@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE form-validation PUBLIC
+          "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1.3//EN"
+          "http://jakarta.apache.org/commons/dtds/validator_1_1_3.dtd">
+
+<form-validation>
+
+	<!-- This is a minimal Validator form file with a couple of examples. -->
+
+	<global>
+
+			<!-- An example global constant  -->
+			<constant> <constant-name>postalCode</constant-name>
+			<constant-value>^\d{5}\d*$</constant-value> </constant>
+
+	</global>
+
+	<formset>
+
+		<!-- <form name="LoginForm"> <field property="userName" depends="required">
+			<arg key="LoginForm.userName"/> </field> <field property="password" depends="required,">
+			<arg0 key="LoginForm.password"/> <arg1 key="${var:minlength}" name="minlength"
+			resource="false"/> <var> <var-name>minlength</var-name> <var-value>6</var-value>
+			</var> </field> </form> -->
+		<form name="MultiUserForm">
+			<field property="userName" depends="required">
+				<arg key="MultiUserForm.userName" />
+				<arg1 key="${var:min}" resource="false" />
+				<arg2 key="${var:max}" resource="false" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>4</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>16</var-value>
+				</var>
+			</field>
+			<field property="password" depends="required">
+				<arg0 key="MultiUserForm.password" />
+				<arg1 key="${var:min}" resource="false" />
+				<arg2 key="${var:max}" resource="false" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>4</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>16</var-value>
+				</var>
+			</field>
+			<field property="confirmPassword" depends="required">
+				<arg0 key="MultiUserForm.confirmPassword" />
+				<arg1 key="${var:min}" resource="false" />
+				<arg2 key="${var:max}" resource="false" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>4</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>16</var-value>
+				</var>
+			</field>
+			<field property="emailAddress" depends="required,email">
+				<arg0 key="MultiUserForm.emailAddress" />
+			</field>
+			<field property="firstName" depends="required">
+				<arg key="MultiUserForm.firstName" />
+			</field>
+			<field property="lastName" depends="required">
+				<arg key="MultiUserForm.lastName" />
+			</field>
+			<field property="companyName" depends="required">
+				<arg key="MultiUserForm.companyName" />
+			</field>
+			<field property="address1" depends="required">
+				<arg key="MultiUserForm.address1" />
+			</field>
+			<field property="city" depends="required">
+				<arg key="MultiUserForm.city" />
+			</field>
+<!-- 			<field property="state" depends="validWhen">
+				<arg key="MultiUserForm.state" />
+				<var>
+					<var-name>test</var-name>
+					<var-value>country == United States) )</var-value>
+				</var>
+			</field> -->
+				<field property="zip" depends="required">
+				<arg key="MultiUserForm.zip" />
+			</field>
+<!-- 			<field property="zip" depends="validWhen,mask">
+				<arg key="MultiUserForm.zip" />
+				<var>
+					<var-name>test</var-name>
+					<var-value>country == United States</var-value>
+				</var>
+				<var>
+					<var-name>mask</var-name>
+					<var-value>${postalCode}</var-value>
+				</var>
+			</field> -->
+			<field property="country" depends="required">
+				<arg key="MultiUserForm.country" />
+			</field>
+			<field property="phone" depends="required">
+				<arg key="MultiUserForm.phone" />
+			</field>
+<!-- 			<field property="phone" depends="validWhen,mask">
+				<arg key="MultiUserForm.phone" />
+					<var>
+						<var-name>test</var-name>
+						<var-value>country == United States</var-value>
+					</var>
+					<var>
+					<var-name>mask</var-name>
+					<var-value>^[+][4][2][0](\d{6,9})$</var-value>
+				</var>
+			</field> -->
+
+			<!-- <field property="emailAddress" depends="email">
+				<arg0 key="MultiUserForm" />
+				<arg1 key="label.emailAddress" />
+			</field> -->
+		</form>
+
+		 <form name="AddEmployeeForm">
+		   <field property="fname" depends="required">
+                <arg key="AddEmployeeForm.fname" />
+            </field>
+             <field property="lname" depends="required">
+                <arg key="AddEmployeeForm.lname" />
+            </field>
+              <field property="title" depends="required">
+                <arg key="AddEmployeeForm.title" />
+            </field>
+
+              <field property="JobTitle" depends="required">
+                <arg key="AddEmployeeForm.JobTitle" />
+            </field>
+              <field property="dob" depends="required">
+                <arg key="AddEmployeeForm.dob" />
+            </field>
+              <field property="dos" depends="required">
+                <arg key="AddEmployeeForm.dos" />
+            </field>
+              <field property="doa" depends="required">
+                <arg key="AddEmployeeForm.doa" />
+            </field>
+
+             <field property="address1" depends="required">
+                <arg key="AddEmployeeForm.address1" />
+            </field>
+
+               <field property="city" depends="required">
+                <arg key="AddEmployeeForm.city" />
+            </field>
+               <field property="country" depends="required">
+                <arg key="AddEmployeeForm.country" />
+            </field>
+               <field property="state" depends="required">
+                <arg key="AddEmployeeForm.state" />
+            </field>
+
+              <field property="state" depends="required">
+                <arg key="AddEmployeeForm.state" />
+            </field>
+
+            <field property="zip" depends="required">
+                <arg key="AddEmployeeForm.zip" />
+            </field>
+
+             <field property="phone" depends="required">
+                <arg key="AddEmployeeForm.phone" />
+            </field>
+
+
+            <field property="email" depends="required">
+                <arg key="AddEmployeeForm.email" />
+            </field>
+
+
+            	<field property="emptype" depends="required">
+                <arg key="AddEmployeeForm.emptype" />
+            </field>
+
+            <field property="ssn" depends="required">
+                <arg key="AddEmployeeForm.ssn" />
+            </field>
+
+              <field property="filingStatus" depends="required">
+                <arg key="AddEmployeeForm.filingStatus" />
+            </field>
+
+              <field property="allowance" depends="required">
+                <arg key="AddEmployeeForm.allowance" />
+            </field>
+
+
+            <field property="stateworked" depends="required">
+                <arg key="AddEmployeeForm.stateworked" />
+            </field>
+
+              <field property="amount" depends="required">
+                <arg key="AddEmployeeForm.amount" />
+            </field>
+
+              <field property="payperiod" depends="required">
+                <arg key="AddEmployeeForm.payperiod" />
+            </field>
+		</form>
+		<!-- An example form -->
+		<!-- <form name="logonForm"> <field property="username" depends="required">
+			<arg key="logonForm.username"/> </field> <field property="password" depends="required,mask">
+			<arg key="logonForm.password"/> <var> <var-name>mask</var-name> <var-value>^[0-9a-zA-Z]*$</var-value>
+			</var> </field> </form> -->
+
+	</formset>
+
+	<!-- An example formset for another locale -->
+	<!-- <formset language="fr"> <constant> <constant-name>postalCode</constant-name>
+		<constant-value>^[0-9a-zA-Z]*$</constant-value> </constant> An example form
+		<form name="logonForm"> <field property="username" depends="required"> <arg
+		key="logonForm.username"/> </field> <field property="password" depends="required,mask">
+		<arg key="logonForm.password"/> <var> <var-name>mask</var-name> <var-value>^[0-9a-zA-Z]*$</var-value>
+		</var> </field> </form> </formset> -->
+
+</form-validation>

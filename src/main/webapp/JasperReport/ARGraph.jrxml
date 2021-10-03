@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ARGraph" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8394eb5d-59af-44fe-bdc2-fbb6160ac2dc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT Sum(adjustedtotal)                             AS qty,
+       Date_format(bca_invoice.dateadded, '%b%y') AS t
+FROM   bca_invoice
+WHERE  invoicetypeid IN ( 1, 3, 7 )
+       AND companyid = 1
+       AND invoicestatus = 0
+       AND ispaymentcompleted <> 1
+GROUP  BY Date_format(bca_invoice.dateadded, '%b%y')
+ORDER  BY Str_to_date(Date_format(bca_invoice.dateadded, '%b%y'), '%M %d,%Y'
+          )]]>
+	</queryString>
+	<field name="qty" class="java.lang.Double"/>
+	<field name="t" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="164" splitType="Stretch">
+			<staticText>
+				<reportElement x="61" y="13" width="424" height="20" uuid="b7287015-5aac-4441-bd7a-150c2577ae2d"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Account Receivable By Month]]></text>
+			</staticText>
+			<pie3DChart>
+				<chart evaluationTime="Report" renderType="image">
+					<reportElement mode="Transparent" x="89" y="39" width="354" height="122" uuid="562f08ae-152a-4afa-9c99-2035baf3a7e0"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend position="Top"/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{t}]]></keyExpression>
+					<valueExpression><![CDATA[$F{qty}]]></valueExpression>
+					<labelExpression><![CDATA[$F{t}+'='+$F{qty}]]></labelExpression>
+				</pieDataset>
+				<pie3DPlot>
+					<plot/>
+					<itemLabel/>
+				</pie3DPlot>
+			</pie3DChart>
+		</band>
+	</title>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+</jasperReport>
