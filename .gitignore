@@ -19,6 +19,7 @@
 .recommenders
 .settings
 .springBeans
+.git-Bitbucket/
 /build
 /code
 MANIFEST.MF
