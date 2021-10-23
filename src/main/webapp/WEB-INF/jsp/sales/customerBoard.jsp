@@ -460,7 +460,7 @@ function setCutomerDataById(vendorID, rowId){
             lookUpHistory();
         },
         error : function(error) {
-             alert("ERROR");
+             alert("<bean:message key='BzComposer.common.erroroccurred'/>");
         }
     });
 }
@@ -483,7 +483,7 @@ function manageCustomer(cmd)
                         location.reload();
                     },
                     error : function(error) {
-                         alert("ERROR");
+                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
                     }
                 });
 			}

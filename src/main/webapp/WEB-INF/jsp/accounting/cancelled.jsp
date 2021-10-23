@@ -19,11 +19,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
-	<%@include file="/WEB-INF/jsp/include/header.jsp"%>
-	<%@include file="/WEB-INF/jsp/include/menu.jsp"%>
-<title>Insert title here</title>
-
+<%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
+<%@include file="/WEB-INF/jsp/include/header.jsp"%>
+<%@include file="/WEB-INF/jsp/include/menu.jsp"%>
+<title><spring:message code="BzComposer.accountreceivabletitle"/></title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -73,11 +72,11 @@ table.tabla-listados tbody tr td {
 <body>
 <% int find = 0; %>
 <div id="ddcolortabsline">&nbsp;</div>
- <form:form action="AccountReceiveble" method="post" styleId="cancelledTabForm" >  
-
-								
+ <form:form action="AccountReceiveble" method="post" styleId="cancelledTabForm" >
 	<div class="content1 clearfix">
-		<h3 class="title1">Cancelled Tab</h3>
+		<h3 class="title1">
+		    <spring:message code="BzComposer.accountreceivable.tabs.cancelled"/>
+		</h3>
 		 <% ReceivableListBean receivablelistbean=(ReceivableListBean)request.getAttribute("Selectedrow");
 		 	TblPaymentType payment = (TblPaymentType)request.getAttribute("SelectedPayment");
 		 	TblAccount Selectedaccount = (TblAccount)request.getAttribute("SelectedAccount");
@@ -102,13 +101,10 @@ table.tabla-listados tbody tr td {
 			<form>
 				<div class="row">
 					<div class="col-md-4">
-						<label>Order no:</label>
-						
-						 <label id="ordernumber">
-						    
-						      </label>
+						<label><spring:message code="BzComposer.sales.Order"/>:</label>
+						 <label id="ordernumber"></label>
 						<div class="form-group row">
-							<label class="col-md-4  col-form-label">Customer</label>
+							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.accountreceivable.customer"/></label>
 							<div class="col-md-8">
 								<select class="form-control devCutNameDrp" id="customerName" >
 								<%
@@ -125,7 +121,9 @@ table.tabla-listados tbody tr td {
 						</div>
 						
 						<div class="form-group row">
-							<label class="col-md-4  col-form-label">Received Type</label>
+							<label class="col-md-4  col-form-label">
+							    <spring:message code="BzComposer.accountreceivable.receivedtype"/>
+							</label>
 							<div class="col-md-8">
 								<select class="form-control devReceivedTypeDrp" id="receivedType" onclick="checkType()">
 								<%-- <%if(payment!=null) 
@@ -146,7 +144,9 @@ table.tabla-listados tbody tr td {
 							</div>
 						</div>
 						 <div class="form-group row">
-						<label class="col-md-4  col-form-label">Amount</label>
+						<label class="col-md-4  col-form-label">
+						    <spring:message code="BzComposer.accountreceivable.amount"/>
+						</label>
 				    
 				    	<div class="col-md-8">	
 				    	<div class="input-group">
@@ -158,7 +158,9 @@ table.tabla-listados tbody tr td {
 						</div>
 						</div>
 						 <div class="form-group row">
-							<label class="col-md-4  col-form-label">Received Amount</label>
+							<label class="col-md-4  col-form-label">
+							    <spring:message code="BzComposer.accountreceivable.receivedamount"/>
+							</label>
 							 
 					<div class="col-md-8">
 						<div class="input-group">
@@ -175,7 +177,9 @@ table.tabla-listados tbody tr td {
 					  data.style.display = "none";
 				</script>
 				<div class="form-group row" id="Check">
-							<label class="col-md-4  col-form-label">Check #</label>
+							<label class="col-md-4  col-form-label">
+							    <spring:message code="BzComposer.accountreceivable.checknumber"/>
+							</label>
 							<div class="col-md-8">
 							<input type="text" class="form-control devCheck" id="checkNum" name="checkNum">
 							</div>
@@ -185,7 +189,9 @@ table.tabla-listados tbody tr td {
 					<div class="col-md-4">
 						<label>&nbsp;</label>
 						<div class="form-group row">
-							<label class="col-md-4  col-form-label">Order Date</label>
+							<label class="col-md-4  col-form-label">
+							    <spring:message code="BzComposer.accountreceivable.orderdate"/>
+							</label>
 						   <%--  <html:text property="orderDate" readonly="false"></html:text>  --%>
 						    <div class="col-md-8 calendar-img"><input type="text" class="form-control devOrderDate" value="" style="width: 275px" name="orderDate" readonly="true" id="orderDate">
 							<img
@@ -197,7 +203,9 @@ table.tabla-listados tbody tr td {
 						</div>
 						
 						<div class="form-group row">
-							<label class="col-md-4  col-form-label">Deposit To</label>
+							<label class="col-md-4  col-form-label">
+							    <spring:message code="BzComposer.accountreceivable.depositto"/>
+							</label>
 							<div class="col-md-8">
 								<select class="form-control devDeposittypeDrp" id="depositId">
 									
@@ -212,7 +220,9 @@ table.tabla-listados tbody tr td {
 							</div>
 						</div>
 						<div class="form-group row">
-							<label class="col-md-4  col-form-label">Category</label>
+							<label class="col-md-4  col-form-label">
+							    <spring:message code="BzComposer.accountreceivable.category"/>
+							</label>
 							<div class="col-md-8">
 								<select class="form-control devCategoryDrp" size="1" id="categoryId">
 								<%
@@ -228,17 +238,19 @@ table.tabla-listados tbody tr td {
 						</div>
 						
 						<div class="form-group row">
-							<label class="col-md-4  col-form-label">Payment Status</label>
+							<label class="col-md-4  col-form-label">
+							    <spring:message code="BzComposer.accountreceivable.paymentstatus"/>
+							</label>
 							<div class="col-md-8">
 								<select class="form-control" size="1">
-									<option>Unpaid</option>
-									<option>Paid</option>
+									<option><spring:message code="BzComposer.accountreceivable.unpaid"/></option>
+                                    <option><spring:message code="BzComposer.accountreceivable.paid"/></option>
 								</select>
 							</div>
 						</div>
 						
 						<div class="form-group row">
-							<label class="col-md-4  col-form-label">Memo</label>
+							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.global.memo"/></label>
 							<div class="col-md-8">
 								<input type="text" class="form-control devMemotext" id="memo">
 							</div>
@@ -246,9 +258,11 @@ table.tabla-listados tbody tr td {
 						
 						
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-4" style="top:35px;">
 						<div class="form-group">
-							<button class="btn btn-info" style="font-size: 14px;" onclick="return clearTransaction()">Clear the Transaction</button>
+							<button class="btn btn-info" style="width:100px;font-size: 14px;" onclick="return clearTransaction()">
+							    <spring:message code="BzComposer.global.clear"/>
+							</button>
 						</div> 
 					</div>
 				</div>
@@ -259,12 +273,12 @@ table.tabla-listados tbody tr td {
 			
 			<nav>
 			   <div class="nav nav-tabs" id="tabId" role="tablist">
-			    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" onclick="receivableList()">Receivable List</a>
-			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Overdue</a>
-			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="cancelledTab()">Cancelled</a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Vendor RMA</a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Layaways</a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()">Received</a>
+			    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" onclick="receivableList()"><spring:message code="BzComposer.accountreceivable.tabs.receivablelist"/></a>
+			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false"><spring:message code="BzComposer.accountreceivable.tabs.overdue"/></a>
+			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="cancelledTab()"><spring:message code="BzComposer.accountreceivable.tabs.cancelled"/></a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false"><spring:message code="BzComposer.accountreceivable.tabs.vendorrma"/></a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()"><spring:message code="BzComposer.accountreceivable.tabs.layaways"/></a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()"><spring:message code="BzComposer.accountreceivable.tabs.received"/></a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">eSales</a>
 			  </div>
 			</nav>
@@ -274,21 +288,21 @@ table.tabla-listados tbody tr td {
 				<table class="table table-bordered table-sm devAcRecDataTbl">
 				  <thead class="thead-light">
 				    <tr>
-				      <th scope="col">Select</th>
-				      <th scope="col" class="text-right">Order#</th>
-				      <th scope="col">Company Name</th>
-				      <th scope="col">Customer Name</th>
-				      <th scope="col" class="text-right">Order Date</th>
-				      <th scope="col" class="text-right">Term</th>
-				      <th scope="col" class="text-right">Due Date</th>
-				      <th scope="col" class="text-right">Amount</th>
-				      <th scope="col" class="text-right">Received</th>
-				      <th scope="col" class="text-right">Balance</th>
-				      <th scope="col" class="text-right">Line of Credit</th>
-				      <th scope="col" class="text-right">Available Credit</th>
-				      <th scope="col" class="text-right">Category</th>
-				      <th scope="col">Memo</th>
-				      <th scope="col">Consigned</th>
+                        <th scope="col"><spring:message code="BzComposer.accountreceivable.select"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.sales.Order"/></th>
+                      <th scope="col"><spring:message code="BzComposer.accountreceivable.companyname"/></th>
+                      <th scope="col"><spring:message code="BzComposer.accountreceivable.customername"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.orderdate"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.global.term"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.duedate"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.amount"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.received"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.balance"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.lineofcredit"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.availablecredit"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.category"/></th>
+                      <th scope="col"><spring:message code="BzComposer.global.memo"/></th>
+                      <th scope="col"><spring:message code="BzComposer.accountreceivable.consigned"/></th>
 				    </tr>
 				  </thead>
 				  <tbody>
@@ -422,7 +436,7 @@ table.tabla-listados tbody tr td {
 				receivedAmount=document.getElementById("receivedAmount").value;
 				if(parseFloat(receivedAmount) > parseFloat(adjustTotal))
 					{
-						alert("Received Amount shuould not be greater than Amount ");
+						alert("<bean:message key='BzComposer.common.receivedAmtShuouldNotBeGTAmt'/>");
 				   		return false;
 					}
 			}
@@ -431,7 +445,7 @@ table.tabla-listados tbody tr td {
 				var balance = document.getElementById("receivedAmount").value;
 				if(parseFloat(receivedAmount)+parseFloat(balance) > parseFloat(adjustTotal) )
 				   {
-				   		alert("Received Amount shuould not be greater than Amount ");
+				   		alert("<bean:message key='BzComposer.common.receivedAmtShuouldNotBeGTAmt'/>");
 				   		return false;
 				   }
 		}
@@ -487,8 +501,6 @@ table.tabla-listados tbody tr td {
 			url : "AccountReceiveble?tabid=selectrow&ordernum="+index,
 			data : "row=" +index, 			
 			success : function(data,status) {
-				/* alert("Hello"); */
-				
 				window.location= "${pageContext.request.contextPath}/AccountReceiveble?tabid=selectrow&ordernum="+index;
 			},
 			 error : function(data) {
@@ -566,14 +578,11 @@ table.tabla-listados tbody tr td {
 	   
 	   if(ctype == 'Check')
 	   {
-	   var checkNo = document.getElementById("checkNum").value;
-	   	if(checkNo == '0' || checkNo == '')
-	   			{
-	   				alert("Please Enter a Valid CheckNumber");
-	   				return false;
-	   				
-	   			}
-	   	 
+           var checkNo = document.getElementById("checkNum").value;
+           if(checkNo == '0' || checkNo == ''){
+               alert("<bean:message key='BzComposer.common.enterValidCheckNumber'/>");
+               return false;
+           }
 	   }
 	   var memo = document.getElementById("memo").value;
 	   var depositBank = document.getElementById("depositId");
@@ -678,13 +687,10 @@ table.tabla-listados tbody tr td {
    {
 	   var answer;
 	   debugger;
-	  /*  alert(indexNumber);
-	   alert(invoiceId); */
-	   if(parseInt(invoiceId) <= 0)
-		   {
-		   		alert("Please select a transaction first");
-		   		return false;
-		   }
+	   if(parseInt(invoiceId) <= 0){
+            alert("<bean:message key='BzComposer.accountreceivable.selecttransaction'/>");
+            return false;
+       }
 	   else{
 		  answer = window.confirm("Are you sure want to Clear the Transaction ?");
 		  if(answer != true)
@@ -735,6 +741,10 @@ table.tabla-listados tbody tr td {
 
 	   window.location = "${pageContext.request.contextPath}/ReceivedTab?tabid=receivedTab";
    }
+   function layawaysTab()
+  {
+    window.location = "${pageContext.request.contextPath}/Layaway?tabid=layawayTab";
+  }
    function addCss()
    {
 	   $(document).ready(function () {

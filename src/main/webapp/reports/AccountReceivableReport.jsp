@@ -291,7 +291,7 @@ input, textarea, select {
 <script type="text/javascript">
 $("#tabs").tabs({
     change: function(event, ui) {
-        alert("PRESSED TAB!");
+
     }
 });
 function callRefresh()

@@ -213,7 +213,7 @@ function DeleteFootnote()
 		id = document.configurationForm.footnote.value;
 		if(id==0)
 		{
-			//alert('<spring:message code="BzComposer.configuration.editfootnote.footnoteemptyvalidation"/>');
+
 			return emptyfootnotevalidationdialog();
 			document.getElementById('txt').focus();
 		}
@@ -279,7 +279,7 @@ function SaveFootnote()
 		
 		if(txtv=='select')
 		{
-			//alert('<spring:message code="BzComposer.configuration.editfootnote.footnoteemptyvalidation"/>')
+
 			return emptyfootnotevalidationdialog();
 			document.getElementById('txt').focus();
 		}
@@ -288,7 +288,7 @@ function SaveFootnote()
 			txtval = trim(document.getElementById('txt').value);
 			if(txtval=="")
 			{
-				//alert('<spring:message code="BzComposer.configuration.editfootnote.footnoteemptyvalidation"/>')
+
 				return emptyfootnotevalidationdialog();
 				document.getElementById('txt').focus();
 			}

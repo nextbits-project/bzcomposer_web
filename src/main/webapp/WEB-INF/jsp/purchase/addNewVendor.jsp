@@ -1048,33 +1048,33 @@ function clearShippingAdd(){
 function SaveVendorData(){
 	debugger
 	if(trim(document.getElementById('firstName').value)==""){
-		//alert('<spring:message code="BzComposer.NewCustomer.FirstName.Validation" />');
+
 		document.getElementById('firstName').focus();
 		return showblankfirstnamevalidationdialog();
 	}
 	else if(trim(document.getElementById('lastName').value)==""){
-		//alert('<spring:message code="BzComposer.NewCustomer.LastName.Validation" />');
+
 		document.getElementById('lastName').focus();
 		return showblanklastnamevalidationdialog();
 	}
 	else if(trim(document.getElementById('cname').value)==""){
-		//alert('<spring:message code="BzComposer.NewCustomer.Name.Validation" />');
+
 		document.getElementById('cname').focus();
 		return showblanknamevalidationdialog();
 	}
 	else if(trim(document.getElementById('address1').value)==""  ){
-		//alert('<spring:message code="BzComposer.NewCustomer.Adderss1.Validation" />');
+
 		document.getElementById('address1').focus();
 		return showblankaddress1validationdialog();
 
 	}
 	else if(trim(document.getElementById('cityID').value)==""){
-		//alert('<spring:message code="BzComposer.NewCustomer.City.Validation" />');
+
 		document.getElementById('cityID').focus();
 		return showblanklcityvalidationdialog();
 	}
 	else if(trim(document.getElementById('zipCode').value)==""){
-		//alert('<spring:message code="BzComposer.NewCustomer.ZipCode.Validation" />');
+
 		document.getElementById('zipCode').focus();
 		return showblankzipcodevalidationdialog();
 	}
@@ -1185,7 +1185,7 @@ function addToTable(form){
 		}
 		if(flag==1)
 		{
-			//alert('<spring:message code="BzComposer.NewCustomer.Service.Validation" />');
+
 			return showservicevalidationdialog();
 			return;
 		}

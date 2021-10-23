@@ -509,8 +509,8 @@ public class ConfigurationDto {
     private String[] listOfExistingModules1;
     private String[] ListOfActiveInvoiceStyle;
     private String[] ListOfDeActiveInvoiceStyle;
-    private int selectedModuleId;
-    private int selectedModules;
+    private int selectedModuleId = 0;
+    private int selectedModules = 0;
     private ArrayList<ConfigurationDto> listOfExistingselectedModules;
 
     private ArrayList<ConfigurationDto> listOfExistingCategory;

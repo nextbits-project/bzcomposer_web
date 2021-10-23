@@ -267,7 +267,7 @@ function showcyberSourceMerchantID()
 function showPaymentGateway()
 {
 	var id = document.configurationForm.selectedPaymentGatewayId.value; 
-	//alert("Payment GatewayId is:"+id);
+
 
 	if(id == 1||id == 17 || id == 33 || id == 50 || id == 66 || id == 82 || id == 98 || id == 114 || id == 130 || id == 146)
 	{

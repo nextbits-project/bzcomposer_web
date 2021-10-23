@@ -1859,7 +1859,7 @@ function StyleChange(value)
 				document.getElementById('amount_id').value="";
 				document.getElementById('weight_id').value="";
 				document.getElementById('pname_id').value="";
-				//alert("Select Item first");
+
 				return showSelectItemDialog();			
 			}
 			else{	
@@ -2013,7 +2013,7 @@ function StyleChange(value)
 				//form.amount.value+=amt+";"
 				
 				hidn_val=( (hidn_val/1) + 1);
-				//alert("DDD" +hidn_val);
+
 				document.getElementById('hidn').value=hidn_val;
 				
    			}	
@@ -2313,10 +2313,10 @@ function StyleChange(value)
 				}
 			</logic:present>
 			var readOnly = <%= request.getAttribute("readData") %>
-			//alert("ReadData value:"+readOnly);
+
 			if(readOnly)
 			{
-				//alert("inside true condition");
+
 				$('#newSalesOrder').prop('disabled', true);
 				$('#btnNewSalesOrder').prop('disabled', true);
 				$('#btnSaveSalesOrder').prop('disabled', true);
@@ -2329,7 +2329,7 @@ function StyleChange(value)
 			}
 			else
 			{
-				//alert("inside false condition");
+
 				$('#newSalesOrder').prop('disabled', false);
 				$('#btnNewSalesOrder').prop('disabled', false);
 				$('#btnSaveSalesOrder').prop('disabled', false);
@@ -2347,16 +2347,16 @@ function onSaveInvoice(form){
 
 			if(cid==0){
 
-				//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 			}
 			else if(isItemExist <=0){
-				   //alert('Select Item ');
+
 				   return showSelectItemDialog();
 			}
 			else{
 				if(No.length==0 || No==0){
-					//alert('<bean:message key="BizComposer.Invoice.OrderNo.Validation" />');
+
 					return showItemOrderNumberDialog();
 				}
 				else
@@ -2492,16 +2492,16 @@ function onSaveInvoice(form){
 
 			if(cid==0){
 
-				//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 			}
 			else if(isItemExist <=0){
-				   //alert('Select Item ');
+
 				   return showSelectItemDialog();
 			}
 			else{
 				if(No.length==0 || No==0){
-					//alert('<bean:message key="BizComposer.Invoice.OrderNo.Validation" />');
+
 					return showItemOrderNumberDialog();
 				}
 				else
@@ -2640,12 +2640,12 @@ function onSaveInvoice(form){
 			No=form.orderNo.value;
 			cid = form.custID.value;
 			if(cid==0){
-				//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 			}
 			else{
 				if(No.length==0 || No==0){
-					//alert('<bean:message key="BizComposer.Invoice.OrderNo.Validation" />');
+
 					return showItemOrderNumberDialog();
 				}
 				else
@@ -2678,7 +2678,7 @@ function onSaveInvoice(form){
 		function ShowUpdate(form){
 			cid=form.custID.value;
 			if(cid==0){
-				//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 			}
 			else{
@@ -2704,7 +2704,7 @@ function onSaveInvoice(form){
 		function paymentHistory(form){
 			cid=form.custID.value;
 			if(cid==0){
-				//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 			}
 			else{
@@ -2932,7 +2932,7 @@ function truncate(num) {
 function PrintInvoice(form){
 	orderNo=document.InvoiceForm.orderNo.value;
 	if(orderNo==""){
-		//alert('<bean:message key="BizComposer.Invoice.OrderNo.Validation" />');
+
 		return showItemOrderNumberDialog();
 	}
 	else{

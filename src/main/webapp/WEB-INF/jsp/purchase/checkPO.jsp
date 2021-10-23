@@ -259,15 +259,15 @@ function checkduplicatenamedialog()
 
 <script type="text/javascript">
 function setIsEmail(){
-	//alert("DFSD");
+
 	document.getElementById("isEmailChk").value=document.getElementById("EmailId").value;
 	document.forms[0].action = "Email?tabid=EOSOLO";
 	document.forms[0].submit();
 }
 function checkName(){
 	if(document.RMAForm.fnameTxt.value=="" && document.RMAForm.lnameTxt.value=="")	{
-		//alert("You have to type one of fields in fst name and last name");
-		//alert("<spring:message code='BzComposer.checkpurchaseorder.enterfirstorlastname'/>");
+
+
 		return checkduplicatenamedialog();
 	}
 	else{

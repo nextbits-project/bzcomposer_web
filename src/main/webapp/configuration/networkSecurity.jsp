@@ -88,7 +88,7 @@ function adduser1() {
 	/* if(size>=4){
 		debugger;
 		return maxnumberofuserdialog();
-		//alert("BzComposer has reached the maximum number of register user.\nTo continue using BzComposer you must purchase additional license.");
+
 	}else{
 		$('#AddUser').modal('show');
 	} */
@@ -325,7 +325,7 @@ $(function() {
 			debugger;
 			return maxnumberofuserdialog();
 
-			//alert("BzComposer has reached the maximum number of register user.\nTo continue using BzComposer you must purchase additional license.");
+
 		}
 		else
 		{
@@ -362,7 +362,7 @@ $(function() {
 		$('select[id="selectedPassword"]').find('option[id="'+user+'"]').attr("selected",true);
 		$('select[id="selectedGroup"]').find('option[id="'+user+'"]').attr("selected",true);
 		$('select[id="selectedStatus"]').find('option[id="'+user+'"]').attr("selected",true);
-		//alert("Selected User:"+user);
+
 	}
 </script>
 </head>

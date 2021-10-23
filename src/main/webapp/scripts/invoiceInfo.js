@@ -815,7 +815,7 @@ function Pending_Value(form){
 				//form.amount.value+=amt+";"
 				
 				hidn_val=( (hidn_val/1) + 1);
-				//alert("DDD" +hidn_val);
+
 				document.getElementById('hidn').value=hidn_val;
 				
 				

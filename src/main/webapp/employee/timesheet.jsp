@@ -73,7 +73,7 @@ function writeSelect1()
     
     document.getElementById("tsheet").innerHTML="";
     document.getElementById("tsheet").innerHTML = o.responseText ;
-    //alert(o.responseText);
+
 }
 function refreshItemsNow(val)
 {
@@ -90,10 +90,10 @@ function drawTimesheet()
   if(id!=null||id!="")
   {
   o = c(writeSelect1);
- // alert('<bean:write name="path" property="pathvalue" />/include/EmployeeTimeSheet.jsp?id=' +id+'&dates='+dates);
+
   oGET(o,'<bean:write name="path" property="pathvalue" />/include/EmployeeTimeSheet.jsp?id=' +id+'&dates='+dates);
   var rawdata=document.getElementById("tsdata").value;
-  //alert(rawdata);
+
   }
 }
 </script>

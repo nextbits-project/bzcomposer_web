@@ -134,14 +134,14 @@ public class ConfigurationDetails {
 
         configDto.setFilterOption(request.getParameter("filterOption"));
         configDto.setDefaultLabelID(Integer.parseInt(request.getParameter("defaultLabelID")));
-        configDto.setListOfExistingModules1(request.getParameter("moduleslist").split(","));
+        //configDto.setListOfExistingModules1(request.getParameter("moduleslist").split(","));
         configDto.setModuleID(Integer.parseInt(request.getParameter("moduleID")));
         configDto.setMailServer(request.getParameter("mailServer"));
         configDto.setSenderEmail(request.getParameter("senderEmail"));
         configDto.setMailUserName(request.getParameter("mailUserName"));
         configDto.setMailPassword(request.getParameter("mailPassword"));
         configDto.setShowUSAInBillShipAddress(Boolean.parseBoolean(request.getParameter("showUSAInBillShipAddress")));
-
+        configDto.setMultiUserConnection(Integer.parseInt(request.getParameter("multiUserConnection")));
         ConfigurationInfo cinfo = new ConfigurationInfo();
         cinfo.saveConfigurationRecordGeneral(configDto, request);
     }

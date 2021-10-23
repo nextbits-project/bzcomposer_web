@@ -77,7 +77,7 @@
 
 			var rid= "<%= request.getParameter("SelectedRID")%>$$";
 			var cvid = <%= request.getParameter("vendrId")%>;
-			//alert("clientVedorID is:"+cvid);
+
 			var rd=document.getElementById(rid);
 			// rd.className = "draft";
 			<c:if test="${not empty VendorFrm}">
@@ -197,7 +197,7 @@
 			rd.className = "draft";
 			document.getElementById("setRID").value=rid;
 			var sortId = <%= request.getParameter("sortById")%>;
-			//alert("sortBy Id:"+sortId);
+
 			$('select[id="sortBy"]').find('option[value="'+sortId+'"]').attr("selected",true);
 		}
 		function emptyemployeeidDialog()

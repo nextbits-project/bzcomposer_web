@@ -84,7 +84,7 @@ function CloseMe(){
 }
 function Send(emailaddr){
 	if(document.getElementById('emailAddr').value.trim()==""){
-		alert("Please check Email address for this recipient");
+		alert("<bean:message key='BzComposer.common.checkEmailForThisRecipient'/>");
 	}
 	else{
 		document.forms[0].action="Invoice?tabid=SendMail&OrderNo="+document.getElementById('ordId').value;

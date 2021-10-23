@@ -66,11 +66,11 @@ function toggleFunction() {
 	
 	function setStoreTypeName()
 	{
-		alert("Please Select eSales Store");	
+		alert("<bean:message key='BzComposer.configuration.esales.selectesalesstore'/>");
 	}
 	function setLeftToRight()
 	{
-		//alert("inside setLeftToRight function");
+
 		debugger
 		var category = $.trim($("#eBayCategorySelect option:selected").text());
 		var categoryId = $.trim($("#eBayCategorySelect option:selected").val());
@@ -107,7 +107,7 @@ function toggleFunction() {
 		debugger
 		var isActive = $.trim($('select[id="eBayCategorySelect"]').find('option[id="'+category+'"]').val());
 		debugger
-		//alert("Selected Category:"+category+"\nis Active?:"+isActive);
+
 		if(isActive == 0)
 		{
 			$("#eBayCategorySelect option:selected").attr('readonly',true);
@@ -121,14 +121,14 @@ function toggleFunction() {
 	
 	function showStore()
 	{
-		//alert("inside showStore")
+
 		window.open("Configuration?tabid=showStore",null,"scrollbars=yes,height=600,width=1300,status=yes,toolbar=no,menubar=no,location=no" );
 	}
 	
 	function setDiv()
 	{
 		var value = $("#stores option:selected").val();
-		//alert("selected Value:"+value);
+
 		if(value == 39)
 		{
 			document.getElementById("forOnlineOption").style.display = "block";
@@ -149,7 +149,7 @@ function toggleFunction() {
 		
 		var storeChannel = $.trim($('select[id="eSalesStoreId"]').find('option[id="'+eSalesStore+'"]').val());
 		
-		//alert("Selected eSales Store Value:"+eSalesStore+"\nId is:"+selectedeSalesStore+"\nAbbreviation is:"+ab+"\nStoreType Id is:"+storeChannel);
+
 		
 		$('select[id="eSalesStoreId"]').find('option[id="'+selectedeSalesStore+'"]').attr("selected",true);
 		$('select[id="eSalesStoreId"]').find('option[id="'+eSalesStore+'"]').attr("selected",true);
@@ -169,7 +169,7 @@ function toggleFunction() {
 	
 	function addeBayCategory()
 	{
-		alert("Inside addeBayCategory")
+
 	}
 </script>
 </head>

@@ -145,7 +145,7 @@ function AddLabel()
 {
 	if(document.CustomerForm.labelName.value=="")
 	{
-		//alert("Label name should not be blank");
+
 		return showLabelNameDialog();
 		document.CustomerForm.labelName.focus();
 	}
@@ -337,7 +337,7 @@ function AddLabel()
 {
 	if(document.VendorForm.labelName.value=="")
 	{
-		alert("Label name should not be blank");
+		alert("<bean:message key='BzComposer.common.enterLabelName'/>");
 		document.VendorForm.labelName.focus();
 	}
 	else

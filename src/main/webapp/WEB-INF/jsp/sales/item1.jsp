@@ -512,7 +512,7 @@ function manageItem(cmd)
 	var itemid = document.getElementById("inventoryId11").value;
 	if (itemid==0)
 	{
-		//alert('<spring:message code="BzComposer.Customer.cName.Validation"/>');
+
 		return showCustomerValidationDialog();
 		//return;
 	}
@@ -521,11 +521,11 @@ function manageItem(cmd)
 		if (cmd=="EDIT")
 		{
 			showitem(itemid);
-		//	alert("Edit...Under development");
+
 		}
 		else if (cmd=="DELETE")
 		{
-			//alert("Delete...Under development");
+
 			if(confirm("This will delete all the information related to this Customer (ID="+itemid+")\nAre you sure to delete ?")==true)
 			{
 			 window.location = "Item?tabid=DeleteItem&InvId="+itemid;

@@ -25,7 +25,6 @@ function setContent()
 {
 	debugger
 	var id = $("#selectedTemplateId option:selected").val();
-	alert("Selected Tempalte Id:"+id)
 	document.getElementById("templateName").style.display = "none";
 	document.getElementById("txtTemplateName").style.display = "block";
 	document.getElementById("templateSubject").style.display = "none";

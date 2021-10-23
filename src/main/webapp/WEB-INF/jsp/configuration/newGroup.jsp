@@ -15,7 +15,7 @@
 <script type="text/javascript">
 $( document ).ready(function() {
 	var checkedBoxes = document.querySelectorAll('input[type=checkbox]');
-	//alert("Total checkBoxes :"+ checkedBoxes.length);
+
 	var gpPermissions = $('#groupPermissions').val();
 	if(gpPermissions != null && gpPermissions != ''){
         for(var i = 0 ; i < checkedBoxes.length; i++){
@@ -43,13 +43,13 @@ function addNewGroup()
         }
     });
     if(gName == ""){
-        alert("Group name can not be blank");
+        alert("<bean:message key='BzComposer.common.groupCantBeBlank'/>");
         return;
     }else if(description == ""){
-         alert("Description can not be blank");
+         alert("<bean:message key='BzComposer.common.descCantBeBlank'/>");
          return;
      }else if(groupExist){
-        alert("Group Name is exists, Please Choose another name.");
+        alert("<bean:message key='BzComposer.common.groupAlreadyExists'/>");
         return;
     }
     var totalCheckBoxes = $('input[type="checkbox"]').length;
@@ -66,7 +66,6 @@ function addNewGroup()
         url :  "ConfigurationAjax/SaveConfiguration?tabid=saveGroup",
         data : formData,
         success : function(data) {
-            alert(data);
             closeWindow();
             window.opener.location.reload();
         },
@@ -192,7 +191,7 @@ function closeWindow(){
 }
 
 function setHelp(){
-    alert("Not yet supported");
+    alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 }
 </script>
 <body>

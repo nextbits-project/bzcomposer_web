@@ -1878,7 +1878,7 @@ function init() {
 			document.getElementById('amount_id').value="";
 			document.getElementById('weight_id').value="";
 			document.getElementById('pname_id').value="";
-			//alert("Select Item first");
+
 			return showSelectItemDialog();
 			form.itemID.focus();
 		}
@@ -2474,19 +2474,19 @@ function init() {
 		cid=form.custID.value;
 		if(isship==2)
 		{
-			//alert('<spring:message code="BizComposer.PurchaseOrder.ShipInfo.Validation" />');
+
 			return showShipInfoValidationDialog();
 		}
 		else if(cid==0)
 		{
-			//alert('<spring:message code="BzComposer.Estimaion.cName.Validation" />');
+
 			return showValidationDialog();
 			document.getElementById('custNm').value="";
 			document.getElementById('custNm').focus();
 		}
 		else if(custnm=="")
 		{
-			//alert('<spring:message code="BzComposer.Estimaion.cName.Validation" />');
+
 			return showValidationDialog();
 			document.getElementById('custNm').focus();
 		}

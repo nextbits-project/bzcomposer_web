@@ -8,7 +8,7 @@
 <script type="text/javascript">
 function openRegisterPage()
 {
-	//alert("Inside openRecoverPassword")
+
 	window.location = "Login.do?tabid=register";
 }
 

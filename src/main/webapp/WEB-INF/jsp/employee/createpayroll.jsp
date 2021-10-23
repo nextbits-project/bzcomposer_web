@@ -56,7 +56,7 @@
                 document.getElementById("workingHours").value = data[0].workingHours;
             },
             error : function(data) {
-                alert("ee"+data);
+                alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
     }

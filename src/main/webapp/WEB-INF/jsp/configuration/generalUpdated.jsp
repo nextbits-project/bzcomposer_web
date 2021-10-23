@@ -79,7 +79,7 @@ function c(r) {
 	  o = new ActiveXObject(t);
       o.onreadystatechange = r;
 	} catch (ex) {
-      alert("<bean:message key='BzComposer.common.needToEnableActiveXObject'/> ts.." + ex);
+      alert("<spring:message code='BzComposer.common.needToEnableActiveXObject'/> ts.." + ex);
 	}
   } else {
 	o = new XMLHttpRequest();
@@ -97,8 +97,8 @@ function oGET(oo, url) {
   }
 }
 
-function showLocale(){
-	var lang = document.getElementById("locale").value;
+function showLocale(lang){
+	//var lang = document.getElementById("locale").value;
 	window.location = "./changeLocale?requestPage=ConfigPage&lang="+lang;
 }
 function showLanguageDialog()
@@ -370,7 +370,6 @@ function pleaseWaitDialog(){
     							<li style="font-size: 12px;"><a href="#GeneralSetting"><spring:message code="BzComposer.configuration.tab.generalsettings" /></a></li>
     							<li style="font-size: 12px;"><a href="#security"><spring:message code="BzComposer.register.security"/></a></li>
     							<!-- <li style="font-size: 12px;"><a href="#modules"><spring:message code="BzComposer.common.modules" /></a></li> -->
-    							<li style="font-size: 12px;"><a href="#orderTemplate"><spring:message code="BzComposer.configuration.tab.orderTemplate" /></a></li>
 								<li style="font-size: 12px;"><a href="#reminder"><spring:message code="BizComposer.Configuration.Reminders"/></a></li>
 								<li style="font-size: 12px;"><a href="#emailSetup"><spring:message code="BzComposer.tab.eMailSetup"/></a></li>
   							</ul>
@@ -512,7 +511,7 @@ function pleaseWaitDialog(){
 												<spring:message code="BzComposer.language" />
 											</td>
 											<td>
-												<select name="locale" id="locale" onchange="showLocale();">
+												<select name="locale" id="locale" onchange="showLocale(this.value);">
 													<!-- <option value=""><spring:message code="BzComposer.selectlanguage"/></option> -->
 													<option value="en" ${sessionScope.currentLocale=='en'?'selected':''}><spring:message code="BzComposer.selectlanguage.english"/></option>
 													<option value="zh" ${sessionScope.currentLocale=='zh'?'selected':''}><spring:message code="BzComposer.selectlanguage.chinese"/></option>
@@ -677,97 +676,7 @@ function pleaseWaitDialog(){
 									</table>
 								</div>
 							</div>
-							<div id="orderTemplate" style="font-size: 12px;">
-			   					<div id="content3" class="tabPage">
-									<table class="table-notifications" width="100%">
-										<tr>
-											<th colspan="2" align="left" style="font-size: 12px; padding: 5px;">
-											<spring:message code="BzComposer.configuration.importantordertemplate" />
-											</th>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;">
-												<spring:message code="BzComposer.configuration.importantordertemplate.templatename" />
-											</td>
-											<td style="font-size: 12px;">
-												<form:input path="templateName" />
-											</td>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;">
-												<spring:message code="BzComposer.configuration.choosefilebtn"/>
-											</td>
-											<td style="font-size: 12px;">
-												<input type="file" name="exelFile" accept=".xls" />
-											</td>
-										</tr>
-										<tr>
-											<td>&nbsp;</td>
-											<td colspan="2" style="font-size: 12px;">
-												<spring:message code="Bzcomposer.configuration.choosefilebtn.onlyexcelfiles"/>
-											</td>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;">
-												<input type="checkbox" name="def" id="def" value="${configDto.def}" ${configDto.def=='on'?'checked':''} />
-												<label><spring:message code="BzComposer.configuration.defaultchkbox" /></label>
-											</td>
-										</tr>
-										<tr>
-											<th colspan="2" align="left" style="font-size: 12px; padding: 5px;">
-												<spring:message code="BzComposer.configuration.fieldsmapping" />
-											</th>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;"><b><spring:message code="BzComposer.configuration.databasefieldsname"/> </b></td>
-											<td style="font-size: 12px;"><b><spring:message code="BzComposer.configuration.mappingfieldsname"/></b></td>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;"><spring:message code= "BzComposer.configuration.itemcode"/>*</td>
-											<td style="font-size: 12px;"><form:input path="itemCode" /></td>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;"><spring:message code = "BzComposer.configuration.itemname"/></td>
-											<td style="font-size: 12px;"><form:input path="itemName" /></td>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;"><spring:message code="BzComposer.configuration.qty"/>*</td>
-											<td style="font-size: 12px;"><form:input path="qty" /></td>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;"><spring:message code="BzComposer.configuration.unitprice"/>* ($)</td>
-											<td style="font-size: 12px;"><form:input path="unitPrice" /></td>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;"><spring:message code="BzComposer.configuration.unitweight"/></td>
-											<td style="font-size: 12px;"><form:input path="weight" /></td>
-										</tr>
-										<tr>
-											<td style="font-size: 12px;"><spring:message code="BzComposer.configuration.taxable"/></td>
-											<td style="font-size: 12px;"><form:input path="taxable" value="" /></td>
-										</tr>
-										<tr>
-											<td colspan="2" align="center" style="font-size: 12px; padding: 5px;">
-												<input type="button" name="New" value="<spring:message code='BzComposer.global.new'/>"/>&nbsp;&nbsp;
-												<input type="button" name="Save" value="<spring:message code='BzComposer.global.save'/>"/>&nbsp;&nbsp;
-												<input type="button" name="Delete" value="<spring:message code='BzComposer.global.delete'/>"/>
-											</td>
-										</tr>
-									</table>
-									<div id="orderTemplateList">
-										<table class="table-notifications" width="80%">
-											<tr>
-												<th colspan="2" align="left" style="font-size: 12px;  padding: 5px;">
-													<spring:message code="BzComposer.configuration.ordertemplatelist" />
-												</th>
-											</tr>
-											<tr>
-												<td></td>
-											</tr>
-										</table>
-									</div>
-								</div>
-							</div>
+
 							<!--  Reminders Starts -->
 							<div id="reminder">
 								<div id="content4" class="tabPage">
@@ -925,7 +834,7 @@ function pleaseWaitDialog(){
                                         <tr>
                                             <td><spring:message code="BzComposer.language" /></td>
                                             <td>
-                                                <select name="locale" id="locale" onchange="showLocale();" style="width:350px;">
+                                                <select name="locale" id="locale" onchange="showLocale(this.value);" style="width:350px;">
                                                     <option value="en" ${currentLocale=='en'?'selected':''}><spring:message code="BzComposer.selectlanguage.english"/></option>
                                                     <option value="zh" ${currentLocale=='zh'?'selected':''}><spring:message code="BzComposer.selectlanguage.chinese"/></option>
                                                     <option value="es" ${currentLocale=='es'?'selected':''}><spring:message code="BzComposer.selectlanguage.spanish"/></option>
@@ -942,7 +851,7 @@ function pleaseWaitDialog(){
                                             <td>&nbsp;</td>
                                         </tr>
                                         <tr>
-                                            <td><spring:message code="BzComposer.Companyinformation.CompanyDBAName" /></td>
+                                            <td><spring:message code="BzComposer.register.dbaName" /></td>
                                             <td><form:input path="nickName" size="42" maxlength="45" /></td>
                                             <td>&nbsp;</td>
                                         </tr>
@@ -951,7 +860,7 @@ function pleaseWaitDialog(){
                                             <td>
                                                 <form:select path="businessTypeId" id="businessTypeId" style="width:350px;">
                                                     <c:forEach items="${companyInfoDto.listOfBusinessType}" var="objList1">
-                                                        <option value="${objList1.businessTypeId}">${objList1.businessName}</option>
+                                                        <form:option value="${objList1.businessTypeId}">${objList1.businessName}</form:option>
                                                     </c:forEach>
                                                 </form:select>
                                             </td>
@@ -1022,7 +931,7 @@ function pleaseWaitDialog(){
                                             <td><spring:message code="BzComposer.global.mobileNumber"/></td>
                                             <td><form:input path="cellPhone" onchange="setPhonePattern(this)" size="42" maxlength="15" /></td>
                                             <td>
-                                                &nbsp;<form:checkbox path="sameAsPhoneNumber" />
+                                                &nbsp;<form:checkbox path="sameAsPhoneNumber" onchange="copyPhoneNumber(this.form);" />
                                                 (<spring:message code="BzComposer.global.isPhoneNumber" />)
                                             </td>
                                         </tr>
@@ -1032,17 +941,8 @@ function pleaseWaitDialog(){
                                             <td>&nbsp;</td>
                                         </tr>
                                         <tr>
-                                            <td><spring:message code="BzComposer.register.taxid"/></td>
+                                            <td><spring:message code="bca.EmployerID"/></td>
                                             <td><form:input path="taxID" size="42" maxlength="15" /></td>
-                                            <td>&nbsp;</td>
-                                        </tr>
-                                        <tr>
-                                            <td>&nbsp;</td>
-                                            <td>
-                                                <button type="button" class="formbutton" onclick="updateComapany();" style="padding:7 15px;font-size:14px;">
-                                                    <spring:message code='BzComposer.global.update'/>
-                                                </button>
-                                            </td>
                                             <td>&nbsp;</td>
                                         </tr>
                                     </table>
@@ -1092,7 +992,7 @@ function pleaseWaitDialog(){
                                     </form:form>
 
                                     <!-- ------------------- Admin-Security Start here ----------------- -->
-                                    <form:form name="AdminSecurityForm" enctype="MULTIPART/FORM-DATA" method="post" id="form" modelAttribute="configDto">
+                                    <form:form name="AdminSecurityForm" method="post" id="form" modelAttribute="configDto">
                                         <div id="uName" class="modal" style="height:auto;">
                                             <form name="changeUserName&Password">
                                                 <table border="2" style="width:100%">
@@ -1300,13 +1200,13 @@ function pleaseWaitDialog(){
                                             </tr>
                                             <tr>
                                                 <td colspan="5" style="font-size: 12px;">
-                                                    <form:radiobutton path="multiUserConnection" id="multiUserConnection"  value="0" />
+                                                    <form:radiobutton path="multiUserConnection" id="multiUserConnection1"  value="0" />
                                                     <spring:message code="BzComposer.configuration.usermode.singleusermode" />
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td colspan="5" style="font-size: 12px;">
-                                                    <form:radiobutton path="multiUserConnection" id="multiUserConnection" value="1" />
+                                                    <form:radiobutton path="multiUserConnection" id="multiUserConnection2" value="1" />
                                                     <spring:message code="BzComposer.configuration.usermode.multiusermode" />
                                                 </td>
                                             </tr>
@@ -1413,9 +1313,6 @@ function pleaseWaitDialog(){
                                             <input type="hidden" name="selectedUserId" id="selectedUserId" />
                                             <input type="hidden" name="userGroupId" id="userGroupId" />
                                         </div>
-                                        <div align="center">
-                                            <input type="button" onclick="SaveSecurityValues()" style="font-size: 1em;" value='<spring:message code="BzComposer.global.save"/>' />
-                                        </div>
                                     </form:form>
                                     <!-- Admin-Security End -->
                                 </div>
@@ -1440,8 +1337,8 @@ function pleaseWaitDialog(){
 		<input type="hidden" name="poboard" value=""/>
 	</div>
 	<div align="center" id="generalButtons" style="display: block;">
-		<input type="submit" class="bottomButton formButton" name="Save" id="Save" onclick="SaveValues()" value="<spring:message code='BzComposer.global.save'/>">
-		<input type="reset" class="bottomButton formButton" id="Cancel" name="Cancel" onclick="RevokeValues()" value="<spring:message code='BzComposer.global.cancel'/>">
+		<input type="button" class="bottomButton formButton" name="Save" id="Save" onclick="updateComapany()" value="<spring:message code='BzComposer.global.save'/>" />
+		<input type="reset" class="bottomButton formButton" id="Cancel" name="Cancel" onclick="RevokeValues()" value="<spring:message code='BzComposer.global.cancel'/>" />
 	</div>
 	</div>
 	</div>
@@ -1455,124 +1352,6 @@ function pleaseWaitDialog(){
 </body>
 <script type="text/javascript">
 EnableDisableFields2();
-function SaveValues()
-{
-	event.preventDefault();
-	$("#showsaverecorddialog").dialog({
-	    	resizable: false,
-	        height: 200,
-	        width: 500,
-	        modal: true,
-	        buttons: {
-	        	"<spring:message code='BzComposer.global.ok'/>": function () {
-
-	            	// document.configurationForm.currencyID.value = parseInt(document.configurationForm.currencyID.value);
-	        		// var currencyValue = $.trim($("#currencyID option:selected").text());
-
-	        		var currencyID=document.getElementById("currencyID").value;
-	        		var weightID=document.getElementById("weightID").value;
-	        		var defaultLabelID=document.getElementById("defaultLabelID").value;
-	        		var filterOption=document.getElementById("filterOption").value;
-	        		var moduleID=document.getElementById("moduleID").value;
-
-	        		var salesOrderBoard = $("#salesOrderBoard").val();
-	        		var itemReceivedBoard = $("#itemReceivedBoard").val();
-	        		var poboard = $("#poboard").val();
-	        		var itemShippedBoard = $("#itemShippedBoard").val();
-	        		document.getElementById('salesOrderBoard').value = salesOrderBoard;
-	        		document.getElementById('itemReceivedBoard').value = itemReceivedBoard;
-	        		document.getElementById('itemShippedBoard').value = itemShippedBoard;
-	        		document.getElementById('poboard').value = poboard;
-
-	        		var mailServer = document.getElementById("mailServer").value;
-	        		var senderEmail = document.getElementById("senderEmail").value;
-	        		var mailUserName = document.getElementById("mailUserName").value;
-	        		var mailPassword = document.getElementById("mailPassword").value;
-	        		var x = document.getElementById("selectedModules");
-	        		let showUSAInBillShipAddress = document.getElementById("showUSAInBillShipAddress").checked;
-	        	    var modules = "";
-	        	    var i;
-	        	    var moduleslist = [];
-	        	    for (i = 0; i < x.length; i++){
-	        	    	modules =x.options[i].text;
-	        	    	moduleslist.push(modules);
-	        	    }
-	        	    /* document.getElementById('tabid').value="SaveConfigurationGeneral";
-	        		document.forms[0].action = "Configuration";
-	        		document.forms[0].submit(); */
-	        		window.location.href= "${pageContext.request.contextPath}/Configuration?tabid=SaveConfigurationGeneral&salesOrderBoard="+salesOrderBoard
-	        		    +"&itemReceivedBoard="+itemReceivedBoard+"&itemShippedBoard="+itemShippedBoard+"&poboard="+poboard+"&currencyID="+currencyID+"&weightID="+weightID
-	        			+"&defaultLabelID="+defaultLabelID+"&filterOption="+filterOption+"&moduleID="+moduleID+"&moduleslist="+moduleslist
-	        			+"&mailServer="+mailServer+"&senderEmail="+senderEmail+"&mailUserName="+mailUserName+"&mailPassword="+mailPassword+"&showUSAInBillShipAddress="+showUSAInBillShipAddress;
-	            },
-	            "<spring:message code='BzComposer.global.cancel'/>": function () {
-	                $(this).dialog("close");
-	                return false;
-	            }
-	        }
-	});
-	return false;
-}
-function SaveValuesFeatures()
-{
-	if(confirm('<spring:message code="BzComposer.configuration.saveconfirm"/>'))
-	{
-		event.preventDefault();
-		$("#showsaverecorddialog").dialog({
-		    	resizable: false,
-		        height: 200,
-		        width: 500,
-		        modal: true,
-		        buttons: {
-		        	"<spring:message code='BzComposer.global.ok'/>": function () {
-		            	document.configurationForm.selectedModules.value = document.configurationForm.selectedModules.value;
-		        		document.configurationForm.selectedModuleId.value = document.configurationForm.selectedModuleId.value;
-
-		        		var x = document.getElementById("selectedModules");
-		        	    var txt = "";
-		        	    var i;
-		        	    for (i = 0; i < x.length; i++)
-		        	    {
-		        	        txt = txt + "\n" + x.options[i].text;
-		        	    }
-		        	    document.configurationForm.selectedModules.value = txt;
-
-		        	    var x = document.getElementById("selectedModuleId");
-		        	    var txt1 = "";
-		        	    var i;
-		        	    for (i = 0; i < x.length; i++)
-		        	    {
-		        	        txt1 = txt1 + "\n" + x.options[i].text;
-		        	    }
-
-						//$('form').submit();
-		            },
-		            "<spring:message code='BzComposer.global.cancel'/>": function () {
-		                $(this).dialog("close");
-		                return false;
-		            }
-		        }
-		    });
-		    return false;
-	}
-}
-function RevokeValues(){
-	document.getElementById('tid').value="config";
-	document.forms[0].action = "Configuration";
-	document.forms[0].submit();
-}
-
-function SetLabelName(lblid){
-	size = document.getElementById('lblsize').value;
-	for(cnt=0;cnt<size;cnt++){
-		lid = document.getElementById(cnt+'lid').value;
-		if(lblid == lid){
-			document.configurationForm.labelName.value =  document.getElementById(cnt+'lname').value;
-			break;
-		}
-	}
-}
-
 function updateComapany()
 {
     debugger;
@@ -1642,40 +1421,179 @@ function updateComapany()
  			success : function() {
 				$("#stateID").find('option[value="'+stateID+'"]').attr("selected",true);
 				document.getElementById("errors").innerHTML = "<h3>Record updated</h3>";
+				SaveValues();
+				//SaveSecurityValues();
 	   		},
 			error : function(data) {
 				event.preventDefault();
-				$("#errorOccurred").dialog({
-			    	resizable: false,
-			        height: 200,
-			        width: 500,
-			        modal: true,
-			        buttons: {
-			            "Ok": function () {
-			                $(this).dialog("close");
-			            }
-			        }
-			    });
-			    return false;
+				alert("<spring:message code='BzComposer.common.erroroccurred'/>");
 			}
 		});
-
-		$("#showsuccessdialog").dialog({
-			resizable: false,
+	}
+}
+function SaveValues()
+{
+	event.preventDefault();
+	$("#showsaverecorddialog").dialog({
+	    	resizable: false,
 	        height: 200,
 	        width: 500,
 	        modal: true,
 	        buttons: {
 	        	"<spring:message code='BzComposer.global.ok'/>": function () {
-	        		$(this).dialog("close");
-	                return false;
-	        	},
+
+	        	    // document.configurationForm.currencyID.value = parseInt(document.configurationForm.currencyID.value);
+	        		// var currencyValue = $.trim($("#currencyID option:selected").text());
+
+	        		var currencyID=document.getElementById("currencyID").value;
+	        		var weightID=document.getElementById("weightID").value;
+	        		var defaultLabelID=document.getElementById("defaultLabelID").value;
+	        		var filterOption=document.getElementById("filterOption").value;
+	        		var moduleID=document.getElementById("moduleID").value;
+
+	        		var salesOrderBoard = $("#salesOrderBoard").val();
+	        		var itemReceivedBoard = $("#itemReceivedBoard").val();
+	        		var poboard = $("#poboard").val();
+	        		var itemShippedBoard = $("#itemShippedBoard").val();
+	        		document.getElementById('salesOrderBoard').value = salesOrderBoard;
+	        		document.getElementById('itemReceivedBoard').value = itemReceivedBoard;
+	        		document.getElementById('itemShippedBoard').value = itemShippedBoard;
+	        		document.getElementById('poboard').value = poboard;
+
+	        		var mailServer = document.getElementById("mailServer").value;
+	        		var senderEmail = document.getElementById("senderEmail").value;
+	        		var mailUserName = document.getElementById("mailUserName").value;
+	        		var mailPassword = document.getElementById("mailPassword").value;
+	        		let showUSAInBillShipAddress = document.getElementById("showUSAInBillShipAddress").checked;
+	        		let multiUserConnection = 0;
+	        		if(document.getElementById("multiUserConnection2").checked){
+	        		    multiUserConnection = 1;
+	        		}
+	        	    /* document.getElementById('tabid').value="SaveConfigurationGeneral";
+	        		document.forms[0].action = "Configuration";
+	        		document.forms[0].submit(); */
+	        		window.location.href= "${pageContext.request.contextPath}/Configuration?tabid=SaveConfigurationGeneral&salesOrderBoard="+salesOrderBoard
+	        		    +"&itemReceivedBoard="+itemReceivedBoard+"&itemShippedBoard="+itemShippedBoard+"&poboard="+poboard+"&currencyID="+currencyID+"&weightID="+weightID
+	        			+"&defaultLabelID="+defaultLabelID+"&filterOption="+filterOption+"&moduleID="+moduleID+"&mailServer="+mailServer+"&senderEmail="+senderEmail
+	        			+"&mailUserName="+mailUserName+"&mailPassword="+mailPassword+"&showUSAInBillShipAddress="+showUSAInBillShipAddress+"&multiUserConnection="+multiUserConnection;
+	            },
 	            "<spring:message code='BzComposer.global.cancel'/>": function () {
 	                $(this).dialog("close");
 	                return false;
 	            }
-        	}
+	        }
 	});
+	return false;
+}
+function SaveSecurityValues(){
+	debugger;
+	event.preventDefault();
+	$("#showsaverecorddialog").dialog({
+        resizable: false,
+        height: 200,
+        width: 500,
+        modal: true,
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () {
+                var multiUserConnection = 0;
+                if(document.getElementById("multiUserConnection2").checked){
+                    multiUserConnection = 1;
+                }
+                var formData = $('form').serialize();
+                $.ajax({
+                    type : "POST",
+                    url :  "ConfigurationAjax/SaveConfiguration?tabid=SaveConfiguration&multiUserConnection="+multiUserConnection,
+                    data : formData,
+                    success : function(data) {
+                        $("#showsaverecorddialog").dialog("close");
+                        $("#showsuccessdialog").dialog({
+                            resizable: false,
+                            height: 200,
+                            width: 500,
+                            modal: true,
+                            buttons: {
+                                "<spring:message code='BzComposer.global.ok'/>": function () {
+                                    $(this).dialog("close");
+                                    return false;
+                                },
+                                "<spring:message code='BzComposer.global.cancel'/>": function () {
+                                    $(this).dialog("close");
+                                    return false;
+                                }
+                            }
+                        });
+                    },
+                    error : function(data) {
+                        alert("<spring:message code='BzComposer.common.erroroccurred'/>");
+                    }
+                });
+            },
+            <spring:message code='BzComposer.global.cancel'/>: function () {
+                $(this).dialog("close");
+                return false;
+            }
+        }
+    });
+    return false;
+}
+
+function SaveValuesFeatures()
+{
+	if(confirm('<spring:message code="BzComposer.configuration.saveconfirm"/>'))
+	{
+		event.preventDefault();
+		$("#showsaverecorddialog").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		        	"<spring:message code='BzComposer.global.ok'/>": function () {
+		            	document.configurationForm.selectedModules.value = document.configurationForm.selectedModules.value;
+		        		document.configurationForm.selectedModuleId.value = document.configurationForm.selectedModuleId.value;
+
+		        		var x = document.getElementById("selectedModules");
+		        	    var txt = "";
+		        	    var i;
+		        	    for (i = 0; i < x.length; i++)
+		        	    {
+		        	        txt = txt + "\n" + x.options[i].text;
+		        	    }
+		        	    document.configurationForm.selectedModules.value = txt;
+
+		        	    var x = document.getElementById("selectedModuleId");
+		        	    var txt1 = "";
+		        	    var i;
+		        	    for (i = 0; i < x.length; i++)
+		        	    {
+		        	        txt1 = txt1 + "\n" + x.options[i].text;
+		        	    }
+
+						//$('form').submit();
+		            },
+		            "<spring:message code='BzComposer.global.cancel'/>": function () {
+		                $(this).dialog("close");
+		                return false;
+		            }
+		        }
+		    });
+		    return false;
+	}
+}
+function RevokeValues(){
+	document.getElementById('tid').value="config";
+	document.forms[0].action = "Configuration";
+	document.forms[0].submit();
+}
+
+function SetLabelName(lblid){
+	size = document.getElementById('lblsize').value;
+	for(cnt=0;cnt<size;cnt++){
+		lid = document.getElementById(cnt+'lid').value;
+		if(lblid == lid){
+			document.configurationForm.labelName.value =  document.getElementById(cnt+'lname').value;
+			break;
+		}
 	}
 }
 
@@ -1728,9 +1646,14 @@ function ValidateEmail(email) {
     var expr = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 	return expr.test(email);
 }
+function copyPhoneNumber(form){
+    if(form.sameAsPhoneNumber.checked){
+        form.cellPhone.value = form.phone.value
+    }
+}
 function setPhonePattern(phoneItem){
     phone = phoneItem.value;
-	if(phone.length > 10 || phone.length < 10){
+	if(phone.length < 10 || phone.length > 14){
 		event.preventDefault();
 		$("#enterPhoneNumber").dialog({
 	    	resizable: false,
@@ -1748,7 +1671,7 @@ function setPhonePattern(phoneItem){
 	let cleaned = ('' + phone).replace(/\D/g, '');
 	let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
 	if (match) {
-		phoneItem.value = '1('+ match[1] +') '+ match[2] +'-'+ match[3];
+		phoneItem.value = '('+ match[1] +') '+ match[2] +'-'+ match[3];
   	}
 }
 
@@ -1807,7 +1730,7 @@ function adduser1() {
 }
 function Deleteuser() {
     if($('#selectedUserId').val() == ''){
-        alert("<bean:message key='BzComposer.common.selectUserFirst'/>");
+        alert("<spring:message code='BzComposer.common.selectUserFirst'/>");
         return false;
     }
     $("#showDeleteGroupConfirmDialog").dialog({
@@ -1833,32 +1756,32 @@ function checkValidation(){
     var password1 = $("#userPassword").val();
     var password2 = $("#cpwd").val();
     var groupID = $("#groupID").val();
-    var inputadminpassword = $("#adminpassword").val();
+    var adminPWD = $("#adminpassword").val();
     var AdminPassword = '<%= request.getAttribute("AdminPassword")%>';
     var checkEmailAddress = (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail));
     if (checkEmailAddress == false){
-        alert("<bean:message key='BzComposer.common.enterValidEmail'/>");
+        alert("<spring:message code='BzComposer.common.enterValidEmail'/>");
         return;
     }
     else if(userEmail == ""){
-        alert("<bean:message key='BzComposer.common.emailCantBlank'/>");
+        alert("<spring:message code='BzComposer.common.emailCantBlank'/>");
         return;
     }
     else if(password1.length < 6){
-        alert("<bean:message key='BzComposer.common.passwordHint'/>");
+        alert("<spring:message code='BzComposer.common.passwordHint'/>");
         return;
     }
     else if(password1 != password2){
-         alert("<bean:message key='BzComposer.common.bothPwdsNotMatch'/>");
+         alert("<spring:message code='BzComposer.common.bothPwdsNotMatch'/>");
          alert(password1+'\n'+password2);
          return;
     }
-    else if(inputadminpassword != AdminPassword){
-         alert("<bean:message key='BzComposer.common.enterValidAdminPwd'/>");
+    else if(adminPWD != AdminPassword){
+         alert("<spring:message code='BzComposer.common.enterValidAdminPwd'/>");
          return;
     }
     else if(groupID == "" || groupID == 0){
-        alert("<bean:message key='BzComposer.common.selectGroupFirst'/>");
+        alert("<spring:message code='BzComposer.common.selectGroupFirst'/>");
         return;
     }
     else{
@@ -1868,28 +1791,42 @@ function checkValidation(){
             url : "ConfigurationAjax/SaveConfiguration?tabid=addNewUser&userName="+userEmail+"&userpassword="+password1+"&groupID="+groupID,
             data : formData,
             success : function(data) {
-                debugger
-                $("#showsuccessdialog").dialog({
-                    resizable: false,
-                    height: 200,
-                    width: 500,
-                    modal: true,
-                    buttons: {
-                        "<spring:message code='BzComposer.global.ok'/>": function () {
-                            $(this).dialog("close");
-                            window.location.href= "Configuration?tabid=config&tab=tr2";
-                            return false;
-                        },
-                        "<spring:message code='BzComposer.global.cancel'/>": function () {
-                            $(this).dialog("close");
-                            window.location.href= "Configuration?tabid=config&tab=tr2";
-                            return false;
+                if(data == 'emailExists'){
+                    $("#showEmailAlreadyExistsDialog").dialog({
+                        resizable: false,
+                        height: 200,
+                        width: 500,
+                        modal: true,
+                        buttons: {
+                            "<spring:message code='BzComposer.global.ok'/>": function () {
+                                $(this).dialog("close");
+                                return false;
+                            }
                         }
-                    }
-                });
+                    });
+                }else{
+                    $("#showsuccessdialog").dialog({
+                        resizable: false,
+                        height: 200,
+                        width: 500,
+                        modal: true,
+                        buttons: {
+                            "<spring:message code='BzComposer.global.ok'/>": function () {
+                                $(this).dialog("close");
+                                window.location.href= "Configuration?tabid=config&tab=tr2";
+                                return false;
+                            },
+                            "<spring:message code='BzComposer.global.cancel'/>": function () {
+                                $(this).dialog("close");
+                                window.location.href= "Configuration?tabid=config&tab=tr2";
+                                return false;
+                            }
+                        }
+                    });
+                }
             },
             error : function(data) {
-                alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+                alert("<spring:message code='BzComposer.common.erroroccurred'/>");
                 return false;
             }
         });
@@ -1904,7 +1841,7 @@ function getData(){
 
 function viewGroupPermissions(){
     if($('#groupID').val() == ''){
-        alert("<bean:message key='BzComposer.common.selectGroupFirst'/>");
+        alert("<spring:message code='BzComposer.common.selectGroupFirst'/>");
     }else{
         window.open("Configuration?tabid=addNewGroup&selectedGroupId="+$('#groupID').val()+"&isViewGroupPermissions=true",null,"scrollbars=yes,height=600,width=1200,status=yes,toolbar=no,menubar=no,location=no" );
     }
@@ -1917,7 +1854,7 @@ function editGroup(){
     if($('#selectedGroupId').val()>0){
         window.open("Configuration?tabid=addNewGroup&selectedGroupId="+$('#selectedGroupId').val(),null,"scrollbars=yes,height=600,width=1200,status=yes,toolbar=no,menubar=no,location=no" );
     }else{
-        alert("<bean:message key='BzComposer.common.selectGroupFirst'/>");
+        alert("<spring:message code='BzComposer.common.selectGroupFirst'/>");
     }
 }
 
@@ -1946,7 +1883,7 @@ function selectGroupData(selectedGroupId, rID){
 
 function deleteGroup(){
     if($('#selectedGroupId').val() == '' || $('#selectedGroupId').val() == 0){
-        alert("<bean:message key='BzComposer.common.selectGroupFirst'/>");
+        alert("<spring:message code='BzComposer.common.selectGroupFirst'/>");
         return false;
     }
     $("#showDeleteGroupConfirmDialog").dialog({
@@ -1964,54 +1901,6 @@ function deleteGroup(){
             }
         }
     });
-}
-function SaveSecurityValues(){
-	debugger;
-	event.preventDefault();
-	$("#showsaverecorddialog").dialog({
-        resizable: false,
-        height: 200,
-        width: 500,
-        modal: true,
-        buttons: {
-            "<spring:message code='BzComposer.global.ok'/>": function () {
-                var multiUserConnection = document.AdminSecurityForm.multiUserConnection.value;
-                var formData = $('form').serialize();
-                $.ajax({
-                    type : "POST",
-                    url :  "ConfigurationAjax/SaveConfiguration?tabid=SaveConfiguration&multiUserConnection="+multiUserConnection,
-                    data : formData,
-                    success : function(data) {
-                        $("#showsaverecorddialog").dialog("close");
-                        $("#showsuccessdialog").dialog({
-                            resizable: false,
-                            height: 200,
-                            width: 500,
-                            modal: true,
-                            buttons: {
-                                "<spring:message code='BzComposer.global.ok'/>": function () {
-                                    $(this).dialog("close");
-                                    return false;
-                                },
-                                "<spring:message code='BzComposer.global.cancel'/>": function () {
-                                    $(this).dialog("close");
-                                    return false;
-                                }
-                            }
-                        });
-                    },
-                    error : function(data) {
-                        alert("<bean:message key='BzComposer.common.erroroccurred'/>");
-                    }
-                });
-            },
-            <spring:message code='BzComposer.global.cancel'/>: function () {
-                $(this).dialog("close");
-                return false;
-            }
-        }
-    });
-    return false;
 }
 
 function maxnumberofuserdialog()
@@ -2046,13 +1935,13 @@ function maxnumberofuserdialog()
 	<p><spring:message code="BzComposer.configuration.pleaseWait"/></p>
 </div>
 <div id="errorOccurred" style="display:none;font-size:1em;">
-	<h3><spring:message code="BzComposer.common.erroroccurred"/></h3>
+	<p><spring:message code="BzComposer.common.erroroccurred"/></p>
 </div>
 <div id="enterPhoneNumber" style="display:none;font-size:1em;">
-	<h3><spring:message code="BzComposer.companyinfo.enterphonenumber"/></h3>
+	<p><spring:message code="BzComposer.companyinfo.enterphonenumber"/></p>
 </div>
 <div id="enterZip" style="display:none;font-size:1em;">
-	<h3><spring:message code="err.Zip"/></h3>
+	<p><spring:message code="err.Zip"/></p>
 </div>
 <div id="showsuccessdialog" style="display:none;">
 	<p><spring:message code='BzComposer.common.recordUpdated'/></p>
@@ -2062,4 +1951,7 @@ function maxnumberofuserdialog()
 </div>
 <div id="showDeleteGroupConfirmDialog" style="display:none;">
 	<p><spring:message code="BizComposer.PurchaseOrder.Delete.Validation"/></p>
+</div>
+<div id="showEmailAlreadyExistsDialog" style="display:none;">
+	<p><spring:message code="BzComposer.common.emailAlreadyExists"/></p>
 </div>

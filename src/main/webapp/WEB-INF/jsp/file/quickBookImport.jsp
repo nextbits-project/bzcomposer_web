@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -12,6 +12,7 @@
 <script src="${pageContext.request.contextPath}/tableStyle/js/jquery.min.js"></script>
 <link href="${pageContext.request.contextPath}/styles/calendar.css" rel="stylesheet" />
 <script src="${pageContext.request.contextPath}/scripts/calendar.js" type="text/javascript"></script>
+<title><spring:message code="menu.file.QBImport"/></title>
 <style type="text/css">
 .customfieldset{
     margin-left: 20px;
@@ -20,7 +21,6 @@
     
 }
 </style>
-<title>QuickBook Import</title>
 </head>
 <body>
 <form:form action="FileUpload?tabid=QuickBookImport&type=ImportFile" method="post" enctype="MULTIPART/FORM-DATA" id="uploadForm" modelAttribute="companyInfoDto">

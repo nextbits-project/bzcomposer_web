@@ -16,7 +16,7 @@ $(function() {
 		}
 		else
 		{
-			//alert('normal Reason');
+
 		}
     });
 	
@@ -39,11 +39,11 @@ $(function() {
 	var packingSlipStyleId = '<%= request.getAttribute("packingSlipStyleId")%>';
 	
 	var isChecked = '<%= request.getAttribute("isRefundAllowed")%>';
-  	/*alert("RefundAllowed Checkecbox is"+isChecked);*/
+
     if(isChecked == "on")
     {
 		
-      	//alert("isRefundAllowed checked");
+
       	$("#isRefundAllowed").attr('checked', true);
       	 
 		$("#refundReason").prop('readonly', false);
@@ -55,7 +55,7 @@ $(function() {
 	} 
 	else if(isChecked == "off")
     {
-		//alert("isRefundAllowed unchecked");
+
         $("#refundReason").prop('readonly', true);
 		$("#refundReasonSel").prop('readonly',true);
 	    $("#addRefundReason").prop('disabled',true);
@@ -98,13 +98,13 @@ $(function() {
     	var isChecked = '<%= request.getAttribute("isDefault")%>';
     	//var isChecked = "on";
         if($(this).prop("checked") == true){
-            //alert("CustomerTaxale is checked.");
+
             $("#isDefaultCreditTerm").attr('checked', true);
             
             isChecked = "on"; 
         }
         else if($(this).prop("checked") == false){
-            //alert("CustomerTaxable is unchecked.");
+
             $("#isDefaultCreditTerm").attr('checked', false);
             
              isChecked = "off";
@@ -120,12 +120,12 @@ $(function() {
 	{
     	var isChecked = '<%= request.getAttribute("custTaxableStatus")%>';
         if($(this).prop("checked") == true){
-            //alert("CustomerTaxale is checked.");
+
             $("#custTaxable").attr('checked', true);
             isChecked = "on"; 
         }
         else if($(this).prop("checked") == false){
-            //alert("CustomerTaxable is unchecked.");
+
             $("#custTaxable").attr('checked', false);
              isChecked = "off";
         }	
@@ -292,7 +292,7 @@ $(function() {
 	
 	$("#invoiceLocation").change(function(){
 		var filePath = $("#invoiceLocation").val();
-		//alert("Selected File:"+filePath);
+
 		$("invoiceLocation").val(filePath);
 		//document.configurationForm.invoiceLocation.value = filePath;
 		//debugger
@@ -300,7 +300,7 @@ $(function() {
 	
 	$("#saveImage").change(function(){
 		var filePath = $("#saveImage").val();
-		//alert("Selected File:"+filePath);
+
 		$("saveImage").val(filePath);
 		//document.configurationForm.invoiceLocation.value = filePath;
 		//debugger
@@ -331,7 +331,7 @@ $(function() {
       	var checked = "on";
         if($(this).prop("checked") == true)
         {
-          	//alert("isRefundAllowed checked");
+
           	$("#isRefundAllowed").attr('checked', true);
           	 
 			$("#refundReason").prop('readonly', false);
@@ -345,7 +345,7 @@ $(function() {
 		} 
 		else if($(this).prop("checked") == false)
         {
-          	//alert("isRefundAllowed unchecked");
+
             $("#refundReason").prop('readonly', true);
 			$("#refundReasonSel").prop('readonly',true);
 		    $("#addRefundReason").prop('disabled',true);
@@ -362,14 +362,13 @@ $(function() {
 		var setup = $("#setupID option:selected").val();
 		if(text == "" || text == " ")
 		{
-			alert("Necessary data is empty");
+
 		}
 		else
 		{
 			if(setup == "Location")
 			{
 				debugger
-				alert(text);
 				$.ajax({
 					type: "POST",
 	   				url:"Configuration.do?tabid=addDescription&Description="+text,
@@ -402,7 +401,7 @@ $(function() {
 function disable() 
 {
 	var value = document.configurationForm.custDefaultCountryID.value;
-	//alert("Selected Country:"+value);
+
 	if(value == "2")
 	{
 		document.configurationForm.selectedStateId.disabled=false;
@@ -418,7 +417,7 @@ function disable()
 function showSetupID()
 {
 	var val = document.getElementById("setupID").value;
-		//alert("Selected SetUpId is:"+val);
+
 		
 		if(val == "Location")
 		{
@@ -504,7 +503,7 @@ function showSetupID()
 		}
 		else
 		{
-			//alert("Selected Reason is:"+reason);
+
         	$('#refundReasonSel option:selected').remove();
         	document.getElementById('locationID').value = reasonId;
         	document.getElementById('tabid').value="makeDefaultReason";
@@ -591,7 +590,7 @@ function showSetupID()
 	
 	/* function AddDescription1()
 	{
-		//alert("Inside AddDescription");
+
 		var text = $('#description').val();
 		var setup = $("#setupID option:selected").val();
 		if(text == "" || text == " ")
@@ -690,14 +689,14 @@ function showSetupID()
 		var setup = $("#setupID option:selected").val();
 		if(text == "" || text == " ")
 		{
-			alert("Necessary data is empty");
+
 		}
 		else
 		{
 			if(setup == "Location")
 			{
 				debugger */
-				/*alert(text);
+				/*
 				 $.ajax({
 					type: "POST",
 	   				url:"Configuration.do?tabid=addDescription&Description="+text,
@@ -857,7 +856,7 @@ function showSetupID()
 		}
 		else
 		{
-			//alert("new Data is:"+t);
+
 			if(setup == "Location")
 			{
 				
@@ -925,7 +924,7 @@ function showSetupID()
 	 
 	function addNewJobCategory()
     {
-		//alert("Inside addJobCategory");
+
 		 var itemExists = false;
     	//var cat = $("#txtJobCategory").val();
 		if ($("#txtJobCategory").val() == '') 
@@ -1025,7 +1024,7 @@ function showSetupID()
 	
 	function EditServiceBillInfo()
 	{
-		//alert("inside EditServiceInfo function")
+
 		var billName = $('#serviceBillName').val();
 		if(billName == "" || billName == " ")
 		{
@@ -1051,11 +1050,11 @@ function showSetupID()
         	var oldReason = $('#refundReasonSel option:selected').text();
         	var newReason = $('#refundReason').text();
             if (oldReason == '' || oldReason == ' ') {
-                alert("Please select a refund reason from the list");
+                //alert("Please select a refund reason from the list");
             }
             else if(oldReason == newReason)
             {
-            	alert("Same Reason can't update to the list")	
+            	//alert("Same Reason can't update to the list")
             }
             else
             {
@@ -1072,17 +1071,17 @@ function showSetupID()
         	debugger
         	var reason = $('#refundReasonSel selected').val();
             if (reason == '') {
-                alert("Please select a refund reason from the list");
+                //alert("Please select a refund reason from the list");
             }
             else if(reason == ' ')
             {
-            	alert("Whitespace is not allowed")
+            	//alert("Whitespace is not allowed")
             }
             else
             {
             	debugger
             	var con = confirm("Are you sure to remove this reason?");
-            	//alert("Inside else condition")
+
             	if(con)
             	//$('#refundReasonSel option:selected').remove();
             	$("#refundReason").val('');
@@ -1097,11 +1096,11 @@ function showSetupID()
         	var cat = $("#txtJobCategory").val();
         	//var items = $("#jobCategory option").val();
             if (cat == '') {
-                alert("Please enter a job category.");
+                //alert("Please enter a job category.");
             }
             else if(cat == ' ')
             {
-            	alert("Whitespace is not allowed.")
+            	//alert("Whitespace is not allowed.")
             }
             else
             {
@@ -1112,7 +1111,7 @@ function showSetupID()
                 $("#jobCategory option").each(function() {
                     if ($(this).text() == $.trim(cat)) {
                         itemExists = true;
-                        alert('Job Category already exists');
+                        //alert('Job Category already exists');
                         $("#txtJobCategory").val('');
                     }
                 });
@@ -1131,11 +1130,11 @@ function showSetupID()
         	var newCategory = $('#txtJobCategory').val();
         	debugger
             if (oldCategory == "") {
-                alert("Please Select a Job from the list.");
+                //alert("Please Select a Job from the list.");
             }
             else if(oldCategory == ' ')
             {
-            	alert("Whitespace is not allowed.")
+            	//alert("Whitespace is not allowed.")
             }
             else
             {
@@ -1150,7 +1149,7 @@ function showSetupID()
         $("#deleteJobCategory").click(function () {
         	debugger
             if ($("#jobCategory option").text() == "") {
-                alert("Please Select a Job from the List");
+                //alert("Please Select a Job from the List");
             }
             else
             {
@@ -1174,14 +1173,13 @@ function showSetupID()
 	/*function addRefundReason()
 	{
 		debugger
-		alert("Inside addRefundReason function")
-    	var reason = $("#refundReason").val();
+		var reason = $("#refundReason").val();
         if (reason == '') {
             alert("Please enter refund reason");
         }
         else if(reason == ' ')
         {
-        	alert("Whitespace is not allowed")
+        	//alert("Whitespace is not allowed")
         }
         else
         {
@@ -1190,7 +1188,7 @@ function showSetupID()
             /*$("#refundReasonSel option").each(function() {
                 if ($(this).text() == $.trim(reason)) {
                     itemExists = true;
-                    alert('Reason already exists');
+                    //alert('Reason already exists');
                     $("#refundReason").val('');
                 }
             });
@@ -1213,7 +1211,7 @@ function showSetupID()
 	
 	function addNewRefundReason()
 	{
-		//alert("Inside addNewRefundReason method");
+
 		var reason = $("#refundReason").val();
         if (reason == '') {
             alert("<bean:message key='BzComposer.configuration.customerinvoice.enterrefundreason'/>");
@@ -1318,7 +1316,7 @@ function showSetupID()
 		var selectedReason = $.trim($("#parentReasonId option:selected").text());
 		if(selectedReason =="")
 		{
-			//alert("<bean:message key='BzComposer.configuration.rma.enterreason'/>");
+
 			return rmareasondialog();
 		}
 		else
@@ -1347,7 +1345,7 @@ function showSetupID()
 		debugger
 		if(newReason == "")
 		{
-			//alert("<bean:message key='BzComposer.configuration.rma.enterreason'/>");
+
 			return rmareasondialog();
 			$("#parentReasonId option").prop("selected",false);
 		}
@@ -1355,14 +1353,14 @@ function showSetupID()
 		{
 			if((newReason.match("^no") || newReason.match("^No"))&&(newReason.match("reason$") || newReason.match("Reason$"))) 
 			{
-				//alert("<bean:message key='BzComposer.configuration.rma.entervalidreason'/>");
+
 				return entervalidreasondialog();
 				$("#parentReasonId option").prop("selected",false);
 			}
 			else if(camelized == isAvailable || newReason == isAvailable)
 			{
 				debugger
-				//alert("<bean:message key='BzComposer.configuration.customerinvoice.reasonalreadyexists'/>");
+
 				return reasonnotexistdialog();
 				$("#parentReasonId option").prop("selected",false);
 			}
@@ -1391,7 +1389,7 @@ function showSetupID()
 
 	function updateRMAReason()
 	{
-		//alert("inside updateRMAReason method");
+
 		debugger
 		var reason = $("#reason").val();
 		debugger
@@ -1407,7 +1405,7 @@ function showSetupID()
 		if(reason == "")
 		{
 			debugger
-			//alert("<bean:message key='BzComposer.configuration.rma.enterreason'/>");
+
 			return rmareasondialog();
 			debugger
 			$("#parentReasonId option").prop("selected",false);
@@ -1418,7 +1416,7 @@ function showSetupID()
 		} */
 		else if(isAvailable =="")
 		{
-			//alert("<bean:message key='BzComposer.configuration.rma.selectreasontoupdate'/>");
+
 			return selectreasontoupdatedialog();
 		}
 		else 
@@ -1442,10 +1440,10 @@ function showSetupID()
 		var reason = $("#reason").val();
 		var parentReasonId = $("#availableReasons option:selected").val();
 		var parentReason = $("#availableReasons option:selected").text();
-		//alert("Reason:"+reason+"\nParent Reason Id:"+parentReasonId+"\nParentReason:"+parentReason);
+
 		/* if(confirm("<bean:message key='BzComposer.configuration.rma.deleteselectedrecord'/>"))
 		{
-			//alert("Redirectd to delete page code");
+
 			document.getElementById('tabid').value="deleteRMAReason";
 			document.getElementById('reason').value= reason;
 			document.getElementById('parentReasonId').value= parentReasonId;
@@ -1455,7 +1453,7 @@ function showSetupID()
 		}
 		else
 		{
-			//alert("<bean:message key='BzComposer.configuration.rma.recordwillnotdeleted'/>");
+
 			return recordnotdeleteddialog();
 		} */
 		debugger;

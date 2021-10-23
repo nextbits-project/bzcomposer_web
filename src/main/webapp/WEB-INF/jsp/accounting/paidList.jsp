@@ -700,7 +700,7 @@ table.tabla-listados tbody tr td {
 		
 	   /* if(parseInt(receivedAmount) >parseInt(adjustTotal) )
 		   {
-		   		alert("Received Amount shuould not be greater than Amount ");
+		   		alert("<bean:message key='BzComposer.common.receivedAmtShuouldNotBeGTAmt'/>");
 		   		return false;
 		   } */
 	   var TblPayment={
@@ -719,7 +719,7 @@ table.tabla-listados tbody tr td {
 	   
 	/* 	}	  
 	else{
-			alert("Please Select a Record First");
+			alert("<bean:message key='BzComposer.common.selectARecordFirst'/>");
 			return false;
 	}   */
 
@@ -730,7 +730,6 @@ table.tabla-listados tbody tr td {
    function sendMyValue(TblPayment,receivedAmount,paidDate) {
 		debugger;
 		var obj=JSON.stringify(TblPayment);
-		/* alert(indexNumber); */
    	 $.ajax({
 		
 			type : "POST",
@@ -876,10 +875,7 @@ table.tabla-listados tbody tr td {
 			window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble";
 			<%-- <% System.out.println(find);%>
 			<% request.getSession().removeAttribute("checkNum"+find);%> --%>
-			
-			<%-- var check = <%= session.getAttribute("checkNum")%>;
-			alert(check); --%>
-			
+
 			},
 			 error : function(data) {
 				 alert("<spring:message code='BzComposer.popayable.someerroroccurred'/>");

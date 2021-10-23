@@ -628,7 +628,7 @@
                                                                     };
                                                                     CKEDITOR.replace( 'editor1' ); */
                                                                     /* CKEDITOR.editorConfig = function( config ) {
-                                                                        alert("Inside ckEditor config function"); */
+                                                                         */
                                                                     /* config.toolbar = [
                                                                         { name: 'save', items: [ 'savebtn','Undo','Redo' ] },
                                                                         { name: 'clipboard', items: [ 'Cut','Copy','Paste','PasteText','PasteFromWord'] },
@@ -1789,15 +1789,15 @@
         debugger;
         var itemid = document.getElementById("inventoryId11").value;
         if (itemid == 0) {
-            //alert('<spring:message code="BzComposer.Customer.cName.Validation"/>');
+
             return showCustomerValidationDialog();
             //return;
         } else {
             if (cmd == "EDIT") {
                 showitem(itemid);
-                //	alert("Edit...Under development");
+
             } else if (cmd == "DELETE") {
-                //alert("Delete...Under development");
+
                 if (confirm("This will delete all the information related to this Customer (ID=" + itemid + ")\nAre you sure to delete ?") == true) {
                     window.location = "Item?tabid=DeleteItem&InvId=" + itemid;
                 }

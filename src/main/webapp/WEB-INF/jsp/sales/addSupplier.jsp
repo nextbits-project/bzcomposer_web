@@ -32,10 +32,7 @@ $(document).ready(function () {
 	var add_1Old = "<%= request.getAttribute("newAdd1")%>";
 	var add_2Old = "<%= request.getAttribute("newAdd2")%>";
 	
-	alert("In page loading new address data\nstatus:"+addStatus+"\naddressName:"+addName+"\nfirstName:"+f_Name+"\nlastName:"
-			+l_Name+"\nAddress1:"+add_1+"\nAddress2:"+add_2+"\n old address data:\nstatus:"+addStatusOld+"\naddressName:"+addNameOld+"\nfirstName:"+f_NameOld
-			+"\nlastName:"+l_NameOld+"\naddress1:"+add_1Old+"\naddress2:"+add_2Old);
-	
+
 	$('#addAddress').click(function(){
 		/* var myWindow = window.open("Customer.do?tabid=addAddress&chkStatus=Active","_blank","scrollbars=No,height=900,width=1400,status=yes,toolbar=no,menubar=no,location=no");
 		debugger
@@ -44,7 +41,7 @@ $(document).ready(function () {
 		var rows = document.getElementById("billingAddress").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
 		if(rows>=2)
 		{
-			alert("You can't add more addresses...");
+			alert("<bean:message key='BzComposer.common.cantAddMoreAddresses'/>");
 			event.preventDefault();
 		}
 		else
@@ -65,8 +62,7 @@ $(document).ready(function () {
 	     	data: { chkStatus : "Active"},
 			success: function(data)
 	        {
-				debugger
-	            alert("Reponse of addAddress is:"+data); // show response from the php script.
+
 	        }
 		}); */
 		
@@ -94,20 +90,19 @@ $(document).ready(function () {
 		     		data: { chkStatus : "Default" , fName : f , lName : l , add1 : ad1 , add2 : ad2 , status : stat},
 					success: function(response)
 	            	{
-						debugger
-		                alert("Reponse of editAddress is:"+response); // show response from the php script.
+
 	    	        }
 				}); */
 		}
 		else if(rows>=2)
 		{
-			alert("You can't add more addresses...");
+			alert("<bean:message key='BzComposer.common.cantAddMoreAddresses'/>");
 			event.preventDefault();
 		}
 		else
 		{
 			event.preventDefault();
-			alert("Please select address to edit.");
+			alert("<bean:message key='BzComposer.common.selectAddress'/>");
 		}
 	});
 	$('#deleteAddress').click(function(){
@@ -116,22 +111,22 @@ $(document).ready(function () {
 		alert("Status:"+status);
 		if(isChecked== true)
 		{
-			alert("Default Address can Not be Deleted.");
+			alert("<bean:message key='BzComposer.common.defaultAddressCantDelete'/>");
 		}
 		else
 		{
 			if(status == "Default")
 			{
-				alert("Please select the address to delete.");
+				alert("<bean:message key='BzComposer.common.selectAddress'/>");
 			}
-			else if(confirm("Do you want to Delete Address?"))
+			else if(confirm("<bean:message key='BzComposer.common.wantToDeleteAddress'/>"))
 			{
-				alert("Default Address will be deleted");
+				alert("<bean:message key='BzComposer.common.defaultAddressWillBeDeleted'/>");
 				$(this).remove();
 			}
 			else
 			{
-				alert("Selected Address is deleted");
+				alert("<bean:message key='BzComposer.common.selectedAddressDeleted'/>");
 				$(this).remove();
 			}
 		}
@@ -229,24 +224,21 @@ function showPanel()
     	if(fName == "" || lName == "")
     	{
     		debugger;
-    	    alert("Please insert either first name or last name.");
+    	    alert("<bean:message key='BzComposer.common.insertFirstOrLastname'/>");
     	    $( "#tabs" ).tabs( "option", "active", 0 );
     	}
     	else if(address1 == "")
     	{
-    		alert("Please type Address1.");
+    		alert("<bean:message key='BzComposer.updatecustomer.enteradderss1'/>");
     	    $( "#tabs" ).tabs( "option", "active", 0 );
     	}
     	/*condition 2(A):if firstName,lastName and address1 had values then check whether is it old address value or new address value.if new values are there then add old and new values.*/
     	else if(fName == f_Name && lName == l_Name && address1 == add_1 && f_Name != "null" && l_Name != "null" && add_1 != "null" && add_2 != "null" && addName != "null" && addStatus != "null" && f_NameOld != "null" && l_NameOld != "null" && add_1Old != "null" && add_2Old != "null" && addNameOld != "null" && addStatusOld != "null")
 		{
     		debugger;
-			/* alert("here textbox has new address values so we'll append old address data and new address data.");
-			debugger; */
 			$('#billingAddress').append("<tr id="+f_NameOld+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addNameOld+"</td><td style='font-size: 1.1em;' id='fname'>"+f_NameOld+"</td><td style='font-size: 1.1em;' id='lname'>"+l_NameOld+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1Old+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2Old+"</td><td style='font-size: 1.1em;' id='status'>"+addStatusOld+"</td></tr>");
     		$('#billingAddress').append("<tr id="+f_Name+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addName+"</td><td style='font-size: 1.1em;' id='fname'>"+f_Name+"</td><td style='font-size: 1.1em;' id='lname'>"+l_Name+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2+"</td><td style='font-size: 1.1em;' id='status'>"+addStatus+"</td></tr>");
-    		//debugger;
-    		//alert("After append data for once it should not added again so make it null..");
+
 			addName = "null";
 			f_Name = "null";
 			l_Name = "null";
@@ -264,10 +256,8 @@ function showPanel()
     	else if(addStatusOld != "null" && addNameOld != "null" && f_NameOld != "null" && l_NameOld != "null" && add_1Old != "null" && add_2Old != "null")
 		{
 			debugger;
-			//alert("in this old data appended...");
+
 			$('#billingAddress').append("<tr id="+f_NameOld+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addNameOld+"</td><td style='font-size: 1.1em;' id='fname'>"+f_NameOld+"</td><td style='font-size: 1.1em;' id='lname'>"+l_NameOld+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1Old+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2Old+"</td><td style='font-size: 1.1em;' id='status'>"+addStatusOld+"</td></tr>");
-			/* debugger;
-			alert("After append data for once it should not added again so make it null.."); */
 			addStatusOld = "null";
 			addNameOld = "null";
 			f_NameOld = "null";
@@ -279,8 +269,7 @@ function showPanel()
     	else if(isAvailable1 == 0 && fName == f_Name && lName == l_Name && address1 == add_1 && f_Name != "null" && l_Name != "null" && add_1 != "null" && add_2 != "null")
 		{
 			debugger;
-			$('#billingAddress').append("<tr id="+f_Name+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addName+"</td><td style='font-size: 1.1em;' id='fname'>"+f_Name+"</td><td style='font-size: 1.1em;' id='lname'>"+l_Name+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2+"</td><td style='font-size: 1.1em;' id='status'>"+addStatus+"</td></tr>");    	
-			/* alert("After append data for once it should not added again so make it null.."); */
+			$('#billingAddress').append("<tr id="+f_Name+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addName+"</td><td style='font-size: 1.1em;' id='fname'>"+f_Name+"</td><td style='font-size: 1.1em;' id='lname'>"+l_Name+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2+"</td><td style='font-size: 1.1em;' id='status'>"+addStatus+"</td></tr>");
 			addStatusOld = "null";
 			addNameOld = "null";
 			f_NameOld = "null";
@@ -296,7 +285,7 @@ function showPanel()
 		}
     	else
     	{
-    		alert("you can't add this item because it is already available");
+    		alert("<bean:message key='Bzcomposer.additem.notadditem'/>");
         	debugger;
         	$( "#tabs" ).tabs( "option", "active", 3 );
     	}
@@ -324,7 +313,6 @@ function showPanel()
 
 /* function checkCheckbox()
 {
-	alert("inside selectAddress check event");
     $(this).siblings('input:checkbox').prop('checked', false);
 } */
 function setState(state_id,name){

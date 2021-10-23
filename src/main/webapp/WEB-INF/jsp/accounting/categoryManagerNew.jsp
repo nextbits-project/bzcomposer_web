@@ -319,7 +319,7 @@ function closeEditDialog(){
     $('#EditCategoryDlgId').dialog('close');
 }
 function init(){
-    //alert('init');
+
     let row1ID = $('.hideShowMyCatType')[0].cells[0].innerText;
     hideShowMyCat(row1ID);
 }
@@ -501,13 +501,13 @@ function loadCategoryForUpdate(){
                  });
             }
             else{
-                //alert("<spring:message code='BzComposer.categorymanager.itemcantdelete'/>");
+
                 return itemcantdeletedialog();
                 return false;
             }
         },
          error : function(data) {
-            //alert("<spring:message code='BzComposer.categorymanager.erroroccurred'/>");
+
             return showerrordialog()
         }
     });
@@ -582,13 +582,13 @@ function saveNewCategory(){
                 location.reload();
             }
             else{
-                //alert("<spring:message code='BzComposer.categorymanager.categorynameexist'/>");
+
                 return categorynameexistdialog();
                 categoryManageWithoutUpdate();
             }
         },
          error : function(data) {
-            //alert("<spring:message code='BzComposer.categorymanager.erroroccurred'/>");
+
             return showerrordialog();
         }
     });

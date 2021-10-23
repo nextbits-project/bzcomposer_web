@@ -413,9 +413,9 @@ $(document).ready(function () {
 });
 
 function init(){
-    //alert('init');
+
     //let row1ID = $('.hideShowSubCatItems')[0].cells[0].innerText;
-    //alert($("#CategoryListTbl tr.highlight").length);
+
     if($("#CategoryListTbl tr").length>2){
         $("#CategoryListTbl tr")[2].cells[0].click();
     }

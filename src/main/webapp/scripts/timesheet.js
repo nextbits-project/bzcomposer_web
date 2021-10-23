@@ -131,7 +131,7 @@ function setRowDates(row)
    date4.setYear(arr[2]);
   
           
- // alert(arr[0]+"/"+arr[1]+"/"+arr[2]);
+
  
 }
 function setTime1(hh,mm)
@@ -169,7 +169,7 @@ function setTime4(hh,mm)
 }
 function dailyHours(row)
 {
-//alert("hello");
+
 var hours1=0;
 var hours2=0;
 var id="t"+row+"1";

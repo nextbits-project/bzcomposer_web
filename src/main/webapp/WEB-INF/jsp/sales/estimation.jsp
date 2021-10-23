@@ -807,7 +807,7 @@ tax_rate=0;
 
 $(function() {
 	var locale = "<%= request.getAttribute("selectedLocale")%>";
-	//alert("selected locale:"+locale);
+
 	$('select[id="locale"]').find('option[value="'+locale+'"]').attr("selected",true);
 
 	$("#sortByLastName").change(function(){
@@ -1594,7 +1594,7 @@ function StyleChange(value){
 				document.getElementById('amount_id').value="";
 				document.getElementById('weight_id').value="";
 				document.getElementById('pname_id').value="";
-				//alert('<spring:message code="BizComposer.Estimaion.Item.Validation" />');
+
 				return showSelectItemDialog();				
 			}
 			else{	
@@ -2026,9 +2026,6 @@ function saveNewItemName()
            			data:{price : price,itemID:itemId},
            			}).done(function(data){
            			debugger
-           			alert("Data fetched:"+data);
-           			debugger
-           			alert("itemDiv data:"+$(document).find('div#itemDiv'));
            			//$(document).find('div#itemDiv').replaceWith($(data).find('div#itemDiv').html());
            			debugger
            			}); */
@@ -2096,10 +2093,10 @@ function Init(){
 		}
 	</c:if>
 	var readOnly = <%= request.getAttribute("readData") %>
-	//alert("ReadData value:"+readOnly);
+
 	if(readOnly)
 	{
-		//alert("inside true condition");
+
 		$('#newEstimation').prop('disabled', true);
 		$('#btnNewEstimation').prop('disabled', true);
 		$('#btnSaveEstimation').prop('disabled', true);
@@ -2110,7 +2107,7 @@ function Init(){
 		$('#invoiceStyle').prop('readonly',true);
 	}
 	else {
-		//alert("inside false condition");
+
 		$('#newEstimation').prop('disabled', false);
 		$('#btnNewEstimation').prop('disabled', false);
 		$('#btnSaveEstimation').prop('disabled', false);
@@ -2262,7 +2259,7 @@ function paymentHistory(form)
 {
 	cid=form.custID.value;
 	if(cid==0){
-		//alert("Please Select Customer");
+
 		return showValidationDialog();
 	}
 	else {

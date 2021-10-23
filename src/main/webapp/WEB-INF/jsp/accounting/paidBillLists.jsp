@@ -578,7 +578,7 @@ table.tabla-listados tbody tr td {
 		}
 		if(parseFloat(paidAmount) > parseFloat(totalAmount))
 		{
-			alert("you can not pay more than balance");
+			alert("<bean:message key='BzComposer.common.cantPayMoreThanBalance'/>");
 			return false;
 		}  */
 		

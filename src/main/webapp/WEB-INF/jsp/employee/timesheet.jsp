@@ -203,10 +203,10 @@
             var id = document.getElementById("empid").value
             if (id != null || id != "") {
                 o = c(writeSelect1);
-                // alert('${pageContext.request.contextPath}/include/EmployeeTimeSheet.jsp?id=' +id+'&dates='+dates);
+
                 oGET(o, '${pageContext.request.contextPath}/include/EmployeeTimeSheet.jsp?id=10&dates=' + dates);
                 var rawdata = document.getElementById("tsdata").value;
-                //alert(rawdata);
+
             }
         }
 
@@ -217,12 +217,12 @@
 
             document.getElementById("tsheet").innerHTML = "";
             document.getElementById("tsheet").innerHTML = o.responseText;
-            //alert(o.responseText);
+
         }
         function saveTimsSheet(){
             var empid = document.getElementById("employeeid").value;
             if (empid == ""){
-                alert("Please Select Employee First");
+                alert("<bean:message key='BzComposer.common.selectEmployee'/>");
                 return false;
             }
             $.ajax({
@@ -232,7 +232,7 @@
                 url: "${pageContext.request.contextPath}/TimeSheet",
                 data: JSON.stringify(TimeSheetForm), // Note it is important
                 success :function(result) {
-                    alert("success");
+
                 }
             });
             location.reload();
@@ -307,7 +307,7 @@
                     }
                 },
                 error : function(data) {
-                    alert("ee"+data);
+                    alert("<bean:message key='BzComposer.common.erroroccurred'/>");
                 }
             });
         }

@@ -323,7 +323,7 @@ function getRecordID(currChkBox, rowIndex) {
     }else{
         document.getElementById('allRecordsChkHead').checked = false;
     }
-    //alert(rowIndex +" : "+ selectedRowIDs);
+
 }
 
 function sendToInvoice(){

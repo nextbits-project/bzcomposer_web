@@ -1208,7 +1208,7 @@ function validate() {
   	}
     else if (!pattern.test(email))
     {
-        //alert('<spring:message code="BzComposer.NewCustomer.Email.Validation" />');
+
         return showInvalidEmailDialog();
         document.VendorForm.email.focus();
         return false;
@@ -1439,7 +1439,7 @@ function addToTable(form){
 		}
 		if(flag==1)
 		{
-			//alert('<spring:message code="BzComposer.NewCustomer.Service.Validation" />');
+
 			return showservicevalidationdialog();
 			return;
 		}
@@ -1620,12 +1620,12 @@ $(function() {
             url:"CustomerAjax?tabid=zipcode&zipcode="+zipCode,
             data :"zipCode=" + zipCode,
             success : function(data) {
-                //alert(data.state);
+
                 $("#city").val(data.city);
                 $(".stateClass1 option:contains('"+data.stateName+"')").attr('selected', 'selected');
             },
             error : function(data) {
-                alert('ERROR');
+                alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
     });
@@ -1640,7 +1640,7 @@ $(function() {
                 $(".stateClass2 option:contains('"+data.stateName+"')").attr('selected', 'selected');
             },
             error : function(data) {
-                alert('ERROR');
+                alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
     });
@@ -1655,7 +1655,7 @@ $(function() {
                 $(".stateClass3 option:contains('"+data.stateName+"')").attr('selected', 'selected');
             },
             error : function(data) {
-                alert('ERROR');
+                alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
     });
@@ -1771,7 +1771,7 @@ function setCutomerDataById(rowID, rowIndex, flag) {
                 hideShowExitingUserTabs(true);
             },
             error : function(error) {
-                 alert("ERROR");
+                 alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
     }

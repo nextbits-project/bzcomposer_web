@@ -168,7 +168,6 @@ function submitform()
 			url : "CompanyNew.do?tabid=addInventory",
 			data : "json=" +json ,
 		    success : function(data) {
-				alert("Inventory Added successfully");  
 				document.forms[0].action = "CompanyNew.do?tabid=createNewCompany9";
 				document.forms[0].submit(); 
 			},
@@ -222,7 +221,7 @@ function addGeneralDetail()
 	
 	if(inventoryCode == null)
 	{
-		alert("Please insert a item detail");
+		alert("<bean:message key='BzComposer.common.insertItemDetails'/>");
 		return false;
 	}	
 	
@@ -311,7 +310,7 @@ function remove()
 		$("#row"+index+"").remove();
 		objGlobal.splice(index,1);
 	}else{
-		alert("Please select at least one row");
+		alert("<bean:message key='BzComposer.common.selectAtleast1Record'/>");
 		return false;
 	}	
 	index = -1;
@@ -330,7 +329,6 @@ function finish()
 				data : "json=" +json ,
 			    success : function(data) {
 					debugger;
-					alert("Inventory Added Successfully");  
 					document.forms[0].action = "CompanyNew.do?tabid=finish3";
 					document.forms[0].submit(); 
 				},

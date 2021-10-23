@@ -118,7 +118,7 @@ function showTextBox6()
 		debugger
 		var val = $("#defaultPrinter option:selected").val();
 		debugger
-		//alert("Selected value:"+val);
+
 		if(val == 1)
 		{
 			debugger
@@ -176,7 +176,7 @@ function CheckEmailConnection()
 	if(response == 1)
 	{
 		debugger
-		//alert('<bean:message key="BzComposer.configuration.manageservicetype.serverconnectedsuccess" />');
+
 		return serverconnectedseccessdialog();
 		document.configurationForm.mailAuth.disabled=false;    		
 		EnableDisableFields();
@@ -184,7 +184,7 @@ function CheckEmailConnection()
 	else
 	{
 		debugger
-		//alert('<bean:message key="BzComposer.configuration.manageservicetype.serverconnectederror" />');
+
 		return serverconnectederrordialog();
 		document.configurationForm.mailAuth.disabled=true;
 		EnableDisableFields();
@@ -272,7 +272,7 @@ function IsExist(){
 	var name = document.getElementById('sname').value;
 	for(cnt=0;cnt<servicename.length;cnt++){
 		if(servicename[cnt] == name){
-			//alert('<bean:message key="BzComposer.configuration.manageservicetype.servicetypenameexist"/>');
+
 			return servicetypeexistdialog();
 			document.getElementById('sname').focus();
 			flag=1;
@@ -285,7 +285,7 @@ function IsExist(){
 function AddServiceType(){
 	var name = trim(document.getElementById('sname').value);
 	if(name==""){
-		//alert('<bean:message key="BzComposer.configuration.manageservicetype.pleaseselectservicetype"/>');
+
 		return selectservicetypedialog();
 		document.getElementById('sname').focus();
 	}
@@ -368,14 +368,14 @@ function getRecords(res){
 function EditServiceType(){
 	var name = trim(document.getElementById('sname').value);
 	if(name==""){
-		//alert('<bean:message key="BzComposer.configuration.manageservicetype.pleaseselectservicetype"/>');
+
 		return selectservicetypedialog()
 		document.getElementById('sname').focus();
 	}
 	else{
 		if(IsExist()==0){
 			if(servid==0){
-				//alert('<bean:message key="BzComposer.configuration.manageservicetype.selectservicetypetoedit"/>');
+
 				return selecttypetoeditdialog();
 			}
 			else
@@ -430,7 +430,7 @@ function EditService(servid,name,invid){
 
 function DeleteServiceType(){
 	if(servid==0){
-		//alert('<bean:message key="BzComposer.configuration.manageservicetype.selectservicetypetodelete"/>');
+
 		return selecttypetodeletedialog()
 	}
 	else

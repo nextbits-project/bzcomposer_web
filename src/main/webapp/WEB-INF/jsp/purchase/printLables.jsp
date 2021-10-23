@@ -287,7 +287,7 @@ function printlabel(){
      } */
 
     if(customerdetails == ""){
-        alert("Please select a customer");
+        alert("<bean:message key='BzComposer.common.selectCustomer'/>");
     }else{
         var i;
         var a = window.open('', '', 'height=500, width=500');

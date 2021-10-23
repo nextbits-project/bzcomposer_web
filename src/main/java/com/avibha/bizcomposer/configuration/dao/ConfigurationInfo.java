@@ -643,19 +643,11 @@ public class ConfigurationInfo {
     /* Saves the information required for the application
      * configuration to the database.
      */
-    public boolean saveConfigurationRecord(ConfigurationDto cForm,
-                                           long compId, HttpServletRequest request) {
-        Connection con = null ;
+    public boolean saveConfigurationRecord(ConfigurationDto cForm, long compId, HttpServletRequest request) {
         SQLExecutor executor = new SQLExecutor();
+        Connection con = executor.getConnection();
         PreparedStatement pstmt = null;
         boolean isSaved = false;
-
-        if (executor == null)
-            return isSaved;
-        con = executor.getConnection();
-        if (con == null)
-            return isSaved;
-
         try {
             String insertRecord = "update bca_preference set  CurrencyID = ?,CurrencyText = ?,WeightID = ?,"
                     + "Weight = ?,LabelSizeID = ?,LabelSize = ?,AdminUsername = ?,"
@@ -697,13 +689,11 @@ public class ConfigurationInfo {
             if (cForm.getIsProductWeight() == null)
                 pstmt.setString(16, "0");
             else
-                pstmt.setString(16,
-                        cForm.getIsProductWeight().equals("on") ? "1" : "0");
+                pstmt.setString(16, cForm.getIsProductWeight().equals("on") ? "1" : "0");
             if (cForm.getIsCompanyName() == null)
                 pstmt.setString(17, "0");
             else
-                pstmt.setString(17, cForm.getIsCompanyName().equals("on") ? "1"
-                        : "0");
+                pstmt.setString(17, cForm.getIsCompanyName().equals("on") ? "1" : "0");
             pstmt.setString(18, "");
             pstmt.setInt(19, cForm.getVendorDefaultCountryID());
             pstmt.setString(20, cForm.getStartPONum());
@@ -714,8 +704,7 @@ public class ConfigurationInfo {
             if (cForm.getProductTaxable() == null)
                 pstmt.setString(25, "0");
             else
-                pstmt.setString(25,
-                        cForm.getProductTaxable().equals("on") ? "1" : "0");
+                pstmt.setString(25, cForm.getProductTaxable().equals("on") ? "1" : "0");
             pstmt.setString(26, "");
             pstmt.setInt(27, cForm.getEmpStateID());
             pstmt.setString(28, "");
@@ -723,15 +712,13 @@ public class ConfigurationInfo {
             if (cForm.getChargeSalesTax() == null)
                 pstmt.setString(30, "0");
             else
-                pstmt.setString(30,
-                        cForm.getChargeSalesTax().equals("on") ? "1" : "0");
+                pstmt.setString(30, cForm.getChargeSalesTax().equals("on") ? "1" : "0");
             pstmt.setInt(31, cForm.getHowOftenSalesTax());
             pstmt.setInt(32, cForm.getSalesTaxID());
             if (cForm.getShowReminder() == null)
                 pstmt.setString(33, "0");
             else
-                pstmt.setString(33, cForm.getShowReminder().equals("on") ? "1"
-                        : "0");
+                pstmt.setString(33, cForm.getShowReminder().equals("on") ? "1" : "0");
             pstmt.setInt(34, cForm.getInvoiceMemo());
             pstmt.setInt(35, cForm.getInvoiceMemoDays());
             pstmt.setInt(36, cForm.getOverdueInvoice());
@@ -761,8 +748,7 @@ public class ConfigurationInfo {
             if (cForm.getAssessFinanceCharge() == null)
                 pstmt.setInt(46, 0);
             else
-                pstmt.setInt(46,
-                        cForm.getAssessFinanceCharge().equals("on") ? 1 : 0);
+                pstmt.setInt(46, cForm.getAssessFinanceCharge().equals("on") ? 1 : 0);
 
             pstmt.setInt(47, 3);
             pstmt.setLong(48, cForm.getTimeSheet());
@@ -842,7 +828,7 @@ public class ConfigurationInfo {
         try {
             String insertRecord = "update bca_preference set CurrencyID=?,WeightID=?,LabelSizeID=?,defaultModule=?,FilterOption=?,poboard=?,"
                     + "itemsReceivedBoard=?,itemsShippedBoard=?,SalesOrderBoard=?,Mailserver=?,Mail_senderEmail=?,Mail_username=?,Mail_password=?, "
-                    + "ShowUSAInBillShipAddress=? WHERE CompanyID=?";
+                    + "ShowUSAInBillShipAddress=?,Multimode=? WHERE CompanyID=?";
 
             pstmt = con.prepareStatement(insertRecord);
             pstmt.setInt(1, cForm.getCurrencyID());
@@ -859,7 +845,8 @@ public class ConfigurationInfo {
             pstmt.setString(12, cForm.getMailUserName());
             pstmt.setString(13, cForm.getMailPassword());
             pstmt.setBoolean(14, cForm.isShowUSAInBillShipAddress());
-            pstmt.setString(15, companyID);
+            pstmt.setInt(15, cForm.getMultiUserConnection());
+            pstmt.setString(16, companyID);
             int saved = pstmt.executeUpdate();
             if (saved > 0) {
                 isSaved = true;
@@ -869,24 +856,18 @@ public class ConfigurationInfo {
             Loger.log("Exception in the class ConfigurationInfo and in method saveConfigurationRecord " + ex.toString());
         }
 
-        String[] Modules = cForm.getListOfExistingModules1();
-        int i = Modules.length;
         try {
             String DeleteModules="delete FROM bca_businessmodules  where CompanyID="+companyID;
             pstmt1 = con.prepareStatement(DeleteModules);
             int check = pstmt1.executeUpdate();
             pstmt1.close();
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
 
-        try {
-            for(i=0;i<Modules.length;i++) {
-                String insertmodules=" insert into bca_businessmodules (ModuleName,Active,CompanyID) values('"+Modules[i]+"',1,"+companyID+")";
-                pstmt2 = con.prepareStatement(insertmodules);
-            }
-            pstmt2.close();
+//            String[] Modules = cForm.getListOfExistingModules1();
+//            for(int i=0;i<Modules.length;i++) {
+//                String insertmodules=" insert into bca_businessmodules (ModuleName,Active,CompanyID) values('"+Modules[i]+"',1,"+companyID+")";
+//                pstmt2 = con.prepareStatement(insertmodules);
+//            }
+//            pstmt2.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

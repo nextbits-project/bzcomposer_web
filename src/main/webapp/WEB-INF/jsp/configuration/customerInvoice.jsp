@@ -109,13 +109,13 @@ $(document).ready(function()
         var isChecked = '<%= request.getAttribute("isDefault")%>';
         //var isChecked = "on";
         if($(this).prop("checked") == true){
-            //alert("CustomerTaxale is checked.");
+
             $("#isDefaultCreditTerm").attr('checked', true);
 
             isChecked = "on";
         }
         else if($(this).prop("checked") == false){
-            //alert("CustomerTaxable is unchecked.");
+
             $("#isDefaultCreditTerm").attr('checked', false);
 
              isChecked = "off";
@@ -130,12 +130,12 @@ $(document).ready(function()
     {
         var isChecked = '<%= request.getAttribute("custTaxableStatus")%>';
         if($(this).prop("checked") == true){
-            //alert("CustomerTaxale is checked.");
+
             $("#custTaxable").attr('checked', true);
             isChecked = "on";
         }
         else if($(this).prop("checked") == false){
-            //alert("CustomerTaxable is unchecked.");
+
             $("#custTaxable").attr('checked', false);
              isChecked = "off";
         }
@@ -283,7 +283,7 @@ $(document).ready(function()
 
     $("#invoiceLocation").change(function(){
         var filePath = $("#invoiceLocation").val();
-        //alert("Selected File:"+filePath);
+
         $("invoiceLocation").val(filePath);
         //document.configurationForm.invoiceLocation.value = filePath;
         //debugger
@@ -291,7 +291,7 @@ $(document).ready(function()
 
     $("#saveImage").change(function(){
         var filePath = $("#saveImage").val();
-        //alert("Selected File:"+filePath);
+
         $("saveImage").val(filePath);
         //document.configurationForm.invoiceLocation.value = filePath;
         //debugger
@@ -322,7 +322,7 @@ $(document).ready(function()
         var checked = "on";
         if($(this).prop("checked") == true)
         {
-            //alert("isRefundAllowed checked");
+
             $("#isRefundAllowed").attr('checked', true);
 
             $("#refundReason").prop('readonly', false);
@@ -336,7 +336,7 @@ $(document).ready(function()
         }
         else if($(this).prop("checked") == false)
         {
-            //alert("isRefundAllowed unchecked");
+
             $("#refundReason").prop('readonly', true);
             $("#refundReasonSel").prop('readonly',true);
             $("#addRefundReason").prop('disabled',true);
@@ -353,14 +353,13 @@ $(document).ready(function()
         var setup = $("#setupID option:selected").val();
         if(text == "" || text == " ")
         {
-            alert("Necessary data is empty");
+            alert("<spring:message code='BzComposer.configuration.customerinvoice.emptydata'/>");
         }
         else
         {
             if(setup == "Location")
             {
                 debugger
-                alert(text);
                 $.ajax({
                     type: "POST",
                     url:"Configuration?tabid=addDescription&Description="+text,
@@ -443,6 +442,7 @@ $(document).ready(function()
 							<div id="tabs" style="height:auto;">
   								<ul>
     								<li style="font-size:12px;"><a href="#Customer"><spring:message code="BzComposer.configuration.tab.customer" /></a></li>
+    								<li style="font-size: 12px;"><a href="#orderTemplate"><spring:message code="BzComposer.configuration.tab.orderTemplate" /></a></li>
     								<li style="font-size:12px;"><a href="#soAndEstimation"><spring:message code="BzComposer.configuration.salesorderAndEstimation"/></a></li>
     								<li style="font-size:12px;"><a href="#InvoiceTab"><spring:message code="Bzcomposer.configuration.invoice" /></a></li>
     								<li style="font-size:12px;"><a href="#BillingTab"><spring:message code="BzComposer.accountreceivable.billing" /></a></li>
@@ -1141,6 +1141,92 @@ $(document).ready(function()
                         </div>
                 </div>
                 <!-- finance-Charges Ends -->
+                <!-- Order-Template-Start -->
+                <div id="orderTemplate" style="font-size: 12px;">
+                    <div id="content3" class="tabPage">
+                        <table class="table-notifications" width="100%">
+                            <tr>
+                                <th colspan="2" align="left" style="font-size: 12px; padding: 5px;">
+                                <spring:message code="BzComposer.configuration.importantordertemplate" />
+                                </th>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;">
+                                    <spring:message code="BzComposer.configuration.importantordertemplate.templatename" />
+                                </td>
+                                <td style="font-size: 12px;">
+                                    <form:input path="templateName" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;">
+                                    <spring:message code="BzComposer.configuration.choosefilebtn"/>
+                                </td>
+                                <td style="font-size: 12px;">
+                                    <input type="file" name="exelFile" accept=".xls" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="2" style="font-size: 12px;">
+                                    <spring:message code="Bzcomposer.configuration.choosefilebtn.onlyexcelfiles"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;">
+                                    <input type="checkbox" name="def" id="def" value="${configDto.def}" ${configDto.def=='on'?'checked':''} />
+                                    <label><spring:message code="BzComposer.configuration.defaultchkbox" /></label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2" align="left" style="font-size: 12px; padding: 5px;">
+                                    <spring:message code="BzComposer.configuration.fieldsmapping" />
+                                </th>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><b><spring:message code="BzComposer.configuration.databasefieldsname"/> </b></td>
+                                <td style="font-size: 12px;"><b><spring:message code="BzComposer.configuration.mappingfieldsname"/></b></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code= "BzComposer.configuration.itemcode"/>*</td>
+                                <td style="font-size: 12px;"><form:input path="itemCode" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code = "BzComposer.configuration.itemname"/></td>
+                                <td style="font-size: 12px;"><form:input path="itemName" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code="BzComposer.configuration.qty"/>*</td>
+                                <td style="font-size: 12px;"><form:input path="qty" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code="BzComposer.configuration.unitprice"/>* ($)</td>
+                                <td style="font-size: 12px;"><form:input path="unitPrice" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code="BzComposer.configuration.unitweight"/></td>
+                                <td style="font-size: 12px;"><form:input path="weight" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code="BzComposer.configuration.taxable"/></td>
+                                <td style="font-size: 12px;"><form:input path="taxable" /></td>
+                            </tr>
+                        </table>
+                        <div id="orderTemplateList">
+                            <table class="table-notifications" width="80%">
+                                <tr>
+                                    <th colspan="2" align="left" style="font-size: 12px;  padding: 5px;">
+                                        <spring:message code="BzComposer.configuration.ordertemplatelist" />
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Order-Template-End -->
 
                 </div></div>
                 <!-- customerInvoice Ends -->
@@ -1280,7 +1366,6 @@ function SaveValues()
                     },
                     error : function(data) {
                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
-                        alert(JSON.stringify(data));
                     }
                 });
             },

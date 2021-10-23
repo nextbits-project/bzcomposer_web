@@ -20,7 +20,7 @@ $(function() {
 		}
 		else
 		{
-			//alert('normal Reason');
+
 		}
     });
 	
@@ -43,11 +43,11 @@ $(function() {
 	var packingSlipStyleId = '<%= request.getAttribute("packingSlipStyleId")%>';
 	
 	var isChecked = '<%= request.getAttribute("isRefundAllowed")%>';
-  	/*alert("RefundAllowed Checkecbox is"+isChecked);*/
+
     if(isChecked == "on")
     {
 		
-      	//alert("isRefundAllowed checked");
+
       	$("#isRefundAllowed").attr('checked', true);
       	 
 		$("#refundReason").prop('readonly', false);
@@ -59,7 +59,7 @@ $(function() {
 	} 
 	else if(isChecked == "off")
     {
-		//alert("isRefundAllowed unchecked");
+
         $("#refundReason").prop('readonly', true);
 		$("#refundReasonSel").prop('readonly',true);
 	    $("#addRefundReason").prop('disabled',true);
@@ -100,13 +100,13 @@ $(function() {
     	var isChecked = '<%= request.getAttribute("isDefault")%>';
     	//var isChecked = "on";
         if($(this).prop("checked") == true){
-            //alert("CustomerTaxale is checked.");
+
             $("#isDefaultCreditTerm").attr('checked', true);
             
             isChecked = "on"; 
         }
         else if($(this).prop("checked") == false){
-            //alert("CustomerTaxable is unchecked.");
+
             $("#isDefaultCreditTerm").attr('checked', false);
             
              isChecked = "off";
@@ -122,12 +122,12 @@ $(function() {
 	{
     	var isChecked = '<%= request.getAttribute("custTaxableStatus")%>';
         if($(this).prop("checked") == true){
-            //alert("CustomerTaxale is checked.");
+
             $("#custTaxable").attr('checked', true);
             isChecked = "on"; 
         }
         else if($(this).prop("checked") == false){
-            //alert("CustomerTaxable is unchecked.");
+
             $("#custTaxable").attr('checked', false);
              isChecked = "off";
         }	
@@ -294,7 +294,7 @@ $(function() {
 	
 	$("#invoiceLocation").change(function(){
 		var filePath = $("#invoiceLocation").val();
-		//alert("Selected File:"+filePath);
+
 		$("invoiceLocation").val(filePath);
 		//document.configurationForm.invoiceLocation.value = filePath;
 		//debugger
@@ -302,7 +302,7 @@ $(function() {
 	
 	$("#saveImage").change(function(){
 		var filePath = $("#saveImage").val();
-		//alert("Selected File:"+filePath);
+
 		$("saveImage").val(filePath);
 		//document.configurationForm.invoiceLocation.value = filePath;
 		//debugger
@@ -333,7 +333,7 @@ $(function() {
       	var checked = "on";
         if($(this).prop("checked") == true)
         {
-          	//alert("isRefundAllowed checked");
+
           	$("#isRefundAllowed").attr('checked', true);
           	 
 			$("#refundReason").prop('readonly', false);
@@ -347,7 +347,7 @@ $(function() {
 		} 
 		else if($(this).prop("checked") == false)
         {
-          	//alert("isRefundAllowed unchecked");
+
             $("#refundReason").prop('readonly', true);
 			$("#refundReasonSel").prop('readonly',true);
 		    $("#addRefundReason").prop('disabled',true);
@@ -364,14 +364,13 @@ $(function() {
 		var setup = $("#setupID option:selected").val();
 		if(text == "" || text == " ")
 		{
-			alert("Necessary data is empty");
+			alert("<bean:message key='BzComposer.federaltax.emptydata'/>");
 		}
 		else
 		{
 			if(setup == "Location")
 			{
 				debugger
-				alert(text);
 				$.ajax({
 					type: "POST",
 	   				url:"Configuration?tabid=addDescription&Description="+text,
@@ -404,7 +403,7 @@ $(function() {
 function disable() 
 {
 	var value = document.configurationForm.custDefaultCountryID.value;
-	//alert("Selected Country:"+value);
+
 	if(value == "2")
 	{
 		document.configurationForm.selectedStateId.disabled=false;
@@ -420,7 +419,7 @@ function disable()
 function showSetupID()
 {
 	var val = document.getElementById("setupID").value;
-		//alert("Selected SetUpId is:"+val);
+
 		
 		if(val == "Location")
 		{
@@ -596,14 +595,14 @@ function showSetupID()
 		var setup = $("#setupID option:selected").val();
 		if(text == "" || text == " ")
 		{
-			alert("Necessary data is empty");
+			alert("<bean:message key='BzComposer.federaltax.emptydata'/>");
 		}
 		else
 		{
 			if(setup == "Location")
 			{
 				debugger */
-				/*alert(text);
+				/*
 				 $.ajax({
 					type: "POST",
 	   				url:"Configuration?tabid=addDescription&Description="+text,
@@ -774,11 +773,11 @@ function showSetupID()
         	var oldReason = $('#refundReasonSel option:selected').text();
         	var newReason = $('#refundReason').text();
             if (oldReason == '' || oldReason == ' ') {
-                alert("Please select a refund reason from the list");
+                alert("<bean:message key='BzComposer.configuration.customerinvoice.selectreasonfromlist'/>");
             }
             else if(oldReason == newReason)
             {
-            	alert("Same Reason can't update to the list")	
+            	alert("<bean:message key='BzComposer.configuration.customerinvoice.samereasoncantupdate'/>");
             }
             else
             {
@@ -795,17 +794,16 @@ function showSetupID()
         	debugger
         	var reason = $('#refundReasonSel selected').val();
             if (reason == '') {
-                alert("Please select a refund reason from the list");
+                alert("<bean:message key='BzComposer.configuration.customerinvoice.selectreasonfromlist'/>");
             }
             else if(reason == ' ')
             {
-            	alert("Whitespace is not allowed")
+            	alert("<bean:message key='BzComposer.configuration.customerinvoice.whitespaceisnotallowed'/>");
             }
             else
             {
             	debugger
-            	var con = confirm("Are you sure to remove this reason?");
-            	//alert("Inside else condition")
+            	var con = confirm("<bean:message key='BzComposer.configuration.customerinvoice.removereason'/>");
             	if(con)
             	//$('#refundReasonSel option:selected').remove();
             	$("#refundReason").val('');
@@ -820,11 +818,11 @@ function showSetupID()
         	var cat = $("#txtJobCategory").val();
         	//var items = $("#jobCategory option").val();
             if (cat == '') {
-                alert("Please enter a job category.");
+                alert("<bean:message key='BzComposer.configuration.customerinvoice.enterjobcategory'/>");
             }
             else if(cat == ' ')
             {
-            	alert("Whitespace is not allowed.")
+            	alert("<bean:message key='BzComposer.configuration.customerinvoice.whitespaceisnotallowed'/>");
             }
             else
             {
@@ -835,7 +833,7 @@ function showSetupID()
                 $("#jobCategory option").each(function() {
                     if ($(this).text() == $.trim(cat)) {
                         itemExists = true;
-                        alert('Job Category already exists');
+                        alert("<bean:message key='BzComposer.configuration.customerinvoice.jobcategoryexists'/>");
                         $("#txtJobCategory").val('');
                     }
                 });
@@ -854,11 +852,11 @@ function showSetupID()
         	var newCategory = $('#txtJobCategory').val();
         	debugger
             if (oldCategory == "") {
-                alert("Please Select a Job from the list.");
+                alert("<bean:message key='BzComposer.configuration.customerinvoice.selectjobfromlist'/>");
             }
             else if(oldCategory == ' ')
             {
-            	alert("Whitespace is not allowed.")
+            	alert("<bean:message key='BzComposer.configuration.customerinvoice.whitespaceisnotallowed'/>");
             }
             else
             {
@@ -873,7 +871,7 @@ function showSetupID()
         $("#deleteJobCategory").click(function () {
         	debugger
             if ($("#jobCategory option").text() == "") {
-                alert("Please Select a Job from the List");
+                alert("<bean:message key='BzComposer.configuration.customerinvoice.selectjobfromlist'/>");
             }
             else
             {

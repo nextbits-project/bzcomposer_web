@@ -171,7 +171,7 @@ function AddJobCode()
 	code = trim(document.getElementById('jcode').value);
 	if(code=="" || document.getElementById('jcode').value.length == 0)
 	{
-		//alert('<bean:message key="BzComposer.configuration.employee.jobcodeemptyvalidation" />');
+
 		return emptyjobcodedialog();
 		document.getElementById('jcode').focus();
 	}
@@ -181,7 +181,7 @@ function AddJobCode()
 		document.getElementById('cost').value = cst;
 		if(cst=="" || cst==0)
 		{
-			//alert('<bean:message key="BzComposer.configuration.employee.costgreatervalidation" />');
+
 			return bigcostvalidationdialog();
 			document.getElementById('cost').value="";
 			document.getElementById('cost').focus();
@@ -236,11 +236,11 @@ function AddJobTitle()
 	    return letter.toUpperCase();
 	});
 	debugger
-	//alert("Camelized Word is:"+camelized);
+
 	debugger
 	if(jobTitle == "")
 	{
-		//alert("<bean:message key='BzComposer.configuration.employee.emptyjobtitlevalidation'/>");
+
 		return emptyjobtitledialog();
 	}
 	/* else if(availableJobTitle == "")
@@ -249,7 +249,7 @@ function AddJobTitle()
 	} */
 	else if(camelized == availableJobTitle || jobTitle == availablejobs)
 	{
-		//alert("<bean:message key='BzComposer.configuration.employee.duplicatejobtitleaddvalidation'/>")
+
 		return duplicatejobtitledialog();
 	}
 	else 
@@ -305,28 +305,28 @@ function EditJobTitle()
 	    return letter.toUpperCase();
 	});
 	debugger
-	//alert("Camelized Word is:"+camelized);
+
 	debugger
 	if(jobTitle == "")
 	{
-		//alert("<bean:message key='BzComposer.configuration.employee.emptyjobtitlevalidation'/>");
+
 		return emptyjobtitledialog();
 	}
 	
 	else if(availableJobTitle == "")
 	{
-		//alert("<bean:message key='BzComposer.configuration.employee.selectrowfirst'/>");
+
 		return selectrowdialog();
 	}
 	
 	else if(camelized == availableJobTitle || jobTitle == availablejobs)
 	{
-		//alert("<bean:message key='BzComposer.configuration.employee.duplicatejobtitleaddvalidation'/>");
+
 		return duplicatejobtitledialog();
 	}
 	else 
 	{
-		//alert("Entered jobTitle:"+jobTitle);
+
 		window.location.href="Configuration.do?tabid=saveJobTitle&jobTitle="+jobTitle+"&titleId="+selectedJobtitleId+"&operation=edit";
 	}
 }
@@ -342,17 +342,17 @@ function DeleteJobTitle()
 	debugger
 	if(selectedJobTitleId == "")
 	{
-		//alert("<bean:message key='BzComposer.configuration.employee.selectrowfirst'/>");
+
 		return selectrowdialog();
 	}
 	else if(jobTitle == "")
 	{
-		//alert("<bean:message key='BzComposer.configuration.employee.emptyjobtitlevalidation'/>");
+
 		return emptyjobtitledialog();
 	}
 	else 
 	{
-		//alert("Deleted jobTitleId:"+selectedJobTitleId+"\nAnd Name is:"+jobTitle);
+
 		window.location.href="Configuration.do?tabid=saveJobTitle&titleId="+selectedJobTitleId+"&operation=delete";
 	}
 	
@@ -362,7 +362,7 @@ function EditJobCode()
 {	
 	if(jid==0)
 	{
-		//alert('<bean:message key="BzComposer.configuration.employee.selectjobcodevalidation" />');
+
 		return selectjobcodedialog();
 	}
 	else
@@ -371,7 +371,7 @@ function EditJobCode()
 		
 		if(code=="" || document.getElementById('jcode').value.length == 0)
 		{
-			//alert('<bean:message key="BzComposer.configuration.employee.jobcodeemptyvalidation" />');
+
 			return emptyjobcodedialog();
 			document.getElementById('jcode').focus();
 		}
@@ -381,7 +381,7 @@ function EditJobCode()
 			document.getElementById('cost').value = cst;
 			if(cst=="" || cst==0)
 			{
-				//alert('<bean:message key="BzComposer.configuration.employee.costgreatervalidation" />');
+
 				return bigcostvalidationdialog();
 				document.getElementById('cost').value="";
 				document.getElementById('cost').focus();
@@ -428,7 +428,7 @@ function RemoveJobCode()
 {
 	if(jid==0)
 	{
-		//alert('<bean:message key="BzComposer.configuration.employee.selectjobcodevalidation" />');
+
 		return selectjobcodedialog();
 	}
 	else
@@ -521,7 +521,7 @@ function ShowEditFoootenote()
 function showSetupID()
 {
 	var val = document.getElementById("setupID").value;
-		//alert("Selected SetUpId is:"+val);
+
 		
 		if(val == "Location")
 		{
@@ -812,7 +812,7 @@ function showSetupID()
             {
             	debugger
             	var con = confirm("<bean:message key='BzComposer.configuration.customerinvoice.removereason'/>");
-            	//alert("Inside else condition")
+
             	if(con)
             	//$('#refundReasonSel option:selected').remove();
             	$("#refundReason").val('');

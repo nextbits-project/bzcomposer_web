@@ -9,6 +9,8 @@ import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
 import com.avibha.bizcomposer.employee.forms.StateTaxOtherDto;
+import com.avibha.bizcomposer.login.dao.LoginDAO;
+import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.common.utility.CountryState;
@@ -1328,8 +1330,7 @@ public class ConfigurationController {
         /* Save all the configuration records (i.e:- inventory,sales,purchase,etc).*/
         else if (action.equalsIgnoreCase("SaveConfiguration")) {
             System.out.println("----------SaveConfiguration-----------");
-            String multiUserConnection1 = request.getParameter("multiUserConnection");
-            int multiUserConnection = Integer.valueOf(multiUserConnection1);
+            int multiUserConnection = Integer.valueOf(request.getParameter("multiUserConnection"));
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.saveRecords(configDto, request, multiUserConnection);
             cDetails.getConfigurationInfo(request, configDto);
@@ -1337,8 +1338,13 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("addNewUser")) {
             ConfigurationDAO dao = new ConfigurationDAO();
-            boolean check = dao.addNewUser(companyID, request);
-            if (check == true) {
+            LoginDAO loginDAO = new LoginDAOImpl();
+            int compId = Integer.parseInt(companyID);
+            boolean emailExists = loginDAO.checkUserEmailExists(request.getParameter("userName"), compId);
+            if(emailExists){
+                status = "emailExists";
+            }
+            else if(dao.addNewUser(companyID, request)) {
                 System.out.println("success");
             } else {
                 System.out.println("Error");

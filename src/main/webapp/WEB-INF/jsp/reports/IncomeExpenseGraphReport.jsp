@@ -85,7 +85,6 @@ function callRefresh(){
 /*  $(document).ready(function() {
 
 	  $("#pdfDownloader").click(function() {
-		  alert("hello");
 	    html2canvas($("#content"), {
 	      useCORS: true,
 	      onrendered: function(canvas) {
@@ -100,7 +99,6 @@ function callRefresh(){
 
 
 	function saveAs(uri, filename) {
-	 alert(uri+ '----' + filename);
 	    var link = document.createElement('a');
 	    if (typeof link.download === 'string') {
 	      link.href = uri;

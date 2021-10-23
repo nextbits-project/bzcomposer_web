@@ -118,7 +118,7 @@ function closeme(){
 function updateItemData()
 {
     if($("#orderQty2").val()==""){
-        alert("Please enter Qty.");
+        alert("<bean:message key='BzComposer.common.enterValidQty'/>");
     }
     else{
         $("#updatePBDialog").dialog({

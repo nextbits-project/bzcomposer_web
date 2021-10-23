@@ -482,14 +482,14 @@ function showFirstNameLastNameDialog() {
 </html>
 <script type="text/javascript">
 function setIsEmail(){
-	//alert("DFSD");
+
 	document.getElementById("isEmailChk").value=document.getElementById("EmailId").value;
 	document.forms[0].action = "Email.do?tabid=EOSOLO";
 	document.forms[0].submit();
 }
 function checkName(){
 	if(document.RMAForm.fnameTxt.value=="" && document.RMAForm.lnameTxt.value=="")	{
-		//alert("You have to type one of fields in fst name and last name");
+
 		return showFirstNameLastNameDialog();
 	}
 	else{
@@ -519,7 +519,7 @@ function setRowId(rowId,email,rid){
 		 }
 	}
  	if((rowValue-1)%2==0){ 	
- 		//alert(rowValue+"IN");
+
  		document.getElementById(rowValue+"$$").classList.remove('odd'); 		
  	}
  	var rd = document.getElementById(rid).classList.add('draft');

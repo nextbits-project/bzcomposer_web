@@ -124,13 +124,13 @@ function newMailTemplate(){
 }
 function saveMailTemplate(){
 	if(document.getElementById('templateName').value.trim()==""){
-		alert("Please Enter Template Name!");
+		alert("<bean:message key='BzComposer.common.enterTemplateName'/>");
 	}
 	else if(document.getElementById('subject').value.trim()==""){
-        alert("Please Enter Subject!");
+        alert("<bean:message key='BzComposer.common.enterSubject'/>");
     }
     else if(document.getElementById('content').value.trim()==""){
-        alert("Please Enter Content!");
+        alert("<bean:message key='BzComposer.common.enterContent'/>");
     }
 	else{
 		document.forms[0].action = "MailTemplates?tabid=SaveMailTemplate";
@@ -166,7 +166,7 @@ function getMailTemplateDataById(tempID, rowId){
             document.getElementById(rowId+'$$').classList.add('draft');
         },
         error : function(error) {
-             alert("ERROR");
+             alert("<bean:message key='BzComposer.common.erroroccurred'/>");
         }
     });
 }

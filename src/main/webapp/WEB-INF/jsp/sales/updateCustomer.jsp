@@ -756,7 +756,7 @@ $(function() {
 					for (i=0; i<exist.length; i++){
 						exist[i]=-1;
 					}
-//					alert("exist created len="+exist.length);
+
 				</script>
 
 				<!-- PAyment information tab -->
@@ -1455,37 +1455,37 @@ function validate() {
 
 function UpdateCust(){
 	if(document.CustomerForm.cname.value==""){
-		//alert('<spring:message code="BzComposer.updatecustomer.entercompanyname" />');
+
 		return showNameDialog();
 		document.CustomerForm.cname.focus();
 	}
 	else if(document.CustomerForm.firstName.value==""){
-		//alert('<spring:message code="BzComposer.updatecustomer.enterfirstname" />');
+
 		return showFirstNameDialog();
 		document.CustomerForm.firstName.focus();
 	}
 	else if(document.CustomerForm.lastName.value==""){
-		//alert('<spring:message code="BzComposer.updatecustomer.enterlastname"/>');
+
 		return showLastNameDialog();
 		document.CustomerForm.lastName.focus();
 	}
 	else if(document.CustomerForm.address1.value==""  ){
-		//alert('<spring:message code="BzComposer.updatecustomer.enteradderss1"/>');
+
 		return showAddress1Dialog();
 		document.CustomerForm.address1.focus();
 	}
 	else if(document.CustomerForm.city.value==""){
-		//alert('<spring:message code="BzComposer.updatecustomer.entercity"/>');
+
 		return showCityDialog();
 		document.CustomerForm.address1.focus();
 	}
 	else if(document.CustomerForm.zipCode.value==""){
-		//alert('<spring:message code="BzComposer.updatecustomer.enterzipcode"/>');
+
 		return showZipCodeDialog();
 		document.CustomerForm.zipCode.focus();
 	}
 	else if(String(document.CustomerForm.cellPhone.value).length>16){
-		//alert('<spring:message code="BzComposer.updatecustomer.cellphonenumberistoolarge"/>');
+
 		return showCellPhoneDialog();
 		document.CustomerForm.cellPhone.value="";	
 		document.CustomerForm.cellPhone.focus();
@@ -1596,7 +1596,7 @@ function showAddPaymentMethodDialog(){
                             location.reload();
                         },
                         error : function(data) {
-                            alert('ERROR');
+                            <spring:message code=‘BzComposer.common.erroroccurred’/>
                         }
                     });
                 }
@@ -1612,13 +1612,13 @@ function showAddPaymentMethodDialog(){
 
 function addToTable(form)
 {	
-//	alert("Count="+count);
+
 	flag=0;
 	flag1=0;
 	invID=form.serviceID.value;
-//	alert("The Value of the Combo is"+invID);
+
 	SIDSize=document.getElementById('sIDSize') .value;
-//	alert("The SerialID Size is"+SIDSize);
+
 	SLSize=document.getElementById('sSize') .value;
 	InvSize=document.getElementById('iSize') .value;
 	DetailSize=document.getElementById('dSize') .value;
@@ -1634,18 +1634,17 @@ function addToTable(form)
 		sid=document.getElementById(i+'_ser').value;		
 		
 		exist[i]=sid;
-		alert("ARR"+exist[i]);
 		cnt++;
 	}
 */
-//	alert("invID="+invID+"\n\nsearching for existance..."+exist.length);
+
 		for(t=0; t<exist.length; t++){	//limit=cnt
 			if(invID==exist[t])		{				
 				flag=1;
 				break;
 			}
 		}
-//			alert("not found...");
+
 	/*	for(z=0;z<SIDSize;z++)
 		{
 			sid=document.getElementById(z+'id').value;
@@ -1664,11 +1663,11 @@ function addToTable(form)
 		isID=document.getElementById(i+'isid').value;
 		if(invID==iinvID)
 		{
-	//	alert("The hiden field id is "+iinvID);
+
 		 
 				serviceName=document.getElementById(i+'sname').value;
 		
-		//alert("The service name is "+serviceName);
+
 	
 			for(j=0;j<InvSize;j++)
 			{
@@ -1686,20 +1685,20 @@ function addToTable(form)
 	}
 *************************************************************************************************************/	
 		if(flag==1)		{
-			//alert('<spring:message code="BzComposer.updatecustomer.serviceexist"/>');
+
 			return showServiceValidationDialog();
 			return;
 		}
 		else {
 			flagx = 0;
-//			alert("adding new item");
+
 				for(i=0;i<SLSize;i++)		{
 					iinvID=document.getElementById(i+'sid').value;
 					isID=document.getElementById(i+'isid').value;
 					if(invID==iinvID) {
-						//	alert("The hiden field id is "+iinvID);
+
 						serviceName=document.getElementById(i+'sname').value;
-						//alert("The service name is "+serviceName);
+
 						for(j=0;j<InvSize;j++)	{
 							isID2=document.getElementById(j+'invid').value;
 							if(isID==isID2) {
@@ -1726,7 +1725,7 @@ function addToTable(form)
 				}
 		
 				hidn_val = document.getElementById('hidn').value;
-				//alert("hidden field"+hidn_val);
+
 				hidn_val1=hidn_val;
 		
 				var tr = document.createElement("tr");
@@ -1746,7 +1745,7 @@ function addToTable(form)
 				td2.setAttribute("align", "left");
 				tr.appendChild(td2);
 				td2.innerHTML=InvoiceStyle;
-//				alert("The InvoiceStyle is "+InvoiceStyle);
+
 
 				var td3 = document.createElement("td");
 				td3.setAttribute("align", "left");
@@ -1769,17 +1768,17 @@ function addToTable(form)
 				td5.innerHTML=button;
 				
 				form.table_size.value++;
-				//alert("The Size of the table is "+form.table_size.value);
+
 				
 				form.table_serID.value+=invID+";";
-				//alert("The Servics ID is "+form.table_serID.value);
+
 
 				form.table_serviceName.value+=serviceName+";";
 				
 				//form.table_invId.value+=InvoiceStyle+";";
 				
 				form.table_bal.value+=ServiceBalance+";";
-				//alert("The Service Bal is "+form.table_bal.value);
+
 	
 				if(InvoiceStyle==""){
 					form.table_invId.value+=invID+";";
@@ -1810,7 +1809,7 @@ function AddItem(form)
 				document.getElementById('unitPrice_id').value="";
 				document.getElementById('amount_id').value="";
 				document.getElementById('weight_id').value="";
-				//alert('<spring:message code="BzComposer.updatecustomer.selectitemfirst" />');
+
 				return showselectitemdialog();
 		}
 		else
@@ -2223,7 +2222,7 @@ function closeme(){
 	this.window.close();
 }
 function fun(val){
-//alert("dd"+val);
+
 }
 function ItemChange(value){
 	var size = document.getElementById('itmSize').value;

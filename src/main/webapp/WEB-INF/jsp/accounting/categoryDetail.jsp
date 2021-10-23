@@ -362,7 +362,7 @@ function executeQuery()
 	    	UpdateCategoryDetailpanel(data);
 		},
 		 error : function(data) {
-			//alert("<spring:message code='BzComposer.categorydetail.erroroccurred'/>");
+
 			return showerrordialog();
 		} 
 	}); 

@@ -38,11 +38,11 @@ $( document ).ready(function() {
 		var camelized = gName.toLowerCase().replace(/\b[a-z]/g, function(letter) {
 		    return letter.toUpperCase();
 		});
-		//alert("Camelized Word is:"+camelized);
+
 		$('select[id="selectedGroup"]').find('option[value="'+camelized+'"]').attr("selected",true);
 		var groupExist = $("#selectedGroup option:selected").val();
 		debugger
-		//alert("Total Number of checkboxes:"+totalCheckBoxes);
+
 		if(gName == "")
 		{
 			alert("Group name can not be blank");	

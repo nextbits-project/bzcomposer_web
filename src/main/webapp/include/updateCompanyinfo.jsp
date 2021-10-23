@@ -791,7 +791,7 @@ function init() {
 														<logic:present name="state_gen">
 															<script>
 															var contry=document.CompanyInfoForm.country.value;
-														    //alert("The genaral country is "+contry)
+
 														    //debugger
 														    //refreshItemsNow33(contry,'<bean:write name="state_gen" />');
 														    refreshItemsNow33(2,'<bean:write name="state_gen" />');

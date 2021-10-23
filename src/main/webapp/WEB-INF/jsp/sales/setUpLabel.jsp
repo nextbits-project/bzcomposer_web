@@ -195,7 +195,7 @@ var top="";
 function SaveLabel(form){
 	labelid=form.labelType.value;
 	if(form.labelName.value==""){
-		alert("Label name should not be blank");
+		alert("<bean:message key='BzComposer.common.enterLabelName'/>");
 	}
 	else{
 		var x=window.confirm("Do you want to update label?");
@@ -491,7 +491,7 @@ function SaveLabel(form){
 	form.labelName.value = trim(document.getElementById('lname').value);
 
 	if(form.labelName.value==""){
-		alert("Label name should not be blank");
+		alert("<bean:message key='BzComposer.common.enterLabelName'/>");
 		document.getElementById('lname').focus();
 	}
 	else{
@@ -553,7 +553,7 @@ function SaveLabel(form){
 function DeleteLabel(){
 	hideList();
 	if(trim(document.getElementById('lname').value)==""){
-		alert("Label name should not be blank");
+		alert("<bean:message key='BzComposer.common.enterLabelName'/>");
 		document.getElementById('lname').focus();
 		
 	}

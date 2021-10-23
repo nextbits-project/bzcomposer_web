@@ -584,7 +584,7 @@ margin-right: 10px;
 		   else
 		   {
 			   debugger;
-				//alert("<bean:message key='BzComposer.popayable.selectonepayable'/>");
+
 				return selectonepayabledialog();
 			   	obj = [];
 			   	return false;
@@ -634,14 +634,14 @@ margin-right: 10px;
 					
 				},
 				 error : function(data) {
-					//alert("<bean:message key='BzComposer.popayable.someerroroccurred'/>");
+
 					return showerrordialog();
 				} 
 			}); 	
 		  	}
 		  	else
 		  	{
-	  			//alert("<bean:message key='BzComposer.popayable.selectonepayable'/>");
+
 	  			return selectonepayabledialog();
 	  			$("#payStatus").get(0).selectedIndex = 0;
 	  			return false;
@@ -668,7 +668,7 @@ margin-right: 10px;
 			receivedAmount=document.getElementById("receivedAmount").value;
 			if(parseFloat(receivedAmount) > parseFloat(adjustTotal))
 			{
-				//alert("<bean:message key='BzComposer.popayable.receivedamountismorethanamount'/>");
+
 				return savereceiveamountdialog();
 		   		return false;
 			}
@@ -679,7 +679,7 @@ margin-right: 10px;
 			var balance = document.getElementById("receivedAmount").value;
 			if(parseFloat(receivedAmount)+parseFloat(balance) > parseFloat(adjustTotal) )
 		   	{
-		   		//alert("<bean:message key='BzComposer.popayable.receivedamountismorethanamount'/>");
+
 		   		return savereceiveamountdialog();
 		   		return false;
 			}
@@ -691,7 +691,7 @@ margin-right: 10px;
 			{
 				if(document.getElementById("checkNum").value == '0' || document.getElementById("checkNum").value == '')
 					{
-						//alert("<bean:message key='BzComposer.popayable.entervalidchecknumber'/>");
+
 						return entervalidchecknumberdialog();
 						return false;
 					}
@@ -734,7 +734,7 @@ margin-right: 10px;
 			
 			},
 			 error : function(data) {
-				 //alert("<bean:message key='BzComposer.popayable.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		});
@@ -756,7 +756,7 @@ margin-right: 10px;
 				window.location= "${pageContext.request.contextPath}/AccountReceiveble.do?tabid=selectrow&ordernum="+index;
 			},
 			 error : function(data) {
-				 //alert("<bean:message key='BzComposer.popayable.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		});
@@ -856,7 +856,7 @@ margin-right: 10px;
 	   alert(invoiceId); */
 	   if(parseInt(invoiceId) <= 0)
 	   {
-	   		//alert("<bean:message key='BzComposer.popayable.selecttransaction'/>");
+
 	   		return selecttransactiondialog();
 	   		return false;
 	   }
@@ -896,7 +896,7 @@ margin-right: 10px;
 				window.location = "${pageContext.request.contextPath}/AccountReceiveble.do?tabid=AccountReceiveble";
 			},
 			 error : function(data) {
-				 //alert("<bean:message key='BzComposer.popayable.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		});
@@ -952,7 +952,7 @@ margin-right: 10px;
 				window.location = "${pageContext.request.contextPath}/PoPayable.do?tabid=popayable";
 			},
 			 error : function(data) {
-				//alert("<bean:message key='BzComposer.popayable.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		}); 		

@@ -106,7 +106,7 @@ $(function() {
 		$('select[id="selectedPassword"]').find('option[id="'+user+'"]').attr("selected",true);
 		$('select[id="selectedGroup"]').find('option[id="'+user+'"]').attr("selected",true);
 		$('select[id="selectedStatus"]').find('option[id="'+user+'"]').attr("selected",true);
-		//alert("Selected User:"+user);
+
 	}
 </script>
 </head>

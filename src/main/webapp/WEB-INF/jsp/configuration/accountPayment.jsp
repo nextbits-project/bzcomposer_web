@@ -138,12 +138,10 @@ $(document).ready(function()
 	
 	/* if($("#noNeedToSetup").prop("checked",true))
 	{
-		alert("NoNeedToSetup is checked");
 		document.configurationForm.scheduleDays.value = 0;
 	}
 	else
 	{
-		alert("NeedSetup is checked");
 		var scheduleDays = $("#scheduleDays").val();
 		document.configurationForm.scheduleDays.value = scheduleDays;
 	} */
@@ -168,17 +166,14 @@ $(document).ready(function()
 	
 	/* if($("#askWhatToDo").prop("checked",true))
 	{
-		alert("askWhatToDo is checked");
 		document.configurationForm.reimbursementSettings.value = 2;
 	}
 	else if($("#dontAddAny").prop("checked",true))
 	{
-		alert("dontNeedAny is checked");
 		document.configurationForm.reimbursementSettings.value = 1;
 	}
 	else
 	{
-		alert("timeForPrompt is checked");
 		document.configurationForm.reimbursementSettings.value = 0;
 	} */
 	
@@ -209,7 +204,7 @@ $(document).ready(function()
  function setDiv()
 	{
 		var value = $("#stores option:selected").val();
-		//alert("selected Value:"+value);
+
 		if(value == 39)
 		{
 			document.getElementById("forOnlineOption").style.display = "block";
@@ -230,7 +225,7 @@ $(document).ready(function()
 		
 		var storeChannel = $.trim($('select[id="eSalesStoreId"]').find('option[id="'+eSalesStore+'"]').val());
 		
-		//alert("Selected eSales Store Value:"+eSalesStore+"\nId is:"+selectedeSalesStore+"\nAbbreviation is:"+ab+"\nStoreType Id is:"+storeChannel);
+
 		
 		$('select[id="eSalesStoreId"]').find('option[id="'+selectedeSalesStore+'"]').attr("selected",true);
 		$('select[id="eSalesStoreId"]').find('option[id="'+eSalesStore+'"]').attr("selected",true);

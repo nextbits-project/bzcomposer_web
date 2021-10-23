@@ -61,21 +61,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#poShowCountry").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowCountry").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowCountry").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.poShowCountry.value = isChecked;
@@ -91,21 +91,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#poShowTelephone").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowTelephone").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowTelephone").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.poShowTelephone.value = isChecked;
@@ -121,21 +121,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#isPurchasePrefix").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#isPurchasePrefix").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#isPurchasePrefix").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.isPurchasePrefix.value = isChecked;
@@ -167,7 +167,6 @@ function numbersonly(e,val)
 function disable() 
 {
 	var value = document.configurationForm.selectedCountryId.value;
-	/* alert("Selected Country:"+value); */
 	if(value == "2")
 	{
 		document.configurationForm.selectedStateId.disabled=false;
@@ -181,7 +180,6 @@ function disable()
 function disable1() 
 {
 	var value = document.configurationForm.selectedCountryId1.value;
-	/* alert("Selected Country:"+value); */
 	if(value == "2")
 	{
 		document.configurationForm.selectedStateId1.disabled=false;
@@ -715,7 +713,6 @@ $("#frmVendorPurchase").submit(function(event) {
 	        			error:function(data) {
 	        			    $("#showsaverecorddialog").dialog("close");
 	        				alert("<spring:message code='BzComposer.common.erroroccurred'/>");
-	        				alert(JSON.stringify(data));
 	        			}
 	        		});
 	            },

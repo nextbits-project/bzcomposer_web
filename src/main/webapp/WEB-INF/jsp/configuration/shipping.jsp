@@ -26,8 +26,7 @@ $(function()
 	var isUSPS = $("#isUSPSActive").val();
 	var isFedex = $("#isFeDexActive").val();
 	
-	/* alert("is UPS Active:"+isUPS+"\n is USPS Active:"+isUSPS+"\n is Fedex Active:"+isFedex); */
-	
+
 	if(isUPS == 1){
 		$("#upsUserId").attr('readonly',true);
 		$("#upsPassword").attr('readonly',true);
@@ -151,7 +150,7 @@ function addSelectedWeightFee(){
                 if(data){   location.reload(); }
             },
             error:function(){
-              alert("error");
+              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
     }
@@ -174,7 +173,7 @@ function updateSelectedWeightFee(){
                 if(data){   location.reload(); }
             },
             error:function(){
-              alert("error");
+              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
     }
@@ -192,7 +191,7 @@ function deleteSelectedWeightFee(){
                     if(data){   location.reload(); }
                 },
                 error:function(){
-                  alert("error");
+                  alert("<bean:message key='BzComposer.common.erroroccurred'/>");
                 }
             });
         }
@@ -233,7 +232,7 @@ function setWeightPrice(){
                 priceDropdown.append(option2);
             },
             error:function(){
-                alert("error");
+                alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
 	}
@@ -251,11 +250,11 @@ function setModalDescription(){
 }
 
 function saveTemplate(){
-	//alert("Inside saveTemplate Method")
+
 }
 
 function deleteTemplate(){
-	//alert("Inside deleteTemplate Method")
+
 }
 function saveModalShippingType()
 {
@@ -265,11 +264,11 @@ function saveModalShippingType()
 	var textboxValue = $("#selectedShippingType").val();
 	debugger
 	if(textboxValue ==""){
-		//alert("<spring:message code='BzComposer.configuration.tax.selectshippingviatoupdate'/>")
+
 		return emptyvaluedialog();
 	}
 	else if(selectedSType == textboxValue){
-		//alert("<spring:message code='BzComposer.configuration.tax.duplicatevalue'/>")
+
 		return duplicatevaluedialog();
 	}
 	else {
@@ -303,7 +302,7 @@ function addNewTemplate(){
 function setContent(){
 	debugger
 	var id = $("#selectedTemplateId option:selected").val();
-	//alert("Selected Tempalte Id:"+id)
+
 	document.getElementById("templateName").style.display = "none";
 	document.getElementById("txtTemplateName").style.display = "block";
 	document.getElementById("templateSubject").style.display = "none";

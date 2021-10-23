@@ -143,7 +143,7 @@ function closeme(){
 
 function updatePBData(){
     if($("#receivedQty").val()==""){
-        alert("Please enter Received Qty.");
+        alert("<bean:message key='BzComposer.common.enterReceivedQty'/>");
     }else{
         $("#updatePBDialog").dialog({
             resizable: false,

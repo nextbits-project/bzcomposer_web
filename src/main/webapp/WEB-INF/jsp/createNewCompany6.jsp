@@ -523,7 +523,6 @@ function submitform()
 			url : "CompanyNew?tabid=addCustomer",
 			data : "json="+json ,
 		    success : function(data) {
-				alert("added customer successfully");
 				document.forms['newcompany6'].action = "CompanyNew?tabid=createNewCompany7";
 				document.forms['newcompany6'].submit();
 			},
@@ -555,7 +554,6 @@ function finish()
 				url : "CompanyNew?tabid=addCustomer",
 				data : "json=" +json ,
 			    success : function(data) {
-					alert("Customer Added successfully");
 					document.forms[0].action = "CompanyNew?tabid=finish3";
 					document.forms[0].submit();
 				},
@@ -730,49 +728,49 @@ function addgeneraldetail()
 
 		if(a==null)
 		{
-			alert("Please Enter the Company Name");
+			alert("<bean:message key='BzComposer.NewCustomer.Name.Validation'/>");
 			CompanyInfoForm.sGeneralCompanyName.focus();
 			return false;
 		}
 		if(fnm == null)
 		{
-			alert("Please Enter the First Name");
+			alert("<bean:message key='BzComposer.NewCustomer.FirstName.Validation'/>");
 			CompanyInfoForm.sGeneralFirstName.focus();
 			return false;
 		}
 		if(lnm == null)
 		{
-			alert("Please Enter the Last Name");
+			alert("<bean:message key='BzComposer.NewCustomer.LastName.Validation'/>");
 			CompanyInfoForm.sGeneralLastName.focus();
 			return false;
 		}
 		if(address1 == null)
 		{
-			alert("PLease Enter the address");
+			alert("<bean:message key='BzComposer.companyinfo.enterAddress'/>");
 			CompanyInfoForm.sGeneralAddress1.focus();
 			return false;
 		}
 		if(zipcode == null)
 		{
-			alert("please enter a zip code");
+			alert("<bean:message key='BzComposer.NewCustomer.ZipCode.Validation'/>");
 			CompanyInfoForm.sGeneralZip.focus();
 			return false;
 		}
 		if(email == null)
 		{
-			alert("please enter a email address");
+			alert("<bean:message key='BzComposer.companyinfo.enteremailaddress'/>");
 			CompanyInfoForm.sGeneralEmail.focus();
 			return false;
 		}
 		if(!zipcode.match(numbers))
 		{
-			alert("Only Numbers Allowed in Zip code");
+			alert("<bean:message key='BzComposer.common.onlyNumbersAllowedInZip'/>");
 			CompanyInfoForm.sGeneralZip.focus();
 			return false;
 		}
 		if(!email.match(emailRegex))
 		{
-			alert("Please enter a valid email address");
+			alert("<bean:message key='BzComposer.common.enterValidEmail'/>");
 			CompanyInfoForm.sGeneralEmail.focus();
 			return false;
 		}

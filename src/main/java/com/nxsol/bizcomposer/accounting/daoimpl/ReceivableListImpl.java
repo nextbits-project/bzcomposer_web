@@ -263,7 +263,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 	public ClientVendor getClentVendor(int cvId, int companyId) {
 		Connection con;
-		ClientVendor cv = null;
+		ClientVendor cv = new ClientVendor();
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -274,7 +274,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				cv = new ClientVendor();
 				cv.setCvID(rs.getInt("ClientVendorID"));
 				cv.setName(rs.getString("Name"));
 				cv.setDetail(rs.getString("Detail"));
@@ -749,7 +748,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	@Override
 	public TblAccount getAccountById(int id) {
 		// TODO Auto-generated method stub
-		TblAccount account = null;
+		TblAccount account = new TblAccount();
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -769,7 +768,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				account = new TblAccount();
 				account.setAccountID(rs.getInt("AccountID"));
                 account.setParentID(rs.getInt("ParentID"));
                 account.setIsCategory(rs.getBoolean("isCategory"));
