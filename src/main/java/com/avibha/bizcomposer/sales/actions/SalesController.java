@@ -1239,6 +1239,7 @@ public class SalesController {
 			invoiceDto.setPayMethod(configDto.getSelectedPaymentId()+"");
 			invoiceDto.setVia(configDto.getCustomerShippingId()+"");
 			invoiceDto.setTemplateType(configDto.getSoTemplateType());
+			invoiceDto.setInvoiceStyle(configDto.getSoStyleID()+"");
 			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType, configDto, false));
 			if (IN_URI.endsWith(SALES_ORDER_URI)){
 				forward = "/sales/salesorder";

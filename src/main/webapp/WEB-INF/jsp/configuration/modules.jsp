@@ -86,7 +86,7 @@ function toggleFunction() {
                                         <spring:message code="BzComposer.configuration.templatecustomization" />
                                     </th>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td style="font-size:12px;">
                                         <spring:message code="BzComposer.configuration.selecttype"/>:
                                     </td>
@@ -98,7 +98,7 @@ function toggleFunction() {
                                             <option value="3"><spring:message code="BzComposer.configuration.packingslips"/></option>
                                         </select>
                                     </td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td style="font-size:12px;">
                                         <spring:message code="BzComposer.configuration.active"/>

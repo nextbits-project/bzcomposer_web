@@ -84,7 +84,7 @@ $(function() {
                             <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                         </td>
                         <td>
-                            <form:input path="clientVendorID" readonly="true" />
+                            <form:input path="clientVendorID" readonly="true" style="width:100px;" />
                         </td>
 						<td colspan="5">&nbsp;</td>
 					</tr>
@@ -1596,7 +1596,7 @@ function showAddPaymentMethodDialog(){
                             location.reload();
                         },
                         error : function(data) {
-                            <spring:message code=‘BzComposer.common.erroroccurred’/>
+                            alert("<spring:message code='BzComposer.common.erroroccurred'/>");
                         }
                     });
                 }

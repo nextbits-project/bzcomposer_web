@@ -2230,7 +2230,6 @@ function StyleChange(value)
 				$('#custID').prop('readonly', true);
 				$('#invoiceStyle').prop('readonly',true);
 			}
-			StyleChange(4);
 		}
 
 

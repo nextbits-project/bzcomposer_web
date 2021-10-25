@@ -306,17 +306,14 @@ public class ConfigurationDetails {
     {
 		/*File fileUpload;
 	    String fileUploadContentType;
-	    String fileUploadFileName;*/
-        //HttpServletRequest servletRequest;
-        //File path =  (File) configDto.getInvoiceLocation();
-        //String locationPath = path.getAbsolutePath();
-		/*File logoPath = configDto.getSaveImage();
-		String logo =  logoPath.getAbsolutePath();*/
-        //String filePath = request.getSession().getServletContext().getRealPath("logoPath");
-        //System.out.println("ImagePath:"+path);
-        //System.out.println("Image path:" + logo);
-        //System.out.println("Invoice Location:" + locationPath);
-
+	    String fileUploadFileName;
+        HttpServletRequest servletRequest;
+        File path =  (File) configDto.getInvoiceLocation();
+        String locationPath = path.getAbsolutePath();
+		File logoPath = configDto.getSaveImage();
+		String logo =  logoPath.getAbsolutePath();
+        String filePath = request.getSession().getServletContext().getRealPath("logoPath");
+        */
         ConfigurationInfo cinfo = new ConfigurationInfo();
         boolean saved = cinfo.saveCustomerInvoice(configDto, Integer.parseInt(companyID));
         if(saved) {
@@ -617,8 +614,7 @@ public class ConfigurationDetails {
         return cinfo.setDefaultRefundReason(reasonID);
     }
 
-    public void addJobCategory(ConfigurationDto configDto, String companyID, String jobCategory, String recurringServiceBill) {
-        configDto.setRecurringServiceBill(recurringServiceBill);
+    public void addJobCategory(ConfigurationDto configDto, String companyID, String jobCategory) {
         int compId = Integer.parseInt(companyID);
         ConfigurationInfo cinfo = new ConfigurationInfo();
         boolean saved = cinfo.addJobCategory(configDto,compId,jobCategory);
@@ -630,8 +626,7 @@ public class ConfigurationDetails {
         }
     }
 
-    public void updateJobCategory(ConfigurationDto configDto, String companyID, int jobCategoryId,String newJobCategoryName, String recurringServiceBill) {
-        configDto.setRecurringServiceBill(recurringServiceBill);
+    public void updateJobCategory(ConfigurationDto configDto, String companyID, int jobCategoryId,String newJobCategoryName) {
         int compId = Integer.parseInt(companyID);
         ConfigurationInfo cinfo = new ConfigurationInfo();
         boolean saved = cinfo.updateJobCategory(configDto,compId,jobCategoryId,newJobCategoryName);
