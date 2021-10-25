@@ -283,7 +283,7 @@ input:checked + .slider:before {
                                         <spring:message code="BzComposer.configuration.packingslips" />
                                     </th>
                                 </tr>
-                                <!-- <tr style="border-top: 1px solid grey;">
+                                <tr style="border-top: 1px solid grey;">
                                     <td style="width:25%;padding-top:25px;font-size:12px;">
                                         <label class="switch switchPS">
                                           <input type="checkbox" name="psTemplateType" value="1" onchange="setTemplateValues(this, 'PS', 1);" ${configDto.psTemplateType==1?'checked':''} />
@@ -293,7 +293,7 @@ input:checked + .slider:before {
                                         <img class="parentImage" src="${pageContext.request.contextPath}/images/new/PackSlip1.png" style="width:100%;" />
                                     </td>
                                     <td colspan="3">&nbsp;</td>
-                                </tr> -->
+                                </tr>
                             </table>
                         </div>
                         <!-- packingslipsTab Ends -->

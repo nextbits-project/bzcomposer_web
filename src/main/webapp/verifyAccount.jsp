@@ -52,7 +52,7 @@ function checkOTP()
 	var givenOTP = $("#verifyOTP").val();
 	debugger
 	
-	//alert("Entered OTP is:"+enteredOTP+"\nGiven OTP is:"+givenOTP);
+
 	
 	if(enteredOTP == "")
 	{

@@ -799,6 +799,7 @@ public class ConfigurationDAO {
         String userName = userEmail.substring(0, userEmail.indexOf("@"));
         String userPassword = request.getParameter("userpassword");
         String groupID = request.getParameter("groupID");
+        if(groupID == null) return false;
         try {
             // Getting membershipLevel
             String sql1 =  "select membershipLevel from bca_user where Email_Address='"+emailAddress+"' OR LoginID= '"+LoginID+"' and CompanyID="+companyID;
@@ -832,21 +833,12 @@ public class ConfigurationDAO {
         } catch (Exception e) {
             e.printStackTrace();
             check = false;
-            // TODO: handle exception
         }finally {
             try {
-                if (rs != null) {
-                    db.close(rs);
-                }
-                if (stmt != null) {
-                    db.close(stmt);
-                }
-                if (stmt1 != null) {
-                    db.close(stmt1);
-                }
-                if(con != null){
-                    db.close(con);
-                }
+                if (rs != null) db.close(rs);
+                if (stmt != null) db.close(stmt);
+                if (stmt1 != null) db.close(stmt1);
+                if(con != null) db.close(con);
             } catch (Exception e) {
                 e.printStackTrace();
             }

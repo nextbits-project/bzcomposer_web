@@ -61,21 +61,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#poShowCountry").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowCountry").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowCountry").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.poShowCountry.value = isChecked;
@@ -91,21 +91,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#poShowTelephone").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowTelephone").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowTelephone").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.poShowTelephone.value = isChecked;
@@ -121,21 +121,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#isPurchasePrefix").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#isPurchasePrefix").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#isPurchasePrefix").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.isPurchasePrefix.value = isChecked;
@@ -167,7 +167,6 @@ function numbersonly(e,val)
 function disable() 
 {
 	var value = document.configurationForm.selectedCountryId.value;
-	/* alert("Selected Country:"+value); */
 	if(value == "2")
 	{
 		document.configurationForm.selectedStateId.disabled=false;
@@ -181,7 +180,6 @@ function disable()
 function disable1() 
 {
 	var value = document.configurationForm.selectedCountryId1.value;
-	/* alert("Selected Country:"+value); */
 	if(value == "2")
 	{
 		document.configurationForm.selectedStateId1.disabled=false;
@@ -551,14 +549,11 @@ function DeleteCustomerType(){
                 <tr>
                     <td style="font-size:12px;"><spring:message code="BzComposer.configuration.postyle" /> :</td>
                     <td style="font-size:12px;">
-                    <%-- <c:if test="${not empty InvStyle}">
-                        <form:select path="poStyleID" style="width:100;">
-                            <form:option value="0">
-                                <spring:message code="BzComposer.ComboBox.Select" />
-                            </form:option>
-                            <form:options collection="InvStyle" property="value" labelProperty="label" />
+                        <form:select path="vendorInvoiceStyleId">
+                            <c:forEach items="${configDto.listOfExistingInvoiceStyle}" var="objList1">
+                                <form:option value="${objList1.selectedInvoiceStyleId}">${objList1.invoiceStyle}</form:option>
+                            </c:forEach>
                         </form:select>
-                    </c:if> --%>
                     </td>
                     <td colspan="2">&nbsp;</td>
                 </tr>
@@ -572,16 +567,7 @@ function DeleteCustomerType(){
                             </c:forEach>
                         </form:select>
                     </td>
-                    <td style="font-size:12px;">
-                        <spring:message code="BzComposer.configuration.invoicestyle"/> :
-                    </td>
-                    <td style="font-size:12px;">
-                        <form:select path="vendorInvoiceStyleId">
-                            <c:forEach items="${configDto.listOfExistingInvoiceStyle}" var="objList1">
-                                <form:option value="${objList1.selectedInvoiceStyleId}">${objList1.invoiceStyle}</form:option>
-                            </c:forEach>
-                        </form:select>
-                    </td>
+                    <td colspan="2">&nbsp;</td>
                 </tr>
                 <tr>
                     <td style="font-size:12px;">
@@ -715,7 +701,6 @@ $("#frmVendorPurchase").submit(function(event) {
 	        			error:function(data) {
 	        			    $("#showsaverecorddialog").dialog("close");
 	        				alert("<spring:message code='BzComposer.common.erroroccurred'/>");
-	        				alert(JSON.stringify(data));
 	        			}
 	        		});
 	            },

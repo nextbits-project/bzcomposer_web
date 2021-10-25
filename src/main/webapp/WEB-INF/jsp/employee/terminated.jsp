@@ -77,7 +77,7 @@
 
 			var rid= "<%= request.getParameter("SelectedRID")%>$$";
 			var cvid = <%= request.getParameter("vendrId")%>;
-			//alert("clientVedorID is:"+cvid);
+
 			var rd=document.getElementById(rid);
 			rd.className = "draft";
 			<c:if test="${not empty VendorFrm}">
@@ -141,7 +141,7 @@
 			var rID = rid;
 			var rd1=rid.replace("$$", "");
 
-			//alert("RowId:"+rowID+"\nrID:"+rd1);
+
 			rd.className = "draft";
 
 			//document.getElementById("setRID").value=rID;

@@ -258,7 +258,7 @@ $(document).ready(function()
 	$("#stampBtn").on('click', function () {
 	if(document.getElementById("stamp").value == "")
 	{
-		//alert("Please type text to stamp.");
+
 		alert("<spring:message code='BzComposer.coupondesign.entertexttostamp'/>")
 	}
 	else
@@ -389,12 +389,12 @@ $(document).ready(function()
 		var btype = $("input[name=btype]:checked").val();
 		if(document.getElementById("barcode").value == "")
 		{
-			//alert("Please enter text to generate barcode.");
+
 			alert("<spring:message code='BzComposer.coupondesign.entertexttogeneratebarcode'/>");
 		}
 		if(!btype)
 		{
-			//alert("Select barcode style.");
+
 			alert("<spring:message code='BzComposer.coupondesign.selectbarcodestyle'/>");
 		}
 		else

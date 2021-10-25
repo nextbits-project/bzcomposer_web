@@ -382,17 +382,17 @@ function approveRMA()
 {
 	cartID=document.getElementById("cartID").value ;
 	if(trim(document.RMAForm.rma.value)==""){
-		//alert('<bean:message key="BzComposer.RMA.rmano.Validation" />')
+
 		return RMADetailsDialog();
 		document.RMAForm.rma.focus();
 	}
 	else if(parseInt(document.RMAForm.qty.value)==0 || document.RMAForm.qty.value==""){
-		//alert('<bean:message key="BzComposer.RMA.qty.Validation" />');
+
 		return showRMAQuantityDialog();
 		document.RMAForm.qty.focus();
 	}
 	else if((!IsNumeric(document.RMAForm.qty.value))){
-		//alert('<bean:message key="BzComposer.RMA.qty.InNumber.Validation" />');
+
 		return RMAQuantityDialog();
 		document.RMAForm.qty.focus();
 	}

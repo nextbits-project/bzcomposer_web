@@ -13,8 +13,6 @@
 <script>
 $(function() {
 	var status = "<%= request.getParameter("chkStatus")%>"
-	alert("Status:"+status);
-	
 	if(status == "Default")
 	{
 		$("#addressStatusDefault").prop('checked', true);	
@@ -34,12 +32,10 @@ $(function() {
 	$('#addressStatusDefault').change(function(){
 		if($(this).prop('checked') == true)
 		{
-			alert("Default checkbox is now checked");
 			$(this).prop('checked',true);
 		}
 		else
 		{
-			alert("Default checkbox is now unchecked");
 			if(confirm("No Default address available,Do you want to Make it default."))
 			{
 				$(this).prop('checked', true);	
@@ -133,20 +129,13 @@ function submitFormUpdate(form)
 	var zipCode = form.zCode.value;
 	var phone = form.phone.value;
 	var fax = form.fax.value;
-	alert("Status:"+st);
 	debugger
 	document.getElementById("status1").value=st;
 	debugger;
-	alert("Details Entered in updating address is:\nStatus:"+st+"\nFirst Name:"+fName+"\nLast Name:"+lName+"\nAddress Name:"+addressName+"\nAddress1:"+add1+
-			"\nAddress2:"+add2+"\nCity:"+city+"\nCountry:"+country+"\nState:"+state+"\nProvince:"+province+"\nZipCode:"+zipCode+"\nPhone:"+phone+"\nFax:"+fax);
-	debugger;
-	
+
 	document.forms[0].action="Customer.do?tabid=addNewAddress&status="+st;
-	debugger
-	document.getElementById("tabid").value="addNewAddress"; 
-	debugger
+	document.getElementById("tabid").value="addNewAddress";
 	document.forms[0].submit();
-	debugger
 	//this.window.close();
 }
 
@@ -167,8 +156,7 @@ function submitFormAdd(form)
 		debugger
 		status = "Default";
 	}
-	alert("Status:"+status);
-	
+
 	var cName = form.cname.value;
 	var fName = form.firstName.value;
 	var lName = form.lastName.value;
@@ -185,10 +173,6 @@ function submitFormAdd(form)
 	var st = status;
 	debugger
 	document.getElementById("status").value=status;
-	debugger;
-	alert("Details Entered:\nStatus:"+status+"\nFirst Name:"+fName+"\nLast Name:"+lName+"\nAddress Name:"+addressName+"\nAddress1:"+add1+
-			"\nAddress2:"+add2+"\nCity:"+city+"\nCountry:"+country+"\nState:"+state+"\nProvince:"+province+"\nZipCode:"+zipCode+"\nPhone:"+phone+"\nFax:"+fax);
-	debugger;
 	//$("#addressForm").submit();
 	
 	//window.location.href = "Customer.do?tabid=addNewAddress&&status="+status;

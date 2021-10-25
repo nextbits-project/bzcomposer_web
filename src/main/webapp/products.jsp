@@ -18,7 +18,7 @@ function redirectToLogin()
 }
 function openRegisterPage()
 {
-	//alert("Inside openRecoverPassword")
+
 	window.location = "Login.do?tabid=register";
 }
 function searchText()
@@ -31,7 +31,7 @@ function searchText()
 	{
 		if(term == 'Style' || term == 'style' || term == 'Class' || term == 'class ' || term == 'para-temp')
 		{
-			//alert("you've called attribute of page content");
+
 			document.getElementById("divProducts").innerHTML = txt1;
 		}
 		else
@@ -62,7 +62,7 @@ function searchTextMobile()
 	{
 		if(term == 'Style' || term == 'style' || term == 'Class' || term == 'class ' || term == 'para-temp')
 		{
-			//alert("you've called attribute of page content");
+
 			document.getElementById("divProducts").innerHTML = txt1;
 		}
 		else

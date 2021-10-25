@@ -455,7 +455,7 @@
 
 <script type="text/javascript">
 function setIsEmail(){
-	//alert("DFSD");
+
 	document.getElementById("isEmailChk").value=document.getElementById("EmailId").value;
 	document.forms[0].action = "Email.do?tabid=EOSOLO";
 	document.forms[0].submit();

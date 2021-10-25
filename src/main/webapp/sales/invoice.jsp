@@ -243,7 +243,7 @@ function updateBillingAddressDialog(form)
     			bill = form.billTo.value;
     			var addressId = form.bsAddressID.value;
     			var res = bill.split("\n");
-    			//alert("Inside updateBillToAddress method\ncustomerId is:"+cid+"\n addressId="+addressId+"\n after converting in array data will be:"+res);
+
     			window.location.href="Invoice.do?tabid=updateBillingAddress&&customerID="+cid+"&&billingAddress="+res+"&&billAddressId="+addressId;
     			
     			/* debugger
@@ -2151,7 +2151,7 @@ function calDiscountTotal() {
 				//form.amount.value+=amt+";"
 				
 				hidn_val=( (hidn_val/1) + 1);
-				//alert("DDD" +hidn_val);
+
 				document.getElementById('hidn').value=hidn_val;
 				
    			}	
@@ -2449,7 +2449,7 @@ function calDiscountTotal() {
 			</logic:present>
 			/*To display data either in readonly or not*/
 			var readOnly = <%= request.getAttribute("readData") %>
-			//alert("ReadData value:"+readOnly);
+
 			if(readOnly)
 			{
 				$('#newInvoice').prop('disabled', true);

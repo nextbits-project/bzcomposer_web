@@ -123,6 +123,10 @@ function validateRegisterForm(){
     }
     return true;
 }
+function showLocale(){
+	var lang = document.getElementById("locale").value;
+	window.location = "/changeLocale?requestPage=RegisterPage&lang="+lang;
+}
 </script>
 </head>
 <body class="register" onload="loadPageDate();">

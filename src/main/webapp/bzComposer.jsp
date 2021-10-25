@@ -18,7 +18,7 @@ function redirectToLogin()
 }
 function openRegisterPage()
 {
-	//alert("Inside openRecoverPassword")
+
 	window.location = "Login.do?tabid=register";
 }
 function searchTextMobile()
@@ -32,7 +32,7 @@ function searchTextMobile()
 	{
 		if(term == 'Style' || term == 'style' || term == 'Class' || term == 'class ' || term == 'para-temp')
 		{
-			//alert("you've called attribute of page content");
+
 			document.getElementById("aboutBzComposer").innerHTML = txt1;
 		}
 		else
@@ -66,7 +66,7 @@ function searchText()
 	{
 		if(term == 'Style' || term == 'style' || term == 'Class' || term == 'class ' || term == 'para-temp')
 		{
-			//alert("you've called attribute of page content");
+
 			document.getElementById("aboutBzComposer").innerHTML = txt1;
 		}
 		else
@@ -107,9 +107,8 @@ function showLocale()
 {
 	debugger;
 	var lang = document.getElementById("locale").value;
-	alert("You've selected language:"+lang);
 	if(lang == "")
-		alert("Select any language to change.");
+		alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
 	else
 	window.location="./Locale.do?request_locale="+lang;
 }
@@ -117,9 +116,8 @@ function showLocaleMobile()
 {
 	debugger;
 	var lang = document.getElementById("localeMobile").value;
-	alert("You've selected language:"+lang);
 	if(lang == "")
-		alert("Select any language to change.");
+		alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
 	else
 		window.location="./Locale.do?request_locale="+lang;
 }

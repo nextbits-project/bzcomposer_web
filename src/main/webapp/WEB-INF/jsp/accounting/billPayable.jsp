@@ -858,7 +858,7 @@ table.tabla-listados tbody tr td {
 		
 		if(checkNo == '' || checkNo == '0')
 		{
-			//alert("<spring:message code='BzComposer.billpayable.entervalidchecknumber'/>");
+
 			return enterchecknumberdialog();
 			return false;
 		}
@@ -883,7 +883,7 @@ table.tabla-listados tbody tr td {
 				updateBillPayableTab(data);	
 				},
 				 error : function(data) {
-					 //alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
+
 					 return showerrordialog();
 				} 
 			});
@@ -913,7 +913,7 @@ table.tabla-listados tbody tr td {
 		}
 		if(parseFloat(paidAmount) > parseFloat(totalAmount))
 		{
-			alert("you can not pay more than balance");
+			alert("<bean:message key='BzComposer.common.cantPayMoreThanBalance'/>");
 			return false;
 		}  */
 		
@@ -939,7 +939,7 @@ table.tabla-listados tbody tr td {
 		
 		if(checkNo == '' || checkNo == '0')
 		{
-			//alert("<spring:message code='BzComposer.billpayable.entervalidchecknumber'/>");
+
 			return enterchecknumberdialog();
 			return false;
 		}
@@ -968,7 +968,7 @@ table.tabla-listados tbody tr td {
 			updateBillPayableTab(data);	
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
+
 				 return showerrordialog()
 			} 
 		});
@@ -994,7 +994,7 @@ table.tabla-listados tbody tr td {
 					updateBillPayableTab(data);	
 				},
 			 	error : function(data) {
-					//alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
+
 					return showerrordialog();
 				} 
 			});
@@ -1026,7 +1026,7 @@ table.tabla-listados tbody tr td {
 							updateBillPayableTab(data);	
 						},
 					 	error : function(data) {
-							//alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
+
 							return showerrordialog();
 						} 
 					});
@@ -1258,7 +1258,7 @@ table.tabla-listados tbody tr td {
 				
 				if(document.getElementById("numberRemaining").value == "" )
 				{
-					//alert("<spring:message code='BzComposer.billpayable.entervaliddatainnumberfield'/>");
+
 					return entervalidnumberdialog();
 					return false;
 				}
@@ -1267,7 +1267,7 @@ table.tabla-listados tbody tr td {
 				}
 				if(document.getElementById("daysInAdvanceToEnter").value == "" )
 				{
-					//alert("<spring:message code='BzComposer.billpayable.entervaliddataindayfield'/>");
+
 					return entervaliddaysinadvancefielddialog();
 					return false;
 				}
@@ -1319,7 +1319,7 @@ table.tabla-listados tbody tr td {
 				updateBillPayableTab(data);	
 				},
 				 error : function(data) {
-					 //alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
+
 					 return showerrordialog();
 				} 
 			});
@@ -1359,7 +1359,7 @@ function DeleteMemorizeTransaction()
 		updateBillPayableTab(data);	
 		},
 		 error : function(data) {
-			//alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
+
 			return showerrordialog();
 		} 
 	});

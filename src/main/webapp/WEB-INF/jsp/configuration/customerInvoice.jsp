@@ -38,27 +38,9 @@ $(document).ready(function()
         }
     });
 
-    var groupId = '<%= request.getAttribute("groupId")%>';
+    debugger
     var countryId = '<%= request.getAttribute("countryId")%>';
-    var stateId = '<%= request.getAttribute("stateId")%>';
-    var shippingFeeMethodId = '<%= request.getAttribute("shippingMethodId")%>';
-    var termId = '<%= request.getAttribute("termId")%>';
-    var salesRepId = '<%= request.getAttribute("salesRepId")%>';
-    var payMethodId = '<%= request.getAttribute("payMethodId")%>';
-
-    var InvoiceFootnoteID =  '<%= request.getAttribute("InvoiceFootnoteID")%>';
-    debugger;
-    var selectedInvoiceStyleId =<%= request.getAttribute("selectedInvoiceStyleId")%>;
-    $('select[id="selectedInvoiceStyleId"]').find('option[value="'+selectedInvoiceStyleId+'"]').attr("selected",true);
-    //Added on 01-05-2020
-    debugger
-    var sortId = '<%= request.getAttribute("sortById")%>';
-    debugger
-    $('select[id="sortBy"]').find('option[value="'+sortId+'"]').attr("selected",true);
-    debugger
     //$("#description").val("");
-
-    var packingSlipStyleId = '<%= request.getAttribute("packingSlipStyleId")%>';
 
     var isChecked = $('#isRefundAllowed').val();
     if(isChecked == "on") {
@@ -93,29 +75,19 @@ $(document).ready(function()
     else {
         $('#customerState').prop('disabled', true);
     }
-    $('select[id="customerGroup"]').find('option[value="'+groupId+'"]').attr("selected",true);
-    $('select[id="customerCountry"]').find('option[value="'+countryId+'"]').attr("selected",true);
-    $('select[id="customerState"]').find('option[value="'+stateId+'"]').attr("selected",true);
-
-    $('select[id="customerShippingId"]').find('option[value="'+shippingFeeMethodId+'"]').attr("selected",true);
-    $('select[id="selectedTermId"]').find('option[value="'+termId+'"]').attr("selected",true);
-    $('select[id="customerSalesRep"]').find('option[value="'+salesRepId+'"]').attr("selected",true);
-    $('select[id="selectedPaymentId"]').find('option[value="'+payMethodId+'"]').attr("selected",true);
-    $('select[id="packingSlipTemplateId"]').find('option[value="'+packingSlipStyleId+'"]').attr("selected",true);
-    $('select[id="selectedMessageId"]').find('option[value="'+InvoiceFootnoteID+'"]').attr("selected",true);
 
     $("#isDefaultCreditTerm").change(function()
     {
         var isChecked = '<%= request.getAttribute("isDefault")%>';
         //var isChecked = "on";
         if($(this).prop("checked") == true){
-            //alert("CustomerTaxale is checked.");
+
             $("#isDefaultCreditTerm").attr('checked', true);
 
             isChecked = "on";
         }
         else if($(this).prop("checked") == false){
-            //alert("CustomerTaxable is unchecked.");
+
             $("#isDefaultCreditTerm").attr('checked', false);
 
              isChecked = "off";
@@ -130,12 +102,12 @@ $(document).ready(function()
     {
         var isChecked = '<%= request.getAttribute("custTaxableStatus")%>';
         if($(this).prop("checked") == true){
-            //alert("CustomerTaxale is checked.");
+
             $("#custTaxable").attr('checked', true);
             isChecked = "on";
         }
         else if($(this).prop("checked") == false){
-            //alert("CustomerTaxable is unchecked.");
+
             $("#custTaxable").attr('checked', false);
              isChecked = "off";
         }
@@ -283,7 +255,7 @@ $(document).ready(function()
 
     $("#invoiceLocation").change(function(){
         var filePath = $("#invoiceLocation").val();
-        //alert("Selected File:"+filePath);
+
         $("invoiceLocation").val(filePath);
         //document.configurationForm.invoiceLocation.value = filePath;
         //debugger
@@ -291,7 +263,7 @@ $(document).ready(function()
 
     $("#saveImage").change(function(){
         var filePath = $("#saveImage").val();
-        //alert("Selected File:"+filePath);
+
         $("saveImage").val(filePath);
         //document.configurationForm.invoiceLocation.value = filePath;
         //debugger
@@ -322,7 +294,7 @@ $(document).ready(function()
         var checked = "on";
         if($(this).prop("checked") == true)
         {
-            //alert("isRefundAllowed checked");
+
             $("#isRefundAllowed").attr('checked', true);
 
             $("#refundReason").prop('readonly', false);
@@ -336,7 +308,7 @@ $(document).ready(function()
         }
         else if($(this).prop("checked") == false)
         {
-            //alert("isRefundAllowed unchecked");
+
             $("#refundReason").prop('readonly', true);
             $("#refundReasonSel").prop('readonly',true);
             $("#addRefundReason").prop('disabled',true);
@@ -353,14 +325,13 @@ $(document).ready(function()
         var setup = $("#setupID option:selected").val();
         if(text == "" || text == " ")
         {
-            alert("Necessary data is empty");
+            alert("<spring:message code='BzComposer.configuration.customerinvoice.emptydata'/>");
         }
         else
         {
             if(setup == "Location")
             {
                 debugger
-                alert(text);
                 $.ajax({
                     type: "POST",
                     url:"Configuration?tabid=addDescription&Description="+text,
@@ -381,8 +352,6 @@ $(document).ready(function()
         }
     }); */
 
-    /* Added on 04-05-2020 */
-    var accountID = '<%= request.getAttribute("accountId")%>';
     $("#reason").val("");
     $("#parentReasonId option").prop("selected",false);
     $("#availableReasons option").prop("selected",false);
@@ -404,7 +373,7 @@ $(document).ready(function()
 <div id="padding">
 	<div>
 		<span style="font-size: 1.1em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-			<spring:message code="BzComposer.configuration.configurationtitle"/>:${pageActiveTab}
+			<spring:message code="BzComposer.configuration.configurationtitle"/>
 		</span>
 	</div>
 	<div>
@@ -443,6 +412,7 @@ $(document).ready(function()
 							<div id="tabs" style="height:auto;">
   								<ul>
     								<li style="font-size:12px;"><a href="#Customer"><spring:message code="BzComposer.configuration.tab.customer" /></a></li>
+    								<li style="font-size: 12px;"><a href="#orderTemplate"><spring:message code="BzComposer.configuration.tab.orderTemplate" /></a></li>
     								<li style="font-size:12px;"><a href="#soAndEstimation"><spring:message code="BzComposer.configuration.salesorderAndEstimation"/></a></li>
     								<li style="font-size:12px;"><a href="#InvoiceTab"><spring:message code="Bzcomposer.configuration.invoice" /></a></li>
     								<li style="font-size:12px;"><a href="#BillingTab"><spring:message code="BzComposer.accountreceivable.billing" /></a></li>
@@ -478,7 +448,7 @@ $(document).ready(function()
 													<form:select path="customerGroup" id="customerGroup">
 														<c:if test="${not empty configDto.listOfExistingCustomerGroup}">
 															<c:forEach items="${configDto.listOfExistingCustomerGroup}" var="objList1">
-																<option value="${objList1.customerGroup}">${objList1.groupName}</option>
+																<form:option value="${objList1.customerGroup}">${objList1.groupName}</form:option>
 															</c:forEach>
 														</c:if>
 													</form:select>
@@ -495,7 +465,7 @@ $(document).ready(function()
 													<form:select path="custDefaultCountryID" id="customerCountry" onchange="disable()">
 														<c:if test="${not empty configDto.listOfExistingCountry}">
 															<c:forEach items="${configDto.listOfExistingCountry}" var="objList1">
-																<option value="${objList1.countryId}">${objList1.countryName}</option>
+																<form:option value="${objList1.countryId}">${objList1.countryName}</form:option>
 															</c:forEach>
 														</c:if>
 													</form:select>
@@ -507,7 +477,7 @@ $(document).ready(function()
 													<form:select path="selectedStateId" id="customerState">
 													    <c:if test="${not empty configDto.listOfExistingState}">
                                                             <c:forEach items="${configDto.listOfExistingState}" var="objList1">
-                                                                <option value="${objList1.selectedStateId}">${objList1.stateName}</option>
+                                                                <form:option value="${objList1.selectedStateId}">${objList1.stateName}</form:option>
                                                             </c:forEach>
                                                         </c:if>
 													</form:select>
@@ -540,7 +510,7 @@ $(document).ready(function()
 														<!-- <option value="0"></option> -->
 														<c:if test="${not empty configDto.listOfExistingShipping}">
                                                             <c:forEach items="${configDto.listOfExistingShipping}" var="objList1">
-                                                                <option value="${objList1.selectedShippingId}">${objList1.shippingName}</option>
+                                                                <form:option value="${objList1.selectedShippingId}">${objList1.shippingName}</form:option>
                                                             </c:forEach>
                                                         </c:if>
 													</form:select>
@@ -553,7 +523,7 @@ $(document).ready(function()
 														<!-- <option value="0"></option>	 -->
 														<c:if test="${not empty configDto.listOfExistingTerm}">
                                                             <c:forEach items="${configDto.listOfExistingTerm}" var="objList1">
-                                                                <option value="${objList1.selectedTermId}">${objList1.termName}</option>
+                                                                <form:option value="${objList1.selectedTermId}">${objList1.termName}</form:option>
                                                             </c:forEach>
                                                         </c:if>
 													</form:select>
@@ -580,7 +550,7 @@ $(document).ready(function()
 													<form:select path="selectedPaymentId" id="selectedPaymentId" style="width:150px;">
 													    <c:if test="${not empty configDto.listOfExistingPayment}">
                                                             <c:forEach items="${configDto.listOfExistingPayment}" var="objList1">
-                                                                <option value="${objList1.paymentId}">${objList1.paymentName}</option>
+                                                                <form:option value="${objList1.paymentId}">${objList1.paymentName}</form:option>
                                                             </c:forEach>
                                                         </c:if>
 													</form:select>
@@ -646,6 +616,20 @@ $(document).ready(function()
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td style="font-size:12px;">
+                                                <spring:message code="BzComposer.configuration.salesOrderStyle"/> :
+                                            </td>
+                                            <td style="font-size:12px;">
+                                                <form:select path="soStyleID" id="soStyleID">
+                                                    <c:if test="${not empty configDto.listOfExistingInvoiceStyle}">
+                                                        <c:forEach items="${configDto.listOfExistingInvoiceStyle}" var="objList1">
+                                                            <form:option value="${objList1.selectedInvoiceStyleId}">${objList1.invoiceStyle}</form:option>
+                                                        </c:forEach>
+                                                    </c:if>
+                                                </form:select>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <th align="left" colspan="2" style="font-size:12px; padding: 5px;">
                                                 <spring:message code="BzComposer.configuration.estimationpreference"/>
                                             </th>
@@ -656,6 +640,20 @@ $(document).ready(function()
                                             </td>
                                             <td style="font-size:12px;">
                                                 <form:input path="startEstimationNum" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-size:12px;">
+                                                <spring:message code="BzComposer.Estimation.EstimationStyle"/> :
+                                            </td>
+                                            <td style="font-size:12px;">
+                                                <form:select path="estimationStyleID" id="estimationStyleID">
+                                                    <c:if test="${not empty configDto.listOfExistingInvoiceStyle}">
+                                                        <c:forEach items="${configDto.listOfExistingInvoiceStyle}" var="objList1">
+                                                            <form:option value="${objList1.selectedInvoiceStyleId}">${objList1.invoiceStyle}</form:option>
+                                                        </c:forEach>
+                                                    </c:if>
+                                                </form:select>
                                             </td>
                                         </tr>
                                     </table>
@@ -683,7 +681,7 @@ $(document).ready(function()
 													<form:select path="packingSlipTemplateId" id="packingSlipTemplateId">
 													    <c:if test="${not empty configDto.listOfExistingPackingSlipTemplate}">
                                                             <c:forEach items="${configDto.listOfExistingPackingSlipTemplate}" var="objList1">
-                                                                <option value="${objList1.packingSlipTemplateId}">${objList1.packingSlipTemplateName}</option>
+                                                                <form:option value="${objList1.packingSlipTemplateId}">${objList1.packingSlipTemplateName}</form:option>
                                                             </c:forEach>
                                                         </c:if>
 													</form:select>
@@ -694,10 +692,10 @@ $(document).ready(function()
 													<spring:message code="BzComposer.configuration.invoicestyle"/> :
 												</td>
 												<td style="font-size:12px;">
-													<form:select path="selectedInvoiceStyleId" id="selectedInvoiceStyleId">
+													<form:select path="invStyleID" id="invStyleID">
 													    <c:if test="${not empty configDto.listOfExistingInvoiceStyle}">
                                                             <c:forEach items="${configDto.listOfExistingInvoiceStyle}" var="objList1">
-                                                                <option value="${objList1.selectedInvoiceStyleId}">${objList1.invoiceStyle}</option>
+                                                                <form:option value="${objList1.selectedInvoiceStyleId}">${objList1.invoiceStyle}</form:option>
                                                             </c:forEach>
                                                         </c:if>
 													</form:select>
@@ -717,7 +715,7 @@ $(document).ready(function()
 													<form:select path="selectedMessageId" id="selectedMessageId">
 													    <c:if test="${not empty configDto.messages}">
                                                             <c:forEach items="${configDto.messages}" var="objList1">
-                                                                <option value="${objList1.selectedMessageId}">${objList1.messageName}</option>
+                                                                <form:option value="${objList1.selectedMessageId}">${objList1.messageName}</form:option>
                                                             </c:forEach>
                                                         </c:if>
 													</form:select>
@@ -828,14 +826,6 @@ $(document).ready(function()
                                     <spring:message code="BzComposer.configuration.recurringservicebillingnote"/>
                                 </td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td style="font-size:14px;">
-                                    <button type="submit" id="EditInfo" name="EditInfo" onclick="EditServiceBillInfo()" class="formButton">
-                                        <spring:message code="BzComposer.configuration.editinfobtn"/>
-                                    </button>
-                                </td>
-                            </tr>
 						</table>
  					</div>
 				</div>
@@ -844,7 +834,7 @@ $(document).ready(function()
                 <div id="TaxTab">
                     <table class="table-notifications">
                         <tr>
-                            <th align="left" colspan="2" style="font-size:12px; padding: 5px;">
+                            <th colspan="2" style="font-size:12px; padding: 5px;">
                                 <spring:message code="BizComposer.Configuration.Tax"/>
                             </th>
                         </tr>
@@ -858,10 +848,18 @@ $(document).ready(function()
                         </tr>
                         <tr>
                             <td style="font-size:12px;">
-                                <spring:message code="BzComposer.configuration.taxrate"/>
+                                <spring:message code="BzComposer.common.LACounty"/> <spring:message code="BzComposer.configuration.taxrate"/>
                             </td>
                             <td style="font-size:12px;">
-                                <form:input path="saleTaxRate" id="saleTaxRate" />
+                                <form:input path="saleTaxRate" id="saleTaxRate" onkeypress="return numbersonly(event, this.value)" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;">
+                                <spring:message code="BzComposer.common.OrangeCounty"/> <spring:message code="BzComposer.configuration.taxrate"/>
+                            </td>
+                            <td style="font-size:12px;">
+                                <form:input path="saleTaxRate2" id="saleTaxRate2" onkeypress="return numbersonly(event, this.value)" />
                             </td>
                         </tr>
                         <tr>
@@ -1141,6 +1139,92 @@ $(document).ready(function()
                         </div>
                 </div>
                 <!-- finance-Charges Ends -->
+                <!-- Order-Template-Start -->
+                <div id="orderTemplate" style="font-size: 12px;">
+                    <div id="content3" class="tabPage">
+                        <table class="table-notifications" width="100%">
+                            <tr>
+                                <th colspan="2" align="left" style="font-size: 12px; padding: 5px;">
+                                <spring:message code="BzComposer.configuration.importantordertemplate" />
+                                </th>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;">
+                                    <spring:message code="BzComposer.configuration.importantordertemplate.templatename" />
+                                </td>
+                                <td style="font-size: 12px;">
+                                    <form:input path="templateName" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;">
+                                    <spring:message code="BzComposer.configuration.choosefilebtn"/>
+                                </td>
+                                <td style="font-size: 12px;">
+                                    <input type="file" name="exelFile" accept=".xls" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="2" style="font-size: 12px;">
+                                    <spring:message code="Bzcomposer.configuration.choosefilebtn.onlyexcelfiles"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;">
+                                    <input type="checkbox" name="def" id="def" value="${configDto.def}" ${configDto.def=='on'?'checked':''} />
+                                    <label><spring:message code="BzComposer.configuration.defaultchkbox" /></label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2" align="left" style="font-size: 12px; padding: 5px;">
+                                    <spring:message code="BzComposer.configuration.fieldsmapping" />
+                                </th>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><b><spring:message code="BzComposer.configuration.databasefieldsname"/> </b></td>
+                                <td style="font-size: 12px;"><b><spring:message code="BzComposer.configuration.mappingfieldsname"/></b></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code= "BzComposer.configuration.itemcode"/>*</td>
+                                <td style="font-size: 12px;"><form:input path="itemCode" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code = "BzComposer.configuration.itemname"/></td>
+                                <td style="font-size: 12px;"><form:input path="itemName" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code="BzComposer.configuration.qty"/>*</td>
+                                <td style="font-size: 12px;"><form:input path="qty" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code="BzComposer.configuration.unitprice"/>* ($)</td>
+                                <td style="font-size: 12px;"><form:input path="unitPrice" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code="BzComposer.configuration.unitweight"/></td>
+                                <td style="font-size: 12px;"><form:input path="weight" /></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 12px;"><spring:message code="BzComposer.configuration.taxable"/></td>
+                                <td style="font-size: 12px;"><form:input path="taxable" /></td>
+                            </tr>
+                        </table>
+                        <div id="orderTemplateList">
+                            <table class="table-notifications" width="80%">
+                                <tr>
+                                    <th colspan="2" align="left" style="font-size: 12px;  padding: 5px;">
+                                        <spring:message code="BzComposer.configuration.ordertemplatelist" />
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Order-Template-End -->
 
                 </div></div>
                 <!-- customerInvoice Ends -->
@@ -1154,12 +1238,8 @@ $(document).ready(function()
 	</div>
 	<div>	
 		<input type="hidden" name="tabid" id="tabid" value="" />
-		<input type="hidden" name="selectedTermId" id="selectedTermId" value="" />
 		<input type="hidden" name="selectedSalesRepId" id="selectedSalesRepId" value="" />
-		<input type="hidden" name="selectedPaymentId" id="selectedPaymentId" value="" />
-		
-		<input type="hidden" name="selectedInvoiceStyleId" id="selectedInvoiceStyleId" value=""/>
-		<input type="hidden" name="sortBy" id="sortBy" value=""/>
+
 		<input type="hidden" name="custTaxable" id="custTaxable" value=""/>
 		<input type="hidden" name="addressSettings" id="addressSettngs" value=""/>
 		<input type="hidden" name="isSalesOrder" id="isSalesOrder" value=""/>
@@ -1226,7 +1306,7 @@ function SaveValues()
                 /*Sales&Invoice Panel*/
                 document.configurationForm.startInvoiceNum.value = document.configurationForm.startInvoiceNum.value;
                 document.configurationForm.packingSlipTemplateId.value = document.configurationForm.packingSlipTemplateId.value;
-                document.configurationForm.selectedInvoiceStyleId.value = document.configurationForm.selectedInvoiceStyleId.value;
+                document.configurationForm.invStyleID.value = document.configurationForm.invStyleID.value;
                 document.configurationForm.poNumPrefix.value = document.configurationForm.poNumPrefix.value;
                 document.configurationForm.selectedMessageId.value = document.configurationForm.selectedMessageId.value;
 
@@ -1280,7 +1360,6 @@ function SaveValues()
                     },
                     error : function(data) {
                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
-                        alert(JSON.stringify(data));
                     }
                 });
             },

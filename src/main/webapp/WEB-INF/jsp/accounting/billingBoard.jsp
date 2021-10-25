@@ -497,7 +497,7 @@ $("#tabs").tabs({
 function PrintBilling()
 {
 	if(invoiceId == -1){
-		//alert("<spring:message code='BzComposer.billingboard.selectinvoicefirst'/>");
+
 		return selectinvoicefirstdialog();
 		return false;
 	}
@@ -510,7 +510,7 @@ function PrintBilling()
             updateBillingBoard(data);
         },
         error : function(data) {
-            //alert("<spring:message code='BzComposer.billingboard.someerroroccurred'/>");
+
             return showerrordialog();
         }
     });
@@ -520,7 +520,7 @@ function CreateBillingStatement()
 {
 	if(invoiceId == -1)
 	{
-		//alert("<spring:message code='BzComposer.billingboard.selectinvoicefirst'/>");
+
 		return selectinvoicefirstdialog();
 		return false;
 	}
@@ -536,7 +536,7 @@ function CreateBillingStatement()
 				 
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.billingboard.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 
@@ -551,7 +551,7 @@ function searchByColumn()
 	var advanceSearchData = $("#advanceSearchData").val();
 	if(advanceSearchData == '')
 	{
-		//alert("<spring:message code='BzComposer.billingboard.dataisempty'/> "+advanceSerchCriteria );
+
 		return showemptydatadialog();
 		return false;
 	}
@@ -567,7 +567,7 @@ function searchByColumn()
 				 
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.billingboard.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 
@@ -583,7 +583,7 @@ function searchByColumnBillingStatement()
 	var advanceSearchData = $("#advanceSearchData").val();
 	if(advanceSearchData == '')
 	{
-		//alert("<spring:message code='BzComposer.billingboard.dataisempty'/> "+advanceSerchCriteria );
+
 		return showemptydatadialog()
 		return false;
 	}
@@ -599,7 +599,7 @@ function searchByColumnBillingStatement()
 				 
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.billingboard.someerroroccurred'/>");
+
 				 return showerrordialog()
 			} 
 

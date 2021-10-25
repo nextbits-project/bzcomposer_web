@@ -588,7 +588,7 @@ margin-right: 10px;
 		   else
 		   {
 			   debugger;
-				//alert("<spring:message code='BzComposer.popayable.selectonepayable'/>");
+
 				return selectonepayabledialog();
 			   	obj = [];
 			   	return false;
@@ -638,14 +638,14 @@ margin-right: 10px;
 					
 				},
 				 error : function(data) {
-					//alert("<spring:message code='BzComposer.popayable.someerroroccurred'/>");
+
 					return showerrordialog();
 				} 
 			}); 	
 		  	}
 		  	else
 		  	{
-	  			//alert("<spring:message code='BzComposer.popayable.selectonepayable'/>");
+
 	  			return selectonepayabledialog();
 	  			$("#payStatus").get(0).selectedIndex = 0;
 	  			return false;
@@ -659,7 +659,7 @@ margin-right: 10px;
 	   debugger;
 	   var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
 	  if(vendor == null){
-		  alert("Please select vendor");
+		  alert("<bean:message key='BzComposer.billcreation.selectvendorfirst'/>");
 	  } else{
 		  
 	   debugger;	
@@ -672,7 +672,7 @@ margin-right: 10px;
 			receivedAmount=document.getElementById("receivedAmount").value;
 			if(parseFloat(receivedAmount) > parseFloat(adjustTotal))
 			{
-				//alert("<spring:message code='BzComposer.popayable.receivedamountismorethanamount'/>");
+
 				return savereceiveamountdialog();
 		   		return false;
 			}
@@ -683,7 +683,7 @@ margin-right: 10px;
 			var balance = document.getElementById("receivedAmount").value;
 			if(parseFloat(receivedAmount)+parseFloat(balance) > parseFloat(adjustTotal) )
 		   	{
-		   		//alert("<spring:message code='BzComposer.popayable.receivedamountismorethanamount'/>");
+
 		   		return savereceiveamountdialog();
 		   		return false;
 			}
@@ -695,7 +695,7 @@ margin-right: 10px;
 			{
 				if(document.getElementById("checkNum").value == '0' || document.getElementById("checkNum").value == '')
 					{
-						//alert("<spring:message code='BzComposer.popayable.entervalidchecknumber'/>");
+
 						return entervalidchecknumberdialog();
 						return false;
 					}
@@ -723,9 +723,7 @@ margin-right: 10px;
    function sendMyValue(ReceivableListBean) {
 		debugger;
 		var obj=JSON.stringify(ReceivableListBean);
-		/* alert(indexNumber); */
-   	 $.ajax({
-		
+   	    $.ajax({
 			type : "POST",
 			url : "PoPayablePost?tabid=UpdateRecord",
 		/* 	data : "row=" + row + "&paymentTypeId=" +paymentTypeId + "&memo=" + memo + "&accountId=" +accountId + "&categoryId=" +categoryId + "&receivedAmount=" +receivedAmount, */			
@@ -738,7 +736,7 @@ margin-right: 10px;
 			
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.popayable.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		});
@@ -755,12 +753,10 @@ margin-right: 10px;
 			url : "AccountReceiveble?tabid=selectrow&ordernum="+index,
 			data : "row=" +index, 			
 			success : function(data,status) {
-				/* alert("Hello"); */
-				
 				window.location= "${pageContext.request.contextPath}/AccountReceiveble?tabid=selectrow&ordernum="+index;
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.popayable.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		});
@@ -861,16 +857,11 @@ margin-right: 10px;
    {
 	   var answer;
 	   debugger;
-	  /*  alert(indexNumber);
-	   alert(invoiceId); */
-	   if(parseInt(invoiceId) <= 0)
-	   {
-	   		//alert("<spring:message code='BzComposer.popayable.selecttransaction'/>");
+	   if(parseInt(invoiceId) <= 0){
 	   		return selecttransactiondialog();
 	   		return false;
 	   }
-	   else
-	   {
+	   else{
 		  /* answer = window.confirm("<spring:message code='BzComposer.popayable.clearselectedtransaction'/>");
 		  if(answer != true)
 		  {
@@ -905,7 +896,7 @@ margin-right: 10px;
 				window.location = "${pageContext.request.contextPath}/AccountReceivebleUpdate?tabid=AccountReceiveble";
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.popayable.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		});
@@ -916,7 +907,6 @@ margin-right: 10px;
    function checkPaymentStatus()
    {
 	   debugger;
-	   alert("here");
 	  	/* var pay = document.getElementById("payStatus");
 	  	vat option = pay.options[pay.selectedIndex].value; */
 	   $(document.forms[0]).submit(function( event ) {
@@ -961,7 +951,7 @@ margin-right: 10px;
 				window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
 			},
 			 error : function(data) {
-				//alert("<spring:message code='BzComposer.popayable.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		}); 		
@@ -979,7 +969,6 @@ margin-right: 10px;
 	  window.location = "${pageContext.request.contextPath}/PoPayable?tabid=consignmentTab";
   }
    /*  $(document.forms[0]).submit(function( event ) {
-	    alert('Before submit');
 	    event.preventDefault();
 	});  */
 	/*  document.forms[0].action="AccountReceiveble?tabid=saveInvoice&object="+save;

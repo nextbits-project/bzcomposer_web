@@ -400,7 +400,7 @@ function sendTo()
 	rid=document.getElementById("setRID").value
 	if(rid=="")
 	{
-		//alert("Please select the customer");
+
 		debugger;
 		return showCustomerValidationDialog();	
 	}
@@ -434,7 +434,7 @@ function UpdateLabel()
 	debugger;
 	if(lbltype=="")
 	{
-		//alert("Please select the customer");
+
 		debugger;
 		return showlabelValidationDialog();	
 	}

@@ -40,7 +40,7 @@ $('#img1').on('click', function() {
 
 /* function testConnection()
 {
-	alert("Inside testConnection")
+
 } */
 	function showTextBox()
 	{
@@ -131,7 +131,6 @@ $('#img1').on('click', function() {
 		debugger
 		var val = $("#defaultPrinter option:selected").val();
 		debugger
-		alert("Selected value:"+val);
 		if(val == 1)
 		{
 			debugger
@@ -173,7 +172,7 @@ $('#img1').on('click', function() {
 
 /* function test()
 {
-	 alert("inside test")
+
 } */
 
 /* function CheckEmailConnection()

@@ -45,19 +45,19 @@
 	var isChecked = "<%= remember%>";
 	if($(this).prop("checked") == true)
 	{
-		//alert("salesOrderBoard is checked.");
+
         $("#rememberMe").attr('checked', true);
         isChecked = "on"; 
 	}
     else if($(this).prop("checked") == false)
     {
-		//alert("salesOrderBoard is unchecked.");
+
         $("#rememberMe").attr('checked', false);
         isChecked = "off";
 	}	
     else
     {
-    	//alert("salesOrderBoard is unchecked.");
+
         $("#rememberMe").attr('checked', true);
     }	
 	document.LoginForm.rememberMe.value = isChecked;
@@ -78,7 +78,7 @@ $("#forgotPasswordForm").submit(function(event) {
 
     /*Alerts the results */
     posting.done(function( data ) {
-      //alert('success');
+
     }); 
   });
   
@@ -89,7 +89,7 @@ $("#forgotPasswordForm").submit(function(event) {
 	var pass = document.forms[0].password.value;
 	var rem = "<%= remember%>";
 	document.getElementById("rememberMe").checked = true;
-	//alert("Username:"+user+"\nPassword:"+pass+"\nRemember Me:"+rem);
+
 	if(rem == "on")
 	{
 		document.getElementById("rememberMe").checked = true;
@@ -108,7 +108,7 @@ $("#forgotPasswordForm").submit(function(event) {
 	 --%>
 function formValue1()
 {
-	//alert("Inside formValue");
+
 	/* document.forms[0].rememberMe.checked = false;
 	debugger */
 	var flag = false;

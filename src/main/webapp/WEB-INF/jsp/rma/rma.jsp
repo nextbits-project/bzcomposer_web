@@ -695,14 +695,13 @@ return false; //disable key press
 function checkName()
 {
 	debugger ;
-	alert(12);
 // if(trim(document.RMAForm.fnameTxt.value)=="" && trim(document.RMAForm.lnameTxt.value)==""){
-// 	alert("You have to type one of fields in fiest name and last name");
+
 // 	document.RMAForm.fnameTxt.focus();
 	
 // }
 // else if(document.RMAForm.order.value!= "" && !IsNumeric(document.RMAForm.order.value)){
-// 	alert('<spring:message code="BzComposer.RMA.OrderNo.InNumber.Validation" />');
+
 // 	document.RMAForm.order.focus();
 // }
 // else
@@ -715,8 +714,6 @@ function checkName()
 
 	rFnm = document.getElementById('nTxt').value;
 	rLnm = document.getElementById('nLTxt').value;
-	alert(rFnm);
-	alert(rLnm);
 	document.forms['RMAForm'].action = "RMA?tabid=R0S0C0&fname="rFnm+"&lname="+rLnm ;
 	document.forms['RMAForm'].submit();
 

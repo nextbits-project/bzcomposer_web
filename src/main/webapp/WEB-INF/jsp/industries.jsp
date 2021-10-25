@@ -35,7 +35,6 @@ function searchText()
 	{
 		if(term == 'Style' || term == 'style' || term == 'Class' || term == 'class ' || term == 'para-temp')
 		{
-			//alert("you've called attribute of page content");
 			document.getElementById("divIndustires").innerHTML = txt1;
 		}
 		else
@@ -66,7 +65,6 @@ function searchTextMobile()
 	{
 		if(term == 'Style' || term == 'style' || term == 'Class' || term == 'class ' || term == 'para-temp')
 		{
-			//alert("you've called attribute of page content");
 			document.getElementById("divIndustires").innerHTML = txt1;
 		}
 		else

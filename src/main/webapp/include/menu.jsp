@@ -1268,7 +1268,7 @@
 	}
 	function ShowProfitLossByJob()
 	{
-		alert("Not yet supported.");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function showSalesReport(action)
 	{
@@ -1409,12 +1409,12 @@
 	function ShowSalesTaxSummary()
 	{
 		//window.open("Item?tabid=ShowSalesTaxSummary",null,"scrollbars=yes,height=600,width=850,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("Not Yet Supported");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function ShowReportTaxDetail()
 	{
 		//window.open("Item?tabid=ShowSalesTaxSummary",null,"scrollbars=yes,height=600,width=850,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("Not Yet Supported");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function showDamagedInventoryList()
 	{
@@ -1475,7 +1475,7 @@
 	function TransactionDeatail()
 	{
 		//window.open("BankingAccounting?tabid=BillDetail",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("Not Yet Supprted");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function ShowAccountReceivableGraph()
 	{
@@ -1520,25 +1520,25 @@
 	function ShowCashFlowForeCast()
 	{
 		//window.open("ShowCashFlowForeCast?tabid=ShowCashFlowForeCast",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("Not Yet Supprted");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function IncomeExpenseGraph()
 	{
 		//window.open("ShowCashFlowForeCast?tabid=ShowCashFlowForeCast",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
 		window.open("BankingAccounting?tabid=IncomeExpenseGraph",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no");
-		//alert("Income Expence graph");
+
 	}
 	function Networth()
 	{
 		//window.open("ShowCashFlowForeCast?tabid=ShowCashFlowForeCast",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
 		window.open("BankingAccounting?tabid=NetworthGraph",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no");
-		//alert("Income Expence graph");
+
 	}
 	function BudgetvsActualGraph()
 	{
 		//window.open("ShowCashFlowForeCast?tabid=ShowCashFlowForeCast",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
 		window.open("BankingAccounting?tabid=BudgetvsActualGraph",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no");
-		//alert("Income Expence graph");
+
 	}
 	function ChartsofCategories()
 	{
@@ -1891,7 +1891,7 @@
 			{
 				if (ch != "/" && ch != "*" && ch != "+" && ch != "-" && ch != "." && ch != "(" && ch!= ")" && ch != "%")
 				{
-					alert("invalid entry!")
+					alert("<bean:message key='BzComposer.common.invalidEntry'/>");
 					return false
 				}
 			}

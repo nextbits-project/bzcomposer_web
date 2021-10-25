@@ -219,7 +219,7 @@ function DeleteFootnote()
 		id = document.configurationForm.footnote.value;
 		if(id==0)
 		{
-			//alert('<bean:message key="BzComposer.configuration.editfootnote.footnoteemptyvalidation"/>');
+
 			return emptyfootnotevalidationdialog();
 			document.getElementById('txt').focus();
 		}
@@ -285,7 +285,7 @@ function SaveFootnote()
 		
 		if(txtv=='select')
 		{
-			//alert('<bean:message key="BzComposer.configuration.editfootnote.footnoteemptyvalidation"/>')
+
 			return emptyfootnotevalidationdialog();
 			document.getElementById('txt').focus();
 		}
@@ -294,7 +294,7 @@ function SaveFootnote()
 			txtval = trim(document.getElementById('txt').value);
 			if(txtval=="")
 			{
-				//alert('<bean:message key="BzComposer.configuration.editfootnote.footnoteemptyvalidation"/>')
+
 				return emptyfootnotevalidationdialog();
 				document.getElementById('txt').focus();
 			}

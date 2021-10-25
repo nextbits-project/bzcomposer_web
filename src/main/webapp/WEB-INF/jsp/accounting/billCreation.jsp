@@ -1900,7 +1900,6 @@ table.tabla-listados tbody tr td {
 		}
 		if(parseFloat(paidAmount) > parseFloat(totalAmount))
 		{
-			alert("you can not pay more than balance");
 			return false;
 		}  */
 		

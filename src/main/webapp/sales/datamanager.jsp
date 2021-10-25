@@ -964,7 +964,7 @@ table.table-notifications th {
 	}
 	function buttonClick(idVal, ttl) {
 		sOldVal = "";
-		//alert("HH");
+
 		document.getElementById("selectedTitle").innerHTML = ttl;
 		document.getElementById("descriptionId").value = "";
 		document.getElementById("tax_rate").value = "";
@@ -998,12 +998,12 @@ table.table-notifications th {
 			window.location = "DataManager.do?tabid=DM_Save";
 		} else {
 			if (taxrate == "" && sType == "TAX") {
-				//alert("Please enter tax rate");
+
 				return selectTaxRateDialog();
 				document.getElementById("tax_rate").focus();
 			}
 			if (sNew == "") {
-				//alert("Description field should not be blank");
+
 				return showBlankDiscriptionDialog();
 				document.getElementById("descriptionId").focus();
 			} else {
@@ -1041,7 +1041,7 @@ table.table-notifications th {
 		document.getElementById("sNewId").value = sNew;
 		document.getElementById("newIDD").value = newID;
 		if (sNew == "") {
-			//alert("Description field should not be blank");
+
 			return showBlankDiscriptionDialog();
 			document.getElementById("descriptionId").focus();
 		} else {

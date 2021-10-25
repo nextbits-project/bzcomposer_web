@@ -525,7 +525,7 @@ function PrintBilling()
 {
 	if(invoiceId == -1)
 	{
-		//alert("<bean:message key='BzComposer.billingboard.selectinvoicefirst'/>");
+
 		return selectinvoicefirstdialog();
 		return false;
 	}
@@ -541,7 +541,7 @@ function PrintBilling()
 				 
 			},
 			 error : function(data) {
-				//alert("<bean:message key='BzComposer.billingboard.someerroroccurred'/>");
+
 				return showerrordialog();
 			} 
 
@@ -551,7 +551,7 @@ function CreateBillingStatement()
 {
 	if(invoiceId == -1)
 	{
-		//alert("<bean:message key='BzComposer.billingboard.selectinvoicefirst'/>");
+
 		return selectinvoicefirstdialog();
 		return false;
 	}
@@ -567,7 +567,7 @@ function CreateBillingStatement()
 				 
 			},
 			 error : function(data) {
-				 //alert("<bean:message key='BzComposer.billingboard.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 
@@ -582,7 +582,7 @@ function searchByColumn()
 	var advanceSearchData = $("#advanceSearchData").val();
 	if(advanceSearchData == '')
 	{
-		//alert("<bean:message key='BzComposer.billingboard.dataisempty'/> "+advanceSerchCriteria );
+
 		return showemptydatadialog();
 		return false;
 	}
@@ -598,7 +598,7 @@ function searchByColumn()
 				 
 			},
 			 error : function(data) {
-				 //alert("<bean:message key='BzComposer.billingboard.someerroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 
@@ -614,7 +614,7 @@ function searchByColumnBillingStatement()
 	var advanceSearchData = $("#advanceSearchData").val();
 	if(advanceSearchData == '')
 	{
-		//alert("<bean:message key='BzComposer.billingboard.dataisempty'/> "+advanceSerchCriteria );
+
 		return showemptydatadialog()
 		return false;
 	}
@@ -630,7 +630,7 @@ function searchByColumnBillingStatement()
 				 
 			},
 			 error : function(data) {
-				 //alert("<bean:message key='BzComposer.billingboard.someerroroccurred'/>");
+
 				 return showerrordialog()
 			} 
 

@@ -59,7 +59,6 @@ function showSelectedOption(priceLevelId,priceLevelDesc,priceLevelPercentage)
 	} */
 	/* var rd=document.getElementById(rid);
 	rd.className = "draft"; */
-	/* alert("priceLevelId"+priceLevelId+"\n PriceLevel:"+priceLevelDesc+"\n PriceLevel Percentage:"+priceLevelPercentage); */
 
 	$('#priceLevelName').val(priceLevelDesc);
 	$('#pricePercentage').val(priceLevelPercentage);
@@ -67,8 +66,6 @@ function showSelectedOption(priceLevelId,priceLevelDesc,priceLevelPercentage)
 
 function showSelectedProduct(productId,productName,productCode,productQty,productType,productPrice)
 {
-	/* alert("Selected Product:"+productId+"\nproductName:"+productName+"\nproductCode:"+productCode+
-			"\nproductType:"+productType+"\nproductQty:"+productQty+"\nproductPrice:"+productPrice); */
 	var product = productId;
 	pId = productId;
 	pName = productCode;
@@ -81,8 +78,7 @@ function showSelectedProduct(productId,productName,productCode,productQty,produc
 	});
 	var rows = document.getElementById("eBayProductTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
 	debugger
-	for(i=0;i<rows;i++)
-	{
+	for(i=0;i<rows;i++){
 		var row1=document.getElementById("productId"+productId);
 		row1.className = "draft";
 	}
@@ -126,7 +122,7 @@ function addToCrossSellProduct()
 		var rowId = document.getElementById("ProductId");
 		if(rowId.className == "draft")
 		{
-			//alert($("#productId"+[i]));
+
 		}
 		/*var row1=document.getElementById("productId"+productId);
 		row1.className = "draft"; */
@@ -147,7 +143,7 @@ function Remove() {
 
 function addData()
 {
-	//alert("inside addData function");
+
 }
 
 function showCategoryDialog()
@@ -362,7 +358,6 @@ $(function() {
 	}); */
 
 	/* $('#eBayProductTable tr').click(function (event) {
-        alert($(this).attr('value')); //trying to alert id of the clicked row
         $(this).parent().addClass('highlight');
    }); */
 
@@ -379,21 +374,13 @@ $(function() {
 
    $('#createCategory1').click(function(){
 		var category = $('#serviceCode1').val();
-
 		if(category == "")
 		{
-			//alert("Please type a category name");
 			return showCategoryDialog();
 		}
-		/* commented on 23-11-2019
-		else
-		{
-			alert("Entered category is:"+category);
-		} */
 	});
 
    $('#addCrossSell').click(function(){
-	/* alert("productId:"+pId+"\nproductName:"+pName+"\nProductCode:"+pSKU+"\nproductQty:"+pQty+"\nproductPrice:"+pAmount); */
 	var isAvailable = $('#crossSellProductTable tr > td:contains('+pName+')').length;
 	if(isAvailable == 0)
 	{
@@ -401,7 +388,6 @@ $(function() {
 	}
 	else
 	{
-		/* alert("you can't add this item because it is already available"); */
 		return showCantaddItemDialog();
 	}
    });
@@ -442,19 +428,15 @@ $(function() {
 		}
 		else
 		{
-			alert("Please select cross-sell product from list.");
+			alert("<bean:message key='BzComposer.common.selectCrossellProduct'/>");
 		}
    });
 	$('#availableStores').change(function(){
 		var storeId = $(this).val();
 		if(storeId == 3 || storeId == 9)
 		{
-			alert("Please Select eSales Store");
+			alert("<bean:message key='BzComposer.configuration.esales.selectesalesstore'/>");
 		}
-		/* else
-		{
-			alert("Selected StoreId:"+storeId);
-		} */
 	});
 
 	$('#clientVendor').change(function()
@@ -483,10 +465,9 @@ $(function() {
 		debugger
 		var name = $('#clientVendor option:selected').text();
 		var names = name.split(' ');
-		/* alert("Array Elements:"+names); */
 		debugger
 		if(id == 0){
-			alert("Please select a supplier from list.");
+			alert("<bean:message key='BzComposer.common.selectSupplier'/>");
 		}
 		else{
 			var rows = document.getElementById("supplierName").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
@@ -498,11 +479,11 @@ $(function() {
 					$('#supplierName').append("<tr id='supplier"+id+"' onclick='highlightSelectedSupplier("+id+");'><td id="+id+">"+name+"</td></tr>");
 				}
 				else{
-					alert("Supplier is already added. Please select another supplier.");
+					alert("<bean:message key='BzComposer.common.supplierAlreadyAdded'/>");
 				}
 			}
 			else{
-				alert("Supplier number reach the maximum limit.");
+				alert("<bean:message key='BzComposer.common.supplierReachedMaxLimit'/>");
 			}
 
 		}
@@ -523,7 +504,7 @@ $(function() {
 		}
 		else
 		{
-			alert("Please select a supplier from list.");
+			alert("<bean:message key='BzComposer.common.selectSupplier'/>");
 		}
 	});
 
@@ -531,7 +512,6 @@ $(function() {
 		$('select[id="unitMeasurement"]').show();
 		var measurement = $('#measurementList option:selected').text();
 		var measurementId = $('#measurementList').val();
-		alert("Selected measurementId:"+measurementId);
 		if(measurementId == "3" || measurementId == "4" || measurementId == "5")
 		{
 			document.getElementById("displayHWL").style.display = "block";
@@ -619,7 +599,7 @@ $(function() {
 	{
 	    let filename = '';
 	    if(e.target.files.length > 5){
-            alert("You can not upload more than 5 files");
+            alert("<bean:message key='BzComposer.common.cantUploadMoreFiles'/>");
             e.target.value = '';
             return;
         }
@@ -696,7 +676,7 @@ $(function() {
 		var table ="<table border='1'><input type='hidden' id='rowId' value="+id+" name='rowId'/><tr><td>Title</td><td>ItemType</td><td>Is Required</td><td>Sort Order</td><td></td></tr>"+
     		"<tr><td><input type='text' id='title' value='"+id+"'/></td><td><input type='text' id='itemType'/></td><td><input type='text' id='title'/></td>"+
     		"<td><input type='text' id='title'/></td><td align='center'><input type='button' class='formbutton' id='deleteOptionBtn' name='deleteOptionBtn' value='Delete Option'/></td></tr></table><br><br>";
-    	//alert("table value:"+table);
+
     	id++;
 		$('#addTableRow').append(table);
 	});
@@ -709,8 +689,7 @@ $(function() {
 	});  */
 
 	/* $('#addTableRow').on('click', 'input[type="button"]', function () {
-	    alert("Inside remove row from table Option...")
-		//$(this).parent().parent().remove();
+	    //$(this).parent().parent().remove();
 	    $(this).closest('tr').remove();
 	}); */
 
@@ -1354,7 +1333,7 @@ $(function() {
                                                         };
                                                         CKEDITOR.replace( 'textAreaContent' ); */
 														/* CKEDITOR.editorConfig = function( config ) {
-                                                            alert("Inside ckEditor config function"); */
+                                                             */
 														/* config.toolbar = [
 															{ name: 'save', items: [ 'savebtn','Undo','Redo' ] },
 															{ name: 'clipboard', items: [ 'Cut','Copy','Paste','PasteText','PasteFromWord'] },
@@ -3013,28 +2992,28 @@ function ShowAdd(form){
 		cat = false;    // document.getElementById('chk_cat').checked;
 		if(cat==false){
 			if(form.itemCode.value==""){
-				//alert('<spring:message code="BzComposer.additem.inventorynamevalidation" />');
+
 				return showitemcodedialog();
 				form.itemCode.focus();
 			}
 			else if(document.getElementById('purchasePrice').value==""){
-				//alert('<spring:message code="BzComposer.additem.purchasepricevalidation" />');
+
 				return showpurchasepricedialog();
 				form.purchasePrice.focus();
 			}
 			else if(form.salePrice.value==""){
-                //alert('<spring:message code="BzComposer.additem.salepricevalidation" />');
+
                 return showsalepricedialog();
                 form.salePrice.focus();
             }
 			else if(form.qty.value==""){
-				//alert('<spring:message code="BzComposer.additem.quantityvalidation" />');
+
 				return showqueantitydialog();
 				form.qty.focus();
 			}
 			else if(form.weight.value=="")
 			{
-				//alert('<spring:message code="BzComposer.additem.weightvalidation" />');
+
 				return showweightdialog();
 				form.weight.focus();
 			}
@@ -3072,7 +3051,6 @@ function ShowAdd(form){
 			if(form.itemCode.value=="")
 			{
 				/* alert('<spring:message code="BzComposer.AddItem.InventoryName.Validation" />'); */
-				//alert('<spring:message code="BzComposer.additem.inventorynamevalidation" />');
 				return showitemcodedialog();
 				form.itemCode.focus();
 			}
@@ -3114,7 +3092,7 @@ function ShowAdd(form){
 	else if(val=="2"){
 		//if(form.itemCodeDis.value==""){
 			/* alert('<spring:message code="BzComposer.AddItem.Discount.Validation" />'); */
-			//alert('<spring:message code="BzComposer.additem.discountvalidation" />');
+
 		//	return showcodediscountdialog();
 		//	form.itemCodeDis.focus();
 		//}
@@ -3151,7 +3129,7 @@ function ShowAdd(form){
 	else if(val=="3"){
 		if(form.itemCodeSub.value==""){
 			/* alert('<spring:message code="BzComposer.AddItem.Subtotal.Validation" />'); */
-			//alert('<spring:message code="BzComposer.additem.subtotalvalidation" />');
+
 			return showitemcodesubdialog();
 			form.itemCodeSub.focus();
 		}
@@ -3187,7 +3165,7 @@ function ShowAdd(form){
 	else if(val=="4"){
 		if(form.itemCodeSer.value==""){
 			/* alert('<spring:message code="BzComposer.AddItem.Service.Validation" />'); */
-			//alert('<spring:message code="BzComposer.additem.servicenamevalidation" />');
+
 			return showservicenamedialog();
 			form.itemCodeSer.focus();
 		}

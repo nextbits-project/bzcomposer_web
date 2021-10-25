@@ -182,7 +182,7 @@ let selectedRowIndexs = [];
 let isInventoryPageReset = false;
 
 function SetWriteAble(id){
- alert("in");
+
 // document.getElementById(id).disabled =false;
 }
 
@@ -308,7 +308,7 @@ function ApplyInventory(){
             }
         });
     }else{
-        //alert('Please change any record');
+
         window.location = "Item?tabid=AdjustInventory";
     }
 }

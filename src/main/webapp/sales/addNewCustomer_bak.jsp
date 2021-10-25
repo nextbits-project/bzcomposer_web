@@ -880,18 +880,18 @@ function refreshItemsNow2(val)
 				if (temp==invStyleName){							//invstyle found...
 					temp=document.getElementById(i+'invid').value;
 					defService=document.getElementById(i+'dservice').value;
-					//alert("style="+invStyleName+"\nid="+temp);	//invstyleid found...
+						//invstyleid found...
 					break;
 				}
 			}
-			//alert(defService);
+
 			document.forms[0].table_serID.value+='<bean:write name="objList" property="serviceID"/>;';
 			document.forms[0].table_bal.value+='<bean:write name="objList" property="serviceBalance"/>;';
 			document.forms[0].table_invId.value+=temp+";";
 			document.forms[0].table_defaultVal.value=defService;
-			//alert(document.forms[0].table_defaultVal.value);
+
 			//table_defaultVal
-			//	alert("serviceID="+document.forms[0].table_serID.value+"\n\n"+
+
 			//		"bal="+	document.forms[0].table_bal.value+"\n\n"+
 			//	 	"invstyles="+		document.forms[0].table_invId.value);
 		</script>
@@ -1073,7 +1073,7 @@ function addToTable(form){
 	flag1=0;
 	invID=form.serviceID.value;
 	SIDSize=document.getElementById('sIDSize') .value;
-	//	alert("The SerialID Size is"+SIDSize);
+
 	SLSize=document.getElementById('sSize') .value;
 	InvSize=document.getElementById('iSize') .value;
 	DetailSize=document.getElementById('dSize') .value;
@@ -1082,14 +1082,14 @@ function addToTable(form){
 	var InvoiceStyle;
 	var ServiceBalance="0.0";
 	var DefaultService;
-	//	alert("invID="+invID+"\n\nsearching for existance..."+exist.length);
+
 		for(t=0; t<exist.length; t++){	//limit=cnt
 			if(invID==exist[t])		{				
 				flag=1;
 				break;
 			}
 		}
-	//			alert("not found...");
+
 		if(flag==1)		{
 			alert('<bean:message key="BzComposer.NewCustomer.Service.Validation" />');
 			return;
@@ -1100,9 +1100,9 @@ function addToTable(form){
 					iinvID=document.getElementById(i+'sid').value;
 					isID=document.getElementById(i+'isid').value;
 					if(invID==iinvID) {
-						//	alert("The hiden field id is "+iinvID);
+
 						serviceName=document.getElementById(i+'sname').value;
-						//alert("The service name is "+serviceName);
+
 						for(j=0;j<InvSize;j++)	{
 							isID2=document.getElementById(j+'invid').value;
 							if(isID==isID2) {
@@ -1187,24 +1187,24 @@ function addToTable(form){
 		name=document.CustomerForm.table_serviceName.value;
 }
 function setDefault(invID1,form){
-	//alert("Invid is="+invID1 );
+
 	//form.table_defaultVal.value+=1+":"+invID1+";";
 	document.CustomerForm.table_defaultVal.value=invID1;
-	//		alert("The default vals are="+form.table_defaultVal.value);
+
 	//document.getElementById('setdisable').disabled=true;
 }
 function setDefaultToDb(invID1,form){
-	//alert("Invid is="+invID1 );
+
 	//form.table_DbDefSer.value+=1+":"+invID1+";";
 	document.CustomerForm.table_DbDefSer.value=invID1;
-	//		alert("The default vals are="+form.table_DbDefSer.value);
+
 	//document.getElementById('setdisable').disabled=true;
 }
 function removeFromTable(idV){
-	//		alert("we r in remove");
+
 	var str;
 	var trid;
-	//		alert("BEFORE"+document.forms[0].table_serID.value+"\n\nAFTER...\n\nstr="+str);		
+
 	//		removeStringValues(document.forms[0].table_serID.value,idV);
 	trid="row"+idV;
 	for(i=0; i<exist.length; i++){
@@ -1214,11 +1214,11 @@ function removeFromTable(idV){
 				ttt.parentNode.removeChild(ttt);
 			exist[i]=-1;			
 			cnt--;
-		//	alert("replacing...key="+idV+";");
+
 
 			//str=removeStringValues(document.forms[0].table_serID.value,idV);
 			removeStringValues(idV);
-			//alert(str);
+
 			
 			//do same for other two strings
 			break;
@@ -1264,7 +1264,7 @@ function removeStringValues(key){	//from one string('str'), a substring 'key' wi
 		document.forms[0].table_defaultVal.value="0";	//reset if no service is set to default
 	}		
 
-	//		alert("table_serID="+document.forms[0].table_serID.value+"\nstr="+str+
+
 	//		"\n\ntable_bal="+document.forms[0].table_bal.value+"\nstr2="+str2+
 	//	"\n\ntable_invId="+document.forms[0].table_invId.value+"\nstr3="+str3+
 	//"\n\ndefault service="+document.forms[0].table_defaultVal.value);

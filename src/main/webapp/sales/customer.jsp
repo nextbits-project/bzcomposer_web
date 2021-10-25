@@ -163,7 +163,7 @@ $(function()
 {
 $('#sortBy').change(function(){
 	var sortBy = $(this).val();
-	//alert("on sortBy change event");
+
 	/* alert("sortBy:"+sortBy); */
 	if(sortBy == 1)
 	{
@@ -616,7 +616,7 @@ function tableValue()
 	var rd=document.getElementById(rid);
 	rd.className = "draft";
 	var sortId = <%= request.getParameter("sortById")%>;
-	//alert("sortBy Id:"+sortId);
+
 	$('select[id="sortBy"]').find('option[value="'+sortId+'"]').attr("selected",true);
 	//document.getElementById("setRID").value=rid;
 }
@@ -645,7 +645,7 @@ function tableValue()
 function resetSelectedCustomer() 
 {
 	document.getElementById("selCustomer").value="0";
-	//alert("value reset");
+
 }
 function getVendorInfo(vendorid,rowId)
 {
@@ -663,7 +663,7 @@ function manageCustomer(cmd)
 	var cvid= document.CustomerForm.clientVendorID.value; //document.forms[0].selectedCustomer.value;	
 	if (cvid==0)
 	{	
-		//alert('<bean:message key="BzComposer.Customer.cName.Validation"/>');
+
 		return showCustomerValidationDialog();
 		//return;
 	}
@@ -672,7 +672,7 @@ function manageCustomer(cmd)
 		if (cmd=="EDIT") 
 		{
 			showCustomer(cvid);
-		//	alert("Edit...Under development");
+
 		}
 		else if (cmd=="DELETE") 
 		{	

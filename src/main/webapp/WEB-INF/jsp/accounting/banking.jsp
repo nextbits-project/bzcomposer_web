@@ -990,7 +990,7 @@ function closeMe(){
 			
 			},
 			 error : function(data) {
-				//alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+
 				return errorMessageDialog();
 			} 
 		});
@@ -1043,7 +1043,7 @@ function addAccount(){
 
 	if(status == 'Save'){
         /**if(payerId == '-1' && openingBalance > customerCurrentBalance){
-            //alert("Insufficient Amount in the Payer Account");
+
             return showInsufficientAmountDialog();
             return false;
         }*/
@@ -1094,7 +1094,7 @@ function addAccount(){
 	{
 		if(paymentId == '' || paymentId == -1)
 		{
-			//alert("Please select a transaction")
+
 			return selectTransactionDialog();
 			return false;
 		}
@@ -1120,7 +1120,6 @@ function addAccount(){
 			    	updatebankingTab(data);
 			    },
 				 error : function(data) {
-						/* alert("<bean:message key='BzComposer.common.erroroccurred'/>"); */
 						return errorMessageDialog();
 					} 
 				});
@@ -1158,7 +1157,7 @@ function deleteBankAccount()
 {
 	if(totalPaymentList > 1)
 	{
-		//alert("<spring:message code='BzComposer.banking.cantdeletaccount'/>");
+
 		return shownotdeletedaccountdialog();
 		$('#AddAccountDialog').dialog('close'); 
 		return false;
@@ -1189,7 +1188,6 @@ function deleteBankAccount()
 		        		    	updateTree();
 		        			},
 		        			 error : function(data) {
-		        				/* alert("<bean:message key='BzComposer.common.erroroccurred'/>"); */
 		        				return errorMessageDialog();
 		        			} 
 		        		});
@@ -1218,7 +1216,7 @@ function deleteBankAccount()
 			    	updateTree();
 				},
 				 error : function(data) {
-					//alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+
 					return errorMessageDialog();
 				} 
 			});
@@ -1330,7 +1328,7 @@ $(document).ready(function () {
 		   document.getElementById('tabid').value="AddAccount";
 		   debugger;
 		   if(accountId == '-1'){
-		        //alert("Please select a bank Account");
+
 			   	return selectBankAccountDialog();
 			   	return false;
 		    }
@@ -1352,7 +1350,7 @@ $(document).ready(function () {
 	   $("#showEditTransactionDialog").on("click", function(){
 		   debugger;
 		   if(Index == -1){
-				//alert("Please select a Payment first");
+
 				return selectPaymentDialog();
 				return false;
 		    }
@@ -1366,7 +1364,7 @@ $(document).ready(function () {
         debugger;
 		$('#deleteBank').prop('disabled', true);
 		if(accountCategoryId == -1){
-            //alert("<spring:message code='BzComposer.banking.selectcategory'/>");
+
 			return showselectcategorydialog();
 			return false;
 		}
@@ -1489,7 +1487,7 @@ function changeBank(){
 	 this.payeeId = payeeName.options[payeeName.selectedIndex].id;
 	 if(parseInt(payeeId) == parseInt(accountId))
 		 {
-		 		//alert("<spring:message code='BzComposer.banking.selectotherbank'/>");
+
 		 		return selectotherbankdialog();
 		 		 $('#addButton').attr('disabled',true);
 		 		return false;
@@ -1744,7 +1742,6 @@ $( ".rangeOP" ).change(function() {
 					 
 				},
 				 error : function(data) {
-					/* alert("<bean:message key='BzComposer.common.erroroccurred'/>"); */
 					return errorMessageDialog();
 				} 
 	  
@@ -1772,7 +1769,7 @@ $( ".transactionFilter" ).change(function() {
 					 
 				},
 				 error : function(data) {
-					//alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+
 					return errorMessageDialog();
 				} 
 	  

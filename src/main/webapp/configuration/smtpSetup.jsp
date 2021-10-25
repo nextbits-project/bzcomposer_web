@@ -172,7 +172,7 @@ function CheckEmailConnection()
 	if(response == 1)
 	{
 		debugger
-		//alert('<bean:message key="BzComposer.configuration.manageservicetype.serverconnectedsuccess" />');
+
 		return serverconnectedseccessdialog();
 		document.configurationForm.mailAuth.disabled=false;    		
 		EnableDisableFields();
@@ -180,7 +180,7 @@ function CheckEmailConnection()
 	else
 	{
 		debugger
-		//alert('<bean:message key="BzComposer.configuration.manageservicetype.serverconnectederror" />');
+
 		return serverconnectederrordialog();
 		document.configurationForm.mailAuth.disabled=true;
 		EnableDisableFields();

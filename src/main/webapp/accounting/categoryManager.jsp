@@ -472,9 +472,9 @@ function selectrow(catId,inv)
 								    	if(data == "")
 								    	{
 								    		debugger;
-								    		//alert("<bean:message key='BzComposer.categorymanager.categoryusedforotherinvoice'/>");
+
 								    		return otherinvoicedialog();
-								    		//alert("The_category is being_used on other invoice");
+
 								    		/* var status = window.confirm("<bean:message key='BzComposer.categorymanager.wanttodelete'/>");
 								    		if(status == true)
 								    		{
@@ -573,13 +573,13 @@ function selectrow(catId,inv)
 							 });
 						}
 						else{
-							//alert("<bean:message key='BzComposer.categorymanager.itemcantdelete'/>");
+
 							return itemcantdeletedialog();
 							return false;
 						}
 					},
 					 error : function(data) {
-						//alert("<bean:message key='BzComposer.categorymanager.erroroccurred'/>");
+
 						return showerrordialog()
 					} 
 				});
@@ -670,13 +670,13 @@ function selectrow(catId,inv)
 					updateCategoryManager(data);
 				}
 				else{
-					//alert("<bean:message key='BzComposer.categorymanager.categorynameexist'/>");
+
 					return categorynameexistdialog();
 					categoryManageWithoutUpdate();
 				}
 			},
 			 error : function(data) {
-				//alert("<bean:message key='BzComposer.categorymanager.erroroccurred'/>");
+
 				return showerrordialog();
 			} 
 		});
@@ -727,13 +727,13 @@ function selectrow(catId,inv)
 						updateCategoryManager(data);
 					}
 					else{
-						//alert("<bean:message key='BzComposer.categorymanager.categorynameexist'/>");
+
 						return categorynameexistdialog();
 						categoryManageWithoutUpdate();
 					}
 				},
 				 error : function(data) {
-					//alert("<bean:message key='BzComposer.categorymanager.erroroccurred'/>");
+
 					 return showerrordialog();
 				} 
 			});
@@ -783,7 +783,7 @@ function selectrow(catId,inv)
 					categoryId = -1;
 				},
 				 error : function(data) {
-					//alert("<bean:message key='BzComposer.categorymanager.erroroccurred'/>");
+
 					return showerrordialog();
 				} 
 			});
@@ -799,7 +799,7 @@ function selectrow(catId,inv)
 			 $("#saveNewcategory").replaceWith('<button class="btn btn-success" onclick="return updateCategory()" id="updateCategory"><bean:message key="BzComposer.global.update"/></button>')
 			if(categoryId == -1)
 			{
-				//alert("<bean:message key='BzComposer.categorymanager.selectcategory'/>");
+
 				return selectcategorydialog();
 				return false;
 			}

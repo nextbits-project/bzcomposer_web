@@ -251,7 +251,7 @@ function updateDeduction()
 	var Id=document.CompanyTaxForm.hidDid.value;
 	if(Id==0)
 	{
-		//alert("<bean:message key='BzComposer.deduction.selectlisttoedit'/>");
+
 		debugger;
 		return showlisttoeditdialog();
 	}

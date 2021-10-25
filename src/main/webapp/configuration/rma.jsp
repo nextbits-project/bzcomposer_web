@@ -33,7 +33,7 @@ function selectReason()
 	var selectedReason = $.trim($("#parentReasonId option:selected").text());
 	if(selectedReason =="")
 	{
-		//alert("<bean:message key='BzComposer.configuration.rma.enterreason'/>");
+
 		return rmareasondialog();
 	}
 	else
@@ -62,7 +62,7 @@ function addNewReason()
 	debugger
 	if(newReason == "")
 	{
-		//alert("<bean:message key='BzComposer.configuration.rma.enterreason'/>");
+
 		return rmareasondialog();
 		$("#parentReasonId option").prop("selected",false);
 	}
@@ -70,14 +70,14 @@ function addNewReason()
 	{
 		if((newReason.match("^no") || newReason.match("^No"))&&(newReason.match("reason$") || newReason.match("Reason$"))) 
 		{
-			//alert("<bean:message key='BzComposer.configuration.rma.entervalidreason'/>");
+
 			return entervalidreasondialog();
 			$("#parentReasonId option").prop("selected",false);
 		}
 		else if(camelized == isAvailable || newReason == isAvailable)
 		{
 			debugger
-			//alert("<bean:message key='BzComposer.configuration.customerinvoice.reasonalreadyexists'/>");
+
 			return reasonnotexistdialog();
 			$("#parentReasonId option").prop("selected",false);
 		}
@@ -106,7 +106,7 @@ function addNewReason()
 
 function updateRMAReason()
 {
-	//alert("inside updateRMAReason method");
+
 	debugger
 	var reason = $("#reason").val();
 	debugger
@@ -122,7 +122,7 @@ function updateRMAReason()
 	if(reason == "")
 	{
 		debugger
-		//alert("<bean:message key='BzComposer.configuration.rma.enterreason'/>");
+
 		return rmareasondialog();
 		debugger
 		$("#parentReasonId option").prop("selected",false);
@@ -133,7 +133,7 @@ function updateRMAReason()
 	} */
 	else if(isAvailable =="")
 	{
-		//alert("<bean:message key='BzComposer.configuration.rma.selectreasontoupdate'/>");
+
 		return selectreasontoupdatedialog();
 	}
 	else 
@@ -153,14 +153,14 @@ function updateRMAReason()
 
 function deleteReason()
 {
-	//alert("Inside deleteReason")
+
 	var reason = $("#reason").val();
 	var parentReasonId = $("#availableReasons option:selected").val();
 	var parentReason = $("#availableReasons option:selected").text();
-	//alert("Reason:"+reason+"\nParent Reason Id:"+parentReasonId+"\nParentReason:"+parentReason);
+
 	/* if(confirm("<bean:message key='BzComposer.configuration.rma.deleteselectedrecord'/>"))
 	{
-		//alert("Redirectd to delete page code");
+
 		document.getElementById('tabid').value="deleteRMAReason";
 		document.getElementById('reason').value= reason;
 		document.getElementById('parentReasonId').value= parentReasonId;
@@ -171,7 +171,7 @@ function deleteReason()
 	}
 	else
 	{
-		//alert("<bean:message key='BzComposer.configuration.rma.recordwillnotdeleted'/>");
+
 		return recordnotdeleteddialog();
 	} */
 	debugger;

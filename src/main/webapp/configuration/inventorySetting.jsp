@@ -50,21 +50,21 @@ $('#showReorderPointList').change(function()
     debugger
     if($(this).prop("checked") == true)
     {
-		//alert("showReorderPointList is checked.");
+
         $("#showReorderPointList").attr('checked', true);
         debugger
         isChecked = "on"; 
 	}
     else if($(this).prop("checked") == false)
     {
-		//alert("showReorderPointList is unchecked.");
+
         $("#showReorderPointList").attr('checked', false);
         debugger
         isChecked = "off";
 	}	
     else
     {
-    	//alert("showReorderPointList is unchecked.");
+
         $("#showReorderPointList").attr('checked', true);
         debugger
     	document.configurationForm.showReorderPointList.value = isChecked;
@@ -79,13 +79,13 @@ $('#showReorderPointWarning').change(function()
 	var isChecked = "on";
     if($(this).prop("checked") == true)
     {
-    	//alert("showReorderPointWarning is checked.");
+
         $("#showReorderPointWarning").attr('checked', true);
         isChecked = "on";
 	}
     else if($(this).prop("checked") == false)
     {
-        //alert("showReorderPointWarring is unchecked.");
+
         $("#showReorderPointWarning").attr('checked', false);
         isChecked = "off";
     }
@@ -107,7 +107,7 @@ $('#reservedQuantity').change(function(){
 	debugger
     if($(this).prop("checked") == true)
     {
-		//alert("reservedQuantity is checked.");
+
 		debugger
 		$("#reservedQuantity").attr('checked', true);
 		debugger
@@ -115,7 +115,7 @@ $('#reservedQuantity').change(function(){
     }
      else if($(this).prop("checked") == false)
      {
-        //alert("reservedQuantity is unchecked.");
+
         debugger
         $("#reservedQuantity").attr('checked', false);
         debugger
@@ -138,7 +138,7 @@ $('#salesOrderQty').change(function()
 	debugger
     if($(this).prop("checked") == true)
     {
-        //alert("salesOrderQty is checked.");
+
         debugger
         $("#salesOrderQty").attr('checked', true);
         debugger
@@ -146,7 +146,7 @@ $('#salesOrderQty').change(function()
     }
     else if($(this).prop("checked") == false)
     {
-        //alert("salesOrderQty is unchecked.");
+
         debugger
         $("#salesOrderQty").attr('checked', false);
         debugger
@@ -170,7 +170,7 @@ $('#productTaxable').change(function()
 	debugger
     if($(this).prop("checked") == true)
     {
-        //alert("productTaxable is checked.");
+
         debugger
         $("#productTaxable").attr('checked', true);
         debugger
@@ -178,7 +178,7 @@ $('#productTaxable').change(function()
     }
     else if($(this).prop("checked") == false)
     {
-        //alert("productTaxable is unchecked.");
+
         debugger
         $("#productTaxable").attr('checked', false);
         debugger
@@ -212,7 +212,7 @@ function showTime()
 		m = "0"+m;
 	}
 	var time = h+":"+ m +" "+ t;
-	//alert("Inserted time:"+time);
+
 	debugger
 	$("#scheduleTime").append("<option>"+ time + "</option>");
 	debugger
@@ -575,12 +575,12 @@ function SaveValues()
 		var soq = $("#salesOrderQty").val();
 		var pt = $("#productTaxable").val();
 		
-		//alert("is reorderPoin is checked?:"+document.configurationForm.showReorderPointList.value
+
 				//+"\nis warningPoint is checked?:"+document.configurationForm.showReorderPointWarning.value
 				//+"\nis ReservedQuantity is checked?:"+document.configurationForm.reservedQuantity.value
 				//+"\nis salesOrderQty is checked?:"+document.configurationForm.salesOrderQty.value
 				//+"\nis productTaxable is checked?:"+document.configurationForm.productTaxable.value);
-		//alert("ScheduleTimes:"+scheduleTimes);
+
 		
 		
 		document.getElementById('tabid').value="SaveConfigurationInventorySettng";

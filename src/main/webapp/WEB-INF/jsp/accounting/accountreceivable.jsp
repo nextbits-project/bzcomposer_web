@@ -608,7 +608,7 @@ table.tabla-listados tbody tr td {
 				receivedAmount=document.getElementById("receivedAmount").value;
 				if(parseFloat(receivedAmount) > parseFloat(adjustTotal))
 					{
-						//alert("<spring:message code='BzComposer.accountreceivable.recivedamountisnotgreaterthanamount'/>");
+
 						return showreceiveddialog();
 				   		return false;
 					}
@@ -618,7 +618,7 @@ table.tabla-listados tbody tr td {
 				var balance = document.getElementById("receivedAmount").value;
 				if(parseFloat(receivedAmount)+parseFloat(balance) > parseFloat(adjustTotal) )
 				   {
-						//alert("<spring:message code='BzComposer.accountreceivable.recivedamountisnotgreaterthanamount'/>");
+
 						return showreceiveddialog();
 				   		return false;
 				   }
@@ -641,9 +641,7 @@ table.tabla-listados tbody tr td {
    function sendMyValue(ReceivableListBean) {
 		debugger;
 		var obj=JSON.stringify(ReceivableListBean);
-		/* alert(indexNumber); */
-   	 $.ajax({
-		
+       	 $.ajax({
 			type : "POST",
 			url : "AccountReceivebleUpdate?tabid=UpdateRecord",
 			data : "row=" + obj + "&invoiceId="+invoiceId,
@@ -654,7 +652,7 @@ table.tabla-listados tbody tr td {
 			
 			},
 			 error : function(data) {
-				//alert("<spring:message code='BzComposer.accountreceivable.erroroccurred'/>");
+
 				return showerrordialog();
 			} 
 		});
@@ -669,11 +667,10 @@ table.tabla-listados tbody tr td {
 			url : "AccountReceiveble?tabid=selectrow&ordernum="+index,
 			data : "row=" +index, 			
 			success : function(data,status) {
-				/* alert("Hello"); */
 				window.location= "${pageContext.request.contextPath}/AccountReceiveble?tabid=selectrow&ordernum="+index;
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.accountreceivable.erroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		});
@@ -749,7 +746,7 @@ table.tabla-listados tbody tr td {
 	   var checkNo = document.getElementById("checkNum").value;
 	   	if(checkNo == '0' || checkNo == '')
 		{
-			//alert("<spring:message code='BzComposer.accountreceivable.entervalidchecknumber'/>");
+
 			return entervalidchecknumberdialog();
 			return false;
 		}
@@ -814,7 +811,7 @@ table.tabla-listados tbody tr td {
 			updateAccountReceivableTab(data);	
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.accountreceivable.erroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		});
@@ -851,11 +848,9 @@ table.tabla-listados tbody tr td {
    {
 	   var answer;
 	   debugger;
-	  /*  alert(indexNumber);
-	   alert(invoiceId); */
 	   if(parseInt(invoiceId) <= 0)
 		   {
-		   		//alert("<spring:message code='BzComposer.accountreceivable.selecttransaction'/>");
+
 		   		return selecttranactiondialog();
 		   		return false;
 		   }
@@ -897,7 +892,7 @@ table.tabla-listados tbody tr td {
 				/* window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; */
 			},
 			 error : function(data) {
-				 //alert("<spring:message code='BzComposer.accountreceivable.erroroccurred'/>");
+
 				 return showerrordialog();
 			} 
 		});
@@ -943,7 +938,7 @@ table.tabla-listados tbody tr td {
    function checkPaymentStatus()
    {
 	   debugger;
-	   //alert("here");
+
 	  	/* var pay = document.getElementById("payStatus");
 	  	vat option = pay.options[pay.selectedIndex].value; */
 	   $(document.forms[0]).submit(function( event ) {
@@ -971,7 +966,7 @@ table.tabla-listados tbody tr td {
 				//window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble";
 			},
 			error : function(data) {
-				//alert("<spring:message code='BzComposer.accountreceivable.erroroccurred'/>");
+
 				return showerrordialog(); 
 			} 
 		});*/
@@ -1001,7 +996,7 @@ table.tabla-listados tbody tr td {
 				//window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble";
 			},
 			error : function(data) {
-				//alert("<spring:message code='BzComposer.accountreceivable.erroroccurred'/>");
+
 				return showerrordialog(); 
 			} 
 		});

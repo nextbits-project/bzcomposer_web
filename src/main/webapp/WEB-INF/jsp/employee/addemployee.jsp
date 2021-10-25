@@ -1153,14 +1153,14 @@
 		else if (!pattern.test(email))
 		{
 
-			//alert('<spring:message code="BzComposer.NewCustomer.Email.Validation" />');
+
 			return showEmailValidationDialog();
 			document.AddEmployeeForm.email.focus();
 			return false;
 		}
 		if(mail.length>=50)
 		{
-			//alert('<spring:message code="BzComposer.NewCustomer.EmailLength.Validation" />');
+
 			return showEmailLengthValidationDialog();
 			document.AddEmployeeForm.email.value="";
 			document.AddEmployeeForm.email.focus();

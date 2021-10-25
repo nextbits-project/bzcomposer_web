@@ -696,7 +696,7 @@ function callClick(idVal, ttl) {
 
 function buttonClick(idVal, ttl) {
     sOldVal = "";
-    //alert("HH");
+
     document.getElementById("selectedTitle").innerHTML = ttl;
     document.getElementById("descriptionId").value = "";
     document.getElementById("tax_rate").value = "";
@@ -730,7 +730,7 @@ function callSave() {
         return false;
     }
     if (sType == "") {
-        alert("Please choose item");
+        alert("<bean:message key='BzComposer.datamanager.selectitemvalidation'/>");
     } else {
         if (taxrate == "" && sType == "TAX") {
             return selectTaxRateDialog();
@@ -779,7 +779,7 @@ function callUpdate() {
         return false;
     }
     if (sType == "") {
-        alert("Please choose item");
+        alert("<bean:message key='BzComposer.datamanager.selectitemvalidation'/>");
     } else {
         if (taxrate == "" && sType == "TAX") {
             return selectTaxRateDialog();

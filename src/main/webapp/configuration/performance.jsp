@@ -118,7 +118,7 @@ function showTextBox6()
 		debugger
 		var val = $("#defaultPrinter option:selected").val();
 		debugger
-		//alert("Selected value:"+val);
+
 		if(val == 1)
 		{
 			debugger

@@ -196,7 +196,7 @@ function AddJobTitle()
 	    return letter.toUpperCase();
 	});
 	debugger
-	//alert("Camelized Word is:"+camelized);
+
 	debugger
 	if(jobTitle == "")
 	{
@@ -232,7 +232,7 @@ function EditJobTitle()
 	    return letter.toUpperCase();
 	});
 	debugger
-	//alert("Camelized Word is:"+camelized);
+
 	debugger
 	if(jobTitle == "")
 	{
@@ -393,7 +393,7 @@ function ShowEditFoootenote()
 function showSetupID()
 {
 	var val = document.getElementById("setupID").value;
-		//alert("Selected SetUpId is:"+val);
+
 		
 		if(val == "Location")
 		{
@@ -684,7 +684,7 @@ function showSetupID()
             {
             	debugger
             	var con = confirm("Are you sure to remove this reason?");
-            	//alert("Inside else condition")
+
             	if(con)
             	//$('#refundReasonSel option:selected').remove();
             	$("#refundReason").val('');

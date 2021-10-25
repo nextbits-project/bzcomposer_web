@@ -21,7 +21,7 @@ $(document).ready(function()
 	$("#minCharge").val("0.0");
 	$("#gracePeriod").val("0"); */
 		
-	//alert("Inside ready function");
+
 	debugger
 	$('#assessFinanceCharge').change(function()
 	{
@@ -29,21 +29,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#assessFinanceCharge").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#assessFinanceCharge").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#assessFinanceCharge").attr('checked', true);
 	        debugger
 	    	document.configurationForm.assessFinanceCharge.value = isChecked;
@@ -237,7 +237,7 @@ function SaveValues()
 		var graceDays = $("#gracePeriod").val();
 		var financeCharge = $("#assessFinanceCharge").val();
 		
-		//alert("Annual Interesest Rate(%):"+annualRate+"\nMinimum Charge Rate(%):"+minCharge+"\nGrace Days:"+graceDays+"\nFinance Charge is clicked?:"+financeCharge);
+
 		
 		document.getElementById('tabid').value="SaveFinanceCharges";
 		document.getElementById('assetFinanceChargeStatus').value = financeCharge;

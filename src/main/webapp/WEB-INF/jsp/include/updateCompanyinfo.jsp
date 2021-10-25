@@ -1106,12 +1106,11 @@ function loadStateCityByZipcode(zipCode){
         url:"CustomerAjax?tabid=zipcode&zipcode="+zipCode,
         data :"zipCode=" + zipCode,
         success : function(data) {
-            //alert(JSON.stringify(data));
             $("#sid option:contains('"+data.stateName+"')").attr('selected', 'selected');
             $("#city").val(data.city);
         },
         error : function(data) {
-            alert('ERROR');
+            alert("<bean:message key='BzComposer.common.erroroccurred'/>");
         }
     });
 }

@@ -798,7 +798,7 @@ table.table-notifications th {
 	}
 	function buttonClick(idVal, ttl) {
 		sOldVal = "";
-		//alert("HH");
+
         document.getElementById("datamanager12").innerHTML = ttl;
 		document.getElementById("selectedTitle").innerHTML = ttl;
 		document.getElementById("descriptionId").value = "";
@@ -833,17 +833,17 @@ table.table-notifications th {
 				return false;
 			}
 			if (sType == "") {
-				alert("Please choose item");
+				alert("<bean:message key='BzComposer.datamanager.selectitemvalidation'/>");
 				/* return selectItemDialog(); */
 				window.location = "DataManager?tabid=DM_Save";
 			} else {
 				if (taxrate == "" && sType == "TAX") {
-					//alert("Please enter tax rate");
+
 					return selectTaxRateDialog();
 					document.getElementById("tax_rate").focus();
 				}
 				if (sNew == "") {
-					//alert("Description field should not be blank");
+
 					return showBlankDiscriptionDialog();
 					document.getElementById("descriptionId").focus();
 				} else {
@@ -875,17 +875,17 @@ table.table-notifications th {
 				return false;
 			}
 			if (sType == "") {
-				alert("Please choose item");
+				alert("<bean:message key='BzComposer.datamanager.selectitemvalidation'/>");
 				/* return selectItemDialog(); */
 				window.location = "DataManager?tabid=DM_Save";
 			} else {
 				if (taxrate == "" && sType == "TAX") {
-					//alert("Please enter tax rate");
+
 					return selectTaxRateDialog();
 					document.getElementById("tax_rate").focus();
 				}
 				if (sNew == "") {
-					//alert("Description field should not be blank");
+
 					return showBlankDiscriptionDialog();
 					document.getElementById("descriptionId").focus();
 				} else {
@@ -924,7 +924,7 @@ table.table-notifications th {
 		document.getElementById("sNewId").value = sNew;
 		document.getElementById("newIDD").value = newID;
 		if (sNew == "") {
-			//alert("Description field should not be blank");
+
 			return showBlankDiscriptionDialog();
 			document.getElementById("descriptionId").focus();
 		} else {

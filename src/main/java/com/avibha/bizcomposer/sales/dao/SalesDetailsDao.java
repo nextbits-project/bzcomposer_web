@@ -1284,7 +1284,7 @@ public class SalesDetailsDao {
 	
 	//	form.setPoNum("0");
 		form.setCustID("0");
-		form.setInvoiceStyle(invoice.getDefaultInvoiceStyleNo(compId));
+		form.setInvoiceStyle("1");
 		form.setVia("0");
 		form.setTerm("0");
 		form.setRep("0");
@@ -1662,7 +1662,7 @@ public class SalesDetailsDao {
 		estimationDto.setOrderDate(da);
 	
 		estimationDto.setCustID("0");
-		estimationDto.setInvoiceStyle(invoice.getDefaultInvoiceStyleNo(compId));
+		estimationDto.setInvoiceStyle("1");
 		estimationDto.setVia("0");
 		estimationDto.setTerm("0");
 		estimationDto.setRep("0");

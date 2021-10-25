@@ -35,13 +35,13 @@ function setTaxInfo()
 	var fmonth=document.forms[0].fcMonth.value;
 	if(fid==null||fid=="")
 	{
-	   //alert("Fedral Tax Id is required field.");
+
 	   alert("<bean:message key='BzComposer.federaltax.federaltaxidisrequired'/>");
 	   return false;
 	}
 	if(fmonth==null||fmonth=="")
 	{
-	   //alert("Fiscal Month is Required Field.");
+
 	   alert("<bean:message key='BzComposer.federaltax.fiscalmonthisrequired'/>");
 	   return false;
 	}
@@ -73,7 +73,7 @@ function setRate(obj)
 	var st1=substring(len,len2);
 	alert("st1"+st1);
 	//str2=substring(len);
-	//alert(str+" str2:"+str2+" len:"+len);
+
 }
 </script>
 </head>

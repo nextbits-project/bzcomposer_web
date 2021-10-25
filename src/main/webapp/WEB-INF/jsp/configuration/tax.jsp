@@ -61,8 +61,6 @@ $(function()
 	var isUSPS = $("#isUSPSActive").val();
 	var isFedex = $("#isFeDexActive").val();
 
-	/* alert("is UPS Active:"+isUPS+"\n is USPS Active:"+isUSPS+"\n is Fedex Active:"+isFedex); */
-
 	if(isUPS == 1)
 	{
 		$("#upsUserId").attr('readonly',true);
@@ -295,7 +293,7 @@ $(document).ready(function(){
     });
 
     $('#selectedTaxYearEmplyr').on('change', function() {
-            alert( 'Emplyr '+this.value );
+
      });
 
 
@@ -403,7 +401,6 @@ function setPrice()
  	var weight = $.trim($("#shippingTypeWeight option:selected").val());
  	$('select[id="shippingTypePrice"]').find('option[value="'+weight+'"]').attr("selected",true);
  	var price = $.trim($("#shippingTypePrice option:selected").text());
- 	alert("Selected Weight:"+weight+"\n Price:"+price);
  	$("#upsWeight").val(weight);
  	$("#upsShippingFee").val("$"+price);
  	$("#modifySeletedWeight").attr('disabled',false);
@@ -424,15 +421,15 @@ function showPanel()
     }
 }
 
-/* comented on 24-11-2019 to prevent simple alert
+/* comented on 24-11-2019 to prevent simple
 function updateSelectedWeight()
 {
-	alert("Inside update weight function")
+
 }
 
 function deleteSelectedWeight()
 {
-	alert("Inside delete selected weight function");
+
 }*/
 function setServices()
 {
@@ -452,12 +449,12 @@ function setWeightPrice()
 	var shippingType = $("#userShippingType option:selected").val();
 	if(shippingType == 0)
 	{
-		//alert("<spring:message code='BzComposer.configuration.tax.selectshippingtype'/>");
+
 		return selectshippingtypedialog();
 	}
 	else
 	{
-		//alert("Weight And Price are:"+shippingType);
+
 		$("#modifySeletedWeight").attr('disabled',true);
 	 	$("#deleteSeletedWeight").attr('disabled',true);
 		window.open("Configuration?tabid=config30&shippingCarrierId="+shippingType);
@@ -478,14 +475,14 @@ function setModalDescription()
 	$("#selectedShippingType").val(sType);
 }
 
-/* comented on 24-11-2019 to prevent simple alert
+/* comented on 24-11-2019 to prevent simple
 function saveTemplate()
 {
-	alert("Inside saveTemplate Method")
+
 }
 function deleteTemplate()
 {
-	alert("Inside deleteTemplate Method")
+
 } */
 function saveModalShippingType()
 {
@@ -496,12 +493,12 @@ function saveModalShippingType()
 	debugger
 	if(textboxValue =="")
 	{
-		//alert("<spring:message code='BzComposer.configuration.tax.selectshippingviatoupdate'/>");
+
 		return selectshippingtypetoupdatedialog();
 	}
 	else if(selectedSType == textboxValue)
 	{
-		//alert("<spring:message code='BzComposer.configuration.tax.duplicatevalue'/>");
+
 		return duplicatevaluedialog();
 	}
 	else
@@ -510,7 +507,7 @@ function saveModalShippingType()
 	}		//This else added on 24-11-2019
 	/* else
 	{
-		alert(textboxValue)
+
 	} */
 }
 
@@ -529,7 +526,7 @@ function setContent()
 {
 	debugger
 	var id = $("#selectedTemplateId option:selected").val();
-	//alert("Selected Tempalte Id:"+id)
+
 	document.getElementById("templateName").style.display = "none";
 	document.getElementById("txtTemplateName").style.display = "block";
 	document.getElementById("templateSubject").style.display = "none";
@@ -1286,33 +1283,29 @@ function removeTime()
                                     <tr>
                                      <td colspan="4" align="right" style="font-size:14px; padding: 5px;">
                                      <table id="tbl-comtaxoptions-option-list" class="tabla-listados" cellspacing="0" border="1">
-                                                                                 <thead>
-                                                                                  <tr>
-                                                                                     <td width="50%" style="font-size:12px;">
-                                                                                     &nbsp;&nbsp;
-                                                                                         <b>Deduction<%--<spring:message code="BzComposer.configuration.deductionlist"/>--%></b>
-                                                                                     </td>
-                                                                                     <td width="50%" style="font-size:12px;">
-                                                                                     &nbsp;&nbsp;
-                                                                                         <b>Amount<%--<spring:message code="BzComposer.configuration.deductionlist"/>--%></b>
-                                                                                     </td>
-                                                                                  </tr>
-                                                                                 </thead>
-                                                                                 <tbody>
-                                                                                     <c:forEach items="${configDto.companyTaxOptionDtos}" var="deduct" varStatus="loop">
-                                                                                                     <tr class="row-comp-tax-option" id='${loop.index}-row-comp-tax-option' onclick="setCompanyTaxOption(this, '${deduct.startingDate}' , '${deduct.daily}' , '${deduct.weekly}' , '${deduct.monthly}' , '${deduct.annually}' , '${deduct.biweekly}' , '${deduct.quarterly}' , '${deduct.semiAnnually}' , '${deduct.semiMonthly}' , '${deduct.dailyOver}' , '${deduct.weeklyOver}' , '${deduct.dailyOverVal}' , '${deduct.weeklyOverVal}' , '${deduct.wendSt}' , '${deduct.wendStRate}' , '${deduct.wendSn}' , '${deduct.wendSnRate}' , '${deduct.holiday}' , '${deduct.overtimeRate}' ,'${deduct.holidayRate}' , '${deduct.dayOfWeek}' , '${deduct.dayOfWeekVal}' , '${deduct.dayOfMonth}' , '${deduct.dayOfMonthVal}' , '${deduct.optionId}')">
-                                                                                                                                                                    <td width="50%" style="font-size:12px;">
-                                                                                                                                                                        ${deduct.startingDate}
-                                                                                                                                                                    </td>
-                                                                                                                                                                    <td width="50%" style="font-size:12px;">
-                                                                                                                                                                        ${deduct.createdAt}
-                                                                                                                                                                    </td>
-
-                                                                                                                                                                </tr>
-
-                                                                                  </c:forEach>
-                                                                                 </tbody>
-                                                                                 </table>
+                                         <thead>
+                                          <tr>
+                                             <td width="50%" style="font-size:12px;">
+                                                &nbsp;&nbsp;<b><spring:message code="BzComposer.Employee.Deduction" /></b>
+                                             </td>
+                                             <td width="50%" style="font-size:12px;">
+                                                &nbsp;&nbsp;<b><spring:message code="BzComposer.Report.Amount" /></b>
+                                             </td>
+                                          </tr>
+                                         </thead>
+                                         <tbody>
+                                             <c:forEach items="${configDto.companyTaxOptionDtos}" var="deduct" varStatus="loop">
+                                                 <tr class="row-comp-tax-option" id='${loop.index}-row-comp-tax-option' onclick="setCompanyTaxOption(this, '${deduct.startingDate}' , '${deduct.daily}' , '${deduct.weekly}' , '${deduct.monthly}' , '${deduct.annually}' , '${deduct.biweekly}' , '${deduct.quarterly}' , '${deduct.semiAnnually}' , '${deduct.semiMonthly}' , '${deduct.dailyOver}' , '${deduct.weeklyOver}' , '${deduct.dailyOverVal}' , '${deduct.weeklyOverVal}' , '${deduct.wendSt}' , '${deduct.wendStRate}' , '${deduct.wendSn}' , '${deduct.wendSnRate}' , '${deduct.holiday}' , '${deduct.overtimeRate}' ,'${deduct.holidayRate}' , '${deduct.dayOfWeek}' , '${deduct.dayOfWeekVal}' , '${deduct.dayOfMonth}' , '${deduct.dayOfMonthVal}' , '${deduct.optionId}')">
+                                                    <td width="50%" style="font-size:12px;">
+                                                        ${deduct.startingDate}
+                                                    </td>
+                                                    <td width="50%" style="font-size:12px;">
+                                                        ${deduct.createdAt}
+                                                    </td>
+                                                </tr>
+                                          </c:forEach>
+                                         </tbody>
+                                     </table>
                                      </td>
                                     </tr>
                                     <tr>

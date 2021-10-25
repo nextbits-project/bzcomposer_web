@@ -170,12 +170,12 @@ function setWeightPrice()
 	var shippingType = $("#userShippingType option:selected").val();
 	if(shippingType == 0)
 	{
-		//alert("<bean:message key='BzComposer.configuration.tax.selectshippingtype'/>");
+
 		return selectshippingtypedialog();
 	}
 	else
 	{
-		//alert("Weight And Price are:"+shippingType);
+
 		$("#modifySeletedWeight").attr('disabled',true);
 	 	$("#deleteSeletedWeight").attr('disabled',true);
 		window.open("Configuration.do?tabid=config30&shippingCarrierId="+shippingType);
@@ -214,12 +214,12 @@ function saveModalShippingType()
 	debugger
 	if(textboxValue =="")
 	{
-		//alert("<bean:message key='BzComposer.configuration.tax.selectshippingviatoupdate'/>");
+
 		return selectshippingtypetoupdatedialog();
 	}
 	else if(selectedSType == textboxValue)
 	{
-		//alert("<bean:message key='BzComposer.configuration.tax.duplicatevalue'/>");
+
 		return duplicatevaluedialog();
 	}
 	else
@@ -247,7 +247,7 @@ function setContent()
 {
 	debugger
 	var id = $("#selectedTemplateId option:selected").val();
-	//alert("Selected Tempalte Id:"+id)
+
 	document.getElementById("templateName").style.display = "none";
 	document.getElementById("txtTemplateName").style.display = "block";
 	document.getElementById("templateSubject").style.display = "none";

@@ -1917,7 +1917,7 @@ function AddItem(form){
         //form.amount.value+=amt+";"
 
         hidn_val=( (hidn_val/1) + 1);
-        //alert("DDD" +hidn_val);
+
         document.getElementById('hidn').value=hidn_val;
     }
 }
@@ -2206,7 +2206,7 @@ function Init(){
     </c:if>
     /*To display data either in readonly or not*/
     var readOnly = <%= request.getAttribute("readData") %>
-    //alert("ReadData value:"+readOnly);
+
     if(readOnly)
     {
         $('#newInvoice').prop('disabled', true);

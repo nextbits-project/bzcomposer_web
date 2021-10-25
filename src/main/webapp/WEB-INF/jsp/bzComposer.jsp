@@ -46,7 +46,7 @@
 			{
 				//Get the id of list items
 				var companyID = $(this).attr('id');
-				//alert("selected Sample company Id:"+companyID);
+
 				if(companyID == 2)
 				{
 					window.location.href="Login.do?tabid=selectedCompany&selectedCompanyId=2&companyName=ABC Retails Company";
@@ -61,7 +61,7 @@
 				}
 			});
 			var locale = "<%= request.getAttribute("selectedLocale")%>";
-			//alert("selected locale:"+locale);
+
 			$('select[id="locale"]').find('option[value="'+locale+'"]').attr("selected",true);
 		});
 
@@ -82,12 +82,12 @@
 
 			/*Alerts the results */
 			posting.done(function( data ) {
-				//alert('success');
+
 			});
 		});
 		function openRegisterPage()
 		{
-			//alert("Inside openRecoverPassword")
+
 			window.location = "Login.do?tabid=register";
 
 		}
@@ -111,12 +111,11 @@
 		{
 			debugger;
 			var lang = document.getElementById("locale").value;
-			//alert("You've selected language:"+lang);
+
 			if(lang == "")
-				event.preventDefault();
+				alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
 			else
 				window.location="Locale.do?request_locale="+lang;
-			//alert("locale is changed...")
 			/* window.location="Locale.do?method="+lang; */
 			/* $.ajax({
                 type: "POST",
@@ -124,21 +123,17 @@
                 data:{lang : lang},
                 }).done(function(data){
                     debugger;
-                alert("locale is changed..");
-                debugger;
             }); */
 		}
 		function showLocaleMobile()
 		{
 			debugger;
 			var lang = document.getElementById("localeMobile").value;
-			//alert("You've selected language:"+lang);
 			if(lang == "")
-					//alert("Select any language to change.");
-				return showLanguageDialog();
-			//else
-			window.location="Locale.do?request_locale="+lang;
-			//alert("locale is changed...")
+				alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
+			else
+			    window.location="Locale.do?request_locale="+lang;
+
 			/* window.location="Locale.do?method="+lang; */
 			/* $.ajax({
                 type: "POST",
@@ -146,8 +141,6 @@
                 data:{lang : lang},
                 }).done(function(data){
                     debugger;
-                alert("locale is changed..");
-                debugger;
             }); */
 		}
 		function showUsernameDialog()
@@ -167,23 +160,6 @@
 			return false;
 		}
 
-		function showLanguageDialog()
-		{
-			debugger;
-			event.preventDefault();
-			$("#showLanguageDialog").dialog({
-				resizable: false,
-				height: 200,
-				width: 300,
-				modal: true,
-				buttons: {
-					"Ok": function () {
-						$(this).dialog("close");
-					}
-				}
-			});
-			return false;
-		}
 	</script>
 	<body>
 	<div id="pageContent" style="width:100%;height: 100%;">
@@ -479,9 +455,6 @@
 								</div>
 							</div>
 							<!-- dialog box that used in this page -->
-							<div id="showLanguageDialog" style="display:none;">
-								<p>Select any language to change.</p>
-							</div>
 							<div class="col-md-3" align="right">
 								<div align="center">
 									<div class="contact-widget contact-widget-1">

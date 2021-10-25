@@ -17,7 +17,7 @@ function redirectToLogin()
 }
 function openRegisterPage()
 {
-	//alert("Inside openRecoverPassword")
+
 	window.location = "Login.do?tabid=register";
 }
 
@@ -31,7 +31,7 @@ function searchText()
 	{
 		if(term == 'Style' || term == 'style' || term == 'Class' || term == 'class ' || term == 'para-temp')
 		{
-			//alert("you've called attribute of page content");
+
 			document.getElementById("futureUpdate").innerHTML = txt1;
 		}
 		else
@@ -49,7 +49,7 @@ function searchText()
 	} 
 	else
 	{
-		alert("Please enter word");
+		alert("<bean:message key='BzComposer.common.emterword'/>");
 	}
  }
 function searchTextMobile()
@@ -62,7 +62,7 @@ function searchTextMobile()
 	{
 		if(term == 'Style' || term == 'style' || term == 'Class' || term == 'class ' || term == 'para-temp')
 		{
-			//alert("you've called attribute of page content");
+
 			document.getElementById("futureUpdate").innerHTML = txt1;
 		}
 		else
@@ -79,7 +79,7 @@ function searchTextMobile()
 		}
 	}
 	else{
-		alert("Please enter word");
+		alert("<bean:message key='BzComposer.common.emterword'/>");
 	}
 }
 </script>

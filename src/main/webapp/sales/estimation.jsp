@@ -31,7 +31,7 @@ font-size: 14px;				/*Added on 23-09-2019  */
 $(function() 
 {
 	var locale = "<%= request.getAttribute("selectedLocale")%>";
-	//alert("selected locale:"+locale);
+
 	$('select[id="locale"]').find('option[value="'+locale+'"]').attr("selected",true);
 	
 	$("#sortByLastName").change(function(){
@@ -1722,7 +1722,7 @@ function StyleChange(value){
 				document.getElementById('amount_id').value="";
 				document.getElementById('weight_id').value="";
 				document.getElementById('pname_id').value="";
-				//alert('<bean:message key="BizComposer.Estimaion.Item.Validation" />');
+
 				return showSelectItemDialog();				
 			}
 			else{	
@@ -2228,10 +2228,10 @@ function Init(){
 		}
 	</logic:present>
 	var readOnly = <%= request.getAttribute("readData") %>
-	//alert("ReadData value:"+readOnly);
+
 	if(readOnly)
 	{
-		//alert("inside true condition");
+
 		$('#newEstimation').prop('disabled', true);
 		$('#btnNewEstimation').prop('disabled', true);
 		$('#btnSaveEstimation').prop('disabled', true);
@@ -2244,7 +2244,7 @@ function Init(){
 	}
 	else
 	{
-		//alert("inside false condition");
+
 		$('#newInvoice').prop('disabled', false);
 		$('#btnNewInvoice').prop('disabled', false);
 		$('#btnSaveInvoice').prop('disabled', false);
@@ -2261,7 +2261,7 @@ function onSaveinvoice(form)
 	cid = form.custID.value;
 	if(cid==0)
 	{
-		//alert('<bean:message key="BizComposer.Estimaion.Item.Validation" />');
+
 		return showValidationDialog();
 	}
 	else if(isItemExist <=0)
@@ -2272,7 +2272,7 @@ function onSaveinvoice(form)
 	{
 		if(No.length==0 || No==0)
 		{
-			//alert('<bean:message key="BizComposer.Estimaion.EstimaionNo" />');
+
 			return showItemOrderNumberDialog();
 		}
 		else
@@ -2407,7 +2407,7 @@ function onSave(form)
 	cid = form.custID.value;
 	if(cid==0)
 	{
-		//alert('<bean:message key="BizComposer.Estimaion.Item.Validation" />');
+
 		return showValidationDialog();
 	}
 	else if(isItemExist <=0)
@@ -2418,7 +2418,7 @@ function onSave(form)
 	{
 		if(No.length==0 || No==0)
 		{
-			//alert('<bean:message key="BizComposer.Estimaion.EstimaionNo" />');
+
 			return showItemOrderNumberDialog();
 		}
 		else
@@ -2559,14 +2559,14 @@ function onDelete(form)
 	cid = form.custID.value;
 	if(cid==0)
 	{
-		//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 		return showValidationDialog();
 	}
 	else
 	{
 		if(No.length==0 || No==0)
 		{
-			//alert('<bean:message key="BizComposer.Estimaion.EstimaionNo" />');
+
 			return showItemOrderNumberDialog();
 		}
 		else
@@ -2578,7 +2578,7 @@ function onDelete(form)
 function ShowUpdate(form){
 	cid=form.custID.value;
 	if(cid==0){
-		//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 		return showValidationDialog();
 	}
 	else{
@@ -2609,7 +2609,7 @@ function paymentHistory(form)
 	cid=form.custID.value;
 	if(cid==0)
 	{
-		//alert("Please Select Customer");
+
 		return showValidationDialog();
 	}
 	else

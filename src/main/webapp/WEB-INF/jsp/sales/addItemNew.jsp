@@ -91,7 +91,7 @@ function showSelectedCrossSellProduct(productId)
 }
 
 function addData(){
-	//alert("inside addData function");
+
 }
 
 $(function() {
@@ -142,7 +142,7 @@ $(function() {
 		var name = $('#clientVendor option:selected').text();
 		var names = name.split(' ');
 		if(id == 0){
-			alert("Please select a supplier from list.");
+			alert("<bean:message key='BzComposer.common.selectSupplier'/>");
 		}
 		else{
 			var rows = document.getElementById("supplierName").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
@@ -153,11 +153,11 @@ $(function() {
 					$('#supplierName').append("<tr id='supplier"+id+"' onclick='highlightSelectedSupplier("+id+");'><td id="+id+">"+name+"</td></tr>");
 				}
 				else{
-					alert("Supplier is already added. Please select another supplier.");
+					alert("<bean:message key='BzComposer.common.supplierAlreadyAdded'/>");
 				}
 			}
 			else{
-				alert("Supplier number reach the maximum limit.");
+				alert("<bean:message key='BzComposer.common.supplierReachedMaxLimit'/>");
 			}
 
 		}
@@ -174,7 +174,7 @@ $(function() {
 				}
 			});
 		}else{
-			alert("Please select a supplier from list.");
+			alert("<bean:message key='BzComposer.common.selectSupplier'/>");
 		}
 	});
 
@@ -182,7 +182,6 @@ $(function() {
 		$('select[id="unitMeasurement"]').show();
 		var measurement = $('#measurementList option:selected').text();
 		var measurementId = $('#measurementList').val();
-		alert("Selected measurementId:"+measurementId);
 		if(measurementId == "3" || measurementId == "4" || measurementId == "5")
 		{
 			document.getElementById("displayHWL").style.display = "block";
@@ -270,7 +269,7 @@ $(function() {
 	{
 	    let filename = '';
 	    if(e.target.files.length > 5){
-            alert("You can not upload more than 5 files");
+            alert("<bean:message key='BzComposer.common.cantUploadMoreFiles'/>");
             e.target.value = '';
             return;
         }

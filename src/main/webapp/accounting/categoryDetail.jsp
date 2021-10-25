@@ -458,7 +458,7 @@ function executeQuery()
 	    	UpdateCategoryDetailpanel(data);
 		},
 		 error : function(data) {
-			//alert("<bean:message key='BzComposer.categorydetail.erroroccurred'/>");
+
 			return showerrordialog();
 		} 
 	}); 

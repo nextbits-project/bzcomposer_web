@@ -184,7 +184,7 @@ function DeleteVendor()
 	//vendorid=document.VendorForm.clientVendorID.value;
 	let vendorid = $('#clientVendorID').val();
 	if(vendorid==0 || vendorid == null){
-		//alert("Please select the vendor to delete");
+
 		return deleteVendorDialog();
 	}
 	else{
@@ -215,7 +215,7 @@ function DeleteVendor()
 	}
 }
 function setCutomerDataById(vendorID, rowId){
-    //alert(vendorID+' '+rowId);
+
     $.ajax({
         type: "POST",
         url:"CustomerAjax?tabid=getCustomerDetails&cvId="+vendorID+"&selectedRID="+rowId,
@@ -300,7 +300,7 @@ function setCutomerDataById(vendorID, rowId){
             markSelectedCustomer(vendorID, rowId+'$$');
         },
         error : function(error) {
-             alert("ERROR");
+             alert("<bean:message key='BzComposer.common.erroroccurred'/>");
         }
     });
 }
