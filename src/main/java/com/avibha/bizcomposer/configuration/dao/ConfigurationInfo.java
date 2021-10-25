@@ -301,7 +301,7 @@ public class ConfigurationInfo {
                     + "Charge_interest,Charge_minimum,Charge_grace,Charge_reassess,Charge_MarkFinance,ProductCategoryID,LocationID,ReOrderPoint,VendorInvoiceStyleId,"
                     + "CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,SalesTaxRate,ShowUSAInBillShipAddress,"
                     + "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod,"
-                    + "StartingInvoiceNumber,StartingEstimationNumber,StartingSalesOrderNumber,StartingPONumber "
+                    + "StartingInvoiceNumber,StartingEstimationNumber,StartingSalesOrderNumber,StartingPONumber,EstimationStyleID,SOStyleID "
                     + " FROM bca_preference WHERE Active=1 AND CompanyID="+companyID;
             pstmt = con.prepareStatement(recordQuery);
             rs = pstmt.executeQuery();
@@ -341,6 +341,8 @@ public class ConfigurationInfo {
                 cForm.setStartEstimationNum(rs.getString("StartingEstimationNumber"));
                 cForm.setStartSalesOrderNum(rs.getString("StartingSalesOrderNumber"));
                 cForm.setStartPONum(rs.getString("StartingPONumber"));
+                cForm.setEstimationStyleID(rs.getInt("EstimationStyleID"));
+                cForm.setSoStyleID(rs.getInt("SOStyleID"));
             }
             pstmt.close();
             rs.close();
@@ -381,7 +383,8 @@ public class ConfigurationInfo {
                     + "Charge_minimum,Charge_grace,Charge_reassess,Charge_MarkFinance,BudgetStartMonth,BudgetEndMonth,Performance,Mail_senderEmail,Mailserver,"
                     + "Mail_username,Mail_password,Mail_Auth,poboard,itemsReceivedBoard,itemsShippedBoard,SalesOrderBoard,ProductCategoryID,LocationID,ReOrderPoint,"
                     + "VendorBusinessTypeID,VendorInvoiceStyleId,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,"
-                    + "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod "
+                    + "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod, EstimationStyleID,SOStyleID,"
+                    + "SalesTaxRate2 "
                     + " FROM bca_preference WHERE CompanyID="+companyID;
             pstmt = con.prepareStatement(recordQuery);
 //			pstmt.setString(1, compId);
@@ -584,6 +587,9 @@ public class ConfigurationInfo {
                 cForm.setPoTemplateType(rs.getInt("PurchaseOrderTemplateType"));
                 cForm.setPsTemplateType(rs.getInt("PackingSlipTemplateType"));
                 cForm.setDisplayPeriod(rs.getInt("DisplayPeriod"));
+                cForm.setEstimationStyleID(rs.getInt("EstimationStyleID"));
+                cForm.setSoStyleID(rs.getInt("SOStyleID"));
+                cForm.setSaleTaxRate2(rs.getDouble("SalesTaxRate2"));
             }
             pstmt.close();
             rs.close();
@@ -1393,18 +1399,10 @@ public class ConfigurationInfo {
 
     public boolean saveRMAReason(ConfigurationDto cForm, int compId)
     {
-
-        Connection con = null ;
         SQLExecutor executor = new SQLExecutor();
+        Connection con = executor.getConnection();
         PreparedStatement pstmt = null;
-
         boolean isSaved = false;
-        if (executor == null)
-            return isSaved;
-        con = executor.getConnection();
-        if (con == null)
-            return isSaved;
-
         try {
             String updateQuery = "insert into bca_rmareason(rmaReason,parentReasonID,CompanyID,Active) values(?,?,?,?)";
             pstmt = con.prepareStatement(updateQuery);
@@ -1412,20 +1410,15 @@ public class ConfigurationInfo {
             pstmt.setInt(2, cForm.getParentReasonId());
             pstmt.setInt(3, compId);
             pstmt.setInt(4, 1);
-
             int updated = pstmt.executeUpdate();
             if (updated > 0) {
                 isSaved = true;
             }
-
         }
-        catch (SQLException ex)
-        {
-            Loger.log("Exception in the class ConfigurationInfo and in method "
-                    + "saveRMAReason " + ex.toString());
+        catch (SQLException ex) {
+            Loger.log("Exception in the class ConfigurationInfo and in method saveRMAReason " + ex.toString());
         }
-        finally
-        {
+        finally {
             executor.close(con);
         }
         return isSaved;
@@ -1433,73 +1426,47 @@ public class ConfigurationInfo {
 
     public boolean deleteRMAReason(ConfigurationDto cForm)
     {
-        Connection con = null ;
         SQLExecutor executor = new SQLExecutor();
+        Connection con = executor.getConnection();
         PreparedStatement pstmt = null;
-
         boolean isUpdated = false;
-        if (executor == null)
-            return isUpdated;
-        con = executor.getConnection();
-        if (con == null)
-            return isUpdated;
-
         try {
-            String updateQuery = "Update bca_rmareason set Active = 0 " +
-                    " Where rmaReason=?";
-            pstmt = con.prepareStatement(updateQuery);
+            pstmt = con.prepareStatement("Update bca_rmareason set Active=0 Where rmaReason=?");
             pstmt.setString(1, cForm.getReason());
-
             int updated = pstmt.executeUpdate();
             if (updated > 0) {
                 isUpdated = true;
             }
-
         }
-        catch (SQLException ex)
-        {
-            Loger.log("Exception in the class ConfigurationInfo and in method "
-                    + "deleteRMAReason " + ex.toString());
+        catch (SQLException ex) {
+            Loger.log("Exception in the class ConfigurationInfo and in method deleteRMAReason " + ex.toString());
         }
-        finally
-        {
+        finally {
             executor.close(con);
         }
         return isUpdated;
     }
 
     public boolean updateRMAReason(ConfigurationDto cForm) {
-        Connection con = null ;
         SQLExecutor executor = new SQLExecutor();
+        Connection con = executor.getConnection();
         PreparedStatement pstmt = null;
-
         boolean isUpdated = false;
-        if (executor == null)
-            return isUpdated;
-        con = executor.getConnection();
-        if (con == null)
-            return isUpdated;
-
         try {
             String updateQuery = "Update bca_rmareason set rmaReason=?, parentReasonId = ? where ReasonID = ?";
             pstmt = con.prepareStatement(updateQuery);
             pstmt.setString(1, cForm.getReason());
             pstmt.setInt(2,cForm.getParentReasonId());
             pstmt.setInt(3, cForm.getReasonId());
-
             int updated = pstmt.executeUpdate();
             if (updated > 0) {
                 isUpdated = true;
             }
-
         }
-        catch (SQLException ex)
-        {
-            Loger.log("Exception in the class ConfigurationInfo and in method "
-                    + "updateRMAReason " + ex.toString());
+        catch (SQLException ex) {
+            Loger.log("Exception in the class ConfigurationInfo and in method updateRMAReason " + ex.toString());
         }
-        finally
-        {
+        finally {
             executor.close(con);
         }
         return isUpdated;
@@ -1821,7 +1788,8 @@ public class ConfigurationInfo {
                     + "StartingInvoiceNumber=?,DefaultPackingSlipStyleID=?,SalesPOPrefix=?,InvoiceFootnoteID=?,SaleShowCountry=?,IsRatePriceChangeble=?,"
                     + "SaleShowTelephone=?,IsSalePrefix=?,ExtraCharge=?,ChargeAmount=?,OrderAmount=?,HowOftenSalestax=?,DropShipCharge=?,SalesTaxCode=?,SalesTaxRate=?,"
                     + "DropShipCharge=?,ShowDropShipItems=?,isRefundAllowed=?,StartingEstimationNumber=?,InvoiceStyleID =?,POTermID=?, SalesRepID=?, POPayMethodID=?,"
-                    + "Charge_interest=?, Charge_minimum=?, Charge_grace=?, Charge_reassess=?, Charge_MarkFinance=?, StartingSalesOrderNumber=?, DisplayPeriod=? "
+                    + "Charge_interest=?, Charge_minimum=?, Charge_grace=?, Charge_reassess=?, Charge_MarkFinance=?, StartingSalesOrderNumber=?, DisplayPeriod=?,"
+                    + "EstimationStyleID=?, SOStyleID=?, SalesTaxRate2=? "
                     + " WHERE companyID = ?";
             int r =cForm.getSortBy();
             pstmt = con.prepareStatement(updateQuery);
@@ -1868,7 +1836,10 @@ public class ConfigurationInfo {
             pstmt.setString(40, (cForm.getMarkFinanceCharge()!=null && cForm.getMarkFinanceCharge().equals("on"))?"1":"0");
             pstmt.setString(41, cForm.getStartSalesOrderNum());
             pstmt.setInt(42, cForm.getDisplayPeriod());
-            pstmt.setInt(43, compId);		//Added on 01-05-2020
+            pstmt.setInt(43, cForm.getEstimationStyleID());
+            pstmt.setInt(44, cForm.getSoStyleID());
+            pstmt.setDouble(45, cForm.getSaleTaxRate2());
+            pstmt.setInt(46, compId);
 
             int updated = pstmt.executeUpdate();
             if (updated > 0) {
@@ -2692,7 +2663,7 @@ public class ConfigurationInfo {
             pstmt = con.prepareStatement(updateQuery);
             pstmt.setString(1, jobCategory);
             pstmt.setInt(2, compId);
-            pstmt.setInt(3, cForm.getRecurringServiceBill().equals("on")?1:0);
+            pstmt.setInt(3, 1);
             pstmt.setInt(4, 1);
 
             int updated = pstmt.executeUpdate();
@@ -2720,7 +2691,7 @@ public class ConfigurationInfo {
             String updateQuery = "update bca_jobcategory set Name=?,isRecurringServiceJob=? where CompanyID=? and JobCategoryID=?";
             pstmt = con.prepareStatement(updateQuery);
             pstmt.setString(1, newJobCategoryName);
-            pstmt.setInt(2, cForm.getRecurringServiceBill().equals("on")?1:0);
+            pstmt.setInt(2, 1);
             pstmt.setInt(3, compId);
             pstmt.setInt(4, jobCategoryId);
 

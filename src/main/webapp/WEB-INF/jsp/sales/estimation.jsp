@@ -2116,7 +2116,6 @@ function Init(){
 		$('#custID').prop('readonly', true);
 		$('#invoiceStyle').prop('readonly',true);
 	}
-	StyleChange(4);
 }
 
 function onSave(form)

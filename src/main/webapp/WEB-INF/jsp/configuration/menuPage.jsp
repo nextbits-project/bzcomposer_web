@@ -143,7 +143,7 @@
 			</td>
 		</tr>
 		<tr id="tr11">
-			<td>
+			<!-- <td>
 				 <c:choose>
                  <c:when test="${sessionScope.configActiveTab=='employeeTab'}">
                      <a href="${pageContext.request.contextPath}/Configuration?tabid=config11&&tab=tr11">
@@ -156,10 +156,10 @@
                     </a>
                  </c:otherwise>
                  </c:choose>
-			 </td>
+			 </td> -->
 		</tr>
 		<tr id="tr12">
-			<td>
+			<!-- <td>
 				<c:choose>
                 <c:when test="${sessionScope.configActiveTab=='taxTab'}">
                     <a href="${pageContext.request.contextPath}/Configuration?tabid=config12&&tab=tr12">
@@ -172,7 +172,7 @@
                     </a>
                 </c:otherwise>
                 </c:choose>
-			</td>
+			</td> -->
 		</tr>
 		<tr id="tr4">
 			<!-- <td>

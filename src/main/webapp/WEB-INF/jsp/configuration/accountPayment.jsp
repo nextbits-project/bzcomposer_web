@@ -300,7 +300,7 @@ $(document).ready(function()
 										<table class="table-notifications" width="100%">
 											<tr>
 												<th colspan="4" align="left" style="font-size: 12px; padding: 5px;">
-													<spring:message code="BzComposer.configuration.defaultaccountsetting" />
+													<spring:message code="BzComposer.configuration.tab.accountsetting" />
 												</th>
 											</tr>
 											<tr>
@@ -451,7 +451,7 @@ $(document).ready(function()
 					   				<table class="table-notifications" width="100%">
 										<tr>
 											<th colspan="2" align="left" style="font-size: 12px; padding: 5px;">
-												<spring:message code="BzComposer.configuration.defaultaccountsetting" />
+												<spring:message code="BzComposer.configuration.tab.accountrecivable" />
 											</th>
 										</tr>
 										<tr>
@@ -505,7 +505,7 @@ $(document).ready(function()
 									<table class="table-notifications" width="100%">
 										<tr>
 											<th colspan="2" align="left" style="font-size: 12px; padding: 5px;">
-												<spring:message code="BzComposer.configuration.defaultaccountsetting" />
+												<spring:message code="BzComposer.configuration.tab.popayable" />
 											</th>
 										</tr>
 										<tr>
@@ -557,7 +557,9 @@ $(document).ready(function()
 							    <div id="content4" class="tabPage">
 								<table class="table-notifications" width="80%">
 									<tr>
-										<th colspan="2" align="left" style="font-size:12px; padding: 5px;"><spring:message code="BzComposer.configuration.invoiceprefrence" /></th>
+										<th colspan="2" align="left" style="font-size:12px; padding: 5px;">
+										    <spring:message code="BzComposer.accountreceivable.billing" />
+										</th>
 									</tr>
 									<tr>
 										<td style="font-size:12px;">
@@ -658,7 +660,9 @@ $(document).ready(function()
                                 <div id="content5" class="tabPage">
                                 <table class="table-notifications">
                                     <tr>
-                                        <th colspan="2" style="font-size:12px; padding: 5px;"><spring:message code="BzComposer.categorymanager.tab.categorylist" /></th>
+                                        <th colspan="2" style="font-size:12px; padding: 5px;">
+                                            <spring:message code="BzComposer.CategoryManager" />
+                                        </th>
                                     </tr>
                                     <tr><td colspan="2">
                                     <div class="mb-3 clear custom-fixed-tabs">

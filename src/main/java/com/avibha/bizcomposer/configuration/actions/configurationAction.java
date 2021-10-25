@@ -1455,10 +1455,10 @@ public class configurationAction extends Action
 		 else if(action.equalsIgnoreCase("addJobCategory"))
 		 {
 			 String jobCategory = request.getParameter("Description");
-			 String recurringServiceBill = request.getParameter("locationID");
+			 configDto.setRecurringServiceBill(request.getParameter("recurringServiceBill"));
 			 System.out.println("New Job Category to be entered:"+jobCategory);
 			 ConfigurationDetails cDetails = new ConfigurationDetails();
-			 cDetails.addJobCategory(configDto,companyID,jobCategory,recurringServiceBill);
+			 cDetails.addJobCategory(configDto,companyID,jobCategory);
 			 forward = "success21";
 		 }
 		 
@@ -1466,11 +1466,8 @@ public class configurationAction extends Action
 		 {
 			 int jobCategoryId = Integer.parseInt(request.getParameter("locationID"));
 			 String newJobCategoryName = request.getParameter("Description");
-			 String recurringServiceBill = request.getParameter("isDefault");
-			 System.out.println("JobCategoryId to be updated:"+jobCategoryId+"\nNew JobCategory Name:"+newJobCategoryName+
-					 "\nis RecurringServiceBill Checkbox is checked?:"+recurringServiceBill);
 			 ConfigurationDetails cDetails = new ConfigurationDetails();
-			 cDetails.updateJobCategory(configDto,companyID,jobCategoryId,newJobCategoryName,recurringServiceBill);
+			 cDetails.updateJobCategory(configDto,companyID,jobCategoryId,newJobCategoryName);
 			 forward = "success21";
 		 }
 		 

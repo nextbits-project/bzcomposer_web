@@ -683,14 +683,9 @@ function showSetupID()
                     $("#txtJobCategory").val('');
                 }
             });
-
 			if (!itemExists) {
 			    $("#parentReasonId").val(0);
-				document.getElementById('Description').value= jobCategory;
-				document.getElementById('locationID').value = document.configurationForm.recurringServiceBill.value;
-	          	document.getElementById('tabid').value="addJobCategory";
-				document.forms['form'].action = "Configuration?tabid=addJobCategory";
-				document.forms['form'].submit();
+				window.location = "Configuration?tabid=addJobCategory&Description="+jobCategory;
           	}
         }
     }
@@ -698,18 +693,17 @@ function showSetupID()
 	function updateExistingJobCategory()
 	{
 	    var oldCategory = $('#jobCategory option:selected').text();
-		var jCategoryId = $('#jobCategory option:selected').val();
+		var locationID = $('#jobCategory option:selected').val();
 		var newCategory = $('#txtJobCategory').val().trim();
 	    var itemExists = false;
-		if (oldCategory == "" || jCategoryId == ""){
+		if (oldCategory == "" || locationID == ""){
 	    	alert("<spring:message code='BzComposer.configuration.customerinvoice.selectjobfromlist'/>");
 		}
 	    else if(newCategory == ''){
 			alert("<spring:message code='BzComposer.configuration.customerinvoice.enterjobcategory'/>");
 		}
 	    else {
-			$("#jobCategory option").each(function() 
-			{
+			$("#jobCategory option").each(function() {
                 if ($(this).text() == newCategory) {
                     itemExists= true;
                     alert('<spring:message code="BzComposer.configuration.customerinvoice.samejobcantupdatetolist"/>');
@@ -717,35 +711,24 @@ function showSetupID()
                     $("#txtJobCategory").val(oldCategory);
                 }
             });
-
 			if (!itemExists) {
 			    $("#parentReasonId").val(0);
-				$('#jobCategory option:selected').remove();
-				document.getElementById('Description').value= newCategory;
-				document.getElementById('locationID').value = jCategoryId
-				document.getElementById('isDefault').value = document.configurationForm.recurringServiceBill.value;
-				document.getElementById('tabid').value="updateJobCategory";
-	          	document.forms['form'].action = "Configuration?tabid=updateJobCategory";
-				document.forms['form'].submit();
+				window.location = "Configuration?tabid=updateJobCategory&locationID="+locationID+"&Description="+newCategory;
           	}
 		}
 	}
 	
 	function deleteSelectedJobCategory()
 	{
-		var jCategoryId = $('#jobCategory option:selected').val();
-        if ($("#jobCategory option").text() == "" || jCategoryId == "" || jCategoryId == null){
+		var locationID = $('#jobCategory option:selected').val();
+        if ($("#jobCategory option").text() == "" || locationID == "" || locationID == null){
 			alert("<spring:message code='BzComposer.configuration.customerinvoice.selectjobfromlist'/>");
         }
         else {
         	var con = confirm("<spring:message code='BzComposer.configuration.customerinvoice.removeselectedjob'/>");
         	if(con){
         	    $("#parentReasonId").val(0);
-            	$("#txtJobCategory").val('');
-            	document.getElementById('locationID').value = jCategoryId;
-				document.getElementById('tabid').value="deleteJobCategory";
-	          	document.forms['form'].action = "Configuration?tabid=deleteJobCategory";
-				document.forms['form'].submit();
+				window.location = "Configuration?tabid=deleteJobCategory&locationID="+locationID;
             }
         }
 	}
@@ -902,13 +885,8 @@ function showSetupID()
                     event.preventDefault();
                 }
             });
-
           	if (!itemExists) {
-          		document.getElementById('Description').value = reason;
-          		document.getElementById('tabid').value="addRefundReason";
-				document.forms['form'].action = "Configuration?tabid=addRefundReason";
-				document.forms['form'].submit();
-				
+          		window.location = "Configuration?tabid=addRefundReason&Description="+reason;
           	}
 		}
 	}
@@ -926,13 +904,7 @@ function showSetupID()
         	alert("<spring:message code='BzComposer.configuration.customerinvoice.samereasoncantupdate'/>");	
         }
         else{
-        	$('#refundReasonSel option:selected').remove();
-        	document.getElementById('Description').value = newReason;
-        	document.getElementById('locationID').value = reasonId;
-
-        	document.getElementById('tabid').value="updateRefundReason";
-			document.forms['form'].action = "Configuration?tabid=updateRefundReason";
-			document.forms['form'].submit();
+			window.location = "Configuration?tabid=updateRefundReason&locationID="+reasonId+"&Description="+newReason;
         }
 	}
 	
@@ -947,10 +919,7 @@ function showSetupID()
         else {
         	var con = confirm("<spring:message code='BzComposer.configuration.customerinvoice.removereason'/>");
         	if(con){
-            	document.getElementById('locationID').value = reasonId;
-            	document.getElementById('tabid').value="deleteRefundReason";
-    			document.forms['form'].action = "Configuration?tabid=deleteRefundReason";
-    			document.forms['form'].submit();
+    			window.location = "Configuration?tabid=deleteRefundReason&locationID="+reasonId;
         	}
         }
 	}
@@ -993,11 +962,7 @@ function showSetupID()
         else {
             var parentReasonId = $("#availableReasons option:selected").val();
             var parentReason = $("#availableReasons option:selected").text();
-            document.getElementById('reason').value = newReason;
-            document.getElementById('parentReasonId').value = parentReasonId;
-            document.getElementById('tabid').value = "addNewRMAReason";
-            document.forms['form'].action = "Configuration?tabid=addNewRMAReason";
-            document.forms['form'].submit();
+            window.location = "Configuration?tabid=addNewRMAReason&parentReasonId="+parentReasonId+"&reason="+newReason;
         }
 	}
 
@@ -1016,12 +981,7 @@ function showSetupID()
 			return false;
 		}
 		else{
-			document.getElementById('reason').value= reason;
-			document.getElementById('resonId').value = reasonId;
-			document.getElementById('parentReasonId').value = parentReasonId;
-			document.getElementById('tabid').value = "updateRMAReason";
-			document.forms['form'].action = "Configuration?tabid=updateRMAReason";
-			document.forms['form'].submit();
+			window.location = "Configuration?tabid=updateRMAReason&parentReasonId="+parentReasonId+"&resonId="+reasonId+"&reason="+reason;
 		}
 	}
 
@@ -1036,11 +996,7 @@ function showSetupID()
         }
 		if(confirm("<spring:message code='BzComposer.configuration.rma.deleteselectedrecord'/>"))
 		{
-			document.getElementById('reason').value = reason;
-			document.getElementById('parentReasonId').value = parentReasonId;
-			document.getElementById('tabid').value = "deleteRMAReason";
-			document.forms['form'].action = "Configuration?tabid=deleteRMAReason";
-			document.forms['form'].submit();
+			window.location = "Configuration?tabid=deleteRMAReason&parentReasonId="+parentReasonId+"&reason="+reason;
 		}
 	}
 

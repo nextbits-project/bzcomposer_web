@@ -1378,7 +1378,7 @@
 	}
 	function moduleImport()
 	{
-		window.open("Module?tabid=ImportModule",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+		window.open("Module?tabid=ImportModule",null,"scrollbars=no,height=400,width =700,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	/*esales board*/
 	/* function eSalesSalesBoard()

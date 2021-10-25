@@ -50,8 +50,10 @@ public class ConfigurationDto {
     private String startSalesOrderNum;
     private String startPONum;
 
-    private int poStyleID;
     private int invStyleID;
+    private int estimationStyleID;
+    private int soStyleID;
+    private int poStyleID;
 
     private int weightID;
     private String weightName;
@@ -133,6 +135,7 @@ public class ConfigurationDto {
     private String salesTaxCode;
 
     private double saleTaxRate;
+    private double saleTaxRate2;
 
     private int howOftenSalestax;
 
@@ -981,20 +984,6 @@ public class ConfigurationDto {
     }
 
     /**
-     * @return Returns the invStyleID.
-     */
-    public int getInvStyleID() {
-        return invStyleID;
-    }
-
-    /**
-     * @param invStyleID The invStyleID to set.
-     */
-    public void setInvStyleID(int invStyleID) {
-        this.invStyleID = invStyleID;
-    }
-
-    /**
      * @return Returns the isCompanyName.
      */
     public String getIsCompanyName() {
@@ -1373,16 +1362,24 @@ public class ConfigurationDto {
         this.groupNm = groupNm;
     }
 
-    /**
-     * @return Returns the poStyleID.
-     */
+    public int getInvStyleID() { return invStyleID; }
+
+    public void setInvStyleID(int invStyleID) {
+        this.invStyleID = invStyleID;
+    }
+
+    public int getEstimationStyleID() { return estimationStyleID; }
+
+    public void setEstimationStyleID(int estimationStyleID) { this.estimationStyleID = estimationStyleID; }
+
+    public int getSoStyleID() { return soStyleID; }
+
+    public void setSoStyleID(int soStyleID) { this.soStyleID = soStyleID; }
+
     public int getPoStyleID() {
         return poStyleID;
     }
 
-    /**
-     * @param poStyleID The poStyleID to set.
-     */
     public void setPoStyleID(int poStyleID) {
         this.poStyleID = poStyleID;
     }
@@ -4080,13 +4077,15 @@ public class ConfigurationDto {
         this.salesTaxCode = salesTaxCode;
     }
 
-    public double getSaleTaxRate() {
-        return saleTaxRate;
-    }
+    public double getSaleTaxRate() { return saleTaxRate; }
 
     public void setSaleTaxRate(double saleTaxRate) {
         this.saleTaxRate = saleTaxRate;
     }
+
+    public double getSaleTaxRate2() { return saleTaxRate2; }
+
+    public void setSaleTaxRate2(double saleTaxRate2) { this.saleTaxRate2 = saleTaxRate2; }
 
     public int getHowOftenSalestax() {
         return howOftenSalestax;

@@ -549,14 +549,11 @@ function DeleteCustomerType(){
                 <tr>
                     <td style="font-size:12px;"><spring:message code="BzComposer.configuration.postyle" /> :</td>
                     <td style="font-size:12px;">
-                    <%-- <c:if test="${not empty InvStyle}">
-                        <form:select path="poStyleID" style="width:100;">
-                            <form:option value="0">
-                                <spring:message code="BzComposer.ComboBox.Select" />
-                            </form:option>
-                            <form:options collection="InvStyle" property="value" labelProperty="label" />
+                        <form:select path="vendorInvoiceStyleId">
+                            <c:forEach items="${configDto.listOfExistingInvoiceStyle}" var="objList1">
+                                <form:option value="${objList1.selectedInvoiceStyleId}">${objList1.invoiceStyle}</form:option>
+                            </c:forEach>
                         </form:select>
-                    </c:if> --%>
                     </td>
                     <td colspan="2">&nbsp;</td>
                 </tr>
@@ -570,16 +567,7 @@ function DeleteCustomerType(){
                             </c:forEach>
                         </form:select>
                     </td>
-                    <td style="font-size:12px;">
-                        <spring:message code="BzComposer.configuration.invoicestyle"/> :
-                    </td>
-                    <td style="font-size:12px;">
-                        <form:select path="vendorInvoiceStyleId">
-                            <c:forEach items="${configDto.listOfExistingInvoiceStyle}" var="objList1">
-                                <form:option value="${objList1.selectedInvoiceStyleId}">${objList1.invoiceStyle}</form:option>
-                            </c:forEach>
-                        </form:select>
-                    </td>
+                    <td colspan="2">&nbsp;</td>
                 </tr>
                 <tr>
                     <td style="font-size:12px;">
