@@ -84,7 +84,7 @@ $(function() {
 						<tbody>
 							<tr>
 							    <td><spring:message code="BzComposer.global.customerid" /></td>
-                                <td><form:input path="clientVendorID" readonly="true" /></td>
+                                <td><form:input path="clientVendorID" readonly="true" style="width:100px;" /></td>
 								<td colspan="5">&nbsp;</td>
 							</tr>
 							<tr>

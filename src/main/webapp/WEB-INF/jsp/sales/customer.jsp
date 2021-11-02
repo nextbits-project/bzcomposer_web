@@ -1330,7 +1330,7 @@ function setCutomerDataById(vendorID, rowId){
             markSelectedCustomer(vendorID, rowId+'$$');
         },
         error : function(error) {
-             <spring:message code=‘BzComposer.common.erroroccurred’/>
+             alert("<spring:message code='BzComposer.common.erroroccurred'/>");
         }
     });
 }
