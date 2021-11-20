@@ -3034,15 +3034,15 @@ public class ItemInfoDao {
 		try{
 			if(type.equals("xls"))
 			{
-				sourcefile=new File(home1+"/Downloads/itemlist.xls");
-				File f = new File(home1+"/Downloads/itemlist.xls"); 
+				sourcefile=new File(home1+"/Downloads/BCA_ItemList.xls");
+				File f = new File(home1+"/Downloads/BCA_ItemList.xls");
 				if(!f.exists()){
 	                  f.createNewFile();
 	                  System.out.println("create new file if not exist");
-	                   fileOutputStream = new FileOutputStream(new File(home1+"/Downloads/itemlist.xls"));
+	                   fileOutputStream = new FileOutputStream(new File(home1+"/Downloads/BCA_ItemList.xls"));
 	             }
 	              else{
-	             fileOutputStream = new FileOutputStream(new File(home1+"/Downloads/itemlist.xls"));
+	             fileOutputStream = new FileOutputStream(new File(home1+"/Downloads/BCA_ItemList.xls"));
 	           }
 				workbook=new HSSFWorkbook();
                 HSSFSheet sheet=workbook.createSheet("item list");
@@ -3451,8 +3451,8 @@ public class ItemInfoDao {
          		fileOutputStream.close();
 			}
 			else{
-				sourcefile = new File(home1+"/Downloads/BCA Itemlist.csv"); 
-				String path=home1+"/Downloads/BCA Itemlist.csv";
+				sourcefile = new File(home1+"/Downloads/BCA_ItemList.csv");
+				String path=home1+"/Downloads/BCA_ItemList.csv";
 				if(!sourcefile.exists()){
 	                  try {
 	                      sourcefile.createNewFile();
@@ -3460,10 +3460,10 @@ public class ItemInfoDao {
 	                      ex.printStackTrace();
 	                  }
 	                  System.out.println("create new file if not exist");
-	                   fileOutputStream = new FileOutputStream(new File(home1+"/Downloads/BCA Itemlist.csv"));
+	                   fileOutputStream = new FileOutputStream(new File(home1+"/Downloads/BCA_ItemList.csv"));
 	             }
 				else{
-		             fileOutputStream = new FileOutputStream(new File(home1+"/Downloads/BCA Itemlist.csv"));
+		             fileOutputStream = new FileOutputStream(new File(home1+"/Downloads/BCA_ItemList.csv"));
 		           } 
 				/*FileWriter fileWriter = null;*/
 				fileWriter=new FileWriter(path);

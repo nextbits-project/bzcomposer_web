@@ -340,26 +340,19 @@ public class SalesDetailsDao {
 		ItemInfoDao info = new ItemInfoDao();
 		boolean b = info.saveUploadFile(attachFile, request);
 		if(b==true) {
-			request.setAttribute("ItemUploaded", "successfully");
+			request.getSession().setAttribute("ItemUploaded", "successfully");
 		}
 	}
 	public void exportFile(HttpServletRequest request, ItemDto im, String type)
 	{
 		ItemInfoDao info = new ItemInfoDao();
-		if(type != null && (type.equals("xls") || type.equals("csv")))
-		{	
+		if(type != null && (type.equals("xls") || type.equals("csv"))) {
 			boolean b = info.exportItem(request, type);
-			if(b == true)
-			{
-				if(type.equals("xls"))
-				{	
+			if(b == true) {
+				if(type.equals("xls")) {
 					request.setAttribute("success", "BzComposer.exportitem.itemlistinxlsdownloaded");
-					/*request.setAttribute("success", "ItemList.xls successfully downloaded at /Downloads");*/
-				}
-				else
-				{
+				} else {
 					request.setAttribute("success", "BzComposer.exportitem.itemlistincsvdownloaded");
-					/*request.setAttribute("success", "ItemList.csv successfully downloaded at /Downloads");*/
 				}
 			}
 		}	

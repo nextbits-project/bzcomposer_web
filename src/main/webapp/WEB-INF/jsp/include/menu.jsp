@@ -34,20 +34,17 @@
                             <span><spring:message code="menu.file.Import" /></span>
 						</a>
 						<ul>
+						    <li>
+                                <a href="#" onclick="confugurationImport()" style="cursor: pointer;"><spring:message code="BzComposer.Confuguration" /></a>
+                            </li>
 							<li>
-								<a href="#" onclick="customerImport()" style="cursor: pointer;">
-								    <span><spring:message code="BzComposer.customer.Customer" /></span>
-								</a>
+								<a href="#" onclick="customerImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.customer.Customer" /></span></a>
 							</li>
 							<li>
-								<a href="#" onclick="vendorImport()" style="cursor: pointer;">
-                                    <span><spring:message code="BzComposer.vendor.vendors" /></span>
-								</a>
+								<a href="#" onclick="vendorImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.vendor.vendors" /></span></a>
 							</li>
 							<li>
-								<a href="#" onclick="uploadItem()" style="cursor: pointer;">
-                                    <span><spring:message code="NavigationTree.Items" /></span>
-								</a>
+								<a href="#" onclick="uploadItem()" style="cursor: pointer;"><span><spring:message code="NavigationTree.Items" /></span></a>
 							</li>
 						</ul>
 					</li>
@@ -57,19 +54,16 @@
 						</a>
 						<ul>
 							<li>
-								<a href="#" onclick="exportCustomer()" style="cursor: pointer;">
-									<spring:message code="BzComposer.customer.Customer" />
-								</a>
+								<a href="/exportDataIntoJsonFile?tabid=ConfigurationInfo" style="cursor: pointer;"><spring:message code="BzComposer.Confuguration" /></a>
 							</li>
 							<li>
-								<a href="#" onclick="exportVendor()" style="cursor: pointer;">
-									<spring:message code="BzComposer.vendor.vendors" />
-								</a>
+                                <a href="#" onclick="exportCustomer()" style="cursor: pointer;"><spring:message code="BzComposer.customer.Customer" /></a>
+                            </li>
+							<li>
+								<a href="#" onclick="exportVendor()" style="cursor: pointer;"><spring:message code="BzComposer.vendor.vendors" /></a>
 							</li>
 							<li>
-								<a href="#" onclick="exportItem()" style="cursor: pointer;">
-									<spring:message code="NavigationTree.Items" />
-								</a>
+								<a href="#" onclick="exportItem()" style="cursor: pointer;"><spring:message code="NavigationTree.Items" /></a>
 							</li>
 						</ul>
 					</li>
@@ -1344,6 +1338,10 @@
 	{
 		window.open("File?tabid=MultiPrintInvoice",null,"scrollbars=no,height=600,width=1050,status=yes,toolbar=no,menubar=no,location=no");
 	}
+	function confugurationImport()
+    {
+        window.open("/importDataFromJsonFile?tabid=ConfigurationInfo",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+    }
 	function customerImport()
 	{
 		window.open("File?tabid=ImportCustomer",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");

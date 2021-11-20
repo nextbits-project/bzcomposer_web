@@ -8,7 +8,6 @@ import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
-import com.avibha.bizcomposer.employee.forms.StateTaxOtherDto;
 import com.avibha.bizcomposer.login.dao.LoginDAO;
 import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
@@ -18,12 +17,8 @@ import com.nxsol.bizcomposer.accounting.action.CategoryManagerController;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
-import com.nxsol.bizcomposer.common.TblBudgetCategory;
-import com.nxsol.bizcomposer.common.TblCategoryType;
-import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 import org.apache.struts.action.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -773,6 +768,11 @@ public class ConfigurationController {
             request.setAttribute("isSelectedWeightID", isSelectedWeightID);
             forward = "success56";
             System.out.println("goes to dashboard page......................");
+        }
+        else if (action.equalsIgnoreCase("config29")) {
+            setConfigActiveTab(session, "membershipTab");
+            System.out.println("goes to membership page......................");
+            forward = "/configuration/membership";
         }
         else if (action.equalsIgnoreCase("showStore")) {
             System.out.println("Inside showStore condition");
