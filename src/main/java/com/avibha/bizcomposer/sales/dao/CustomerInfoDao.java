@@ -1195,7 +1195,7 @@ public class CustomerInfoDao {
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
+		ArrayList<CustomerDto> objList = new ArrayList<>();
 		ResultSet rs = null;
 		ResultSet rs1 = null;
 		con = db.getConnection();

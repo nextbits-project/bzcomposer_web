@@ -94,6 +94,7 @@ public class FileController {
             String compId = (String) sess.getAttribute("CID");
             CompanyInfo customer = new CompanyInfo();
             ConfigurationInfo configInfo = new ConfigurationInfo();
+            System.out.println("CompanyID: "+ compId);
 
             request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo));
             request.setAttribute("salesOrderDetails", customer.selectSalesOrders(compId, configInfo));

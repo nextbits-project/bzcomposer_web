@@ -146,6 +146,7 @@ public class CustomerDto {
 	private String cardBillAddress;
 	private String cardZip;
 	private List<CreditCardDto> customerCards;
+	private List<UpdateInvoiceDto> customerServices;
 
 	private String annualIntrestRate;
 
@@ -673,6 +674,9 @@ public class CustomerDto {
 
 	public List<CreditCardDto> getCustomerCards() { return customerCards; }
 	public void setCustomerCards(List<CreditCardDto> customerCards) { this.customerCards = customerCards; }
+
+	public List<UpdateInvoiceDto> getCustomerServices() {return customerServices;}
+	public void setCustomerServices(List<UpdateInvoiceDto> customerServices) {this.customerServices = customerServices;}
 
 	/**
 	 * @return the cellPhone

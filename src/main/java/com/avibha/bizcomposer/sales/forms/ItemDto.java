@@ -13,10 +13,11 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.upload.FormFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ItemDto {
+public class ItemDto implements Serializable {
 	
 	private static final long serialVersionUID = 0;
 

@@ -1,17 +1,17 @@
 package com.avibha.bizcomposer.configuration.forms;
 
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
-import com.avibha.bizcomposer.employee.forms.StateTaxOtherDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author sarfrazmalik
  */
-public class ConfigurationDto {
+public class ConfigurationDto implements Serializable {
 
     private static final long serialVersionUID = 0;
 
@@ -1248,17 +1248,17 @@ public class ConfigurationDto {
         this.showReminder = showReminder;
     }
 
-    public String getStartInvoiceNum() { return startInvoiceNum; }
+    public String getStartInvoiceNum() { return startInvoiceNum!=null?startInvoiceNum:"1"; }
     public void setStartInvoiceNum(String startInvoiceNum) { this.startInvoiceNum = startInvoiceNum; }
 
-    public String getStartEstimationNum() { return startEstimationNum; }
+    public String getStartEstimationNum() { return startEstimationNum!=null?startEstimationNum:"1"; }
     public void setStartEstimationNum(String startEstimationNum) { this.startEstimationNum = startEstimationNum; }
 
-    public String getStartSalesOrderNum() { return startSalesOrderNum; }
+    public String getStartSalesOrderNum() { return startSalesOrderNum!=null?startSalesOrderNum:"1"; }
     public void setStartSalesOrderNum(String startSalesOrderNum) { this.startSalesOrderNum = startSalesOrderNum; }
 
     public String getStartPONum() {
-        return startPONum;
+        return startPONum!=null?startPONum:"1";
     }
     public void setStartPONum(String startPONum) {
         this.startPONum = startPONum;
@@ -2867,10 +2867,6 @@ public class ConfigurationDto {
 
     public void setIsEnable(int isEnable) {
         this.isEnable = isEnable;
-    }
-
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
     }
 
     public int getImportDays() {
