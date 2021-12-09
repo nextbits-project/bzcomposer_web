@@ -29,6 +29,7 @@ import org.apache.struts.util.LabelValueBean;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.*;
 import java.util.*;
@@ -313,7 +314,7 @@ public class SalesDetailsDao {
 			request.getSession().setAttribute("ItemUploaded", "successfully");
 		}
 	}
-	public void exportFile(HttpServletRequest request, ItemDto itemDto, String type)
+	public void exportFile(HttpServletRequest request, ItemDto itemDto, String type, HttpServletResponse response)
 	{
 		String compId = (String) request.getSession().getAttribute("CID");
 		ItemInfoDao itemInfoDao = new ItemInfoDao();
@@ -329,7 +330,7 @@ public class SalesDetailsDao {
 					}
 				}
 			}
-			boolean b = importExportUtils.exportItemList(itemList, type);
+			boolean b = importExportUtils.exportItemList(itemList, type, response);
 			if(b == true) {
 				if(type.equals("xls")) {
 					request.setAttribute("success", "BzComposer.exportitem.itemlistinxlsdownloaded");

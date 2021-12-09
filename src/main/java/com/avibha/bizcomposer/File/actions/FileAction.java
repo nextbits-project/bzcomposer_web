@@ -306,7 +306,7 @@ public class FileAction extends Action {
 			if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls")))
 			{
 				DataImportExportUtils fDao = new DataImportExportUtils();
-				boolean b = fDao.exportCustomerList(null, type);
+				boolean b = fDao.exportCustomerList(null, type, response);
 				if(b==true) {
 					if(type.equals("csv")) {
 						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
@@ -323,7 +323,7 @@ public class FileAction extends Action {
 			if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls")))
 			{
 				DataImportExportUtils fDao = new DataImportExportUtils();
-				boolean b = fDao.exportVendorList(null, type);
+				boolean b = fDao.exportVendorList(null, type, response);
 				if(b == true) {
 					if(type.equals("csv")) {
 						request.setAttribute("success", "BzComposer.exportvendor.vendorlistincsvdownloaded");

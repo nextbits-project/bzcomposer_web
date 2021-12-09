@@ -65,7 +65,7 @@ public class FileController {
     }
 
     @RequestMapping(value = {"/Dashboard", "/File"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String execute(CompanyInfoDto companyInfoDto, HttpServletRequest request, Model model) throws IOException, ServletException, ParseException {
+    public String execute(CompanyInfoDto companyInfoDto, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ParseException {
         model.addAttribute("companyInfoDto", companyInfoDto);
         String forward = "/include/dashboard";
         String action = request.getParameter("tabid");
@@ -219,7 +219,7 @@ public class FileController {
             if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
                 InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
                 ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
-                boolean b = importExportUtils.exportCustomerList(customerList, type);
+                boolean b = importExportUtils.exportCustomerList(customerList, type, response);
                 if(b==true) {
                     if(type.equals("csv")) {
 						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
@@ -227,15 +227,16 @@ public class FileController {
 						request.setAttribute("success", "BzComposer.exportcustomer.customerlistinxlsdownloaded");
                     }
                 }
+            }else {
+                forward = "/file/exportCustomer";
             }
-            forward = "/file/exportCustomer";
         }
         else if(action.equalsIgnoreCase("ExportVendor")) {
             String type = request.getParameter("type");
             if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
                 PurchaseInfoDao purchaseInfoDao = new PurchaseInfoDao();
                 ArrayList<VendorDto> vendorList = purchaseInfoDao.SearchVendor(compId, null, request, new VendorDto());
-                boolean b = importExportUtils.exportVendorList(vendorList, type);
+                boolean b = importExportUtils.exportVendorList(vendorList, type, response);
                 if(b==true) {
                     if(type.equals("csv")) {
                         request.setAttribute("success", "BzComposer.exportvendor.vendorlistincsvdownloaded");
@@ -243,8 +244,9 @@ public class FileController {
                         request.setAttribute("success", "BzComposer.exportvendor.vendorlistinxlsdownloaded");
                     }
                 }
+            }else {
+                forward = "/file/exportVendor";
             }
-            forward = "/file/exportVendor";
         }
         else if(action.equalsIgnoreCase("QuickBookImport")) {
             quickBookImportTest(companyInfoDto, request);

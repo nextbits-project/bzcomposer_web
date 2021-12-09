@@ -47,7 +47,7 @@ public class SalesController {
 
 	@RequestMapping(value = {"/Invoice", "/Customer", "/Item", "/SalesOrder" ,"/DataManager"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto, UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto,
-						  HttpServletRequest request, Model model) throws Exception {
+					Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String IN_URI = request.getRequestURI();
 		String CUSTOMER_URI = "/Customer";
 		String ITEM_URI = "/Item";
@@ -1649,7 +1649,7 @@ public class SalesController {
 		else if(action.equals("ExportItem")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			String type = request.getParameter("type");
-			sdetails.exportFile(request, itemDto, type);
+			sdetails.exportFile(request, itemDto, type, response);
 			if(IN_URI.endsWith(ITEM_URI)) {
 				forward = "/file/exportItem";
 			}else {

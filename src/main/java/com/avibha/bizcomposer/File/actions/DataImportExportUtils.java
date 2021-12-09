@@ -16,9 +16,11 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,10 +35,10 @@ public class DataImportExportUtils {
     private final static String COMMA_DELIMITER = ",";
 
 //  =================================== Configuration-Import-Export ===================================
-    public boolean exportConfigurationInfo(ConfigurationDto configDto, String type) {
+    public boolean exportConfigurationInfo(ConfigurationDto configDto, String type, HttpServletResponse response) {
         boolean b = false;
-        String csvFilePath = System.getProperty("user.home") + "/Downloads/BCA_Configuration.csv";
-        String excelFilePath = System.getProperty("user.home") + "/Downloads/BCA_Configuration.xls";
+        String csvFilePath = "BCA_Configuration.csv";
+        String excelFilePath = "BCA_Configuration.xls";
         File sourcefile = null;
         FileOutputStream fileOutputStream = null;
         if (type.equals("csv")) {
@@ -176,14 +178,15 @@ public class DataImportExportUtils {
                 row.createCell(49).setCellValue(parseColumnValue(configDto.getPriceLevelGeneral()+"", 1));
                 row.createCell(50).setCellValue(parseColumnValue(configDto.isShowUSAInBillShipAddress()+"", 2));
 
-                b = true;
                 workbook.write(fileOutputStream);
                 workbook.close();
                 fileOutputStream.close();
+                b = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        writeFileToResponse(response, sourcefile);
         return b;
     }
 
@@ -358,10 +361,10 @@ public class DataImportExportUtils {
     }
 
 //  =================================== Customer-Import-Export ===================================
-    public boolean exportCustomerList(ArrayList<CustomerDto> customerList, String type) {
+    public boolean exportCustomerList(ArrayList<CustomerDto> customerList, String type, HttpServletResponse response) {
         boolean b = false;
-        String csvFilePath = System.getProperty("user.home") + "/Downloads/BCA_CustomerList.csv";
-        String excelFilePath = System.getProperty("user.home") + "/Downloads/BCA_CustomerList.xls";
+        String csvFilePath = "BCA_CustomerList.csv";
+        String excelFilePath = "BCA_CustomerList.xls";
         File sourcefile = null;
         FileOutputStream fileOutputStream = null;
         if (type.equals("csv")) {
@@ -477,6 +480,7 @@ public class DataImportExportUtils {
                 e.printStackTrace();
             }
         }
+        writeFileToResponse(response, sourcefile);
         return b;
     }
 
@@ -632,10 +636,10 @@ public class DataImportExportUtils {
     }
 
 //  =================================== Vendor-Import-Export ===================================
-    public boolean exportVendorList(ArrayList<VendorDto> vendorList, String type) {
+    public boolean exportVendorList(ArrayList<VendorDto> vendorList, String type, HttpServletResponse response) {
         boolean status = false;
-        String csvFilePath = System.getProperty("user.home") + "/Downloads/BCA_VendorList.csv";
-        String excelFilePath = System.getProperty("user.home") + "/Downloads/BCA_VendorList.xls";
+        String csvFilePath = "BCA_VendorList.csv";
+        String excelFilePath = "BCA_VendorList.xls";
         File sourcefile = null;
         FileOutputStream fileOutputStream = null;
         if (type.equals("csv")) {
@@ -751,6 +755,7 @@ public class DataImportExportUtils {
                 e.printStackTrace();
             }
         }
+        writeFileToResponse(response, sourcefile);
         return status;
     }
 
@@ -898,10 +903,10 @@ public class DataImportExportUtils {
     }
 
 //  =================================== Item-Import-Export ===================================
-    public boolean exportItemList(ArrayList<ItemDto> itemList, String type) {
+    public boolean exportItemList(ArrayList<ItemDto> itemList, String type, HttpServletResponse response) {
         boolean status = false;
-        String csvFilePath = System.getProperty("user.home") + "/Downloads/BCA_ItemList.csv";
-        String excelFilePath = System.getProperty("user.home") + "/Downloads/BCA_ItemList.xls";
+        String csvFilePath = "BCA_ItemList.csv";
+        String excelFilePath = "BCA_ItemList.xls";
         File sourcefile = null;
         FileOutputStream fileOutputStream = null;
         if (type.equals("csv")) {
@@ -981,6 +986,7 @@ public class DataImportExportUtils {
                 e.printStackTrace();
             }
         }
+        writeFileToResponse(response, sourcefile);
         return status;
     }
 
@@ -1112,6 +1118,18 @@ public class DataImportExportUtils {
         for(int x=0; x<columns.length; x++){
             sheet.setColumnWidth(x, 20*256);
             row.createCell(x).setCellValue(columns[x]);
+        }
+    }
+
+    private void writeFileToResponse(HttpServletResponse response, File outFile){
+        try {
+            if(outFile!=null && outFile.exists()) {
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-Disposition", "attachment; filename=" + outFile.getName());
+                FileCopyUtils.copy(new FileInputStream(outFile), response.getOutputStream());
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
     }
 }

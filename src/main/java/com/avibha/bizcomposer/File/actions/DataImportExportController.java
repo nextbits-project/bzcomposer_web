@@ -22,14 +22,19 @@ import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
 import com.pritesh.bizcomposer.accounting.bean.TblPayment;
 import org.apache.poi.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,17 +60,13 @@ public class DataImportExportController {
                 configInfo.getCongurationRecord(compId, configDto, request);
                 String type = request.getParameter("type");
                 if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-                    boolean b = importExportUtils.exportConfigurationInfo(configDto, type);
-                    if(b==true) {
-                        if(type.equals("csv")) {
-                            request.setAttribute("success", "BzComposer.exportconfig.configDataCSVDownloaded");
-                        } else {
-                            request.setAttribute("success", "BzComposer.exportconfig.configDataXLSDownloaded");
-                        }
+                    boolean status = importExportUtils.exportConfigurationInfo(configDto, type, response);
+                    if(status) {
+                        System.out.println("ConfigurationInfo Exported...");
                     }
+                }else {
+                    forward = "/file/configurationExport";
                 }
-                forward = "/file/configurationExport";
-                System.out.println("ConfigurationInfo Exported...");
             }
             else if(action.equalsIgnoreCase("Invoices")) {
                 InvoiceInfoDao invoice = new InvoiceInfoDao();
