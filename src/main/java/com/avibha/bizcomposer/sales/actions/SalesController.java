@@ -625,7 +625,7 @@ public class SalesController {
 			String cvId = request.getParameter("CustId");
 			//String itemIndex = request.getParameter("itemIndex");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			long savedCvID = sdetails.AddCustomer(request, customerDto);
+			sdetails.AddCustomer(request, customerDto);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "redirect:/Customer?tabid=NewCustomer";
 			}else {
@@ -1708,8 +1708,7 @@ public class SalesController {
 		String forward = "/include/dashboard";
 		String action = request.getParameter("tabid");
 
-		System.out.println("--------------SalesController-------ItemFileUpload-------" + request.getMethod());
-		System.out.println("tabid: " + action);
+		System.out.println("--------------SalesController-------ItemFileUpload------tabid: " + action);
 		if(action.equalsIgnoreCase("UploadItemFile")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			if(!attachFile.isEmpty()) {

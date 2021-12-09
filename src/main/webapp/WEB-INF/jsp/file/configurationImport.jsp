@@ -15,6 +15,9 @@
 function CloseMe(){
     window.close();
 }
+function pleaseWait(){
+    document.getElementById("pleaseWait").style.display = "block";
+}
 </script>
 </head>
 <body>
@@ -24,7 +27,7 @@ function CloseMe(){
 	</span>
 </div>
 <div>
-<form:form action="/importDataFromJsonFile?tabid=ConfigurationInfo" method="post" enctype="MULTIPART/FORM-DATA">
+<form:form action="/dataImportAction?tabid=ConfigurationInfo" method="post" enctype="MULTIPART/FORM-DATA">
 	<div style="margin: 20px 10px 0px 40px;">
 	 <table style="width:100%;">
 	 	<tr>
@@ -33,7 +36,7 @@ function CloseMe(){
  			</td>
 	 		<td style="width:33%;"><input type="file" name="attachFile" /></td>
 	 		<td style="width:33%;">
-                <input type="submit" class="formbutton" value="<spring:message code='BzComposer.global.upload'/>" />
+                <input type="submit" class="formbutton" onclick="pleaseWait();" value="<spring:message code='BzComposer.global.upload'/>" />
             </td>
 	 	</tr>
 	 	<tr><td colspan="3">&nbsp;</td></tr>
@@ -45,6 +48,7 @@ function CloseMe(){
 	 </table>
 	</div>
 	<div>
+	    <span style="color: green;display:none;" id="pleaseWait"><spring:message code="BzComposer.configuration.pleaseWait"/></span>
 		<c:if test="${not empty successMessage}">
 		  <span style="color: green"><spring:message code="BzComposer.FileUpload"/></span>
 		  <% session.removeAttribute("successMessage"); %>

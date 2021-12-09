@@ -1419,17 +1419,17 @@ public class CustomerInfoDao {
 		return valid;
 	}
 	
-	public boolean insertCustomer(String cvId, CustomerDto c, String compID, int istaxable, int isAlsoClient, int useIndividualFinanceCharges,
-								  int AssessFinanceChk, int FChargeInvoiceChk, String status) {
+	public boolean insertCustomer(CustomerDto c, String compID) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		PreparedStatement ps = null, pstmt = null;
 		boolean ret = false;
 		try {
-			String oBal = "0";
-			String exCredit = "0";
+			String oBal = "0.0";
+			String exCredit = "0.0";
+			String status = "N";
 			PurchaseInfo pinfo = new PurchaseInfo();
-			int cvID = Integer.parseInt(cvId); // pinfo.getLastClientVendorID()
+			int cvID = pinfo.getLastClientVendorID() + 1;
 
 			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
 				oBal = c.getOpeningUB();
@@ -1442,9 +1442,9 @@ public class CustomerInfoDao {
 
 			String sqlString = "insert into bca_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
 					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,ResellerTaxID,VendorOpenDebit,"
-					+ " VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,isPhoneMobileNumber,"
-					+ " isMobilePhoneNumber,MiddleName,DateInput,DateTerminated,isTerminated,DBAName) "
-					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					+ " VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,isPhoneMobileNumber,isMobilePhoneNumber,"
+					+ " MiddleName,DateInput,DateTerminated,isTerminated,DBAName, TermID,SalesRepID,ShipCarrierID,PaymentTypeID,CCTypeID) "
+					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setInt(1, cvID);
@@ -1467,11 +1467,11 @@ public class CustomerInfoDao {
 			pstmt.setString(18, c.getEmail());
 			pstmt.setString(19, compID);
 			pstmt.setString(20, c.getTexID());
-			pstmt.setString(21, oBal);
-			pstmt.setString(22, exCredit);
+			pstmt.setDouble(21, Double.parseDouble(oBal));
+			pstmt.setDouble(22, Double.parseDouble(exCredit));
 			pstmt.setString(23, c.getMemo());
-			pstmt.setInt(24, istaxable);
-			pstmt.setInt(25, isAlsoClient);
+			pstmt.setString(24, c.getTaxAble());
+			pstmt.setString(25, c.getIsclient());
 			pstmt.setString(26, c.getType());
 			pstmt.setString(27, vcName);
 			pstmt.setString(28, "1");
@@ -1484,32 +1484,22 @@ public class CustomerInfoDao {
 			pstmt.setDate(35, (c.getTerminatedDate()==null || c.getTerminatedDate().trim().equals(""))?null:string2date(c.getTerminatedDate()));
 			pstmt.setBoolean(36, c.isTerminated());
 			pstmt.setString(37, c.getDbaName());
+			pstmt.setString(38, c.getTerm());
+			pstmt.setString(39, c.getRep());
+			pstmt.setString(40, c.getShipping());
+			pstmt.setString(41, c.getPaymentType());
+			pstmt.setString(42, c.getCcType());
 
 			Loger.log(sqlString);
 			int num = pstmt.executeUpdate();
 			if (num > 0) {
 				ret = true;
 			}
-			if (c.getShipping() != null && c.getShipping().trim().length() > 0)
-				pinfo.updateClientVendor("ShipCarrierID", c.getShipping(), cvID);
-
-			if (c.getPaymentType() != null && c.getPaymentType().trim().length() > 0)
-				pinfo.updateClientVendor("PaymentTypeID", c.getPaymentType(), cvID);
-
-			if (c.getRep() != null && c.getRep().trim().length() > 0)
-				pinfo.updateClientVendor("SalesRepID", c.getRep(), cvID);
-
-			if (c.getTerm() != null && c.getTerm().trim().length() > 0)
-				pinfo.updateClientVendor("TermID", c.getTerm(), cvID);
-
-			if (c.getCcType() != null && c.getCcType().trim().length() > 0) {
-				pinfo.updateClientVendor("CCTypeID", c.getCcType(), cvID);
-			}
 
 			pinfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 			int bsAddID = pinfo.getLastBsAdd() + 1;
 
-		    if(c.getSetdefaultbs().equals("0")){		    	
+		    if("0".equals(c.getSetdefaultbs())){
 		    	pinfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(), c.getBslastName(), c.getBsaddress1(),
 						c.getBsaddress2(), c.getBscity(), c.getBsstate(), c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
 
@@ -1523,22 +1513,18 @@ public class CustomerInfoDao {
 						c.getAddress2(), c.getCity(), c.getState(), c.getProvince(), c.getCountry(), c.getZipCode(), "0");
 		    }
 
-			pinfo.insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(), c.getGracePrd(), AssessFinanceChk, FChargeInvoiceChk);
+			int useIndividual = "1".equals(c.getFsUseIndividual())?1:0;
+			int assFCharge = "1".equals(c.getFsAssessFinanceCharge())?1:0;
+			int markFCharge = "1".equals(c.getFsMarkFinanceCharge())?1:0;
+			pinfo.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(), c.getGracePrd(), assFCharge, markFCharge);
 
-			// --------------------------code to save services
-			// -------------------------------------START-------
+			// -----------------------code to save services---START------------------------
 			int i;
 			String sql;
 			String serviceID = c.getTable_serID();
-
 			String serviceBal = c.getTable_bal();
 			String defaultser = c.getTable_defaultVal();
-
 			String invStyleID = c.getTable_invId();
-
-			
-			
-			
 			//Loger.log("SERVICE----------------------->");
 
 			String temp[] = null, temp2[] = null, temp3[] = null;
@@ -1573,25 +1559,16 @@ public class CustomerInfoDao {
 					ps.executeUpdate();
 				}
 			}
-			// }
-			// --------------------------code to save services
-			// -------------------------------------END-------
-
+			// -------------------Code to save services---END-----------------------
 		} catch (SQLException ee) {
 			Loger.log(2,"SQLException in Class CustomerInfo,  method -insertCustomer "+ ee.toString());
 			ee.printStackTrace();
 		}finally {
 			try {
-				if (ps != null) {
-					db.close(ps);
-					}
-				if (pstmt != null) {
-					db.close(pstmt);
-					}
-					if(con != null){
-					db.close(con);
-					}
-				} catch (Exception e) {
+				if (ps != null) { db.close(ps); }
+				if (pstmt != null) { db.close(pstmt); }
+				if(con != null){ db.close(con); }
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

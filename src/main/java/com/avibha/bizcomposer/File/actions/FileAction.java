@@ -305,20 +305,13 @@ public class FileAction extends Action {
 			String type = request.getParameter("type");
 			if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls")))
 			{
-				CompanyInfoForm aform = (CompanyInfoForm)form;
-				FileMenuDao fDao = new FileMenuDao();
-				boolean b = fDao.exportCustomerList(request, type);
-				if(b==true)
-				{
-					if(type.equals("csv"))
-					{	
-//						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
-						request.setAttribute("success", "Customerlist.csv file downloaded successfully at /Downloads");
-					}
-					else
-					{
-//						request.setAttribute("success", "BzComposer.exportcustomer.customerlistinxlsdownloaded");
-						request.setAttribute("success", "Customerlist.xls file downloaded successfully at /Downloads");
+				DataImportExportUtils fDao = new DataImportExportUtils();
+				boolean b = fDao.exportCustomerList(null, type);
+				if(b==true) {
+					if(type.equals("csv")) {
+						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
+					} else {
+						request.setAttribute("success", "BzComposer.exportcustomer.customerlistinxlsdownloaded");
 					}
 				}
 			}
@@ -329,20 +322,13 @@ public class FileAction extends Action {
 			String type = request.getParameter("type");
 			if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls")))
 			{
-				CompanyInfoForm aform = (CompanyInfoForm)form;
-				FileMenuDao fDao = new FileMenuDao();
-				boolean b = fDao.exportVendorList(request, type);
-				if(b==true)
-				{
-					if(type.equals("csv"))
-					{	
+				DataImportExportUtils fDao = new DataImportExportUtils();
+				boolean b = fDao.exportVendorList(null, type);
+				if(b == true) {
+					if(type.equals("csv")) {
 						request.setAttribute("success", "BzComposer.exportvendor.vendorlistincsvdownloaded");
-						/*request.setAttribute("success", "Vendorlist.csv file downloaded successfully at /Downloads");*/
-					}
-					else
-					{
+					} else {
 						request.setAttribute("success", "BzComposer.exportvendor.vendorlistinxlsdownloaded");
-						/*request.setAttribute("success", "Vendorlist.xls file downloaded successfully at /Downloads");*/
 					}
 				}
 			}

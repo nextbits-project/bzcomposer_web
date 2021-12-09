@@ -14,17 +14,15 @@ import java.util.List;
 public class ConfigurationDto implements Serializable {
 
     private static final long serialVersionUID = 0;
+    public static final String ConfigColumns = "PoBoard,ItemReceivedBoard,ItemShippedBoard,SalesOrderBoard,ShowReorderPointList,ShowReorderPointWarning,"
+            + "ReservedQuantity,SalesOrderQty,ProductTaxable,CurrencyID,StartInvoiceNum,StartEstimationNum,StartSalesOrderNum,StartPONum,"
+            + "InvoiceStyleID,EstimationStyleID,SoStyleID,PoStyleID,FilterOption,AdminPassword,CustTaxable,AddressSettings,SalesTaxCode,SaleTaxRate,SaleTaxRate2,"
+            + "HowOftenSalesTax,DropShipCharge,ExtraChargeApplicable,ChargeAmount,OrderAmount,IsRefundAllowed,PoShowCountry,PoShowTelephone,IsPurchasePrefix,"
+            + "ShowReminder,AnnualInterestRate,MinCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge,MailServer,MailUserName,MailPassword,MailAuth,"
+            + "SenderEmail,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress";
 
     public int preferenceID = -1;
-    /* Back up Option */
-    private String backupLocation;
-
-    private String backupPeriod;
-
-    private String backupPlace;
-
     /*for Dashboard and General option*/
-
     private String poboard;
     private String itemReceivedBoard;
     private String itemShippedBoard;
@@ -39,7 +37,9 @@ public class ConfigurationDto implements Serializable {
     private String productTaxable;
     private String taxable;
 
-
+    private String backupLocation;
+    private String backupPeriod;
+    private String backupPlace;
 
     /* For General */
     private int currencyID;
@@ -69,11 +69,8 @@ public class ConfigurationDto implements Serializable {
 
     /* For Networking and security */
     private String userName;
-
     private int groupID;
-
     private String groupNm;
-
     private int multiUserConnection;
 
     private String password;
@@ -4068,19 +4065,16 @@ public class ConfigurationDto implements Serializable {
     public String getSalesTaxCode() {
         return salesTaxCode;
     }
-
     public void setSalesTaxCode(String salesTaxCode) {
         this.salesTaxCode = salesTaxCode;
     }
 
     public double getSaleTaxRate() { return saleTaxRate; }
-
     public void setSaleTaxRate(double saleTaxRate) {
         this.saleTaxRate = saleTaxRate;
     }
 
     public double getSaleTaxRate2() { return saleTaxRate2; }
-
     public void setSaleTaxRate2(double saleTaxRate2) { this.saleTaxRate2 = saleTaxRate2; }
 
     public int getHowOftenSalestax() {

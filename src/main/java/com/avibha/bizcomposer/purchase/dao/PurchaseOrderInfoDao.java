@@ -739,14 +739,15 @@ public class PurchaseOrderInfoDao {
 	 * Saves the new purchase order & its related information to the database.
 	 *  Also it saves the items for the purchaseorder.
 	 */
-	public void Save(String compId, PurchaseOrderDto form) {
+	public boolean Save(String compId, PurchaseOrderDto form) {
 		CustomerInfo cinfo = new CustomerInfo();
 		SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
 		ResultSet rs = null;
 		PreparedStatement pstmt = null, pstmt2 = null, pstmt1 = null, pstmt3 = null;
 		int cid = Integer.parseInt(compId);
 		int invoiceID = 0;
-		Connection con = db.getConnection();
+		boolean status = false;
 		try {
 			pstmt = con.prepareStatement("SELECT MAX(InvoiceID) FROM bca_invoice");
 			rs = pstmt.executeQuery();
@@ -803,6 +804,7 @@ public class PurchaseOrderInfoDao {
 					pstmt3.executeUpdate();
 					/* Add Item to Cart */
 					AddItem(invoiceID, cid, form);
+					status = true;
 				}
 			}
 		} catch (SQLException ee) {
@@ -820,6 +822,7 @@ public class PurchaseOrderInfoDao {
 				e.printStackTrace();
 			}
 		}
+		return status;
 	}
 	
 	/*	Updates the selected purchase order  & its related information
@@ -1015,6 +1018,7 @@ public class PurchaseOrderInfoDao {
 		ResultSet rs = null;
 		PreparedStatement pstmt = null, pstmt2 = null;
 
+		if(form.getItem()==null || form.getItem().isEmpty()) return;
 		String invIDs[] = form.getItem().split(";");
 		String invCodes[] = form.getCode().split(";");
 		String invNames[] = form.getDesc().split(";");
@@ -1333,13 +1337,17 @@ public class PurchaseOrderInfoDao {
 		try {
 			String sql = "SELECT InvoiceID,ClientVendorID,InvoiceStyleID,TermID,PaymentTypeID,ShipCarrierID,MessageID,Total,"
 					+ "date_format(DateAdded,'%m-%d-%Y') as DateAdded, Taxable,VendorAddrID,ShippingAddrID,Memo "
-					+ " FROM bca_invoice WHERE PONum=? and CompanyID=? AND invoiceStatus=0 and InvoiceTypeID=2";
+					+ " FROM bca_invoice WHERE CompanyID="+compId+" AND invoiceStatus=0 and InvoiceTypeID=2 ";
+			if(PONum > 0){
+				sql = sql+" AND PONum="+PONum;
+			}
 			pstmt = con.prepareStatement(sql);
-			pstmt.setLong(1, PONum);
-			pstmt.setString(2, compId);
 			rs = pstmt.executeQuery();
 			int invoiceID = 0;
-			if (rs.next()) {
+			while (rs.next()) {
+				if(!list.isEmpty()){
+					form = new PurchaseOrderDto();
+				}
 				invoiceID = rs.getInt("InvoiceID");
 				form.setCustID(rs.getString("ClientVendorID"));
 				form.setClientVendorID(form.getCustID());
@@ -1356,42 +1364,43 @@ public class PurchaseOrderInfoDao {
 				//shipAddr=rs.getString("ShippingAddrID");
 				form.setMemo(rs.getString("Memo"));
 				request.setAttribute("Style", form.getInvoiceStyle());
+
+				/* Bill Address */
+				ArrayList<PurchaseOrderDto> billAddresses = billAddress(compId, form.getCustID());
+				if (!billAddresses.isEmpty()) {
+					PurchaseOrderDto POBillAddr = billAddresses.get(0);
+					form.setBillAddrValue(POBillAddr.getBsAddressID());
+					form.setFullName(POBillAddr.getFullName());
+					form.setBillTo(POBillAddr.getBillTo());
+				}
+				/* Ship Address */
+				ArrayList<PurchaseOrderDto> shipAddresses = shipAddress(compId, form.getCustID());
+				if (!shipAddresses.isEmpty()) {
+					PurchaseOrderDto POShipAddr = shipAddresses.get(0);
+					form.setShipAddr(POShipAddr.getBsAddressID());
+					form.setShipTo(POShipAddr.getShipTo());
+				}
+				pstmtTemp = con.prepareStatement("select Name,FirstName,LastName from bca_clientvendor where ClientVendorID=?");
+				pstmtTemp.setString(1, form.getCustID());
+				rsTemp = pstmtTemp.executeQuery();
+				if (rsTemp.next()) {
+					form.setCompanyName(rsTemp.getString("Name"));
+					form.setFullName(rsTemp.getString("LastName") + ", " + rsTemp.getString("FirstName"));
+					request.setAttribute("CustomerName", form.getFullName());
+				}
+				request.setAttribute("VendorName", form.getCompanyName());
+				list.add(form);
+				/* Item List in the cart */
+				itemList(invoiceID, compId, request, form);
 			}
-			/* Bill Address */
-			ArrayList<PurchaseOrderDto> billAddresses = billAddress(compId, form.getCustID());
-			if(!billAddresses.isEmpty()) {
-				PurchaseOrderDto POBillAddr = billAddresses.get(0);
-				form.setBillAddrValue(POBillAddr.getBsAddressID());
-				form.setFullName(POBillAddr.getFullName());
-				form.setBillTo(POBillAddr.getBillTo());
-			}
-			/* Ship Address */
-			ArrayList<PurchaseOrderDto> shipAddresses = shipAddress(compId, form.getCustID());
-			if(!shipAddresses.isEmpty()) {
-				PurchaseOrderDto POShipAddr = shipAddresses.get(0);
-				form.setShipAddr(POShipAddr.getBsAddressID());
-				form.setShipTo(POShipAddr.getShipTo());
-			}
-			pstmt = con.prepareStatement("select Name,FirstName,LastName from bca_clientvendor where ClientVendorID=?");
-			pstmt.setString(1, form.getCustID());
-			rs = pstmt.executeQuery();
-			if(rs.next()){
-				form.setCompanyName(rs.getString("Name"));
-				form.setFullName(rs.getString("LastName")+", "+rs.getString("FirstName"));
-				request.setAttribute("CustomerName",form.getFullName());
-			}
-			request.setAttribute("VendorName", form.getCompanyName());
-			list.add(form);
-			/* Item List in the cart */
-			itemList(invoiceID, compId, request, form);
 		} catch (SQLException ex) {
 			Loger.log("Exception in getRecord Function" + ex.toString());
 			ex.printStackTrace();
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
 				if (rsTemp != null) { db.close(rsTemp); }
+				if (pstmt != null) { db.close(pstmt); }
 				if (pstmtTemp != null) { db.close(pstmtTemp); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
