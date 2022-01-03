@@ -14,7 +14,7 @@ public class CustomerDto {
 	public static final String customerColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
 			+ "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID,Taxable,CVTypeID,CVCategoryID,"
 			+ "VendorOpenDebit,VendorAllowedCredit,TermID,SalesRepID,ShipCarrierID,PaymentTypeID,UseIndividual,"
-			+ "AnnualInterestRate,MinimumFinanceCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge,Detail";
+			+ "AnnualInterestRate,MinimumFinanceCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge";
 
 	private String custId;
 	private int companyID;

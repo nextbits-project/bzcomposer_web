@@ -37,19 +37,16 @@ public class DataImportExportUtils {
 //  =================================== Configuration-Import-Export ===================================
     public boolean exportConfigurationInfo(ConfigurationDto configDto, String type, HttpServletResponse response) {
         boolean b = false;
-        String csvFilePath = "BCA_Configuration.csv";
-        String excelFilePath = "BCA_Configuration.xls";
+        String csvFilePath = System.getProperty("user.home") + "/Test/BCA_Configuration.csv";
+        String excelFilePath = System.getProperty("user.home") + "/Test/BCA_Configuration.xls";
         File sourcefile = null;
         FileOutputStream fileOutputStream = null;
         if (type.equals("csv")) {
             try {
                 sourcefile = new File(csvFilePath);
-                if (!sourcefile.exists()) {
-                    sourcefile.createNewFile();
-                    fileOutputStream = new FileOutputStream(csvFilePath);
-                } else {
-                    fileOutputStream = new FileOutputStream(csvFilePath);
-                }
+                checkFileExistance(sourcefile);
+                fileOutputStream = new FileOutputStream(csvFilePath);
+
                 FileWriter fileWriter = null;
                 fileWriter = new FileWriter(csvFilePath);
                 fileWriter.append(ConfigurationDto.ConfigColumns);
@@ -363,19 +360,16 @@ public class DataImportExportUtils {
 //  =================================== Customer-Import-Export ===================================
     public boolean exportCustomerList(ArrayList<CustomerDto> customerList, String type, HttpServletResponse response) {
         boolean b = false;
-        String csvFilePath = "BCA_CustomerList.csv";
-        String excelFilePath = "BCA_CustomerList.xls";
+        String csvFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.csv";
+        String excelFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.xls";
         File sourcefile = null;
         FileOutputStream fileOutputStream = null;
         if (type.equals("csv")) {
             try {
                 sourcefile = new File(csvFilePath);
-                if (!sourcefile.exists()) {
-                    sourcefile.createNewFile();
-                    fileOutputStream = new FileOutputStream(csvFilePath);
-                } else {
-                    fileOutputStream = new FileOutputStream(csvFilePath);
-                }
+                checkFileExistance(sourcefile);
+                fileOutputStream = new FileOutputStream(csvFilePath);
+
                 FileWriter fileWriter = null;
                 fileWriter = new FileWriter(csvFilePath);
                 fileWriter.append(CustomerDto.customerColumns);
@@ -413,7 +407,6 @@ public class DataImportExportUtils {
                     fileWriter.append(parseColumnValue(customer.getGracePrd(), 1)).append(COMMA_DELIMITER);
                     fileWriter.append(customer.getFsAssessFinanceCharge()).append(COMMA_DELIMITER);
                     fileWriter.append(parseColumnValue(customer.getFsMarkFinanceCharge(), 1)).append(COMMA_DELIMITER);
-                    fileWriter.append(parseColumnValue(customer.getMemo(), 1)).append(COMMA_DELIMITER);
                 }
                 fileWriter.flush();
                 fileWriter.close();
@@ -470,7 +463,6 @@ public class DataImportExportUtils {
                     row.createCell(29).setCellValue(parseColumnValue(customer.getGracePrd(), 1));
                     row.createCell(30).setCellValue(customer.getFsAssessFinanceCharge());
                     row.createCell(31).setCellValue(parseColumnValue(customer.getFsMarkFinanceCharge(), 1));
-                    row.createCell(32).setCellValue(parseColumnValue(customer.getMemo(), 1));
                 }
                 b = true;
                 workbook.write(fileOutputStream);
@@ -545,7 +537,6 @@ public class DataImportExportUtils {
                     customer.setGracePrd(data[29]);
                     customer.setFsAssessFinanceCharge(data[30]);
                     customer.setFsMarkFinanceCharge(data[31]);
-                    customer.setMemo(data[32]);
 
 //                  b = insertdataintodatabase(al, request, type);
                     customerInfoDao.insertCustomer(customer, compId);
@@ -618,7 +609,6 @@ public class DataImportExportUtils {
                             else if(count2 == 29) customer.setGracePrd(data);
                             else if(count2 == 30) customer.setFsAssessFinanceCharge(data);
                             else if(count2 == 31) customer.setFsMarkFinanceCharge(data);
-                            else if(count2 == 32) customer.setMemo(data);
                             count2++;
                         }
 //                        b = insertdataintodatabase(al, request, type);
@@ -638,19 +628,16 @@ public class DataImportExportUtils {
 //  =================================== Vendor-Import-Export ===================================
     public boolean exportVendorList(ArrayList<VendorDto> vendorList, String type, HttpServletResponse response) {
         boolean status = false;
-        String csvFilePath = "BCA_VendorList.csv";
-        String excelFilePath = "BCA_VendorList.xls";
+        String csvFilePath = System.getProperty("user.home") + "/Test/BCA_VendorList.csv";
+        String excelFilePath = System.getProperty("user.home") + "/Test/BCA_VendorList.xls";
         File sourcefile = null;
         FileOutputStream fileOutputStream = null;
         if (type.equals("csv")) {
             try {
                 sourcefile = new File(csvFilePath);
-                if (!sourcefile.exists()) {
-                    sourcefile.createNewFile();
-                    fileOutputStream = new FileOutputStream(csvFilePath);
-                } else {
-                    fileOutputStream = new FileOutputStream(csvFilePath);
-                }
+                checkFileExistance(sourcefile);
+                fileOutputStream = new FileOutputStream(csvFilePath);
+
                 FileWriter fileWriter = null;
                 fileWriter = new FileWriter(csvFilePath);
                 fileWriter.append(VendorDto.vendorColumns);
@@ -688,7 +675,6 @@ public class DataImportExportUtils {
                     fileWriter.append(parseColumnValue(customer.getGracePrd(), 1)).append(COMMA_DELIMITER);
                     fileWriter.append(customer.getFsAssessFinanceCharge()).append(COMMA_DELIMITER);
                     fileWriter.append(parseColumnValue(customer.getFsMarkFinanceCharge(), 1)).append(COMMA_DELIMITER);
-                    fileWriter.append(parseColumnValue(customer.getMemo(), 1)).append(COMMA_DELIMITER);
                 }
                 fileWriter.flush();
                 fileWriter.close();
@@ -745,7 +731,6 @@ public class DataImportExportUtils {
                     row.createCell(29).setCellValue(parseColumnValue(customer.getGracePrd(), 1));
                     row.createCell(30).setCellValue(customer.getFsAssessFinanceCharge());
                     row.createCell(31).setCellValue(parseColumnValue(customer.getFsMarkFinanceCharge(), 1));
-                    row.createCell(32).setCellValue(parseColumnValue(customer.getMemo(), 1));
                 }
                 status = true;
                 workbook.write(fileOutputStream);
@@ -820,7 +805,6 @@ public class DataImportExportUtils {
                     customer.setGracePrd(data[29]);
                     customer.setFsAssessFinanceCharge(data[30]);
                     customer.setFsMarkFinanceCharge(data[31]);
-                    customer.setMemo(data[32]);
 
 //                  b = insertdataintodatabase(al, request, type);
                     purchase.insertVendor(customer, compId);
@@ -885,7 +869,6 @@ public class DataImportExportUtils {
                             else if(count2 == 29) customer.setGracePrd(data);
                             else if(count2 == 30) customer.setFsAssessFinanceCharge(data);
                             else if(count2 == 31) customer.setFsMarkFinanceCharge(data);
-                            else if(count2 == 32) customer.setMemo(data);
                             count2++;
                         }
 //                        b = insertdataintodatabase(al, request, type);
@@ -905,19 +888,16 @@ public class DataImportExportUtils {
 //  =================================== Item-Import-Export ===================================
     public boolean exportItemList(ArrayList<ItemDto> itemList, String type, HttpServletResponse response) {
         boolean status = false;
-        String csvFilePath = "BCA_ItemList.csv";
-        String excelFilePath = "BCA_ItemList.xls";
+        String csvFilePath = System.getProperty("user.home") + "/Test/BCA_ItemList.csv";
+        String excelFilePath = System.getProperty("user.home") + "/Test/BCA_ItemList.xls";
         File sourcefile = null;
         FileOutputStream fileOutputStream = null;
         if (type.equals("csv")) {
             try {
                 sourcefile = new File(csvFilePath);
-                if (!sourcefile.exists()) {
-                    sourcefile.createNewFile();
-                    fileOutputStream = new FileOutputStream(csvFilePath);
-                } else {
-                    fileOutputStream = new FileOutputStream(csvFilePath);
-                }
+                checkFileExistance(sourcefile);
+                fileOutputStream = new FileOutputStream(csvFilePath);
+
                 FileWriter fileWriter = null;
                 fileWriter = new FileWriter(csvFilePath);
                 fileWriter.append(ItemDto.ItemColumns);
@@ -1121,6 +1101,18 @@ public class DataImportExportUtils {
         }
     }
 
+    private void checkFileExistance(File outFile){
+        try {
+            if (!outFile.getParentFile().exists()) {
+                outFile.getParentFile().mkdir();
+            }
+            if (!outFile.exists()) {
+                outFile.createNewFile();
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
     private void writeFileToResponse(HttpServletResponse response, File outFile){
         try {
             if(outFile!=null && outFile.exists()) {
