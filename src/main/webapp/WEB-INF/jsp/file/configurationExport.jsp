@@ -9,24 +9,24 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="${pageContext.request.contextPath}/styles/form.css" media="screen" rel="Stylesheet" type="text/css" />
 <script src="${pageContext.request.contextPath}/tableStyle/js/jquery.min.js"></script>
-<title><spring:message code="BzComposer.exportcustomertitle"/></title>
+<title>BzComposer - <spring:message code="BzComposer.exportConfuguration"/></title>
 <%@include file="/include/header.jsp"%>
 </head>
 <body>
 <div style="margin: 20px 10px 0px 40px;">
 	<span style="font-size: 1.2em; font-weight: normal; color: #05A9C5 !important;">
-		<spring:message code="BzComposer.exportcustomer" />
+		<spring:message code="BzComposer.exportConfuguration" />
 	</span>
 </div>
 <div>
-<form:form action="File?tabid=ExportCustomer" method="post" enctype="MULTIPART/FORM-DATA" styleId="uploadForm" modelAttribute="companyInfoDto">
+<form:form action="dataExportAction?tabid=ConfigurationInfo" method="post" id="uploadForm" modelAttribute="companyInfoDto">
     <div style="margin: 20px 10px 0px 40px;">
 	<table>
 		<tr>
-			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportcustomer.downloadcustomerincsv'/>" onclick="downloadCustomerList('csv')"/></td>
+			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportconfig.downloadConfigurationCSV'/>" onclick="downloadConfiguration('csv')"/></td>
 	    </tr>
 	    <tr>
-			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportcustomer.downloadcustomerinxls'/>" onclick="downloadCustomerList('xls')"/></td>
+			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportconfig.downloadConfigurationXLS'/>" onclick="downloadConfiguration('xls')"/></td>
 		</tr>
 		<tr><td>&nbsp;</td></tr>
         <tr>
@@ -45,10 +45,8 @@
 </div>
 <script type="text/javascript">
 var progress;
-function downloadCustomerList(type){
-	debugger;
-	document.forms[0].action = "File?tabid=ExportCustomer&type="+type;
-	document.forms[0].submit();
+function downloadConfiguration(type){
+	window.location = "dataExportAction?tabid=ConfigurationInfo&type="+type;
 }
 function CloseMe(){
     window.close();

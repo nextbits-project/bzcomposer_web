@@ -9,83 +9,38 @@ package com.avibha.bizcomposer.sales.forms;
 import java.util.List;
 
 public class CustomerDto {
-	
+
 	private static final long serialVersionUID = 0;
+	public static final String customerColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
+			+ "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID,Taxable,CVTypeID,CVCategoryID,"
+			+ "VendorOpenDebit,VendorAllowedCredit,TermID,SalesRepID,ShipCarrierID,PaymentTypeID,UseIndividual,"
+			+ "AnnualInterestRate,MinimumFinanceCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge";
 
 	private String custId;
-
-	private String horizon;
-
-	private String vertical;
-
-	private String labelHeight;
-
-	private String labelWidth;
-
-	private int labelType;
-
-	private String topMargin;
-
-	private String leftMargin;
-
-	private String labelName;
-
-	private String table_defaultVal;
-
-	private String table_DbDefSer;
-
-	private int table_size;
-
-	private String table_invId;
-
-	private String table_bal;
-
-	private String table_serID;
-
 	private int companyID;
-
 	private String companyName;
-	
 	private String clientVendorID;
-	
 	private String selectedRowID;
-
-	public String getSelectedRowID() {
-		return selectedRowID;
-	}
-
-	public void setSelectedRowID(String selectedRowID) {
-		this.selectedRowID = selectedRowID;
-	}
-
 	private String bsAddressID;
 
 	private String fullName;
-
 	private String rvName;
-
 	private String shipTo;
-
 	private String billTo;
 
 	private String cname;
 	private String dbaName;
 	private String bsdbaName;
 	private String shdbaName;
-
 	private String cntCode;
 
 	private String firstName;
 	private String middleName;
 	private String lastName;
-
 	private String address1;
-
 	private String address2;
-
 	private String city;
 	private String cityID;
-
 	private String state; // stores id of state
 	private String stateName; // stores name of state
 
@@ -94,7 +49,6 @@ public class CustomerDto {
 	private String cellPhone;
 	private String fax;
 	private String email;
-
 
 	private boolean isPhoneMobileNumber;
 	private boolean isMobilePhoneNumber;
@@ -105,38 +59,40 @@ public class CustomerDto {
 	private String dateInput;
 
 	private String title;
-	
-	private int titleID;		//Added on 31-07-2019
-	
-	private int categoryId;		//Added on 31-07-2019
-
+	private int titleID;
+	private int categoryId;
 	private String province;
-
 	private String country;
-
 	private String homePage;
 
 	private String type;
-
 	private String texID;
-
 	private String openingUB;
-
 	private String extCredit;
-	
 	private String remCredit;
-
 	private String memo;
 
 	private String term;
-
 	private String rep;
-	
 	private String creditTerm;
-
 	private String paymentType;
-
 	private String shipping;
+
+	private String horizon;
+	private String vertical;
+	private String labelHeight;
+	private String labelWidth;
+	private int labelType;
+	private String topMargin;
+	private String leftMargin;
+	private String labelName;
+
+	private String table_defaultVal;
+	private String table_DbDefSer;
+	private int table_size;
+	private String table_invId;
+	private String table_bal;
+	private String table_serID;
 
 	private String ccType;
 	private String cardNo;
@@ -149,9 +105,7 @@ public class CustomerDto {
 	private List<UpdateInvoiceDto> customerServices;
 
 	private String annualIntrestRate;
-
 	private String minFCharges;
-
 	private String gracePrd;
 
 	private String fsCardNo;
@@ -257,7 +211,13 @@ public class CustomerDto {
 		this.custId = custId;
 	}
 
+	public String getSelectedRowID() {
+		return selectedRowID;
+	}
 
+	public void setSelectedRowID(String selectedRowID) {
+		this.selectedRowID = selectedRowID;
+	}
 	public String getCreditTerm() {
 		return creditTerm;
 	}
@@ -402,77 +362,35 @@ public class CustomerDto {
 		this.total = total;
 	}
 
-	/**
-	 * @return the address1
-	 */
 	public String getAddress1() {
 		return address1;
 	}
-
-	/**
-	 * @param address1
-	 *            the address1 to set
-	 */
 	public void setAddress1(String address1) {
 		this.address1 = address1;
 	}
 
-	/**
-	 * @return the address2
-	 */
 	public String getAddress2() {
 		return address2;
 	}
-
-	/**
-	 * @param address2
-	 *            the address2 to set
-	 */
 	public void setAddress2(String address2) {
 		this.address2 = address2;
 	}
 
-	/**
-	 * @return the annualIntrestRate
-	 */
-	public String getAnnualIntrestRate() {
-		return annualIntrestRate;
-	}
-
-	/**
-	 * @param annualIntrestRate
-	 *            the annualIntrestRate to set
-	 */
+	public String getAnnualIntrestRate() { return annualIntrestRate; }
 	public void setAnnualIntrestRate(String annualIntrestRate) {
 		this.annualIntrestRate = annualIntrestRate;
 	}
 
-	/**
-	 * @return the bsaddress1
-	 */
 	public String getBsaddress1() {
 		return bsaddress1;
 	}
-
-	/**
-	 * @param bsaddress1
-	 *            the bsaddress1 to set
-	 */
 	public void setBsaddress1(String bsaddress1) {
 		this.bsaddress1 = bsaddress1;
 	}
 
-	/**
-	 * @return the bsaddress2
-	 */
 	public String getBsaddress2() {
 		return bsaddress2;
 	}
-
-	/**
-	 * @param bsaddress2
-	 *            the bsaddress2 to set
-	 */
 	public void setBsaddress2(String bsaddress2) {
 		this.bsaddress2 = bsaddress2;
 	}

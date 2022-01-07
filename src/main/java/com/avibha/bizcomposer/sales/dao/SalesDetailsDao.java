@@ -5,6 +5,7 @@
  */
 package com.avibha.bizcomposer.sales.dao;
 
+import com.avibha.bizcomposer.File.actions.DataImportExportUtils;
 import com.avibha.bizcomposer.accounting.dao.AccountingDAO;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
@@ -28,12 +29,10 @@ import org.apache.struts.util.LabelValueBean;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SalesDetailsDao {
 
@@ -54,53 +53,25 @@ public class SalesDetailsDao {
 		request.setAttribute("Via", sales.getVia(compId));
 	}
 
-	public long AddCustomer(HttpServletRequest request, CustomerDto cfrm) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		String istaxable = request.getParameter("isTaxable");
-		String isAlsoClient = request.getParameter("isAlsoClient");
-		String UseIndividualFinanceCharges = request.getParameter("UseIndividualFinanceCharges");
-		String AssessFinanceChk = request.getParameter("AssessFinanceChk");
-		String FChargeInvoiceChk = request.getParameter("FChargeInvoiceChk");
-		Loger.log("istaxable:" + istaxable);
-		Loger.log("isAlsoClient:" + isAlsoClient);
-		int istax = 0;
-		int isclient = 2; // 1: Customer+Vendor, 2: Customer, 3: Vendor
-		int indCharge = 0;
-		int aFCharge = 0;
-		int fICharge = 0;
-
-		if ("on".equalsIgnoreCase(istaxable))
-			istax = 1;
-
-		if ("on".equalsIgnoreCase(isAlsoClient))
-			isclient = 1;
-
-		if ("on".equalsIgnoreCase(UseIndividualFinanceCharges))
-			indCharge = 1;
-
-		if ("on".equalsIgnoreCase(AssessFinanceChk))
-			aFCharge = 1;
-
-		if ("on".equalsIgnoreCase(FChargeInvoiceChk))
-			fICharge = 1;
-
-		PurchaseInfo pinfo = new PurchaseInfo();
-		long cvID = pinfo.getLastClientVendorID() + 1;
-
+	public void AddCustomer(HttpServletRequest request, CustomerDto customerDto) {
+		String compId = (String) request.getSession().getAttribute("CID");
 		CustomerInfoDao customer = new CustomerInfoDao();
+
+		customerDto.setTaxAble( "on".equalsIgnoreCase(request.getParameter("isTaxable"))?"1":"0" );
+		customerDto.setIsclient( "on".equalsIgnoreCase(request.getParameter("isAlsoClient"))?"1":"2" );	// 1: Customer+Vendor, 2: Customer, 3: Vendor
+		customerDto.setFsUseIndividual( "on".equalsIgnoreCase(request.getParameter("UseIndividualFinanceCharges"))?"1":"0" );
+		customerDto.setFsAssessFinanceCharge( "on".equalsIgnoreCase(request.getParameter("AssessFinanceChk"))?"1":"0" );
+		customerDto.setFsMarkFinanceCharge( "on".equalsIgnoreCase(request.getParameter("FChargeInvoiceChk"))?"1":"0" );
 		try{
-			boolean addCust = customer.insertCustomer(cvID + "", cfrm, compId, istax, isclient, indCharge, aFCharge, fICharge, "N");
+			boolean addCust = customer.insertCustomer(customerDto, compId);
 			if(addCust){
 				request.setAttribute("SaveStatus",new ActionMessage("Customer Information is Successfully Added!"));
-				sess.setAttribute("actionMsg", "Customer Information is Successfully Added!");
+				request.getSession().setAttribute("actionMsg", "Customer Information is Successfully Added!");
 			}
 		}catch (Exception e) {
-			// TODO: handle exception
 			request.setAttribute("SaveStatus",new ActionMessage("Customer Information is Not Insert !."));
-			sess.setAttribute("actionMsg", "Customer Information is Not Insert!");
+			request.getSession().setAttribute("actionMsg", "Customer Information is Not Insert!");
 		}
-		return cvID;
 	}
 
 	public void getAllList(HttpServletRequest request) {
@@ -337,17 +308,29 @@ public class SalesDetailsDao {
 		sales.updateSalesData(sNewvalID, sTitleval, sOldval, sNewval, taxRateVal, compId);
 	}
 	public void uploadItemFile(HttpServletRequest request, MultipartFile attachFile) {
-		ItemInfoDao info = new ItemInfoDao();
-		boolean b = info.saveUploadFile(attachFile, request);
+		DataImportExportUtils importExportUtils = new DataImportExportUtils();
+		boolean b = importExportUtils.uploadItemFile(attachFile, request);
 		if(b==true) {
 			request.getSession().setAttribute("ItemUploaded", "successfully");
 		}
 	}
-	public void exportFile(HttpServletRequest request, ItemDto im, String type)
+	public void exportFile(HttpServletRequest request, ItemDto itemDto, String type, HttpServletResponse response)
 	{
-		ItemInfoDao info = new ItemInfoDao();
+		String compId = (String) request.getSession().getAttribute("CID");
+		ItemInfoDao itemInfoDao = new ItemInfoDao();
 		if(type != null && (type.equals("xls") || type.equals("csv"))) {
-			boolean b = info.exportItem(request, type);
+			DataImportExportUtils importExportUtils = new DataImportExportUtils();
+			ArrayList<ItemDto> itemList = itemInfoDao.SearchItem(compId, null, itemDto, request);
+			Collections.sort(itemList, Comparator.comparing(ItemDto::getParentID));
+			for(ItemDto item1: itemList){
+				for(ItemDto item2: itemList){
+					if(item1.getParentID().equals(item2.getInventoryId())){
+						item1.setCategoryName(item2.getItemCode());
+						break;
+					}
+				}
+			}
+			boolean b = importExportUtils.exportItemList(itemList, type, response);
 			if(b == true) {
 				if(type.equals("xls")) {
 					request.setAttribute("success", "BzComposer.exportitem.itemlistinxlsdownloaded");
@@ -865,7 +848,9 @@ public class SalesDetailsDao {
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfoDao item = new ItemInfoDao();
 		String itemType = request.getParameter("ItemType");
-		//Loger.log("FILE PHOTO  _______________________          "+itemFrm.getPhotoName().getFileName());
+		if(itemType == null){
+			itemType = itemFrm.getItemType();
+		}
 		if (itemType.equals("2")) {
 			itemFrm.setItemCode(itemFrm.getItemCodeDis());
 			itemFrm.setInvTitle(itemFrm.getInvTitleDis());
@@ -914,7 +899,6 @@ public class SalesDetailsDao {
 				request.getSession().setAttribute("SaveStatus", "Item saved successfully");
 			}
 		} catch (Exception ex) {
-			// TODO: handle exception
 			ex.printStackTrace();
 		}
 		Loger.log("item added successfully");

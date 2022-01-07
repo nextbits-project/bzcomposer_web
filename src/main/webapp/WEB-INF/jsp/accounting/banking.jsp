@@ -1,4 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt" %>
 <%@ page isELIgnored="false"%>
 <html>
 <head>
@@ -6,11 +11,6 @@
 <%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt" %>
 <title><spring:message code="BzComposer.bankingtitle"/></title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

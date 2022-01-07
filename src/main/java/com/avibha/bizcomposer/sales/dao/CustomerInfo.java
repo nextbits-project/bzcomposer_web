@@ -1970,7 +1970,6 @@ public class CustomerInfo {
 			Loger.log(2, "ParseException" + e.getMessage());
 		}
 		return (d1 != null ? new java.sql.Date(d1.getTime()) : new java.sql.Date(new Date().getTime()));
-
 	}
 
    public String date2String(Date date)

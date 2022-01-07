@@ -308,10 +308,10 @@ public class ConfigurationInfo {
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 cForm.setPreferenceID(rs.getInt("PreferenceID"));
-                cForm.setAddressSettings(rs.getString("copyAddress").equals("1")?"on":"off");
+                cForm.setAddressSettings("1".equals(rs.getString("copyAddress"))?"on":"off");
                 cForm.setCustDefaultCountryID(rs.getInt("CustomerCountryID"));
                 cForm.setSelectedStateId(rs.getInt("CustomerStateID"));
-                cForm.setCustTaxable(rs.getString("CustomerTaxable").equals("1")?"on":"off");
+                cForm.setCustTaxable("1".equals(rs.getString("CustomerTaxable"))?"on":"off");
                 cForm.setSelectedTermId(rs.getInt("SalesTermID"));
                 cForm.setSelectedSalesRepId(rs.getInt("SalesRepID"));
                 cForm.setSelectedPaymentId(rs.getInt("SalesPayMethodID"));
@@ -319,8 +319,8 @@ public class ConfigurationInfo {
                 cForm.setAnnualInterestRate(rs.getDouble("Charge_interest"));
                 cForm.setMinCharge(rs.getDouble("Charge_minimum"));
                 cForm.setGracePeriod(rs.getInt("Charge_grace"));
-                cForm.setAssessFinanceCharge(rs.getString("Charge_reassess").equals("1") ? "on" : "off");
-                cForm.setMarkFinanceCharge(rs.getString("Charge_MarkFinance").equals("1") ? "on" : "off");
+                cForm.setAssessFinanceCharge("1".equals(rs.getString("Charge_reassess")) ? "on" : "off");
+                cForm.setMarkFinanceCharge("1".equals(rs.getString("Charge_MarkFinance")) ? "on" : "off");
                 cForm.setProductCategoryID(rs.getInt("ProductCategoryID"));
                 cForm.setLocationID(rs.getInt("LocationID"));
                 cForm.setReorderPoint(rs.getInt("ReOrderPoint"));
@@ -408,9 +408,9 @@ public class ConfigurationInfo {
 
                 /*Billing*/
                 cForm.setStartingBillNumber(rs.getInt("StartingBillNumber"));
-                cForm.setPrintBills(rs.getString("PrintBills").equals("1") ? "on" : "off");
-                cForm.setMailToCustomer(rs.getString("MailToCustomer").equals("1") ? "on" : "off");
-                cForm.setShowCombinedBilling(rs.getString("showCombinedBilling").equals("1")? "on" : "off");
+                cForm.setPrintBills("1".equals(rs.getString("PrintBills")) ? "on" : "off");
+                cForm.setMailToCustomer("1".equals(rs.getString("MailToCustomer")) ? "on" : "off");
+                cForm.setShowCombinedBilling("1".equals(rs.getString("showCombinedBilling"))? "on" : "off");
                 cForm.setShowBillingStatStyle(rs.getInt("showBillingStatStyle"));
 
                 /*RMA*/
@@ -434,26 +434,26 @@ public class ConfigurationInfo {
                 cForm.setScheduleDays(rs.getInt("AutoPaymentDuration"));
                 cForm.setReimbursementSettings(rs.getInt("DefaultReimbusrementSetting"));
                 /*Inventory Setting*/
-                cForm.setShowReorderPointList(rs.getString("showReorderPointList").equals("1")?"on":"off");
-                cForm.setShowReorderPointWarning(rs.getString("showReorderPointWarring").equals("1")?"on":"off");
-                cForm.setReservedQuantity(rs.getString("reservedQuantity").equals("1")?"on":"off");
-                cForm.setSalesOrderQty(rs.getString("salesOrderQty").equals("1")?"on":"off");
+                cForm.setShowReorderPointList("1".equals(rs.getString("showReorderPointList"))?"on":"off");
+                cForm.setShowReorderPointWarning("1".equals(rs.getString("showReorderPointWarring"))?"on":"off");
+                cForm.setReservedQuantity("1".equals(rs.getString("reservedQuantity"))?"on":"off");
+                cForm.setSalesOrderQty("1".equals(rs.getString("salesOrderQty"))?"on":"off");
 
                 /* Networking & Security */
-                //cForm.setPassword(rs.getString("AdminPassword"));
+                cForm.setPassword(rs.getString("AdminPassword"));
                 cForm.setMultiUserConnection(rs.getInt("Multimode"));
 
                 /* Sales & Customer */
                 cForm.setSortBy(rs.getInt("DEFAULTCustomerSortID"));
                 cForm.setCustomerGroup(rs.getInt("DEFAULTCustomerGroupID"));
                 cForm.setCustDefaultCountryID(rs.getInt("CustomerCountryID"));
-                cForm.setCustTaxable(rs.getString("CustomerTaxable").equals("1")?"on":"off");
-                cForm.setIsSalesOrder(rs.getString("showSalesOrder").equals("1")?"on":"off");
+                cForm.setCustTaxable("1".equals(rs.getString("CustomerTaxable"))?"on":"off");
+                cForm.setIsSalesOrder("1".equals(rs.getString("showSalesOrder"))?"on":"off");
                 cForm.setCustomerProvince(rs.getString("CustomerProvience"));
                 cForm.setCustomerShippingId((rs.getInt("SalesViaID")));
 
                 cForm.setStartInvoiceNum(rs.getString("StartingInvoiceNumber"));
-                cForm.setAddressSettings(rs.getString("copyAddress").equals("1")?"on":"off");
+                cForm.setAddressSettings("1".equals(rs.getString("copyAddress"))?"on":"off");
                 cForm.setSelectedStateId(rs.getInt("CustomerStateID"));
                 cForm.setSelectedShippingId(rs.getInt("ShippingFeeMethod"));
                 cForm.setSelectedSalesRepId(rs.getInt("SalesRepID"));
@@ -464,11 +464,11 @@ public class ConfigurationInfo {
                 //added by tulsi
                 cForm.setInvStyleID(rs.getInt("InvoiceStyleID"));
                 cForm.setSelectedMessageId(rs.getInt("InvoiceFootnoteID"));
-                cForm.setSaleShowCountry(rs.getString("SaleShowCountry").equals("1")? "on" : "off");
-                cForm.setRatePriceChangable(rs.getString("IsRatePriceChangeble").equals("1")? "on" : "off");
-                cForm.setSaleShowTelephone(rs.getString("SaleShowTelephone").equals("1")? "on" : "off");
-                cForm.setIsSalePrefix(rs.getString("IsSalePrefix").equals("1")? "on" : "off");
-                cForm.setExtraChargeApplicable(rs.getString("ExtraCharge").equals("1")?"on":"off");
+                cForm.setSaleShowCountry("1".equals(rs.getString("SaleShowCountry"))? "on" : "off");
+                cForm.setRatePriceChangable("1".equals(rs.getString("IsRatePriceChangeble"))? "on" : "off");
+                cForm.setSaleShowTelephone("1".equals(rs.getString("SaleShowTelephone"))? "on" : "off");
+                cForm.setIsSalePrefix("1".equals(rs.getString("IsSalePrefix"))? "on" : "off");
+                cForm.setExtraChargeApplicable("1".equals(rs.getString("ExtraCharge"))?"on":"off");
                 cForm.setChargeAmount(rs.getInt("ChargeAmount"));
                 cForm.setOrderAmount(rs.getInt("OrderAmount"));
                 cForm.setHowOftenSalestax(rs.getInt("HowOftenSalestax"));
@@ -477,8 +477,7 @@ public class ConfigurationInfo {
                 cForm.setSaleTaxRate(rs.getDouble("SalesTaxRate"));
                 cForm.setDropShipCharge(rs.getInt("DropShipCharge"));
                 cForm.setIsShowDropShipItems(rs.getInt("ShowDropShipItems"));
-                cForm.setIsRefundAllowed(rs.getString("isRefundAllowed").equals("1")?"on":"off");
-                String r = rs.getString("isRefundAllowed").equals("1")?"on":"off";
+                cForm.setIsRefundAllowed("1".equals(rs.getString("isRefundAllowed"))?"on":"off");
                 /* Purchase & Vendor */
 				/*cForm.setVendorDefaultCountryID(rs.getInt("VendorCountryID"));
 				cForm.setStartPONum(rs.getLong("StartingPONumber"));
@@ -501,13 +500,13 @@ public class ConfigurationInfo {
                 cForm.setSelectedSalesRepId(rs.getInt("PORepID"));
                 cForm.setSelectedPaymentId(rs.getInt("POPayMethodID"));
                 cForm.setSelectedActiveEmployeeId(rs.getInt("EmployeeInChargeID"));
-                cForm.setPoShowCountry(rs.getString("POShowCountry").equals("1")?"on":"off");
-                cForm.setPoShowTelephone(rs.getString("POShowTelephone").equals("1")?"on":"off");
-                cForm.setIsPurchasePrefix(rs.getString("IsPurchasePrefix").equals("1")?"on":"off");
+                cForm.setPoShowCountry("1".equals(rs.getString("POShowCountry"))?"on":"off");
+                cForm.setPoShowTelephone("1".equals(rs.getString("POShowTelephone"))?"on":"off");
+                cForm.setIsPurchasePrefix("1".equals(rs.getString("IsPurchasePrefix"))?"on":"off");
 
                 /* Inventory */
                 cForm.setStartRINum(rs.getLong("StartingRINumber"));
-                cForm.setProductTaxable(rs.getString("ProductTaxable").equals("1") ? "on" : "off");
+                cForm.setProductTaxable("1".equals(rs.getString("ProductTaxable")) ? "on" : "off");
 
                 /* Employee */
                 cForm.setEmpStateID(rs.getInt("EmployeeStateID"));
@@ -517,12 +516,12 @@ public class ConfigurationInfo {
                 cForm.setTimeSheet(rs.getLong("TimeSheetSet"));
 
                 /* Tax */
-                cForm.setChargeSalesTax(rs.getString("ChargeSalestax").equals("1") ? "true" : "false");
+                cForm.setChargeSalesTax("1".equals(rs.getString("ChargeSalestax")) ? "true" : "false");
                 cForm.setHowOftenSalesTax(rs.getInt("HowOftenSalestax"));
                 cForm.setSalesTaxID(rs.getInt("SalesTaxID"));
 
                 /* Reminders */
-                cForm.setShowReminder(rs.getString("ShowReminder").equals("1") ? "on" : "off");
+                cForm.setShowReminder("1".equals(rs.getString("ShowReminder")) ? "on" : "off");
                 cForm.setInvoiceMemo(rs.getInt("InvoiceMemo"));
                 cForm.setInvoiceMemoDays(rs.getInt("InvoiceMemoDays"));
                 cForm.setOverdueInvoice(rs.getInt("OverdueInvoice"));
@@ -544,8 +543,8 @@ public class ConfigurationInfo {
                 cForm.setAnnualInterestRate(rs.getDouble("Charge_interest"));
                 cForm.setMinCharge(rs.getDouble("Charge_minimum"));
                 cForm.setGracePeriod(rs.getInt("Charge_grace"));
-                cForm.setAssessFinanceCharge(rs.getString("Charge_reassess").equals("1") ? "on" : "off");
-                cForm.setMarkFinanceCharge(rs.getString("Charge_MarkFinance").equals("1") ? "on" : "off");
+                cForm.setAssessFinanceCharge("1".equals(rs.getString("Charge_reassess")) ? "on" : "off");
+                cForm.setMarkFinanceCharge("1".equals(rs.getString("Charge_MarkFinance")) ? "on" : "off");
                 cForm.setStartMonth(rs.getInt("BudgetStartMonth"));
                 cForm.setEndMonth(rs.getInt("BudgetEndMonth"));
 
@@ -564,7 +563,7 @@ public class ConfigurationInfo {
                 cForm.setMailServer(rs.getString("Mailserver"));
                 cForm.setMailUserName(rs.getString("Mail_username"));
                 cForm.setMailPassword(rs.getString("Mail_password"));
-                cForm.setMailAuth(rs.getString("Mail_Auth").equals("1") ? "true": "false");
+                cForm.setMailAuth("1".equals(rs.getString("Mail_Auth")) ? "true": "false");
 
                 /*Dashboard*/
                 cForm.setPoboard(rs.getString("poboard").equals("1")?"on":"off");

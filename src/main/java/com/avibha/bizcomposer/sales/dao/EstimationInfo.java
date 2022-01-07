@@ -724,16 +724,13 @@ public class EstimationInfo {
 	}
 
 	public void AddItem(int invoiceID, int cid, EstimationDto form) {
-		Connection con = null ;
-		PreparedStatement pstmt = null, pstmt2 = null;
 		SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
+		PreparedStatement pstmt = null, pstmt2 = null;
 		ResultSet rs = null;
 		int cartID = 0;
-		if (db == null)
-			return;
-		con = db.getConnection();
-		if (con == null)
-			return;
+
+		if(form.getItem()==null || form.getItem().isEmpty()) return;
 		int size = form.getSize();
 		int[] inventoryID = new int[size];
 		String[] code = new String[size];

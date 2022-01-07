@@ -679,12 +679,12 @@ public class PurchaseInfo {
 			pstmt.setString(4, fname);
 			pstmt.setString(5, lname);
 			pstmt.setString(6, add1);
-			pstmt.setString(7, add2);
+			pstmt.setString(7, add2!=null?add2:"");
 			pstmt.setString(8, city);
 			pstmt.setString(9, zip);
 			pstmt.setString(10, country);
 			pstmt.setString(11, state);
-			pstmt.setString(12, province);
+			pstmt.setString(12, province!=null?province:"");
 			pstmt.setString(13, addressType);
 			pstmt.setString(14, dbaName);
 			pstmt.setString(15, "N");

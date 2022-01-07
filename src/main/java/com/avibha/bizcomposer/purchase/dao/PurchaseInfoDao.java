@@ -9,6 +9,7 @@ package com.avibha.bizcomposer.purchase.dao;
 import com.avibha.bizcomposer.purchase.forms.*;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.bizcomposer.sales.forms.CreditCardDto;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -280,8 +281,7 @@ public class PurchaseInfoDao {
 	 * The method insert the new vendor. It insert all the information related
 	 * to that vendor such as finance charges,services,bsaaddress,etc.
 	 */
-	public boolean insertVendor(String cvId, VendorDto c, String compID, int istaxable, int isAlsoClient, int useIndividualFinanceCharges,
-                                int AssessFinanceChk, int FChargeInvoiceChk, String status, String stateName) {
+	public boolean insertVendor(VendorDto c, String compID) {
 		boolean ret = false;
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
@@ -290,13 +290,11 @@ public class PurchaseInfoDao {
 		try {
 			String oBal = "0";
 			String exCredit = "0";
+			// generating new cvId
 			PurchaseInfoDao pinfo = new PurchaseInfoDao();
-			int cvID = Integer.parseInt(cvId);
-			if (isAlsoClient == 1) {
-				isAlsoClient = 1;
-			} else {
-				isAlsoClient = 3;
-			}
+			PurchaseInfo purchaseInfo = new PurchaseInfo();
+			int cvID = purchaseInfo.getLastClientVendorID() + 1;
+
 			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
 				oBal = c.getOpeningUB();
 			if (c.getExtCredit() != null && c.getExtCredit().trim().length() > 0)
@@ -306,10 +304,10 @@ public class PurchaseInfoDao {
 			String vcName = vc.CVCategory(c.getType());
 
 			String sqlString = "insert into bca_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
-					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,"
-					+ " ResellerTaxID,VendorOpenDebit,VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,"
-					+ " isMobilePhoneNumber,MiddleName,DateInput,DateTerminated,isTerminated,DBAName) "
-					+ " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,ResellerTaxID,VendorOpenDebit,"
+					+ " VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,isMobilePhoneNumber,"
+					+ " MiddleName,DateInput,DateTerminated,isTerminated,DBAName, TermID,SalesRepID,ShipCarrierID,PaymentTypeID,CCTypeID) "
+					+ " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setInt(1, cvID);
@@ -322,7 +320,7 @@ public class PurchaseInfoDao {
 			pstmt.setString(7, c.getAddress1());
 			pstmt.setString(8, c.getAddress2());
 			pstmt.setString(9, c.getCity());
-			pstmt.setString(10, stateName);
+			pstmt.setString(10, c.getStateName());
 			pstmt.setString(11, c.getProvince());
 			pstmt.setString(12, c.getCountry());
 			pstmt.setString(13, c.getZipCode());
@@ -336,46 +334,35 @@ public class PurchaseInfoDao {
 			pstmt.setString(21, oBal);
 			pstmt.setString(22, exCredit);
 			pstmt.setString(23, c.getMemo());
-			pstmt.setInt(24, istaxable);
-			pstmt.setInt(25, isAlsoClient);
+			pstmt.setString(24, c.getTaxAble());
+			pstmt.setString(25, c.getIsclient());
 			pstmt.setString(26, c.getType());
 			pstmt.setString(27, vcName);
 			pstmt.setString(28, "1");
 			pstmt.setString(29, "0");
-			pstmt.setString(30, status);
+			pstmt.setString(30, "N");
 			pstmt.setBoolean(31, c.isIsMobilePhoneNumber());
 			pstmt.setString(32, c.getMiddleName());
 			pstmt.setDate(33, (c.getDateInput()==null || c.getDateInput().trim().equals(""))?null:cinfo.string2date(c.getDateInput()));
 			pstmt.setDate(34, (c.getTerminatedDate()==null || c.getTerminatedDate().trim().equals(""))?null:cinfo.string2date(c.getTerminatedDate()));
 			pstmt.setBoolean(35, c.isTerminated());
 			pstmt.setString(36, c.getDbaName());
+			pstmt.setString(37, c.getTerm());
+			pstmt.setString(38, c.getRep());
+			pstmt.setString(39, c.getShipping());
+			pstmt.setString(40, c.getPaymentType());
+			pstmt.setString(41, c.getCcType());
 
 			Loger.log(sqlString);
 			int num = pstmt.executeUpdate();
 			if (num > 0) {
 				ret = true;
 			}
-			if (c.getShipping() != null && c.getShipping().trim().length() > 0)
-				pinfo.updateClientVendor("ShipCarrierID", c.getShipping(), cvID);
-
-			if (c.getPaymentType() != null && c.getPaymentType().trim().length() > 0)
-				pinfo.updateClientVendor("PaymentTypeID", c.getPaymentType(), cvID);
-
-			if (c.getRep() != null && c.getRep().trim().length() > 0)
-				pinfo.updateClientVendor("SalesRepID", c.getRep(), cvID);
-
-			if (c.getTerm() != null && c.getTerm().trim().length() > 0)
-				pinfo.updateClientVendor("TermID", c.getTerm(), cvID);
-
-			if (c.getCcType() != null && c.getCcType().trim().length() > 0) {
-				pinfo.updateClientVendor("CCTypeID", c.getCcType(), cvID);
-			}
 
 			pinfo.insertVendorCreditCard(c.getCcType(), cvID, c.getCardNo(), c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 
 			int bsAddID = pinfo.getLastBsAdd() + 1;
-			
-		    if(c.getSetdefaultbs().equals("0")){		    	
+			if("0".equals(c.getSetdefaultbs())){
 		    	pinfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(), c.getBslastName(), c.getBsaddress1(),
 						c.getBsaddress2(), c.getBscity(), c.getBsstate(), c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
 
@@ -388,18 +375,11 @@ public class PurchaseInfoDao {
 		    	pinfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(), c.getLastName(), c.getAddress1(),
 						c.getAddress2(), c.getCity(), c.getState(), c.getProvince(), c.getCountry(), c.getZipCode(), "0");
 		    }
-			
-//			pinfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c
-//					.getBsfirstName(), c.getBslastName(), c.getBsaddress1(), c
-//					.getBsaddress2(), c.getBscity(), c.getBsstate(), c
-//					.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
-//
-//			pinfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c
-//					.getShfirstName(), c.getShlastName(), c.getShaddress1(), c
-//					.getShaddress2(), c.getShcity(), c.getShstate(), c
-//					.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 
-			pinfo.insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(), c.getGracePrd(), AssessFinanceChk, 0);
+			int useIndividual = "1".equals(c.getFsUseIndividual())?1:0;
+			int assFCharge = "1".equals(c.getFsAssessFinanceCharge())?1:0;
+			int markFCharge = "1".equals(c.getFsMarkFinanceCharge())?1:0;
+			pinfo.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(), c.getGracePrd(), assFCharge, markFCharge);
 
 			//code to save services START
 			int i;
@@ -1043,13 +1023,13 @@ public class PurchaseInfoDao {
 	 * Searches the vendor details
 	 */
 
-	public void SearchVendor(String compId, String cvId, HttpServletRequest request, VendorDto customer) {
+	public ArrayList SearchVendor(String compId, String cvId, HttpServletRequest request, VendorDto customer) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null, rs1 = null, rs2 = null, rs3 = null, rs12 = null, rs13 = null, rs22 = null;
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null, pstmt3 = null, pstmt4 = null, pstmt12 = null, pstmt13 = null;
-		ArrayList<VendorDto> serviceinfo = new ArrayList<>();
+		ArrayList<VendorDto> vendorList = new ArrayList<>();
 		try {
 			String sqlString = "SELECT distinct cv.ClientVendorID,cv.Name,cv.FirstName, cv.LastName, cv.Address1, cv.Address2,"
 				+ "cv.City,cv.State, cv.Province, cv.Country,cv.ZipCode, cv.Phone, cv.CellPhone,cv.Fax, cv.Email,cv.HomePage,"
@@ -1063,61 +1043,19 @@ public class PurchaseInfoDao {
 				+ "cv.isMobilePhoneNumber,cv.DBAName "
 				+ "FROM  bca_clientvendor AS cv left join ( bca_creditcard AS cc, bca_bsaddress AS ad, bca_clientvendorfinancecharges AS vfc )"
 				+ " on (cc.ClientVendorID= cv.ClientVendorID and ad.ClientVendorID = cv.ClientVendorID and vfc.ClientVendorID= cv.ClientVendorID) "
-				+ "WHERE CompanyID="+compId+" AND cv.ClientVendorID ="+cvId+" AND cv.Deleted='0' AND cv.Status IN ('N','U') and cv.CVTypeID IN (1, 3)"
-				+ " group by ( cv.ClientVendorID ) order by cv.ClientVendorID ";
+				+ "WHERE CompanyID="+compId+" AND cv.CVTypeID IN (1, 3) AND cv.Status IN ('N','U') AND cv.Deleted='0' AND cv.Active=1 ";
+			if(cvId != null){
+				sqlString = sqlString+ " AND cv.ClientVendorID ="+cvId;
+			}
+			sqlString = sqlString+ " group by ( cv.ClientVendorID ) order by cv.ClientVendorID ";
 
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-
-			String sqlString11 = "select ClientVendorID,ServiceID,DateAdded,InvoiceStyleID,ServiceBalance,DefaultService from bca_clientvendorservice where CompanyID = ? and ClientVendorID = ?";
-			String sqlString12 = "select  Name from bca_invoicestyle where Active=1 and InvoiceStyleID=?";
-			String sqlString13 = "select ServiceName from bca_servicetype where ServiceID=? ";
-
-			pstmt2 = con.prepareStatement(sqlString11);
-			pstmt12 = con.prepareStatement(sqlString12);
-			pstmt13 = con.prepareStatement(sqlString13);
-			pstmt2.setString(1, compId);
-			pstmt2.setString(2, cvId);
-			rs22 = pstmt2.executeQuery();
-			String default_ser = "";
-			while (rs22.next()) {
-				VendorDto uform1 = new VendorDto();
-				uform1.setServiceBalance((rs22.getDouble("ServiceBalance")));
-				uform1.setDefaultService(rs22.getInt("DefaultService"));
-
-				int svID = rs22.getInt("ServiceID");
-				uform1.setServiceID(svID);
-
-				if (uform1.getDefaultService() == 1) {
-					default_ser = String.valueOf(svID);
-				}
-
-				pstmt12.setString(1, rs22.getString("InvoiceStyleID"));
-				rs12 = pstmt12.executeQuery();
-				pstmt13.setString(1, String.valueOf(svID));
-				rs13 = pstmt13.executeQuery();
-
-				while (rs12.next()) {
-					uform1.setInvoiceStyle(rs12.getString(1));
-
-				}
-				while (rs13.next()) {
-					uform1.setServiceName(rs13.getString(1));
-				}
-
-				serviceinfo.add(uform1);
-			}
-			request.setAttribute("ServiceInfo", serviceinfo);
-			if (!(default_ser.equals(""))) {
-				request.setAttribute("DefaultService", default_ser);
-			} else {
-				default_ser = "0";
-				request.setAttribute("DefaultService", default_ser);
-			}
-			//String country = "";
-			if (rs.next()) {
-				//country = rs.getString(10);
+			while (rs.next()) {
 				/* General */
+				if(!vendorList.isEmpty()){
+					customer = new VendorDto();
+				}
 				customer.setClientVendorID(rs.getString(1));
 				customer.setCname(rs.getString(2));
 				customer.setFirstName(rs.getString(3));
@@ -1174,88 +1112,131 @@ public class PurchaseInfoDao {
 				customer.setTerminated(rs.getBoolean(52));
 				customer.setIsMobilePhoneNumber(rs.getBoolean(53));
 				customer.setDbaName(rs.getString(54));
-			}
-			rs.close();
-			pstmt.close();
 
-			String sqlString1 = "SELECT Name,FirstName,LastName,Address1,Address2,City,ZipCode,Country,State,Province,DBAName "
-				+ " FROM bca_bsaddress WHERE ClientVendorID='"+cvId+"' and AddressType='1' and Status in ('N', 'U')";
-			pstmt1 = con.prepareStatement(sqlString1);
-			rs1 = pstmt1.executeQuery();
-			if (rs1.next()) {
-				customer.setBscname(rs1.getString(1));
-				customer.setBsfirstName(rs1.getString(2));
-				customer.setBslastName(rs1.getString(3));
-				customer.setBsaddress1(rs1.getString(4));
-				customer.setBsaddress2(rs1.getString(5));
-				customer.setBscity(rs1.getString(6));
-				customer.setBszipCode(rs1.getString(7));
-				customer.setBscountry(rs1.getString(8));
-				customer.setBsstate(rs1.getString(9));
-				customer.setBsprovince(rs1.getString(10));
-				customer.setBsdbaName(rs1.getString(11));
-				request.setAttribute("state_bt", customer.getBsstate());
-			}
 
-			String sqlString2 = "SELECT Name,FirstName,LastName,Address1,Address2,City,ZipCode,Country,State,Province,DBAName "
-				+ "FROM bca_bsaddress WHERE ClientVendorID='"+cvId+"' and AddressType='0' and Status in ('N', 'U')";
-			pstmt3 = con.prepareStatement(sqlString2);
-			rs2 = pstmt3.executeQuery();
-			if (rs2.next()) {
-				customer.setShcname(rs2.getString(1));
-				customer.setShfirstName(rs2.getString(2));
-				customer.setShlastName(rs2.getString(3));
-				customer.setShaddress1(rs2.getString(4));
-				customer.setShaddress2(rs2.getString(5));
-				customer.setShcity(rs2.getString(6));
-				customer.setShzipCode(rs2.getString(7));
-				customer.setShcountry(rs2.getString(8));
-				customer.setShstate(rs2.getString(9));
-				customer.setShprovince(rs2.getString(10));
-				customer.setShdbaName(rs2.getString(11));
-				request.setAttribute("state_st", customer.getShstate());
-			}
-
-			/* for Account tab */
-			pstmt4 = con.prepareStatement("select SalesRepID,TermID,PaymentTypeID,ShipCarrierID from bca_clientvendor where CompanyID=? and ClientVendorID=?");
-			pstmt4.setString(1, compId);
-			pstmt4.setString(2, cvId);
-			rs3 = pstmt4.executeQuery();
-			if (rs3.next()) {
-				customer.setRep(rs3.getString(1));
-				customer.setTerm(rs3.getString(2));
-				customer.setPaymentType(rs3.getString(3));
-				customer.setShipping(rs3.getString(4));
-			}
-			pstmt4.close();
-			rs3.close();
-
-			// ---start---------------------------------------------------------------------code
-			List<CreditCardDto> creditCards = new ArrayList<>();
-			pstmt4 = con.prepareStatement("select c.*,t.Name AS CardTypeName from bca_creditcard AS c INNER JOIN bca_cctype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
-			pstmt4.setString(1, cvId);
-			rs3 = pstmt4.executeQuery();
-			while (rs3.next()) {
-				CreditCardDto card = new CreditCardDto();
-				card.setCardID(rs3.getInt("CreditCardID"));
-				card.setClientVendorID(rs3.getInt("ClientVendorID"));
-				card.setCcType(rs3.getString("CCTypeID"));
-				card.setCardNo(rs3.getString("CardNumber"));
-				card.setExpDate(rs3.getString("CardExpMonth") + " / " + rs3.getString("CardExpYear"));
-				card.setCw2(rs3.getString("CardCW2"));
-				card.setCardHolderName(rs3.getString("CardHolderName"));
-				card.setCardBillAddress(rs3.getString("CardBillingAddress"));
-				card.setCardZip(rs3.getString("CardBillingZipCode"));
-				card.setCardDefault(rs3.getBoolean("DEFAULTCard"));
-				if(card.getCardNo() != null && card.getCardNo().length()>4) {
-					String ccTypeName = rs3.getString("CardTypeName") + "...." + card.getCardNo().substring(card.getCardNo().length() - 4);
-					card.setCcTypeName(ccTypeName);
+				String sqlString1 = "SELECT Name,FirstName,LastName,Address1,Address2,City,ZipCode,Country,State,Province,DBAName "
+						+ " FROM bca_bsaddress WHERE ClientVendorID='" + cvId + "' and AddressType='1' and Status in ('N', 'U')";
+				pstmt1 = con.prepareStatement(sqlString1);
+				rs1 = pstmt1.executeQuery();
+				if (rs1.next()) {
+					customer.setBscname(rs1.getString(1));
+					customer.setBsfirstName(rs1.getString(2));
+					customer.setBslastName(rs1.getString(3));
+					customer.setBsaddress1(rs1.getString(4));
+					customer.setBsaddress2(rs1.getString(5));
+					customer.setBscity(rs1.getString(6));
+					customer.setBszipCode(rs1.getString(7));
+					customer.setBscountry(rs1.getString(8));
+					customer.setBsstate(rs1.getString(9));
+					customer.setBsprovince(rs1.getString(10));
+					customer.setBsdbaName(rs1.getString(11));
+					request.setAttribute("state_bt", customer.getBsstate());
 				}
-				creditCards.add(card);
+
+				String sqlString2 = "SELECT Name,FirstName,LastName,Address1,Address2,City,ZipCode,Country,State,Province,DBAName "
+						+ "FROM bca_bsaddress WHERE ClientVendorID='" + cvId + "' and AddressType='0' and Status in ('N', 'U')";
+				pstmt3 = con.prepareStatement(sqlString2);
+				rs2 = pstmt3.executeQuery();
+				if (rs2.next()) {
+					customer.setShcname(rs2.getString(1));
+					customer.setShfirstName(rs2.getString(2));
+					customer.setShlastName(rs2.getString(3));
+					customer.setShaddress1(rs2.getString(4));
+					customer.setShaddress2(rs2.getString(5));
+					customer.setShcity(rs2.getString(6));
+					customer.setShzipCode(rs2.getString(7));
+					customer.setShcountry(rs2.getString(8));
+					customer.setShstate(rs2.getString(9));
+					customer.setShprovince(rs2.getString(10));
+					customer.setShdbaName(rs2.getString(11));
+					request.setAttribute("state_st", customer.getShstate());
+				}
+
+				/* for Account tab */
+				pstmt4 = con.prepareStatement("select SalesRepID,TermID,PaymentTypeID,ShipCarrierID from bca_clientvendor where CompanyID=? and ClientVendorID=?");
+				pstmt4.setString(1, compId);
+				pstmt4.setString(2, cvId);
+				rs3 = pstmt4.executeQuery();
+				if (rs3.next()) {
+					customer.setRep(rs3.getString(1));
+					customer.setTerm(rs3.getString(2));
+					customer.setPaymentType(rs3.getString(3));
+					customer.setShipping(rs3.getString(4));
+				}
+				pstmt4.close();
+				rs3.close();
+
+				// ---start---------------------------------------------------------------------code
+				List<CreditCardDto> creditCards = new ArrayList<>();
+				pstmt4 = con.prepareStatement("select c.*,t.Name AS CardTypeName from bca_creditcard AS c INNER JOIN bca_cctype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
+				pstmt4.setString(1, cvId);
+				rs3 = pstmt4.executeQuery();
+				while (rs3.next()) {
+					CreditCardDto card = new CreditCardDto();
+					card.setCardID(rs3.getInt("CreditCardID"));
+					card.setClientVendorID(rs3.getInt("ClientVendorID"));
+					card.setCcType(rs3.getString("CCTypeID"));
+					card.setCardNo(rs3.getString("CardNumber"));
+					card.setExpDate(rs3.getString("CardExpMonth") + " / " + rs3.getString("CardExpYear"));
+					card.setCw2(rs3.getString("CardCW2"));
+					card.setCardHolderName(rs3.getString("CardHolderName"));
+					card.setCardBillAddress(rs3.getString("CardBillingAddress"));
+					card.setCardZip(rs3.getString("CardBillingZipCode"));
+					card.setCardDefault(rs3.getBoolean("DEFAULTCard"));
+					if (card.getCardNo() != null && card.getCardNo().length() > 4) {
+						String ccTypeName = rs3.getString("CardTypeName") + "...." + card.getCardNo().substring(card.getCardNo().length() - 4);
+						card.setCcTypeName(ccTypeName);
+					}
+					creditCards.add(card);
+				}
+				customer.setCustomerCards(creditCards);
+
+//				============================ Services ============================
+				String sqlString11 = "select ClientVendorID,ServiceID,DateAdded,InvoiceStyleID,ServiceBalance,DefaultService from bca_clientvendorservice where CompanyID = ? and ClientVendorID = ?";
+				pstmt2 = con.prepareStatement(sqlString11);
+				pstmt2.setString(1, compId);
+				pstmt2.setString(2, cvId);
+				rs22 = pstmt2.executeQuery();
+				String default_ser = "";
+				ArrayList<VendorDto> serviceinfo = new ArrayList<>();
+				while (rs22.next()) {
+					VendorDto uform1 = new VendorDto();
+					uform1.setServiceBalance((rs22.getDouble("ServiceBalance")));
+					uform1.setDefaultService(rs22.getInt("DefaultService"));
+
+					int svID = rs22.getInt("ServiceID");
+					uform1.setServiceID(svID);
+					if (uform1.getDefaultService() == 1) {
+						default_ser = String.valueOf(svID);
+					}
+
+					String sqlString12 = "select  Name from bca_invoicestyle where Active=1 and InvoiceStyleID=?";
+					pstmt12 = con.prepareStatement(sqlString12);
+					pstmt12.setString(1, rs22.getString("InvoiceStyleID"));
+					rs12 = pstmt12.executeQuery();
+					while (rs12.next()) {
+						uform1.setInvoiceStyle(rs12.getString(1));
+					}
+
+					String sqlString13 = "select ServiceName from bca_servicetype where ServiceID=? ";
+					pstmt13 = con.prepareStatement(sqlString13);
+					pstmt13.setString(1, String.valueOf(svID));
+					rs13 = pstmt13.executeQuery();
+					while (rs13.next()) {
+						uform1.setServiceName(rs13.getString(1));
+					}
+					serviceinfo.add(uform1);
+				}
+				request.setAttribute("ServiceInfo", serviceinfo);
+				if (!(default_ser.equals(""))) {
+					request.setAttribute("DefaultService", default_ser);
+				} else {
+					default_ser = "0";
+					request.setAttribute("DefaultService", default_ser);
+				}
+				vendorList.add(customer);
 			}
-			customer.setCustomerCards(creditCards);
 			request.setAttribute("vendorDetails1", customer);
-			
 			//System.out.println("vendorDetails1:"+customer.toString());
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
@@ -1282,7 +1263,7 @@ public class PurchaseInfoDao {
 				e.printStackTrace();
 			}
 		}
-		
+		return vendorList;
 	}
 
 	/*

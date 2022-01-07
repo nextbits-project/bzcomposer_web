@@ -16,58 +16,33 @@ import java.util.List;
 public class VendorDto{
 	
 	private static final long serialVersionUID = 0;
-	
-	private int addressType;
-	
-	private String selectedRowID;
-	
-	private String table_defaultVal;
-
-	private String table_DbDefSer;
-
-	private int table_size;
-
-	private String table_invId;
-
-	private String table_bal;
-
-	private String table_serID;
+	public static final String vendorColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
+			+ "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID,Taxable,CVTypeID,CVCategoryID,"
+			+ "VendorOpenDebit,VendorAllowedCredit,TermID,SalesRepID,ShipCarrierID,PaymentTypeID,UseIndividual,"
+			+ "AnnualInterestRate,MinimumFinanceCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge,Detail";
 
 	private int companyID;
-
 	private String clientVendorID;
-
 	private String bsAddressID;
-
 	private String fullName;
-
 	private String rvName;
-
 	private String shipTo;
-
 	private String billTo;
 
 	private String cname;
 	private String dbaName;
 	private String bsdbaName;
 	private String shdbaName;
-
 	private String cntCode;
 
 	private String firstName;
 	private String middleName;
 	private String lastName;
-
 	private String address1;
-
 	private String address2;
-
 	private String city;
-
 	private String state; // stores id of state
-
 	private String stateName; // stores name of state
-
 	private String zipCode;
 
 	private String phone;
@@ -82,45 +57,37 @@ public class VendorDto{
 
 	private String dateAdded;
 	private String dateInput;
-
 	private String title;
-
 	private String province;
-
 	private String country;
 
 	private String homePage;
-
 	private String type;
-
 	private String texID;
-
 	private String openingUB;
-
 	private String extCredit;
-
 	private String memo;
 
 	private String term;
-
 	private String rep;
-
 	private String paymentType;
-
 	private String shipping;
 
+	private int addressType;
+	private String selectedRowID;
+	private String table_defaultVal;
+	private String table_DbDefSer;
+	private int table_size;
+	private String table_invId;
+	private String table_bal;
+	private String table_serID;
+
 	private String ccType;
-
 	private String cardNo;
-
 	private String expDate;
-
 	private String cw2;
-
 	private String cardHolderName;
-
 	private String cardBillAddress;
-
 	private String cardZip;
 	private List<CreditCardDto> customerCards;
 

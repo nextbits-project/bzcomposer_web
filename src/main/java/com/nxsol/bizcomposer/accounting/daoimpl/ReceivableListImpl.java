@@ -5447,59 +5447,51 @@ public class ReceivableListImpl implements ReceivableLIst {
 	        }
 	        return tempBankAccounts;
 	    }
-	 private ArrayList<TblAccount> getBankAccountsOfCategoryIdFundTransfer(int accountCategoryId) {
 
-	        ArrayList<TblAccount> tempBankAccounts = new ArrayList<TblAccount>();
-	        for (TblAccount bankAccount : bankAccountsInFundTransfer) {    //bankAccounts
-	            if (accountCategoryId == bankAccount.getAccountCategoryID() &&
-	                    bankAccount.getParentID() <= 0) {
-	                if (bankAccount.getName().equals("Customer Deposit Account")) {
-	                    /*if (tblbusinessmodulesLoader.chechFeatureExist("Upfront Deposit")) {
-	                        tempBankAccounts.add(bankAccount);
-	                    }*/
-	                } else {
-	                    tempBankAccounts.add(bankAccount);
-	                }
-	            }
-	        }
-	        return tempBankAccounts;
-	    }
+	private ArrayList<TblAccount> getBankAccountsOfCategoryIdFundTransfer(int accountCategoryId) {
+		ArrayList<TblAccount> tempBankAccounts = new ArrayList<TblAccount>();
+		for (TblAccount bankAccount : bankAccountsInFundTransfer) {    //bankAccounts
+			if (accountCategoryId == bankAccount.getAccountCategoryID() &&
+					bankAccount.getParentID() <= 0) {
+				if (bankAccount.getName().equals("Customer Deposit Account")) {
+					/*if (tblbusinessmodulesLoader.chechFeatureExist("Upfront Deposit")) {
+						tempBankAccounts.add(bankAccount);
+					}*/
+				} else {
+					tempBankAccounts.add(bankAccount);
+				}
+			}
+		}
+		return tempBankAccounts;
+	}
+
 	@Override
 	public ArrayList<TblPayment> getPaymentsForBanking(TblAccount account, Date from , Date to,String transType , Boolean useFilter) {
-		// TODO Auto-generated method stub
-		String dataStr = "";
-		Connection con;
-		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
+		Connection con = db.getConnection();
+		Statement stmt = null;
 		ResultSet rs = null;
-		dataStr = getSQL4Date(from, to);
-		ArrayList<TblPayment> payments = new ArrayList<TblPayment>();
+		ArrayList<TblPayment> payments = new ArrayList<>();
 		
 		String trans = "";
 		String dateAdded = "";
-		String colDateAdded = "DateAdded";
-		colDateAdded = "Date_Format(pay.DateAdded,'%Y-%m-%d')";
-		
-		 if (transType.equals("ALLPAYMENTS")) {
-	            trans = " pay.PayerID=" + account.getAccountID();
-	        } else if (transType.equals("ALLDEPOSITE")) {
-	            trans = " pay.PayeeID = " + account.getAccountID();
-	        } else if (transType.equals("INVOICE")) {
-	            if (account.getAccountCategoryID() != 7) {
-	                trans = " pay.PayeeID =" + account.getAccountID() + " AND pay.InvoiceID > 0";
-	            }
+		String colDateAdded = "Date_Format(pay.DateAdded,'%Y-%m-%d')";
 
-	       } else if (transType.equals("PURCHASE")) {
-	            trans = " pay.PayerID =" + account.getAccountID() + " AND pay.InvoiceID > 0 AND pay.RmaNo <= 0";
-	       } else{
-			 System.out.println("Account data "+account.getAccountID());
-	    	   		trans = " ( pay.PayerID =" + account.getAccountID() + " OR pay.PayeeID=" + account.getAccountID() + ")";
-	       }
-		
+		if (transType.equals("ALLPAYMENTS")) {
+			trans = " pay.PayerID=" + account.getAccountID();
+		} else if (transType.equals("ALLDEPOSITE")) {
+			trans = " pay.PayeeID = " + account.getAccountID();
+		} else if (transType.equals("INVOICE")) {
+			if (account.getAccountCategoryID() != 7) {
+				trans = " pay.PayeeID =" + account.getAccountID() + " AND pay.InvoiceID > 0";
+			}
+	    } else if (transType.equals("PURCHASE")) {
+			trans = " pay.PayerID =" + account.getAccountID() + " AND pay.InvoiceID > 0 AND pay.RmaNo <= 0";
+	    } else{
+			trans = " ( pay.PayerID =" + account.getAccountID() + " OR pay.PayeeID=" + account.getAccountID() + ")";
+	    }
+
 		StringBuffer sql = new StringBuffer();
-		
-		
 		sql.append("SELECT *, pType.Name AS paymentTypeName , c.FirstName , c.LastName , c.Name AS companyName , cat.Name AS cName , payeeAccount.Name As payeeAccount");
 		sql.append(", payerAccount.Name As payerAccount , cv.FirstName AS VendorFirstName , cv.LastName AS VendorLastName");
 		sql.append(" FROM bca_payment AS pay");
@@ -5513,19 +5505,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 		sql.append(" WHERE");
 		sql.append(trans);
 		if (from != null && to != null) {
-            Timestamp t=new Timestamp(to.getYear(), to.getMonth(), to.getDate(), 23, 00, 00,0);
-            
-            
+            Timestamp t = new Timestamp(to.getYear(), to.getMonth(), to.getDate(), 23, 00, 00,0);
             dateAdded = " AND " + colDateAdded + " BETWEEN " + ConstValue.getTIMESTAMP_START() + "'"+JProjectUtil.qbFormatter().format(from)+"'" + ConstValue.getTIMESTAMP_END() + " AND " + ConstValue.getTIMESTAMP_START() + "'"+t+"'" + ConstValue.getTIMESTAMP_END();
         }
-		/*if(!dataStr.equals(""))
- 		{
+		/*if(!dataStr.equals("")){
 			dateAdded = " AND DATE_FORMAT(pay.DateAdded,'%Y-%m-%d')  " + dataStr;
  		}*/
 		sql.append(dateAdded);
 		sql.append(" AND pay.CompanyID = " + ConstValue.companyId+ " AND pay.DELETED<>1 AND c.Status IN ('U','N')");
-		if(!transType.equals("INVOICE") && !transType.equals("PURCHASE") && !transType.equals("ALLDEPOSITE"))
-		{	
+		if(!transType.equals("INVOICE") && !transType.equals("PURCHASE") && !transType.equals("ALLDEPOSITE")) {
 			sql.append(" OR ( ( pay.InvoiceID = -1 OR pay.ClientVendorID = -1 OR pay.CategoryID = -1) AND pay.Deleted =0");
 			sql.append(dateAdded + ")");
 		}	
@@ -5535,91 +5523,71 @@ public class ReceivableListImpl implements ReceivableLIst {
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql.toString());
-			
 			while(rs.next())
 			{
 				TblPayment payment = new TblPayment();
-				 payment.setId(rs.getInt("PaymentID"));
-		            payment.setAmount(rs.getDouble("Amount"));
-		            payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
-		            payment.setPaymentTypeName(rs.getString("paymentTypeName"));
-		            payment.setPayerID(rs.getInt("PayerID"));
-		            payment.setPayeeID(rs.getInt("PayeeID"));
-		            payment.setAccountID(rs.getInt("AccountID"));
-		            payment.setCvID(rs.getInt("ClientVendorID"));
-		            payment.setInvoiceID(rs.getInt("InvoiceID"));
-		            payment.setCategoryId(rs.getInt("CategoryID"));
-		            payment.setAccountCategoryId(rs.getInt("AccountCategoryID"));
-		            payment.setCheckNumber(rs.getString("CheckNumber"));
-		            payment.setDeleted(rs.getBoolean("Deleted"));
-		            payment.setAcID(account.getAccountID());
-		            payment.setPayableID(rs.getInt("PayableID"));
-		            if(account.getAccountID() == payment.getPayerID())
-		            {
-		            	payment.setBalanceForBanking(rs.getDouble("PayFromBalance"));
-		            }
-		            else
-		            {
-		            	payment.setBalanceForBanking(rs.getDouble("PayToBalance"));
-		            }
-		            if(account.getAccountID() == payment.getPayerID())
-		            {	
-		            	payment.setFromCurrentBalance(payment.getAmount());
-		            }	else {
-		            	payment.setToCurrentBalance(payment.getAmount());
-		            }
-		            
-		            payment.setTransactionID(rs.getString("TransactionType"));
-		            payment.setBillNum(rs.getInt("BillNum"));
+				payment.setId(rs.getInt("PaymentID"));
+				payment.setAmount(rs.getDouble("Amount"));
+				payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
+				payment.setPaymentTypeName(rs.getString("paymentTypeName"));
+				payment.setPayerID(rs.getInt("PayerID"));
+				payment.setPayeeID(rs.getInt("PayeeID"));
+				payment.setAccountID(rs.getInt("AccountID"));
+				payment.setCvID(rs.getInt("ClientVendorID"));
+				payment.setInvoiceID(rs.getInt("InvoiceID"));
+				payment.setCategoryId(rs.getInt("CategoryID"));
+				payment.setAccountCategoryId(rs.getInt("AccountCategoryID"));
+				payment.setCheckNumber(rs.getString("CheckNumber"));
+				payment.setDeleted(rs.getBoolean("Deleted"));
+				payment.setAcID(account.getAccountID());
+				payment.setPayableID(rs.getInt("PayableID"));
+				if(account.getAccountID() == payment.getPayerID()) {
+					payment.setBalanceForBanking(rs.getDouble("PayFromBalance"));
+				} else {
+					payment.setBalanceForBanking(rs.getDouble("PayToBalance"));
+				}
+				if(account.getAccountID() == payment.getPayerID()) {
+					payment.setFromCurrentBalance(payment.getAmount());
+				} else {
+					payment.setToCurrentBalance(payment.getAmount());
+				}
+				payment.setTransactionID(rs.getString("TransactionType"));
+				payment.setBillNum(rs.getInt("BillNum"));
 
-		            try {
-		                payment.setDateAdded(new Date(rs.getTimestamp("DateAdded").getTime()));
-		            } catch (Exception e) {
-		                payment.setDateAdded(null);
-		            }
-		            payment.setToBePrinted(rs.getBoolean("IsToBePrinted"));
-		            payment.setNeedToDeposit(rs.getBoolean("isNeedtoDeposit"));
-		            payment.setCvName(rs.getString("FirstName")+ " " + rs.getString("LastName") + "(" + rs.getString("CompanyName") + ")");
-		            if(payment.getCvName().equals("null null(null)"))
-		            {
-		            	payment.setCvName(rs.getString("payeeAccount"));
-		            }
-		            if(payment.getCvName() == null)
-		            {
-		            	payment.setCvName(rs.getString("VendorFirstName") + " " + rs.getString("VendorLastName"));
-		            }
-		            payment.setOrderNum(rs.getInt("OrderNum"));
-		            payment.setPoNum(rs.getInt("PONum"));
-		            payment.setCategoryName(rs.getString("cName") + " " +rs.getString("CateNumber"));
-		            payment.setPyerAccountForBanking(rs.getString("payerAccount"));
-		            payments.add(payment);
-
+				try {
+					payment.setDateAdded(new Date(rs.getTimestamp("DateAdded").getTime()));
+				} catch (Exception e) {
+					payment.setDateAdded(null);
+				}
+				payment.setToBePrinted(rs.getBoolean("IsToBePrinted"));
+				payment.setNeedToDeposit(rs.getBoolean("isNeedtoDeposit"));
+				payment.setCvName(rs.getString("FirstName")+ " " + rs.getString("LastName") + "(" + rs.getString("CompanyName") + ")");
+				if(payment.getCvName().equals("null null(null)")) {
+					payment.setCvName(rs.getString("payeeAccount"));
+				}
+				if(payment.getCvName() == null) {
+					payment.setCvName(rs.getString("VendorFirstName") + " " + rs.getString("VendorLastName"));
+				}
+				payment.setOrderNum(rs.getInt("OrderNum"));
+				payment.setPoNum(rs.getInt("PONum"));
+				payment.setCategoryName(rs.getString("cName") + " " +rs.getString("CateNumber"));
+				payment.setPyerAccountForBanking(rs.getString("payerAccount"));
+				payments.add(payment);
 			}
 		}catch (Exception e) {
-				// TODO: handle exception
 			e.printStackTrace();
 		}finally {
 			try {
-				if (rs != null) {
-					db.close(rs);
-					}
-				if (stmt != null) {
-					db.close(stmt);
-					}
-					if(con != null){
-					db.close(con);
-					}
+				if (rs != null) { db.close(rs); }
+				if (stmt != null) { db.close(stmt); }
+				if(con != null){ db.close(con); }
 				} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-				
-					
-		
 		return payments;
-		
-		
 	}
+
 	@Override
 	public int getPriority() {
 		// TODO Auto-generated method stub
