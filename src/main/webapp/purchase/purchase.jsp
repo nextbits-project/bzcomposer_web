@@ -219,7 +219,7 @@ function trim(inputString) {
 function paymentHistory(form){
 	cid=form.custID.value;
 	if(cid==0){
-		//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 		return showValidationDialog();
 	}
 	else{
@@ -1936,7 +1936,7 @@ function ComapanyValue(chbox)
 				document.getElementById('amount_id').value="";
 				document.getElementById('weight_id').value="";
 				document.getElementById('pname_id').value="";
-				//alert("Select Item first");
+
 				return showSelectItemDialog();
 				form.itemID.focus();					
 			}
@@ -2104,7 +2104,7 @@ function ComapanyValue(chbox)
 // 				document.InvoiceForm.taxable.checked=false;
 			}
 			else{
-				//alert(value);
+
 				document.PurchaseOrderForm.custID.value=value;
 				document.PurchaseOrderForm.custNm.value=value;
 				//document.getElementById('custId').value=value;
@@ -2120,7 +2120,7 @@ function ComapanyValue(chbox)
 						form.bsAddressID.value = document.getElementById(i+"bsaddr").value; //set Billing Address Id
 						form.billAddrValue.value = document.getElementById(i+"bsaddr").value; 
 						document.PurchaseOrderForm.billTo.value = document.getElementById(i+"bl").value;								
-						//alert(document.getElementById(i+"bl").value);						
+
 						break;		
 					}
 				}
@@ -2195,7 +2195,7 @@ function ComapanyValue(chbox)
 // 						form.companyID.value = document.getElementById(i+"cid").value;
 // 						form.bsAddressID.value = document.getElementById(i+"bsaddr").value; //set Billing Address Id
 // 						document.PurchaseOrderForm.billTo.value = document.getElementById(i+"bl").value;								
-					//	alert(document.getElementById(i+"bl").value);						
+
 // 						break;		
 // 					}
 // 				}
@@ -2204,7 +2204,7 @@ function ComapanyValue(chbox)
 					if(value==field2){
 						document.PurchaseOrderForm.shipTo.value = document.getElementById(i+"sh").value;
 						form.shipAddr.value = document.getElementById(i+"sh_id").value; //set Shipping Address Id
-						//alert(form.shipAddr.value);
+
 						break;		
 					}
 				}
@@ -2605,29 +2605,29 @@ function ComapanyValue(chbox)
 			cid=form.custID.value;
 			debugger
 			//if(isship==2 || (document.getElementById('dropship').checked==true && document.PurchaseOrderForm.shipAddr.value==0 )){
-			//alert('<bean:message key="BizComposer.PurchaseOrder.ShipInfo.Validation" />');
+
 			//}
 			/* commented on 01-10-2019 for testing purpose
 			if(document.getElementById('dropship').checked==true && document.PurchaseOrderForm.shipAddr.value==0 )
 			{
-				//alert('<bean:message key="BizComposer.PurchaseOrder.ShipInfo.Validation" />');
+
 				return showShipInfoValidationDialog();
 			} */
 			if(cid==0)
 			{
-				//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 				document.getElementById('custNm').value="";
 				document.getElementById('custNm').focus();
 				
 			}else if(isItemExist <=0)
 			{
-				//alert('Select Item ');
+
 				return showSelectItemDialog();
 			}
 			else if(custnm=="")
 			{
-				//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 				document.getElementById('custNm').focus();
 			}
@@ -2635,7 +2635,7 @@ function ComapanyValue(chbox)
 			{
 				if(No.length==0 || No==0)
 				{
-					//alert('<bean:message key="BizComposer.PurchaseOrder.PONum.Validation" />');
+
 					return showItemOrderNumberDialog();
 					form.orderNo.focus();
 				}
@@ -2896,7 +2896,7 @@ function ComapanyValue(chbox)
 			ponum=document.PurchaseOrderForm.orderNo.value;
 			if(ponum.length==0 || ponum==0)
 			{
-				//alert('<bean:message key="BizComposer.PurchaseOrder.PONum.Validation" />');
+
 				return showItemOrderNumberDialog();
 				document.PurchaseOrderForm.orderNo.focus();
 			}
@@ -2946,7 +2946,7 @@ function init()
 		chbox.value="on";
 	}
 	else{
-		// alert(document.PurchaseOrderForm.fullName.value);
+
 		document.getElementById('custNm').value=document.PurchaseOrderForm.fullName.value;
 
 		chbox.value="off";
@@ -3082,19 +3082,19 @@ function init()
 			cid=form.custID.value;
 			if(isship==2)
 			{
-				//alert('<bean:message key="BizComposer.PurchaseOrder.ShipInfo.Validation" />');
+
 				return showShipInfoValidationDialog();
 			}
 			else if(cid==0)
 			{
-				//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 				document.getElementById('custNm').value="";
 				document.getElementById('custNm').focus();
 			}
 			else if(custnm=="")
 			{
-				//alert('<bean:message key="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 				document.getElementById('custNm').focus();
 			}
@@ -3102,7 +3102,7 @@ function init()
 			{
 				if(No.length==0 || No==0)
 				{
-					//alert('<bean:message key="BizComposer.PurchaseOrder.PONum.Validation" />');
+
 					return showItemOrderNumberDialog();
 					form.orderNo.focus();
 				}

@@ -36,14 +36,14 @@ function setTaxInfo()
 	var fmonth=document.forms[0].fcMonth.value;
 	if(fid==null||fid=="")
 	{
-	   //alert("Fedral Tax Id is required field.");
+
 
 	   alert("<spring:message code='BzComposer.federaltax.federaltaxidisrequired'/>");
 	   return false;
 	}
 	if(fmonth==null||fmonth=="")
 	{
-	   //alert("Fiscal Month is Required Field.");
+
 
 	   alert("<spring:message code='BzComposer.federaltax.fiscalmonthisrequired'/>");
 	   return false;
@@ -55,7 +55,6 @@ function setTaxInfo()
 function setRate(obj)
 {
 	var str=obj.value;
-	alert(str);
 	var len=0;
 	len=str.indexOf("%");
 	len++;
@@ -64,7 +63,6 @@ function setRate(obj)
 	len1++;
 	var len2=0;
 	len2=str.length-len1;
-	alert("len2:"+len2);
 	if(len==0)
 	{
 		if(len1==0)
@@ -72,11 +70,9 @@ function setRate(obj)
 		else
 			obj.value="%"+str;
 	}
-	alert("len:"+len);
 	var st1=substring(len,len2);
-	alert("st1"+st1);
 	//str2=substring(len);
-	//alert(str+" str2:"+str2+" len:"+len);
+
 }
 </script>
 </head>

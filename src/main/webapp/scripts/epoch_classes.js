@@ -435,7 +435,7 @@ Epoch.prototype.reDraw = function () //PRIVATE: reapplies all the CSS classes fo
 	month=seldate.getMonth();
 	year=seldate.getFullYear();
 	day=seldate.getDay();
-    //alert(date + "--"+month +"--"+year +"---"+day +"--" +weekno);
+
 	getDate123();
 	this.state = 2;
 };
@@ -733,7 +733,7 @@ CalCell.prototype.onclick = function ()
 					owner.hide();
 				}
 			}
-			//alert(owner.selectedDates);
+
 		}
 		owner.reDraw(); //redraw the calendar cell styles to reflect the changes
 	}
@@ -1047,7 +1047,7 @@ function getDate123()
 	   
 	      var op=weekdays[0]+"," +weekdays[1]+"," +weekdays[2]+","+weekdays[3]+","+weekdays[4]+","+weekdays[5]+","+weekdays[6];
           document.getElementById("weekdays").value=op;
-          //alert(document.getElementById("weekdays").value);
+
           //drawTimesheet();
           setRowData();
 }

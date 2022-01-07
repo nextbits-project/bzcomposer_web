@@ -8,6 +8,9 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.login.forms.LoginFormDto;
 import com.avibha.bizcomposer.login.forms.MultiUserFormDto;
+import com.avibha.bizcomposer.purchase.dao.PurchaseInfoDao;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
@@ -15,6 +18,7 @@ import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.Path;
 import com.nxsol.bizcomposer.common.TblStore;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +37,9 @@ import java.util.ArrayList;
  */
 @Controller
 public class FileController {
+
+    @Autowired
+    private DataImportExportUtils importExportUtils;
 
     @GetMapping("/changeLocale")
     public String changeLocale(HttpServletRequest request) throws Exception {
@@ -58,10 +65,11 @@ public class FileController {
     }
 
     @RequestMapping(value = {"/Dashboard", "/File"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String execute(CompanyInfoDto companyInfoDto, HttpServletRequest request, Model model) throws IOException, ServletException, ParseException {
+    public String execute(CompanyInfoDto companyInfoDto, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ParseException {
         model.addAttribute("companyInfoDto", companyInfoDto);
         String forward = "/include/dashboard";
         String action = request.getParameter("tabid");
+        String compId = (String) request.getSession().getAttribute("CID");
 
         if(action.equalsIgnoreCase("AdminDashboard")){
             ArrayList<LoginFormDto> list = LoginDAOImpl.getAllCompany(request);
@@ -91,9 +99,9 @@ public class FileController {
         }
         else if(action.equalsIgnoreCase("Dashboard")){
             HttpSession sess = request.getSession();
-            String compId = (String) sess.getAttribute("CID");
             CompanyInfo customer = new CompanyInfo();
             ConfigurationInfo configInfo = new ConfigurationInfo();
+            System.out.println("CompanyID: "+ compId);
 
             request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo));
             request.setAttribute("salesOrderDetails", customer.selectSalesOrders(compId, configInfo));
@@ -103,7 +111,6 @@ public class FileController {
             forward = "/include/dashboard";
         }
         else if(action.equalsIgnoreCase("CompanyInfo")){
-            String compId = (String) request.getSession().getAttribute("CID");
             int userID = (Integer) request.getSession().getAttribute("userID");
             CompanyInfo customer = new CompanyInfo();
             AddNewCompanyDAO dao = new AddNewCompanyDAO();
@@ -155,15 +162,12 @@ public class FileController {
             forward = "/include/updateCompanyinfo";
         }
 
-        else if(action.equalsIgnoreCase("CompanyInformation"))
-        {
+        else if(action.equalsIgnoreCase("CompanyInformation")) {
             HttpSession sess = request.getSession();
-            String compId = (String) sess.getAttribute("CID");
             int userID=(Integer) sess.getAttribute("userID");
             CompanyInfo customer = new CompanyInfo();
-            ArrayList<CompanyInfoDto> Comanydetails = new ArrayList<CompanyInfoDto>();
+            ArrayList<CompanyInfoDto> comanyDetails = customer.SearchCompany(compId,userID,companyInfoDto,request);
             CompanyDetails cdetails = new CompanyDetails();
-            Comanydetails=customer.SearchCompany(compId,userID,companyInfoDto,request);
             cdetails.getAllList(request);
             forward = "Success1";
         }
@@ -191,16 +195,12 @@ public class FileController {
 		}*/
 
         else if (action.equalsIgnoreCase("SetUpprintForms")) {
-            HttpSession sess = request.getSession();
-            String compId = (String) sess.getAttribute("CID");
-            int userID=(Integer) sess.getAttribute("userID");
+            int userID=(Integer) request.getSession().getAttribute("userID");
             CompanyInfo customer = new CompanyInfo();
             forward = "/file/setupprintForm";
         }
         else if (action.equalsIgnoreCase("MultiPrintInvoice")) {
-            HttpSession sess = request.getSession();
-            String compId = (String) sess.getAttribute("CID");
-            int userID=(Integer) sess.getAttribute("userID");
+            int userID = (Integer) request.getSession().getAttribute("userID");
             FileMenuDao fileMenuDao = new FileMenuDao();
             boolean result = fileMenuDao.validation(request, companyInfoDto);
             forward = "/file/multi-printInvoice";
@@ -217,38 +217,36 @@ public class FileController {
         else if(action.equalsIgnoreCase("ExportCustomer")) {
             String type = request.getParameter("type");
             if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-                FileMenuDao fDao = new FileMenuDao();
-                boolean b = fDao.exportCustomerList(request, type);
+                InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+                ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
+                boolean b = importExportUtils.exportCustomerList(customerList, type, response);
                 if(b==true) {
                     if(type.equals("csv")) {
-//						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
-                        request.setAttribute("success", "Customerlist.csv file downloaded successfully at /Downloads");
-                    }
-                    else {
-//						request.setAttribute("success", "BzComposer.exportcustomer.customerlistinxlsdownloaded");
-                        request.setAttribute("success", "Customerlist.xls file downloaded successfully at /Downloads");
+						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
+                    } else {
+						request.setAttribute("success", "BzComposer.exportcustomer.customerlistinxlsdownloaded");
                     }
                 }
+            }else {
+                forward = "/file/exportCustomer";
             }
-            forward = "/file/exportCustomer";
         }
         else if(action.equalsIgnoreCase("ExportVendor")) {
             String type = request.getParameter("type");
             if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-                FileMenuDao fDao = new FileMenuDao();
-                boolean b = fDao.exportVendorList(request, type);
+                PurchaseInfoDao purchaseInfoDao = new PurchaseInfoDao();
+                ArrayList<VendorDto> vendorList = purchaseInfoDao.SearchVendor(compId, null, request, new VendorDto());
+                boolean b = importExportUtils.exportVendorList(vendorList, type, response);
                 if(b==true) {
                     if(type.equals("csv")) {
                         request.setAttribute("success", "BzComposer.exportvendor.vendorlistincsvdownloaded");
-                        /*request.setAttribute("success", "Vendorlist.csv file downloaded successfully at /Downloads");*/
-                    }
-                    else {
+                    } else {
                         request.setAttribute("success", "BzComposer.exportvendor.vendorlistinxlsdownloaded");
-                        /*request.setAttribute("success", "Vendorlist.xls file downloaded successfully at /Downloads");*/
                     }
                 }
+            }else {
+                forward = "/file/exportVendor";
             }
-            forward = "/file/exportVendor";
         }
         else if(action.equalsIgnoreCase("QuickBookImport")) {
             quickBookImportTest(companyInfoDto, request);
@@ -312,23 +310,19 @@ public class FileController {
         String action = request.getParameter("tabid");
         System.out.println("--------------FileController-------FileUpload-------" + action);
         if(action.equalsIgnoreCase("UploadCustomerFile")) {
-            FileMenuDao fDao = new FileMenuDao();
-            String type = "customer";
             if(!attachFile.isEmpty()) {
-                boolean b = fDao.uploadCustomerFile(attachFile, request, type);
+                boolean b = importExportUtils.uploadCustomerFile(attachFile, request);
                 if (b == true) {
-                    request.setAttribute("successMessage", "success");
+                    request.getSession().setAttribute("successMessage", "success");
                 }
             }
             forward = "redirect:File?tabid=ImportCustomer";
         }
         else if(action.equalsIgnoreCase("UploadVendorFile")) {
-            FileMenuDao fDao = new FileMenuDao();
-            String type = "vendor";
             if(!attachFile.isEmpty()) {
-                boolean b = fDao.uploadVendorFile(attachFile, request, type);
+                boolean b = importExportUtils.uploadVendorFile(attachFile, request);
                 if (b == true) {
-                    request.setAttribute("successMessage1", "success");
+                    request.getSession().setAttribute("successMessage1", "success");
                 }
             }
             forward = "redirect:File?tabid=ImportVendor";

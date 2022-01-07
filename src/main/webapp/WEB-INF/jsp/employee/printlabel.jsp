@@ -100,7 +100,7 @@ function sendTo()
 	rid=document.getElementById("setRID").value
 	if(rid=="")
 	{
-		//alert("Please select the customer");
+
 		debugger;
 		return showCustomerValidationDialog();	
 	}
@@ -192,12 +192,12 @@ function rowClick(rid) {
 		document.getElementById(rid).classList.add('draft');
 	}
 	catch(error){
-		//alert(error)
+
 	}
 	finally{
-		//alert(222)
+
  	}
-	//alert(500000)
+
 }
 
 
@@ -351,7 +351,7 @@ function printlabel()
 	 } */
 	 
 	 if(customerdetails == ""){
-		alert("Please select a customer"); 
+		alert("<bean:message key='BzComposer.common.selectCustomer'/>");
 	 }else{
 		 var i;
 		 var a = window.open('', '', 'height=500, width=500'); 

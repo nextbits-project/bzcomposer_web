@@ -230,7 +230,7 @@ function printlabel()
 	 } */
 	 
 	 if(ops.length == 0){
-		alert("Please select a customer"); 
+		alert("<bean:message key='BzComposer.common.selectCustomer'/>");
 	 }else{
 		 var i;
 		 var a = window.open('', '', 'height=500, width=500'); 
@@ -323,7 +323,7 @@ function UpdateLabel()
 	lbltype=document.getElementById('ltype').value;
 	debugger;
 	if(lbltype==""){
-		//alert("Please select the customer");
+
 		debugger;
 		return showlabelValidationDialog();	
 	}else{

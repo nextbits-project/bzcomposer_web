@@ -14,11 +14,10 @@
 		
 		if(id =="" || id == " ")
 		{
-			alert("Please enter your loginId")
+			alert("<bean:message key='BzComposer.companyinfo.enteremailaddress'/>");
 		}
 		else
 		{
-			alert("Entered UserId is:"+id);
 			window.location.href = "Login.do?tabid=forgotPassword&loginID="+id;
 		}
 	} 

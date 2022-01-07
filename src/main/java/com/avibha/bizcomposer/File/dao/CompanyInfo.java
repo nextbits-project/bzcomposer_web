@@ -28,8 +28,6 @@ public class CompanyInfo {
             String sqlString = "select NAME,NickName,FirstName,LastName,Address1,Address2,City,State,Zipcode,Province,"
                     + "Phone1,Phone2,Fax1,Email,Country,BusinessTypeID,MembershipLevel,Password,SameAsPhoneNumber,TaxID,JobPosition "
                     + "FROM bca_company WHERE CompanyId="+compId;
-
-            String sql="SELECT LoginID,PASSWORD,Confirm_Password FROM bca_user WHERE ID="+userID;
             pstmt = con.prepareStatement(sqlString);
             rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -59,13 +57,14 @@ public class CompanyInfo {
                 customer.setTaxID(replaceNullWithBlank(rs.getString(20)));
                 customer.setJobPosition(replaceNullWithBlank(rs.getString(21)));
 
-                pstmt1 = con.prepareStatement(sql);
-                rs1 = pstmt1.executeQuery();
-                if(rs1.next()) {
+//                String sql="SELECT LoginID,PASSWORD,Confirm_Password FROM bca_user WHERE ID="+userID;
+//                pstmt1 = con.prepareStatement(sql);
+//                rs1 = pstmt1.executeQuery();
+//                if(rs1.next()) {
 //                    customer.setUserName(rs1.getString("LoginID"));
 //                    customer.setPassword(rs1.getString("PASSWORD"));
 //                    customer.setConfirmPassword(rs1.getString("Confirm_Password"));
-                }
+//                }
                 int businessTypeId = customer.getBusinessTypeId();
                 String sql2 = "select BusinessName from bca_businesstype where BusinessTypeID = "+businessTypeId;
                 pstmt2=con.prepareStatement(sql2);

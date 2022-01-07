@@ -1,30 +1,28 @@
 package com.avibha.bizcomposer.configuration.forms;
 
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
-import com.avibha.bizcomposer.employee.forms.StateTaxOtherDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author sarfrazmalik
  */
-public class ConfigurationDto {
+public class ConfigurationDto implements Serializable {
 
     private static final long serialVersionUID = 0;
+    public static final String ConfigColumns = "PoBoard,ItemReceivedBoard,ItemShippedBoard,SalesOrderBoard,ShowReorderPointList,ShowReorderPointWarning,"
+            + "ReservedQuantity,SalesOrderQty,ProductTaxable,CurrencyID,StartInvoiceNum,StartEstimationNum,StartSalesOrderNum,StartPONum,"
+            + "InvoiceStyleID,EstimationStyleID,SoStyleID,PoStyleID,FilterOption,AdminPassword,CustTaxable,AddressSettings,SalesTaxCode,SaleTaxRate,SaleTaxRate2,"
+            + "HowOftenSalesTax,DropShipCharge,ExtraChargeApplicable,ChargeAmount,OrderAmount,IsRefundAllowed,PoShowCountry,PoShowTelephone,IsPurchasePrefix,"
+            + "ShowReminder,AnnualInterestRate,MinCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge,MailServer,MailUserName,MailPassword,MailAuth,"
+            + "SenderEmail,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress";
 
     public int preferenceID = -1;
-    /* Back up Option */
-    private String backupLocation;
-
-    private String backupPeriod;
-
-    private String backupPlace;
-
     /*for Dashboard and General option*/
-
     private String poboard;
     private String itemReceivedBoard;
     private String itemShippedBoard;
@@ -39,7 +37,9 @@ public class ConfigurationDto {
     private String productTaxable;
     private String taxable;
 
-
+    private String backupLocation;
+    private String backupPeriod;
+    private String backupPlace;
 
     /* For General */
     private int currencyID;
@@ -50,8 +50,10 @@ public class ConfigurationDto {
     private String startSalesOrderNum;
     private String startPONum;
 
-    private int poStyleID;
     private int invStyleID;
+    private int estimationStyleID;
+    private int soStyleID;
+    private int poStyleID;
 
     private int weightID;
     private String weightName;
@@ -67,11 +69,8 @@ public class ConfigurationDto {
 
     /* For Networking and security */
     private String userName;
-
     private int groupID;
-
     private String groupNm;
-
     private int multiUserConnection;
 
     private String password;
@@ -133,6 +132,7 @@ public class ConfigurationDto {
     private String salesTaxCode;
 
     private double saleTaxRate;
+    private double saleTaxRate2;
 
     private int howOftenSalestax;
 
@@ -509,8 +509,8 @@ public class ConfigurationDto {
     private String[] listOfExistingModules1;
     private String[] ListOfActiveInvoiceStyle;
     private String[] ListOfDeActiveInvoiceStyle;
-    private int selectedModuleId;
-    private int selectedModules;
+    private int selectedModuleId = 0;
+    private int selectedModules = 0;
     private ArrayList<ConfigurationDto> listOfExistingselectedModules;
 
     private ArrayList<ConfigurationDto> listOfExistingCategory;
@@ -981,20 +981,6 @@ public class ConfigurationDto {
     }
 
     /**
-     * @return Returns the invStyleID.
-     */
-    public int getInvStyleID() {
-        return invStyleID;
-    }
-
-    /**
-     * @param invStyleID The invStyleID to set.
-     */
-    public void setInvStyleID(int invStyleID) {
-        this.invStyleID = invStyleID;
-    }
-
-    /**
      * @return Returns the isCompanyName.
      */
     public String getIsCompanyName() {
@@ -1259,17 +1245,17 @@ public class ConfigurationDto {
         this.showReminder = showReminder;
     }
 
-    public String getStartInvoiceNum() { return startInvoiceNum; }
+    public String getStartInvoiceNum() { return startInvoiceNum!=null?startInvoiceNum:"1"; }
     public void setStartInvoiceNum(String startInvoiceNum) { this.startInvoiceNum = startInvoiceNum; }
 
-    public String getStartEstimationNum() { return startEstimationNum; }
+    public String getStartEstimationNum() { return startEstimationNum!=null?startEstimationNum:"1"; }
     public void setStartEstimationNum(String startEstimationNum) { this.startEstimationNum = startEstimationNum; }
 
-    public String getStartSalesOrderNum() { return startSalesOrderNum; }
+    public String getStartSalesOrderNum() { return startSalesOrderNum!=null?startSalesOrderNum:"1"; }
     public void setStartSalesOrderNum(String startSalesOrderNum) { this.startSalesOrderNum = startSalesOrderNum; }
 
     public String getStartPONum() {
-        return startPONum;
+        return startPONum!=null?startPONum:"1";
     }
     public void setStartPONum(String startPONum) {
         this.startPONum = startPONum;
@@ -1373,16 +1359,24 @@ public class ConfigurationDto {
         this.groupNm = groupNm;
     }
 
-    /**
-     * @return Returns the poStyleID.
-     */
+    public int getInvStyleID() { return invStyleID; }
+
+    public void setInvStyleID(int invStyleID) {
+        this.invStyleID = invStyleID;
+    }
+
+    public int getEstimationStyleID() { return estimationStyleID; }
+
+    public void setEstimationStyleID(int estimationStyleID) { this.estimationStyleID = estimationStyleID; }
+
+    public int getSoStyleID() { return soStyleID; }
+
+    public void setSoStyleID(int soStyleID) { this.soStyleID = soStyleID; }
+
     public int getPoStyleID() {
         return poStyleID;
     }
 
-    /**
-     * @param poStyleID The poStyleID to set.
-     */
     public void setPoStyleID(int poStyleID) {
         this.poStyleID = poStyleID;
     }
@@ -2872,10 +2866,6 @@ public class ConfigurationDto {
         this.isEnable = isEnable;
     }
 
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
-    }
-
     public int getImportDays() {
         return importDays;
     }
@@ -4075,18 +4065,17 @@ public class ConfigurationDto {
     public String getSalesTaxCode() {
         return salesTaxCode;
     }
-
     public void setSalesTaxCode(String salesTaxCode) {
         this.salesTaxCode = salesTaxCode;
     }
 
-    public double getSaleTaxRate() {
-        return saleTaxRate;
-    }
-
+    public double getSaleTaxRate() { return saleTaxRate; }
     public void setSaleTaxRate(double saleTaxRate) {
         this.saleTaxRate = saleTaxRate;
     }
+
+    public double getSaleTaxRate2() { return saleTaxRate2; }
+    public void setSaleTaxRate2(double saleTaxRate2) { this.saleTaxRate2 = saleTaxRate2; }
 
     public int getHowOftenSalestax() {
         return howOftenSalestax;

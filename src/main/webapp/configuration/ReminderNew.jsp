@@ -131,7 +131,7 @@ $(document).ready(function()
 	
 	$("#invoiceMemoRemindMe").click(function()
 	{
-		//alert("invoiceMemoRemindMe is checked");
+
 		debugger
 		document.configurationForm.invoiceMemo.value = 1;
 		debugger
@@ -139,7 +139,7 @@ $(document).ready(function()
 	
 	$("#invoiceMenoDontRemindMe").click(function()
 	{
-		//alert("invoiceMemoDon'tRemindMe is checked");
+
 		debugger
 		document.configurationForm.invoiceMemo.value = 0;
 		debugger
@@ -150,7 +150,7 @@ $(document).ready(function()
 		var inoviceMemoDays = $("#invoiceMemoDays").val();
 		if(inoviceMemoDays > 180)
 		{
-			//alert("<bean:message key='BzComposer.configuration.reminder.insertedvaluenotgreater'/>");
+
 			return invaliddaysdialog();
 			$("#invoiceMemoDays").focus();
 		}
@@ -160,7 +160,7 @@ $(document).ready(function()
 		var estimateDays = $("#memorizeEstimationDays").val();
 		if(estimateDays > 180)
 		{
-			//alert("<bean:message key='BzComposer.configuration.reminder.insertedvaluenotgreater'/>");
+
 			return invaliddaysdialog();
 			$("#memorizeEstimationDays").focus();
 		}
@@ -170,7 +170,7 @@ $(document).ready(function()
 		var invoiceDays = $("#overdueInvoiceDays").val();
 		if(invoiceDays > 180)
 		{
-			//alert("<bean:message key='BzComposer.configuration.reminder.insertedvaluenotgreater'/>");
+
 			return invaliddaysdialog();
 			$("#overdueInvoiceDays").focus();
 		}
@@ -180,7 +180,7 @@ $(document).ready(function()
 		var inventoryOrderDays = $("#inventoryOrderDays").val();
 		if(inventoryOrderDays > 180)
 		{
-			//alert("<bean:message key='BzComposer.configuration.reminder.insertedvaluenotgreater'/>");
+
 			return invaliddaysdialog();
 			$("#inventoryOrderDays").focus();
 		}
@@ -190,7 +190,7 @@ $(document).ready(function()
 		var serviceBillingDays = $("#serviceBillingDays").val();
 		if(serviceBillingDays > 180)
 		{
-			//alert("<bean:message key='BzComposer.configuration.reminder.insertedvaluenotgreater'/>");
+
 			return invaliddaysdialog();
 			$("#serviceBillingDays").focus();
 		}
@@ -200,7 +200,7 @@ $(document).ready(function()
 		var billPayDays = $("#billsToPayDays").val();
 		if(billPayDays > 180)
 		{
-			//alert("<bean:message key='BzComposer.configuration.reminder.insertedvaluenotgreater'/>");
+
 			return invaliddaysdialog();
 			$("#billsToPayDays").focus();
 		}
@@ -210,7 +210,7 @@ $(document).ready(function()
 		var purchaseOrderDays = $("#memorizePurchaseOrderDays").val();
 		if(purchaseOrderDays > 180)
 		{
-			//alert("<bean:message key='BzComposer.configuration.reminder.insertedvaluenotgreater'/>");
+
 			return invaliddaysdialog();
 			$("#memorizePurchaseOrderDays").focus();
 		}
@@ -220,7 +220,7 @@ $(document).ready(function()
 		var memorizeBillDays = $("#memorizePurchaseOrderDays").val();
 		if(memorizeBillDays > 180)
 		{
-			//alert("<bean:message key='BzComposer.configuration.reminder.insertedvaluenotgreater'/>");
+
 			return invaliddaysdialog();
 			$("#memorizePurchaseOrderDays").focus();
 		}
@@ -232,21 +232,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("showReminder is checked.");
+
 	        $("#showReminder").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("showReminder is unchecked.");
+
 	        $("#showReminder").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("showReminder is unchecked.");
+
 	        $("#showReminder").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.showReminder.value = isChecked;

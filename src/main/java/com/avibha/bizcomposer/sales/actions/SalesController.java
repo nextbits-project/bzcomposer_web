@@ -47,7 +47,7 @@ public class SalesController {
 
 	@RequestMapping(value = {"/Invoice", "/Customer", "/Item", "/SalesOrder" ,"/DataManager"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto, UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto,
-						  HttpServletRequest request, Model model) throws Exception {
+					Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String IN_URI = request.getRequestURI();
 		String CUSTOMER_URI = "/Customer";
 		String ITEM_URI = "/Item";
@@ -625,7 +625,7 @@ public class SalesController {
 			String cvId = request.getParameter("CustId");
 			//String itemIndex = request.getParameter("itemIndex");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			long savedCvID = sdetails.AddCustomer(request, customerDto);
+			sdetails.AddCustomer(request, customerDto);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "redirect:/Customer?tabid=NewCustomer";
 			}else {
@@ -1239,6 +1239,7 @@ public class SalesController {
 			invoiceDto.setPayMethod(configDto.getSelectedPaymentId()+"");
 			invoiceDto.setVia(configDto.getCustomerShippingId()+"");
 			invoiceDto.setTemplateType(configDto.getSoTemplateType());
+			invoiceDto.setInvoiceStyle(configDto.getSoStyleID()+"");
 			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType, configDto, false));
 			if (IN_URI.endsWith(SALES_ORDER_URI)){
 				forward = "/sales/salesorder";
@@ -1648,7 +1649,7 @@ public class SalesController {
 		else if(action.equals("ExportItem")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			String type = request.getParameter("type");
-			sdetails.exportFile(request, itemDto, type);
+			sdetails.exportFile(request, itemDto, type, response);
 			if(IN_URI.endsWith(ITEM_URI)) {
 				forward = "/file/exportItem";
 			}else {
@@ -1707,8 +1708,7 @@ public class SalesController {
 		String forward = "/include/dashboard";
 		String action = request.getParameter("tabid");
 
-		System.out.println("--------------SalesController-------ItemFileUpload-------" + request.getMethod());
-		System.out.println("tabid: " + action);
+		System.out.println("--------------SalesController-------ItemFileUpload------tabid: " + action);
 		if(action.equalsIgnoreCase("UploadItemFile")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			if(!attachFile.isEmpty()) {

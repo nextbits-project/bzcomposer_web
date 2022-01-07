@@ -1757,7 +1757,7 @@ function StyleChange(value)
 				document.getElementById('amount_id').value="";
 				document.getElementById('weight_id').value="";
 				document.getElementById('pname_id').value="";
-				//alert("Select Item first");
+
 				return showSelectItemDialog();			
 			}
 			else{	
@@ -1910,7 +1910,7 @@ function StyleChange(value)
 				//form.amount.value+=amt+";"
 				
 				hidn_val=( (hidn_val/1) + 1);
-				//alert("DDD" +hidn_val);
+
 				document.getElementById('hidn').value=hidn_val;
 				
    			}	
@@ -2207,10 +2207,10 @@ function StyleChange(value)
 				}
 			</c:if>
 			var readOnly = <%= request.getAttribute("readData") %>
-			//alert("ReadData value:"+readOnly);
+
 			if(readOnly)
 			{
-				//alert("inside true condition");
+
 				$('#newSalesOrder').prop('disabled', true);
 				$('#btnNewSalesOrder').prop('disabled', true);
 				$('#btnSaveSalesOrder').prop('disabled', true);
@@ -2221,7 +2221,7 @@ function StyleChange(value)
 				$('#invoiceStyle').prop('readonly',true);
 			}
 			else {
-				//alert("inside false condition");
+
 				$('#newSalesOrder').prop('disabled', false);
 				$('#btnNewSalesOrder').prop('disabled', false);
 				$('#btnSaveSalesOrder').prop('disabled', false);
@@ -2230,7 +2230,6 @@ function StyleChange(value)
 				$('#custID').prop('readonly', true);
 				$('#invoiceStyle').prop('readonly',true);
 			}
-			StyleChange(4);
 		}
 
 
@@ -2374,7 +2373,7 @@ function StyleChange(value)
 		function ShowUpdate(form){
 			cid=form.custID.value;
 			if(cid==0){
-				//alert('<spring:message code="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 			}
 			else{
@@ -2385,7 +2384,7 @@ function StyleChange(value)
 		function paymentHistory(form){
 			cid=form.custID.value;
 			if(cid==0){
-				//alert('<spring:message code="BzComposer.Estimaion.cName.Validation" />');
+
 				return showValidationDialog();
 			}
 			else{
@@ -2570,7 +2569,7 @@ function printCustomerOrder(form){
 function PrintInvoice22(form){
 	orderNo=document.InvoiceForm.orderNo.value;
 	if(orderNo==""){
-		//alert('<spring:message code="BizComposer.Invoice.OrderNo.Validation" />');
+
 		return showItemOrderNumberDialog();
 	}
 	else{

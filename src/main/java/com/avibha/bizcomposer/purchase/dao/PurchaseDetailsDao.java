@@ -117,26 +117,17 @@ public class PurchaseDetailsDao {
 	/* Add new vendor with its related information to
 	 * the database. 
 	 */
-	public long AddVendor(HttpServletRequest request, VendorDto form, String compId, String stateName) {
-		//String compId = (String) request.getSession().getAttribute("CID");
-		String istaxable = request.getParameter("isTaxable");
-		String isAlsoClient = request.getParameter("isAlsoClient");
-		String UseIndividualFinanceCharges = request.getParameter("UseIndividualFinanceCharges");
-		String AssessFinanceChk = request.getParameter("AssessFinanceChk");
-		String FChargeInvoiceChk = request.getParameter("FChargeInvoiceChk");
-
-		int istax = (istaxable!=null && istaxable.equalsIgnoreCase("on"))?1:0;
-		int isclient = (isAlsoClient!=null && isAlsoClient.equalsIgnoreCase("on"))?1:3; // 1: Customer+Vendor, 2: Customer, 3: Vendor
-		int indCharge = (UseIndividualFinanceCharges!=null && UseIndividualFinanceCharges.equalsIgnoreCase("on"))?1:0;
-		int aFCharge = (AssessFinanceChk!=null && AssessFinanceChk.equalsIgnoreCase("on"))?1:0;
-		int fICharge = (FChargeInvoiceChk!=null && FChargeInvoiceChk.equalsIgnoreCase("on"))?1:0;
-
-		// generating new cvId
-		PurchaseInfo pinfo = new PurchaseInfo();
-		long cvID = pinfo.getLastClientVendorID() + 1;
+	public void AddVendor(HttpServletRequest request, VendorDto form, String compId) {
 		PurchaseInfoDao purchase = new PurchaseInfoDao();
+
+		form.setTaxAble( "on".equalsIgnoreCase(request.getParameter("isTaxable"))?"1":"0" );
+		form.setIsclient( "on".equalsIgnoreCase(request.getParameter("isAlsoClient"))?"1":"3" );	// 1: Customer+Vendor, 2: Customer, 3: Vendor
+		form.setFsUseIndividual( "on".equalsIgnoreCase(request.getParameter("UseIndividualFinanceCharges"))?"1":"0" );
+		form.setFsAssessFinanceCharge( "on".equalsIgnoreCase(request.getParameter("AssessFinanceChk"))?"1":"0" );
+		form.setFsMarkFinanceCharge( "on".equalsIgnoreCase(request.getParameter("FChargeInvoiceChk"))?"1":"0" );
+		form.setStateName(request.getParameter("stateName"));
 		try{
-			boolean isAdded = purchase.insertVendor(cvID + "", form, compId, istax, isclient, indCharge, aFCharge, fICharge, "N", stateName);
+			boolean isAdded = purchase.insertVendor(form, compId);
 			if(isAdded){
 				request.setAttribute("SaveStatus",new ActionMessage("Vendor Information is Successfully Added !"));
 				request.setAttribute("Added","true");
@@ -145,7 +136,6 @@ public class PurchaseDetailsDao {
 		}catch (Exception e) {
 			request.setAttribute("Status",new ActionMessage("Vendor Information is Not Insert !"));
 		}
-		return cvID;
 	}
 
 	/*

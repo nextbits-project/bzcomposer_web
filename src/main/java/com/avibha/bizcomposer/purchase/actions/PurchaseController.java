@@ -92,10 +92,7 @@ public class PurchaseController {
 		else if (action.equalsIgnoreCase("AOVODO")) { // to Add/Save Vendor details
 			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			String compId = (String) request.getSession().getAttribute("CID");
-			String cvId = request.getParameter("CustId");
-			String stateName = request.getParameter("stateName");
-			long savedCvID = pdetails.AddVendor(request, vendorDto, compId, stateName);
-			/*pdetails.AddVendor(request, form);*/
+			pdetails.AddVendor(request, vendorDto, compId);
 			forward = "redirect:/Vendor?tabid=AODOVO";
 		}
 

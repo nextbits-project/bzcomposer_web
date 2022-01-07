@@ -1334,7 +1334,7 @@ $(function() {
 	 $(function() {
 		   $( "#AddButton").on("click", function(){
 			  debugger;
-				//alert("<bean:message key='BzComposer.reconciliation.gotobankingtabandaddbutton'/>");
+
 				return gotobankandadddialog();
 		    });
 		 });
@@ -1418,7 +1418,7 @@ function editTransaction()
 		
 		},
 		 error : function(data) {
-			//alert("<bean:message key='BzComposer.reconciliation.someerroroccurred'/>");
+
 			return showerrordialog();
 		} 
 	});
@@ -1450,7 +1450,7 @@ function executeQuery()
 			updateReconsilationTab(data);
 		},
 		 error : function(data) {
-			//alert("<bean:message key='BzComposer.reconciliation.someerroroccurred'/>");
+
 			 return showerrordialog();
 		} 
 	}); 
@@ -1459,7 +1459,7 @@ function deletePayment()
 {
 	if(paymentId == -1)
 	{
-		//alert("<bean:message key='BzComposer.reconciliation.selectpaymentfirst'/>");
+
 		return selectpaymentdialog();
 		return false;
 	}
@@ -1479,7 +1479,7 @@ function deletePayment()
 					paymentId = -1;
 				},
 				 error : function(data) {
-					//alert("<bean:message key='BzComposer.reconciliation.someerroroccurred'/>");
+
 					return showerrordialog();
 				} 
 			});
@@ -1509,7 +1509,7 @@ function deletePayment()
 	    					paymentId = -1;
 	    				},
 	    				 error : function(data) {
-	    					//alert("<bean:message key='BzComposer.reconciliation.someerroroccurred'/>");
+
 	    					return showerrordialog();
 	    				} 
 	    			});
@@ -1548,7 +1548,7 @@ $.ajax({
 			updateReconsilationTab(data);
 		},
 		 error : function(data) {
-			//alert("<bean:message key='BzComposer.reconciliation.someerroroccurred'/>");
+
 			return showerrordialog()
 		} 
 	}); 
@@ -1588,7 +1588,7 @@ $.ajax({
 			updateChargeDropdown(data);
 		},
 		 error : function(data) {
-			//alert("<bean:message key='BzComposer.reconciliation.someerroroccurred'/>");
+
 			return showerrordialog()
 		} 
 	}); 
@@ -1625,7 +1625,7 @@ function AddFromReconcileDlg()
 	}	
 	else
 	{
-		//alert("<bean:message key='BzComposer.reconciliation.changenamecantempty'/>");
+
 		return entervalidnamedialog();
 		return false;
 	}
@@ -1634,7 +1634,7 @@ function AddFromReconcileDlg()
 	var amount = $("#AmountForReconcileDlg").val();
 	if(amount == '')
 	{
-		//alert("<bean:message key='BzComposer.reconciliation.entervalidamount'/>");
+
 		return entervalidamountdialog();
 		return false;
 	}
@@ -1645,7 +1645,7 @@ function AddFromReconcileDlg()
 		checkNumber = $("#checkNumberForReconcile").val();
 		if(checkNumber == '' || checkNumber == '0')
 		{
-			//alert("<bean:message key='BzComposer.reconciliation.entervalidchecknumber'/>");
+
 			return entervalidchecknumberdialog();
 			return false;
 		}
@@ -1675,7 +1675,7 @@ $.ajax({
 			updateReconsilationTab(data);
 		},
 		 error : function(data) {
-			//alert("<bean:message key='BzComposer.reconciliation.someerroroccurred'/>");
+
 			return showerrordialog();
 		} 
 	}); 
@@ -1721,7 +1721,7 @@ function AddAssets()
 }
 function addNewSituation()
 {
-	//alert("<bean:message key='BzComposer.reconciliation.gotocategorymanagerandeditbutton'/>");
+
 	return gotobankandeditdialog();
 	return false;
 }

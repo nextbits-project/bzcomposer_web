@@ -467,17 +467,15 @@ public class LoginDAOImpl implements LoginDAO
         return loginStatus;		
 	}
 
-	public static boolean isUserExists(String userId) 
-	{
+	public boolean checkUserEmailExists(String email, int companyID) {
         SQLExecutor db1 = new SQLExecutor();
     	Connection c = db1.getConnection();
-		Statement stmt = null,stmt1=null;
-		ResultSet rs = null,rs1= null;
-		MultiUserForm user = null;
+		Statement stmt = null;
+		ResultSet rs = null;
 		boolean loginStatus = false;
         try {
             stmt = c.createStatement();
-            rs = stmt.executeQuery("SELECT LoginID FROM bca_user where Email_Address = " + "'" + userId + "'");
+            rs = stmt.executeQuery("SELECT ID FROM bca_user where Email_Address='"+email+"' AND CompanyID="+ companyID);
             while (rs.next()) {
                 loginStatus = true;
             }

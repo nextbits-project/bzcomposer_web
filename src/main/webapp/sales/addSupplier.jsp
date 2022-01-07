@@ -246,7 +246,7 @@ function showPanel()
 			$('#billingAddress').append("<tr id="+f_NameOld+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addNameOld+"</td><td style='font-size: 1.1em;' id='fname'>"+f_NameOld+"</td><td style='font-size: 1.1em;' id='lname'>"+l_NameOld+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1Old+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2Old+"</td><td style='font-size: 1.1em;' id='status'>"+addStatusOld+"</td></tr>");
     		$('#billingAddress').append("<tr id="+f_Name+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addName+"</td><td style='font-size: 1.1em;' id='fname'>"+f_Name+"</td><td style='font-size: 1.1em;' id='lname'>"+l_Name+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2+"</td><td style='font-size: 1.1em;' id='status'>"+addStatus+"</td></tr>");
     		//debugger;
-    		//alert("After append data for once it should not added again so make it null..");
+
 			addName = "null";
 			f_Name = "null";
 			l_Name = "null";
@@ -264,7 +264,7 @@ function showPanel()
     	else if(addStatusOld != "null" && addNameOld != "null" && f_NameOld != "null" && l_NameOld != "null" && add_1Old != "null" && add_2Old != "null")
 		{
 			debugger;
-			//alert("in this old data appended...");
+
 			$('#billingAddress').append("<tr id="+f_NameOld+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addNameOld+"</td><td style='font-size: 1.1em;' id='fname'>"+f_NameOld+"</td><td style='font-size: 1.1em;' id='lname'>"+l_NameOld+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1Old+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2Old+"</td><td style='font-size: 1.1em;' id='status'>"+addStatusOld+"</td></tr>");
 			/* debugger;
 			alert("After append data for once it should not added again so make it null.."); */

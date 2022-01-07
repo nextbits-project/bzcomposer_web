@@ -255,7 +255,7 @@ function Init(){
 }
 function setIsEmail()
 {
-	//alert("DFSD");
+
 	document.getElementById("isEmailChk").value=document.getElementById("EmailId").value;
 	document.forms[0].action = "Email?tabid=EOSOLO";
 	document.forms[0].submit();
@@ -264,7 +264,7 @@ function checkName()
 {
 	if(document.RMAForm.fnameTxt.value=="" && document.RMAForm.lnameTxt.value=="")	
 	{
-		//alert("You have to type one of fields in fst name and last name");
+
 		return showNameDialog();
 	}
 	else
@@ -518,10 +518,10 @@ var sortType1 = document.getElementById("sortType1").value;
 var sortType2 = document.getElementById("sortType2").value;
 
 if(sortType1 == 0 || sortType2 == 0){
-	//alert("Please select sort Type first...");
+
 }
 else{
-	//alert("sortType1:"+sortType1+"\nsortType2:"+sortType2);
+
 	event.preventDefault();
 } */
 

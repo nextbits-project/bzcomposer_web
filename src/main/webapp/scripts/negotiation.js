@@ -138,7 +138,7 @@ var editParticipant = {
 	visible: function(id) {
 		visible = $("participantForm["+id+"]_visible")
 		signer = $("participantForm["+id+"]_signer")
-		//alert(signer+" "+id)
+
 		if (visible.checked) {
 			Element.addClassName('editParticipant['+id+']',"visible")
 			Element.removeClassName('editParticipant['+id+']',"invisible")

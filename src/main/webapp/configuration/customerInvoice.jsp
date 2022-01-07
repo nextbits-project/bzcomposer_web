@@ -47,7 +47,7 @@ $(document).ready(function()
 				}
 				else
 				{
-					//alert('normal Reason');
+
 				}
 		    });
 			
@@ -75,11 +75,11 @@ $(document).ready(function()
 			var packingSlipStyleId = '<%= request.getAttribute("packingSlipStyleId")%>';
 			
 			var isChecked = '<%= request.getAttribute("isRefundAllowed")%>';
-		  	/*alert("RefundAllowed Checkecbox is"+isChecked);*/
+
 		    if(isChecked == "on")
 		    {
 				
-		      	//alert("isRefundAllowed checked");
+
 		      	$("#isRefundAllowed").attr('checked', true);
 		      	 
 				$("#refundReason").prop('readonly', false);
@@ -91,7 +91,7 @@ $(document).ready(function()
 			} 
 			else if(isChecked == "off")
 		    {
-				//alert("isRefundAllowed unchecked");
+
 		        $("#refundReason").prop('readonly', true);
 				$("#refundReasonSel").prop('readonly',true);
 			    $("#addRefundReason").prop('disabled',true);
@@ -136,13 +136,13 @@ $(document).ready(function()
 		    	var isChecked = '<%= request.getAttribute("isDefault")%>';
 		    	//var isChecked = "on";
 		        if($(this).prop("checked") == true){
-		            //alert("CustomerTaxale is checked.");
+
 		            $("#isDefaultCreditTerm").attr('checked', true);
 		            
 		            isChecked = "on"; 
 		        }
 		        else if($(this).prop("checked") == false){
-		            //alert("CustomerTaxable is unchecked.");
+
 		            $("#isDefaultCreditTerm").attr('checked', false);
 		            
 		             isChecked = "off";
@@ -158,12 +158,12 @@ $(document).ready(function()
 			{
 		    	var isChecked = '<%= request.getAttribute("custTaxableStatus")%>';
 		        if($(this).prop("checked") == true){
-		            //alert("CustomerTaxale is checked.");
+
 		            $("#custTaxable").attr('checked', true);
 		            isChecked = "on"; 
 		        }
 		        else if($(this).prop("checked") == false){
-		            //alert("CustomerTaxable is unchecked.");
+
 		            $("#custTaxable").attr('checked', false);
 		             isChecked = "off";
 		        }	
@@ -330,7 +330,7 @@ $(document).ready(function()
 			
 			$("#invoiceLocation").change(function(){
 				var filePath = $("#invoiceLocation").val();
-				//alert("Selected File:"+filePath);
+
 				$("invoiceLocation").val(filePath);
 				//document.configurationForm.invoiceLocation.value = filePath;
 				//debugger
@@ -338,7 +338,7 @@ $(document).ready(function()
 			
 			$("#saveImage").change(function(){
 				var filePath = $("#saveImage").val();
-				//alert("Selected File:"+filePath);
+
 				$("saveImage").val(filePath);
 				//document.configurationForm.invoiceLocation.value = filePath;
 				//debugger
@@ -369,7 +369,7 @@ $(document).ready(function()
 		      	var checked = "on";
 		        if($(this).prop("checked") == true)
 		        {
-		          	//alert("isRefundAllowed checked");
+
 		          	$("#isRefundAllowed").attr('checked', true);
 		          	 
 					$("#refundReason").prop('readonly', false);
@@ -383,7 +383,7 @@ $(document).ready(function()
 				} 
 				else if($(this).prop("checked") == false)
 		        {
-		          	//alert("isRefundAllowed unchecked");
+
 		            $("#refundReason").prop('readonly', true);
 					$("#refundReasonSel").prop('readonly',true);
 				    $("#addRefundReason").prop('disabled',true);
@@ -1327,7 +1327,7 @@ $(document).ready(function()
 <script type="text/javascript">
 function AddDescription1()
 {
-	//alert("Inside AddDescription");
+
 	var text = $('#description').val();
 	var setup = $("#setupID option:selected").val();
 	if(text == "" || text == " ")

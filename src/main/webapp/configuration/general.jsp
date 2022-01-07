@@ -40,21 +40,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("salesOrderBoard is checked.");
+
 	        $("#salesOrderBoard").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("salesOrderBoard is unchecked.");
+
 	        $("#salesOrderBoard").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("salesOrderBoard is unchecked.");
+
 	        $("#salesOrderBoard").attr('checked', isChecked);
 	       /*  debugger
 	    	document.configurationForm.salesOrderBoard.value = isChecked; */
@@ -71,21 +71,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("itemReceivedBoard is checked.");
+
 	        $("#itemReceivedBoard").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("itemReceivedBoard is unchecked.");
+
 	        $("#itemReceivedBoard").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("itemReceivedBoard is unchecked.");
+
 	        $("#itemReceivedBoard").attr('checked', isChecked);
 	       /*  debugger
 	    	document.configurationForm.itemReceivedBoard.value = isChecked; */
@@ -102,21 +102,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("poboard is checked.");
+
 	        $("#poboard").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("poboard is unchecked.");
+
 	        $("#poboard").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("poboard is unchecked.");
+
 	        $("#poboard").attr('checked', isChecked);
 	        /* debugger
 	    	document.configurationForm.poboard.value = isChecked; */
@@ -133,21 +133,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("itemShippedBoard is checked.");
+
 	        $("#itemShippedBoard").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("itemShippedBoard is unchecked.");
+
 	        $("#itemShippedBoard").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("itemShippedBoard is unchecked.");
+
 	        $("#itemShippedBoard").attr('checked', isChecked);
 	       /*  debugger
 	    	document.configurationForm.itemShippedBoard.value = isChecked; */
@@ -246,7 +246,7 @@ function CheckEmailConnection()
 	if(response == 1)
 	{
 		debugger
-		//alert('<bean:message key="BzComposer.configuration.manageservicetype.serverconnectedsuccess" />');
+
 		return serverconnectedseccessdialog();
 		document.configurationForm.mailAuth.disabled=false;    		
 		EnableDisableFields();
@@ -254,7 +254,7 @@ function CheckEmailConnection()
 	else
 	{
 		debugger
-		//alert('<bean:message key="BzComposer.configuration.manageservicetype.serverconnectederror" />');
+
 		return serverconnectederrordialog();
 		document.configurationForm.mailAuth.disabled=true;
 		EnableDisableFields();
@@ -1006,26 +1006,26 @@ function SaveValues()
 		var currencyValue = $.trim($("#currencyID option:selected").text());
 		
 		//document.configurationForm.currencyName.value = currencyValue;
-		//alert("CurrencyID:"+document.configurationForm.currencyID.value+"\n CurrencyText:"+currencyValue);
+
 		
 		document.configurationForm.weightID.value = parseInt(document.configurationForm.weightID.value); 
 		var weightName =$.trim($("#weightID option:selected").text());
 		//document.configurationForm.weightName.value = weightName;
-		//alert("Weight:"+document.configurationForm.weightID.value+"\n WeightName:"+weightName);	
+
 		
 		document.configurationForm.defaultLabelID.value = document.configurationForm.defaultLabelID.value;
 		var labelValue = $.trim($("#defaultLabelID option:selected").text());
 		//document.configurationForm.labelName.value = labelValue;
-		//alert("DefaultLabelID:"+document.configurationForm.defaultLabelID.value+"\n Label Name:"+labelValue);
+
 		//document.configurationForm.productTaxable.value = 
 			
 		document.configurationForm.filterOption.value = document.configurationForm.filterOption.value;
 		var filterOption = $.trim($("#filterOption option:selected").text());
-		//alert("FilterOptionID:"+document.configurationForm.filterOption.value+"\nName:"+filterOption);
+
 		
 		document.configurationForm.moduleID.value = document.configurationForm.moduleID.value;
 		var moduleName = $.trim($("#moduleID option:selected").text());
-		//alert("StartingModuleId:"+document.configurationForm.moduleID.value+"\nName:"+moduleName);
+
 		debugger;
 		
 		document.configurationForm.salesOrderBoard.value = document.configurationForm.salesOrderBoard.value;
@@ -1150,7 +1150,7 @@ function SaveValuesFeatures()
 	    {
 	        txt = txt + "\n" + x.options[i].text;
 	    }
-	   // alert("Selected Modules:"+txt);
+
 	    
 	    document.configurationForm.selectedModules.value = txt;
 	    
@@ -1161,8 +1161,8 @@ function SaveValuesFeatures()
 	    {
 	        txt1 = txt1 + "\n" + x.options[i].text;
 	    }
-		//alert("Available Modules:"+txt1);
-		//alert("Selected Modules:"+$("#selectedModules").val();
+
+
 		document.configurationForm.selectedModuleId.value = txt1; */
 		
 		debugger;

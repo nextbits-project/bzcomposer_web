@@ -97,7 +97,7 @@ function adduser1() {
 	/* if(size>=4){
 		debugger;
 		return maxnumberofuserdialog();
-		//alert("BzComposer has reached the maximum number of register user.\nTo continue using BzComposer you must purchase additional license.");
+
 	}else{
 		$('#AddUser').modal('show');
 	} */
@@ -156,7 +156,6 @@ function checkValidation(){
     }
     else if(password1 != password2){
          alert("<bean:message key='BzComposer.common.bothPwdsNotMatch'/>");
-         alert(password1+'\n'+password2);
          return;
     }
     else if(inputadminpassword != AdminPassword){
@@ -252,8 +251,7 @@ $(function() {
 		/* if(modalNewPassword == null){
 			alert("<bean:message key='BzComposer.common.bothPwdsNotMatch'/>"+ modalNewPassword);
 		}else{
-			alert("not null"+modalNewPassword);
-		window.location.href= "Configuration?tabid=ChangeAdministratorPassword&modalNewPassword="+modalNewPassword;
+			window.location.href= "Configuration?tabid=ChangeAdministratorPassword&modalNewPassword="+modalNewPassword;
 		} */
 		window.location.href= "Configuration?tabid=ChangeAdministratorPassword&modalNewPassword="+modalNewPassword;
 		//changeUserName&Password
@@ -291,7 +289,7 @@ $(function() {
 		if(size>=4){
 			debugger;
 			return maxnumberofuserdialog();
-			//alert("BzComposer has reached the maximum number of register user.\nTo continue using BzComposer you must purchase additional license.");
+
 		}else{
 			window.open("Configuration?tabid=NewUser",null,"scrollbars=yes,height=300,width=700,status=yes,toolbar=no,menubar=no,location=no" );
 		}
@@ -890,10 +888,10 @@ function SetLabelName(lblid){
 	}
 }
 
-/* Commented to prevent general alert on 24-11-2019
+/* Commented to prevent general  on 24-11-2019
 function ChangePassword()
 {
-	alert("Inside password Method");
+
 }  */
 
 function maxnumberofuserdialog()

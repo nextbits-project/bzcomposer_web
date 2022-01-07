@@ -4,8 +4,8 @@
 		<ul class="sf-menu" id="example"
 			style="text-align: center; width: max-content;">
 			<li>
-				<a href="Dashboard?tabid=Dashboard" style="cursor: pointer;"><spring:message code="BzComposer.File" /></a>
-				<ul class="uppercaseText">
+				<a href="Dashboard?tabid=Dashboard" style="cursor: pointer;" class="uppercaseText"><spring:message code="BzComposer.File" /></a>
+				<ul>
 					<li>
 						<a href="Dashboard?tabid=Dashboard" style="cursor: pointer;"> <span><spring:message code="BzComposer.Dashboard" /></span></a>
 					</li>
@@ -34,21 +34,35 @@
                             <span><spring:message code="menu.file.Import" /></span>
 						</a>
 						<ul>
+						    <li>
+                                <a href="#" onclick="confugurationImport()" style="cursor: pointer;"><spring:message code="BzComposer.Confuguration" /></a>
+                            </li>
 							<li>
-								<a href="#" onclick="customerImport()" style="cursor: pointer;">
-								    <span><spring:message code="BzComposer.customer.Customer" /></span>
-								</a>
+								<a href="#" onclick="customerImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.customer.Customer" /></span></a>
 							</li>
 							<li>
-								<a href="#" onclick="vendorImport()" style="cursor: pointer;">
-                                    <span><spring:message code="BzComposer.vendor.vendors" /></span>
-								</a>
+								<a href="#" onclick="vendorImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.vendor.vendors" /></span></a>
 							</li>
 							<li>
-								<a href="#" onclick="uploadItem()" style="cursor: pointer;">
-                                    <span><spring:message code="NavigationTree.Items" /></span>
-								</a>
+								<a href="#" onclick="uploadItem()" style="cursor: pointer;"><span><spring:message code="NavigationTree.Items" /></span></a>
 							</li>
+							<li>
+                                <a href="#" style="cursor: pointer;"><span><spring:message code="BzComposer.common.orders" /> > </span></a>
+                                <ul>
+                                    <li>
+                                        <a href="#" onclick="invoicesImport()" style="cursor: pointer;"><spring:message code="BzComposer.sales.Invoice" /></a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="estimationImport()" style="cursor: pointer;"><spring:message code="BzComposer.sales.Estimation" /></a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="salesOrderImport()" style="cursor: pointer;"><spring:message code="BzComposer.sales.SalesOrder" /></a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="purchaseOrderImport()" style="cursor: pointer;"><spring:message code="BzComposer.purchase.PurchaseOrder" /></a>
+                                    </li>
+                                </ul>
+                            </li>
 						</ul>
 					</li>
 					<li>
@@ -57,20 +71,48 @@
 						</a>
 						<ul>
 							<li>
-								<a href="#" onclick="exportCustomer()" style="cursor: pointer;">
-									<spring:message code="BzComposer.customer.Customer" />
-								</a>
+								<a href="#" onclick="exportConfiguration()" style="cursor: pointer;"><spring:message code="BzComposer.Confuguration" /></a>
 							</li>
 							<li>
-								<a href="#" onclick="exportVendor()" style="cursor: pointer;">
-									<spring:message code="BzComposer.vendor.vendors" />
-								</a>
+                                <a href="#" onclick="exportCustomer()" style="cursor: pointer;"><spring:message code="BzComposer.customer.Customer" /></a>
+                            </li>
+							<li>
+								<a href="#" onclick="exportVendor()" style="cursor: pointer;"><spring:message code="BzComposer.vendor.vendors" /></a>
 							</li>
 							<li>
-								<a href="#" onclick="exportItem()" style="cursor: pointer;">
-									<spring:message code="NavigationTree.Items" />
-								</a>
+								<a href="#" onclick="exportItem()" style="cursor: pointer;"><spring:message code="NavigationTree.Items" /></a>
 							</li>
+							<li>
+                                <a href="#" style="cursor: pointer;"><span><spring:message code="BzComposer.common.orders" /> > </span></a>
+                                <ul>
+                                    <li>
+                                        <a href="/dataExportAction?tabid=Invoices" style="cursor: pointer;"><spring:message code="BzComposer.sales.Invoice" /></a>
+                                    </li>
+                                    <li>
+                                        <a href="/dataExportAction?tabid=Estimations" style="cursor: pointer;"><spring:message code="BzComposer.sales.Estimation" /></a>
+                                    </li>
+                                    <li>
+                                        <a href="/dataExportAction?tabid=SalesOrders" style="cursor: pointer;"><spring:message code="BzComposer.sales.SalesOrder" /></a>
+                                    </li>
+                                    <li>
+                                        <a href="/dataExportAction?tabid=PurchaseOrders" style="cursor: pointer;"><spring:message code="BzComposer.purchase.PurchaseOrder" /></a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- <li>
+                                <a href="#" style="cursor: pointer;"><span><spring:message code="BzComposer.Accounting" /> > </span></a>
+                                <ul>
+                                    <li>
+                                        <a href="/dataExportAction?tabid=AccountCategory" style="cursor: pointer;"><spring:message code="BzComposer.banking.bankingAccountCategory" /></a>
+                                    </li>
+                                    <li>
+                                        <a href="/dataExportAction?tabid=AccountSubCategory" style="cursor: pointer;"><spring:message code="BzComposer.banking.bankingAccountSubCategory" /></a>
+                                    </li>
+                                    <li>
+                                        <a href="/dataExportAction?tabid=BankingTransactions" style="cursor: pointer;"><spring:message code="BzComposer.banking.bankingTransactions" /></a>
+                                    </li>
+                                </ul>
+                            </li> -->
 						</ul>
 					</li>
 					<li>
@@ -138,10 +180,10 @@
 				</ul>
 			</li>
 			<li>
-				<a href="Customer?tabid=Customer" title="Customer">
-                <span><spring:message code="BzComposer.sales.Customer" /></span>
+				<a href="Customer?tabid=Customer" title="Customer" class="uppercaseText">
+                    <span><spring:message code="BzComposer.sales.Customer" /></span>
 				</a>
-				<ul class="uppercaseText">
+				<ul>
 					<!-- <li>
 						<a href="Customer?tabid=NewCustomer" title="Add New Customer">
                         <span><spring:message code="BzComposer.customer.AddNewCutomer" /></span>
@@ -170,10 +212,10 @@
 				</ul>
 			</li>
 			<li>
-				<a href="Invoice?tabid=Invoice" title="Sales">
+				<a href="Invoice?tabid=Invoice" title="Sales" class="uppercaseText">
 					<spring:message code="BzComposer.Sales" />
 				</a>
-				<ul class="uppercaseText">
+				<ul>
 					<li>
 						<a href="Invoice?tabid=Invoice" title="">
                     <span><spring:message code="BzComposer.sales.Invoice" /></span>
@@ -232,7 +274,7 @@
 								</a>
 							</li>
 							<li>
-                                <a href="RMA?tabid=CreditMemo">Credit Memo</a>
+                                <a href="RMA?tabid=CreditMemo"><spring:message code="BzComposer.common.creditMemo"/></a>
                             </li>
 						</ul>
 					</li>
@@ -244,12 +286,10 @@
 				</ul>
 			</li>
 			<li>
-				<a href="Item?tabid=Item" title="Item">
-               <span>
-                  <spring:message code="BzComposer.sales.Item" />
-               </span>
+				<a href="Item?tabid=Item" title="Item" class="uppercaseText">
+                    <span><spring:message code="BzComposer.sales.Item" /></span>
 				</a>
-				<ul class="uppercaseText">
+				<ul>
 					<!-- <li> -->
 						<!-- <a href="Item?tabid=NewItem&ItemType=1">-->
 						<!-- <a href="Item?tabid=ShowAdd&ItemType=1&showHistoryPanel=1">
@@ -280,8 +320,8 @@
 				</ul>
 			</li>
 			<li>
-				<a href="Vendor?tabid=VONODO" title="Purchase"><span><spring:message code="BzComposer.Purchase" /></span></a>
-				<ul class="uppercaseText">
+				<a href="Vendor?tabid=VONODO" title="Purchase" class="uppercaseText"><span><spring:message code="BzComposer.Purchase" /></span></a>
+				<ul>
 					<li>
 					    <a href="Vendor?tabid=VONODO"><spring:message code="BzComposer.vendor.vendors" /></a>
 					</li>
@@ -310,10 +350,10 @@
 			</li>
 			<!-- 	<li><a	href="javascript: void(0)" title="Accounting" ><spring:message code="BzComposer.Accounting" /></a></li> -->
 			<li>
-				<a href="Banking?tabid=Banking" title="Accounting" style="cursor: pointer;">
+				<a href="Banking?tabid=Banking" title="Accounting" style="cursor: pointer;" class="uppercaseText">
 					<spring:message code="BzComposer.Accounting" />
 				</a>
-				<ul class="uppercaseText">
+				<ul>
 				    <!-- <li>
                         <a href="CategoryManager?tabid=CategoryManager" style="cursor: pointer;">
                             <span><spring:message code="BzComposer.CategoryManager" /></span>
@@ -359,8 +399,8 @@
 				</ul>
 			</li>
 		<!-- <li>
-				<a href="employeelist" title="Employee"><spring:message code="BzComposer.Employee" /></a>
-				<ul class="uppercaseText">
+				<a href="employeelist" title="Employee" class="uppercaseText"><spring:message code="BzComposer.Employee" /></a>
+				<ul>
 					<li class="current">
 						<a href="employee" title="Employee"><spring:message code="BzComposer.EmployeeList" /></a>
 					    <a href="employeelist" title="Employee"><spring:message code="BzComposer.EmployeeList" /></a>
@@ -392,10 +432,10 @@
 			</li> -->
 
 			<li>
-				<a href="Reports?tabid=ReportsCenter" title="Report Center">
+				<a href="Reports?tabid=ReportsCenter" title="Report Center" class="uppercaseText">
                     <span><spring:message code="BzComposer.Report.ReportTitle" /></span>
 				</a>
-				<ul class="uppercaseText">
+				<ul>
 					<li>
 						<a href="Reports?tabid=ReportsCenter" title="Report Center">
                             <span><spring:message code="BzComposer.Report.ReportCenter" /></span>
@@ -943,7 +983,7 @@
                </li> --%>
 			<!-- eSales navigation over -->
 			<li>
-				<a href="Configuration?tabid=config" title="Confuguration">
+				<a href="Configuration?tabid=config" title="Confuguration" class="uppercaseText">
 					<spring:message code="BzComposer.Confuguration" />
 				</a>
 			</li>
@@ -1001,7 +1041,7 @@
 	}
 	function ShowProfitLossByJob()
 	{
-		alert("Not yet supported.");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function showSalesReport(action)
 	{
@@ -1150,12 +1190,12 @@
 	function ShowSalesTaxSummary()
 	{
 		//window.open("Item?tabid=ShowSalesTaxSummary",null,"scrollbars=yes,height=600,width=850,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("Not Yet Supported");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function ShowReportTaxDetail()
 	{
 		//window.open("Item?tabid=ShowSalesTaxSummary",null,"scrollbars=yes,height=600,width=850,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("Not Yet Supported");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function showDamagedInventoryList()
 	{
@@ -1216,7 +1256,7 @@
 	function TransactionDeatail()
 	{
 		//window.open("BankingAccounting?tabid=BillDetail",null,"scrollbars=yes,height=600,width=1200,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("Not Yet Supprted");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function ShowAccountReceivableGraph()
 	{
@@ -1261,25 +1301,25 @@
 	function ShowCashFlowForeCast()
 	{
 		//window.open("ShowCashFlowForeCast?tabid=ShowCashFlowForeCast",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("Not Yet Supprted");
+		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
 	}
 	function IncomeExpenseGraph()
 	{
 		//window.open("ShowCashFlowForeCast?tabid=ShowCashFlowForeCast",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
 		window.open("BankingAccounting?tabid=IncomeExpenseGraph",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no");
-		//alert("Income Expence graph");
+
 	}
 	function Networth()
 	{
 		//window.open("ShowCashFlowForeCast?tabid=ShowCashFlowForeCast",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
 		window.open("BankingAccounting?tabid=NetworthGraph",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no");
-		//alert("Income Expence graph");
+
 	}
 	function BudgetvsActualGraph()
 	{
 		//window.open("ShowCashFlowForeCast?tabid=ShowCashFlowForeCast",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
 		window.open("BankingAccounting?tabid=BudgetvsActualGraph",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no");
-		//alert("Income Expence graph");
+
 	}
 	function ChartsofCategories()
 	{
@@ -1346,6 +1386,10 @@
 	{
 		window.open("File?tabid=MultiPrintInvoice",null,"scrollbars=no,height=600,width=1050,status=yes,toolbar=no,menubar=no,location=no");
 	}
+	function confugurationImport()
+    {
+        window.open("/dataImportAction?tabid=ConfigurationInfo",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+    }
 	function customerImport()
 	{
 		window.open("File?tabid=ImportCustomer",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
@@ -1358,17 +1402,38 @@
 	{
 		window.open("Item?tabid=UploadItem",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
+	function invoicesImport()
+    {
+        window.open("dataImportAction?tabid=Invoices",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+    }
+    function estimationImport()
+    {
+        window.open("dataImportAction?tabid=Estimations",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+    }
+    function salesOrderImport()
+    {
+        window.open("dataImportAction?tabid=SalesOrders",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+    }
+    function purchaseOrderImport()
+    {
+        window.open("dataImportAction?tabid=PurchaseOrders",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+    }
+
+    function exportConfiguration()
+    {
+        window.open("dataExportAction?tabid=ConfigurationInfo",null,"scrollbars=no,height=300,width=600,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+    }
 	function exportCustomer()
 	{
-		window.open("File?tabid=ExportCustomer",null,"scrollbars=no,height=300,width=500,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+		window.open("File?tabid=ExportCustomer",null,"scrollbars=no,height=300,width=600,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	function exportVendor()
 	{
-		window.open("File?tabid=ExportVendor",null,"scrollbars=no,height=300,width=500,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+		window.open("File?tabid=ExportVendor",null,"scrollbars=no,height=300,width=600,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	function exportItem()
 	{
-		window.open("Item?tabid=ExportItem",null,"scrollbars=no,height=300,width=500,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+		window.open("Item?tabid=ExportItem",null,"scrollbars=no,height=300,width=600,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	function quickBookImport()
 	{
@@ -1380,7 +1445,7 @@
 	}
 	function moduleImport()
 	{
-		window.open("Module?tabid=ImportModule",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+		window.open("Module?tabid=ImportModule",null,"scrollbars=no,height=400,width =700,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	/*esales board*/
 	/* function eSalesSalesBoard()
@@ -1632,7 +1697,7 @@
 			{
 				if (ch != "/" && ch != "*" && ch != "+" && ch != "-" && ch != "." && ch != "(" && ch!= ")" && ch != "%")
 				{
-					alert("invalid entry!")
+					alert("<bean:message key='BzComposer.common.invalidEntry'/>");
 					return false
 				}
 			}

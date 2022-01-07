@@ -38,7 +38,7 @@
 	</div>
 	<div>
 		<c:if test="${not empty success}">
-            <span style="color: green">${success}</span>
+            <span style="color: green"><spring:message code='${success}'/></span>
         </c:if>
 	</div>
 </form:form>

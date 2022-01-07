@@ -848,7 +848,7 @@ $(function() {
 									for (i=0; i<100; i++){
 										exist[i]=-1;
 									}
-									//alert("exist created len="+exist.length);
+
 								</script>
 
 								<!-- PAyment information tab -->
@@ -1259,37 +1259,37 @@ function oGET(oo, url) {
 	    debugger;
 		if(document.getElementById("cname").value=="")
 		{
-			//alert('<spring:message code="BzComposer.UpdateCustomer.Cname.Validation" />');
+
 			return showNameDialog();
 			document.VendorForm.cname.focus();
 		}
 		else if(trim(document.VendorForm.firstName.value)=="")
 		{
-			//alert('<spring:message code="BzComposer.UpdateCustomer.Fname.Validation" />');
+
 			return showFirstNameDialog();
 			document.VendorForm.firstName.focus();
 		}
 		else if(trim(document.VendorForm.lastName.value)=="")
 		{
-			//alert('<spring:message code="BzComposer.UpdateCustomer.Lname.Validation"/>');
+
 			return showLastNameDialog();
 			document.VendorForm.lastName.focus();
 		}
 		else if(trim(document.VendorForm.address1.value)=="")
 		{
-			//alert('<spring:message code="BzComposer.UpdateCustomer.Add1.Validation"/>');
+
 			return showAddress1Dialog();
 			document.VendorForm.address1.focus();
 		}
 		else if(trim(document.VendorForm.city.value)=="")
 		{
-			//alert('<spring:message code="BzComposer.UpdateCustomer.City.Validation"/>');
+
 			return showCityDialog();
 			document.VendorForm.address1.focus();
 		}
 		else if(trim(document.VendorForm.zipCode.value)=="")
 		{
-			//alert('<spring:message code="BzComposer.UpdateCustomer.ZipCode.Validation"/>');
+
 			return showZipCodeDialog();
 			document.VendorForm.zipCode.focus();
 		}
@@ -1320,13 +1320,13 @@ function oGET(oo, url) {
 
 	function addToTable(form)
 	{
-//	alert("Count="+count);
+
 		flag=0;
 		flag1=0;
 		invID=form.serviceID.value;
-//	alert("The Value of the Combo is"+invID);
+
 		SIDSize=document.getElementById('sIDSize') .value;
-//	alert("The SerialID Size is"+SIDSize);
+
 		SLSize=document.getElementById('sSize') .value;
 		InvSize=document.getElementById('iSize') .value;
 		DetailSize=document.getElementById('dSize') .value;
@@ -1342,18 +1342,17 @@ function oGET(oo, url) {
                 sid=document.getElementById(i+'_ser').value;
 
                 exist[i]=sid;
-                alert("ARR"+exist[i]);
                 cnt++;
             }
         */
-//	alert("invID="+invID+"\n\nsearching for existance..."+exist.length);
+
 		for(t=0; t<exist.length; t++){	//limit=cnt
 			if(invID==exist[t])		{
 				flag=1;
 				break;
 			}
 		}
-//			alert("not found...");
+
 		/*	for(z=0;z<SIDSize;z++)
             {
                 sid=document.getElementById(z+'id').value;
@@ -1370,11 +1369,11 @@ function oGET(oo, url) {
 		isID=document.getElementById(i+'isid').value;
 		if(invID==iinvID)
 		{
-	//	alert("The hiden field id is "+iinvID);
+
 
 				serviceName=document.getElementById(i+'sname').value;
 
-		//alert("The service name is "+serviceName);
+
 
 			for(j=0;j<InvSize;j++)
 			{
@@ -1393,22 +1392,22 @@ function oGET(oo, url) {
 		 *************************************************************************************************************/
 		if(flag==1)
 		{
-			//alert('<spring:message code="BzComposer.NewCustomer.Service.Validation"/>');
+
 			return showServiceValidationDialog();
 			return;
 		}
 		else
 		{
 			flagx=0;
-//			alert("adding new item");
+
 			for(i=0;i<SLSize;i++){
 				iinvID=document.getElementById(i+'sid').value;
 
 				isID=document.getElementById(i+'isid').value;
 				if(invID==iinvID) {
-					//	alert("The hiden field id is "+iinvID);
+
 					serviceName=document.getElementById(i+'sname').value;
-					//alert("The service name is "+serviceName);
+
 					for(j=0;j<InvSize;j++)	{
 						isID2=document.getElementById(j+'invid').value;
 						if(isID==isID2) {
@@ -1420,7 +1419,7 @@ function oGET(oo, url) {
 							}
 							InvoiceStyle=document.getElementById(j+'iname').value;
 							flagx=1;
-							//alert("new row id="+invID);
+
 							//cnt++;
 						}
 					}
@@ -1437,7 +1436,7 @@ function oGET(oo, url) {
 			}
 
 			hidn_val = document.getElementById('hidn').value;
-			//alert("hidden field"+hidn_val);
+
 			hidn_val1=hidn_val;
 
 			var tr = document.createElement("tr");
@@ -1457,7 +1456,7 @@ function oGET(oo, url) {
 			td2.setAttribute("align", "left");
 			tr.appendChild(td2);
 			td2.innerHTML=InvoiceStyle;
-			//alert("The InvoiceStyle is "+InvoiceStyle);
+
 
 			var td3 = document.createElement("td");
 			td3.setAttribute("align", "left");
@@ -1483,17 +1482,17 @@ function oGET(oo, url) {
             tr.appendChild(td6); */										//td6 is added on 02-10-2019
 
 			form.table_size.value++;
-			//alert("The Size of the table is "+form.table_size.value);
+
 
 			form.table_serID.value+=invID+";";
-			//alert("The Servics ID is "+form.table_serID.value);
+
 
 			form.table_serviceName.value+=serviceName+";";
 
 			//form.table_invId.value+=InvoiceStyle+";";
 
 			form.table_bal.value+=ServiceBalance+";";
-			//alert("The Service Bal is "+form.table_bal.value);
+
 
 			if(InvoiceStyle==""){
 				form.table_invId.value+="0;";
@@ -1744,7 +1743,7 @@ function oGET(oo, url) {
 
 		/*To display data either in readonly or not*/
 		var readOnly = <%= request.getAttribute("readData") %>
-		//alert("ReadData value:"+readOnly);
+
 		if(readOnly)
 		{
 			$('#newInvoice').prop('disabled', true);
@@ -1865,7 +1864,7 @@ function showAddPaymentMethodDialog(){
                             location.reload();
                         },
                         error : function(data) {
-                            alert('ERROR');
+                            alert("<bean:message key='BzComposer.common.erroroccurred'/>");
                         }
                     });
                 }

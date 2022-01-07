@@ -13,12 +13,15 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.upload.FormFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ItemDto {
+public class ItemDto implements Serializable {
 	
 	private static final long serialVersionUID = 0;
+	public static final String ItemColumns = "Category,ItemCode,ItemTitle,ItemType,SerialNum,Qty,AvailableQty,ReorderPoint,Weight,ProductSKU," +
+			"PuchasePrice,SalePrice,DealerPrice,Taxable,Description";
 
 	private long id;
 	private String inventoryId;
@@ -53,8 +56,9 @@ public class ItemDto {
 	private String salePrice;
 	private String dealerPrice;
 
-	private String expectedQty;
 	private String qty;
+	private String availableQty;
+	private String expectedQty;
 	private String weight;
 	private String actualWeight;
 
@@ -891,6 +895,9 @@ public class ItemDto {
 
 	public String getQty() { return qty; }
 	public void setQty(String qty) { this.qty = qty; }
+
+	public String getAvailableQty() { return availableQty; }
+	public void setAvailableQty(String availableQty) { this.availableQty = availableQty; }
 
 	/**
 	 * @return the salePrice

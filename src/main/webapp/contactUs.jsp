@@ -40,10 +40,10 @@ function ValidCaptcha()
 	var result = document.getElementById("CaptchaInput").value;
 
     if(result == (parseInt(a) + parseInt(b))) {
-        //alert("Correct");
+
         return true;
     } else {
-        //alert("Wrong");
+
         return false;
     }
 }
@@ -52,10 +52,10 @@ function check()
     var result = document.getElementById("CaptchaInput").value;
 
     if(result == (parseInt(a) + parseInt(b))) {
-        //alert("Correct");
+
         return true;
     } else {
-        //alert("Wrong");
+
         return false;
     }
 }
@@ -66,46 +66,37 @@ function checkform(theform)
 	var why = "";
 	if(theform.txtName.value == "" || theform.txtName.value == " ")
 	{
-		//why+= "Please Enter Name";
-		//alert("Please Enter Name");
 		debugger
 		document.getElementById('errorMessageName').innerHTML="<bean:message key='BzComposer.contactus.formerrormessage'/>";
-		debugger
-		//event.preventDefault();
 	}
 	if(theform.txtEmail.value == "" || theform.txtEmail.value == " ")
 	{
-		//alert("Please Enter Email");
+
 		document.getElementById('errorMessageEmail').innerHTML="<bean:message key='BzComposer.contactus.formerrormessage'/>";
 		//event.preventDefault();
 	}
 	if(theform.comments.value == "" || theform.comments.value == " ")
 	{
-		//alert("Please Enter Comments");
+
 		document.getElementById('errorMessageComments').innerHTML="<bean:message key='BzComposer.contactus.formerrormessage'/>";
 		//event.preventDefault();
 	}
 	if(theform.CaptchaInput.value == "")
 	{
-		//why += "- Please Enter CAPTCHA Code.\n";
 		debugger
 		document.getElementById('errorMessageCaptcha').innerHTML = "<bean:message key='BzComposer.contactus.formcaptchacode'/>";
-		debugger
 		event.preventDefault();
 	}
 	else
 	{
 		if(ValidCaptcha(theform.CaptchaInput.value) == false)
 		{
-			//why += "- The CAPTCHA Code Does Not Match.\n";
 			document.getElementById('errorMessageCaptcha').innerHTML = "<bean:message key='BzComposer.contactus.forminvalidcaptcha'/>";
 			event.preventDefault();
 		}
 		
 		else
 		{
-			alert("Name:"+theform.txtName.value+"\nEmail:"+theform.txtEmail.value+"\nPhone:"+theform.txtPhone.value+"\nSubject:"+theform.subject.value+"\nComments:"+theform.comments.value);
-			
 			var UserName = theform.txtName.value;
 			var email = theform.txtEmail.value;
 			var phone = theform.txtPhone.value;
@@ -125,7 +116,6 @@ function checkform(theform)
 	
 	if(why != "")
 	{
-		alert(why);
 		return false;
 	}
 }

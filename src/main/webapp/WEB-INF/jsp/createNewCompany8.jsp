@@ -189,7 +189,7 @@ function submitform()
 			 }*/
 
 		});
-		alert("Inventory Added successfully");
+		alert("<bean:message key='BzComposer.common.saveSuccess'/>");
 		document.forms['newcompany8'].action = "CompanyNew?tabid=createNewCompany9";
 		document.forms['newcompany8'].submit();
 
@@ -227,7 +227,7 @@ function addGeneralDetail()
 	
 	if(inventoryCode == null)
 	{
-		alert("Please insert a item detail");
+		alert("<bean:message key='BzComposer.common.insertItemDetails'/>");
 		return false;
 	}	
 	
@@ -316,7 +316,7 @@ function remove()
 		$("#row"+index+"").remove();
 		objGlobal.splice(index,1);
 	}else{
-		alert("Please select at least one row");
+		alert("<bean:message key='BzComposer.common.selectAtleast1Record'/>");
 		return false;
 	}	
 	index = -1;
@@ -335,7 +335,7 @@ function finish()
 				data : "json=" +json ,
 			    success : function(data) {
 					debugger;
-					alert("Inventory Added Successfully");  
+					alert("<bean:message key='BzComposer.common.saveSuccess'/>");
 					document.forms[0].action = "CompanyNew?tabid=finish3";
 					document.forms[0].submit(); 
 				},

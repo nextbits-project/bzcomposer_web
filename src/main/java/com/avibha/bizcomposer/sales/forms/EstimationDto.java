@@ -137,6 +137,7 @@ public class EstimationDto {
 
     private int templateType;
     private List<Item> cart;
+    private String tabid;
 
     public String getCname() {
         return cname;
@@ -996,4 +997,7 @@ public class EstimationDto {
 
     public List<Item> getCart() { return cart; }
     public void setCart(List<Item> cart) { this.cart = cart; }
+
+    public String getTabid() { return tabid; }
+    public void setTabid(String tabid) { this.tabid = tabid; }
 }

@@ -15,6 +15,9 @@
 function CloseMe(){
     window.close();
 }
+function pleaseWait(){
+    document.getElementById("pleaseWait").style.display = "block";
+}
 </script>
 </head>
 <body>
@@ -25,22 +28,22 @@ function CloseMe(){
 </div>
 <div>
 <form:form action="FileUpload?tabid=UploadVendorFile" method="post" enctype="MULTIPART/FORM-DATA" id="uploadForm" modelAttribute="companyInfoDto">
-	<div style="margin: 20px 10px 0px 40px;">
-		<!-- <input type="button" class="formbutton" value="DownLoad Sample CSV for customer" onclick= "csvOption()" id="csv"/> -->
+	<!-- <div style="margin: 20px 10px 0px 40px;">
 		<a href="${pageContext.request.contextPath}/samplefile/BCA vendor data template.csv" download class="formbutton">
  			<spring:message code="BzComposer.vendorimport.csvfiledownload"/>
 		</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<a href="${pageContext.request.contextPath}/samplefile/BCA vendor data template.xls" download class="formbutton">
  			<spring:message code="BzComposer.vendorimport.excelfiledownload"/>
 		</a>
-		<!-- <input type="button" class="formbutton" value="DownLoad Sample xls for customer" onclick= "xlsOption()" id="xls"/> -->
-	</div>
+	</div> -->
 	<div style="margin: 20px 10px 0px 40px;">
 	 <table style="width:100%;">
 	 	<tr>
-	 		<td style="width:33%;"><spring:message code="BzComposer.vendorimport.csvorexcelfile"/></td>
+	 		<td style="width:33%;"><spring:message code="BzComposer.itemimport.csvorexcelfile"/></td>
 	 		<td style="width:33%;"><input type="file" name="attachFile" /></td>
-	 		<td style="width:33%;"><input type="submit" class="formbutton" onclick="upload()" value="<spring:message code='BzComposer.global.upload'/>" /></td>
+	 		<td style="width:33%;">
+	 		    <input type="submit" class="formbutton" onclick="pleaseWait();" value="<spring:message code='BzComposer.global.upload'/>" />
+	 	    </td>
 	 	</tr>
 	 	<tr><td colspan="3">&nbsp;</td></tr>
 	 	<tr>
@@ -51,10 +54,10 @@ function CloseMe(){
 	 </table>
 	</div>
 	<div>
+	    <span style="color: green;display:none;" id="pleaseWait"><spring:message code="BzComposer.configuration.pleaseWait"/></span>
 		<c:if test="${not empty successMessage1}">
-		  <span style="color: green">	
-		  		<spring:message code="BzComposer.FileUpload"/>
-		  </span>
+		    <span style="color: green"><spring:message code="BzComposer.FileUpload"/></span>
+            <% session.removeAttribute("successMessage1"); %>
 		</c:if>
 	</div>
 </form:form>

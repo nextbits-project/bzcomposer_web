@@ -130,8 +130,7 @@ public class PurchaseOrderController {
 				String compId = (String) request.getSession().getAttribute("CID");
 				String cvId = request.getParameter("CustId");
 				InvoiceInfoDao invoice = new InvoiceInfoDao();
-				String stateName = request.getParameter("stateName");
-				pdetails.AddVendor(request, vendorDto, compId,stateName);
+				pdetails.AddVendor(request, vendorDto, compId);
 				invoice.getServices(request, compId, cvId);
 				pdetails.getAllList(request);
 				forward = "/purchase/addNewUser";

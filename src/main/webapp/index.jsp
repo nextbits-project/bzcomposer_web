@@ -45,7 +45,7 @@ $(document).ready(function()
 	{
 		//Get the id of list items
 		var companyID = $(this).attr('id');
-		//alert("selected Sample company Id:"+companyID);
+
 		if(companyID == 2)
 		{
 			window.location.href="Login.do?tabid=selectedCompany&selectedCompanyId=2&companyName=ABC Retails Company";	
@@ -60,7 +60,7 @@ $(document).ready(function()
 		}
 	});
 	var locale = "<%= request.getAttribute("selectedLocale")%>";
-	//alert("selected locale:"+locale);
+
 	$('select[id="locale"]').find('option[value="'+locale+'"]').attr("selected",true);
 });  
 
@@ -81,12 +81,12 @@ $("#forgotPasswordForm").submit(function(event) {
 
     /*Alerts the results */
     posting.done(function( data ) {
-      //alert('success');
+
     }); 
   });
 function openRegisterPage()
 {
-	//alert("Inside openRecoverPassword")
+
 	window.location = "Login.do?tabid=register";
 }
 function redirectToLogin()
@@ -109,12 +109,12 @@ function showLocale()
 {
 	debugger;
 	var lang = document.getElementById("locale").value;
-	//alert("You've selected language:"+lang);
+
 	if(lang == "")
 		event.preventDefault();
 	else
 		window.location="Locale.do?request_locale="+lang;
-	//alert("locale is changed...")
+
 	/* window.location="Locale.do?method="+lang; */ 
 	/* $.ajax({
 		type: "POST",
@@ -122,21 +122,19 @@ function showLocale()
 		data:{lang : lang},
 		}).done(function(data){
 			debugger;
-		alert("locale is changed..");
-		debugger;
 	}); */
 }
 function showLocaleMobile()
 {
 	debugger;
 	var lang = document.getElementById("localeMobile").value;
-	//alert("You've selected language:"+lang);
+
 	if(lang == "")
-		//alert("Select any language to change.");
+
 		return showLanguageDialog();
 	//else
 		window.location="Locale.do?request_locale="+lang;
-	//alert("locale is changed...")
+
 	/* window.location="Locale.do?method="+lang; */ 
 	/* $.ajax({
 		type: "POST",

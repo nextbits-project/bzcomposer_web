@@ -1943,14 +1943,20 @@ public class EstimationInfoDao {
 			String sql = " SELECT InvoiceID,ClientVendorID,PONum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,ShipCarrierID,MessageID,"
 					+ " SalesTaxID,Weight,SubTotal,Tax,SH,Total,AdjustedTotal,BSAddressID,CompanyID,Taxable,Memo,"
 					+ " date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,date_format(DateAdded,'%m-%d-%Y') as DateAdded "
-					+ "FROM bca_invoice WHERE EstNum =? AND CompanyID = ? AND invoiceStatus in (0,2) AND InvoiceTypeID=10 ";
+					+ "FROM bca_invoice WHERE CompanyID="+compId+" AND InvoiceTypeID=10 ";
+			if(estNo > 0){
+				sql = sql+" AND invoiceStatus in (0,2) AND EstNum="+estNo;
+			}else{
+				sql = sql+" AND invoiceStatus=0";
+			}
 			pstmt = con.prepareStatement(sql);
-			pstmt.setLong(1, estNo);
-			pstmt.setString(2, compId);
 			rs = pstmt.executeQuery();
 			int invoiceID = 0;
 			String style = "";
-			if (rs.next()) {
+			while (rs.next()) {
+				if (!list.isEmpty()) {
+					form = new EstimationDto();
+				}
 				invoiceID = rs.getInt("InvoiceID");
 				form.setCustID(rs.getString("ClientVendorID"));
 				form.setPoNum(rs.getString("PONum"));
@@ -1978,26 +1984,27 @@ public class EstimationInfoDao {
 				form.setOrderDate(rs.getString("DateAdded"));
 				form.setTaxable((rs.getInt("Taxable") == 1) ? "true" : "false");
 				form.setMemo(rs.getString("Memo"));
+
+				/* Bill Address */
+				InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+				ArrayList<InvoiceDto> billAddresses = invoiceInfoDao.billAddress(compId, form.getCustID());
+				if (!billAddresses.isEmpty()) {
+					InvoiceDto invoiceBillAddr = billAddresses.get(0);
+					form.setBsAddressID(invoiceBillAddr.getBsAddressID());
+					form.setBillTo(invoiceBillAddr.getBillTo());
+				}
+				/* Ship Address */
+				ArrayList<InvoiceDto> shipAddresses = invoiceInfoDao.shipAddress(compId, form.getCustID());
+				if (!shipAddresses.isEmpty()) {
+					InvoiceDto invoiceShipAddr = shipAddresses.get(0);
+					form.setShAddressID(invoiceShipAddr.getShAddressID());
+					form.setShipTo(invoiceShipAddr.getShipTo());
+				}
+				list.add(form);
+				/* Item List in the cart */
+				itemList(invoiceID, compId, request, form);
+				request.setAttribute("Style", style);
 			}
-			/* Bill Address */
-			InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
-			ArrayList<InvoiceDto> billAddresses = invoiceInfoDao.billAddress(compId, form.getCustID());
-			if(!billAddresses.isEmpty()) {
-				InvoiceDto invoiceBillAddr = billAddresses.get(0);
-				form.setBsAddressID(invoiceBillAddr.getBsAddressID());
-				form.setBillTo(invoiceBillAddr.getBillTo());
-			}
-			/* Ship Address */
-			ArrayList<InvoiceDto> shipAddresses = invoiceInfoDao.shipAddress(compId, form.getCustID());
-			if(!shipAddresses.isEmpty()) {
-				InvoiceDto invoiceShipAddr = shipAddresses.get(0);
-				form.setShAddressID(invoiceShipAddr.getShAddressID());
-				form.setShipTo(invoiceShipAddr.getShipTo());
-			}
-			list.add(form);
-			/* Item List in the cart */
-			itemList(invoiceID, compId, request, form);
-			request.setAttribute("Style", style);
 		} catch (SQLException ex) {
 			Loger.log("Exception in getRecord Function" + ex.toString());
 			ex.printStackTrace();

@@ -48,7 +48,7 @@ border-radius: 2px;
 	{
 		debugger;
 		<%-- var role = '<%= request.getAttribute("Role")%>';
-		//alert("Role is:"+role);
+
 		if(role == "Admin" || role =="Super Admin")
 		{
 			$("#selectedRetailCompanyId").show();
@@ -213,7 +213,7 @@ function deleteCompany()
 		//companyName = $("#selectedRetailCompanyId").find(":selected").text().replace(/\s/g,'');
 	} */
 	companyId = selectedNonRetailCompanyId;
-	//alert("companyId"+companyId);
+
 	if(companyId  != null)
 	{	
 		window.location.href= "Login.do?tabid=DeleteCompany&&CompanyID="+companyId;

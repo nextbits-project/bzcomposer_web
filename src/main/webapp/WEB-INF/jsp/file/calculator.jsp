@@ -180,7 +180,7 @@ function checkNum(str) {
 		if (ch < "0" || ch > "9") {
 			if (ch != "/" && ch != "*" && ch != "+" && ch != "-" && ch != "."
 				&& ch != "(" && ch!= ")" && ch != "%") {
-				alert("invalid entry!")
+				alert("<bean:message key='BzComposer.common.invalidEntry'/>");
 				return false
 				}
 			}

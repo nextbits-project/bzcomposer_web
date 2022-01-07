@@ -363,17 +363,17 @@ function approveRMA()
 {
 	cartID=document.getElementById("cartID").value ;
 	if(trim(document.RMAForm.rma.value)==""){
-		//alert('<spring:message code="BzComposer.RMA.rmano.Validation" />')
+
 		return RMADetailsDialog();
 		document.RMAForm.rma.focus();
 	}
 	else if(parseInt(document.RMAForm.qty.value)==0 || document.RMAForm.qty.value==""){
-		//alert('<spring:message code="BzComposer.RMA.qty.Validation" />');
+
 		return showRMAQuantityDialog();
 		document.RMAForm.qty.focus();
 	}
 	else if((!IsNumeric(document.RMAForm.qty.value))){
-		//alert('<spring:message code="BzComposer.RMA.qty.InNumber.Validation" />');
+
 		return RMAQuantityDialog();
 		document.RMAForm.qty.focus();
 	}
@@ -445,9 +445,6 @@ window.close();
 
 function init(){
 	debugger;
-	<c:if test="${not empty msg}">
-		alert('${msg}');
-	</c:if>
 	document.RMAForm.rma.value="";
 }
 

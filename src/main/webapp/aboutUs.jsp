@@ -12,7 +12,7 @@ function redirectToLogin()
 }
 function openRegisterPage()
 {
-	//alert("Inside openRecoverPassword")
+
 	window.location = "Login.do?tabid=register";
 }
 </script>

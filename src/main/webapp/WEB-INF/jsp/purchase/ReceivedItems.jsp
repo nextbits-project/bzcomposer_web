@@ -252,14 +252,14 @@ function callClick(rid, invId, cartID2) {
 
 function callClearReceivedQty(){
     if(cartID == undefined || cartID == 0){
-        alert("Please select any record");
+        alert("<bean:message key='BzComposer.common.selectanyrecord'/>");
     }else{
         window.location="PurchaseBoard?tabid=clearReceivedQty&cartID=" + cartID;
     }
 }
 function callEdit(){
     if(invoiceID == undefined){
-        alert("Please select any record");
+        alert("<bean:message key='BzComposer.common.selectanyrecord'/>");
     }else{
         window.open("PurchaseBoard?tabid=editReceivedItems&invoiceID=" + invoiceID, null, "scrollbars=yes,height=600,width=900,status=yes,toolbar=no,menubar=no,location=no");
     }
@@ -299,7 +299,7 @@ function callsave(){
             "memo" : ItemCells[15].getElementsByTagName("input")[0].value
         };
         if(parseInt(ItemCells[10].getElementsByTagName("input")[0].value) < 0){
-            alert("Please enter valid Qty!");
+            alert("<bean:message key='BzComposer.common.enterValidQty'/>");
             return false;
         }
     }
@@ -337,7 +337,7 @@ function callDelete() {
         return showItemValidationDialog();
     }
     if (setInvId == 0) {
-        //alert('<spring:message code="BizComposer.Item.Item.Validation"/>');
+
         return showItemValidationDialog();
     } else {
         debugger;
@@ -363,14 +363,14 @@ function callDelete() {
 }
 
 function setIsEmail(){
-    //alert("DFSD");
+
     document.getElementById("isEmailChk").value=document.getElementById("EmailId").value;
     document.forms[0].action = "Email.do?tabid=EOSOLO";
     document.forms[0].submit();
 }
 function checkName(){
     if(document.RMAForm.fnameTxt.value=="" && document.RMAForm.lnameTxt.value=="")	{
-        //alert("You have to type one of fields in fst name and last name");
+
         return checkduplicatenamedialog();
     }
     else{

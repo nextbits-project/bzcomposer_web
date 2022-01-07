@@ -36,10 +36,10 @@ function showEditVendor()
 	debugger;
 	var custid = <%= request.getParameter("vendrId")%>;
 	debugger;
-	//alert("ClientVendorID:"+custid);
+
 	if(custid==0 || custid == null)
 	{
-		//alert("Please select the vendor");
+
 		return showSelectVendorDialog();
 	}
 	else
@@ -88,7 +88,7 @@ function initialize()
 	debugger
 	var rid= "<%= request.getParameter("SelectedRID")%>$$";
 	var cvid = <%= request.getParameter("vendrId")%>;
-	//alert("clientVedorID is:"+cvid);
+
 	var rd=document.getElementById(rid);
 	rd.className = "draft";
 	<logic:present name="VendorFrm">
@@ -186,7 +186,7 @@ function DeleteVendor()
 	vendorid = <%= request.getParameter("vendrId")%>;
 	if(vendorid==0 || vendorid == null)
 	{
-		//alert("Please select the vendor to delete");
+
 		return deleteVendorDialog();
 	}
 	else
@@ -245,7 +245,7 @@ function setRowId(rowid,rid)
 	var rID = rid;
 	var rd1=rid.replace("$$", "");
 	debugger
-	//alert("RowId:"+rowID+"\nrID:"+rd1);
+
 	rd.className = "draft";
 	debugger
 	//document.getElementById("setRID").value=rID;
@@ -1202,7 +1202,7 @@ table.tabla-listados tbody tr td {
 						for (i=0; i<exist.length; i++){
 							exist[i]=-1;
 						}
-//						alert("exist created len="+exist.length);
+
 					</script>
 									<tr>
 										<td valign=top class="tabPage">

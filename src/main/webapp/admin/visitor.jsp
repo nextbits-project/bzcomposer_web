@@ -204,7 +204,7 @@ table.tabla-listados tbody tr.odd td {
 
 	function callDelete() {
 		if (setInvId == 0) {
-			//alert('<bean:message key="BizComposer.Item.Item.Validation"/>');
+
 			return showItemValidationDialog();
 		} else {
 			/* var res=window.confirm('<bean:message key="BizComposer.Item.Delete.Validation"/>')
@@ -253,7 +253,7 @@ table.tabla-listados tbody tr.odd td {
 
 	function showEdit(inventoryId) {
 		if (inventoryId == 0) {
-			//alert('<bean:message key="BizComposer.Item.Item.Validation"/>');
+
 			return showItemValidationDialog();
 		} else {
 			window

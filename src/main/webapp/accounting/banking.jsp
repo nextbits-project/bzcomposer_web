@@ -1150,7 +1150,7 @@ function getAccountCategoryId(catId)
 			
 			},
 			 error : function(data) {
-				//alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+
 				return errorMessageDialog();
 			} 
 		});
@@ -1171,7 +1171,7 @@ function addAccount()
 	}
 	else
 	{
-		//alert("<bean:message key='BzComposer.banking.startingaccountbalance'/>");
+
 		return shostartingaccbalancedialog();
 		return false;
 	}
@@ -1180,7 +1180,7 @@ function addAccount()
 		{		
 			if(payerId == '-1' && opeingBalance > customerCurrentBalance)
 			{
-				//alert("Insufficient Amount in the Payer Account");
+
 				return showInsufficientAmountDialog();
 				return false;
 			}
@@ -1233,7 +1233,7 @@ function addAccount()
 	{
 		if(paymentId == '' || paymentId == -1)
 		{
-			//alert("Please select a transaction")
+
 			return selectTransactionDialog();
 			return false;
 		}
@@ -1323,7 +1323,7 @@ function deleteBankAccount()
 {
 	if(totalPaymentList > 1)
 	{
-		//alert("<bean:message key='BzComposer.banking.cantdeletaccount'/>");
+
 		return shownotdeletedaccountdialog();
 		$('#AddAccountDialog').dialog('close'); 
 		return false;
@@ -1383,7 +1383,7 @@ function deleteBankAccount()
 			    	updateTree();
 				},
 				 error : function(data) {
-					//alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+
 					return errorMessageDialog();
 				} 
 			});
@@ -1473,7 +1473,7 @@ $(function() {
 		   debugger;
 		   if(accountId == '-1')
 			   {
-			   		//alert("Please select a bank Account");
+
 			   		return selectBankAccountDialog();
 			   		return false;
 			   }
@@ -1501,7 +1501,7 @@ $(function() {
 		   debugger;
 		   if(Index == -1)
 			{
-				//alert("Please select a Payment first");
+
 				return selectPaymentDialog();
 				return false;
 			}
@@ -1523,7 +1523,7 @@ $(function() {
 		{
 			  if(accountId != -1)
 			{
-				  //alert("<bean:message key='BzComposer.banking.selectcategory'/>");
+
 				  return showselectcategorydialog();
 				  accountId = -1;
 				  return false; 
@@ -1531,7 +1531,7 @@ $(function() {
 		}
 		  if(accountId != -1)
 		{
-			  //alert("<bean:message key='BzComposer.banking.selectcategory'/>");
+
 			  return showselectcategorydialog();
 			  return false; 
 		}
@@ -1563,7 +1563,7 @@ $(function() {
 		  $('#deleteBank').prop('disabled', false);
 		  if(accountCategoryId == '6' || accountCategoryId == '7')
 		{
-			  //alert("<bean:message key='BzComposer.banking.canteditesalesbankaccount'/>");
+
 			  return canteditesalesbankaccountdialog();
 			  return false;
 		}
@@ -1574,7 +1574,7 @@ $(function() {
 		}
 		  if(accountCategoryId != -1)
 		{
-			  //alert("<bean:message key='BzComposer.banking.canteditaccountcategory'/>");
+
 			  return editableaccountcategorydialog()
 			  return false; 
 		}
@@ -1674,7 +1674,7 @@ function changeBank()
 	 this.payeeId = payeeName.options[payeeName.selectedIndex].id;
 	 if(parseInt(payeeId) == parseInt(accountId))
 		 {
-		 		//alert("<bean:message key='BzComposer.banking.selectotherbank'/>");
+
 		 		return selectotherbankdialog();
 		 		 $('#addButton').attr('disabled',true);
 		 		return false;
@@ -1740,7 +1740,7 @@ function addTransactionFromDialog()
 		{
 			if(document.getElementById("checkNumForDlg").value == '0' || document.getElementById("checkNumForDlg").value == '')
 			{
-				//alert("please enter a valid check number");
+
 				return selectValidNumberDialog();
 				return false;
 			}
@@ -1750,7 +1750,7 @@ function addTransactionFromDialog()
 			var payAmount = parseFloat(document.getElementById("payAmount").value);
 			if(payAmount > payerBalance)
 				{
-					//alert("Insufficient Balance please enter a valid amount")
+
 					return showInsufficientBalanceDialog();
 					return false;
 				}
@@ -1798,7 +1798,7 @@ function addTransactionFromDialogForPayment()
 		{
 			if(document.getElementById("checkNumForDlgForPayment").value == '0' || document.getElementById("checkNumForDlgForPayment").value == '')
 			{
-				//alert("please enter a valid check number");
+
 				return selectValidNumberDialog();
 				return false;
 			}
@@ -1808,7 +1808,7 @@ function addTransactionFromDialogForPayment()
 			var payAmount = parseFloat(document.getElementById("payAmountForPayment").value);
 			if(payAmount > payerBalance)
 				{
-					//alert("Insufficient Balance please enter a valid amount")
+
 					return showInsufficientBalanceDialog();
 					return false;
 				}
@@ -1858,7 +1858,7 @@ function addTrafsactioFromDeposit()
 		{
 			if(document.getElementById("checkNumForDeposit").value == '0' || document.getElementById("checkNumForDeposit").value == '')
 			{
-				//alert("please enter a valid check number");
+
 				return selectValidNumberDialog();
 				return false;
 			}
@@ -1874,7 +1874,7 @@ function addTrafsactioFromDeposit()
 	
 	if(payAmount > payerBalance)
 	{
-		//alert("Insufficient Balance please enter a valid amount")
+
 		return showInsufficientBalanceDialog();
 		return false;
 	}
@@ -1988,7 +1988,7 @@ $( ".transactionFilter" ).change(function() {
 					 
 				},
 				 error : function(data) {
-					//alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+
 					return errorMessageDialog();
 				} 
 	  

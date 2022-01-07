@@ -33,6 +33,7 @@ public class Item {
 	private int isCategory;
 
 	private int itemTypeID;
+	private int itemOrder;
 
 	private String tax;
 
@@ -109,107 +110,52 @@ public class Item {
 
 	public void setIsCategory(int isCategory) { this.isCategory = isCategory; }
 
-	/**
-	 * @return the itemTypeID
-	 */
 	public int getItemTypeID() {
 		return itemTypeID;
 	}
+	public void setItemTypeID(int itemTypeID) { this.itemTypeID = itemTypeID; }
 
-	/**
-	 * @param itemTypeID
-	 *            the itemTypeID to set
-	 */
-	public void setItemTypeID(int itemTypeID) {
-		this.itemTypeID = itemTypeID;
-	}
+	public int getItemOrder() { return itemOrder; }
+	public void setItemOrder(int itemOrder) { this.itemOrder = itemOrder; }
 
-	/**
-	 * @return the qty
-	 */
 	public int getQty() {
 		return qty;
 	}
-
-	/**
-	 * @param qty
-	 *            the qty to set
-	 */
 	public void setQty(int qty) {
 		this.qty = qty;
 	}
 
-	/**
-	 * @return the salePrice
-	 */
 	public double getSalePrice() {
 		return salePrice;
 	}
-
-	/**
-	 * @param salePrice
-	 *            the salePrice to set
-	 */
 	public void setSalePrice(double salePrice) {
 		this.salePrice = salePrice;
 	}
 
-	/**
-	 * @return the serialNo
-	 */
 	public String getSerialNo() {
 		return serialNo;
 	}
-
-	/**
-	 * @param serialNo
-	 *            the serialNo to set
-	 */
 	public void setSerialNo(String serialNo) {
 		this.serialNo = serialNo;
 	}
 
-	/**
-	 * @return the tax
-	 */
 	public String getTax() {
 		return tax;
 	}
-
-	/**
-	 * @param tax
-	 *            the tax to set
-	 */
 	public void setTax(String tax) {
 		this.tax = tax;
 	}
 
-	/**
-	 * @return the uprice
-	 */
 	public double getUprice() {
 		return uprice;
 	}
-
-	/**
-	 * @param uprice
-	 *            the uprice to set
-	 */
 	public void setUprice(double uprice) {
 		this.uprice = uprice;
 	}
 
-	/**
-	 * @return the weight
-	 */
 	public double getWeight() {
 		return weight;
 	}
-
-	/**
-	 * @param weight
-	 *            the weight to set
-	 */
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}

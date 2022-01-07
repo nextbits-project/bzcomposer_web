@@ -1246,7 +1246,7 @@ function setRowId(rowid, rid)
 }
 
 function setCutomerDataById(vendorID, rowId){
-    //alert(vendorID+' '+rowId);
+
     $.ajax({
         type: "POST",
         url:"CustomerAjax?tabid=getCustomerDetails&cvId="+vendorID+"&selectedRID="+rowId,
@@ -1330,7 +1330,7 @@ function setCutomerDataById(vendorID, rowId){
             markSelectedCustomer(vendorID, rowId+'$$');
         },
         error : function(error) {
-             alert("ERROR");
+             alert("<spring:message code='BzComposer.common.erroroccurred'/>");
         }
     });
 }
@@ -1354,7 +1354,7 @@ function tableValue()
 	    rd.className = "draft";
 	}
 	var sortId = <%= request.getParameter("sortById")%>;
-	//alert("sortBy Id:"+sortId);
+
 	$('select[id="sortBy"]').find('option[value="'+sortId+'"]').attr("selected",true);
 	//document.getElementById("setRID").value=rid;
 }
@@ -1362,7 +1362,7 @@ function tableValue()
 function resetSelectedCustomer() 
 {
 	document.getElementById("selCustomer").value="0";
-	//alert("value reset");
+
 }
 function getVendorInfo(vendorid,rowId)
 {
@@ -1376,7 +1376,7 @@ function manageCustomer(cmd)
 	var cvid= document.CustomerForm.clientVendorID.value; //document.forms[0].selectedCustomer.value;
 	if (cvid==0)
 	{	
-		//alert('<spring:message code="BzComposer.Customer.cName.Validation"/>');
+
 		return showCustomerValidationDialog();
 		//return;
 	}
@@ -1385,12 +1385,11 @@ function manageCustomer(cmd)
 		if (cmd=="EDIT") 
 		{
 			showCustomer(cvid);
-		//	alert("Edit...Under development");
+
 		}
 		else if (cmd=="DELETE") 
 		{	
-			alert("Delete...Under development");
-			if(confirm("This will delete all the information related to this Customer (ID="+cvid+")\nAre you sure to delete ?")==true) 
+			if(confirm("This will delete all the information related to this Customer (ID="+cvid+")\nAre you sure to delete ?")==true)
 			{
 				/* document.forms[0].action="Customer?customerAction=DELETE&cvID="+cvid;
 				document.forms[0].submit(); */

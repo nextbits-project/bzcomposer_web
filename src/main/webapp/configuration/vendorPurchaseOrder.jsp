@@ -69,21 +69,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#poShowCountry").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowCountry").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowCountry").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.poShowCountry.value = isChecked;
@@ -99,21 +99,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#poShowTelephone").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowTelephone").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#poShowTelephone").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.poShowTelephone.value = isChecked;
@@ -129,21 +129,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("assessFinanceCharge is checked.");
+
 	        $("#isPurchasePrefix").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("assessFinanceCharge is unchecked.");
+
 	        $("#isPurchasePrefix").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("assessFinanceCharge is unchecked.");
+
 	        $("#isPurchasePrefix").attr('checked', isChecked);
 	        debugger
 	    	document.configurationForm.isPurchasePrefix.value = isChecked;

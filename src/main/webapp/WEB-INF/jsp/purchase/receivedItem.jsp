@@ -1831,8 +1831,7 @@ tax_rate=0;
 				document.getElementById('unitPrice_id').value="";
 				document.getElementById('amount_id').value="";
 				document.getElementById('weight_id').value="";
-				alert("Select Item first");
-								
+				alert("<bean:message key='BzComposer.item.selectitemvalidation'/>");
 			}
 			else{		
 				style = document.getElementById('invStyle').value;

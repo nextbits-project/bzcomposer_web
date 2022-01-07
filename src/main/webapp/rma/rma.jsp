@@ -704,15 +704,14 @@ return false; //disable key press
 
 function checkName()
 {
-	debugger ;
-	alert(12);
+	debugger;
 // if(trim(document.RMAForm.fnameTxt.value)=="" && trim(document.RMAForm.lnameTxt.value)==""){
-// 	alert("You have to type one of fields in fiest name and last name");
+
 // 	document.RMAForm.fnameTxt.focus();
 	
 // }
 // else if(document.RMAForm.order.value!= "" && !IsNumeric(document.RMAForm.order.value)){
-// 	alert('<bean:message key="BzComposer.RMA.OrderNo.InNumber.Validation" />');
+
 // 	document.RMAForm.order.focus();
 // }
 // else

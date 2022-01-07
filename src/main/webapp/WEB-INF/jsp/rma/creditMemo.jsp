@@ -34,19 +34,19 @@
 	    <div class="col-sm-4">
 	        <div>
                 <span style="font-size: 2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-                    Credit Memo
+                    <spring:message code="BzComposer.common.creditMemo"/>
                 </span>
             </div>
             <br/>
-	        <div>Date: March 12, 2020</div>
-            <div>Credit NO: 1001</div>
+	        <div><spring:message code="BzComposer.Item.Date"/>: March 12, 2020</div>
+            <div><spring:message code="BzComposer.common.creditNo"/>: 1001</div>
 	    </div>
 	    <div class="col-sm-4">
 	        <br/><br/><br/>
-	        <div>Amount: 1120.00</div>
-	        <div>Discount: 0.00</div>
-	        <div>Taxes: 125.00</div>
-	        <div><b>Total Amount: 1245.00 $</b></div>
+	        <div><spring:message code="BzComposer.Report.Amount"/>: 1120.00</div>
+	        <div><spring:message code="BzComposer.Item.Discount"/>: 0.00</div>
+	        <div><spring:message code="Bizcomposer.tax"/> 125.00</div>
+	        <div><b><spring:message code="BzComposer.common.totalAmount"/>: 1245.00 $</b></div>
 	    </div>
         <div class="col-sm-4 text-right">
             <div>Adam Luis</div>
@@ -64,19 +64,19 @@
 	<div class="grid_8 height250" id="table-negotiations">
 	    <div>
             <span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-                Order Details
+                <spring:message code="BzComposer.file.option.order"/>
             </span>
         </div>
 		<table id="creditMemoTable" class="tabla-listados" cellpadding="0" cellspacing="0">
 		<thead style="font-weight: bold;">
 			<tr>
-				<th>OrderID</th>
-				<th>Item</th>
-				<th>Quantity</th>
-				<th>Description</th>
-				<th>Order Date</th>
-				<th>Sale Date</th>
-				<th>Price ($)</th>
+				<th><spring:message code="BzComposer.sales.Order"/></th>
+				<th><spring:message code="BzComposer.sales.Item"/></th>
+				<th><spring:message code="Bizcomposer.qty"/></th>
+				<th><spring:message code="CategoryList.Description"/></th>
+				<th><spring:message code="BzComposer.RMA.OrderDate"/></th>
+				<th><spring:message code="BzComposer.RMA.SaleDate"/></th>
+				<th><spring:message code="BzComposer.Price"/> ($)</th>
 			</tr>
 		</thead>
 		<tbody>

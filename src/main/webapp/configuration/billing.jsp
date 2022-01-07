@@ -72,7 +72,7 @@ $(function() {
 		var size = $("#selectedUser option").length;
 		if(size>=4)
 		{
-			//alert("BzComposer has reached the maximum number of register user.\nTo continue using BzComposer you must purchase additional license.");
+
 			alert("<bean:message key='BzComposer.configuration.networksecurity.maxnumberofuser'/>");
 		}
 		else
@@ -109,7 +109,7 @@ $(function() {
 		$('select[id="selectedPassword"]').find('option[id="'+user+'"]').attr("selected",true);
 		$('select[id="selectedGroup"]').find('option[id="'+user+'"]').attr("selected",true);
 		$('select[id="selectedStatus"]').find('option[id="'+user+'"]').attr("selected",true);
-		//alert("Selected User:"+user);
+
 	}
 	
 </script>
@@ -127,18 +127,18 @@ $(function() {
     	 $("#showCombinedBilling").change(function(){
         	var isChecked = "on";
         	if($(this).prop("checked") == true){
-                //alert("showCombinedBilling is checked.");
+
                 $("#showCombinedBilling").attr('checked', true);
                 isChecked = "on"; 
             }
             else if($(this).prop("checked") == false){
-                //alert("showCombinedBilling is unchecked.");
+
                 $("#showCombinedBilling").attr('checked', false);
                 isChecked = "off";
             }	
             else
             {
-            	//alert("showCombinedBilling is unchecked.");
+
                 $("#showCombinedBilling").attr('checked', true);
                 document.configurationForm.showCombinedBilling.value = isChecked;
             }	
@@ -148,18 +148,18 @@ $(function() {
         $('#printBills').change(function(){
         	var isChecked = "on";
         	if($(this).prop("checked") == true){
-               // alert("printBills is checked.");
+
                 $("#printBills").attr('checked', true);
                 isChecked = "on"; 
             }
             else if($(this).prop("checked") == false){
-                //alert("printBills is unchecked.");
+
                 $("#printBills").attr('checked', false);
                 isChecked = "off";
             }	
             else
             {
-            	//alert("printBills is unchecked.");
+
                 $("#printBills").attr('checked', true);
                 document.configurationForm.printBills.value = isChecked;
             }
@@ -169,12 +169,12 @@ $(function() {
         $('#mailToCustomer').change(function(){
         	var isChecked = "on";
             if($(this).prop("checked") == true){
-                //alert("mailToCustomer is checked.");
+
                 $("#mailToCustomer").attr('checked', true);
                 isChecked = "on";
             }
             else if($(this).prop("checked") == false){
-                //alert("mailToCustomer is unchecked.");
+
                 $("#mailToCustomer").attr('checked', false);
                 isChecked = "off";
             }
@@ -359,19 +359,19 @@ function SaveValues()
 		debugger
 	
 		document.configurationForm.startingBillNumber.value = document.configurationForm.startingBillNumber.value;
-		//alert("Starting Billing Invoice Number:"+document.configurationForm.startingBillNumber.value);
+
 		
 		document.configurationForm.showCombinedBilling.value = document.configurationForm.showCombinedBilling.value;
 		
 		document.configurationForm.showBillingStatStyle.value =  document.configurationForm.showBillingStatStyle.value;
 		var selectedBillingType = $.trim($("#selectedBillingTypeId option:selected").text());
-		//alert("SelectedBillingTypeId:"+document.configurationForm.showBillingStatStyle.value+"\nValue:"+selectedBillingType);
+
 		
 		document.configurationForm.mailToCustomer.value = document.configurationForm.mailToCustomer.value;
 		
 		document.configurationForm.printBills.value = document.configurationForm.printBills.value;
 		
-		//alert("ShowCombinedBilling value:"+document.configurationForm.showCombinedBilling.value+
+
 		//"\nIsPrinted Value:"+document.configurationForm.printBills.value+
 		//"\nIsEmailed Value:"+document.configurationForm.mailToCustomer.value);
 		

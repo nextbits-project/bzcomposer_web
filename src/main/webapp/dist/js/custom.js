@@ -118,7 +118,7 @@ $('.addfeature').on('click', function() {
 //var test = JSON.parse(localStorage.getItem("testKey"));
 $('select.featureName2').append(options2);
 //$("select.featureName2 option").prop("selected",true);    			//Commented on 29-04-2019
-//alert(item);
+
 /**/
 
 $('.removefeature').on('click', function() {
@@ -249,9 +249,9 @@ function add()
 	$('#accname').val("");
 	$('#bca_add').text('Add');
 	
-	//alert(list);
+
 	
-	//alert("add");
+
 }
 
 
@@ -482,7 +482,7 @@ $(document).on('click','.caret',function(e)
 	if(e.target.id == this.id)
 	{
 		globalSelectedPreferenceType = this.id;
-		/*alert(globalSelectedPreferenceType);*/
+
 		$('#edit').replaceWith('<li class=bca_setuppreference_add id=add><< Add</li>');
 		$("#bca_initTerm").show();
 		$("#bca_initSalesRep").hide();
@@ -498,7 +498,7 @@ $(document).on('click','.caret2',function(e)
 	if(e.target.id == this.id)
 	{
 		globalSelectedPreferenceType = this.id;
-		/*alert(globalSelectedPreferenceType);*/
+
 		$('#edit').replaceWith('<li class=bca_setuppreference_add id=add><< Add</li>');
 		$("#bca_initTerm").hide();
 		$("#bca_initSalesRep").show();
@@ -530,7 +530,7 @@ $(document).on('click','.caret4',function(e)
 	if(e.target.id == this.id)
 	{
 		globalSelectedPreferenceType = this.id;
-		/*alert(globalSelectedPreferenceType);*/
+
 		$('#edit').replaceWith('<li class=bca_setuppreference_add id=add><< Add</li>');
 		$("#bca_initTerm").hide();
 		$("#bca_initSalesRep").hide();
@@ -546,7 +546,7 @@ $(document).on('click','.caret5',function(e)
 	if(e.target.id == this.id)
 	{
 		globalSelectedPreferenceType = this.id;
-		/*alert(globalSelectedPreferenceType);*/
+
 		$('#edit').replaceWith('<li class=bca_setuppreference_add id=add><< Add</li>');
 		$("#bca_initTerm").hide();
 		$("#bca_initSalesRep").hide();
@@ -562,7 +562,7 @@ $(document).on('click','.caret6',function(e)
 	if(e.target.id == this.id)
 	{
 		globalSelectedPreferenceType = this.id;
-		/*alert(globalSelectedPreferenceType);*/
+
 		$('#edit').replaceWith('<li class=bca_setuppreference_add id=add><< Add</li>');
 		$("#bca_initTerm").hide();
 		$("#bca_initSalesRep").hide();
@@ -578,7 +578,7 @@ $(document).on('click','.caret7',function(e)
 	if(e.target.id == this.id)
 	{
 		globalSelectedPreferenceType = this.id;
-		/*alert(globalSelectedPreferenceType);*/
+
 		$('#edit').replaceWith('<li class=bca_setuppreference_add id=add><< Add</li>');
 		$("#bca_initTerm").hide();
 		$("#bca_initSalesRep").hide();
@@ -592,7 +592,7 @@ $(document).on('click','.caret7',function(e)
 
 $(document).on('click','#add',function(){
 	debugger;
-	/*alert("add function");*/
+
 	if(globalSelectedPreferenceType != null)
 	{	
 		if($("#caret").val() != '' && $("#caret").val() != null)

@@ -8,7 +8,8 @@ import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
-import com.avibha.bizcomposer.employee.forms.StateTaxOtherDto;
+import com.avibha.bizcomposer.login.dao.LoginDAO;
+import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.common.utility.CountryState;
@@ -16,12 +17,8 @@ import com.nxsol.bizcomposer.accounting.action.CategoryManagerController;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
-import com.nxsol.bizcomposer.common.TblBudgetCategory;
-import com.nxsol.bizcomposer.common.TblCategoryType;
-import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 import org.apache.struts.action.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -432,43 +429,19 @@ public class ConfigurationController {
             configDto.setIsDefaultCreditTerm(isDefaultCreditTerm);
             configDto.setRecurringServiceBill(recurringServiceBill);
 
-            request.setAttribute("sortById", configDto.getSortBy());
-            request.setAttribute("groupId", configDto.getCustomerGroup());
             request.setAttribute("countryId", configDto.getCustDefaultCountryID());
             request.setAttribute("stateId", configDto.getSelectedStateId());
             request.setAttribute("isRefundAllowed", isDefault);
-            request.setAttribute("shippingMethodId", configDto.getCustomerShippingId());
-            request.setAttribute("termId", configDto.getSelectedTermId());
-            request.setAttribute("salesRepId", configDto.getSelectedSalesRepId());
-            request.setAttribute("payMethodId", configDto.getSelectedPaymentId());
-            request.setAttribute("packingSlipStyleId", configDto.getPackingSlipTemplateId());
 
-            String cTaxableStatus = configDto.getCustTaxable().equals("1") ? "on" : "off";
-            String salesOrderStatus = configDto.getIsSalesOrder().equals("1") ? "on" : "off";
-            String addressStatus = configDto.getAddressSettings().equals("1") ? "on" : "off";
 
-            String showCountry = configDto.getSaleShowCountry().equals("1") ? "on" : "off";
-            String ratePrice = configDto.getRatePriceChangable().equals("1") ? "on" : "off";
-            String saleShowTelephone = configDto.getSaleShowTelephone().equals("1") ? "on" : "off";
-            String isSalePrefix = configDto.getIsSalePrefix().equals("1") ? "on" : "off";
-            String extraChargeApplicable = configDto.getExtraChargeApplicable().equals("1") ? "on" : "off";
-
-            request.setAttribute("DefaultPaymentMethodId", configDto.getDefaultPaymentMethodId());
-            request.setAttribute("custTaxableStatus", cTaxableStatus);
-            request.setAttribute("salesOrderStatus", salesOrderStatus);
-            request.setAttribute("addressStatus", addressStatus);
-            // request.setAttribute("showCountry", showCountry);
-            request.setAttribute("ratePrice", ratePrice);
-            request.setAttribute("salesShowTelephone", saleShowTelephone);
-            request.setAttribute("isSalePrefix", isSalePrefix);
-            request.setAttribute("extraCharge", extraChargeApplicable);
-
-            //configInfo.getCongurationRecord(companyID,configDto,request);
-            //Sales and invoice
-            request.setAttribute("InvoiceFootnoteID", configDto.getSelectedMessageId());
-            request.setAttribute("selectedInvoiceStyleId", configDto.getInvStyleID());
-            request.setAttribute("billingTemplateID", configDto.getShowBillingStatStyle());
-            request.setAttribute("accountId", configDto.getSelectedAccountId());
+            request.setAttribute("custTaxableStatus", configDto.getCustTaxable().equals("1") ? "on" : "off");
+            request.setAttribute("salesOrderStatus", configDto.getIsSalesOrder().equals("1") ? "on" : "off");
+            request.setAttribute("addressStatus", configDto.getAddressSettings().equals("1") ? "on" : "off");
+            // request.setAttribute("showCountry", configDto.getSaleShowCountry().equals("1") ? "on" : "off");
+            request.setAttribute("ratePrice", configDto.getRatePriceChangable().equals("1") ? "on" : "off");
+            request.setAttribute("salesShowTelephone", configDto.getSaleShowTelephone().equals("1") ? "on" : "off");
+            request.setAttribute("isSalePrefix", configDto.getIsSalePrefix().equals("1") ? "on" : "off");
+            request.setAttribute("extraCharge", configDto.getExtraChargeApplicable().equals("1") ? "on" : "off");
 
             setConfigActiveTab(session, "customerInvoiceTab");
             for(ConfigurationDto conDto: configDto.getListOfExistingCountry()){
@@ -796,6 +769,11 @@ public class ConfigurationController {
             forward = "success56";
             System.out.println("goes to dashboard page......................");
         }
+        else if (action.equalsIgnoreCase("config29")) {
+            setConfigActiveTab(session, "membershipTab");
+            System.out.println("goes to membership page......................");
+            forward = "/configuration/membership";
+        }
         else if (action.equalsIgnoreCase("showStore")) {
             System.out.println("Inside showStore condition");
             ConfigurationDAO dao = new ConfigurationDAO();
@@ -907,8 +885,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("addNewRMAReason")) {
             String Reason = request.getParameter("reason");
-            String parentReasonId = request.getParameter("parentReasonId");
-            int parentReasonID = Integer.parseInt(parentReasonId);
+            int parentReasonID = Integer.parseInt(request.getParameter("parentReasonId"));
 
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.addRMAReason(configDto, companyID, Reason, parentReasonID);
@@ -1132,18 +1109,16 @@ public class ConfigurationController {
 
         else if (action.equalsIgnoreCase("addJobCategory")) {
             String jobCategory = request.getParameter("Description");
-            String recurringServiceBill = request.getParameter("locationID");
             ConfigurationDetails cDetails = new ConfigurationDetails();
-            cDetails.addJobCategory(configDto, companyID, jobCategory, recurringServiceBill);
+            cDetails.addJobCategory(configDto, companyID, jobCategory);
             session.setAttribute(pageActiveTab, "Customer&Job0");
             forward = "redirect:Configuration?tabid=config6&tab=tr6";
         }
         else if (action.equalsIgnoreCase("updateJobCategory")) {
             int jobCategoryId = Integer.parseInt(request.getParameter("locationID"));
             String newJobCategoryName = request.getParameter("Description");
-            String recurringServiceBill = request.getParameter("isDefault");
             ConfigurationDetails cDetails = new ConfigurationDetails();
-            cDetails.updateJobCategory(configDto, companyID, jobCategoryId, newJobCategoryName, recurringServiceBill);
+            cDetails.updateJobCategory(configDto, companyID, jobCategoryId, newJobCategoryName);
             session.setAttribute(pageActiveTab, "Customer&Job0");
             forward = "redirect:Configuration?tabid=config6&tab=tr6";
         }
@@ -1230,10 +1205,6 @@ public class ConfigurationController {
 
         if (action.equalsIgnoreCase("SaveCustomerInvoiceSettings")) {
             ConfigurationDetails cDetails = new ConfigurationDetails();
-
-            configDto.setSelectedTermId(Integer.parseInt(request.getParameter("selectedTermId")));
-            configDto.setSelectedSalesRepId(Integer.parseInt(request.getParameter("selectedSalesRepId")));
-            configDto.setSelectedPaymentId(Integer.parseInt(request.getParameter("selectedPaymentId")));
             configDto.setCustTaxable(request.getParameter("custTaxable"));
             configDto.setIsSalesOrder(request.getParameter("isSalesOrder"));
             configDto.setAddressSettings(request.getParameter("addressSettings"));
@@ -1243,48 +1214,9 @@ public class ConfigurationController {
             configDto.setIsSalePrefix(request.getParameter("isSalePrefix"));
             configDto.setExtraChargeApplicable(request.getParameter("extraChargeApplicable"));
             configDto.setIsRefundAllowed(request.getParameter("creditTermDays"));
-            configDto.setSortBy(Integer.parseInt(request.getParameter("sortBy")));
-            configDto.setInvStyleID(Integer.parseInt(request.getParameter("selectedInvoiceStyleId")));
-            configDto.setDisplayPeriod(Integer.parseInt(request.getParameter("displayPeriod")));
 
             String errorCode = cDetails.saveCustomerInvoiceSetting(configDto, request, companyID);
-            cDetails.getConfigurationInfo(request, configDto);
-
-            //added on 01-05-2020
-            request.setAttribute("sortById", configDto.getSortBy());
-            request.setAttribute("groupId", configDto.getCustomerGroup());
-            request.setAttribute("countryId", configDto.getCustDefaultCountryID());
-            request.setAttribute("stateId", configDto.getSelectedStateId());
-            request.setAttribute("isRefundAllowed", configDto.getIsRefundAllowed());
-
-            request.setAttribute("shippingMethodId", configDto.getCustomerShippingId());
-            request.setAttribute("termId", configDto.getSelectedTermId());
-            request.setAttribute("salesRepId", configDto.getSelectedSalesRepId());
-            request.setAttribute("payMethodId", configDto.getSelectedPaymentId());
-            request.setAttribute("packingSlipStyleId", configDto.getPackingSlipTemplateId());
-
-            String cTaxableStatus = configDto.getCustTaxable().equals("1") ? "on" : "off";
-            String salesOrderStatus = configDto.getIsSalesOrder().equals("1") ? "on" : "off";
-            String addressStatus = configDto.getAddressSettings().equals("1") ? "on" : "off";
-
-            String showCountry = configDto.getSaleShowCountry().equals("1") ? "on" : "off";
-            String ratePrice = configDto.getRatePriceChangable().equals("1") ? "on" : "off";
-            String saleShowTelephone1 = configDto.getSaleShowTelephone().equals("1") ? "on" : "off";
-            String isSalePrefix1 = configDto.getIsSalePrefix().equals("1") ? "on" : "off";
-            String extraChargeApplicable1 = configDto.getExtraChargeApplicable().equals("1") ? "on" : "off";
-
-            request.setAttribute("custTaxableStatus", cTaxableStatus);
-            request.setAttribute("salesOrderStatus", salesOrderStatus);
-            request.setAttribute("addressStatus", addressStatus);
-
-            request.setAttribute("showCountry", showCountry);
-            request.setAttribute("ratePrice", ratePrice);
-            request.setAttribute("salesShowTelephone", saleShowTelephone1);
-            request.setAttribute("isSalePrefix", isSalePrefix1);
-            request.setAttribute("extraCharge", extraChargeApplicable1);
-
-            System.out.println("ErrorCode value:" + errorCode);
-            //forward = "success21";
+            System.out.println("UpdateStatusCode value:" + errorCode);
             status = errorCode;
         }
         else if (action.equalsIgnoreCase("saveVendorPurchaseValues")) {
@@ -1328,8 +1260,7 @@ public class ConfigurationController {
         /* Save all the configuration records (i.e:- inventory,sales,purchase,etc).*/
         else if (action.equalsIgnoreCase("SaveConfiguration")) {
             System.out.println("----------SaveConfiguration-----------");
-            String multiUserConnection1 = request.getParameter("multiUserConnection");
-            int multiUserConnection = Integer.valueOf(multiUserConnection1);
+            int multiUserConnection = Integer.valueOf(request.getParameter("multiUserConnection"));
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.saveRecords(configDto, request, multiUserConnection);
             cDetails.getConfigurationInfo(request, configDto);
@@ -1337,8 +1268,13 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("addNewUser")) {
             ConfigurationDAO dao = new ConfigurationDAO();
-            boolean check = dao.addNewUser(companyID, request);
-            if (check == true) {
+            LoginDAO loginDAO = new LoginDAOImpl();
+            int compId = Integer.parseInt(companyID);
+            boolean emailExists = loginDAO.checkUserEmailExists(request.getParameter("userName"), compId);
+            if(emailExists){
+                status = "emailExists";
+            }
+            else if(dao.addNewUser(companyID, request)) {
                 System.out.println("success");
             } else {
                 System.out.println("Error");

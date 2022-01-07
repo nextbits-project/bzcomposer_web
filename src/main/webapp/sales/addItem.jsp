@@ -131,7 +131,7 @@ function addToCrossSellProduct()
 		var rowId = document.getElementById("ProductId");
 		if(rowId.className == "draft")
 		{
-			//alert($("#productId"+[i]));
+
 		}
 		/*var row1=document.getElementById("productId"+productId);
 		row1.className = "draft"; */
@@ -152,7 +152,7 @@ function Remove() {
 
 function addData()
 {
-	//alert("inside addData function");
+
 }
 
 function showCategoryDialog()
@@ -393,7 +393,7 @@ $(function() {
 		
 		if(category == "")
 		{
-			//alert("Please type a category name");
+
 			return showCategoryDialog();
 		}
 		/* commented on 23-11-2019 
@@ -714,7 +714,7 @@ $(function() {
 		var table ="<table border='1'><input type='hidden' id='rowId' value="+id+" name='rowId'/><tr><td>Title</td><td>ItemType</td><td>Is Required</td><td>Sort Order</td><td></td></tr>"+
     		"<tr><td><input type='text' id='title' value='"+id+"'/></td><td><input type='text' id='itemType'/></td><td><input type='text' id='title'/></td>"+
     		"<td><input type='text' id='title'/></td><td align='center'><input type='button' class='formbutton' id='deleteOptionBtn' name='deleteOptionBtn' value='Delete Option'/></td></tr></table><br><br>";
-    	//alert("table value:"+table);
+
     	id++;
 		$('#addTableRow').append(table);
 	});
@@ -3242,32 +3242,32 @@ function ShowAdd(form){
 		if(cat.checked==false){
 			if(form.itemCode.value==""){
 			/* alert('<bean:message key="BzComposer.AddItem.InventoryName.Validation" />'); */
-				//alert('<bean:message key="BzComposer.additem.inventorynamevalidation" />');
+
 				return showitemcodedialog();
 				form.itemCode.focus();
 			}
 			else if(form.salePrice.value==""){
 				/* alert('<bean:message key="BzComposer.AddItem.SalePrice.Validation" />'); */
-				//alert('<bean:message key="BzComposer.additem.salepricevalidation" />');
+
 				return showsalepricedialog();
 				form.salePrice.focus();
 			}
 			else if(form.purchasePrice.value==""){
 /* alert('<bean:message key="BzComposer.AddItem.PurchasePrice.Validation" />'); */
-				//alert('<bean:message key="BzComposer.additem.purchasepricevalidation" />');
+
 				return showpurchasepricedialog();
 				form.purchasePrice.focus();
 			}
 			else if(form.qty.value==""){
 /* alert('<bean:message key="BzComposer.AddItem.Quantity.Validation" />'); */
-				//alert('<bean:message key="BzComposer.additem.quantityvalidation" />');
+
 				return showqueantitydialog();
 				form.qty.focus();
 			}
 			else if(form.weight.value=="")
 			{
 /* alert('<bean:message key="BzComposer.AddItem.Weight.Validation" />'); */
-				//alert('<bean:message key="BzComposer.additem.weightvalidation" />');
+
 				return showweightdialog();
 				form.weight.focus();
 			}
@@ -3306,7 +3306,7 @@ function ShowAdd(form){
 			if(form.itemCode.value=="")
 			{
 				/* alert('<bean:message key="BzComposer.AddItem.InventoryName.Validation" />'); */
-				//alert('<bean:message key="BzComposer.additem.inventorynamevalidation" />');
+
 				return showitemcodedialog();
 				form.itemCode.focus();
 			}
@@ -3348,7 +3348,7 @@ function ShowAdd(form){
 	else if(val=="2"){
 		//if(form.itemCodeDis.value==""){
 			/* alert('<bean:message key="BzComposer.AddItem.Discount.Validation" />'); */
-			//alert('<bean:message key="BzComposer.additem.discountvalidation" />');
+
 		//	return showcodediscountdialog();
 		//	form.itemCodeDis.focus();
 		//}
@@ -3385,7 +3385,7 @@ function ShowAdd(form){
 	else if(val=="3"){
 		if(form.itemCodeSub.value==""){
 			/* alert('<bean:message key="BzComposer.AddItem.Subtotal.Validation" />'); */
-			//alert('<bean:message key="BzComposer.additem.subtotalvalidation" />');
+
 			return showitemcodesubdialog();
 			form.itemCodeSub.focus();
 		}
@@ -3421,7 +3421,7 @@ function ShowAdd(form){
 	else if(val=="4"){
 		if(form.itemCodeSer.value==""){
 			/* alert('<bean:message key="BzComposer.AddItem.Service.Validation" />'); */
-			//alert('<bean:message key="BzComposer.additem.servicenamevalidation" />');
+
 			return showservicenamedialog();
 			form.itemCodeSer.focus();
 		}

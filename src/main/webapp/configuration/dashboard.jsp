@@ -29,21 +29,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("salesOrderBoard is checked.");
+
 	        $("#salesOrderBoard").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("salesOrderBoard is unchecked.");
+
 	        $("#salesOrderBoard").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("salesOrderBoard is unchecked.");
+
 	        $("#salesOrderBoard").attr('checked', isChecked);
 	       /*  debugger
 	    	document.configurationForm.salesOrderBoard.value = isChecked; */
@@ -60,21 +60,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("itemReceivedBoard is checked.");
+
 	        $("#itemReceivedBoard").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("itemReceivedBoard is unchecked.");
+
 	        $("#itemReceivedBoard").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("itemReceivedBoard is unchecked.");
+
 	        $("#itemReceivedBoard").attr('checked', isChecked);
 	       /*  debugger
 	    	document.configurationForm.itemReceivedBoard.value = isChecked; */
@@ -91,21 +91,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("poboard is checked.");
+
 	        $("#poboard").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("poboard is unchecked.");
+
 	        $("#poboard").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("poboard is unchecked.");
+
 	        $("#poboard").attr('checked', isChecked);
 	        /* debugger
 	    	document.configurationForm.poboard.value = isChecked; */
@@ -122,21 +122,21 @@ $(document).ready(function()
 		debugger
 		if($(this).prop("checked") == true)
 		{
-			//alert("itemShippedBoard is checked.");
+
 	        $("#itemShippedBoard").attr('checked', true);
 	        debugger
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
-			//alert("itemShippedBoard is unchecked.");
+
 	        $("#itemShippedBoard").attr('checked', false);
 	        debugger
 	        isChecked = "off";
 		}	
 	    else
 	    {
-	    	//alert("itemShippedBoard is unchecked.");
+
 	        $("#itemShippedBoard").attr('checked', isChecked);
 	       /*  debugger
 	    	document.configurationForm.itemShippedBoard.value = isChecked; */

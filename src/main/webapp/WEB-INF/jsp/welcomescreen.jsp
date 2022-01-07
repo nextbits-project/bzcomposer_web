@@ -50,7 +50,7 @@
 		{
 
 			<%-- var role = '<%= request.getAttribute("Role")%>';
-            //alert("Role is:"+role);
+
             if(role == "Admin" || role =="Super Admin")
             {
                 $("#selectedRetailCompanyId").show();
@@ -208,7 +208,7 @@
             //companyName = $("#selectedRetailCompanyId").find(":selected").text().replace(/\s/g,'');
         } */
 		companyId = selectedNonRetailCompanyId;
-		//alert("companyId"+companyId);
+
 		if(companyId  != null)
 		{
 			window.location.href= "Login?tabid=DeleteCompany&&CompanyID="+companyId;

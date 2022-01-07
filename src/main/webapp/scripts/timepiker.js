@@ -33,7 +33,7 @@ $(document).ready(function(){
         $('.bottom').removeClass('d-none'); //display total hours worked
         let chosenDate = $('#datePicker').datepicker('getDate'); //get chosen date from datepicker
         // let chosenDate = $('#datePicker').datepicker('getDate'); //get chosen date from datepicker
-        // alert(chosenDate)
+
         chosenDate = getMonday(new Date());
         const monStartWeekDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
         for(let i = 0; i < weekDays.length; i++) { //iterate through each weekday
@@ -41,12 +41,12 @@ $(document).ready(function(){
             newDate.setDate(chosenDate.getDate() + i); //increment set date
             let date11 = newDate.getDate();
             if(date11.toString().length == 1){
-                //alert("la"+date11.toString().length);
+
                 date11 = "0"+date11;
             }
             let month11 = newDate.getMonth() + 1;
             if(month11.toString().length == 1){
-                //alert("la"+date11.toString().length);
+
                 month11 = "0"+month11;
             }
             //append results to table

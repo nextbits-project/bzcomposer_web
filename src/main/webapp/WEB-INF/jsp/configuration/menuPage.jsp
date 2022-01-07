@@ -143,7 +143,7 @@
 			</td>
 		</tr>
 		<tr id="tr11">
-			<td>
+			<!-- <td>
 				 <c:choose>
                  <c:when test="${sessionScope.configActiveTab=='employeeTab'}">
                      <a href="${pageContext.request.contextPath}/Configuration?tabid=config11&&tab=tr11">
@@ -156,10 +156,10 @@
                     </a>
                  </c:otherwise>
                  </c:choose>
-			 </td>
+			 </td> -->
 		</tr>
 		<tr id="tr12">
-			<td>
+			<!-- <td>
 				<c:choose>
                 <c:when test="${sessionScope.configActiveTab=='taxTab'}">
                     <a href="${pageContext.request.contextPath}/Configuration?tabid=config12&&tab=tr12">
@@ -172,7 +172,7 @@
                     </a>
                 </c:otherwise>
                 </c:choose>
-			</td>
+			</td> -->
 		</tr>
 		<tr id="tr4">
 			<!-- <td>
@@ -217,6 +217,22 @@
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/Configuration?tabid=config22&&tab=tr22">
                         <img id="img39" src='ConfigurationImages/printer-new.png' />
+                    </a>
+                </c:otherwise>
+                </c:choose>
+            </td>
+        </tr>
+        <tr id="tr23">
+            <td>
+                <c:choose>
+                <c:when test="${sessionScope.configActiveTab=='membershipTab'}">
+                    <a href="${pageContext.request.contextPath}/Configuration?tabid=config29&tab=tr23">
+                        <img id="img40" src='ConfigurationImages/MembershipActive.png' />
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/Configuration?tabid=config29&tab=tr23">
+                        <img id="img39" src='ConfigurationImages/Membership.png' />
                     </a>
                 </c:otherwise>
                 </c:choose>
@@ -359,10 +375,10 @@
 		else if(rid=="tr22"){
 			document.getElementById('printerSetup').style.display='block';
 		}
-		/*else if(rid=="tr23"){
-			document.getElementById('finance').style.display='block';
+		else if(rid=="tr23"){
+			document.getElementById('membership').style.display='block';
 		}
-		else if(rid=="tr24"){
+		/*else if(rid=="tr24"){
 			document.getElementById('smtp').style.display='block';
 		}
 		else if(rid=="tr25"){
@@ -447,10 +463,10 @@
 		else if(t1=="tr22"){
 			document.getElementById('printerSetup').style.display='block';
 		}
-		/*else if(t1=="tr23"){
-			document.getElementById('finance').style.display='block';
+		else if(t1=="tr23"){
+			document.getElementById('membership').style.display='block';
 		}
-		else if(t1=="tr24"){
+		/*else if(t1=="tr24"){
 			document.getElementById('smtp').style.display='block';
 		}
 		else if(t1=="tr25"){

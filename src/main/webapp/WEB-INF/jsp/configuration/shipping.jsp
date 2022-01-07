@@ -26,8 +26,7 @@ $(function()
 	var isUSPS = $("#isUSPSActive").val();
 	var isFedex = $("#isFeDexActive").val();
 	
-	/* alert("is UPS Active:"+isUPS+"\n is USPS Active:"+isUSPS+"\n is Fedex Active:"+isFedex); */
-	
+
 	if(isUPS == 1){
 		$("#upsUserId").attr('readonly',true);
 		$("#upsPassword").attr('readonly',true);
@@ -125,11 +124,9 @@ function showPanel() {
     var selectedTab = $("#tabs1").tabs('option','active');
     if(selectedTab == 2){
     	document.getElementById("shippingFreeMethodDiv").style.display = "none";
-    	document.getElementById("valueAddedCalculator").style.display = "none";
     }
     else{
     	document.getElementById("shippingFreeMethodDiv").style.display = "block";
-    	document.getElementById("valueAddedCalculator").style.display = "block";
     }
 }
 
@@ -151,7 +148,7 @@ function addSelectedWeightFee(){
                 if(data){   location.reload(); }
             },
             error:function(){
-              alert("error");
+              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
     }
@@ -174,7 +171,7 @@ function updateSelectedWeightFee(){
                 if(data){   location.reload(); }
             },
             error:function(){
-              alert("error");
+              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
     }
@@ -192,7 +189,7 @@ function deleteSelectedWeightFee(){
                     if(data){   location.reload(); }
                 },
                 error:function(){
-                  alert("error");
+                  alert("<bean:message key='BzComposer.common.erroroccurred'/>");
                 }
             });
         }
@@ -233,7 +230,7 @@ function setWeightPrice(){
                 priceDropdown.append(option2);
             },
             error:function(){
-                alert("error");
+                alert("<bean:message key='BzComposer.common.erroroccurred'/>");
             }
         });
 	}
@@ -251,11 +248,11 @@ function setModalDescription(){
 }
 
 function saveTemplate(){
-	//alert("Inside saveTemplate Method")
+
 }
 
 function deleteTemplate(){
-	//alert("Inside deleteTemplate Method")
+
 }
 function saveModalShippingType()
 {
@@ -265,11 +262,11 @@ function saveModalShippingType()
 	var textboxValue = $("#selectedShippingType").val();
 	debugger
 	if(textboxValue ==""){
-		//alert("<spring:message code='BzComposer.configuration.tax.selectshippingviatoupdate'/>")
+
 		return emptyvaluedialog();
 	}
 	else if(selectedSType == textboxValue){
-		//alert("<spring:message code='BzComposer.configuration.tax.duplicatevalue'/>")
+
 		return duplicatevaluedialog();
 	}
 	else {
@@ -303,7 +300,7 @@ function addNewTemplate(){
 function setContent(){
 	debugger
 	var id = $("#selectedTemplateId option:selected").val();
-	//alert("Selected Tempalte Id:"+id)
+
 	document.getElementById("templateName").style.display = "none";
 	document.getElementById("txtTemplateName").style.display = "block";
 	document.getElementById("templateSubject").style.display = "none";
@@ -395,18 +392,13 @@ function removeTime(){
 						</div>
 						<div id="tabs1" style="height:auto;">
 							<ul>
-								<li onclick="showPanel()" style="font-size:12px;"><a href="#userDefinedShippingMethod">
-									<spring:message code="BzComposer.configuration.tab.userdefinedshippingmehod" />
-								</a></li>
-								<li onclick="showPanel()" style="font-size:12px;"><a href="#realTimeShippingAPI">
-									<spring:message code="BzComposer.configuration.tab.realtimeapishipping" />
-								</a></li>
-								<li onclick="showPanel()" style="font-size:12px;"><a href="#shipping">
-									<spring:message code="BzComposer.configuration.tab.shipping" />
-								</a></li>
+								<li onclick="showPanel()" style="font-size:12px;"><a href="#userDefinedShippingMethod"><spring:message code="BzComposer.configuration.tab.userdefinedshippingmehod" /></a></li>
+								<li onclick="showPanel()" style="font-size:12px;"><a href="#realTimeShippingAPI"><spring:message code="BzComposer.configuration.tab.realtimeapishipping" /></a></li>
+								<li onclick="showPanel()" style="font-size:12px;"><a href="#shipping"><spring:message code="BzComposer.configuration.tab.shipping" /></a></li>
+								<li onclick="showPanel()" style="font-size:12px;"><a href="#valueAddedAervices"><spring:message code="BzComposer.configuration.valueaddedservices" /></a></li>
 							</ul>
 							<div id="userDefinedShippingMethod">
-								<table style="width:1000px; height:500px;">
+								<table style="width:100%; height:500px;">
 									<tr>
 										<td style="font-size:12px;">
 											<input type="checkbox" id="userDataInsertion">
@@ -463,7 +455,7 @@ function removeTime(){
 										</td>
 									</tr>
 									<tr>
-										<td rowspan="6" style="font-size:12px;">
+										<td rowspan="6" style="font-size:12px;width:350px;">
 											<table>
 												<tr>
 													<td style="font-size:12px;">
@@ -495,72 +487,12 @@ function removeTime(){
 												</tr>
 											</table>
 										</td>
-										<td rowspan="6" align="center" style="font-size:14px;">
+										<td rowspan="6" style="font-size:14px;">
 											<input type="button" class="formButton" id="addSelectedWeight" onclick="addSelectedWeightFee()" style="width:80px;" value="<spring:message code='BzComposer.global.add'/>" />
 											<br>
 											<input type="button" class="formButton" id="modifySeletedWeight" onclick="updateSelectedWeightFee()" style="width:80px;" value="<spring:message code='BzComposer.configuration.modify'/>" />
 											<br>
 											<input type="button" class="formButton" id="deleteSeletedWeight" onclick="deleteSelectedWeightFee()" style="width:80px;" value="<spring:message code='BzComposer.global.delete'/>" />
-										</td>
-										<td>
-											<spring:message code="BzComposer.configuration.valueaddedservices"/>
-										</td>
-									</tr>
-									<tr>
-										<td style="font-size:12px;">
-											<spring:message code="BzComposer.configuration.mailtype"/> :
-										</td>
-										<td style="font-size:12px;">
-											<form:select id="selectedMailTypeId" path="selectedMailTypeId" style="width:100px;">
-											    <c:if test="${not empty configDto.listOfExistingMailType}">
-                                                	<c:forEach items="${configDto.listOfExistingMailType}" var="objList1">
-                                                		<option value="${objList1.mailTypeId}">${objList1.mailType}</option>
-                                                	</c:forEach>
-                                                </c:if>
-											</form:select>
-										</td>
-									</tr>
-									<tr>
-										<td style="font-size:12px;">
-											<spring:message code="BzComposer.configuration.packagesize"/> :
-										</td>
-										<td style="font-size:12px;">
-											<form:select id="selectedPackageSizeId" path="selectedPackageSizeId" style="width:100px;">
-											    <c:if test="${not empty configDto.listOfExistingPackageSize}">
-                                                	<c:forEach items="${configDto.listOfExistingPackageSize}" var="objList1">
-                                                		<option value="${objList1.packageSizeId}">${objList1.packageSize}</option>
-                                                	</c:forEach>
-                                                </c:if>
-											</form:select>
-										</td>
-									</tr>
-									<tr>
-										<td style="font-size:12px;">
-											<spring:message code="BzComposer.configuration.container"/> :
-										</td>
-										<td style="font-size:12px;">
-											<form:select id="selectedContainerId" path="selectedContainerId" style="width:100px;">
-											    <c:if test="${not empty configDto.listOfExistingContainer}">
-                                                    <c:forEach items="${configDto.listOfExistingContainer}" var="objList1">
-                                                        <option value="${objList1.containerId}">${objList1.container}</option>
-                                                    </c:forEach>
-                                                </c:if>
-											</form:select>
-										</td>
-									</tr>
-									<tr>
-										<td style="font-size:12px;">
-											<spring:message code="BzComposer.configuration.specialhandlingfee"/> ($) :
-										</td>
-										<td style="font-size:12px;">
-											<input type="text" id="specialHandlingFee" style="width:100px;"/>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2" align="center" style="font-size:14px;">
-											<button type="button" class="formButton" id="addService">
-											    <spring:message code="BzComposer.configuration.addservicebtn"/>
-											</button>
 										</td>
 									</tr>
 								</table>
@@ -620,7 +552,7 @@ function removeTime(){
 										</td>
 									</tr>
 									<tr>
-										<td style="width:200px;font-size:12px;">
+										<td style="font-size:12px;">
 											<spring:message code="BzComposer.configuration.availableshippingapis"/>
 										</td>
 										<td>
@@ -641,14 +573,14 @@ function removeTime(){
 													</a></li>
 												</ul>
 												<div id="ups" style="width:auto;">
-													<table style="width:1200px;">
+													<table style="width:100%;">
 														<tr>
 															<th colspan="3" align="left" style="font-size:12px; padding: 5px;">
 																<spring:message code="BzComposer.configuration.upsaccountsettings"/>
 															</th>
 														</tr>
 														<tr>
-															<td style="font-size:12px;">
+															<td style="font-size:12px;width:300px;">
 															<c:if test="${not empty configDto.listOfExistingUpsUSers}">
                                                             	<c:forEach items="${configDto.listOfExistingUpsUSers}" var="objList1">
                                                             		<input type="checkbox" id="isUPSActive" name="isUPSActive" value="${objList1.isUPSActive}"/>
@@ -656,6 +588,8 @@ function removeTime(){
                                                             	</c:forEach>
                                                             </c:if>
 															</td>
+															<td style="width:200px;">&nbsp;</td>
+															<td>&nbsp;</td>
 														</tr>
 														<tr>
 															<td style="font-size:12px;">
@@ -668,6 +602,7 @@ function removeTime(){
                                                                 	</c:forEach>
                                                                 </c:if>
 															</td>
+															<td>&nbsp;</td>
 														</tr>
 														<tr>
 															<td style="font-size:12px;">
@@ -761,14 +696,14 @@ function removeTime(){
 													</table>
 												</div>
 												<div id="usps">
-													<table style="width:1200px;">
+													<table style="width:100%;">
 														<tr>
 															<th colspan="3" align="left" style="font-size:12px; padding: 5px;">
 																<spring:message code="BzComposer.configuration.uspsaccountsettings"/>
 															</th>
 														</tr>
 														<tr>
-															<td style="font-size:12px;">
+															<td style="font-size:12px;width:300px;">
 																<%-- <form:checkbox path="isUSPSActive" /> --%>
 																<c:if test="${not empty configDto.listOfExistingUspsUSers}">
                                                                 	<c:forEach items="${configDto.listOfExistingUspsUSers}" var="objList1">
@@ -777,6 +712,8 @@ function removeTime(){
                                                                 	</c:forEach>
                                                                 </c:if>
 															</td>
+															<td style="width:200px;">&nbsp;</td>
+															<td>&nbsp;</td>
 														</tr>
 														<tr>
 															<td style="font-size:12px;">
@@ -790,6 +727,7 @@ function removeTime(){
                                                                 	</c:forEach>
                                                                 </c:if>
 															</td>
+															<td>&nbsp;</td>
 														</tr>
 														<tr>
 															<th colspan="3" align="left" style="font-size:12px; padding: 5px;">
@@ -846,14 +784,14 @@ function removeTime(){
 													</table>
 												</div>
 												<div id="fedex">
-													<table style="width:1200px;">
+													<table style="width:100%;">
 														<tr>
 															<th colspan="3" align="left" style="font-size:12px; padding: 5px;">
 																<spring:message code="BzComposer.configuration.fedexaccountsettings"/>
 															</th>
 														</tr>
 														<tr>
-															<td style="font-size:12px;">
+															<td style="font-size:12px;width:300px;">
 																<%-- <form:checkbox path="isFeDexActive">
 																	<spring:message code="BizComposer.Configuration.Shipping.fedex"/> --%>
 																<c:if test="${not empty configDto.listOfExistingFedexUSers}">
@@ -863,6 +801,8 @@ function removeTime(){
                                                                 	</c:forEach>
                                                                 </c:if>
 															</td>
+															<td style="width:200px;">&nbsp;</td>
+															<td>&nbsp;</td>
 														</tr>
 														<tr>
 															<td style="font-size:12px;">
@@ -876,6 +816,7 @@ function removeTime(){
                                                                 	</c:forEach>
                                                                 </c:if>
 															</td>
+															<td>&nbsp;</td>
 														</tr>
 														<tr>
 															<td style="font-size:12px;">
@@ -1160,31 +1101,109 @@ function removeTime(){
 										<input type="file" id="selectDatabase" accept="(/*.mdb)" value="SHIPPING.mdb">
 									</div> 
 								</div>
-							</div> 
-					</div>
-					<div id="valueAddedCalculator">
-						<fieldset>
-							<legend class="h6" style="font-size:12px; padding: 5px;">
-								<b><spring:message code="BzComposer.configuration.valueaddedcalculator"/></b>
-							</legend>
-							<div style="font-size:12px;">
-								<spring:message code="BzComposer.configuration.calculatornote"/>
 							</div>
-							<div class="col-md-12" style="font-size:12px;">
-								<div class="col-md-6" align="left" style="font-size:12px;">
-									<spring:message code="BzComposer.configuration.extraamount"/> :
-									&nbsp;
-									<input type="text" id="extraAmount" style="font-size:12px;">
-									&nbsp;&nbsp;
-									<spring:message code="BzComposer.configuration.unit"/> :
-									&nbsp;
-									<select id="unit">
-										<option>$</option>
-										<option>%</option>
-									</select>
-								</div>
-							</div>
-						</fieldset> 
+							<!-- Value-Added-Services-Start -->
+							<div id="valueAddedAervices" style="width:auto;">
+                                <table class="table-notifications">
+                                    <tr>
+                                        <th colspan="2" align="left" style="font-size:12px; padding: 5px;">
+                                            <spring:message code="BzComposer.configuration.valueaddedservices" />
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;width:200px;">
+                                            <spring:message code="BzComposer.configuration.mailtype"/> :
+                                        </td>
+                                        <td style="font-size:12px;">
+                                            <form:select id="selectedMailTypeId" path="selectedMailTypeId" style="width:100px;">
+                                                <c:if test="${not empty configDto.listOfExistingMailType}">
+                                                    <c:forEach items="${configDto.listOfExistingMailType}" var="objList1">
+                                                        <option value="${objList1.mailTypeId}">${objList1.mailType}</option>
+                                                    </c:forEach>
+                                                </c:if>
+                                            </form:select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;">
+                                            <spring:message code="BzComposer.configuration.packagesize"/> :
+                                        </td>
+                                        <td style="font-size:12px;">
+                                            <form:select id="selectedPackageSizeId" path="selectedPackageSizeId" style="width:100px;">
+                                                <c:if test="${not empty configDto.listOfExistingPackageSize}">
+                                                    <c:forEach items="${configDto.listOfExistingPackageSize}" var="objList1">
+                                                        <option value="${objList1.packageSizeId}">${objList1.packageSize}</option>
+                                                    </c:forEach>
+                                                </c:if>
+                                            </form:select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;">
+                                            <spring:message code="BzComposer.configuration.container"/> :
+                                        </td>
+                                        <td style="font-size:12px;">
+                                            <form:select id="selectedContainerId" path="selectedContainerId" style="width:100px;">
+                                                <c:if test="${not empty configDto.listOfExistingContainer}">
+                                                    <c:forEach items="${configDto.listOfExistingContainer}" var="objList1">
+                                                        <option value="${objList1.containerId}">${objList1.container}</option>
+                                                    </c:forEach>
+                                                </c:if>
+                                            </form:select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;">
+                                            <spring:message code="BzComposer.configuration.specialhandlingfee"/> ($) :
+                                        </td>
+                                        <td style="font-size:12px;">
+                                            <input type="text" id="specialHandlingFee" style="width:100px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td style="font-size:14px;">
+                                            <button type="button" class="formButton" id="addService">
+                                                <spring:message code="BzComposer.configuration.addservicebtn"/>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2" style="font-size:12px; padding: 5px;">
+                                            <spring:message code="BzComposer.configuration.valueaddedcalculator" />
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-size:12px;">
+                                            <spring:message code="BzComposer.configuration.calculatornote"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div id="valueAddedCalculator">
+                                                <fieldset>
+
+                                                    <div class="col-md-12" style="font-size:12px;">
+                                                        <div class="col-md-6" align="left" style="font-size:12px;">
+                                                            <spring:message code="BzComposer.configuration.extraamount"/> :
+                                                            &nbsp;
+                                                            <input type="text" id="extraAmount" style="font-size:12px;">
+                                                            &nbsp;&nbsp;
+                                                            <spring:message code="BzComposer.configuration.unit"/> :
+                                                            &nbsp;
+                                                            <select id="unit">
+                                                                <option>$</option>
+                                                                <option>%</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+							<!-- Value-Added-Services-End -->
 					</div>
 			</div>
 			<!-- shipping Ends -->

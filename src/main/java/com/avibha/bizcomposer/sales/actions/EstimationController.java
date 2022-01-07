@@ -66,6 +66,7 @@ public class EstimationController {
             estimationDto.setPayMethod(configDto.getSelectedPaymentId()+"");
             estimationDto.setVia(configDto.getCustomerShippingId()+"");
             estimationDto.setTemplateType(configDto.getEstTemplateType());
+            estimationDto.setInvoiceStyle(configDto.getEstimationStyleID()+"");
             estimationDto.setOrderNo(MyUtility.getOrderNumberByConfigData(estimationDto.getOrderNo(), AppConstants.EstType, configDto, false));
             forward = "/sales/estimation";
         }

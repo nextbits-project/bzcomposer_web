@@ -634,7 +634,6 @@ margin-right: 10px;
    function sendMyValue(ReceivableListBean) {
 		debugger;
 		var obj=JSON.stringify(ReceivableListBean);
-		/* alert(indexNumber); */
    	 $.ajax({
 		
 			type : "POST",
@@ -665,8 +664,6 @@ margin-right: 10px;
 			url : "AccountReceiveble?tabid=selectrow&ordernum="+index,
 			data : "row=" +index, 			
 			success : function(data,status) {
-				/* alert("Hello"); */
-				
 				window.location= "${pageContext.request.contextPath}/AccountReceiveble?tabid=selectrow&ordernum="+index;
 			},
 			 error : function(data) {
@@ -859,8 +856,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
    {
 	   var answer;
 	   debugger;
-	  /*  alert(indexNumber);
-	   alert(invoiceId); */
+
 	   if(parseInt(invoiceId) > 0 &&  $('input[id="Checkbox['+indexNumber+']"]').is(':checked'))
 		   {
 		   answer = window.confirm("<spring:message code='BzComposer.popayable.clearselectedtransaction'/>");
@@ -933,8 +929,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
    function checkPaymentStatus()
    {
 	   debugger;
-	   alert("here");
-	  	/* var pay = document.getElementById("payStatus");
+	   	/* var pay = document.getElementById("payStatus");
 	  	vat option = pay.options[pay.selectedIndex].value; */
 	   $(document.forms[0]).submit(function( event ) {
 		    event.preventDefault();
@@ -1040,7 +1035,6 @@ $("td#accdrpdwn").click(function(e){     //function_td
 	});   
    
    /*  $(document.forms[0]).submit(function( event ) {
-	    alert('Before submit');
 	    event.preventDefault();
 	});  */
 	/*  document.forms[0].action="AccountReceiveble?tabid=saveInvoice&object="+save;

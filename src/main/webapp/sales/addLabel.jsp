@@ -155,7 +155,7 @@ function AddLabel()
 {
 	if(document.CustomerForm.labelName.value=="")
 	{
-		//alert("Label name should not be blank");
+
 		return showLabelNameDialog();
 		document.CustomerForm.labelName.focus();
 	}

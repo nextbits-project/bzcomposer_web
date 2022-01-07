@@ -96,6 +96,11 @@
             <version>1.0</version>
             <systemPath>${pom.basedir}/src/main/webapp/WEB-INF/lib/paypal_base.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.paypal.sdk</groupId>
+            <artifactId>rest-api-sdk</artifactId>
+            <version>1.14.0</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/net.authorize/anet-java-sdk -->
         <dependency>
             <groupId>net.authorize</groupId>
@@ -180,6 +185,11 @@
             <groupId>com.itextpdf</groupId>
             <artifactId>layout</artifactId>
             <version>7.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180813</version>
         </dependency>
 
     </dependencies>

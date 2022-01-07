@@ -311,7 +311,7 @@ function saveValue(){
 	/* document.getElementById('tabid').value="SaveCustomerInvoiceSettings"; */
 	/* document.forms['frmcust'].action = "Configuration.do?tabid=formCustomization&ActiveInvoiceStylelist="+ActiveInvoiceStylelist+"&DeActiveInvoiceStylelist="+DeActiveInvoiceStylelist;
 	document.forms['frmcust'].submit(); */
-	//alert("save");
+
 	
 	var formData = $('frmcust').serialize();
 	

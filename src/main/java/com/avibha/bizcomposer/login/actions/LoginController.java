@@ -6,8 +6,6 @@ import com.avibha.bizcomposer.login.dao.LoginDAO;
 import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.login.forms.LoginForm;
 import com.avibha.bizcomposer.login.forms.LoginFormDto;
-import com.avibha.bizcomposer.registration.dao.RegistrationDAO;
-import com.avibha.bizcomposer.registration.dao.RegistrationDAOImpl;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;

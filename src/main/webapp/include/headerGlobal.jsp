@@ -8,19 +8,17 @@
 $(document).ready(function() 
 {
 	var locale = "<%= request.getAttribute("selectedLocale")%>";
-	alert("selected locale:"+locale);
 	$('select[id="locale"]').find('option[value="'+locale+'"]').attr("selected",true);
 });  
 function showLocale()
 {
 	debugger;
 	var lang = document.getElementById("locale").value;
-	alert("You've selected language:"+lang);
 	if(lang == "")
-		alert("Select any language to change.");
+		alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
 	else
 	window.location="Locale.do?request_locale="+lang;
-	//alert("locale is changed...")
+
 	/* window.location="Locale.do?method="+lang; */ 
 	/* $.ajax({
 		type: "POST",
@@ -28,20 +26,17 @@ function showLocale()
 		data:{lang : lang},
 		}).done(function(data){
 			debugger;
-		alert("locale is changed..");
-		debugger;
 	}); */
 }
 function showLocaleMobile()
 {
 	debugger;
 	var lang = document.getElementById("localeMobile").value;
-	alert("You've selected language:"+lang);
 	if(lang == "")
-		alert("Select any language to change.");
+		alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
 	else
 		window.location="Locale.do?request_locale="+lang;
-	//alert("locale is changed...")
+
 	/* window.location="Locale.do?method="+lang; */ 
 	/* $.ajax({
 		type: "POST",
@@ -49,8 +44,6 @@ function showLocaleMobile()
 		data:{lang : lang},
 		}).done(function(data){
 			debugger;
-		alert("locale is changed..");
-		debugger;
 	}); */
 }
 </script>

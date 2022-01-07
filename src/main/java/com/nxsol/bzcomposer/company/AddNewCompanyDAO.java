@@ -180,63 +180,41 @@ public class AddNewCompanyDAO {
     /*BusinessType*/
     public  ArrayList getBusinessType(String cId,HttpServletRequest request,CompanyInfoDto form)
     {
-        Connection con = null;
         SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
         Statement stmt1 = null;
         ResultSet rs1 = null;
-        con = db.getConnection();
-        String dateBetween = "";
         DateInfo dInfo = new DateInfo();
         ArrayList<CompanyInfoDto> listPOJOs = new ArrayList<>();
         ArrayList<Date> selectedRange = new ArrayList<>();
         CustomerInfoDao cInfo = new CustomerInfoDao();
         CompanyInfoDto pojo = null;
-
-        try
-        {
+        try {
             stmt1 = con.createStatement();
-
-            String sql1 = ""
-                    + "SELECT businessname, "
-                    + "       businesstypeid "
-                    + "FROM   bca_businesstype "
-                    + "WHERE  active = 1 "
-                    + "ORDER  BY businessname";
+            String sql1 = "SELECT businessname, businesstypeid FROM bca_businesstype WHERE active=1 ORDER BY businessname";
             Loger.log(sql1);
             rs1 = stmt1.executeQuery(sql1);
-
-            while (rs1.next())
-            {
+            while (rs1.next()) {
                 pojo = new CompanyInfoDto();
                 pojo.setBusinessName(rs1.getString(1));
                 pojo.setBusinessTypeId(rs1.getInt(2));
                 listPOJOs.add(pojo);
             }
-
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
         finally {
             try {
-                if (rs1 != null) {
-                    db.close(rs1);
-                }
-                if (stmt1 != null) {
-                    db.close(stmt1);
-                }
-                if(con != null){
-                    db.close(con);
-                }
+                if (rs1 != null) db.close(rs1);
+                if (stmt1 != null) db.close(stmt1);
+                if(con != null) db.close(con);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
         form.setListOfBusinessType(listPOJOs);
         return listPOJOs;
-
     }
     /**/
 
