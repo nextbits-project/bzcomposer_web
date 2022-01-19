@@ -5,6 +5,8 @@ import javax.servlet.http.HttpSession;
 
 import net.authorize.api.contract.v1.ANetApiResponse;
 import net.authorize.api.contract.v1.CreateTransactionResponse;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,18 +58,18 @@ public class PaymentController {
     }
 
     @GetMapping("/paypal-payment-cancel")
-    public String cancel(Model model) {
+    public String cancel(Model model) throws JSONException {
         System.out.println("--------------payment-cancel-------------");
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("status", 0);
         jsonResponse.put("error_message", "Something went wrong to process the payment!");
-        model.addAttribute("paymentStatus", 0);
-        model.addAttribute("paymentDetails", jsonResponse.toMap());
+      //  model.addAttribute("paymentStatus", 0);
+        model.addAttribute("paymentDetails", jsonResponse.names());
         return "/sales/paymentResponse";
     }
 
     @GetMapping("/paypal-payment-success")
-    public String success(@RequestParam String paymentId, @RequestParam String PayerID, Model model) {
+    public String success(@RequestParam String paymentId, @RequestParam String PayerID, Model model) throws JSONException {
         System.out.println("--------------payment-success-------------");
         JSONObject jsonResponse = new JSONObject();
         int paymentStatus = 0;
@@ -90,7 +92,7 @@ public class PaymentController {
             jsonResponse.put("error_message", ex.getDetails().getMessage());
         }
         model.addAttribute("paymentStatus", paymentStatus);
-        model.addAttribute("paymentDetails", jsonResponse.toMap());
+        model.addAttribute("paymentDetails", jsonResponse. names());
         return "/sales/paymentResponse";
     }
 

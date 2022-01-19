@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>  
     <groupId>com.bzc.web</groupId>
     <artifactId>bzc-web</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>BZC Web Project Maven Webapp</name>
-    <url>http://bzcomposer.com</url>
     <parent>
         <!-- lookup parent from repository -->
         <groupId>org.springframework.boot</groupId>
@@ -19,14 +18,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>3.8.1</maven.compiler.target> -->
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -38,7 +41,7 @@
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+       <!--  <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -48,7 +51,7 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency> -->
         <!-- https://mvnrepository.com/artifact/struts/struts -->
         <dependency>
             <groupId>struts</groupId>
@@ -59,7 +62,6 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -140,12 +142,13 @@
             <artifactId>jfreechart</artifactId>
             <version>1.0.19</version>
         </dependency>
+		
 
         <!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>5.0.1</version>
+            <version>6.18.1</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-dbcp -->
         <dependency>
@@ -153,13 +156,20 @@
             <artifactId>tomcat-dbcp</artifactId>
             <version>10.0.0-M6</version>
         </dependency>
-
         <dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		</dependency>
+        <!--<dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
@@ -170,6 +180,7 @@
             <artifactId>openpdf</artifactId>
             <version>1.3.8</version>
         </dependency>
+		
 
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -194,24 +205,13 @@
 
     </dependencies>
     <build>
-        <finalName>ROOT</finalName>
         <plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.0</version>
-                <!--<configuration>
-                  &lt;!&ndash;
-                    Exclude JCL and LOG4J since all logging should go through SLF4J.
-                    Note that we're excluding log4j-<version>.jar but keeping
-                    log4j-over-slf4j-<version>.jar
-                  &ndash;&gt;
-                  <packagingIncludes>
-                    WEB-INF/lib/*.jar
-                  </packagingIncludes>
-                </configuration>-->
-            </plugin>
-        </plugins>
-
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+		<finalName>${project.artifactId}</finalName>
 
     </build>
 

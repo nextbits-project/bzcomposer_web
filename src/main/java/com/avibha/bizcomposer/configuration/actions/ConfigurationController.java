@@ -1,5 +1,29 @@
 package com.avibha.bizcomposer.configuration.actions;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.Application;
 import com.avibha.bizcomposer.File.dao.CompanyInfo;
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
@@ -19,32 +43,21 @@ import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
-import org.apache.struts.action.*;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * @author sarfrazmalik
  */
 @Controller
 public class ConfigurationController {
-
+	@Autowired
+	private static final Logger logMsg = LoggerFactory.getLogger(Application.class);
     private String pageActiveTab = "pageActiveTab";
 
     @RequestMapping(value = {"/Configuration"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(ConfigurationDto configDto, CompanyInfoDto companyInfoDto, HttpServletRequest request, Model model) throws IOException, ServletException {
         String forward = "/configuration/configuration";
         String action = request.getParameter("tabid");
-        System.out.println("-------ConfigurationController---------tabid: " + action);
+       logMsg.debug("-------ConfigurationController---------tabid: " + action);
 
         HttpSession session = request.getSession();
         //line added from this
@@ -110,7 +123,7 @@ public class ConfigurationController {
             dao.getUserGroup(companyID, request, configDto);
 
             setConfigActiveTab(session, "generalTab");
-            System.out.println("goes to generalUpdated page......................");
+           logMsg.debug("goes to generalUpdated page......................");
             forward = "/configuration/generalUpdated";
         }
         else if (action.equalsIgnoreCase("configModule")) {
@@ -120,7 +133,7 @@ public class ConfigurationController {
             dao.getModules(companyID, request, configDto);
 
             setConfigActiveTab(session, "moduleTab");
-            System.out.println("goes to configModule page......................");
+           logMsg.debug("goes to configModule page......................");
             forward = "/configuration/modules";
         }
         else if (action.equalsIgnoreCase("config1")) {
@@ -144,7 +157,7 @@ public class ConfigurationController {
             dao.getSalesTax(companyID, request, configDto);
             dao.getCreditTerm(companyID, request, configDto);
             dao.getRefundReason(companyID, request, configDto);
-            System.out.println("goes to general page......................");
+           logMsg.debug("goes to general page......................");
             forward = "success2";
         }
         else if (action.equalsIgnoreCase("addNewGroup")) {
@@ -242,11 +255,11 @@ public class ConfigurationController {
             ConfigurationDAO dao = new ConfigurationDAO();
             dao.getMasterReason(configDto);
             int templateId = Integer.parseInt(request.getParameter("templateId"));
-            System.out.println("Selected Template ID:" + templateId);
+           logMsg.debug("Selected Template ID:" + templateId);
             dao.getActiveTemplates(templateId, request, configDto);
             /*forward="success33";*/
             forward = "success11";
-            System.out.println("goes to emailTemplate page with data");
+           logMsg.debug("goes to emailTemplate page with data");
         }
         else if (action.equalsIgnoreCase("config3")) {
             ConfigurationDetails configDetails = new ConfigurationDetails();
@@ -264,7 +277,7 @@ public class ConfigurationController {
 
             dao.geteBayCategories(request, configDto);
 			/* ArrayList <configurationForm> s1 = new ArrayList<>();
-			 System.out.println("List Size:"+s.size());
+			logMsg.debug("List Size:"+s.size());
 			 s1.add(s.get(2));*/
             //request.setAttribute("List", s);
             //System.out.println("goes to div3 page......................");
@@ -336,16 +349,16 @@ public class ConfigurationController {
             try {
                 catManagerController.categoryManager(null, request);
             }catch (Exception ex){
-                ex.printStackTrace();
+                logMsg.error("Error While Categories Display: "+ex);
             }
 
-            System.out.println("goes to accountPayment page......................");
+           logMsg.debug("goes to accountPayment page......................");
             setConfigActiveTab(session, "accountPaymentTab");
             forward = "/configuration/accountPayment";
         }
         else if (action.equalsIgnoreCase("ChangeAdministratorPassword")) {
             String modalNewPassword = request.getParameter("modalNewPassword");
-            System.out.println("modalNewPassword" + modalNewPassword);
+           logMsg.debug("modalNewPassword" + modalNewPassword);
             ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getAdministratorDetails(companyID, emailAddress, modalNewPassword);
             forward = "redirect:Configuration?tabid=config&tab=tr2";
@@ -372,7 +385,7 @@ public class ConfigurationController {
             dao.getUserListDetails(companyID, request, configDto);
             dao.getUserGroup(companyID, request, configDto);
 
-            System.out.println("goes to networkSecurity page......................");
+           logMsg.debug("goes to networkSecurity page......................");
             setConfigActiveTab(session, "securityTab");
             forward = "/configuration/networkSecurity";
         }
@@ -392,7 +405,7 @@ public class ConfigurationController {
             ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
             forward = "success14";
-            System.out.println("goes to billing page......................");
+           logMsg.debug("goes to billing page......................");
         }
         else if (action.equalsIgnoreCase("config6")) {
             //System.out.println("Inside config6 condition");
@@ -449,13 +462,13 @@ public class ConfigurationController {
                     conDto.setCountryName("USA");
                 }
             }
-            System.out.println("goes to customerInvoice page......................");
+           logMsg.debug("goes to customerInvoice page......................");
             forward = "/configuration/customerInvoice";
         }
         else if (action.equalsIgnoreCase("config7")) {
             //System.out.println("Inside config7 condition");
             forward = "success22";
-            System.out.println("goes to estimation page......................");
+           logMsg.debug("goes to estimation page......................");
         }
         else if (action.equalsIgnoreCase("config8")) {
             ConfigurationInfo configInfo = new ConfigurationInfo();
@@ -473,7 +486,7 @@ public class ConfigurationController {
             request.setAttribute("salesOrder", so);
             request.setAttribute("productTaxable", pt);
             forward = "/configuration/inventorySetting";
-            System.out.println("goes to inventory Setting page......................");
+           logMsg.debug("goes to inventory Setting page......................");
         }
         else if (action.equalsIgnoreCase("config9")) {
             ConfigurationDAO dao = new ConfigurationDAO();
@@ -484,7 +497,7 @@ public class ConfigurationController {
             dao.getInvoiceStyle1(companyID, request, configDto);
             dao.getModules(companyID, request, configDto);
 
-            System.out.println("goes to formCustomization page......................");
+           logMsg.debug("goes to formCustomization page......................");
             setConfigActiveTab(session, "customizationTab");
             forward = "/configuration/formCustomization";
         }
@@ -523,7 +536,7 @@ public class ConfigurationController {
             dao.getMessages(companyID, request, configDto);
             dao.getInvoiceStyle(companyID, request, configDto);
             setConfigActiveTab(session, "vendorPurchaseOrderTab");
-            System.out.println("goes to vendorPurchaseOrder page......................");
+           logMsg.debug("goes to vendorPurchaseOrder page......................");
             forward = "/configuration/vendorPurchaseOrder";
         }
         else if (action.equalsIgnoreCase("config11")) {
@@ -536,7 +549,7 @@ public class ConfigurationController {
             dao.getStates("2", configDto);
             dao.getJobTitle(request, configDto, companyID);
             setConfigActiveTab(session, "employeeTab");
-            System.out.println("goes to employee page......................");
+           logMsg.debug("goes to employee page......................");
             forward = "/configuration/employee";
         }
         else if (action.equalsIgnoreCase("config28")) {
@@ -546,7 +559,7 @@ public class ConfigurationController {
             SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManager(request);
             setConfigActiveTab(session, "dataManagerTab");
-            System.out.println("goes to datamanager page......................");
+           logMsg.debug("goes to datamanager page......................");
             forward = "configuration/datamanager";
         }
         else if (action.equalsIgnoreCase("DM_Save")) { // save of DataManager tab
@@ -577,7 +590,7 @@ public class ConfigurationController {
             int year = Calendar.getInstance().get(Calendar.YEAR);
             dao.loadTaxProperties(companyID, year, configDto);
             configDto.setCompanyTaxOptionDtos(dao.loadCompanyTaxOption(companyID));
-            System.out.println("goes to tax page......................");
+           logMsg.debug("goes to tax page......................");
             forward = "/configuration/tax";
             setConfigActiveTab(session, "taxTab");
         }
@@ -591,7 +604,7 @@ public class ConfigurationController {
             configInfo.getCongurationRecord(companyID, configDto, request);
             //configDetails.getConfigurationInfo(request,configDto);
             forward = "success32";
-            System.out.println("goes to reminder page......................");
+           logMsg.debug("goes to reminder page......................");
         }
         else if (action.equalsIgnoreCase("config14")) {
             //System.out.println("Inside config14 condition");
@@ -599,7 +612,7 @@ public class ConfigurationController {
             dao.getActiveTemplates(1, request, configDto);
 
             forward = "success33";
-            System.out.println("goes to emailSetup page......................");
+           logMsg.debug("goes to emailSetup page......................");
         }
         else if (action.equalsIgnoreCase("config15")) {
             //System.out.println("Inside config15 condition");
@@ -619,7 +632,7 @@ public class ConfigurationController {
                 int sId = udShipTypes.get(0).getUserDefinedShippingTypeId();
                 dao.getUserDefinedShippingWeightAndPrice(sId, request, configDto);
             }
-            System.out.println("goes to shipping page......................");
+           logMsg.debug("goes to shipping page......................");
             forward = "/configuration/shipping";
             setConfigActiveTab(session, "shippingTab");
         }
@@ -628,7 +641,7 @@ public class ConfigurationController {
             ConfigurationDAO dao = new ConfigurationDAO();
             dao.addShippingTypeValue(request, Newval, companyID);
             //forward="success34";
-            System.out.println("goes to shipping page......................");
+           logMsg.debug("goes to shipping page......................");
             forward = "redirect:Configuration?tabid=config15&&tab=tr15";
         }
         else if (action.equalsIgnoreCase("editshippingtype")) {
@@ -656,7 +669,7 @@ public class ConfigurationController {
             dao.getMasterReason(configDto);
             dao.getMasterReason1(companyID, configDto);
             dao.getDefaultBank(1, request, configDto, companyID);
-            System.out.println("goes to RMA page......................");
+           logMsg.debug("goes to RMA page......................");
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
         }
         else if (action.equalsIgnoreCase("config17")) {
@@ -669,7 +682,7 @@ public class ConfigurationController {
             dao.geteActiveStore(request, configDto, companyID);
 
             forward = "success41";
-            System.out.println("goes to eSales page......................");
+           logMsg.debug("goes to eSales page......................");
         }
         else if (action.equalsIgnoreCase("config18")) {
             //System.out.println("Inside config18 condition");
@@ -684,18 +697,18 @@ public class ConfigurationController {
             dao.getAllPayemntTypeId(request, configDto, companyID);
 
             forward = "success42";
-            System.out.println("goes to paymentReceivedOption page......................");
+           logMsg.debug("goes to paymentReceivedOption page......................");
         }
         else if (action.equalsIgnoreCase("config19")) {
             //System.out.println("Inside config19 condition");
 
             forward = "success43";
-            System.out.println("goes to mySqlConfiguration page......................");
+           logMsg.debug("goes to mySqlConfiguration page......................");
         }
         else if (action.equalsIgnoreCase("config20")) {
             //System.out.println("Inside config20 condition");
             forward = "/configuration/deviceManager";
-            System.out.println("goes to deviceManager page......................");
+           logMsg.debug("goes to deviceManager page......................");
         }
         else if (action.equalsIgnoreCase("config21")) {
             //System.out.println("Inside config21 condition");
@@ -703,7 +716,7 @@ public class ConfigurationController {
             ArrayList<ConfigurationDto> s = dao.getPaymentGateways(companyID, request, configDto);
             //System.out.println("List Size:"+s.size());
 
-            System.out.println("goes to paymentGateway page......................");
+           logMsg.debug("goes to paymentGateway page......................");
             forward = "/configuration/paymentGateway";
             setConfigActiveTab(session, "paymentGatewayTab");
         }
@@ -714,7 +727,7 @@ public class ConfigurationController {
             ConfigurationDAO dao = new ConfigurationDAO();
             dao.getExistingPrinter(companyID, request, configDto);
 
-            System.out.println("goes to printer Setup page......................");
+           logMsg.debug("goes to printer Setup page......................");
             setConfigActiveTab(session, "deviceManagerTab");
             forward = "/configuration/printerSetup";
         }
@@ -724,16 +737,16 @@ public class ConfigurationController {
             configDetails.getConfigurationInfo(request, configDto);
             String isChecked = configDto.getAssessFinanceCharge().equals("1") ? "on" : "off";
             request.setAttribute("isChecked", isChecked);
-            System.out.println("goes to financeCharges page......................");
+           logMsg.debug("goes to financeCharges page......................");
             forward = "success52";
         }
         else if (action.equalsIgnoreCase("config24")) {
-            System.out.println("goes to smtp Setup page......................");
+           logMsg.debug("goes to smtp Setup page......................");
             forward = "success53";
         }
         else if (action.equalsIgnoreCase("config25")) {
             //System.out.println("Inside config25 condition");
-            System.out.println("goes to performance page......................");
+           logMsg.debug("goes to performance page......................");
             forward = "success54";
         }
         else if (action.equalsIgnoreCase("config26")) {
@@ -741,7 +754,7 @@ public class ConfigurationController {
 
             ConfigurationDetails configDetails = new ConfigurationDetails();
             configDetails.getConfigurationInfo(request, configDto);
-            System.out.println("goes to manage service type page......................");
+           logMsg.debug("goes to manage service type page......................");
             forward = "success55";
         }
         else if (action.equalsIgnoreCase("config27")) {
@@ -767,15 +780,15 @@ public class ConfigurationController {
             int isSelectedWeightID = configDto.getWeightID();
             request.setAttribute("isSelectedWeightID", isSelectedWeightID);
             forward = "success56";
-            System.out.println("goes to dashboard page......................");
+           logMsg.debug("goes to dashboard page......................");
         }
         else if (action.equalsIgnoreCase("config29")) {
             setConfigActiveTab(session, "membershipTab");
-            System.out.println("goes to membership page......................");
+           logMsg.debug("goes to membership page......................");
             forward = "/configuration/membership";
         }
         else if (action.equalsIgnoreCase("showStore")) {
-            System.out.println("Inside showStore condition");
+           logMsg.debug("Inside showStore condition");
             ConfigurationDAO dao = new ConfigurationDAO();
             //dao.initStoreTypesModel(true);
             //ConfigurationDao dao = new ConfigurationDao();
@@ -847,7 +860,7 @@ public class ConfigurationController {
             String mailCustomerValue = request.getParameter("mailToCust");
             String showCombinedValue = request.getParameter("showCmbBilling");
 
-            System.out.println("is showCombinedBilling Checked?:" + showCombinedValue + ""
+           logMsg.debug("is showCombinedBilling Checked?:" + showCombinedValue + ""
                     + "\nis PrintBills Checked?:" + printBillValue + "\nis MailToCustomer Checked?:" + mailCustomerValue);
 
             ConfigurationDetails cDetails = new ConfigurationDetails();
@@ -943,7 +956,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("addDescription")) {
             String description = request.getParameter("Description");
-            System.out.println("New Description To be added:" + description);
+           logMsg.debug("New Description To be added:" + description);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.addNewDescription(configDto, companyID, description);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -951,21 +964,21 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("updateDescription")) {
             String description = request.getParameter("Description");
             String locationID = request.getParameter("locationID");
-            System.out.println("LocationId:" + locationID + "\nDescription To be updated:" + description);
+           logMsg.debug("LocationId:" + locationID + "\nDescription To be updated:" + description);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.updateDescription(configDto, companyID, description, locationID);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
         }
         else if (action.equalsIgnoreCase("deleteLocation")) {
             int descriptionID = Integer.parseInt(request.getParameter("locationID"));
-            System.out.println("locationId To be Delete:" + descriptionID);
+           logMsg.debug("locationId To be Delete:" + descriptionID);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.deleteLocation(companyID, descriptionID);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
         }
         else if (action.equalsIgnoreCase("addNewMessage")) {
             String description = request.getParameter("Description");
-            System.out.println("New Message To be added:" + description);
+           logMsg.debug("New Message To be added:" + description);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.addNewMessage(configDto, companyID, description);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -973,21 +986,21 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("updateMessage")) {
             String message = request.getParameter("Description");
             String messageId = request.getParameter("locationID");
-            System.out.println("MessageId:" + messageId + "\nNew Message To be updated:" + message);
+           logMsg.debug("MessageId:" + messageId + "\nNew Message To be updated:" + message);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.updateMessage(configDto, companyID, message, messageId);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
         }
         else if (action.equalsIgnoreCase("deleteMessage")) {
             int messageID = Integer.parseInt(request.getParameter("locationID"));
-            System.out.println("MessageId To be Delete:" + messageID);
+           logMsg.debug("MessageId To be Delete:" + messageID);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.deleteMessage(companyID, messageID);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
         }
         else if (action.equalsIgnoreCase("addNewSalesRep")) {
             String description = request.getParameter("Description");
-            System.out.println("New Sales Representative To be added:" + description);
+           logMsg.debug("New Sales Representative To be added:" + description);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.addNewSalesRep(configDto, companyID, description);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -995,14 +1008,14 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("updateSalesRep")) {
             String salesRep = request.getParameter("Description");
             String salesRepId = request.getParameter("locationID");
-            System.out.println("SalesRepId:" + salesRepId + "\nNSales Representative:" + salesRep);
+           logMsg.debug("SalesRepId:" + salesRepId + "\nNSales Representative:" + salesRep);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.updateSalesRep(configDto, companyID, salesRep, salesRepId);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
         }
         else if (action.equalsIgnoreCase("deleteSalesRep")) {
             int salesRepId = Integer.parseInt(request.getParameter("locationID"));
-            System.out.println("Sales Representative Id To be Deleted:" + salesRepId);
+           logMsg.debug("Sales Representative Id To be Deleted:" + salesRepId);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.deleteSalesRep(configDto, companyID, salesRepId);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -1010,7 +1023,7 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("addNewTerms")) {
             String term = request.getParameter("Description");
             int days = Integer.parseInt(request.getParameter("locationID"));
-            System.out.println("New Term To be added:" + term + "\n Days:" + days);
+           logMsg.debug("New Term To be added:" + term + "\n Days:" + days);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.addNewTerm(configDto, companyID, term, days);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -1019,14 +1032,14 @@ public class ConfigurationController {
             String term = request.getParameter("Description");
             String termId = request.getParameter("locationID");
             int days = Integer.parseInt(request.getParameter("isDefault"));
-            System.out.println("TermId:" + termId + "\nTerm:" + term + "\nDays:" + days);
+           logMsg.debug("TermId:" + termId + "\nTerm:" + term + "\nDays:" + days);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.updateTerm(configDto, companyID, term, termId, days);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
         }
         else if (action.equalsIgnoreCase("deleteTerms")) {
             int termId = Integer.parseInt(request.getParameter("locationID"));
-            System.out.println("Term Id To be Deleted:" + termId);
+           logMsg.debug("Term Id To be Deleted:" + termId);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.deleteTerm(companyID, termId);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -1034,7 +1047,7 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("addNewSalesTax")) {
             String term = request.getParameter("Description");
             float tax = Float.parseFloat((request.getParameter("locationID")));
-            System.out.println("New Term To be added:" + term + "\n Tax:" + tax);
+           logMsg.debug("New Term To be added:" + term + "\n Tax:" + tax);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.addNewSalesTax(configDto, companyID, term, tax);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -1043,14 +1056,14 @@ public class ConfigurationController {
             String salesTax = request.getParameter("Description");
             String salesTaxId = request.getParameter("locationID");
             float tax = Float.parseFloat(request.getParameter("isDefault"));
-            System.out.println("SalesTaxId:" + salesTaxId + "\nSalesTaxName:" + salesTax + "\nTax:" + tax);
+           logMsg.debug("SalesTaxId:" + salesTaxId + "\nSalesTaxName:" + salesTax + "\nTax:" + tax);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.updateSalesTax(configDto, companyID, salesTax, salesTaxId, tax);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
         }
         else if (action.equalsIgnoreCase("deleteSalesTax")) {
             int salesTaxId = Integer.parseInt(request.getParameter("locationID"));
-            System.out.println("SalesTax Id To be Deleted:" + salesTaxId);
+           logMsg.debug("SalesTax Id To be Deleted:" + salesTaxId);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.deleteSalesTax(companyID, salesTaxId);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -1059,7 +1072,7 @@ public class ConfigurationController {
             String term = request.getParameter("Description");
             String isDefault = request.getParameter("isDefault");
             int days = Integer.parseInt(request.getParameter("locationID"));
-            System.out.println("New CreditTerm To be added:" + term + "\nDays:" + days + "\nIs Default:" + isDefault);
+           logMsg.debug("New CreditTerm To be added:" + term + "\nDays:" + days + "\nIs Default:" + isDefault);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.addNewCreditTerms(configDto, companyID, term, days, isDefault);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -1069,14 +1082,14 @@ public class ConfigurationController {
             String creditTermId = request.getParameter("locationID");
             String isDefault = request.getParameter("isDefault");
             String days = request.getParameter("creditTermDays");
-            System.out.println("CreditTermId:" + creditTermId + "\nCreditTerm:" + creditTerm + "\nDefault is checked?:" + isDefault + "\nDays:" + days);
+           logMsg.debug("CreditTermId:" + creditTermId + "\nCreditTerm:" + creditTerm + "\nDefault is checked?:" + isDefault + "\nDays:" + days);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.updateCreditTerm(configDto, companyID, creditTerm, creditTermId, isDefault, days);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
         }
         else if (action.equalsIgnoreCase("deleteCreditTerm")) {
             int creditTermId = Integer.parseInt(request.getParameter("locationID"));
-            System.out.println("creditTerm Id To be Deleted:" + creditTermId);
+           logMsg.debug("creditTerm Id To be Deleted:" + creditTermId);
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.deleteCreditTerm(companyID, creditTermId);
             forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -1195,7 +1208,7 @@ public class ConfigurationController {
     public String ConfigurationAjax(ConfigurationDto configDto, HttpServletRequest request) {
         String status = "Success";
         String action = request.getParameter("tabid");
-        System.out.println("-------ConfigurationAjax--POST-------tabid: "+ action);
+       logMsg.debug("-------ConfigurationAjax--POST-------tabid: "+ action);
 
         String companyID = (String) request.getSession().getAttribute("CID");
         String emailAddress = (String) request.getSession().getAttribute("Email_Address");
@@ -1216,7 +1229,7 @@ public class ConfigurationController {
             configDto.setIsRefundAllowed(request.getParameter("creditTermDays"));
 
             String errorCode = cDetails.saveCustomerInvoiceSetting(configDto, request, companyID);
-            System.out.println("UpdateStatusCode value:" + errorCode);
+           logMsg.debug("UpdateStatusCode value:" + errorCode);
             status = errorCode;
         }
         else if (action.equalsIgnoreCase("saveVendorPurchaseValues")) {
@@ -1259,7 +1272,7 @@ public class ConfigurationController {
         }
         /* Save all the configuration records (i.e:- inventory,sales,purchase,etc).*/
         else if (action.equalsIgnoreCase("SaveConfiguration")) {
-            System.out.println("----------SaveConfiguration-----------");
+           logMsg.debug("----------SaveConfiguration-----------");
             int multiUserConnection = Integer.valueOf(request.getParameter("multiUserConnection"));
             ConfigurationDetails cDetails = new ConfigurationDetails();
             cDetails.saveRecords(configDto, request, multiUserConnection);
@@ -1275,9 +1288,9 @@ public class ConfigurationController {
                 status = "emailExists";
             }
             else if(dao.addNewUser(companyID, request)) {
-                System.out.println("success");
+               logMsg.debug("success");
             } else {
-                System.out.println("Error");
+               logMsg.debug("Error");
             }
         }
         else if (action.equalsIgnoreCase("saveGroup")) {
@@ -1287,7 +1300,7 @@ public class ConfigurationController {
                 status = "ERROR";
             }
         } else {
-            System.out.println("-----------ERROR-ACTION-not-found-------------");
+           logMsg.debug("-----------ERROR-ACTION-not-found-------------");
         }
         return status;
     }
@@ -1297,7 +1310,7 @@ public class ConfigurationController {
     public Object ConfigurationAjaxTest(ConfigurationDto configDto, HttpServletRequest request) {
         String status = "Success";
         String action = request.getParameter("tabid");
-        System.out.println("-------ConfigurationAjaxTest-------tabid: "+ action);
+       logMsg.debug("-------ConfigurationAjaxTest-------tabid: "+ action);
         String companyID = (String) request.getSession().getAttribute("CID");
         ConfigurationDAO dao = new ConfigurationDAO();
         if (action.equalsIgnoreCase("getUserDefinedShippingWeightAndPrice")) {
@@ -1315,11 +1328,11 @@ public class ConfigurationController {
             return dao.deleteUserDefinedShippingWeightAndPrice(udShippingRateID);
         }
         else if (action.equalsIgnoreCase("setPrintingTemplates")) {
-            System.out.println(configDto);
+           logMsg.debug(configDto.toString());
             return dao.setPrintingTemplates(companyID, configDto);
         }
         else {
-            System.out.println("-----------ERROR-ACTION-not-found-------------");
+           logMsg.debug("-----------ERROR-ACTION-not-found-------------");
         }
         return status;
     }
