@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -703,6 +704,40 @@ public class InvoiceInfoDao {
 		return exist;
 	}
 
+	public Boolean checkClientVendorDetails(String companyID, int clientVendorId) {
+		// TODO Auto-generated method stub
+		Boolean isClientVendorDetailsExits = false;
+		SQLExecutor db = new SQLExecutor();
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+        String sql ="SELECT count(*) as count  FROM bca_clientvendor WHERE  ClientVendorID ="+clientVendorId+" AND Status='N' AND CompanyID="+companyID;
+        try {
+        	con = db.getConnection();
+        	pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery(sql);
+            if (rs.next()) {
+            	int count  = rs.getInt("count");
+            	if(count != 0) {
+            		isClientVendorDetailsExits = true;	
+            	}
+            	
+            }
+            Loger.log("Sql query =="+sql);
+        } catch (SQLException ee) {
+			Loger.log("Exception" + ee.toString());
+			ee.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { db.close(rs); }
+				if (pstmt != null) { db.close(pstmt); }
+				if(con != null){ db.close(con); }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return isClientVendorDetailsExits;
+	}
 	public boolean Save(String compId, InvoiceDto form, String custId) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
@@ -879,7 +914,7 @@ public class InvoiceInfoDao {
 			pstmt1.setString(4, form.getBsAddressID());
 			pstmt1.setString(5, form.getInvoiceStyle());
 			pstmt1.setInt(6, salesOrderType); // Sales Order Type id
-			pstmt1.setString(7, form.getCompanyID());
+			pstmt1.setInt(7, cid);
 			pstmt1.setDouble(8, form.getWeight());
 			pstmt1.setDouble(9, form.getSubtotal());
 			pstmt1.setDouble(10, form.getTax());
