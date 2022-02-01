@@ -7,7 +7,6 @@ import java.sql.Statement;
 
 import com.avibha.bizcomposer.forgetpassword.forms.RecoverForm;
 import com.avibha.bizcomposer.forgetpassword.util.MailSender;
-import com.avibha.bizcomposer.login.actions.LoginAction;
 import com.avibha.bizcomposer.login.forms.MultiUserForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
@@ -21,7 +20,7 @@ import com.twilio.type.PhoneNumber;
 public class ForgetPasswordDAO {
 
 	public boolean isRecoverPassword(RecoverForm reform) {
-		Loger.log(LoginAction.class + ".isRecoverPassword()");
+		Loger.log(ForgetPasswordDAO.class + ".isRecoverPassword()");
 		boolean recoverStatus = false;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -98,7 +97,7 @@ public class ForgetPasswordDAO {
 	}
 
 	public boolean isRecoverPassword1(MultiUserForm reform, int otp) {
-		Loger.log(LoginAction.class + ".isRecoverPassword1()");
+		Loger.log(ForgetPasswordDAO.class + ".isRecoverPassword1()");
 		boolean recoverStatus = false;
 		Statement stmt = null;
 		ResultSet rs = null;
