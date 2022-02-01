@@ -212,9 +212,14 @@ public class DataImportExportController {
                     ObjectMapper mapper = new ObjectMapper();
                     List<InvoiceDto> invoiceList = mapper.readValue(attachFile.getInputStream(), typeReference);
                     for (InvoiceDto invoiceDto : invoiceList) {
-                        invoiceDto.setOrderNo(invoiceInfoDao.getNewOrderNo(compId));
-                        status = invoiceInfoDao.Save(compId, invoiceDto, invoiceDto.getCustID());
-                        if(!status && !statusError) statusError = true;
+                    	Boolean isClientVendorDetailsExits = invoiceInfoDao.checkClientVendorDetails(compId, Integer.parseInt(invoiceDto.getClientVendorID()));
+                    	if(isClientVendorDetailsExits == true) {
+                    		invoiceDto.setOrderNo(invoiceInfoDao.getNewOrderNo(compId));
+                    		status = invoiceInfoDao.Save(compId, invoiceDto, invoiceDto.getCustID());
+                    		if(!status && !statusError) statusError = true;
+                    	}else {
+                    		continue;
+                    	}
                     }
                     if(statusError) request.getSession().setAttribute("errorMessage", "success");
                     else request.getSession().setAttribute("successMessage", "success");
@@ -223,15 +228,21 @@ public class DataImportExportController {
             }
             else if(action.equalsIgnoreCase("Estimations")) {
                 if(!attachFile.isEmpty()) {
+                	InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
                     boolean statusError = false;
                     EstimationInfo estInfo = new EstimationInfo();
                     TypeReference<List<EstimationDto>> typeReference = new TypeReference<List<EstimationDto>>() {};
                     ObjectMapper mapper = new ObjectMapper();
                     List<EstimationDto> estList = mapper.readValue(attachFile.getInputStream(), typeReference);
                     for (EstimationDto estimationDto : estList) {
-                        estimationDto.setOrderNo(estInfo.getNewEstimationNo(compId));
-                        status = estInfo.Save(compId, estimationDto);
-                        if(!status && !statusError) statusError = true;
+                    	Boolean isClientVendorDetailsExits = invoiceInfoDao.checkClientVendorDetails(compId, Integer.parseInt(estimationDto.getClientVendorID()));
+                    	if(isClientVendorDetailsExits == true) {
+	                        estimationDto.setOrderNo(estInfo.getNewEstimationNo(compId));
+	                        status = estInfo.Save(compId, estimationDto);
+	                        if(!status && !statusError) statusError = true;
+                    	}else {
+                    		continue;
+                    	}
                     }
                     if(statusError) request.getSession().setAttribute("errorMessage", "success");
                     else request.getSession().setAttribute("successMessage", "success");
@@ -246,9 +257,14 @@ public class DataImportExportController {
                     ObjectMapper mapper = new ObjectMapper();
                     List<InvoiceDto> invoiceList = mapper.readValue(attachFile.getInputStream(), typeReference);
                     for (InvoiceDto invoiceDto : invoiceList) {
-                        invoiceDto.setOrderNo(invoiceInfoDao.getNewSalesOrderNo(compId));
-                        status = invoiceInfoDao.SaveSalesOrder(compId, invoiceDto, 7);
-                        if(!status && !statusError) statusError = true;
+                    	Boolean isClientVendorDetailsExits = invoiceInfoDao.checkClientVendorDetails(compId, Integer.parseInt(invoiceDto.getClientVendorID()));
+                    	if(isClientVendorDetailsExits == true) {
+	                        invoiceDto.setOrderNo(invoiceInfoDao.getNewSalesOrderNo(compId));
+	                        status = invoiceInfoDao.SaveSalesOrder(compId, invoiceDto, 7);
+	                        if(!status && !statusError) statusError = true;
+                    	}else {
+                    		continue;
+                    	}
                     }
                     if(statusError) request.getSession().setAttribute("errorMessage", "success");
                     else request.getSession().setAttribute("successMessage", "success");
@@ -258,14 +274,21 @@ public class DataImportExportController {
             else if(action.equalsIgnoreCase("PurchaseOrders")) {
                 if(!attachFile.isEmpty()) {
                     boolean statusError = false;
+                    InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
                     PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
                     TypeReference<List<PurchaseOrderDto>> typeReference = new TypeReference<List<PurchaseOrderDto>>() {};
                     ObjectMapper mapper = new ObjectMapper();
                     List<PurchaseOrderDto> invoiceList = mapper.readValue(attachFile.getInputStream(), typeReference);
                     for (PurchaseOrderDto purchaseOrderDto : invoiceList) {
-                        purchaseOrderDto.setOrderNo(purchaseInfo.getNewPONum(compId));
-                        status = purchaseInfo.Save(compId, purchaseOrderDto);
-                        if(!status && !statusError) statusError = true;
+                    	Boolean isClientVendorDetailsExits = invoiceInfoDao.checkClientVendorDetails(compId, Integer.parseInt(purchaseOrderDto.getClientVendorID()));
+                    	if(isClientVendorDetailsExits == true) {
+	                        purchaseOrderDto.setOrderNo(purchaseInfo.getNewPONum(compId));
+	                        status = purchaseInfo.Save(compId, purchaseOrderDto);
+	                        if(!status && !statusError) statusError = true;
+                    	}else {
+                    		continue;
+                    	}
+                    	
                     }
                     if(statusError) request.getSession().setAttribute("errorMessage", "success");
                     else request.getSession().setAttribute("successMessage", "success");
