@@ -130,12 +130,12 @@
 			<td>
 				<c:choose>
                 <c:when test="${sessionScope.configActiveTab=='customizationTab'}">
-                    <a href="${pageContext.request.contextPath}/Configuration?tabid=config9&&tab=tr9">
+                    <a href="${pageContext.request.contextPath}/formCustomization?tabid=config9&&tab=tr9">
                         <img id="img18" src='ConfigurationImages/FormCustomizationActive.png' />
                     </a>
                 </c:when>
                 <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/Configuration?tabid=config9&&tab=tr9">
+                    <a href="${pageContext.request.contextPath}/formCustomization?tabid=config9&&tab=tr9">
                         <img id="img17" src='ConfigurationImages/FormCustomization.png' />
                     </a>
                 </c:otherwise>

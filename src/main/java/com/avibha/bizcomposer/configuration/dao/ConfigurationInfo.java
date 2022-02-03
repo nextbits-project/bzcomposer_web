@@ -4,7 +4,12 @@ import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
+import com.bzcomposer.configuration.module.form.templates.BCA_FormTemplateType;
+import com.bzcomposer.configuration.module.form.templates.FormTemplateService;
+
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,20 +21,43 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+@Controller
 public class ConfigurationInfo {
-
-    private static HttpServletRequest request;
+	
+	private FormTemplateService service;    
+	
+	private static HttpServletRequest request;
+	
     public void setCurrentRequest(HttpServletRequest req){
         request = req;
     }
+       
+    @Autowired  
+    public ConfigurationInfo(FormTemplateService service) {
+		super();
+		this.service = service;
+	}
+    
+    
+    public ConfigurationInfo() {
+		super();
+	}
+    
+ 
 
     public ConfigurationDto getDefaultCongurationDataBySession() {
-        String companyID = (String) request.getSession().getAttribute("CID");
+        String companyId = (String) request.getSession().getAttribute("CID");
         ConfigurationDto configDto = null;
+        String templateType=(String)  request.getSession().getAttribute("Invoice");
         if(request.getSession().getAttribute("DefaultCongurationData") != null) {
             configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
         }else{
-            configDto = getDefaultCongurationData(companyID);
+        	if(templateType !=null) {
+        	   BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,"Invoice");
+        	}
+            configDto = getDefaultCongurationData(companyId);
+            //
+            
         }
         return configDto;
     }
@@ -385,7 +413,7 @@ public class ConfigurationInfo {
                     + "Mail_username,Mail_password,Mail_Auth,poboard,itemsReceivedBoard,itemsShippedBoard,SalesOrderBoard,ProductCategoryID,LocationID,ReOrderPoint,"
                     + "VendorBusinessTypeID,VendorInvoiceStyleId,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,"
                     + "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod, EstimationStyleID,SOStyleID,"
-                    + "SalesTaxRate2 "
+                    + "SalesTaxRate2,InvoiceTemplateType"
                     + " FROM bca_preference WHERE CompanyID="+companyID;
             pstmt = con.prepareStatement(recordQuery);
 //			pstmt.setString(1, compId);
@@ -590,7 +618,8 @@ public class ConfigurationInfo {
                 cForm.setEstimationStyleID(rs.getInt("EstimationStyleID"));
                 cForm.setSoStyleID(rs.getInt("SOStyleID"));
                 cForm.setSaleTaxRate2(rs.getDouble("SalesTaxRate2"));
-            }
+                cForm.setBillsTemplateType(6);//need to remove this
+            }  
             pstmt.close();
             rs.close();
         } catch (SQLException ex) {

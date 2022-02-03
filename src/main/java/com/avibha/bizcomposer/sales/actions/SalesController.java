@@ -770,7 +770,8 @@ public class SalesController {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.newInvoice(request, invoiceDto);
 			sdetails.getInvoiceInfo(request);
-
+			request.getSession().setAttribute("templateName", "Invoice");
+			
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			InvoiceDto invoice = new InvoiceDto();
 			invoice.setSalesTaxID("1");

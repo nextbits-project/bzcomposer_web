@@ -23,7 +23,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer implements WebMvcConfigurer {
-	@Autowired
+
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
 	public static void main(String[] args) {
 		log.info("Starting BZComposer Application. And This is a logger Test");

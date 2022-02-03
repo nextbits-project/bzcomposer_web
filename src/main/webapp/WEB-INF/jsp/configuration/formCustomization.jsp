@@ -2,8 +2,9 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page isELIgnored="false"%>
-<%@ page errorPage="/include/sessionExpired.jsp"%>
+<%-- <%@ page errorPage="/include/sessionExpired.jsp"%> --%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -19,7 +20,7 @@
 $(function() {
     $("#tabs").tabs();
 });
-function toggleFunction() {
+function toggleFunction() {     
 	debugger;
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
@@ -62,25 +63,25 @@ input:checked + .slider:before {
 .parentImage {
 	-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
-	-o-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;  
 	transition: all 0.5s ease;
 }
 .parentImage:hover {
     -moz-transform: scale(2);
 	-webkit-transform: scale(2);
 	-o-transform: scale(2);
-	-ms-transform: scale(2);
+	-ms-transform: scale(2);  
 	transform: scale(2);
 }
 </style>
 </head>
 <!-- <body onload="init1();"> -->
-<body onload="init();" style="min-width: 1366px;">
+<body onload="" style="min-width: 1366px;">
 <!-- begin shared/header -->
-<form:form name="configurationForm" enctype="MULTIPART/FORM-DATA" method="post" id="frmcust" modelAttribute="configDto">
+<form:form name="formCustomization" enctype="MULTIPART/FORM-DATA" method="post" id="frmcust" modelAttribute="formTemplateList">
 <div id="ddcolortabsline">&nbsp;</div>
 <div id="cos">
-<div class="statusquo ok">
+<div class="statusquo ok">  
 <div id="hoja">
 <div id="blanquito">
 <div id="padding">
@@ -110,40 +111,28 @@ input:checked + .slider:before {
 						</table>
 					</td>
 					<td valign="top" style="padding-right: 20px; padding-bottom: 20px;">
-					    <div id="formCustomization" style="display:none;padding: 0; position: relative; left:0;">
+					    <div id="formCustomization" style="padding: 0; position: relative; left:0;">
 					    <div id="tabs" style="height: auto;">
 					        <ul>
                                 <li style="font-size: 12px;"><a href="#invoiceTab"><spring:message code="BzComposer.invoice.invoicetitle"/></a></li>
                                 <li style="font-size: 12px;"><a href="#estimationTab"><spring:message code="BzComposer.estimation.estimationtitle"/></a></li>
-                                <li style="font-size: 12px;"><a href="#salesOrderTab"><spring:message code="BzComposer.salesorder.salesordertitle"/></a></li>
-                                <li style="font-size: 12px;"><a href="#purchaseOrderTab"><spring:message code="BzComposer.purchase.PurchaseOrder"/></a></li>
+                                <li style="font-size: 12px;"><a href="#salesorderTab"><spring:message code="BzComposer.salesorder.salesordertitle"/></a></li>
+                                <li style="font-size: 12px;"><a href="#purchaseorderTab"><spring:message code="BzComposer.purchase.PurchaseOrder"/></a></li>
                                 <li style="font-size: 12px;"><a href="#packingslipsTab"><spring:message code="BzComposer.configuration.packingslips"/></a></li>
-                                <li style="font-size: 12px;"><a href="#billsTab"><spring:message code="BzComposer.configuration.bills"/></a></li>
+                                <li style="font-size: 12px;"><a href="#serviceTab"><spring:message code="BzComposer.configuration.bills"/></a></li>
                             </ul>
-
+  
 			            <!-- invoiceTab Starts -->
-                        <div id="invoiceTab" class="tabPage">
+                       <%--  <div id="invoiceTab" class="tabPage">
                             <table class="table-notifications" style="width:100%">
                                 <tr>
                                     <th colspan="4" align="left" style="font-size:12px; padding:5px;">
                                         <spring:message code="BzComposer.invoice.invoicetitle" />
                                     </th>
                                 </tr>
-                            <!--    <tr>
-                                    <td align="center" style="font-size:12px;">
-                                        <spring:message code="BzComposer.common.template" />
-                                    </td>
-                                    <td style="font-size: 12px;">
-                                        <form:select path="invoiceTemplateType" id="invoiceTemplateType">
-                                            <form:option value="1">Sales Order Standard</form:option>
-                                            <form:option value="2">Sales Order Charcoal</form:option>
-                                            <form:option value="3">Product Standard</form:option>
-                                            <form:option value="4">Product Charcoal</form:option>
-                                            <form:option value="5">Professional Standard</form:option>
-                                            <form:option value="6">Professional Charcoal</form:option>
-                                        </form:select>
-                                    </td>
-                                </tr> -->
+                           
+                                
+                                
                                 <tr style="border-top: 1px solid grey;">
                                     <td style="padding-top:25px;font-size:12px;">
                                         <label class="switch switchIV">
@@ -296,19 +285,108 @@ input:checked + .slider:before {
                                 </tr>
                             </table>
                         </div>
-                        <!-- packingslipsTab Ends -->
+                        <!-- packingslipsTab Ends -->--%>
 
                         <!-- billsTab Starts - billsTemplateType -->
-                        <div id="billsTab" class="tabPage">
+                     <%--    <div id="serviceBillsTab" class="tabPage">
                             <table class="table-notifications" style="width:100%">
                                 <tr>
                                     <th colspan="3" align="left" style="font-size:12px; padding:5px;">
                                         <spring:message code="BzComposer.configuration.bills" />
                                     </th>
+                                </tr>    
+                                <tr style="border-top: 1px solid grey;">
+                                    <td style="padding-top:25px;font-size:12px;">
+                                        <label class="switch switchSB">
+                                          <input type="checkbox" value="3" onchange="setTemplateValues(this, 'SB', 1);" ${configDto.billsTemplateType==1?'checked':''} />
+                                          <span class="slider round"></span>
+                                        </label>
+                                        <strong>Service Basic</strong><br/>
+                                        <img class="parentImage" src="${pageContext.request.contextPath}/images/new/printService1.png" style="width:100%;" />
+                                    </td>
+                                    <td style="padding-top:25px;font-size:12px;">
+                                        <label class="switch switchSB">
+                                          <input type="checkbox" value="4" onchange="setTemplateValues(this, 'SB', 2);" ${configDto.billsTemplateType==2?'checked':''} />
+                                          <span class="slider round"></span>
+                                        </label>
+                                        <strong>Service Simple</strong><br/>
+                                        <img class="parentImage" src="${pageContext.request.contextPath}/images/new/printService2.png" style="width:100%;" />
+                                    </td>
+                                    <td style="padding-top:25px;font-size:12px;">
+                                        <label class="switch switchSB">
+                                          <input type="checkbox" value="5" onchange="setTemplateValues(this, 'SB', 3);" ${configDto.billsTemplateType==3?'checked':''} />
+                                          <span class="slider round"></span>
+                                        </label>
+                                        <strong>Service Accounting</strong><br/>
+                                        <img class="parentImage" src="${pageContext.request.contextPath}/images/new/printService3.png" style="width:96%;" />
+                                    </td>
+                                    <td style="padding-top:25px;font-size:12px;">
+                                        <label class="switch switchSB">
+                                          <input type="checkbox" value="6" onchange="setTemplateValues(this, 'SB', 4);" ${configDto.billsTemplateType==4?'checked':''} />
+                                          <span class="slider round"></span>
+                                        </label>
+                                        <strong>Service Hourly</strong><br/>
+                                        <img class="parentImage" src="${pageContext.request.contextPath}/images/new/printService4.png" style="width:96%;" />
+                                    </td>
+                                </tr>
+                                <tr style="border-top: 1px solid grey;">
+                                	 <td style="padding-top:25px;font-size:12px;">
+                                        <label class="switch switchSB">
+                                          <input type="checkbox" value="5" onchange="setTemplateValues(this, 'SB', 5);" ${configDto.billsTemplateType==5?'checked':''} />
+                                          <span class="slider round"></span>
+                                        </label>
+                                        <strong>Service Labor & Parts</strong><br/>
+                                        <img class="parentImage" src="${pageContext.request.contextPath}/images/new/printService5.png" style="width:96%;" />
+                                    </td>
+                                    <td style="padding-top:25px;font-size:12px;">
+                                        <label class="switch switchSB">
+                                          <input type="checkbox" value="6" onchange="setTemplateValues(this, 'SB', 6);" ${configDto.billsTemplateType==6?'checked':''} />
+                                          <span class="slider round"></span>
+                                        </label>
+                                        <strong>Service Repair</strong><br/>
+                                        <img class="parentImage" src="${pageContext.request.contextPath}/images/new/printService6.png" style="width:96%;" />
+                                    </td>
                                 </tr>
                             </table>
-                        </div>
+                        </div>  --%>
                         <!-- billsTab Ends -->
+                        
+                        <input type="hidden" name=invType value="">
+                        <c:forEach var="element" items="${formTemplateList}">
+                        		<div id="${fn:replace(fn:toLowerCase(element.templateName),' ','')}Tab" class="tabPage">
+		                        <table class="table-notifications" style="width:100%">
+		                        <tr>
+				                                    <th colspan="4" align="left" style="font-size:12px; padding:5px;">  
+				                                        <%-- <spring:message code="BzComposer.invoice.invoicetitle" /> --%>
+				                                        	${element.templateName}
+				                                    </th>
+				                                    <c:set var="invoiceType" scope="page" value="${fn:toLowerCase(fn:substring(element.templateName,0,3))}"/> 
+			                     </tr><tr style="border-top: 1px solid grey;">
+		                        	 <c:forEach var="data" items="${element.mappingData}"  varStatus="status">
+		                        	 			<c:if test="${status.count ==4 }">
+			                                		<tr style="border-top: 1px solid grey;">
+			                               		</c:if>
+			                                            <td style="padding-top:25px;font-size:12px;">
+			                                			<label class="switch switch${invoiceType}">
+			                                			<c:set var="checkboxId" scope="page" value="${invoiceType}${data.templateNo}"/>
+				                                          <input type="checkbox" id ="${checkboxId}" value="${checkboxId}" onchange="setTemplateValues(this, ${checkboxId}, ${checkboxId});" ${data.isSelected==true?'checked':''} />
+				                                          <span class="slider round"></span>
+				                                        </label>
+				                                         <strong>${data.templateType}</strong><br/>
+                                        				 <img class="parentImage" src="${pageContext.request.contextPath}${data.imagePath}" style="width:100%;" />
+                                        				 <c:if test="${data.isSelected==true}">
+                                        				 	<input type="hidden" id=" ${invoiceType}${data.templateNo}" value="${data.isSelected}">
+                                          				 </c:if>
+			                                		</td>
+			                                		<c:if test="${fn:length(element.mappingData)<3 && status.count== fn:length(element.mappingData)}">
+			                                			<c:set var="colspan" scope="page" value="${3-fn:length(element.mappingData)}"/>
+			                                			<td colspan="${colspan}" style="padding-top:25px;font-size:12px;width:${100/3*colspan}%;">&nbsp;</td>
+			                                		</c:if>
+			                                	<c:if test="${status.count ==3 || status.count == 6}"></tr></c:if>
+			                          </c:forEach>
+			                   </table></div>
+		                             
+                        </c:forEach>
 
 			        </div>
 			        </div>
@@ -316,15 +394,16 @@ input:checked + .slider:before {
 		</tr>
 	</table>
 	<div>
-	    <form:hidden path="empStateID" />
+	    <%-- <form:hidden path="empStateID" />
 	    <form:hidden path="labelName" />
-	    <form:hidden path="fileName" />
+	    <form:hidden path="fileName" /> --%>
 	    <input type="hidden" name="tabid" id="tid" value="" />
-	    <input type="hidden" id="tempValueIV" value="${configDto.invoiceTemplateType}" />
+	    <%-- <input type="hidden" id="tempValueIV" value="${configDto.invoiceTemplateType}" />
 	    <input type="hidden" id="tempValueEST" value="${configDto.estTemplateType}" />
 	    <input type="hidden" id="tempValueSO" value="${configDto.soTemplateType}" />
 	    <input type="hidden" id="tempValuePO" value="${configDto.poTemplateType}" />
 	    <input type="hidden" id="tempValuePS" value="${configDto.psTemplateType}" />
+	     <input type="hidden" id="tempValueSB" value="${configDto.sbTemplateType}" /> --%>
 	</div>
 	</div>
 	<div>
@@ -340,43 +419,62 @@ input:checked + .slider:before {
 	</div>
 	</div>
 </form:form>
-<script type="text/javascript">
+<script language="javascript">
+
 function setTemplateValues(tempElement, tempName, tempVal){
     let isSelected =  tempElement.checked;
-    if (isSelected && tempName === 'IV'){
-        document.getElementById('tempValueIV').value = tempVal;
-        $('.switchIV input').prop('checked', false);
+   
+    var element = tempName.id;
+    if (isSelected && element.includes("inv")){
+        tempName.value = tempVal.value;
+        $('.switchinv input').prop('checked', false);
+    }  
+    else if (isSelected && element.includes("est")){
+        tempName.value = tempVal.value;
+        $('.switchest input').prop('checked', false);
     }
-    else if (isSelected && tempName === 'EST'){
-        document.getElementById('tempValueEST').value = tempVal;
-        $('.switchEST input').prop('checked', false);
+    else if (isSelected && element.includes("sal")){
+        tempName.value = tempVal.value;
+        $('.switchsal input').prop('checked', false);
     }
-    else if (isSelected && tempName === 'SO'){
-        document.getElementById('tempValueSO').value = tempVal;
-        $('.switchSO input').prop('checked', false);
+    else if (isSelected && element.includes("pur")){
+        tempName.value = tempVal.value;
+        $('.switchpur input').prop('checked', false);
     }
-    else if (isSelected && tempName === 'PO'){
-        document.getElementById('tempValuePO').value = tempVal;
-        $('.switchPO input').prop('checked', false);
+    else if (isSelected && element.includes("pac")){
+        tempName.value = tempVal.value;
+        $('.switchpac input').prop(tempName, false);
     }
-    else if (isSelected && tempName === 'PS'){
-        document.getElementById('tempValuePS').value = tempVal;
-        $('.switchPS input').prop('checked', false);
+    else if (isSelected && element.includes("ser")){
+        tempName.value = tempVal.value;
+        $('.switchser input').prop('checked', false);
     }
     tempElement.checked = isSelected;
 }
 function saveTemplateTypes(){
-    let params = "invoiceTemplateType="+document.getElementById('tempValueIV').value
+/*     let params = "invoiceTemplateType="+document.getElementById('tempValueIV').value
                 +"&estTemplateType="+document.getElementById('tempValueEST').value
                 +"&soTemplateType="+document.getElementById('tempValueSO').value
                 +"&poTemplateType="+document.getElementById('tempValuePO').value
                 +"&psTemplateType="+document.getElementById('tempValuePS').value
-    $.ajax({
-        type : "POST",
-        url : "/ConfigurationAjaxTest?tabid=setPrintingTemplates",
-        data : params,
+                +"&sbTemplateType="+document.getElementById('tempValueSB').value */
+    let params="";
+   // const params= [];
+    var checkedBoxes = document.querySelectorAll( 'input[type="checkbox"]:checked' );
+    var token="splitter";
+    for( var i =0;i< checkedBoxes.length; i++ ) {
+    	if(i==checkedBoxes.length-1){
+    		token="";
+    	}
+    	params+=checkedBoxes[i].value.substr(3)+token;
+    }
+        console.log( params);
+     $.ajax({  
+        type : "GET",
+        url : "/saveTemplateDetails?tabid=setPrintingTemplates",
+        data : "formTemplateList="+params,
         success : function(data) {
-            if(data === true){
+            if(data == true){
                 showSuccessDialog();
             }else{
                 errorOccureddialog();
@@ -385,7 +483,10 @@ function saveTemplateTypes(){
         error : function(data) {
             alert("<bean:message key='BzComposer.common.erroroccurred'/>");
         }
-    });
+    }); 
+    
+    
+    
 }
 
 function showSuccessDialog(){
@@ -429,8 +530,15 @@ function selectAnyTemplateDialog(){
             }
         }
     });
+    
 }
+//alert("${pageContext.request.contextPath}");
+
+
 </script>
+
+    
+
 <jsp:include page="/WEB-INF/jsp/include/footer.jsp" />
 </body>
 </html>

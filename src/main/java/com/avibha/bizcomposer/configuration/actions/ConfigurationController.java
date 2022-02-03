@@ -102,7 +102,7 @@ public class ConfigurationController {
             int userID = (Integer) request.getSession().getAttribute("userID");
             CompanyInfo customer = new CompanyInfo();
             AddNewCompanyDAO companyDAO = new AddNewCompanyDAO();
-            companyDAO.getBusinessType(companyID, request, companyInfoDto);
+            companyDAO.getBusinessType(companyInfoDto);
             customer.SearchCompany(companyID, userID, companyInfoDto, request);
 
             CountryState cs = new CountryState();
@@ -110,7 +110,7 @@ public class ConfigurationController {
             request.setAttribute("stateList", cs.getStateList(companyInfoDto.getCountryId()+""));
             request.setAttribute("cityList", cs.getCityList(companyInfoDto.getStateId()+""));
             model.addAttribute("companyInfoDto", companyInfoDto);
-
+            
             //Admin-Security-Data
             configInfo.getAdministratorDetails(companyID, configDto, emailAddress);
             request.setAttribute("UserName", configDto.getEmailAddress());
@@ -1430,6 +1430,4 @@ public class ConfigurationController {
         ConfigurationDAO dao = new ConfigurationDAO();
         return dao.saveSIDStateSetActive(companyID, dto);
     }
-
-
 }
