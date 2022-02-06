@@ -1,5 +1,24 @@
 package com.avibha.bizcomposer.configuration.dao;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
@@ -7,23 +26,10 @@ import com.avibha.common.utility.MyUtility;
 import com.bzcomposer.configuration.module.form.templates.BCA_FormTemplateType;
 import com.bzcomposer.configuration.module.form.templates.FormTemplateService;
 
-import org.apache.struts.util.LabelValueBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-
 @Controller
 public class ConfigurationInfo {
-	
+	@Autowired 
+	@Qualifier("formTemplateService")
 	private FormTemplateService service;    
 	
 	private static HttpServletRequest request;
@@ -32,12 +38,10 @@ public class ConfigurationInfo {
         request = req;
     }
        
-    @Autowired  
     public ConfigurationInfo(FormTemplateService service) {
 		super();
 		this.service = service;
 	}
-    
     
     public ConfigurationInfo() {
 		super();
@@ -51,13 +55,15 @@ public class ConfigurationInfo {
         String templateType=(String)  request.getSession().getAttribute("Invoice");
         if(request.getSession().getAttribute("DefaultCongurationData") != null) {
             configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
+            if(templateType !=null) {
+         	   BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,"Invoice");
+         	   configDto.setFormTemplateType(formTemplateType);
+         	}
         }else{
-        	if(templateType !=null) {
-        	   BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,"Invoice");
-        	}
+        	
             configDto = getDefaultCongurationData(companyId);
-            //
-            
+            BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,"Invoice");
+      	   	configDto.setFormTemplateType(formTemplateType);
         }
         return configDto;
     }

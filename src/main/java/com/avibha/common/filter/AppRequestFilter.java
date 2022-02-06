@@ -16,6 +16,9 @@ import java.io.IOException;
  */
 @Service
 public class AppRequestFilter extends OncePerRequestFilter {
+	
+	
+	
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
@@ -53,7 +56,7 @@ public class AppRequestFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	private void setRequestIntoSession(HttpServletRequest request){
+	private void setRequestIntoSession(HttpServletRequest request){  
 		ConfigurationInfo configInfo = new ConfigurationInfo();
 		configInfo.setCurrentRequest(request);
 	}

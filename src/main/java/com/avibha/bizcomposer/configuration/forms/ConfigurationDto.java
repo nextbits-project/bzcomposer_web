@@ -1,6 +1,11 @@
 package com.avibha.bizcomposer.configuration.forms;
 
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
+import com.bzcomposer.configuration.module.form.templates.BCA_FormTemplateType;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -297,6 +302,7 @@ public class ConfigurationDto implements Serializable {
     private int billingTypeId;
     private String billingTypeName;
 
+    private @Setter @Getter BCA_FormTemplateType formTemplateType;
     /* Sales and Customer */
 
     private String fileName;

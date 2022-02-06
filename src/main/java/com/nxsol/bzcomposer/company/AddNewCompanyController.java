@@ -60,7 +60,7 @@ public class AddNewCompanyController {
 			AddNewCompanyDAO dao = new AddNewCompanyDAO();
 			dao.getExistingCompanies(companyID,request,companyInfoForm);
 			dao.getdefaultmodules(companyID,request,companyInfoForm);
-			dao.getBusinessType(companyID,request,companyInfoForm);
+			dao.getBusinessType(companyInfoForm);
 			forward="createNewCompany";
 		}
 		if(action.equalsIgnoreCase("createNewCompany2"))

@@ -1,4 +1,0 @@
-Category,Item Code,Item Type,Item Title,Qty,Available Qty,Reorder Point,Weight,SKU,Barcode,First Supplier price,Second Supplier price,Sale Price,Dealer Price,Taxable,First Supplier,Second Supplier
-Unclassified,LM-Water,Inventory,LM-Water,3297,241,0,45,LM-Wdffater,0,0,0,78,45,1,0,0
-Samsung Products,Samsung note 7,Inventory,Note 7,200,297,5,50,mobile phone,0,0,0,0,0,1,0,0
-Apple Products,iPhone121,Inventory,iPhone 6s,396,53,25,100,iPhone 6s,0,0,0,4900,0,1,0,0

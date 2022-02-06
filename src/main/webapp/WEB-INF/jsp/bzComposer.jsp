@@ -14,9 +14,9 @@
 	<title><spring:message code="BzComposer.homepagetitle"/></title>
 
 	<!-- for opening dialog these files added on 26-09-2019 -->
-	<%-- <script src="${pageContext.request.contextPath}/includeAll/jquery-1.11.1.min.js"></script> --%>
+	<script src="${pageContext.request.contextPath}/includeAll/jquery-1.11.1.min.js"></script> 
 	<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/jquery-ui.css" />
+	<!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/jquery-ui.css" /> -->
 
 	<%@ include file="templateHeader.jsp"%>
 

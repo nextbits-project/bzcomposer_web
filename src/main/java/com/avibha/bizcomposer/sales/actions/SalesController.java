@@ -783,7 +783,8 @@ public class SalesController {
 			invoiceDto.setTerm(configDto.getSelectedTermId()+"");
 			invoiceDto.setPayMethod(configDto.getSelectedPaymentId()+"");
 			invoiceDto.setVia(configDto.getCustomerShippingId()+"");
-			invoiceDto.setTemplateType(configDto.getInvoiceTemplateType());
+			//invoiceDto.setTemplateType(configDto.getInvoiceTemplateType());
+			invoiceDto.setFormTemplateType(configDto.getFormTemplateType());
 			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.InvoiceType, configDto, false));
 			request.setAttribute("TaxRates", taxRates);
 			forward = "/sales/invoice";

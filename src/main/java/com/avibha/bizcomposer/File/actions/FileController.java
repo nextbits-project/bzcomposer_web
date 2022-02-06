@@ -95,7 +95,7 @@ public class FileController {
             forward = "success4";
         }
         else if(action.equalsIgnoreCase("Visitor")){
-            forward = "success5";
+            forward = "success5";  
         }
         else if(action.equalsIgnoreCase("Dashboard")){
             HttpSession sess = request.getSession();
@@ -115,7 +115,7 @@ public class FileController {
             CompanyInfo customer = new CompanyInfo();
             AddNewCompanyDAO dao = new AddNewCompanyDAO();
 
-            dao.getBusinessType(compId, request, companyInfoDto);
+            dao.getBusinessType(companyInfoDto);
             customer.SearchCompany(compId, userID, companyInfoDto, request);
 
             CountryState cs = new CountryState();

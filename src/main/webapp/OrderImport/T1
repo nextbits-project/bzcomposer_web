@@ -1,8 +1,0 @@
-{
-"MappingOrderFields":["orderId","date","","","","",""]
-,"MappingAddressFields":["","","","email","","","","","","","","",""]
-,"MappingItemLineFields":["wt","","qty","price","",""]
-,"ImportFrom":["D:\\order temp test file1.xls"]
-,"OrderType":["Invoice Order"]
-,"SelectedSheetIndex":["1"]
-}

@@ -117,7 +117,7 @@ $(document).ready(function(){
 								<th colspan="5"><spring:message code="BzComposer.addnewcustomer.customerinfo" /></th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody>  
 							<tr>
 							    <td style="width:18%;"><spring:message code="BzComposer.global.titlename" /></td>
                                 <td style="width:31%;">

@@ -95,7 +95,7 @@ public class FileAction extends Action {
 			CompanyInfo customer = new CompanyInfo();
 			AddNewCompanyDAO dao = new AddNewCompanyDAO();
 
-			dao.getBusinessType(compId,request,companyInfoDto);
+			dao.getBusinessType(companyInfoDto);
        		ArrayList<CompanyInfoDto> companydetails = new ArrayList<CompanyInfoDto>();
        		CompanyDetails cdetails = new CompanyDetails();
        		CompanyInfoForm customer1 = (CompanyInfoForm) form;
