@@ -827,6 +827,7 @@ table.table-notifications th {
 		document.getElementById("sNewId").value = sNew;
 		document.getElementById("newIDD").value = newID;
 		if(value == "Add"){
+			debugger;
 			if(sNew == ""){
 				showemptynewDescriptionDialog();
 				document.getElementById("descriptionId").focus();

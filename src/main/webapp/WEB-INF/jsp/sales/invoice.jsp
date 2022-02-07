@@ -388,7 +388,7 @@ function ShowShippingAddressPage(form){
                                     <input type="button" id="sendMailEnabled" class="formbutton" title="Send Mail to..." onclick="SendMail(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value="<spring:message code='BzComposer.Invoice.SendMail' />" />
                                 </c:if>
                                 <c:if test="${empty Enable}">
-                                    <input type="button" id="sendMailDisabled" class="formbutton" title="Send Mail to..." onclick="SendMail(this.form);" disabled="true" style="padding: 8px 20px 8px 20px; font-size: 16px;" value="<spring:message code='BzComposer.Invoice.SendMail' />" />
+                                    <input type="button" id="sendMailDisabled" class="formbutton" title="Send Mail to..." onclick="SendMailDisabled(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value="<spring:message code='BzComposer.Invoice.SendMail' />" />
                                 </c:if>
                                 <input type="button" class="formbutton" onclick="printCustomerOrder(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value="<spring:message code='BzComposer.global.print' />" />
 							</td>
@@ -1004,24 +1004,30 @@ rate = 0;
 
 // this function clear input value,
 function clearShippingCol(){
+	debugger;
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) -  parseFloat(document.InvoiceForm.shipping.value);
 	document.InvoiceForm.total.value = parseFloat(convertSubData).toFixed(2);
 	document.InvoiceForm.shipping.value = 0;
 }
 // this function sum Shipping value in total
 function sumShippingTotal() {
+	debugger;
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) +  parseFloat(document.InvoiceForm.shipping.value);
 	document.InvoiceForm.total.value = parseFloat(convertSubData).toFixed(2);
+	document.InvoiceForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
+
 }
 
 //this function clear input value, 
 function clearDiscountCol(){
+	debugger;
 	document.InvoiceForm.adjustedtotal.value = 0;
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) + parseFloat(document.InvoiceForm.balance.value);
 	document.InvoiceForm.balance.value = "";
 }
 //this function for calculat discount amount 
 function calDiscountTotal() {
+	debugger;
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) -  parseFloat(document.InvoiceForm.balance.value);
 	document.InvoiceForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
 }
@@ -1753,6 +1759,7 @@ function TaxValue(value,form){
     document.InvoiceForm.tax.value=rate;
     total = ((tot/1) + (subtotal/1)+(rate)/1);
     document.InvoiceForm.total.value=total.toFixed(2);
+    document.InvoiceForm.adjustedtotal.value = total.toFixed(2);
 }
 
 function AddItem(form){
@@ -1854,6 +1861,7 @@ function AddItem(form){
         tot=(form.shipping.value);
         total = ((tot/1) + (subtotal/1) + (tax_val/1)).toFixed(2);
         form.total.value=total;
+        form.adjustedtotal.value=total;
 
         form.subtotal.value=subtotal;
         document.getElementById('amt_id').value=subtotal;
@@ -2402,10 +2410,15 @@ function paymentHistory(form){
 }
 
 function SendMail(form){
+	debugger;
     cid=form.orderNo.value;
     window.open("Invoice?tabid=ShowEmail&OrderType=invoice&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }
-		
+
+function SendMailDisabled(form){
+	return showItemOrderNumberDialog();
+}
+
 function DeleteRow(d,form)
 {
     event.preventDefault();
@@ -2474,6 +2487,7 @@ function DeleteRow(d,form)
                             shipping = document.InvoiceForm.shipping.value;
                             total = ( (rt/1) + (subtotal/1) + (shipping/1));
                             document.InvoiceForm.total.value=total.toFixed(2);
+                            document.InvoiceForm.adjustedtotal.value = total.toFixed(2);
                             document.InvoiceForm.tax.value=rt;
                             break;
                         }
@@ -2540,6 +2554,7 @@ event.preventDefault();
 
                         total = ((tot/1) + (subtotal/1) + (tx/1));
                         document.InvoiceForm.total.value=total.toFixed(2);
+                        document.InvoiceForm.adjustedtotal.value = total.toFixed(2);
                         deleted++;
                     }
                 }
@@ -2630,6 +2645,7 @@ function PrintInvoice22(form){
 <div id="showValidationDialog" style="display:none;">
 	<p><spring:message code="BzComposer.Estimaion.cName.Validation" /></p>
 </div>
+
 <div id="showSelectItemDialog" style="display:none;">
 	<p><spring:message code="BzComposer.invoice.selectItemFirst"/></p>
 </div>

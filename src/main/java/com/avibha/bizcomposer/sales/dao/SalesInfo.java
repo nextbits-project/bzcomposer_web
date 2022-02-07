@@ -414,7 +414,7 @@ public class SalesInfo {
 
 
 			} else if ("CUSTOMER TITLE".equalsIgnoreCase(title)) {
-				Loger.log("sdsds");
+				Loger.log("CUSTOMER TITLE");
 				pstmt = con
 						.prepareStatement("select max(TitleID)+1 from bca_title");
 				rs = pstmt.executeQuery();
@@ -424,7 +424,7 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_title values('" + iD + "',\""
+				sqlString = "insert into bca_title(TitleID, Title, CompanyID, Active)  values('" + iD + "',\""
 						+ newVal + "\",'" + compId + "',1)";
 			} else if ("REP".equalsIgnoreCase(title)) {
 				pstmt = con
@@ -437,7 +437,7 @@ public class SalesInfo {
 				pstmt.close();
 				rs.close();
 				sqlString = "insert into bca_salesrep values('" + iD
-						+ "','" + compId + "',\"" + newVal + "\",1)";
+						+ "','" + compId + "',\"" + newVal + "\",1,0)";
 
 
 			} else if ("TERMS".equalsIgnoreCase(title)) {
@@ -463,7 +463,7 @@ public class SalesInfo {
 				pstmt.close();
 				rs.close();
 				sqlString = "insert into bca_message values('" + iD + "','"
-						+ compId + "',\"" + newVal + "\",1)";
+						+ compId + "',\"" + newVal + "\",1,0)";
 			} else if ("BUSINESS TYPE".equalsIgnoreCase(title)) {
 
 				pstmt = con.prepareStatement("select max(CVCategoryID)+1 from bca_cvcategory");
@@ -475,7 +475,7 @@ public class SalesInfo {
 				pstmt.close();
 				rs.close();
 				sqlString = "insert into bca_cvcategory values('" + iD
-						+ "','" + compId + "',\"" + newVal + "\",1)";
+						+ "','" + compId + "',\"" + newVal + "\",1,0)";
 			} else if ("LOCATION".equalsIgnoreCase(title)) {
 				pstmt = con.prepareStatement("select max(LocationID)+1 from bca_location");
 				rs = pstmt.executeQuery();
@@ -522,7 +522,7 @@ public class SalesInfo {
 				pstmt.close();
 				rs.close();
 				sqlString = "insert into bca_cctype values('" + iD + "','"
-						+ compId + "',\"" + newVal + "\",1)";
+						+ compId + "',\"" + newVal + "\",1,0)";
 			} else if ("SHIPPING VIA".equalsIgnoreCase(title)) {
 				pstmt = con.prepareStatement("select max(ShipCarrierID)+1 from bca_shipcarrier");
 				rs = pstmt.executeQuery();
@@ -542,6 +542,7 @@ public class SalesInfo {
 				valid = true;
 
 		} catch (SQLException ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in updateSalesData() " + ee);
 		}finally {
 			try {
