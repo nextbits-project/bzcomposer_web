@@ -186,3 +186,4 @@ $(document).ready(function() {
    }); */
 });
 </script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>

@@ -134,7 +134,7 @@ table.tabla-customListOds tbody tr td { font-size: 14px; }
 </div>
 </form:form>
 <%@ include file="/include/emailModal.jsp"%>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <!-- Javascript begins here -->
 <script type="text/javascript">
 var modal = document.getElementById('myModal');

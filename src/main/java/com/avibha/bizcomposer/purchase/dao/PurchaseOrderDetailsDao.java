@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
@@ -16,7 +17,7 @@ import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 
-
+@Service
 public class PurchaseOrderDetailsDao {
 	
 	/*	Sets all the information required for the new

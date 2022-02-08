@@ -32,7 +32,7 @@ public class ReceivedItemAction extends Action {
 	 *      javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
+/*	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException, SQLException {
 		String forward = "success";
@@ -52,7 +52,7 @@ public class ReceivedItemAction extends Action {
 			SalesDetails sdetails = new SalesDetails();
 			InvoiceForm iForm = new InvoiceForm();
 			String invoiceStyleId = iForm.getInvoiceStyle();
-			/*sdetails.saveInvoice(request,form,invoiceStyleId);*/
+			sdetails.saveInvoice(request,form,invoiceStyleId);
 			sdetails.saveInvoice(request,form,request.getParameter("custID"));
 			
 			recvDetails.getInvoiceInfo(request);
@@ -92,5 +92,5 @@ public class ReceivedItemAction extends Action {
 				
 		return mapping.findForward(forward);
 	}
-
+*/
 }

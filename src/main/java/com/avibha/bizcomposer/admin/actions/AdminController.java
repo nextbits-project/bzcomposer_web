@@ -21,23 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class AdminController {
 
+	@Autowired
 	private ConfigurationInfo configInfo;
 	
 	
 	 private SalesDetailsDao salesDetails;
-	
-	 @Autowired
-	 public AdminController(ConfigurationInfo configInfo) {
-		 super();
-		 this.configInfo = configInfo;
-	 }
-	
-	/*@Autowired
-	public AdminController(SalesDetailsDao salesDetails) {
-		super();
-		this.salesDetails = salesDetails;
-	}*/
-
 
 	@RequestMapping(value = {"/administer"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String executeSalesController(MultiUserForm mform, HttpServletRequest request, Model model) throws Exception {

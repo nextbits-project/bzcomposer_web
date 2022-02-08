@@ -122,7 +122,7 @@
         </div>
     </div>
 </div>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <script type="text/javascript">
     function downloadPayroll(payrollid){
         window.location.href="${pageContext.request.contextPath}/DownloadPayroll?payrollID="+payrollid;

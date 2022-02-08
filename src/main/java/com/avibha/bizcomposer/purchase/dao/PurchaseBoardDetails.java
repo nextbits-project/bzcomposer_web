@@ -6,14 +6,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
 import com.avibha.common.log.Loger;
 
+@Service
 public class PurchaseBoardDetails {
 	
-	@Autowired
 	private PurchaseBoardInfoDao purchaseInfo;
+
+	@Autowired
+	public PurchaseBoardDetails(PurchaseBoardInfoDao purchaseInfo) {
+		super();
+		this.purchaseInfo = purchaseInfo;
+	}  
 
 	public ArrayList getPurchaseBoardDetails(HttpServletRequest request, PurchaseBoardDto pform) {
 		

@@ -11,7 +11,7 @@ import org.apache.struts.action.*;
 
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
-public class SalesOrderBoardAction extends Action {
+public class SalesOrderBoardAction extends Action {/*
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
@@ -48,6 +48,6 @@ public class SalesOrderBoardAction extends Action {
 		}
 		return mapping.findForward(forward);
 	}
-
+*/
 }
 

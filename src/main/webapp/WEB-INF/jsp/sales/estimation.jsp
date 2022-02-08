@@ -2,6 +2,7 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page isELIgnored="false"%>
 <html>
 <head>
@@ -187,10 +188,20 @@ table.cart tbody tr td {
 					</tr>
 					<tr>
 					    <td style="font-size: 14px;">
-                            <form:select path="templateType">
+                            <%-- <form:select path="templateType">
                                 <form:option value="3">Product Standard</form:option>
                                 <form:option value="4">Product Charcoal</form:option>
-                            </form:select>
+                            </form:select> --%>
+                            
+                            <c:set var="invoiceType" scope="page" value="${fn:toLowerCase(fn:substring(estimationDto.formTemplateType.templateName,0,3))}"/> 
+											<form:select path="templateType">
+												 <c:forEach var="estItems" items="${estimationDto.formTemplateType.mappingData}" varStatus="status">
+												 
+												 <c:set var="selectID" scope="page" value="${estItems.templateNo}"/>
+												 
+												 	<form:option value="${selectID}" selected="${estItems.isSelected==true?'selected':''}">${estItems.templateType}</form:option>
+												 </c:forEach>
+											 </form:select>   
                         </td>
                         <td style="font-size:14px;">
                             <form:select path="invoiceStyle" onchange="StyleChange(this.value);" onkeydown="StyleChange(this.value);" onkeyup="StyleChange(this.value);">
@@ -781,7 +792,7 @@ table.cart tbody tr td {
 </div>
 </div>
 </div>
-<%@ include file="/include/footer.jsp"%>
+<%@include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>
 <script type="text/javascript">

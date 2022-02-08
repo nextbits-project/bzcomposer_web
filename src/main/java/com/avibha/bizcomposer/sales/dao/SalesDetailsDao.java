@@ -57,14 +57,13 @@ import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
 public class SalesDetailsDao {
 	@Autowired
     private InvoiceInfoDao invoice;
+	@Autowired
     private PurchaseOrderInfoDao purchase;
-    
+    private EstimationInfoDao estimation;
     @Autowired
-	public SalesDetailsDao(PurchaseOrderInfoDao purchase) {
-		super();
-		this.purchase = purchase;
-	}
-
+    private EstimationInfo estInfo;
+	
+  
 	@Autowired
 	private DataImportExportUtils importExportUtils;
 	
@@ -1220,7 +1219,7 @@ public class SalesDetailsDao {
 	public void getInitializeEstimation(String estNo, HttpServletRequest request, EstimationDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		long estimationNo = Long.parseLong(estNo);
-		EstimationInfoDao estimation= new EstimationInfoDao();
+		//EstimationInfoDao estimation= new EstimationInfoDao();
  		estimation.getRecord(request, form, compId, estimationNo);
 	}
 
@@ -1241,11 +1240,11 @@ public class SalesDetailsDao {
 	}
 
 	public List<String> getCustomerEstimationNums(String custID, String compId) {
-		EstimationInfoDao estimation = new EstimationInfoDao();
+		//EstimationInfoDao estimation = new EstimationInfoDao();
 		return estimation.getCustomerEstimationNums(custID, compId);
 	}
 	public EstimationDto getRecordForEstimation(String compId, String orderNum, EstimationDto form, HttpServletRequest request) {
-		EstimationInfoDao estimation = new EstimationInfoDao();
+		//EstimationInfoDao estimation = new EstimationInfoDao();
 		return estimation.getRecordForEstimation(compId, orderNum, form, request);
 	}
 
@@ -1645,7 +1644,7 @@ public class SalesDetailsDao {
 	}
 
 	public void newEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
-		EstimationInfoDao estimation= new EstimationInfoDao();
+		//EstimationInfoDao estimation= new EstimationInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		String estNum = estimation.getNewEstimationNo(compId);
 		estimationDto.setPoNum("0");
@@ -1701,13 +1700,13 @@ public class SalesDetailsDao {
 	}
 
 	public void saveEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
-		EstimationInfo invoice = new EstimationInfo();
+		//EstimationInfo invoice = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		getInvoiceInfo(request);
-		boolean exist = invoice.estimationExist(compId, estimationDto.getOrderNo());
+		boolean exist = estInfo.estimationExist(compId, estimationDto.getOrderNo());
 		if (exist == true) {
 			try {
-				invoice.Update(compId, estimationDto);
+				estInfo.Update(compId, estimationDto);
 				newEstimation(request, estimationDto);
 				request.setAttribute("SaveStatus",
 						"Estimation is successfully updated.");
@@ -1719,7 +1718,7 @@ public class SalesDetailsDao {
 			}
 		} else {
 			try {
-				invoice.Save(compId, estimationDto);
+				estInfo.Save(compId, estimationDto);
 				newEstimation(request, estimationDto);
 				request.setAttribute("SaveStatus",
 						"Estimation is successfully saved.");
@@ -1732,7 +1731,7 @@ public class SalesDetailsDao {
 	}
 
 	public EstimationDto getEstimationDetailsByBtnName(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
-		EstimationInfo estInfo = new EstimationInfo();
+		//EstimationInfo estInfo = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		Long estNo = estInfo.getEstimationNumberByBtnName(compId, request);
 		ArrayList<EstimationDto> list = estInfo.getRecord(request, estimationDto, compId, estNo);
@@ -1748,15 +1747,15 @@ public class SalesDetailsDao {
 
 	public boolean deleteEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
 		boolean val = false;
-		EstimationInfo invoice = new EstimationInfo();
+		//EstimationInfo invoice = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		getInvoiceInfo(request);
 
 		String estNo = estimationDto.getOrderNo();
-		boolean exist = invoice.estimationExist(compId, estNo);
+		boolean exist = estInfo.estimationExist(compId, estNo);
 		if (exist == true) {
 			try {
-				invoice.Delete(compId, estNo);
+				estInfo.Delete(compId, estNo);
 				newEstimation(request, estimationDto);
 				request.setAttribute("SaveStatus",
 						"Estimation is successfully deleted.");

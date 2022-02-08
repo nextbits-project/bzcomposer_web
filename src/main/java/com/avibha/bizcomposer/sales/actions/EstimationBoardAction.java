@@ -18,15 +18,15 @@ import org.apache.struts.action.ActionMapping;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
 
-public class EstimationBoardAction extends Action {
-	/*
+public class EstimationBoardAction extends Action {/*
+	
 	 * (non-Javadoc)
 	 * 
 	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping,
 	 *      org.apache.struts.action.ActionForm,
 	 *      javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
-	 */
+	 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
@@ -62,5 +62,5 @@ public class EstimationBoardAction extends Action {
 		return mapping.findForward(forward);
 	}
 
-}
+*/}
 

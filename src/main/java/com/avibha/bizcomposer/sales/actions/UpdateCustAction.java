@@ -29,7 +29,7 @@ public class UpdateCustAction extends Action {
 	 *      org.apache.struts.action.ActionForm,
 	 *      javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
-	 */
+	 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
@@ -66,4 +66,4 @@ public class UpdateCustAction extends Action {
 		}
 		return mapping.findForward(forward);
 	}
-}
+*/}

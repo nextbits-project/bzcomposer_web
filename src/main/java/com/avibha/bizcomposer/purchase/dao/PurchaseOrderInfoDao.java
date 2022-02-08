@@ -44,10 +44,7 @@ public class PurchaseOrderInfoDao {
 			this.configInfo = configInfo;
 		}
 	    
-	    public PurchaseOrderInfoDao() {
-			super();
-		}
-	
+	  
 	/* Provide the list of all customers with their
 	 * ids, last name,etc. The list is used for drop
 	 * ship to.   

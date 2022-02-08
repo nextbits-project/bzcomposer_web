@@ -202,7 +202,7 @@ table.tabla-customListOds tbody tr td { font-size: 14px; }
 	<input type="hidden" name="ItemType"  value="1">
 	<!-- end Contents -->
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <%@ include file="/include/emailModal.jsp"%>
 </body>
 </html>

@@ -297,7 +297,7 @@ table.tabla-listados tbody tr td {
 </div>
 </div>
 <div style="margin-top:400px;">
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </div>
 </body>
 </html>

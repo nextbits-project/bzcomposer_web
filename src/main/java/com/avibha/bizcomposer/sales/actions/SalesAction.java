@@ -41,6 +41,7 @@ import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 
+
 public class SalesAction extends Action {
 	/*
 	 * (non-Javadoc)
@@ -49,7 +50,7 @@ public class SalesAction extends Action {
 	 * ActionMapping, org.apache.struts.action.ActionForm,
 	 * javax.servlet.http.HttpServletRequest,
 	 * javax.servlet.http.HttpServletResponse)
-	 */
+	 
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String forward = "success";
@@ -88,10 +89,10 @@ public class SalesAction extends Action {
 			 System.out.println("set locale from salesAction:"+session.getAttribute("org.apache.struts.action.LOCALE").toString());
 		 }
 	 }
-		/*Locale locale=new Locale("org.apache.struts.action.LOCALE");*/
-		/*String locale = (String)sess.getAttribute("selectedLocale");
-		System.out.println("selected language for i18n is:"+locale);*/
-		/*setLocale(request, locale);*/
+		Locale locale=new Locale("org.apache.struts.action.LOCALE");
+		String locale = (String)sess.getAttribute("selectedLocale");
+		System.out.println("selected language for i18n is:"+locale);
+		setLocale(request, locale);
 		boolean readData;
 		if(companyID.equals("2") || companyID.equals("3") || companyID.equals("4"))
 		{
@@ -110,7 +111,7 @@ public class SalesAction extends Action {
 				System.out.println("readData is false");
 			}
 		}
-		/*else if(userRole.equals("User")&&companyID.equals("1"))
+		else if(userRole.equals("User")&&companyID.equals("1"))
 		{
 			System.out.println("This is new condition added for readonly data.");
 			request.getSession().setAttribute("username", user);
@@ -123,7 +124,7 @@ public class SalesAction extends Action {
 			request.setAttribute("readData", false);
 			readData = false;
 			System.out.println("readData is false for other compaies");
-		}*/
+		}
 		try 
 		{
 			action = request.getParameter("tabid");
@@ -232,7 +233,7 @@ public class SalesAction extends Action {
 			sd.searchSelectedCustomer(cvId, request, form);
 			sd.getAllList(request);
 			
-			/*CustomerForm frm = (CustomerForm) form;
+			CustomerForm frm = (CustomerForm) form;
 
 			if (rowId != null)
 				frm.setSelectedRowID(rowId);
@@ -244,7 +245,7 @@ public class SalesAction extends Action {
 				frm.setClientVendorID("0");
 			if (rowId != null) {
 				request.setAttribute("VendorFrm", frm.getSelectedRowID());
-			}*/
+			}
 			forward = "success1";
 		}
 		
@@ -681,10 +682,10 @@ public class SalesAction extends Action {
 		else if (action.equalsIgnoreCase("NewInvoice")) {
 			System.out.println("Inside NewInvoice Condition");
 			SalesDetails sdetails = new SalesDetails();
-			/*InvoiceInfo.save(companyID,form);*/
+			InvoiceInfo.save(companyID,form);
 			InvoiceForm ifrm = (InvoiceForm) form;
-			/*InvoiceInfo i = new InvoiceInfo();
-			i.Save(companyID,ifrm);*/
+			InvoiceInfo i = new InvoiceInfo();
+			i.Save(companyID,ifrm);
 			sdetails.newInvoice(request, ifrm);
 			sdetails.getInvoiceInfo(request);
 			forward = "success5";
@@ -817,7 +818,7 @@ public class SalesAction extends Action {
 			CustomerForm frm = (CustomerForm)form;
 			if(form!=null)
 			{
-				/*frm.setCname(frm.getCname());
+				frm.setCname(frm.getCname());
 				frm.setFirstName(frm.getFirstName());
 				frm.setLastName(frm.getLastName());
 				frm.setAddress1(frm.getAddress1());
@@ -828,7 +829,7 @@ public class SalesAction extends Action {
 				frm.setCountry(frm.getCountry());
 				frm.setZipCode(frm.getZipCode());
 				frm.setPhone(frm.getPhone());
-				frm.setFax(frm.getFax());*/
+				frm.setFax(frm.getFax());
 				if(chkStatus.equals("Default"))
 				{
 					frm.setStatus(chkStatus);
@@ -981,8 +982,8 @@ public class SalesAction extends Action {
 			System.out.println("Old Address Data:\nAddressName:"+addName+"\nFirstName:"+first+"\nLastName:"+last+"\nAddress1:"+
 			add1+"\nAddress2:"+add2+"\nStatus:"+stat);
 			
-			/*if(form!=null)
-			{*/
+			if(form!=null)
+			{
 				//new address data....
 				request.setAttribute("addressStatus", status);
 				request.setAttribute("fName",frm.getFirstName());
@@ -1094,8 +1095,8 @@ public class SalesAction extends Action {
 			sdetails.getInvoiceInfo(request);
 			sdetails.firstInvoice(request,form);
 			sdetails.getAllList(request);
-			/*forward ="success";*/
-			/*forward = "success1";*/
+			forward ="success";
+			forward = "success1";
 			forward = "success5";}
 			catch(Exception e){
 				System.out.println("Exception in FirstInvoice:"+e.getMessage());
@@ -1601,5 +1602,5 @@ public class SalesAction extends Action {
 		
 		return mapping.findForward(forward);
 	}
-
+*/
 }

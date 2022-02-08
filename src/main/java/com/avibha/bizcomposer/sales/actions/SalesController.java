@@ -69,6 +69,9 @@ public class SalesController {
 	@Autowired
     private InvoiceInfoDao invoice;
 	
+	@Autowired
+	private PurchaseBoardDetails purchaseBoardDtls;
+	
 	@RequestMapping(value = {"/Invoice", "/Customer", "/Item", "/SalesOrder" ,"/DataManager"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto, UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto,
 					Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -1251,7 +1254,7 @@ public class SalesController {
 			
 			salesDetailsDao.newSalesOrder(request, invoiceDto);
 			salesDetailsDao.getInvoiceInfo(request);
-
+			request.setAttribute("templateName", "Sales Order");
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			InvoiceDto invoice = new InvoiceDto();
 			invoice.setSalesTaxID("1");
@@ -1264,7 +1267,7 @@ public class SalesController {
 			invoiceDto.setTerm(configDto.getSelectedTermId()+"");
 			invoiceDto.setPayMethod(configDto.getSelectedPaymentId()+"");
 			invoiceDto.setVia(configDto.getCustomerShippingId()+"");
-			invoiceDto.setTemplateType(configDto.getSoTemplateType());
+			invoiceDto.setFormTemplateType(configDto.getFormTemplateType());
 			invoiceDto.setInvoiceStyle(configDto.getSoStyleID()+"");
 			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType, configDto, false));
 			if (IN_URI.endsWith(SALES_ORDER_URI)){
@@ -1379,8 +1382,8 @@ public class SalesController {
 			}
 		}
 		else if (action.equalsIgnoreCase("ReceivedItemList")) { // for Received-Item List Report
-			PurchaseBoardDetails pd = new PurchaseBoardDetails();
-			pd.getPurchaseBoardDetails(request, new PurchaseBoardDto());
+			//PurchaseBoardDetails pd = new PurchaseBoardDetails();
+			purchaseBoardDtls.getPurchaseBoardDetails(request, new PurchaseBoardDto());
 			forward = "/reports/receivedItemList";
 		}
 		else if (action.equalsIgnoreCase("ItemPriceList")) { // for ItemPriceList List Report

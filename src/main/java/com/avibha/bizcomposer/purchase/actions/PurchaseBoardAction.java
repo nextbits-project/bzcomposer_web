@@ -21,7 +21,7 @@ import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
 
-public class PurchaseBoardAction extends Action {
+public class PurchaseBoardAction extends Action {/*
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
@@ -182,5 +182,5 @@ public class PurchaseBoardAction extends Action {
 		
 		return mapping.findForward(forward);
 	}
-}
+*/}
 

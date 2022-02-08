@@ -80,7 +80,8 @@ public class PurchaseController {
 			pdetails.getAllList(request);
 			invoice.set(cvId, request, updateInvoiceDto, compId);
 			invoice.getServices(request, compId, cvId);
-
+			
+			request.setAttribute("templateName", "Purchase Order");
 			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);

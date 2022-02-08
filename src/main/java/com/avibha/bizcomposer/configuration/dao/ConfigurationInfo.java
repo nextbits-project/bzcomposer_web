@@ -48,19 +48,19 @@ public class ConfigurationInfo {
  
 
     public ConfigurationDto getDefaultCongurationDataBySession() {
-        String companyId = (String) request.getSession().getAttribute("CID");
+        String companyId = (String) request.getSession().getAttribute("CID");     
         ConfigurationDto configDto = null;
-        String templateType=(String)  request.getSession().getAttribute("Invoice");
+        String templateType=(String)  request.getAttribute("templateName");
         if(request.getSession().getAttribute("DefaultCongurationData") != null) {
             configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
             if(templateType !=null) {
-         	   BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,"Invoice");
+         	   BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,templateType);
          	   configDto.setFormTemplateType(formTemplateType);
          	}
         }else{
         	
             configDto = getDefaultCongurationData(companyId);
-            BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,"Invoice");
+            BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,templateType);
       	   	configDto.setFormTemplateType(formTemplateType);
         }
         return configDto;

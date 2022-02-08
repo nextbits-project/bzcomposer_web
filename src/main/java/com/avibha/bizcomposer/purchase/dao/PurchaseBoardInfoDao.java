@@ -13,8 +13,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import com.avibha.bizcomposer.File.actions.DataImportExportUtils;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
@@ -33,11 +33,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 
+@Service
 public class PurchaseBoardInfoDao {
 	
-	 @Autowired
-	    private DataImportExportUtils importExportUtils;
-	    
 	    private ConfigurationInfo configInfo;
 	    @Autowired
 	    public PurchaseBoardInfoDao(ConfigurationInfo configInfo) {

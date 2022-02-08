@@ -55,6 +55,9 @@ public class PurchaseOrderController {
 		super();
 		this.configInfo = configInfo;
 	}
+    @Autowired
+    private PurchaseOrderDetailsDao pdetails;
+  
 	@GetMapping("/PurchaseOrder")
 	public String purchaseOrder(VendorDto vendorDto, UpdateInvoiceDto updateInvoiceDto, PurchaseOrderDto purchaseOrderDto,
 				HttpServletRequest request, Model model) throws IOException, ServletException {
@@ -82,7 +85,7 @@ public class PurchaseOrderController {
 				forward = "/purchase/addNewUser";
 			}
 			else if (action.equalsIgnoreCase("PurchaseOrder")) {
-				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+				////PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.newPurchaseOrder(request, purchaseOrderDto);
 
 				//ConfigurationInfo configInfo = new ConfigurationInfo();
@@ -100,7 +103,7 @@ public class PurchaseOrderController {
 			}
 			else if (action.equalsIgnoreCase("FirstPurchaseOrder") || action.equalsIgnoreCase("LastPurchaseOrder")
 				|| action.equalsIgnoreCase("NextPurchaseOrder") || action.equalsIgnoreCase("PreviousPurchaseOrder")) {
-				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+				////PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.getPurchaseOrderDetailsByBtnName(request, purchaseOrderDto);
 
 				//ConfigurationInfo configInfo = new ConfigurationInfo();
@@ -116,12 +119,12 @@ public class PurchaseOrderController {
 				forward = "/purchase/purchase";
 			}
 			else if (action.equalsIgnoreCase("SavePurchaseOrder")) {
-				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+				////PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.savePurchaseOrder(request, purchaseOrderDto);
 				forward = "redirect:PurchaseOrder?tabid=PurchaseOrder";
 			}
 			else if (action.equalsIgnoreCase("DeletePurchaseOrder")) {
-				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+				////PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				boolean isDeleted = pdetails.deletePurchaseOrder(request, purchaseOrderDto);
 				if (!isDeleted) {
 					request.getSession().setAttribute("SaveStatus", "Purchase Order is yet not saved.");
@@ -150,7 +153,7 @@ public class PurchaseOrderController {
 				forward = "/purchase/addNewUser";
 			}
 			else if (action.equalsIgnoreCase("AddressConfirm")) {
-				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+				////PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				String cType = request.getParameter("CType");
 				vendorDto.setBsAddressID(request.getParameter("addressID"));
 				pdetails.getConfirmAddress(request, vendorDto, cType);
@@ -159,24 +162,24 @@ public class PurchaseOrderController {
 				forward = "/purchase/addressConfirm";
 			}
 			else if (action.equalsIgnoreCase("Confirm")) {
-				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+				////PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				String cType = request.getParameter("CType");
 				pdetails.addConfirmAddress(request, vendorDto);
 				forward = "redirect:/PurchaseOrder?tabid=AddressConfirm&CType="+cType+"&addressID="+vendorDto.getBsAddressID();
 			}
 			else if (action.equalsIgnoreCase("IsPoNumExist")) {
-				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+				////PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.isPoNumExist(request, purchaseOrderDto);
 				forward = "/purchase/purchase";
 			}
 			else if (action.equalsIgnoreCase("InvoiceData")) {
-				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+				////PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.getPurchaseOrder(request, purchaseOrderDto);
 				request.setAttribute("Flag", "true");
 				forward = "/purchase/purchase";
 			}
 			else if (action.equalsIgnoreCase("NotExist")) {
-				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+				//PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.notExistPurchaseOrder(request, purchaseOrderDto);
 				request.setAttribute("Flag", "true");
 				forward = "/purchase/purchase";
@@ -193,7 +196,7 @@ public class PurchaseOrderController {
 			else if (action.equalsIgnoreCase("PBLU")) { // Action For Look up Button From poboard.jsp
 				String poNo = request.getParameter("po_no");
 				//SalesDetailsDao sdetails = new SalesDetailsDao();
-			    PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+			    //PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.newPurchaseOrder(request, purchaseOrderDto);
 				sdetails.getInitializePurchase(poNo, request, purchaseOrderDto);
 
@@ -259,7 +262,7 @@ public class PurchaseOrderController {
 			//forward = "Expired";
 		}
 		else if (action.equalsIgnoreCase("PurchaseOrder")) {
-			PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+			//PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 			pdetails.newPurchaseOrder(request, purchaseOrderDto);
 			InvoiceInfo info = new InvoiceInfo();
 			String Invoicestyleid = info.getDefaultInvoiceStyleNo(companyID);
@@ -270,19 +273,19 @@ public class PurchaseOrderController {
 			String poNo = request.getParameter("po_no");
 			//SalesDetailsDao sdetails = new SalesDetailsDao();
 			//sdetails.getInvoiceInfo(request);
-			PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+			//PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 			pdetails.getInvoiceInfo(request);
 			sdetails.getInitializePurchase(poNo, request, purchaseOrderDto);
 			request.setAttribute("Enable", "true");
 			forward = "/purchase/purchase"; //Purchases order
 		}
 		else if (action.equalsIgnoreCase("SavePurchaseOrder")) {
-			PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+			//PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 			pdetails.savePurchaseOrder(request, purchaseOrderDto);
 			forward = "redirect:PurchaseOrder?tabid=PurchaseOrder";
 		}
 		else if (action.equalsIgnoreCase("Confirm")) {
-            PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
+            //PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
             String cType = request.getParameter("CType");
             pdetails.addConfirmAddress(request, vendorDto);
 			forward = "redirect:/PurchaseOrder?tabid=AddressConfirm&CType="+cType+"&addressID="+vendorDto.getBsAddressID();

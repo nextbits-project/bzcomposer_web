@@ -39,28 +39,29 @@ import com.pritesh.bizcomposer.accounting.bean.TblPayment;
  */
 @Controller
 public class DataImportExportController {
-
 	@Autowired
     private DataImportExportUtils importExportUtils;
     
-   
+    @Autowired
     private InvoiceInfoDao invoice;
    
     @Autowired
     private ConfigurationInfo configInfo;
 
-
-	/*@Autowired
-    public DataImportExportController(ConfigurationInfo configInfo) {
-		super();
-		this.configInfo = configInfo;
-	}*/
-	@Autowired
-	public DataImportExportController(InvoiceInfoDao invoice) {
-		super();
-		this.invoice = invoice;
-	}
+    @Autowired 
+    private EstimationInfo estInfo;
     
+    @Autowired
+    private EstimationInfoDao estInfoDao;
+    
+    private PurchaseOrderInfoDao purchaseInfDao;
+	@Autowired
+    public DataImportExportController( PurchaseOrderInfoDao purchaseInfDao) {
+		super();
+		this.purchaseInfDao = purchaseInfDao;
+	}
+	
+	    
     @GetMapping("/dataExportAction")
     public String dataExportAction(HttpServletRequest request, HttpServletResponse response) {
         String compId = (String) request.getSession().getAttribute("CID");
@@ -97,7 +98,7 @@ public class DataImportExportController {
                 System.out.println("BCA_InvoiceList Exported...");
             }
             else if(action.equalsIgnoreCase("Estimations")) {
-                EstimationInfoDao estInfoDao = new EstimationInfoDao();
+              //  EstimationInfoDao estInfoDao = new EstimationInfoDao();
                 EstimationDto estimationDto = new EstimationDto();
                 ArrayList<InvoiceDto> estList = estInfoDao.getRecord(request, estimationDto, compId, 0);
 
@@ -123,9 +124,9 @@ public class DataImportExportController {
                 System.out.println("BCA_SalesOrderList Exported...");
             }
             else if(action.equalsIgnoreCase("PurchaseOrders")) {
-                PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
+                //PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
                 PurchaseOrderDto poDto = new PurchaseOrderDto();
-                ArrayList<PurchaseOrderDto> poList = poInfoDao.getRecord(request, poDto, compId, 0);
+                ArrayList<PurchaseOrderDto> poList = purchaseInfDao.getRecord(request, poDto, compId, 0);
 
                 ObjectMapper mapper = new ObjectMapper();
                 ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
@@ -238,7 +239,7 @@ public class DataImportExportController {
             else if(action.equalsIgnoreCase("Estimations")) {
                 if(!attachFile.isEmpty()) {
                     boolean statusError = false;
-                    EstimationInfo estInfo = new EstimationInfo();
+                   // EstimationInfo estInfo = new EstimationInfo();
                     TypeReference<List<EstimationDto>> typeReference = new TypeReference<List<EstimationDto>>() {};
                     ObjectMapper mapper = new ObjectMapper();
                     List<EstimationDto> estList = mapper.readValue(attachFile.getInputStream(), typeReference);
@@ -272,13 +273,13 @@ public class DataImportExportController {
             else if(action.equalsIgnoreCase("PurchaseOrders")) {
                 if(!attachFile.isEmpty()) {
                     boolean statusError = false;
-                    PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+                 //   PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
                     TypeReference<List<PurchaseOrderDto>> typeReference = new TypeReference<List<PurchaseOrderDto>>() {};
                     ObjectMapper mapper = new ObjectMapper();
                     List<PurchaseOrderDto> invoiceList = mapper.readValue(attachFile.getInputStream(), typeReference);
                     for (PurchaseOrderDto purchaseOrderDto : invoiceList) {
-                        purchaseOrderDto.setOrderNo(purchaseInfo.getNewPONum(compId));
-                        status = purchaseInfo.Save(compId, purchaseOrderDto);
+                        purchaseOrderDto.setOrderNo(purchaseInfDao.getNewPONum(compId));
+                        status = purchaseInfDao.Save(compId, purchaseOrderDto);
                         if(!status && !statusError) statusError = true;
                     }
                     if(statusError) request.getSession().setAttribute("errorMessage", "success");
