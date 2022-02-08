@@ -25,6 +25,8 @@ import com.avibha.common.constants.AppConstants;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.MyUtility;
 import com.avibha.common.utility.Path;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +42,19 @@ import java.util.List;
 
 @Controller
 public class PurchaseOrderController {
+	
+	@Autowired
+    private InvoiceInfoDao invoice;
+	
+	@Autowired
+	private SalesDetailsDao sdetails;
 
+	private ConfigurationInfo configInfo;
+    @Autowired
+    public PurchaseOrderController(ConfigurationInfo configInfo) {
+		super();
+		this.configInfo = configInfo;
+	}
 	@GetMapping("/PurchaseOrder")
 	public String purchaseOrder(VendorDto vendorDto, UpdateInvoiceDto updateInvoiceDto, PurchaseOrderDto purchaseOrderDto,
 				HttpServletRequest request, Model model) throws IOException, ServletException {
@@ -60,7 +74,7 @@ public class PurchaseOrderController {
 			if (action == null) {
 				PurchaseDetails pdetails = new PurchaseDetails();
 				pdetails.getAllList(request);
-				InvoiceInfoDao invoice = new InvoiceInfoDao();
+				//InvoiceInfoDao invoice = new InvoiceInfoDao();
 
 				String cvId = request.getParameter("CustId");
 				invoice.set(cvId, request, updateInvoiceDto, companyID);
@@ -71,7 +85,7 @@ public class PurchaseOrderController {
 				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.newPurchaseOrder(request, purchaseOrderDto);
 
-				ConfigurationInfo configInfo = new ConfigurationInfo();
+				//ConfigurationInfo configInfo = new ConfigurationInfo();
 				ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 				InvoiceInfo info = new InvoiceInfo();
@@ -89,7 +103,7 @@ public class PurchaseOrderController {
 				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.getPurchaseOrderDetailsByBtnName(request, purchaseOrderDto);
 
-				ConfigurationInfo configInfo = new ConfigurationInfo();
+				//ConfigurationInfo configInfo = new ConfigurationInfo();
 				ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 				InvoiceInfo info = new InvoiceInfo();
@@ -118,7 +132,7 @@ public class PurchaseOrderController {
 				PurchaseDetails pdetails = new PurchaseDetails();
 				pdetails.getAllList(request);
 				String compId = (String) request.getSession().getAttribute("CID");
-				InvoiceInfoDao invoice = new InvoiceInfoDao();
+				//InvoiceInfoDao invoice = new InvoiceInfoDao();
 
 				String cvId = request.getParameter("CustId");
 				invoice.set(cvId, request, updateInvoiceDto, compId);
@@ -129,7 +143,7 @@ public class PurchaseOrderController {
 				PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 				String compId = (String) request.getSession().getAttribute("CID");
 				String cvId = request.getParameter("CustId");
-				InvoiceInfoDao invoice = new InvoiceInfoDao();
+				//InvoiceInfoDao invoice = new InvoiceInfoDao();
 				pdetails.AddVendor(request, vendorDto, compId);
 				invoice.getServices(request, compId, cvId);
 				pdetails.getAllList(request);
@@ -178,12 +192,12 @@ public class PurchaseOrderController {
 			}
 			else if (action.equalsIgnoreCase("PBLU")) { // Action For Look up Button From poboard.jsp
 				String poNo = request.getParameter("po_no");
-				SalesDetailsDao sdetails = new SalesDetailsDao();
+				//SalesDetailsDao sdetails = new SalesDetailsDao();
 			    PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				pdetails.newPurchaseOrder(request, purchaseOrderDto);
 				sdetails.getInitializePurchase(poNo, request, purchaseOrderDto);
 
-				ConfigurationInfo configInfo = new ConfigurationInfo();
+				//ConfigurationInfo configInfo = new ConfigurationInfo();
 				ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 				InvoiceInfo info = new InvoiceInfo();
@@ -212,7 +226,7 @@ public class PurchaseOrderController {
 				String orderNo = request.getParameter("orderNo");
 				String templateType = request.getParameter("ttype");
 
-				SalesDetailsDao sdetails = new SalesDetailsDao();
+				//SalesDetailsDao sdetails = new SalesDetailsDao();
 				List<String> orderNums = sdetails.getCustomerPONums(custID, compId);
 				request.setAttribute("PrintOrderNums", orderNums);
 				if((orderNo==null || orderNo.isEmpty()) && !orderNums.isEmpty()) {
@@ -254,7 +268,7 @@ public class PurchaseOrderController {
 		}
 		else if (action.equalsIgnoreCase("PBLU")) {
 			String poNo = request.getParameter("po_no");
-			SalesDetailsDao sdetails = new SalesDetailsDao();
+			//SalesDetailsDao sdetails = new SalesDetailsDao();
 			//sdetails.getInvoiceInfo(request);
 			PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 			pdetails.getInvoiceInfo(request);

@@ -1,5 +1,25 @@
 package com.avibha.bizcomposer.File.actions;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.avibha.bizcomposer.File.dao.CompanyDetails;
 import com.avibha.bizcomposer.File.dao.CompanyInfo;
 import com.avibha.bizcomposer.File.dao.FileMenuDao;
@@ -12,25 +32,9 @@ import com.avibha.bizcomposer.purchase.dao.PurchaseInfoDao;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.utility.CountryState;
-import com.avibha.common.utility.Path;
 import com.nxsol.bizcomposer.common.TblStore;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
 
 /**
  * @author sarfrazmalik
@@ -40,6 +44,17 @@ public class FileController {
 
     @Autowired
     private DataImportExportUtils importExportUtils;
+    
+    private ConfigurationInfo configInfo;
+    @Autowired
+    public FileController(ConfigurationInfo configInfo) {
+		super();
+		this.configInfo = configInfo;
+	}
+    
+    @Autowired
+    private InvoiceInfoDao invoiceInfoDao;
+    
 
     @GetMapping("/changeLocale")
     public String changeLocale(HttpServletRequest request) throws Exception {
@@ -63,8 +78,9 @@ public class FileController {
         }
         return url;
     }
+   
 
-    @RequestMapping(value = {"/Dashboard", "/File"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = {"/Dashboard", "/File"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(CompanyInfoDto companyInfoDto, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ParseException {
         model.addAttribute("companyInfoDto", companyInfoDto);
         String forward = "/include/dashboard";
@@ -100,7 +116,7 @@ public class FileController {
         else if(action.equalsIgnoreCase("Dashboard")){
             HttpSession sess = request.getSession();
             CompanyInfo customer = new CompanyInfo();
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+           // ConfigurationInfo configInfo = new ConfigurationInfo();
             System.out.println("CompanyID: "+ compId);
 
             request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo));
@@ -217,7 +233,7 @@ public class FileController {
         else if(action.equalsIgnoreCase("ExportCustomer")) {
             String type = request.getParameter("type");
             if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-                InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+                //InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
                 ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
                 boolean b = importExportUtils.exportCustomerList(customerList, type, response);
                 if(b==true) {

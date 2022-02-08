@@ -1,30 +1,47 @@
 package com.avibha.bizcomposer.sales.actions;
 
-import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
-import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
-import com.avibha.bizcomposer.sales.dao.SalesDetails;
-import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
-import com.avibha.bizcomposer.sales.forms.*;
-import com.avibha.common.constants.AppConstants;
-import com.avibha.common.log.Loger;
-import com.avibha.common.utility.MyUtility;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.avibha.bizcomposer.File.actions.DataImportExportUtils;
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.sales.dao.SalesDetails;
+import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
+import com.avibha.bizcomposer.sales.forms.EstimationBoardForm;
+import com.avibha.bizcomposer.sales.forms.EstimationDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
+import com.avibha.common.constants.AppConstants;
+import com.avibha.common.log.Loger;
+import com.avibha.common.utility.MyUtility;
 
 /**
  * @author sarfrazmalik
  */
 @Controller
 public class EstimationController {
+	
+	 		    
+    private ConfigurationInfo configInfo;
+    @Autowired
+    public EstimationController(ConfigurationInfo configInfo) {
+		super();
+		this.configInfo = configInfo;
+	}
+    @Autowired
+    private SalesDetailsDao sdetails;
 
     @RequestMapping(value = {"/Estimation"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(EstimationDto estimationDto, InvoiceDto invoiceDto, UpdateInvoiceDto updateInvoiceDto, HttpServletRequest request) throws IOException, ServletException, SQLException {
@@ -49,9 +66,9 @@ public class EstimationController {
         }
 
         if (action.equalsIgnoreCase("Estimation")) {
-            SalesDetailsDao sdetails = new SalesDetailsDao();
+           // SalesDetailsDao sdetails = new SalesDetailsDao();
             sdetails.newEstimation(request, estimationDto);
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
             InvoiceDto invoice = new InvoiceDto();
@@ -72,10 +89,10 @@ public class EstimationController {
         }
         else if (action.equalsIgnoreCase("FirstEstimation") || action.equalsIgnoreCase("LastEstimation")
                 || action.equalsIgnoreCase("NextEstimation") || action.equalsIgnoreCase("PreviousEstimation")) {
-            SalesDetailsDao sdetails = new SalesDetailsDao();
+        //    SalesDetailsDao sdetails = new SalesDetailsDao();
             sdetails.newEstimation(request, estimationDto);
             sdetails.getEstimationDetailsByBtnName(request, estimationDto);
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
             invoiceDto.setSalesTaxID("1");
             invoiceDto.setState("Tax "+configDto.getSaleTaxRate()+"%");
@@ -176,11 +193,11 @@ public class EstimationController {
         }
         else if (action.equalsIgnoreCase("SBLU")) { // Action For Look up Button From EstimationBorad.jsp
             String estimationNo = request.getParameter("est_no");
-            SalesDetailsDao sdetails = new SalesDetailsDao();
+          //  SalesDetailsDao sdetails = new SalesDetailsDao();
             sdetails.newEstimation(request, estimationDto);
             sdetails.getInitializeEstimation(estimationNo, request, estimationDto);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+           // ConfigurationInfo configInfo = new ConfigurationInfo();
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
             InvoiceDto invoice = new InvoiceDto();
             invoice.setSalesTaxID("1");
@@ -195,7 +212,7 @@ public class EstimationController {
             forward = "/sales/estimation";
         }
         else if(action.equalsIgnoreCase("getBillingAddress")){
-            SalesDetailsDao sdetails = new SalesDetailsDao();
+       //     SalesDetailsDao sdetails = new SalesDetailsDao();
             sdetails.getBillingAddress(invoiceDto, request);
             if(request.getParameter("addressType").equalsIgnoreCase("bill")) {
                 request.setAttribute("URL", "Estimation?tabid=updateBillingAddress");
@@ -205,12 +222,12 @@ public class EstimationController {
             forward = "/sales/addressCustomer";
         }
         else if(action.equalsIgnoreCase("updateBillingAddress")) {
-            SalesDetailsDao sdetails = new SalesDetailsDao();
+         //  SalesDetailsDao sdetails = new SalesDetailsDao();
             sdetails.updateBillingAddress(invoiceDto, request);
             forward = "redirect:/Estimation?tabid=getBillingAddress&addressType=bill&cvID="+invoiceDto.getClientVendorID()+"&addressID="+invoiceDto.getAddressID();
         }
         else if(action.equalsIgnoreCase("updateShippingAddress")) {
-            SalesDetailsDao sdetails = new SalesDetailsDao();
+        //    SalesDetailsDao sdetails = new SalesDetailsDao();
             sdetails.updateShippingAddress(invoiceDto, request);
             forward = "redirect:/Estimation?tabid=getBillingAddress&addressType=ship&cvID="+invoiceDto.getClientVendorID()+"&addressID="+invoiceDto.getAddressID();
         }
@@ -220,7 +237,7 @@ public class EstimationController {
             String orderNo = request.getParameter("orderNo");
             String templateType = request.getParameter("ttype");
 
-            SalesDetailsDao sdetails = new SalesDetailsDao();
+            //SalesDetailsDao sdetails = new SalesDetailsDao();
             List<String> orderNums = sdetails.getCustomerEstimationNums(custID, compId);
             request.setAttribute("PrintOrderNums", orderNums);
             if((orderNo==null || orderNo.isEmpty()) && !orderNums.isEmpty()) {

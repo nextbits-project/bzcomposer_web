@@ -1,15 +1,19 @@
 package com.avibha.bizcomposer.purchase.dao;
 
-import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
-import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
-import com.avibha.common.log.Loger;
-import org.apache.struts.action.ActionForm;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
+import com.avibha.common.log.Loger;
 
 public class PurchaseBoardDetails {
+	
+	@Autowired
+	private PurchaseBoardInfoDao purchaseInfo;
 
 	public ArrayList getPurchaseBoardDetails(HttpServletRequest request, PurchaseBoardDto pform) {
 		
@@ -17,7 +21,7 @@ public class PurchaseBoardDetails {
 		String compId = (String) sess.getAttribute("CID");
 		String action = request.getParameter("tabid");
 
-		PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+		
 		ArrayList poBoardDetails = purchaseInfo.PurchaseRecordSearch(request,compId, action, pform);
 		request.setAttribute("PurchaseBoardDetails", poBoardDetails);
 		request.setAttribute("Market", pform.getFilterMarket());
@@ -26,13 +30,13 @@ public class PurchaseBoardDetails {
 
 	public void getPurchaseBoardReceivedItemDetails(HttpServletRequest request) {
 		String invoiceID = request.getParameter("invoiceID");
-		PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+		
 		PurchaseBoard pbDetails = purchaseInfo.getPurchaseBoardReceivedItemDetails(invoiceID);
 		request.setAttribute("pbDetails", pbDetails);
 	}
 
 	public void updateReceivedItemDetails(HttpServletRequest request) {
-		PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+		
 		boolean status = purchaseInfo.updateReceivedItemDetails(request);
 		if(status) {
 			request.setAttribute("SaveStatus", "Item updated successfully");
@@ -40,7 +44,7 @@ public class PurchaseBoardDetails {
 	}
 
 	public void clearReceivedQty(HttpServletRequest request) {
-		PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+		
 		boolean status = purchaseInfo.clearReceivedQty(request);
 		if(status) {
 			request.setAttribute("SaveStatus", "Item updated successfully");
@@ -53,7 +57,7 @@ public void getPurchaseBillList(HttpServletRequest request, PurchaseBoardDto pfo
 	String compId = (String) sess.getAttribute("CID");
 	String action = request.getParameter("tabid");
 
-	PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+	
 	ArrayList PurchaseBillDetails = new ArrayList();
 	
 	String oDate1 = pform.getOrderDate1();
@@ -81,7 +85,7 @@ public void getvendorBalanceSymmary(HttpServletRequest request, PurchaseBoardDto
 		String compId = (String) sess.getAttribute("CID");
 		String action = request.getParameter("tabid");
 	
-		PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+		
 		ArrayList vendorbalanceSymmary = new ArrayList();
 			
 		String sDate1 = pform.getSaleDate1();
@@ -106,7 +110,7 @@ public void getCancelledREf(HttpServletRequest request, PurchaseBoardDto pform)
 	String compId = (String) sess.getAttribute("CID");
 	String action = request.getParameter("tabid");
 
-	PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+	
 	ArrayList cancelledPuBillRef = new ArrayList();
 		
 	String sDate1 = pform.getSaleDate1();
@@ -136,7 +140,7 @@ public void getVendor1099List(HttpServletRequest request, PurchaseBoardDto pform
 	String compId = (String) sess.getAttribute("CID");
 	String action = request.getParameter("tabid");
 
-	PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+	
 	String sDate1 = pform.getSaleDate1();
 	String sDate2 = pform.getSaleDate2();
 	
@@ -164,7 +168,7 @@ public void getVendor1099TransactionSummary(HttpServletRequest request, Purchase
 	String compId = (String) sess.getAttribute("CID");
 	String action = request.getParameter("tabid");
 
-	PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+	
 	ArrayList vendorList1099 = new ArrayList();
 	
 
@@ -191,7 +195,7 @@ public void getVendor1099TransactionSummary(HttpServletRequest request, Purchase
 
 	public void updateRecord(HttpServletRequest request) {
 		
-		PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+		
 		boolean result = purchaseInfo.update(request);
 		String msg = "";
 		if (result) {
@@ -204,7 +208,7 @@ public void getVendor1099TransactionSummary(HttpServletRequest request, Purchase
 	}
 
    public void updateCheckPORecord(HttpServletRequest request) {
-		PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+		
 		boolean result = purchaseInfo.updateCheckPO(request);
 		String msg = "";
 		if (result) {
@@ -223,7 +227,7 @@ public void getVendor1099TransactionSummary(HttpServletRequest request, Purchase
    		String compId = (String) sess.getAttribute("CID");
    		String action = request.getParameter("tabid");
    	
-   		PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+   		
    		ArrayList PurchaseDetails = new ArrayList();
    		
    		String oDate1 = pform.getOrderDate1();

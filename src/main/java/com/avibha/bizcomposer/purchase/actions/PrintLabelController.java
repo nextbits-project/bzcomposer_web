@@ -17,6 +17,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,6 +30,9 @@ import java.util.ArrayList;
 
 @Controller
 public class PrintLabelController{
+	
+	@Autowired
+    private SalesDetailsDao saleDetailsDao;
 
 	@GetMapping("/PrintLBL")
 	public String printLabel(PrintLabelDto printLabelDto, HttpServletRequest request) throws IOException, ServletException {
@@ -92,7 +96,7 @@ public class PrintLabelController{
 		 */
 		else if (action.equalsIgnoreCase("SaveLabel")) { 
 			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			SalesDetailsDao sd = new SalesDetailsDao();
+			//SalesDetailsDao sd = new SalesDetailsDao();
 			boolean result=pdetails.saveLabel(request, printLabelDto);
 			String msg="";
 			request.setAttribute("Vendor","v");
@@ -105,7 +109,7 @@ public class PrintLabelController{
 				msg="Label is updated successfully";
 				
 			}
-			sd.getLabelType(request);
+			saleDetailsDao.getLabelType(request);
 			Label lbl = new Label();
 			ArrayList labelList = lbl.getLabelList();
 			request.setAttribute("Labels", labelList);

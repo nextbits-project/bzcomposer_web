@@ -49,11 +49,21 @@ import com.nxsol.bzcomposer.company.ConfigurationDAO;
  */
 @Controller
 public class ConfigurationController {
-	@Autowired
+	
 	private static final Logger logMsg = LoggerFactory.getLogger(Application.class);
     private String pageActiveTab = "pageActiveTab";
+    private ConfigurationInfo configInfo;
+    
+    @Autowired
+    private SalesDetailsDao salesDetails;
 
-    @RequestMapping(value = {"/Configuration"}, method = {RequestMethod.GET, RequestMethod.POST})
+    @Autowired
+    public ConfigurationController(ConfigurationInfo configInfo) {
+		super();
+		this.configInfo = configInfo;
+	}
+
+	@RequestMapping(value = {"/Configuration"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(ConfigurationDto configDto, CompanyInfoDto companyInfoDto, HttpServletRequest request, Model model) throws IOException, ServletException {
         String forward = "/configuration/configuration";
         String action = request.getParameter("tabid");
@@ -75,7 +85,7 @@ public class ConfigurationController {
         if (action.equalsIgnoreCase("config")) {
 			 /*ConfigurationDetailsDao cDetails = new ConfigurationDetailsDao();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             ConfigurationDetails configDetails = new ConfigurationDetails();
@@ -318,7 +328,7 @@ public class ConfigurationController {
             dao.getPaymentTypeGeneralAccount(companyID, request, configDto);
             dao.getBillingTemplate(companyID, request, configDto);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             // Added on 04-05-2020
@@ -359,13 +369,13 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("ChangeAdministratorPassword")) {
             String modalNewPassword = request.getParameter("modalNewPassword");
            logMsg.debug("modalNewPassword" + modalNewPassword);
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getAdministratorDetails(companyID, emailAddress, modalNewPassword);
             forward = "redirect:Configuration?tabid=config&tab=tr2";
         }
         else if (action.equalsIgnoreCase("config04")) {
             //System.out.println("Inside config04 condition");
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getAdministratorDetails(companyID, configDto, emailAddress);
             String UserName = configDto.getEmailAddress();
             String Password = configDto.getPassword();
@@ -402,7 +412,7 @@ public class ConfigurationController {
             request.setAttribute("pbValue", pbValue);
             request.setAttribute("mcValue", mailValue);
             request.setAttribute("showCmbValue", showCmbValue);
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getCongurationRecord(companyID, configDto, request);
             forward = "success14";
            logMsg.debug("goes to billing page......................");
@@ -429,7 +439,7 @@ public class ConfigurationController {
             dao.getRefundReason(companyID, request, configDto);
             dao.getJobCategory(companyID, request, configDto);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             dao.getMasterReason(configDto);
@@ -471,7 +481,7 @@ public class ConfigurationController {
            logMsg.debug("goes to estimation page......................");
         }
         else if (action.equalsIgnoreCase("config8")) {
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             String reorder = configDto.getShowReorderPointList();
@@ -490,7 +500,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config9")) {
             ConfigurationDAO dao = new ConfigurationDAO();
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             dao.getInvoiceStyle(companyID, request, configDto);
@@ -556,30 +566,30 @@ public class ConfigurationController {
             ConfigurationDetails configDetails = new ConfigurationDetails();
             configDetails.getConfigurationInfo(request, configDto);
 
-            SalesDetailsDao sd = new SalesDetailsDao();
-            sd.getdataManager(request);
+           // SalesDetailsDao sd = new SalesDetailsDao();
+            salesDetails.getdataManager(request);
             setConfigActiveTab(session, "dataManagerTab");
            logMsg.debug("goes to datamanager page......................");
             forward = "configuration/datamanager";
         }
         else if (action.equalsIgnoreCase("DM_Save")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
-            sd.getdataManagerSave(request);
+           //SalesDetailsDao sd = new SalesDetailsDao();
+        	salesDetails.getdataManagerSave(request);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
         else if (action.equalsIgnoreCase("DM_SaveDefaultValues")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
-            sd.DataManager_SaveDefaultValues(configDto);
+            //SalesDetailsDao sd = new SalesDetailsDao();
+            salesDetails.DataManager_SaveDefaultValues(configDto);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
         else if (action.equalsIgnoreCase("DM_Update")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
-            sd.getdataManagerUpdate(request);
+           // SalesDetailsDao sd = new SalesDetailsDao();
+        	salesDetails.getdataManagerUpdate(request);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
         else if (action.equalsIgnoreCase("DM_Delete")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
-            sd.getdataManagerDelete(request);
+        //    SalesDetailsDao sd = new SalesDetailsDao();
+        	salesDetails.getdataManagerDelete(request);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
         else if (action.equalsIgnoreCase("config12")) {
@@ -597,7 +607,7 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("config13")) {
             //System.out.println("Inside config13 condition");
             //ConfigurationDetailsDao configDetails = new ConfigurationDetailsDao();
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             String showReminderStatus = configDto.getShowReminder().equals("1") ? "on" : "off";
             request.setAttribute("showReminderStatus", showReminderStatus);
 
@@ -663,7 +673,7 @@ public class ConfigurationController {
             int accountID = configDto.getSelectedAccountId();
             request.setAttribute("accountId", accountID);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             dao.getMasterReason(configDto);
@@ -761,7 +771,7 @@ public class ConfigurationController {
             //System.out.println("Inside config27 condition");
 			 /*ConfigurationDetailsDao cDetails = new ConfigurationDetailsDao();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             String isSalesOrderBoard = configDto.getSalesOrderBoard();
@@ -1172,17 +1182,17 @@ public class ConfigurationController {
             forward = "success_setPreference";
         }
         else if (action.equalsIgnoreCase("addEmployeeJobCode")) {
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.addJobCodeTimesheet(request);
             forward = "redirect:Configuration?tabid=config11&&tab=tr11";
         }
         else if (action.equalsIgnoreCase("editEmployeeJobCode")) {
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.editJobCodeTimesheet(request);
             forward = "redirect:Configuration?tabid=config11&&tab=tr11";
         }
         else if (action.equalsIgnoreCase("deleteEmployeeJobCode")) {
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            
             configInfo.removeJobCodeTimesheet(request);
             forward = "redirect:Configuration?tabid=config11&&tab=tr11";
         }

@@ -6,6 +6,7 @@
 <%@ page isELIgnored="false"%>
 <html>
 <head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
@@ -420,9 +421,11 @@ function ShowShippingAddressPage(form){
 											</form:select> --%>
 										<c:set var="invoiceType" scope="page" value="${fn:toLowerCase(fn:substring(invoiceDto.formTemplateType.templateName,0,3))}"/> 
 											<form:select path="templateType">
-												 <c:forEach var="invItems" items="${invoiceDto.formTemplateType.mappingData}">
-												 <c:set var="checkboxId" scope="page" value="${invoiceType}${invItems.templateNo}"/>
-												 	<form:option value="${checkboxId}" selected="${invItems.isSelected}">${invItems.templateType}</form:option>
+												 <c:forEach var="invItems" items="${invoiceDto.formTemplateType.mappingData}" varStatus="status">
+												 
+												 <c:set var="checkboxId" scope="page" value="${invItems.templateNo}"/>
+												 
+												 	<form:option value="${checkboxId}" selected="${invItems.isSelected==true?'selected':''}">${invItems.templateType}</form:option>
 												 </c:forEach>
 											 </form:select>   
 											

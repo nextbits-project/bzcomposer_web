@@ -13,26 +13,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
-import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
-import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
-import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.configurationForm;
 import com.avibha.common.utility.Path;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
+import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 
 public class configurationAction extends Action 
 {
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException 
 	{
@@ -73,7 +77,7 @@ public class configurationAction extends Action
 			//System.out.println("Inside config27 condition");
 			 /*ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 
@@ -125,7 +129,7 @@ public class configurationAction extends Action
 		 {
 			 String modalNewPassword = request.getParameter("modalNewPassword");
 			 System.out.println("modalNewPassword"+modalNewPassword);
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getAdministratorDetails(companyID,emailAddress,modalNewPassword);
 			 
 			 //e.add("common.recoversucess", new ActionMessage("err.general.success"));
@@ -438,7 +442,7 @@ public class configurationAction extends Action
 			 
 			 dao.getBillingTemplate(companyID, request, configDto);
 			 
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 // Added on 04-05-2020
@@ -454,7 +458,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("config04"))
 		 {
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getAdministratorDetails(companyID,configDto,emailAddress);
 			 String UserName = configDto.getEmailAddress();
 			 String Password = configDto.getPassword();
@@ -490,7 +494,7 @@ public class configurationAction extends Action
 			 request.setAttribute("pbValue", pbValue);
 			 request.setAttribute("mcValue", mailValue);
 			 request.setAttribute("showCmbValue", showCmbValue);
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 forward="success14";
 			 System.out.println("goes to billing page......................");
@@ -589,7 +593,7 @@ public class configurationAction extends Action
 		 	
 			 request.setAttribute("accountId", accountID);
 			 
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 dao.getMasterReason(configDto);
@@ -610,7 +614,7 @@ public class configurationAction extends Action
 		 else if(action.equalsIgnoreCase("config8"))
 		 {
 			 //System.out.println("Inside config8 condition");
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 String reorder = configDto.getShowReorderPointList();
@@ -716,7 +720,7 @@ public class configurationAction extends Action
 		 {
 			 //System.out.println("Inside config13 condition");
 			 //ConfigurationDetails configDetails = new ConfigurationDetails();
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 String showReminderStatus = configDto.getShowReminder().equals("1")?"on":"off";
 			 request.setAttribute("showReminderStatus", showReminderStatus);
 			 
@@ -790,7 +794,7 @@ public class configurationAction extends Action
 			 
 			 request.setAttribute("accountId", accountID);
 			 
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 dao.getMasterReason(configDto);
@@ -912,7 +916,7 @@ public class configurationAction extends Action
 			 //System.out.println("Inside config27 condition");
 			 /*ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			 //ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 String isSalesOrderBoard = configDto.getSalesOrderBoard();

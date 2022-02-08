@@ -9,6 +9,9 @@ import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.MyUtility;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +21,29 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class AdminController {
 
-    @RequestMapping(value = {"/administer"}, method = {RequestMethod.GET, RequestMethod.POST})
+	private ConfigurationInfo configInfo;
+	
+	
+	 private SalesDetailsDao salesDetails;
+	
+	 @Autowired
+	 public AdminController(ConfigurationInfo configInfo) {
+		 super();
+		 this.configInfo = configInfo;
+	 }
+	
+	/*@Autowired
+	public AdminController(SalesDetailsDao salesDetails) {
+		super();
+		this.salesDetails = salesDetails;
+	}*/
+
+
+	@RequestMapping(value = {"/administer"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String executeSalesController(MultiUserForm mform, HttpServletRequest request, Model model) throws Exception {
         String action  = request.getParameter("tabid");
         String companyID = (String) request.getSession().getAttribute("CID");
         String forward = "/admin/dashboard";
-        ConfigurationInfo configInfo = new ConfigurationInfo();
         configInfo.setCurrentRequest(request);
         if(action == null){
 
@@ -57,9 +77,9 @@ public class AdminController {
             forward = "redirect:/administer?tabid=Visitors";
         }
         else if (action.equalsIgnoreCase("CustomerBoard")) {
-            SalesDetailsDao sd = new SalesDetailsDao();
-            String firstCvID = sd.getCustomerList(request);
-            sd.getAllList(request);
+           // = new SalesDetailsDao();
+            String firstCvID = salesDetails.getCustomerList(request);
+            salesDetails.getAllList(request);
             CustomerDto customerDto = new CustomerDto();
 
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();

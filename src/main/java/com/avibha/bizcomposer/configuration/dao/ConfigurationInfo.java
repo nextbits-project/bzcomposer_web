@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,8 +27,6 @@ import com.bzcomposer.configuration.module.form.templates.FormTemplateService;
 
 @Controller
 public class ConfigurationInfo {
-	@Autowired 
-	@Qualifier("formTemplateService")
 	private FormTemplateService service;    
 	
 	private static HttpServletRequest request;
@@ -38,6 +35,7 @@ public class ConfigurationInfo {
         request = req;
     }
        
+    @Autowired 
     public ConfigurationInfo(FormTemplateService service) {
 		super();
 		this.service = service;

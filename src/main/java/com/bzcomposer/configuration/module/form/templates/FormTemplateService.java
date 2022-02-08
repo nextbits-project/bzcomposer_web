@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Qualifier("formTemplateService")
 public class FormTemplateService {
 
 	private static final Logger log = LoggerFactory.getLogger(FormTemplatesController.class);

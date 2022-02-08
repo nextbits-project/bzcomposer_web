@@ -28,14 +28,15 @@
 Favicons
 ==================================================
 -->
-<!-- <link rel="shortcut icon" href="favicon.ico"> -->
+<!-- <link rel="shortcut icon" href="#"> -->
 <!-- <link rel="apple-touch-icon" href="favicon.ico"> -->
 <!-- <link rel="apple-touch-icon" sizes="72x72" href="favicon.ico">
 <link rel="apple-touch-icon" sizes="114x114" href="favicon.ico"> -->
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="../imgages/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../imgages/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../imgages/favicon-16x16.png">
+<link rel="shortcut icon" href="../images/favicon.ico" />
+<link rel="manifest" href="../imgages/site.webmanifest">
 
 <script src="${pageContext.request.contextPath}/dist/template/js/modernizr-custom.js"></script>
 </head>

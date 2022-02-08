@@ -6,12 +6,34 @@
 
 package com.avibha.bizcomposer.sales.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.sales.forms.*;
-import com.avibha.common.constants.AppConstants;
+import com.avibha.bizcomposer.sales.forms.CreditCardDto;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceForm;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
@@ -19,22 +41,15 @@ import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.avibha.common.utility.MyUtility;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
-import org.apache.struts.util.LabelValueBean;
-
-import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /*
  * 
  */
+@Service
 public class InvoiceInfoDao {
 
+	@Autowired
+	private ConfigurationInfo configInfo;
 	public ArrayList getItemList(String compId) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
@@ -97,7 +112,7 @@ public class InvoiceInfoDao {
 		ArrayList<InvoiceDto> objList = new ArrayList<>();
 		CountryState conState = new CountryState();
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
@@ -164,7 +179,7 @@ public class InvoiceInfoDao {
 		PreparedStatement pstmt = null;
 		ArrayList<InvoiceDto> objList = new ArrayList<>();
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
@@ -546,10 +561,10 @@ public class InvoiceInfoDao {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
-		PreparedStatement pstmt = null;
+		PreparedStatement pstmt = null;  
 		int lastOrderNo = 0;
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			String sqlString = "SELECT OrderNum FROM bca_invoice WHERE CompanyID=? AND invoiceStatus in (0,2) ORDER BY OrderNum DESC";
@@ -584,7 +599,7 @@ public class InvoiceInfoDao {
 		PreparedStatement pstmt = null;
 		int lastOrderNo = 0;
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+		//	ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			String sqlString = "select SONum from bca_invoice  where CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID IN (1,7,9)  order by SONum desc";

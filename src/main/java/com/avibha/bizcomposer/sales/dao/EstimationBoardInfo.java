@@ -12,10 +12,11 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.sales.forms.EstimationBoardDto;
-import com.avibha.bizcomposer.sales.forms.EstimationBoardForm;
 import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
@@ -23,6 +24,8 @@ import com.avibha.common.utility.MyUtility;
 
 public class EstimationBoardInfo {
 	
+	@Autowired
+	private ConfigurationInfo configInfo;
 	public ArrayList EstimationRecordSearch(String compId, EstimationBoardDto eform) {
 
 		String oDate1 = eform.getOrderDate1();
@@ -41,7 +44,7 @@ public class EstimationBoardInfo {
 		String mark = null;
 		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<EstimationBoard> objList = new ArrayList<>();
-		ConfigurationInfo configInfo = new ConfigurationInfo();
+		//ConfigurationInfo configInfo = new ConfigurationInfo();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
 			con = db.getConnection();
