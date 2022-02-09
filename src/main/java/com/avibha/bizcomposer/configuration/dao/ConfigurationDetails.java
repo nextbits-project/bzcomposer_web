@@ -3,6 +3,7 @@ package com.avibha.bizcomposer.configuration.dao;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.common.utility.CountryState;
@@ -11,6 +12,7 @@ import com.avibha.common.utility.CountryState;
  * This class contains methods to save,delete,update configuration related information
  * (i.e:- footnote,all configuration records).
  */
+@Service
 public class ConfigurationDetails {
 	
 	@Autowired

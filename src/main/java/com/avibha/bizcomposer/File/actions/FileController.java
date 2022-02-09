@@ -47,6 +47,8 @@ public class FileController {
     
     private ConfigurationInfo configInfo;
     @Autowired
+    private AddNewCompanyDAO dao;
+    @Autowired
     public FileController(ConfigurationInfo configInfo) {
 		super();
 		this.configInfo = configInfo;
@@ -129,7 +131,7 @@ public class FileController {
         else if(action.equalsIgnoreCase("CompanyInfo")){
             int userID = (Integer) request.getSession().getAttribute("userID");
             CompanyInfo customer = new CompanyInfo();
-            AddNewCompanyDAO dao = new AddNewCompanyDAO();
+            //AddNewCompanyDAO dao = new AddNewCompanyDAO();
 
             dao.getBusinessType(companyInfoDto);
             customer.SearchCompany(compId, userID, companyInfoDto, request);

@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<%@include file="/include/header.jsp"%>
+<%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <title>${sessionScope.user} - <spring:message code="BzComposer.customerlisttitle"/></title>
 <style>
 table.tabla-customListOds { width: 100%; border: 1px solid rgb(207, 207, 207); margin: 5px; }

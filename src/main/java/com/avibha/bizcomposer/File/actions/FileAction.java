@@ -27,7 +27,7 @@ import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.Path;
 import com.nxsol.bizcomposer.common.TblStore;
 
-public class FileAction extends Action {
+public class FileAction extends Action {/*
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException, ParseException {
@@ -93,7 +93,7 @@ public class FileAction extends Action {
 			String compId = (String) sess.getAttribute("CID");
 			int userID=(Integer) sess.getAttribute("userID");
 			CompanyInfo customer = new CompanyInfo();
-			AddNewCompanyDAO dao = new AddNewCompanyDAO();
+			//AddNewCompanyDAO dao = new AddNewCompanyDAO();
 
 			dao.getBusinessType(companyInfoDto);
        		ArrayList<CompanyInfoDto> companydetails = new ArrayList<CompanyInfoDto>();
@@ -111,13 +111,13 @@ public class FileAction extends Action {
      		request.setAttribute("city", cust.getCity());
      		int stateId = cs.getStatesId(cust.getState());
      		request.setAttribute("state", stateId);
-     		/*String country = cs.getCountryName(cust.getCity());
-     		cust.setCountry(country);*/
+     		String country = cs.getCountryName(cust.getCity());
+     		cust.setCountry(country);
      		System.out.println("stateId:"+stateId);
      		
      		forward = "success1";
          }
-		/*else if(action.equalsIgnoreCase("states")){
+		else if(action.equalsIgnoreCase("states")){
 			HttpSession sess = request.getSession();
 			String state = request.getParameter("stateName");
 			System.out.println("Enter state name:"+state);
@@ -130,7 +130,7 @@ public class FileAction extends Action {
        		//cdetails.getAllList(request);
      		
 			forward = "Success";
-		}*/
+		}
 		
 		else if(action.equalsIgnoreCase("zipcode")){
 			HttpSession sess = request.getSession();
@@ -221,7 +221,7 @@ public class FileAction extends Action {
 			forward = "Success";
 		}
 		
-		/*else if (action.equalsIgnoreCase("edit")) {
+		else if (action.equalsIgnoreCase("edit")) {
 			
 			HttpSession sess = request.getSession();
 			String compId = (String) sess.getAttribute("CID");	
@@ -241,7 +241,7 @@ public class FileAction extends Action {
 			System.out.println("City:"+cForm.getCity());
      		request.setAttribute("city", cForm.getCity());
 			forward = "success3";
-		}*/
+		}
 		
 		else if (action.equalsIgnoreCase("SetUpprintForms")) {
 			
@@ -364,4 +364,4 @@ public class FileAction extends Action {
 		}
 		return mapping.findForward(forward);
 	}
-}
+*/}

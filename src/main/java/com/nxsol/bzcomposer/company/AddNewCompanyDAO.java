@@ -16,6 +16,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.File.forms.CompanyInfoBean;
@@ -75,10 +76,8 @@ public class AddNewCompanyDAO {
     
     private  BusinessTypeRepository businessRepository;
 
-    public AddNewCompanyDAO() {
-		super();
-	}
-
+   
+    @Autowired
 	public AddNewCompanyDAO(BusinessTypeRepository businessRepository) {
 		super();
 		this.businessRepository = businessRepository;
