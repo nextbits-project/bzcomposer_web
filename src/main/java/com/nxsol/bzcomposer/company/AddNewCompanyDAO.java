@@ -1,5 +1,24 @@
 package com.nxsol.bzcomposer.company;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.avibha.bizcomposer.File.forms.CompanyInfoBean;
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfoDao;
@@ -7,14 +26,20 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
-import com.nxsol.bizcomposer.common.*;
+import com.nxsol.bizcomposer.common.ConstValue;
+import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.nxsol.bizcomposer.common.TblBalanceSheet;
+import com.nxsol.bizcomposer.common.TblBudget;
+import com.nxsol.bizcomposer.common.TblBudgetDetail;
+import com.nxsol.bizcomposer.common.TblBusinessType;
+import com.nxsol.bizcomposer.common.TblCategory;
+import com.nxsol.bizcomposer.common.TblLineofCreditTerm;
+import com.nxsol.bizcomposer.common.TblPreference;
+import com.nxsol.bizcomposer.common.TblPriceLevel;
+import com.nxsol.bizcomposer.common.TblUnitofMeasure;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 
-import javax.servlet.http.HttpServletRequest;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
-
+@Service
 public class AddNewCompanyDAO {
 
     public static ArrayList<CompanyInfoDto> vTerm_ID;
@@ -48,8 +73,17 @@ public class AddNewCompanyDAO {
     public int shipCarrierID = 0;
     public int vReceivedType_ID;
     public ArrayList<CompanyInfoDto> sGeneralContactINformationList = new ArrayList<>();
+    
+    private  BusinessTypeRepository businessRepository;
 
-    public ArrayList getExistingCompanies(String cId, HttpServletRequest request, CompanyInfoDto form)
+   
+    @Autowired
+	public AddNewCompanyDAO(BusinessTypeRepository businessRepository) {
+		super();
+		this.businessRepository = businessRepository;
+	}
+
+	public ArrayList getExistingCompanies(String cId, HttpServletRequest request, CompanyInfoDto form)
     {
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
@@ -178,43 +212,11 @@ public class AddNewCompanyDAO {
     /**/
 
     /*BusinessType*/
-    public  ArrayList getBusinessType(String cId,HttpServletRequest request,CompanyInfoDto form)
+    
+    public  void getBusinessType(CompanyInfoDto form)
     {
-        SQLExecutor db = new SQLExecutor();
-        Connection con = db.getConnection();
-        Statement stmt1 = null;
-        ResultSet rs1 = null;
-        DateInfo dInfo = new DateInfo();
-        ArrayList<CompanyInfoDto> listPOJOs = new ArrayList<>();
-        ArrayList<Date> selectedRange = new ArrayList<>();
-        CustomerInfoDao cInfo = new CustomerInfoDao();
-        CompanyInfoDto pojo = null;
-        try {
-            stmt1 = con.createStatement();
-            String sql1 = "SELECT businessname, businesstypeid FROM bca_businesstype WHERE active=1 ORDER BY businessname";
-            Loger.log(sql1);
-            rs1 = stmt1.executeQuery(sql1);
-            while (rs1.next()) {
-                pojo = new CompanyInfoDto();
-                pojo.setBusinessName(rs1.getString(1));
-                pojo.setBusinessTypeId(rs1.getInt(2));
-                listPOJOs.add(pojo);
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (rs1 != null) db.close(rs1);
-                if (stmt1 != null) db.close(stmt1);
-                if(con != null) db.close(con);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        form.setListOfBusinessType(listPOJOs);
-        return listPOJOs;
+        List<BusinessType> businessTypeList =businessRepository.findAll();
+        form.setBusinessTypes(businessTypeList);
     }
     /**/
 

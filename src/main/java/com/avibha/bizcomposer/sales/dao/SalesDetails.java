@@ -11,19 +11,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.avibha.bizcomposer.accounting.dao.AccountingDAO;
-import com.avibha.bizcomposer.sales.forms.*;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionServlet;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.avibha.bizcomposer.accounting.dao.AccountingDAO;
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.purchase.dao.CreditCard;
 import com.avibha.bizcomposer.purchase.dao.PayMethod;
@@ -34,13 +33,30 @@ import com.avibha.bizcomposer.purchase.dao.Shipping;
 import com.avibha.bizcomposer.purchase.dao.Term;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.purchase.forms.PurchaseOrderForm;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.bizcomposer.sales.forms.CustomerForm;
+import com.avibha.bizcomposer.sales.forms.EstimationDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceForm;
+import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.bizcomposer.sales.forms.ItemForm;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
 
+@Service
 public class SalesDetails {
+
+	private EstimationInfo estimation;
+	
+	@Autowired
+	public SalesDetails(EstimationInfo estimation) {
+		super();
+		this.estimation = estimation;
+	}
 
 	public void getdataManager(HttpServletRequest request, ActionForm form) {
 		HttpSession sess = request.getSession();
@@ -1151,7 +1167,7 @@ public class SalesDetails {
 	public void getInitializeEstimation(String estNo, HttpServletRequest request, EstimationDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		long estimationNo = Long.parseLong(estNo);
-		EstimationInfo estimation = new EstimationInfo();
+		//EstimationInfo estimation = new EstimationInfo();
  		estimation.getRecord(request, form, compId, estimationNo);
 	}
 
@@ -1738,7 +1754,7 @@ public class SalesDetails {
 	}
 
 	public void newEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
-		EstimationInfo estimation = new EstimationInfo();
+		//EstimationInfo estimation = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		String estNum = estimation.getNewEstimationNo(compId);
 		estimationDto.setPoNum(estNum);
@@ -1794,27 +1810,27 @@ public class SalesDetails {
 	}
 
 	public void saveEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
-		EstimationInfo invoice = new EstimationInfo();
+		//EstimationInfo invoice = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		if(estimationDto.getOrderNo().contains("-")){
 			String orderNo = estimationDto.getOrderNo();
 			estimationDto.setOrderNo(orderNo.substring(orderNo.indexOf("-")+1));
 		}
-		boolean exist = invoice.estimationExist(compId, estimationDto.getOrderNo());
+		boolean exist = estimation.estimationExist(compId, estimationDto.getOrderNo());
 		if (exist == true) {
-			boolean saveStatus = invoice.Update(compId, estimationDto);
+			boolean saveStatus = estimation.Update(compId, estimationDto);
 			request.getSession().setAttribute("SaveStatus", saveStatus?"Estimation is updated successfully.":"Estimation is not updated successfully.");
 		} else {
-			boolean saveStatus = invoice.Save(compId, estimationDto);
+			boolean saveStatus = estimation.Save(compId, estimationDto);
 			request.getSession().setAttribute("SaveStatus", saveStatus?"Estimation is saved successfully.":"Estimation is not saved successfully.");
 		}
 	}
 
 	public EstimationDto getEstimationDetailsByBtnName(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
-		EstimationInfo estInfo = new EstimationInfo();
+		//EstimationInfo estimation = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
-		Long estNo = estInfo.getEstimationNumberByBtnName(compId, request);
-		ArrayList<EstimationDto> list = estInfo.getRecord(request, estimationDto, compId, estNo);
+		Long estNo = estimation.getEstimationNumberByBtnName(compId, request);
+		ArrayList<EstimationDto> list = estimation.getRecord(request, estimationDto, compId, estNo);
 		if(!list.isEmpty()) {
 			estimationDto = list.get(0);
 			request.setAttribute("Enable", "true");
@@ -1827,15 +1843,15 @@ public class SalesDetails {
 
 	public boolean deleteEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
 		boolean val = false;
-		EstimationInfo invoice = new EstimationInfo();
+		//EstimationInfo invoice = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		getInvoiceInfo(request);
 
 		String estNo = estimationDto.getOrderNo();
-		boolean exist = invoice.estimationExist(compId, estNo);
+		boolean exist = estimation.estimationExist(compId, estNo);
 		if (exist == true) {
 			try {
-				invoice.Delete(compId, estNo);
+				estimation.Delete(compId, estNo);
 				newEstimation(request, estimationDto);
 				request.setAttribute("SaveStatus",
 						"Estimation is successfully deleted.");

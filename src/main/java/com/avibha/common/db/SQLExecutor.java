@@ -6,22 +6,42 @@
  */
 package com.avibha.common.db;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import javax.naming.InitialContext;
-import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import com.avibha.common.log.Loger;
 
 /**
  * @author avibha
  * 
  */
-public class SQLExecutor {
+
+@Configuration
+@EnableTransactionManagement
+public class SQLExecutor  {
 
 	/** database connection */
 	//private Connection con = null;
 	/** connection pool */
 	//private ConnectionPool conPool = null;
+
+	@Autowired
+	private Environment env;
+	
 
 	/** Database type (for example, DatabaseType.ORACLE) */
 	private int dbType;
@@ -47,16 +67,14 @@ public class SQLExecutor {
 	/** ArrayList which stores the SQL parameters (?) */
 	private ArrayList<Object> params = null;
 	
-
+	private static DriverManagerDataSource dataSource ;
+	
 	/**
 	 * Constructor uses provided connection pool
 	 * @throws InterruptedException 
 	 */
 	public SQLExecutor() {
 		
-		//this.conPool = ConnectionPool.getInstance();
-		//con = conPool.getConnection();
-		//dbType = DatabaseType.getDbType(con);
 		params = new ArrayList<Object>();
 	}
 
@@ -68,36 +86,38 @@ public class SQLExecutor {
 	 * public Connection getConnection1() { return (con); }
 	 */
 	
-	static BasicDataSource dataSource ;
 	
-	static {
-		dataSource = new BasicDataSource();
+	/*static {
 		try {
-			InitialContext ic = new InitialContext();
-			dataSource = new BasicDataSource();
-			dataSource.setDriverClassName((String) ic.lookup("java:comp/env/DriverClass"));
-			dataSource.setUrl((String) ic.lookup("java:comp/env/URL"));
-			dataSource.setUsername((String) ic.lookup("java:comp/env/UID"));
-			dataSource.setPassword((String) ic.lookup("java:comp/env/password"));
-			dataSource.setMaxIdle(10);
-			dataSource.setMaxTotal(100);
-			dataSource.setInitialSize(5);
-			dataSource.setValidationQuery("select 1");
-			dataSource.setTestOnBorrow(true);
+			// InitialContext ic = new InitialContext();
+	            //dataSource.setDriverClassName((String) ic.lookup("java:comp/env/DriverClass"));
+	            //dataSource.setUrl((String) ic.lookup("java:comp/env/URL"));
+	           // dataSource.setUsername((String) ic.lookup("java:comp/env/UID"));
+	            //dataSource.setPassword((String) ic.lookup("java:comp/env/password"));
+				dataSource.setDriverClassName(env.getProperty("DriverClass"));
+				dataSource.setUrl(env.getProperty("spring.datasource.url"));
+				dataSource.setUsername(env.getProperty("spring.datasource.username"));
+				dataSource.setPassword(env.getProperty("spring.datasource.password"));
+
+				dataSource.setMaxIdle(10);
+				dataSource.setMaxTotal(100);
+				dataSource.setInitialSize(5);
+				dataSource.setValidationQuery("select 1");
+				dataSource.setTestOnBorrow(true);
 		} catch (Exception ex) {
 			System.out.println("***Not able to create Datasource: " + ex.getMessage());
 			Loger.log(Loger.DEBUG,"***Not able to create Datasource: " + ex.getMessage());
 			ex.printStackTrace();
 		}
-	}
+	}*/
 
 
     public Connection getConnection() {
     	Connection connection =null;
         try {
-            connection = dataSource.getConnection();
-//			Class.forName("com.mysql.jdbc.Driver");
-//			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzcomposer","root","Root1230");
+             connection = dataSource.getConnection();
+			//Class.forName("com.mysql.cj.jdbc.Driver");
+			//connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bzc","root","root");
 		} catch (Exception ex) {
 			System.out.println("Not able to create DB connection " + ex.getMessage());
 			Loger.log(Loger.DEBUG,"Not able to create DB connection " + ex.getMessage());
@@ -548,5 +568,19 @@ public class SQLExecutor {
 			}
 		}
 	}
+	@Bean
+	public DataSource dataSource() {
 
+	    dataSource = new DriverManagerDataSource();
+	    dataSource.setDriverClassName(env.getProperty("DriverClass"));
+		dataSource.setUrl(env.getProperty("spring.datasource.url"));
+		dataSource.setUsername(env.getProperty("spring.datasource.username"));
+		dataSource.setPassword(env.getProperty("spring.datasource.password"));
+	    return dataSource;
+	}
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
+	    return new PropertySourcesPlaceholderConfigurer();
+	}
+	
 }

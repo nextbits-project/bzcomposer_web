@@ -28,14 +28,15 @@ import com.avibha.bizcomposer.sales.forms.salesboardForm;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
 
+
 public class EstimationAction extends Action {
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
+	/*public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException, SQLException {
 			String forward = "success";
 			String action = request.getParameter("tabid");
 			final String SUCCESS = "success";
-			/*String method = request.getParameter("request_locale");
+			String method = request.getParameter("request_locale");
 			HttpSession session = request.getSession();
 			if(method == null)
 			{
@@ -59,7 +60,7 @@ public class EstimationAction extends Action {
 				 session.setAttribute("org.apache.struts.action.LOCALE", new Locale("es"));
 				 System.out.println("set locale from estimationAction:"+session.getAttribute("org.apache.struts.action.LOCALE").toString());
 			 }
-		 }*/
+		 }
 		boolean readData;
 		System.out.println("Performed action is:"+action);
 		
@@ -140,13 +141,13 @@ public class EstimationAction extends Action {
 			forward = "success2";
 
 		}
-		/*
+		
 		 * if (action.equalsIgnoreCase("UpdateInvoice")) { // to add Vendor
 		 * String cvId=request.getParameter("CustId"); SalesDetails sdetails=new
 		 * SalesDetails(); sdetails.UpdateCustInfo(request,form);
 		 * sdetails.updateInvoice(cvId,request,form);
 		 * sdetails.getAllList(request); forward = "success2"; }
-		 */
+		 
 		else if (action.equalsIgnoreCase("UpdateCustInfo")) {
 			SalesDetails sdetails = new SalesDetails();
 //			sdetails.UpdateCustInfo(request, form);
@@ -224,5 +225,5 @@ public class EstimationAction extends Action {
 		
 		return mapping.findForward(forward);
 	}
-
+*/
 }

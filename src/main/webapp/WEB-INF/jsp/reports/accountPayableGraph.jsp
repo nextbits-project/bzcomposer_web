@@ -30,7 +30,7 @@
   <img alt="" src="${pageContext.request.contextPath}/ChartReports/Account Payable${sessionScope.userID}.png">
 </div>
 
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </div>
 </body>
 </html>

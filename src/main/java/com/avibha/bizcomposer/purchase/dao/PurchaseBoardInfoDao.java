@@ -1,5 +1,20 @@
 package com.avibha.bizcomposer.purchase.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
@@ -18,14 +33,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
+@Service
 public class PurchaseBoardInfoDao {
+	
+	    private ConfigurationInfo configInfo;
+	    @Autowired
+	    public PurchaseBoardInfoDao(ConfigurationInfo configInfo) {
+			super();
+			this.configInfo = configInfo;
+		}
 
 	public ArrayList PurchaseRecordSearch(HttpServletRequest request, String compId, String action, PurchaseBoardDto form) {
 
@@ -54,7 +70,7 @@ public class PurchaseBoardInfoDao {
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
-		ConfigurationInfo configInfo = new ConfigurationInfo();
+		//ConfigurationInfo configInfo = new ConfigurationInfo();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		
 		if(datesCombo != null && !datesCombo.equals("8")) {

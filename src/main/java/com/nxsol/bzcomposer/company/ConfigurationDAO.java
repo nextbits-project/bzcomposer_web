@@ -1,29 +1,36 @@
 package com.nxsol.bzcomposer.company;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.util.StringUtils;
+
+import com.Application;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
-import com.avibha.bizcomposer.employee.forms.StateTaxOtherDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
-import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
-import org.apache.struts.util.LabelValueBean;
-import org.springframework.util.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConfigurationDAO {
 
+	private static final Logger logMsg = LoggerFactory.getLogger(Application.class);
     ConfigurationDto pojo = null;
     SimpleDateFormat formatterMMDDYYYY = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -812,7 +819,7 @@ public class ConfigurationDAO {
             String sql = "insert into bca_user(LoginID, Email_Address, Password, CompanyID,membershipLevel,jobPosition,Active) " +
                     "values ('"+userName+"','"+userEmail+"','"+userPassword+"',"+companyID+",'"+membershipLevel+"','"+""+"',"+1+")";
             ps = con.prepareStatement(sql);
-            Loger.log(sql);
+            logMsg.debug(sql);
             ps.execute();
             check = true;
 
@@ -827,7 +834,7 @@ public class ConfigurationDAO {
             // insert new user role in mapping table
             String sql3 = "insert into bca_usermapping(UserGroupID, UserID, Role, CompanyID, Active, Deleted) values ('"+groupID+"','"+NewUserID+"','User',"+companyID+",1,0)";
             ps2 = con.prepareStatement(sql3);
-            Loger.log(sql3);
+            logMsg.debug(sql3);
             ps2.execute();
             check = true;
         } catch (Exception e) {
@@ -975,7 +982,7 @@ public class ConfigurationDAO {
                 result = true;
             }
         } catch (SQLException ee) {
-            Loger.log(2,"SQLException in Class ConfigurationDAO,  method -saveUserGroupDetails "+ ee.toString());
+            logMsg.error("SQLException in Class ConfigurationDAO,  method -saveUserGroupDetails "+ ee);
         }
         finally {
             try {
@@ -1010,7 +1017,7 @@ public class ConfigurationDAO {
                 result = true;
             }
         } catch (SQLException ee) {
-            Loger.log(2,"SQLException in Class ConfigurationDAO,  method -deleteUserGroupDetails "+ ee.toString());
+            logMsg.error("SQLException in Class ConfigurationDAO,  method -deleteUserGroupDetails "+ ee);
         }
         finally {
             try {
@@ -2587,10 +2594,11 @@ public class ConfigurationDAO {
             pstmt.setInt(4, form.getPoTemplateType());
             pstmt.setInt(5, form.getPsTemplateType());
             pstmt.setString(6, companyID);
+            logMsg.debug("Records Updated Are : "+ form.toString());
             rowAdded = pstmt.executeUpdate() > 0 ? true : false;
         }
         catch(Exception e) {
-            e.printStackTrace();
+            logMsg.error("Error While Updating Invoice Template", e);
         }
         finally {
             try {
@@ -2715,7 +2723,7 @@ public class ConfigurationDAO {
         try {
             String sql = "insert into bca_shipcarrier(Name, CompanyID, ParentID) values ('"+shippingtype+"',"+companyID+","+ParentID+")";
             ps = con.prepareStatement(sql);
-            Loger.log(sql);
+            logMsg.debug(sql);
             ps.execute();
 
         } catch (Exception e) {
@@ -2747,7 +2755,7 @@ public class ConfigurationDAO {
         try {
             String sql = "update bca_shipcarrier set Name='"+oldVal+"' where ShipCarrierID = "+oldId;
             pstmt = con.prepareStatement(sql);
-            Loger.log(sql);
+            logMsg.debug(sql);
             int count = pstmt.executeUpdate();
             if (count > 0)
                 valid = true;
@@ -2781,7 +2789,7 @@ public class ConfigurationDAO {
         try {
             String sql = "update bca_shipcarrier set Active=0 where ShipCarrierID = "+oldId;
             pstmt = con.prepareStatement(sql);
-            Loger.log(sql);
+            logMsg.debug(sql);
             int count = pstmt.executeUpdate();
             if (count > 0)
                 valid = true;
@@ -3085,7 +3093,7 @@ public class ConfigurationDAO {
                     "SundayRate,UseHolidayRate,HolidayRate,BiWeekly, OptionId, StartingDate, DateAdded" +
                     " from bcp_tax_company where CompanyID =? and Active not like '0' ";
 
-            Loger.log(sqlString);
+            logMsg.debug(sqlString);
             pstmt = con.prepareStatement(sqlString);
             pstmt.setString(1, compId);
             rs = pstmt.executeQuery();
@@ -3130,9 +3138,9 @@ public class ConfigurationDAO {
             }
 
         } catch (SQLException ee) {
-            Loger.log(2,
+            logMsg.error(
                     " SQL Error in Class TaxInfo and  method -getCompanyTax "
-                            + " " + ee.toString());
+                            + " " + ee);
         }
         finally {
             try {
@@ -3211,9 +3219,9 @@ public class ConfigurationDAO {
              }
 
         } catch (SQLException ee) {
-            Loger.log(2,
+            logMsg.error(
                     " SQL Error in Class TaxInfo and  method -getCompanyTax "
-                            + " " + ee.toString());
+                            + " " + ee);
         }
         finally {
             try {
@@ -3560,7 +3568,7 @@ public class ConfigurationDAO {
             }
 
         } catch (SQLException ee) {
-            Loger.log(2, "Error in editCompanyTaxOption() " + ee);
+            logMsg.error( "Error in editCompanyTaxOption() " + ee);
         } finally {
             try {
                 if(con != null){
@@ -3682,7 +3690,7 @@ public class ConfigurationDAO {
 
         } catch (SQLException ee) {
             ee.printStackTrace();
-            Loger.log(2, "Error in editCompanyTaxOption() " + ee);
+            logMsg.error("Error in editCompanyTaxOption() " + ee);
         } finally {
             try {
                 if(con != null){
@@ -3731,7 +3739,7 @@ public class ConfigurationDAO {
 
         } catch (SQLException ee) {
             ee.printStackTrace();
-            Loger.log(2, "Error in editCompanyTaxOption() " + ee);
+            logMsg.error( "Error in editCompanyTaxOption() " + ee);
         } finally {
             try {
                 if(con != null){
@@ -3775,7 +3783,7 @@ public class ConfigurationDAO {
 
         } catch (SQLException ee) {
             ee.printStackTrace();
-            Loger.log(2, "Error in editCompanyTaxOption() " + ee);
+            logMsg.error("Error in editCompanyTaxOption() " + ee);
         } finally {
             try {
                 if(con != null){

@@ -117,7 +117,7 @@ $(document).ready(function(){
 								<th colspan="5"><spring:message code="BzComposer.addnewcustomer.customerinfo" /></th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody>  
 							<tr>
 							    <td style="width:18%;"><spring:message code="BzComposer.global.titlename" /></td>
                                 <td style="width:31%;">
@@ -965,7 +965,7 @@ $(document).ready(function(){
 </div>
 </div>
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 </body>

@@ -40,11 +40,11 @@ public class CompanyInfo {
                 customer.setCity(rs.getString(7));
                 customer.setZip(replaceNullWithBlank(rs.getString(9)));
                 customer.setProvince(replaceNullWithBlank(rs.getString(10)));
-                customer.setStateId(rs.getInt(8));
+               // customer.setStateId(rs.getString(8));
                 customer.setState(rs.getString(8));
                 request.setAttribute("state_gen", replaceNullWithBlank(rs.getString(8)));
                 customer.setCountry(replaceNullWithBlank(rs.getString(15)));
-                customer.setCountryId(rs.getInt(15));
+                //customer.setCountryId(rs.getInt(15));
 
                 customer.setPhone(replaceNullWithBlank(rs.getString(11)));
                 customer.setCellPhone(replaceNullWithBlank(rs.getString(12)));

@@ -5,6 +5,22 @@
  */
 package com.avibha.bizcomposer.sales.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
@@ -16,24 +32,17 @@ import com.avibha.bizcomposer.sales.forms.UpdateInvoiceForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
-import com.avibha.common.utility.CountryState;
-import org.apache.struts.util.LabelValueBean;
-
-import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /*
  * 
  */
+@Service
 public class EstimationInfoDao {
+	
+	@Autowired
+    private InvoiceInfoDao invoiceInfoDao;
+	@Autowired
+	private ConfigurationInfo configInfo;
 
 	public ArrayList getItemList(String compId) {
 		Connection con = null ;
@@ -626,7 +635,7 @@ public class EstimationInfoDao {
 		PreparedStatement pstmt = null;
 		int lastOrderNo = 0;
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			String sqlString = "SELECT EstNum FROM bca_invoice WHERE CompanyID=? AND invoiceStatus IN (0,2) AND InvoiceTypeID IN (10) ORDER BY EstNum DESC";
@@ -1873,7 +1882,7 @@ public class EstimationInfoDao {
 				form.setMemo(rs.getString("Memo"));
 			}
 			/* Bill Address */
-			InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+			//InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
 			ArrayList<InvoiceDto> billAddresses = invoiceInfoDao.billAddress(compId, form.getCustID());
 			if(!billAddresses.isEmpty()) {
 				InvoiceDto invoiceBillAddr = billAddresses.get(0);
@@ -1986,7 +1995,7 @@ public class EstimationInfoDao {
 				form.setMemo(rs.getString("Memo"));
 
 				/* Bill Address */
-				InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+			//	InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
 				ArrayList<InvoiceDto> billAddresses = invoiceInfoDao.billAddress(compId, form.getCustID());
 				if (!billAddresses.isEmpty()) {
 					InvoiceDto invoiceBillAddr = billAddresses.get(0);

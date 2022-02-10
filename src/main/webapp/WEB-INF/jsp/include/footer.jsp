@@ -6,6 +6,6 @@
 		<a href="http://www.bzcomposer.net" style="color: #05A9C5; text-decoration: none" target="_blank">
 			<!-- Copyright 2013 BZComposer Web. All Rights Reserved. -->
 			<spring:message code="BzComposer.globalfooter.footertext"/>
-		</a>
+		</a>  
 	</p>
 </div>

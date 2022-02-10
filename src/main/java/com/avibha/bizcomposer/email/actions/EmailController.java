@@ -1,17 +1,9 @@
 package com.avibha.bizcomposer.email.actions;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
-import com.avibha.bizcomposer.email.forms.MailTemplateDto;
-import com.avibha.bizcomposer.email.dao.EmailDetails;
-import com.avibha.bizcomposer.email.forms.EmailForm;
-import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
-import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
-import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
-import com.avibha.bizcomposer.sales.dao.TrHistoryLookUp;
-import com.avibha.bizcomposer.sales.forms.CustomerDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.common.utility.CountryState;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.avibha.bizcomposer.email.dao.EmailDetails;
+import com.avibha.bizcomposer.email.forms.EmailForm;
+import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 
 @Controller
 public class EmailController {

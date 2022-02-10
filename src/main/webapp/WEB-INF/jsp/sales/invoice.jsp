@@ -2,9 +2,11 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page isELIgnored="false"%>
 <html>
 <head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
@@ -411,14 +413,22 @@ function ShowShippingAddressPage(form){
 									</tr>
 									<tr>
 										<td style="font-size: 14px;">
-											<form:select path="templateType">
-												<!-- <form:option value="1">Sales Order Standard</form:option> -->
-												<!-- <form:option value="2">Sales Order Charcoal</form:option> -->
+											<%-- <form:select path="templateType" >
 												<form:option value="3">Product Standard</form:option>
 												<form:option value="4">Product Charcoal</form:option>
 												<form:option value="5">Professional Standard</form:option>
 												<form:option value="6">Professional Charcoal</form:option>
-											</form:select>
+											</form:select> --%>
+										<c:set var="invoiceType" scope="page" value="${fn:toLowerCase(fn:substring(invoiceDto.formTemplateType.templateName,0,3))}"/> 
+											<form:select path="templateType">
+												 <c:forEach var="invItems" items="${invoiceDto.formTemplateType.mappingData}" varStatus="status">
+												 
+												 <c:set var="checkboxId" scope="page" value="${invItems.templateNo}"/>
+												 
+												 	<form:option value="${checkboxId}" selected="${invItems.isSelected==true?'selected':''}">${invItems.templateType}</form:option>
+												 </c:forEach>
+											 </form:select>   
+											
 										</td>
 										<td style="font-size: 14px;">
                                             <form:select id="inoiceStyle" path="invoiceStyle" onchange="StyleChange(this.value);">
@@ -1717,7 +1727,7 @@ function TaxValue1(value){
             if(value==field){
                 rt = document.getElementById(i+"tx_rt").value;
                 document.getElementById('tax_field').innerHTML=rt+" %";
-                rate = ( ((yestax/1 ) * (rt/1)) / 100 ).toFixed(2);
+                rate = ( ((yestax/1 ) * (rt/1)) / 100 ).toFixed(2);  
                 document.getElementById('tax_val').value=rate;
                 tax_rate=rt;
                 break;

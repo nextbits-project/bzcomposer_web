@@ -1,33 +1,37 @@
 package com.nxsol.bzcomposer.company;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import com.avibha.common.log.Loger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.TblBusinessType;
-import net.sf.jasperreports.engine.JRException;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMessage;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import net.sf.jasperreports.engine.JRException;
 
 @Controller
 public class AddNewCompanyController {
-
+	@Autowired
+	private AddNewCompanyDAO companyDAO;
 	//@GetMapping  ("/CompanyNew")
 	@ModelAttribute("CompanyInfoDto")
 	@RequestMapping(value = "/CompanyNew", method = {RequestMethod.POST ,RequestMethod.GET})
@@ -57,18 +61,18 @@ public class AddNewCompanyController {
 		if(companyID != null && action.equalsIgnoreCase("createNewCompany"))
 		{
 			request.getSession().setAttribute("CID", companyID);
-			AddNewCompanyDAO dao = new AddNewCompanyDAO();
-			dao.getExistingCompanies(companyID,request,companyInfoForm);
-			dao.getdefaultmodules(companyID,request,companyInfoForm);
-			dao.getBusinessType(companyID,request,companyInfoForm);
+			//AddNewCompanyDAO dao = new AddNewCompanyDAO();
+			companyDAO.getExistingCompanies(companyID,request,companyInfoForm);
+			companyDAO.getdefaultmodules(companyID,request,companyInfoForm);
+			companyDAO.getBusinessType(companyInfoForm);
 			forward="createNewCompany";
 		}
 		if(action.equalsIgnoreCase("createNewCompany2"))
 		{
 			/*request.getSession().setAttribute("createNewCompanyData", form);*/
 			request.getSession().setAttribute("CID", companyID);
-			AddNewCompanyDAO dao = new AddNewCompanyDAO();
-			boolean isDuplicateName = dao.getCheckDuplicateCompanyName(companyID,request,companyInfoFormInput);
+			//AddNewCompanyDAO dao = new AddNewCompanyDAO();
+			boolean isDuplicateName = companyDAO.getCheckDuplicateCompanyName(companyID,request,companyInfoFormInput);
 
 			if (isDuplicateName==true)
 			{
@@ -91,7 +95,7 @@ public class AddNewCompanyController {
 				companyInfoFormInput.setCompanyName(companyInfoFormInput.getCompanyName());
 				String startModuleID = (String)request.getSession().getAttribute("startModuleID");
 				companyInfoForm.setStartModuleID(companyInfoFormInput.getStartModuleID());
-				dao.getModules(companyID,request,companyInfoForm);
+				companyDAO.getModules(companyID,request,companyInfoForm);
 				forward="createNewCompany2";
 			}
 		}
@@ -102,9 +106,9 @@ public class AddNewCompanyController {
 			companyInfoForm.setBusinessTypeId(companyInfoFormInput.getBusinessTypeId());
 			companyInfoForm.setsEndDate(companyInfoFormInput.getsEndDate());
 
-			AddNewCompanyDAO dao = new AddNewCompanyDAO();
-			dao.getCountry(companyID,request,companyInfoForm);
-			dao.getStates(companyID,request,companyInfoForm);
+			//AddNewCompanyDAO dao = new AddNewCompanyDAO();
+			companyDAO.getCountry(companyID,request,companyInfoForm);
+			companyDAO.getStates(companyID,request,companyInfoForm);
 			TblBusinessType type = new TblBusinessType();
 			String DefaultInvoiceStyleID1 = request.getParameter("businessTypeId");
 			int DefaultInvoiceStyleID = Integer.parseInt(DefaultInvoiceStyleID1);
@@ -136,8 +140,8 @@ public class AddNewCompanyController {
 //				forward = "createNewCompany3";
 //				saveErrors(request,errors);
 //			}else{
-			AddNewCompanyDAO dao = new AddNewCompanyDAO();
-			ArrayList<CompanyInfoDto> bca_acctcategory = dao.getbca_acctcategory(companyID,request,companyInfoForm);
+			//AddNewCompanyDAO dao = new AddNewCompanyDAO();
+			ArrayList<CompanyInfoDto> bca_acctcategory = companyDAO.getbca_acctcategory(companyID,request,companyInfoForm);
 			request.setAttribute("bca_acctcategory", bca_acctcategory);
 			forward="createNewCompany4";
 //			}
@@ -147,7 +151,7 @@ public class AddNewCompanyController {
 			companyInfoForm.setvAcctType_Name(companyInfoFormInput.getvAcctType_Name());
 			companyInfoForm.setvAcctCategory_Name(companyInfoFormInput.getvAcctCategory_Name());
 
-			AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
+			//AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
 			companyDAO.getbca_initTerms("0",request,companyInfoForm);
 			companyDAO.getbca_initSalesRep("0",request,companyInfoForm);
 			companyDAO.getbca_initItemCategory("0",request,companyInfoForm);
@@ -164,7 +168,7 @@ public class AddNewCompanyController {
 
 
 
-			AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
+			//AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
 			companyDAO.getInitvccCategory(companyInfoForm);
 			companyDAO.getCutomerGroup(companyInfoForm);
 			companyDAO.getCountry(companyID,request,companyInfoForm);
@@ -266,7 +270,7 @@ public class AddNewCompanyController {
 			companyInfoForm.setvMemoText(companyInfoFormInput.getvMemoText());
 
 
-			AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
+			//AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
 			companyDAO.getbca_initItemCategory(companyID,request,companyInfoForm);
 			forward = "createNewCompany8";
 		}
@@ -292,7 +296,7 @@ public class AddNewCompanyController {
 		if(action.equalsIgnoreCase("createNewCompany10"))
 		{
 			CompanyInfoDto sessionForm = (CompanyInfoDto) request.getSession().getAttribute("createNewCompanyData");
-			AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
+			//AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
 			boolean isDuplicateName = companyDAO.getCheckDuplicateCompanyName(companyID,request,companyInfoForm);
 
 			if(companyInfoForm.getCompanyName()!=null || companyInfoForm.getCompanyName()!="" && isDuplicateName==false)
@@ -326,7 +330,7 @@ public class AddNewCompanyController {
 		}
 		if(action.equalsIgnoreCase("finish3"))
 		{
-			AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
+			//AddNewCompanyDAO companyDAO = new  AddNewCompanyDAO();
 //			ActionErrors errors =  companyInfoForm.validate(mapping, request, action);
 //			if(!errors.isEmpty())
 //			{

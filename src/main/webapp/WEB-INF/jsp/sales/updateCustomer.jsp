@@ -1372,7 +1372,7 @@ $(function() {
 
 </form:form>
 <input type="hidden" id="default_sid" />
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>
 <script>

@@ -21,24 +21,24 @@ import org.apache.struts.action.ActionMapping;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
 
-public class SalesBordAction extends Action {
-	/*
+public class SalesBordAction extends Action {/*
+	
 	 * (non-Javadoc)
 	 * 
 	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping,
 	 *      org.apache.struts.action.ActionForm,
 	 *      javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
-	 */
+	 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		String forward = "success";
 		SalesBoardDto salesBoardDto = new SalesBoardDto();
 		String action = request.getParameter("tabid");
-		/*Path p = new Path();
+		Path p = new Path();
 		p.setPathvalue(request.getContextPath());
-		request.getSession().setAttribute("path", p);*/
+		request.getSession().setAttribute("path", p);
 		if(request.getSession().isNew()|| ((String) request.getSession().getAttribute("CID"))==null || ((Path) request.getSession().getAttribute("path"))==null){
 			forward="Expired";
 		}
@@ -117,5 +117,5 @@ public class SalesBordAction extends Action {
 		
 		return mapping.findForward(forward);
 	}
-
+*/
 }

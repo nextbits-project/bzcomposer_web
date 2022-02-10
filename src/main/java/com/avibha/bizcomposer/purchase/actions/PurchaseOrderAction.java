@@ -29,16 +29,16 @@ import com.avibha.bizcomposer.sales.forms.EstimationForm;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.Path;
 
-public class PurchaseOrderAction extends Action {
+public class PurchaseOrderAction extends Action {/*
 
-	/*
+	
 	 * (non-Javadoc)
 	 * 
 	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping,
 	 *      org.apache.struts.action.ActionForm,
 	 *      javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
-	 */
+	 
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
 		String forward = "success";
@@ -197,5 +197,5 @@ public class PurchaseOrderAction extends Action {
 		}
 		return mapping.findForward(forward);
 	}
-
+*/
 }

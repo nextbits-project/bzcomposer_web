@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<%@include file="/include/header.jsp"%>
+<%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <title>${sessionScope.user} - <spring:message code="BzComposer.customerlisttitle"/></title>
 <style>
 table.tabla-customListOds { width: 100%; border: 1px solid rgb(207, 207, 207); margin: 5px; }
@@ -147,7 +147,7 @@ table.tabla-customListOds tbody tr td { font-size: 14px; }
 	</div>
 </div>
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <%@ include file="/include/emailModal.jsp"%>
 <!-- Javascript begins here -->
 <script type="text/javascript">

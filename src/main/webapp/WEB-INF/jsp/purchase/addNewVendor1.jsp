@@ -988,7 +988,7 @@ $(document).ready(function(){
     <input type="hidden" name="itemIndex" id="itemIndex" value="${itemIndex}" />
 </div>
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 </body>

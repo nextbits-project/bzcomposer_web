@@ -19,6 +19,9 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
@@ -26,10 +29,12 @@ import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
-import com.nxsol.bizcomposer.common.TblBudget;
 
+@Service
 public class SalesBoardInfo {
 
+	@Autowired
+	private ConfigurationInfo configInfo;
 	public ArrayList SalesRecordSearch(String compId, String invoiceReportType, SalesBoardDto salesBoardDto) {
 
 		String oDate1 = salesBoardDto.getOrderDate1();
@@ -50,7 +55,7 @@ public class SalesBoardInfo {
 		String sqlString="";
 		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<SalesBoard> objList = new ArrayList<>();
-		ConfigurationInfo configInfo = new ConfigurationInfo();
+		//ConfigurationInfo configInfo = new ConfigurationInfo();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
 			stmt = con.createStatement();

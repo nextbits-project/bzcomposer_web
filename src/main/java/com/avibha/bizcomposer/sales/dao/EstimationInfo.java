@@ -11,27 +11,34 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.avibha.bizcomposer.sales.forms.EstimationDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
+import com.avibha.bizcomposer.sales.forms.EstimationDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
-import com.avibha.common.utility.CountryState;
 
 /*
  * 
  */
+@Service
 public class EstimationInfo {
 
+	@Autowired
+    private InvoiceInfoDao invoice;
+	
 	public ArrayList getItemList(String compId) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
@@ -1711,7 +1718,7 @@ public class EstimationInfo {
 				form.setMemo(rs.getString("Memo"));
 			}
 			/* Bill Address */
-			InvoiceInfoDao invoice = new InvoiceInfoDao();
+			//InvoiceInfoDao invoice = new InvoiceInfoDao();
 			ArrayList<InvoiceDto> billAddresses = invoice.billAddress(compId, form.getCustID());
 			if(!billAddresses.isEmpty()) {
 				InvoiceDto invoiceBillAddr = billAddresses.get(0);

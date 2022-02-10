@@ -12,14 +12,14 @@
 <link href="${pageContext.request.contextPath}/styles/lightbox.css" media="screen" rel="Stylesheet" type="text/css" />
 <link href="${pageContext.request.contextPath}/styles/epoch_styles.css" rel="stylesheet" type="text/css" />
 <link href="${pageContext.request.contextPath}/styles/styles.css" rel="stylesheet" type="text/css" />
-<link href="${pageContext.request.contextPath}/inputstyle/bootstrap-select.css" rel="stylesheet" type="text/css" />
-<link href="${pageContext.request.contextPath}/inputstyle/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+<!-- <link href="../includeAll/bootstrap-select.css" rel="stylesheet" type="text/css" />
+<link href="../includeAll/bootstrap-select.min.css" rel="stylesheet" type="text/css" /> -->
 <!-- <link href='http://fonts.googleapis.com/css?family=Philosopher:400,700,400italic,700italic&subset=cyrillic,latin' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"> -->
 
 
-<link href='${pageContext.request.contextPath}/includeAll/font.css' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/includeAll/bootstrap.min.css">
+<link href='../includeAll/font.css' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="../includeAll/bootstrap.min.css">
 
 <link href="${pageContext.request.contextPath}/tableStyle/css/defaultTheme.css" rel="stylesheet" media="screen" />
 <link href="${pageContext.request.contextPath}/tableStyle/css/myTheme.css" rel="stylesheet" media="screen" />
@@ -54,7 +54,7 @@
 <script src="${pageContext.request.contextPath}/scripts/myAppUtility.js" type="text/javascript"></script>
 <%-- commented on 25-09-2019
 <script src="${pageContext.request.contextPath}/inputstyle/bootstrap-select.js" type="text/javascript"></script> --%>
-<script src="${pageContext.request.contextPath}/inputstyle/bootstrap-select.min.js" type="text/javascript"></script>
+<!-- <script src="../includeAll/bootstrap-select.min.js" type="text/javascript"></script> -->
 <script src="${pageContext.request.contextPath}/dist/js/jquery.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/dist/js/hoverIntent.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/dist/js/superfish.js" type="text/javascript"></script>
@@ -88,26 +88,30 @@
 <!--  -->
 
 <!-- Date 18 Aug 2020: loaded css and js files on local directory -->
-<link type="text/css" href="${pageContext.request.contextPath}/includeAll/jquery.dataTables.min.css"/>
-<link type="text/css" href="${pageContext.request.contextPath}/includeAll/buttons.dataTables.min.css">
-<script type="text/javascript" src="${pageContext.request.contextPath}/includeAll/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/includeAll/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/includeAll/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/includeAll/pdfmake.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/includeAll/vfs_fonts.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/includeAll/buttons.html5.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/includeAll/jszip.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/includeAll/buttons.html5.min.js"></script>
+<link type="text/css" href="../includeAll/jquery.dataTables.min.css"/>
+<link type="text/css" href="../includeAll/buttons.dataTables.min.css">
+<script type="text/javascript" src="../includeAll/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="../includeAll/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../includeAll/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="../includeAll/pdfmake.min.js"></script>
+<script type="text/javascript" src="../includeAll/vfs_fonts.js"></script>
+<script type="text/javascript" src="../includeAll/buttons.html5.min.js"></script>
+<script type="text/javascript" src="../includeAll/jszip.min.js"></script>
+<script type="text/javascript" src="./includeAll/buttons.html5.min.js"></script>
 
-<script src="${pageContext.request.contextPath}/includeAll/jquery-3.3.1.slim.min.js"></script>
-<script src="${pageContext.request.contextPath}/includeAll/popper.min.js"></script>
-<script src="${pageContext.request.contextPath}/includeAll/bootstrap.min.js"></script>
+<script src="../includeAll/jquery-3.3.1.slim.min.js"></script>
+<script src="../includeAll/popper.min.js"></script>
+<script src="../includeAll/bootstrap.min.js"></script>
 
-<script src="${pageContext.request.contextPath}/includeAll/jquery-1.11.1.min.js"></script>
-<script src="${pageContext.request.contextPath}/includeAll/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/includeAll/jquery-ui.css" />
-<!--  -->
-
+<script src="../includeAll/jquery-1.11.1.min.js"></script>
+<script src="../includeAll/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="../includeAll/jquery-ui.css" />
+<!-- favicon settings @Maimur Hasan -->  
+<link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+<link rel="shortcut icon" href="../images/favicon.ico">
+<link rel="manifest" href="../images/site.webmanifest">
 <!-- tabs -->
 <%--   <link href="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui-tab.css" rel="stylesheet" media="screen" /> --%>
 <%--   <script src="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui.js"></script> --%>
@@ -182,3 +186,4 @@ $(document).ready(function() {
    }); */
 });
 </script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>

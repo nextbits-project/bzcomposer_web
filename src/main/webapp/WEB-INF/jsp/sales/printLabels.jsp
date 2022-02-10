@@ -211,7 +211,7 @@ function showlabelValidationDialog()
 </div>
 <!-- end Contents -->
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>
 <script type="text/javascript">

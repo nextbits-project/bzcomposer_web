@@ -1,13 +1,18 @@
 package com.avibha.bizcomposer.File.forms;
 
-import com.nxsol.bizcomposer.common.JProjectUtil;
-import com.nxsol.bizcomposer.common.TblBalanceSheet;
-import com.nxsol.bizcomposer.common.TblCategory;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.nxsol.bizcomposer.common.TblBalanceSheet;
+import com.nxsol.bizcomposer.common.TblCategory;
+import com.nxsol.bzcomposer.company.BusinessType;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author sarfrazmalik
@@ -17,6 +22,9 @@ public class CompanyInfoDto {
     private int userGroupID = 0;
     private String countryName;
     private String cityName;
+    
+    
+    private @Setter @Getter List<BusinessType> businessTypes;
 
     public String getCountryName() {
         return countryName;

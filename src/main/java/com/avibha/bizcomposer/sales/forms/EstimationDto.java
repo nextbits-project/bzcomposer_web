@@ -1,6 +1,7 @@
 package com.avibha.bizcomposer.sales.forms;
 
 import com.avibha.bizcomposer.sales.dao.Item;
+import com.bzcomposer.configuration.module.form.templates.BCA_FormTemplateType;
 
 import java.util.List;
 
@@ -138,12 +139,22 @@ public class EstimationDto {
     private int templateType;
     private List<Item> cart;
     private String tabid;
+    
+    private BCA_FormTemplateType formTemplateType;
 
     public String getCname() {
         return cname;
     }
 
-    public void setCname(String cname) {
+    public BCA_FormTemplateType getFormTemplateType() {
+		return formTemplateType;
+	}
+
+	public void setFormTemplateType(BCA_FormTemplateType formTemplateType) {
+		this.formTemplateType = formTemplateType;
+	}
+
+	public void setCname(String cname) {
         this.cname = cname;
     }
 

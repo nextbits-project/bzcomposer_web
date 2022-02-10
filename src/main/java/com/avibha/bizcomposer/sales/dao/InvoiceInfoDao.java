@@ -1,3 +1,4 @@
+
 /*
  * Author : Avibha IT Solutions Copyright 2007 Avibha IT Solutions. All rights
  * reserved. AVIBHA PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -6,12 +7,34 @@
 
 package com.avibha.bizcomposer.sales.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.sales.forms.*;
-import com.avibha.common.constants.AppConstants;
+import com.avibha.bizcomposer.sales.forms.CreditCardDto;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceForm;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
@@ -19,23 +42,15 @@ import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.avibha.common.utility.MyUtility;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
-import org.apache.struts.util.LabelValueBean;
-
-import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /*
  * 
  */
+@Service
 public class InvoiceInfoDao {
 
+	@Autowired
+	private ConfigurationInfo configInfo;
 	public ArrayList getItemList(String compId) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
@@ -98,7 +113,7 @@ public class InvoiceInfoDao {
 		ArrayList<InvoiceDto> objList = new ArrayList<>();
 		CountryState conState = new CountryState();
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
@@ -165,7 +180,7 @@ public class InvoiceInfoDao {
 		PreparedStatement pstmt = null;
 		ArrayList<InvoiceDto> objList = new ArrayList<>();
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
@@ -547,10 +562,10 @@ public class InvoiceInfoDao {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
-		PreparedStatement pstmt = null;
+		PreparedStatement pstmt = null;  
 		int lastOrderNo = 0;
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			String sqlString = "SELECT OrderNum FROM bca_invoice WHERE CompanyID=? AND invoiceStatus in (0,2) ORDER BY OrderNum DESC";
@@ -585,7 +600,7 @@ public class InvoiceInfoDao {
 		PreparedStatement pstmt = null;
 		int lastOrderNo = 0;
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+		//	ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			String sqlString = "select SONum from bca_invoice  where CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID IN (1,7,9)  order by SONum desc";
@@ -704,40 +719,6 @@ public class InvoiceInfoDao {
 		return exist;
 	}
 
-	public Boolean checkClientVendorDetails(String companyID, int clientVendorId) {
-		// TODO Auto-generated method stub
-		Boolean isClientVendorDetailsExits = false;
-		SQLExecutor db = new SQLExecutor();
-		Connection con = null;
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
-        String sql ="SELECT count(*) as count  FROM bca_clientvendor WHERE  ClientVendorID ="+clientVendorId+" AND Status='N' AND CompanyID="+companyID;
-        try {
-        	con = db.getConnection();
-        	pstmt = con.prepareStatement(sql);
-            rs = pstmt.executeQuery(sql);
-            if (rs.next()) {
-            	int count  = rs.getInt("count");
-            	if(count != 0) {
-            		isClientVendorDetailsExits = true;	
-            	}
-            	
-            }
-            Loger.log("Sql query =="+sql);
-        } catch (SQLException ee) {
-			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return isClientVendorDetailsExits;
-	}
 	public boolean Save(String compId, InvoiceDto form, String custId) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
@@ -914,7 +895,7 @@ public class InvoiceInfoDao {
 			pstmt1.setString(4, form.getBsAddressID());
 			pstmt1.setString(5, form.getInvoiceStyle());
 			pstmt1.setInt(6, salesOrderType); // Sales Order Type id
-			pstmt1.setInt(7, cid);
+			pstmt1.setString(7, form.getCompanyID());
 			pstmt1.setDouble(8, form.getWeight());
 			pstmt1.setDouble(9, form.getSubtotal());
 			pstmt1.setDouble(10, form.getTax());
@@ -4087,3 +4068,4 @@ public class InvoiceInfoDao {
 		return status;
 	}
 }
+

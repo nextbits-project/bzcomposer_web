@@ -567,7 +567,7 @@
 		</div>
 	</div>
 </form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <script>
         var defaultCountry = 2;
         var defaultStateWork = 2;

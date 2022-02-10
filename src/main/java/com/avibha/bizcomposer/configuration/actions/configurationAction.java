@@ -13,26 +13,34 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
-import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
-import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
-import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.configurationForm;
 import com.avibha.common.utility.Path;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
+import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 
+@Service
 public class configurationAction extends Action 
 {
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
+	@Autowired
+	private ConfigurationDetails cDetails;
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException 
 	{
@@ -64,16 +72,16 @@ public class configurationAction extends Action
 			 
 			 String DeActiveInvoiceStylelist = request.getParameter("DeActiveInvoiceStylelist");
 			 String[] DeActiveInvoiceStylelists = DeActiveInvoiceStylelist.split(",");
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveInvoiceStyle(configDto,ActiveInvoiceStylelists,DeActiveInvoiceStylelists);
 			 
 		 }
 		 else if(action.equalsIgnoreCase("config"))
 		 {
 			//System.out.println("Inside config27 condition");
-			 /*ConfigurationDetails cDetails = new ConfigurationDetails();
+			 /*//ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 
@@ -94,8 +102,8 @@ public class configurationAction extends Action
 			 request.setAttribute("isSelectedWeightID", isSelectedWeightID);
 			 
 			 
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 String tab = request.getParameter("tab");
 			 //System.out.println("selected tab is:"+tab);
 			 request.getSession().setAttribute("CID", companyID);
@@ -125,7 +133,7 @@ public class configurationAction extends Action
 		 {
 			 String modalNewPassword = request.getParameter("modalNewPassword");
 			 System.out.println("modalNewPassword"+modalNewPassword);
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getAdministratorDetails(companyID,emailAddress,modalNewPassword);
 			 
 			 //e.add("common.recoversucess", new ActionMessage("err.general.success"));
@@ -133,8 +141,8 @@ public class configurationAction extends Action
 		 }
 		 else if(action.equalsIgnoreCase("config1"))
 		 {
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 String tab = request.getParameter("tab");
 			 //System.out.println("selected tab is:"+tab);
 			 request.getSession().setAttribute("CID", companyID);
@@ -224,8 +232,8 @@ public class configurationAction extends Action
 				 dao.deleteJobTitle(companyID,request,configDto,id);
 			 }
 			 
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 
 			 ConfigurationDAO dao1 = new ConfigurationDAO();
 
@@ -246,7 +254,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("addDays"))
 		 {
-			 /*ConfigurationDetails configDetails = new ConfigurationDetails();
+			 /*//ConfigurationDetails configDetails = new ConfigurationDetails();
 			 configDetails.getConfigurationInfo(request,configDto);*/
 			 //System.out.println("inside addDays method........");
 			 forward="success2";
@@ -255,8 +263,8 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("config2"))
 		 {
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 String tab = request.getParameter("tab");
 			 request.getSession().setAttribute("CID", companyID);
 			 //System.out.println("selected companyId is:"+companyID);
@@ -317,8 +325,8 @@ public class configurationAction extends Action
 			 
 		 else if(action.equalsIgnoreCase("config3"))
 		 {
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 String tab = request.getParameter("tab");
 			 //System.out.println("selected tab is:"+tab);
 			 request.getSession().setAttribute("CID", companyID);
@@ -348,8 +356,8 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("config4"))
 		 {
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 String tab = request.getParameter("tab");
 			 //System.out.println("selected tab is:"+tab);
 			 forward="success5";
@@ -360,8 +368,8 @@ public class configurationAction extends Action
 		 else if(action.equalsIgnoreCase("config5"))
 		 {
 			 //System.out.println("Inside config5 condition");
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 String tab = request.getParameter("tab");
 			 //System.out.println("selected tab is:"+tab);
 			 request.getSession().setAttribute("CID", companyID);
@@ -438,7 +446,7 @@ public class configurationAction extends Action
 			 
 			 dao.getBillingTemplate(companyID, request, configDto);
 			 
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 // Added on 04-05-2020
@@ -454,7 +462,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("config04"))
 		 {
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getAdministratorDetails(companyID,configDto,emailAddress);
 			 String UserName = configDto.getEmailAddress();
 			 String Password = configDto.getPassword();
@@ -490,7 +498,7 @@ public class configurationAction extends Action
 			 request.setAttribute("pbValue", pbValue);
 			 request.setAttribute("mcValue", mailValue);
 			 request.setAttribute("showCmbValue", showCmbValue);
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 forward="success14";
 			 System.out.println("goes to billing page......................");
@@ -589,7 +597,7 @@ public class configurationAction extends Action
 		 	
 			 request.setAttribute("accountId", accountID);
 			 
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 dao.getMasterReason(configDto);
@@ -610,7 +618,7 @@ public class configurationAction extends Action
 		 else if(action.equalsIgnoreCase("config8"))
 		 {
 			 //System.out.println("Inside config8 condition");
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 String reorder = configDto.getShowReorderPointList();
@@ -643,7 +651,7 @@ public class configurationAction extends Action
 			 //System.out.println("Inside config10 condition");
 			 
 			 ConfigurationDAO dao = new ConfigurationDAO();
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.getConfigurationInfo(request, configDto);
 			 
 			 //int sortId = configDto.getSortBy();
@@ -690,8 +698,8 @@ public class configurationAction extends Action
 		 {
 			 //System.out.println("Inside config11 condition");
 			 
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 
 			 ConfigurationDAO dao = new ConfigurationDAO();
 			 dao.getCountry(companyID, request, configDto);
@@ -715,8 +723,8 @@ public class configurationAction extends Action
 		 else if(action.equalsIgnoreCase("config13"))
 		 {
 			 //System.out.println("Inside config13 condition");
-			 //ConfigurationDetails configDetails = new ConfigurationDetails();
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			 ////ConfigurationDetails configDetails = new ConfigurationDetails();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 String showReminderStatus = configDto.getShowReminder().equals("1")?"on":"off";
 			 request.setAttribute("showReminderStatus", showReminderStatus);
 			 
@@ -790,7 +798,7 @@ public class configurationAction extends Action
 			 
 			 request.setAttribute("accountId", accountID);
 			 
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 dao.getMasterReason(configDto);
@@ -872,8 +880,8 @@ public class configurationAction extends Action
 		 else if(action.equalsIgnoreCase("config23"))
 		 {
 			 //System.out.println("Inside config23 condition");
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 String isChecked = configDto.getAssessFinanceCharge().equals("1")?"on":"off";
 			 request.setAttribute("isChecked", isChecked);
 			 forward="success52";
@@ -901,8 +909,8 @@ public class configurationAction extends Action
 		 {
 			 //System.out.println("Inside config26 condition");
 			 
-			 ConfigurationDetails configDetails = new ConfigurationDetails();
-			 configDetails.getConfigurationInfo(request,configDto);
+			 //ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			 forward="success55";
 			 System.out.println("goes to manage service type page......................");
 		 }
@@ -910,9 +918,9 @@ public class configurationAction extends Action
 		 else if(action.equalsIgnoreCase("config27"))
 		 {
 			 //System.out.println("Inside config27 condition");
-			 /*ConfigurationDetails cDetails = new ConfigurationDetails();
+			 /*//ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-			 ConfigurationInfo configInfo = new ConfigurationInfo();
+			 //ConfigurationInfo configInfo = new ConfigurationInfo();
 			 configInfo.getCongurationRecord(companyID,configDto,request);
 			 
 			 String isSalesOrderBoard = configDto.getSalesOrderBoard();
@@ -969,7 +977,7 @@ public class configurationAction extends Action
 		 /* Show the footnote list & related information in the special window */
 		 else if(action.equalsIgnoreCase("ShowEditFootnote"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.newFootnote(request,configDto);
 			 forward="success1";
 		 }
@@ -977,7 +985,7 @@ public class configurationAction extends Action
 		 /* Delete the selected footnote & its related information */
 		 else if(action.equalsIgnoreCase("DeleteFootnote"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteFootnote(request,configDto);
 			 forward="success1";
 		 }
@@ -985,7 +993,7 @@ public class configurationAction extends Action
 		 /*  Save the new footnote as user enter */
 		 else if(action.equalsIgnoreCase("SaveFootnote"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveFootnote(request,configDto);
 			 forward="success1";
 		 }
@@ -993,7 +1001,7 @@ public class configurationAction extends Action
 		 /* Update the existing footnote & its information */
 		 else if(action.equalsIgnoreCase("UpdateFootnote"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateFootnote(request,configDto);
 			 forward="success1";
 		 }
@@ -1003,7 +1011,7 @@ public class configurationAction extends Action
 		 {
 			 String multiUserConnection1 = request.getParameter("multiUserConnection");
 			 int multiUserConnection = Integer.valueOf(multiUserConnection1);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveRecords(configDto,request,multiUserConnection);
 			 cDetails.getConfigurationInfo(request,configDto);
 			 e.add("common.recoversucess", new ActionMessage("err.general.success"));
@@ -1012,7 +1020,7 @@ public class configurationAction extends Action
 		 }
 		 
 		 else if(action.equalsIgnoreCase("SaveConfigurationGeneral")) {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveRecordsGeneral(configDto, request);
 			 cDetails.getConfigurationInfo(request,configDto);
 			 e.add("common.recoversucess", new ActionMessage("err.general.success"));
@@ -1023,7 +1031,7 @@ public class configurationAction extends Action
 		 else if(action.equalsIgnoreCase("SaveConfigurationEstimation"))
 		 {
 			 
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveRecordsEstimation(configDto,request);
 			 cDetails.getConfigurationInfo(request,configDto);
 			 e.add("common.recoversucess", new ActionMessage("err.general.success"));
@@ -1040,7 +1048,7 @@ public class configurationAction extends Action
 			 System.out.println("is showCombinedBilling Checked?:"+showCombinedValue+""
 			 		+ "\nis PrintBills Checked?:"+printBillValue+"\nis MailToCustomer Checked?:"+mailCustomerValue);
 			 
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveRecordsBilling(configDto,request,printBillValue,mailCustomerValue,showCombinedValue);
 			 cDetails.getConfigurationInfo(request,configDto);
 			 e.add("common.recoversucess", new ActionMessage("err.general.success"));
@@ -1050,7 +1058,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("SaveConfigurationInventorySettng"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveRecordsInventorySettings(configDto, request);
 			 cDetails.getConfigurationInfo(request, configDto);
 			 forward = "success23";
@@ -1058,7 +1066,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("SaveConfigurationAccountPayment"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 
 			 cDetails.saveAccountPaymentDetails(configDto,request,companyID);
 			 cDetails.getConfigurationInfo(request, configDto);
@@ -1067,7 +1075,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("SavePerformance"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			
 			 cDetails.savePerformance(configDto,request,companyID);
 			 cDetails.getConfigurationInfo(request, configDto);
@@ -1076,7 +1084,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("SaveFinanceCharges"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 
 			 String assetFinanceChargeStatus = request.getParameter("assetFinanceChargeStatus");
 			 cDetails.saveFinanceCharges(configDto,request,companyID,assetFinanceChargeStatus);
@@ -1093,7 +1101,7 @@ public class configurationAction extends Action
 			 System.out.println("*****Inside addNewRMAReson*****"+"\nNew Reason:"+Reason+
 				"\nParent Reason ID:"+parentReasonID+"\nCompanyID:"+companyID);
 			 
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.addRMAReason(configDto,companyID,Reason,parentReasonID);
 			 forward = "success35";
 		 }
@@ -1109,7 +1117,7 @@ public class configurationAction extends Action
 			 System.out.println("*****Inside updateRMAReson*****"+"\nReasonId:"+rId+"\nReason:"+Reason+
 				"\nParent Reason ID:"+parentReasonID);
 			 
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateMAReason(configDto,Reason,reasonId,parentReasonID);
 			 forward = "success35";
 		 }
@@ -1123,14 +1131,14 @@ public class configurationAction extends Action
 			 System.out.println("*****Inside deleteRMAReson*****"+"\nReason:"+Reason+
 				"\nParent Reason ID:"+parentReasonID);
 			 
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteRMAReason(configDto,Reason,parentReasonID);
 			 forward = "success35";
 		 }
 		 
 		 else if(action.equalsIgnoreCase("SaveDefaultBank"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveDefaultBank(configDto,request);
 			 cDetails.getConfigurationInfo(request,configDto);
 			 /*e.add("common.recoversucess", new ActionMessage("err.general.success"));
@@ -1140,7 +1148,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("SaveDashboardSetting"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 
 			 String salesOrder = request.getParameter("salesOrderBoard");
 			 String itemReceived = request.getParameter("itemReceivedBoard"); 
@@ -1154,7 +1162,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("SaveReminderSetting"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 
 			 String showReminderStatus = request.getParameter("showReminderStatus");
 
@@ -1165,7 +1173,7 @@ public class configurationAction extends Action
 		 
 		 else if(action.equalsIgnoreCase("SaveCustomerInvoiceSettings"))
 		 {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 
 			 configDto.setSelectedTermId(Integer.parseInt(request.getParameter("selectedTermId")));
 			 configDto.setSelectedSalesRepId(Integer.parseInt(request.getParameter("selectedSalesRepId")));
@@ -1245,7 +1253,7 @@ public class configurationAction extends Action
 		 {
 			 String description = request.getParameter("Description");
 			 System.out.println("New Description To be added:"+description);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.addNewDescription(configDto,companyID,description);
 			 forward = "success21";
 		 }
@@ -1255,7 +1263,7 @@ public class configurationAction extends Action
 			 String description = request.getParameter("Description");
 			 String locationID = request.getParameter("locationID");
 			 System.out.println("LocationId:"+locationID+"\nDescription To be updated:"+description);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateDescription(configDto,companyID,description,locationID);
 			 forward = "success21";
 		 }
@@ -1264,7 +1272,7 @@ public class configurationAction extends Action
 		 {
 			 int descriptionID = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("locationId To be Delete:"+descriptionID);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteLocation(companyID,descriptionID);
 			 forward = "success21";
 		 }
@@ -1273,7 +1281,7 @@ public class configurationAction extends Action
 		 {
 			 String description = request.getParameter("Description");
 			 System.out.println("New Message To be added:"+description);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.addNewMessage(configDto,companyID,description);
 			 forward = "success21";
 		 }
@@ -1283,7 +1291,7 @@ public class configurationAction extends Action
 			 String message = request.getParameter("Description");
 			 String messageId = request.getParameter("locationID");
 			 System.out.println("MessageId:"+messageId+"\nNew Message To be updated:"+message);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateMessage(configDto,companyID,message,messageId);
 			 forward = "success21";
 		 }
@@ -1292,7 +1300,7 @@ public class configurationAction extends Action
 		 {
 			 int messageID = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("MessageId To be Delete:"+messageID);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteMessage(companyID,messageID);
 			 forward = "success21";
 		 }
@@ -1301,7 +1309,7 @@ public class configurationAction extends Action
 		 {
 			 String description = request.getParameter("Description");
 			 System.out.println("New Sales Representative To be added:"+description);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.addNewSalesRep(configDto,companyID,description);
 			 forward = "success21";
 		 }
@@ -1311,7 +1319,7 @@ public class configurationAction extends Action
 			 String salesRep = request.getParameter("Description");
 			 String salesRepId = request.getParameter("locationID");
 			 System.out.println("SalesRepId:"+salesRepId+"\nNSales Representative:"+salesRep);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateSalesRep(configDto,companyID,salesRep,salesRepId);
 			 forward = "success21";
 		 }
@@ -1320,7 +1328,7 @@ public class configurationAction extends Action
 		 {
 			 int salesRepId = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("Sales Representative Id To be Deleted:"+salesRepId);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteSalesRep(configDto,companyID,salesRepId);
 			 forward = "success21";
 		 }
@@ -1330,7 +1338,7 @@ public class configurationAction extends Action
 			 String term = request.getParameter("Description");
 			 int days = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("New Term To be added:"+term+"\n Days:"+days);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.addNewTerm(configDto,companyID,term,days);
 			 forward = "success21";
 		 }
@@ -1341,7 +1349,7 @@ public class configurationAction extends Action
 			 String termId = request.getParameter("locationID");
 			 int days = Integer.parseInt(request.getParameter("isDefault"));
 			 System.out.println("TermId:"+termId+"\nTerm:"+term+"\nDays:"+days);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateTerm(configDto,companyID,term,termId,days);
 			 forward = "success21";
 		 }
@@ -1350,7 +1358,7 @@ public class configurationAction extends Action
 		 {
 			 int termId = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("Term Id To be Deleted:"+termId);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteTerm(companyID,termId);
 			 forward = "success21";
 		 }
@@ -1360,7 +1368,7 @@ public class configurationAction extends Action
 			 String term = request.getParameter("Description");
 			 float tax = Float.parseFloat((request.getParameter("locationID")));
 			 System.out.println("New Term To be added:"+term+"\n Tax:"+tax);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.addNewSalesTax(configDto,companyID,term,tax);
 			 forward = "success21";
 		 }
@@ -1371,7 +1379,7 @@ public class configurationAction extends Action
 			 String salesTaxId = request.getParameter("locationID");
 			 float tax = Float.parseFloat(request.getParameter("isDefault"));
 			 System.out.println("SalesTaxId:"+salesTaxId+"\nSalesTaxName:"+salesTax+"\nTax:"+tax);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateSalesTax(configDto,companyID,salesTax,salesTaxId,tax);
 			 forward = "success21";
 		 }
@@ -1380,7 +1388,7 @@ public class configurationAction extends Action
 		 {
 			 int salesTaxId = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("SalesTax Id To be Deleted:"+salesTaxId);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteSalesTax(companyID,salesTaxId);
 			 forward = "success21";
 		 }
@@ -1391,7 +1399,7 @@ public class configurationAction extends Action
 			 String isDefault = request.getParameter("isDefault");
 			 int days = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("New CreditTerm To be added:"+term+"\nDays:"+days+"\nIs Default:"+isDefault);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.addNewCreditTerms(configDto,companyID,term,days,isDefault);
 			 forward = "success21";
 		 }
@@ -1403,7 +1411,7 @@ public class configurationAction extends Action
 			 String isDefault = request.getParameter("isDefault");
 			 String days = request.getParameter("creditTermDays");
 			 System.out.println("CreditTermId:"+creditTermId+"\nCreditTerm:"+creditTerm+"\nDefault is checked?:"+isDefault+"\nDays:"+days);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateCreditTerm(configDto,companyID,creditTerm,creditTermId,isDefault,days);
 			 forward = "success21";
 		 }
@@ -1412,7 +1420,7 @@ public class configurationAction extends Action
 		 {
 			 int creditTermId = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("creditTerm Id To be Deleted:"+creditTermId);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteCreditTerm(companyID,creditTermId);
 			 forward = "success21";
 		 }
@@ -1422,7 +1430,7 @@ public class configurationAction extends Action
 			 String refundReason = request.getParameter("Description");
 			 //String allowRefundChecked = request.getParameter("isDefault");
 			 System.out.println("Refund Reason to be inserted:"+refundReason);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.insertRefundReason(companyID,refundReason);
 			 forward = "success21";
 		 }
@@ -1432,7 +1440,7 @@ public class configurationAction extends Action
 			 int refundReasonId = Integer.parseInt(request.getParameter("locationID"));
 			 String newRefundReason = request.getParameter("Description");
 			 System.out.println("Old Refund Reason Id:"+refundReasonId+"\nNew RefundReason to be updated:"+newRefundReason);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateRefundReason(companyID,refundReasonId,newRefundReason);
 			 forward = "success21";
 		 }
@@ -1441,13 +1449,13 @@ public class configurationAction extends Action
 		 {
 			 int refundReasonId = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("RefundReasonId to be updated:"+refundReasonId);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteRefundReason(companyID,refundReasonId);
 			 forward = "success21";
 		 }
 		 
 		 else if(action.equalsIgnoreCase("makeDefaultReason")) {
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.setDefaultRefundReason(Integer.parseInt(request.getParameter("reasonID")));
 			 forward = "success21";
 		 }
@@ -1457,7 +1465,7 @@ public class configurationAction extends Action
 			 String jobCategory = request.getParameter("Description");
 			 configDto.setRecurringServiceBill(request.getParameter("recurringServiceBill"));
 			 System.out.println("New Job Category to be entered:"+jobCategory);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.addJobCategory(configDto,companyID,jobCategory);
 			 forward = "success21";
 		 }
@@ -1466,7 +1474,7 @@ public class configurationAction extends Action
 		 {
 			 int jobCategoryId = Integer.parseInt(request.getParameter("locationID"));
 			 String newJobCategoryName = request.getParameter("Description");
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.updateJobCategory(configDto,companyID,jobCategoryId,newJobCategoryName);
 			 forward = "success21";
 		 }
@@ -1475,7 +1483,7 @@ public class configurationAction extends Action
 		 {
 			 int jCategoryId = Integer.parseInt(request.getParameter("locationID"));
 			 System.out.println("JobCategoryId to be deleted:"+jCategoryId);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.deleteJobCategory(companyID,jCategoryId);
 			 forward = "success21";
 		 }
@@ -1485,7 +1493,7 @@ public class configurationAction extends Action
 			 String billName = request.getParameter("Description");
 			 String recurringServiceBill = request.getParameter("isDefault");
 			 System.out.println("Service Bill Name:"+billName+"\nis RecurringServiceBill Checkbox is checked?:"+recurringServiceBill);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.editServiceBillInfo(configDto,companyID,billName,recurringServiceBill);
 			 forward = "success21";
 		 }
@@ -1507,7 +1515,7 @@ public class configurationAction extends Action
 			 configDto.setSelectedActiveEmployeeId(Integer.parseInt(request.getParameter("selectedActiveEmployeeId")));
 			 configDto.setSelectedCategoryId(Integer.parseInt(request.getParameter("selectedCategoryId")));
 
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveVendorPurchaseValues(configDto, companyID);
 			 //request.setAttribute("tab", tab);
 			 //forward = "success25";
@@ -1522,8 +1530,8 @@ public class configurationAction extends Action
 		 /* Show the set prefernces window which is useful to set the preference information. */
 		 else if(action.equalsIgnoreCase("ShowSetPreference"))
 		 {
-			ConfigurationDetails configDetails = new ConfigurationDetails();
-			configDetails.getConfigurationInfo(request,configDto);
+			//ConfigurationDetails configDetails = new ConfigurationDetails();
+			 cDetails.getConfigurationInfo(request,configDto);
 			forward = "success_setPreference";
 		 }
 		 
@@ -1532,7 +1540,7 @@ public class configurationAction extends Action
 		 {
 			 String multiUserConnection1 = request.getParameter("multiUserConnection");
 			 int multiUserConnection = Integer.valueOf(multiUserConnection1);
-			 ConfigurationDetails cDetails = new ConfigurationDetails();
+			 //ConfigurationDetails cDetails = new ConfigurationDetails();
 			 cDetails.saveRecords(configDto,request,multiUserConnection);
 			 cDetails.getConfigurationInfo(request,configDto);
 			 forward = "success_setPreference";

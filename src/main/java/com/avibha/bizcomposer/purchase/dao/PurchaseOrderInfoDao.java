@@ -5,27 +5,6 @@
  */
 package com.avibha.bizcomposer.purchase.dao;
 
-import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
-import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderForm;
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.purchase.forms.VendorForm;
-import com.avibha.bizcomposer.sales.dao.CustomerInfo;
-import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
-import com.avibha.bizcomposer.sales.dao.Item;
-import com.avibha.bizcomposer.sales.forms.EstimationDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceForm;
-import com.avibha.common.db.SQLExecutor;
-import com.avibha.common.log.Loger;
-import com.avibha.common.utility.CountryState;
-import com.avibha.common.utility.MyUtility;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import org.apache.struts.util.LabelValueBean;
-
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,8 +14,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
+import com.avibha.bizcomposer.purchase.forms.PurchaseOrderForm;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.sales.dao.CustomerInfo;
+import com.avibha.bizcomposer.sales.dao.Item;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
+import com.avibha.common.utility.CountryState;
+import com.avibha.common.utility.MyUtility;
+
+@Service
 public class PurchaseOrderInfoDao {
 	
+	    
+		@Autowired
+	    private ConfigurationInfo configInfo;
+		@Autowired
+	    public PurchaseOrderInfoDao(ConfigurationInfo configInfo) {
+			super();
+			this.configInfo = configInfo;
+		}
+	    
+	  
 	/* Provide the list of all customers with their
 	 * ids, last name,etc. The list is used for drop
 	 * ship to.   
@@ -161,7 +169,7 @@ public class PurchaseOrderInfoDao {
 		ArrayList<PurchaseOrderDto> objList = new ArrayList<>();
 		CountryState conState = new CountryState();
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			con = db.getConnection();
@@ -223,7 +231,7 @@ public class PurchaseOrderInfoDao {
 		ArrayList<PurchaseOrderDto> objList = new ArrayList<>();
 		CountryState conState = new CountryState();
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			con = db.getConnection();
@@ -544,7 +552,7 @@ public class PurchaseOrderInfoDao {
 		ResultSet rs = null;
 		int lastOrderNo = 0;
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+			//ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			String sqlString = "select PONum from bca_invoice where CompanyID = ? and not(invoiceStatus=1) and InvoiceTypeID IN (2)  order by PONum desc";

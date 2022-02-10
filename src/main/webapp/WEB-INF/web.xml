@@ -62,6 +62,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 			<param-value>false</param-value>
 		</init-param>
 	</servlet>
+	
 
 	<!--<servlet-mapping>
 		<servlet-name>action</servlet-name>
@@ -93,15 +94,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 		<extension>txt</extension>
 		<mime-type>text/plain</mime-type>
 	</mime-mapping>
-	<welcome-file-list>
-		<welcome-file>/jsp/index.jsp</welcome-file>
-	</welcome-file-list>
+	<!-- <welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list> -->
 
-	<env-entry>
+	<!-- <env-entry>
 		<env-entry-name>DriverClass</env-entry-name>
 		<env-entry-value>com.mysql.jdbc.Driver</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
+	</env-entry> -->
 
 
 <!--	&lt;!&ndash;<env-entry>-->
@@ -124,23 +125,23 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 
 
 
-	  <env-entry>
+<!-- 	  <env-entry>
 		<env-entry-name>URL</env-entry-name>
 		<env-entry-value>
-			jdbc:mysql://198.38.89.143:3306/namemaxx_bzcomposer?useSSL=false&amp;autoReconnect=true&amp;lower_case_table_names=1
+			jdbc:mysql://localhost/bzc?useSSL=false&amp;autoReconnect=true&amp;lower_case_table_names=1
 		</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-	<env-entry>
+	</env-entry> -->
+	<!-- <env-entry>
 		<env-entry-name>UID</env-entry-name>
-		<env-entry-value>namemaxx_bzc</env-entry-value>
+		<env-entry-value>root</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 	<env-entry>
 		<env-entry-name>password</env-entry-name>
-		<env-entry-value>VPU5^O!AD4ZL</env-entry-value>
+		<env-entry-value>root</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
+	</env-entry> -->
 
 	<!-- <env-entry>
 		<env-entry-name>URL</env-entry-name>
@@ -162,16 +163,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 	<!-- Local URL,UID and Password Ends -->
 
 
-	<env-entry>
+	<!-- <env-entry>
 		<env-entry-name>poolsize</env-entry-name>
 		<env-entry-value>5</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-	<env-entry>
+	</env-entry> -->
+	<!-- <env-entry>
 		<env-entry-name>DatabaseType</env-entry-name>
 		<env-entry-value>MYSQL</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
+	</env-entry> -->
 	<env-entry>
 		<env-entry-name>MAILHOST</env-entry-name>
 		<env-entry-value>localhost</env-entry-value>
