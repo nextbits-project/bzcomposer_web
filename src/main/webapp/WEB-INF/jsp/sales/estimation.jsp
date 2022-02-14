@@ -164,7 +164,7 @@ table.cart tbody tr td {
 					<input type="button" class="formbutton" title="Send Mail to..." onclick="SendMail(this.form);" style="padding: 8px 30px 8px 30px; font-size: 16px;" value="<spring:message code='BzComposer.global.sendmail' />" />
 				</c:if>
 				<c:if test="${empty Enable}">
-					<input type="button" class="formbutton" title="Send Mail to..." onclick="SendMail(this.form);" disabled="true" style="padding: 8px 30px 8px 30px; font-size: 16px;" value="<spring:message code='BzComposer.global.sendmail' />" />
+					<input type="button" class="formbutton" title="Send Mail to..." onclick="SendMailDisabled(this.form);" style="padding: 8px 30px 8px 30px; font-size: 16px;" value="<spring:message code='BzComposer.global.sendmail' />" />
 				</c:if>
 				<input type="button" class="formbutton" onclick="printCustomerOrder(this.form);" style="padding: 8px 30px 8px 30px; font-size: 16px;" value="<spring:message code='BzComposer.global.Print' />" />
 			</td>
@@ -836,12 +836,14 @@ $(function() {
 function clearShippingCol(){
 	var convertSubData  =  parseFloat(document.EstimationForm.total.value) -  parseFloat(document.EstimationForm.shipping.value);
 	document.EstimationForm.total.value = parseFloat(convertSubData).toFixed(2);
+	document.EstimationForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
 	document.EstimationForm.shipping.value = 0;
 }
 //myFunction() - this function sum Shipping value in total
 function sumShippingTotal() {
 	var convertSubData  =  parseFloat(document.EstimationForm.total.value) +  parseFloat(document.EstimationForm.shipping.value);
 	document.EstimationForm.total.value = parseFloat(convertSubData).toFixed(2);
+	document.EstimationForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
 }
 
 /* //this function clear input value, 
@@ -1583,6 +1585,7 @@ function StyleChange(value){
 			document.EstimationForm.tax.value=rate;
 			total = ((tot/1) + (subtotal/1)+(rate)/1);
 			document.EstimationForm.total.value=total.toFixed(2);
+			document.EstimationForm.adjustedtotal.value=total.toFixed(2);
 		}
 		
 		function AddItem(form){
@@ -1686,7 +1689,7 @@ function StyleChange(value){
 				tot=(form.shipping.value);
 				total = ((tot/1) + (subtotal/1) + (tax_val/1)).toFixed(2);
 				form.total.value=total;
-   				
+				form.adjustedtotal.value=total;
    				form.subtotal.value=subtotal;
 				document.getElementById('amt_id').value=subtotal;
 				
@@ -2281,7 +2284,9 @@ function SendMail(form)
 	cid=form.orderNo.value;
 	window.open("Invoice?tabid=ShowEmail&OrderType=estimation&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }
-
+function SendMailDisabled(form){
+	return showItemOrderNumberDialog();
+}
 function DeleteRow(d,form)
 {
 	event.preventDefault();
@@ -2348,6 +2353,7 @@ function DeleteRow(d,form)
 							shipping = document.EstimationForm.shipping.value;
 							total = ( (rt/1) + (subtotal/1) + (shipping/1));
 							document.EstimationForm.total.value=total.toFixed(2);
+							document.EstimationForm.adjustedtotal.value=total.toFixed(2);
 							document.EstimationForm.tax.value=rt;
 				
 							break;
@@ -2415,6 +2421,7 @@ function DeleteRow1(d,form)
 	    						
 	    						total = ((tot/1) + (subtotal/1) + (tx/1));
 	    						document.EstimationForm.total.value=total.toFixed(2);
+	    						document.EstimationForm.adjustedtotal.value=total.toFixed(2);
 	    						deleted++;
 	    					}
 	    				}

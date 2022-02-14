@@ -38,8 +38,7 @@ public class AccountingController{
 	public String showBzComposer() {
 			return "bzComposer";
 		}
-
-	@GetMapping("/AccountReceiveble")
+	@RequestMapping(value ="/AccountReceiveble", method = {RequestMethod.GET, RequestMethod.POST})
 	public String accounting(ReceivableListDto receivableListDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String forward = "/accounting/accountreceivable";   //jsp name without ext
 		HttpSession sess=request.getSession();

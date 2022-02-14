@@ -771,7 +771,7 @@ $(function() {
 				<td colspan="3" align="center" style="padding-right: 14px;">
 					<!-- productTab Starts -->
 					<div id="productTab">
-						<div id="tabs" style="height:650px;">
+						<div id="tabs" >
 							<ul id="tabsAddItem">
 								<li style="font-size: 12px;"><a href="#productInfo-1"><spring:message code="BzComposer.tabs.productinformation"/></a></li>
 								<li style="font-size: 12px;"><a href="#pricing-2"><spring:message code="BzComposer.tabs.pricing"/></a></li>
@@ -2946,14 +2946,14 @@ function CheckMambership(form) {
 	debugger;
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("itemSize")%>";
-	if(membershipLevel == "Standard"){
+	if(membershipLevel == "Standard" || membershipLevel == "standard"){
 		if(size>=100){
 			debugger;
 			return maxnumberofuserdialog();
 		}else {
 			return  ShowAdd(form);
 		}
-	}else if(membershipLevel == "Professional"){
+	}else if(membershipLevel == "Professional" || membershipLevel == "professional"){
 		if(size>=500){
 			debugger;
 			return maxnumberofuserdialog();
