@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<<<<<<< HEAD
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%> 
+=======
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+>>>>>>> 9fd090f12dc8c3ba6355dbf54c083e5c9812a2bd
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
