@@ -416,7 +416,7 @@ table.tabla-listados tbody tr td {
 				<button class="btn btn-info" onclick="return AddFromReconcileDlg()">
 					<spring:message code="BzComposer.global.add"/>
 				</button>
-				<button class="btn btn-info">
+				<button class="btn btn-info" onclick="CloseReconcileDlg()">
 					<spring:message code="BzComposer.global.close"/>
 				</button>
 			</div>
@@ -1038,7 +1038,7 @@ table.tabla-listados tbody tr td {
  		</div>
  	</div> 
 	<div class="bzbtn">
-  		<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  		<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onclick="CloseEditDlg()">
   			<spring:message code="BzComposer.global.cancel"/>
   		</button>	
   		<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;" onclick="return editTransaction()" id="addButtonForDeposit">
@@ -1471,10 +1471,19 @@ function getCheckboxForReconcile()
 		$("#checkNumberForReconcile").prop("disabled",true);
 	}
 }
+
+function CloseEditDlg()
+{ 
+	$('#EditDlgId').dialog('close');
+}
+function CloseReconcileDlg()
+{ 
+	$('#ReconcileDlgId').dialog('close');
+}
 function AddFromReconcileDlg()
 {
 	debugger;
-	
+
 	var checkNumber = "";
 	var categoryTypeCombo = document.getElementById("CategoryTypeForReconsile");
 	var categoryTypeId = categoryTypeCombo.options[categoryTypeCombo.selectedIndex].value;
