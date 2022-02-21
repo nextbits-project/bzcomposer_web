@@ -26,6 +26,11 @@ public class AdminController {
 	
 	
 	 private SalesDetailsDao salesDetails;
+	 @Autowired
+	public AdminController(SalesDetailsDao salesDetails) {
+		super();
+		this.salesDetails = salesDetails;
+	}
 
 	@RequestMapping(value = {"/administer"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String executeSalesController(MultiUserForm mform, HttpServletRequest request, Model model) throws Exception {

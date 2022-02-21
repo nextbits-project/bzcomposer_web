@@ -71,7 +71,7 @@ table.tabla-listados tbody tr td {
 <body>
 <% int find = 0; %>
 <div id="ddcolortabsline">&nbsp;</div>
- <form action="AccountReceiveble" method="post" name="ReceivableListForm" id="receivableForm">
+ <form action="AccountReceiveble" name="ReceivableListForm" id="receivableForm">
 	<div class="content1 clearfix">
 		<h3 class="title1">
 			<spring:message code="BzComposer.accountreceivable.accountreceivabletitle"/>

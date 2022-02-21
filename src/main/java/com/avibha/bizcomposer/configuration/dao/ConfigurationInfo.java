@@ -50,7 +50,7 @@ public class ConfigurationInfo {
     public ConfigurationDto getDefaultCongurationDataBySession() {
         String companyId = (String) request.getSession().getAttribute("CID");     
         ConfigurationDto configDto = null;
-        String templateType=(String)  request.getAttribute("templateName");
+        String templateType=(String)  request.getSession().getAttribute("templateName");
         if(request.getSession().getAttribute("DefaultCongurationData") != null) {
             configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
             if(templateType !=null) {

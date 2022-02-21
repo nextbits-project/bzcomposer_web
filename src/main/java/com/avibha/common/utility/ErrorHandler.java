@@ -32,6 +32,7 @@ public class ErrorHandler implements ErrorController  {
 	    Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 	    Object message = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
 	    errorBean.setStatusCode(status.toString());
+	    if(message!=null)
 	    errorBean.setErrorMessage(message.toString());
 	    errorBean.setDate(new Date());
 	    errorBean.setForwardPage("http://localhost:8080");    

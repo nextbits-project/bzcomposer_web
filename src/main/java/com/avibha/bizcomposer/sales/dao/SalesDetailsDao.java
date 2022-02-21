@@ -55,7 +55,6 @@ import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
 @Service
 //@Transactional
 public class SalesDetailsDao {
-	@Autowired
     private InvoiceInfoDao invoice;
 	@Autowired
     private PurchaseOrderInfoDao purchase;
@@ -67,6 +66,14 @@ public class SalesDetailsDao {
 	@Autowired
 	private DataImportExportUtils importExportUtils;
 	
+	
+	
+	@Autowired
+	public SalesDetailsDao(InvoiceInfoDao invoice) {
+		super();
+		this.invoice = invoice;
+	}
+
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");

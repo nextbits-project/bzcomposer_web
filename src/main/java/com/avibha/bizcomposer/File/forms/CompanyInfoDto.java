@@ -14,7 +14,7 @@ import com.nxsol.bzcomposer.company.BusinessType;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
+/**  
  * @author sarfrazmalik
  */
 public class CompanyInfoDto {

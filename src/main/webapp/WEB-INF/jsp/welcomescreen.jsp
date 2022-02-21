@@ -29,7 +29,7 @@
 		}
 		/*formbutton class is added on 17-06-2019*/
 		.formbutton
-		{
+		{   
 			background-position: 0px 0px;
 			background-repeat: no-repeat;
 			/* width: 70px; */

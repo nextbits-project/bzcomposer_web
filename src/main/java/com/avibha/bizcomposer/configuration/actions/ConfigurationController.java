@@ -50,7 +50,7 @@ import com.nxsol.bzcomposer.company.ConfigurationDAO;
 @Controller
 public class ConfigurationController {
 	
-	private static final Logger logMsg = LoggerFactory.getLogger(Application.class);
+	private static final Logger logMsg = LoggerFactory.getLogger(ConfigurationController.class);
     private String pageActiveTab = "pageActiveTab";
     private ConfigurationInfo configInfo;
     private AddNewCompanyDAO companyDAO;

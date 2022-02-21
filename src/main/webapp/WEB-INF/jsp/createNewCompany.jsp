@@ -170,7 +170,7 @@ function init()
 				 		<spring:message code="bca.Thestartdateisthedateyouchoosetobegintrackingyourbusiness" />
 			 		</p>
 				 	<ul>
-				 		<%-- <li>
+				 		<%-- <li>  
 				 			<spring:message code="bca.StartDate" />
 			 				<input type="text" id="sStartDate" name="sStartDate" size="15"/>
 		 					<img src="${pageContext.request.contextPath}/images/cal.gif"

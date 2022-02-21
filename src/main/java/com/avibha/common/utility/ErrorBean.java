@@ -12,7 +12,7 @@ import lombok.Setter;
  * @author Maimur
  *
  */
-public class ErrorBean {
+public class ErrorBean {   
 
 	private@Setter@Getter String statusCode;
 	private @Setter@Getter String errorMessage;

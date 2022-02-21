@@ -102,7 +102,7 @@ function saveItemName()
 function saveNewUnitPrice()
 {
 	event.preventDefault();
-	$("#SaveUnitPrice").dialog({
+	$("#SaveUnitPrice").dialog({    
     	resizable: false,
         height: 200,
         width: 500,
@@ -416,7 +416,7 @@ function ShowShippingAddressPage(form){
 											<%-- <form:select path="templateType" >
 												<form:option value="3">Product Standard</form:option>
 												<form:option value="4">Product Charcoal</form:option>
-												<form:option value="5">Professional Standard</form:option>
+												<form:option value="5">Professional Standard</form:option>  
 												<form:option value="6">Professional Charcoal</form:option>
 											</form:select> --%>
 										<c:set var="invoiceType" scope="page" value="${fn:toLowerCase(fn:substring(invoiceDto.formTemplateType.templateName,0,3))}"/> 
