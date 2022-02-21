@@ -336,6 +336,7 @@ table.tabla-listados tbody tr td {
 						</label>
 						<div class="col-md-7">
 							<select class="form-control" id="CategoryTypeForReconsile" onchange="getCategoryAndCharge()">
+								<option></option>
 							    <c:forEach items="${categoryType}" var="curObject" varStatus="loop">
                                     <c:if test="${curObject.categoryTypeName == 'EXPENSE' || curObject.categoryTypeName == 'INCOME'}">
 								    <option value="${curObject.categoryTypeID}">${curObject.categoryTypeName}</option>
@@ -1251,10 +1252,11 @@ function editTransaction()
 	var paymentTypeName = paymenTypeNameString.options[paymenTypeNameString.selectedIndex].text; 
 	
 	var checkNumber = document.getElementById("checkNumberEdit").value;
+
 	var amount = document.getElementById("amountToEdit").value;
-	
+
 	var date = document.getElementById("devDateForEdit").value;
-	
+
 	var TblPayment={
 			   "cvID":customerId,
 			   "paymentTypeID":paymentTypeId,	   
@@ -1266,14 +1268,23 @@ function editTransaction()
 			   "oldPaymentTypeId":oldPaymentTypeId,
 			   "checkNumber":checkNumber,
 	   };
-	
+
 	var obj=JSON.stringify(TblPayment);
+	var requestData=""
+	if(amount=="" || amount==undefined)
+	{
+	requestData="row=" + obj + "&PaymentId=" + paymentId + "&date=" + date + "&tableName=" + tableName
+	}
+	else
+	{
+		"row=" + obj + "&PaymentId=" + paymentId + "&amount=" + amount + "&date=" + date + "&tableName=" + tableName
+	}
 	$('#EditDlgId').dialog('close'); 
+
 	$.ajax({
-		
 		type : "POST",
 		url : "ReconsilationPost?tabid=EditTransaction",
-		data : "row=" + obj + "&PaymentId=" + paymentId + "&amount=" +amount + "&date=" + date + "&tableName=" +tableName,
+		data : requestData,
 	    success : function(data) {
 			/* var html = "" + data.msg; */
 			debugger;   
@@ -1281,7 +1292,6 @@ function editTransaction()
 		
 		},
 		 error : function(data) {
-
 			return showerrordialog();
 		} 
 	});
@@ -1488,8 +1498,15 @@ function AddFromReconcileDlg()
 	var categoryTypeCombo = document.getElementById("CategoryTypeForReconsile");
 	var categoryTypeId = categoryTypeCombo.options[categoryTypeCombo.selectedIndex].value;
 	var categoryCombo = document.getElementById("CategoryForReconsile");
-	var categoryId = categoryCombo.options[categoryCombo.selectedIndex].value;
-	
+	if(categoryCombo.options[categoryCombo.selectedIndex]!=undefined)
+		{
+		var categoryId = categoryCombo.options[categoryCombo.selectedIndex].value;
+		}
+	else
+		{
+		var categoryId ="";
+		}
+
 	var chargeForreconcileCombo = document.getElementById("ChrgeForReconsile");
 	if(chargeForreconcileCombo.length > 0)
 	{	
@@ -1720,6 +1737,7 @@ function entervalidnamedialog()
     });
     return false;
 }
+
 function entervalidamountdialog()
 {
 	event.preventDefault();

@@ -7571,7 +7571,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
-		
 		String sql = "UPDATE bca_bill SET Status = 1 WHERE CompanyID = " + ConstValue.companyId
 				+ " AND BillNum = "+billNum;
 		String sql2 = "DELETE FROM bca_billdetail WHERE CompanyID = "+ConstValue.companyId 
@@ -7580,6 +7579,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 			stmt.executeUpdate(sql2);
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -7613,7 +7613,8 @@ public class ReceivableListImpl implements ReceivableLIst {
                 " bill.VendorId,bill.CategoryID,bill.PayerID,bill.ServiceID,bill.DateAdded,bill.CHECKNO,bill.Status,ci.Name" +
                 " FROM bca_bill as bill INNER Join bca_clientvendor as ci"+
                 " ON bill.VENDORID=ci.CLIENTVENDORID"+
-                " WHERE " +                    
+                " WHERE " +   
+                " bill.Status=0 and "+
                 " bill.CompanyID=" + ConstValue.companyId;
 		
 		if(cvID>0){
@@ -8192,15 +8193,17 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            payment.setNumberOfPayments(noOfPayments);             
 	        }
 		 try{
+
 			 firstPaymentDate = JProjectUtil.getDateForBanking().parse(payment.getFirstPaymentDate());
+
 		 }
 		 catch(Exception e)
 		 {
 			 firstPaymentDate = JProjectUtil.getdateFormat().parse(payment.getFirstPaymentDate());
 		 }
 		 try{
-			 
-			 lastPaymentDate = JProjectUtil.getDateForBanking().parse(payment.getLastPaymentDate());
+				 lastPaymentDate = JProjectUtil.getDateForBanking().parse(payment.getLastPaymentDate());
+		
 		 }
 		 catch(Exception e1)
 		 {
