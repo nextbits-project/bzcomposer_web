@@ -35,13 +35,11 @@ import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.dao.TrHistoryLookUp;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
-import com.avibha.bizcomposer.sales.forms.CustomerForm;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
 import com.avibha.bizcomposer.sales.forms.SalesOrderBoardForm;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
-import com.avibha.bizcomposer.sales.forms.salesboardForm;
 import com.avibha.common.constants.AppConstants;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -52,10 +50,10 @@ import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategory;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 
@@ -474,9 +472,9 @@ public class SalesController {
 			
 		else if (action.equalsIgnoreCase("AccountReceiveble")) { 
 			ReceivableLIst rl = new ReceivableListImpl();
-			ArrayList<ReceivableListBean> ReceivableList = rl.getReceivableList(Integer.parseInt(companyID));
+			ArrayList<ReceivableListDto> ReceivableList = rl.getReceivableList(Integer.parseInt(companyID));
 			TblCategoryLoader category = new TblCategoryLoader();
-			ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
+			ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 			ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 			ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
 			ArrayList<TblAccount> account = rl.getAccount();
@@ -693,7 +691,7 @@ public class SalesController {
 		}
 
 		else if (action.equalsIgnoreCase("SalesBoard")) { // get SalesBoard-page data
-			salesboardForm salesForm = new salesboardForm();
+			SalesBoardDto salesForm = new SalesBoardDto();
 			salesForm.setOrderDate1("");
 			salesForm.setOrderDate2("");
 			salesForm.setSaleDate1("");
@@ -703,7 +701,7 @@ public class SalesController {
 		}
 
 		else if (action.equalsIgnoreCase("SBTS")) { // For Fname and lname listing
-			salesboardForm salesForm = new salesboardForm();
+			SalesBoardDto salesForm = new SalesBoardDto();
 			salesForm.setOrderDate1("");
 			salesForm.setOrderDate2("");
 			salesForm.setSaleDate1("");
@@ -900,7 +898,7 @@ public class SalesController {
 			serviceList = salesDetailsDao.addServices(companyID);
 			request.setAttribute("serviceList", serviceList);
 			
-			CustomerForm frm1 = new CustomerForm();
+			CustomerDto frm1 = new CustomerDto();
 			
 			//new address data
 			request.setAttribute("addressStatus", addressStatus);

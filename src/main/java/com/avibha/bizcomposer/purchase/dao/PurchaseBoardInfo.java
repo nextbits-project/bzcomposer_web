@@ -10,21 +10,18 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionError;
-
-import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
-import com.avibha.bizcomposer.purchase.forms.VendorForm;
+import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
-import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 
 public class PurchaseBoardInfo {
 	public ArrayList PurchaseRecordSearch(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action, String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form) {
+			String sOption1, String sOption2, String sType,String action, String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form) {
 
 		//Loger.log("From PurchaseInfo" + compId);
 		Connection con = null ;
@@ -297,7 +294,7 @@ public class PurchaseBoardInfo {
 	}
 	public ArrayList getPurchaseBillLists(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action , String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form)
+			String sOption1, String sOption2, String sType,String action , String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
 	{
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
@@ -398,11 +395,11 @@ public class PurchaseBoardInfo {
 		return objList;
 	}
 	//  vendor symmary  report 
-	public ArrayList VendorSummaryRecordSearch(HttpServletRequest request,String compId, String saleDate1, String saleDate2, String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form) {
+	public ArrayList VendorSummaryRecordSearch(HttpServletRequest request,String compId, String saleDate1, String saleDate2, String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null,stmt2=null;
-		ArrayList<VendorForm> objList = new ArrayList<VendorForm>();
+		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
 		double totalbalance=0;
 		ResultSet rs = null,rs2=null;
 		con = db.getConnection();
@@ -463,7 +460,7 @@ public class PurchaseBoardInfo {
 			if(!rs.next())
 				break;
 
-				VendorForm vendor = new VendorForm();
+				VendorDto vendor = new VendorDto();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
 				
@@ -531,7 +528,7 @@ public class PurchaseBoardInfo {
 	}
 	public ArrayList getCancelledPuBillRefList(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form)
+			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
 	{
 		Connection con=null;
 		Statement stmt = null,stmt1 = null;
@@ -664,7 +661,7 @@ public class PurchaseBoardInfo {
 	}
 	public ArrayList getVendor1099List(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form)
+			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
 	{
 		Connection con=null;
 		Statement stmt = null,stmt1 = null;
@@ -779,7 +776,7 @@ public class PurchaseBoardInfo {
 	/*getVendor1099TransactionSummary*/
 	public ArrayList getVendor1099TransactionSummary(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form)
+			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
 	{
 		Connection con=null;
 		Statement stmt = null,stmt1 = null;
@@ -845,7 +842,7 @@ public class PurchaseBoardInfo {
 			
 			while(rs.next())
 			{
-				PurchaseBoardForm pb = new PurchaseBoardForm();
+				PurchaseBoardDto pb = new PurchaseBoardDto();
 				
 				/*pb.setVendorName(rs.getString(3));
 				pb.setTotal(rs.);
@@ -1030,13 +1027,13 @@ public class PurchaseBoardInfo {
 	/*get all purchse order*/
 	public ArrayList getAllPurchaseOrderList(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action, String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form) {
+			String sOption1, String sOption2, String sType,String action, String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form) {
 
 		Loger.log("From PurchaseInfo" + compId);
 		Connection con = null ;
 		Statement stmt = null, stmt1 = null, stmt2 = null,stm3=null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<PurchaseBoardForm> objList = new ArrayList<PurchaseBoardForm>();
+		ArrayList<PurchaseBoardDto> objList = new ArrayList<PurchaseBoardDto>();
 		ResultSet rs = null, rs2 = null, rs3 = null,rs4=null;
 		con = db.getConnection();
 		String mark = null;
@@ -1181,11 +1178,11 @@ public class PurchaseBoardInfo {
 			rs = stmt.executeQuery(sqlString);
 			rs2 = stmt1.executeQuery(sql2);
 			
-			PurchaseBoardForm pb = null;
+			PurchaseBoardDto pb = null;
 			
 			while(rs.next())
 			{
-				pb = new PurchaseBoardForm();
+				pb = new PurchaseBoardDto();
 				
 				pb.setDateAdded(rs.getString(4));
 				pb.setClientvendor(rs.getString(9));

@@ -1,30 +1,27 @@
 package com.nxsol.bizcomposer.accounting.action;
 
-import com.google.gson.Gson;
-import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
-import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
-import com.nxsol.bizcomposer.common.JProjectUtil;
-import com.nxsol.bizcomposer.common.TblVendorDetail;
-import com.nxsol.bizcomposer.common.TblVendorDetailDto;
-import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategory;
-import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
-import com.pritesh.bizcomposer.accounting.bean.TblPayment;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
+import com.google.gson.Gson;
+import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
+import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
+import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.nxsol.bizcomposer.common.TblVendorDetailDto;
+import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
+import com.pritesh.bizcomposer.accounting.bean.TblAccount;
+import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 @Controller
 public class BillPayableController{
 
@@ -43,7 +40,7 @@ public class BillPayableController{
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
-		ArrayList<TblCategory> categoryListForCombo = rl.getCategoryListForPayment();
+		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
 		
 		request.setAttribute("cvForCombo", cvForCombo);
 		request.setAttribute("accountListForBill", accountListForBill);
@@ -54,18 +51,18 @@ public class BillPayableController{
 		}
 		if(action.equals("PaidBillLists"))
 		{	
-			ArrayList<TblPayment> paidBillLists = rl.getPaidBillLists();
-			ArrayList<TblPayment> recurrentPaymentList = rl.getRecurrentBillPayment();
+			ArrayList<TblPaymentDto> paidBillLists = rl.getPaidBillLists();
+			ArrayList<TblPaymentDto> recurrentPaymentList = rl.getRecurrentBillPayment();
 			request.setAttribute("recurrentPaymentList", recurrentPaymentList);
 			request.setAttribute("paidBillLists", paidBillLists);
 			forward = "/accounting/paidBillLists";
 		}
 
-		ArrayList<TblVendorDetail> unpaidBillList = rl.getUnpaidBillList(cvID, checkStatus);
+		ArrayList<TblVendorDetailDto> unpaidBillList = rl.getUnpaidBillList(cvID, checkStatus);
 		request.setAttribute("unpaidBillList", unpaidBillList );
-		ArrayList<TblVendorDetail> getMemorizeTransactionList = rl.getMemorizeTransactionList();
+		ArrayList<TblVendorDetailDto> getMemorizeTransactionList = rl.getMemorizeTransactionList();
 		request.setAttribute("getMemorizeTransactionList", getMemorizeTransactionList);
-		ArrayList<TblVendorDetail> payBillList = rl.getPayBillsLists(payBillsDate);
+		ArrayList<TblVendorDetailDto> payBillList = rl.getPayBillsLists(payBillsDate);
 		request.setAttribute("payBillList", payBillList);
 		ModelAndView modelAndView =new ModelAndView(forward);
 
@@ -86,7 +83,7 @@ public class BillPayableController{
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
-		ArrayList<TblCategory> categoryListForCombo = rl.getCategoryListForPayment();
+		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
 
 		request.setAttribute("cvForCombo", cvForCombo);
 		request.setAttribute("accountListForBill", accountListForBill);
@@ -94,13 +91,13 @@ public class BillPayableController{
 		if(action.equals("save"))
 		{
 			Gson gson=new Gson();
-			TblVendorDetail vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
+			TblVendorDetailDto vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetailDto.class);
 			rl.updateBill(vDetail);
 		}
 		if(action.equals("MakePayment"))
 		{
 			Gson gson=new Gson();
-			TblVendorDetail vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
+			TblVendorDetailDto vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetailDto.class);
 			System.out.println(vDetail);
 			rl.makePayment(vDetail, cvID);
 
@@ -114,7 +111,7 @@ public class BillPayableController{
 		if(action.equals("MakeScheduleMemorizedTransaction"))
 		{
 			Gson gson=new Gson();
-			TblVendorDetail vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
+			TblVendorDetailDto vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetailDto.class);
 			Date date = JProjectUtil.getDateForBanking().parse(vDetail.getNextDateString());
 			vDetail.setNextDate(date);
 			rl.updateVendorBills(vDetail);

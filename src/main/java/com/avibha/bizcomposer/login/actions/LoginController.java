@@ -1,7 +1,6 @@
 package com.avibha.bizcomposer.login.actions;
 
 import com.avibha.bizcomposer.File.dao.CompanyInfo;
-import com.avibha.bizcomposer.configuration.forms.configurationForm;
 import com.avibha.bizcomposer.login.dao.LoginDAO;
 import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.login.forms.LoginForm;
@@ -607,7 +606,6 @@ public class LoginController
 		else if(action.equalsIgnoreCase("selectedCompany"))
 		{
 			ConfigurationDAO dao = new ConfigurationDAO();
-			configurationForm configurationForm = null;
 			String companyName = request.getParameter("companyName");
 			p.setPathvalue(request.getContextPath());
 			//request.getSession().setAttribute("path", p);

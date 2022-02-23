@@ -2,7 +2,7 @@
  * Author : Avibha IT Solutions Copyright 2006 Avibha IT Solutions. All rights
  * reserved. AVIBHA PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  * www.avibha.com
- */
+ 
 
 package com.avibha.bizcomposer.rma.dao;
 
@@ -18,9 +18,9 @@ import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 
-/*
+
  * 
- */
+ 
 public class RMAInfo {
 
 	public ArrayList getUserName(String compId ) {
@@ -688,3 +688,4 @@ public class RMAInfo {
 	}
 
 }
+*/

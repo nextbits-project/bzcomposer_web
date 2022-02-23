@@ -39,8 +39,8 @@ public class PurchaseInfoDao {
 		PreparedStatement pstmt_clientSer = null;
 		PreparedStatement pstmt_ser = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<VendorForm> objList = new ArrayList<VendorForm>();
-		ArrayList<VendorForm> serviceList = new ArrayList<VendorForm>();
+		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
+		ArrayList<VendorDto> serviceList = new ArrayList<VendorDto>();
 		ResultSet rs = null;
 		ResultSet rs_clientSer = null;
 		ResultSet rs_ser = null;
@@ -58,7 +58,7 @@ public class PurchaseInfoDao {
 			CountryState cs=new CountryState();
 			while (rs.next()) 
 			{
-				VendorForm vendor = new VendorForm();
+				VendorDto vendor = new VendorDto();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
 				vendor.setFirstName(rs.getString(3));
@@ -85,7 +85,7 @@ public class PurchaseInfoDao {
 				String services = "select ServiceName from bca_servicetype where ServiceID=?";
 				while (rs_clientSer.next()) 
 				{
-					VendorForm vendorService = new VendorForm();
+					VendorDto vendorService = new VendorDto();
 					pstmt_ser = con.prepareStatement(services);
 					pstmt_ser.setInt(1, rs_clientSer.getInt("ServiceID"));
 					rs_ser = pstmt_ser.executeQuery();
@@ -143,8 +143,8 @@ public class PurchaseInfoDao {
 		PreparedStatement pstmt_clientSer = null;
 		PreparedStatement pstmt_ser = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<VendorForm> objList = new ArrayList<VendorForm>();
-		ArrayList<VendorForm> serviceList = new ArrayList<VendorForm>();
+		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
+		ArrayList<VendorDto> serviceList = new ArrayList<VendorDto>();
 		ResultSet rs = null;
 		ResultSet rs_clientSer = null;
 		ResultSet rs_ser = null;
@@ -203,7 +203,7 @@ public class PurchaseInfoDao {
 			CountryState cs=new CountryState();
 			while (rs.next()) {
 
-				VendorForm vendor = new VendorForm();
+				VendorDto vendor = new VendorDto();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
 				vendor.setFirstName(rs.getString(3));
@@ -228,7 +228,7 @@ public class PurchaseInfoDao {
 				rs_clientSer = pstmt_clientSer.executeQuery();
 				String services = "select ServiceName from bca_servicetype where ServiceID=?";
 				while (rs_clientSer.next()) {
-					VendorForm vendorService = new VendorForm();
+					VendorDto vendorService = new VendorDto();
 					pstmt_ser = con.prepareStatement(services);
 					pstmt_ser.setInt(1, rs_clientSer.getInt("ServiceID"));
 					rs_ser = pstmt_ser.executeQuery();
@@ -1274,9 +1274,9 @@ public class PurchaseInfoDao {
 	public void getServices(HttpServletRequest request, String compId,
 			String cvId) {
 		// TODO Auto-generated method stub
-		ArrayList<VendorForm> serviceList = new ArrayList<VendorForm>();
-		ArrayList<VendorForm> invoiceName = new ArrayList<VendorForm>();
-		ArrayList<VendorForm> balenceDetails = new ArrayList<VendorForm>();
+		ArrayList<VendorDto> serviceList = new ArrayList<VendorDto>();
+		ArrayList<VendorDto> invoiceName = new ArrayList<VendorDto>();
+		ArrayList<VendorDto> balenceDetails = new ArrayList<VendorDto>();
 		ResultSet rs = null, rs1 = null, rs2 = null;
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
@@ -1290,7 +1290,7 @@ public class PurchaseInfoDao {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				VendorForm uform = new VendorForm();
+				VendorDto uform = new VendorDto();
 				uform.setServiceID(rs.getInt(1));
 				uform.setServiceName(rs.getString(2));
 				uform.setInvoiceStyleId(rs.getInt(3));
@@ -1319,7 +1319,7 @@ public class PurchaseInfoDao {
 			pstmt1 = con.prepareStatement(sqlString1);
 			rs1 = pstmt1.executeQuery();
 			while (rs1.next()) {
-				VendorForm uform = new VendorForm();
+				VendorDto uform = new VendorDto();
 				//Loger.log("The Incoice style id is " + rs1.getString(1));
 				uform.setInvoiceStyleId(rs1.getInt(1));
 				//Loger.log("The Invoice Style name is " + rs1.getString(2));
@@ -1353,7 +1353,7 @@ public class PurchaseInfoDao {
 
 			rs2 = pstmt2.executeQuery();
 			while (rs2.next()) {
-				VendorForm uform = new VendorForm();
+				VendorDto uform = new VendorDto();
 
 				uform.setClientVendorID(String.valueOf(rs2
 						.getInt("ClientVendorID")));
@@ -1610,13 +1610,13 @@ public class PurchaseInfoDao {
 	 */
 	public ArrayList getPrintLabelInfo(HttpServletRequest request, String compId,int startValue,int limit) {
 		Connection con = null;
-		ArrayList<VendorForm> labelInfo = new ArrayList<>();
+		ArrayList<VendorDto> labelInfo = new ArrayList<>();
 		CountryState conState = new CountryState();
 		PreparedStatement pstmt_client = null;
 		PreparedStatement pstmt_clientSer = null;
 		PreparedStatement pstmt_ser = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<VendorForm> serviceList = new ArrayList<>();
+		ArrayList<VendorDto> serviceList = new ArrayList<>();
 		ResultSet rs_client = null;
 		ResultSet rs_clientSer = null;
 		ResultSet rs_ser = null;
@@ -1634,7 +1634,7 @@ public class PurchaseInfoDao {
 			pstmt_client.setInt(3, limit);
 			rs_client = pstmt_client.executeQuery();
 			while (rs_client.next()) {
-				VendorForm vendor = new VendorForm();
+				VendorDto vendor = new VendorDto();
 				vendor.setClientVendorID(rs_client.getString("ClientVendorID"));
 				vendor.setCname(rs_client.getString("Name"));
 				vendor.setFirstName(rs_client.getString("FirstName"));
@@ -1656,7 +1656,7 @@ public class PurchaseInfoDao {
 				rs_clientSer = pstmt_clientSer.executeQuery();
 				String services = "select ServiceName from bca_servicetype where ServiceID=?";
 				while (rs_clientSer.next()) {
-					VendorForm vendorService = new VendorForm();
+					VendorDto vendorService = new VendorDto();
 					pstmt_ser = con.prepareStatement(services);
 					pstmt_ser.setInt(1, rs_clientSer.getInt("ServiceID"));
 					rs_ser = pstmt_ser.executeQuery();

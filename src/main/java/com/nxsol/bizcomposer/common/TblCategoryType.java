@@ -1,8 +1,6 @@
 package com.nxsol.bizcomposer.common;
 
-import org.apache.struts.action.ActionForm;
-
-public class TblCategoryType extends ActionForm {
+public class TblCategoryType {
 
 	 private long categoryTypeID = -1;
 	    

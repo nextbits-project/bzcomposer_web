@@ -12,22 +12,22 @@ import com.nxsol.bizcomposer.common.ConstValue;
 
 public class TblCategoryLoader {
 
-	Vector<TblCategory> categories = new Vector();
-	 public TblCategory getCategoryOf(int categoryId) {
+	Vector<TblCategoryDto> categories = new Vector();
+	 public TblCategoryDto getCategoryOf(int categoryId) {
 	        load();
-	        TblCategory tblcategory = null;
-	        for (TblCategory category : categories) {
+	        TblCategoryDto TblCategoryDto = null;
+	        for (TblCategoryDto category : categories) {
 	            if (category.getId() == categoryId) {
-	                tblcategory = category;
+	                TblCategoryDto = category;
 	            }
 	        }
-	        return tblcategory;
+	        return TblCategoryDto;
 	    }
 	 
 	 public void load() {
 
-	        Vector<TblCategory> roots = new Vector();
-	        Vector<TblCategory> subs = new Vector();
+	        Vector<TblCategoryDto> roots = new Vector();
+	        Vector<TblCategoryDto> subs = new Vector();
 
 	        Statement stmt = null;
 	        SQLExecutor db = new SQLExecutor();
@@ -41,7 +41,7 @@ public class TblCategoryLoader {
 	            stmt = con.createStatement();
 	            rs = stmt.executeQuery(sql1);
 	            while (rs.next()) {
-	                TblCategory category = new TblCategory();
+	                TblCategoryDto category = new TblCategoryDto();
 	                category.setId(rs.getInt("CategoryID"));
 	                category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 	                category.setParent(rs.getString("Parent"));
@@ -56,7 +56,7 @@ public class TblCategoryLoader {
 
 	            rs = stmt.executeQuery(sql2);
 	            while (rs.next()) {
-	                TblCategory category = new TblCategory();
+	                TblCategoryDto category = new TblCategoryDto();
 	                category.setId(rs.getInt("CategoryID"));
 	                category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 	                category.setParent(rs.getString("Parent"));
@@ -107,16 +107,16 @@ public class TblCategoryLoader {
 	            i++;
 	        }
 
-	        roots.add(0, new TblCategory());
+	        roots.add(0, new TblCategoryDto());
 	        categories = roots;
 	        subs.clear();
 	        subs = null;
 	        roots = null;
 
 	    }
-	 public ArrayList<TblCategory>  getCategoryForCombo()
+	 public ArrayList<TblCategoryDto>  getCategoryForCombo()
 	 {
-		 ArrayList<TblCategory> roots = new ArrayList<TblCategory>();
+		 ArrayList<TblCategoryDto> roots = new ArrayList<TblCategoryDto>();
 		 Statement stmt = null;
 	     SQLExecutor db = new SQLExecutor();
 	     ResultSet rs = null;
@@ -135,7 +135,7 @@ public class TblCategoryLoader {
 			
 			while(rs.next())
 			{
-				TblCategory category = new TblCategory();
+				TblCategoryDto category = new TblCategoryDto();
                 category.setId(rs.getInt("CategoryID"));
                 category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 category.setParent(rs.getString("Parent"));
@@ -168,14 +168,14 @@ public class TblCategoryLoader {
 	    
 		 return roots;
 	 }
-	 public TblCategory getcategoryById(int id)
+	 public TblCategoryDto getcategoryById(int id)
 	 {
 		 Statement stmt = null;
 	     SQLExecutor db = new SQLExecutor();
 	     ResultSet rs = null;
 	     Connection con = null;
 	     con = db.getConnection();
-	     TblCategory category = null;
+	     TblCategoryDto category = null;
 	     String sql1 = "Select * "
 	                + " from bca_category" +
 	                " where CompanyID = " + ConstValue.companyId +
@@ -188,7 +188,7 @@ public class TblCategoryLoader {
 			
 			while(rs.next())
 			{
-				category = new TblCategory();
+				category = new TblCategoryDto();
                 category.setId(rs.getInt("CategoryID"));
                 category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 category.setParent(rs.getString("Parent"));

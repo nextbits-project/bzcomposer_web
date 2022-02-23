@@ -1,27 +1,25 @@
 package com.nxsol.bizcomposer.accounting.action;
 
-import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
-import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
-import com.nxsol.bizcomposer.common.ConstValue;
-import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategory;
-import com.nxsol.bizcompser.global.table.TblCategoryLoader;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
-import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
+import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
+import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
+import com.nxsol.bizcomposer.common.ConstValue;
+import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
+import com.nxsol.bizcompser.global.table.TblCategoryLoader;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
+import com.pritesh.bizcomposer.accounting.bean.TblAccount;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 @Controller
 public class CancelledTabController {
 
@@ -34,10 +32,10 @@ public class CancelledTabController {
 		String companyID = (String) sess.getAttribute("CID");	
 		ReceivableLIst rl = new ReceivableListImpl();
 		
-		/*ArrayList<ReceivableListBean> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
-		ArrayList<ReceivableListBean> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);*/
+		/*ArrayList<ReceivableListDto> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
+		ArrayList<ReceivableListDto> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);*/
 		TblCategoryLoader category = new TblCategoryLoader();
-		ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
+		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
 		ArrayList<TblAccount> account =rl.getAccount();
@@ -58,7 +56,7 @@ public class CancelledTabController {
 			System.out.println(invoiceId);
 			rl.updateInvoiceStatusForCancelled(invoiceId);
 		}
-		ArrayList<ReceivableListBean> ReceivableList = rl.getCancelledTableList(ConstValue.companyId);
+		ArrayList<ReceivableListDto> ReceivableList = rl.getCancelledTableList(ConstValue.companyId);
 		request.setAttribute("ReceivableList", ReceivableList);
 		ModelAndView modelAndView =new ModelAndView(forward);
 		return modelAndView;
@@ -73,10 +71,10 @@ public class CancelledTabController {
 		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl = new ReceivableListImpl();
 
-		/*ArrayList<ReceivableListBean> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
-		ArrayList<ReceivableListBean> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);*/
+		/*ArrayList<ReceivableListDto> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
+		ArrayList<ReceivableListDto> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);*/
 		TblCategoryLoader category = new TblCategoryLoader();
-		ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
+		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
 		ArrayList<TblAccount> account = rl.getAccount();

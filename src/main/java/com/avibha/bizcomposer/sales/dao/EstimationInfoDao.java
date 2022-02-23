@@ -26,9 +26,8 @@ import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
-import com.avibha.bizcomposer.sales.forms.EstimationForm;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.bizcomposer.sales.forms.UpdateInvoiceForm;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
@@ -156,7 +155,7 @@ public class EstimationInfoDao {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<EstimationForm> objList = new ArrayList<EstimationForm>();
+		ArrayList<EstimationDto> objList = new ArrayList<EstimationDto>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -167,7 +166,7 @@ public class EstimationInfoDao {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				EstimationForm customer = new EstimationForm();
+				EstimationDto customer = new EstimationDto();
 				customer.setBsAddressID(rs.getString(1));
 				customer.setClientVendorID(rs.getString(2));
 				customer.setFullName(rs.getString(4) + "  " + rs.getString(5));
@@ -204,7 +203,7 @@ public class EstimationInfoDao {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<EstimationForm> objList = new ArrayList<EstimationForm>();
+		ArrayList<EstimationDto> objList = new ArrayList<EstimationDto>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -215,7 +214,7 @@ public class EstimationInfoDao {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				EstimationForm customer = new EstimationForm();
+				EstimationDto customer = new EstimationDto();
 				customer.setCompanyID(String.valueOf(cid));
 				customer.setBsAddressID(rs.getString(1));
 				customer.setClientVendorID(rs.getString(2));
@@ -255,7 +254,7 @@ public class EstimationInfoDao {
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> objList = new ArrayList<LabelValueBean>();
-		ArrayList<EstimationForm> details = new ArrayList<EstimationForm>();
+		ArrayList<EstimationDto> details = new ArrayList<EstimationDto>();
 		ResultSet rs = null;
 		String cvId = "";
 		try {
@@ -271,7 +270,7 @@ public class EstimationInfoDao {
 
 			while (rs.next()) {
 				cvId = rs.getString(1);
-				EstimationForm invForm = new EstimationForm();
+				EstimationDto invForm = new EstimationDto();
 				objList.add(new LabelValueBean(rs
 						.getString(3)
 						+ " , " + rs.getString(2), cvId));
@@ -581,7 +580,7 @@ public class EstimationInfoDao {
 	}
 
 	public ArrayList getTaxes(String compId) {
-		ArrayList<EstimationForm> arr = new ArrayList<EstimationForm>();
+		ArrayList<EstimationDto> arr = new ArrayList<EstimationDto>();
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -599,7 +598,7 @@ public class EstimationInfoDao {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				EstimationForm invoice = new EstimationForm();
+				EstimationDto invoice = new EstimationDto();
 				invoice.setSalesTaxID(rs.getString(1));
 				invoice.setState(rs.getString(2));
 				invoice.setRate(rs.getInt(3));
@@ -707,7 +706,7 @@ public class EstimationInfoDao {
 		return exist;
 	}
 
-	public void Save(String compId, EstimationForm form) {
+	public void Save(String compId, EstimationDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
 		PreparedStatement pstmt3 = null;
@@ -835,7 +834,7 @@ public class EstimationInfoDao {
 		}
 	}
 
-	public void AddItem(int invoiceID, int cid, EstimationForm form) {
+	public void AddItem(int invoiceID, int cid, EstimationDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt2 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -988,7 +987,7 @@ public class EstimationInfoDao {
 
 	}
 
-	public void Update(String compId, EstimationForm form) {
+	public void Update(String compId, EstimationDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
@@ -1177,7 +1176,7 @@ public class EstimationInfoDao {
 		}
 	}
 
-	public void getBillShipAddr(int custID, UpdateInvoiceForm form) {
+	public void getBillShipAddr(int custID, UpdateInvoiceDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
 		PreparedStatement pstmt3 = null;
@@ -1286,7 +1285,7 @@ public class EstimationInfoDao {
 	}
 
 	public void getCountry(HttpServletRequest request, String country,
-			UpdateInvoiceForm form) {
+			UpdateInvoiceDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1347,7 +1346,7 @@ public class EstimationInfoDao {
 		PreparedStatement pstmt12 = null;
 		PreparedStatement pstmt13 = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<UpdateInvoiceForm> serviceinfo = new ArrayList<UpdateInvoiceForm>();
+		ArrayList<UpdateInvoiceDto> serviceinfo = new ArrayList<UpdateInvoiceDto>();
 		ResultSet rs = null;
 		ResultSet rs1 = null;
 		ResultSet rs2 = null;
@@ -1360,7 +1359,7 @@ public class EstimationInfoDao {
 		con = db.getConnection();
 		if (con == null)
 			return;
-		UpdateInvoiceForm customer = new UpdateInvoiceForm();
+		UpdateInvoiceDto customer = new UpdateInvoiceDto();
 		try {
 			StringBuffer sqlString = new StringBuffer();
 			sqlString
@@ -1425,7 +1424,7 @@ public class EstimationInfoDao {
 			Loger.log("The Client Vendor ID is" + cvId);
 			rs22 = pstmt2.executeQuery();
 			while (rs22.next()) {
-				UpdateInvoiceForm uform1 = new UpdateInvoiceForm();
+				UpdateInvoiceDto uform1 = new UpdateInvoiceDto();
 				Loger.log("we r in Search Customer");
 				Loger.log("The InvoiceStyleID from client vendor  is "
 						+ rs22.getString("InvoiceStyleID"));
@@ -1681,7 +1680,7 @@ public class EstimationInfoDao {
 
 	}
 
-	public boolean insertCustomer(String cId, UpdateInvoiceForm c, String compID, int istaxable, int isAlsoClient,
+	public boolean insertCustomer(String cId, UpdateInvoiceDto c, String compID, int istaxable, int isAlsoClient,
 			int useIndividualFinanceCharges, int AssessFinanceChk, int FChargeInvoiceChk, String status) {
 		boolean ret = false;
 		Connection con = null ;
@@ -2273,9 +2272,9 @@ public class EstimationInfoDao {
 		PreparedStatement pstmt = null, pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null, rs1 = null;
-		ArrayList<EstimationForm> list = new ArrayList<EstimationForm>();
+		ArrayList<EstimationDto> list = new ArrayList<EstimationDto>();
 		ArrayList<String> count = new ArrayList<String>();
-		ArrayList<EstimationForm> total = new ArrayList<EstimationForm>();
+		ArrayList<EstimationDto> total = new ArrayList<EstimationDto>();
 		con = db.getConnection();
 		try {
 			String sqlString = "select Name,FirstName,LastName from bca_clientvendor "
@@ -2298,7 +2297,7 @@ public class EstimationInfoDao {
 			pstmt.setString(1, cvId);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				EstimationForm invoiceList = new EstimationForm();
+				EstimationDto invoiceList = new EstimationDto();
 				invoiceList.setOrderNo(rs.getString(1));
 				invoiceList.setOrderDate(rs.getString(2));
 				invoiceList.setTotal(rs.getDouble(3));
@@ -2319,7 +2318,7 @@ public class EstimationInfoDao {
 			}
 			for (int i = 0; i < count.size(); i++) {
 				Loger.log("LLL");
-				EstimationForm invForm = new EstimationForm();
+				EstimationDto invForm = new EstimationDto();
 				String sql1 = "select sum(i.Total),sum(i.Balance) from bca_invoice as i inner join  bca_invoicetype as it on (i.ClientVendorID = ? and  i.InvoiceTypeID = ? )";
 				pstmt = con.prepareStatement(sql1);
 				pstmt = con.prepareStatement(sql1);
@@ -2447,7 +2446,7 @@ public class EstimationInfoDao {
 			pstmt = con.prepareStatement(sql1);
 			pstmt.setLong(1, cvId);
 			rs = pstmt.executeQuery();
-			EstimationForm form = new EstimationForm();
+			EstimationDto form = new EstimationDto();
 			if (rs.next()) {
 
 				form.setEmailAddr(rs.getString(1));
@@ -2540,7 +2539,7 @@ public class EstimationInfoDao {
 		return content;
 	}
 
-	public boolean send(String compId, EstimationForm form) {
+	public boolean send(String compId, EstimationDto form) {
 		boolean result = false;
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -2690,9 +2689,9 @@ public class EstimationInfoDao {
 	public void getServices(HttpServletRequest request, String compId,
 			String cvId) {
 		// TODO Auto-generated method stub
-		ArrayList<UpdateInvoiceForm> serviceList = new ArrayList<UpdateInvoiceForm>();
-		ArrayList<UpdateInvoiceForm> invoiceName = new ArrayList<UpdateInvoiceForm>();
-		ArrayList<UpdateInvoiceForm> balenceDetails = new ArrayList<UpdateInvoiceForm>();
+		ArrayList<UpdateInvoiceDto> serviceList = new ArrayList<UpdateInvoiceDto>();
+		ArrayList<UpdateInvoiceDto> invoiceName = new ArrayList<UpdateInvoiceDto>();
+		ArrayList<UpdateInvoiceDto> balenceDetails = new ArrayList<UpdateInvoiceDto>();
 		ResultSet rs = null;
 		ResultSet rs1 = null;
 		ResultSet rs2 = null;
@@ -2710,7 +2709,7 @@ public class EstimationInfoDao {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				UpdateInvoiceForm uform = new UpdateInvoiceForm();
+				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 				uform.setServiceID(rs.getInt(1));
 				uform.setServiceName(rs.getString(2));
 				uform.setInvoiceStyleId(rs.getInt(3));
@@ -2738,7 +2737,7 @@ public class EstimationInfoDao {
 			pstmt1 = con.prepareStatement(sqlString1);
 			rs1 = pstmt1.executeQuery();
 			while (rs1.next()) {
-				UpdateInvoiceForm uform = new UpdateInvoiceForm();
+				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 				Loger.log("The Incoice style id is " + rs1.getString(1));
 				uform.setInvoiceStyleId(rs1.getInt(1));
 				Loger.log("The Invoice Style name is " + rs1.getString(2));
@@ -2770,7 +2769,7 @@ public class EstimationInfoDao {
 
 			rs2 = pstmt2.executeQuery();
 			while (rs2.next()) {
-				UpdateInvoiceForm uform = new UpdateInvoiceForm();
+				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 
 				uform.setClientVendorID(String.valueOf(rs2
 						.getInt("ClientVendorID")));

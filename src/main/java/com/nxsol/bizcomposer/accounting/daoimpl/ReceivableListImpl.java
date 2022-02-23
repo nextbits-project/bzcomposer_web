@@ -27,27 +27,36 @@ import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblBudgetCategory;
 import com.nxsol.bizcomposer.common.TblCategoryType;
 import com.nxsol.bizcomposer.common.TblRecurrentPaymentPlan;
-import com.nxsol.bizcomposer.common.TblVendorDetail;
+import com.nxsol.bizcomposer.common.TblVendorDetailDto;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcomposer.jasper.pojo.BillingBoardReport;
 import com.nxsol.bizcomposer.jasper.pojo.BillingStatementReport;
-import com.nxsol.bizcompser.global.table.*;
-import com.pritesh.bizcomposer.accounting.bean.*;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
+import com.nxsol.bizcompser.global.table.TblCategoryLoader;
+import com.nxsol.bizcompser.global.table.TblTerm;
+import com.nxsol.bizcompser.global.table.TblTermLoader;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
+import com.pritesh.bizcomposer.accounting.bean.SalesBillingTable;
+import com.pritesh.bizcomposer.accounting.bean.TblAccount;
+import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
+import com.pritesh.bizcomposer.accounting.bean.TblAccountable;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 
 public class ReceivableListImpl implements ReceivableLIst {
 
 	public static int pID=0;
-	public static TblPayment p = new TblPayment();
+	public static TblPaymentDto p = new TblPaymentDto();
 	boolean flag = false;
 	Date paidDate = null;
 	Date frDate = null;
 	Date tdate = null;
 	double partialDepositAmount = 0.0;
 	String strName = "";
-	TblPayment paymentForReceived = null;
+	TblPaymentDto paymentForReceived = null;
 	double receivedAmountForRL = 0.00;
 	TblAccount payerAccount = null;
-	ReceivableListBean inv = null;
+	ReceivableListDto inv = null;
 	double totalAmount = 0.0;
 	int priorityForAddBank = -1;
 	String statusForAddBank = "";
@@ -57,7 +66,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	private ArrayList<TblAccountCategory> root = new ArrayList<TblAccountCategory>();
 	ArrayList<TblAccount> parent = new ArrayList<TblAccount>();
 	ArrayList<TblBudgetCategory> vRows = new ArrayList<TblBudgetCategory>();
-	TblCategory category = null;
+	TblCategoryDto category = null;
 
 	public double getTotalAmountForLabel()
 	{
@@ -65,12 +74,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 	
 	@Override
-	public ArrayList<ReceivableListBean> getReceivableList(int companyId) {
+	public ArrayList<ReceivableListDto> getReceivableList(int companyId) {
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<ReceivableListBean> rlb = new ArrayList<>();
+		ArrayList<ReceivableListDto> rlb = new ArrayList<>();
 		con = db.getConnection();
 		try {
 			String sql = "SELECT I.InvoiceID,I.OrderNum,I.PONum,I.SubTotal,I.Tax,I.EmployeeID,I.RefNum,I.Memo,I.ShipCarrierID,I.ShippingMethod,"
@@ -90,8 +99,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				ReceivableListBean rb = new ReceivableListBean();
-				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				ReceivableListDto rb = new ReceivableListDto();
+				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -158,13 +167,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ArrayList<ReceivableListBean> getCancelledTableList(int companyId) {
+	public ArrayList<ReceivableListDto> getCancelledTableList(int companyId) {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<ReceivableListBean> rlb = new ArrayList<ReceivableListBean>();
+		ArrayList<ReceivableListDto> rlb = new ArrayList<ReceivableListDto>();
 		con = db.getConnection();
 
 		try {
@@ -180,7 +189,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					+ " LEFT JOIN  bca_term AS term" + " ON INV.TermID = term.TermID"
 					+ " WHERE  ( ( ( InvoiceTypeID ) IN ( 1, 12 )" + " AND INV.TermID <> 3 )"
 					+ " OR INV.InvoiceTypeID = 11 )" + " AND INV.AdjustedTotal > 0" + " AND INV.IsPaymentCompleted = 0"
-					+ " AND INV.invoiceStatus ="+ReceivableListBean.CANCELLED_INVOICE_STATUS + " AND INV.CompanyID =" + companyId
+					+ " AND INV.invoiceStatus ="+ReceivableListDto.CANCELLED_INVOICE_STATUS + " AND INV.CompanyID =" + companyId
 					+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
 					+ " WHERE  bca_payment.InvoiceID =" + "INV.InvoiceID" + " AND bca_payment.Deleted != 1)"
 					+ " OR (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
@@ -192,8 +201,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				ReceivableListBean rb = new ReceivableListBean();
-				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				ReceivableListDto rb = new ReceivableListDto();
+				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -487,7 +496,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ReceivableListBean getInvoiceByOrderNUm(int ordernum,int companyId) {
+	public ReceivableListDto getInvoiceByOrderNUm(int ordernum,int companyId) {
 		// TODO Auto-generated method stub
 		
 		Connection con;
@@ -495,7 +504,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ReceivableListBean rb = null;
+		ReceivableListDto rb = null;
 		
 		try {
 			String sql = "SELECT INV.InvoiceID,INV.OrderNum,INV.PONum,INV.SubTotal,INV.Tax,INV.EmployeeID,INV.RefNum,INV.Memo,INV.ShipCarrierID,INV.ShippingMethod,"
@@ -522,8 +531,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				rb = new ReceivableListBean();
-				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				rb = new ReceivableListDto();
+				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -590,7 +599,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return rb;
 	}
 	@Override
-	public ReceivableListBean getInvoiceForLayawaysByOrderNUm(int ordernum,int companyId) {
+	public ReceivableListDto getInvoiceForLayawaysByOrderNUm(int ordernum,int companyId) {
 		// TODO Auto-generated method stub
 		
 		Connection con;
@@ -598,7 +607,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ReceivableListBean rb = null;
+		ReceivableListDto rb = null;
 		
 		try {
 			String sql = "SELECT INV.InvoiceID,INV.OrderNum,INV.PONum,INV.SubTotal,INV.Tax,INV.EmployeeID,INV.RefNum,INV.Memo,INV.ShipCarrierID,INV.ShippingMethod,"
@@ -625,8 +634,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				rb = new ReceivableListBean();
-				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				rb = new ReceivableListDto();
+				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -863,9 +872,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public TblPayment getPaymentByPaymentId(int id) {
+	public TblPaymentDto getPaymentByPaymentId(int id) {
 		// TODO Auto-generated method stub
-		TblPayment payment = null;
+		TblPaymentDto payment = null;
 		
 		Connection con;
 		Statement stmt = null;
@@ -882,7 +891,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				payment = new TblPayment();
+				payment = new TblPaymentDto();
 				payment.setId(rs.getInt("PaymentID"));
 				payment.setAmount(rs.getDouble("Amount"));
 				payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -917,19 +926,19 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public int updateInvoiceByOrderNum(ReceivableListBean receivableListBean) {
+	public int updateInvoiceByOrderNum(ReceivableListDto ReceivableListDto) {
 		// TODO Auto-generated method stub
-		ReceivableListBean rb = getInvoiceByOrderNUm(receivableListBean.getOrderNum(),receivableListBean.getCompanyID());
+		ReceivableListDto rb = getInvoiceByOrderNUm(ReceivableListDto.getOrderNum(),ReceivableListDto.getCompanyID());
 		if(rb == null)
 		{
 			try {
-				rb = getInvoiceByInvoiceID(receivableListBean.getInvoiceID());
+				rb = getInvoiceByInvoiceID(ReceivableListDto.getInvoiceID());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		double paidAmount = rb.getPaidAmount()+receivableListBean.getBalance();
+		double paidAmount = rb.getPaidAmount()+ReceivableListDto.getBalance();
 		double balance = rb.getAdjustedTotal() - paidAmount;
 		int i = 0;
 		Connection con;
@@ -938,17 +947,17 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ResultSet rs = null;
 		con = db.getConnection();
 		String sql = "";
-		if(receivableListBean.getPoNum() == 0)
+		if(ReceivableListDto.getPoNum() == 0)
 		{
-			 sql = "update bca_invoice SET PaymentTypeID ="+receivableListBean.getPaymentTypeID()+ "," + " BankAccountID="+receivableListBean.getBankAccountID()+ "," + "CategoryID="+receivableListBean.getCategoryID()
-				+ "," + " PaidAmount="+paidAmount+ "," + " Balance="+balance+ ","+"ClientVendorID="+ receivableListBean.getCvID() + ", Memo='"+ receivableListBean.getMemo() +"'"+ 
-				" Where OrderNum="+receivableListBean.getOrderNum()+" AND CompanyID="+receivableListBean.getCompanyID();
+			 sql = "update bca_invoice SET PaymentTypeID ="+ReceivableListDto.getPaymentTypeID()+ "," + " BankAccountID="+ReceivableListDto.getBankAccountID()+ "," + "CategoryID="+ReceivableListDto.getCategoryID()
+				+ "," + " PaidAmount="+paidAmount+ "," + " Balance="+balance+ ","+"ClientVendorID="+ ReceivableListDto.getCvID() + ", Memo='"+ ReceivableListDto.getMemo() +"'"+ 
+				" Where OrderNum="+ReceivableListDto.getOrderNum()+" AND CompanyID="+ReceivableListDto.getCompanyID();
 		}
 		else
 		{	
-				 sql = "update bca_invoice SET PaymentTypeID ="+receivableListBean.getPaymentTypeID()+ "," + " BankAccountID="+receivableListBean.getBankAccountID()+ "," + "CategoryID="+receivableListBean.getCategoryID()
-				+ "," + " PaidAmount="+paidAmount+ "," + " Balance="+balance+ ","+"ClientVendorID="+ receivableListBean.getCvID() + ", Memo='"+ receivableListBean.getMemo() +"'"+ 
-				" Where PONum="+receivableListBean.getPoNum()+" AND CompanyID="+receivableListBean.getCompanyID();
+				 sql = "update bca_invoice SET PaymentTypeID ="+ReceivableListDto.getPaymentTypeID()+ "," + " BankAccountID="+ReceivableListDto.getBankAccountID()+ "," + "CategoryID="+ReceivableListDto.getCategoryID()
+				+ "," + " PaidAmount="+paidAmount+ "," + " Balance="+balance+ ","+"ClientVendorID="+ ReceivableListDto.getCvID() + ", Memo='"+ ReceivableListDto.getMemo() +"'"+ 
+				" Where PONum="+ReceivableListDto.getPoNum()+" AND CompanyID="+ReceivableListDto.getCompanyID();
 		}
 		try {
 			stmt = con.createStatement();
@@ -976,7 +985,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ArrayList<ReceivableListBean> getInvoiceForUnpaidOpeningbal(int copanyId) {
+	public ArrayList<ReceivableListDto> getInvoiceForUnpaidOpeningbal(int copanyId) {
 		// TODO Auto-generated method stub
 		double openingBalance = 0.0;
 		Connection con;
@@ -984,7 +993,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ArrayList<ReceivableListBean> rlb = new ArrayList<ReceivableListBean>();
+		ArrayList<ReceivableListDto> rlb = new ArrayList<ReceivableListDto>();
 		
 		String sql = "SELECT * "
 				+ " FROM bca_clientvendor  WHERE Deleted=0 AND CompanyID ="+copanyId
@@ -999,7 +1008,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				ReceivableListBean rb = new ReceivableListBean();
+				ReceivableListDto rb = new ReceivableListDto();
 				openingBalance = rs.getDouble("CustomerOpenDebit");
 				rb.setCvName(rs.getString("FirstName")+" "+rs.getString("LastName"));
 				rb.setCompanyName(rs.getString("Name"));
@@ -1085,7 +1094,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ArrayList<ReceivableListBean> getUnpaidCreditAmount(int companyId) {
+	public ArrayList<ReceivableListDto> getUnpaidCreditAmount(int companyId) {
 		// TODO Auto-generated method stub
 		double openingBalance = 0.0;
 		Connection con;
@@ -1093,7 +1102,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ArrayList<ReceivableListBean> rlb = new ArrayList<ReceivableListBean>();
+		ArrayList<ReceivableListDto> rlb = new ArrayList<ReceivableListDto>();
 		
 		/*int cvTypeIdForCustomer = getCustomerTypeId(ConstValue.CUSTOMER);
 		int cvTypeIdForDealer = getCustomerTypeId(ConstValue.DEALER);
@@ -1103,7 +1112,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ " a.ClientVendorID,a.CategoryID,b.InvoiceID,b.Credit,b.Total_Credit ,a.TermID,b.Memo"
 				+ " FROM bca_clientvendor AS a  INNER JOIN bca_invoicecredit AS b ON b.cvId = a.ClientVendorID "
 				+ " WHERE a.Deleted=0 AND b.Deleted = 0 AND b.Credit > 0 "
-				+ " AND b.InvoiceTypeID NOT IN("+ReceivableListBean.PURCHASE_ORDER_INVOICE_TYPE+") AND CompanyID ="+companyId
+				+ " AND b.InvoiceTypeID NOT IN("+ReceivableListDto.PURCHASE_ORDER_INVOICE_TYPE+") AND CompanyID ="+companyId
 				+ " AND Status = 'N'"
 				+ " AND CVTypeID IN("+getCustomerTypeId(ConstValue.CUSTOMER)+","+getCustomerTypeId(ConstValue.DEALER)+","+getCustomerTypeId(ConstValue.CustVenBoth)+","+getCustomerTypeId(ConstValue.DealerVenBoth)+") ORDER BY b.DateAdded DESC";
 				/*+ " AND CVTypeID IN("+cvTypeIdForCustomer+","+cvTypeIdForDealer+","+cvTypeIdForBoth+","+cvTypeIdForDealerVendor+") ORDER BY b.DateAdded DESC";*/
@@ -1114,7 +1123,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				ReceivableListBean uca = new ReceivableListBean();
+				ReceivableListDto uca = new ReceivableListDto();
 				openingBalance = rs.getDouble("Credit");
 				uca.setInvoiceID(rs.getInt("InvoiceID"));
 //				uca.setPaymentTypeID(paymentTypeID);
@@ -1124,7 +1133,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				uca.setCreditAmount(openingBalance);
 				uca.setTotalCreditAmount(rs.getDouble("Total_Credit"));
 				uca.setBalance(openingBalance);
-				uca.setInvoiceTypeID(ReceivableListBean.UNPAID_CREDIT_TYPE);
+				uca.setInvoiceTypeID(ReceivableListDto.UNPAID_CREDIT_TYPE);
 //				uca.setpayFrom(PayFrom);
 //				uca.setCategoryID(categoryID);
 				uca.setDateAdded(rs.getDate("DateAdded"));
@@ -1244,11 +1253,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public TblPayment setPayment(ReceivableListBean bean,int InvoiceID,int CompanyID) {
+	public TblPaymentDto setPayment(ReceivableListDto bean,int InvoiceID,int CompanyID) {
 		// TODO Auto-generated method stub
 		int cvId = bean.getCvID();
 		TblAccount account = getAccountForPayer(cvId, CompanyID);
-		TblPayment payment = new TblPayment();
+		TblPaymentDto payment = new TblPaymentDto();
 		payment.setAmount(bean.getPaidAmount());
 		payment.setPaymentTypeID(bean.getPaymentTypeID());
 		payment.setCvID(cvId);
@@ -1440,7 +1449,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public void insertAccount(TblPayment payment, ReceivableListBean bean) throws SQLException {
+	public void insertAccount(TblPaymentDto payment, ReceivableListDto bean) throws SQLException {
 		// TODO Auto-generated method stub
 		Savepoint payment_svpt = null;
 		Connection con = null;
@@ -1472,7 +1481,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 }
 	
-	public int transaction(TblPayment payment) throws SQLException
+	public int transaction(TblPaymentDto payment) throws SQLException
 	{
 		int paymentId = -1;
         double payFromBalance = 0.00;
@@ -1598,7 +1607,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 	
-	public static void invoicePaid(ReceivableListBean invoice,boolean b) throws SQLException
+	public static void invoicePaid(ReceivableListDto invoice,boolean b) throws SQLException
 	{
 		boolean paymentCompleted = false;
         double paidAmount = 0.0;
@@ -1609,7 +1618,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ResultSet rs = null;
 		con = db.getConnection();
 		
-        invoice.setInvoiceStatus(ReceivableListBean.NORMAL_INVOICE_STATUS);
+        invoice.setInvoiceStatus(ReceivableListDto.NORMAL_INVOICE_STATUS);
         
         if (b) {
             if (invoice.getBalance() == 0.0) {
@@ -1664,7 +1673,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public void getLastId(TblPayment payment) {
+	public void getLastId(TblPaymentDto payment) {
 		// TODO Auto-generated method stub
 		 	Connection con;
 			Statement stmt = null;
@@ -1707,7 +1716,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public void depositTo(TblPayment payment, TblAccount account,int priority) throws SQLException {
+	public void depositTo(TblPaymentDto payment, TblAccount account,int priority) throws SQLException {
 		// TODO Auto-generated method stub
 		boolean state = false;
 		Connection con;
@@ -1762,7 +1771,7 @@ public class ReceivableListImpl implements ReceivableLIst {
        
 	}
 	
-	public void adjustCurrentBalance(TblPayment payment) throws SQLException
+	public void adjustCurrentBalance(TblPaymentDto payment) throws SQLException
 	{
 		double payFromBalance = 0.0;
         double payToBalance = 0.0;
@@ -1809,7 +1818,7 @@ public class ReceivableListImpl implements ReceivableLIst {
   }
 
 	@Override
-	public double getAmountByInvoiceId(ReceivableListBean invoice) {
+	public double getAmountByInvoiceId(ReceivableListDto invoice) {
 		// TODO Auto-generated method stub
 		double amount = 0.0;
 		Connection con;
@@ -1853,7 +1862,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ArrayList<TblPayment> getReceivedList(int compantId,String dateStr) {
+	public ArrayList<TblPaymentDto> getReceivedList(int compantId,String dateStr) {
 		// TODO Auto-generated method stub
 		double amount = 0.0;
 		Connection con;
@@ -1861,7 +1870,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ArrayList<TblPayment> rl = new ArrayList<TblPayment>();
+		ArrayList<TblPaymentDto> rl = new ArrayList<TblPaymentDto>();
 		
 		String sql = "SELECT a.* "
                 + " FROM bca_payment a , bca_invoice b"
@@ -1871,7 +1880,7 @@ public class ReceivableListImpl implements ReceivableLIst {
                 + " AND b.InvoiceTypeID IN (1,11,12,16,17,31) "
                 + " AND a.InvoiceID=b.InvoiceID "
                 + " AND a.Deleted=0"
-                + " AND a.TransactionType <> "+ReceivableListBean.UNPAID_CREDIT_TYPE    //+ " AND a.TransactionType <> 19"
+                + " AND a.TransactionType <> "+ReceivableListDto.UNPAID_CREDIT_TYPE    //+ " AND a.TransactionType <> 19"
                 + " AND a.CategoryID <> -11";
 		
 		if (!dateStr.equals("")) {
@@ -1886,9 +1895,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblPayment payment = new TblPayment();
+				TblPaymentDto payment = new TblPaymentDto();
 				TblCategoryLoader category = new TblCategoryLoader();
-				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				ClientVendor cv = getClentVendor(rs.getInt("ClientVendorID"), ConstValue.companyId);
 				payment.setId(rs.getInt("PaymentID"));
                 payment.setAmount(rs.getDouble("Amount"));
@@ -2221,7 +2230,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		
 		String sql = "Update bca_invoice "
-		+" SET invoiceStatus="+ReceivableListBean.CANCELLED_INVOICE_STATUS
+		+" SET invoiceStatus="+ReceivableListDto.CANCELLED_INVOICE_STATUS
 		+ " ,MEMO='Cancelled Payment'"
 		+ " WHERE CompanyID="+ConstValue.companyId
 		+ " AND InvoiceID="+invoiceId;
@@ -2258,7 +2267,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		
 		String sql = "Update bca_invoice "
-		+" SET invoiceStatus="+ReceivableListBean.NORMAL_INVOICE_STATUS
+		+" SET invoiceStatus="+ReceivableListDto.NORMAL_INVOICE_STATUS
 		+ " ,MEMO='Cancelled Payment'"
 		+ " WHERE CompanyID="+ConstValue.companyId
 		+ " AND InvoiceID="+invoiceId;
@@ -2331,14 +2340,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public TblPayment getObjectOfStoragePayment(int paymentId) {
+	public TblPaymentDto getObjectOfStoragePayment(int paymentId) {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		TblPayment payment = new TblPayment();
+		TblPaymentDto payment = new TblPaymentDto();
 		
 		String sql = "SELECT PaymentID,AccountID,Amount,PayeeID,"
                 + " PayerID,Deleted,CategoryID,AccountCategoryID,PaymentTypeID,"
@@ -2403,14 +2412,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 		return payment;
 	}
-	public static ReceivableListBean getInvoiceByInvoiceID(int invoiceID) throws SQLException
+	public static ReceivableListDto getInvoiceByInvoiceID(int invoiceID) throws SQLException
 	{
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ReceivableListBean invoice = new ReceivableListBean();
+		ReceivableListDto invoice = new ReceivableListDto();
 		String sql = " SELECT * "
                 + " FROM bca_invoice "
                 + " WHERE InvoiceID = " + invoiceID
@@ -2504,7 +2513,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public void updateTransaction(TblPayment payment,double receivedAmount,String receivedName,Date date) throws SQLException {
+	public void updateTransaction(TblPaymentDto payment,double receivedAmount,String receivedName,Date date) throws SQLException {
 		// TODO Auto-generated method stub
 		strName = receivedName;
 		receivedAmountForRL = receivedAmount;
@@ -2552,7 +2561,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 		
 	}
-	public void adjustPaymentBalance(TblPayment payment, double amount)
+	public void adjustPaymentBalance(TblPaymentDto payment, double amount)
 	{
 		 double payFromBalance = 0.00;
 	     double payToBalance = 0.00;
@@ -2684,7 +2693,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		}
     }
-	public void adjustDepositBalance(TblPayment payment,double amount)throws SQLException
+	public void adjustDepositBalance(TblPaymentDto payment,double amount)throws SQLException
 	{
 		double payFromBalance = 0.00;
         double payToBalance = 0.00, payToBalanceAmount = 0.0;
@@ -2764,7 +2773,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		}
 	}
-	private void updateRefundTransaction(TblPayment payment,double amount)
+	private void updateRefundTransaction(TblPaymentDto payment,double amount)
 	{
 		Statement stmt = null;
 		Connection con = null;
@@ -2899,7 +2908,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		}
 	}
-	final public static void updateInvoicemodifiedforBankingedited(ReceivableListBean invoice,boolean b)throws SQLException
+	final public static void updateInvoicemodifiedforBankingedited(ReceivableListDto invoice,boolean b)throws SQLException
 	{
 		Connection con;
 		Statement stmt = null;
@@ -3089,7 +3098,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	private boolean checkEdits()throws SQLException
 	{
 		if (paymentForReceived.getInvoiceID() > 0) {
-	          ReceivableListBean invoice = getInvoiceByInvoiceID(paymentForReceived.getInvoiceID());
+	          ReceivableListDto invoice = getInvoiceByInvoiceID(paymentForReceived.getInvoiceID());
 	          if(invoice!=null)
 	          {
 	        	  partialDepositAmount = receivedAmountForRL - paymentForReceived.getAmount() + invoice.getPaidAmount();
@@ -3249,7 +3258,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public void setDeletedmodified(TblPayment payment, boolean isDeleted, String tableName, int isUpfrontDeposit) {
+	public void setDeletedmodified(TblPaymentDto payment, boolean isDeleted, String tableName, int isUpfrontDeposit) {
 		// TODO Auto-generated method stub
 		
 		boolean isDepositAccount = false;
@@ -3352,7 +3361,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 			}
 	    }
-	public void deletePayment(TblPayment payment)
+	public void deletePayment(TblPaymentDto payment)
 	{
 		Connection con;
 		Statement stmt = null;
@@ -3389,7 +3398,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 
 	}
-	public void updateBcaPaymentForToSetIsneedTodeposit(TblPayment payment)
+	public void updateBcaPaymentForToSetIsneedTodeposit(TblPaymentDto payment)
 	{
 		Connection con;
 		Statement stmt = null;
@@ -3421,7 +3430,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 	
-	public static void adjustCurrentBalancemodified(TblPayment payment, TblAccount payerAccount, TblAccount payeeAccount, double paymentAmount)
+	public static void adjustCurrentBalancemodified(TblPaymentDto payment, TblAccount payerAccount, TblAccount payeeAccount, double paymentAmount)
 	{
 		double payFromBalance = 0.00;
         double payToBalance = 0.00;
@@ -3642,9 +3651,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	
-	public static void updateInvoice(TblPayment payment)
+	public static void updateInvoice(TblPaymentDto payment)
 	{
-		ReceivableListBean invoice;
+		ReceivableListDto invoice;
 		
 		try {
 			invoice = getInvoiceByInvoiceID(payment.getInvoiceID());
@@ -3701,7 +3710,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	
-	public static void updateTransaction(TblPayment payment,boolean b)
+	public static void updateTransaction(TblPaymentDto payment,boolean b)
 	{
 		Connection con;
 		Statement stmt = null;
@@ -3933,7 +3942,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			SQLExecutor db = new SQLExecutor();
 			con = db.getConnection();
 			
-			String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListBean.LAYAWAYS_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
+			String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListDto.LAYAWAYS_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
 			try {
 				stmt = con.createStatement();
 				int  i = stmt.executeUpdate(sql);
@@ -3958,13 +3967,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 	}
 	@Override
-	public ArrayList<ReceivableListBean> getLayawayList() {
+	public ArrayList<ReceivableListDto> getLayawayList() {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<ReceivableListBean> rlb = new ArrayList<ReceivableListBean>();
+		ArrayList<ReceivableListDto> rlb = new ArrayList<ReceivableListDto>();
 		con = db.getConnection();
 		
 		try {
@@ -3981,7 +3990,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					+ " LEFT JOIN  bca_term AS term" + " ON INV.TermID = term.TermID"
 					+ " LEFT JOIN bca_paymenttype AS pay ON INV.PaymentTypeID = pay.PaymentTypeID" 
                     + " LEFT JOIN bca_account AS account ON INV.BankAccountID = account.AccountID"
-					+ " WHERE  ( ( ( InvoiceTypeID ) IN ("+ReceivableListBean.LAYAWAYS_TYPE+")" + " AND INV.TermID <> 3 )"
+					+ " WHERE  ( ( ( InvoiceTypeID ) IN ("+ReceivableListDto.LAYAWAYS_TYPE+")" + " AND INV.TermID <> 3 )"
 					+ " OR INV.InvoiceTypeID = 11 )" + " AND INV.AdjustedTotal > 0" + " AND INV.IsPaymentCompleted = 0"
 					+ " AND INV.invoiceStatus = 0" + " AND INV.CompanyID =" + ConstValue.companyId
 					+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
@@ -3995,8 +4004,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				ReceivableListBean rb = new ReceivableListBean();
-				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				ReceivableListDto rb = new ReceivableListDto();
+				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -4069,9 +4078,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	}
 	@Override
-	public double updateInvoiceForLayaways(ReceivableListBean bean) {
+	public double updateInvoiceForLayaways(ReceivableListDto bean) {
 		// TODO Auto-generated method stub
-		ReceivableListBean rb = getInvoiceForLayawaysByOrderNUm(bean.getOrderNum(),bean.getCompanyID());
+		ReceivableListDto rb = getInvoiceForLayawaysByOrderNUm(bean.getOrderNum(),bean.getCompanyID());
 		double paidAmount = rb.getPaidAmount()+bean.getBalance();
 		double balance = rb.getAdjustedTotal() - paidAmount;
 		int i = 0;
@@ -4112,7 +4121,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public ArrayList<TblPayment> getPartiallyReceivedLayaways() {
+	public ArrayList<TblPaymentDto> getPartiallyReceivedLayaways() {
 		// TODO Auto-generated method stub
 		
 		Connection con;
@@ -4120,7 +4129,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ArrayList<TblPayment> rl = new ArrayList<TblPayment>();
+		ArrayList<TblPaymentDto> rl = new ArrayList<TblPaymentDto>();
 		
 		String sql = "SELECT * , "
 				+ " b.Name As PaymentTypeName,"
@@ -4141,9 +4150,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblPayment payment = new TblPayment();
+				TblPaymentDto payment = new TblPaymentDto();
 				TblCategoryLoader category = new TblCategoryLoader();
-				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				ClientVendor cv = getClentVendor(rs.getInt("ClientVendorID"), ConstValue.companyId);
 				payment.setId(rs.getInt("PaymentID"));
                 payment.setAmount(rs.getDouble("Amount"));
@@ -4202,7 +4211,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		
 		String sql = "Update bca_invoice "
-		+" SET InvoiceTypeId="+ReceivableListBean.INVOICE_TYPE
+		+" SET InvoiceTypeId="+ReceivableListDto.INVOICE_TYPE
 		+ " WHERE CompanyID="+ConstValue.companyId
 		+ " AND InvoiceID="+invoiceId;
 		
@@ -4284,9 +4293,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 	
 	}
 	@Override
-	public ArrayList<ReceivableListBean> getPoPayableList() {
+	public ArrayList<ReceivableListDto> getPoPayableList() {
 		// TODO Auto-generated method stub
-		ArrayList<ReceivableListBean> pli = new ArrayList<ReceivableListBean>();
+		ArrayList<ReceivableListDto> pli = new ArrayList<ReceivableListDto>();
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -4336,7 +4345,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				ReceivableListBean rb = new ReceivableListBean();
+				ReceivableListDto rb = new ReceivableListDto();
 				
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				/*rb.setOrderNum(rs.getInt("OrderNum"));*/
@@ -4404,7 +4413,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return pli;
 }
 	@Override
-	public void getInvoices(ReceivableListBean bean) throws SQLException {
+	public void getInvoices(ReceivableListDto bean) throws SQLException {
 		// TODO Auto-generated method stub
 		TblAccountable payable = new TblAccountable();
 		Calendar c1 = Calendar.getInstance();
@@ -4526,7 +4535,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (fromAccount != null && fromAccount.getAccountTypeID() == 2) {
 		            payToBalance = 0.0;
 		        }
-				 TblPayment payment = new TblPayment();
+				 TblPaymentDto payment = new TblPaymentDto();
 				 if(accountable.getInvoiceTypeId() == 2)
 				 {	 
 					 payment.setInvoiceTypeID(2);
@@ -4604,7 +4613,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				return payableId;					
 	}
 	
-	public void insertIntoPaymentTable(TblAccountable accountable,int payableId,double payFromBalance,double payToBalance,TblPayment payment,int priority)throws SQLException
+	public void insertIntoPaymentTable(TblAccountable accountable,int payableId,double payFromBalance,double payToBalance,TblPaymentDto payment,int priority)throws SQLException
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -4664,7 +4673,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 	}
 	@Override
-	public ArrayList<TblPayment> getPaidList(Date fromDate , Date toDate) {
+	public ArrayList<TblPaymentDto> getPaidList(Date fromDate , Date toDate) {
 		// TODO Auto-generated method stub
 		String dataStr = "";
 		String sql = "";
@@ -4673,7 +4682,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		dataStr = getSQL4Date(fromDate, toDate);
-		ArrayList<TblPayment> paidL = new ArrayList<TblPayment>();
+		ArrayList<TblPaymentDto> paidL = new ArrayList<TblPaymentDto>();
 		
 		sql = " SELECT a.*"
 		 + " ,acc.Name AS AccountName"
@@ -4717,7 +4726,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				 TblPayment payment = new TblPayment();
+				 TblPaymentDto payment = new TblPaymentDto();
                  payment.setId(rs.getInt("PaymentID"));
                  payment.setAmount(rs.getDouble("Amount"));
                  payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -4767,9 +4776,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return paidL;
 	}
 	@Override
-	public ArrayList<ReceivableListBean> getConsignmentSaleList() {
+	public ArrayList<ReceivableListDto> getConsignmentSaleList() {
 		// TODO Auto-generated method stub
-		ArrayList<ReceivableListBean> cli = new ArrayList<ReceivableListBean>();
+		ArrayList<ReceivableListDto> cli = new ArrayList<ReceivableListDto>();
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -4802,7 +4811,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	  + " WHERE INV.CompanyID="+ConstValue.companyId
 	  + " AND INV.IsPaymentCompleted = 0"
 	  + " AND INV.InvoiceStatus = 0"
-	  + " AND INV.InvoiceTypeID ="+ReceivableListBean.CONSIGNMENT_SALE_TYPE
+	  + " AND INV.InvoiceTypeID ="+ReceivableListDto.CONSIGNMENT_SALE_TYPE
 	  + " AND bca_clientvendor.Status = 'N'"
 	  + " AND bca_clientvendor.CompanyID = 1"
 	  + " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)"
@@ -4819,7 +4828,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				ReceivableListBean rb = new ReceivableListBean();
+				ReceivableListDto rb = new ReceivableListDto();
 				
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				rb.setPoNum(rs.getInt("PONum"));
@@ -4872,7 +4881,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		
-		String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListBean.CONSIGNMENT_SALE_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
+		String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListDto.CONSIGNMENT_SALE_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
 		try {
 			stmt = con.createStatement();
 			int  i = stmt.executeUpdate(sql);
@@ -4894,13 +4903,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 	@Override
-	public ArrayList<TblPayment> getPaidConsignPaymentList() {
+	public ArrayList<TblPaymentDto> getPaidConsignPaymentList() {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<TblPayment> paidConsign = new ArrayList<TblPayment>();
+		ArrayList<TblPaymentDto> paidConsign = new ArrayList<TblPaymentDto>();
 		
 		String sql = " SELECT a.*"
 		 + " ,acc.Name AS AccountName"
@@ -4923,7 +4932,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		 		+ " AND ( a.invoiceid <> -1 "
 		 				+" OR a.invoiceid <> 0 )"
 		 		+ " AND a.rmano <= 0"
-		 	    + " AND b.invoicetypeid IN ( "+ReceivableListBean.CONSIGNMENT_SALE_TYPE+" )"
+		 	    + " AND b.invoicetypeid IN ( "+ReceivableListDto.CONSIGNMENT_SALE_TYPE+" )"
 		 		+ " AND a.invoiceid = b.invoiceid"
 		 		+ " AND a.deleted = 0"
 		 		+ " AND a.transactiontype <> 16"
@@ -4939,7 +4948,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				 TblPayment payment = new TblPayment();
+				 TblPaymentDto payment = new TblPaymentDto();
                  payment.setId(rs.getInt("PaymentID"));
                  payment.setAmount(rs.getDouble("Amount"));
                  payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -4994,7 +5003,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		
-		String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListBean.PURCHASE_ORDER_INVOICE_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
+		String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListDto.PURCHASE_ORDER_INVOICE_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
 		try {
 			stmt = con.createStatement();
 			int  i = stmt.executeUpdate(sql);
@@ -5466,12 +5475,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ArrayList<TblPayment> getPaymentsForBanking(TblAccount account, Date from , Date to,String transType , Boolean useFilter) {
+	public ArrayList<TblPaymentDto> getPaymentsForBanking(TblAccount account, Date from , Date to,String transType , Boolean useFilter) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
-		ArrayList<TblPayment> payments = new ArrayList<>();
+		ArrayList<TblPaymentDto> payments = new ArrayList<>();
 		
 		String trans = "";
 		String dateAdded = "";
@@ -5525,7 +5534,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			rs = stmt.executeQuery(sql.toString());
 			while(rs.next())
 			{
-				TblPayment payment = new TblPayment();
+				TblPaymentDto payment = new TblPaymentDto();
 				payment.setId(rs.getInt("PaymentID"));
 				payment.setAmount(rs.getDouble("Amount"));
 				payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -5681,7 +5690,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public int bankTransfer(TblPayment payment , double amount, Date transferDate , int priority) {
+	public int bankTransfer(TblPaymentDto payment , double amount, Date transferDate , int priority) {
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -5738,7 +5747,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public void adjustBankForBanking(TblPayment payment) {
+	public void adjustBankForBanking(TblPaymentDto payment) {
 		// TODO Auto-generated method stub
 		TblAccount fromAccount = getAccountById(payment.getPayerID());
 		TblAccount toAccount = getAccountById(payment.getPayeeID());
@@ -5808,14 +5817,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public ArrayList<TblCategory> getCategoryListForPayment() {
+	public ArrayList<TblCategoryDto> getCategoryListForPayment() {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
+		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
 		
 		String sql = "SELECT * from bca_category where CompanyID=" + ConstValue.companyId
 				    + " AND CategoryTypeID IN (1841648525) AND isActive = 1 ORDER BY Name ASC";
@@ -5826,7 +5835,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategory category = new TblCategory();
+				TblCategoryDto category = new TblCategoryDto();
 				category.setId(rs.getInt("CategoryID"));
                 category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 category.setParent(rs.getString("Parent"));
@@ -5874,7 +5883,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public void adjustBankBalanceForVendor(TblPayment payment) {
+	public void adjustBankBalanceForVendor(TblPaymentDto payment) {
 		// TODO Auto-generated method stub
 		
 		TblAccount fromAccount = getAccountById(payment.getPayerID());
@@ -5941,7 +5950,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return clientList;
 	}
 	@Override
-	public ArrayList<TblCategory> getCategoryListForDeposit() {
+	public ArrayList<TblCategoryDto> getCategoryListForDeposit() {
 		// TODO Auto-generated method stub
 		
 		Connection con;
@@ -5949,7 +5958,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
+		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
 		
 		String sql = "SELECT * from bca_category where CompanyID=" + ConstValue.companyId
 				    + " AND CategoryTypeID IN (1973117447) AND isActive = 1 ORDER BY Name ASC";
@@ -5960,7 +5969,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategory category = new TblCategory();
+				TblCategoryDto category = new TblCategoryDto();
 				category.setId(rs.getInt("CategoryID"));
                 category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 category.setParent(rs.getString("Parent"));
@@ -5992,7 +6001,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return categoryList;
 	}
 	@Override
-	public int bankTransferFromDeposit(TblPayment payment, double amount, Date transferDate, int priority) {
+	public int bankTransferFromDeposit(TblPaymentDto payment, double amount, Date transferDate, int priority) {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
@@ -6081,7 +6090,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
         }
 	@Override
-	public void adjustBankAfterDeposit(TblPayment payment) {
+	public void adjustBankAfterDeposit(TblPaymentDto payment) {
 		// TODO Auto-generated method stub
 		TblAccount toAccount = getAccountById(payment.getPayeeID());
 		
@@ -6140,9 +6149,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return allClientvendor;
 	}
 	@Override
-	public ArrayList<TblCategory> getAllCategory() {
+	public ArrayList<TblCategoryDto> getAllCategory() {
 		// TODO Auto-generated method stub
-		ArrayList<TblCategory> allCategory = new ArrayList<TblCategory>();
+		ArrayList<TblCategoryDto> allCategory = new ArrayList<TblCategoryDto>();
 		
 		Connection con;
 		Statement stmt = null;
@@ -6158,7 +6167,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategory category = new TblCategory();
+				TblCategoryDto category = new TblCategoryDto();
 				category.setId(rs.getInt("CategoryID"));
                 category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 category.setParent(rs.getString("Parent"));
@@ -6241,7 +6250,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public void addAccount(TblPayment payment,int priority,String status , int AccountId) {
+	public void addAccount(TblPaymentDto payment,int priority,String status , int AccountId) {
 		int bankID = 0;
 		priorityForAddBank = priority;
 		statusForAddBank = status;
@@ -6352,7 +6361,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return rowUpdated;
 	}
 	
-	public int insertBankAccountmodified(TblAccount account , int depositFrom , TblPayment payment) throws SQLException
+	public int insertBankAccountmodified(TblAccount account , int depositFrom , TblPaymentDto payment) throws SQLException
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -6396,7 +6405,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		 int depositFromId = payment.getAccountID() == -1 ? -1 : payment.getAccountID();
 		 int cateoryID = (depositFromId == -1 ? -7 : -9);
 		 
-		 TblPayment pay = new TblPayment();
+		 TblPaymentDto pay = new TblPaymentDto();
 		 pay.setAmount(account.getCustomerStartingBalance());
 		 pay.setPaymentTypeID(account.getAccountCategoryID());
 		 pay.setPayerID(depositFromId);
@@ -6408,7 +6417,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		 pay.setDateAdded(account.getDateAdded());
 		 pay.setCategoryId(cateoryID);
 		 
-		 TblCategory category = getCategory("Bank Deposit");
+		 TblCategoryDto category = getCategory("Bank Deposit");
 		 
 		 pay.setAccountCategoryId((int)category.getId());
 		 int paymentId = addBankTransaction(pay);
@@ -6449,7 +6458,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		}
 	}
-	public void updateBankBalance(TblPayment payment)
+	public void updateBankBalance(TblPaymentDto payment)
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -6496,7 +6505,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		}
 	}
-	public int addBankTransaction(TblPayment payment)
+	public int addBankTransaction(TblPaymentDto payment)
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -6661,7 +6670,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 		return paymentId;
 	}
-	public void insertRecord(TblPayment payment,double payFromBalance , double payToBalance)
+	public void insertRecord(TblPaymentDto payment,double payFromBalance , double payToBalance)
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -6720,14 +6729,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		}
 	}
-	public TblCategory getCategory(String categoryName)
+	public TblCategoryDto getCategory(String categoryName)
 	{
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		TblCategory category = new TblCategory();
+		TblCategoryDto category = new TblCategoryDto();
 		
 		String sql = "SELECT * FROM bca_category WHERE companyID = "+ConstValue.companyId +" and Name = '" + categoryName + "'";
 		 try {
@@ -6768,14 +6777,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		 return category;
 		
 	}
-	public TblCategory getCategoryById(int categoryId)
+	public TblCategoryDto getCategoryById(int categoryId)
 	{
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		TblCategory category = new TblCategory();
+		TblCategoryDto category = new TblCategoryDto();
 		
 		String sql = " SELECT * FROM bca_category WHERE CompanyID = "+ ConstValue.companyId
 				    + " AND CategoryID = " + categoryId;
@@ -6815,7 +6824,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 		return category;
 	}
-	public TblAccount getAccountInfo(TblPayment payment)
+	public TblAccount getAccountInfo(TblPaymentDto payment)
 	{
 		TblAccount account  = new TblAccount(); 
 		 int parentId = -1;
@@ -6872,7 +6881,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		account.setDateAdded(new Date());
 		return account;
 	}
-	public boolean getIsAccountNameExists(TblPayment payment)
+	public boolean getIsAccountNameExists(TblPaymentDto payment)
 	{	
 		Connection con = null;
 		Statement stmt = null;
@@ -7019,7 +7028,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return cvList;
 	}
 	@Override
-	public ArrayList<TblVendorDetail> getUnpaidBillList(int cvID , int checkStatus) {
+	public ArrayList<TblVendorDetailDto> getUnpaidBillList(int cvID , int checkStatus) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
@@ -7027,7 +7036,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		ResultSet rs = null;
 		double totalUnpaidAmount = 0.00; 
-		ArrayList<TblVendorDetail> unpaidBill = new ArrayList<TblVendorDetail>();
+		ArrayList<TblVendorDetailDto> unpaidBill = new ArrayList<TblVendorDetailDto>();
 		
 		String Sql = " SELECT bill.BillNum,bill.DueDate,bill.AmountDue,bill.Status,bill.BillType,bill.AmountPaid,bill.CreditUsed," +
                 " bill.Balance,bill.Memo,bill.IsMemorized,bill.VendorId,bill.CategoryID,bill.PayerID " +
@@ -7049,7 +7058,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblVendorDetail vDetail = new TblVendorDetail();
+				TblVendorDetailDto vDetail = new TblVendorDetailDto();
                 vDetail.setIsSelected(false);
                 vDetail.setIsSelected(vDetail.getIsSelected());
                 vDetail.setVendorName(rs.getString("Name"));             
@@ -7108,14 +7117,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return unpaidBill;
 	}
 	@Override
-	public TblVendorDetail getBillById(int billNum) {
+	public TblVendorDetailDto getBillById(int billNum) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		TblVendorDetail vDetail = null;
+		TblVendorDetailDto vDetail = null;
 		
 		String sql = "SELECT * FROM bca_bill AS bill WHERE bill.BillNum = " +billNum
 				+ " AND bill.CompanyID =" + ConstValue.companyId;
@@ -7126,7 +7135,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			if(rs.next())
 			{
-				vDetail = new TblVendorDetail();
+				vDetail = new TblVendorDetailDto();
 				vDetail.setCheckNo(rs.getInt("CheckNo"));                
                 vDetail.setBillNo(rs.getInt("BillNum"));
                 vDetail.setDueDate(JProjectUtil.getdateFormat().format(rs.getDate("DueDate")));
@@ -7180,12 +7189,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public void updateBill(TblVendorDetail vDetail) {
+	public void updateBill(TblVendorDetailDto vDetail) {
 		// TODO Auto-generated method stub
 		double paidAmount = 0.00;
 		double balance = 0.00;
 		
-		TblVendorDetail oldDetail = getBillById(vDetail.getBillNo());
+		TblVendorDetailDto oldDetail = getBillById(vDetail.getBillNo());
 		paidAmount = oldDetail.getAmountPaid() + vDetail.getAmount();
 		balance = oldDetail.getAmount() - paidAmount;
 		
@@ -7194,7 +7203,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		TblVendorDetail detail = null;
+		TblVendorDetailDto detail = null;
 		
 		String sql = " Update bca_bill SET PayerID = " + vDetail.getPayerId()
 		           + " ,VendorID = " + vDetail.getVendorId() + " ,Memo = '"+vDetail.getMemo()+"'" 
@@ -7226,7 +7235,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public void makePayment(TblVendorDetail vDetail, int cvID) {
+	public void makePayment(TblVendorDetailDto vDetail, int cvID) {
 		// TODO Auto-generated method stub
 		try {
 			
@@ -7266,7 +7275,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			e.printStackTrace();
 		}
 	}
-	public void updateBillTab(TblVendorDetail v)
+	public void updateBillTab(TblVendorDetailDto v)
 	{
 	    int paymentID = 0;
 	    
@@ -7389,7 +7398,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public ArrayList<TblPayment> getPaidBillLists() {
+	public ArrayList<TblPaymentDto> getPaidBillLists() {
 		// TODO Auto-generated method stub
 		
 		Connection con = null;
@@ -7397,7 +7406,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs_paidUC = null;
-		ArrayList<TblPayment> paidBillLists = new ArrayList<TblPayment>();
+		ArrayList<TblPaymentDto> paidBillLists = new ArrayList<TblPaymentDto>();
 		StringBuffer Sql = new StringBuffer();
 		double totaAmount = 0.00;
 		
@@ -7434,7 +7443,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs_paidUC.next())
 			{	
-				TblPayment payment = new TblPayment();
+				TblPaymentDto payment = new TblPaymentDto();
 				payment.setId(rs_paidUC.getInt("PaymentID"));
 				  payment.setAmount(rs_paidUC.getDouble("Amount"));
 				  totaAmount = totalAmount + rs_paidUC.getDouble("Amount");
@@ -7483,14 +7492,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public ArrayList<TblPayment> getRecurrentBillPayment() {
+	public ArrayList<TblPaymentDto> getRecurrentBillPayment() {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs_paidUC = null;
-		ArrayList<TblPayment> recurrentPaymentList = new ArrayList<TblPayment>();
+		ArrayList<TblPaymentDto> recurrentPaymentList = new ArrayList<TblPaymentDto>();
 		double totaAmount = 0.00;
 		
 		StringBuffer Sql = new StringBuffer();
@@ -7524,7 +7533,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs_paidUC.next())
 			{
-				TblPayment payment = new TblPayment();
+				TblPaymentDto payment = new TblPaymentDto();
 				payment.setId(rs_paidUC.getInt("PaymentID"));
 				  payment.setAmount(rs_paidUC.getDouble("Amount"));
 				  totaAmount = totaAmount + rs_paidUC.getDouble("Amount");
@@ -7598,7 +7607,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 	@Override
-	public ArrayList<TblVendorDetail> getAllBill(int cvID, int checkStatus) {
+	public ArrayList<TblVendorDetailDto> getAllBill(int cvID, int checkStatus) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
@@ -7606,7 +7615,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		ResultSet rs = null;
 		double totalUnpaidAmount = 0.00; 
-		ArrayList<TblVendorDetail> allBill = new ArrayList<TblVendorDetail>();
+		ArrayList<TblVendorDetailDto> allBill = new ArrayList<TblVendorDetailDto>();
 		
 		String Sql = " SELECT bill.BillNum,bill.DueDate,bill.AmountDue,bill.Status,bill.BillType," +
                 " bill.AmountPaid,bill.CreditUsed,bill.Balance,bill.Memo,bill.IsMemorized," +
@@ -7629,7 +7638,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblVendorDetail vDetail = new TblVendorDetail();
+				TblVendorDetailDto vDetail = new TblVendorDetailDto();
                 vDetail.setIsSelected(false);
                 vDetail.setIsSelected(vDetail.getIsSelected());
                 vDetail.setVendorName(rs.getString("Name"));             
@@ -7688,7 +7697,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return allBill;
 	}
 	@Override
-	public void updateVendorBills(TblVendorDetail vDetail) {
+	public void updateVendorBills(TblVendorDetailDto vDetail) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
@@ -7728,14 +7737,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public ArrayList<TblVendorDetail> getMemorizeTransactionList() {
+	public ArrayList<TblVendorDetailDto> getMemorizeTransactionList() {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblVendorDetail> vDetail = new ArrayList<TblVendorDetail>();
+		ArrayList<TblVendorDetailDto> vDetail = new ArrayList<TblVendorDetailDto>();
 		
 		String sql =  " SELECT bill.*, bca_account.Name AS AccountName FROM bca_bill AS bill "
                       + " LEFT JOIN bca_account ON bill.PayerID = bca_account.AccountID"
@@ -7747,7 +7756,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{	
-				TblVendorDetail detail = new TblVendorDetail();
+				TblVendorDetailDto detail = new TblVendorDetailDto();
 				detail.setBillNo(rs.getInt("BillNum"));
 				detail.setTransactionName(rs.getString("TransactionName"));
 				detail.setBankAccount(rs.getString("AccountName"));
@@ -7814,14 +7823,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 	@Override
-	public ArrayList<TblVendorDetail> getPayBillsLists(Date dateFormat) {
+	public ArrayList<TblVendorDetailDto> getPayBillsLists(Date dateFormat) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblVendorDetail> vDetail = new ArrayList<TblVendorDetail>();
+		ArrayList<TblVendorDetailDto> vDetail = new ArrayList<TblVendorDetailDto>();
 		
 		String sql = " SELECT a.firstname,"
        + " a.lastname,"
@@ -7856,7 +7865,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblVendorDetail detail = new TblVendorDetail();
+				TblVendorDetailDto detail = new TblVendorDetailDto();
 				detail.setBillNo(rs.getInt("BillNum"));
 				detail.setVendorName(rs.getString("FirstName") + " " + rs.getString("LastName"));
 				detail.setDueDate(JProjectUtil.getdateFormat().format(rs.getDate("DueDate")));
@@ -7888,7 +7897,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return vDetail;
 	}
 	@Override
-	public ArrayList<TblCategory> getAllCategories() {
+	public ArrayList<TblCategoryDto> getAllCategories() {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
@@ -7896,8 +7905,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		ResultSet rs = null;
 		
-		ArrayList<TblCategory> vRoot = new ArrayList<TblCategory>();
-		ArrayList<TblCategory> vSub = new ArrayList<TblCategory>();
+		ArrayList<TblCategoryDto> vRoot = new ArrayList<TblCategoryDto>();
+		ArrayList<TblCategoryDto> vSub = new ArrayList<TblCategoryDto>();
 		
 		   String sql1 = " Select * from bca_category" +
 	                " where CompanyID = " + ConstValue.companyId +
@@ -7917,7 +7926,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategory r = new TblCategory();
+				TblCategoryDto r = new TblCategoryDto();
 				r.setId(rs.getInt("CategoryID"));
                 r.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 r.setParent(rs.getString("Parent"));
@@ -7933,7 +7942,7 @@ public class ReceivableListImpl implements ReceivableLIst {
                 
                 while(rs.next())
                 {
-                	TblCategory r1 = new TblCategory();
+                	TblCategoryDto r1 = new TblCategoryDto();
                 	r1.setId(rs.getInt("CategoryID"));
                 	r1.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 	r1.setParent(rs.getString("Parent"));
@@ -7986,7 +7995,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            i++;
 	        }
 
-	        vRoot.add(0, new TblCategory());
+	        vRoot.add(0, new TblCategoryDto());
 	        vSub = null;
 	        return vRoot;	  
 	}
@@ -8033,7 +8042,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return maxBillId; 
 	}
 	@Override
-	public void insertNewBill(TblVendorDetail vDetail) throws ParseException {
+	public void insertNewBill(TblVendorDetailDto vDetail) throws ParseException {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
@@ -8557,23 +8566,23 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
-		TblCategoryDto tblCategory = null;
+		TblCategoryDto TblCategoryDto = null;
 
 		String sql1 = "SELECT * FROM bca_category WHERE CategoryID="+categoryId;
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql1);
 			while(rs.next()) {
-				tblCategory = new TblCategoryDto();
-				tblCategory.setId(rs.getInt("CategoryID"));
-				tblCategory.setCategoryTypeID(rs.getLong("CategoryTypeID"));
-				tblCategory.setParent(rs.getString("Parent"));
-				tblCategory.setDescription(rs.getString("Description"));
-				tblCategory.setName(rs.getString("Name"));
-				tblCategory.setCategoryNumber(rs.getString("CateNumber"));
-				tblCategory.setBudgetCategoryID(rs.getInt("BudgetCategoryID"));
-				tblCategory.setSubLevel(1);
-				tblCategory.setActive(rs.getBoolean("isActive"));
+				TblCategoryDto = new TblCategoryDto();
+				TblCategoryDto.setId(rs.getInt("CategoryID"));
+				TblCategoryDto.setCategoryTypeID(rs.getLong("CategoryTypeID"));
+				TblCategoryDto.setParent(rs.getString("Parent"));
+				TblCategoryDto.setDescription(rs.getString("Description"));
+				TblCategoryDto.setName(rs.getString("Name"));
+				TblCategoryDto.setCategoryNumber(rs.getString("CateNumber"));
+				TblCategoryDto.setBudgetCategoryID(rs.getInt("BudgetCategoryID"));
+				TblCategoryDto.setSubLevel(1);
+				TblCategoryDto.setActive(rs.getBoolean("isActive"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -8587,19 +8596,19 @@ public class ReceivableListImpl implements ReceivableLIst {
 				e.printStackTrace();
 			}
 		}
-		return tblCategory;
+		return TblCategoryDto;
 	}
 	
 	@Override
-	public ArrayList<TblCategory> getListOfCategoryForCategoryManager() {
+	public ArrayList<TblCategoryDto> getListOfCategoryForCategoryManager() {
 		Statement stmt = null;
         SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
 		
-		ArrayList<TblCategory> vRoot = new ArrayList<>();
-		ArrayList<TblCategory> vSub = new ArrayList<>();
-		ArrayList<TblCategory> cList = new ArrayList<>();
+		ArrayList<TblCategoryDto> vRoot = new ArrayList<>();
+		ArrayList<TblCategoryDto> vSub = new ArrayList<>();
+		ArrayList<TblCategoryDto> cList = new ArrayList<>();
 		
 		String sql1 = " SELECT a.*,b.CategoryTypeName FROM bca_category a, bca_categorytype b WHERE a.categorytypeid = b.categorytypeid "
 				+ " AND a.isActive=1 AND a.companyid=" +ConstValue.companyId+ " ORDER BY a.CateNumber";
@@ -8611,7 +8620,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql1);
 			while(rs.next()) {
-				TblCategory r = new TblCategory();
+				TblCategoryDto r = new TblCategoryDto();
 				r.setId(rs.getInt("CategoryID"));
                 r.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 r.setParent(rs.getString("Parent"));
@@ -8628,7 +8637,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 //			rs = stmt.executeQuery(sql2);
 //			while(rs.next()) {
-//				TblCategory r1 = new TblCategory();
+//				TblCategoryDto r1 = new TblCategoryDto();
 //				r1.setId(rs.getInt("CategoryID"));
 //				r1.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 //				r1.setParent(rs.getString("Parent"));
@@ -8684,14 +8693,14 @@ public class ReceivableListImpl implements ReceivableLIst {
         return new TblBudgetCategory();   
     }
 
-	public ArrayList<TblCategory> sort(ArrayList<TblCategory> catList)
+	public ArrayList<TblCategoryDto> sort(ArrayList<TblCategoryDto> catList)
 	{
-		ArrayList<TblCategory> category = new ArrayList<TblCategory>();
+		ArrayList<TblCategoryDto> category = new ArrayList<TblCategoryDto>();
 		String[] sortBy = {"ASSETS", "INCOME", "EXPENSE","PAYROLL"};
 		for (int c = 0; c < sortBy.length; c++) {
             int c1 = 0;
             while (c1 < catList.size()) {
-                TblCategory d = (TblCategory) catList.get(c1);
+                TblCategoryDto d = (TblCategoryDto) catList.get(c1);
                 String strType = d.getCategoryTypeName().trim();
                 if (strType.equals(sortBy[c])) {
                 	category.add(d);
@@ -8776,7 +8785,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public boolean saveCategory(TblCategory category) {
+	public boolean saveCategory(TblCategoryDto category) {
 		Statement stmt = null, stmt2 = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -8844,7 +8853,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public void updateCategory(TblCategory category, String categoryId) {
+	public void updateCategory(TblCategoryDto category, String categoryId) {
 		Statement stmt = null, stmt1 = null, stmt2 = null;
 		Connection con = null;
         SQLExecutor db = new SQLExecutor();
@@ -8996,13 +9005,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ArrayList<TblPayment> getPaymentsList(TblPayment payment, Date fromDate, Date toDate) {
+	public ArrayList<TblPaymentDto> getPaymentsList(TblPaymentDto payment, Date fromDate, Date toDate) {
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblPayment> listOfPayments = new ArrayList<>();
+		ArrayList<TblPaymentDto> listOfPayments = new ArrayList<>();
 		String sql = "";
 		sql = "SELECT a.paymentid,a.amount,a.paymenttypeid,a.invoiceid,a.dateadded,a.istobeprinted,a.isneedtodeposit,a.PayerID,a.checknumber,"
 			+ " c.Name AS CategoryName,c.BudgetCategoryID,b.BudgetCategoryName,cl.Name AS CompanyName "
@@ -9025,7 +9034,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while(rs.next()) {
-				TblPayment payment1 = new TblPayment();
+				TblPaymentDto payment1 = new TblPaymentDto();
 				payment1.setId(rs.getInt("PaymentID"));
 				payment1.setAmount(rs.getDouble("Amount"));
 				payment1.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -9058,13 +9067,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ArrayList<TblPayment> getDepositsList(TblPayment payment,Date fromDate,Date toDate) {
+	public ArrayList<TblPaymentDto> getDepositsList(TblPaymentDto payment,Date fromDate,Date toDate) {
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblPayment> listOfPayments = new ArrayList<TblPayment>();
+		ArrayList<TblPaymentDto> listOfPayments = new ArrayList<TblPaymentDto>();
 		String sql = "";
 		sql = "SELECT a.paymentid,a.amount,a.paymenttypeid,a.invoiceid,a.dateadded,a.istobeprinted,a.isneedtodeposit,a.PayeeID,a.checknumber,"
 			   + " c.Name AS CategoryName,c.BudgetCategoryID,b.BudgetCategoryName,cl.Name AS CompanyName"
@@ -9087,7 +9096,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while(rs.next()) {
-				TblPayment payment1 = new TblPayment();
+				TblPaymentDto payment1 = new TblPaymentDto();
 				payment1.setId(rs.getInt("PaymentID"));
 				payment1.setAmount(rs.getDouble("Amount"));
 				payment1.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -9120,14 +9129,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ArrayList<TblPayment> getPaymentOfReconciliation(int accountId, Date fromDate, Date toDate) {
+	public ArrayList<TblPaymentDto> getPaymentOfReconciliation(int accountId, Date fromDate, Date toDate) {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblPayment> listOfpayment = new ArrayList<TblPayment>();
+		ArrayList<TblPaymentDto> listOfpayment = new ArrayList<TblPaymentDto>();
 		double totalAmount = 0.00;
 		
 		String datebetween = "";
@@ -9181,7 +9190,7 @@ public class ReceivableListImpl implements ReceivableLIst {
              
              while(rs.next())
              {
-            	 TblPayment payment = new TblPayment();
+            	 TblPaymentDto payment = new TblPaymentDto();
             	 payment.setId(rs.getInt("PaymentID"));
             	 payment.setCvName(rs.getString("LastName") + " " + rs.getString("FirstName") + "(" + rs.getString("CompanyName") + ")");
             	 payment.setCheckNumber(rs.getString("CheckNumber"));
@@ -9221,14 +9230,14 @@ public class ReceivableListImpl implements ReceivableLIst {
         return listOfpayment;
 	}
 	@Override
-	public ArrayList<TblPayment> getDepositOfReconciliation(int accountId, Date fromDate, Date toDate) {
+	public ArrayList<TblPaymentDto> getDepositOfReconciliation(int accountId, Date fromDate, Date toDate) {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblPayment> listDepositAmount = new ArrayList<TblPayment>();
+		ArrayList<TblPaymentDto> listDepositAmount = new ArrayList<TblPaymentDto>();
 		double totalAmount = 0.00;
 		
 		String datebetween = "";
@@ -9282,7 +9291,7 @@ public class ReceivableListImpl implements ReceivableLIst {
              
              while(rs.next())
              {
-            	 TblPayment payment = new TblPayment();
+            	 TblPaymentDto payment = new TblPaymentDto();
             	 payment.setId(rs.getInt("PaymentID"));
             	 payment.setCvName(rs.getString("LastName") + " " + rs.getString("FirstName") + "(" + rs.getString("CompanyName") + ")");
             	 payment.setCheckNumber(rs.getString("CheckNumber"));
@@ -9316,14 +9325,14 @@ public class ReceivableListImpl implements ReceivableLIst {
         return listDepositAmount;
 	}
 	@Override
-	public ArrayList<TblCategory> initTblCategory(long CategoryTypeId) {
+	public ArrayList<TblCategoryDto> initTblCategory(long CategoryTypeId) {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
+		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
 		
 		boolean b = true;
 		 
@@ -9337,7 +9346,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategory cat = new TblCategory();
+				TblCategoryDto cat = new TblCategoryDto();
 				cat.setCategoryNumber(rs.getString("Name"));
 				cat.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 				cat.setId(rs.getLong("CategoryID"));
@@ -9371,14 +9380,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return categoryList;
 	}
 	@Override
-	public ArrayList<TblCategory> initComboCharge(TblCategory category) {
+	public ArrayList<TblCategoryDto> initComboCharge(TblCategoryDto category) {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
+		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
 		
 		String sql = " SELECT * FROM bca_category" +
                     " WHERE Parent='" + category.getId() + "'" +
@@ -9391,7 +9400,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategory cat = new TblCategory();
+				TblCategoryDto cat = new TblCategoryDto();
 				cat.setCategoryNumber(rs.getString("Name"));
 				cat.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 				cat.setId(rs.getLong("CategoryID"));
@@ -9420,7 +9429,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return categoryList;
 	}
 	@Override
-	public void addBankCharge(TblPayment payment) throws ParseException {
+	public void addBankCharge(TblPaymentDto payment) throws ParseException {
 		// TODO Auto-generated method stub
 		String date = JProjectUtil.getDateFormaterCommon().format(new SimpleDateFormat("MM/dd/yyyy").parse(payment.getFromDate()));
 		double amount = payment.getAmount();
@@ -9444,7 +9453,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	     
 	     account.setLastCheckNo(checkNum);
 	     
-	     TblCategory category = getCategoryById(payment.getCategoryId());
+	     TblCategoryDto category = getCategoryById(payment.getCategoryId());
 	     
 	     if (category.getCategoryTypeID() == 1841648525) {
 	            //Expense
@@ -9508,14 +9517,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 	}
 	@Override
-	public ArrayList<TblCategory> getCategoryForAsset() {
+	public ArrayList<TblCategoryDto> getCategoryForAsset() {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
+		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
 		
 		String sql =  " SELECT * FROM bca_category"
                     + " WHERE CategoryTypeID = -450722500"
@@ -9529,7 +9538,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategory category = new TblCategory();
+				TblCategoryDto category = new TblCategoryDto();
 				category.setCategoryNumber(rs.getString("Name"));
 				category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 				category.setId(rs.getLong("CategoryID"));
@@ -9562,7 +9571,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		// TODO Auto-generated method stub
 		
 		 boolean isRefundedTransaction = false;
-         TblPayment payment = null;
+         TblPaymentDto payment = null;
          
          payment = getObjectOfStoragePayment(paymentId);
          
@@ -9579,7 +9588,7 @@ public class ReceivableListImpl implements ReceivableLIst {
          
 	}
 	@Override
-	public ArrayList<ReceivableListBean> getAllInvoicesForBillingBoardWithSearchOption(Date from, Date to,
+	public ArrayList<ReceivableListDto> getAllInvoicesForBillingBoardWithSearchOption(Date from, Date to,
 			String ascent, String columnName, int InvoiceType, int overdueDays, String alldata, String advanceSearchCriteria,String advanceSearchData) {
 		
 		Statement stmt = null;
@@ -9587,7 +9596,7 @@ public class ReceivableListImpl implements ReceivableLIst {
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<ReceivableListBean> list = new ArrayList<ReceivableListBean>();
+		ArrayList<ReceivableListDto> list = new ArrayList<ReceivableListDto>();
 		
 		String dateStr = getSQL4Date(from, to);
 		String advanceFilter = "";
@@ -9677,7 +9686,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			   int year = 0;
 			   int month = 0;
 			   int day = 0;
-				ReceivableListBean invoice = new ReceivableListBean();
+				ReceivableListDto invoice = new ReceivableListDto();
 				ordNo = rs.getInt("OrderNum");
 
                 invoice.setInvoiceID(rs.getInt("InvoiceID"));
@@ -9933,7 +9942,7 @@ public class ReceivableListImpl implements ReceivableLIst {
         SQLExecutor db = null;
 		ResultSet rs = null;
 		try {
-			ReceivableListBean invoice = getInvoiceByInvoiceID(invoiceId);
+			ReceivableListDto invoice = getInvoiceByInvoiceID(invoiceId);
 			
 			db = new SQLExecutor();
 			con = db.getConnection();

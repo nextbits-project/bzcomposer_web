@@ -21,7 +21,7 @@ import com.avibha.common.log.Loger;
 
 public class EmailDetails {
 
-	public void getEmailSearch(HttpServletRequest request, ActionForm form) {
+	public void getEmailSearch(HttpServletRequest request, EmailForm form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		EmailInfo EmailInfo = new EmailInfo();
@@ -43,7 +43,7 @@ public class EmailDetails {
 		request.setAttribute("EmailDetails", EmailDetails);
 	}
 
-	public void sendEmail(HttpServletRequest request, ActionForm form) {
+	public void sendEmail(HttpServletRequest request, EmailForm form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		EmailInfo EmailInfo = new EmailInfo();

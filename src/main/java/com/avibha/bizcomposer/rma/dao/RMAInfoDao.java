@@ -6,7 +6,7 @@
 
 package com.avibha.bizcomposer.rma.dao;
 
-import com.avibha.bizcomposer.rma.forms.RMAForm;
+import com.avibha.bizcomposer.rma.forms.RMADto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
@@ -23,7 +23,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ArrayList<RMADto> objList = new ArrayList<RMADto>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -40,7 +40,7 @@ public class RMAInfoDao {
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMAForm rma = new RMAForm();
+				RMADto rma = new RMADto();
 				rma.setFname(rs.getString(1));
 				rma.setLname(rs.getString(2));
 				objList.add(rma);
@@ -72,7 +72,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ArrayList<RMADto> objList = new ArrayList<RMADto>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -107,7 +107,7 @@ public class RMAInfoDao {
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMAForm rma = new RMAForm();
+				RMADto rma = new RMADto();
 				rma.setFname(rs.getString(1));
 				rma.setLname(rs.getString(2));
 				rma.setRma(rs.getString(3));
@@ -140,7 +140,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ArrayList<RMADto> objList = new ArrayList<RMADto>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -157,7 +157,7 @@ public class RMAInfoDao {
 				Loger.log(sqlString);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					RMAForm rma = new RMAForm();
+					RMADto rma = new RMADto();
 					rma.setFname(rs.getString(1));
 					objList.add(rma);
 				}
@@ -189,7 +189,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ArrayList<RMADto> objList = new ArrayList<RMADto>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -207,7 +207,7 @@ public class RMAInfoDao {
 				Loger.log(sqlString);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					RMAForm rma = new RMAForm();
+					RMADto rma = new RMADto();
 					rma.setLname(rs.getString(1));
 					objList.add(rma);
 				}
@@ -240,7 +240,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ArrayList<RMADto> objList = new ArrayList<RMADto>();
 		ResultSet rs = null;
 		CustomerInfo cinfo = new CustomerInfo();
 		try {
@@ -278,7 +278,7 @@ public class RMAInfoDao {
 			pstmt.setString(1, compId);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMAForm rma = new RMAForm();
+				RMADto rma = new RMADto();
 				rma.setRma(rs.getString(1));
 				rma.setFname(rs.getString(2));
 				rma.setLname(rs.getString(3));
@@ -318,7 +318,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ArrayList<RMADto> objList = new ArrayList<RMADto>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -332,7 +332,7 @@ public class RMAInfoDao {
 			pstmt.setString(2, compId);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMAForm rma = new RMAForm();
+				RMADto rma = new RMADto();
 				rma.setItemCode(rs.getString(1));
 				rma.setItemDesc(rs.getString(2));
 				rma.setQty(rs.getString(3));
@@ -369,7 +369,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ArrayList<RMADto> objList = new ArrayList<RMADto>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -389,7 +389,7 @@ public class RMAInfoDao {
 			rs = pstmt.executeQuery();
 			Loger.log(sqlString);
 			while (rs.next()) {
-				RMAForm rma = new RMAForm();
+				RMADto rma = new RMADto();
 				rma.setRma(rs.getString(1));
 				rma.setFname(rs.getString(2));
 				rma.setLname(rs.getString(3));
@@ -429,7 +429,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ArrayList<RMADto> objList = new ArrayList<RMADto>();
 		ResultSet rs = null;
 		int start = ((startValue - 1) * limit);
 		try {
@@ -448,7 +448,7 @@ public class RMAInfoDao {
 			pstmt.setInt(3, limit);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMAForm rma = new RMAForm();
+				RMADto rma = new RMADto();
 				rma.setRma(rs.getString(1));
 				rma.setFname(rs.getString(2));
 				rma.setLname(rs.getString(3));

@@ -5,9 +5,29 @@
  */
 package com.avibha.bizcomposer.sales.dao;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionServlet;
+import org.apache.struts.upload.FormFile;
+import org.apache.struts.util.LabelValueBean;
+
 import com.avibha.bizcomposer.employee.dao.Employee;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
-import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
@@ -21,26 +41,7 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 import com.nxsol.bizcomposer.common.TblItemInventory;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.struts.action.ActionServlet;
-import org.apache.struts.upload.FormFile;
-import org.apache.struts.util.LabelValueBean;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.nio.file.Files;
-import java.sql.*;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.*;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 
 /*
  * 
@@ -597,7 +598,7 @@ public class ItemInfoDao {
 		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		String cat = "";
 		String inventoryName = "";
-		ReceivableListBean invoice = null;
+		ReceivableListDto invoice = null;
 		String sql = "";
 
 		DateInfo dInfo = new DateInfo();

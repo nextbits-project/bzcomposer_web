@@ -6,41 +6,37 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategory;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblPayment;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class OverDueController {
 
 	@GetMapping("/OverDueTab")
-	public ModelAndView OverDue(ReceivableListBean form, HttpServletRequest request,
+	public ModelAndView OverDue(ReceivableListDto form, HttpServletRequest request,
 								HttpServletResponse response) throws Exception {
 		String forward = "/accounting/overDue";
 		HttpSession sess=request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl = new ReceivableListImpl();
-		ArrayList<ReceivableListBean> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
-		ArrayList<ReceivableListBean> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);
+		ArrayList<ReceivableListDto> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
+		ArrayList<ReceivableListDto> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);
 		TblCategoryLoader category = new TblCategoryLoader();
-		ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
+		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
 		ArrayList<TblAccount> account =rl.getAccount();
@@ -56,9 +52,9 @@ public class OverDueController {
 		}
 		if(action.equals("UpdateRecord"))
 		{
-			ReceivableListBean cfrm = (ReceivableListBean) form;
+			ReceivableListDto cfrm = (ReceivableListDto) form;
 			Gson gson=new Gson();
-			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			ReceivableListDto reListBean = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
 			double amtToPay = reListBean.getAmtToPay();
 			/*String indexNumber = request.getParameter("index");*/
 			String invoiceId = request.getParameter("invoiceId");
@@ -74,18 +70,18 @@ public class OverDueController {
 		}
 		if(action.equals("ReceivedInvoice"))
 		{
-			ReceivableListBean cfrm = (ReceivableListBean) form;
+			ReceivableListDto cfrm = (ReceivableListDto) form;
 			Gson gson=new Gson();
-			ReceivableListBean invoice = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			ReceivableListDto invoice = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
 			String rowId = request.getParameter("index");
 			/*System.out.println(invoice.getPaidAmount());*/
 			int orderNum = invoice.getOrderNum();
-			ReceivableListBean rb = rl.getInvoiceByOrderNUm(orderNum, ConstValue.companyId);
+			ReceivableListDto rb = rl.getInvoiceByOrderNUm(orderNum, ConstValue.companyId);
 			int invoiceId = rb.getInvoiceID();
-			TblPayment payment = rl.setPayment(invoice,invoiceId,ConstValue.companyId);
+			TblPaymentDto payment = rl.setPayment(invoice,invoiceId,ConstValue.companyId);
 			payment.setInvoiceTypeID(1);
 			int balance = (int) (invoice.getAdjustedTotal() - (rl.getSum(invoiceId) + invoice.getPaidAmount()));
-//		    ReceivableListBean invoice = new ReceivableListBean();
+//		    ReceivableListDto invoice = new ReceivableListDto();
 			invoice.setBalance(balance);
 			invoice.setInvoiceID(invoiceId);
 			rl.insertAccount(payment, invoice);
@@ -109,23 +105,23 @@ public class OverDueController {
 			rl.updateInvoice(invoiceId);
 
 		}
-		ArrayList<ReceivableListBean> ReceivableList = rl.getReceivableList(ConstValue.companyId);
+		ArrayList<ReceivableListDto> ReceivableList = rl.getReceivableList(ConstValue.companyId);
 		request.setAttribute("ReceivableList", ReceivableList);
 		ModelAndView modelAndView =new ModelAndView(forward);
 		return modelAndView;
 	}
 	@PostMapping("/OverDueTabPost")
-	public ModelAndView OverDuePost(ReceivableListBean form, HttpServletRequest request,
+	public ModelAndView OverDuePost(ReceivableListDto form, HttpServletRequest request,
 								HttpServletResponse response) throws Exception {
 		String forward = "/accounting/overDue";
 		HttpSession sess = request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl = new ReceivableListImpl();
-		ArrayList<ReceivableListBean> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
-		ArrayList<ReceivableListBean> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);
+		ArrayList<ReceivableListDto> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
+		ArrayList<ReceivableListDto> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);
 		TblCategoryLoader category = new TblCategoryLoader();
-		ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
+		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
 		ArrayList<TblAccount> account = rl.getAccount();
@@ -137,9 +133,9 @@ public class OverDueController {
 		request.setAttribute("ClineVendorForCombo", clientVendorForCombo);
 		if(action.equals("UpdateRecord"))
 		{
-			ReceivableListBean cfrm = (ReceivableListBean) form;
+			ReceivableListDto cfrm = (ReceivableListDto) form;
 			Gson gson=new Gson();
-			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			ReceivableListDto reListBean = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
 			double amtToPay = reListBean.getAmtToPay();
 			/*String indexNumber = request.getParameter("index");*/
 			String invoiceId = request.getParameter("invoiceId");
@@ -155,18 +151,18 @@ public class OverDueController {
 		}
 		if(action.equals("ReceivedInvoice"))
 		{
-			ReceivableListBean cfrm = (ReceivableListBean) form;
+			ReceivableListDto cfrm = (ReceivableListDto) form;
 			Gson gson=new Gson();
-			ReceivableListBean invoice = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			ReceivableListDto invoice = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
 			String rowId = request.getParameter("index");
 			/*System.out.println(invoice.getPaidAmount());*/
 			int orderNum = invoice.getOrderNum();
-			ReceivableListBean rb = rl.getInvoiceByOrderNUm(orderNum, ConstValue.companyId);
+			ReceivableListDto rb = rl.getInvoiceByOrderNUm(orderNum, ConstValue.companyId);
 			int invoiceId = rb.getInvoiceID();
-			TblPayment payment = rl.setPayment(invoice,invoiceId,ConstValue.companyId);
+			TblPaymentDto payment = rl.setPayment(invoice,invoiceId,ConstValue.companyId);
 			payment.setInvoiceTypeID(1);
 			int balance = (int) (invoice.getAdjustedTotal() - (rl.getSum(invoiceId) + invoice.getPaidAmount()));
-//		    ReceivableListBean invoice = new ReceivableListBean();
+//		    ReceivableListDto invoice = new ReceivableListDto();
 			invoice.setBalance(balance);
 			invoice.setInvoiceID(invoiceId);
 			rl.insertAccount(payment, invoice);

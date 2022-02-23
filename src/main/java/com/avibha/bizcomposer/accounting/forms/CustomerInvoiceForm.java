@@ -7,7 +7,7 @@ package com.avibha.bizcomposer.accounting.forms;
 
 import org.apache.struts.action.ActionForm;
 
-public class CustomerInvoiceForm extends ActionForm{
+public class CustomerInvoiceForm {
 
 	private static final long serialVersionUID = 1L;
 	private String customer;

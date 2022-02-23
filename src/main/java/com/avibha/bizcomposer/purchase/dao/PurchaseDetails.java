@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
 
 import com.avibha.bizcomposer.employee.dao.Title;
-import com.avibha.bizcomposer.purchase.forms.PrintLabelForm;
-import com.avibha.bizcomposer.purchase.forms.VendorForm;
+import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -70,7 +70,7 @@ public class PurchaseDetails {
 	/* Add new vendor with its related information to
 	 * the database. 
 	 */
-	public void AddVendor(HttpServletRequest request, ActionForm form,String compId, String stateName) {
+	/*public void AddVendor(HttpServletRequest request, VendorDto form,String compId, String stateName) {
 			//String compId = (String) request.getSession().getAttribute("CID");
 			String istaxable = request.getParameter("isTaxable");
 			String isAlsoClient = request.getParameter("isAlsoClient");
@@ -115,12 +115,12 @@ public class PurchaseDetails {
 			//Id generation finished
 		
 			PurchaseInfo purchase = new PurchaseInfo();
-			VendorForm vfrm = (VendorForm) form;
+			VendorDto vfrm = (VendorDto) form;
 			try{
 			boolean isAdded = purchase.insertVendor(cvID + "", vfrm, compId, istax, isclient,
 					indCharge, aFCharge, fICharge, "N",stateName);
-			/*request.setAttribute("SaveStatus",
-					"Vendor Information is Successfully Added !");*/
+			request.setAttribute("SaveStatus",
+					"Vendor Information is Successfully Added !");
 			if(isAdded){
 				request.setAttribute("SaveStatus",new ActionMessage("Vendor Information is Successfully Added !"));
 				request.setAttribute("Added","true");
@@ -129,7 +129,7 @@ public class PurchaseDetails {
 				// TODO: handle exception
 				request.setAttribute("Status",new ActionMessage("Vendor Information is Not Insert !"));
 			}
-	}
+	}*/
 
 	/*		Get all general information related to
 	 * the vendor. 
@@ -242,7 +242,7 @@ public class PurchaseDetails {
 	 * services,total no. of pages, etc. 
 	 * 
 	 */
-	public void getPrintLabelInfo(HttpServletRequest request,PrintLabelForm pForm){
+	public void getPrintLabelInfo(HttpServletRequest request,PrintLabelDto pForm){
 		
 		PurchaseInfo purchase = new PurchaseInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -294,50 +294,5 @@ public class PurchaseDetails {
 				
 	}
 	
-	/*	Provides the information related the label of the  
-	 * the given label id.
-	 */
-	public void getLabel(HttpServletRequest request,ActionForm form)  {
-		PurchaseInfo customer = new PurchaseInfo();
-		PrintLabelForm vform = (PrintLabelForm)form;
-		int labelId = Integer.parseInt(request.getParameter("lblId"));
-		customer.getLabel(labelId,vform);
-	}
 	
-	/*		Saves or updates the label & related information.
-	 * 
-	 */
-	public boolean saveLabel(HttpServletRequest request, ActionForm form) {
-		boolean result=false;
-		PurchaseInfo purchase = new PurchaseInfo();
-		PrintLabelForm cfrm = (PrintLabelForm) form;
-		int labelID = Integer.parseInt(request.getParameter("LabelID"));
-		if (labelID == 0) {
-			purchase.saveLabel(cfrm);
-			result=true;
-		} else {
-			purchase.updateLabel(labelID, cfrm);
-			result=false;
-		}
-		return result;
-	}
-	
-	
-	public void addNewLabel(ActionForm form){
-		PrintLabelForm cform = (PrintLabelForm)form ;
-		cform.setLabelName("");
-		cform.setTopMargin("0.0");
-		cform.setLeftMargin("0.0");
-		cform.setHorizon("0.0");
-		cform.setVertical("0.0");
-		cform.setLabelHeight("0.0");
-		cform.setLabelWidth("0.0");
-	}
-	public void deleteLabel(HttpServletRequest request, ActionForm form) {
-		PurchaseInfo purchase = new PurchaseInfo();
-		PrintLabelForm vfrm = (PrintLabelForm) form;
-		int labelID = Integer.parseInt(request.getParameter("LabelID"));
-		Loger.log("LABEL   "+labelID);
-		purchase.deleteLabel(labelID, vfrm);
-	}
 }

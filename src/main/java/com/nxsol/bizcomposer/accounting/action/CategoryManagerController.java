@@ -1,18 +1,20 @@
 package com.nxsol.bizcomposer.accounting.action;
 
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.TblBudgetCategory;
 import com.nxsol.bizcomposer.common.TblCategoryType;
-import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 
 @Controller
 public class CategoryManagerController {
@@ -23,7 +25,7 @@ public class CategoryManagerController {
 		ReceivableLIst rl = new ReceivableListImpl();
 
 		ArrayList<TblBudgetCategory> budgetCategoryList = rl.readBudgetCategory();
-		ArrayList<TblCategory> listOfCategory = rl.getListOfCategoryForCategoryManager();
+		ArrayList<TblCategoryDto> listOfCategory = rl.getListOfCategoryForCategoryManager();
 		ArrayList<TblCategoryType> categoryType = rl.getCategoryType();
 		filterCategoryList(listOfCategory, categoryType);
 		request.setAttribute("listOfCategory", listOfCategory);
@@ -38,13 +40,13 @@ public class CategoryManagerController {
 		ReceivableLIst rl = new ReceivableListImpl();
 		if(action.equals("AddNewCategory")) {
 			Gson gson=new Gson();
-			TblCategory category = gson.fromJson(request.getParameter("data"), TblCategory.class);
+			TblCategoryDto category = gson.fromJson(request.getParameter("data"), TblCategoryDto.class);
 			boolean b = rl.saveCategory(category);
 			System.out.println(category.getParent());
 		}
 		else if(action.equals("UpdateCategory")) {
 			Gson gson=new Gson();
-			TblCategory category = gson.fromJson(request.getParameter("data"), TblCategory.class);
+			TblCategoryDto category = gson.fromJson(request.getParameter("data"), TblCategoryDto.class);
 			rl.updateCategory(category, category.getId()+"");
 		}
 		else if(action.equals("DeleteCategory")) {
@@ -59,12 +61,12 @@ public class CategoryManagerController {
 	public TblCategoryDto categoryManagerAJAX(HttpServletRequest request) throws Exception {
 		String action = request.getParameter("tabid");
 		ReceivableLIst rl = new ReceivableListImpl();
-		TblCategoryDto tblCategory = new TblCategoryDto();
+		TblCategoryDto TblCategoryDto = new TblCategoryDto();
 		if(action.equals("getCategoryDetails")) {
 			String catID = request.getParameter("catID");
-			tblCategory = rl.getCategoryCategoryDetails(catID);
+			TblCategoryDto = rl.getCategoryCategoryDetails(catID);
 		}
-		return tblCategory;
+		return TblCategoryDto;
 	}
 
 	@ResponseBody
@@ -84,10 +86,10 @@ public class CategoryManagerController {
 		return status;
 	}
 
-	private void filterCategoryList(ArrayList<TblCategory> listOfCategory, ArrayList<TblCategoryType> categoryType){
+	private void filterCategoryList(ArrayList<TblCategoryDto> listOfCategory, ArrayList<TblCategoryType> categoryType){
 		for(TblCategoryType cType: categoryType){
 			int count = 0;
-			for(TblCategory cat: listOfCategory){
+			for(TblCategoryDto cat: listOfCategory){
 				if(cat.getCategoryTypeID() == cType.getCategoryTypeID()){
 					count++;
 				}

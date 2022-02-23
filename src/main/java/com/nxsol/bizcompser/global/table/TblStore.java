@@ -2,9 +2,7 @@ package com.nxsol.bizcompser.global.table;
 
 import java.util.Date;
 
-import org.apache.struts.action.ActionForm;
-
-public class TblStore  extends ActionForm
+public class TblStore 
 {
 	/**
 	 * 

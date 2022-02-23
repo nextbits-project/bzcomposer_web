@@ -32,9 +32,9 @@ import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.sales.forms.CreditCardDto;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceForm;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
-import com.avibha.bizcomposer.sales.forms.UpdateInvoiceForm;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
@@ -1275,7 +1275,7 @@ public class InvoiceInfoDao {
 			}
 		}
 	}
-	public void getBillShipAddr(int custID, UpdateInvoiceForm form) {
+	public void getBillShipAddr(int custID, UpdateInvoiceDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
 		PreparedStatement pstmt3 = null;
@@ -1384,7 +1384,7 @@ public class InvoiceInfoDao {
 	}
 
 	public void getCountry(HttpServletRequest request, String country,
-			UpdateInvoiceForm form) {
+			UpdateInvoiceDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -2923,7 +2923,7 @@ public class InvoiceInfoDao {
 			invoiceDto.setItemTypeID(invItemIDs.toString());
 			invoiceDto.setItemOrder(invItemOrders.toString());
 
-			InvoiceForm form = new InvoiceForm();
+			InvoiceDto form = new InvoiceDto();
 			form.setTaxValue(Double.parseDouble(truncate(String.valueOf(taxTotal))));
 			request.setAttribute("TaxValue", form);
 			request.setAttribute("Cart", cart);

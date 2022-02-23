@@ -5,9 +5,10 @@
  */
 package com.avibha.bizcomposer.sales.forms;
 
-import org.apache.struts.action.ActionForm;
-
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class UpdateInvoiceDto {
 	
@@ -205,6 +206,9 @@ public class UpdateInvoiceDto {
 	private String table_bal;
 
 	private String table_serID;
+	private @Setter@Getter String shdbaName;
+	private @Setter@Getter String bsdbaName;
+	private @Setter@Getter String dbaName;
 
 	/**
 	 * @return the address1

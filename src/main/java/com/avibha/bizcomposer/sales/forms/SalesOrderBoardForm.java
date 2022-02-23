@@ -1,12 +1,6 @@
 package com.avibha.bizcomposer.sales.forms;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-
-
-public class SalesOrderBoardForm extends ActionForm {
+public class SalesOrderBoardForm {
 	
 	private static final long serialVersionUID = 0;
 	
@@ -605,45 +599,6 @@ public class SalesOrderBoardForm extends ActionForm {
 		this.zipCode = zipCode;
 	}
 
-	public void reset(ActionMapping mapping, HttpServletRequest request) {
-		super.reset(mapping, request);
-
-		filterMarket = null;
-		searchType = null;
-		sortType1 = null;
-		sortType2 = null;
-
-		invoiceID = null;
-		orderNum = null;
-		pONum = null;
-		rcvNum = null;
-		estNum = null;
-		clientVendorID = null;
-		bSAddressID = null;
-		dateAdded = null;
-		orderid = null;
-		dateConfirmed = null;
-		isPrinted = null;
-		shipped = null;
-		isEmailed = null;
-		lastName = null;
-		firstName = null;
-		email = null;
-		address1 = null;
-		address2 = null;
-		city = null;
-		state = null;
-		country = null;
-		zipCode = null;
-		inventoryName = null;
-		qty = null;
-		count_kind_items = 0;
-		orderDate1 = null;
-		orderDate2 = null;
-		saleDate1 = null;
-		saleDate2 = null;
-		searchTxt = null;
-
-	}
+	
 
 }

@@ -6,12 +6,10 @@
 
 package com.avibha.bizcomposer.employee.forms;
 
-import org.apache.struts.action.ActionForm;
-
 /*
  * 
  */
-public class SearchForm extends ActionForm {
+public class SearchForm  {
 	
 	private static final long serialVersionUID = 0;
 

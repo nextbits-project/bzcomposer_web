@@ -1338,7 +1338,7 @@ public class AddNewCompanyDAO {
                 accountId = rs1.getInt("LastID");
             }
             account.setAccountID(accountId);
-            com.pritesh.bizcomposer.accounting.bean.TblPayment payment = new com.pritesh.bizcomposer.accounting.bean.TblPayment();
+            com.pritesh.bizcomposer.accounting.bean.TblPaymentDto payment = new com.pritesh.bizcomposer.accounting.bean.TblPaymentDto();
             payment.setAmount(account.getCustomerStartingBalance());
             payment.setPaymentTypeID(account.getAccountCategoryID());
             payment.setPayerID(-1);
@@ -1379,7 +1379,7 @@ public class AddNewCompanyDAO {
         }
         return accountId;
     }
-    public void updateBankBalance(com.pritesh.bizcomposer.accounting.bean.TblPayment payment)
+    public void updateBankBalance(com.pritesh.bizcomposer.accounting.bean.TblPaymentDto payment)
     {
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
@@ -1425,7 +1425,7 @@ public class AddNewCompanyDAO {
             }
         }
     }
-    public int transaction(com.pritesh.bizcomposer.accounting.bean.TblPayment payment,int companyId)
+    public int transaction(com.pritesh.bizcomposer.accounting.bean.TblPaymentDto payment,int companyId)
     {
         Statement stmt = null,stmt1 = null;
         ResultSet rs = null;

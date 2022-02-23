@@ -13,10 +13,9 @@ package com.avibha.bizcomposer.accounting.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
-public class AddAccountForm extends ActionForm{
+public class AddAccountForm {
 	
   private static final long serialVersionUID = 1L;
   private String checkno;

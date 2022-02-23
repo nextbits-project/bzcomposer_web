@@ -5,9 +5,8 @@
  */
 package com.avibha.bizcomposer.accounting.forms;
 
-import org.apache.struts.action.ActionForm;
 
-public class EditCategoryForm extends ActionForm {
+public class EditCategoryForm  {
 	
 	private static final long serialVersionUID = 1L;
 	private String name;

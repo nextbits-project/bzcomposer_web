@@ -17,13 +17,13 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.avibha.bizcomposer.sales.forms.*;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.util.LabelValueBean;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.purchase.forms.VendorForm;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
@@ -166,7 +166,7 @@ public class InvoiceInfo {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<InvoiceForm> objList = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> objList = new ArrayList<InvoiceDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		CountryState conState = new CountryState();
@@ -182,7 +182,7 @@ public class InvoiceInfo {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				InvoiceForm customer = new InvoiceForm();
+				InvoiceDto customer = new InvoiceDto();
 				//customer.setBsAddressID(rs.getString(1));
 				customer.setShAddressID(rs.getString(1));		//Added on 09-09-2019
 				customer.setClientVendorID(rs.getString(2));
@@ -248,7 +248,7 @@ public class InvoiceInfo {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<InvoiceForm> objList = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> objList = new ArrayList<InvoiceDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		CountryState conState = new CountryState();
@@ -264,7 +264,7 @@ public class InvoiceInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				InvoiceForm customer = new InvoiceForm();
+				InvoiceDto customer = new InvoiceDto();
 				customer.setCompanyID(String.valueOf(cid));
 				customer.setBsAddressID(rs.getString(1));
 				customer.setClientVendorID(rs.getString(2));
@@ -383,7 +383,7 @@ public class InvoiceInfo {
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> objList = new ArrayList<LabelValueBean>();
-		ArrayList<InvoiceForm> details = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> details = new ArrayList<InvoiceDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		String cvId = "";
@@ -412,7 +412,7 @@ public class InvoiceInfo {
 
 			while (rs.next()) {
 				cvId = rs.getString(1);
-				InvoiceForm invForm = new InvoiceForm();
+				InvoiceDto invForm = new InvoiceDto();
 				objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ "," + rs.getString(2)+")", cvId));
 				invForm.setClientVendorID(cvId);
 				invForm.setFirstName(rs.getString(2));
@@ -714,7 +714,7 @@ public class InvoiceInfo {
 	}
 
 	public ArrayList getTaxes(String compId) {
-		ArrayList<InvoiceForm> arr = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> arr = new ArrayList<InvoiceDto>();
 		Connection con = null ;
 		PreparedStatement pstmt=null;
 		SQLExecutor db = new SQLExecutor();
@@ -732,7 +732,7 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				InvoiceForm invoice = new InvoiceForm();
+				InvoiceDto invoice = new InvoiceDto();
 				invoice.setSalesTaxID(rs.getString(1));
 				invoice.setState(rs.getString(2));
 				invoice.setRate(rs.getInt(3));
@@ -1001,7 +1001,7 @@ public class InvoiceInfo {
 		}
 		return exist;
 	}
-	public int Save(String compId, InvoiceForm form,String custId) {
+	public int Save(String compId, InvoiceDto form,String custId) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
@@ -1046,7 +1046,7 @@ public class InvoiceInfo {
 		}
 		return invoiceID;
 	}
-	public void SaveSalesOrder(String compId, InvoiceForm form, int salesOrderType) {
+	public void SaveSalesOrder(String compId, InvoiceDto form, int salesOrderType) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
@@ -1096,7 +1096,7 @@ public class InvoiceInfo {
 			}
 		}
 	}
-	public void AddItem(int invoiceID, int cid, InvoiceForm form) {
+	public void AddItem(int invoiceID, int cid, InvoiceDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
@@ -1257,7 +1257,7 @@ public class InvoiceInfo {
 		
 
 	}
-	public void SalesUpdate(String compId, InvoiceForm form, int salesOrderType,int invoiceID) {
+	public void SalesUpdate(String compId, InvoiceDto form, int salesOrderType,int invoiceID) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
@@ -1395,7 +1395,7 @@ public class InvoiceInfo {
 		}
 	}
 
-	public void Update(String compId, InvoiceForm form,int invoiceID,String custID) {
+	public void Update(String compId, InvoiceDto form,int invoiceID,String custID) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
@@ -2852,13 +2852,13 @@ public class InvoiceInfo {
 			}
 		}
 	}
-	public ArrayList getSalesOrderRecord(HttpServletRequest request, InvoiceForm form,
+	public ArrayList getSalesOrderRecord(HttpServletRequest request, InvoiceDto form,
 			String compId, long OrderNo) {  //Sales Order Fetch
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<InvoiceForm> list = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> list = new ArrayList<InvoiceDto>();
 		
 		if (db == null)
 			return null;
@@ -3000,13 +3000,13 @@ public class InvoiceInfo {
 		return list;
 	}
 
-	public ArrayList getRecord(HttpServletRequest request, InvoiceForm form,
+	public ArrayList getRecord(HttpServletRequest request, InvoiceDto form,
 			String compId, long OrderNo) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<InvoiceForm> list = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> list = new ArrayList<InvoiceDto>();
 		String action = request.getParameter("tabid");
 		String sql="";
 		if (db == null)
@@ -3225,7 +3225,7 @@ public class InvoiceInfo {
 				cart.add(inForm);
 			}
 			request.setAttribute("Cart", cart);
-			InvoiceForm form = new InvoiceForm();
+			InvoiceDto form = new InvoiceDto();
 			form.setTaxValue(Double.parseDouble(truncate(String
 					.valueOf(taxTotal))));
 			request.setAttribute("TaxValue", form);
@@ -3601,9 +3601,9 @@ public class InvoiceInfo {
 		PreparedStatement pstmt = null, pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null, rs1 = null;
-		ArrayList<InvoiceForm> list = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> list = new ArrayList<InvoiceDto>();
 		ArrayList<String> count = new ArrayList<String>();
-		ArrayList<InvoiceForm> total = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> total = new ArrayList<InvoiceDto>();
 		con = db.getConnection();
 		try {
 			String sqlString = "select Name,FirstName,LastName from bca_clientvendor "
@@ -3628,7 +3628,7 @@ public class InvoiceInfo {
 			pstmt.setString(1, cvId);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				InvoiceForm invoiceList = new InvoiceForm();
+				InvoiceDto invoiceList = new InvoiceDto();
 				invoiceList.setOrderNo(rs.getString(1));
 				invoiceList.setOrderDate(rs.getString(2));
 				invoiceList.setTotal(Double.parseDouble(truncate(rs
@@ -3653,7 +3653,7 @@ public class InvoiceInfo {
 			pstmt.setString(1, cvId);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				InvoiceForm invoiceList = new InvoiceForm();
+				InvoiceDto invoiceList = new InvoiceDto();
 				String orderNo = rs.getString(1);
 				String poNumber = rs.getString(2);
 				String soNumber = rs.getString(3);
@@ -3692,7 +3692,7 @@ public class InvoiceInfo {
 				count.add(String.valueOf(rs.getInt(1)));
 			}
 			for (int i = 0; i < count.size(); i++) {
-				InvoiceForm invForm = new InvoiceForm();
+				InvoiceDto invForm = new InvoiceDto();
 				String sql1 = "select sum(Total),sum(Balance) from bca_invoice where ClientVendorID = ? and InvoiceTypeID =? ";
 				pstmt = con.prepareStatement(sql1);
 				pstmt = con.prepareStatement(sql1);
@@ -3846,7 +3846,7 @@ public class InvoiceInfo {
 			pstmt = con.prepareStatement(sql1);
 			pstmt.setLong(1, cvId);
 			rs = pstmt.executeQuery();
-			InvoiceForm form = new InvoiceForm();
+			InvoiceDto form = new InvoiceDto();
 			if (rs.next()) {
 
 				form.setEmailAddr(rs.getString(1));
@@ -4402,7 +4402,7 @@ public class InvoiceInfo {
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> objList = new ArrayList<LabelValueBean>();
-		ArrayList<InvoiceForm> details = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> details = new ArrayList<InvoiceDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		String cvId = "";
@@ -4418,7 +4418,7 @@ public class InvoiceInfo {
 
 			while (rs.next()) {
 				cvId = rs.getString(1);
-				InvoiceForm invForm = new InvoiceForm();
+				InvoiceDto invForm = new InvoiceDto();
 				objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ " " + rs.getString(2)+")", cvId));
 				invForm.setClientVendorID(cvId);
 				invForm.setFirstName(rs.getString(2));
@@ -4456,7 +4456,7 @@ public class InvoiceInfo {
 		return objList;
 	}
 
-	public void updateBillingAddress(InvoiceForm frm, String cId, String billAddressId) 
+	public void updateBillingAddress(InvoiceDto frm, String cId, String billAddressId) 
 	{
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -4578,7 +4578,7 @@ public class InvoiceInfo {
 		}
 	}
 
-	public void updateShippingAddress(InvoiceForm frm, String cId, String billAddressId) 
+	public void updateShippingAddress(InvoiceDto frm, String cId, String billAddressId) 
 	{
 		Connection con = null;
 		PreparedStatement pstmt = null;

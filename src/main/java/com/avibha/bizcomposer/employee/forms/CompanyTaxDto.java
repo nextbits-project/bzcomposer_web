@@ -12,7 +12,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
-public class CompanyTaxDto extends ActionForm {
+public class CompanyTaxDto  {
 
 	private static final long serialVersionUID = 0;
 	
@@ -96,27 +96,4 @@ public class CompanyTaxDto extends ActionForm {
 		this.ddId = ddId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping,
-	 *      javax.servlet.http.HttpServletRequest)
-	 */
-	public void reset(ActionMapping mapping, HttpServletRequest request) {
-		super.reset(mapping, request);
-
-		dname=null;
-
-		drate=null;
-
-		damount=null;
-
-		taxExmp=null;
-
-		isRate=null;
-		
-		srNo=0;
-
-
-	}
 }

@@ -6,39 +6,33 @@
 
 package com.avibha.bizcomposer.purchase.actions;
 
-import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
-import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
-import com.avibha.bizcomposer.purchase.dao.PurchaseDetails;
-import com.avibha.bizcomposer.purchase.dao.PurchaseDetailsDao;
-import com.avibha.bizcomposer.purchase.dao.PurchaseOrderDetails;
-import com.avibha.bizcomposer.purchase.dao.PurchaseOrderDetailsDao;
-import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.purchase.forms.VendorForm;
-import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
-import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
-import com.avibha.bizcomposer.sales.dao.SalesDetails;
-import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
-import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
-import com.avibha.common.constants.AppConstants;
-import com.avibha.common.utility.CountryState;
-import com.avibha.common.utility.MyUtility;
-import com.avibha.common.utility.Path;
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.purchase.dao.PurchaseDetails;
+import com.avibha.bizcomposer.purchase.dao.PurchaseDetailsDao;
+import com.avibha.bizcomposer.purchase.dao.PurchaseOrderDetailsDao;
+import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
+import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
+import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
+import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
+import com.avibha.common.constants.AppConstants;
+import com.avibha.common.utility.MyUtility;
+import com.avibha.common.utility.Path;
 
 @Controller
 public class PurchaseOrderController {
@@ -185,12 +179,12 @@ public class PurchaseOrderController {
 				forward = "/purchase/purchase";
 			}
 			else if (action.equalsIgnoreCase("PurchaseBoard")) { // to add Purchase
-				PurchaseBoardForm purchaseBoardForm = new PurchaseBoardForm();
-				purchaseBoardForm.setOrderDate1("");
-				purchaseBoardForm.setOrderDate2("");
-				purchaseBoardForm.setSaleDate1("");
-				purchaseBoardForm.setSaleDate2("");
-				request.setAttribute("BlankValue", purchaseBoardForm);
+				PurchaseBoardDto PurchaseBoardDto = new PurchaseBoardDto();
+				PurchaseBoardDto.setOrderDate1("");
+				PurchaseBoardDto.setOrderDate2("");
+				PurchaseBoardDto.setSaleDate1("");
+				PurchaseBoardDto.setSaleDate2("");
+				request.setAttribute("BlankValue", PurchaseBoardDto);
 				forward = "/purchase/poboard";
 			}
 			else if (action.equalsIgnoreCase("PBLU")) { // Action For Look up Button From poboard.jsp
@@ -215,12 +209,12 @@ public class PurchaseOrderController {
 				forward = "/purchase/purchase";
 			}
 //			else if (action.equalsIgnoreCase("CheckPO")) { // to add Purchase
-//				PurchaseBoardForm purchaseBoardForm = new PurchaseBoardForm();
-//				purchaseBoardForm.setOrderDate1("");
-//				purchaseBoardForm.setOrderDate2("");
-//				purchaseBoardForm.setSaleDate1("");
-//				purchaseBoardForm.setSaleDate2("");
-//				request.setAttribute("BlankValue", purchaseBoardForm);
+//				PurchaseBoardDto PurchaseBoardDto = new PurchaseBoardDto();
+//				PurchaseBoardDto.setOrderDate1("");
+//				PurchaseBoardDto.setOrderDate2("");
+//				PurchaseBoardDto.setSaleDate1("");
+//				PurchaseBoardDto.setSaleDate2("");
+//				request.setAttribute("BlankValue", PurchaseBoardDto);
 //				forward = "/purchase/checkPO";
 //			}
 			else if (action.equalsIgnoreCase("PrintPO")) { // Action to Print-Purchase-Order

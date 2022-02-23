@@ -18,7 +18,7 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.sales.dao.SalesDetails;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
-import com.avibha.bizcomposer.sales.forms.EstimationBoardForm;
+import com.avibha.bizcomposer.sales.forms.EstimationBoardDto;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
@@ -187,7 +187,7 @@ public class EstimationController {
 
         }
         else if (action.equalsIgnoreCase("EstimationBoard")) { // to add Vendor
-            EstimationBoardForm estimationBoardForm = new EstimationBoardForm();
+        	EstimationBoardDto estimationBoardForm = new EstimationBoardDto();
             estimationBoardForm.setOrderDate1("");
             estimationBoardForm.setOrderDate2("");
             estimationBoardForm.setSaleDate1("");

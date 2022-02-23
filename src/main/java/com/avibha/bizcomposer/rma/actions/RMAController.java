@@ -5,26 +5,19 @@
  */
 package com.avibha.bizcomposer.rma.actions;
 
-import com.avibha.bizcomposer.rma.dao.RMADetails;
-import com.avibha.bizcomposer.rma.dao.RMADetailsDao;
-import com.avibha.bizcomposer.rma.forms.RMADto;
-import com.avibha.bizcomposer.rma.forms.RMAForm;
-import com.avibha.common.log.Loger;
-import com.avibha.common.utility.Path;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.avibha.bizcomposer.rma.dao.RMADetailsDao;
+import com.avibha.bizcomposer.rma.forms.RMADto;
+import com.avibha.common.log.Loger;
 @Controller
 public class RMAController {
 	/*

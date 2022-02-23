@@ -14,7 +14,7 @@ import org.apache.struts.util.LabelValueBean;
 
 import com.avibha.bizcomposer.purchase.forms.*;
 import com.avibha.bizcomposer.sales.dao.*;
-import com.avibha.bizcomposer.sales.forms.InvoiceForm;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -26,7 +26,7 @@ public class PurchaseOrderInfo {
 	 * ship to.   
 	 */
 	public ArrayList dropShipTo(String compId,String name){
-		ArrayList<PurchaseOrderForm> dlist = new ArrayList<PurchaseOrderForm>();
+		ArrayList<PurchaseOrderDto> dlist = new ArrayList<PurchaseOrderDto>();
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		PreparedStatement pstmt=null;
@@ -41,7 +41,7 @@ public class PurchaseOrderInfo {
 			pstmt.setString(1,compId);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				PurchaseOrderForm pform = new PurchaseOrderForm();
+				PurchaseOrderDto pform = new PurchaseOrderDto();
 				pform.setFullName(rs.getString("LastName")+", "+rs.getString("FirstName"));
 				pform.setClientVendorID(rs.getString("ClientVendorID"));
 				dlist.add(pform);
@@ -76,7 +76,7 @@ public class PurchaseOrderInfo {
 	 * the purchase order to select perticular vendor. 
 	 */
 	public ArrayList getVendorList(String compId,String name,String companyValue){
-			ArrayList<PurchaseOrderForm> vList = new ArrayList<PurchaseOrderForm>();
+			ArrayList<PurchaseOrderDto> vList = new ArrayList<PurchaseOrderDto>();
 			Connection con = null ;
 			SQLExecutor db = new SQLExecutor();
 			PreparedStatement pstmt=null;
@@ -94,7 +94,7 @@ public class PurchaseOrderInfo {
 					pstmt.setString(1,compId);
 					rs=pstmt.executeQuery();
 					while(rs.next()){
-						PurchaseOrderForm pform = new PurchaseOrderForm();
+						PurchaseOrderDto pform = new PurchaseOrderDto();
 						pform.setCompanyID(rs.getString("Name"));
 						pform.setClientVendorID(rs.getString("ClientVendorID"));
 						vList.add(pform);
@@ -109,7 +109,7 @@ public class PurchaseOrderInfo {
 					pstmt.setString(1,compId);
 					rs=pstmt.executeQuery();
 					while(rs.next()){
-						PurchaseOrderForm pform = new PurchaseOrderForm();
+						PurchaseOrderDto pform = new PurchaseOrderDto();
 						pform.setCompanyID(rs.getString("LastName")+", "+rs.getString("FirstName"));
 						pform.setClientVendorID(rs.getString("ClientVendorID"));
 						vList.add(pform);
@@ -141,8 +141,8 @@ public class PurchaseOrderInfo {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		//ArrayList<InvoiceForm> objList = new ArrayList<InvoiceForm>();
-		ArrayList<PurchaseOrderForm> objList = new ArrayList<PurchaseOrderForm>();
+		//ArrayList<InvoiceDto> objList = new ArrayList<InvoiceDto>();
+		ArrayList<PurchaseOrderDto> objList = new ArrayList<PurchaseOrderDto>();
 		ResultSet rs = null;
 		
 		CountryState conState = new CountryState();
@@ -157,7 +157,7 @@ public class PurchaseOrderInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {			
 				//PurchaseForm customer = new PurchaseForm();
-				PurchaseOrderForm customer = new PurchaseOrderForm();
+				PurchaseOrderDto customer = new PurchaseOrderDto();
 				customer.setCompanyID(String.valueOf(cid));
 				customer.setBsAddressID(rs.getString(1));
 				customer.setClientVendorID(rs.getString(2));
@@ -205,7 +205,7 @@ public class PurchaseOrderInfo {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<PurchaseOrderForm> objList = new ArrayList<PurchaseOrderForm>();
+		ArrayList<PurchaseOrderDto> objList = new ArrayList<PurchaseOrderDto>();
 		ResultSet rs = null;
 		
 		CountryState conState = new CountryState();
@@ -219,7 +219,7 @@ public class PurchaseOrderInfo {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				PurchaseOrderForm customer = new PurchaseOrderForm();
+				PurchaseOrderDto customer = new PurchaseOrderDto();
 				customer.setBsAddressID(rs.getString(1));
 				customer.setClientVendorID(rs.getString(2));
 				customer.setFullName(rs.getString(4) + "  " + rs.getString(5));
@@ -318,7 +318,7 @@ public class PurchaseOrderInfo {
 	 * company name. vendor's first name,last name,etc.
 	 * 
 	 */
-	public PurchaseOrderForm getVendorDetails(String compId,String cvId,String companyValue){
+	public PurchaseOrderDto getVendorDetails(String compId,String cvId,String companyValue){
 		Connection con = null ;
 		PreparedStatement pstmt_clientInfo=null;
 		PreparedStatement pstmt_bsaAddr=null;
@@ -327,7 +327,7 @@ public class PurchaseOrderInfo {
 		ResultSet rs_clientInfo = null;
 		ResultSet rs_bsaAddr=null;
 		
-		PurchaseOrderForm recvForm = new PurchaseOrderForm();
+		PurchaseOrderDto recvForm = new PurchaseOrderDto();
 		
 		try{
 			con = db.getConnection();
@@ -407,7 +407,7 @@ public class PurchaseOrderInfo {
 	 *  vendor,also provides the ship address information
 	 *  The information is provided by the vendor id.
 	 */
-	public PurchaseOrderForm getDropShipDetails(String compId,String cvId){
+	public PurchaseOrderDto getDropShipDetails(String compId,String cvId){
 		Connection con = null ;
 		PreparedStatement pstmt_clientInfo=null;
 		PreparedStatement pstmt_bsaAddr=null;
@@ -415,7 +415,7 @@ public class PurchaseOrderInfo {
 		CountryState conState = new CountryState();
 		ResultSet rs_clientInfo = null;
 		ResultSet rs_bsaAddr=null;
-		PurchaseOrderForm recvForm = new PurchaseOrderForm();
+		PurchaseOrderDto recvForm = new PurchaseOrderDto();
 		try{
 			con = db.getConnection();
 			pstmt_clientInfo=con.prepareStatement("select LastName,FirstName from bca_clientvendor where Active=1" +
@@ -769,7 +769,7 @@ public class PurchaseOrderInfo {
 	 * to the database. Also it saves the items for the purchase 
 	 * order.
 	 */
-	public void Save(String compId, PurchaseOrderForm form) {
+	public void Save(String compId, PurchaseOrderDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
@@ -899,7 +899,7 @@ public class PurchaseOrderInfo {
 	 * to the database. Also it updates the items for the purchase 
 	 * order.
 	 */
-	public void Update(String compId, PurchaseOrderForm form, int invoiceID) {
+	public void Update(String compId, PurchaseOrderDto form, int invoiceID) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
@@ -1006,7 +1006,7 @@ public class PurchaseOrderInfo {
 	}
 
 	
-	public void SaveUpdate(String compId, PurchaseOrderForm form, int invoiceID) {
+	public void SaveUpdate(String compId, PurchaseOrderDto form, int invoiceID) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
@@ -1116,7 +1116,7 @@ public class PurchaseOrderInfo {
 	 * purchase order.
 	 * 
 	 */
-	public void AddItem(int invoiceID, int cid, PurchaseOrderForm form) {
+	public void AddItem(int invoiceID, int cid, PurchaseOrderDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
@@ -1346,7 +1346,7 @@ public class PurchaseOrderInfo {
 	 * purchase order according to the purchase order number.
 	 * 
 	 */
-	public ArrayList getRecord(HttpServletRequest request, PurchaseOrderForm form,
+	public ArrayList getRecord(HttpServletRequest request, PurchaseOrderDto form,
 			String compId, long PONum) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -1354,7 +1354,7 @@ public class PurchaseOrderInfo {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		ResultSet rsTemp = null;
-		ArrayList<PurchaseOrderForm> list = new ArrayList<PurchaseOrderForm>();
+		ArrayList<PurchaseOrderDto> list = new ArrayList<PurchaseOrderDto>();
 		if (db == null)
 			return null;
 		con = db.getConnection();
@@ -1565,7 +1565,7 @@ public class PurchaseOrderInfo {
 				cart.add(inForm);
 			}
 			request.setAttribute("Cart", cart);
-			InvoiceForm form = new InvoiceForm();
+			InvoiceDto form = new InvoiceDto();
 			form.setTaxValue(Double.parseDouble(truncate(String
 					.valueOf(taxTotal))));
 			request.setAttribute("TaxValue", form);
@@ -1803,7 +1803,7 @@ public class PurchaseOrderInfo {
 	 * ship address of purticular vendor.
 	 * 
 	 */
-	public void showConfirmAddress(String custID,VendorForm vForm,HttpServletRequest request,String cType){
+	public void showConfirmAddress(String custID,VendorDto vForm,HttpServletRequest request,String cType){
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1870,7 +1870,7 @@ public class PurchaseOrderInfo {
 	 *  of perticular vendor to the database.
 	 * 
 	 */
-	public boolean addBillConfirmAddress(VendorForm vForm,HttpServletRequest request){
+	public boolean addBillConfirmAddress(VendorDto vForm,HttpServletRequest request){
 		boolean isUpdated=false;
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -1994,7 +1994,7 @@ public class PurchaseOrderInfo {
 	 *  of perticular vendor to the database.
 	 * 
 	 */
-	public boolean addShipConfirmAddress(VendorForm vForm,HttpServletRequest request){
+	public boolean addShipConfirmAddress(VendorDto vForm,HttpServletRequest request){
 		boolean isUpdated=false;
 		Connection con = null ;
 		PreparedStatement pstmt = null;

@@ -1,7 +1,6 @@
 package com.pritesh.bizcomposer.accounting.bean;
 
-import com.nxsol.bizcompser.global.table.TblCategory;
-import org.apache.struts.action.ActionForm;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 
 public class TblPaymentDto{
 
@@ -83,7 +82,7 @@ private int id = -1;
 
     private int oldPaymentTypeId = -1;
 
-    private TblCategory tblcategory = null;
+    private TblCategoryDto TblCategoryDto = null;
 
     private TblAccount accountName;
 
@@ -327,12 +326,12 @@ private int id = -1;
 		return accountName;
 	}
 
-	public TblCategory getTblcategory() {
-		return tblcategory;
+	public TblCategoryDto getTblcategory() {
+		return TblCategoryDto;
 	}
 
-	public void setTblcategory(TblCategory tblcategory) {
-		this.tblcategory = tblcategory;
+	public void setTblcategory(TblCategoryDto TblCategoryDto) {
+		this.TblCategoryDto = TblCategoryDto;
 	}
 
 	public void setAccountName(TblAccount accountName) {

@@ -18,7 +18,7 @@ import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.BillingStatement;
 import com.nxsol.bizcomposer.jasper.pojo.BillingBoardReport;
 import com.nxsol.bizcomposer.jasper.pojo.BillingStatementReport;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -72,7 +72,7 @@ public class BillingBoardController{
 		 int height=725;
 		 
 		Gson gson = new Gson();
-		ArrayList<ReceivableListBean> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
+		ArrayList<ReceivableListDto> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
 		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement,criteriaForBillStatement);
 		request.setAttribute("billingStatementList", billingStatementList);
 		request.setAttribute("billingList", billingList);
@@ -148,7 +148,7 @@ public class BillingBoardController{
 			System.out.println(invoiceId);
 		}
 
-		ArrayList<ReceivableListBean> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
+		ArrayList<ReceivableListDto> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
 		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement, criteriaForBillStatement);
 		request.setAttribute("billingStatementList", billingStatementList);
 		request.setAttribute("billingList", billingList);

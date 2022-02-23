@@ -40,7 +40,7 @@ public class CustomerInfo {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<CustomerForm> objList = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
 		ResultSet rs = null;
 		
 		CountryState cs = new CountryState();
@@ -60,7 +60,7 @@ public class CustomerInfo {
 			//Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				CustomerForm customer = new CustomerForm();
+				CustomerDto customer = new CustomerDto();
 				customer.setClientVendorID(rs.getString(1));
 				customer.setCname(rs.getString(2)+"("+rs.getString(3)+" "+rs.getString(4)+")");
 				customer.setFirstName(rs.getString(3));
@@ -102,14 +102,14 @@ public class CustomerInfo {
 		}
 		return objList;
 	}
-	public ArrayList getTransactionList(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerForm cForm)
+	public ArrayList getTransactionList(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerDto cForm)
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ArrayList<CustomerForm> objList = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		CustomerInfo cInfo = new CustomerInfo();
@@ -181,7 +181,7 @@ public class CustomerInfo {
 			rs = pstmt.executeQuery();
 			while(rs.next())
 			{
-				CustomerForm iForm = new CustomerForm();
+				CustomerDto iForm = new CustomerDto();
 				iForm.setCname(rs.getString(1));
 				iForm.setDate(rs.getString(4));
 				iForm.setOrderNo(rs.getString(9));
@@ -214,7 +214,7 @@ public class CustomerInfo {
 		return objList;
 	}
 
-	public ArrayList getBalanceSummaryList(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerForm cForm)
+	public ArrayList getBalanceSummaryList(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerDto cForm)
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -222,7 +222,7 @@ public class CustomerInfo {
 		ResultSet rs = null;
 		con = db.getConnection();
 		StringBuffer sb = new StringBuffer();
-		ArrayList<CustomerForm> objList = new ArrayList();
+		ArrayList<CustomerDto> objList = new ArrayList();
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		CustomerInfo cInfo = new CustomerInfo();
 		DateInfo dInfo = new DateInfo();
@@ -282,7 +282,7 @@ public class CustomerInfo {
 			rs = pstmt.executeQuery();
 			while(rs.next())
 			{
-				CustomerForm form = new CustomerForm();
+				CustomerDto form = new CustomerDto();
 				form.setFullName(rs.getString(2) + " " + rs.getString(3) + "(" + rs.getString(1) + ")");
 				form.setTotal(Double.parseDouble(getBalance(rs.getInt(4), Integer.parseInt(companyID))));
 				
@@ -310,14 +310,14 @@ public class CustomerInfo {
 		}
 		return objList;
 	}
-	public ArrayList getBalanceDetail(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerForm cForm)
+	public ArrayList getBalanceDetail(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerDto cForm)
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		StringBuffer sb = new StringBuffer();
-		ArrayList<CustomerForm> form = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> form = new ArrayList<CustomerDto>();
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		CustomerInfo cInfo = new CustomerInfo();
@@ -379,7 +379,7 @@ public class CustomerInfo {
 			
 			while(rs.next())
 			{
-				CustomerForm f = new CustomerForm();
+				CustomerDto f = new CustomerDto();
 				f.setCname(rs.getString(2));
 				f.setDateAdded(rs.getString(5));
 				f.setOrderNo(rs.getString(10));
@@ -487,14 +487,14 @@ public class CustomerInfo {
 		}
 	    return cvTypeId;
 	}
-	public ArrayList getSalesByCustomerSummary(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerForm cForm)
+	public ArrayList getSalesByCustomerSummary(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerDto cForm)
 	{
 		Connection con = null ;
 		PreparedStatement pstmt=null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		StringBuffer sb = new StringBuffer();
-		ArrayList<CustomerForm> objList = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		CustomerInfo cInfo = new CustomerInfo();
@@ -552,7 +552,7 @@ public class CustomerInfo {
 			
 			while(rs.next())
 			{
-				CustomerForm f = new CustomerForm();
+				CustomerDto f = new CustomerDto();
 				f.setCname(rs.getString(2));
 				f.setTotal(getBalanceForSalesCustomerSummary(rs.getInt(1), companyID));
 				objList.add(f);
@@ -620,13 +620,13 @@ public class CustomerInfo {
 		}
 		return bal;
 	}
-	public ArrayList getIncomeByCustomerSymmary(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerForm cForm)
+	public ArrayList getIncomeByCustomerSymmary(String datesCombo,String fromDate,String toDate, String sortBy, String companyID,HttpServletRequest request, CustomerDto cForm)
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<CustomerForm> objlist = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> objlist = new ArrayList<CustomerDto>();
 		Long cvId = 0L;
 		double balance = 0.00;
 		String dateBetween = "";
@@ -683,7 +683,7 @@ public class CustomerInfo {
 			 Loger.log(sql);
 			 while(rs.next())
 			 {
-				 CustomerForm f= new CustomerForm();
+				 CustomerDto f= new CustomerDto();
 				 cvId = rs.getLong(1);
 				 ClientVendor cv = getCv(cvId, companyID);
 				 f.setCname(cv.getName().equals("") ? cv.getFirstName() + " " + cv.getLastName() : cv.getName());
@@ -931,7 +931,7 @@ public class CustomerInfo {
 		}
 		return cv;
 	}
-	public void getLabel(int lblId,CustomerForm label){
+	public void getLabel(int lblId,CustomerDto label){
 		Connection con = null ;
 		PreparedStatement pstmt_lbl=null;
 		SQLExecutor db = new SQLExecutor();
@@ -982,7 +982,7 @@ public class CustomerInfo {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<CustomerForm> objList = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 
@@ -991,7 +991,7 @@ public class CustomerInfo {
 					.prepareStatement("select ID,LabelType,Mar_Top,Mar_Left,Size_Width,Size_Height,Spacing_Hor,Spacing_Vert from bca_label order by LabelType");
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				CustomerForm label = new CustomerForm();
+				CustomerDto label = new CustomerDto();
 				label.setLabelType(rs.getInt("ID"));
 				label.setLabelName(rs.getString("LabelType"));
 				label.setTopMargin(rs.getString("Mar_Top"));
@@ -1026,7 +1026,7 @@ public class CustomerInfo {
 		return objList;
 	}
 
-	public void saveLabel(CustomerForm form) {
+	public void saveLabel(CustomerDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1;
 		SQLExecutor db = new SQLExecutor();
@@ -1072,7 +1072,7 @@ public class CustomerInfo {
 		}
 	}
 	
-	public void deleteLabel(int lblId,CustomerForm form) {
+	public void deleteLabel(int lblId,CustomerDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt_delete=null,pstmt_id = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1124,7 +1124,7 @@ public class CustomerInfo {
 			}
 	}
 
-	public void updateLabel(int labelID, CustomerForm form) {
+	public void updateLabel(int labelID, CustomerDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1183,12 +1183,12 @@ public class CustomerInfo {
 		}
 	}
 
-	public ArrayList SearchCustomer(String compId, String cvId, ActionForm form) {
+	public ArrayList SearchCustomer(String compId, String cvId, CustomerDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<CustomerForm> objList = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
 		ResultSet rs = null;
 		ResultSet rs1 = null;
 		con = db.getConnection();
@@ -1245,7 +1245,7 @@ public class CustomerInfo {
 			rs = pstmt.executeQuery();
 			String addresstype = "";
 			if (rs.next()) {
-				CustomerForm customer = (CustomerForm) form;
+				CustomerDto customer = (CustomerDto) form;
 				customer.setClientVendorID(rs.getString(1));
 				customer.setCname(rs.getString(2));
 				customer.setFirstName(rs.getString(3));
@@ -1437,7 +1437,7 @@ public class CustomerInfo {
 		return valid;
 	}
 	
-	public boolean insertCustomer(String cvId, CustomerForm c, String compID,
+	public boolean insertCustomer(String cvId, CustomerDto c, String compID,
 			int istaxable, int isAlsoClient, int useIndividualFinanceCharges,
 			int AssessFinanceChk, int FChargeInvoiceChk, String status) {
 		boolean ret = false;
@@ -1886,8 +1886,8 @@ public class CustomerInfo {
 
 	public void getServices(HttpServletRequest request, String compId) {
 
-		ArrayList<UpdateInvoiceForm> serviceList = new ArrayList<UpdateInvoiceForm>();
-		ArrayList<UpdateInvoiceForm> invoiceName = new ArrayList<UpdateInvoiceForm>();
+		ArrayList<UpdateInvoiceDto> serviceList = new ArrayList<UpdateInvoiceDto>();
+		ArrayList<UpdateInvoiceDto> invoiceName = new ArrayList<UpdateInvoiceDto>();
 		// ArrayList balenceDetails = new ArrayList();
 		ResultSet rs = null;
 		ResultSet rs1 = null;
@@ -1904,7 +1904,7 @@ public class CustomerInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				UpdateInvoiceForm uform = new UpdateInvoiceForm();
+				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 				uform.setServiceID(rs.getInt(1));
 				uform.setServiceName(rs.getString(2));
 				uform.setInvoiceStyleId(rs.getInt(3));
@@ -1935,7 +1935,7 @@ public class CustomerInfo {
 			pstmt1 = con.prepareStatement(sqlString1);
 			rs1 = pstmt1.executeQuery();
 			while (rs1.next()) {
-				UpdateInvoiceForm uform = new UpdateInvoiceForm();
+				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 				//Loger.log("The Incoice style id is " + rs1.getString(1));
 				uform.setInvoiceStyleId(rs1.getInt(1));
 				//Loger.log("The Invoice Style name is " + rs1.getString(2));
@@ -2014,13 +2014,13 @@ public class CustomerInfo {
 		}
 		return sname;
 	}
-	public ArrayList getAccountPayableReport(String cId,HttpServletRequest request,String datesCombo,String fromDate,String toDate,String sortBy,CustomerForm form)
+	public ArrayList getAccountPayableReport(String cId,HttpServletRequest request,String datesCombo,String fromDate,String toDate,String sortBy,CustomerDto form)
 	{
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
-		ArrayList<CustomerForm> objList = new ArrayList<>();
+		ArrayList<CustomerDto> objList = new ArrayList<>();
 		ResultSet rs = null;
 		double totalBalance = 0.00;
 		String sql = "";
@@ -2093,7 +2093,7 @@ public class CustomerInfo {
 			rs = stmt.executeQuery(sql);
 			while(rs.next())
 			{
-				CustomerForm c = new CustomerForm();
+				CustomerDto c = new CustomerDto();
 				c.setPoNum(rs.getInt(3));
 				c.setInvoiceId(rs.getInt(1));
 				c.setDateAdded(rs.getString(4));
@@ -2128,16 +2128,16 @@ public class CustomerInfo {
 		request.setAttribute("totalBalance", totalBalance);
 		return objList;
 	}
-	public void getProfitLossDetailReport(String datesCombo,String fromDate,String toDate,String sortBy,String cId,HttpServletRequest request,CustomerForm form)
+	public void getProfitLossDetailReport(String datesCombo,String fromDate,String toDate,String sortBy,String cId,HttpServletRequest request,CustomerDto form)
 	{
 		Connection con = null;
 		Statement stmt1 = null,stmt2 = null,stmt3 = null;
 		ResultSet rs1 = null,rs2= null,rs3 = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<CustomerForm> AccountReceivable = new ArrayList<>();
-		ArrayList<CustomerForm> AccountPayable = new ArrayList<>();
-		ArrayList<CustomerForm> temp = new ArrayList<>();
-		ArrayList<CustomerForm> billPayable = new ArrayList<>();
+		ArrayList<CustomerDto> AccountReceivable = new ArrayList<>();
+		ArrayList<CustomerDto> AccountPayable = new ArrayList<>();
+		ArrayList<CustomerDto> temp = new ArrayList<>();
+		ArrayList<CustomerDto> billPayable = new ArrayList<>();
 		con=db.getConnection();
 		DateInfo dInfo = new DateInfo();
 		String dateBetween = "";
@@ -2206,7 +2206,7 @@ public class CustomerInfo {
 			rs1 = stmt1.executeQuery(sql1);
 			while(rs1.next())
 			{
-				CustomerForm c= new CustomerForm();
+				CustomerDto c= new CustomerDto();
 				c.setCvTypeID(rs1.getInt("CVTypeID"));
 				if(c.getCvTypeID() == 2)
 				{
@@ -2227,7 +2227,7 @@ public class CustomerInfo {
 					 if (amt == 0) {
 	                        continue;
 	                  }
-						CustomerForm c1= new CustomerForm();
+						CustomerDto c1= new CustomerDto();
 						c1.setClientVendorID(rs1.getString("ClientVendorID"));
 						c1.setFirstName(rs1.getString("Name"));
 						c1.setTotal(amt);
@@ -2262,8 +2262,8 @@ public class CustomerInfo {
 			rs2 = stmt2.executeQuery(sql2);
 			while(rs2.next())
 			{
-				CustomerForm c= new CustomerForm();
-				CustomerForm pPrice= new CustomerForm();
+				CustomerDto c= new CustomerDto();
+				CustomerDto pPrice= new CustomerDto();
 				pPrice.setNumber(rs2.getString("ID"));
 				c.setNumber(rs2.getString("ID"));
 				c.setFirstName(rs2.getString("Name"));
@@ -2294,7 +2294,7 @@ public class CustomerInfo {
 			rs3 = stmt3.executeQuery(sql3);
 			while(rs3.next())
 			{
-				CustomerForm f = new CustomerForm();
+				CustomerDto f = new CustomerDto();
 				f.setNumber(rs3.getString("ID"));
 				f.setFirstName(rs3.getString("NAME"));
 				f.setTotal(rs3.getDouble("AMOUNT"));
@@ -2345,7 +2345,7 @@ public class CustomerInfo {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<CustomerForm> objList = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		CountryState cs = new CountryState();
@@ -2361,7 +2361,7 @@ public class CustomerInfo {
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				CustomerForm customer = new CustomerForm();
+				CustomerDto customer = new CustomerDto();
 				customer.setClientVendorID(rs.getString(1));
 				customer.setCname(rs.getString(2)+"("+rs.getString(3)+" "+rs.getString(4)+")");
 				customer.setFirstName(rs.getString(3));
@@ -2403,12 +2403,12 @@ public class CustomerInfo {
 		}
 		return objList;
 	}
-	public ArrayList<CustomerForm> customerDetailsSortByLastName(String compId) 
+	public ArrayList<CustomerDto> customerDetailsSortByLastName(String compId) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<CustomerForm> objList = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		CountryState cs = new CountryState();
@@ -2424,7 +2424,7 @@ public class CustomerInfo {
 			//Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				CustomerForm customer = new CustomerForm();
+				CustomerDto customer = new CustomerDto();
 				customer.setClientVendorID(rs.getString(1));
 				customer.setCname(rs.getString(2)+"("+rs.getString(3)+" "+rs.getString(4)+")");
 				customer.setFirstName(rs.getString(3));
@@ -2466,12 +2466,12 @@ public class CustomerInfo {
 		}
 		return objList;
 	}
-	public ArrayList<CustomerForm> customerDetailsSort(String compId, String sort) 
+	public ArrayList<CustomerDto> customerDetailsSort(String compId, String sort) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<CustomerForm> objList = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		CountryState cs = new CountryState();
@@ -2487,7 +2487,7 @@ public class CustomerInfo {
 			//Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				CustomerForm customer = new CustomerForm();
+				CustomerDto customer = new CustomerDto();
 				customer.setClientVendorID(rs.getString(1));
 				customer.setCname(rs.getString(2)+"("+rs.getString(3)+" "+rs.getString(4)+")");
 				customer.setFirstName(rs.getString(3));
@@ -2529,12 +2529,12 @@ public class CustomerInfo {
 		return objList;
 	}
 	
-	public ArrayList<EstimationForm> sortCustomer(String compId, String sort) 
+	public ArrayList<EstimationDto> sortCustomer(String compId, String sort) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<EstimationForm> objList = new ArrayList<EstimationForm>();
+		ArrayList<EstimationDto> objList = new ArrayList<EstimationDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		CountryState cs = new CountryState();
@@ -2550,7 +2550,7 @@ public class CustomerInfo {
 			//Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				EstimationForm customer = new EstimationForm();
+				EstimationDto customer = new EstimationDto();
 				customer.setClientVendorID(rs.getString(1));
 				customer.setCname(rs.getString(2)+"("+rs.getString(3)+" "+rs.getString(4)+")");
 				customer.setFirstName(rs.getString(3));
