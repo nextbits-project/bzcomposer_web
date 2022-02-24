@@ -4,15 +4,15 @@
 <%@page import="java.util.Currency"%>
 <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%>
 <%@page import="javax.script.ScriptEngineManager"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentDto"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentType"%>
-<%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
+<%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>   
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%> 
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -107,11 +107,11 @@ table.tabla-listados tbody tr td {
 		<h3 class="title1">
 		    <spring:message code="BzComposer.accountreceivable.accountreceivabletitle"/>
 		</h3>
-		 <% ReceivableListBean receivablelistbean=(ReceivableListBean)request.getAttribute("Selectedrow");
+		 <% ReceivableListDto ReceivableListDto=(ReceivableListDto)request.getAttribute("Selectedrow");
 		 	TblPaymentType payment = (TblPaymentType)request.getAttribute("SelectedPayment");
 		 	TblAccount Selectedaccount = (TblAccount)request.getAttribute("SelectedAccount");
-		 	TblCategory SelectedCategory = (TblCategory)request.getAttribute("SelectedCategory");
-		 	TblPayment SelcetedPaymentForCheck = (TblPayment)request.getAttribute("Payment");
+		 	TblCategoryDto SelectedCategory = (TblCategoryDto)request.getAttribute("SelectedCategory");
+		 	TblPaymentDto SelcetedPaymentForCheck = (TblPaymentDto)request.getAttribute("Payment");
 		 	if(request.getSession().getAttribute("invoiceId") != null)
 		 	{
 		 		find = Integer.parseInt(request.getSession().getAttribute("invoiceId").toString());
@@ -248,8 +248,8 @@ table.tabla-listados tbody tr td {
 							<div class="col-md-8">
 								<select class="form-control devCategoryDrp" size="1" id="categoryId">
 								<%
-									ArrayList<TblCategory> category = (ArrayList)request.getAttribute("CategoryCombo");
-							/* 		Iterator<TblCategory> itr2 = category.iterator(); */
+									ArrayList<TblCategoryDto> category = (ArrayList)request.getAttribute("CategoryCombo");
+							/* 		Iterator<TblCategoryDto> itr2 = category.iterator(); */
 									for(int i=0;i<category.size();i++)
 									{
 								%>
@@ -390,11 +390,11 @@ table.tabla-listados tbody tr td {
 				  </thead>
 				  <tbody> 
 				  <%
-				  	ArrayList<TblPayment> li = (ArrayList)request.getAttribute("receivedList");		
-				  	Iterator<TblPayment> itr =li.iterator();
+				  	ArrayList<TblPaymentDto> li = (ArrayList)request.getAttribute("receivedList");		
+				  	Iterator<TblPaymentDto> itr =li.iterator();
 				    int index = 1;
 				  	while(itr.hasNext()){
-				  		TblPayment rb = itr.next();
+				  		TblPaymentDto rb = itr.next();
 				    %>
 				  <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index+","+rb.getId()%>)">
 				      <td><input type="checkbox"></td>
@@ -443,12 +443,12 @@ table.tabla-listados tbody tr td {
 				  </thead>
 				  <tbody> 
 				  <%
-				  	ArrayList<TblPayment> pli = (ArrayList)request.getAttribute("partiallyReceivedLayaways");		
-				  	Iterator<TblPayment> itr1 =pli.iterator();
+				  	ArrayList<TblPaymentDto> pli = (ArrayList)request.getAttribute("partiallyReceivedLayaways");		
+				  	Iterator<TblPaymentDto> itr1 =pli.iterator();
 							  int indexForpli=1;
 				  	while(itr1.hasNext())
 				  	{
-				  		TblPayment rb = itr1.next();
+				  		TblPaymentDto rb = itr1.next();
 				    %>
 				  <tr onclick="selectrow(<%=rb.getInvoiceID()+","+indexForpli+","+rb.getId()%>)">
 				      <td><input type="checkbox"></td>
@@ -670,7 +670,7 @@ table.tabla-listados tbody tr td {
                 return false;
             }
         }
-	   var TblPayment={
+	   var TblPaymentDto={
 			   "invoiceID":invoiceId,
 			   "cvID":customerId,
 			   "paymentTypeID":paymentTypeId,	   
@@ -684,12 +684,12 @@ table.tabla-listados tbody tr td {
 			   "checkNumber":document.getElementById("checkNum").value,
 	   }
 	   
-    sendMyValue(TblPayment,receivedAmount,paidDate);
+    sendMyValue(TblPaymentDto,receivedAmount,paidDate);
  
   	}
-   function sendMyValue(TblPayment,receivedAmount,paidDate) {
+   function sendMyValue(TblPaymentDto,receivedAmount,paidDate) {
 		debugger;
-		var obj=JSON.stringify(TblPayment);
+		var obj=JSON.stringify(TblPaymentDto);
    	    $.ajax({
 		
 			type : "POST",
@@ -856,7 +856,7 @@ table.tabla-listados tbody tr td {
 		   {
 		  		 receivedAmountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
 		   }
-	   var ReceivableListBean={
+	   var ReceivableListDto={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":selectedCustomer,
 			   "paymentTypeID":paymentTypeId,	   
@@ -868,7 +868,7 @@ table.tabla-listados tbody tr td {
 			   "memo":memo,
 			   "checkNum":checkNo,
 	   };
-	   var obj=JSON.stringify(ReceivableListBean);
+	   var obj=JSON.stringify(ReceivableListDto);
 	   
 	   $.ajax({
 			

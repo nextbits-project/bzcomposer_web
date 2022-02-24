@@ -4,15 +4,15 @@
 <%@page import="java.util.Currency"%>
 <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%>
 <%@page import="javax.script.ScriptEngineManager"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
+<%@page import="com.nxsol.bizcomposer.common.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentType"%>
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
 <%@page import="java.util.ArrayList"%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -85,8 +85,8 @@ margin-right: 10px;
 </head>
 <body>
 <% int find = 0;
- ReceivableListBean rb = null;
- ArrayList<ReceivableListBean> li = null;
+ ReceivableListDto rb = null;
+ ArrayList<ReceivableListDto> li = null;
  String invoiceNumber = "-1";
  %>
 <div id="ddcolortabsline">&nbsp;</div>
@@ -224,7 +224,7 @@ margin-right: 10px;
 							<div class="col-md-8">
 								<select class="form-control devCategoryDrp" size="1" id="categoryId">
 								<%
-									ArrayList<TblCategory> category = (ArrayList)request.getAttribute("categoryforcombo");
+									ArrayList<TblCategoryDto> category = (ArrayList)request.getAttribute("categoryforcombo");
 							
 									for(int i=0;i<category.size();i++)
 									{
@@ -253,13 +253,13 @@ margin-right: 10px;
 						
 					</div>
 					<div class="col-md-4" style="top:35px;">
-					<%-- <% if(receivablelistbean == null) {%>
+					<%-- <% if(ReceivableListDto == null) {%>
 						<div class="form-group">
 								<button class="btn btn-info btn1" onclick="return save(null,null)">Save</button>
 							</div>
 						<%} else {%>
 							<div class="form-group">
-								<button class="btn btn-info btn1" onclick="return save(<%= receivablelistbean.getOrderNum()%>,<%= receivablelistbean.getPaidAmount()+receivablelistbean.getBalance()%>)">Save</button>
+								<button class="btn btn-info btn1" onclick="return save(<%= ReceivableListDto.getOrderNum()%>,<%= ReceivableListDto.getPaidAmount()+ReceivableListDto.getBalance()%>)">Save</button>
 							</div>
 						<% } %>  --%>
 						 <div class="form-group">
@@ -320,7 +320,7 @@ margin-right: 10px;
 				  <tbody>
 				   <%
 				  	li = (ArrayList)request.getAttribute("poList");		
-				  	Iterator<ReceivableListBean> itr =li.iterator();
+				  	Iterator<ReceivableListDto> itr =li.iterator();
 					int index = 1;
 				  	while(itr.hasNext()){
 				  		 rb = itr.next();
@@ -704,7 +704,7 @@ margin-right: 10px;
 		this.amtToPay = document.getElementById("receivedAmount").value; 
 		var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
 	   
-	   var ReceivableListBean={
+	   var ReceivableListDto={
 			   "poNum":document.getElementById("poNumber").innerHTML,
 			   "cvID":vendor,
 			   "paymentTypeID":document.getElementById("paymentType").value,	   
@@ -717,12 +717,12 @@ margin-right: 10px;
 			   "checkNum":document.getElementById("checkNum").value,
 	   }
 	   
-     sendMyValue(ReceivableListBean); 
+     sendMyValue(ReceivableListDto); 
    }
   	}
-   function sendMyValue(ReceivableListBean) {
+   function sendMyValue(ReceivableListDto) {
 		debugger;
-		var obj=JSON.stringify(ReceivableListBean);
+		var obj=JSON.stringify(ReceivableListDto);
    	    $.ajax({
 			type : "POST",
 			url : "PoPayablePost?tabid=UpdateRecord",
@@ -928,7 +928,7 @@ margin-right: 10px;
 	  var paymentTypeId = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(7)').attr('value');
 	  var checkNum = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(8)').text();
 	  var balance = parseInt(AdjustedTotal) - parseInt(paidAmount);
-	  var ReceivableListBean={
+	  var ReceivableListDto={
 			   "poNum":PoNumber,
 			   "invoiceID":invoiceId,
 			   "cvID":vendorId,
@@ -940,7 +940,7 @@ margin-right: 10px;
 			   "categoryID":categoryId,
 			   "checkNum":checkNum,
 	   };
-	  var obj=JSON.stringify(ReceivableListBean);
+	  var obj=JSON.stringify(ReceivableListDto);
 	  $.ajax({
 			
 			type : "POST",

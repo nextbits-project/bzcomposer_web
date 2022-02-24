@@ -12,10 +12,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.apache.struts.util.LabelValueBean;
-
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.avibha.common.utility.LabelValueBean;
 
 /*
  * 

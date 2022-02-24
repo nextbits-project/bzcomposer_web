@@ -1,9 +1,10 @@
 package com.avibha.bizcomposer.sales.dao;
 import java.io.InputStream;
 
-import org.apache.struts.upload.FormFile;
+import com.avibha.common.utility.FormFile;
 
-public class FrmFile implements FormFile{
+
+public class FrmFile implements FormFile {
 	private String file;
 	public FrmFile(){
 		

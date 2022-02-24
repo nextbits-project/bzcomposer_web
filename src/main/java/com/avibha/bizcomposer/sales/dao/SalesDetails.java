@@ -15,9 +15,6 @@ import java.util.Calendar;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +38,7 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
+import com.avibha.common.utility.LabelValueBean;
 import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
 
 @Service
@@ -54,52 +52,7 @@ public class SalesDetails {
 		this.estimation = estimation;
 	}
 
-	public void getdataManager(HttpServletRequest request, ActionForm form) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
-		ArrayList customerTitle = new ArrayList(); // to get customer title
-		customerTitle = sales.getCustomerTitle(compId);
-		request.setAttribute("customerTitle", customerTitle);
-
-		ArrayList SalesRep = new ArrayList(); // to get sales rep
-		SalesRep = sales.getSalesRep(compId);
-		request.setAttribute("SalesRep", SalesRep);
-
-		ArrayList salesTerms = new ArrayList(); // to get customer title
-		salesTerms = sales.getTerms(compId);
-		request.setAttribute("salesTerms", salesTerms);
-
-		ArrayList SalesCatType = new ArrayList(); // to get customer title
-		SalesCatType = sales.getCatType(compId);
-		request.setAttribute("SalesCatType", SalesCatType);
-
-		ArrayList SalesLocation = new ArrayList(); // to get customer title
-		SalesLocation = sales.getLocation(compId);
-		request.setAttribute("SalesLocation", SalesLocation);
-
-		ArrayList SalesPaymentMethod = new ArrayList(); // to get customer title
-		SalesPaymentMethod = sales.getPaymentType(compId);
-		request.setAttribute("SalesPaymentMethod", SalesPaymentMethod);
-
-		ArrayList SalesMessage = new ArrayList(); // to get customer title
-		SalesMessage = sales.getMessage(compId);
-		request.setAttribute("SalesMessage", SalesMessage);
-
-		ArrayList CreditCardType = new ArrayList(); // to get customer title
-		CreditCardType = sales.getCreditCard(compId);
-		request.setAttribute("CreditCardType", CreditCardType);
-
-		ArrayList SalesTax = new ArrayList(); // to get customer title
-		SalesTax = sales.getTax(compId);
-		request.setAttribute("SalesTax", SalesTax);
-
-		/* Via Information */
-		ArrayList via = new ArrayList();
-		via = sales.getVia(compId);
-		request.setAttribute("Via", via);
-
-	}
+	
 
 	public void AddCustomer(HttpServletRequest request, CustomerDto form) {
 		HttpSession sess = request.getSession();
@@ -145,11 +98,11 @@ public class SalesDetails {
 			boolean addCust = customer.insertCustomer(cvID + "", cfrm, compId, istax, isclient,
 				indCharge, aFCharge, fICharge, "N");
 			if(addCust){
-				request.setAttribute("SaveStatus",new ActionMessage("Customer Information is Successfully Added !."));
+				request.setAttribute("SaveStatus","Customer Information is Successfully Added !.");
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
-			request.setAttribute("SaveStatus",new ActionMessage("Customer Information is Not Insert !."));
+			request.setAttribute("SaveStatus","Customer Information is Not Insert !.");
 		}
 	}
 
@@ -268,7 +221,7 @@ public class SalesDetails {
 			pstmt.setString(1, companyID);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("ServiceName"), rs.getString("ServiceID")));
 			}
 			pstmt.close();
@@ -282,33 +235,6 @@ public class SalesDetails {
 		}
 
 		return arr;
-	}
-	public void getdataManagerSave(HttpServletRequest request, ActionForm form) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
-		String sTitleval = request.getParameter("sTitleval");
-		String sOldval = request.getParameter("sOldval");
-		String sNewval = request.getParameter("sNewval");
-		String sNewvalID = request.getParameter("sNewvalID");
-		String taxRateVal = "";
-		if (request.getParameter("taxRateVal") != null)
-			taxRateVal = request.getParameter("taxRateVal");
-
-		sales.updateSalesData(sNewvalID, sTitleval, sOldval, sNewval,
-				taxRateVal, compId);
-
-	}
-	
-	public void getdataManagerDelete(HttpServletRequest request, ActionForm form) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
-		String sTitleval = request.getParameter("sTitleval");
-		String sNewvalID = request.getParameter("sNewvalID");
-		Loger.log("IDSS" + sNewvalID);
-		sales.DeleteSalesData(sNewvalID, sTitleval, compId);
-
 	}
 
 	public void getCustomer(HttpServletRequest request) {
@@ -377,16 +303,7 @@ public class SalesDetails {
 		request.setAttribute("CustomerDetails", CustomerDetails);
 	}
 	//search selected customer base on cvid
-	public void searchSelectedCustomer(String cvId, HttpServletRequest request,
-			ActionForm form) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		InvoiceInfo invoice = new InvoiceInfo();
-		//Loger.log("The Client vendor is from sales detail is " + cvId);
-		invoice.SearchselectedCustomer(compId, cvId, request);
-		invoice.getServices(request, compId, cvId);
-	//	request.setAttribute("CustomerDetails", CustomerDetails);
-	}
+	
 	public void UpdateCustomer(HttpServletRequest request, CustomerDto customerDto) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -605,41 +522,7 @@ public class SalesDetails {
 
 	}
 
-	public void AdjustInventory(HttpServletRequest request, ActionForm form) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		ArrayList Inventory = new ArrayList();
-		Inventory = (ArrayList) sess.getAttribute("ItemDetails");
-		int invSize = Inventory.size();
-
-		String[][] oldInventory = new String[invSize][3];
-
-		for (int i = 0; i < invSize; i++) {
-			ItemDto ItemDto = (ItemDto) Inventory.get(i);
-			String invId = ItemDto.getInventoryId();
-			oldInventory[i][0] = invId;
-			if (request.getParameter("newQty" + invId) != null) {
-				if (request.getParameter("newQty" + invId).trim().length() > 0)
-					oldInventory[i][1] = request.getParameter("newQty" + invId);
-				else
-					oldInventory[i][1] = ItemDto.getQty();
-				if (request.getParameter("newValue" + invId).trim().length() > 0) {
-					oldInventory[i][2] = request.getParameter("newValue"
-							+ invId);
-				} else {
-					oldInventory[i][2] = ItemDto.getSalePrice();
-				}
-			}
-		}
-		ItemInfo item = new ItemInfo();
-		item.adjustInventory(compId, oldInventory, invSize);
-		ArrayList ItemDetails = new ArrayList();
-		ItemDetails = item.getItemList(compId);
-		sess.removeAttribute("ItemDetails");
-		sess.setAttribute("ItemDetails", ItemDetails);
-		Loger.log("list Size:" + ItemDetails.size());
-
-	}
+	
 	
 	public void updateBillingAddress(InvoiceDto frm, String cId, String billAddressId) 
 	{
@@ -1006,37 +889,6 @@ public class SalesDetails {
 		}
 		return val;
 
-	}
-
-	
-	
-	
-	public void getAccountPayableGraph(HttpServletRequest request,ActionForm form)
-	{
-		HttpSession sess = request.getSession();
-		ArrayList<EsalesPOJO> graphDetail = new ArrayList<>();
-		String compId = (String) sess.getAttribute("CID");
-		//AccountForm aForm = (AccountForm)form;
-		AccountingDAO acd = new AccountingDAO();
-		
-		graphDetail = acd.getAccountPayableGraph(compId,request);
-	}
-
-	public void getBudgetVsActual(HttpServletRequest request, ActionForm form) {
-		int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
-		System.out.println("Current Year for budget vs actual is:"+year);
-		request.setAttribute("Year", year);
-	}
-
-	public void getBudgetOverview(HttpServletRequest request, ActionForm form) {
-		int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
-		System.out.println("Current Year for budget overview is:"+year);
-		String month[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-		for(int i=0;i<month.length;i++)
-		{
-			System.out.println("Budget Year:"+month[i]+year);
-		}
-		request.setAttribute("Year", year);
 	}
 
 	public ArrayList<CustomerDto> getSortedCustomer(HttpServletRequest request, CustomerDto frm, int sortById) 

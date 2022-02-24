@@ -1,4 +1,3 @@
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <!-- Menu starts -->
 <ul class="sf-menu" id="example">
 	<li>

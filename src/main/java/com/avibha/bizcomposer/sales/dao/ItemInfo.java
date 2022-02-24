@@ -5,16 +5,10 @@
  */
 package com.avibha.bizcomposer.sales.dao;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,16 +28,14 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.struts.upload.FormFile;
-import org.apache.struts.util.LabelValueBean;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
+import com.avibha.common.utility.FormFile;
+import com.avibha.common.utility.LabelValueBean;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
@@ -1856,7 +1847,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			int invID;
 			while (rs.next()) {
-				fillList.add(new org.apache.struts.util.LabelValueBean(rs.getString(2), rs.getString(1)));
+				fillList.add(new LabelValueBean(rs.getString(2), rs.getString(1)));
 				String sqlString1 = "select InventoryID,InventoryCode from bca_iteminventory where ParentID=? and ItemTypeID in (1,4) and Active=1 and isCategory=1 and CompanyID=?";
 				invID = rs.getInt(1);
 				pstmt1 = con.prepareStatement(sqlString1);
@@ -1866,14 +1857,14 @@ public class ItemInfo {
 				int ivcode = 0;
 				while (rs1.next()) {
 					ivcode = rs1.getInt(1);
-					fillList.add(new org.apache.struts.util.LabelValueBean(rs1.getString(2), rs1.getString(1)));
+					fillList.add(new LabelValueBean(rs1.getString(2), rs1.getString(1)));
 					pstmt_th = con.prepareStatement(
 							"select InventoryID,InventoryCode from bca_iteminventory where ParentID=? and ItemTypeID in (1,4) and Active=1 and isCategory=1 and CompanyID=?");
 					pstmt_th.setInt(1, ivcode);
 					pstmt_th.setInt(2, cid);
 					rs_th = pstmt_th.executeQuery();
 					while (rs_th.next()) {
-						fillList.add(new org.apache.struts.util.LabelValueBean(rs_th.getString(2), rs_th.getString(1)));
+						fillList.add(new LabelValueBean(rs_th.getString(2), rs_th.getString(1)));
 					}
 
 				}
@@ -2112,7 +2103,7 @@ public class ItemInfo {
 
 	}
 
-	public boolean saveUploadFile(FormFile selectedFile, HttpServletRequest request) {
+	/*public boolean saveUploadFile(FormFile selectedFile, HttpServletRequest request) {
 
 		File file = new File(selectedFile.getFileName());
 		ArrayList al = new ArrayList();
@@ -2328,13 +2319,13 @@ public class ItemInfo {
 
 			else {
 				if (name[1].equals("xlsx")) {
-					/*
+					
 					 * FileInputStream inputStream=null; XSSFWorkbook
 					 * workbook=null; inputStream = new FileInputStream(file);
 					 * workbook=new XSSFWorkbook(inputStream); XSSFSheet
 					 * firstSheet = workbook.getSheetAt(0); Iterator<Row>
 					 * iterator = firstSheet.iterator(); //row int count1=0;
-					 */
+					 
 				} else {
 					FileInputStream inputStream = null;
 					HSSFWorkbook workbook = null;
@@ -2392,7 +2383,7 @@ public class ItemInfo {
 		}
 		return b;
 	}
-
+*/
 	public boolean insertdataintodatabase(ArrayList al, HttpServletRequest request) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con=null;
@@ -3848,7 +3839,7 @@ public class ItemInfo {
 				int ivcode = 0;
 				while (rs1.next()) 
 				{
-					weightList.add(new org.apache.struts.util.LabelValueBean(rs1.getString(4),rs1.getString(1)));
+					weightList.add(new LabelValueBean(rs1.getString(4),rs1.getString(1)));
 				}
 				
 				if(null!=rs1) {
@@ -3944,7 +3935,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				measurementList.add(new org.apache.struts.util.LabelValueBean(rs.getString(4), rs.getString(1)));
+				measurementList.add(new LabelValueBean(rs.getString(4), rs.getString(1)));
 			}
 		} 
 		catch (SQLException ee) 
@@ -3984,7 +3975,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				subMeasurementList.add(new org.apache.struts.util.LabelValueBean(rs.getString(4), rs.getString(2)));
+				subMeasurementList.add(new LabelValueBean(rs.getString(4), rs.getString(2)));
 			}
 		} 
 		catch (SQLException ee) 
@@ -4034,7 +4025,7 @@ public class ItemInfo {
 				
 				priceLevelList.add(fo);
 				
-				//priceLevelList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"),rs.getString("PriceLevelId")));
+				//priceLevelList.add(new LabelValueBean(rs.getString("Name"),rs.getString("PriceLevelId")));
 			}
 		} 
 		catch (SQLException ee) 
@@ -4144,7 +4135,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				locationList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"), rs.getString("LocationID")));
+				locationList.add(new LabelValueBean(rs.getString("Name"), rs.getString("LocationID")));
 			}
 		} 
 		catch (SQLException ee) 
@@ -4236,8 +4227,8 @@ public class ItemInfo {
 				{
 					if(storeTypeId == 3 || storeTypeId == 9)
 					{
-						storeList.add(new org.apache.struts.util.LabelValueBean(rs.getString("StoreTypeName"), rs.getString("StoreTypeID")));
-						storeList.add(new org.apache.struts.util.LabelValueBean(rs1.getString("StoreName"), rs1.getString("StoreID")));
+						storeList.add(new LabelValueBean(rs.getString("StoreTypeName"), rs.getString("StoreTypeID")));
+						storeList.add(new LabelValueBean(rs1.getString("StoreName"), rs1.getString("StoreID")));
 					}
 				}
 				if (rs1 != null) {
@@ -4361,7 +4352,7 @@ public class ItemInfo {
 			{
 				String category = rs.getString("Name")+" "+ rs.getString("CateNumber");
 				int categoryId = rs.getInt("CategoryID");
-				accountList.add(new org.apache.struts.util.LabelValueBean(category, rs.getString("CategoryID")));
+				accountList.add(new LabelValueBean(category, rs.getString("CategoryID")));
 				pstmt1 = con1.prepareStatement(sqlString1);
 				rs1 = pstmt1.executeQuery();
 				
@@ -4371,7 +4362,7 @@ public class ItemInfo {
 					String category1 = rs1.getString("Name")+" "+ rs1.getString("CateNumber");
 					if(categoryId == parentId)
 					{
-						accountList.add(new org.apache.struts.util.LabelValueBean("	"+category1, rs1.getString("CategoryID")));
+						accountList.add(new LabelValueBean("	"+category1, rs1.getString("CategoryID")));
 					}
 				}
 				if (rs1 != null) {
@@ -4430,7 +4421,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				categoryList.add(new org.apache.struts.util.LabelValueBean(rs.getString("InventoryCode"),rs.getString("InventoryID")));	
+				categoryList.add(new LabelValueBean(rs.getString("InventoryCode"),rs.getString("InventoryID")));	
 			}
 		} 
 		catch (SQLException ee) 
@@ -4471,7 +4462,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				subCategoryList.add(new org.apache.struts.util.LabelValueBean(rs.getString("InventoryCode"),rs.getString("ParentID")));	
+				subCategoryList.add(new LabelValueBean(rs.getString("InventoryCode"),rs.getString("ParentID")));	
 			}
 		} 
 		catch (SQLException ee) 
@@ -4514,7 +4505,7 @@ public class ItemInfo {
 			while (rs.next()) 
 			{
 				String name = rs.getString("LastName")+" "+rs.getString("FirstName")+"("+rs.getString("Name")+")";
-				vendorList.add(new org.apache.struts.util.LabelValueBean(name,rs.getString("ClientVendorID")));	
+				vendorList.add(new LabelValueBean(name,rs.getString("ClientVendorID")));	
 			}
 		} 
 		catch (SQLException ee) 

@@ -17,7 +17,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.util.LabelValueBean;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -36,6 +35,7 @@ import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
+import com.avibha.common.utility.LabelValueBean;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 
 public class AccountingDAO {
@@ -1668,7 +1668,7 @@ public class AccountingDAO {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sqlString);
             while (rs.next()) {
-                accountCategories.add(new org.apache.struts.util.LabelValueBean(rs
+                accountCategories.add(new LabelValueBean(rs
                         .getString("Name"), rs.getString("acctCategoryId")));
             }
         }
@@ -1713,7 +1713,7 @@ public class AccountingDAO {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sqlString);
             while (rs.next()) {
-                bankList.add(new org.apache.struts.util.LabelValueBean(rs
+                bankList.add(new LabelValueBean(rs
                         .getString("name"), rs.getString("accountId")));
             }
         }
@@ -1761,7 +1761,7 @@ public class AccountingDAO {
             rs = stmt.executeQuery(sqlString);
 
             while (rs.next()) {
-                subAccountList.add(new org.apache.struts.util.LabelValueBean(rs
+                subAccountList.add(new LabelValueBean(rs
                         .getString("Name"), rs.getString("accountId")));
 
             }

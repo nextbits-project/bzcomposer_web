@@ -17,9 +17,6 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.util.LabelValueBean;
-
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
@@ -29,6 +26,7 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
+import com.avibha.common.utility.LabelValueBean;
 
 /*
  * 
@@ -344,7 +342,7 @@ public class InvoiceInfo {
 			while (rs.next()) {
 				cvId = rs.getString(1);
 				InvoiceDto invForm = new InvoiceDto();
-				objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ "," + rs.getString(2)+")", cvId));
+				objList.add(new LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ "," + rs.getString(2)+")", cvId));
 				invForm.setClientVendorID(cvId);
 				invForm.setFirstName(rs.getString(2));
 				invForm.setLastName(rs.getString(3));
@@ -413,7 +411,7 @@ public class InvoiceInfo {
 			while (rs.next()) {
 				cvId = rs.getString(1);
 				InvoiceDto invForm = new InvoiceDto();
-				objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ "," + rs.getString(2)+")", cvId));
+				objList.add(new LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ "," + rs.getString(2)+")", cvId));
 				invForm.setClientVendorID(cvId);
 				invForm.setFirstName(rs.getString(2));
 				invForm.setLastName(rs.getString(3));
@@ -467,7 +465,7 @@ public class InvoiceInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("InvoiceStyleID")));
 			}
 		} catch (SQLException ee) {
@@ -510,7 +508,7 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("SalesRepID")));
 			}
 		} catch (SQLException ee) {
@@ -553,7 +551,7 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("ShipCarrierID")));
 			}
 		} catch (SQLException ee) {
@@ -597,7 +595,7 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("TermID")));
 			}
 		} catch (SQLException ee) {
@@ -644,7 +642,7 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("PaymentTypeID")));
 				
 			}
@@ -689,7 +687,7 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("MessageID")));
 			}
 		} catch (SQLException ee) {
@@ -4161,7 +4159,7 @@ public class InvoiceInfo {
 
 	}
 
-	public void set(String cvId, HttpServletRequest request, ActionForm form,
+	/*public void set(String cvId, HttpServletRequest request, ActionForm form,
 			String compId) {
 
 		Connection con = null ;
@@ -4265,7 +4263,7 @@ public class InvoiceInfo {
 		request.setAttribute("ServiceInfo", serviceinfo);
 
 	}
-
+*/
 	public String setCurrentDate() {
 
 		DateInfo date = new DateInfo();
@@ -4419,7 +4417,7 @@ public class InvoiceInfo {
 			while (rs.next()) {
 				cvId = rs.getString(1);
 				InvoiceDto invForm = new InvoiceDto();
-				objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ " " + rs.getString(2)+")", cvId));
+				objList.add(new LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ " " + rs.getString(2)+")", cvId));
 				invForm.setClientVendorID(cvId);
 				invForm.setFirstName(rs.getString(2));
 				invForm.setLastName(rs.getString(3));

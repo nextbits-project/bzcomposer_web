@@ -13,13 +13,12 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.util.LabelValueBean;
-
 import com.avibha.bizcomposer.sales.dao.Item;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
+import com.avibha.common.utility.LabelValueBean;
 
 public class ReceivedItemInfo {
 
@@ -42,7 +41,7 @@ public class ReceivedItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				InvoiceDto invFrm = new InvoiceDto();
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("InvoiceStyleID")));
 			}
 			pstmt.close();
@@ -87,7 +86,7 @@ public class ReceivedItemInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("MessageID")));
 			}
 			pstmt.close();

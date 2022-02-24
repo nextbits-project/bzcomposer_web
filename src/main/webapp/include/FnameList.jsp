@@ -1,6 +1,4 @@
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+
 <script
 	src="<bean:write name="path" property="pathvalue"/>/scripts/sortable.js"
 	type="text/javascript"></script>

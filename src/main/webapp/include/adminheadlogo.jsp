@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%> 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -80,9 +79,9 @@ function showLanguageDialog()
 		</select>
 	</div> -->
 	<div class="horizontal">
-		<html:button styleId="btnLogout" property="Logout" title="logout" styleClass="formbutton" onclick="logout();">
+		<button styleId="btnLogout" property="Logout" title="logout" styleClass="formbutton" onclick="logout();">
 			<bean:message key="BzComposer.Logout" />
-		</html:button>
+		</button>
 	</div>
 	<input type="hidden" id="request_locale" name="request_locale" value=""/>
  <div class="clear"></div>

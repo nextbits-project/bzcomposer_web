@@ -13,10 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.util.LabelValueBean;
-
 import com.avibha.bizcomposer.sales.forms.SalesForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;

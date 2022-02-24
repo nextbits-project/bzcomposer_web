@@ -22,16 +22,13 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionServlet;
-import org.apache.struts.upload.FormFile;
-import org.apache.struts.util.LabelValueBean;
-
 import com.avibha.bizcomposer.employee.dao.Employee;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
+import com.avibha.common.utility.LabelValueBean;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -2318,7 +2315,7 @@ public class ItemInfoDao {
 		return objList;
 	}
 
-	public void uploadImage(ItemDto itemFrm, ActionServlet servlet) {
+	/*public void uploadImage(ItemDto itemFrm, ActionServlet servlet) {
 		String fileSep = System.getProperty("file.separator");
 		FileOutputStream fo = null;
 		try {
@@ -2375,7 +2372,7 @@ public class ItemInfoDao {
 		}
 
 	}
-
+*/
 	public boolean insertdataintodatabase(ArrayList al, HttpServletRequest request) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con=null;

@@ -11,14 +11,8 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMessage;
-
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 
@@ -172,70 +166,12 @@ public class PurchaseDetails {
 
 	}
 	
-	/*		Search the vendor from his id provided.
-	 * & provide his related information.
-	 */
-	public void searchVendor(String cvId, HttpServletRequest request, ActionForm form) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		PurchaseInfo purchase = new PurchaseInfo();
-		//Loger.log("The Client vendor is from sales detail is " + cvId);
-		purchase.SearchVendor (compId, cvId, request);
-		purchase.getServices(request, compId, cvId);
-		//request.setAttribute("CustomerDetails",CustomerDetails);
-	}
+	
 	
 	/*		Update the existing vendor & his related 
 	 * information.
 	 */
-	public void UpdateVendor(HttpServletRequest request, VendorDto form) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		PurchaseInfo purchase =new  PurchaseInfo();
-		CustomerInfo customer = new CustomerInfo();
-		String cvId = (String) sess.getAttribute("editedCVID");
-
-		customer.UpdateCustomer(compId, cvId);
-
-		String istaxable = request.getParameter("isTaxable");
-		String isAlsoClient = request.getParameter("isAlsoClient");
-		String UseIndividualFinanceCharges = request.getParameter("UseIndividualFinanceCharges");
-		String AssessFinanceChk = request.getParameter("AssessFinanceChk");
-		String FChargeInvoiceChk = request.getParameter("FChargeInvoiceChk");
-
-		int istax = (istaxable!=null && istaxable.equalsIgnoreCase("on"))?1:0;
-		int isclient = (isAlsoClient!=null && isAlsoClient.equalsIgnoreCase("on"))?1:3; // 2 for vendor in cvtype table
-		int indCharge = (UseIndividualFinanceCharges!=null && UseIndividualFinanceCharges.equalsIgnoreCase("on"))?1:0;
-		int aFCharge = (AssessFinanceChk!=null && AssessFinanceChk.equalsIgnoreCase("on"))?1:0;
-		int fICharge = (FChargeInvoiceChk!=null && FChargeInvoiceChk.equalsIgnoreCase("on"))?1:0;
-
-		form.setAnnualIntrestRate(request.getParameter("AnualRate"));
-		form.setMinFCharges(request.getParameter("MinFinance"));
-		form.setGracePrd(request.getParameter("GracePeriod"));
-		boolean updated = purchase.updateInsertVendor(cvId, form, compId, istax, isclient, indCharge, aFCharge, fICharge, "U");
-		
-		if(updated){
-			request.setAttribute("SaveStatus",new ActionMessage("Vendor information is successfully updated."));
-		}
-		else{
-			request.setAttribute("SaveStatus",new ActionMessage("Vendor information is not updated."));
-		}
-		
-		if(form.getDispay_info()== null){
-			request.setAttribute("RadioVal","1");
-			
-		}
-		else if(form.getDispay_info().equals("ShowAll")){
-			request.setAttribute("RadioVal","1");
-			
-		}
-		else
-			request.setAttribute("RadioVal","2");
-			
-		if(request.getParameter("Flag").equals("1")){
-			request.setAttribute("ClientID",cvId);
-		}
-	}
+	
 	
 	/*		Provides the information required for the 
 	 * print label such as vendor list with his/her

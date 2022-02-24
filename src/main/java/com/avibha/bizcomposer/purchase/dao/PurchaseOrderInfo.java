@@ -5,19 +5,23 @@
  */
 package com.avibha.bizcomposer.purchase.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.util.LabelValueBean;
-
-import com.avibha.bizcomposer.purchase.forms.*;
-import com.avibha.bizcomposer.sales.dao.*;
+import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.sales.dao.CustomerInfo;
+import com.avibha.bizcomposer.sales.dao.Item;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
+import com.avibha.common.utility.LabelValueBean;
 
 public class PurchaseOrderInfo {
 	
@@ -290,7 +294,7 @@ public class PurchaseOrderInfo {
 				rs = pstmt.executeQuery();
 				while(rs.next()){								
 					cvId = rs.getString("ClientVendorID");
-					objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("LastName")+ " , " + rs.getString("FirstName"), cvId));			
+					objList.add(new LabelValueBean(rs.getString("LastName")+ " , " + rs.getString("FirstName"), cvId));			
 				}			
 		}catch(SQLException ex){
 			Loger.log("Exception in the dropShipTo" +

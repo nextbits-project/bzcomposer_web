@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,6 +46,7 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
+import com.avibha.common.utility.LabelValueBean;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
@@ -103,11 +102,11 @@ public class SalesDetailsDao {
 		try{
 			boolean addCust = customer.insertCustomer(customerDto, compId);
 			if(addCust){
-				request.setAttribute("SaveStatus",new ActionMessage("Customer Information is Successfully Added!"));
+				request.setAttribute("SaveStatus","Customer Information is Successfully Added!");
 				request.getSession().setAttribute("actionMsg", "Customer Information is Successfully Added!");
 			}
 		}catch (Exception e) {
-			request.setAttribute("SaveStatus",new ActionMessage("Customer Information is Not Insert !."));
+			request.setAttribute("SaveStatus","Customer Information is Not Insert !.");
 			request.getSession().setAttribute("actionMsg", "Customer Information is Not Insert!");
 		}
 	}

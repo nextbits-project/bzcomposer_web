@@ -6,12 +6,6 @@
 
 package com.avibha.bizcomposer.employee.forms;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-
 public class CompanyTaxDto  {
 
 	private static final long serialVersionUID = 0;
@@ -81,12 +75,7 @@ public class CompanyTaxDto  {
 		this.srNo = srNo;
 	}
 
-	public ActionErrors validate(ActionMapping mapping,
-			HttpServletRequest request) {
-		ActionErrors errors = new ActionErrors();
-
-		return errors;
-	}
+	
 	
 	public String getDdId() {
 		return ddId;

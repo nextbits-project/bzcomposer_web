@@ -5,7 +5,6 @@
  */
 package com.avibha.bizcomposer.accounting.forms;
 
-import org.apache.struts.action.ActionForm;
 
 public class CustomerInvoiceForm {
 

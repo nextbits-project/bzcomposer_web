@@ -13,7 +13,6 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.avibha.common.utility.LabelValueBean;
 import com.avibha.common.utility.MyUtility;
 import com.bzcomposer.configuration.module.form.templates.BCA_FormTemplateType;
 import com.bzcomposer.configuration.module.form.templates.FormTemplateService;

@@ -62,14 +62,7 @@
 		    <artifactId>junit</artifactId>  
 		    <scope>test</scope>
 		</dependency>
-          
-        <!-- https://mvnrepository.com/artifact/struts/struts -->
-        <dependency>
-            <groupId>struts</groupId>
-            <artifactId>struts</artifactId>
-            <version>1.2.8</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>

@@ -1,4 +1,4 @@
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+
 
 <!-- CSS Files starts -->
 

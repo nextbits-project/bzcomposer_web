@@ -4,15 +4,15 @@
 <%@page import="java.util.Currency"%>
 <%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
+<%@page import="com.nxsol.bizcomposer.common.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentType"%>
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
 <%@page import="java.util.ArrayList"%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -200,7 +200,7 @@ table.tabla-listados tbody tr td {
 									<select class="form-control devCategoryDrp" size="1"
 										id="categoryId">
 										<%
-											ArrayList<TblCategory> categoryList = (ArrayList) request.getAttribute("categoryListForCombo");
+											ArrayList<TblCategoryDto> categoryList = (ArrayList) request.getAttribute("categoryListForCombo");
 												for (int i = 1; i < categoryList.size(); i++) {
 										%>
 										<option value="<%=categoryList.get(i).getId()%>">

@@ -17,7 +17,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +28,7 @@ import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
+import com.avibha.common.utility.LabelValueBean;
 
 /*
  * 
@@ -169,7 +169,7 @@ public class EstimationInfo {
 			while (rs.next()) {
 				cvId = rs.getString(1);
 				EstimationDto invForm = new EstimationDto();
-				objList.add(new org.apache.struts.util.LabelValueBean(rs
+				objList.add(new LabelValueBean(rs
 						.getString(3)
 						+ " , " + rs.getString(2), cvId));
 				invForm.setClientVendorID(cvId);
@@ -222,7 +222,7 @@ public class EstimationInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("InvoiceStyleID")));
 			}
 
@@ -269,7 +269,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("SalesRepID")));
 			}
 
@@ -315,7 +315,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("ShipCarrierID")));
 			}
 
@@ -360,7 +360,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("TermID")));
 			}
 
@@ -405,7 +405,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("PaymentTypeID")));
 			}
 
@@ -451,7 +451,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
+				arr.add(new LabelValueBean(rs
 						.getString("Name"), rs.getString("MessageID")));
 			}
 

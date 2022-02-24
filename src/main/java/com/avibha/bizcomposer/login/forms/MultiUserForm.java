@@ -1,7 +1,5 @@
 package com.avibha.bizcomposer.login.forms;
 
-import org.apache.struts.action.ActionForm;
-
 public class MultiUserForm {
 
     public MultiUserForm() {

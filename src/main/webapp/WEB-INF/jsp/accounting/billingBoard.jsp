@@ -1,13 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@page import="com.nxsol.bizcomposer.common.BillingStatement"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentType"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page isELIgnored="false"%>
 <%@page import="java.text.DecimalFormat"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
+<%@page import="com.nxsol.bizcomposer.common.TblPayment"%>
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>

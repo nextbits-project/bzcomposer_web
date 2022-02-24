@@ -9,8 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.Application;
 import com.avibha.bizcomposer.File.dao.CompanyInfo;
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
@@ -43,6 +40,8 @@ import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
+
+import net.sf.jasperreports.web.actions.AbstractAction.ActionErrors;
 
 /**
  * @author sarfrazmalik
@@ -81,7 +80,7 @@ public class ConfigurationController {
         String emailAddress = (String) session.getAttribute("Email_Address");
         ConstValue c = new ConstValue();
         c.setCompanyId(Integer.parseInt(companyID));
-        ActionErrors e = new ActionErrors();
+      //  ActionErrors e = new ActionErrors();
         //till this
         if (session.getAttribute("currentLocale") == null) {
             session.setAttribute("currentLocale", "en");
@@ -860,7 +859,7 @@ public class ConfigurationController {
             //ConfigurationDetails cDetails = new ConfigurationDetails();
             configDetails.saveRecordsGeneral(configDto, request);
             configDetails.getConfigurationInfo(request, configDto);
-            e.add("common.recoversucess", new ActionMessage("err.general.success"));
+         //   e.add("common.recoversucess", new ActionMessage("err.general.success"));
             forward = "redirect:Configuration?tabid=config";
         }
         else if (action.equalsIgnoreCase("SaveConfigurationEstimation")) {
@@ -868,7 +867,7 @@ public class ConfigurationController {
             //ConfigurationDetails cDetails = new ConfigurationDetails();
             configDetails.saveRecordsEstimation(configDto, request);
             configDetails.getConfigurationInfo(request, configDto);
-            e.add("common.recoversucess", new ActionMessage("err.general.success"));
+        //    e.add("common.recoversucess", new ActionMessage("err.general.success"));
             forward = "success22";
         }
         else if (action.equalsIgnoreCase("SaveConfigurationBilling")) {
@@ -882,7 +881,7 @@ public class ConfigurationController {
             //ConfigurationDetails cDetails = new ConfigurationDetails();
             configDetails.saveRecordsBilling(configDto, request, printBillValue, mailCustomerValue, showCombinedValue);
             configDetails.getConfigurationInfo(request, configDto);
-            e.add("common.recoversucess", new ActionMessage("err.general.success"));
+           // e.add("common.recoversucess", new ActionMessage("err.general.success"));
             forward = "success11";
         }
         else if (action.equalsIgnoreCase("SaveConfigurationInventorySettng")) {
@@ -1230,7 +1229,7 @@ public class ConfigurationController {
         String emailAddress = (String) request.getSession().getAttribute("Email_Address");
         ConstValue c = new ConstValue();
         c.setCompanyId(Integer.parseInt(companyID));
-        ActionErrors e = new ActionErrors();
+     //   ActionErrors e = new ActionErrors();
 
         if (action.equalsIgnoreCase("SaveCustomerInvoiceSettings")) {
             //ConfigurationDetails cDetails = new ConfigurationDetails();
@@ -1293,7 +1292,7 @@ public class ConfigurationController {
             //ConfigurationDetails cDetails = new ConfigurationDetails();
             configDetails.saveRecords(configDto, request, multiUserConnection);
             configDetails.getConfigurationInfo(request, configDto);
-            e.add("common.recoversucess", new ActionMessage("err.general.success"));
+     //       e.add("common.recoversucess", new ActionMessage("err.general.success"));
         }
         else if (action.equalsIgnoreCase("addNewUser")) {
             ConfigurationDAO dao = new ConfigurationDAO();

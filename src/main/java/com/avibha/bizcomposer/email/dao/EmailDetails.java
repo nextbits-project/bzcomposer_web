@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.avibha.bizcomposer.email.forms.MailTemplateDto;
-import org.apache.struts.action.ActionForm;
-
 import com.avibha.bizcomposer.email.forms.EmailForm;
+import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 

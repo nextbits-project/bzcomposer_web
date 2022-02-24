@@ -12,10 +12,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.apache.struts.util.LabelValueBean;
-
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.avibha.common.utility.LabelValueBean;
 
 public class VendorCategory {
 	
@@ -31,7 +30,7 @@ public class VendorCategory {
 			pstmt.setString(2, "1");
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"), rs.getString("CVCategoryID")));
+				arr.add(new LabelValueBean(rs.getString("Name"), rs.getString("CVCategoryID")));
 			}
 			pstmt.close();
 			rs.close();

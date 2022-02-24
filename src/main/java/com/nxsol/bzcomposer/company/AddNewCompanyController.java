@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -77,15 +75,15 @@ public class AddNewCompanyController {
 			if (isDuplicateName==true)
 			{
 				request.getSession().setAttribute("CID", companyID);
-				ActionErrors e=new ActionErrors();
-				e.add("loginerror", new ActionMessage("err.user.username.alreadyExists"));
+				/*ActionErrors e=new ActionErrors();
+				e.add("loginerror", new ActionMessage("err.user.username.alreadyExists"));*/
 				//saveErrors(request,e);
 				forward="createNewCompany";
 			}
 			else if(companyInfoFormInput.getCompanyName()==null || companyInfoFormInput.getCompanyName()=="" && isDuplicateName==false)
 			{
-				ActionErrors e=new ActionErrors();
-				e.add("loginerror", new ActionMessage("err.user.username.blank"));
+				/*ActionErrors e=new ActionErrors();
+				e.add("loginerror", new ActionMessage("err.user.username.blank"));*/
 				//saveErrors(request,e);
 				forward="createNewCompany";
 			}
