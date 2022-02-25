@@ -242,9 +242,9 @@ function showselectRecordDialog(){
 							<!-- 	</table> -->
 
 							<div>
-								<div style="float: left;">
-									<input type="button" class="formbutton" onclick="sendTo();" value='<spring:message code="BzComposer.printlabel.sendto" />' />
-								</div>
+								<!--<div style="float: left;">-->
+								<!--	<input type="button" class="formbutton" onclick="sendTo();" value='<spring:message code="BzComposer.printlabel.sendto" />' />-->
+								<!--</div>-->
 								<div style="float: right;">
 									<input type="hidden" name="SelectedRID" id="setRID" value="">
 									<input type="button" class="formbutton" onclick="printlabel();" value='<spring:message code="BzComposer.printlabel.printlabelbutton"/>'/>
@@ -312,7 +312,12 @@ function printlabel(){
 
 //setRowId(null, "0$$");
 function setRowId(rowid, rid){
+	debugger;
     var selectedRowClass = document.getElementById(rid).classList;
+    
+	var rd1=rid.replace("$$", "");
+	//document.getElementById("setRID").value=rID;
+	$("#setRID").val(rd1);
     if(selectedRowClass == 'draft'){
         document.getElementById(rid).classList.remove('draft');
         deleteSelectedCustomerFromList(rid);
@@ -343,22 +348,31 @@ function deleteSelectedCustomerFromList(rid){
         }
     }
 }
+
 function sendTo2(){
     debugger;
     rid = document.getElementById("setRID").value
     if(rid==""){
         return showselectRecordDialog();
     }else{
-        var sel=document.getElementById(rid);
+   	 	var sel = document.getElementById(rid+"$$");
+   	    var cells= sel.getElementsByTagName("td");
+   	    var name = cells[0].innerHTML +" : "+cells[1].innerHTML +",  "+ cells[2].innerHTML +",  "+ cells[7].innerHTML;
+   	    var op = document.createElement('OPTION');
+   	    op.setAttribute('value', cells[0].innerHTML);
+   	    op.appendChild(document.createTextNode(name));
+   	    document.getElementById("list").appendChild(op);
+        /* var sel=document.getElementById(rid+"$$");
         var cells= sel.getElementsByTagName("td");
         var name=vendorid+" "+document.getElementById(vendorid).value;
+        var name=cells[1].innerHTML;
         var op=document.createElement('OPTION');
         var txt=document.createTextNode(name);
         op.setAttribute('value',name);
         op.appendChild(txt);
         document.getElementById("list").appendChild(op);
         var val = document.getElementById('listvalue').value;
-        document.getElementById('listvalue').value=val+vendorid+" "+document.getElementById(vendorid).value+"/";
+        document.getElementById('listvalue').value=val+vendorid+" "+document.getElementById(vendorid).value+"/"; */
     }
 }
 

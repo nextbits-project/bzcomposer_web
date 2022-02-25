@@ -2410,7 +2410,7 @@ public class CustomerInfoDao {
 		try {
 			String sqlString = "select distinct ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
 					+ "City,State,ZipCode, Phone,CellPhone,Fax,Email,date_format(DateAdded,'%m-%d-%Y') as DateAdded,Country from bca_clientvendor  "
-					+ "where CVTypeID IN (1, 2) AND Status IN ('N', 'U') and Deleted = '0' and CompanyID='" + compId + "' order by "+sort;
+					+ "where CVTypeID IN (1, 2) AND Status IN ('N', 'U') and Deleted = '0' and active =1 and CompanyID='" + compId + "' order by "+sort;
 
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();

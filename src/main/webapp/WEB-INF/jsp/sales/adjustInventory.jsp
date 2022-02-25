@@ -62,7 +62,7 @@ table.tabla-listados tbody tr:nth-child(even) { background-color: #dddddd; }
             <tr>
                 <!--<td><a class="formbutton" onclick="callEdit();" style="padding:5 20px;"><spring:message code='BzComposer.global.edit'/></a></td>-->
                 <td><a class="formbutton" onclick="ApplyInventory();" style="padding:5 20px;"><spring:message code='BzComposer.global.save'/></a></td>
-                <td><a class="formbutton" onclick="resetInventoryPage();" style="padding:5 20px;"><spring:message code='BzComposer.global.new'/></a></td>
+              <!--   <td><a class="formbutton" onclick="resetInventoryPage();" style="padding:5 20px;"><spring:message code='BzComposer.global.new'/></a></td>-->
                 <td><a class="formbutton" onclick="printInventoryList('SavingInventoryLists');" style="padding:5 20px;" id="InventoryPrintingBtn"><spring:message code='BzComposer.global.SavingInventoryLists'/></a>
                     <a class="formbutton" onclick="printInventoryList('SavingCheckLists');" style="padding:5 20px;display:none;" id="InvPrintingCheckListBtn"><spring:message code='BzComposer.global.SavingCheckLists'/></a>
                 </td>
@@ -266,9 +266,9 @@ function ApplyInventory(){
         let ItemCells = document.getElementById(selectedRowIndexs[x]+'$$').cells;
         let invItem = {
             "inventoryId" : ItemCells[0].innerText,
-            "expectedQty" : ItemCells[4].getElementsByTagName("input")[0].value,
-            "countedQty" : ItemCells[5].getElementsByTagName("input")[0].value,
-            "memo" : ItemCells[8].getElementsByTagName("input")[0].value
+            "expectedQty" : ItemCells[6].getElementsByTagName("input")[0].value,
+            "countedQty" : ItemCells[7].getElementsByTagName("input")[0].value,
+            "memo" : ItemCells[10].getElementsByTagName("input")[0].value
         };
         InventoryArr[x] = invItem;
     }
@@ -333,8 +333,8 @@ function resetInventoryPage(){
         document.getElementById(i+"memo").value = "";
 
         let ItemCells = document.getElementById(i+'$$').cells;
-        ItemCells[6].innerText = '';
-        ItemCells[7].innerText = '';
+        ItemCells[5].innerText = '';
+        ItemCells[9].innerText = '';
     }
     isInventoryPageReset = true;
     selectedRowIndexs = [];

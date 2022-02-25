@@ -1704,7 +1704,7 @@ public class InvoiceInfoDao {
 			sqlString.append(" order by bca_clientvendor.ClientVendorID ");
 
 			pstmt = con.prepareStatement(sqlString.toString());
-			//Loger.log(sqlString);
+			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 
 			String sqlString11 = "select ClientVendorID,ServiceID,DateAdded,InvoiceStyleID,ServiceBalance,DefaultService from bca_clientvendorservice where CompanyID = ? and ClientVendorID = ?";

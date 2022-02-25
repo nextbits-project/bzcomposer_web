@@ -259,7 +259,7 @@ $(function() {
                                     <spring:message code="BzComposer.global.terminatedDate" />
                                 </td>
                                 <td>
-                                    <form:input path="terminatedDate" readonly="true" />
+                                    <form:input path="terminatedDate" readonly="false" />
                                     <img src="${pageContext.request.contextPath}/images/cal.gif"
                                         onclick="displayCalendar(document.CustomerForm.terminatedDate,'mm-dd-yyyy',this);">
                                 </td>
@@ -710,7 +710,7 @@ $(function() {
                                 </td>
                             </tr>
                             <tr>
-                                <tdcolspan="3">
+                                <td colspan="3">
                                     <spring:message code="BzComposer.addnewcustomer.billingaddress"/>
                                 </td>
                                 <td colspan="3">

@@ -135,13 +135,15 @@ public class BillingBoardController{
 			jasperPath = request.getServletContext().getRealPath("/JasperReport/PrintBilling.jrxml");
 			destinationPsth = request.getServletContext().getRealPath("/JasperReport/PrintBilling.pdf");
 			System.out.println(request.getServletContext().getContextPath());
-			/*JasperDesign design = JRXmlLoader.load(jasperPath);
+			/*
+			JasperDesign design = JRXmlLoader.load(jasperPath);
 			JasperReport jasperreport = JasperCompileManager.compileReport(design);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(), new JRBeanCollectionDataSource(bill));
 			JFrame frame = new JFrame("Invoice");
 	        frame.getContentPane().add(new JRViewer(jasperPrint));
 	        frame.setBounds(x, y, width,height);
-	        frame.setVisible(true);*/
+	        frame.setVisible(true);
+	        */
 			System.out.println(invoiceId);
 		}
 

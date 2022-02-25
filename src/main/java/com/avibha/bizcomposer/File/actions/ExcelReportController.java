@@ -88,7 +88,7 @@ public class ExcelReportController {
             String currentDate = dateFormatter.format(new Date());
             String reportFileName = "AdjustInventoryReport" + currentDate;
             if(reportName.equalsIgnoreCase("SavingInventoryLists")){
-                reportFileName = "Saving Inventory Lists " + currentDate;
+                reportFileName = "Savin Inventory Lists " + currentDate;
             }
             else if(reportName.equalsIgnoreCase("SavingCheckLists")){
                 reportFileName = "Saving Check Lists " + currentDate;

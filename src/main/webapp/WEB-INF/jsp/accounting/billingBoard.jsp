@@ -181,7 +181,7 @@ color: red;
                             <tr>
                                 <td><spring:message code="BzComposer.billingboard.text"/></td>
                                 <td><input type="text" class="form-control" id="advanceSearchData" /><span id="errmsg"></span></td>
-                                <td><button class="btn btn-info" style="font-size: 14px;" disabled="disabled" id="clearButtonId">
+                                <td><button class="btn btn-info" style="font-size: 14px;" onclick="location.reload();" disabled="disabled"  id="clearButtonId">
                                         <spring:message code="BzComposer.global.clear"/>
                                     </button>
                                 </td>
@@ -316,7 +316,7 @@ color: red;
 							</thead>
 							<tbody>
                                 <c:forEach items="${billingList}" var="objList" varStatus="loop">
-								<tr onclick="selctRow(${objList.invoiceID}, ${loop.index}">
+								<tr onclick="selctRow(${objList.invoiceID}, ${loop.index})">
 									<th><input type="checkbox" name="checkbox"></th>
 									<!-- <td>&nbsp;</td> -->
 									<td class="text-right">${objList.orderNum}</td>
@@ -620,11 +620,18 @@ $(document).ready(function () {
 		$("#columnSearchId").prop("disabled",true);
 		$("#clearButtonId").prop("disabled",true);
 	}
+	else
+	{
+		$("#columnSearchId").prop("disabled",false);
+		$("#clearButtonId").prop("disabled",false);
+	}
 	$("#section3DivId").hide();
 	$("#searchDataForBillingStatement").hide();
 	$("#columnSearchForBilling").hide();
 });
-/* $("#advanceSearchData").keypress(function (e) {
+
+/* This function remove
+ $("#advanceSearchData").keypress(function (e) {
     //if the letter is not digit then display error and don't type anything
     debugger;
     var searchCriteriaCombo = document.getElementById("advanceSearchCriteria");

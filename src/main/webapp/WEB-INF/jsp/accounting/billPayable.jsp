@@ -182,10 +182,10 @@ table.tabla-listados tbody tr td {
 								<label class="col-md-4  col-form-label">
 									<spring:message code="BzComposer.billpayable.date"/>
 								</label>
-								<%--  <html:text property="orderDate" readonly="false"></html:text>  --%>
+								  <!-- <html:text property="orderDate" readonly="false"></html:text> -->  
 								<div class="col-md-8 calendar-img">
 									<input type="text" class="form-control devOrderDate" value=""
-										style="width: 275px" name="orderDate" readonly="true"
+										style="width: 275px" name="orderDate" 
 										id="orderDate"> <img
 										src="${pageContext.request.contextPath}/images/cal.gif"
 										class="img-fluid" alt="Responsive image"
@@ -283,7 +283,7 @@ table.tabla-listados tbody tr td {
 									</label>
 								<% ArrayList<TblVendorDetail> unpaidBillList1 = (ArrayList) request.getAttribute("unpaidBillList"); %>
 									<label>
-										<%-- <% out.println(unpaidBillList1.get(unpaidBillList1.size() - 1).getTotalBillAmount()); %> --%>
+									 <%-- <% out.println(unpaidBillList1.get(unpaidBillList1.size() - 1).getTotalBillAmount()); %> --%> 
 									</label>
 								</li>
 							</ul>
@@ -761,7 +761,7 @@ table.tabla-listados tbody tr td {
   	<button type="button" style="font-size: 14px;" class="btn btn-info" onclick="return addAccount()" id="addButtonForDeposit">
   		<spring:message code="BzComposer.global.save"/>
 	</button>
-  <!-- <button type="button" style="font-size: 14px;" class="btn btn-info" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> -->
+   <!-- <button type="button" style="font-size: 14px;" class="btn btn-info" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> --> 
   	<button type="button" style="font-size: 14px;" class="btn btn-info" onclick="return editTransaction()" id="addButtonForDeposit">
   		<spring:message code="BzComposer.global.cancel"/>
 	</button>
@@ -1175,11 +1175,12 @@ table.tabla-listados tbody tr td {
 		function updateBillPayableTab(data)
 		{
 			debugger;
-			$("#billPayableForm")[0].reset();
+			//$("#billPayableForm")[0].reset();
 			$(document).find('div#tblForInvoiceOrder table').replaceWith($(data).find('div#tblForInvoiceOrder').html());
 			$(document).find('div#totalAmountLabelDiv label').eq(1).text(this.value).replaceWith($(data).find('div#totalAmountLabelDiv label').eq(1).text(this.value));
 			$(document).find('div#MemTraList table').replaceWith($(data).find("div#MemTraList").html());
 			addCss();
+			
 			
 		}
 		function remindMe()

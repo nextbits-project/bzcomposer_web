@@ -186,6 +186,7 @@ table.tabla-listados tbody tr td {
 						<% } %> --%>
 				<script>
 					  var data = document.getElementById("Check");
+				
 					  data.style.display = "none";
 				</script>
 				<div class="form-group row" id="Check">
@@ -738,7 +739,12 @@ table.tabla-listados tbody tr td {
 		debugger;
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
-	   var ctype = type.options[type.selectedIndex].label;
+	   console.log(document.getElementById("receivedType").options[type.selectedIndex]);
+	   if(!type.options[type.selectedIndex]){
+    	   alert("please select Received Type")
+       }
+       var ctype = type.options[type.selectedIndex].label;
+       
 	   var paymentTypeIdString = type.options[type.selectedIndex].id;
 	   var paymentTypeId = parseInt(paymentTypeIdString);
 	   if(ctype == 'Check')

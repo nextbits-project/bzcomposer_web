@@ -13,17 +13,17 @@ import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
 import com.pritesh.bizcomposer.accounting.bean.*;
-import org.apache.struts.action.Action;
+/*import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMapping;*/
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+/*import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;*/
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+/*import org.springframework.web.servlet.ModelAndView;*/
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,8 +38,8 @@ public class AccountingController{
 	public String showBzComposer() {
 			return "bzComposer";
 		}
-
-	@GetMapping("/AccountReceiveble")
+	@RequestMapping(value ="/AccountReceiveble", method = {RequestMethod.GET, RequestMethod.POST})
+	//@GetMapping("/AccountReceiveble")
 	public String accounting(ReceivableListDto receivableListDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String forward = "/accounting/accountreceivable";   //jsp name without ext
 		HttpSession sess=request.getSession();
@@ -92,7 +92,7 @@ public class AccountingController{
 		return forward;
 	}
 
-	@PostMapping("/AccountReceivebleUpdate")
+	@RequestMapping(value ="/AccountReceivebleUpdate", method = {RequestMethod.GET, RequestMethod.POST})
 	public String accountingpost(ReceivableListDto receivableListDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String forward = "/accounting/accountreceivable";   //jsp name without ext
 		HttpSession sess = request.getSession();

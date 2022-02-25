@@ -96,6 +96,7 @@ function refreshItemsNow(val)
 }
 function sendTo()
 {
+	alert("asdf")
 	debugger;
 	rid=document.getElementById("setRID").value
 	if(rid=="")

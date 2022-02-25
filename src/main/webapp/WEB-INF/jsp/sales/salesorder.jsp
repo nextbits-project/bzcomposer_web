@@ -1006,6 +1006,12 @@ function calDiscountTotal() {
 	document.InvoiceForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
 }
 
+//this function for calculate adjustedtotal amount 
+function caladjustedtotal() {
+	var convertSubData  =  parseFloat(document.InvoiceForm.total.value);
+	document.InvoiceForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
+}
+
 function ShowBillingAddressPage(form){
     custID = form.custID.value;
     let addressID = form.bsAddressID.value;

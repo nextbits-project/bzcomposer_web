@@ -2,7 +2,7 @@
 <%@page import="java.text.DecimalFormat"%>
 <%@ page isELIgnored="false"%>
 <%@page import="java.util.Currency"%>
-<%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%>
+<%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
@@ -665,7 +665,8 @@ margin-right: 10px;
 	   debugger;	
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
-		/* var receivedAmount=document.getElementById("receivedAmount").value; */
+		/* 
+		var receivedAmount=document.getElementById("receivedAmount").value; */
 		receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
 		if(parseFloat(receivedAmount) == 0.0)
 		{
@@ -726,11 +727,14 @@ margin-right: 10px;
    	    $.ajax({
 			type : "POST",
 			url : "PoPayablePost?tabid=UpdateRecord",
-		/* 	data : "row=" + row + "&paymentTypeId=" +paymentTypeId + "&memo=" + memo + "&accountId=" +accountId + "&categoryId=" +categoryId + "&receivedAmount=" +receivedAmount, */			
-				/* data :"row=" + obj + "&index="+indexNumber, */
+		/*
+		data : "row=" + row + "&paymentTypeId=" +paymentTypeId + "&memo=" + memo + "&accountId=" +accountId + "&categoryId=" +categoryId + "&receivedAmount=" +receivedAmount, */			
+				/*
+				data :"row=" + obj + "&index="+indexNumber, */
 				data : "row=" + obj + "&invoiceId="+invoiceId,
 		    success : function(data) {
-				/* var html = "" + data.msg; */
+				/*
+				var html = "" + data.msg; */
 				
 			window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
 			
@@ -862,7 +866,8 @@ margin-right: 10px;
 	   		return false;
 	   }
 	   else{
-		  /* answer = window.confirm("<spring:message code='BzComposer.popayable.clearselectedtransaction'/>");
+		  /*
+		  answer = window.confirm("<spring:message code='BzComposer.popayable.clearselectedtransaction'/>");
 		  if(answer != true)
 		  {
 		  		return false;

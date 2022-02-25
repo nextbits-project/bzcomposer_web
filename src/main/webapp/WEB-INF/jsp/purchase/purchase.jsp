@@ -421,13 +421,13 @@ function init() {
 													</button>
 												</c:if>
 
-                                                <c:if test="${not empty Enable}">
+                                                <c:if test="${Enable==null}">
                                                     <button type="button" class="formbutton" id="sendMailEnabled" onclick="SendMail(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;">
                                                         <spring:message code="BzComposer.global.sendmail" />
                                                     </button>
                                                 </c:if>
-                                                <c:if test="${Enable == null}">
-                                                    <button type="button" class="formbutton" id="sendMailDisabled" disabled="true" style="padding: 8px 20px 8px 20px; font-size: 16px;">
+                                                <c:if test="${Enable}">
+                                                    <button type="button" class="formbutton" id="sendMailDisabled" disabled="true" style="padding: 8px 20px 8px 20px; font-size: 16px;    background-color: lightgrey">
                                                         <spring:message code="BzComposer.global.sendmail" />
                                                     </button>
                                                 </c:if>
@@ -2286,7 +2286,11 @@ function init() {
 	}
 
 	function SendMail(form){
-        cid=form.orderNo.value;
+		debugger;
+		cid=form.custID.value;
+		if(cid==0){
+			return showValidationDialog();
+		}
         window.open("Invoice?tabid=ShowEmail&OrderType=PO&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
     }
 

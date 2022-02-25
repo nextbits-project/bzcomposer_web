@@ -418,7 +418,7 @@ label {display: inline-block; margin-bottom: 0;}
 </div>
   </div> 
   <div class="bzbtn">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  	<button type="button" class="btn btn-info" onclick="popupWindowClose()" style="float: right;font-size: 14px;">
 		<spring:message code="BzComposer.global.cancel"/>
 	</button>	
   	<button type="button" class="btn btn-info" onclick="return addTransactionFromDialog()" id="addButton" style="float: right;margin-right: 10px;font-size: 14px;">
@@ -525,7 +525,7 @@ label {display: inline-block; margin-bottom: 0;}
 </div>
   </div> 
    <div class="bzbtn">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  	<button type="button" class="btn btn-info" onclick="popupWindowClose()" style="float: right;font-size: 14px;">
   		<spring:message code="BzComposer.global.cancel"/>
 	</button>	
   	<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;"
@@ -723,7 +723,7 @@ label {display: inline-block; margin-bottom: 0;}
  </div>
  </div> 
    <div class="bzbtn">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  	<button type="button" class="btn btn-info" onclick="closeEditTransactionDialog()" style="float: right;font-size: 14px;">
   		<spring:message code="BzComposer.global.cancel"/>
 	</button>	
   	<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;" onclick="return editTransaction()" id="addButtonForDeposit">
@@ -853,7 +853,7 @@ label {display: inline-block; margin-bottom: 0;}
   <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return deleteBankAccount()" id="deleteBank"><spring:message code="BzComposer.global.delete"/></button>
   <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()" id="addButtonForDeposit"><spring:message code="BzComposer.global.save"/></button>
   <!-- <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> -->
-  <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="closeMe()" id="addButtonForDeposit"><spring:message code="BzComposer.global.cancel"/></button>
+  <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="closeAddTransactionDialog()" id="addButtonForDeposit"><spring:message code="BzComposer.global.cancel"/></button>
   </div> 
   </div>
  </div> 
@@ -935,8 +935,14 @@ function getAccountCategoryId(catId)
 	
 }
 
-function closeMe(){
+function closeAddTransactionDialog(){
     $('#AddAccountDialog').dialog('close');
+}
+function closeEditTransactionDialog(){
+    $('#EditTransactionDialog').dialog('close');
+}
+function popupWindowClose(){
+    $('#popupWindow').dialog('close');
 }
 	function editTransaction()
 	{
