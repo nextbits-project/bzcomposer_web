@@ -952,7 +952,7 @@ table.tabla-listados tbody tr td {
 					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return deleteBankAccount()" id="deleteBank">
 						<spring:message code="BzComposer.billpayable.payselectedbillsbtn"/>
 					</button>
-					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return editTransaction()" id="addButtonForDeposit">
+					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="closePayBill()" id="addButtonForDeposit">
 						<spring:message code="BzComposer.global.cancel"/>
 					</button>
 				</div>
@@ -1051,7 +1051,7 @@ table.tabla-listados tbody tr td {
 					<li><button><spring:message code="BzComposer.global.add"/></button></li>
 					<li><button onclick="EditMemorizedTransactionList()"><spring:message code="BzComposer.global.edit"/></button></li>
 					<li><button onclick="DeleteMemorizeTransaction()"><spring:message code="BzComposer.global.delete"/></button></li>
-					<li><button><spring:message code="BzComposer.global.close"/></button></li>
+					<li><button onclick="closeMomorizedTransactionList()"><spring:message code="BzComposer.global.close"/></button></li>
 				</ul>
 			</div>
 		</div>
@@ -1491,7 +1491,7 @@ table.tabla-listados tbody tr td {
 						<spring:message code="BzComposer.global.cancel"/>
 					</button>
 					<!-- <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> -->
-					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return editTransaction()"
+					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="closePlanDetails()"
 					id="addButtonForDeposit">
 						<spring:message code="BzComposer.global.close"/>
 					</button>
@@ -1797,6 +1797,12 @@ table.tabla-listados tbody tr td {
 	var recurrentPaymentLength = 0;
 	var matchIndex = 0;
 	var planID = -1;
+	function closePlanDetails(){
+		$("#EditingRecurrentPaymentDlgId").dialog("close");
+	}
+	function closePayBill(){
+		$("#PayBills").dialog("close");
+	}
 	function selectrow(no , indexNumber)
 	{
 		debugger;
@@ -1916,7 +1922,10 @@ table.tabla-listados tbody tr td {
 		var amountPaid;
 		var billNo = document.getElementById("ordernumber").innerHTML;
 		var payerIdSelect = document.getElementById("receivedType");
-		var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
+		if(payerIdSelect.options[payerIdSelect.selectedIndex]!=undefined)
+			{
+			var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
+			}
 		var totalAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text();
 		/*  if(!$('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text() == '')
 		{	
@@ -1948,7 +1957,11 @@ table.tabla-listados tbody tr td {
 		var amount = document.getElementById("devAmount").innerHTML;
 		var dueDate = document.getElementById("orderDate").value;
 		var categoryIdString  = document.getElementById("categoryId");
-		var categoryId = categoryIdString.options[categoryIdString.selectedIndex].value;
+		if(categoryIdString.options[categoryIdString.selectedIndex]!=undefined)
+		{
+			var categoryId = categoryIdString.options[categoryIdString.selectedIndex].value;
+		}
+	
 		var memo = document.getElementById("memo").value;
 		
 		if(checkNo == '' || checkNo == '0')
@@ -2383,6 +2396,10 @@ function EditMemorizedTransactionList()
  	   title: 'Schedule Memorized Transaction'
      }); 
 }
+function closeMomorizedTransactionList(){
+	$('#MemorizeTransactionList').dialog('close');
+}
+
 function DeleteMemorizeTransaction()
 {
 	debugger;
@@ -2395,6 +2412,11 @@ function DeleteMemorizeTransaction()
 		$('#ScheduleMemorizedTransaction').dialog('close');
 	}
 	var bill = parseInt($('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(2)').text());
+	if(isNaN(bill))
+	{
+	alert("please select the bill to delete")
+	return false;
+	}
 	$.ajax({
 		
 	 	type : "POST",
