@@ -107,7 +107,7 @@ table.tabla-customListOds tbody tr td { font-size: 14px; }
 	</div>
 </div>	
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <%@ include file="/include/emailModal.jsp"%>
 <!-- Javascript begins here -->
 <script type="text/javascript">

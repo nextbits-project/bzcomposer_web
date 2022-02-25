@@ -105,7 +105,7 @@
 	</div>
 </form:form>
 <div style="height:500px;width: 1300px;padding-top:450px;">
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </div>
 </body>
 </html>

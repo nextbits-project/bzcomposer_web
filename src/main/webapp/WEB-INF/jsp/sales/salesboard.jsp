@@ -448,7 +448,7 @@
 	</div>
 	<input type="hidden" id="ord_value" />
 </html:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 
 </body>
 </html>

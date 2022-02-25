@@ -796,7 +796,7 @@ table.cart tbody tr td { font-size: 14px; }
 </div>
 </div>
 </div>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>
 <script type="text/javascript">

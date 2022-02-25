@@ -149,7 +149,7 @@ table.tabla-listados tbody tr td
 </div>
 <!-- end Contents -->
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 <script>	
 function CloseWindow()
@@ -561,7 +561,7 @@ table.tabla-listados tbody tr td
 	</div>
 	<!-- end Contents -->
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 <script>
 	function CloseWindow(){
