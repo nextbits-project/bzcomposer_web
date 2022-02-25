@@ -331,7 +331,7 @@
     </div>
 </div>
 </form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 
 <script type="text/javascript">
 

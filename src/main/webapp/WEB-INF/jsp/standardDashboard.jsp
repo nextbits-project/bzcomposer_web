@@ -22,6 +22,6 @@ Inside Dashboard of BzComposer Invoice...
 </div>
 </div>
 </div>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>

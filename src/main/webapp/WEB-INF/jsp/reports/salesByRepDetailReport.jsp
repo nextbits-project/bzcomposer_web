@@ -145,6 +145,6 @@ table.tabla-listados tbody tr td { font-size: 14px; }
 </div>
 </div>
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>

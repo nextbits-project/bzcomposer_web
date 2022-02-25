@@ -196,7 +196,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 				    value='<spring:message code="BzComposer.estimationboard.lookup" />' />&nbsp;&nbsp;
 				<input type="button" class="formbutton" id="modi" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
                     value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp;
-                <input type="button" class="formbutton" id="modi" style="padding: 10px;"
+                <input type="button" class="formbutton" id="modi"  onclick="SendMail(this.form);" style="padding: 10px;"
                     value='<spring:message code="BzComposer.global.sendmail" />' />
 				<input type="hidden" name="ONum" id="ONumId" />
 				<input type="hidden" name="sEmail" id="sEmailID" />
@@ -220,7 +220,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 	<input type="hidden" id="ord_value" />
 	<input type="hidden" id="est_value" />
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 </body>
@@ -325,6 +325,11 @@ function sendToEstimation(){
 	window.location = "Estimation?tabid=SBLU&est_no="+est_no;
 }
 
+function SendMail(form){
+	debugger;
+	//order_no = document.getElementById("ord_value").value;
+	window.open("Invoice?tabid=ShowEmail",null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
+}
 function InvoiceSelectedRecord(){
     let ItemCells = $("#estiboardList tr.draft")[0].cells;
     if(ItemCells && ItemCells.length){

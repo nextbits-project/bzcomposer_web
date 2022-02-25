@@ -1037,7 +1037,7 @@ $(function() {
 </div>
 </div>
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>
 <script>
@@ -1066,6 +1066,7 @@ function validate() {
     }
     return true;
 }
+
 
 function numbersonly(e,val)
 {
@@ -1130,14 +1131,14 @@ function CheckMambership() {
 	debugger;
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("CustomerSize")%>";
-	if(membershipLevel == "Standard"){
+	if(membershipLevel == "Standard" || membershipLevel == "standard"){
 		if(size>=1000){
 			debugger;
 			return maxnumberofuserdialog();
 		}else {
 			return AddCustomer();
 		}
-	}else if(membershipLevel == "Professional"){
+	}else if(membershipLevel == "Professional" || membershipLevel == "professional"){
 		if(size>=10000){
 			debugger;
 			return maxnumberofuserdialog();
@@ -1493,6 +1494,7 @@ function removeStringValues(key){	//from one string('str'), a substring 'key' wi
 	document.forms[0].table_invId.value=str3;
 }
 function NewCustomer(){
+	debugger;
 //billing addressres/*
 	document.CustomerForm.bscname.value="";
 	document.CustomerForm.bsfirstName.value="";

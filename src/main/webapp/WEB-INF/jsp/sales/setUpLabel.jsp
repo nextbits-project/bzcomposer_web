@@ -601,7 +601,7 @@ function hideList(){
 
 </script>
 </c:if>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 
 <script type="text/javascript">
 function numbersonly(e,val)

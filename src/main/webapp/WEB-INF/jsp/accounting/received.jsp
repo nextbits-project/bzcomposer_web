@@ -895,7 +895,7 @@ table.tabla-listados tbody tr td {
    function clearTransaction()
    {
 	   if(paymentId == '' || paymentId == -1){
-            alert("<bean:message key='BzComposer.accountreceivable.selecttransaction'/>");
+		   alert("<spring:message code="BzComposer.accountreceivable.selecttransaction"/>");
             return false;
        }
 	   else{

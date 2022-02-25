@@ -634,7 +634,7 @@ table.table-notifications th {
 			</div>
 		</div>
 	</form:form>
-	<%@ include file="/include/footer.jsp"%>
+	<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>
 <script>
@@ -827,6 +827,7 @@ table.table-notifications th {
 		document.getElementById("sNewId").value = sNew;
 		document.getElementById("newIDD").value = newID;
 		if(value == "Add"){
+			debugger;
 			if(sNew == ""){
 				showemptynewDescriptionDialog();
 				document.getElementById("descriptionId").focus();

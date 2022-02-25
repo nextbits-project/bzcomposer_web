@@ -92,7 +92,7 @@ public class AccountingController{
 		return forward;
 	}
 
-	@RequestMapping(value ="/AccountReceivebleUpdate", method = {RequestMethod.GET, RequestMethod.POST})
+	@PostMapping("/AccountReceivebleUpdate")
 	public String accountingpost(ReceivableListDto receivableListDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String forward = "/accounting/accountreceivable";   //jsp name without ext
 		HttpSession sess = request.getSession();

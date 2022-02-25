@@ -1,6 +1,7 @@
 <%@ page isELIgnored="false"%>
 <%@page import="java.util.Currency"%>
 <%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
+<%-- <%@ taglib prefix="bean" uri="http://struts.apache.org/tags-bean" %> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
@@ -490,7 +491,7 @@ table.tabla-listados tbody tr td {
 			
 			},
 			 error : function(data) {
-				alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+				 alert("<spring:message code="BzComposer.common.erroroccurred"/>");
 			} 
 		});
    	
@@ -509,7 +510,7 @@ table.tabla-listados tbody tr td {
 				window.location= "${pageContext.request.contextPath}/AccountReceiveble?tabid=selectrow&ordernum="+index;
 			},
 			 error : function(data) {
-				alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+				 alert("<spring:message code="BzComposer.common.erroroccurred"/>");
 			} 
 		});
    }
@@ -641,7 +642,8 @@ table.tabla-listados tbody tr td {
 			/* window.location = "${pageContext.request.contextPath}/Layaway?tabid=layawayTab";  */
 			},
 			 error : function(data) {
-				alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+				 alert("<spring:message code="BzComposer.common.erroroccurred"/>");
+				/*  alert("<bean:message key='BzComposer.common.erroroccurred'/>"); */
 			} 
 		});
   	
@@ -679,11 +681,11 @@ table.tabla-listados tbody tr td {
 	   debugger;
 	   if(parseInt(invoiceId) <= 0)
 		   {
-		   		alert("<bean:message key='BzComposer.accountreceivable.selecttransaction'/>");
+		   alert("<spring:message code="BzComposer.accountreceivable.selecttransaction"/>");
 		   		return false;
 		   }
 	   else{
-		  answer = window.confirm("<bean:message key='BzComposer.accountreceivable.cleartransaction'/>");
+		  answer = window.confirm("<spring:message code='BzComposer.accountreceivable.cleartransaction'/>");
 		  if(answer != true)
 			  {
 			  		return false;
@@ -702,7 +704,7 @@ table.tabla-listados tbody tr td {
 				
 			},
 			 error : function(data) {
-				alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+				 alert("<spring:message code="BzComposer.common.erroroccurred"/>");
 			} 
 		});
 		$(document.forms[0]).submit(function( event ) {

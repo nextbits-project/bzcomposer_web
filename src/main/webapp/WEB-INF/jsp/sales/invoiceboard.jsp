@@ -201,7 +201,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 					<td>
 						<input type="button" style="padding: 10px;" class="formbutton" id="smail" disabled="disabled" onclick="sendToInvoice();"
 						    value='<spring:message code="BzComposer.invoiceboard.lookup" />' /> &nbsp;&nbsp;
-                        <input type="button" class="formbutton" style="padding: 10px;" value='<spring:message code="BzComposer.global.sendmail" />' />
+                        <input type="button" class="formbutton" style="padding: 10px;" onclick="SendMail(this.form);" value='<spring:message code="BzComposer.global.sendmail" />' />
 						<input type="hidden" name="ONum" id="ONumId"> 
 						<input type="hidden" name="sEmail" id="sEmailID"> 
 						<input type="hidden" name="rNum" id="rowONum"> 
@@ -223,7 +223,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 	</div>
 	<input type="hidden" id="ord_value" />
 </form:form>
-<%@ include file="/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 </body>
@@ -330,7 +330,10 @@ function sendToInvoice(){
 	order_no = document.getElementById("ord_value").value;
 	window.location = "Invoice?tabid=SBLU&order_no="+order_no;
 }
-
+function SendMail(form){
+	order_no = document.getElementById("ord_value").value;
+	window.open("Invoice?tabid=ShowEmail&OrderType=SO&OrderNo="+order_no,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
+}
 function SaleSearch(filterType)
 {
 	if(filterType > 1){

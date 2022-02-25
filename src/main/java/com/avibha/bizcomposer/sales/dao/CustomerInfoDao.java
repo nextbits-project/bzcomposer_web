@@ -1488,7 +1488,7 @@ public class CustomerInfoDao {
 			pstmt.setString(39, c.getRep());
 			pstmt.setString(40, c.getShipping());
 			pstmt.setString(41, c.getPaymentType());
-			pstmt.setString(42, c.getCcType());
+			pstmt.setString(42, "".equalsIgnoreCase(c.getCcType()) ? null : c.getCcType());
 
 			Loger.log(sqlString);
 			int num = pstmt.executeUpdate();

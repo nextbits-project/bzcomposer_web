@@ -141,9 +141,9 @@ public class SalesController {
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
 			SalesDetailsDao sd = new SalesDetailsDao();
-			sd.getCustomerList(request);
-			sd.searchSelectedCustomer(cvId, request, customerDto);
-			sd.getAllList(request);
+//			sd.getCustomerList(request);
+		//	sd.searchSelectedCustomer(cvId, request, customerDto);
+			//sd.getAllList(request);
 
 			forward = "/sales/invoice";
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
@@ -1131,10 +1131,16 @@ public class SalesController {
 		}
 		else if (action.equalsIgnoreCase("SendMail")) {
 			String orderNo = request.getParameter("OrderNo");
-			SalesDetailsDao sdetails = new SalesDetailsDao();
-			sdetails.sendEmail(request, invoiceDto);
-			sdetails.sendEmailInfo(orderNo, request, "invoice", invoiceDto);
-			forward = "/sales/sendEMail";
+			if(null != orderNo) {
+				SalesDetailsDao sdetails = new SalesDetailsDao();
+				sdetails.sendEmail(request, invoiceDto);
+				sdetails.sendEmailInfo(orderNo, request, "invoice", invoiceDto);
+				forward = "/sales/sendEMail";
+			}else {
+				SalesDetailsDao sdetails = new SalesDetailsDao();
+				sdetails.sendEmail(request, invoiceDto);
+				forward = "redirect:/Customer?tabid=ContactBoard";
+			}
 		}
 		else if (action.equalsIgnoreCase("ShowEmailOnCustomerBoard")) {
 			String CustIDs = request.getParameter("CustIDs");
@@ -1251,7 +1257,7 @@ public class SalesController {
 				|| action.equalsIgnoreCase("NextSalesOrder") || action.equalsIgnoreCase("PreviousSalesOrder")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInvoiceInfo(request);
-			sdetails.getSalesOrderDetailsByBtnName(request, invoiceDto);
+			sdetails.getSalesOrderDetailsByBtnName(request, invoiceDto );
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			invoiceDto.setSalesTaxID("1");

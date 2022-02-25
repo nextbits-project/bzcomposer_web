@@ -1,3 +1,4 @@
+
 <%@ page isELIgnored="false"%>
 <%@page import="java.util.Currency"%>
 <%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
@@ -891,7 +892,7 @@ table.tabla-listados tbody tr td {
 	   var answer;
 	   debugger;
 	   if(parseInt(invoiceId) <= 0){
-            alert("<bean:message key='BzComposer.accountreceivable.selecttransaction'/>");
+		   alert("<spring:message code="BzComposer.accountreceivable.selecttransaction"/>");
             return false;
        }
 	   else{

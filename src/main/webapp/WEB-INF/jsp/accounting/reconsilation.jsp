@@ -336,6 +336,7 @@ table.tabla-listados tbody tr td {
 						</label>
 						<div class="col-md-7">
 							<select class="form-control" id="CategoryTypeForReconsile" onchange="getCategoryAndCharge()">
+								<option></option>
 							    <c:forEach items="${categoryType}" var="curObject" varStatus="loop">
                                     <c:if test="${curObject.categoryTypeName == 'EXPENSE' || curObject.categoryTypeName == 'INCOME'}">
 								    <option value="${curObject.categoryTypeID}">${curObject.categoryTypeName}</option>
@@ -416,7 +417,7 @@ table.tabla-listados tbody tr td {
 				<button class="btn btn-info" onclick="return AddFromReconcileDlg()">
 					<spring:message code="BzComposer.global.add"/>
 				</button>
-				<button class="btn btn-info">
+				<button class="btn btn-info" onclick="CloseReconcileDlg()">
 					<spring:message code="BzComposer.global.close"/>
 				</button>
 			</div>
@@ -1038,7 +1039,7 @@ table.tabla-listados tbody tr td {
  		</div>
  	</div> 
 	<div class="bzbtn">
-  		<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  		<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onclick="CloseEditDlg()">
   			<spring:message code="BzComposer.global.cancel"/>
   		</button>	
   		<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;" onclick="return editTransaction()" id="addButtonForDeposit">
@@ -1251,10 +1252,11 @@ function editTransaction()
 	var paymentTypeName = paymenTypeNameString.options[paymenTypeNameString.selectedIndex].text; 
 	
 	var checkNumber = document.getElementById("checkNumberEdit").value;
+
 	var amount = document.getElementById("amountToEdit").value;
-	
+
 	var date = document.getElementById("devDateForEdit").value;
-	
+
 	var TblPayment={
 			   "cvID":customerId,
 			   "paymentTypeID":paymentTypeId,	   
@@ -1266,14 +1268,23 @@ function editTransaction()
 			   "oldPaymentTypeId":oldPaymentTypeId,
 			   "checkNumber":checkNumber,
 	   };
-	
+
 	var obj=JSON.stringify(TblPayment);
+	var requestData=""
+	if(amount=="" || amount==undefined)
+	{
+	requestData="row=" + obj + "&PaymentId=" + paymentId + "&date=" + date + "&tableName=" + tableName
+	}
+	else
+	{
+		"row=" + obj + "&PaymentId=" + paymentId + "&amount=" + amount + "&date=" + date + "&tableName=" + tableName
+	}
 	$('#EditDlgId').dialog('close'); 
+
 	$.ajax({
-		
 		type : "POST",
 		url : "ReconsilationPost?tabid=EditTransaction",
-		data : "row=" + obj + "&PaymentId=" + paymentId + "&amount=" +amount + "&date=" + date + "&tableName=" +tableName,
+		data : requestData,
 	    success : function(data) {
 			/* var html = "" + data.msg; */
 			debugger;   
@@ -1281,7 +1292,6 @@ function editTransaction()
 		
 		},
 		 error : function(data) {
-
 			return showerrordialog();
 		} 
 	});
@@ -1471,16 +1481,32 @@ function getCheckboxForReconcile()
 		$("#checkNumberForReconcile").prop("disabled",true);
 	}
 }
+
+function CloseEditDlg()
+{ 
+	$('#EditDlgId').dialog('close');
+}
+function CloseReconcileDlg()
+{ 
+	$('#ReconcileDlgId').dialog('close');
+}
 function AddFromReconcileDlg()
 {
 	debugger;
-	
+
 	var checkNumber = "";
 	var categoryTypeCombo = document.getElementById("CategoryTypeForReconsile");
 	var categoryTypeId = categoryTypeCombo.options[categoryTypeCombo.selectedIndex].value;
 	var categoryCombo = document.getElementById("CategoryForReconsile");
-	var categoryId = categoryCombo.options[categoryCombo.selectedIndex].value;
-	
+	if(categoryCombo.options[categoryCombo.selectedIndex]!=undefined)
+		{
+		var categoryId = categoryCombo.options[categoryCombo.selectedIndex].value;
+		}
+	else
+		{
+		var categoryId ="";
+		}
+
 	var chargeForreconcileCombo = document.getElementById("ChrgeForReconsile");
 	if(chargeForreconcileCombo.length > 0)
 	{	
@@ -1711,6 +1737,7 @@ function entervalidnamedialog()
     });
     return false;
 }
+
 function entervalidamountdialog()
 {
 	event.preventDefault();
