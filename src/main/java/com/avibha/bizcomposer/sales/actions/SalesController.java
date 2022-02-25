@@ -141,9 +141,9 @@ public class SalesController {
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
 			SalesDetailsDao sd = new SalesDetailsDao();
-//			sd.getCustomerList(request);
-		//	sd.searchSelectedCustomer(cvId, request, customerDto);
-			//sd.getAllList(request);
+			sd.getCustomerList(request);
+			sd.searchSelectedCustomer(cvId, request, customerDto);
+			sd.getAllList(request);
 
 			forward = "/sales/invoice";
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
