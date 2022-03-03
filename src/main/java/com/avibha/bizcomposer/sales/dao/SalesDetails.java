@@ -5,12 +5,8 @@
  */
 package com.avibha.bizcomposer.sales.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,28 +14,20 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.avibha.bizcomposer.accounting.dao.AccountingDAO;
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.purchase.dao.CreditCard;
 import com.avibha.bizcomposer.purchase.dao.PayMethod;
-import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
-import com.avibha.bizcomposer.purchase.dao.PurchaseOrderInfo;
 import com.avibha.bizcomposer.purchase.dao.Rep;
 import com.avibha.bizcomposer.purchase.dao.Shipping;
 import com.avibha.bizcomposer.purchase.dao.Term;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
-import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
-import com.avibha.common.utility.LabelValueBean;
-import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
 
 @Service
 public class SalesDetails {
@@ -50,60 +38,6 @@ public class SalesDetails {
 	public SalesDetails(EstimationInfo estimation) {
 		super();
 		this.estimation = estimation;
-	}
-
-	
-
-	public void AddCustomer(HttpServletRequest request, CustomerDto form) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		String istaxable = request.getParameter("isTaxable");
-		String isAlsoClient = request.getParameter("isAlsoClient");
-		String UseIndividualFinanceCharges = request
-				.getParameter("UseIndividualFinanceCharges");
-		String AssessFinanceChk = request.getParameter("AssessFinanceChk");
-		String FChargeInvoiceChk = request.getParameter("FChargeInvoiceChk");
-		Loger.log("istaxable:" + istaxable);
-		Loger.log("isAlsoClient:" + isAlsoClient);
-		int istax = 0;
-		int isclient = 2; // 2 for vendor in cvtype table
-		int indCharge = 0;
-		int aFCharge = 0;
-		int fICharge = 0;
-
-		if ("on".equalsIgnoreCase(istaxable))
-			istax = 1;
-
-		if ("on".equalsIgnoreCase(isAlsoClient))
-			isclient = 1;
-
-		if ("on".equalsIgnoreCase(UseIndividualFinanceCharges))
-			indCharge = 1;
-
-		if ("on".equalsIgnoreCase(AssessFinanceChk))
-			aFCharge = 1;
-
-		if ("on".equalsIgnoreCase(FChargeInvoiceChk))
-			fICharge = 1;
-
-		// ..............................................generating new cvId
-		PurchaseInfo pinfo = new PurchaseInfo();
-		int cvID = pinfo.getLastClientVendorID() + 1;
-		// ............................................Id generation finished
-
-		CustomerInfo customer = new CustomerInfo();
-		CustomerDto cfrm = (CustomerDto) form;
-		
-		try{
-			boolean addCust = customer.insertCustomer(cvID + "", cfrm, compId, istax, isclient,
-				indCharge, aFCharge, fICharge, "N");
-			if(addCust){
-				request.setAttribute("SaveStatus","Customer Information is Successfully Added !.");
-			}
-		}catch (Exception e) {
-			// TODO: handle exception
-			request.setAttribute("SaveStatus","Customer Information is Not Insert !.");
-		}
 	}
 
 	public void getAllList(HttpServletRequest request) {
@@ -152,121 +86,6 @@ public class SalesDetails {
 		CustomerInfo customer = new CustomerInfo();
 		customer.getServices(request, cid);
 	}
-
-
-	public void addSupplierDetails(HttpServletRequest request) 
-	{
-		HttpSession sess = request.getSession();
-		String cid = (String) sess.getAttribute("CID");
-		// Title List
-		Title t = new Title();
-		request.setAttribute("titleList", t.getTitleList(cid));
-
-		// country List
-		CountryState cs = new CountryState();
-		request.setAttribute("cList", cs.getCountry());
-		
-		//state List
-		CountryState cs1 = new CountryState();
-		request.setAttribute("sList", cs1.getStates(cid));
-
-		// Term List
-		Term tr = new Term();
-		request.setAttribute("TermList", tr.getTermList(cid));
-
-		// Rep List
-		Rep rap = new Rep();
-		request.setAttribute("RepList", rap.getRepList(cid));
-
-		// PayMethod List
-		PayMethod pmethod = new PayMethod();
-		request.setAttribute("PaymentList", pmethod.getPaymentTypeList(cid));
-
-		// ShipCarrier List
-		Shipping ship = new Shipping();
-		request.setAttribute("ShipCarrierList", ship.getShipCarrierList(cid));
-
-		// CreditCard List
-		CreditCard cc = new CreditCard();
-		request.setAttribute("CreditCardList", cc.getCCTypeList(cid));
-		
-		//CreditTerm List
-		request.setAttribute("CreditTermList", cc.getCreditTermList(cid));
-		
-		ItemInfo item = new ItemInfo();
-		ArrayList accountList = new ArrayList();
-		accountList = item.fillAccountList(cid);
-		sess.setAttribute("AccountList", accountList);
-
-	}
-	
-	public ArrayList addServices(String companyID) 
-	{
-		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
-		// boolean ret = false;
-		Connection con = null ;
-		PreparedStatement pstmt=null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		if (db == null)
-			arr = null;
-		con = db.getConnection();
-
-		if (con == null)
-			arr = null;
-
-		try {
-			String sqlString = "SELECT ServiceID,ServiceName,InvoiceStyleID,InventoryID FROM bca_servicetype WHERE CompanyID= ? ORDER BY ServiceName";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, companyID);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
-						.getString("ServiceName"), rs.getString("ServiceID")));
-			}
-			pstmt.close();
-			rs.close();
-		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class SalesDetail and  method -addServices "
-					+ " " + ee.toString());
-		} finally {
-			db.close(con);
-
-		}
-
-		return arr;
-	}
-
-	public void getCustomer(HttpServletRequest request) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		CustomerInfo customer = new CustomerInfo();
-		ArrayList CustomerDetails = new ArrayList();
-		CustomerDetails = customer.customerDetails(compId);
-		request.setAttribute("CustomerDetails", CustomerDetails);
-	}
-	
-	public ArrayList<CustomerDto> getCustomerSortByFirstName(HttpServletRequest request, CustomerDto frm) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		CustomerInfo customer = new CustomerInfo();
-		ArrayList<CustomerDto> CustomerDetails = new ArrayList<CustomerDto>();
-		CustomerDetails = customer.customerDetailsSortByFirstName(compId);
-		request.setAttribute("CustomerDetails", CustomerDetails);
-		return CustomerDetails;
-	}
-
-	public ArrayList<CustomerDto> getCustomerSortByLastName(HttpServletRequest request, CustomerDto frm) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		CustomerInfo customer = new CustomerInfo();
-		ArrayList<CustomerDto> CustomerDetails = new ArrayList<CustomerDto>();
-		CustomerDetails = customer.customerDetailsSortByLastName(compId);
-		request.setAttribute("CustomerDetails", CustomerDetails);
-		return CustomerDetails;
-	}
-	
-	
 	
 	public void getLabelType(HttpServletRequest request)  {
 		CustomerInfo customer = new CustomerInfo();
@@ -275,33 +94,6 @@ public class SalesDetails {
 		request.setAttribute("LabelTypeList", labelType);
 	}
 
-	public void addNewLabel(CustomerDto form){
-		CustomerDto cform = (CustomerDto)form ;
-		cform.setLabelName("");
-		cform.setTopMargin("0.0");
-		cform.setLeftMargin("0.0");
-		cform.setHorizon("0.0");
-		cform.setVertical("0.0");
-		cform.setLabelHeight("0.0");
-		cform.setLabelWidth("0.0");
-	}
-	
-
-	
-	
-
-	public void searchCustomer(String cvId, HttpServletRequest request,
-			CustomerDto form) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		CustomerInfo customer = new CustomerInfo();
-		ArrayList CustomerDetails = new ArrayList();
-		sess.setAttribute("CustID", cvId);
-		CustomerDetails = customer.SearchCustomer(compId, cvId, form);
-		InvoiceInfo invoice = new InvoiceInfo();
-		invoice.getServices(request, compId, cvId);
-		request.setAttribute("CustomerDetails", CustomerDetails);
-	}
 	//search selected customer base on cvid
 	
 	public void UpdateCustomer(HttpServletRequest request, CustomerDto customerDto) {
@@ -431,109 +223,6 @@ public class SalesDetails {
 		updateInvoice(cvId, request);
 	}
 
-	
-	
-	public void DeleteItem(HttpServletRequest request) {
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		ItemInfo item = new ItemInfo();
-		String invId = request.getParameter("InvId");
-		item.deleteItem(compId, invId);
-	}
-	
-	public void AddItem(HttpServletRequest request, ItemDto itemFrm) {
-		HttpSession sess = request.getSession();
-		String sale_service = null;
-		String compId = (String) sess.getAttribute("CID");
-		ItemInfo item = new ItemInfo();
-		String itemType = request.getParameter("ItemType");
-		//Loger.log("FILE PHOTO  _______________________          "+itemFrm.getPhotoName().getFileName());
-		if (itemType.equals("2")) {
-			itemFrm.setItemCode(itemFrm.getItemCodeDis());
-			itemFrm.setInvTitle(itemFrm.getInvTitleDis());
-			itemFrm.setItemCodeDis("");
-			itemFrm.setInvTitleDis("");
-
-		}
-
-		if (itemType.equals("3")) {
-			itemFrm.setItemCode(itemFrm.getItemCodeSub());
-			itemFrm.setItemName(itemFrm.getItemNameSub());
-			itemFrm.setItemCodeSub("");
-			itemFrm.setItemNameSub("");
-		}
-
-		if (itemType.equals("4")) {
-			itemFrm.setItemCode(itemFrm.getItemCodeSer());
-			itemFrm.setItemName(itemFrm.getItemNameSer());
-			itemFrm.setTectcmd(itemFrm.getTectcmdSer());
-			itemFrm.setInvTitle(itemFrm.getInvTitleSer());
-
-			itemFrm.setTaxable(itemFrm.getTaxableSer());
-
-			itemFrm.setItemCodeSer("");
-			itemFrm.setItemNameSer("");
-			itemFrm.setTectcmdSer(0);
-			itemFrm.setInvTitleSer("");
-			Loger.log("CAT_______________________________________"+request.getParameter("iscat"));
-			itemFrm.setIscategory(request.getParameter("iscat"));
-			
-		}
-		String str="";
-		if(itemFrm.getPhotoName().getFileName()==null || itemFrm.getPhotoName().getFileName().equals("")){
-			str="";
-			
-		}
-		else{
-			Loger.log("FILE______________________________DJDJD__");
-			ItemInfo itmInfo = new ItemInfo();
-			itmInfo.uploadImage(itemFrm, request);
-			str=itemFrm.getPhotoName().getFileName();
-			Loger.log("FILE UPLOADED******");
-		}
-		
-		
-		try {
-			if (itemFrm.getItemType().equals("1")) {
-				sale_service = itemFrm.getSalePrice();
-			}
-
-			if (itemFrm.getItemType().equals("4")) {
-				sale_service = itemFrm.getServiceRate();
-
-			}
-					
-			item.insertItem(compId, itemFrm.getItemName(), itemFrm
-					.getItemCode(), sale_service, itemFrm.getPurchasePrice(),
-					itemFrm.getQty(), itemFrm.getWeight(), itemFrm
-							.getLocation(), itemFrm.getTaxable(), itemFrm
-							.getSerialNum(), itemFrm.getIscategory(), itemFrm
-							.getInvTitle(), itemFrm.getBarcode(), itemFrm
-							.getItemType(), itemFrm.getTectcmd(), str,itemFrm.getDiscontinued());
-			itemFrm.setItemCode("");
-			itemFrm.setTectcmd(0);
-			itemFrm.setDiscountAmt("");
-
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		Loger.log("item added successfully");
-
-	}
-
-	
-	
-	public void updateBillingAddress(InvoiceDto frm, String cId, String billAddressId) 
-	{
-		InvoiceInfo invoice = new InvoiceInfo();
-		invoice.updateBillingAddress(frm, cId,billAddressId);
-	}
-	
-	public void updateShippingAddress(InvoiceDto frm, String cId, String billAddressId) {
-		InvoiceInfo invoice = new InvoiceInfo();
-		invoice.updateShippingAddress(frm, cId,billAddressId);
-	}
 
 	/* Method for getting Invoice information */
 	public void getInvoiceInfo(HttpServletRequest request) throws SQLException {
@@ -600,87 +289,6 @@ public class SalesDetails {
 		request.setAttribute("ItemDetails", itemList);
 	}
 	
-	public void getSortedInvoiceInfo(HttpServletRequest request, String sort) throws SQLException {
-		String compId = (String) request.getSession().getAttribute("CID");
-		InvoiceInfo invoice = new InvoiceInfo();
-		ArrayList ClientDetails = new ArrayList();
-		if(sort.equals("Name"))
-		{
-			ClientDetails = invoice.customerDetails(compId, request);
-			System.out.println("Calling sortByName method and getting data:"+ClientDetails.toString());
-		}
-		else
-		{
-			ClientDetails = invoice.sortedcustomerDetails(compId, request,sort);
-			System.out.println("Calling sortByLastName method and getting data:"+ClientDetails.toString());
-		}
-		request.setAttribute("CDetails", ClientDetails);
-		
-		ArrayList shAddr = new ArrayList();
-		String companyName = (String) request.getSession().getAttribute("user");
-		//System.out.println("CompanyName:"+companyName);
-		shAddr = invoice.shipAddress(companyName);
-		request.setAttribute("ShAddr", shAddr);
-
-		ArrayList billAddr = new ArrayList();
-		billAddr = invoice.billAddress(Integer.parseInt(compId),companyName);
-		request.getSession().setAttribute("BillAddr", billAddr);
-
-		/* Invoice Style */
-		ArrayList InvoiceStyle = new ArrayList();
-		InvoiceStyle = invoice.getInvoiceStyle();
-		request.setAttribute("InvoiceStyle", InvoiceStyle);
-
-		/* Via Information */
-		ArrayList via = new ArrayList();
-		via = invoice.getVia(compId);
-		request.setAttribute("Via", via);
-
-		/* Rep Information */
-		ArrayList rep = new ArrayList();
-		rep = invoice.getRep(compId);
-		request.getSession().setAttribute("Rep", rep);
-
-		/* Term Information */
-		ArrayList term = new ArrayList();
-		term = invoice.getTerm(compId);
-		request.setAttribute("Term", term);
-
-		/* Term Information */
-		ArrayList payMethod = new ArrayList();
-		payMethod = invoice.getPayMethod(compId);
-		request.setAttribute("PayMethod", payMethod);
-
-		/* Messages */
-		ArrayList message = new ArrayList();
-		message = invoice.getMessage(compId);
-		request.setAttribute("Message", message);
-
-		/* Tax */
-		ArrayList tax = new ArrayList();
-		tax = invoice.getTaxes(compId);
-		request.setAttribute("Tax", tax);
-
-		/* Item List */
-		ArrayList itemList = new ArrayList();
-		itemList = invoice.getItemList(compId);
-		request.setAttribute("ItemList", itemList);
-	}
-
-	
-	public void getInitialize(String ordNo, HttpServletRequest request, InvoiceDto form) {
-		String compId = (String) request.getSession().getAttribute("CID");
-		long orderNo = Long.parseLong(ordNo);
-		InvoiceInfo invoice = new InvoiceInfo();
-		invoice.getRecord(request, form, compId, orderNo);
-	}
-
-	public void getSalesOrderInitialize(String salesOrderNo, HttpServletRequest request, InvoiceDto form) {
-		String compId = (String) request.getSession().getAttribute("CID");
-		long soNo = Long.parseLong(salesOrderNo); // Sales Order Num SO Num
-		InvoiceInfo invoice = new InvoiceInfo();
-		invoice.getSalesOrderRecord(request, form, compId, soNo);
-	}
 
 	public void getInitializeEstimation(String estNo, HttpServletRequest request, EstimationDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -689,14 +297,6 @@ public class SalesDetails {
  		estimation.getRecord(request, form, compId, estimationNo);
 	}
 
-	public void getInitializePurchase(String poNo, HttpServletRequest request, PurchaseOrderDto form) {
-		String compId = (String) request.getSession().getAttribute("CID");
-		long purchaseNo = Long.parseLong(poNo);
-		PurchaseOrderInfo purchase = new PurchaseOrderInfo();
-		purchase.getRecord(request, form, compId, purchaseNo);
-	}
-
-	
 	public void updateInvoice(String cvId, HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -890,40 +490,7 @@ public class SalesDetails {
 		return val;
 
 	}
-
-	public ArrayList<CustomerDto> getSortedCustomer(HttpServletRequest request, CustomerDto frm, int sortById) 
-	{
-		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		CustomerInfo customer = new CustomerInfo();
-		ArrayList<CustomerDto> CustomerDetails = new ArrayList<CustomerDto>();
-		if(sortById==1)
-		{
-			CustomerDetails = customer.customerDetailsSort(compId,"Name");
-		}
-		else if(sortById==2)
-		{
-			CustomerDetails = customer.customerDetailsSort(compId,"FirstName");
-		}
-		else if(sortById == 3)
-		{
-			CustomerDetails = customer.customerDetailsSort(compId,"LastName");
-		}
-		request.setAttribute("CustomerDetails", CustomerDetails);
-		return CustomerDetails;
-	}
-
-	public void setUnitPrice(String companyID, int itemId, double price) 
-	{
-		CustomerInfo customer = new CustomerInfo();
-		customer.setNewUnitPrice(companyID,itemId,price);
-	}
-
-	public void setItemName(String companyID, int itemId, String itemName) {
-		CustomerInfo customer = new CustomerInfo();
-		customer.setNewitemName(companyID,itemId,itemName);
-	}
-
+	
 	public void setUnitPriceEstimation(String companyID, int itemId, double price) {
 		CustomerInfo customer = new CustomerInfo();
 		customer.setUnitPriceEstimation(companyID,itemId,price);
