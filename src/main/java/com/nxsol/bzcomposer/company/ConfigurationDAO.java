@@ -15,9 +15,9 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.Application;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
@@ -28,13 +28,14 @@ import com.avibha.common.utility.DateInfo;
 import com.avibha.common.utility.LabelValueBean;
 import com.nxsol.bizcomposer.common.ConstValue;
 
+@Service
 public class ConfigurationDAO {
 
-	private static final Logger logMsg = LoggerFactory.getLogger(Application.class);
+	private static final Logger logMsg = LoggerFactory.getLogger(ConfigurationDAO.class);
     ConfigurationDto pojo = null;
     SimpleDateFormat formatterMMDDYYYY = new SimpleDateFormat("yyyy-MM-dd");
 
-
+  
     public ArrayList<ConfigurationDto> getModules(String cId, HttpServletRequest request, ConfigurationDto form)
     {
         SQLExecutor db = new SQLExecutor();
