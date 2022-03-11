@@ -736,7 +736,7 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-		/*  debugger;  */
+		debugger;
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
 	   console.log(document.getElementById("receivedType").options[type.selectedIndex]);

@@ -157,6 +157,7 @@ public class PoPayableController {
 			reListBean.setInvoiceTypeID(inv.getInvoiceTypeID());
 			ReceivableListImpl.invoicePaid(reListBean, true);
 			rl.getInvoices(reListBean);
+			forward = "redirect:/PoPayablePost?tabid=popayable";
 		}
 		if(action.equals("clearFromConsignTab"))
 		{

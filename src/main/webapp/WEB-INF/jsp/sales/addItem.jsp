@@ -2987,6 +2987,7 @@ function maxnumberofuserdialog()
     return false;
 }
 function ShowAdd(form){
+	debugger;
 	val = form.itemType.value;
 	if(val=="1"){
 		cat = false;    // document.getElementById('chk_cat').checked;

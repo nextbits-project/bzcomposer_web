@@ -421,7 +421,10 @@ function init() {
 													</button>
 												</c:if>
 
-                                                <c:if test="${Enable==null}">
+													<button type="button" class="formbutton" id="sendMailEnabled" onclick="SendMail(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;">
+                                                        <spring:message code="BzComposer.global.sendmail" />
+                                                    </button>
+                                                <%-- <c:if test="${Enable==null}">
                                                     <button type="button" class="formbutton" id="sendMailEnabled" onclick="SendMail(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;">
                                                         <spring:message code="BzComposer.global.sendmail" />
                                                     </button>
@@ -430,7 +433,7 @@ function init() {
                                                     <button type="button" class="formbutton" id="sendMailDisabled" disabled="true" style="padding: 8px 20px 8px 20px; font-size: 16px;    background-color: lightgrey">
                                                         <spring:message code="BzComposer.global.sendmail" />
                                                     </button>
-                                                </c:if>
+                                                </c:if> --%>
                                                 <button type="button" class="formbutton" onclick="printCustomerOrder(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;">
                                                     <spring:message code='BzComposer.global.Print' />
                                                 </button>

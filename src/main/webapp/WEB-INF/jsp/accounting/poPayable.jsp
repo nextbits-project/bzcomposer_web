@@ -367,7 +367,7 @@ margin-right: 10px;
 		</tbody>	
 	</table>
 	</div>
-	<div class="footer1">
+	<div class="footer1" style="margin-top: 50px">
 		<a class="btn btn-info" style="float: right;font-size:14px;color:white;" id="pay"><spring:message code="BzComposer.popayable.paybtn"/></a>
 		<!-- <button class="float-right" onclick="return received()">Pay</button> -->
 	</div>
@@ -425,7 +425,7 @@ margin-right: 10px;
 </form>
 </div>
    <div class=" col-4">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onclick="closePayableWindow()">
   		<spring:message code="BzComposer.global.cancel"/>
 	</button>	
   	<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;"
@@ -953,7 +953,7 @@ margin-right: 10px;
 			data :"row=" + obj,
 		    success : function(data) {
 				/* var html = "" + data.msg; */
-				window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
+				//window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
 			},
 			 error : function(data) {
 
@@ -965,6 +965,9 @@ margin-right: 10px;
 		    event.preventDefault();
 		});
   }
+  function closePayableWindow(){
+		$('#popupWindow').dialog('close');
+	}
   function paidList()
   {
 	  window.location = "${pageContext.request.contextPath}/PaidListTab?tabid=paidList";

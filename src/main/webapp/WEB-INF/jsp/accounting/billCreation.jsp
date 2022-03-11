@@ -1486,7 +1486,8 @@ table.tabla-listados tbody tr td {
 					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return UpdateRecurrentPayment()" id="">
 						<spring:message code="BzComposer.global.update"/>
 					</button>
-					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()"
+					<!-- <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()" -->
+					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="closePlanDetails()"
 					id="addButtonForDeposit">
 						<spring:message code="BzComposer.global.cancel"/>
 					</button>
@@ -2180,7 +2181,7 @@ else
 			 });
 		 $(function() {
 			   $( "#EditRecurrentPaymentButtonId").on("click", function(){
-				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
+			   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
 				  debugger;
 				   $( "#EditingRecurrentPaymentDlgId").dialog({
 			    	   modal: true,

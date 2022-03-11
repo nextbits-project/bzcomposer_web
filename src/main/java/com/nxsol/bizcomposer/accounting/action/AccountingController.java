@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;*/
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 /*import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;*/
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -124,7 +125,7 @@ public class AccountingController{
 			request.getSession().setAttribute("path", p);
 
 			Gson gson=new Gson();
-			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), null);
 			double amtToPay = reListBean.getAmtToPay();
 			/*String indexNumber = request.getParameter("index");*/
 			String invoiceId = request.getParameter("invoiceId");

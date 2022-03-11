@@ -852,6 +852,13 @@ public class SalesDetailsDao {
 		if(itemType == null){
 			itemType = itemFrm.getItemType();
 		}
+		if (itemType.equals("1")) {
+			itemFrm.setItemCode(itemFrm.getItemCodeDis());
+			itemFrm.setInvTitle(itemFrm.getInvTitleDis());
+			itemFrm.setItemCodeDis("");
+			itemFrm.setInvTitleDis("");
+		}
+		else
 		if (itemType.equals("2")) {
 			itemFrm.setItemCode(itemFrm.getItemCodeDis());
 			itemFrm.setInvTitle(itemFrm.getInvTitleDis());
