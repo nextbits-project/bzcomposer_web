@@ -393,8 +393,8 @@ public class SalesInfo {
 	public boolean insertSalesData(String sNewID, String title, String oldVal, String newVal, String taxRateVal, String compId) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		PreparedStatement pstmt = null,pstmt1,pstmt2,pstmt3,pstmt4,pstmt5,pstmt6 = null;
+				ResultSet rs = null;
 		boolean valid = false;
 		try {
 			Statement stmt = con.createStatement();
@@ -409,9 +409,18 @@ public class SalesInfo {
 				pstmt.close();
 				rs.close();
 				String newValtaxRateVal = newVal+" "+taxRateVal;
-				sqlString="INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`) " +
-						"values('" + iD + "','" + compId + "',\"" + newValtaxRateVal + "\",'" + taxRateVal + "',1,1)";
-
+//				sqlString="INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`) " +
+//						"values('" + iD + "','" + compId + "',\"" + newValtaxRateVal + "\",'" + taxRateVal + "',1,1)";
+                pstmt5=con.prepareStatement("INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`)"+
+                        "values(?,?,?,?,?,?)");
+                pstmt5.setString(1,iD );
+                pstmt5.setString(2, compId);
+                pstmt5.setString(3, newValtaxRateVal);
+                pstmt5.setString(4, taxRateVal);
+                pstmt5.setInt(5, 1);
+                pstmt5.setInt(6, 1);
+                pstmt5.executeUpdate();
+                pstmt5.close();
 
 			} else if ("CUSTOMER TITLE".equalsIgnoreCase(title)) {
 				Loger.log("CUSTOMER TITLE");
@@ -424,8 +433,17 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_title(TitleID, Title, CompanyID, Active)  values('" + iD + "',\""
-						+ newVal + "\",'" + compId + "',1)";
+//				sqlString = "insert into bca_title(TitleID, Title, CompanyID, Active)  values('" + iD + "',\""
+//						+ newVal + "\",'" + compId + "',1)";
+			
+				pstmt1 = con.prepareStatement("insert into bca_title(TitleID, Title, CompanyID, Active) values(?,?,?,?)");
+				pstmt1.setString(1, iD);
+				pstmt1.setString(2,newVal);
+				pstmt1.setString(3,compId);
+				pstmt1.setInt(4,1);
+				pstmt1.executeUpdate();
+				pstmt1.close();
+				
 			} else if ("REP".equalsIgnoreCase(title)) {
 				pstmt = con
 						.prepareStatement("select max(SalesRepID)+1 from bca_salesrep");
@@ -436,9 +454,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_salesrep values('" + iD
-						+ "','" + compId + "',\"" + newVal + "\",1,0)";
-
+//				sqlString = "insert into bca_salesrep values('" + iD
+//						+ "','" + compId + "',\"" + newVal + "\",1,0)";
+           pstmt2 = con.prepareStatement("insert into bca_salesrep values(?,?,?,?,?)");
+           pstmt2.setString(1,iD);
+           pstmt2.setString(2, compId);
+           pstmt2.setString(3,newVal);
+           pstmt2.setInt(4, 1);
+           pstmt2.setInt(5, 0);
+           pstmt2.executeUpdate();
+           pstmt2.close();
 
 			} else if ("TERMS".equalsIgnoreCase(title)) {
 				pstmt = con
@@ -450,8 +475,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_term values('" + iD + "','"
-						+ compId + "',\"" + newVal + "\",1,0)";
+//				sqlString = "insert into bca_term values('" + iD + "','"
+//						+ compId + "',\"" + newVal + "\",1,0)";
+				pstmt3 = con.prepareStatement("insert into bca_term values(?,?,?,?,?)");
+				pstmt3.setString(1,iD);
+				pstmt3.setString(2, compId);
+				pstmt3.setString(3, newVal);
+				pstmt3.setInt(4, 1);
+				pstmt3.setInt(5, 0);
+				pstmt3.executeUpdate();
+				pstmt3.close();
 			} else if ("MESSAGE".equalsIgnoreCase(title)) {
 				pstmt = con
 						.prepareStatement("select max(MessageID)+1 from bca_message");
@@ -462,8 +495,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_message values('" + iD + "','"
-						+ compId + "',\"" + newVal + "\",1,0)";
+//				sqlString = "insert into bca_message values('" + iD + "','"
+//						+ compId + "',\"" + newVal + "\",1,0)";
+				pstmt4 =con.prepareStatement("insert into bca_message values(?,?,?,?,?)");
+				pstmt4.setString(1,iD);
+				pstmt4.setString(2, compId);
+				pstmt4.setString(3, newVal);
+				pstmt4.setInt(4, 1);
+				pstmt4.setInt(5, 0);
+				pstmt4.executeUpdate();
+				pstmt4.close();
 			} else if ("BUSINESS TYPE".equalsIgnoreCase(title)) {
 
 				pstmt = con.prepareStatement("select max(CVCategoryID)+1 from bca_cvcategory");
@@ -521,8 +562,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_cctype values('" + iD + "','"
-						+ compId + "',\"" + newVal + "\",1,0)";
+//				sqlString = "insert into bca_cctype values('" + iD + "','"
+//						+ compId + "',\"" + newVal + "\",1,0)";
+				pstmt6 =con.prepareStatement("insert into bca_cctype values(?,?,?,?,?)");
+				pstmt6.setString(1, iD);
+				pstmt6.setString(2,compId);
+				pstmt6.setString(3,newVal);
+				pstmt6.setInt(4,1);
+				pstmt6.setInt(5,0);
+				pstmt6.executeUpdate();
+				pstmt6.close();
 			} else if ("SHIPPING VIA".equalsIgnoreCase(title)) {
 				pstmt = con.prepareStatement("select max(ShipCarrierID)+1 from bca_shipcarrier");
 				rs = pstmt.executeQuery();

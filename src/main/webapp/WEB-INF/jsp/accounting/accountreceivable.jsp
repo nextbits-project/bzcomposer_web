@@ -566,7 +566,7 @@ table.tabla-listados tbody tr td {
     selectChaseBankFromDropDownList("depositId");
 
    function selectrow(invoice,index) {
-	    debugger;
+	    
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
 	    var count = 1;
@@ -600,7 +600,7 @@ table.tabla-listados tbody tr td {
    }  
    function save()
    {
-	   debugger;	
+	   	
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
 		receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
@@ -640,7 +640,7 @@ table.tabla-listados tbody tr td {
     sendMyValue(ReceivableListBean);
   	}
    function sendMyValue(ReceivableListBean) {
-		debugger;
+		
 		var obj=JSON.stringify(ReceivableListBean);
        	 $.ajax({
 			type : "POST",
@@ -678,7 +678,7 @@ table.tabla-listados tbody tr td {
    }
    function checkType()
    {
-	 	debugger;
+	 	
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].innerText;
 	   if(ctype == 'Cash')
@@ -697,7 +697,7 @@ table.tabla-listados tbody tr td {
    }
    function selectedRadio()
    {
-	 debugger;
+	
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 		   {
 		   		$("#tblForInvoiceOrder").hide();
@@ -736,7 +736,7 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-		debugger;
+		
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
 	   console.log(document.getElementById("receivedType").options[type.selectedIndex]);
@@ -906,7 +906,7 @@ table.tabla-listados tbody tr td {
    }
    function cancelledTab()
    {
-	   debugger;
+	
 	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab";
    }
    function receivedTab()
@@ -920,7 +920,6 @@ table.tabla-listados tbody tr td {
 
    function billingInfo()
    {
-	   debugger;
 	   var h = window.screen.height;
 	   var w = window.screen.width;
 	   
@@ -942,8 +941,7 @@ table.tabla-listados tbody tr td {
    }
    function checkPaymentStatus()
    {
-	   debugger;
-
+	 
 	  	/* var pay = document.getElementById("payStatus");
 	  	vat option = pay.options[pay.selectedIndex].value; */
 	   $(document.forms[0]).submit(function( event ) {
@@ -951,7 +949,7 @@ table.tabla-listados tbody tr td {
 		});
    }
    $( ".paymentOP" ).change(function() {
-	debugger;
+	
 	var pay = document.getElementById("payStatus");
 	var payment = pay.options[pay.selectedIndex].value; 
 	if(payment == 'Layaway')

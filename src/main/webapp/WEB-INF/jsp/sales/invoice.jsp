@@ -1004,14 +1004,12 @@ rate = 0;
 
 // this function clear input value,
 function clearShippingCol(){
-	debugger;
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) -  parseFloat(document.InvoiceForm.shipping.value);
 	document.InvoiceForm.total.value = parseFloat(convertSubData).toFixed(2);
 	document.InvoiceForm.shipping.value = 0;
 }
 // this function sum Shipping value in total
 function sumShippingTotal() {
-	debugger;
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) +  parseFloat(document.InvoiceForm.shipping.value);
 	document.InvoiceForm.total.value = parseFloat(convertSubData).toFixed(2);
 	document.InvoiceForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
@@ -1020,14 +1018,12 @@ function sumShippingTotal() {
 
 //this function clear input value, 
 function clearDiscountCol(){
-	debugger;
 	document.InvoiceForm.adjustedtotal.value = 0;
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) + parseFloat(document.InvoiceForm.balance.value);
 	document.InvoiceForm.balance.value = "";
 }
 //this function for calculat discount amount 
 function calDiscountTotal() {
-	debugger;
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) -  parseFloat(document.InvoiceForm.balance.value);
 	document.InvoiceForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
 }
@@ -2410,7 +2406,6 @@ function paymentHistory(form){
 }
 
 function SendMail(form){
-	debugger;
     cid=form.orderNo.value;
     window.open("Invoice?tabid=ShowEmail&OrderType=invoice&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }

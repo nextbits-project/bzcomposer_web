@@ -1128,17 +1128,17 @@ function clearShippingAdd()
 	document.CustomerForm.shstate.value="0";
 }
 function CheckMambership() {
-	debugger;
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("CustomerSize")%>";
-	if(membershipLevel == "Standard" || membershipLevel == "standard"){
+	var st = "Standared";
+	var pf ="Professional";
+	if(membershipLevel.toLowerCase()===st.toLowerCase()){
 		if(size>=1000){
-			debugger;
 			return maxnumberofuserdialog();
 		}else {
 			return AddCustomer();
 		}
-	}else if(membershipLevel == "Professional" || membershipLevel == "professional"){
+	}else if(membershipLevel.toLowerCase() == pf.toLowerCase()){
 		if(size>=10000){
 			debugger;
 			return maxnumberofuserdialog();
@@ -1494,7 +1494,6 @@ function removeStringValues(key){	//from one string('str'), a substring 'key' wi
 	document.forms[0].table_invId.value=str3;
 }
 function NewCustomer(){
-	debugger;
 //billing addressres/*
 	document.CustomerForm.bscname.value="";
 	document.CustomerForm.bsfirstName.value="";

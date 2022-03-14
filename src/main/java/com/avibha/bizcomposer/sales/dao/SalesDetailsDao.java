@@ -71,7 +71,7 @@ public class SalesDetailsDao {
 		}catch (Exception e) {
 			request.setAttribute("SaveStatus",new ActionMessage("Customer Information is Not Insert !."));
 			request.getSession().setAttribute("actionMsg", "Customer Information is Not Insert!");
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 

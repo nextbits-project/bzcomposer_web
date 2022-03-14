@@ -2946,14 +2946,18 @@ function CheckMambership(form) {
 	debugger;
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("itemSize")%>";
-	if(membershipLevel == "Standard" || membershipLevel == "standard"){
+	var st = "Standared";
+	var pf ="Professional";
+	if(membershipLevel.toLowerCase()===st.toLowerCase()){
 		if(size>=100){
 			debugger;
 			return maxnumberofuserdialog();
 		}else {
 			return  ShowAdd(form);
 		}
-	}else if(membershipLevel == "Professional" || membershipLevel == "professional"){
+		
+	}
+	else if(membershipLevel.toLowerCase() == pf.toLowerCase()){
 		if(size>=500){
 			debugger;
 			return maxnumberofuserdialog();
@@ -2987,8 +2991,7 @@ function maxnumberofuserdialog()
     return false;
 }
 function ShowAdd(form){
-	debugger;
-	val = form.itemType.value;
+		val = form.itemType.value;
 	if(val=="1"){
 		cat = false;    // document.getElementById('chk_cat').checked;
 		if(cat==false){
