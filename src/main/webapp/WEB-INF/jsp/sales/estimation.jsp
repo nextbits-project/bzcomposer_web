@@ -1534,7 +1534,7 @@ function StyleChange(value){
 		}
 
 		function TaxValue1(value){
-			debugger;
+			
 			size=document.getElementById("tSize").value;
 			if(value==0){
 				document.getElementById('tax_field').innerHTML="0.0 %";
@@ -1942,7 +1942,7 @@ function ItemChange(value)
 				document.getElementById('qty_id').max = qtyVal;
 				var qtyMax = document.getElementById('qty_id').max;
 				
-				debugger;
+				
 				//you can replace eventListner like keyup keypress blur change
 
 				$(".minutesInput").on('keyup', function(e) {
@@ -2028,9 +2028,9 @@ function saveNewItemName()
            			url:"Estimation?tabid=saveUnitPrice&price="+price+"&itemID="+itemId,
            			data:{price : price,itemID:itemId},
            			}).done(function(data){
-           			debugger
+           			
            			//$(document).find('div#itemDiv').replaceWith($(data).find('div#itemDiv').html());
-           			debugger
+           			
            			}); */
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
@@ -2046,7 +2046,7 @@ function AddTotal(form){
 	form.adjustedtotal.value=value;
 }
 function Init(){
-    debugger
+    
 	var sortId = '<%= request.getAttribute("sortById")%>';
 	isItemExist = document.getElementById('CartSize').value;
 	TaxValue1(1);
@@ -2123,7 +2123,7 @@ function Init(){
 
 function onSave(form)
 {
-    debugger;
+    
 	No=form.orderNo.value;
 	cid = form.custID.value;
 	if(cid==0){
@@ -2147,7 +2147,7 @@ function onSave(form)
 			            "<spring:message code='BzComposer.global.ok'/>": function () {
 			                
 			            	$(this).dialog("close");
-			            	debugger;
+			            	
 							var rt=0;
 							subtotal=form.subtotal.value;
 							value = form.taxID.value;

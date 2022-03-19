@@ -76,7 +76,7 @@ public class CompanyInfo {
             }
         } catch (SQLException ee) {
             Loger.log(2," SQL Error in Class CompanyInfo and  method -SearchCompany "+ " " + ee.toString());
-            ee.printStackTrace();
+            
         } finally {
             try {
                 if (rs != null) { db.close(rs); }
@@ -85,7 +85,7 @@ public class CompanyInfo {
                 if (pstmt1 != null) { db.close(pstmt1); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -132,7 +132,7 @@ public class CompanyInfo {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objPurchaseList;
@@ -173,7 +173,7 @@ public class CompanyInfo {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objSalesOrderList;
@@ -208,14 +208,14 @@ public class CompanyInfo {
             }
         } catch (SQLException ee) {
             Loger.log(2," SQL Error in Class CompanyInfo and  method -selectSalesOrders "+  ee.toString());
-            ee.printStackTrace();
+            
         }finally {
             try {
                 if (rs != null) { db.close(rs); }
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objSalesOrderList;
@@ -249,14 +249,14 @@ public class CompanyInfo {
             }
         } catch (SQLException ee) {
             Loger.log(2," SQL Error in Class CompanyInfo and  method -selectEstimateDetails "+ ee.toString());
-            ee.printStackTrace();
+            
         } finally {
             try {
                 if (rs != null) { db.close(rs); }
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objSalesOrderList;
@@ -295,7 +295,7 @@ public class CompanyInfo {
                 objItemListList.add(itemList);
             }
         } catch (SQLException ee) {
-            ee.printStackTrace();
+            
             Loger.log(2," SQL Error in Class CompanyInfo and  method -getItemListDetails "+ " " + ee.toString());
         } finally {
             try {
@@ -309,7 +309,7 @@ public class CompanyInfo {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objItemListList;
@@ -351,7 +351,7 @@ public class CompanyInfo {
                 InvoiceStyleID = 7;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         try {
             stmt = con.createStatement();
@@ -375,7 +375,7 @@ public class CompanyInfo {
             System.out.println(stmt3);
         } catch (SQLException ee) {
             Loger.log(2, " SQL Error in Class CompanyInfo and  method -updateComapanyinfo " + ee.toString());
-            ee.printStackTrace();
+            
         }
         finally {
             try {
@@ -389,7 +389,7 @@ public class CompanyInfo {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return valid;
@@ -409,14 +409,14 @@ public class CompanyInfo {
             }
         } catch (SQLException ee) {
             Loger.log(2, " SQL Error in Class CompanyInfo and  method -updateComapanySecurity " + ee.toString());
-            ee.printStackTrace();
+            
         }
         finally {
             try {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return valid;
@@ -473,7 +473,7 @@ public class CompanyInfo {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return ret;
@@ -506,7 +506,7 @@ public class CompanyInfo {
         }
         catch (SQLException e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
             System.out.println("Error in delete company:"+e.getMessage());
         }
         finally {
@@ -521,7 +521,7 @@ public class CompanyInfo {
                     db1.close(c);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return loginStatus;

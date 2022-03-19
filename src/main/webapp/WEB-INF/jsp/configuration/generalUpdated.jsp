@@ -39,7 +39,7 @@ if(Role=='User'){
 	$("#userlistlable").hide();
 }
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -123,7 +123,7 @@ $(function() {
 });
 $(document).ready(function()
 {
-	debugger;
+	
 	var isSOBChecked = "<%= request.getAttribute("isSOBChecked")%>";
 	var isISBChecked = "<%= request.getAttribute("isISBChecked")%>";
 	var isIRBChecked = "<%= request.getAttribute("isIRBChecked")%>";
@@ -1354,7 +1354,7 @@ function pleaseWaitDialog(){
 EnableDisableFields2();
 function updateComapany()
 {
-    debugger;
+    
 	var sel = document.getElementById("businessTypeId");
     var businessTypeId = sel.options[sel.selectedIndex].value;
 	var email = document.getElementById("email").value;
@@ -1486,7 +1486,7 @@ function SaveValues()
 	return false;
 }
 function SaveSecurityValues(){
-	debugger;
+	
 	event.preventDefault();
 	$("#showsaverecorddialog").dialog({
         resizable: false,
@@ -1599,7 +1599,7 @@ function SetLabelName(lblid){
 
 function updateComapanySecurity()
 {
-    debugger;
+    
 	var password = document.getElementById("password").value;
 	var confirmPassword = document.getElementById("confirmPassword").value;
 
@@ -1702,26 +1702,26 @@ var v = new validator('login', a_fields, o_config);
 
 //========================================== Security-Module-JS =================================================
 function adduser1() {
-	debugger;
+	
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("userSize")%>";
 	if(membershipLevel == "Standard"){
 		if(size>=1){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
 		}
 	}else if(membershipLevel == "Professional"){
 		if(size>=5){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
 		}
 	}else if(membershipLevel == "Enterprise"){
 		if(size>=10){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
@@ -1751,7 +1751,7 @@ function Deleteuser() {
 }
 
 function checkValidation(){
-    debugger;
+    
     var userEmail = $("#userEmail").val();
     var password1 = $("#userPassword").val();
     var password2 = $("#cpwd").val();

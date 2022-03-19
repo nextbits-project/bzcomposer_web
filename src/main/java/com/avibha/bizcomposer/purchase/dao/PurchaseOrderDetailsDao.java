@@ -12,6 +12,7 @@ import com.avibha.bizcomposer.purchase.forms.VendorForm;
 import com.avibha.bizcomposer.sales.dao.EstimationInfo;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
+import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 
@@ -186,7 +187,7 @@ public class PurchaseOrderDetailsDao {
 				}
 				request.getSession().setAttribute("SaveStatus", "Purchase Order is successfully updated.");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request.getSession().setAttribute("SaveStatus", "Purchase Order is not updated.");
 			}
 		} else {
@@ -194,7 +195,7 @@ public class PurchaseOrderDetailsDao {
 				purchaseInfo.Save(compId, form);
 				request.getSession().setAttribute("SaveStatus", "Purchase Order is successfully saved.");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request.getSession().setAttribute("SaveStatus", "Purchase Order is not saved.");
 			}
 		}
@@ -239,7 +240,7 @@ public class PurchaseOrderDetailsDao {
 				request.getSession().setAttribute("SaveStatus", "Purchase Order is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return val;

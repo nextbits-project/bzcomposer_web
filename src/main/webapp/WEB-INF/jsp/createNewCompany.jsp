@@ -22,7 +22,7 @@
 <script type="text/javascript">
 function init()
 		{
-		debugger;
+		
 		var BusinessTypeId = 1;
 		$('select[id="businessTypeId"]').find('option[value="'+BusinessTypeId+'"]').attr("selected",true);
 
@@ -211,7 +211,7 @@ function init()
 <script type="text/javascript">
 function submitform()
 {
-debugger;
+
 	document.forms['createNewCompany'].action = "CompanyNew?tabid=createNewCompany3";
 	document.forms['createNewCompany'].submit();
 }

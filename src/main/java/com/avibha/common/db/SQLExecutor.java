@@ -497,7 +497,7 @@ public class SQLExecutor {
                 c.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
     }
 
@@ -507,7 +507,7 @@ public class SQLExecutor {
                 c.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
     }
 
@@ -517,7 +517,7 @@ public class SQLExecutor {
                 c.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
     }
 	public int getDatatabaseType(){

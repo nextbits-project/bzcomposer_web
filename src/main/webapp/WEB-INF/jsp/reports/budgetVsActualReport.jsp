@@ -158,7 +158,7 @@ table.tabla-customListOds tbody tr td { font-size: 14px; }
 var modal = document.getElementById('myModal');
 function hideShowHeader()
 {
-	debugger;
+	
 	document.getElementById("headerBar").style.display = "none";
 	/* $("#btnHeader1").hide(); */
 	document.getElementById("headerBar").style.display = "none";
@@ -171,7 +171,7 @@ function ShowHeader()
 }
 function printPage()
 {
-	/*   debugger;
+	/*   
 	  var doc = new jsPDF("1", "pt","a2");  
 	  var source = $("#printContent")[0]; 
 	  doc.fromHTML(source); 
@@ -186,7 +186,7 @@ function printPage()
 	   newWin.close(); 
 	 
 	   //for creating excel
-	   debugger;
+	   
 	   str="";
 
   var myTableHead = document.getElementById('ProfitLossItem');

@@ -266,7 +266,7 @@
 	}
 
 	function init(){
-		debugger;
+		
 		var t = <%= request.getParameter("tab") %>
 		var tabId = <%= request.getAttribute("tab")%>;
 		if(t){

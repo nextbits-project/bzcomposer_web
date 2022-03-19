@@ -20,7 +20,7 @@ $(function() {
     $("#tabs").tabs();
 });
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {

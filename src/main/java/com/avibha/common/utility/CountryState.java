@@ -264,7 +264,7 @@ public class CountryState {
 				if (stmt != null) { db.close(stmt); }
 				if(c != null){ db.close(c); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return countryList;
@@ -294,7 +294,7 @@ public class CountryState {
 				if (stmt != null) { db.close(stmt); }
 				if(c != null){ db.close(c); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return stateList;
@@ -324,7 +324,7 @@ public class CountryState {
 				if (stmt != null) { db.close(stmt); }
 				if(c != null){ db.close(c); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cityList;

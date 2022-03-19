@@ -12,7 +12,7 @@ $(document).ready(function(){
 
 function addNewTemplate()
 {
-	debugger	
+		
 	document.getElementById("templateName").style.display = "block";
 	document.getElementById("templateSubject").style.display = "block";
 	document.getElementById("emailText").style.display = "block";
@@ -23,7 +23,7 @@ function addNewTemplate()
 }
 function setContent()
 {
-	debugger
+	
 	var id = $("#selectedTemplateId option:selected").val();
 	document.getElementById("templateName").style.display = "none";
 	document.getElementById("txtTemplateName").style.display = "block";
@@ -38,7 +38,7 @@ function setContent()
      	url:"Configuration.do?tabid=con&templateId="+id,
        	data: { emailText : id }
    		}).done(function(data){
-   		debugger
+   		
        	$(document).find('div#emailTextDiv table').replaceWith($(data).find('div#emailTextDiv').html());
    	});
 }

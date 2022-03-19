@@ -823,12 +823,12 @@ tax_rate=0;
 
 $(function() {
 	$("#sortByLastName").change(function(){
-		debugger
+		
 		var checked = $("#sortByLastName").prop('checked');
-		debugger
+		
 		if(checked == true)
 		{
-			debugger
+			
 			$.ajax({
 				type: "POST",
 				url:"Invoice?tabid=SortCustomerOfSalesOrder&SortBy=LastName",
@@ -855,7 +855,7 @@ function toggle_visibility(id){
 	e.style.display = ((e.style.display!='none') ? 'none' : 'block');
 }
 function ConfirmDelete() {
-	debugger;
+	
     $("#SaveItemName").dialog({
     	resizable: false,
         height: 200,
@@ -865,13 +865,13 @@ function ConfirmDelete() {
         	"<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
                 //$('form').submit();
-                debugger
+                
                 var itemName = $.trim(document.getElementById('pname_id').value);
-            	debugger
+            	
             	var item = document.getElementById('itemID');
-            	debugger
+            	
             	var itemId = item.options[item.selectedIndex].value;
-            	debugger
+            	
             	window.location.href = "SalesOrder?tabid=saveItemNameForSalesOrder&itemName="+itemName+"&itemID="+itemId;
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
@@ -883,7 +883,7 @@ function ConfirmDelete() {
     return false;
 }
 function saveNewUnitPrice(){
-	debugger;
+	
     $("#SaveUnitPrice").dialog({
     	resizable: false,
         height: 200,
@@ -894,11 +894,11 @@ function saveNewUnitPrice(){
                 $(this).dialog("close");
                 //$('form').submit();
                 var price = document.getElementById('unitPrice_id').value;
-				debugger
+				
 				var item = document.getElementById('itemID');
-				debugger
+				
 				var itemId = item.options[item.selectedIndex].value;
-				debugger
+				
 				window.location.href = "SalesOrder?tabid=saveUnitPriceForSalesOrder&price="+price+"&itemID="+itemId;
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
@@ -1704,7 +1704,7 @@ function StyleChange(value)
 		}
 
 		function TaxValue1(value){
-			debugger;
+			
 			size=document.getElementById("tSize").value;
 			if(value==0){
 				document.getElementById('tax_field').innerHTML="0.0 %";
@@ -2110,7 +2110,7 @@ function StyleChange(value)
 						document.getElementById('qty_id').max = qtyVal;
 						var qtyMax = document.getElementById('qty_id').max;
 						
-						debugger;
+						
 						//you can replace eventListner like keyup keypress blur change
 
 						$(".minutesInput").on('keyup', function(e) {
@@ -2165,7 +2165,7 @@ function StyleChange(value)
 		}
 				
 		function Init(){
-		    debugger;
+		    
 			var sortId = '<%= request.getAttribute("sortById")%>';
 			TaxValue1(1);
 			document.getElementById('tax_val').value=rate;
@@ -2244,7 +2244,7 @@ function StyleChange(value)
 
 
 		function onSave(form){
-			debugger;
+			
 			No=form.orderNo.value;
 			cid = form.custID.value;
 			if(cid==0){
@@ -2267,7 +2267,7 @@ function StyleChange(value)
                         buttons: {
                             "<spring:message code='BzComposer.global.ok'/>": function () {
                                 $(this).dialog("close");
-                                debugger;
+                                
                                 subtotal=form.subtotal.value;
                                 value = form.taxID.value;
                                 sze=document.getElementById("tSize").value;
@@ -2369,7 +2369,7 @@ function StyleChange(value)
 		
 		function sendToInvoice()
 		{
-			debugger
+			
 			return sendInvoioceDialog();
 			/* response = window.confirm('<spring:message code="BzComposer.InvoiceIt.CreateInvoice" />');
 			
@@ -2420,7 +2420,7 @@ function StyleChange(value)
 			        modal: true,
 			        buttons: {
 			        	"<spring:message code='BzComposer.global.ok'/>": function () {
-			            	debugger;
+			            	
 			                $(this).dialog("close");
 			                
 			                size=document.getElementById('CartSize').value;

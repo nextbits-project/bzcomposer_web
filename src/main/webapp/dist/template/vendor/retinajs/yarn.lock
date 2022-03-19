@@ -723,9 +723,9 @@ babel-plugin-transform-remove-console@^6.8.3:
   version "6.8.3"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-remove-console/-/babel-plugin-transform-remove-console-6.8.3.tgz#313441720324ad20af0fb009fa59e8102364626b"
 
-babel-plugin-transform-remove-debugger@^6.8.3:
+babel-plugin-transform-remove-@^6.8.3:
   version "6.8.3"
-  resolved "https://registry.yarnpkg.com/babel-plugin-transform-remove-debugger/-/babel-plugin-transform-remove-debugger-6.8.3.tgz#5064f2d843b77ce660ebaa7760be30eb925bb93f"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-remove-/-/babel-plugin-transform-remove--6.8.3.tgz#5064f2d843b77ce660ebaa7760be30eb925bb93f"
 
 babel-plugin-transform-remove-undefined@^0.1.1:
   version "0.1.1"
@@ -768,7 +768,7 @@ babel-preset-babili@^0.1.2:
     babel-plugin-transform-property-literals "^6.8.3"
     babel-plugin-transform-regexp-constructors "^0.1.1"
     babel-plugin-transform-remove-console "^6.8.3"
-    babel-plugin-transform-remove-debugger "^6.8.3"
+    babel-plugin-transform-remove- "^6.8.3"
     babel-plugin-transform-remove-undefined "^0.1.1"
     babel-plugin-transform-simplify-comparison-operators "^6.8.3"
     babel-plugin-transform-undefined-to-void "^6.8.2"

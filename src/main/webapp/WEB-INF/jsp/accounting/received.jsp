@@ -570,7 +570,7 @@ table.tabla-listados tbody tr td {
 	selectChaseBankFromDropDownList("depositId");
 
    function selectrow(invoice,index,payId) {
-	    debugger;
+	    
 	 if(document.getElementById("rdoReceivedInvoiceOrder").checked)
 	 {   	
 	    this.indexNumber = index;
@@ -649,7 +649,7 @@ table.tabla-listados tbody tr td {
    
    function save()
    {
-	   debugger;	
+	   	
 
 	    var customer = document.getElementById("customerName");
 	 	var customerId = customer.options[customer.selectedIndex].value;
@@ -688,7 +688,7 @@ table.tabla-listados tbody tr td {
  
   	}
    function sendMyValue(TblPayment,receivedAmount,paidDate) {
-		debugger;
+		
 		var obj=JSON.stringify(TblPayment);
    	    $.ajax({
 		
@@ -728,7 +728,7 @@ table.tabla-listados tbody tr td {
    }
    function checkType()
    {
-	 	debugger;
+	 	
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].innerText;
 	   
@@ -748,7 +748,7 @@ table.tabla-listados tbody tr td {
    }
    function selectedRadio1()
    {
-	 debugger;
+	 
 	   if(document.getElementById("rdoReceivedInvoiceOrder").checked)
 		   {
 		   		
@@ -816,7 +816,7 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-		debugger;
+		
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].label;
@@ -924,7 +924,7 @@ table.tabla-listados tbody tr td {
    }
 
    $(document).ready(function(){
-		debugger;
+		
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	   $("#tblForUnpaidOpeningBalance").hide();
@@ -946,7 +946,7 @@ table.tabla-listados tbody tr td {
 });
    function selectedRadio()
    {
-	 debugger;
+	 
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 		   {
 		   		$("#tblForInvoiceOrder").hide();
@@ -977,7 +977,7 @@ table.tabla-listados tbody tr td {
   }
    function cancelledTab()
    {
-	   debugger;
+	   
 	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab"; 
    }
    function receivedTab()
@@ -1024,7 +1024,7 @@ table.tabla-listados tbody tr td {
    }
    function updateReceivedTab(data)
    {
-	   debugger;
+	   
 	   document.getElementById("devAmount").innerHTML = "";
 	   $("#receivedForm")[0].reset();
 	   $(document).find('div#tblForReceived table').replaceWith($(data).find('div#tblForReceived').html());

@@ -1004,7 +1004,7 @@ table.tabla-listados tbody tr td {
      }
 	function selectrow(no, indexNumber)
 	{
-		debugger;
+		
 		this.billNo = no;
 		this.index = indexNumber;
 		
@@ -1028,7 +1028,7 @@ table.tabla-listados tbody tr td {
 
 	function selectMemorizedTransactionList(memTransListIndex)
 	{
-		debugger;
+		
 		this.indexForMemTransList = memTransListIndex;
 		this.billNo = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(2)').text();
 		var name = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(3)').text();
@@ -1066,7 +1066,7 @@ table.tabla-listados tbody tr td {
 
 	function save()
 	{
-		debugger;
+		
 		var billNo = document.getElementById("ordernumber").innerHTML;
 		var payerIdSelect = document.getElementById("receivedType");
 		console.log(payerIdSelect);
@@ -1112,7 +1112,7 @@ table.tabla-listados tbody tr td {
 				url : "billPayablePost?tabid=save",
 			    data :"data=" + obj,
 			    success : function(data) {
-				debugger;
+				
 				updateBillPayableTab(data);	
 				},
 				 error : function(data) {
@@ -1128,7 +1128,7 @@ table.tabla-listados tbody tr td {
 
 	function makePayment()
 	{
-		debugger;
+		
 		var paidAmount;
 		var amountPaid;
 		var billNo = document.getElementById("ordernumber").innerHTML;
@@ -1206,7 +1206,7 @@ table.tabla-listados tbody tr td {
 			url : "billPayablePost?tabid=MakePayment",
 		    data :"data=" + obj,
 		    success : function(data) {
-			debugger;
+			
 			amountToBepaid = 0.00;
 			updateBillPayableTab(data);	
 			},
@@ -1237,7 +1237,7 @@ table.tabla-listados tbody tr td {
 				url : "BillPayable?tabid=DeleteBill",			
 		    	data :"BillNum=" + billNo,
 		    	success : function(data) {
-					debugger;
+					
 					updateBillPayableTab(data);	
 				},
 			 	error : function(data) {
@@ -1254,7 +1254,7 @@ table.tabla-listados tbody tr td {
 			return false;
 		}	 */
 		
-		debugger;
+		
 		event.preventDefault();
 		$("#deleteselectedbilldialog").dialog({
 			resizable: false,
@@ -1269,7 +1269,7 @@ table.tabla-listados tbody tr td {
 						url : "billPayablePost?tabid=DeleteBill",
 				    	data :"BillNum=" + billNo,
 				    	success : function(data) {
-							debugger;
+							
 							updateBillPayableTab(data);	
 						},
 					 	error : function(data) {
@@ -1301,7 +1301,7 @@ table.tabla-listados tbody tr td {
 	}
 		$(document).ready(
 				function() {
-					//debugger;
+					//
 					var day = new Date().getDay();
 					var dName = dayName(day);
 					$("#tblForUnpaidOpeningBalance").hide();
@@ -1352,7 +1352,7 @@ table.tabla-listados tbody tr td {
 		 $(function() {
 			   $( "#MemorizeTransactionListId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  debugger;
+				  
 				   $( "#MemorizeTransactionList").dialog({
 			    	   modal: true,
 			    	   title: 'Memorized Transaction List'
@@ -1366,7 +1366,7 @@ table.tabla-listados tbody tr td {
 		 $(function() {
 			   $( "#MemorizeBillId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  debugger;
+				  
 				   $( "#ScheduleMemorizedTransaction").dialog({
 			    	   modal: true,
 			    	   title: 'Schedule Memorized Transaction'
@@ -1380,7 +1380,7 @@ table.tabla-listados tbody tr td {
 		 $(function() {
 			   $( "#PaybillId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  debugger;
+				  
 				   $( "#PayBills").dialog({
 			    	   modal: true,
 			    	   title: 'Pay Bill'
@@ -1394,7 +1394,7 @@ table.tabla-listados tbody tr td {
 		 $(function() {
 			   $( "#CreatingEditingRecurrentPaymentId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  debugger;
+				  
 				   $( "#CreatingEditingRecurrentPaymentDlgId").dialog({
 			    	   modal: true,
 			    	   title: 'Creating Recurrent Payment Plan'
@@ -1421,7 +1421,7 @@ table.tabla-listados tbody tr td {
 		   }
 		function updateBillPayableTab(data)
 		{
-			debugger;
+			
 			$("#billPayableForm").trigger("reset");
 			$(document).find('div#tblForInvoiceOrder table').replaceWith($(data).find('div#tblForInvoiceOrder').html());
 			$(document).find('div#totalAmountLabelDiv label').eq(1).text(this.value).replaceWith($(data).find('div#totalAmountLabelDiv label').eq(1).text(this.value));
@@ -1430,7 +1430,7 @@ table.tabla-listados tbody tr td {
 		}
 		function remindMe()
 		{
-			debugger;
+			
 			/* $("#numberRemaining").children().attr("disabled", "disabled"); */
 			/* document.getElementById("numberRemaining").disabled = true; */
 			/* $("#numberRemaining").disable(); */
@@ -1441,7 +1441,7 @@ table.tabla-listados tbody tr td {
 		}
 		function dontRemindMe()
 		{
-			debugger;
+			
 			this.scheduleTransactionRadioButtonValue = document.getElementById("dontRemindMe").value;
 			$( "#numberRemaining" ).prop( "disabled", true );
 			$( "#daysInAdvanceToEnter" ).prop( "disabled", true );
@@ -1451,7 +1451,7 @@ table.tabla-listados tbody tr td {
 		}
 		function automaticEnter()
 		{
-			debugger;
+			
 			this.scheduleTransactionRadioButtonValue = document.getElementById("automaticEnter").value;
 			$( "#howOften" ).prop( "disabled", false );
 			$( "#schrduleMemorizedTransactionDate" ).prop( "disabled", false );
@@ -1460,7 +1460,7 @@ table.tabla-listados tbody tr td {
 		}
 		function withTransactionGroup()
 		{
-			debugger;
+			
 			this.scheduleTransactionRadioButtonValue = document.getElementById("withTransactionGroup").value;
 			$( "#howOften" ).prop( "disabled", true );
 			$( "#schrduleMemorizedTransactionDate" ).prop( "disabled", true );
@@ -1473,7 +1473,7 @@ table.tabla-listados tbody tr td {
 		}
 		function ScheduleMemorizedTransactionOkay()
 		{
-			debugger;
+			
 			var remindOption = scheduleTransactionRadioButtonValue;
 			var transactionName = "";
 			var dayInAdvance = "";
@@ -1563,7 +1563,7 @@ table.tabla-listados tbody tr td {
 				url : "billPayablePost?tabid=MakeScheduleMemorizedTransaction",
 			    data :"data=" + obj,
 			    success : function(data) {
-				debugger;
+				
 				amountToBepaid = 0.00;
 
 				updateBillPayableTab(data);	
@@ -1579,7 +1579,7 @@ table.tabla-listados tbody tr td {
 }
 function EditMemorizedTransactionList()
 {
-	debugger;
+	
 	$( "#ScheduleMemorizedTransaction").dialog({
  	   modal: true,
  	   title: 'Schedule Memorized Transaction'
@@ -1590,7 +1590,7 @@ function closeMomorizedTransactionList(){
 }
 function DeleteMemorizeTransaction()
 {
-	debugger;
+	
 	if($('#MemorizeTransactionList').parents('.ui-dialog:visible').length)
 	{
 		$('#MemorizeTransactionList').dialog('close');
@@ -1612,7 +1612,7 @@ function DeleteMemorizeTransaction()
 		url : "billPayablePost?tabid=UpdateMemorizedTransaction",
 	    data :"BillNumber=" + bill,
 	    success : function(data) {
-		debugger;
+		
 		amountToBepaid = 0.00;
 		updateBillPayableTab(data);	
 		},

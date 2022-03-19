@@ -8,6 +8,8 @@ import com.avibha.bizcomposer.sales.dao.CustomerInfoDao;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.common.log.Loger;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -180,7 +182,7 @@ public class DataImportExportUtils {
                 fileOutputStream.close();
                 b = true;
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         writeFileToResponse(response, sourcefile);
@@ -352,7 +354,7 @@ public class DataImportExportUtils {
             request.getSession().setAttribute("successMessage", "Success");
             status = true;
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         return status;
     }
@@ -469,7 +471,7 @@ public class DataImportExportUtils {
                 workbook.close();
                 fileOutputStream.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         writeFileToResponse(response, sourcefile);
@@ -620,7 +622,7 @@ public class DataImportExportUtils {
             }
             status = true;
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         return status;
     }
@@ -737,7 +739,7 @@ public class DataImportExportUtils {
                 workbook.close();
                 fileOutputStream.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         writeFileToResponse(response, sourcefile);
@@ -880,7 +882,7 @@ public class DataImportExportUtils {
             }
             status = true;
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         return status;
     }
@@ -963,7 +965,7 @@ public class DataImportExportUtils {
                 workbook.close();
                 fileOutputStream.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         writeFileToResponse(response, sourcefile);
@@ -1065,7 +1067,7 @@ public class DataImportExportUtils {
             }
             status = true;
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         return status;
     }

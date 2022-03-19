@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
 import com.nxsol.bizcomposer.common.ConstValue;
 
 public class TblCategoryLoader {
@@ -71,7 +72,7 @@ public class TblCategoryLoader {
 	            }
 
 	        } catch (SQLException e) {
-	            e.printStackTrace();
+	            Loger.log(e.toString());
 	        } finally {
 				try {
 					if (rs != null) {
@@ -84,7 +85,7 @@ public class TblCategoryLoader {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 
@@ -149,7 +150,7 @@ public class TblCategoryLoader {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -162,7 +163,7 @@ public class TblCategoryLoader {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	    
@@ -202,7 +203,7 @@ public class TblCategoryLoader {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -215,7 +216,7 @@ public class TblCategoryLoader {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		 return category;

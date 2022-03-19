@@ -59,7 +59,7 @@ public class Term {
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in  Class Term and method -getTitleList "
 					+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -72,7 +72,7 @@ public class Term {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr1;
@@ -115,7 +115,7 @@ public class Term {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return Term;

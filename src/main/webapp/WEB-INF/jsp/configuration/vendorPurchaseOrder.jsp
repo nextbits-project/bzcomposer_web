@@ -14,7 +14,7 @@
 
 <script type="text/javascript">
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -33,7 +33,7 @@ $(function() {
   });
 $(document).ready(function()
 {
-	debugger
+	
 	 //request.setAttribute("sortId", sortId);
 	var countryId = '<%= request.getAttribute("countryID")%>';
 	var stateId = '<%=request.getAttribute("stateID")%>';
@@ -45,7 +45,7 @@ $(document).ready(function()
 	var paymentMethodId = '<%= request.getAttribute("payMethodID")%>';
 	var inchargeEmpId = '<%= request.getAttribute("inchargeEmpID")%>';
 	
-	debugger
+	
 	
 	$('select[id="selectedCategoryId"]').find('option[value="'+CategoryID+'"]').attr("selected",true);
 	$('select[id="shipCarrierId"]').find('option[value="'+viaId+'"]').attr("selected",true);
@@ -58,28 +58,28 @@ $(document).ready(function()
 	{
 		var isChecked = "<%= request.getAttribute("showCountry")%>";
 		//var isChecked = "on";
-		debugger
+		
 		if($(this).prop("checked") == true)
 		{
 
 	        $("#poShowCountry").attr('checked', true);
-	        debugger
+	        
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
 
 	        $("#poShowCountry").attr('checked', false);
-	        debugger
+	        
 	        isChecked = "off";
 		}	
 	    else
 	    {
 
 	        $("#poShowCountry").attr('checked', isChecked);
-	        debugger
+	        
 	    	document.configurationForm.poShowCountry.value = isChecked;
-	    	debugger
+	    	
 	    }	
 		$("#poShowCountry").val(isChecked);
 	});
@@ -88,28 +88,28 @@ $(document).ready(function()
 	{
 		var isChecked = "<%= request.getAttribute("showTelephone")%>";
 		//var isChecked = "on";
-		debugger
+		
 		if($(this).prop("checked") == true)
 		{
 
 	        $("#poShowTelephone").attr('checked', true);
-	        debugger
+	        
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
 
 	        $("#poShowTelephone").attr('checked', false);
-	        debugger
+	        
 	        isChecked = "off";
 		}	
 	    else
 	    {
 
 	        $("#poShowTelephone").attr('checked', isChecked);
-	        debugger
+	        
 	    	document.configurationForm.poShowTelephone.value = isChecked;
-	    	debugger
+	    	
 	    }	
 		$("#poShowTelephone").val(isChecked);
 	});
@@ -118,28 +118,28 @@ $(document).ready(function()
 	{
 		var isChecked = "<%= request.getAttribute("purchasePrefix")%>";
 		//var isChecked = "on";
-		debugger
+		
 		if($(this).prop("checked") == true)
 		{
 
 	        $("#isPurchasePrefix").attr('checked', true);
-	        debugger
+	        
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
 
 	        $("#isPurchasePrefix").attr('checked', false);
-	        debugger
+	        
 	        isChecked = "off";
 		}	
 	    else
 	    {
 
 	        $("#isPurchasePrefix").attr('checked', isChecked);
-	        debugger
+	        
 	    	document.configurationForm.isPurchasePrefix.value = isChecked;
-	    	debugger
+	    	
 	    }	
 		$("#isPurchasePrefix").val(isChecked);
 	});
@@ -620,7 +620,7 @@ function DeleteCustomerType(){
 <script type="text/javascript">
 
 $("#frmVendorPurchase").submit(function(event) {
-    debugger;
+    
     //Vendor Section
     var sortBy =document.getElementById('sortBy').value;
     var selectedStateId1 = document.getElementById('selectedStateId1').value;
@@ -654,7 +654,7 @@ $("#frmVendorPurchase").submit(function(event) {
      var priceLevelDealer = document.getElementById('priceLevelDealer').value;
      var priceLevelCustomer = document.getElementById('priceLevelCustomer').value;
      var priceLevelGeneral = document.getElementById('priceLevelGeneral').value;
-    debugger;
+    
 	event.preventDefault();
 	$("#showsaverecorddialog").dialog({
 	    	resizable: false,
@@ -663,7 +663,7 @@ $("#frmVendorPurchase").submit(function(event) {
 	        modal: true,
 	        buttons: {
 	        	"<spring:message code='BzComposer.global.ok'/>": function () {
-	            	debugger;
+	            	
 					//$('form').submit();
 					var formData = $('frmVendorPurchase').serialize();
 	        		$.ajax({
@@ -679,7 +679,7 @@ $("#frmVendorPurchase").submit(function(event) {
 	        					"&priceLevelPriority="+priceLevelPriority+"&priceLevelDealer="+priceLevelDealer+"&priceLevelCustomer="+priceLevelCustomer+"&priceLevelGeneral="+priceLevelGeneral,
 	        			data:formData,
 	        			success:function(data) {
-	        				debugger
+	        				
 	        				$("#showsaverecorddialog").dialog("close");
 	        				$("#showsuccessdialog").dialog({
                                 resizable: false,

@@ -326,7 +326,7 @@ function sendToEstimation(){
 }
 
 function SendMail(form){
-	debugger;
+	
 	//order_no = document.getElementById("ord_value").value;
 	window.open("Invoice?tabid=ShowEmail",null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }

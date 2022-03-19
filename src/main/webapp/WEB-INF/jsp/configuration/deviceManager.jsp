@@ -26,7 +26,7 @@
 </style>
 <script type="text/javascript">
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -71,10 +71,10 @@ function toggleFunction() {
 	function setLeftToRight()
 	{
 
-		debugger
+		
 		var category = $.trim($("#eBayCategorySelect option:selected").text());
 		var categoryId = $.trim($("#eBayCategorySelect option:selected").val());
-		debugger
+		
 		var optionsAvailable = $('#defaultCategorySelect').find("option[value='"+categoryId+"']").val();
 		var isActive = $.trim($('select[id="eBayCategorySelect"]').find('option[id="'+category+'"]').val());
 		if(categoryId != optionsAvailable && isActive == "1")
@@ -102,11 +102,11 @@ function toggleFunction() {
 	
 	function setDefaultCategory()
 	{
-		debugger
+		
 		var category = $.trim($("#eBayCategorySelect option:selected").text());
-		debugger
+		
 		var isActive = $.trim($('select[id="eBayCategorySelect"]').find('option[id="'+category+'"]').val());
-		debugger
+		
 
 		if(isActive == 0)
 		{

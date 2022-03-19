@@ -63,7 +63,7 @@ public class ForgetPasswordDAO {
 					db.close(c);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		if (recoverStatus) {
@@ -137,7 +137,7 @@ public class ForgetPasswordDAO {
 					db.close(c);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		if (recoverStatus) {
@@ -254,7 +254,7 @@ public class ForgetPasswordDAO {
 					db.close(c);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		if (status) {

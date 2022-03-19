@@ -371,7 +371,7 @@ table.tabla-listados tbody tr td {
     selectChaseBankFromDropDownList("depositId");
 
    function selectrow(invoice,index) {
-	    debugger;
+	    
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
 	    var count = 1;
@@ -425,7 +425,7 @@ table.tabla-listados tbody tr td {
    
    function save()
    {
-	   debugger;	
+	   	
 
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
@@ -470,7 +470,7 @@ table.tabla-listados tbody tr td {
  
   	}
    function sendMyValue(ReceivableListBean) {
-		debugger;
+		
 		var obj=JSON.stringify(ReceivableListBean);
 		
    	 $.ajax({
@@ -510,7 +510,7 @@ table.tabla-listados tbody tr td {
    }
    function checkType()
    {
-	 	debugger;
+	 	
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].innerText;
 	   
@@ -530,7 +530,7 @@ table.tabla-listados tbody tr td {
    }
    function selectedRadio()
    {
-	 debugger;
+	 
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 		   {
 		   		$("#tblForInvoiceOrder").hide();
@@ -569,7 +569,7 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-		debugger;
+		
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].label;
@@ -663,7 +663,7 @@ table.tabla-listados tbody tr td {
    }
 
    $(document).ready(function(){
-		debugger;
+		
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	   $("#tblForUnpaidOpeningBalance").hide();
@@ -686,7 +686,7 @@ table.tabla-listados tbody tr td {
    function clearTransaction()
    {
 	   var answer;
-	   debugger;
+	   
 	   if(parseInt(invoiceId) <= 0){
 		   alert("<spring:message code="BzComposer.accountreceivable.selecttransaction"/>");
             return false;
@@ -733,7 +733,7 @@ table.tabla-listados tbody tr td {
    }
    function cancelledTab()
    {
-	   debugger;
+	   
 	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab";
    }
    function receivedTab()

@@ -269,7 +269,7 @@ public class SalesDetailsDao {
 			stmt.executeBatch();
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in  Class DataManager_SaveDefaultValues: " + ee.toString());
-			ee.printStackTrace();
+			
 		} finally {
 			if (stmt != null) { db.close(stmt); }
 			if(con != null){ db.close(con); }
@@ -1463,7 +1463,7 @@ public class SalesDetailsDao {
 				request.setAttribute("SaveStatus", "Invoice is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		} else {
 			request.setAttribute("SaveStatus", "Invoice is not found.");
@@ -1485,7 +1485,7 @@ public class SalesDetailsDao {
 				request.setAttribute("SaveStatus", "Sales Order is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		} else {
 			request.setAttribute("SaveStatus","Sales Order is not yet saved.");
@@ -1688,7 +1688,7 @@ public class SalesDetailsDao {
 				request.setAttribute("SaveStatus",
 						"Estimation is successfully updated.");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request
 						.setAttribute("SaveStatus",
 								"Estimation is not updated.");
@@ -1700,7 +1700,7 @@ public class SalesDetailsDao {
 				request.setAttribute("SaveStatus",
 						"Estimation is successfully saved.");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request.setAttribute("SaveStatus", "Estimation is not saved.");
 			}
 		}
@@ -1738,7 +1738,7 @@ public class SalesDetailsDao {
 						"Estimation is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		} else {
 			request.setAttribute("SaveStatus",

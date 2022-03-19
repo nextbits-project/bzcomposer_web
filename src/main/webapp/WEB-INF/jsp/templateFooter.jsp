@@ -6,11 +6,11 @@
 <script type="text/javascript">
 function checkformSubscribe(theform)
 {
-	debugger
+	
 	var theform = document.getElementById('frmSubscribe');
 	if(theform.txtSubscribe.value == "" || theform.txtSubscribe.value == " ")
 	{
-		debugger
+		
 		/* document.getElementById('errorMessage').innerHTML="The field is required."; */
 		event.preventDefault();
 	}

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
 import com.nxsol.bizcomposer.common.ConstValue;
 
 public class TblStoreLoader 
@@ -73,7 +74,7 @@ public class TblStoreLoader
                 return store;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 			try {
 				if (rs != null) {
@@ -86,7 +87,7 @@ public class TblStoreLoader
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return null;
@@ -112,7 +113,7 @@ public class TblStoreLoader
                 return date;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         } finally {
 			try {
 				if (rs != null) {
@@ -125,7 +126,7 @@ public class TblStoreLoader
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return date;

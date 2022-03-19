@@ -1806,7 +1806,7 @@ table.tabla-listados tbody tr td {
 	}
 	function selectrow(no , indexNumber)
 	{
-		debugger;
+		
 		 this.billNo = no;
 		 this.index = indexNumber;
 		 this.paymentStatus = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(10)').attr('value');
@@ -1829,7 +1829,7 @@ table.tabla-listados tbody tr td {
 	}
 	function selectMemorizedTransactionList(memTransListIndex)
 	{
-		debugger;
+		
 		this.indexForMemTransList = memTransListIndex;
 		this.billNo = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(2)').text();
 		var name = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(3)').text();
@@ -1866,7 +1866,7 @@ table.tabla-listados tbody tr td {
 	}
 	function save()
 	{
-		debugger;
+		
 		var billNo = document.getElementById("ordernumber").innerHTML;
 		var payerIdSelect = document.getElementById("receivedType");
 		var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
@@ -1903,7 +1903,7 @@ table.tabla-listados tbody tr td {
 				url : "BillCreationPost?tabid=save",
 			    data :"data=" + obj,
 			    success : function(data) {
-				debugger;
+				
 				updateBillPayableTab(data);	
 				},
 				 error : function(data) {
@@ -1918,7 +1918,7 @@ table.tabla-listados tbody tr td {
 	}
 	function makePayment()
 	{
-		debugger;
+		
 		var paidAmount;
 		var amountPaid;
 		var billNo = document.getElementById("ordernumber").innerHTML;
@@ -1990,7 +1990,7 @@ table.tabla-listados tbody tr td {
 			url : "BillCreationPost?tabid=MakePayment",
 		    data :"data=" + obj,
 		    success : function(data) {
-			debugger;
+			
 			amountToBepaid = 0.00;
 			updateBillPayableTab(data);	
 			},
@@ -2016,7 +2016,7 @@ table.tabla-listados tbody tr td {
 			url : "BillCreationPost?tabid=DeleteBill",
 		    data :"BillNum=" + billNo,
 		    success : function(data) {
-			debugger;
+			
 			updateBillPayableTab(data);	
 			},
 			 error : function(data) {
@@ -2043,7 +2043,7 @@ else
 	}
 		$(document).ready(
 				function() {
-					debugger;
+					
 					var day = new Date().getDay();
 					var dName = dayName(day);
 					var dateForDue = new Date();
@@ -2110,7 +2110,7 @@ else
 		 $(function() {
 			   $( "#MemorizeTransactionListId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  debugger;
+				  
 				   $( "#MemorizeTransactionList").dialog({
 			    	   modal: true,
 			    	   title: 'Memorized Transaction List'
@@ -2124,7 +2124,7 @@ else
 		 $(function() {
 			   $( "#MemorizeBillId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  debugger;
+				  
 				 if(paymentStatus == '' || paymentStatus == 'Paid')
 				 {
 					 alert("<spring:message code='BzComposer.billcreation.selectunpaidbilllist'/>");
@@ -2143,7 +2143,7 @@ else
 		 $(function() {
 			   $( "#PaybillId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  debugger;
+				  
 				   $( "#PayBills").dialog({
 			    	   modal: true,
 			    	   title: 'Pay Bill'
@@ -2157,7 +2157,7 @@ else
 		 $(function() { 
 			 $( "#CreatingEditingRecurrentPaymentId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				 debugger;
+				 
 				if(vendorId != matchVendorIdWithRecurrentId)
 				{	
 				   $( "#CreatingEditingRecurrentPaymentDlgId").dialog({
@@ -2182,7 +2182,7 @@ else
 		 $(function() {
 			   $( "#EditRecurrentPaymentButtonId").on("click", function(){
 			   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
-				  debugger;
+				  
 				   $( "#EditingRecurrentPaymentDlgId").dialog({
 			    	   modal: true,
 			    	   title: 'Plan Details'
@@ -2196,7 +2196,7 @@ else
 		 $(function() {
 			   $( "#CreateBillButtonId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  debugger;
+				  
 				if(vendorId == -1)
 				{
 					alert("<spring:message code='BzComposer.billcreation.selectvendorfirst'/>");
@@ -2231,7 +2231,7 @@ else
 		   }
 		function updateBillPayableTab(data)
 		{
-			debugger;
+			
 			
 			$("#billPayableForm")[0].reset();
 			$(document).find('div#tblForInvoiceOrder table').replaceWith($(data).find('div#tblForInvoiceOrder').html());
@@ -2243,7 +2243,7 @@ else
 		}
 		function remindMe()
 		{
-			debugger;
+			
 			/* $("#numberRemaining").children().attr("disabled", "disabled"); */
 			/* document.getElementById("numberRemaining").disabled = true; */
 			/* $("#numberRemaining").disable(); */
@@ -2254,7 +2254,7 @@ else
 		}
 		function dontRemindMe()
 		{
-			debugger;
+			
 			this.scheduleTransactionRadioButtonValue = document.getElementById("dontRemindMe").value;
 			$( "#numberRemaining" ).prop( "disabled", true );
 			$( "#daysInAdvanceToEnter" ).prop( "disabled", true );
@@ -2264,7 +2264,7 @@ else
 		}
 		function automaticEnter()
 		{
-			debugger;
+			
 			this.scheduleTransactionRadioButtonValue = document.getElementById("automaticEnter").value;
 			$( "#howOften" ).prop( "disabled", false );
 			$( "#schrduleMemorizedTransactionDate" ).prop( "disabled", false );
@@ -2273,7 +2273,7 @@ else
 		}
 		function withTransactionGroup()
 		{
-			debugger;
+			
 			this.scheduleTransactionRadioButtonValue = document.getElementById("withTransactionGroup").value;
 			$( "#howOften" ).prop( "disabled", true );
 			$( "#schrduleMemorizedTransactionDate" ).prop( "disabled", true );
@@ -2284,7 +2284,7 @@ else
 	
 		function ScheduleMemorizedTransactionOkay()
 		{
-			debugger;
+			
 			var remindOption = scheduleTransactionRadioButtonValue;
 			var transactionName = "";
 			var dayInAdvance = "";
@@ -2372,7 +2372,7 @@ else
 				url : "BillCreationPost?tabid=MakeScheduleMemorizedTransaction",
 			    data :"data=" + obj,
 			    success : function(data) {
-				debugger;
+				
 				amountToBepaid = 0.00;
 				updateBillPayableTab(data);	
 				},
@@ -2391,7 +2391,7 @@ function closeMemorizedBill()
 }
 function EditMemorizedTransactionList()
 {
-	debugger;
+	
 	$( "#ScheduleMemorizedTransaction").dialog({
  	   modal: true,
  	   title: 'Schedule Memorized Transaction'
@@ -2403,7 +2403,7 @@ function closeMomorizedTransactionList(){
 
 function DeleteMemorizeTransaction()
 {
-	debugger;
+	
 	if($('#MemorizeTransactionList').parents('.ui-dialog:visible').length)
 	{
 		$('#MemorizeTransactionList').dialog('close');
@@ -2424,7 +2424,7 @@ function DeleteMemorizeTransaction()
 		url : "BillCreationPost?tabid=UpdateMemorizedTransaction",
 	    data :"BillNumber=" + bill,
 	    success : function(data) {
-		debugger;
+		
 		amountToBepaid = 0.00;
 		updateBillPayableTab(data);	
 		},
@@ -2435,7 +2435,7 @@ function DeleteMemorizeTransaction()
 }
 function selectVendor(vendorIndex,recurrentPayment)
 {
-	debugger;
+	
 	this.vendorId = parseInt($('table.decACPayeeTable tbody tr:nth-child('+vendorIndex+')').find('td:nth-child(1)').attr('value'));
 	this.vendorAddress = $('table.decACPayeeTable tbody tr:nth-child('+vendorIndex+')').find('td:nth-child(2)').attr('value')
 	this.vendorName = $('table.decACPayeeTable tbody tr:nth-child('+vendorIndex+')').find('td:nth-child(1)').text();
@@ -2468,7 +2468,7 @@ function selectVendor(vendorIndex,recurrentPayment)
 		url : "BillCreation?tabid=billCreation",
 	    data :"VendorId=" + vendorId,
 	    success : function(data) {
-	        debugger;
+	        
 		    updateBillPayableTab(data);
 		},
 		 error : function(data) {
@@ -2486,7 +2486,7 @@ function closedialog() {
 }
 function SaveCloseBill()
 {
-	debugger;
+	
 	var billRadio = $("#createBillRadio").prop("checked");
 	var billType = 0;
 	if(billRadio == true)
@@ -2568,7 +2568,7 @@ $.ajax({
 	 	url : "BillCreationPost?tabid=CreateBill",
 	    data :"data=" + obj + "&VendorId=" +Vendorid ,
 	    success : function(data) {
-		debugger;
+		
 		/*  window.location = "${pageContext.request.contextPath}/BillCreation?tabid=billCreation";  */
 	    updateBillPayableTab(data);	
 		vendorId = -1; 
@@ -2581,7 +2581,7 @@ $.ajax({
 }
 function SaveAndNewBill()
 {
-	debugger;
+	
 	var billRadio = $("#createBillRadio").prop("checked");
 	var billType = 0;
 	if(billRadio == true)
@@ -2668,7 +2668,7 @@ $.ajax({
 	 	url : "BillCreationPost?tabid=CreateBill",
 	    data :"data=" + obj + "&VendorId=" +Vendorid ,
 	    success : function(data) {
-		debugger;
+		
 		updateBillPayableTab(data);	
 		vendorId = -1;
 		
@@ -2684,7 +2684,7 @@ function closeSetUpPayment()
 }
 function setUpPayment()
 {
-	debugger;
+	
 	 var payeeId = vendorId;
 	 var recurrentOption = 0;
 	 var numberOfPayments = -1;
@@ -2769,7 +2769,7 @@ $.ajax({
 	    url : "BillCreationPost?tabid=setUpPayment",
 	    data :"data=" + obj + "&VendorId=" +payeeId,
 	    success : function(data) {
-		debugger;
+		
 		updateBillPayableTab(data);	
 		$(document).find('div#payeeNamesForNavigation table').replaceWith($(data).find('div#payeeNamesForNavigation').html());
 		/* vendorId = -1; */
@@ -2781,7 +2781,7 @@ $.ajax({
 }
 function UpdateRecurrentPayment()
 {
-	debugger;
+	
  	if(planID == -1)
 	{
 		alert("<spring:message code='BzComposer.billcreation.selectpropervendor'/>");
@@ -2831,7 +2831,7 @@ $.ajax({
 	    url : "BillCreationPost?tabid=UpdateRecurrentPayment",
 	    data :"data=" + obj + "&PlanID=" +idOfPlan,
 	    success : function(data) {
-		debugger;
+		
 		updateBillPayableTab(data);	
 		$(document).find('div#payeeNamesForNavigation table').replaceWith($(data).find('div#payeeNamesForNavigation').html());
 		/* vendorId = -1; */
@@ -2844,7 +2844,7 @@ $.ajax({
 }
 function sendPaymentsChange()
 {
-	debugger;
+	
 	var sendPaymentCombo = document.getElementById("sendPayments");
 	var sendPayment = sendPaymentCombo.options[sendPaymentCombo.selectedIndex].value;
 	
@@ -2923,7 +2923,7 @@ function changeFrequencyForEditRecurrent()
 }
 function setInDaysChange()
 {
-	debugger;
+	
 	if($("#setInDaysCheckBox").prop('checked') == true)
 	{	
 		$("#daysFieldForRecurrent").prop('disabled',false);
@@ -2939,7 +2939,7 @@ function billPayableTab()
 }
 function getCustomerCurrentBalance()
 {
-	debugger;
+	
 	var accountCombo = document.getElementById("EditRecurrentBankAccount");
 	var accountBalance = accountCombo.options[accountCombo.selectedIndex].label; 
 	$("#EndingBalanceOfAccount").html(accountBalance);

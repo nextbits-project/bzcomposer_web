@@ -178,7 +178,7 @@ function hightlightROW(){
 }
 
 function manageCustomer(cmd){
-    debugger;
+    
 	if (itemID == 0) {
 		return showCustomerValidationDialog();
 	} else {

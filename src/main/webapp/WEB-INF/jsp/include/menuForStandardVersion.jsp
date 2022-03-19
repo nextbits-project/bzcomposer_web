@@ -1035,12 +1035,12 @@
 	}
 	function customerImport()
 	{
-		debugger;
+		
 		window.open("File?tabid=ImportCustomer",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no" );
 	}
 	function vendorImport()
 	{
-		debugger;
+		
 		window.open("File?tabid=ImportVendor",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no" );
 	}
 	function uploadItem()
@@ -1065,7 +1065,7 @@
 	}
 	function orderImport()
 	{
-		debugger;
+		
 		window.open("File?tabid=OrderImport",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no" );
 	}
 	function moduleImport()

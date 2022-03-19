@@ -1060,9 +1060,9 @@ function ShippedItem(){
 }
 
 function Assignment(value, form){
-    debugger;
+    
     if(value==0){
-        debugger;
+        
         document.InvoiceForm.billTo.value="";
         document.InvoiceForm.shipTo.value="";
         document.InvoiceForm.via.value="0"
@@ -1074,7 +1074,7 @@ function Assignment(value, form){
     else if(value==1111){
         window.location.href = "Customer?tabid=NewCustomer";
     } else {
-        debugger;
+        
         size = document.getElementById("bSize").value;
         shsize = document.getElementById("sSize").value;
         var i;
@@ -1705,7 +1705,7 @@ function ebusiness(size){
 
 }
 function TaxValue1(value){
-    debugger;
+    
     size=document.getElementById("tSize").value;
     if(value==0){
         document.getElementById('tax_field').innerHTML="0.0 %";
@@ -2106,7 +2106,7 @@ function ItemChange(value){
                 //you can replace eventListner like keyup keypress blur change
 
                 $(".minutesInput").on('keyup', function(e) {
-                    debugger;
+                    
                     var num = parseInt(this.value, 10),
                         min = qtyMin,
                         max = qtyMax;
@@ -2159,7 +2159,7 @@ function AddTotal(form){
 }
 
 function Init(){
-    debugger;
+    
     var sortId = '<%= request.getAttribute("sortById")%>';
     TaxValue1(1);
     document.getElementById('tax_val').value=rate;
@@ -2240,7 +2240,7 @@ function Init(){
 
 function onSave(form)
 {
-    debugger;
+    
     No = form.orderNo.value;
     var bill = form.billTo.value;
     if(form.custID.value==0){
@@ -2262,7 +2262,7 @@ function onSave(form)
                         "<spring:message code='BzComposer.global.ok'/>": function () {
 
                             $(this).dialog("close");
-                            debugger;
+                            
                             subtotal=form.subtotal.value;
                             value = form.taxID.value;
                             sze=document.getElementById("tSize").value;
@@ -2344,7 +2344,7 @@ function onSave(form)
                                 val = ((((val)/1 - (cnt)/1)));
                                 form.size.value = val;
                             }
-                            debugger;
+                            
                             ShippedItem();
                             PaidItem();
                             var amount = document.getElementById("amount_id").value;
@@ -2434,7 +2434,7 @@ function DeleteRow(d,form)
                         rowId=document.getElementById(jj+'rowVal').value;
                         if(d==rowId)
                         {
-                            debugger;
+                            
                             var rt=0;
                             document.getElementById(d).style.display='none';
 

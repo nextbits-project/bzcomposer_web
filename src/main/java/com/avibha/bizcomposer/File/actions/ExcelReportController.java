@@ -2,6 +2,8 @@ package com.avibha.bizcomposer.File.actions;
 
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.common.log.Loger;
+
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.util.IOUtils;
@@ -102,7 +104,7 @@ public class ExcelReportController {
             IOUtils.copy(stream, response.getOutputStream());
             System.out.println("Excel Report created...");
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
     }
 

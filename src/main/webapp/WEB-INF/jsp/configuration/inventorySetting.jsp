@@ -22,7 +22,7 @@
 </head>
 <script type="text/javascript">
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -159,7 +159,7 @@ function SaveValues()
 	        modal: true,
 	        buttons: {
 	        	"<spring:message code='BzComposer.global.ok'/>": function () {
-	            	debugger;
+	            	
 	        		document.getElementById('showReorderPointWarning').value = $('#showReorderPointWarning2').prop("checked")?'on':'off';
 	        		document.getElementById('reservedQuantity').value = $("#reservedQuantity2").prop("checked")?'on':'off';
 	        		document.getElementById('salesOrderQty').value = $("#salesOrderQty2").prop("checked")?'on':'off';
@@ -171,7 +171,7 @@ function SaveValues()
 	        			url : "ConfigurationAjax/SaveConfiguration?tabid=SaveConfigurationInventorySettng",
 	        			data : formData,
 	        			success : function(data) {
-	        				debugger
+	        				
 	        				$("#showsaverecorddialog").dialog("close");
 	        				$("#showsuccessdialog").dialog({
 	        						resizable: false,

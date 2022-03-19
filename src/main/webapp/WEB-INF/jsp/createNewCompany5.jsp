@@ -444,13 +444,13 @@ function quit(){
 </script>	
 <script type="text/javascript">
 
-/* debugger;
+/* 
 var items = document.querySelectorAll(".bca_bankaccountlist #nested li");
 for(var i=0; i< items.length; i++)
 	{
-	debugger;
+	
 		items[i].onclick = function(){
-			debugger;
+			
 			document.getElementById("accname").value = this.innerHTML;
 		};
 } */

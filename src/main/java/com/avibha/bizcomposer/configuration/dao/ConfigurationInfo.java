@@ -613,7 +613,7 @@ public class ConfigurationInfo {
             pstmt.close();
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             executor.close(con);
         }
@@ -640,7 +640,7 @@ public class ConfigurationInfo {
             rs.close();
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             executor.close(con);
         }
@@ -777,7 +777,7 @@ public class ConfigurationInfo {
             pstmt1.close();
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         } finally {
             executor.close(con);
         }
@@ -866,7 +866,7 @@ public class ConfigurationInfo {
 //            }
 //            pstmt2.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         } finally {
             executor.close(con);
         }
@@ -2614,14 +2614,14 @@ public class ConfigurationInfo {
             status = stmt.executeBatch().length > 0 ? true : false;
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return status;

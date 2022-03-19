@@ -2289,7 +2289,7 @@ function init() {
 	}
 
 	function SendMail(form){
-		debugger;
+		
 		cid=form.custID.value;
 		if(cid==0){
 			return showValidationDialog();

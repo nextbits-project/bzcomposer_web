@@ -326,7 +326,7 @@ input:checked + .slider:before {
 
 <script>
 $(document).ready(function () {
-    debugger;
+    
     $('tr').click(function () {
          var selected = $(this).hasClass("highlight");
          $("tr").removeClass("highlight");

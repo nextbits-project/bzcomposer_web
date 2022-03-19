@@ -259,7 +259,7 @@ function ApplyInventory(){
 	    window.location = "Item?tabid=UpdateInventory&InvId="+InvId+"&expectedQty="+expectedQty+"&memo="+memo;
 	}*/
 
-    debugger;
+    
     let InventoryArr = [];
     //let selectedRows = $("#ItemDetails tr.draft");
     for(let x=0; x<selectedRowIndexs.length; x++){

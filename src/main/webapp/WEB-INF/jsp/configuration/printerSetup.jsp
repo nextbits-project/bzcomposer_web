@@ -16,7 +16,7 @@
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
 <script type="text/javascript">
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -128,12 +128,12 @@ $('#img1').on('click', function() {
 	
 	$(function () {
 	$("#defaultPrinter").on('change',function(){
-		debugger
+		
 		var val = $("#defaultPrinter option:selected").val();
-		debugger
+		
 		if(val == 1)
 		{
-			debugger
+			
 			$('select[name="invoicePrinter"]').find('option[value="'+val+'"]').attr("selected",true);
 			$('select[name="labelPrinter"]').find('option[value="'+val+'"]').attr("selected",true);
 			$('select[name="eSalesPrinter"]').find('option[value="'+val+'"]').attr("selected",true);
@@ -144,7 +144,7 @@ $('#img1').on('click', function() {
 		}
 		else if(val == 0)
 		{
-			debugger
+			
 			$('select[name="invoicePrinter"]').find('option[value="'+val+'"]').attr("selected",true);
 			$('select[name="labelPrinter"]').find('option[value="'+val+'"]').attr("selected",true);
 			$('select[name="eSalesPrinter"]').find('option[value="'+val+'"]').attr("selected",true);
@@ -155,7 +155,7 @@ $('#img1').on('click', function() {
 		}
 		else
 		{
-			debugger
+			
 			$('select[name="invoicePrinter"]').find('option[value="'+val+'"]').attr("selected",true);
 			$('select[name="labelPrinter"]').find('option[value="'+val+'"]').attr("selected",true);
 			$('select[name="eSalesPrinter"]').find('option[value="'+val+'"]').attr("selected",true);
@@ -177,22 +177,22 @@ $('#img1').on('click', function() {
 
 /* function CheckEmailConnection()
 {
-	 debugger
+	 
 	if (oEmail.readyState != 4 || oEmail.status != 200) { 
 	  	return;
 	}
 	response = parseInt(trim(oEmail.responseText));
-	debugger
+	
 	if(response == 1)
 	{
-		debugger
+		
 		alert('<spring:message code="BzComposer.configuration.manageservicetype.serverconnectedsuccess" />');
 		document.configurationForm.mailAuth.disabled=false;    		
 		EnableDisableFields();
 	}
 	else
 	{
-		debugger
+		
 		alert('<spring:message code="BzComposer.configuration.manageservicetype.serverconnectederror" />');
 		document.configurationForm.mailAuth.disabled=true;
 		EnableDisableFields();
@@ -212,15 +212,15 @@ function EnableDisableFields(){
 
 /* function TestConnection()
 {
-	debugger
+	
 	d = new Date();
-	debugger
+	
 	var host = document.configurationForm.mailServer.value;
-	debugger
+	
 	oEmail = c(CheckEmailConnection);
-	debugger
+	
 	oGET(oEmail,'${pageContext.request.contextPath}/include/testMailServerConnection.jsp?HostName='+host+'&Date='+d);
-	debugger
+	
 } */
 
 /* var funsequence = 0;

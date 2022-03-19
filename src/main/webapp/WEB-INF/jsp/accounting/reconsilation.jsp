@@ -1055,7 +1055,7 @@ var accountId = -1;
 var tableName = "";
 function getPayments(index,payId,accId,type)
 {
-	debugger;
+	
 	this.inv = index;
 	this.paymentId = payId;
 	this.accountId = accId; 
@@ -1126,7 +1126,7 @@ $(document).ready(function () {
    
 }); 
 $(document).ready(function(){
-	debugger;
+	
 	$("#fromDate").val("11/14/2007");
 	$("#toDate").val((new Date().getMonth()+1) + "/" + new Date().getDate() + "/" + new Date().getFullYear());
 	$("#ReconcileDate").val((new Date().getMonth()+1) + "/" + new Date().getDate() + "/" + new Date().getFullYear());
@@ -1153,7 +1153,7 @@ $(function() {
 
 $(function() {
 	   $( "#ReconcileButton").on("click", function(){
-		  debugger;
+		  
 		  var bankAccountCombo = document.getElementById("account");
 		  $("#ReconcileBankName").html("Reconcile"+ " "+bankAccountCombo.options[bankAccountCombo.selectedIndex].text);
 		  
@@ -1169,7 +1169,7 @@ $(function() {
 	 });
 $(function() {
 	   $( "#AssetButton").on("click", function(){
-		  debugger;
+		  
 		
 		   $( "#AssetDlgId").dialog({
 	    	   modal: true,
@@ -1183,7 +1183,7 @@ $(function() {
 	 });
 /* $(function() {
 	   $( "#AddButton").on("click", function(){
-		  debugger;
+		  
 		
 		   $( "#AddDlgId").dialog({
 	    	   modal: true,
@@ -1197,14 +1197,14 @@ $(function() {
 	 }); */
 	 $(function() {
 		   $( "#AddButton").on("click", function(){
-			  debugger;
+			  
 
 				return gotobankandadddialog();
 		    });
 		 });
 $(function() {
 	   $( "#EditButton").on("click", function(){
-		  debugger;
+		  
 		
 		   $( "#EditDlgId").dialog({
 	    	   modal: true,
@@ -1218,7 +1218,7 @@ $(function() {
 	 });
 function editTransaction()
 {
-	debugger;
+	
 	var oldClientVendorId;
 	var oldAccountId;
 	var oldPaymentTypeId;
@@ -1287,7 +1287,7 @@ function editTransaction()
 		data : requestData,
 	    success : function(data) {
 			/* var html = "" + data.msg; */
-			debugger;   
+			   
 			updateReconsilationTab(data);
 		
 		},
@@ -1298,7 +1298,7 @@ function editTransaction()
 }
 function executeQuery()
 {
-	debugger;
+	
 	var accountCombo = document.getElementById("account");
 	var accountId = accountCombo.options[accountCombo.selectedIndex].value;
 	
@@ -1318,7 +1318,7 @@ function executeQuery()
 	 	url : "ReconsilationPost?tabid=Payment",
 		data :"data=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			updateReconsilationTab(data);
 		},
@@ -1346,7 +1346,7 @@ function deletePayment()
 			 	url : "Reconsilation?tabid=DeletePayment",
 				data :"PaymentId=" + paymentId + "&AccountId=" +acId,
 			    success : function(data) {
-					debugger;
+					
 			    	
 					updateReconsilationTab(data);
 					paymentId = -1;
@@ -1361,7 +1361,7 @@ function deletePayment()
 		return false;
 	} */
 	
-	debugger;
+	
 	event.preventDefault();
 	$("#removeselectedtransactiondialog").dialog({
 	    	resizable: false,
@@ -1376,7 +1376,7 @@ function deletePayment()
 	    			 	url : "ReconsilationPost?tabid=DeletePayment",
 	    				data :"PaymentId=" + paymentId + "&AccountId=" +acId,
 	    			    success : function(data) {
-	    					debugger;
+	    					
 	    			    	
 	    					updateReconsilationTab(data);
 	    					paymentId = -1;
@@ -1416,7 +1416,7 @@ $.ajax({
 	 	url : "ReconsilationPost?tabid=CategoryType",
 		data :"data1=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			updateReconsilationTab(data);
 		},
@@ -1455,7 +1455,7 @@ $.ajax({
 	 	url : "ReconsilationPost?tabid=CategoryType",
 		data :"data2=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			/* updateReconsilationTab(data); */
 			updateChargeDropdown(data);
@@ -1492,7 +1492,7 @@ function CloseReconcileDlg()
 }
 function AddFromReconcileDlg()
 {
-	debugger;
+	
 
 	var checkNumber = "";
 	var categoryTypeCombo = document.getElementById("CategoryTypeForReconsile");
@@ -1559,7 +1559,7 @@ $.ajax({
 	  	url : "ReconsilationPost?tabid=AddReconcile",
 		data :"data3=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			updateReconsilationTab(data);
 		},
@@ -1571,7 +1571,7 @@ $.ajax({
 }
 function changeAssetCategory()
 {
-	debugger;
+	
 	var categoryCombo = document.getElementById("AssetCategoryId");
 	var categoryId = categoryCombo.options[categoryCombo.selectedIndex].value; 
 	
@@ -1589,7 +1589,7 @@ $.ajax({
 	  	url : "ReconsilationPost?tabid=SubAssetCategory",
 		data :"data4=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			$(document).find('div#AssetChargeCategoryDiv select').replaceWith($(data).find("div#AssetChargeCategoryDiv").html());
 		},
@@ -1600,7 +1600,7 @@ $.ajax({
 }
 function AddAssets()
 {
-	debugger;
+	
 	 $('#AssetDlgId').dialog('close');
 	 $("#AssetAmount").val("");
 	 $("#AssetCategoryId").val($("#AssetCategoryId option:first").val());
@@ -1899,7 +1899,7 @@ if(status == 'backward')
 	$("#fromDate").val(this.fromDate);
 	$("#toDate").val(this.toDate);
 }
- debugger;
+ 
 	executeQuery();									//calling method to execute
 }
 </script>

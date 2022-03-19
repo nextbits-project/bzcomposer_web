@@ -144,14 +144,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rlb.add(rb);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
@@ -241,7 +241,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -254,7 +254,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
@@ -284,7 +284,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -298,7 +298,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cv;
@@ -344,7 +344,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -358,7 +358,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return alc;
@@ -400,7 +400,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -414,7 +414,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paymentType;
@@ -466,7 +466,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -480,7 +480,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return accountForCombo;
@@ -571,7 +571,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -584,7 +584,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rb;
@@ -674,7 +674,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -687,7 +687,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rb;
@@ -724,7 +724,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -738,7 +738,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -787,7 +787,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -801,7 +801,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
@@ -842,7 +842,7 @@ public class ReceivableListImpl implements ReceivableLIst {
             }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -855,7 +855,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -895,7 +895,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -909,7 +909,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 				
@@ -926,7 +926,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb = getInvoiceByInvoiceID(receivableListBean.getInvoiceID());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		double paidAmount = rb.getPaidAmount()+receivableListBean.getBalance();
@@ -955,7 +955,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			i = stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -969,7 +969,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return i;
@@ -1022,7 +1022,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1036,7 +1036,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
@@ -1064,7 +1064,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1078,7 +1078,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return balnace;
@@ -1137,7 +1137,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1151,7 +1151,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
@@ -1179,7 +1179,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1193,7 +1193,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cvTypeId;
@@ -1223,7 +1223,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1237,7 +1237,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return amount;
@@ -1299,7 +1299,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1313,7 +1313,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
@@ -1359,7 +1359,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1373,7 +1373,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
@@ -1419,7 +1419,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1433,7 +1433,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
@@ -1458,7 +1458,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				System.out.println("P id is :66"+pID);
 				p.setpID(pID);
 		}
-		catch(Exception e){e.printStackTrace();}
+		catch(Exception e){Loger.log(e.toString());}
 		
 		invoicePaid(bean, true);
 		
@@ -1536,7 +1536,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	        	p.setpID(pID);
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -1549,7 +1549,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         	
@@ -1593,7 +1593,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1644,7 +1644,7 @@ public class ReceivableListImpl implements ReceivableLIst {
       }
       catch(SQLException e)
       {
-    	  e.printStackTrace();
+    	  Loger.log(e.toString());
       }
       finally {
 			try {
@@ -1658,7 +1658,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1686,7 +1686,7 @@ public class ReceivableListImpl implements ReceivableLIst {
                  }
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -1700,7 +1700,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		
@@ -1756,7 +1756,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
        
@@ -1803,7 +1803,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
   }
@@ -1832,7 +1832,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1846,7 +1846,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return amount;
@@ -1916,7 +1916,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1930,7 +1930,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rl;
@@ -1957,7 +1957,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1971,7 +1971,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
@@ -1998,7 +1998,7 @@ public class ReceivableListImpl implements ReceivableLIst {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
 			try {
@@ -2012,7 +2012,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return paymentTypeName;
@@ -2039,7 +2039,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -2053,7 +2053,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -2099,7 +2099,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				// TODO Auto-generated catch block
 				fromDate = new Date();
 	            toDate = new Date();
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -2113,7 +2113,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		 al.add(fromDate);
@@ -2192,7 +2192,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -2206,7 +2206,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		return PaidOrUnpaid;
@@ -2232,7 +2232,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			System.out.println("Invoice Updated :-----" +i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -2243,7 +2243,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -2269,7 +2269,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			System.out.println("Invoice Updated :-----" +i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -2280,7 +2280,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -2309,7 +2309,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}		
 		finally {
 			try {
@@ -2323,7 +2323,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -2383,7 +2383,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -2397,7 +2397,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -2484,7 +2484,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2497,7 +2497,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return invoice;
@@ -2547,7 +2547,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		
 		
@@ -2603,7 +2603,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -2616,7 +2616,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}      
 	     
@@ -2680,7 +2680,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
     }
@@ -2760,7 +2760,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2782,7 +2782,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(Sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2795,7 +2795,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2827,7 +2827,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				db.close(con);
 				}
 			} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 		
@@ -2885,7 +2885,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (stmt != null) {
@@ -2895,7 +2895,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2993,7 +2993,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	        
@@ -3036,7 +3036,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				db.close(con);
 				}
 			} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	}
@@ -3081,7 +3081,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				db.close(con);
 				}
 			} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	}
@@ -3179,7 +3179,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		 finally {
 				try {
@@ -3190,7 +3190,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		
@@ -3228,7 +3228,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3242,7 +3242,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return 0;
@@ -3270,7 +3270,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				deleteAccountable(payment.getPayableID());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		deleteAccountablemodified(payment.getInvoiceID());
@@ -3296,7 +3296,7 @@ public class ReceivableListImpl implements ReceivableLIst {
               }
                 catch(SQLException e)
                 {
-                	e.printStackTrace();
+                	Loger.log(e.toString());
                 }
                 finally {
         			try {
@@ -3307,7 +3307,7 @@ public class ReceivableListImpl implements ReceivableLIst {
         					db.close(con);
         					}
         				} catch (Exception e) {
-        				e.printStackTrace();
+        				Loger.log(e.toString());
         			}
         		}
             }
@@ -3338,7 +3338,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            stmt.executeUpdate(sql);
 
 	        } catch (SQLException e) {
-	            e.printStackTrace();
+	            Loger.log(e.toString());
 	        } finally {
 				try {
 					if (stmt != null) {
@@ -3348,7 +3348,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	    }
@@ -3368,7 +3368,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3382,7 +3382,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -3405,7 +3405,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3416,7 +3416,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -3506,7 +3506,7 @@ public class ReceivableListImpl implements ReceivableLIst {
              
         }catch(SQLException e)
         {
-        	e.printStackTrace();
+        	Loger.log(e.toString());
         }
         finally {
 			try {
@@ -3523,7 +3523,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -3563,7 +3563,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		 finally {
 				try {
@@ -3580,7 +3580,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	}
@@ -3620,7 +3620,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -3636,7 +3636,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -3665,7 +3665,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	public static void deleteAccountablemodified(int payableID)
@@ -3683,7 +3683,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3694,7 +3694,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -3723,7 +3723,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			int count = stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3734,7 +3734,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -3795,7 +3795,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3809,7 +3809,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return sl;
@@ -3867,7 +3867,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return cv;
@@ -3905,7 +3905,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            }
 	        } catch (SQLException e) {
 
-	            e.printStackTrace();
+	            Loger.log(e.toString());
 
 	        } finally {
 				try {
@@ -3919,7 +3919,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 
@@ -3940,7 +3940,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				System.out.println("update layaways : ------"+i);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -3952,7 +3952,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 			
@@ -4049,7 +4049,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -4062,7 +4062,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
@@ -4091,7 +4091,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			i = stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4105,7 +4105,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return balance;
@@ -4173,7 +4173,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4187,7 +4187,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rl;
@@ -4212,7 +4212,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			System.out.println("Invoice Updated :-----" +i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4223,7 +4223,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -4263,7 +4263,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4277,7 +4277,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paymentType;
@@ -4383,7 +4383,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -4396,7 +4396,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -4490,7 +4490,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -4599,7 +4599,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 							db.close(con);
 							}
 						} catch (Exception e) {
-						e.printStackTrace();
+						Loger.log(e.toString());
 				}
 				return payableId;					
 	}
@@ -4660,7 +4660,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 	}
 	@Override
@@ -4746,7 +4746,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4760,7 +4760,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -4845,7 +4845,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -4858,7 +4858,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cli;
@@ -4879,7 +4879,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			System.out.println("update Consignment : ------"+i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (stmt != null) {
@@ -4889,7 +4889,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -4967,7 +4967,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -4980,7 +4980,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paidConsign;
@@ -5001,7 +5001,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			System.out.println("update Consignment : ------"+i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -5012,7 +5012,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -5265,14 +5265,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				categories.add(category);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categories;
@@ -5365,7 +5365,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			 }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -5379,7 +5379,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -5575,14 +5575,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				payments.add(payment);
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return payments;
@@ -5611,7 +5611,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5624,7 +5624,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return priority;
@@ -5660,7 +5660,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -5674,7 +5674,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return types;
@@ -5724,14 +5724,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 	        	paymentId = rs.getInt("LastID");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) db.close(rs);
 				if (stmt != null) db.close(stmt);
 				if(con != null) db.close(con);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paymentId;
@@ -5748,7 +5748,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			adjustBankBalance(toAccount, payment.getAmount());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		
 	}
@@ -5788,7 +5788,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5801,7 +5801,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cvList;
@@ -5839,7 +5839,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5852,7 +5852,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -5885,7 +5885,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			adjustBankBalance(toAccount, payment.getAmount());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	@Override
@@ -5922,7 +5922,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5935,7 +5935,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return clientList;
@@ -5973,7 +5973,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5986,7 +5986,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -6061,7 +6061,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6074,7 +6074,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paymentId;
@@ -6089,7 +6089,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			adjustBankBalance(toAccount, payment.getAmount());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	@Override
@@ -6121,7 +6121,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6134,7 +6134,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return allClientvendor;
@@ -6170,7 +6170,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6183,7 +6183,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return allCategory;
@@ -6220,7 +6220,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6234,7 +6234,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return allPayment;
@@ -6255,7 +6255,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						updatedefaultbank(bankID);
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			} else {
 				editBankAccmodified(accountInfo ,AccountId);
@@ -6283,7 +6283,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6294,7 +6294,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -6310,14 +6310,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -6339,14 +6339,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rowUpdated = stmt.executeUpdate(sql);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rowUpdated;
@@ -6434,7 +6434,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(" UPDATE bca_account SET DepositPaymentID=" + paymentId + " WHERE AccountID=" + accountId);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6445,7 +6445,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -6478,7 +6478,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql_put);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6492,7 +6492,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -6517,7 +6517,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				 payFromBalance = (fromAccount.getCustomerCurrentBalance());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 	    	 
 	     }
@@ -6529,7 +6529,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				payToBalance = (toAccount.getVendorCurrentBalance());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 	     }
 	     if (fromAccount != null && fromAccount.getAccountTypeID() == 2) {
@@ -6592,7 +6592,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}*/
 	     /*finally {
 	            if (rs != null) {
@@ -6600,7 +6600,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						rs.close();
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Loger.log(e.toString());
 					}
 	            }
 	            if (stmt != null) {
@@ -6608,7 +6608,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						stmt.close();
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Loger.log(e.toString());
 					}
 	            }
 	        }*/
@@ -6617,7 +6617,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 	     return paymentId;
 	}
@@ -6642,7 +6642,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6655,7 +6655,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -6702,7 +6702,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6716,7 +6716,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -6748,7 +6748,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		 finally {
 				try {
@@ -6762,7 +6762,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		 return category;
@@ -6796,7 +6796,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6810,7 +6810,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return category;
@@ -6893,7 +6893,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6906,7 +6906,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		 return false;
@@ -6936,7 +6936,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql2);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				
@@ -6947,7 +6947,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -6999,7 +6999,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7013,7 +7013,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cvList;
@@ -7089,7 +7089,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -7102,7 +7102,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return unpaidBill;
@@ -7160,7 +7160,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -7173,7 +7173,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return vDetail;
@@ -7206,7 +7206,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7220,7 +7220,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -7263,7 +7263,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	public void updateBillTab(TblVendorDetail v)
@@ -7367,7 +7367,7 @@ public class ReceivableListImpl implements ReceivableLIst {
              }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -7383,7 +7383,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -7462,7 +7462,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7476,7 +7476,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paidBillLists;
@@ -7543,7 +7543,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7557,7 +7557,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return recurrentPaymentList;
@@ -7582,7 +7582,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7593,7 +7593,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -7670,7 +7670,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -7683,7 +7683,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return allBill;
@@ -7710,7 +7710,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7721,7 +7721,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -7764,7 +7764,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7778,7 +7778,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		 return vDetail;
@@ -7799,7 +7799,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7810,7 +7810,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -7869,7 +7869,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7883,7 +7883,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return vDetail;
@@ -7948,7 +7948,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	       finally {
 				try {
@@ -7962,7 +7962,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	       int i = 0;
@@ -8014,7 +8014,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8028,7 +8028,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return maxBillId; 
@@ -8074,7 +8074,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -8087,7 +8087,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -8146,7 +8146,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
+		Loger.log(e.toString());
 	}
 	  finally {
 			try {
@@ -8160,7 +8160,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	  return recurrentPayment;
@@ -8245,7 +8245,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				insertRecurrentPayments(payment,planID);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -8259,7 +8259,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	}
@@ -8313,7 +8313,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		            pst.addBatch();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
            
             Calendar calendar1 = getCalendar(recurrentPlan.getFirstPaymentDate());
@@ -8328,7 +8328,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				pst.executeBatch();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
             finally {
     			try {
@@ -8339,7 +8339,7 @@ public class ReceivableListImpl implements ReceivableLIst {
     					db.close(con);
     					}
     				} catch (Exception e) {
-    				e.printStackTrace();
+    				Loger.log(e.toString());
     			}
     		}
             
@@ -8360,7 +8360,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				stmt.executeUpdate(sql);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
     		finally {
     			try {
@@ -8371,7 +8371,7 @@ public class ReceivableListImpl implements ReceivableLIst {
     					db.close(con);
     					}
     				} catch (Exception e) {
-    				e.printStackTrace();
+    				Loger.log(e.toString());
     			}
     		}
         }
@@ -8446,7 +8446,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
         finally {
 			try {
@@ -8460,7 +8460,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return planId;
@@ -8474,7 +8474,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			insertRecurrentPaymentPlan(rPayment, true);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	public void updatePlan(int planID , boolean active , boolean status)
@@ -8500,7 +8500,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				stmt.executeUpdate(sSQL);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -8511,7 +8511,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	}
@@ -8538,7 +8538,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sSQL);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8549,7 +8549,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -8579,7 +8579,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				tblCategory.setActive(rs.getBoolean("isActive"));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8587,7 +8587,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if (con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return tblCategory;
@@ -8645,7 +8645,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				vSub.add(r1);
 //			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	   	finally {
 			try {
@@ -8653,7 +8653,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if (con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 //	   	int i = 0;
@@ -8727,7 +8727,7 @@ public class ReceivableListImpl implements ReceivableLIst {
                 vTemp.add(row);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8735,7 +8735,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		vRows = (ArrayList<TblBudgetCategory>) vTemp.clone();
@@ -8764,7 +8764,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8772,7 +8772,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryType;
@@ -8829,7 +8829,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt2 = con.createStatement();
 			stmt2.executeUpdate(sql3);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		 finally {
 			try {
@@ -8840,7 +8840,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (pstmt != null) db.close(pstmt);
 				if(con != null) db.close(con);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
          return b;
@@ -8894,7 +8894,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt2 = con.createStatement();
 			stmt2.executeUpdate(sql_1);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		 finally {
 			try {
@@ -8904,7 +8904,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt2 != null) db.close(stmt2);
 				if(con != null) db.close(con);
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -8926,7 +8926,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				b = true;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8934,7 +8934,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return b;
@@ -8960,7 +8960,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8968,7 +8968,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return b;
@@ -8986,14 +8986,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -9047,14 +9047,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) db.close(rs);
 				if (stmt != null) db.close(stmt);
 				if(con != null) db.close(con);
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return listOfPayments;
@@ -9109,14 +9109,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) db.close(rs);
 				if (stmt != null) db.close(stmt);
 				if(con != null) db.close(con);
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return listOfPayments;
@@ -9204,7 +9204,7 @@ public class ReceivableListImpl implements ReceivableLIst {
             
         }catch(Exception e)
         {
-        	e.printStackTrace();
+        	Loger.log(e.toString());
         }
         finally {
 			try {
@@ -9218,7 +9218,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return listOfpayment;
@@ -9305,7 +9305,7 @@ public class ReceivableListImpl implements ReceivableLIst {
             
         }catch(Exception e)
         {
-        	e.printStackTrace();
+        	Loger.log(e.toString());
         }
         finally {
 			db.close(con);
@@ -9313,7 +9313,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				con.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return listDepositAmount;
@@ -9354,7 +9354,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9368,7 +9368,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -9403,7 +9403,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9417,7 +9417,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -9493,7 +9493,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	     }
 	     catch(Exception e)
 	     {
-	    	 e.printStackTrace();
+	    	 Loger.log(e.toString());
 	     }finally {
 				try {
 					if (rs != null) {
@@ -9506,7 +9506,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	}
@@ -9541,7 +9541,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9555,7 +9555,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -9725,7 +9725,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					date = JProjectUtil.qbFormatter().parse("2017-01-23");
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}*/
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(date);
@@ -9771,7 +9771,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
         finally {
 			try {
@@ -9785,7 +9785,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return list;
@@ -9896,7 +9896,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9910,7 +9910,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -9955,7 +9955,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9969,7 +9969,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -10019,7 +10019,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -10033,7 +10033,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -10123,7 +10123,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -10137,7 +10137,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return statement;

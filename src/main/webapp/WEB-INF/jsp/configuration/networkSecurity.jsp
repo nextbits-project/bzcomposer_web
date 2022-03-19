@@ -47,7 +47,7 @@
 </style>
 
 <script type="text/javascript">
-debugger;
+
 var membershipLevel1 = "<%= request.getAttribute("membershipLevel")%>";
 if(membershipLevel1 == "Standard"){
 	$("#userlistlable11").hide();
@@ -57,7 +57,7 @@ if(membershipLevel1 == "Standard"){
 
 
 
-debugger;
+
 var Role = "<%= request.getAttribute("Role")%>";
 //$("#stateRow").hide();
 if(Role=='User'){
@@ -69,33 +69,33 @@ if(Role=='User'){
 }else{
 }
 function adduser1() {
-	debugger;
+	
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("userSize")%>";
 	if(membershipLevel == "Standard"){
 		if(size>=1){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
 		}
 	}else if(membershipLevel == "Professional"){
 		if(size>=5){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
 		}
 	}else if(membershipLevel == "Enterprise"){
 		if(size>=10){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
 		}
 	}
 	/* if(size>=4){
-		debugger;
+		
 		return maxnumberofuserdialog();
 
 	}else{
@@ -134,7 +134,7 @@ function backToDivFirst()
 }
 
 function checkValidation(){
-    debugger;
+    
     var userEmail = $("#userEmail").val();
     var password1 = $("#userPassword").val();
     var password2 = $("#cpwd").val();
@@ -173,7 +173,7 @@ function checkValidation(){
             url : "ConfigurationAjax/SaveConfiguration?tabid=addNewUser&userName="+userEmail+"&userpassword="+password1+"&groupID="+groupID,
             data : formData,
             success : function(data) {
-                debugger
+                
                 $("#showsuccessdialog").dialog({
                     resizable: false,
                     height: 200,
@@ -202,7 +202,7 @@ function checkValidation(){
 }
 
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -287,7 +287,7 @@ $(function() {
 	function checkRecords(){
 		var size = $("#selectedUser option").length;
 		if(size>=4){
-			debugger;
+			
 			return maxnumberofuserdialog();
 
 		}else{
@@ -764,7 +764,7 @@ $(function() {
 </body>
 <script type="text/javascript">
 function SaveValues(){
-	debugger;
+	
 	/* if(confirm('<spring:message code="BzComposer.configuration.saveconfirm"/>')){
 		document.configurationForm.annualInterestRate.value = wxToFixed(document.configurationForm.annualInterestRate.value,2);
 		document.configurationForm.minCharge.value = wxToFixed(document.configurationForm.minCharge.value,2);
@@ -838,7 +838,7 @@ function SaveValues(){
 	        			url :  "ConfigurationAjax/SaveConfiguration?tabid=SaveConfiguration&multiUserConnection="+multiUserConnection,
 	        			data : formData,
 	        			success : function(data) {
-	        				debugger
+	        				
 	        				$("#showsaverecorddialog").dialog("close");
 	        				$("#showsuccessdialog").dialog({
 	        						resizable: false,

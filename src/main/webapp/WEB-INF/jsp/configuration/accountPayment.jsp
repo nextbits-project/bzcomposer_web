@@ -46,7 +46,7 @@ $(function() {
     }, 1000);
 });
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -1082,7 +1082,7 @@ $(document).ready(function()
 <script type="text/javascript">
 function SaveValues()
 {
-    debugger;
+    
     event.preventDefault();
     $("#showsaverecorddialog").dialog({
         resizable: false,
@@ -1091,7 +1091,7 @@ function SaveValues()
         modal: true,
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
-                debugger;
+                
                 let tabID = $('div#tabs1 ul li.ui-state-active').attr('id');
                 sessionStorage.setItem("activeTabID", tabID);
 

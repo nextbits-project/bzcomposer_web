@@ -20,7 +20,7 @@
 </head>
 <script type="text/javascript">
 function init() {
-	debugger;
+	
 	var  value =  document.getElementById("iCountry").value;
 	if(value == 39){
 		$("#stateRow").hide();
@@ -31,7 +31,7 @@ function init() {
 	}
 }
 function refreshItemsNow(val){
-	debugger;
+	
 	var  value =  document.getElementById("iCountry").value;
 		if(value == 39){
 			$("#stateRow").hide();

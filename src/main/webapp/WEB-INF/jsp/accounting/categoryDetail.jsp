@@ -358,7 +358,7 @@ function executeQuery()
 	 	url : "categoryDetailPost?tabid=Payment",
 		data :"data=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	UpdateCategoryDetailpanel(data);
 		},
 		 error : function(data) {

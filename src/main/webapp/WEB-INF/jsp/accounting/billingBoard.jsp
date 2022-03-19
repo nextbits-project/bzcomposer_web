@@ -402,7 +402,7 @@ color: red;
 		</div>
 		<script>
 			$(function() {
-				debugger;
+				
 				$("#tabs").tabs();
 			});
 		</script>
@@ -412,7 +412,7 @@ var invoiceId = -1;
 var index = -1;
 function selctRow(id,inv)
 {
-	debugger;
+	
 	this.invoiceId = id;
 	this.index = inv;
 }
@@ -467,7 +467,7 @@ function showemptydatadialog()
 $("#tabs").tabs({
   
 	activate: function(event, ui) {
-		debugger;
+		
         
         var activeTab = $('#tabs').tabs('option', 'active');
         if(activeTab == 1)
@@ -506,7 +506,7 @@ function PrintBilling()
         url : "BillingBoardStatement?tabid=PrintBill",
         data:"invoiceId=" +invoiceId ,
         success : function(data){
-            debugger;
+            
             updateBillingBoard(data);
         },
         error : function(data) {
@@ -531,7 +531,7 @@ function CreateBillingStatement()
 		 	data:"invoiceId=" +invoiceId ,
 		    success : function(data)
 		    {
-		    debugger;
+		    
 		    updateBillingBoard(data);
 				 
 			},
@@ -544,7 +544,7 @@ function CreateBillingStatement()
 }
 function searchByColumn()
 {
-	debugger;
+	
 	var searchCriteriaCombo = document.getElementById("advanceSearchCriteria");
 	var advanceSerchCriteria = searchCriteriaCombo.options[searchCriteriaCombo.selectedIndex].value;
 	
@@ -562,7 +562,7 @@ function searchByColumn()
 		 	data:"advanceSerchCriteria=" + advanceSerchCriteria + "&advanceSearchData=" +advanceSearchData,
 		    success : function(data)
 		    {
-		    debugger;
+		    
 		    updateBillingBoard(data);
 				 
 			},
@@ -576,7 +576,7 @@ function searchByColumn()
 }
 function searchByColumnBillingStatement()
 {
-	debugger;
+	
 	var searchCriteriaCombo = document.getElementById("searchDataForBillingStatement");
 	var advanceSerchCriteria = searchCriteriaCombo.options[searchCriteriaCombo.selectedIndex].value;
 	
@@ -594,7 +594,7 @@ function searchByColumnBillingStatement()
 		 	data:"advanceSerchCriteria=" + advanceSerchCriteria + "&advanceSearchData=" +advanceSearchData,
 		    success : function(data)
 		    {
-		    debugger;
+		    
 		    updateBillingBoard(data);
 				 
 			},
@@ -633,7 +633,7 @@ $(document).ready(function () {
 /* This function remove
  $("#advanceSearchData").keypress(function (e) {
     //if the letter is not digit then display error and don't type anything
-    debugger;
+    
     var searchCriteriaCombo = document.getElementById("advanceSearchCriteria");
 	var advanceSerchCriteria = searchCriteriaCombo.options[searchCriteriaCombo.selectedIndex].value;
 if(advanceSerchCriteria == "Invoice#" || advanceSerchCriteria == "Bill#")

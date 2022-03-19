@@ -121,7 +121,7 @@ public class SalesController {
 			}
 		} catch (Exception e) {
 			action = request.getParameter("tabid");
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		Path p = new Path();
 		p.setPathvalue(request.getContextPath());

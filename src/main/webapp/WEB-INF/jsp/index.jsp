@@ -112,7 +112,7 @@ function showLocale(){
 
 function showLocaleMobile()
 {
-	debugger;
+	
 	var lang = document.getElementById("localeMobile").value;
 	if(lang == "")
 		alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
@@ -125,7 +125,7 @@ function showLocaleMobile()
 		url:"Locale.do?request_locale="+lang,
 		data:{lang : lang},
 		}).done(function(data){
-			debugger;
+			
 	}); */
 }
 function showUsernameDialog()
@@ -147,7 +147,7 @@ function showUsernameDialog()
 
 function showLanguageDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showLanguageDialog").dialog({
     	resizable: false,

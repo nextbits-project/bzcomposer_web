@@ -1,6 +1,7 @@
 package com.nxsol.bizcomposer.emailSender.action;
 
 import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.common.log.Loger;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import org.springframework.stereotype.Controller;
@@ -91,7 +92,7 @@ public class EmailSendController {
                 System.out.println("Mail send successfully");
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
 
             System.out.println(attachFile);

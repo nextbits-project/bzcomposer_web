@@ -537,13 +537,13 @@ function makeUpdateInList()
 }
 
 function SaleSearch(){
-	debugger
+	
 	Myid="";
 	count=0;
 	size=document.getElementById("lSize").value;
 	type=document.getElementById("sType").value;
 	typeVal=document.getElementById("SearchVal").value;
-	debugger
+	
 
 	for(i=0;i<size;i++){
 		var row1=document.getElementById(i+"$$");

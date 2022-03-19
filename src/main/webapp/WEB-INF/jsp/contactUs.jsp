@@ -63,12 +63,12 @@ function check()
 }
 function checkform(theform)
 {
-	debugger
+	
 	var theform = document.getElementById('frmContactUs');
 	var why = "";
 	if(theform.txtName.value == "" || theform.txtName.value == " ")
 	{
-		debugger
+		
 		document.getElementById('errorMessageName').innerHTML="<spring:message code='BzComposer.contactus.formerrormessage'/>";
 	}
 	if(theform.txtEmail.value == "" || theform.txtEmail.value == " ")
@@ -85,7 +85,7 @@ function checkform(theform)
 	}
 	if(theform.CaptchaInput.value == "")
 	{
-		debugger
+		
 		document.getElementById('errorMessageCaptcha').innerHTML = "<spring:message code='BzComposer.contactus.formcaptchacode'/>";
 		event.preventDefault();
 	}

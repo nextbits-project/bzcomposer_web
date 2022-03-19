@@ -1033,12 +1033,12 @@
 	}
 	function customerImport()
 	{
-		debugger;
+		
 		window.open("File.do?tabid=ImportCustomer",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no" );
 	}
 	function vendorImport()
 	{
-		debugger;
+		
 		window.open("File.do?tabid=ImportVendor",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no" );
 	}
 	function uploadItem()
@@ -1063,7 +1063,7 @@
 	}
 	function orderImport()
 	{
-		debugger;
+		
 		window.open("File.do?tabid=OrderImport",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no" );
 	}
 	function moduleImport()

@@ -97,12 +97,12 @@ function refreshItemsNow(val)
 function sendTo()
 {
 	alert("Send to")
-	debugger;
+	
 	rid=document.getElementById("setRID").value
 	if(rid=="")
 	{
 
-		debugger;
+		
 		return showCustomerValidationDialog();	
 	}
 	else{
@@ -340,7 +340,7 @@ refreshItemsNow('1');
 
 function printlabel()
 {
-	debugger;
+	
 	//lbltype
 	 var list=document.getElementById("list");
 	 var ops=list.getElementsByTagName('OPTION');

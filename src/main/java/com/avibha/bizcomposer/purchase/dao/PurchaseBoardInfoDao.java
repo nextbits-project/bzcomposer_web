@@ -291,7 +291,7 @@ public class PurchaseBoardInfoDao {
 			request.setAttribute("total", totalBalance);
 		} catch (SQLException ee) {
 			Loger.log(2,"SQL Error in Class TaxInfo and  method -getFederalTax "+ ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -362,7 +362,7 @@ public class PurchaseBoardInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2,"SQL Error in Class TaxInfo and  method -getFederalTax "+ ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -437,7 +437,7 @@ public class PurchaseBoardInfoDao {
 			}
 			con.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 			Loger.log(2, "Error in DeleteReceivedItem() " + e);
 		}
 		finally {
@@ -472,7 +472,7 @@ public class PurchaseBoardInfoDao {
 				status = true;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 			Loger.log(2, "Error in DeleteReceivedItem() " + e);
 		}
 		finally {
@@ -500,7 +500,7 @@ public class PurchaseBoardInfoDao {
 			Loger.log(sqlString);
 			int count = pstmtUpdate.executeUpdate();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 			Loger.log(2, "Error in DeleteReceivedItem() " + e);
 		}
 		return true;
@@ -589,7 +589,7 @@ public class PurchaseBoardInfoDao {
 			
 		}catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -603,7 +603,7 @@ public class PurchaseBoardInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -849,7 +849,7 @@ public class PurchaseBoardInfoDao {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -868,7 +868,7 @@ public class PurchaseBoardInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -931,7 +931,7 @@ public class PurchaseBoardInfoDao {
 			}
 			
 		}catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -940,7 +940,7 @@ public class PurchaseBoardInfoDao {
 				if (stmt1 != null) { db.close(stmt1); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1025,7 +1025,7 @@ public class PurchaseBoardInfoDao {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -1044,7 +1044,7 @@ public class PurchaseBoardInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1068,7 +1068,7 @@ public class PurchaseBoardInfoDao {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally{
 			try {
 				if (rs != null)
@@ -1382,7 +1382,7 @@ public class PurchaseBoardInfoDao {
 			Loger.log(2,
 					" SQL Error in Class TaxInfo and  method -getFederalTax "
 							+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 
 		finally {

@@ -1164,7 +1164,7 @@ table.tabla-listados tbody tr td {
 <script>
 function initialize()
 {
-	debugger;
+	
 	<c:if test="${not empty VendorFrm}">
 		tableValue();
 	</c:if>
@@ -1188,7 +1188,7 @@ function initialize()
     }
 }
 function refreshItemsNow(val){
-	debugger;
+	
 	if(val == "3"){
 		$(".provinceShow").show();
 		$(".postalcodeShow").show();
@@ -1347,7 +1347,7 @@ function markSelectedCustomer(vendorID, rowId){
 
 function tableValue()
 {
-	debugger;
+	
 	rid=document.CustomerForm.selectedRowID.value;
 	var rd=document.getElementById(rid);
 	if(rd != null){

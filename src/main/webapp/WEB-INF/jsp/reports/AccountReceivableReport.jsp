@@ -225,7 +225,7 @@ $("#tabs").tabs({
 });
 function callRefresh()
 {
-	debugger;
+	
 	document.forms[0].action = "AccountReceivableAR.do?tabid=AccontReceivableReport";
 	document.forms[0].submit();
 }

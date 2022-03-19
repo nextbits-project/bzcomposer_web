@@ -877,7 +877,7 @@ public class SalesDetails {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		Loger.log("item added successfully");
 
@@ -1345,7 +1345,7 @@ public class SalesDetails {
 				//e.add("SaveStatus", new ActionMessage("BzComposer.invoice.saveinvoicesuccessmessage"));
 				//request.setAttribute("SaveStatus", "BzComposer.invoice.saveinvoicesuccessmessage");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request.setAttribute("SaveStatus", "Invoice is not updated.");
 				//ActionErrors e1=new ActionErrors();
 				//e1.add("SaveStatus", new ActionMessage("BzComposer.invoice.saveinvoiceerrormessage"));
@@ -1363,7 +1363,7 @@ public class SalesDetails {
 				//ActionErrors e=new ActionErrors();
 				//e.add("SaveStatus", new ActionMessage("BzComposer.invoice.saveinvoicesuccessmessage"));
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request.setAttribute("SaveStatus", "Invoice is not saved.");
 				//ActionErrors e1=new ActionErrors();
 				//e1.add("SaveStatus", new ActionMessage("BzComposer.invoice.saveinvoiceerrormessage"));
@@ -1385,7 +1385,7 @@ public class SalesDetails {
 				request.setAttribute("SaveStatus",
 						"Sales Order is successfully updated.");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request.setAttribute("SaveStatus", "Sales Order is not updated.");
 			}
 		} else {
@@ -1395,7 +1395,7 @@ public class SalesDetails {
 				request.setAttribute("SaveStatus",
 						"Sales Order is successfully saved.");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request.setAttribute("SaveStatus", "Sales Order is not saved.");
 			}
 		}
@@ -1420,7 +1420,7 @@ public class SalesDetails {
 						"Invoice is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		} else {
 			request.setAttribute("SaveStatus","Invoice is not yet saved.");
@@ -1449,7 +1449,7 @@ public class SalesDetails {
 						"Sales Order is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		} else {
 			request.setAttribute("SaveStatus","Sales Order is not yet saved.");
@@ -1841,7 +1841,7 @@ public class SalesDetails {
 						"Estimation is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		} else {
 			request.setAttribute("SaveStatus",

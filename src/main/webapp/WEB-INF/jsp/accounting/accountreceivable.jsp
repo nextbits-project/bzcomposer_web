@@ -647,7 +647,7 @@ table.tabla-listados tbody tr td {
 			url : "AccountReceivebleUpdate?tabid=UpdateRecord",
 			data : "row=" + obj + "&invoiceId="+invoiceId,
 		    success : function(data) {
-				debugger;
+				
 				updateAccountReceivableTab(data);  
 			 /*  window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; */
 			
@@ -829,7 +829,7 @@ table.tabla-listados tbody tr td {
 	   
    }
    $(document).ready(function(){
-		debugger;
+		
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	   $("#tblForUnpaidOpeningBalance").hide();

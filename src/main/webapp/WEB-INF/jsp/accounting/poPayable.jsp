@@ -439,7 +439,7 @@ margin-right: 10px;
   </div>
 </div>
 <script type="text/javascript">
-	debugger;
+	
 	var indexNumber = -1;
 	var amtToPay = -1;
 	var invoiceId = -1;
@@ -461,7 +461,7 @@ margin-right: 10px;
 	selectCategoryAsPurchaseOrder6800FromDropDownList("categoryId");
 
    function selectrow(invoice,index) {
-	    debugger;
+	    
 	      $( "#demo" ).empty();  
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
@@ -549,7 +549,7 @@ margin-right: 10px;
    
    $(function() {
 	   $( "#pay").on("click", function(){ 
-		   debugger;
+		   
 		   var content;
 		   $( "#demo" ).empty();  
 		   if(invoiceId >= '0' && $('input[type="checkbox"]').is(':checked'))
@@ -560,7 +560,7 @@ margin-right: 10px;
 		        });
 				for(var index = 0;index < obj.length;index++)
 			{
-					debugger;
+					
 					var a = obj[index].AmountDue;
 					var b = obj[index].PaidAmount;
 			   content = "<tr>",
@@ -587,7 +587,7 @@ margin-right: 10px;
 			}		
 		   else
 		   {
-			   debugger;
+			   
 
 				return selectonepayabledialog();
 			   	obj = [];
@@ -597,7 +597,7 @@ margin-right: 10px;
 	 });
 								 							 	
    $( ".paymentOP" ).change(function() {
-	   debugger; 
+	    
 	  var pay = document.getElementById("payStatus");
 	  var payment = pay.options[pay.selectedIndex].value; 
 	 
@@ -610,7 +610,7 @@ margin-right: 10px;
 			  	{
 			  		return;
 			  	} */
-			  	debugger;
+			  	
 				event.preventDefault();
 				$("#savelayawaysinvoicedialog").dialog({
 				    	resizable: false,
@@ -656,13 +656,13 @@ margin-right: 10px;
    
    function save()
    {
-	   debugger;
+	   
 	   var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
 	  if(vendor == null){
 		  alert("<bean:message key='BzComposer.billcreation.selectvendorfirst'/>");
 	  } else{
 		  
-	   debugger;	
+	   	
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
 		/* 
@@ -722,7 +722,7 @@ margin-right: 10px;
    }
   	}
    function sendMyValue(ReceivableListBean) {
-		debugger;
+		
 		var obj=JSON.stringify(ReceivableListBean);
    	    $.ajax({
 			type : "POST",
@@ -767,7 +767,7 @@ margin-right: 10px;
    }
    function checkType()
    {
-		debugger;
+		
 		var type = document.getElementById("receivedType");
 		var ctype = type.options[type.selectedIndex].innerText;
 		   
@@ -786,7 +786,7 @@ margin-right: 10px;
    }
    function selectedRadio()
    {
-	 debugger;
+	 
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 	   {
 	   		$("#tblForInvoiceOrder").hide();
@@ -825,7 +825,7 @@ margin-right: 10px;
      	return d;
    }
    $(document).ready(function(){
-        debugger;
+        
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	    $("#poDate").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
@@ -860,7 +860,7 @@ margin-right: 10px;
    function clearTransaction()
    {
 	   var answer;
-	   debugger;
+	   
 	   if(parseInt(invoiceId) <= 0){
 	   		return selecttransactiondialog();
 	   		return false;
@@ -872,7 +872,7 @@ margin-right: 10px;
 		  {
 		  		return false;
 		  } */
-			debugger;
+			
 			event.preventDefault();
 			$("#selectcleartransactiondialog").dialog({
     			resizable: false,
@@ -911,7 +911,7 @@ margin-right: 10px;
    }
    function checkPaymentStatus()
    {
-	   debugger;
+	   
 	  	/* var pay = document.getElementById("payStatus");
 	  	vat option = pay.options[pay.selectedIndex].value; */
 	   $(document.forms[0]).submit(function( event ) {
@@ -921,7 +921,7 @@ margin-right: 10px;
    
   function payFromDialog()
   {
-	  debugger;
+	  
 	  var vendorName = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(1)').text();
 	  var invoiceId =  $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(9)').text();
 	  var vendorId = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(1)').attr('value');

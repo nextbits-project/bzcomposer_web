@@ -372,9 +372,9 @@ $(document).ready(function()
 
 		 text = text.slice(0, ele.selectionStart) + text.slice(ele.selectionEnd);
 		 ele.value = text;
-		 debugger;
+		 
 		 element = $("#result");
-		 debugger;
+		 
 		 html2canvas(element, {
 	         onrendered: function (canvas) {
 	                $("#result").append(canvas);

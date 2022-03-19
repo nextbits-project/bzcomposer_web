@@ -94,7 +94,7 @@ $(document).ready(function(){
 });
 
 function toggleFunction() {
-	debugger;
+	
     var x = document.getElementById("divtoggle");
     var lftmenu = document.getElementById("leftMenu");
     if (x.style.display === "none") {
@@ -197,7 +197,7 @@ function deleteSelectedWeightFee(){
 }
 
 function setServices(){
-	debugger
+	
 	var serviceName = $.trim($("#upsSelect option:selected").text());
 	$("#upsServiceName").val(serviceName);
 }
@@ -242,7 +242,7 @@ function addModalShippingType(){
 }
 
 function setModalDescription(){
-	debugger
+	
 	var sType = $.trim($("#modalShippingType option:selected").text());
 	$("#selectedShippingType").val(sType);
 }
@@ -256,11 +256,11 @@ function deleteTemplate(){
 }
 function saveModalShippingType()
 {
-	debugger
+	
 	var selectedSType = $.trim($("#modalShippingType option:selected").text());
-	debugger
+	
 	var textboxValue = $("#selectedShippingType").val();
-	debugger
+	
 	if(textboxValue ==""){
 
 		return emptyvaluedialog();
@@ -276,19 +276,19 @@ function saveModalShippingType()
 }
 
 function editModalShippingType() {
-	debugger;
+	
 	newID = document.getElementById("modalShippingType").value;
 	var textboxValue = $("#selectedShippingType").val();
 	window.location.href= "Configuration?tabid=editshippingtype&oldshippingtype="+textboxValue+"&oldId="+newID;
 }
 function deleteModalShippingType() {
-	debugger;
+	
 	newID = document.getElementById("modalShippingType").value;
 	window.location.href= "Configuration?tabid=deleteshippingtype&oldId="+newID;
 }
 
 function addNewTemplate(){
-	debugger	
+		
 	document.getElementById("templateName").style.display = "block";
 	document.getElementById("templateSubject").style.display = "block";
 	document.getElementById("emailText").style.display = "block";
@@ -298,7 +298,7 @@ function addNewTemplate(){
 	document.getElementById("emailText").value = "<<name>>"+'\n'+"<<company name>>"+'\n'+"<<address>>"+'\n'+"<<phonenumber>>";	
 }
 function setContent(){
-	debugger
+	
 	var id = $("#selectedTemplateId option:selected").val();
 
 	document.getElementById("templateName").style.display = "none";

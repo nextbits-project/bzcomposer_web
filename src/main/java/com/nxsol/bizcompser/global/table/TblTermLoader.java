@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.Vector;
 
 import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
 import com.nxsol.bizcomposer.common.ConstValue;
 
 public class TblTermLoader {
@@ -43,7 +44,7 @@ public class TblTermLoader {
                 vTemp.add(row);
             }
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -51,7 +52,7 @@ public class TblTermLoader {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		 vRows = (Vector)vTemp.clone();

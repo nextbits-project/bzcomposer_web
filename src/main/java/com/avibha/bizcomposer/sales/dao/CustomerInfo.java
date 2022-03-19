@@ -97,7 +97,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -208,7 +208,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -292,7 +292,7 @@ public class CustomerInfo {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -305,7 +305,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -389,7 +389,7 @@ public class CustomerInfo {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -402,7 +402,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return form;
@@ -431,7 +431,7 @@ public class CustomerInfo {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rst != null) {
@@ -444,7 +444,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	      return balance;
@@ -469,7 +469,7 @@ public class CustomerInfo {
 
         } catch (Exception e) {
 
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 			try {
 				if (rst != null) {
@@ -482,7 +482,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	    return cvTypeId;
@@ -559,7 +559,7 @@ public class CustomerInfo {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -572,7 +572,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -602,7 +602,7 @@ public class CustomerInfo {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -615,7 +615,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return bal;
@@ -706,7 +706,7 @@ public class CustomerInfo {
 			 }
 		}catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -719,7 +719,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objlist;
@@ -750,7 +750,7 @@ public class CustomerInfo {
 	    	 }
 	    	 
 	     }catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -763,7 +763,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	     return amt;
@@ -796,7 +796,7 @@ public class CustomerInfo {
         	}
         }catch(Exception e)
         {
-        	e.printStackTrace();
+        	Loger.log(e.toString());
         }finally {
 			try {
 				if (rs != null) {
@@ -809,7 +809,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return amount;
@@ -857,7 +857,7 @@ public class CustomerInfo {
         }
         catch(Exception e)
         {
-        	e.printStackTrace();
+        	Loger.log(e.toString());
         }finally {
 			try {
 				if (rs != null) {
@@ -870,7 +870,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return amount;
@@ -913,7 +913,7 @@ public class CustomerInfo {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -926,7 +926,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cv;
@@ -973,7 +973,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1020,7 +1020,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1067,7 +1067,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1178,7 +1178,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1400,7 +1400,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1431,7 +1431,7 @@ public class CustomerInfo {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1630,7 +1630,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -1814,7 +1814,7 @@ public class CustomerInfo {
 
 		} catch (SQLException ee) {
 			Loger.log(2,"SQLException in Class CustomerInfo," + "method -updateInsertCustomer "+ ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (ps != null) {
@@ -1827,7 +1827,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -1878,7 +1878,7 @@ public class CustomerInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -1911,7 +1911,7 @@ public class CustomerInfo {
 				serviceList.add(uform);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1925,7 +1925,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("ServiceList", serviceList);
@@ -1943,7 +1943,7 @@ public class CustomerInfo {
 				invoiceName.add(uform);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs1 != null) {
@@ -1956,7 +1956,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2009,7 +2009,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return sname;
@@ -2109,7 +2109,7 @@ public class CustomerInfo {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2122,7 +2122,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("totalBalance", totalBalance);
@@ -2306,7 +2306,7 @@ public class CustomerInfo {
 			grossProfit = totalUncategorisedIncome - totalCOGS;
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs1 != null) {
@@ -2331,7 +2331,7 @@ public class CustomerInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("AccountReceivable", AccountReceivable);

@@ -30,7 +30,7 @@ table.tabla-listados thead tr th,td {
 </style>
 <script type="text/javascript">
 function showselectRecordDialog(){
-    debugger;
+    
     event.preventDefault();
     $("#showselectRecordDialog").dialog({
         resizable: false,
@@ -277,7 +277,7 @@ function showselectRecordDialog(){
 </html>
 <script type="text/javascript">
 function printlabel(){
-    debugger;
+    
     var list=document.getElementById("list");
     var ops=list.getElementsByTagName('OPTION');
     var pagebreak= document.getElementById("pagebreak").innerHTML;
@@ -312,7 +312,7 @@ function printlabel(){
 
 //setRowId(null, "0$$");
 function setRowId(rowid, rid){
-	debugger;
+	
     var selectedRowClass = document.getElementById(rid).classList;
     
 	var rd1=rid.replace("$$", "");
@@ -350,7 +350,7 @@ function deleteSelectedCustomerFromList(rid){
 }
 
 function sendTo2(){
-    debugger;
+    
     rid = document.getElementById("setRID").value
     if(rid==""){
         return showselectRecordDialog();

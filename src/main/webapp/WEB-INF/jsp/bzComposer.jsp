@@ -109,7 +109,7 @@
 		}
 		function showLocale()
 		{
-			debugger;
+			
 			var lang = document.getElementById("locale").value;
 
 			if(lang == "")
@@ -122,12 +122,12 @@
                 url:"Locale.do?request_locale="+lang,
                 data:{lang : lang},
                 }).done(function(data){
-                    debugger;
+                    
             }); */
 		}
 		function showLocaleMobile()
 		{
-			debugger;
+			
 			var lang = document.getElementById("localeMobile").value;
 			if(lang == "")
 				alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
@@ -140,7 +140,7 @@
                 url:"Locale.do?request_locale="+lang,
                 data:{lang : lang},
                 }).done(function(data){
-                    debugger;
+                    
             }); */
 		}
 		function showUsernameDialog()

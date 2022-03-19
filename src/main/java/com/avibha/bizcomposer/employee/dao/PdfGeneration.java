@@ -2,6 +2,7 @@ package com.avibha.bizcomposer.employee.dao;
 
 import com.avibha.bizcomposer.employee.forms.AddEmployeeForm;
 import com.avibha.bizcomposer.employee.forms.PayrollDto;
+import com.avibha.common.log.Loger;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -339,11 +340,11 @@ public class PdfGeneration{
             document.add(table2);
             document.add(table3);
         }catch(FileNotFoundException | DocumentException e){
-            e.printStackTrace();
+            Loger.log(e.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         } catch (Exception ee) {
-            ee.printStackTrace();
+            Loger.log(ee.toString());
         } finally {
             // Closing the document
             document.close();

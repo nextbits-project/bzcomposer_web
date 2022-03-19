@@ -358,19 +358,19 @@ function setState(){
 	else{
 		window.location = "File.do?tabid=zipcode&&zipcode="+zip;	
 	}
-	<%-- debugger
+	<%-- 
 	$.ajax({
 		type: "POST",
    		url:"File.do?tabid=zipcode&&zipcode="+zip,
      	data: { zip : zip } 
  		}).done(function(data){
- 			debugger
+ 			
  			$(document).find('div#cityDiv').replaceWith($(data).find('div#cityDiv').html());
- 			debugger
+ 			
  			var stateName = '<%= request.getAttribute("state") %>';
- 			debugger
+ 			
  			$('select[id="sid"]').find('option[value="'+stateName+'"]').attr("selected",true);
- 			debugger
+ 			
 	}); --%>
 }
 
@@ -429,7 +429,7 @@ function writeSelect()
 }
 function refreshItemsNow()
 {
-	debugger;
+	
   o = c(writeSelect);
   var val = $("#country").children(":selected").attr("id");
   oGET(o,'<bean:write name="path" property="pathvalue"/>/include/GetStates.jsp?st=state&Cid=' + val)
@@ -456,11 +456,11 @@ function writeSelect33()
     document.getElementById("t_statedata").innerHTML = o33.responseText ;
 }
 function init() {
-	debugger;
+	
     var BusinessTypeId = "<%= request.getAttribute("businessTypeId1")%>";
 	$('select[id="businessTypeId"]').find('option[value="'+BusinessTypeId+'"]').attr("selected",true);
 	
-	debugger;
+	
 	 var val = $("#country").children(":selected").attr("id");
 	//var  value =  document.getElementById("iCountry").value;
 	if(val == 3){
@@ -792,7 +792,7 @@ function init() {
 															<script>
 															var contry=document.CompanyInfoForm.country.value;
 
-														    //debugger
+														    //
 														    //refreshItemsNow33(contry,'<bean:write name="state_gen" />');
 														    refreshItemsNow33(2,'<bean:write name="state_gen" />');
 														    </script>    
@@ -1075,7 +1075,7 @@ function init() {
 <script>
 function updateComapany()
 {
-    debugger;
+    
 	var sel = document.getElementById("businessTypeId");
     var selectbusinessTypeId = sel.options[sel.selectedIndex].value;
     
@@ -1087,7 +1087,7 @@ function updateComapany()
 	var address1 = document.getElementById("address1").value;
 	var address2 = document.getElementById("address2").value;
 	var zip = document.getElementById("zip").value;
-	 debugger;
+	 
 	var stateName = document.getElementById("sid").value;
 	var cityName = document.getElementById("city").value;
 	var countryName = $.trim(document.getElementById("country").value);
@@ -1150,7 +1150,7 @@ function updateComapany()
 		document.forms["frmUpdateCompany"].submit(); */
 		/* document.forms["CompanyInfoForm"].action = "updateEditedCompanyinfo.do?tabid=edit&&cityName="+cityName+"&&stateName="+stateName+"&countryName="+countryName;
 		document.forms["CompanyInfoForm"].submit(); */
-		//debugger
+		//
 	
 		document.CompanyInfoForm.companyName.value = companyName;
 		$.ajax({

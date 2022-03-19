@@ -15,7 +15,7 @@
 <script src="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui.js"></script>
 <script type="text/javascript">
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -310,7 +310,7 @@ function showPaymentGateway()
 		document.getElementById("rtWare").style.display = 'none';
 		document.getElementById("skipJack").style.display = 'none';
 		document.getElementById("USAePay").style.display = 'none';
-		debugger
+		
 		
 		$('select[name="eProcessingLoginId"]').find('option[value="'+id+'"]').attr("selected",true);
 		$('select[name="apiPassword"]').find('option[value="'+id+'"]').attr("selected",true);
@@ -362,7 +362,7 @@ function showPaymentGateway()
 	}
 	else if(id == 5)
 	{
-		debugger
+		
 		document.getElementById("authorizeNet").style.display = 'none';
 		document.getElementById("cyberSource").style.display = 'none';
 		document.getElementById("eProcessingNetwork").style.display = 'none';
@@ -515,7 +515,7 @@ function showPaymentGateway()
 	}
 	else if(id == 12)
 	{
-		debugger
+		
 		document.getElementById("authorizeNet").style.display = 'none';
 		document.getElementById("cyberSource").style.display = 'none';
 		document.getElementById("eProcessingNetwork").style.display = 'none';
@@ -540,7 +540,7 @@ function showPaymentGateway()
 	}
 	else if(id == 13)
 	{
-		debugger;
+		
 		document.getElementById("authorizeNet").style.display = 'none';
 		document.getElementById("cyberSource").style.display = 'none';
 		document.getElementById("eProcessingNetwork").style.display = 'none';
@@ -558,7 +558,7 @@ function showPaymentGateway()
 		document.getElementById("skipJack").style.display = 'none';
 		document.getElementById("USAePay").style.display = 'none';
 		
-		debugger;
+		
 		$('select[name="linkPointUserID"]').find('option[value="'+id+'"]').attr("selected",true);
 		$('select[name="LinkPointPassword"]').find('option[value="'+id+'"]').attr("selected",true);
 	}

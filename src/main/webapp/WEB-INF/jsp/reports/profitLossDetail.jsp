@@ -171,7 +171,7 @@ table.tabla-customListOds tbody tr td { font-size: 14px; }
 <script type="text/javascript">
 function hideShowHeader()
 {
-	debugger;
+	
 	document.getElementById("headerBar").style.display = "none";
 	/* $("#btnHeader1").hide(); */
 	document.getElementById("headerBar").style.display = "none";
@@ -184,9 +184,9 @@ function ShowHeader()
 }
 function printPage()
 {
-	debugger;
+	
 	        var doc = new jsPDF("1", "pt","a2");  
-	        debugger;
+	        
 			 var source = $("#printContent")[0]; 
 		 	 doc.fromHTML(source); 
 			 doc.save($("#headerBarValue").html()+".pdf"); 

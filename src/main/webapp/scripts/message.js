@@ -75,14 +75,14 @@ window.onload=createhintbox
 
 function showToolTip(e,text){
 	if(document.all)e = event;
-	debugger;
+	
 	var obj = document.getElementById('bubble_tooltip');
-	debugger;
+	
 	obj.style.display = 'block';
 	var obj2 = document.getElementById('bubble_tooltip_content');
-	debugger;
+	
 	obj2.innerHTML = text;
-	debugger;
+	
 	var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
 	if(navigator.userAgent.toLowerCase().indexOf('safari')>=0)st=0; 
 	var leftPos = e.clientX - 100;
@@ -93,7 +93,7 @@ function showToolTip(e,text){
 
 function hideToolTip()
 {
-	debugger;
+	
 	document.getElementById('bubble_tooltip').style.display = 'none';
-	debugger;
+	
 }

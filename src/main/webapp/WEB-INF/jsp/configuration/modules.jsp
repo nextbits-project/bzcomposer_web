@@ -19,7 +19,7 @@ $(function() {
     $("#tabs").tabs();
 });
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -296,7 +296,7 @@ function toggleFunction() {
 </form:form>
 <script type="text/javascript">
 function saveValue(){
-	debugger;
+	
 	var i, x = document.getElementById("ActiveInvoiceStyleId");
     var ActiveInvoiceStyle = "";
     var ActiveInvoiceStylelist = [];
@@ -318,7 +318,7 @@ function saveValue(){
 		url : "ConfigurationAjax/SaveConfiguration?tabid=formCustomization&ActiveInvoiceStylelist="+ActiveInvoiceStylelist+"&DeActiveInvoiceStylelist="+DeActiveInvoiceStylelist,
 		data : formData,
 		success : function(data) {
-			debugger
+			
 
 			$("#showsuccessdialog").dialog({
 					resizable: false,
@@ -344,7 +344,7 @@ function saveValue(){
 }
 
 function setdeactivate() {
-	debugger;
+	
 	var sel = document.getElementById("ActiveInvoiceStyleId");
 	var selectValue = sel.options[sel.selectedIndex].text;
 	var selectValue1 = sel.options[sel.selectedIndex].value;
@@ -358,7 +358,7 @@ function setdeactivate() {
 	sel1.appendChild(opt);
 }
 function setactivate() {
-	debugger;
+	
 	var sel = document.getElementById("InvoiceStyleId1");
 	var selectValue = sel.options[sel.selectedIndex].text;
 	var selectValue1 = sel.options[sel.selectedIndex].value;

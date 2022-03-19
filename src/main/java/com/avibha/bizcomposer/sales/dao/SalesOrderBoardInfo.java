@@ -159,7 +159,7 @@ public class SalesOrderBoardInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class TaxInfo and  method -getFederalTax "+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -171,7 +171,7 @@ public class SalesOrderBoardInfo {
 				if (stmt2 != null) { db.close(stmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -242,7 +242,7 @@ public class SalesOrderBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return result;

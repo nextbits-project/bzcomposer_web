@@ -16,7 +16,7 @@
 <script src="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui.js"></script>
 <script type="text/javascript">
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -433,7 +433,7 @@ function deleteSelectedWeight()
 }*/
 function setServices()
 {
-	debugger
+	
 	var serviceName = $.trim($("#upsSelect option:selected").text());
 	$("#upsServiceName").val(serviceName);
 }
@@ -470,7 +470,7 @@ function addModalShippingType()
 
 function setModalDescription()
 {
-	debugger
+	
 	var sType = $.trim($("#modalShippingType option:selected").text());
 	$("#selectedShippingType").val(sType);
 }
@@ -486,11 +486,11 @@ function deleteTemplate()
 } */
 function saveModalShippingType()
 {
-	debugger
+	
 	var selectedSType = $.trim($("#modalShippingType option:selected").text());
-	debugger
+	
 	var textboxValue = $("#selectedShippingType").val();
-	debugger
+	
 	if(textboxValue =="")
 	{
 
@@ -513,7 +513,7 @@ function saveModalShippingType()
 
 function addNewTemplate()
 {
-	debugger
+	
 	document.getElementById("templateName").style.display = "block";
 	document.getElementById("templateSubject").style.display = "block";
 	document.getElementById("emailText").style.display = "block";
@@ -524,7 +524,7 @@ function addNewTemplate()
 }
 function setContent()
 {
-	debugger
+	
 	var id = $("#selectedTemplateId option:selected").val();
 
 	document.getElementById("templateName").style.display = "none";
