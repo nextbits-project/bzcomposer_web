@@ -84,6 +84,8 @@ public class EstimationController {
             taxRates.add(invoiceDto);
             request.setAttribute("TaxRates", taxRates);
             estimationDto.setTemplateType(configDto.getEstTemplateType());
+            estimationDto.setOrderNo(MyUtility.getOrderNumberByConfigData(estimationDto.getOrderNo(), AppConstants.EstType, configDto, false));
+            
             forward = "/sales/estimation";
         }
         else if (action.equalsIgnoreCase("SaveEstimation")) {

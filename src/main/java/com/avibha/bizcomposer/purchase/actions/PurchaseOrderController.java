@@ -99,6 +99,7 @@ public class PurchaseOrderController {
 				purchaseOrderDto.setPayMethod(configDto.getSelectedPaymentId()+"");
 				purchaseOrderDto.setVia(configDto.getCustomerShippingId()+"");
 				purchaseOrderDto.setTemplateType(configDto.getPoTemplateType());
+				purchaseOrderDto.setOrderNo(MyUtility.getOrderNumberByConfigData(purchaseOrderDto.getOrderNo(), AppConstants.POType, configDto, false));
 				forward = "/purchase/purchase";
 			}
 			else if (action.equalsIgnoreCase("SavePurchaseOrder")) {

@@ -803,6 +803,7 @@ public class SalesController {
 			taxRates.add(invoiceDto);
 			invoiceDto.setTemplateType(configDto.getInvoiceTemplateType());
 			request.setAttribute("TaxRates", taxRates);
+			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.InvoiceType, configDto, false));
 			forward = "/sales/invoice";
 		}
 		else if (action.equalsIgnoreCase("addSupplier")) {// to add
@@ -1267,6 +1268,7 @@ public class SalesController {
 			taxRates.add(invoiceDto);
 			request.setAttribute("TaxRates", taxRates);
 			invoiceDto.setTemplateType(configDto.getSoTemplateType());
+			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType, configDto, false));
 			if (IN_URI.endsWith(SALES_ORDER_URI)){
 				forward = "/sales/salesorder";
 			}else{

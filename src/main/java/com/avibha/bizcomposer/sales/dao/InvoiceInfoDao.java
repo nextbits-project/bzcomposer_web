@@ -2583,7 +2583,7 @@ public class InvoiceInfoDao {
 		String action = request.getParameter("tabid");
 		String sql="";
 		try {
-			if(action.equalsIgnoreCase("IBLU") || form.getTabid().equalsIgnoreCase("IBLU")){ //Send Invoice it
+			if(action.equalsIgnoreCase("IBLU")){ //Send Invoice it
 				 sql = " select InvoiceID,ClientVendorID,RefNum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,"
 						+ " ShipCarrierID,MessageID,SalesTaxID,Weight,SubTotal,Tax,SH,Total,AdjustedTotal,"
 						+ " BSAddressID,CompanyID,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,"

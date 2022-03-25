@@ -1924,6 +1924,14 @@ function AddItem(form){
 
         document.getElementById('hidn').value=hidn_val;
     }
+    document.getElementById('serialNo_id').value="";
+    document.getElementById('qty_id').value="";
+
+    document.getElementById('unitPrice_id').value="";
+    document.getElementById('amount_id').value="";
+    document.getElementById('weight_id').value="";
+    document.getElementById('pname_id').value="";
+    document.getElementById('itemID').value="0";
 }
 
 function productItem(hidn_val){

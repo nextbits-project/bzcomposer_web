@@ -289,8 +289,8 @@ $(document).ready(function()
     							<li style="font-size: 12px;" id="tabNo1"><a href="#AccountSetting"><spring:message code="BzComposer.configuration.tab.accountsetting" /></a></li>
     							<li style="font-size: 12px;" id="tabNo2"><a href="#AccountReceivable"><spring:message code="BzComposer.configuration.tab.accountrecivable" /></a></li>
     							<li style="font-size: 12px;" id="tabNo3"><a href="#POPayable"><spring:message code="BzComposer.configuration.tab.popayable" /></a></li>
-    							<li style="font-size: 12px;" id="tabNo4"><a href="#billing"><spring:message code="BzComposer.accountreceivable.billing" /></a</li>
-    							<li style="font-size: 12px;" id="tabNo5"><a href="#CategoryManager"><spring:message code="BzComposer.CategoryManager" /></a</li>
+    							<li style="font-size: 12px;" id="tabNo4"><a href="#billing"><spring:message code="BzComposer.accountreceivable.billing" /></a></li>
+    							<li style="font-size: 12px;" id="tabNo5"><a href="#CategoryManager"><spring:message code="BzComposer.CategoryManager" /></a></li>
     							<li style="font-size: 12px;display:none;"><a href="#PaymentType"><spring:message code="BzComposer.popayable.paymenttype" /></a></li>
    								<li style="font-size: 12px;display:none;"><a href="#ReceivedType"><spring:message code="BzComposer.configuration.tab.receivedtype" /></a></li>
   							</ul>
@@ -1000,7 +1000,7 @@ $(document).ready(function()
                                                             <c:forEach items="${configDto.listOfExistingCreditCard}" var="objList1" varStatus="loop">
                                                             <tr>
                                                                 <td id="${objList1.creditCardTypeId}" onclick="showType();" align="center">
-                                                                    <label id="cType" name="cTyoe" value="${objList1.creditCardTypeId}">
+                                                                    <label id="cType" name="cType" value="${objList1.creditCardTypeId}">
                                                                         ${objList1.creditCardName}
                                                                     </label>
                                                                 </td>

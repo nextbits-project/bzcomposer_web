@@ -769,7 +769,7 @@ function init() {
 				</tr>
 				<tr>
 					<td id="td2" style="font-size:14px;">
-						<select name="itemID" onchange="ItemChange(this.value);">
+						<select name="itemID" id="itemID" onchange="ItemChange(this.value);">
 							<option value="0">
 								<spring:message code="BzComposer.ComboBox.Select" />
 							</option>
@@ -1873,6 +1873,7 @@ function init() {
 	}
 
 	function AddItem(form){
+		debugger;
 		if(form.itemID.value==0 || form.itemID.value==='01'){
 			document.getElementById('serialNo_id').value="";
 			document.getElementById('qty_id').value="";
@@ -2031,6 +2032,13 @@ function init() {
 			document.getElementById('hidn').value=hidn_val;
 
 		}
+		document.getElementById('serialNo_id').value="";
+		document.getElementById('qty_id').value="";
+		document.getElementById('itemID').value="0";
+		document.getElementById('unitPrice_id').value="";
+		document.getElementById('amount_id').value="";
+		document.getElementById('weight_id').value="";
+		document.getElementById('pname_id').value="";
 	}
 
 	function Assignment(custID, form){

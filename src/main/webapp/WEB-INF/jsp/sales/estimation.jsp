@@ -1751,7 +1751,15 @@ function StyleChange(value){
 							
 				hidn_val=( (hidn_val/1) + 1);
 				document.getElementById('hidn').value=hidn_val;
-   			}	
+   			}
+			document.getElementById('serialNo_id').value="";
+			document.getElementById('qty_id').value="";
+		
+			document.getElementById('unitPrice_id').value="";
+			document.getElementById('amount_id').value="";
+			document.getElementById('weight_id').value="";
+			document.getElementById('pname_id').value="";
+			document.getElementById('itemID').value="0";
 		}
 		
 function productItem(hidn_val)
@@ -2046,7 +2054,7 @@ function AddTotal(form){
 	form.adjustedtotal.value=value;
 }
 function Init(){
-    
+    debugger;
 	var sortId = '<%= request.getAttribute("sortById")%>';
 	isItemExist = document.getElementById('CartSize').value;
 	TaxValue1(1);
@@ -2497,11 +2505,14 @@ function showItemOrderNumberDialog(){
 
 function getEstimationDetailsByBtnName(form, url){
     //window.location.href="Estimation?tabid=FirstEstimation";
+    console.log("/Estimation?tabid="+url)
     $.ajax({
         type : "GET",
         url : "/Estimation?tabid="+url,
         success : function(data) {
+        	debugger;
             $(document).find('div#fullPageDetails section').replaceWith($(data).find('div#fullPageDetails').html());
+           
             let cvID2 = form.clientVendorID.value;
             if(cvID2!=null && cvID2!=''){
                 form.custID.value = cvID2;
