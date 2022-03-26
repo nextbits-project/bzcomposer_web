@@ -680,7 +680,7 @@ table.cart tbody tr td {
 			</td>
 			<td style="font-size:14px;" colspan="3">
 				<table>
-					<tr>
+					<%-- <tr>
 						<td style="font-size:14px;">
 							<div id="tax_field">
 								<spring:message code="BzComposer.estimation.taxfield" />
@@ -697,17 +697,35 @@ table.cart tbody tr td {
 						<td style="font-size:14px;">
 							<form:input path="shipping" onclick="clearShippingCol()" onchange="sumShippingTotal()" style="width: 170px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
 						</td>
-					</tr>
+					</tr> --%>
 				</table>
 			</td>
 			<td style="font-size:14px;" colspan="3">
-				<table>
+				<table align="right">
 					<tr>
 						<td align="right" style="font-size:14px;">
 							<spring:message code="BzComposer.estimation.subtotal" />
 						</td>
 						<td style="font-size:14px;">
 							<form:input path="subtotal" readonly="true" style="text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
+						</td>
+					</tr>
+					<tr>
+						<td align="right" style="font-size:14px;">
+							<div id="tax_field">
+								<spring:message code="BzComposer.estimation.taxfield" />
+							</div>
+						</td>
+						<td style="font-size:14px;">
+							<form:input path="tax" readonly="true" style="width: 170px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
+						</td>
+					</tr>
+					<tr>
+						<td align="right" style="font-size: 14px;">
+							<spring:message code="BzComposer.estimation.shipping" />
+						</td>
+						<td style="font-size:14px;">
+							<form:input path="shipping" onclick="clearShippingCol()" onchange="sumShippingTotal()" style="width: 170px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
 						</td>
 					</tr>
 					<tr>
@@ -2054,7 +2072,7 @@ function AddTotal(form){
 	form.adjustedtotal.value=value;
 }
 function Init(){
-    debugger;
+    
 	var sortId = '<%= request.getAttribute("sortById")%>';
 	isItemExist = document.getElementById('CartSize').value;
 	TaxValue1(1);
@@ -2510,7 +2528,7 @@ function getEstimationDetailsByBtnName(form, url){
         type : "GET",
         url : "/Estimation?tabid="+url,
         success : function(data) {
-        	debugger;
+        	
             $(document).find('div#fullPageDetails section').replaceWith($(data).find('div#fullPageDetails').html());
            
             let cvID2 = form.clientVendorID.value;

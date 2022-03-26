@@ -626,7 +626,7 @@ $(document).ready(function()
                                     </tr>
                                     <tr>
                                         <td style="font-size: 12px;">
-                                            <spring:message code="BzComposer.configuration.defaultreceivetype"/>:
+                                            <spring:message code="BzComposer.configuration.defaultreceivedtype"/>:
                                         </td>
                                         <td style="font-size: 12px;">
                                             <form:select path="bpReceivedType" id="bpReceivedType" styleClass="width:50%" >

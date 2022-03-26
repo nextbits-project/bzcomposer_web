@@ -862,6 +862,44 @@ function ShowShippingAddressPage(form){
 							</td>
 							<td style="font-size: 14px;" colspan="3">
 								<table>
+									<%-- <tr>
+										<td align="right" style="font-size: 14px;">
+											<div id="tax_field">
+												<spring:message code="BizComposer.Invoice.TaxField" />
+											</div>
+										</td>
+										<td style="font-size: 14px;">
+											<form:input path="tax" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
+										</td>
+									</tr> --%>
+								<%-- 	<tr>
+										<td align="right" style="font-size: 14px;">
+											<spring:message code="BzComposer.Invoice.Shipping" />
+										</td>
+										<td style="font-size: 14px;"> 
+											<form:input path="shipping" onclick="clearShippingCol()" onchange="sumShippingTotal()" style="width: 167px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
+										</td>
+									</tr> --%>
+									<%-- <tr>
+										<td align="right" style="font-size: 14px;">
+											<spring:message code="BzComposer.Invoice.Balanc" />
+										</td>
+										<td style="font-size: 14px;">
+											<form:input path="balance" style="text-align: right;" onclick="clearDiscountCol()" onchange="calDiscountTotal()" onkeypress="return numbersOnlyFloat(event,this.value);" />
+										</td>
+									</tr> --%>			
+								</table>
+							</td>						
+							<td style="font-size: 14px;" colspan="3">
+								<table align="right">			
+									<tr>
+										<td align="right" style="font-size: 14px;">
+											<spring:message code="BzComposer.Invoice.Subtotal" />
+										</td>
+										<td style="font-size: 14px;">
+											<form:input path="subtotal" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
+										</td>
+									</tr>
 									<tr>
 										<td align="right" style="font-size: 14px;">
 											<div id="tax_field">
@@ -872,7 +910,7 @@ function ShowShippingAddressPage(form){
 											<form:input path="tax" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
 										</td>
 									</tr>
-									<tr>
+										<tr>
 										<td align="right" style="font-size: 14px;">
 											<spring:message code="BzComposer.Invoice.Shipping" />
 										</td>
@@ -886,18 +924,6 @@ function ShowShippingAddressPage(form){
 										</td>
 										<td style="font-size: 14px;">
 											<form:input path="balance" style="text-align: right;" onclick="clearDiscountCol()" onchange="calDiscountTotal()" onkeypress="return numbersOnlyFloat(event,this.value);" />
-										</td>
-									</tr>			
-								</table>
-							</td>						
-							<td style="font-size: 14px;" colspan="3">
-								<table>			
-									<tr>
-										<td align="right" style="font-size: 14px;">
-											<spring:message code="BzComposer.Invoice.Subtotal" />
-										</td>
-										<td style="font-size: 14px;">
-											<form:input path="subtotal" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
 										</td>
 									</tr>
 									<tr>
@@ -2167,7 +2193,7 @@ function AddTotal(form){
 }
 
 function Init(){
-    
+    debugger;
     var sortId = '<%= request.getAttribute("sortById")%>';
     TaxValue1(1);
     document.getElementById('tax_val').value=rate;

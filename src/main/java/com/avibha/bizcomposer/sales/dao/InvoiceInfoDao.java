@@ -3881,7 +3881,7 @@ public class InvoiceInfoDao {
 			String sqlString = "select distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name from bca_clientvendor"
 					+ " where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
 					+ " and ( Deleted = '0') and CompanyID=? and Active=1 order by FirstName";
-
+            
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1, compId);
 			rs = pstmt.executeQuery();

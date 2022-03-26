@@ -682,7 +682,7 @@ table.cart tbody tr td { font-size: 14px; }
 				</td>
 				<td style="font-size:14px;" colspan="3">
 					<table>
-						<tr>
+						<%-- <tr>
 							<td align="right" style="font-size:14px;">
 								<div id="tax_field">
 									<spring:message code="BzComposer.salesorder.taxfield" />
@@ -707,17 +707,43 @@ table.cart tbody tr td { font-size: 14px; }
 							<td style="font-size:14px;">
 								<form:input path="balance" style="text-align: right;" onclick="clearDiscountCol()" onchange="calDiscountTotal()" onkeypress="return numbersOnlyFloat(event,this.value);" />
 							</td>
-						</tr>
+						</tr> --%>
 					</table>
 				</td>						
 				<td style="font-size:14px;" colspan="3">
-					<table>			
+					<table align="right">			
 						<tr>
 							<td align="right" style="font-size:14px;">
 								<spring:message code="BzComposer.salesorder.subtotal" />
 							</td>
 							<td style="font-size:14px;">
 								<form:input path="subtotal" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right" style="font-size:14px;">
+								<div id="tax_field">
+									<spring:message code="BzComposer.salesorder.taxfield" />
+								</div>
+							</td>
+							<td style="font-size:14px;">
+								<form:input path="tax" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right" style="font-size:14px;">
+								<spring:message code="BzComposer.salesorder.shipping" />
+							</td>
+							<td style="font-size:14px;">
+								<form:input path="shipping" onclick="clearShippingCol()" onchange="sumShippingTotal()" style="width: 167px;text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right" style="font-size:14px;">
+								<spring:message code="BzComposer.salesorder.balanceindollers" />
+							</td>
+							<td style="font-size:14px;">
+								<form:input path="balance" style="text-align: right;" onclick="clearDiscountCol()" onchange="calDiscountTotal()" onkeypress="return numbersOnlyFloat(event,this.value);" />
 							</td>
 						</tr>
 						<tr>
