@@ -1136,7 +1136,7 @@ function writeSelect(){
    document.getElementById("t_statedata").innerHTML = o.responseText ;
 }
 function refreshItemsNow(val){
-    
+
     if(val == "3"){
         $(".provinceShow").show();
         $(".postalcodeShow").show();
@@ -1152,7 +1152,7 @@ function refreshItemsNow(val){
     oGET(o,'${pageContext.request.contextPath}/include/GetStates.jsp?st=state&Cid=' + val)
 }
 function writeSelect1(){
-    
+
    if (o1.readyState != 4 || o1.status != 200) {
       return;
     }
@@ -1270,7 +1270,7 @@ function clearShippingAdd(){
 }
 
 	function trim(inputString) {
-	
+
 	   // Removes the spaces  return from the passed string. 
 	   var retValue = inputString;
 	   var ch = retValue.substring(0, 1);
@@ -1285,7 +1285,7 @@ function reloadPage() {
     location.reload();
 }
 function SaveVendorData(){
-	
+
 	if(trim(document.getElementById('firstName').value)==""){
 		document.getElementById('firstName').focus();
 		return showblankfirstnamevalidationdialog();
@@ -1312,7 +1312,7 @@ function SaveVendorData(){
 	}
 	else {
 		if(validate()){
-			
+
             event.preventDefault();
             $("#saveCustomerInfoDialog").dialog({
                 resizable: false,
@@ -1321,7 +1321,7 @@ function SaveVendorData(){
                 modal: true,
                 buttons: {
                     "<spring:message code='BzComposer.global.ok'/>": function () {
-                        
+
                         $(this).dialog("close");
                         if(document.VendorForm.chk_setaddress.checked){
                             hidebsaddress(document.VendorForm);
@@ -1418,7 +1418,7 @@ function hidebsaddress(form){
 }
 
 function addToTable(form){
-	
+
 	flag=0;
 	flag1=0;
 	invID=form.serviceID.value;
@@ -1779,7 +1779,7 @@ function setCutomerDataById(rowID, rowIndex, flag) {
 
 function showInvalidEmailDialog()
 {
-  
+
     event.preventDefault();
     $("#showInvalidEmailDialog").dialog({
         resizable: false,
@@ -1797,7 +1797,7 @@ function showInvalidEmailDialog()
 
 function showblanknamevalidationdialog()
 {
-  
+
     event.preventDefault();
     $("#showblanknamevalidationdialog").dialog({
         resizable: false,
@@ -1815,7 +1815,7 @@ function showblanknamevalidationdialog()
 
 function showblankfirstnamevalidationdialog()
 {
-  
+
     event.preventDefault();
     $("#showblankfirstnamevalidationdialog").dialog({
         resizable: false,
@@ -1833,7 +1833,7 @@ function showblankfirstnamevalidationdialog()
 
 function showblanklastnamevalidationdialog()
 {
-  
+
     event.preventDefault();
     $("#showblanklastnamevalidationdialog").dialog({
         resizable: false,
@@ -1851,7 +1851,7 @@ function showblanklastnamevalidationdialog()
 
 function showblankaddress1validationdialog()
 {
-  
+
     event.preventDefault();
     $("#showblankaddress1validationdialog").dialog({
         resizable: false,
@@ -1869,7 +1869,7 @@ function showblankaddress1validationdialog()
 
 function showblanklcityvalidationdialog()
 {
-  
+
     event.preventDefault();
     $("#showblanklcityvalidationdialog").dialog({
         resizable: false,
@@ -1887,7 +1887,7 @@ function showblanklcityvalidationdialog()
 
 function showblankzipcodevalidationdialog()
 {
-  
+
     event.preventDefault();
     $("#showblankzipcodevalidationdialog").dialog({
         resizable: false,
@@ -1905,7 +1905,7 @@ function showblankzipcodevalidationdialog()
 
 function showservicevalidationdialog()
 {
-  
+
     event.preventDefault();
     $("#showservicevalidationdialog").dialog({
         resizable: false,

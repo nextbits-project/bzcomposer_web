@@ -927,7 +927,7 @@ function refreshItemsNow2(val)
 	</div>
 	</div>
 </html:form>
-<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
+<%@ include file="/include/footer.jsp"%>
 </body>
 </html>
 <script>

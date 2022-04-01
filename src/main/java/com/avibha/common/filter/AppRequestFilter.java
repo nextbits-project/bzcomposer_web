@@ -1,21 +1,28 @@
 package com.avibha.common.filter;
 
-import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
-import com.nxsol.bizcomposer.common.ConstValue;
-import org.springframework.stereotype.Service;
-import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.nxsol.bizcomposer.common.ConstValue;
 
 /**
  * @author sarfrazmalik
  */
 @Service
 public class AppRequestFilter extends OncePerRequestFilter {
+	
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
@@ -53,8 +60,9 @@ public class AppRequestFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	private void setRequestIntoSession(HttpServletRequest request){
-		ConfigurationInfo configInfo = new ConfigurationInfo();
+	private void setRequestIntoSession(HttpServletRequest request){  
+		//ConfigurationInfo configInfo = this.beanFactory.createBean(ConfigurationInfo.class);//new ConfigurationInfo();
+		
 		configInfo.setCurrentRequest(request);
 	}
  }

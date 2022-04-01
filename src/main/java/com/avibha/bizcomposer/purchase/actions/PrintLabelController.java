@@ -17,6 +17,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,6 +30,12 @@ import java.util.ArrayList;
 
 @Controller
 public class PrintLabelController{
+	
+	@Autowired
+    private SalesDetailsDao saleDetailsDao;
+	
+	@Autowired
+	private SalesDetails sd;
 
 	@GetMapping("/PrintLBL")
 	public String printLabel(PrintLabelDto printLabelDto, HttpServletRequest request) throws IOException, ServletException {
@@ -37,8 +44,8 @@ public class PrintLabelController{
 
 		/*		The code executes when user click on PrintLabel
 		 * tab. It provides the information ie:- vendor name &
-		 * their related service types, address label type list.
-		 */
+		 * their related service types, address label type list.*/
+		 
 		if (action.equalsIgnoreCase("PrintLabel")) {
 			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			printLabelDto.setStartPage(1);
@@ -53,11 +60,11 @@ public class PrintLabelController{
 			forward = "/purchase/printLables";
 		}
 		
-		/*		The code executes when user click on pages 
+			/*	The code executes when user click on pages 
 		 * (ie:- 1,2 or previous or next). It provides the 
 		 * information ie:- vendor name & their related 
-		 * service types, address label type list.
-		 */		
+		 * service types, address label type list.*/
+		 		
 		else if (action.equalsIgnoreCase("PrintLabelList")) { // for Print Label
 			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			pdetails.getPrintLabelInfo(request,printLabelDto);
@@ -72,27 +79,27 @@ public class PrintLabelController{
 		/*	Update the address type label selected by
 		 * user in the existing address type label list.
 		 * Also update the related information such as 
-		 * width,height,etc.
-		 */
+		 * width,height,etc.*/
+		 
 		else if (action.equalsIgnoreCase("UpdateLabel")) { 
 			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			request.setAttribute("Vendor","Vendor");
 			Label lbl = new Label();
 			ArrayList labelList = lbl.getLabelList();
 			request.setAttribute("Labels", labelList);
-			SalesDetails sd = new SalesDetails();
+			//SalesDetails sd = new SalesDetails();
 			pdetails.getLabel(request, printLabelDto);
 			sd.getLabelType(request);
 			forward = "/sales/setUpLabel";
 		}
-		
-		/*		Saves the new address type label & its related 
+		/*
+				Saves the new address type label & its related 
 		 * information sach as width, height,etc. to the
-		 * database.
-		 */
+		 * database.*/
+		 
 		else if (action.equalsIgnoreCase("SaveLabel")) { 
 			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			SalesDetailsDao sd = new SalesDetailsDao();
+			//SalesDetailsDao sd = new SalesDetailsDao();
 			boolean result=pdetails.saveLabel(request, printLabelDto);
 			String msg="";
 			request.setAttribute("Vendor","v");
@@ -105,7 +112,7 @@ public class PrintLabelController{
 				msg="Label is updated successfully";
 				
 			}
-			sd.getLabelType(request);
+			saleDetailsDao.getLabelType(request);
 			Label lbl = new Label();
 			ArrayList labelList = lbl.getLabelList();
 			request.setAttribute("Labels", labelList);
@@ -121,7 +128,7 @@ public class PrintLabelController{
 		else if (action.equalsIgnoreCase("DeleteLabel")) { 
 			request.setAttribute("Vendor","v");
 			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			SalesDetails sd = new SalesDetails();
+		//	SalesDetails sd = new SalesDetails();
 			pdetails.deleteLabel(request, printLabelDto);
 			sd.getLabelType(request);
 			Label lbl = new Label();
@@ -131,5 +138,5 @@ public class PrintLabelController{
 		}
 		request.setAttribute("customerDto", printLabelDto);
 		return forward;
-	}
+	}  
 }

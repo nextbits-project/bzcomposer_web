@@ -1,11 +1,17 @@
 package com.avibha.bizcomposer.configuration.forms;
 
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
+import com.bzcomposer.configuration.module.form.templates.BCA_FormTemplateType;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,7 +19,209 @@ import java.util.List;
  */
 public class ConfigurationDto implements Serializable {
 
-    private static final long serialVersionUID = 0;
+    @Override
+	public String toString() {
+		return "ConfigurationDto [preferenceID=" + preferenceID + ", poboard=" + poboard + ", itemReceivedBoard="
+				+ itemReceivedBoard + ", itemShippedBoard=" + itemShippedBoard + ", salesOrderBoard=" + salesOrderBoard
+				+ ", showReorderPointList=" + showReorderPointList + ", showReorderPointWarning="
+				+ showReorderPointWarning + ", reservedQuantity=" + reservedQuantity + ", salesOrderQty="
+				+ salesOrderQty + ", productTaxable=" + productTaxable + ", taxable=" + taxable + ", backupLocation="
+				+ backupLocation + ", backupPeriod=" + backupPeriod + ", backupPlace=" + backupPlace + ", currencyID="
+				+ currencyID + ", currencyName=" + currencyName + ", startInvoiceNum=" + startInvoiceNum
+				+ ", startEstimationNum=" + startEstimationNum + ", startSalesOrderNum=" + startSalesOrderNum
+				+ ", startPONum=" + startPONum + ", invStyleID=" + invStyleID + ", estimationStyleID="
+				+ estimationStyleID + ", soStyleID=" + soStyleID + ", poStyleID=" + poStyleID + ", weightID=" + weightID
+				+ ", weightName=" + weightName + ", listOfExistingWeights=" + listOfExistingWeights
+				+ ", defaultLabelID=" + defaultLabelID + ", labelName=" + labelName + ", filterOption=" + filterOption
+				+ ", printBills=" + printBills + ", mailToCustomer=" + mailToCustomer + ", userName=" + userName
+				+ ", groupID=" + groupID + ", groupNm=" + groupNm + ", multiUserConnection=" + multiUserConnection
+				+ ", password=" + password + ", EmailAddress=" + EmailAddress + ", showCombinedBilling="
+				+ showCombinedBilling + ", startingBillNumber=" + startingBillNumber + ", listOfExistingBillingType="
+				+ listOfExistingBillingType + ", selectedBillingTypeId=" + selectedBillingTypeId
+				+ ", showBillingStatStyle=" + showBillingStatStyle + ", billingTypeId=" + billingTypeId
+				+ ", billingTypeName=" + billingTypeName + ", fileName=" + fileName + ", custDefaultCountryID="
+				+ custDefaultCountryID + ", custTaxable=" + custTaxable + ", defaultFootnoteID=" + defaultFootnoteID
+				+ ", personPrefer=" + personPrefer + ", isProductWeight=" + isProductWeight + ", isCompanyName="
+				+ isCompanyName + ", invoiceDefaultLogo=" + invoiceDefaultLogo + ", shippingTable=" + shippingTable
+				+ ", customerProvince=" + customerProvince + ", addressSettings=" + addressSettings
+				+ ", customerShippingId=" + customerShippingId + ", saleShowCountry=" + saleShowCountry
+				+ ", ratePriceChangable=" + ratePriceChangable + ", saleShowTelephone=" + saleShowTelephone
+				+ ", isSalePrefix=" + isSalePrefix + ", salesTaxCode=" + salesTaxCode + ", saleTaxRate=" + saleTaxRate
+				+ ", saleTaxRate2=" + saleTaxRate2 + ", howOftenSalestax=" + howOftenSalestax + ", dropShipCharge="
+				+ dropShipCharge + ", isShowDropShipItems=" + isShowDropShipItems + ", extraChargeApplicable="
+				+ extraChargeApplicable + ", chargeAmount=" + chargeAmount + ", orderAmount=" + orderAmount
+				+ ", packingSlipTemplateId=" + packingSlipTemplateId + ", packingSlipTemplateName="
+				+ packingSlipTemplateName + ", baseTemplateId=" + baseTemplateId
+				+ ", listOfExistingPackingSlipTemplate=" + listOfExistingPackingSlipTemplate + ", invoiceStyleTypeId="
+				+ invoiceStyleTypeId + ", invoiceStyleName=" + invoiceStyleName + ", listOfExistingInvoiceStyles="
+				+ listOfExistingInvoiceStyles + ", isDefaultCreditTerm=" + isDefaultCreditTerm + ", isRefundAllowed="
+				+ isRefundAllowed + ", recurringServiceBill=" + recurringServiceBill + ", jobCategoryId="
+				+ jobCategoryId + ", jobCategory=" + jobCategory + ", listOfExistingJobCategory="
+				+ listOfExistingJobCategory + ", vendorDefaultCountryID=" + vendorDefaultCountryID
+				+ ", vendorDefaultFootnoteID=" + vendorDefaultFootnoteID + ", selectedActiveEmployeeId="
+				+ selectedActiveEmployeeId + ", activeEmployeeName=" + activeEmployeeName
+				+ ", listOfExistingActiveEmployee=" + listOfExistingActiveEmployee + ", shipCarrierId=" + shipCarrierId
+				+ ", shipCarrierName=" + shipCarrierName + ", shipCarrierParentId=" + shipCarrierParentId
+				+ ", listOfExistingShipCarrier=" + listOfExistingShipCarrier + ", vendorProvience=" + vendorProvience
+				+ ", poShowCountry=" + poShowCountry + ", poShowTelephone=" + poShowTelephone + ", isPurchasePrefix="
+				+ isPurchasePrefix + ", startRINum=" + startRINum + ", performance=" + performance
+				+ ", userDefinePerform=" + userDefinePerform + ", empStateID=" + empStateID + ", empCountryID="
+				+ empCountryID + ", timeSheet=" + timeSheet + ", job=" + job + ", cost=" + cost + ", description="
+				+ description + ", jobCodeID=" + jobCodeID + ", jobTitleId=" + jobTitleId + ", selecctedJobTitleId="
+				+ selecctedJobTitleId + ", jobTitleName=" + jobTitleName + ", listOfJobTitle=" + listOfJobTitle
+				+ ", chargeSalesTax=" + chargeSalesTax + ", salesTaxID=" + salesTaxID + ", federalTaxID=" + federalTaxID
+				+ ", fiscalMonth=" + fiscalMonth + ", rateFICA=" + rateFICA + ", rateSocialTax=" + rateSocialTax
+				+ ", socialTaxLimit=" + socialTaxLimit + ", rateMedicareTax=" + rateMedicareTax + ", rateFIT=" + rateFIT
+				+ ", rateFUTA=" + rateFUTA + ", autoFIT=" + autoFIT + ", yearFIT=" + yearFIT + ", deductionList="
+				+ deductionList + ", companyTaxOptionDtos=" + companyTaxOptionDtos + ", howOftenSalesTax="
+				+ howOftenSalesTax + ", availableTaxYear=" + availableTaxYear + ", selectedTaxYear=" + selectedTaxYear
+				+ ", listOfExistingTaxYear=" + listOfExistingTaxYear + ", moduleID=" + moduleID + ", parentID="
+				+ parentID + ", moduleName=" + moduleName + ", listOfExistingModule=" + listOfExistingModule
+				+ ", listOfExistingModuleNames=" + listOfExistingModuleNames + ", showReminder=" + showReminder
+				+ ", invoiceMemo=" + invoiceMemo + ", invoiceMemoDays=" + invoiceMemoDays + ", overdueInvoice="
+				+ overdueInvoice + ", overdueInvoiceDays=" + overdueInvoiceDays + ", inventoryOrder=" + inventoryOrder
+				+ ", inventoryOrderDays=" + inventoryOrderDays + ", billsToPay=" + billsToPay + ", billsToPayDays="
+				+ billsToPayDays + ", memorizePurchaseOrder=" + memorizePurchaseOrder + ", memorizePurchaseOrderDays="
+				+ memorizePurchaseOrderDays + ", memorizeBill=" + memorizeBill + ", memorizeBillDays="
+				+ memorizeBillDays + ", memorizeEstimation=" + memorizeEstimation + ", memorizeEstimationDays="
+				+ memorizeEstimationDays + ", serviceBilling=" + serviceBilling + ", serviceBillingDays="
+				+ serviceBillingDays + ", annualInterestRate=" + annualInterestRate + ", minCharge=" + minCharge
+				+ ", gracePeriod=" + gracePeriod + ", assessFinanceCharge=" + assessFinanceCharge
+				+ ", markFinanceCharge=" + markFinanceCharge + ", mailServer=" + mailServer + ", mailUserName="
+				+ mailUserName + ", mailPassword=" + mailPassword + ", mailAuth=" + mailAuth + ", senderEmail="
+				+ senderEmail + ", serviceID=" + serviceID + ", serviceName=" + serviceName + ", invName=" + invName
+				+ ", footnote=" + footnote + ", footnoteName=" + footnoteName + ", desc=" + desc + ", arCategory="
+				+ arCategory + ", arReceivedType=" + arReceivedType + ", arDepositTo=" + arDepositTo + ", poCategory="
+				+ poCategory + ", poReceivedType=" + poReceivedType + ", poDepositTo=" + poDepositTo + ", bpCategory="
+				+ bpCategory + ", bpReceivedType=" + bpReceivedType + ", bpDepositTo=" + bpDepositTo
+				+ ", defaultPaymentMethodId=" + defaultPaymentMethodId + ", defaultReceiveTypeId="
+				+ defaultReceiveTypeId + ", defaultCategoryId=" + defaultCategoryId + ", defaultDepositToId="
+				+ defaultDepositToId + ", reasonId=" + reasonId + ", reason=" + reason + ", parentReasonId="
+				+ parentReasonId + ", reasonType=" + reasonType + ", reasonTypeId=" + reasonTypeId
+				+ ", listOfExistingReasonType=" + listOfExistingReasonType + ", listOfExistingMasterReasonType="
+				+ listOfExistingMasterReasonType + ", shippingAPI=" + shippingAPI + ", isUPSActive=" + isUPSActive
+				+ ", isUSPSActive=" + isUSPSActive + ", isFeDexActive=" + isFeDexActive + ", upsUserId=" + upsUserId
+				+ ", uspsUserId=" + uspsUserId + ", upsPassword=" + upsPassword + ", accesskey=" + accesskey
+				+ ", upsAccountNo=" + upsAccountNo + ", upsServiceName=" + upsServiceName + ", upsServicePrice="
+				+ upsServicePrice + ", fedexAccountNumber=" + fedexAccountNumber + ", fedexMeterNumber="
+				+ fedexMeterNumber + ", fedexPassword=" + fedexPassword + ", fedexTestKey=" + fedexTestKey
+				+ ", listOfExistingUpsUSers=" + listOfExistingUpsUSers + ", listOfExistingUspsUSers="
+				+ listOfExistingUspsUSers + ", listOfExistingFedexUSers=" + listOfExistingFedexUSers
+				+ ", selectedDurationDaysId=" + selectedDurationDaysId + ", durationDaysId=" + durationDaysId
+				+ ", durationDays=" + durationDays + ", listOfExistingDurationDays=" + listOfExistingDurationDays
+				+ ", mailTypeId=" + mailTypeId + ", selectedMailTypeId=" + selectedMailTypeId + ", mailType=" + mailType
+				+ ", active=" + active + ", listOfExistingMailType=" + listOfExistingMailType + ", packageSizeId="
+				+ packageSizeId + ", selectedPackageSizeId=" + selectedPackageSizeId + ", packageSize=" + packageSize
+				+ ", packageSizeActive=" + packageSizeActive + ", listOfExistingPackageSize="
+				+ listOfExistingPackageSize + ", containerId=" + containerId + ", selectedContainerId="
+				+ selectedContainerId + ", container=" + container + ", containerActive=" + containerActive
+				+ ", listOfExistingContainer=" + listOfExistingContainer + ", realTimeShippingServiceId="
+				+ realTimeShippingServiceId + ", selectedRealTimeShippingServiceId=" + selectedRealTimeShippingServiceId
+				+ ", realTimeShippingServiceType=" + realTimeShippingServiceType + ", realTimeShippingService="
+				+ realTimeShippingService + ", realTimeShippingActive=" + realTimeShippingActive
+				+ ", realTimeShippingPrice=" + realTimeShippingPrice + ", listOfExistingRealTimeShippingServices="
+				+ listOfExistingRealTimeShippingServices + ", listOfExistingRealTimeShippingServices1="
+				+ listOfExistingRealTimeShippingServices1 + ", listOfExistingRealTimeShippingServices2="
+				+ listOfExistingRealTimeShippingServices2 + ", userDefinedShippingId=" + userDefinedShippingId
+				+ ", userDefinedShippingTypeId=" + userDefinedShippingTypeId + ", selectedUserDefinedShippingTypeId="
+				+ selectedUserDefinedShippingTypeId + ", userDefinedShipping=" + userDefinedShipping
+				+ ", userDefinedShppingActive=" + userDefinedShppingActive + ", parentId=" + parentId
+				+ ", userDefinedShippingWeight=" + userDefinedShippingWeight + ", userDefinedShppingRate="
+				+ userDefinedShppingRate + ", userDefinedShippingPrice=" + userDefinedShippingPrice
+				+ ", listOfExistingUserDefiedShippingType=" + listOfExistingUserDefiedShippingType
+				+ ", listOfExistingUserDefiedShippingWeightAndPrice=" + listOfExistingUserDefiedShippingWeightAndPrice
+				+ ", isEnable=" + isEnable + ", importDays=" + importDays + ", useCurrentTime=" + useCurrentTime
+				+ ", alloweSalesOnline=" + alloweSalesOnline + ", scheduleTime=" + scheduleTime
+				+ ", selectedStoreTypeId=" + selectedStoreTypeId + ", selectedStoreId=" + selectedStoreId
+				+ ", storeTypeId=" + storeTypeId + ", storeId=" + storeId + ", storeName=" + storeName
+				+ ", storeTypeName=" + storeTypeName + ", abbreviation=" + abbreviation + ", returnPolicy="
+				+ returnPolicy + ", listOfExistingStoreType=" + listOfExistingStoreType + ", listOfExistingStores="
+				+ listOfExistingStores + ", listOfExistingActiveStores=" + listOfExistingActiveStores
+				+ ", selectedeBayCategoryId=" + selectedeBayCategoryId + ", eBayCategoryId=" + eBayCategoryId
+				+ ", eBayCategoryName=" + eBayCategoryName + ", isLeaf=" + isLeaf + ", listOfExistingeBayCategories="
+				+ listOfExistingeBayCategories + ", selectedTemplateId=" + selectedTemplateId + ", templateContent="
+				+ templateContent + ", templateSubject=" + templateSubject + ", listOfExistingTemplates="
+				+ listOfExistingTemplates + ", templateId=" + templateId + ", selectedAccountName="
+				+ selectedAccountName + ", selectedBankAccountId=" + selectedBankAccountId + ", accountId=" + accountId
+				+ ", listOfExistingBankAccount=" + listOfExistingBankAccount + ", selectedStateId1=" + selectedStateId1
+				+ ", stateId1=" + stateId1 + ", stateName1=" + stateName1 + ", listOfExistingState1="
+				+ listOfExistingState1 + ", selectedCountryId1=" + selectedCountryId1 + ", countryId1=" + countryId1
+				+ ", countryName1=" + countryName1 + ", listOfExistingCountry1=" + listOfExistingCountry1
+				+ ", selectedPaymentTypeId=" + selectedPaymentTypeId + ", AcctID=" + AcctID + ", paymentType="
+				+ paymentType + ", paymentTypeId=" + paymentTypeId + ", receivedTypeId=" + receivedTypeId
+				+ ", listOfExistingPaymentType=" + listOfExistingPaymentType + ", selectedCreditCardId="
+				+ selectedCreditCardId + ", isActive=" + isActive + ", cvv=" + cvv + ", creditCardName="
+				+ creditCardName + ", creditCardTypeId=" + creditCardTypeId + ", listOfExistingCreditCard="
+				+ listOfExistingCreditCard + ", listOfExistingCreditCardType=" + listOfExistingCreditCardType
+				+ ", businessTypeId=" + businessTypeId + ", companyName=" + companyName + ", listOfExistingModules="
+				+ listOfExistingModules + ", listOfExistingModules1=" + Arrays.toString(listOfExistingModules1)
+				+ ", ListOfActiveInvoiceStyle=" + Arrays.toString(ListOfActiveInvoiceStyle)
+				+ ", ListOfDeActiveInvoiceStyle=" + Arrays.toString(ListOfDeActiveInvoiceStyle) + ", selectedModuleId="
+				+ selectedModuleId + ", selectedModules=" + selectedModules + ", listOfExistingselectedModules="
+				+ listOfExistingselectedModules + ", listOfExistingCategory=" + listOfExistingCategory
+				+ ", listOfExistingAccounts=" + listOfExistingAccounts + ", listOfExistingPayment="
+				+ listOfExistingPayment + ", listOfExistingReceivedType=" + listOfExistingReceivedType
+				+ ", listOfExistingPaymentGeneralAccount=" + listOfExistingPaymentGeneralAccount
+				+ ", listOfExistingCountry=" + listOfExistingCountry + ", listOfExistingState=" + listOfExistingState
+				+ ", listOfExistingShipping=" + listOfExistingShipping + ", selectedPaymentId=" + selectedPaymentId
+				+ ", selectedShippingId=" + selectedShippingId + ", selectedCountryId=" + selectedCountryId
+				+ ", selectedStateId=" + selectedStateId + ", selectedShipping=" + selectedShipping + ", shippingName="
+				+ shippingName + ", selectedCountry=" + selectedCountry + ", selectedState=" + selectedState
+				+ ", countryId=" + countryId + ", countryName=" + countryName + ", stateName=" + stateName
+				+ ", selectedPayment=" + selectedPayment + ", paymentId=" + paymentId + ", needSetUp=" + needSetUp
+				+ ", scheduleDays=" + scheduleDays + ", paymentName=" + paymentName + ", selectedAccountId="
+				+ selectedAccountId + ", featureName=" + featureName + ", selectedCategoryId=" + selectedCategoryId
+				+ ", selectedCategory=" + selectedCategory + ", categoryName=" + categoryName + ", categoryNumber="
+				+ categoryNumber + ", accountName=" + accountName + ", accountNumber=" + accountNumber
+				+ ", templateName=" + templateName + ", def=" + def + ", isDefault=" + isDefault
+				+ ", reimbursementSettings=" + reimbursementSettings + ", itemCode=" + itemCode + ", itemName="
+				+ itemName + ", qty=" + qty + ", unitPrice=" + unitPrice + ", weight=" + weight + ", annualRate="
+				+ annualRate + ", financeCharge=" + financeCharge + ", gracePeriodDays=" + gracePeriodDays
+				+ ", startMonth=" + startMonth + ", endMonth=" + endMonth + ", statusID=" + statusID + ", statusName="
+				+ statusName + ", invoiceLocation=" + invoiceLocation + ", listOfExistingTerm=" + listOfExistingTerm
+				+ ", selectedTermId=" + selectedTermId + ", selectedTerm=" + selectedTerm + ", termName=" + termName
+				+ ", listOfExistingCustomerGroup=" + listOfExistingCustomerGroup + ", selectedCustomerGroupId="
+				+ selectedCustomerGroupId + ", selectedCustomerGroup=" + selectedCustomerGroup + ", groupName="
+				+ groupName + ", groupPermissions=" + groupPermissions + ", customerGroup=" + customerGroup
+				+ ", listOfExistingGroup=" + listOfExistingGroup + ", listOfExistingUserList=" + listOfExistingUserList
+				+ ", selectedGroupId=" + selectedGroupId + ", selectedGroup=" + selectedGroup + ", status=" + status
+				+ ", listOfExistingInvoiceStyle=" + listOfExistingInvoiceStyle + ", listOfExistingInvoiceStyle1="
+				+ listOfExistingInvoiceStyle1 + ", selectedInvoiceStyleId=" + selectedInvoiceStyleId
+				+ ", InvoiceStyleId=" + InvoiceStyleId + ", invoiceStyle=" + invoiceStyle + ", InvoiceStyleId1="
+				+ InvoiceStyleId1 + ", invoiceStyle1=" + invoiceStyle1 + ", listOfExistingSalesRep="
+				+ listOfExistingSalesRep + ", selectedSalesRepId=" + selectedSalesRepId + ", salesRepId=" + salesRepId
+				+ ", salesRepName=" + salesRepName + ", messages=" + messages + ", selectedMessageId="
+				+ selectedMessageId + ", messageId=" + messageId + ", messageName=" + messageName
+				+ ", listOfExistingLocation=" + listOfExistingLocation + ", selectedLocationId=" + selectedLocationId
+				+ ", locationName=" + locationName + ", saveImage=" + saveImage + ", sortBy=" + sortBy
+				+ ", isSalesOrder=" + isSalesOrder + ", newPassword=" + newPassword + ", hostAddess=" + hostAddess
+				+ ", portNumber=" + portNumber + ", portName=" + portName + ", timeOut=" + timeOut + ", baudRate="
+				+ baudRate + ", bufferSize=" + bufferSize + ", listOfExistingPaymentGateways="
+				+ listOfExistingPaymentGateways + ", selectedPaymentGatewayId=" + selectedPaymentGatewayId
+				+ ", gateWayId=" + gateWayId + ", gatewayName=" + gatewayName + ", listOfExistingSalesTax="
+				+ listOfExistingSalesTax + ", selectedSalesTaxId=" + selectedSalesTaxId + ", salesTaxRate="
+				+ salesTaxRate + ", salesTaxName=" + salesTaxName + ", listOfExistingCreditTerm="
+				+ listOfExistingCreditTerm + ", selectedCreditTermId=" + selectedCreditTermId + ", days=" + days
+				+ ", creditTermName=" + creditTermName + ", listOfExistingRefundReason=" + listOfExistingRefundReason
+				+ ", selectedRefundReasonId=" + selectedRefundReasonId + ", isDefaultRefundReason="
+				+ isDefaultRefundReason + ", refundReason=" + refundReason + ", listOfExistingDefaultPrinter="
+				+ listOfExistingDefaultPrinter + ", selectedDefaultPrinterId=" + selectedDefaultPrinterId
+				+ ", printerName=" + printerName + ", eWayRefundPassword=" + eWayRefundPassword + ", fieldName1="
+				+ fieldName1 + ", fieldName2=" + fieldName2 + ", fieldName3=" + fieldName3 + ", fieldName4="
+				+ fieldName4 + ", poNumPrefix=" + poNumPrefix + ", productCategoryID=" + productCategoryID
+				+ ", locationID=" + locationID + ", reorderPoint=" + reorderPoint + ", vendorBusinessTypeID="
+				+ vendorBusinessTypeID + ", vendorInvoiceStyleId=" + vendorInvoiceStyleId + ", customerType="
+				+ customerType + ", priceLevelPriority=" + priceLevelPriority + ", priceLevelDealer=" + priceLevelDealer
+				+ ", priceLevelCustomer=" + priceLevelCustomer + ", priceLevelGeneral=" + priceLevelGeneral
+				+ ", showUSAInBillShipAddress=" + showUSAInBillShipAddress + ", invoiceTemplateType="
+				+ invoiceTemplateType + ", estTemplateType=" + estTemplateType + ", soTemplateType=" + soTemplateType
+				+ ", poTemplateType=" + poTemplateType + ", psTemplateType=" + psTemplateType + ", billsTemplateType="
+				+ billsTemplateType + ", displayPeriod=" + displayPeriod + ", custTitleID=" + custTitleID
+				+ ", shippingViaID=" + shippingViaID + ", scheduleTimes=" + scheduleTimes + ", ScheduleTimesList="
+				+ Arrays.toString(ScheduleTimesList) + "]";
+	}
+
+	private static final long serialVersionUID = 0;
     public static final String ConfigColumns = "PoBoard,ItemReceivedBoard,ItemShippedBoard,SalesOrderBoard,ShowReorderPointList,ShowReorderPointWarning,"
             + "ReservedQuantity,SalesOrderQty,ProductTaxable,CurrencyID,StartInvoiceNum,StartEstimationNum,StartSalesOrderNum,StartPONum,"
             + "InvoiceStyleID,EstimationStyleID,SoStyleID,PoStyleID,FilterOption,AdminPassword,CustTaxable,AddressSettings,SalesTaxCode,SaleTaxRate,SaleTaxRate2,"
@@ -94,6 +302,7 @@ public class ConfigurationDto implements Serializable {
     private int billingTypeId;
     private String billingTypeName;
 
+    private @Setter @Getter BCA_FormTemplateType formTemplateType;
     /* Sales and Customer */
 
     private String fileName;

@@ -1140,7 +1140,7 @@ function CheckMambership() {
 		}
 	}else if(membershipLevel.toLowerCase() == pf.toLowerCase()){
 		if(size>=10000){
-			
+
 			return maxnumberofuserdialog();
 		}else {
 			return AddCustomer();
@@ -1149,7 +1149,7 @@ function CheckMambership() {
 }
 function AddCustomer()
 {
-	
+
 	if(document.CustomerForm.cname.value==""){
 		document.CustomerForm.cname.focus();
 		return showNameDialog();
@@ -1183,7 +1183,7 @@ function AddCustomer()
 	{
 		if(validate())
 		{
-			
+
 			event.preventDefault();
 			$("#addNewCustomerDialog").dialog({
                 resizable: false,
@@ -1192,7 +1192,7 @@ function AddCustomer()
                 modal: true,
                 buttons: {
                     "<spring:message code='BzComposer.global.ok'/>": function () {
-                        
+
                         $(this).dialog("close");
                         document.getElementById('tabid').value="AddCustomer";
                         document.forms["frmNewCustomer"].action = "Customer?tabid=AddCustomer" ;
@@ -1323,7 +1323,7 @@ function addToTable(form){
 
 		if(flag==1)		{
 
-			
+
 			return showServiceValidationDialog();
 			return;
 		}
@@ -1721,7 +1721,7 @@ function showEmailValidationDialog(){
     return false;
 }
 function showServiceValidationDialog(){
-	
+
 	event.preventDefault();
 	$("#showServiceValidationDialog").dialog({
     	resizable: false,

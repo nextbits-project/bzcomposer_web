@@ -151,7 +151,7 @@ function AddLabel()
 	}
 	else
 	{
-		
+
 		event.preventDefault();
 		$("#saveLabelDialog").dialog({
 			resizable: false,
