@@ -5,6 +5,7 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+@Service
 public class ConfigurationInfo {
 
     private static HttpServletRequest request;

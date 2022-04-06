@@ -24,6 +24,7 @@ import com.avibha.common.utility.MyUtility;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Service
 public class PurchaseOrderInfoDao {
 	
 	/* Provide the list of all customers with their

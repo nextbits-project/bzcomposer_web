@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
@@ -30,6 +31,8 @@ import com.avibha.common.utility.CountryState;
 /*
  * 
  */
+
+@Service
 public class EstimationInfo {
 
 	public ArrayList getItemList(String compId) {
@@ -43,10 +46,8 @@ public class EstimationInfo {
 			con = db.getConnection();
 			String invcode = "";
 			String sqlString = " InventoryID,InventoryCode,InventoryDescription,Qty,Weight,SalePrice,isCategory,ItemTypeID,SerialNum from bca_iteminventory where CompanyID=? and Active=1 and ParentID=0 ";
-
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setInt(1, cid);
-
 			rs = pstmt.executeQuery();
 			int invID;
 			while (rs.next()) {

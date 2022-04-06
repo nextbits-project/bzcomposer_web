@@ -20,6 +20,7 @@ import com.avibha.common.utility.DateInfo;
 import com.avibha.common.utility.MyUtility;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -33,6 +34,7 @@ import java.util.*;
 /*
  * 
  */
+@Service
 public class InvoiceInfoDao {
 
 	public ArrayList getItemList(String compId) {

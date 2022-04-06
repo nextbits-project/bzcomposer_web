@@ -19,7 +19,9 @@ import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SalesOrderBoardInfo {
 
 	public ArrayList SalesRecordSearch(String compId, SalesBoardDto sform) {

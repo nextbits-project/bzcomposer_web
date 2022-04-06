@@ -14,7 +14,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.view.JRViewer;
+//import net.sf.jasperreports.view.JRViewer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -113,7 +113,7 @@ public class BillingBoardController{
 			JasperReport jasperreport = JasperCompileManager.compileReport(design);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(), new JRBeanCollectionDataSource(bill));
 			JFrame frame = new JFrame("BillingStatement");
-			frame.getContentPane().add(new JRViewer(jasperPrint));
+//			frame.getContentPane().add(new JRViewer(jasperPrint));
 			frame.setBounds(x, y, width,height);
 			frame.setVisible(true);
 

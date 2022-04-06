@@ -19,12 +19,15 @@ import com.google.gson.JsonParser;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+@Service
 public class PurchaseBoardInfoDao {
 
 	public ArrayList PurchaseRecordSearch(HttpServletRequest request, String compId, String action, PurchaseBoardDto form) {

@@ -13,13 +13,8 @@ import com.avibha.common.log.Loger;
 
 @Service
 public class SalesOrderBoardDetails {
-
+    @Autowired
 	private SalesOrderBoardInfo saleInfo;
-	@Autowired
-	public SalesOrderBoardDetails(SalesOrderBoardInfo saleInfo) {
-		super();
-		this.saleInfo = saleInfo;
-	}
 
 	
     public ArrayList getSalesOrderBoardDetails(HttpServletRequest request, SalesBoardDto sform) {

@@ -27,7 +27,9 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
 import com.nxsol.bizcomposer.common.TblBudget;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SalesBoardInfo {
 
 	public ArrayList SalesRecordSearch(String compId, String invoiceReportType, SalesBoardDto salesBoardDto) {

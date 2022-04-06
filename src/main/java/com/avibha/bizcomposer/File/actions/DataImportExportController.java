@@ -54,13 +54,8 @@ public class DataImportExportController {
     
     @Autowired
     private EstimationInfoDao estInfoDao;
-    
+    @Autowired
     private PurchaseOrderInfoDao purchaseInfDao;
-	@Autowired
-    public DataImportExportController( PurchaseOrderInfoDao purchaseInfDao) {
-		super();
-		this.purchaseInfDao = purchaseInfDao;
-	}
 	
 	    
     @GetMapping("/dataExportAction")

@@ -23,6 +23,7 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.purchase.dao.CreditCard;
@@ -39,7 +40,7 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
-
+@Service
 public class SalesDetails {
 
 	public void getdataManager(HttpServletRequest request, ActionForm form) {

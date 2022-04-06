@@ -18,6 +18,7 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
 import com.avibha.common.utility.CountryState;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -33,6 +34,7 @@ import java.util.List;
 /*
  * 
  */
+@Service
 public class EstimationInfoDao {
 
 	public ArrayList getItemList(String compId) {

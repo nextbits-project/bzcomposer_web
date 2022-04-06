@@ -13,14 +13,9 @@ import com.avibha.common.log.Loger;
 
 @Service
 public class PurchaseBoardDetails {
-	
-	private PurchaseBoardInfoDao purchaseInfo;
-
 	@Autowired
-	public PurchaseBoardDetails(PurchaseBoardInfoDao purchaseInfo) {
-		super();
-		this.purchaseInfo = purchaseInfo;
-	}  
+	PurchaseBoardInfoDao purchaseInfo;
+  
 
 	public ArrayList getPurchaseBoardDetails(HttpServletRequest request, PurchaseBoardDto pform) {
 		
