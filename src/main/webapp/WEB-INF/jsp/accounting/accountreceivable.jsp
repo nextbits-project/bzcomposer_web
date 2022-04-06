@@ -138,6 +138,23 @@ table.tabla-listados tbody tr td {
 								</select>
 							</div>
 						</div>
+						<div class="form-group row">
+							<label class="col-md-4  col-form-label">
+								<spring:message code="BzComposer.accountreceivable.depositto"/>
+							</label>
+							<div class="col-md-8">
+								<select class="form-control devDeposittypeDrp" id="depositId">
+
+								<% ArrayList<TblAccount> account = (ArrayList)request.getAttribute("AccountForCombo");
+									for(int i=0;i<account.size();i++)
+									{
+								%>
+									<option value="<%= account.get(i).getAccountID()%>" id="<%= account.get(i).getAccountID()%>"><% out.println(account.get(i).getName());  %></option>
+								<%  } %>
+
+								</select>
+							</div>
+						</div>
 						 <div class="form-group row">
 						<label class="col-md-4  col-form-label">
 							<spring:message code="BzComposer.accountreceivable.amount"/>
@@ -213,7 +230,7 @@ table.tabla-listados tbody tr td {
 
 						</div>
 
-						<div class="form-group row">
+						<%-- <div class="form-group row">
 							<label class="col-md-4  col-form-label">
 								<spring:message code="BzComposer.accountreceivable.depositto"/>
 							</label>
@@ -229,7 +246,7 @@ table.tabla-listados tbody tr td {
 
 								</select>
 							</div>
-						</div>
+						</div> --%>
 						<div class="form-group row">
 							<label class="col-md-4  col-form-label">
 								<spring:message code="BzComposer.accountreceivable.category"/>
@@ -283,6 +300,11 @@ table.tabla-listados tbody tr td {
 								</button>
 							</div>
 						<div class="form-group">
+							<button class="btn btn-info" style="width: 100px;font-size: 14px;" onclick="return save()">
+								<spring:message code="BzComposer.global.new"/>
+							</button>
+						</div>
+						<div class="form-group">
 							<button class="btn btn-info" style="width: 100px;font-size: 14px;" onclick="return clearTransaction()">
 								<spring:message code="BzComposer.global.clear"/>
 							</button>
@@ -299,6 +321,10 @@ table.tabla-listados tbody tr td {
 			    aria-controls="nav-home" aria-selected="true">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.receivablelist"/>
 		    	</a>
+				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+			    aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()">
+			    	<spring:message code="BzComposer.accountreceivable.tabs.received"/>
+		    	</a>
 			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
 			    aria-controls="nav-profile" aria-selected="false" onclick="overDueTab()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.overdue"/>
@@ -314,10 +340,6 @@ table.tabla-listados tbody tr td {
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
 			    aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.layaways"/>
-		    	</a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-			    aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()">
-			    	<spring:message code="BzComposer.accountreceivable.tabs.received"/>
 		    	</a>
 			  </div>
 			</nav>
