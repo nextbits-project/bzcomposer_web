@@ -116,6 +116,7 @@ public class SalesBoard {
     
     private double balTotal;
     
+    private boolean isPaymentCompleted;
 	public int getQtyTotal() {
 		return qtyTotal;
 	}
@@ -799,4 +800,16 @@ public class SalesBoard {
 	public String getSoNumStr() { return soNumStr; }
 	public void setSoNumStr(String soNumStr) { this.soNumStr = soNumStr; }
 
+
+	public boolean isPaymentCompleted() {
+		return isPaymentCompleted;
+	}
+
+
+	public void setPaymentCompleted(boolean isPaymentCompleted) {
+		this.isPaymentCompleted = isPaymentCompleted;
+	}
+
+	
+	
 }

@@ -148,6 +148,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 							<th style="font-size: 14px;"><spring:message code="BzComposer.invoiceboard.companyname" /></th>
 							<th style="font-size: 14px;"><spring:message code="BzComposer.invoiceboard.name" /></th>
 			    			<th style="font-size: 14px;"><spring:message code="BzComposer.invoiceboard.salesamount" /></th>
+			    			<th style="font-size: 14px;"><spring:message code="BzComposer.invoiceboard.paid" /></th>
 							<th style="font-size: 14px;"><spring:message code="BzComposer.invoiceboard.emailid" /></th>	
 							<th style="font-size: 14px;"><spring:message code="BzComposer.invoiceboard.printed" /></th>
 			    			<th style="font-size: 14px;"><spring:message code="BzComposer.invoiceboard.shipped" /></th>
@@ -164,6 +165,14 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                             <td style="font-size:14px;">${objList.lastName}, ${objList.firstName}</td>
                             <%--<td style="font-size:14px;">${objList.zipCode}</td>--%>
                             <td style="font-size:14px;">${objList.total}</td>
+                            <td style="font-size:14px;">
+                                <c:if test="${objList.paymentCompleted == true}">
+                                    <input type="checkbox" name="paymentCompletedCHK" id="paymentCompletedId" title="paymentCompleted" checked="true" disabled="disabled">
+                                </c:if>
+                                <c:if test="${objList.paymentCompleted == false}">
+                                    <input type="checkbox" name="paymentCompletedCHK" id="paymentCompletedId" title="paymentCompleted" disabled="disabled">
+                                </c:if>
+                            </td>
                             <td style="font-size:14px;">${objList.email}</td>
                             <td style="font-size:14px;">
                                 <c:if test="${objList.printed == true}">

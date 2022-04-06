@@ -62,15 +62,15 @@ public class SalesBoardInfo {
 			Loger.log("oDate1:" + oDate1 + " oDate2:" + oDate2);
 
 	        if(invoiceReportType.equalsIgnoreCase("2")){
-				 sqlString = "select InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
+				 sqlString = "select IsPaymentCompleted,InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
 							"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
 							"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 and IsPaymentCompleted =1";// AND
 			}else if(invoiceReportType.equalsIgnoreCase("3")){
-				 sqlString = "select InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
+				 sqlString = "select IsPaymentCompleted, InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
 							"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
 							"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 and IsPaymentCompleted =0"; // AND
 		    }else{
-		    	 sqlString = "select InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
+		    	 sqlString = "select IsPaymentCompleted, InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
 						"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
 						"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 ";// AND
 		    }
@@ -129,6 +129,7 @@ public class SalesBoardInfo {
 			while(rs.next()) {
 				SalesBoard d = new SalesBoard();
 				d.setInvoiceID(rs.getInt("InvoiceID"));
+				d.setPaymentCompleted(rs.getBoolean("IsPaymentCompleted"));
 				d.setOrderid(rs.getInt("orderid"));
 				d.setOrderNum(rs.getLong("OrderNum"));
 				String orderNo = (rs.getString("OrderNum"));

@@ -19,8 +19,12 @@ import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.avibha.common.utility.MyUtility;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.common.BillingStatement;
 import com.nxsol.bizcomposer.common.ConstValue;
@@ -60,6 +64,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 	ArrayList<TblBudgetCategory> vRows = new ArrayList<TblBudgetCategory>();
 	TblCategory category = null;
 
+	ConfigurationInfo configInfo = new ConfigurationInfo();
+	ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 	public double getTotalAmountForLabel()
 	{
 		return totalAmount;
@@ -9688,6 +9694,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
                 invoice.setOrderNum(ordNo);
 
+                invoice.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(ordNo), AppConstants.InvoiceType, configDto, false));
+                
                 invoice.setMemo(rs.getString("Memo"));
 
                 invoice.setNote(rs.getString("Note"));
@@ -9985,11 +9993,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ResultSet rs = null;
 		ArrayList<BillingStatement> billingList = new ArrayList<BillingStatement>();
 		
-		String sql = "SELECT bill.statementno, bill.statementdate,bill.clientvendorid,bill.invoiceid,bill.iscombined,bill.type,bill.amount,"
+		String sql = "SELECT inv.Balance, inv.DateAdded, inv.PaidAmount, bill.statementno, bill.statementdate,bill.clientvendorid,bill.invoiceid,bill.iscombined,bill.type,bill.amount,"
 				+ "bill.overdueamount,bill.overdueservicecharge,c.Name AS CompanyName,c.FirstName,c.LastName,inv.OrderNum"
 				+ " FROM   bca_billingstatements AS bill"
 				+ " LEFT JOIN bca_clientvendor AS c on bill.ClientVendorID = c.ClientVendorID"
-				+ " LEFT JOIN bca_invoice AS inv ON bill.InvoiceID = inv.InvoiceID"
+				+ " JOIN bca_invoice AS inv ON bill.InvoiceID = inv.InvoiceID"
 				+ " WHERE   c.Status IN ('U','N') "
 				+ " AND c.CompanyID = " + ConstValue.companyId;
 		 if(criteriaForBillStatement.equals("Statement#"))
@@ -10015,6 +10023,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 				bs.setCustomerName(rs.getString("FirstName") + " " + rs.getString("LastName") + "(" + rs.getString("CompanyName") + ")");
 				bs.setStatementDate(rs.getDate("StatementDate"));
 				bs.setAmount(rs.getDouble("Amount"));
+				bs.setPaidAmount(rs.getDouble("PaidAmount"));
+				bs.setPaidDate(rs.getDate("DateAdded"));
 				
 				billingList.add(bs);
 			}

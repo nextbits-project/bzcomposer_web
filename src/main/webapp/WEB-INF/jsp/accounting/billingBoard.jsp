@@ -276,12 +276,12 @@ color: red;
 				<ul>
 					<li class="tab">
 						<a href="#tabs-1">
-							<spring:message code="BzComposer.billingboard.tabs.unpaidbillsandinvoice"/>
+							<spring:message code="BzComposer.billingboard.tabs.unpaidbills"/>
 						</a>
 					</li>
 					<li class="tab">
 						<a href="#tabs-2">
-							<spring:message code="BzComposer.billingboard.tabs.paidbillsandinvoice"/>
+							<spring:message code="BzComposer.billingboard.tabs.paidbills"/>
 						</a>
 					</li>
 					<li class="tab">
@@ -299,7 +299,6 @@ color: red;
 									<%-- <th scope="col"><spring:message code="BzComposer.billingboard.billinumber"/></th> --%>
 									<th scope="col"><spring:message code="BzComposer.billingboard.invoicenumber"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.customername"/></th>
-									<th scope="col"><spring:message code="BzComposer.billingboard.customerjob"/></th>
 									<%-- <th scope="col"><spring:message code="BzComposer.global.email"/></th> --%>
 									<th scope="col"><spring:message code="BzComposer.billingboard.billingcycle"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.orderdate"/></th>
@@ -319,9 +318,9 @@ color: red;
 								<tr onclick="selctRow(${objList.invoiceID}, ${loop.index})">
 									<th><input type="checkbox" name="checkbox"></th>
 									<!-- <td>&nbsp;</td> -->
-									<td class="text-right">${objList.orderNum}</td>
+									<td class="text-right">${objList.orderNumStr}</td>
 									<td class="text-right">${objList.cvName}</td>
-									<td>&nbsp;</td>
+									
 									<!-- <td>&nbsp;</td> -->
 									<td>&nbsp;</td>
 									<td class="text-right">${objList.dateAdded}</td>
@@ -348,11 +347,14 @@ color: red;
 							<thead>
 								<tr>
 									<th scope="col"><spring:message code="BzComposer.billingboard.select"/></th>
-									<th scope="col"><spring:message code="BzComposer.billingboard.statementnumber"/></th>
-									<th scope="col"><spring:message code="BzComposer.billingboard.statementfor"/></th>
+									<th scope="col"><spring:message code="BzComposer.billingboard.invoiceno"/></th>
+									<%-- <th scope="col"><spring:message code="BzComposer.billingboard.statementfor"/></th> --%>
 									<th scope="col"><spring:message code="BzComposer.billingboard.customername"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.statementdate"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.amount"/></th>
+									<th scope="col"><spring:message code="BzComposer.billingboard.paidamount"/></th>
+									<th scope="col"><spring:message code="BzComposer.popayable.paiddate"/></th>
+									<th scope="col"><spring:message code="BzComposer.popayable.balance"/></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -363,10 +365,15 @@ color: red;
 								<tr>
 									<th><input type="checkbox" name="checkbox"></th>
 									<td><% out.println(billingStatementList.get(i).getStatementNo());%></td>
-									<td class="text-right"><%= billingStatementList.get(i).getStatementFor()%></td>
+									<%-- <td class="text-right"><%= billingStatementList.get(i).getStatementFor()%></td> --%>
 									<td class="text-right"><%= billingStatementList.get(i).getCustomerName()%></td>
 									<td class="text-right"><%= JProjectUtil.getdateFormat().format(billingStatementList.get(i).getStatementDate())%></td>
 									<td class="text-right"><%= String.format("%.2f", billingStatementList.get(i).getAmount())%></td>
+									
+									<td class="text-right"><%= billingStatementList.get(i).getPaidAmount()%></td>
+									<td class="text-right"><%= billingStatementList.get(i).getPaidDate()%></td>
+									<td class="text-right"><%= billingStatementList.get(i).getBalance()%></td>
+									
 								</tr>
 								<% } %>
 							</tbody>
