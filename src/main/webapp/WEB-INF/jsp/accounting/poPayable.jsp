@@ -284,11 +284,7 @@ margin-right: 10px;
 			    aria-controls="nav-home" aria-selected="true">
 			    	<spring:message code="BzComposer.popayable.tab.popayablelist"/>
 		    	</a>
-			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" 
-			    aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
-			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
-		    	</a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" 
+		    	 <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" 
 			    aria-controls="nav-contact" aria-selected="false" onclick="paidList()">
 			    	<spring:message code="BzComposer.popayable.tab.paidlist"/>
 		    	</a>
@@ -296,6 +292,12 @@ margin-right: 10px;
                 aria-controls="nav-contact" aria-selected="false">
                     <spring:message code="BzComposer.accountreceivable.tabs.VendorRMARefund"/>
                 </a>
+			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" 
+			    aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
+			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
+		    	</a>
+			   
+		    	
 			  </div>
 			</nav>
 				<div class="table1" id="tblForInvoiceOrder">
@@ -327,7 +329,7 @@ margin-right: 10px;
 				  %> 
 			 	    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)" id="rowId<%=index%>">
 				      <td><input type="checkbox" id="Checkbox[<%= index %>]" ></td>
-				      <td class="text-right"><% out.println(rb.getPoNum()); %></td>
+				      <td class="text-right"><% out.println(rb.getOrderNumStr()); %></td>
 				      <td><% out.println(rb.getCompanyName()); %></td>
 				      <td value=<%=rb.getCvID() %>><% out.println(rb.getCvName()); %></td>
 				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded())); %></td>

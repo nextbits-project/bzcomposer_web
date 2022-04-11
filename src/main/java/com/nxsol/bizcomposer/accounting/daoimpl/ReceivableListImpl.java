@@ -110,6 +110,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				rb.setOrderNum(rs.getInt("OrderNum"));
+				int orderNo = (rs.getInt("OrderNum"));
+                rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo), AppConstants.POType, configDto, false));
 				rb.setPoNum(rs.getInt("PONum"));
 				rb.setEmployeeId(rs.getInt("EmployeeID"));
 				rb.setRefNum(rs.getString("RefNum"));
@@ -4348,6 +4350,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				/*rb.setOrderNum(rs.getInt("OrderNum"));*/
 				rb.setPoNum(rs.getInt("PONum"));
+				int orderNo = (rs.getInt("PONum"));
+				rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo), AppConstants.POType, configDto, false));
 				/*rb.setEmployeeId(rs.getInt("EmployeeID"));*/
 				/*rb.setRefNum(rs.getString("RefNum"));*/
 				rb.setMemo(rs.getString("Memo"));

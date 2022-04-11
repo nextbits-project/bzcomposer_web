@@ -2,6 +2,8 @@ package com.nxsol.bizcomposer.accounting.action;
 
 import com.avibha.bizcomposer.accounting.dao.AccountingDAO;
 import com.avibha.bizcomposer.accounting.forms.AccountDto;
+import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
 import com.google.gson.Gson;
@@ -13,6 +15,8 @@ import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
 import com.pritesh.bizcomposer.accounting.bean.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 /*import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -35,13 +39,16 @@ import java.util.ArrayList;
 
 @Controller
 public class AccountingController{
-
 	public String showBzComposer() {
 			return "bzComposer";
 		}
+	
+	@Autowired
+    ConfigurationDetails configDetails;
+	
 	@RequestMapping(value ="/AccountReceiveble", method = {RequestMethod.GET, RequestMethod.POST})
 	//@GetMapping("/AccountReceiveble")
-	public String accounting(ReceivableListDto receivableListDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String accounting(ConfigurationDto configDto, ReceivableListDto receivableListDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String forward = "/accounting/accountreceivable";   //jsp name without ext
 		HttpSession sess=request.getSession();
 		String action = request.getParameter("tabid");
@@ -54,6 +61,12 @@ public class AccountingController{
 		ArrayList<TblAccount> account =rl.getAccount();
 		/*request.setAttribute("listForUnpaidCreditAmount", listForUnpaidCreditAmount);
 		request.setAttribute("listForUnpaidOpeningBal", listForUnpaidOpeningBal);*/
+		configDetails.getConfigurationInfo(request, configDto);
+		
+		request.setAttribute("arCatId", configDto.getArCategory());
+		request.setAttribute("arReceiveType", configDto.getArReceivedType());
+		request.setAttribute("arDepositTo", configDto.getArDepositTo());
+		
 		request.setAttribute("AccountForCombo", account);
 		request.setAttribute("PaymentTypeForCombo", paymentType);
 		request.setAttribute("CategoryCombo", categoryforcombo);

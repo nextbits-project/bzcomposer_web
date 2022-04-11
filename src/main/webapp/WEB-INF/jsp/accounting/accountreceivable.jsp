@@ -423,7 +423,7 @@ table.tabla-listados tbody tr td {
 				  %>
 				    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)">
 				      <td class="text-right"><input type="checkbox" id="Checkbox"></td>
-				      <td class="text-right" ><% out.println(rb.getOrderNum()); %></td>
+				      <td class="text-right" ><% out.println(rb.getOrderNumStr()); %></td>
 				      <td class="text-right"><% out.println(rb.getCompanyName()); %></td>
 				      <td value="<%=rb.getCvID() %>" class="text-right"><% out.println(rb.getCvName()); %></td>
 				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded())); %></td>
@@ -862,12 +862,19 @@ table.tabla-listados tbody tr td {
 	   if(ctype != 'Check'){
              $("#Check").hide();
        }
-       $("#receivedType option:contains(Check)").attr('selected', 'selected');
-       $("#depositId option:contains(US State Bank)").attr('selected', 'selected');
-       $("#categoryId option:contains(Inventory 6810)").attr('selected', 'selected');
-       setTimeout(function() {
+       //$("#receivedType option:contains(Check)").attr('selected', 'selected');
+       //$("#depositId option:contains(US State Bank)").attr('selected', 'selected');
+       //$("#categoryId option:contains(Inventory 6810)").attr('selected', 'selected');
+       /* setTimeout(function() {
            $('table.devAcRecDataTbl tbody tr:nth-child(1)').trigger('click');
-       }, 1000);
+       }, 1000); */
+       var arCatID = '<%= request.getAttribute("arCatId")%>';
+       var arReceive = '<%= request.getAttribute("arReceiveType")%>';
+       var arDeposit = '<%= request.getAttribute("arDepositTo")%>';
+       
+       $('select[id="categoryId"]').find('option[value="'+arCatID+'"]').attr("selected",true);
+       $('select[id="receivedType"]').find('option[value="'+arReceive+'"]').attr("selected",true);
+       $('select[id="depositId"]').find('option[value="'+arDeposit+'"]').attr("selected",true);
 });
   function popUp()
    {

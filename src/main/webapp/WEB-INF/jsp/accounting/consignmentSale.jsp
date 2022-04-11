@@ -287,11 +287,7 @@ margin-right: 10px;
 			    aria-controls="nav-home" aria-selected="true" onclick="payableLists()">
 			    	<spring:message code="BzComposer.popayable.tab.popayablelist"/>
 		    	</a>
-			    <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" 
-			    role="tab" aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
-			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
-		    	</a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" 
+		    	<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" 
 			    aria-controls="nav-contact" aria-selected="false" onclick="paidList()">
 			    	<spring:message code="BzComposer.popayable.tab.paidlist"/>
 		    	</a>
@@ -299,6 +295,12 @@ margin-right: 10px;
                 aria-controls="nav-contact" aria-selected="false">
                     <spring:message code="BzComposer.accountreceivable.tabs.VendorRMARefund"/>
                 </a>
+			    <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" 
+			    role="tab" aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
+			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
+		    	</a>
+			    
+		    	
 			  </div>
 			</nav>
 				<div class="table1" id="tblForInvoiceOrder">
