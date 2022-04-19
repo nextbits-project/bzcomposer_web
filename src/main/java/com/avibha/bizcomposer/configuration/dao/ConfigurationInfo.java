@@ -26,8 +26,16 @@ public class ConfigurationInfo {
     }
 
     public ConfigurationDto getDefaultCongurationDataBySession() {
-    	HttpSession sess = request.getSession();
-        String companyID = (String) sess.getAttribute("CID");
+    	String companyID = null;
+    	if(request!=null) {
+    		HttpSession sess = request.getSession();
+    		companyID = (String) sess.getAttribute("CID");
+    	}
+    	else {
+    		return null;
+    	}
+    	
+        
         ConfigurationDto configDto = null;
         if(request.getSession().getAttribute("DefaultCongurationData") != null) {
             configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");

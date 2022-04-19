@@ -319,7 +319,7 @@ ul.nested7 li:hover{ background-color: #ccc; color: #000; }
 									<td>
 										<select id="initPaymentType">
 											<c:forEach items="${CompanyInfoForm.vPaymentType}" var="curObject" >
-												<option value="${curObject.commonid}"
+												<option value="${curObject.commonid}">
 												${curObject.name}
 											</c:forEach>
 										</select>

@@ -14,8 +14,34 @@ import lombok.Setter;
  */
 public class ErrorBean {
 
-	private@Setter@Getter String statusCode;
-	private @Setter@Getter String errorMessage;
-	private @Setter@Getter Date date;
-	private @Setter@Getter String forwardPage;
+	private String statusCode;
+	private   String errorMessage;
+	private  Date date;
+	private   String forwardPage;
+	public String getStatusCode() {
+		return statusCode;
+	}
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	public Date getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	public String getForwardPage() {
+		return forwardPage;
+	}
+	public void setForwardPage(String forwardPage) {
+		this.forwardPage = forwardPage;
+	}
+	
+	
 }

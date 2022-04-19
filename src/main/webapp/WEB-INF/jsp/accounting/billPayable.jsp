@@ -1025,6 +1025,18 @@ table.tabla-listados tbody tr td {
 		 $('#transactionGroup').append('<option value="'+vendorName+'" selected="selected">'+vendorName+'</option>');
 		 document.getElementById("categoryId").value = document.getElementById("categoryID2"+indexNumber).value;
 	}
+	function clearTransaction(){
+		document.getElementById("receivedType").value="";
+		document.getElementById("categoryId").value="";
+		document.getElementById("customerName").value="";
+		document.getElementById("devAmount").innerHTML="";
+		document.getElementById("receivedAmount").value="";
+		document.getElementById("checkNum").value="";
+		document.getElementById("orderDate").value="";
+		document.getElementById("memo").value="";
+		document.getElementById("payStatus").value="";
+	
+	}
 
 	function selectMemorizedTransactionList(memTransListIndex)
 	{

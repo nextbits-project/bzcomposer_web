@@ -143,7 +143,7 @@ function showDivs(val)
 		<li><a href="employee" title="Employee" class="selected" rel="section"><spring:message code="BzComposer.Employee" /></a></li>
 		<li><a	href="javascript: void(0)" title="Accounting" rel="section"><spring:message code="BzComposer.Accounting" /></a></li>
 
-<%-- 		<li><a href="javascript: void(0)" title="Email" rel="section"><spring:message code="BzComposer.Email" /></a></li> -->
+<%--<li><a href="javascript: void(0)" title="Email" rel="section"><spring:message code="BzComposer.Email" /></a></li> --%>
 		<li><a href="Configuration.do?tabid=config"  title="Confuguration" rel="section" >
 		        <spring:message code="BzComposer.Confuguration" /></a></li>
 	</ul>
