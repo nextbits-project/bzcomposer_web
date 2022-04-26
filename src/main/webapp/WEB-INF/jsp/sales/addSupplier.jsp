@@ -1,11 +1,10 @@
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<%@include file="/include/headlogo.jsp"%>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <%-- <%@include file="/include/menu.jsp"%> --%> 
 <%@include file="/include/header.jsp"%>
 <title>BzComposer-Add New Supplier</title>
@@ -41,7 +40,7 @@ $(document).ready(function () {
 		var rows = document.getElementById("billingAddress").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
 		if(rows>=2)
 		{
-			alert("<bean:message key='BzComposer.common.cantAddMoreAddresses'/>");
+			alert("<spring:message code='BzComposer.common.cantAddMoreAddresses'/>");
 			event.preventDefault();
 		}
 		else
@@ -96,13 +95,13 @@ $(document).ready(function () {
 		}
 		else if(rows>=2)
 		{
-			alert("<bean:message key='BzComposer.common.cantAddMoreAddresses'/>");
+			alert("<spring:message code='BzComposer.common.cantAddMoreAddresses'/>");
 			event.preventDefault();
 		}
 		else
 		{
 			event.preventDefault();
-			alert("<bean:message key='BzComposer.common.selectAddress'/>");
+			alert("<spring:message code='BzComposer.common.selectAddress'/>");
 		}
 	});
 	$('#deleteAddress').click(function(){
@@ -111,22 +110,22 @@ $(document).ready(function () {
 		alert("Status:"+status);
 		if(isChecked== true)
 		{
-			alert("<bean:message key='BzComposer.common.defaultAddressCantDelete'/>");
+			alert("<spring:message code='BzComposer.common.defaultAddressCantDelete'/>");
 		}
 		else
 		{
 			if(status == "Default")
 			{
-				alert("<bean:message key='BzComposer.common.selectAddress'/>");
+				alert("<spring:message code='BzComposer.common.selectAddress'/>");
 			}
-			else if(confirm("<bean:message key='BzComposer.common.wantToDeleteAddress'/>"))
+			else if(confirm("<spring:message code='BzComposer.common.wantToDeleteAddress'/>"))
 			{
-				alert("<bean:message key='BzComposer.common.defaultAddressWillBeDeleted'/>");
+				alert("<spring:message code='BzComposer.common.defaultAddressWillBeDeleted'/>");
 				$(this).remove();
 			}
 			else
 			{
-				alert("<bean:message key='BzComposer.common.selectedAddressDeleted'/>");
+				alert("<spring:message code='BzComposer.common.selectedAddressDeleted'/>");
 				$(this).remove();
 			}
 		}
@@ -156,7 +155,7 @@ function c(r) {
       o = new ActiveXObject(t);
       o.onreadystatechange = r;
     } catch (ex) {
-      alert("<bean:message key='BzComposer.common.needToEnableActiveXObject'/> ts.." + ex);
+      alert("<spring:message code='BzComposer.common.needToEnableActiveXObject'/> ts.." + ex);
     }
   } else {
     o = new XMLHttpRequest();
@@ -224,12 +223,12 @@ function showPanel()
     	if(fName == "" || lName == "")
     	{
     		
-    	    alert("<bean:message key='BzComposer.common.insertFirstOrLastname'/>");
+    	    alert("<spring:message code='BzComposer.common.insertFirstOrLastname'/>");
     	    $( "#tabs" ).tabs( "option", "active", 0 );
     	}
     	else if(address1 == "")
     	{
-    		alert("<bean:message key='BzComposer.updatecustomer.enteradderss1'/>");
+    		alert("<spring:message code='BzComposer.updatecustomer.enteradderss1'/>");
     	    $( "#tabs" ).tabs( "option", "active", 0 );
     	}
     	/*condition 2(A):if firstName,lastName and address1 had values then check whether is it old address value or new address value.if new values are there then add old and new values.*/
@@ -285,7 +284,7 @@ function showPanel()
 		}
     	else
     	{
-    		alert("<bean:message key='Bzcomposer.additem.notadditem'/>");
+    		alert("<spring:message code='Bzcomposer.additem.notadditem'/>");
         	
         	$( "#tabs" ).tabs( "option", "active", 3 );
     	}
@@ -374,7 +373,7 @@ function onlyAlphabets(e, t) {
 <div id="ddcolortabsline">
 &nbsp;
 </div>
-<html:form styleId="frmAddSupplier" action="Customer.do?tabid=addAddress&chkStatus=Default" enctype="MULTIPART/FORM-DATA" method="post">
+<form:form action="Item" method="post" enctype="MULTIPART/FORM-DATA" id="frmAddSupplier" name="frmAddSupplier">
 <div id="cos">
 <div class="statusquo ok">
 <div id="hoja">
@@ -382,7 +381,7 @@ function onlyAlphabets(e, t) {
 <div id="padding">
 <div>
 	<span style="font-size:1.1em;font-weight:normal;color:#838383;margin:30px 0px 15px 0px;border-bottom:1px dotted #333;padding:0 0 .3em 0;">
-		<%-- <bean:message key="BzComposer.Item.AddItem"/> --%>Add New Supplier
+		<%-- <spring:message code="BzComposer.Item.AddItem"/> --%>Add New Supplier
 	</span>
 </div>
 <br/>
@@ -433,22 +432,22 @@ function onlyAlphabets(e, t) {
 											<tbody>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="MultiUserForm.firstName"/>
+														<spring:message code="MultiUserForm.firstName"/>
 													</td>
 													<td style="font-size: 1em;">
-														<html:text property="firstName" styleId="firstName" onkeypress="return onlyAlphabets(event,this)"></html:text>
+														<form:input type="text" path="firstName" onkeypress="return onlyAlphabets(event,this)"/>
 													</td>
 													<td style="font-size: 1em;">
-														<bean:message key="MultiUserForm.lastName"/>
+														<spring:message code="MultiUserForm.lastName"/>
 													</td>
 													<td style="font-size: 1em;">
-														<html:text property="lastName" styleId="lastName" onkeypress="return onlyAlphabets(event,this)"></html:text>
+														<input type="text" path="lastName" id="lastName" onkeypress="return onlyAlphabets(event,this)">
 													</td>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Vendor.StartDate"/>
+														<spring:message code="BzComposer.Vendor.StartDate"/>
 													</td>
 													<td style="font-size: 1em;">
-														<html:text property="fromDate" styleId="fromDate"></html:text>
+														<input type="text" path="fromDate" id="fromDate">
 														<img src="${pageContext.request.contextPath}/images/cal.gif"
 														onclick="displayCalendar(document.CustomerForm.fromDate,'dd-mm-yyyy',this);">
 													</td>
@@ -458,15 +457,17 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Vendor.Title"/>
+														<spring:message code="BzComposer.Vendor.Title"/>
 													</td>
 													<td style="font-size: 1em;">
-														<html:select property="titleID">
-															<html:option value="0">
-																<bean:message key="BzComposer.ComboBox.Select" />
-															</html:option>
-															<html:options collection="titleList" property="value" labelProperty="label" />
-														</html:select>
+													
+													
+														<form:select path="titleID">
+															<option value="0">
+																<spring:message code="BzComposer.ComboBox.Select" />
+															</option>
+															<form:options items="${titleList}" itemValue="value" itemLabel="label" />
+														</form:select>
 													</td>
 													<td colspan="10">
 														&nbsp;
@@ -474,7 +475,7 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Vendor.Company"/>
+														<spring:message code="BzComposer.Vendor.Company"/>
 														<span class="highlighted">*</span>
 													</td>
 													<td style="font-size: 1em;">
@@ -486,7 +487,7 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Address1"/>
+														<spring:message code="BzComposer.Customer.Address1"/>
 														<span class="highlighted">*</span>
 													</td>
 													<td style="font-size: 1em;">
@@ -499,7 +500,7 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Address2"/>
+														<spring:message code="BzComposer.Customer.Address2"/>
 													</td>
 													<td style="font-size: 1em;">
 														<!-- <input type="text" id="address2" size="30"/> -->
@@ -511,14 +512,14 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.City"/>
+														<spring:message code="BzComposer.Customer.City"/>
 														<span class="highlighted">*</span>
 													</td>
 													<td style="font-size: 1em;">
 														<html:text property="city"></html:text>
 													</td>
 													<td id="t_state" style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.State" />
+														<spring:message code="BzComposer.Customer.State" />
 														<span class="highlighted">*</span>
 													</td>
 													<td id="t_statedata" style="font-size: 1em;">
@@ -528,7 +529,7 @@ function onlyAlphabets(e, t) {
 								        				refreshItemsNow("239");
 													</script> -->
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.ZipCode"/>
+														<spring:message code="BzComposer.Customer.ZipCode"/>
 														<span class="highlighted">*</span>
 													</td>
 													<td style="font-size: 1em;">
@@ -540,18 +541,18 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Country"/>
+														<spring:message code="BzComposer.Customer.Country"/>
 													</td>
 													<td style="font-size: 1em;">
 														<html:select property="country" onchange="refreshItemsNow(this.value);" onblur="refreshItemsNow(this.value);">
 															<html:option value="0">
-																<bean:message key="BzComposer.ComboBox.Select" />
+																<spring:message code="BzComposer.ComboBox.Select" />
 															</html:option>
 															<html:options collection="cList" property="value" labelProperty="label" />
 														</html:select>
 													</td>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Province"/>
+														<spring:message code="BzComposer.Customer.Province"/>
 													</td>
 													<td>
 														<html:text property="province"/>
@@ -562,20 +563,20 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Phone"/>
+														<spring:message code="BzComposer.Customer.Phone"/>
 													</td>
 													<td>
 														<html:text onkeypress="return numbersonly(event,this.value)" property="phone" />
 													</td>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Mobile"/>
+														<spring:message code="BzComposer.Customer.Mobile"/>
 														<span class="highlighted">*</span>
 													</td>
 													<td>
 														<html:text onkeypress="return numbersonly(event,this.value)" property="cellPhone" />
 													</td>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Fax"/>
+														<spring:message code="BzComposer.Customer.Fax"/>
 													</td>
 													<td>
 														<html:text property="fax" onkeypress="return numbersonly(event,this.value)" />
@@ -586,13 +587,13 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.HomePage"/>
+														<spring:message code="BzComposer.Customer.HomePage"/>
 													</td>
 													<td>
 														<html:text property="homePage" />
 													</td>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Email"/>
+														<spring:message code="BzComposer.Customer.Email"/>
 													</td>
 													<td>
 														<html:text property="email" />
@@ -603,13 +604,13 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.OppeningUnpaidBalance"/>
+														<spring:message code="BzComposer.Customer.OppeningUnpaidBalance"/>
 													</td>
 													<td>
 														<html:text property="openingUB" onkeypress="return numbersonly(event,this.value)" />
 													</td>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.TaxID"/>
+														<spring:message code="BzComposer.Customer.TaxID"/>
 													</td>
 													<td>
 														<html:text property="texID" />
@@ -620,25 +621,25 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Type"/>
+														<spring:message code="BzComposer.Customer.Type"/>
 													</td>
 													<td style="font-size: 1em;">
-														<html:checkbox property="taxAble" styleId="taxable" value="<bean:message key='BzComposer.Customer.billVendor'/>">
-															<bean:message key="BzComposer.Customer.billVendor"/>
+														<html:checkbox property="taxAble" styleId="taxable" value="<spring:message code='BzComposer.Customer.billVendor'/>">
+															<spring:message code="BzComposer.Customer.billVendor"/>
 														</html:checkbox>
 														&nbsp;&nbsp;
-														<html:checkbox property="purchaseVendor" styleId="purchaseVendor" value="<bean:message key='BzComposer.Customer.billVendor'/>">
-															<bean:message key="BzComposer.Customer.purchaseVendor"/>
+														<html:checkbox property="purchaseVendor" styleId="purchaseVendor" value="<spring:message code='BzComposer.Customer.billVendor'/>">
+															<spring:message code="BzComposer.Customer.purchaseVendor"/>
 														</html:checkbox>
 													</td>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.ExistingCredits"/>
+														<spring:message code="BzComposer.Customer.ExistingCredits"/>
 													</td>
 													<td>
 														<html:text property="extCredit"></html:text>
 													</td>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.remainingCredit"/>
+														<spring:message code="BzComposer.Customer.remainingCredit"/>
 													</td>
 													<td>
 														<html:text property="remCredit"></html:text>
@@ -649,13 +650,13 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Report.ReservedInventoryList.Category"/>
+														<spring:message code="BzComposer.Report.ReservedInventoryList.Category"/>
 														<span class="highlighted">*</span>
 													</td>
 													<td style="font-size: 1em;">
 														<html:select property="categoryId">
 															<html:option value="0">
-																<bean:message key="BzComposer.ComboBox.Select" />
+																<spring:message code="BzComposer.ComboBox.Select" />
 															</html:option>
 															<html:options collection="AccountList" property="value" labelProperty="label"></html:options>
 														</html:select>
@@ -666,7 +667,7 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Memo"/>
+														<spring:message code="BzComposer.Customer.Memo"/>
 													</td>
 													<td colspan="11">
 														<!-- <textarea rows="4" cols="60" style="size: 1000px;"></textarea> -->
@@ -675,20 +676,20 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<input type="checkbox" id="applyDealerPrice" value="<bean:message key="BzComposer.Customer.applyDealerPrice"/>"/>
-														<bean:message key="BzComposer.Customer.applyDealerPrice"/>
+														<input type="checkbox" id="applyDealerPrice" value="<spring:message code="BzComposer.Customer.applyDealerPrice"/>"/>
+														<spring:message code="BzComposer.Customer.applyDealerPrice"/>
 													</td>
 													<td style="font-size: 1em;">
-														<input type="checkbox" id="isAlsoClient" value="<bean:message key="BzComposer.Vendor.isAlsoClient"/>"/>
-														<bean:message key="BzComposer.Vendor.isAlsoClient"/>
+														<input type="checkbox" id="isAlsoClient" value="<spring:message code="BzComposer.Vendor.isAlsoClient"/>"/>
+														<spring:message code="BzComposer.Vendor.isAlsoClient"/>
 													</td>
 													<td style="font-size: 1em;">
-														<input type="checkbox" id="taxableVendor" value="<bean:message key="BzComposer.Customer.taxableVendor"/>"/>
-														<bean:message key="BzComposer.Customer.taxableVendor"/>
+														<input type="checkbox" id="taxableVendor" value="<spring:message code="BzComposer.Customer.taxableVendor"/>"/>
+														<spring:message code="BzComposer.Customer.taxableVendor"/>
 													</td>
 													<td style="font-size: 1em;">
-														<input type="checkbox" id="vendor1099" value="<bean:message key="BzComposer.Customer.vendorEligibleFor1099"/>"/>
-														<bean:message key="BzComposer.Customer.vendorEligibleFor1099"/>
+														<input type="checkbox" id="vendor1099" value="<spring:message code="BzComposer.Customer.vendorEligibleFor1099"/>"/>
+														<spring:message code="BzComposer.Customer.vendorEligibleFor1099"/>
 													</td>
 													<td colspan="8">
 														&nbsp;
@@ -710,19 +711,19 @@ function onlyAlphabets(e, t) {
 											<thead>
 												<tr>
 													<th colspan="12" style="font-size:1.3em;">
-														<bean:message key="BzComposer.Customer.purchasePreferenceInformation"/>
+														<spring:message code="BzComposer.Customer.purchasePreferenceInformation"/>
 													</th>
 												</tr>
 											</thead>
 											<tbody>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Vendor.term"/>
+														<spring:message code="BzComposer.Vendor.term"/>
 													</td>
 													<td style="font-size: 1em;">
 														<html:select property="term">
 															<html:option value="">
-																<bean:message key="BzComposer.ComboBox.Select" />
+																<spring:message code="BzComposer.ComboBox.Select" />
 															</html:option>
 															<html:options collection="TermList" property="value" labelProperty="label" />
 														</html:select>
@@ -733,12 +734,12 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Vendor.Rep"/>
+														<spring:message code="BzComposer.Vendor.Rep"/>
 													</td>
 													<td style="font-size: 1em;">
 														<html:select property="rep">
 															<html:option value="">
-																<bean:message key="BzComposer.ComboBox.Select" />
+																<spring:message code="BzComposer.ComboBox.Select" />
 															</html:option>
 															<html:options collection="RepList" property="value" labelProperty="label" />
 														</html:select>
@@ -749,12 +750,12 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Vendor.PayMethod"/>
+														<spring:message code="BzComposer.Vendor.PayMethod"/>
 													</td>
 													<td style="font-size: 1em;">
 														<html:select property="paymentType">
 															<html:option value="">
-																<bean:message key="BzComposer.ComboBox.Select" />
+																<spring:message code="BzComposer.ComboBox.Select" />
 															</html:option>
 															<html:options collection="PaymentList" property="value" labelProperty="label" />
 														</html:select>
@@ -765,12 +766,12 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Vendor.ShippingVia"/>
+														<spring:message code="BzComposer.Vendor.ShippingVia"/>
 													</td>
 													<td style="font-size: 1em;">
 														<html:select property="shipping">
 															<html:option value="">
-																<bean:message key="BzComposer.ComboBox.Select" />
+																<spring:message code="BzComposer.ComboBox.Select" />
 															</html:option>
 															<html:options collection="ShipCarrierList" property="value" labelProperty="label" />
 														</html:select>
@@ -781,12 +782,12 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Vendor.lineOfCreditTerm"/>
+														<spring:message code="BzComposer.Vendor.lineOfCreditTerm"/>
 													</td>
 													<td style="font-size: 1em;">
 														<html:select property="creditTerm">
 															<html:option value="">
-																<bean:message key="BzComposer.ComboBox.Select" />
+																<spring:message code="BzComposer.ComboBox.Select" />
 															</html:option>
 															<html:options collection="CreditTermList" property="value" labelProperty="label" />
 														</html:select>
@@ -811,12 +812,12 @@ function onlyAlphabets(e, t) {
 											<tbody>
 												<tr>
 													<td style="font-size: 1em;">
-														<bean:message key="BzComposer.Customer.Service"/>
+														<spring:message code="BzComposer.Customer.Service"/>
 													</td>
 													<td style="font-size: 1em;">
 														<html:select property="defaultService">
 															<html:option value="">
-																<bean:message key="BzComposer.ComboBox.Select" />
+																<spring:message code="BzComposer.ComboBox.Select" />
 															</html:option>
 															<html:options collection="serviceList" property="value" labelProperty="label" />
 														</html:select>
@@ -830,7 +831,7 @@ function onlyAlphabets(e, t) {
 												</tr>
 												<tr>
 													<td colspan="12" style="font-size: 1em;">
-														<bean:message key="BzComposer.Vendor.Service.Service"/>
+														<spring:message code="BzComposer.Vendor.Service.Service"/>
 													</td>
 												</tr>
 												<tr>
@@ -839,19 +840,19 @@ function onlyAlphabets(e, t) {
 															<thead>
 																<tr>
 																	<th style="font-size:1.3em;">
-																		<bean:message key="BzComposer.Item.ServiceTitle"/>
+																		<spring:message code="BzComposer.Item.ServiceTitle"/>
 																	</th>
 																	<th style="font-size:1.3em;">
-																		<bean:message key="BzComposer.ServiceCode"/>
+																		<spring:message code="BzComposer.ServiceCode"/>
 																	</th>
 																	<th style="font-size:1.3em;">
-																		<bean:message key="BzComposer.Item.ServiceDescription"/>
+																		<spring:message code="BzComposer.Item.ServiceDescription"/>
 																	</th>
 																	<th style="font-size:1.3em;">
-																		<bean:message key="BzComposer.Vendor.billingAmount"/>
+																		<spring:message code="BzComposer.Vendor.billingAmount"/>
 																	</th>
 																	<th style="font-size:1.3em;">
-																		<bean:message key="BzComposer.Vendor.billingCycle"/>
+																		<spring:message code="BzComposer.Vendor.billingCycle"/>
 																	</th>
 																</tr>
 															</thead>
@@ -978,6 +979,6 @@ function onlyAlphabets(e, t) {
 		<html:hidden property="bsstate" value="0" />
 		<html:hidden property="shstate" value="0" />
 	</div>
-	</html:form>
+	</form:form>
 </body>
 </html>
