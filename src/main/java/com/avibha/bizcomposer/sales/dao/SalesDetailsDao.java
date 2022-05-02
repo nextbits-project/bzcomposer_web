@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +43,7 @@ import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.bizcomposer.sales.service.SalesInfo;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
@@ -54,6 +57,7 @@ import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
 @Service
 //@Transactional
 public class SalesDetailsDao {
+	private Logger logMsg = LoggerFactory.getLogger(SalesDetailsDao.class);
     private InvoiceInfoDao invoice;
 	@Autowired
     private PurchaseOrderInfoDao purchase;
@@ -65,29 +69,31 @@ public class SalesDetailsDao {
 	@Autowired
 	private DataImportExportUtils importExportUtils;
 	
+	private SalesInfo sales;
 	
 	
 	@Autowired
-	public SalesDetailsDao(InvoiceInfoDao invoice) {
+	public SalesDetailsDao(InvoiceInfoDao invoice,SalesInfo sales) {
 		super();
 		this.invoice = invoice;
+		this.sales = sales;
 	}
 
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
-		request.setAttribute("customerTitle", sales.getCustomerTitle(compId)); // to get customer title
-		request.setAttribute("SalesRep", sales.getSalesRep(compId));		// to get sales rep
-		request.setAttribute("salesTerms", sales.getTerms(compId));		// to get customer title
-		request.setAttribute("SalesCatType", sales.getCatType(compId)); 		// to get customer title
-		request.setAttribute("SalesLocation", sales.getLocation(compId)); 	// to get customer title
+		request.setAttribute("customerTitle", sales.getCustomerTitle(compId)); // to get customer title.. done
+		request.setAttribute("SalesRep", sales.getSalesRep(compId));		// to get sales rep..done
+		request.setAttribute("salesTerms", sales.getTerms(compId));		// to get terms
+		request.setAttribute("SalesCatType", sales.getCatType(compId)); 		// to get  cvc category... pending
+		request.setAttribute("SalesLocation", sales.getLocation(compId)); 	// to get location
 		request.setAttribute("SalesPaymentMethod", sales.getPaymentType(compId)); // to get getPaymentType
-		request.setAttribute("SalesReceivedType", sales.getReceivedType(compId)); // to get customer title
+		request.setAttribute("SalesReceivedType", sales.getReceivedType(compId)); // to get received type
 		request.setAttribute("SalesMessage", sales.getMessage(compId)); 		// to get customer title
-		request.setAttribute("CreditCardType", sales.getCreditCard(compId)); // to get customer title
-		request.setAttribute("SalesTax", sales.getTax(compId));		// to get customer title
-		request.setAttribute("Via", sales.getVia(compId));
+		request.setAttribute("CreditCardType", sales.getCreditCard(compId)); // to get card type
+		request.setAttribute("SalesTax", sales.getTax(compId));		// to get tax
+		request.setAttribute("Via", sales.getVia(compId));// to fetch shipping via
+		request.setAttribute("UnitOfMeasure", sales.getUnitOfMeasure(compId));// fetch unit Of measure;
 	}
 
 	public void AddCustomer(HttpServletRequest request, CustomerDto customerDto) {
@@ -315,7 +321,6 @@ public class SalesDetailsDao {
 	public void getdataManagerSave(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
 		String sTitleval = request.getParameter("sTitleval");
 		String sOldval = request.getParameter("sOldval");
 		String sNewval = request.getParameter("sNewval");
@@ -324,16 +329,11 @@ public class SalesDetailsDao {
 		if (request.getParameter("taxRateVal") != null) {
 			taxRateVal = request.getParameter("taxRateVal");
 		}
-		if(sNewvalID != null && !sNewvalID.trim().isEmpty()){
-			getdataManagerUpdate(request);
-		}else {
 			sales.insertSalesData(sNewvalID, sTitleval, sOldval, sNewval, taxRateVal, compId);
-		}
 	}
 	public void getdataManagerUpdate(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
 		String sTitleval = request.getParameter("sTitleval");
 		String sOldval = request.getParameter("sOldval");
 		String sNewval = request.getParameter("sNewval");
@@ -380,10 +380,9 @@ public class SalesDetailsDao {
 	public void getdataManagerDelete(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
 		String sTitleval = request.getParameter("sTitleval");
 		String sNewvalID = request.getParameter("sNewvalID");
-		Loger.log("IDSS" + sNewvalID);
+		logMsg.debug("Deleting Record from Database sTitleval= "+sTitleval+", sNewvalID= "+sNewvalID);
 		sales.DeleteSalesData(sNewvalID, sTitleval, compId);
 
 	}
