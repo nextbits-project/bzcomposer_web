@@ -1109,6 +1109,7 @@ table.tabla-listados tbody tr td {
 		}
 		TblVendorDetail = {
 				"billNo": billNo,
+				"accountId": payerID,
 				"vendorID": vendorId,
 				"payerId": payerID,
 				"amount": paidAmount,
