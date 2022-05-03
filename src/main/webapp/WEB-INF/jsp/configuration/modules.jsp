@@ -119,7 +119,7 @@ function toggleFunction() {
                                             </c:if>
                                         </select>
                                         <c:if test="${not empty configDto.listOfExistingInvoiceStyle}">
-                                            <input type="hidden" name="invoiceStyleId" id="invoiceStyleId" value="${configDto.listOfExistingInvoiceStyle[configDto.listOfExistingInvoiceStyle.size()-1].invoiceStyle}">
+                                            <input type="hidden" name="invoiceStyleId" id="invoiceStyleId" value="${configDto.listOfExistingInvoiceStyle[configDto.listOfExistingInvoiceStyle.length-1].invoiceStyle}">
                                         </c:if>
                                         <c:if test="${empty configDto.listOfExistingInvoiceStyle}">
                                             <input type="hidden" name="invoiceStyleId" id="invoiceStyleId" value="">

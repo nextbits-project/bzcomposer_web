@@ -594,7 +594,7 @@ table.tabla-listados tbody tr td {
 							</div>
 							<div class="footer1">
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1"> 
+									<input class="form-check-input" type="checkbox" id="inlineCheckbox2" onclick ="checkAll()" value="option1"> 
 									<label class="form-check-label" for="inlineCheckbox2">
 										<spring:message code="BzComposer.billpayable.selectall"/>
 									</label>
@@ -1804,6 +1804,19 @@ table.tabla-listados tbody tr td {
 	function closePayBill(){
 		$("#PayBills").dialog("close");
 	}
+			
+	var checkAll = () => {
+			  debugger;
+			  if(document.getElementById('inlineCheckbox2').checked==true){
+			var checkboxes = document.querySelectorAll('input[type=checkbox]');
+			  checkboxes.forEach((cb) => { cb.checked = true; });
+			}
+		  else{
+			  var checkboxes = document.querySelectorAll('input[type=checkbox]');
+			  checkboxes.forEach((cb) => { cb.checked = false; });
+		 }  
+		} 
+		
 	function selectrow(no , indexNumber)
 	{
 		
@@ -2180,8 +2193,9 @@ else
 				});
 			 });
 		 $(function() {
+			   debugger;
 			   $( "#EditRecurrentPaymentButtonId").on("click", function(){
-			   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
+			   /* $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
 				  
 				   $( "#EditingRecurrentPaymentDlgId").dialog({
 			    	   modal: true,

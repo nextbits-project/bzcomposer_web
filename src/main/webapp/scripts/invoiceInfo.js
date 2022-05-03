@@ -1026,12 +1026,11 @@ function Pending_Value(form){
 		function Init(){
 			alert("teddtrtrtdrttr");
 			
-			<logic:present name="Style">
-				StyleChange(<bean:write name="Style"/>);
-			</logic:present>
-			<logic:notPresent name="Style">
-					StyleChange(0);
-			</logic:notPresent>
+			<><logic:present name="Style">
+                StyleChange(<bean:write name="Style" />);
+            </logic:present><logic:notPresent name="Style">
+                    StyleChange(0);
+                </logic:notPresent></>
 			var i;
 			for(i=0;i<100;i++){
 				deleted[i]=0;

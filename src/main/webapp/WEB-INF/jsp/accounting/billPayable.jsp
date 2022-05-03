@@ -410,7 +410,7 @@ table.tabla-listados tbody tr td {
 							<div class="footer1">
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" type="checkbox"
-										id="inlineCheckbox2" value="option1"> <label
+										id="inlineCheckbox2" onclick ="checkAll()" value="option1"> <label
 										class="form-check-label" for="inlineCheckbox2"> <spring:message
 											code="BzComposer.billpayable.selectall" />
 									</label>
@@ -974,7 +974,7 @@ table.tabla-listados tbody tr td {
 
 				<div class="bzbtn text-center">
 					<button type="button" style="font-size: 14px;" class="btn btn-info"
-						onclick="return deleteBankAccount()" id="deleteBank">
+						onclick="return deleteBill()" id="deleteBank">
 						<spring:message code="BzComposer.global.delete" />
 					</button>
 					<button type="button" style="font-size: 14px;" class="btn btn-info"
@@ -1002,6 +1002,31 @@ table.tabla-listados tbody tr td {
     function closePayBill(){
     	$("#PayBills").dialog('close');
      }
+    
+    var checkAll = () => {
+		  debugger;
+		  if(document.getElementById('inlineCheckbox2').checked==true){
+		var checkboxes = document.querySelectorAll('input[type=checkbox]');
+		  checkboxes.forEach((cb) => { cb.checked = true; });
+		}
+	  else{
+		  var checkboxes = document.querySelectorAll('input[type=checkbox]');
+		  checkboxes.forEach((cb) => { cb.checked = false; });
+	 }  
+	}
+    
+    var checkAll1 = () => {
+		  debugger;
+		  if(document.getElementById('inlineCheckbox1').checked==true){
+		var checkboxes = document.querySelectorAll('input[type=checkbox]');
+		  checkboxes.forEach((cb) => { cb.checked = true; });
+		}
+	  else{
+		  var checkboxes = document.querySelectorAll('input[type=checkbox]');
+		  checkboxes.forEach((cb) => { cb.checked = false; });
+	 }  
+	}
+    
 	function selectrow(no, indexNumber)
 	{
 		
