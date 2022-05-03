@@ -2093,6 +2093,13 @@ function initialize(){
     if(document.CustomerForm.homePage.value == ''){
         document.CustomerForm.homePage.value = 'www.';
     }
+    
+    var selectedCityId = '<%= request.getAttribute("selectedCityId")%>';
+	var selectedStateId = '<%=request.getAttribute("selectedStateId")%>';
+	
+	$('select[id="cityID"]').find('option[value="'+selectedCityId+'"]').attr("selected",true);
+	$('select[id="stateID"]').find('option[value="'+selectedStateId+'"]').attr("selected",true);
+    
 }
 
 

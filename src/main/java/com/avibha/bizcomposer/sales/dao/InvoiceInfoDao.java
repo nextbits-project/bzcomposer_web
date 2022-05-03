@@ -805,6 +805,12 @@ public class InvoiceInfoDao {
 				String uweight = (invUWeights[i]!=null && invUWeights[i].length()>0) ?invUWeights[i]:"0.0";
 				String uprice = (invUPrices[i]!=null && invUPrices[i].length()>0) ?invUPrices[i]:"0.0";
 				String taxable = (invIsTaxables[i]!=null && invIsTaxables[i].length()>0) ?invIsTaxables[i]:"0";
+				String taxable1 ;
+				if(taxable.equalsIgnoreCase("Yes")) {
+					taxable1 = "1";
+				}else {
+					taxable1 = "0";
+				}
 				String itmTypeID = (invItemIDs[i]!=null && invItemIDs[i].length()>0) ?invItemIDs[i]:"0";
 				String itmOrder = invItemOrders[i];
 
@@ -826,7 +832,7 @@ public class InvoiceInfoDao {
 					pstmt.setDouble(7, Double.parseDouble(uweight));
 					pstmt.setDouble(8, 0.0);
 					pstmt.setDouble(9, Double.parseDouble(truncate(uprice)));
-					pstmt.setInt(10, Integer.parseInt(taxable));
+					pstmt.setInt(10, Integer.parseInt(taxable1));
 					pstmt.setInt(11, Integer.parseInt(itmTypeID));
 					pstmt.setInt(12, Integer.parseInt(itmOrder));
 					pstmt.setInt(13, cartID);

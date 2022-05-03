@@ -7211,6 +7211,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		           + " ,VendorID = " + vDetail.getVendorId() + " ,Memo = '"+vDetail.getMemo()+"'" 
 		           + " ,CheckNo = " + vDetail.getCheckNo() + " ,AmountPaid = " +paidAmount + " ,Balance = " + balance
 		           + " ,CategoryID = " + vDetail.getCategoryID()
+		           + " ,PayerID = " + vDetail.getAccountId()
 		           + " WHERE BillNum = " + vDetail.getBillNo() + " AND CompanyID = " + ConstValue.companyId;
 		try {
 			stmt = con.createStatement();

@@ -1499,7 +1499,12 @@ public class SalesDetailsDao {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
-		invoice.SearchCustomer(compId, cvId, request, customerDto);
+		ArrayList<CustomerDto> customerList = invoice.SearchCustomer(compId, cvId, request, customerDto);
+		CustomerDto customerDto2 = customerList.get(0);
+		String cityId = customerDto2.getCity();
+		String stateId = customerDto2.getState();
+		request.setAttribute("selectedCityId", cityId);
+		request.setAttribute("selectedStateId", stateId);
 		invoice.getServices(request, compId, cvId);
 		//String itemIndex = request.getParameter("itemIndex");
 		//request.setAttribute("itemIndex", itemIndex);

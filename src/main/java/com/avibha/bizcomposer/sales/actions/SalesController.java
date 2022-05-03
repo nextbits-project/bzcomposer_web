@@ -843,7 +843,7 @@ public class SalesController {
 			request.setAttribute("newAdd1",address1);
 			request.setAttribute("newAdd2",address2);
 			request.setAttribute("newAddressStatus", stat);
-			forward = "success28";
+			forward = "/sales/addSupplier";
 		}
 		
 		else if(action.equalsIgnoreCase("addNewSupplier"))
@@ -889,7 +889,7 @@ public class SalesController {
 			request.setAttribute("newAdd1",address1);
 			request.setAttribute("newAdd2",address2);
 			request.setAttribute("newAddressStatus", stat);
-			forward = "success28";
+			forward = "/sales/addSupplier";
 		}
 		else if(action.equalsIgnoreCase("addAddress")) {
 			// country List
