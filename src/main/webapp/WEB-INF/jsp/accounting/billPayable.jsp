@@ -199,12 +199,11 @@ table.tabla-listados tbody tr td {
 								<label class="col-md-4  col-form-label"> <spring:message
 										code="BzComposer.billpayable.date" />
 								</label>
-								  <!-- <html:text property="orderDate" readonly="false"></html:text> -->  
+								<!-- <html:text property="orderDate" readonly="false"></html:text> -->
 								<div class="col-md-8 calendar-img">
 									<input type="text" class="form-control devOrderDate" value=""
-										style="width: 275px" name="orderDate" 
-										id="orderDate"> <img
-										src="${pageContext.request.contextPath}/images/cal.gif"
+										style="width: 275px" name="orderDate" id="orderDate">
+									<img src="${pageContext.request.contextPath}/images/cal.gif"
 										class="img-fluid" alt="Responsive image"
 										onclick="displayCalendar(document.ReceivableListForm.orderDate,'mm-dd-yyyy',this);">
 								</div>
@@ -309,8 +308,7 @@ table.tabla-listados tbody tr td {
 											code="BzComposer.billpayable.total" />
 								</label> <%
  ArrayList<TblVendorDetail> unpaidBillList1 = (ArrayList) request.getAttribute("unpaidBillList");
- %>
-									<label> <%-- <% out.println(unpaidBillList1.get(unpaidBillList1.size() - 1).getTotalBillAmount()); %> --%>
+ %> <label> <%-- <% out.println(unpaidBillList1.get(unpaidBillList1.size() - 1).getTotalBillAmount()); %> --%>
 								</label></li>
 							</ul>
 						</div>
@@ -356,7 +354,7 @@ table.tabla-listados tbody tr td {
 										<tr
 											onclick="selectrow(<%=unpaidBillList.get(i).getBillNo() + "," + index%>)">
 											<td class="text-right"><input type="checkbox"
-												id="Checkbox"></td>
+												id="unpaidBillList"></td>
 											<td class="text-right">
 												<%
 												out.println(unpaidBillList.get(i).getBillNo());
@@ -410,9 +408,9 @@ table.tabla-listados tbody tr td {
 							<div class="footer1">
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" type="checkbox"
-										id="inlineCheckbox2" onclick ="checkAll()" value="option1"> <label
-										class="form-check-label" for="inlineCheckbox2"> <spring:message
-											code="BzComposer.billpayable.selectall" />
+										id="inlineCheckbox2" onclick="checkAll()" value="option1">
+									<label class="form-check-label" for="inlineCheckbox2">
+										<spring:message code="BzComposer.billpayable.selectall" />
 									</label>
 								</div>
 								<button type="button" class="btn btn-info"
@@ -677,7 +675,7 @@ table.tabla-listados tbody tr td {
 								for (int i = 0; i < payBillList.size(); i++) {
 							%>
 							<tr>
-								<td><input type="checkbox"></td>
+								<td><input type="checkbox" id="payBillList"></td>
 								<td>
 									<%
 									out.println(payBillList.get(i).getBillNo());
@@ -723,7 +721,8 @@ table.tabla-listados tbody tr td {
 					</table>
 				</div>
 				<div class="mb-3">
-					<button type="button" style="font-size: 14px;" class="btn btn-info">
+					<button type="button" onclick="selectallbillsbtn1()"
+						style="font-size: 14px;" class="btn btn-info">
 						<spring:message code="BzComposer.billpayable.selectallbillsbtn" />
 					</button>
 				</div>
@@ -941,7 +940,8 @@ table.tabla-listados tbody tr td {
 							onclick="DeleteMemorizeTransaction()">
 							<spring:message code="BzComposer.global.delete" />
 						</button></li>
-					<li><button style="font-size: 14px;" onclick="closeMomorizedTransactionList()">
+					<li><button style="font-size: 14px;"
+							onclick="closeMomorizedTransactionList()">
 							<spring:message code="BzComposer.global.close" />
 						</button></li>
 
@@ -983,7 +983,8 @@ table.tabla-listados tbody tr td {
 					</button>
 					<!-- <button type="button" style="font-size: 14px;" class="btn btn-info" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> -->
 					<button type="button" style="font-size: 14px;" class="btn btn-info"
-						onclick="closeCreatingEditingRecurrentPaymentDlgId()" id="addButtonForDeposit">
+						onclick="closeCreatingEditingRecurrentPaymentDlgId()"
+						id="addButtonForDeposit">
 						<spring:message code="BzComposer.global.cancel" />
 					</button>
 				</div>
@@ -1005,27 +1006,27 @@ table.tabla-listados tbody tr td {
     
     var checkAll = () => {
 		  debugger;
-		  if(document.getElementById('inlineCheckbox2').checked==true){
-		var checkboxes = document.querySelectorAll('input[type=checkbox]');
-		  checkboxes.forEach((cb) => { cb.checked = true; });
+		if(document.getElementById('inlineCheckbox2').checked==true){
+			var checkboxes=document.querySelectorAll("[id^='unpaidBillList']")
+		  	checkboxes.forEach((cb) => { cb.checked = true; });
 		}
-	  else{
-		  var checkboxes = document.querySelectorAll('input[type=checkbox]');
+	  	else{
+		  var checkboxes=document.querySelectorAll("[id^='unpaidBillList']")
 		  checkboxes.forEach((cb) => { cb.checked = false; });
-	 }  
+	 	}  
 	}
-    
-    var checkAll1 = () => {
+      
+    var selectallbillsbtn1 = () => {
 		  debugger;
-		  if(document.getElementById('inlineCheckbox1').checked==true){
-		var checkboxes = document.querySelectorAll('input[type=checkbox]');
+		   if(document.getElementById('payBillList').checked==false){ 
+		  var checkboxes = document.querySelectorAll("[id^='payBillList']");
 		  checkboxes.forEach((cb) => { cb.checked = true; });
 		}
 	  else{
-		  var checkboxes = document.querySelectorAll('input[type=checkbox]');
+		  var checkboxes = document.querySelectorAll("[id^='payBillList']");
 		  checkboxes.forEach((cb) => { cb.checked = false; });
-	 }  
-	}
+	 }   
+	} 
     
 	function selectrow(no, indexNumber)
 	{

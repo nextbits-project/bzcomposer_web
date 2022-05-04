@@ -269,7 +269,7 @@ table.tabla-listados tbody tr td {
 						</a> 
 						<a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" 
 						role="tab" aria-controls="nav-profile" aria-selected="false" onclick="paidBillLists()">
-							<spring:message code="BzComposer.billpayable.tabs.unpaidbilllist"/>
+							<spring:message code="BzComposer.billpayable.tabs.paibilllist"/>
 						</a> 
 						<a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" 
 						role="tab" aria-controls="nav-contact" aria-selected="false" onclick="">
@@ -529,7 +529,7 @@ table.tabla-listados tbody tr td {
 												%>
 												<tr onclick="selectrow(<%=allBillLists.get(i).getBillNo() + "," + index%>)">
 													<td class="text-right">
-														<input type="checkbox" id="Checkbox">
+														<input type="checkbox" id="allBillLists">
 													</td>
 													<td class="text-right">
 														<% out.println(allBillLists.get(i).getBillNo());%>
@@ -848,7 +848,7 @@ table.tabla-listados tbody tr td {
 							%>
 							<tr>
 								<td>
-									<input type="checkbox">
+									<input type="checkbox" id= "selectbillbutton">
 								</td>
 								<td>
 									<% out.println(payBillList.get(i).getBillNo());%>
@@ -879,7 +879,7 @@ table.tabla-listados tbody tr td {
 					</table>
 				</div>
 				<div class="mb-3">
-					<button type="button" class="btn btn-info" style="font-size: 14px;">
+					<button type="button" id="selectallbillsbtn" onclick ="selectallbillsbtn()" class="btn btn-info" style="font-size: 14px;">
 						<spring:message code="BzComposer.billpayable.selectallbillsbtn"/>
 					</button>
 				</div>
@@ -1808,14 +1808,26 @@ table.tabla-listados tbody tr td {
 	var checkAll = () => {
 			  debugger;
 			  if(document.getElementById('inlineCheckbox2').checked==true){
-			var checkboxes = document.querySelectorAll('input[type=checkbox]');
+			  var checkboxes = document.querySelectorAll("[id^='allBillLists']");
 			  checkboxes.forEach((cb) => { cb.checked = true; });
 			}
 		  else{
-			  var checkboxes = document.querySelectorAll('input[type=checkbox]');
+			  var checkboxes = document.querySelectorAll("[id^='allBillLists']");
 			  checkboxes.forEach((cb) => { cb.checked = false; });
 		 }  
-		} 
+		}
+	
+	var selectallbillsbtn = () => {
+		  debugger;
+		   if(document.getElementById('selectbillbutton').checked==false){ 
+		  var checkboxes = document.querySelectorAll("[id^='selectbillbutton']");
+		  checkboxes.forEach((cb) => { cb.checked = true; });
+		}
+	  else{
+		  var checkboxes = document.querySelectorAll("[id^='selectbillbutton']");
+		  checkboxes.forEach((cb) => { cb.checked = false; });
+	 }   
+	} 
 		
 	function selectrow(no , indexNumber)
 	{
