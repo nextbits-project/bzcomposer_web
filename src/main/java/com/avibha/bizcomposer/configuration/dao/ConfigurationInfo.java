@@ -24,14 +24,15 @@ public class ConfigurationInfo {
     }
 
     public ConfigurationDto getDefaultCongurationDataBySession() {
-    	HttpSession sess = request.getSession();
-        String companyID = (String) sess.getAttribute("CID");
+    	//HttpSession sess = request.getSession();
+        String companyID = "1";//(String) request.getSession().getAttribute("CID");
         ConfigurationDto configDto = null;
-        if(request.getSession().getAttribute("DefaultCongurationData") != null) {
-            configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
-        }else{
-            configDto = getDefaultCongurationData(companyID);
-        }
+//        if(request.getSession().getAttribute("DefaultCongurationData") != null) {
+//            configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
+//        }else{
+//            configDto = getDefaultCongurationData(companyID);
+//        }
+        configDto = getDefaultCongurationData(companyID);
         return configDto;
     }
 

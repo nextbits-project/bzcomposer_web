@@ -1029,9 +1029,7 @@ table.tabla-listados tbody tr td {
 	 }   
 	} 
     
-	function selectrow(no, indexNumber)
-	{
-		
+	
 
 	function selectrow(no, indexNumber)
 	{

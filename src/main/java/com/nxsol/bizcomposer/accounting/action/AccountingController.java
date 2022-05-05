@@ -16,6 +16,8 @@ import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
 import com.pritesh.bizcomposer.accounting.bean.*;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 /*import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -156,9 +158,24 @@ public class AccountingController{
 		}
 		if(action.equals("ReceivedInvoice"))
 		{
-
-			Gson gson=new Gson();
-			ReceivableListBean invoice = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			JSONObject newObj = new JSONObject();
+			try {
+		        newObj = new JSONObject(request.getParameter("row"));
+		    } catch (JSONException e) {
+		        e.printStackTrace();
+		    }
+			ReceivableListBean invoice = new ReceivableListBean();
+			invoice.setOrderNum(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("orderNumStr")));
+			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("cvID")));
+			invoice.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("paymentTypeID")));
+			invoice.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("bankAccountID")));
+			invoice.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("adjustedTotal")));
+			invoice.setPaidAmount(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("paidAmount")));
+			invoice.setBalance(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("balance")));
+			invoice.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("categoryID")));
+			invoice.setMemo(newObj.getJSONObject("ReceivableListBean").getString("memo"));
+			invoice.setCheckNum(newObj.getJSONObject("ReceivableListBean").getString("checkNo"));
+			
 			String rowId = request.getParameter("index");
 			/*System.out.println(invoice.getPaidAmount());*/
 			int orderNum = invoice.getOrderNum();
@@ -181,7 +198,7 @@ public class AccountingController{
 			HttpSession session = request.getSession();
 			session.setAttribute("totalPayable"+invoiceId, totalPayable);
 			session.removeAttribute("checkNum"+invoiceId);
-			session.removeAttribute("amtToPay"+invoiceId);
+			session.removeAttribute("amtToPay"+invoiceId);		
 		}
 		if(action.equals("ClearTransaction"))
 		{

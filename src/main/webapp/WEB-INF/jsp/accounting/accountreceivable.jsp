@@ -68,7 +68,7 @@ table.tabla-listados tbody tr td {
 .highlight { background-color: #00CED1 !important;color: #fff }	 
 </style>
 </head>
-<body>
+<body onload="init()">
 <% int find = 0; %>
 <div id="ddcolortabsline">&nbsp;</div>
  <form action="AccountReceiveble" method="post" name="ReceivableListForm" id="receivableForm">
@@ -122,7 +122,7 @@ table.tabla-listados tbody tr td {
 								<spring:message code="BzComposer.accountreceivable.receivedtype"/>
 							</label>
 							<div class="col-md-8">
-								<select class="form-control devReceivedTypeDrp" id="receivedType" onclick="checkType()">
+								<select class="form-control devReceivedTypeDrp" id="receivedType" onchange="checkType(this)">
 								<%-- <%if(payment!=null)
 								{ %>
 								 <option selected="selected"><% out.println(payment.getTypeName()); } else{ %> --%>
@@ -174,21 +174,17 @@ table.tabla-listados tbody tr td {
 								<spring:message code="BzComposer.accountreceivable.receivedamount"/>
 							</label>
 
-					<div class="col-md-8">
-						<div class="input-group">
-							<div class="input-group-prepend">
-							 <span class="input-group-text" id="basic-addon1">$</span>
-							  </div>
-							<input type="text" class="form-control devReceiveAmount" value="" width="20px" id="receivedAmount">
+							<div class="col-md-8">
+								<div class="input-group">
+									<div class="input-group-prepend">
+									 	<span class="input-group-text" id="basic-addon1">$</span>
+									</div>
+									<input type="text" class="form-control devReceiveAmount" value="" width="20px" id="receivedAmount">
+								</div>
 							</div>
-					</div>
 						</div>
 
-					<%-- <% if(SelcetedPaymentForCheck != null) {%>
-					<script>
-					  var data = document.getElementById("Check");
-					  data.style.display = "none";
-					</script>
+					 <% if(SelcetedPaymentForCheck != null) {%>
 						<div class="form-group row" id="Check">
 							<label class="col-md-5  col-form-label">Check #</label>
 							<div class="col-md-7">
@@ -200,7 +196,7 @@ table.tabla-listados tbody tr td {
 								<% } %>
 							</div>
 						</div>
-						<% } %> --%>
+						<% } %>
 			<script>
 					  var data = document.getElementById("Check");
 				
@@ -586,8 +582,22 @@ table.tabla-listados tbody tr td {
 	var invoiceId = -1;
     selectChaseBankFromDropDownList("depositId");
 
+    function init() {
+    	checkReceivedType();
+	}
+    
+    function checkReceivedType(){
+		var receivedType = document.getElementById("receivedType");
+		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
+		
+		if(selectedReceivedType == '452'){
+		 	$("#Check").show();
+		 }else{ 
+		 	$("#Check").hide();
+		 }
+    }
+  
    function selectrow(invoice,index) {
-	    
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
 	    var count = 1;
@@ -617,7 +627,8 @@ table.tabla-listados tbody tr td {
 	    $(".devMemotext").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(14)').text());
 		if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value') != 'null'){
 	 		$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value'));
-		}	
+		}
+		checkReceivedType();
    }  
    function save()
    {
@@ -697,24 +708,14 @@ table.tabla-listados tbody tr td {
 			} 
 		});
    }
-   function checkType()
+   function checkType(selectObject)
    {
-	 	
-	   var type = document.getElementById("receivedType");
-	   var ctype = type.options[type.selectedIndex].innerText;
-	   if(ctype == 'Cash')
-		   {
-		   		document.getElementById("Check").style.display = "none";
-		   }
-	   else if(ctype == 'Check')
-		   {
-		   		
-		   		$("#Check").show();
-		   	} 
-	    else
-		{ 
-	    		$("#Check").hide();
-	    } 
+	   var value = selectObject.value; 
+		  if(value == '452'){
+			  $("#Check").show();
+		   }else{ 
+		   		$("#Check").hide();
+		   } 
    }
    function selectedRadio()
    {
@@ -757,7 +758,7 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-		
+		debugger;
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
 	   console.log(document.getElementById("receivedType").options[type.selectedIndex]);
@@ -817,9 +818,19 @@ table.tabla-listados tbody tr td {
 		   }
 	   
 	  /*  	var receivedAmount = parseInt(receivedAmountString); */   
-	 /*   var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text(); */
-	   var ReceivableListBean={
-			   "orderNum":document.getElementById("ordernumber").innerHTML,
+	    var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text();
+	  	var newON = orderNum.replace('PO2021-0','').replace(/\n/g, ''); 
+	  	
+	  	var receivedType = document.getElementById("receivedType");
+		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
+		
+		if(selectedReceivedType == '452'){
+			checkNum = document.getElementById("checkNum").value;
+		 }else{ 
+			 checkNum = "0";
+		 }
+	   /* var ReceivableListBean={
+			   "orderNumStr":newON,
 			   "cvID":selectedCustomer,
 			   "paymentTypeID":paymentTypeId,	   
 			   "bankAccountID":accountId,
@@ -829,25 +840,40 @@ table.tabla-listados tbody tr td {
 			   "categoryID":categoryId,
 			   "memo":memo,
 			   "checkNum":checkNo,
-	   };
-	   var obj=JSON.stringify(ReceivableListBean);
+	   }; */
+	   var ReceivableListBean = {
+            "ReceivableListBean": {
+            	"orderNumStr":newON,
+ 			   "cvID":selectedCustomer,
+ 			   "paymentTypeID":paymentTypeIdString,	   
+ 			   "bankAccountID":accountId,
+ 			   "adjustedTotal":amountString,	
+ 			   "paidAmount":receivedAmountString,
+ 			   "balance":balaceString,
+ 			   "categoryID":selectedCategoryString,
+ 			   "memo":memo,
+ 			   "checkNo":checkNum
+            }
+	    };
+	   /* var obj=JSON.stringify(ReceivableListBean); */
+	   var obj1=JSON.stringify(ReceivableListBean);
 	   $.ajax({
 			type : "POST",
 			url : "AccountReceivebleUpdate?tabid=ReceivedInvoice",
-				data :"row=" + obj + "&index="+indexNumber,
+				data :"row=" + obj1 + "&index="+indexNumber,
 		    success : function(data) {
-			updateAccountReceivableTab(data);	
+		    	document.forms['receivableForm'].action = "AccountReceiveble";
+                document.forms['receivableForm'].submit();
 			},
 			 error : function(data) {
 
 				 return showerrordialog();
 			} 
 		});
-  	$(document.forms[0]).submit(function( event ) {
+  	/* $(document.forms[0]).submit(function( event ) {
 	    event.preventDefault();
-	});
-	   return false;
-	   
+	}); */
+	   return false;  
    }
    $(document).ready(function(){
 		
