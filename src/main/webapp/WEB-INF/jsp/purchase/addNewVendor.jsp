@@ -1033,7 +1033,7 @@ function clearShippingAdd(){
 }
 
 	function trim(inputString) {
-	debugger;
+	
 	   // Removes the spaces  return from the passed string. 
 	   var retValue = inputString;
 	   var ch = retValue.substring(0, 1);
@@ -1046,7 +1046,7 @@ function clearShippingAdd(){
 
 
 function SaveVendorData(){
-	debugger
+	
 	if(trim(document.getElementById('firstName').value)==""){
 
 		document.getElementById('firstName').focus();
@@ -1164,7 +1164,7 @@ function hidebsaddress(form){
 }
 
 function addToTable(form){
-	debugger;
+	
 	flag=0;
 	flag1=0;
 	invID=form.serviceID.value;
@@ -1447,7 +1447,7 @@ function validate() {
 
   function showInvalidEmailDialog()
   {
-	  debugger;
+	  
 		event.preventDefault();
 		$("#showInvalidEmailDialog").dialog({
 	    	resizable: false,
@@ -1465,7 +1465,7 @@ function validate() {
 
   function showblanknamevalidationdialog()
   {
-	  debugger;
+	  
 		event.preventDefault();
 		$("#showblanknamevalidationdialog").dialog({
 	    	resizable: false,
@@ -1483,7 +1483,7 @@ function validate() {
 
   function showblankfirstnamevalidationdialog()
   {
-	  debugger;
+	  
 		event.preventDefault();
 		$("#showblankfirstnamevalidationdialog").dialog({
 	    	resizable: false,
@@ -1501,7 +1501,7 @@ function validate() {
 
   function showblanklastnamevalidationdialog()
   {
-	  debugger;
+	  
 		event.preventDefault();
 		$("#showblanklastnamevalidationdialog").dialog({
 	    	resizable: false,
@@ -1519,7 +1519,7 @@ function validate() {
 
   function showblankaddress1validationdialog()
   {
-	  debugger;
+	  
 		event.preventDefault();
 		$("#showblankaddress1validationdialog").dialog({
 	    	resizable: false,
@@ -1537,7 +1537,7 @@ function validate() {
 
   function showblanklcityvalidationdialog()
   {
-	  debugger;
+	  
 		event.preventDefault();
 		$("#showblanklcityvalidationdialog").dialog({
 	    	resizable: false,
@@ -1555,7 +1555,7 @@ function validate() {
 
   function showblankzipcodevalidationdialog()
   {
-	  debugger;
+	  
 		event.preventDefault();
 		$("#showblankzipcodevalidationdialog").dialog({
 	    	resizable: false,
@@ -1573,7 +1573,7 @@ function validate() {
 
   function addNewVendorDialog()
   {
-	  debugger;
+	  
 	  event.preventDefault();
 		$("#addNewVendorDialog").dialog({
 	    	resizable: false,
@@ -1582,7 +1582,7 @@ function validate() {
 	        modal: true,
 	        buttons: {
 	            "<spring:message code='BzComposer.global.ok'/>": function () {
-	            	debugger
+	            	
 	                $(this).dialog("close");
 	            	newValues();
 	            },
@@ -1596,7 +1596,7 @@ function validate() {
 
   function showservicevalidationdialog()
   {
-	  debugger;
+	  
 		event.preventDefault();
 		$("#showservicevalidationdialog").dialog({
 	    	resizable: false,

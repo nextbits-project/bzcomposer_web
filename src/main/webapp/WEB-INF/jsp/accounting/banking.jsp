@@ -418,7 +418,7 @@ label {display: inline-block; margin-bottom: 0;}
 </div>
   </div> 
   <div class="bzbtn">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onClick="closeAddTransaction()">
 		<spring:message code="BzComposer.global.cancel"/>
 	</button>	
   	<button type="button" class="btn btn-info" onclick="return addTransactionFromDialog()" id="addButton" style="float: right;margin-right: 10px;font-size: 14px;">
@@ -525,7 +525,7 @@ label {display: inline-block; margin-bottom: 0;}
 </div>
   </div> 
    <div class="bzbtn">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;"  onClick="closeAddTransaction()">
   		<spring:message code="BzComposer.global.cancel"/>
 	</button>	
   	<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;"
@@ -628,7 +628,7 @@ label {display: inline-block; margin-bottom: 0;}
 </div>
   </div> 
    <div class="bzbtn">
-		<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+		<button type="button" class="btn btn-info" style="float: right;font-size: 14px;"  onClick="closeAddTransaction()">
 			<spring:message code="BzComposer.global.cancel"/>
 		</button>	
   		<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;"
@@ -723,7 +723,7 @@ label {display: inline-block; margin-bottom: 0;}
  </div>
  </div> 
    <div class="bzbtn">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onClick="closeEditTransaction()">
   		<spring:message code="BzComposer.global.cancel"/>
 	</button>	
   	<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;" onclick="return editTransaction()" id="addButtonForDeposit">
@@ -853,7 +853,7 @@ label {display: inline-block; margin-bottom: 0;}
   <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return deleteBankAccount()" id="deleteBank"><spring:message code="BzComposer.global.delete"/></button>
   <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()" id="addButtonForDeposit"><spring:message code="BzComposer.global.save"/></button>
   <!-- <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> -->
-  <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="closeMe()" id="addButtonForDeposit"><spring:message code="BzComposer.global.cancel"/></button>
+  <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="closeAddTransactionDialog()" id="addButtonForDeposit"><spring:message code="BzComposer.global.cancel"/></button>
   </div> 
   </div>
  </div> 
@@ -878,7 +878,7 @@ label {display: inline-block; margin-bottom: 0;}
 	var totalPaymentList = -1;
 	function selectRow(index , payId,accId)
 	{
-		debugger;
+		/*   */ 
 		this.Index = index;
 		this.paymentId = payId;
 		this.accountId = accId;
@@ -915,7 +915,7 @@ label {display: inline-block; margin-bottom: 0;}
 					var idv = $(this).val();
 					if(idv == id)
 					{
-						debugger;
+						
 						$("#payerForEdit").empty();
 						$('#payeeForEdit option').clone().appendTo('#payerForEdit');	
 					}
@@ -929,18 +929,29 @@ label {display: inline-block; margin-bottom: 0;}
 	}       
 function getAccountCategoryId(catId)
 {
-	debugger;
+	
 	this.accountCategoryId = catId;
 	$("select.acForAddAccount").val(catId);
-	
 }
 
 function closeMe(){
+	
     $('#AddAccountDialog').dialog('close');
+}
+function closeAddTransaction(){
+	
+    $('#popupWindow').dialog('close');
+}
+
+function closeTransferFund(){
+    $('#popupWindow').dialog('close');
+}
+function closeEditTransaction(){
+    $('#EditTransactionDialog').dialog('close');
 }
 	function editTransaction()
 	{
-		debugger;
+		
 		var oldClientVendorId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('value');
 		var oldAccountId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(10)').attr('value');
 		var oldPaymentTypeId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').attr('value');
@@ -985,7 +996,7 @@ function closeMe(){
 			data : "row=" + obj + "&PaymentId=" + paymentId + "&amount=" +amount + "&date=" + date + "&tableName=" +tableName,
 		    success : function(data) {
 				/* var html = "" + data.msg; */
-				debugger;   
+				   
 		    	updatebankingTab(data);
 			
 			},
@@ -1027,7 +1038,7 @@ function saveMainCategory(){
     });
 }
 function addAccount(){
-	debugger;
+	
 	var payerIdString = document.getElementById("devAdAccount");
 	var payerId = payerIdString.options[payerIdString.selectedIndex].id;
 	var customerCurrentBalanceString = payerIdString.options[payerIdString.selectedIndex].value; 
@@ -1072,7 +1083,7 @@ function addAccount(){
         url : "BankingCategory?tabid=AddAccount",
         data :"obj=" + obj + "&date=" + date + "&Status=" + status + "&AccountId=" + acID,
         success : function(data) {
-            debugger;
+            
             /* window.location = "${pageContext.request.contextPath}/Banking?tabid=Banking"; */
             /* $(document).find('div#treeView2').replaceWith('<div id="treeView2" class="treeview">'+ $(data).find('div#treeView2').html() + '</div>'); */
             //$(document).find('div#treeView2').replaceWith('<div id="treeView2" class="treeview">'+ $(data).find('div#treeView2').html() + '</div>');
@@ -1094,9 +1105,9 @@ function addAccount(){
 	{
 		if(paymentId == '' || paymentId == -1)
 		{
-
-			return selectTransactionDialog();
-			return false;
+			console.log("ghhhhhhhhhhhhhhhhh")
+	    return selectTransactionDialog();
+		return false;
 		}
 		else
 		{
@@ -1105,27 +1116,9 @@ function addAccount(){
 	   		{
 	   			return false;
 	   		} */
-	   		return showremovetranactiondialog();
+			return showremovetranactiondialog()
 		}
-		 $.ajax({
-				
-				type : "POST",
-				url : "BankingCategory?tabid=deleteTransaction",
-			/* 	data : "row=" + row + "&paymentTypeId=" +paymentTypeId + "&memo=" + memo + "&accountId=" +accountId + "&categoryId=" +categoryId + "&receivedAmount=" +receivedAmount, */			
-					data :"paymentId=" + paymentId,
-			    success : function(data) {
-			    	
-			    	/* window.location = "${pageContext.request.contextPath}/Banking?tabid=Banking"; */
-			    
-			    	updatebankingTab(data);
-			    },
-				 error : function(data) {
-						return errorMessageDialog();
-					} 
-				});
-		   $(document.forms[0]).submit(function( event ) {
-			    event.preventDefault();
-			});
+		
 	}
 
 function afterMainCategoryChange(){
@@ -1135,7 +1128,7 @@ function afterMainCategoryChange(){
 }
 function afterCategoryChange()
 {
-	debugger;
+	
 	var indexForCategory = document.getElementById("acForAddAccount");
 	var index = indexForCategory.options[indexForCategory.selectedIndex].value;
 }
@@ -1174,14 +1167,14 @@ function deleteBankAccount()
 		        modal: true,
 		        buttons: {
 		        	"<spring:message code='BzComposer.global.ok'/>": function () {
-		            	debugger;
+		            	
 		            	$.ajax({
 		        			
 		        			type : "POST",
 		        			url : "BankingCategory?tabid=DeleteAccount",
 		        			data :"AccountId=" +acID,
 		        		    success : function(data) {
-		        				debugger;
+		        				
 		        			/*  window.location = "${pageContext.request.contextPath}/Banking?tabid=Banking&Ac="+accountId; */  
 		        				$(document).find('div#treeView2').replaceWith('<div id="treeView2" class="treeview">'+ $(data).find('div#treeView2').html() + '</div>');
 		        		    	updatebankingTab(data);
@@ -1209,7 +1202,7 @@ function deleteBankAccount()
 				url : "Banking?tabid=DeleteAccount",			
 				data :"AccountId=" +acID,
 			    success : function(data) {
-					debugger;
+					
 					//window.location = "${pageContext.request.contextPath}/Banking?tabid=Banking&Ac="+accountId;  
 					$(document).find('div#treeView2').replaceWith('<div id="treeView2" class="treeview">'+ $(data).find('div#treeView2').html() + '</div>');
 			    	updatebankingTab(data);
@@ -1263,7 +1256,7 @@ function showTransaction(Id, catID, accName){
         seletedItem.classList.add('highlight');
     }
 
-	debugger;
+	
     this.accountId = Id;
     this.acID = Id;
     this.accountCategoryId = catID;
@@ -1282,7 +1275,7 @@ function showTransaction(Id, catID, accName){
 		url : "BankingCategory?tabid=Banking",
 		data :"Ac=" +accountId,
 	    success : function(data) {
-			debugger;
+			
 			updatebankingTab(data);
 			var totalPaymentListString = $("#RowCount").attr('value');
 			totalPaymentList = parseInt(totalPaymentListString);
@@ -1298,7 +1291,7 @@ $(document).ready(function () {
     $('label.tree-toggler').click(function () {
         $(this).toggleClass('thisOpen').parent().children('ul.tree').toggle(300);
     });
-    debugger;
+    
     this.dName = dayName(this.day);
     $("#dateFrom").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
     $("#dateTo").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
@@ -1326,7 +1319,7 @@ $(document).ready(function () {
 
     $("#AddTransaction").on("click", function(){
 		   document.getElementById('tabid').value="AddAccount";
-		   debugger;
+		   
 		   if(accountId == '-1'){
 
 			   	return selectBankAccountDialog();
@@ -1348,7 +1341,7 @@ $(document).ready(function () {
 	    });
 
 	   $("#showEditTransactionDialog").on("click", function(){
-		   debugger;
+		   
 		   if(Index == -1){
 
 				return selectPaymentDialog();
@@ -1361,7 +1354,7 @@ $(document).ready(function () {
 	   });
 
     $("#AddAccount").on("click", function(){
-        debugger;
+        
 		$('#deleteBank').prop('disabled', true);
 		if(accountCategoryId == -1){
 
@@ -1383,7 +1376,7 @@ $(document).ready(function () {
 	});
 
 	$("#EditAccount").on("click", function(){
-	    debugger;
+	    
 		$('#deleteBank').prop('disabled', false);
 		status = 'Edit';
 		document.getElementById("mainCategoryBtnAdd").style.display = "none";
@@ -1412,7 +1405,7 @@ $(document).ready(function () {
 	});
 
 	$("#TranseferFundsBtn").on("click", function(){
-        debugger;
+        
         $("#paymentTab").hide();
         $("#depositTab").hide();
         $("#popupWindow").dialog({
@@ -1424,7 +1417,7 @@ $(document).ready(function () {
 });
 
 function isCategory(){
- 	debugger;
+ 	
 	if($('#isCategory').is(':checked')){
 	    $( "#devAdAccount" ).prop( "disabled", true );
 	    $( "#devAdCheck" ).prop( "disabled", true );
@@ -1439,7 +1432,7 @@ function isCategory(){
 
  function addCss(){
 	 $(document).ready(function () {
-        debugger;
+        
 		$('#transactionTable table tr').click(function () {
 		    var selected1 = $(this).hasClass("highlight");
 		        $("tr").removeClass("highlight");
@@ -1457,14 +1450,14 @@ function isCategory(){
  }
 
 function fundTrasferTab(){
-	debugger;
+	
 	/* $( "#dialogTabs" ).tabs({ active: "#nav-home1-tab" }); */
 	$("#fundTrasferTab").show();
 	$("#paymentTab").hide();
 	$("#depositTab").hide();
 }
 function paymentTab(){
-	debugger;
+	
 	/* $( "#dialogTabs" ).tabs({ active: "#nav-home1-tab" }); */
 	$("#paymentTab").show();
 	$("#fundTrasferTab").hide();
@@ -1477,11 +1470,11 @@ function depositTab(){
 }
 
 function vendorIndex(index){
-	debugger;
+	
 	this.Index = index;
 }
 function changeBank(){
-	debugger;
+	
 	 var payeeName = document.getElementById("payeename");
 	 var balance = payeeName.options[payeeName.selectedIndex].value;
 	 this.payeeId = payeeName.options[payeeName.selectedIndex].id;
@@ -1498,7 +1491,7 @@ function changeBank(){
 	 }
 }
 function selectVendorForDeposit(){
-	debugger;
+	
 	var payerName = document.getElementById("payerForDeposit");
 	var balance = payerName.options[payerName.selectedIndex].value;
 	if(balance == '2.2E-306')
@@ -1510,19 +1503,19 @@ function selectVendorForDeposit(){
 	}
 }
 function changeBankForDeposit(){
-	debugger;
+	
 	var payeeName = document.getElementById("payeenameForDeposit");
 	var balance = payeeName.options[payeeName.selectedIndex].value;
 	document.getElementById("payeeBalanceForDeposit").value = balance; 
 }
 function selectVendor(){
-	debugger;
+	
 	var payeeName = document.getElementById("payeenameForPayment");
 	this.payeeId = payeeName.options[payeeName.selectedIndex].id;
 	this.Index = payeeName.options[payeeName.selectedIndex].label;
 }
 function slectedPayMethod(){
-	debugger;
+	
 	var pType = document.getElementById("payMethodForDlg");
 	this.paymentMethod =  pType.options[pType.selectedIndex].value;
 	this.paymentMethodId = pType.options[pType.selectedIndex].id;
@@ -1539,7 +1532,7 @@ function selectedPaymenthodForPayment(){
 }
 
 function addTransactionFromDialog(){
-	debugger;
+	
 	var AccountCategoryId = document.getElementById("categoryIdForPayer").value;
 	var payerBalance  = parseFloat(document.getElementById("payerBalance").value);
     var payeeBalance = parseFloat(document.getElementById("payeeBalance").value);
@@ -1581,7 +1574,7 @@ function addTransactionFromDialog(){
         url : "BankingCategory?tabid=Transferfund",
         data :"payment=" + obj + "&date=" + date,
         success : function(data) {
-            debugger;
+            
             updatebankingTab(data);
         },
          error : function(data) {
@@ -1591,7 +1584,7 @@ function addTransactionFromDialog(){
 }
 
 function addTransactionFromDialogForPayment(){
-	debugger;
+	
 	var payerBalance  = parseFloat(document.getElementById("payerBalance2").value);
 	var payeeBalance = parseFloat(document.getElementById("payeeBalance2").value);
     var payeenameForPaymentID = document.getElementById("payeenameForPayment").value;
@@ -1629,7 +1622,7 @@ function addTransactionFromDialogForPayment(){
         url : "BankingCategory?tabid=TransferfundFromPayment",
         data :"payment=" + obj + "&date=" + date + "&index=" + Index,
         success : function(data) {
-            debugger;
+            
             updatebankingTab(data);
         },
          error : function(data) {
@@ -1639,7 +1632,7 @@ function addTransactionFromDialogForPayment(){
 }
 
 function addTrafsactioFromDeposit(){
-	debugger;
+	
 	var pType = document.getElementById("payMethodForDeposit");
 	this.paymentMethod =  pType.options[pType.selectedIndex].value;
 	var paymentMethodId = pType.options[pType.selectedIndex].id;
@@ -1688,7 +1681,7 @@ function addTrafsactioFromDeposit(){
 		url : "BankingCategory?tabid=TransferfundFromDeposit",
 		data :"payment=" + obj + "&date=" + date,
 	    success : function(data) {
-			debugger;
+			
 			updatebankingTab(data);
 		},
 		 error : function(data) {
@@ -1699,7 +1692,6 @@ function addTrafsactioFromDeposit(){
 
 function updatebankingTab(data)
 {
-	debugger;
 	$(document).find('div#selectedAccount h4').replaceWith($(data).find('div#selectedAccount').html()); 
 	$(document).find('div#transactionTable table').replaceWith($(data).find('div#transactionTable').html());
 	if($(data).find('div#bottom label').eq(1).text(this.value).text() == ""){
@@ -1721,7 +1713,7 @@ function updatebankingTab(data)
 }
 
 $( ".rangeOP" ).change(function() {
-	   debugger;  
+	     
 	   var rangeType = document.getElementById("rangeId");
 	   if(acID == '-1')
 	{
@@ -1736,7 +1728,7 @@ $( ".rangeOP" ).change(function() {
 			 	url : "BankingCategory?tabid=slectedMenu&SelectedRange=" + range,
 			 	data:"Ac=" +acID + "&TransactionRange=" + transactionFilterId,		
 			    success : function(data)
-			    {debugger;
+			    {
 			
 			    updatebankingTab(data);
 					 
@@ -1748,7 +1740,7 @@ $( ".rangeOP" ).change(function() {
 	 });
 });
 $( ".transactionFilter" ).change(function() {
-	   debugger;  
+	     
 	   var rangeType = document.getElementById("rangeId");
 	   var transactionFilterType = document.getElementById("transactionFilterId");
 	   var transactionFilterId = transactionFilterType.options[transactionFilterType.selectedIndex].value;
@@ -1763,7 +1755,7 @@ $( ".transactionFilter" ).change(function() {
 				url : "BankingCategory?tabid=slectedMenu&SelectedRange=" + range,
 			 	data:"Ac=" +acID + "&TransactionRange=" + transactionFilterId,
 			    success : function(data)
-			    {debugger;
+			    {
 			
 			    updatebankingTab(data);
 					 
@@ -1777,7 +1769,7 @@ $( ".transactionFilter" ).change(function() {
 })
 function errorMessageDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#errorMessageDialog").dialog({
     	resizable: false,
@@ -1794,7 +1786,7 @@ function errorMessageDialog()
 }
 function selectValidNumberDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#selectValidNumberDialog").dialog({
     	resizable: false,
@@ -1811,7 +1803,7 @@ function selectValidNumberDialog()
 }
 function selectBankAccountDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#selectBankAccountDialog").dialog({
     	resizable: false,
@@ -1828,7 +1820,7 @@ function selectBankAccountDialog()
 }
 function showInsufficientBalanceDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showInsufficientBalanceDialog").dialog({
     	resizable: false,
@@ -1845,7 +1837,7 @@ function showInsufficientBalanceDialog()
 }
 function showInsufficientAmountDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showInsufficientAmountDialog").dialog({
     	resizable: false,
@@ -1862,7 +1854,7 @@ function showInsufficientAmountDialog()
 }
 function selectPaymentDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#selectPaymentDialog").dialog({
     	resizable: false,
@@ -1879,7 +1871,7 @@ function selectPaymentDialog()
 }
 function selectTransactionDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#selectTransactionDialog").dialog({
     	resizable: false,
@@ -1896,7 +1888,7 @@ function selectTransactionDialog()
 }
 function selectotherbankdialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#selectotherbankdialog").dialog({
     	resizable: false,
@@ -1913,7 +1905,7 @@ function selectotherbankdialog()
 }
 function editableaccountcategorydialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#editableaccountcategorydialog").dialog({
     	resizable: false,
@@ -1930,7 +1922,7 @@ function editableaccountcategorydialog()
 }
 function canteditesalesbankaccountdialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#canteditesalesbankaccountdialog").dialog({
     	resizable: false,
@@ -1946,7 +1938,7 @@ function canteditesalesbankaccountdialog()
     return false;
 }
 function showselectcategorydialog(){
-	debugger;
+	
 	event.preventDefault();
 	$("#showselectcategorydialog").dialog({
     	resizable: false,
@@ -1962,7 +1954,7 @@ function showselectcategorydialog(){
     return false;
 }
 function showEditableAccountNotSelectedDialog(){
-	debugger;
+	
 	event.preventDefault();
 	$("#showEditableAccountNotSelectedDialog").dialog({
     	resizable: false,
@@ -1979,7 +1971,7 @@ function showEditableAccountNotSelectedDialog(){
 }
 function shownotdeletedaccountdialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#shownotdeletedaccountdialog").dialog({
     	resizable: false,
@@ -1996,7 +1988,7 @@ function shownotdeletedaccountdialog()
 }
 function shostartingaccbalancedialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#shostartingaccbalancedialog").dialog({
     	resizable: false,
@@ -2013,7 +2005,7 @@ function shostartingaccbalancedialog()
 }
 function showremovetranactiondialog()
 {
-	debugger;
+
 	event.preventDefault();
 	$("#showremovetranactiondialog").dialog({
     	resizable: false,
@@ -2023,14 +2015,33 @@ function showremovetranactiondialog()
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
+                 $.ajax({					
+					type : "POST",
+					url : "BankingCategory?tabid=deleteTransaction",
+				/* 	data : "row=" + row + "&paymentTypeId=" +paymentTypeId + "&memo=" + memo + "&accountId=" +accountId + "&categoryId=" +categoryId + "&receivedAmount=" +receivedAmount, */			
+					data :"paymentId=" + paymentId,
+				    success : function(data) {
+				    	
+				    	 window.location = "${pageContext.request.contextPath}/Banking?tabid=Banking"; 
+				    	updatebankingTab(data);
+				    },
+					 error : function(data) {
+							return errorMessageDialog();
+						} 
+					});
+			   $(document.forms[0]).submit(function( event ) {
+				    event.preventDefault();
+				});
+                return true;
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
                 $(this).dialog("close");
-                return false;
+            	return false;
             }
         }
     });
-    return false;
+
+   return false; 
 }
 
 function showSelectPayeeAccountFirstDialog(){

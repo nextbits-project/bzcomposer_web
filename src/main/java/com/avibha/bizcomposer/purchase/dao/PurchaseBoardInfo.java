@@ -287,7 +287,7 @@ public class PurchaseBoardInfo {
 			Loger.log(sqlString);
 			int count = pstmtUpdate.executeUpdate();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 			Loger.log(2, "Error in DeleteReceivedItem() " + e);
 			// TODO: handle exception
 		}
@@ -378,7 +378,7 @@ public class PurchaseBoardInfo {
 			
 		}catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -392,7 +392,7 @@ public class PurchaseBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -637,7 +637,7 @@ public class PurchaseBoardInfo {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -656,7 +656,7 @@ public class PurchaseBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -751,7 +751,7 @@ public class PurchaseBoardInfo {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -770,7 +770,7 @@ public class PurchaseBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -855,7 +855,7 @@ public class PurchaseBoardInfo {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -874,7 +874,7 @@ public class PurchaseBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -898,7 +898,7 @@ public class PurchaseBoardInfo {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally{
 			try {
 				if (rs != null)
@@ -1208,7 +1208,7 @@ public class PurchaseBoardInfo {
 			Loger.log(2,
 					" SQL Error in Class TaxInfo and  method -getFederalTax "
 							+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 
 		finally {

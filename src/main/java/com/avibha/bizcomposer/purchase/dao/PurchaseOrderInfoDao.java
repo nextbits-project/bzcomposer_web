@@ -5,6 +5,27 @@
  */
 package com.avibha.bizcomposer.purchase.dao;
 
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
+import com.avibha.bizcomposer.purchase.forms.PurchaseOrderForm;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.purchase.forms.VendorForm;
+import com.avibha.bizcomposer.sales.dao.CustomerInfo;
+import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
+import com.avibha.bizcomposer.sales.dao.Item;
+import com.avibha.bizcomposer.sales.forms.EstimationDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceForm;
+import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
+import com.avibha.common.utility.CountryState;
+import com.avibha.common.utility.MyUtility;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import org.apache.struts.util.LabelValueBean;
+
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,37 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
-import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderForm;
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.sales.dao.CustomerInfo;
-import com.avibha.bizcomposer.sales.dao.Item;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.common.db.SQLExecutor;
-import com.avibha.common.log.Loger;
-import com.avibha.common.utility.CountryState;
-import com.avibha.common.utility.MyUtility;
-
-@Service
 public class PurchaseOrderInfoDao {
 	
-	    
-		@Autowired
-	    private ConfigurationInfo configInfo;
-		@Autowired
-	    public PurchaseOrderInfoDao(ConfigurationInfo configInfo) {
-			super();
-			this.configInfo = configInfo;
-		}
-	    
-	  
 	/* Provide the list of all customers with their
 	 * ids, last name,etc. The list is used for drop
 	 * ship to.   
@@ -88,7 +80,7 @@ public class PurchaseOrderInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -156,7 +148,7 @@ public class PurchaseOrderInfoDao {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}			
 		return vList;
@@ -169,7 +161,7 @@ public class PurchaseOrderInfoDao {
 		ArrayList<PurchaseOrderDto> objList = new ArrayList<>();
 		CountryState conState = new CountryState();
 		try {
-			//ConfigurationInfo configInfo = new ConfigurationInfo();
+			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			con = db.getConnection();
@@ -217,7 +209,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -231,7 +223,7 @@ public class PurchaseOrderInfoDao {
 		ArrayList<PurchaseOrderDto> objList = new ArrayList<>();
 		CountryState conState = new CountryState();
 		try {
-			//ConfigurationInfo configInfo = new ConfigurationInfo();
+			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			con = db.getConnection();
@@ -285,7 +277,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -321,7 +313,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -409,7 +401,7 @@ public class PurchaseOrderInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -485,7 +477,7 @@ public class PurchaseOrderInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -537,7 +529,7 @@ public class PurchaseOrderInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -552,7 +544,7 @@ public class PurchaseOrderInfoDao {
 		ResultSet rs = null;
 		int lastOrderNo = 0;
 		try {
-			//ConfigurationInfo configInfo = new ConfigurationInfo();
+			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			String sqlString = "select PONum from bca_invoice where CompanyID = ? and not(invoiceStatus=1) and InvoiceTypeID IN (2)  order by PONum desc";
@@ -567,14 +559,14 @@ public class PurchaseOrderInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getNewPONum " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return String.valueOf(lastOrderNo);
@@ -620,7 +612,7 @@ public class PurchaseOrderInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return String.valueOf(poStyleID);
@@ -647,14 +639,14 @@ public class PurchaseOrderInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + ee.toString());
-			ee.printStackTrace();
+			
 		} finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return exist;
@@ -682,14 +674,14 @@ public class PurchaseOrderInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return shipAddr;
@@ -724,7 +716,7 @@ public class PurchaseOrderInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -737,7 +729,7 @@ public class PurchaseOrderInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return invoiceID;
@@ -817,7 +809,7 @@ public class PurchaseOrderInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -827,7 +819,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt3 != null) { db.close(pstmt3); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return status;
@@ -913,7 +905,7 @@ public class PurchaseOrderInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -923,7 +915,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt4 != null) { db.close(pstmt3); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1001,7 +993,7 @@ public class PurchaseOrderInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -1011,7 +1003,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt4 != null) { db.close(pstmt4); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1081,7 +1073,7 @@ public class PurchaseOrderInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -1089,7 +1081,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1177,7 +1169,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -1211,7 +1203,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return poNums;
@@ -1326,7 +1318,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return form;
@@ -1412,7 +1404,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmtTemp != null) { db.close(pstmtTemp); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return list;
@@ -1475,7 +1467,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1520,7 +1512,7 @@ public class PurchaseOrderInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rsInvoice != null) { db.close(rsInvoice); }
@@ -1528,7 +1520,7 @@ public class PurchaseOrderInfoDao {
 				if (pstmtCartDelete != null) { db.close(pstmtCartDelete); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1574,14 +1566,14 @@ public class PurchaseOrderInfoDao {
 			request.setAttribute("state", vForm.getState());
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		} finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1660,14 +1652,14 @@ public class PurchaseOrderInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return isUpdated;

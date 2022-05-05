@@ -55,7 +55,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -88,7 +88,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -120,7 +120,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -153,7 +153,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -186,7 +186,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -218,7 +218,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -250,7 +250,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -283,7 +283,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -316,7 +316,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -349,7 +349,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -384,7 +384,7 @@ public class SalesInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -393,8 +393,8 @@ public class SalesInfo {
 	public boolean insertSalesData(String sNewID, String title, String oldVal, String newVal, String taxRateVal, String compId) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		PreparedStatement pstmt = null,pstmt1,pstmt2,pstmt3,pstmt4,pstmt5,pstmt6,pstmt7,pstmt8,pstmt9,pstmt10,pstmt11 = null;
+				ResultSet rs = null;
 		boolean valid = false;
 		try {
 			Statement stmt = con.createStatement();
@@ -409,12 +409,21 @@ public class SalesInfo {
 				pstmt.close();
 				rs.close();
 				String newValtaxRateVal = newVal+" "+taxRateVal;
-				sqlString="INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`) " +
-						"values('" + iD + "','" + compId + "',\"" + newValtaxRateVal + "\",'" + taxRateVal + "',1,1)";
-
+//				sqlString="INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`) " +
+//						"values('" + iD + "','" + compId + "',\"" + newValtaxRateVal + "\",'" + taxRateVal + "',1,1)";
+                pstmt1=con.prepareStatement("INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`)"+
+                        "values(?,?,?,?,?,?)");
+                pstmt1.setString(1,iD );
+                pstmt1.setString(2, compId);
+                pstmt1.setString(3, newValtaxRateVal);
+                pstmt1.setString(4, taxRateVal);
+                pstmt1.setInt(5, 1);
+                pstmt1.setInt(6, 1);
+                pstmt1.executeUpdate();
+                pstmt1.close();
 
 			} else if ("CUSTOMER TITLE".equalsIgnoreCase(title)) {
-				Loger.log("sdsds");
+				Loger.log("CUSTOMER TITLE");
 				pstmt = con
 						.prepareStatement("select max(TitleID)+1 from bca_title");
 				rs = pstmt.executeQuery();
@@ -424,8 +433,17 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_title values('" + iD + "',\""
-						+ newVal + "\",'" + compId + "',1)";
+//				sqlString = "insert into bca_title(TitleID, Title, CompanyID, Active)  values('" + iD + "',\""
+//						+ newVal + "\",'" + compId + "',1)";
+			
+				pstmt2 = con.prepareStatement("insert into bca_title(TitleID, Title, CompanyID, Active) values(?,?,?,?)");
+				pstmt2.setString(1, iD);
+				pstmt2.setString(2,newVal);
+				pstmt2.setString(3,compId);
+				pstmt2.setInt(4,1);
+				pstmt2.executeUpdate();
+				pstmt2.close();
+				
 			} else if ("REP".equalsIgnoreCase(title)) {
 				pstmt = con
 						.prepareStatement("select max(SalesRepID)+1 from bca_salesrep");
@@ -436,9 +454,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_salesrep values('" + iD
-						+ "','" + compId + "',\"" + newVal + "\",1)";
-
+//				sqlString = "insert into bca_salesrep values('" + iD
+//						+ "','" + compId + "',\"" + newVal + "\",1,0)";
+           pstmt3 = con.prepareStatement("insert into bca_salesrep values(?,?,?,?,?)");
+           pstmt3.setString(1,iD);
+           pstmt3.setString(2, compId);
+           pstmt3.setString(3,newVal);
+           pstmt3.setInt(4, 1);
+           pstmt3.setInt(5, 0);
+           pstmt3.executeUpdate();
+           pstmt3.close();
 
 			} else if ("TERMS".equalsIgnoreCase(title)) {
 				pstmt = con
@@ -450,8 +475,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_term values('" + iD + "','"
-						+ compId + "',\"" + newVal + "\",1,0)";
+//				sqlString = "insert into bca_term values('" + iD + "','"
+//						+ compId + "',\"" + newVal + "\",1,0)";
+				pstmt4 = con.prepareStatement("insert into bca_term values(?,?,?,?,?)");
+				pstmt4.setString(1,iD);
+				pstmt4.setString(2, compId);
+				pstmt4.setString(3, newVal);
+				pstmt4.setInt(4, 1);
+				pstmt4.setInt(5, 0);
+				pstmt4.executeUpdate();
+				pstmt4.close();
 			} else if ("MESSAGE".equalsIgnoreCase(title)) {
 				pstmt = con
 						.prepareStatement("select max(MessageID)+1 from bca_message");
@@ -462,8 +495,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_message values('" + iD + "','"
-						+ compId + "',\"" + newVal + "\",1)";
+//				sqlString = "insert into bca_message values('" + iD + "','"
+//						+ compId + "',\"" + newVal + "\",1,0)";
+				pstmt5 =con.prepareStatement("insert into bca_message values(?,?,?,?,?)");
+				pstmt5.setString(1,iD);
+				pstmt5.setString(2, compId);
+				pstmt5.setString(3, newVal);
+				pstmt5.setInt(4, 1);
+				pstmt5.setInt(5, 0);
+				pstmt5.executeUpdate();
+				pstmt5.close();
 			} else if ("BUSINESS TYPE".equalsIgnoreCase(title)) {
 
 				pstmt = con.prepareStatement("select max(CVCategoryID)+1 from bca_cvcategory");
@@ -474,8 +515,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_cvcategory values('" + iD
-						+ "','" + compId + "',\"" + newVal + "\",1)";
+//				sqlString = "insert into bca_cvcategory values('" + iD
+//						+ "','" + compId + "',\"" + newVal + "\",1,0)";
+				pstmt6 =con.prepareStatement("insert into bca_cvcategory values(?,?,?,?,?)");
+				pstmt6.setString(1,iD);
+				pstmt6.setString(2, compId);
+				pstmt6.setString(3, newVal);
+				pstmt6.setInt(4, 1);
+				pstmt6.setInt(5, 0);
+				pstmt6.executeUpdate();
+				pstmt6.close();
 			} else if ("LOCATION".equalsIgnoreCase(title)) {
 				pstmt = con.prepareStatement("select max(LocationID)+1 from bca_location");
 				rs = pstmt.executeQuery();
@@ -487,8 +536,15 @@ public class SalesInfo {
 
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_location(LocationID,Name,CompanyID,Active) values('"
-						+ iD + "',\"" + newVal + "\",'" + compId + "',1)";
+//				sqlString = "insert into bca_location(LocationID,Name,CompanyID,Active) values('"
+//						+ iD + "',\"" + newVal + "\",'" + compId + "',1)";
+				pstmt7 =con.prepareStatement("insert into bca_location(LocationID,Name,CompanyID,Active) values(?,?,?,?)");
+				pstmt7.setString(1,iD);
+				pstmt7.setString(2, newVal);
+				pstmt7.setString(3, compId);
+				pstmt7.setInt(4, 1);
+				pstmt7.executeUpdate();
+				pstmt7.close();
 
 			} else if ("PAYMENT TYPE".equalsIgnoreCase(title)) {
 				pstmt = con.prepareStatement("select max(PaymentTypeID)+1 from bca_paymenttype");
@@ -498,8 +554,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_paymenttype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values('"
-						+ iD + "','" + compId + "',\"" + newVal + "\",1,1)";
+//				sqlString = "insert into bca_paymenttype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values('"
+//						+ iD + "','" + compId + "',\"" + newVal + "\",1,1)";
+				pstmt8 =con.prepareStatement("insert into bca_paymenttype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values(?,?,?,?,?)");
+				pstmt8.setString(1,iD);
+				pstmt8.setString(2, compId);
+				pstmt8.setString(3, newVal);
+				pstmt8.setInt(4, 1);
+				pstmt8.setInt(5, 1);
+				pstmt8.executeUpdate();
+				pstmt8.close();
 			}
 			else if ("RECEIVED TYPE".equalsIgnoreCase(title)) {
 				pstmt = con.prepareStatement("select max(PaymentTypeID)+1 from bca_receicedtype");
@@ -509,8 +573,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_receicedtype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values('"
-						+ iD + "','" + compId + "',\"" + newVal + "\",1,1)";
+//				sqlString = "insert into bca_receicedtype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values('"
+//						+ iD + "','" + compId + "',\"" + newVal + "\",1,1)";
+				pstmt9 =con.prepareStatement("insert into bca_receicedtype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values(?,?,?,?,?)");
+				pstmt9.setString(1,iD);
+				pstmt9.setString(2, compId);
+				pstmt9.setString(3, newVal);
+				pstmt9.setInt(4, 1);
+				pstmt9.setInt(5, 1);
+				pstmt9.executeUpdate();
+				pstmt9.close();
 
 			} else if ("CREDIT CARD".equalsIgnoreCase(title)) {
 				pstmt = con.prepareStatement("select max(CCTypeID)+1 from bca_cctype");
@@ -521,8 +593,16 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_cctype values('" + iD + "','"
-						+ compId + "',\"" + newVal + "\",1)";
+//				sqlString = "insert into bca_cctype values('" + iD + "','"
+//						+ compId + "',\"" + newVal + "\",1,0)";
+				pstmt10 =con.prepareStatement("insert into bca_cctype values(?,?,?,?,?)");
+				pstmt10.setString(1, iD);
+				pstmt10.setString(2,compId);
+				pstmt10.setString(3,newVal);
+				pstmt10.setInt(4,1);
+				pstmt10.setInt(5,0);
+				pstmt10.executeUpdate();
+				pstmt10.close();
 			} else if ("SHIPPING VIA".equalsIgnoreCase(title)) {
 				pstmt = con.prepareStatement("select max(ShipCarrierID)+1 from bca_shipcarrier");
 				rs = pstmt.executeQuery();
@@ -532,7 +612,14 @@ public class SalesInfo {
 				}
 				pstmt.close();
 				rs.close();
-				sqlString = "insert into bca_shipcarrier  (ShipCarrierID, CompanyID,Name,Active) values('" + iD+ "','" + compId + "',\"" + newVal + "\",1)";
+//				sqlString = "insert into bca_shipcarrier  (ShipCarrierID, CompanyID,Name,Active) values('" + iD+ "','" + compId + "',\"" + newVal + "\",1)";
+				pstmt11 =con.prepareStatement("insert into bca_shipcarrier (ShipCarrierID, CompanyID,Name,Active) values(?,?,?,?)");
+				pstmt11.setString(1, iD);
+				pstmt11.setString(2,compId);
+				pstmt11.setString(3,newVal);
+				pstmt11.setInt(4,1);
+				pstmt11.executeUpdate();
+				pstmt11.close();
 			}
 
 			Loger.log(sqlString);
@@ -542,6 +629,7 @@ public class SalesInfo {
 				valid = true;
 
 		} catch (SQLException ee) {
+			
 			Loger.log(2, "Error in updateSalesData() " + ee);
 		}finally {
 			try {
@@ -555,7 +643,7 @@ public class SalesInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -650,7 +738,7 @@ public class SalesInfo {
 						db.close(con);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		return valid;
@@ -802,7 +890,7 @@ public class SalesInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;

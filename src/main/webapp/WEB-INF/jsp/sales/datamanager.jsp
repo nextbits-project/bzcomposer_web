@@ -642,7 +642,7 @@ table.table-notifications th {
 
 	function callClick(idVal, ttl) {
 		sOldVal = "";
-		debugger;
+		
         document.getElementById("datamanager12").innerHTML = ttl;
 		document.getElementById("selectedTitle").innerHTML = ttl;
 		document.getElementById("descriptionId").value = "";
@@ -816,7 +816,7 @@ table.table-notifications th {
 		document.getElementById("" + idVal).style.background = '#AAAAAA';
 	}
 	function callSave(value) {
-		debugger;
+		
 		sType = document.getElementById("selectedTitle").innerHTML
 		sOld = sOldVal;
 		sNew = document.getElementById("descriptionId").value;

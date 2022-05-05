@@ -2,11 +2,9 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page isELIgnored="false"%>
 <html>
 <head>
-
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
@@ -390,7 +388,7 @@ function ShowShippingAddressPage(form){
                                     <input type="button" id="sendMailEnabled" class="formbutton" title="Send Mail to..." onclick="SendMail(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value="<spring:message code='BzComposer.Invoice.SendMail' />" />
                                 </c:if>
                                 <c:if test="${empty Enable}">
-                                    <input type="button" id="sendMailDisabled" class="formbutton" title="Send Mail to..." onclick="SendMail(this.form);" disabled="true" style="padding: 8px 20px 8px 20px; font-size: 16px;" value="<spring:message code='BzComposer.Invoice.SendMail' />" />
+                                    <input type="button" id="sendMailDisabled" class="formbutton" title="Send Mail to..." onclick="SendMailDisabled(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value="<spring:message code='BzComposer.Invoice.SendMail' />" />
                                 </c:if>
                                 <input type="button" class="formbutton" onclick="printCustomerOrder(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value="<spring:message code='BzComposer.global.print' />" />
 							</td>
@@ -413,22 +411,14 @@ function ShowShippingAddressPage(form){
 									</tr>
 									<tr>
 										<td style="font-size: 14px;">
-											<%-- <form:select path="templateType" >
+											<form:select path="templateType">
+												<!-- <form:option value="1">Sales Order Standard</form:option> -->
+												<!-- <form:option value="2">Sales Order Charcoal</form:option> -->
 												<form:option value="3">Product Standard</form:option>
 												<form:option value="4">Product Charcoal</form:option>
 												<form:option value="5">Professional Standard</form:option>
 												<form:option value="6">Professional Charcoal</form:option>
-											</form:select> --%>
-										<c:set var="invoiceType" scope="page" value="${fn:toLowerCase(fn:substring(invoiceDto.formTemplateType.templateName,0,3))}"/> 
-											<form:select path="templateType">
-												 <c:forEach var="invItems" items="${invoiceDto.formTemplateType.mappingData}" varStatus="status">
-												 
-												 <c:set var="checkboxId" scope="page" value="${invItems.templateNo}"/>
-												 
-												 	<form:option value="${checkboxId}" selected="${invItems.isSelected==true?'selected':''}">${invItems.templateType}</form:option>
-												 </c:forEach>
-											 </form:select>   
-											
+											</form:select>
 										</td>
 										<td style="font-size: 14px;">
                                             <form:select id="inoiceStyle" path="invoiceStyle" onchange="StyleChange(this.value);">
@@ -872,6 +862,44 @@ function ShowShippingAddressPage(form){
 							</td>
 							<td style="font-size: 14px;" colspan="3">
 								<table>
+									<%-- <tr>
+										<td align="right" style="font-size: 14px;">
+											<div id="tax_field">
+												<spring:message code="BizComposer.Invoice.TaxField" />
+											</div>
+										</td>
+										<td style="font-size: 14px;">
+											<form:input path="tax" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
+										</td>
+									</tr> --%>
+								<%-- 	<tr>
+										<td align="right" style="font-size: 14px;">
+											<spring:message code="BzComposer.Invoice.Shipping" />
+										</td>
+										<td style="font-size: 14px;"> 
+											<form:input path="shipping" onclick="clearShippingCol()" onchange="sumShippingTotal()" style="width: 167px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
+										</td>
+									</tr> --%>
+									<%-- <tr>
+										<td align="right" style="font-size: 14px;">
+											<spring:message code="BzComposer.Invoice.Balanc" />
+										</td>
+										<td style="font-size: 14px;">
+											<form:input path="balance" style="text-align: right;" onclick="clearDiscountCol()" onchange="calDiscountTotal()" onkeypress="return numbersOnlyFloat(event,this.value);" />
+										</td>
+									</tr> --%>			
+								</table>
+							</td>						
+							<td style="font-size: 14px;" colspan="3">
+								<table align="right">			
+									<tr>
+										<td align="right" style="font-size: 14px;">
+											<spring:message code="BzComposer.Invoice.Subtotal" />
+										</td>
+										<td style="font-size: 14px;">
+											<form:input path="subtotal" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
+										</td>
+									</tr>
 									<tr>
 										<td align="right" style="font-size: 14px;">
 											<div id="tax_field">
@@ -882,7 +910,7 @@ function ShowShippingAddressPage(form){
 											<form:input path="tax" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
 										</td>
 									</tr>
-									<tr>
+										<tr>
 										<td align="right" style="font-size: 14px;">
 											<spring:message code="BzComposer.Invoice.Shipping" />
 										</td>
@@ -896,18 +924,6 @@ function ShowShippingAddressPage(form){
 										</td>
 										<td style="font-size: 14px;">
 											<form:input path="balance" style="text-align: right;" onclick="clearDiscountCol()" onchange="calDiscountTotal()" onkeypress="return numbersOnlyFloat(event,this.value);" />
-										</td>
-									</tr>			
-								</table>
-							</td>						
-							<td style="font-size: 14px;" colspan="3">
-								<table>			
-									<tr>
-										<td align="right" style="font-size: 14px;">
-											<spring:message code="BzComposer.Invoice.Subtotal" />
-										</td>
-										<td style="font-size: 14px;">
-											<form:input path="subtotal" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
 										</td>
 									</tr>
 									<tr>
@@ -1022,6 +1038,8 @@ function clearShippingCol(){
 function sumShippingTotal() {
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) +  parseFloat(document.InvoiceForm.shipping.value);
 	document.InvoiceForm.total.value = parseFloat(convertSubData).toFixed(2);
+	document.InvoiceForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
+
 }
 
 //this function clear input value, 
@@ -1068,9 +1086,9 @@ function ShippedItem(){
 }
 
 function Assignment(value, form){
-    debugger;
+    
     if(value==0){
-        debugger;
+        
         document.InvoiceForm.billTo.value="";
         document.InvoiceForm.shipTo.value="";
         document.InvoiceForm.via.value="0"
@@ -1082,7 +1100,7 @@ function Assignment(value, form){
     else if(value==1111){
         window.location.href = "Customer?tabid=NewCustomer";
     } else {
-        debugger;
+        
         size = document.getElementById("bSize").value;
         shsize = document.getElementById("sSize").value;
         var i;
@@ -1713,7 +1731,7 @@ function ebusiness(size){
 
 }
 function TaxValue1(value){
-    debugger;
+    
     size=document.getElementById("tSize").value;
     if(value==0){
         document.getElementById('tax_field').innerHTML="0.0 %";
@@ -1727,7 +1745,7 @@ function TaxValue1(value){
             if(value==field){
                 rt = document.getElementById(i+"tx_rt").value;
                 document.getElementById('tax_field').innerHTML=rt+" %";
-                rate = ( ((yestax/1 ) * (rt/1)) / 100 ).toFixed(2);  
+                rate = ( ((yestax/1 ) * (rt/1)) / 100 ).toFixed(2);
                 document.getElementById('tax_val').value=rate;
                 tax_rate=rt;
                 break;
@@ -1763,6 +1781,7 @@ function TaxValue(value,form){
     document.InvoiceForm.tax.value=rate;
     total = ((tot/1) + (subtotal/1)+(rate)/1);
     document.InvoiceForm.total.value=total.toFixed(2);
+    document.InvoiceForm.adjustedtotal.value = total.toFixed(2);
 }
 
 function AddItem(form){
@@ -1864,6 +1883,7 @@ function AddItem(form){
         tot=(form.shipping.value);
         total = ((tot/1) + (subtotal/1) + (tax_val/1)).toFixed(2);
         form.total.value=total;
+        form.adjustedtotal.value=total;
 
         form.subtotal.value=subtotal;
         document.getElementById('amt_id').value=subtotal;
@@ -1930,6 +1950,14 @@ function AddItem(form){
 
         document.getElementById('hidn').value=hidn_val;
     }
+    document.getElementById('serialNo_id').value="";
+    document.getElementById('qty_id').value="";
+
+    document.getElementById('unitPrice_id').value="";
+    document.getElementById('amount_id').value="";
+    document.getElementById('weight_id').value="";
+    document.getElementById('pname_id').value="";
+    document.getElementById('itemID').value="0";
 }
 
 function productItem(hidn_val){
@@ -2112,7 +2140,7 @@ function ItemChange(value){
                 //you can replace eventListner like keyup keypress blur change
 
                 $(".minutesInput").on('keyup', function(e) {
-                    debugger;
+                    
                     var num = parseInt(this.value, 10),
                         min = qtyMin,
                         max = qtyMax;
@@ -2246,7 +2274,7 @@ function Init(){
 
 function onSave(form)
 {
-    debugger;
+    
     No = form.orderNo.value;
     var bill = form.billTo.value;
     if(form.custID.value==0){
@@ -2268,7 +2296,7 @@ function onSave(form)
                         "<spring:message code='BzComposer.global.ok'/>": function () {
 
                             $(this).dialog("close");
-                            debugger;
+                            
                             subtotal=form.subtotal.value;
                             value = form.taxID.value;
                             sze=document.getElementById("tSize").value;
@@ -2350,7 +2378,7 @@ function onSave(form)
                                 val = ((((val)/1 - (cnt)/1)));
                                 form.size.value = val;
                             }
-                            debugger;
+                            
                             ShippedItem();
                             PaidItem();
                             var amount = document.getElementById("amount_id").value;
@@ -2415,7 +2443,11 @@ function SendMail(form){
     cid=form.orderNo.value;
     window.open("Invoice?tabid=ShowEmail&OrderType=invoice&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }
-		
+
+function SendMailDisabled(form){
+	return showItemOrderNumberDialog();
+}
+
 function DeleteRow(d,form)
 {
     event.preventDefault();
@@ -2436,7 +2468,7 @@ function DeleteRow(d,form)
                         rowId=document.getElementById(jj+'rowVal').value;
                         if(d==rowId)
                         {
-                            debugger;
+                            
                             var rt=0;
                             document.getElementById(d).style.display='none';
 
@@ -2484,6 +2516,7 @@ function DeleteRow(d,form)
                             shipping = document.InvoiceForm.shipping.value;
                             total = ( (rt/1) + (subtotal/1) + (shipping/1));
                             document.InvoiceForm.total.value=total.toFixed(2);
+                            document.InvoiceForm.adjustedtotal.value = total.toFixed(2);
                             document.InvoiceForm.tax.value=rt;
                             break;
                         }
@@ -2550,6 +2583,7 @@ event.preventDefault();
 
                         total = ((tot/1) + (subtotal/1) + (tx/1));
                         document.InvoiceForm.total.value=total.toFixed(2);
+                        document.InvoiceForm.adjustedtotal.value = total.toFixed(2);
                         deleted++;
                     }
                 }
@@ -2640,6 +2674,7 @@ function PrintInvoice22(form){
 <div id="showValidationDialog" style="display:none;">
 	<p><spring:message code="BzComposer.Estimaion.cName.Validation" /></p>
 </div>
+
 <div id="showSelectItemDialog" style="display:none;">
 	<p><spring:message code="BzComposer.invoice.selectItemFirst"/></p>
 </div>

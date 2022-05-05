@@ -12,7 +12,7 @@
     <title><spring:message code="BzComposer.payroll.title.createPayroll" /></title>
 <script type="text/javascript">
     function init(){
-        debugger;
+        
         var d = new Date();
         var monthname = (d.getMonth()+1);
         var yearname = d.getFullYear();
@@ -20,7 +20,7 @@
         document.getElementById("year").value = yearname;
     }
     function getempdata(){
-        debugger;
+        
         var empids = document.getElementById("empids").value;
         var fields = empids.split(',');
         var empid = fields[0];
@@ -29,7 +29,7 @@
         document.getElementById("payPeriodID1").value = payperiod;
     }
     function findEmployee(){
-        debugger;
+        
         var empids = document.getElementById("empids").value;
         var fields = empids.split(',');
         var empid = fields[0];

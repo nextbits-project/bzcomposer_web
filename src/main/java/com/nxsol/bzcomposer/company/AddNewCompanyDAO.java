@@ -1,24 +1,5 @@
 package com.nxsol.bzcomposer.company;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.avibha.bizcomposer.File.forms.CompanyInfoBean;
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfoDao;
@@ -26,20 +7,14 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
-import com.nxsol.bizcomposer.common.ConstValue;
-import com.nxsol.bizcomposer.common.JProjectUtil;
-import com.nxsol.bizcomposer.common.TblBalanceSheet;
-import com.nxsol.bizcomposer.common.TblBudget;
-import com.nxsol.bizcomposer.common.TblBudgetDetail;
-import com.nxsol.bizcomposer.common.TblBusinessType;
-import com.nxsol.bizcomposer.common.TblCategory;
-import com.nxsol.bizcomposer.common.TblLineofCreditTerm;
-import com.nxsol.bizcomposer.common.TblPreference;
-import com.nxsol.bizcomposer.common.TblPriceLevel;
-import com.nxsol.bizcomposer.common.TblUnitofMeasure;
+import com.nxsol.bizcomposer.common.*;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 
-@Service
+import javax.servlet.http.HttpServletRequest;
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
+
 public class AddNewCompanyDAO {
 
     public static ArrayList<CompanyInfoDto> vTerm_ID;
@@ -73,17 +48,8 @@ public class AddNewCompanyDAO {
     public int shipCarrierID = 0;
     public int vReceivedType_ID;
     public ArrayList<CompanyInfoDto> sGeneralContactINformationList = new ArrayList<>();
-    
-    private  BusinessTypeRepository businessRepository;
 
-   
-    @Autowired
-	public AddNewCompanyDAO(BusinessTypeRepository businessRepository) {
-		super();
-		this.businessRepository = businessRepository;
-	}
-
-	public ArrayList getExistingCompanies(String cId, HttpServletRequest request, CompanyInfoDto form)
+    public ArrayList getExistingCompanies(String cId, HttpServletRequest request, CompanyInfoDto form)
     {
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
@@ -124,7 +90,7 @@ public class AddNewCompanyDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -138,7 +104,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -187,7 +153,7 @@ public class AddNewCompanyDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -201,7 +167,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -212,11 +178,43 @@ public class AddNewCompanyDAO {
     /**/
 
     /*BusinessType*/
-    
-    public  void getBusinessType(CompanyInfoDto form)
+    public  ArrayList getBusinessType(String cId,HttpServletRequest request,CompanyInfoDto form)
     {
-        List<BusinessType> businessTypeList =businessRepository.findAll();
-        form.setBusinessTypes(businessTypeList);
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        Statement stmt1 = null;
+        ResultSet rs1 = null;
+        DateInfo dInfo = new DateInfo();
+        ArrayList<CompanyInfoDto> listPOJOs = new ArrayList<>();
+        ArrayList<Date> selectedRange = new ArrayList<>();
+        CustomerInfoDao cInfo = new CustomerInfoDao();
+        CompanyInfoDto pojo = null;
+        try {
+            stmt1 = con.createStatement();
+            String sql1 = "SELECT businessname, businesstypeid FROM bca_businesstype WHERE active=1 ORDER BY businessname";
+            Loger.log(sql1);
+            rs1 = stmt1.executeQuery(sql1);
+            while (rs1.next()) {
+                pojo = new CompanyInfoDto();
+                pojo.setBusinessName(rs1.getString(1));
+                pojo.setBusinessTypeId(rs1.getInt(2));
+                listPOJOs.add(pojo);
+            }
+        }
+        catch (Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (rs1 != null) db.close(rs1);
+                if (stmt1 != null) db.close(stmt1);
+                if(con != null) db.close(con);
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        form.setListOfBusinessType(listPOJOs);
+        return listPOJOs;
     }
     /**/
 
@@ -255,7 +253,7 @@ public class AddNewCompanyDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -266,7 +264,7 @@ public class AddNewCompanyDAO {
                     db.close(ocon);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return b;
@@ -331,7 +329,7 @@ public class AddNewCompanyDAO {
 
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 
 
@@ -345,7 +343,7 @@ public class AddNewCompanyDAO {
         }
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
         finally {
             try { // close connection
@@ -404,7 +402,7 @@ public class AddNewCompanyDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -418,7 +416,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingModules(listPOJOs);
@@ -463,7 +461,7 @@ public class AddNewCompanyDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -477,7 +475,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfCountries(listPOJOs);
@@ -519,7 +517,7 @@ public class AddNewCompanyDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -533,7 +531,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfStates(listPOJOs);
@@ -577,7 +575,7 @@ public class AddNewCompanyDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -591,7 +589,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return listPOJOs;
@@ -639,7 +637,7 @@ public class AddNewCompanyDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -653,7 +651,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return listPOJOs;
@@ -727,7 +725,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return number1;
@@ -756,7 +754,7 @@ public class AddNewCompanyDAO {
         catch (Exception e)
         {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
 
 
@@ -910,7 +908,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -923,7 +921,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setvListCustomerGroup(objList);
@@ -1041,7 +1039,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -1093,7 +1091,7 @@ public class AddNewCompanyDAO {
                     db.close(con2);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return test;
@@ -1151,7 +1149,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) {
@@ -1167,7 +1165,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -1192,7 +1190,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }  finally {
             try {
                 if (rs1 != null) {
@@ -1205,7 +1203,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return isExist;
@@ -1239,7 +1237,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         return accountId;
     }
@@ -1361,7 +1359,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }  finally {
             try {
                 if (rs1 != null) {
@@ -1374,7 +1372,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return accountId;
@@ -1408,7 +1406,7 @@ public class AddNewCompanyDAO {
             stmt1.executeUpdate(sql_put);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }  finally {
             try {
                 if (rs1 != null) {
@@ -1421,7 +1419,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -1499,7 +1497,7 @@ public class AddNewCompanyDAO {
 
         }catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1516,7 +1514,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return paymentId;
@@ -1559,7 +1557,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -1572,7 +1570,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -1602,7 +1600,7 @@ public class AddNewCompanyDAO {
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -1615,7 +1613,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return priority;
@@ -1661,7 +1659,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -1674,7 +1672,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -1720,7 +1718,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -1733,7 +1731,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return account;
@@ -1759,7 +1757,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -1772,7 +1770,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return account;
@@ -1806,7 +1804,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -1819,7 +1817,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -1854,7 +1852,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -1867,7 +1865,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -1891,7 +1889,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             db.close(con);
             try{
@@ -1905,7 +1903,7 @@ public class AddNewCompanyDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return Id;
@@ -1923,7 +1921,7 @@ public class AddNewCompanyDAO {
             String sql = "SELECT * FROM ";
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -1936,7 +1934,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -2114,7 +2112,7 @@ public class AddNewCompanyDAO {
             db.close(stmt1);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
 
         sSql = new StringBuffer();
@@ -2154,7 +2152,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -2167,7 +2165,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -2191,7 +2189,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -2204,7 +2202,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setvPaymentGateway(objList);
@@ -2231,7 +2229,7 @@ public class AddNewCompanyDAO {
             form.setcCategory_Name(objList);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -2244,7 +2242,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -2293,7 +2291,7 @@ public class AddNewCompanyDAO {
             }
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
 
 
@@ -2511,7 +2509,7 @@ public class AddNewCompanyDAO {
             db.close(stmt1);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
 
         for (Object objPaymentGateway : form.getvPaymentGateway()) {
@@ -2567,7 +2565,7 @@ public class AddNewCompanyDAO {
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Loger.log(e.toString());
                 }
             }
         }
@@ -2610,14 +2608,14 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
 
         try {
             insertUnitOfMeasure();
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         String[] sLocation = null;
         try {
@@ -2653,7 +2651,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
 
         String[] sMessage = null;
@@ -2688,7 +2686,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         String[] empJobTitle = {"Manager", "Sales Rep", "Technician"};
         try {
@@ -2720,7 +2718,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         String[] empType = {"Full Time", "Part Time", "Contractor"};
         try {
@@ -2752,7 +2750,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
 
         try{
@@ -2789,7 +2787,7 @@ public class AddNewCompanyDAO {
         }
         catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         ArrayList<TblPriceLevel> priceLevels = new ArrayList<>();
         try {
@@ -2853,14 +2851,14 @@ public class AddNewCompanyDAO {
                             db.close(stmt1);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Loger.log(e.toString());
                     }
                 }
             }
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2871,7 +2869,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -2964,7 +2962,7 @@ public class AddNewCompanyDAO {
 
                 }catch (Exception e) {
                     // TODO: handle exception
-                    e.printStackTrace();
+                    Loger.log(e.toString());
                 }
             }
         }
@@ -3024,7 +3022,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -3059,7 +3057,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -3072,7 +3070,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return type;
@@ -3095,7 +3093,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -3108,7 +3106,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return country;
@@ -3133,7 +3131,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -3146,7 +3144,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return stCode;
@@ -3229,7 +3227,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -3242,7 +3240,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setvAccountCategories(objList);
@@ -3318,7 +3316,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -3337,7 +3335,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setvAccCategories(objList);
@@ -3369,7 +3367,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -3382,7 +3380,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setvBalanceSheetCategories(objList);
@@ -3416,7 +3414,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -3426,7 +3424,7 @@ public class AddNewCompanyDAO {
                     db.close(stmt1);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
             db.close(con);
         }
@@ -3720,7 +3718,7 @@ public class AddNewCompanyDAO {
 				}
 			}catch (Exception e) {
 				// TODO: handle exception
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}*/
             }
@@ -3883,7 +3881,7 @@ public class AddNewCompanyDAO {
 				}
 			}catch (Exception e) {
 				// TODO: handle exceptio
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}*/
             }
@@ -3917,7 +3915,7 @@ public class AddNewCompanyDAO {
             int[] counts = statement.executeBatch();
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (statement != null) {
@@ -3927,7 +3925,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -4404,7 +4402,7 @@ public class AddNewCompanyDAO {
                             db.close(con);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Loger.log(e.toString());
                     }
                 }
                 vendId++;
@@ -4486,7 +4484,7 @@ public class AddNewCompanyDAO {
                             db.close(con);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Loger.log(e.toString());
                     }
                 }
             }
@@ -4521,7 +4519,7 @@ public class AddNewCompanyDAO {
             stmt1.executeUpdate(Updatesql);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4535,7 +4533,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -4556,7 +4554,7 @@ public class AddNewCompanyDAO {
             budget.setBudgetID(budgetId);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         for (TblCategory c : form.getvAccCategories()) {
             TblBudgetDetail details = new TblBudgetDetail();
@@ -4612,7 +4610,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -4628,7 +4626,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return budgetID;
@@ -4684,7 +4682,7 @@ public class AddNewCompanyDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4698,7 +4696,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -4739,7 +4737,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -4752,7 +4750,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -4793,7 +4791,7 @@ public class AddNewCompanyDAO {
             stmt.executeUpdate(sql);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) {
@@ -4803,7 +4801,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -4830,7 +4828,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -4843,7 +4841,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return termID;
@@ -4870,7 +4868,7 @@ public class AddNewCompanyDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -4883,7 +4881,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return termID;
@@ -4916,7 +4914,7 @@ public class AddNewCompanyDAO {
             stmt.executeUpdate(eSql);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) {
@@ -4926,7 +4924,7 @@ public class AddNewCompanyDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }

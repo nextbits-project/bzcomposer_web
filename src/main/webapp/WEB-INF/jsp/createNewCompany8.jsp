@@ -156,7 +156,7 @@ var salePrice;var inventoryBarCode;var orderUnit;var inventoryDropShipping;var i
 
 function submitform()
 {
-	debugger;
+	
 	if(!confirm("Do you want to save changes?"))
 	{
 		document.forms[0].action = "CompanyNew?tabid=createNewCompany9";
@@ -197,7 +197,7 @@ function submitform()
 }
 
 function isNumber(evt) {
-    debugger;
+    
 	evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -207,7 +207,7 @@ function isNumber(evt) {
 }
 function addGeneralDetail()
 {
-	debugger;
+	
 	var inventoryName = $("#inventoryName").val() == ""?null:$("#inventoryName").val();
 	var inventoryCode = $("#inventoryCode").val() == ""?null:$("#inventoryCode").val();
 	var serialNum = $("#serialNum").val() == ""?null:$("#serialNum").val();
@@ -263,7 +263,7 @@ function addGeneralDetail()
 	
 	}	
 	else {
-			debugger;
+			
 			objGlobal[index] = {
 				InventoryName:inventoryName,
 				InventoryCode:inventoryCode,
@@ -289,7 +289,7 @@ function addGeneralDetail()
 }
 function selectRow(i)
 {
-	debugger;
+	
 	index = i;	
 	$("#inventoryCode").val(objGlobal[i].InventoryCode);
 	$("#inventoryName").val(objGlobal[i].InventoryName);
@@ -310,7 +310,7 @@ function selectRow(i)
 }
 function remove()
 {
-	debugger;
+	
 	if(index != -1)
 	{
 		$("#row"+index+"").remove();
@@ -324,7 +324,7 @@ function remove()
 }
 function finish()
 {
-	debugger;
+	
 	if(objGlobal.length > 0)
 	{		
 			var json = JSON.stringify(objGlobal);
@@ -334,7 +334,7 @@ function finish()
 				url : "CompanyNew?tabid=addInventory",
 				data : "json=" +json ,
 			    success : function(data) {
-					debugger;
+					
 					alert("<bean:message key='BzComposer.common.saveSuccess'/>");
 					document.forms[0].action = "CompanyNew?tabid=finish3";
 					document.forms[0].submit(); 

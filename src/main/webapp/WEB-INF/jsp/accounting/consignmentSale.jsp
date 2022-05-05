@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page isELIgnored="false"%>
 <%@page import="java.util.Currency"%>
-<%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%>
+<%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
@@ -287,10 +287,7 @@ margin-right: 10px;
 			    aria-controls="nav-home" aria-selected="true" onclick="payableLists()">
 			    	<spring:message code="BzComposer.popayable.tab.popayablelist"/>
 		    	</a>
-			    <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" 
-			    role="tab" aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
-			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
-		    	</a>
+			    
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" 
 			    aria-controls="nav-contact" aria-selected="false" onclick="paidList()">
 			    	<spring:message code="BzComposer.popayable.tab.paidlist"/>
@@ -299,6 +296,10 @@ margin-right: 10px;
                 aria-controls="nav-contact" aria-selected="false">
                     <spring:message code="BzComposer.accountreceivable.tabs.VendorRMARefund"/>
                 </a>
+                <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" 
+			    role="tab" aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
+			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
+		    	</a>
 			  </div>
 			</nav>
 				<div class="table1" id="tblForInvoiceOrder">
@@ -445,7 +446,7 @@ margin-right: 10px;
 	var obj = [];
 	var vendorId = 0;
    function selectrow(invoice,index) {
-	    debugger;
+	    
 	      $( "#demo" ).empty();  
 	    this.indexNumber = index;	
 	    this.invoiceId = invoice;
@@ -533,7 +534,7 @@ margin-right: 10px;
    
    $(function() {
 	   $( "#pay").on("click", function(){ 
-		   debugger;
+		   
 		   var content;
 		   $( "#demo" ).empty();  
 		   if(invoiceId >= '0' && $('input[type="checkbox"]').is(':checked'))
@@ -575,7 +576,7 @@ margin-right: 10px;
 	
    function save()
    {
-	   debugger;	
+	   	
 
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
@@ -632,7 +633,7 @@ margin-right: 10px;
  
   	}
    function sendMyValue(ReceivableListBean) {
-		debugger;
+		
 		var obj=JSON.stringify(ReceivableListBean);
    	 $.ajax({
 		
@@ -673,7 +674,7 @@ margin-right: 10px;
    }
    function checkType()
    {
-	 	debugger;
+	 	
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].innerText;
 	   
@@ -693,7 +694,7 @@ margin-right: 10px;
    }
    function selectedRadio()
    {
-	 debugger;
+	 
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 		   {
 		   		$("#tblForInvoiceOrder").hide();
@@ -715,7 +716,7 @@ margin-right: 10px;
    }
    function received()
    {
-		debugger;
+		
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].label;
@@ -829,7 +830,7 @@ margin-right: 10px;
      	return d;
    }
    $(document).ready(function(){
-		debugger;
+		
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	   $("#poDate").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
@@ -844,7 +845,7 @@ margin-right: 10px;
 	   
 });
 $("td#accdrpdwn").click(function(e){     //function_td
-	   debugger;
+	   
 	  $(this).replaceWith($("#payId"));
 	 });
    function popUp()
@@ -855,7 +856,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
    function clearTransaction()
    {
 	   var answer;
-	   debugger;
+	   
 
 	   if(parseInt(invoiceId) > 0 &&  $('input[id="Checkbox['+indexNumber+']"]').is(':checked'))
 		   {
@@ -892,7 +893,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
    }
    function cancelledTab()
    {
-	   debugger;
+	   
 	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab";
    }
    function receivedTab()
@@ -906,7 +907,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
    }
    function billingInfo()
    {
-	   debugger;
+	   
 	   var h = window.screen.height;
 	   var w = window.screen.width;
 	   
@@ -928,7 +929,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
    }
    function checkPaymentStatus()
    {
-	   debugger;
+	   
 	   	/* var pay = document.getElementById("payStatus");
 	  	vat option = pay.options[pay.selectedIndex].value; */
 	   $(document.forms[0]).submit(function( event ) {
@@ -936,7 +937,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
 		});
    }
    $( ".paymentOP" ).change(function() {
-	   debugger;
+	   
 	  var pay = document.getElementById("payStatus");
 	  var payment = pay.options[pay.selectedIndex].value; 
 	 
@@ -968,7 +969,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
    } 
   function payFromDialog()
   {
-	  debugger;
+	  
 	  var vendorName = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(1)').text();
 	  var invoiceId =  $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(9)').text();
 	  var vendorId = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(1)').attr('value');

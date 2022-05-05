@@ -350,7 +350,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -559,7 +559,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -641,7 +641,7 @@ public class PurchaseInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class Employee and  method -insertEmployee "+" " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -649,7 +649,7 @@ public class PurchaseInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -696,14 +696,14 @@ public class PurchaseInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class PurchaseInfo and  method -insertVendorBSAddress: " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -773,7 +773,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -871,7 +871,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -905,7 +905,7 @@ public class PurchaseInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return CVID;
@@ -950,7 +950,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -995,7 +995,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -1040,7 +1040,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -1102,7 +1102,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1453,7 +1453,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -1492,7 +1492,7 @@ public class PurchaseInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -1503,7 +1503,7 @@ public class PurchaseInfo {
 					}
 					
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("ServiceList", serviceList);
@@ -1522,7 +1522,7 @@ public class PurchaseInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				
@@ -1534,7 +1534,7 @@ public class PurchaseInfo {
 					}
 					
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("InvoiceName", invoiceName);
@@ -1569,7 +1569,7 @@ public class PurchaseInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs2 != null) {
@@ -1582,7 +1582,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("BalenceDetails", balenceDetails);
@@ -1786,7 +1786,7 @@ public class PurchaseInfo {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		return ret;
@@ -1889,7 +1889,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return labelInfo;
@@ -1938,7 +1938,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1989,7 +1989,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2106,7 +2106,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}

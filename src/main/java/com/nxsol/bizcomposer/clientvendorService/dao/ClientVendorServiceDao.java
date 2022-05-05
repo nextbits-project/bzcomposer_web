@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.TblClientVendorService;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
@@ -58,7 +59,7 @@ public class ClientVendorServiceDao {
 	                
 			 }catch (Exception e) {
 					// TODO: handle exception
-					  e.printStackTrace();
+					  Loger.log(e.toString());
 				}finally {
 					try {
 						if (rs != null) {
@@ -77,7 +78,7 @@ public class ClientVendorServiceDao {
 							db.close(con);
 							}
 						} catch (Exception e) {
-						e.printStackTrace();
+						Loger.log(e.toString());
 					}
 				}
 		 return vService;

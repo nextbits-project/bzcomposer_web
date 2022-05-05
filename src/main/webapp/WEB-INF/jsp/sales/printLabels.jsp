@@ -218,7 +218,7 @@ function showlabelValidationDialog()
 
 function printlabel()
 {
-	debugger;
+	
 	//lbltype
 	 var list=document.getElementById("list");
 	 var ops=list.getElementsByTagName('OPTION');
@@ -291,7 +291,7 @@ function deleteSelectedCustomerFromList(rid){
 }
 
 function sendTo2(){
-	debugger;
+	
 	rid = document.getElementById("setRID").value
 	if(rid==""){
 		return showCustomerValidationDialog();
@@ -319,12 +319,12 @@ function clearData()
 }
 function UpdateLabel()
 {
-	debugger;
+	
 	lbltype=document.getElementById('ltype').value;
-	debugger;
+	
 	if(lbltype==""){
 
-		debugger;
+		
 		return showlabelValidationDialog();	
 	}else{
 		window.open("Customer?tabid=UpdateLabel&lblId="+lbltype,null,"scrollbars=yes,height=475,width=650,status=yes,toolbar=no,menubar=no,location=no" );

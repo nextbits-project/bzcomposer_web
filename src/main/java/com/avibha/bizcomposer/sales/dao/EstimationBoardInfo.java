@@ -12,22 +12,17 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.sales.forms.EstimationBoardDto;
+import com.avibha.bizcomposer.sales.forms.EstimationBoardForm;
 import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
 
-@Service
 public class EstimationBoardInfo {
 	
-	@Autowired
-	private ConfigurationInfo configInfo;
 	public ArrayList EstimationRecordSearch(String compId, EstimationBoardDto eform) {
 
 		String oDate1 = eform.getOrderDate1();
@@ -46,7 +41,7 @@ public class EstimationBoardInfo {
 		String mark = null;
 		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<EstimationBoard> objList = new ArrayList<>();
-		//ConfigurationInfo configInfo = new ConfigurationInfo();
+		ConfigurationInfo configInfo = new ConfigurationInfo();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
 			con = db.getConnection();
@@ -172,7 +167,7 @@ public class EstimationBoardInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -186,7 +181,7 @@ public class EstimationBoardInfo {
 				if (stmt4 != null) { db.close(stmt4); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -252,7 +247,7 @@ public class EstimationBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return result;

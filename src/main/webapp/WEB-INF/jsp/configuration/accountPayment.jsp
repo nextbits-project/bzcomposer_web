@@ -46,7 +46,7 @@ $(function() {
     }, 1000);
 });
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -289,8 +289,8 @@ $(document).ready(function()
     							<li style="font-size: 12px;" id="tabNo1"><a href="#AccountSetting"><spring:message code="BzComposer.configuration.tab.accountsetting" /></a></li>
     							<li style="font-size: 12px;" id="tabNo2"><a href="#AccountReceivable"><spring:message code="BzComposer.configuration.tab.accountrecivable" /></a></li>
     							<li style="font-size: 12px;" id="tabNo3"><a href="#POPayable"><spring:message code="BzComposer.configuration.tab.popayable" /></a></li>
-    							<li style="font-size: 12px;" id="tabNo4"><a href="#billing"><spring:message code="BzComposer.accountreceivable.billing" /></a</li>
-    							<li style="font-size: 12px;" id="tabNo5"><a href="#CategoryManager"><spring:message code="BzComposer.CategoryManager" /></a</li>
+    							<li style="font-size: 12px;" id="tabNo4"><a href="#billing"><spring:message code="BzComposer.accountreceivable.billing" /></a></li>
+    							<li style="font-size: 12px;" id="tabNo5"><a href="#CategoryManager"><spring:message code="BzComposer.CategoryManager" /></a></li>
     							<li style="font-size: 12px;display:none;"><a href="#PaymentType"><spring:message code="BzComposer.popayable.paymenttype" /></a></li>
    								<li style="font-size: 12px;display:none;"><a href="#ReceivedType"><spring:message code="BzComposer.configuration.tab.receivedtype" /></a></li>
   							</ul>
@@ -626,7 +626,7 @@ $(document).ready(function()
                                     </tr>
                                     <tr>
                                         <td style="font-size: 12px;">
-                                            <spring:message code="BzComposer.configuration.defaultreceivetype"/>:
+                                            <spring:message code="BzComposer.configuration.defaultreceivedtype"/>:
                                         </td>
                                         <td style="font-size: 12px;">
                                             <form:select path="bpReceivedType" id="bpReceivedType" styleClass="width:50%" >
@@ -1000,7 +1000,7 @@ $(document).ready(function()
                                                             <c:forEach items="${configDto.listOfExistingCreditCard}" var="objList1" varStatus="loop">
                                                             <tr>
                                                                 <td id="${objList1.creditCardTypeId}" onclick="showType();" align="center">
-                                                                    <label id="cType" name="cTyoe" value="${objList1.creditCardTypeId}">
+                                                                    <label id="cType" name="cType" value="${objList1.creditCardTypeId}">
                                                                         ${objList1.creditCardName}
                                                                     </label>
                                                                 </td>
@@ -1082,7 +1082,7 @@ $(document).ready(function()
 <script type="text/javascript">
 function SaveValues()
 {
-    debugger;
+    
     event.preventDefault();
     $("#showsaverecorddialog").dialog({
         resizable: false,
@@ -1091,7 +1091,7 @@ function SaveValues()
         modal: true,
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
-                debugger;
+                
                 let tabID = $('div#tabs1 ul li.ui-state-active').attr('id');
                 sessionStorage.setItem("activeTabID", tabID);
 

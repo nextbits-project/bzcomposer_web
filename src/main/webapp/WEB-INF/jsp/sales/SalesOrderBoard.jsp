@@ -259,7 +259,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 				    value='<spring:message code="BzComposer.salesorderboard.lookup" />' />&nbsp;&nbsp;
 				<input type="button" class="formbutton" id="modi" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
                     value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp;
-                <input type="button" class="formbutton" id="modi" style="padding: 10px;"
+                <input type="button" class="formbutton" id="modi" onclick="SendMail(this.form);" style="padding: 10px;"
                     value='<spring:message code="BzComposer.global.sendmail" />' />
 				<input type="hidden" name="ONum" id="ONumId">
 				<input type="hidden" name="sEmail" id="sEmailID"> 
@@ -388,6 +388,11 @@ function InvoiceSelectedRecord(){
     }else{
         alert("<spring:message code='BzComposer.categorymanager.selectitemrow'/>");
     }
+}
+
+function SendMail(form){
+	//order_no = document.getElementById("ord_value").value;
+	window.open("Invoice?tabid=ShowEmail",null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }
 
 function SaleSearch(filterType){

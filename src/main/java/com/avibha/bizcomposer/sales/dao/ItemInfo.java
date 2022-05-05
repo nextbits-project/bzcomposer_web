@@ -228,7 +228,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -297,7 +297,7 @@ public class ItemInfo {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -310,7 +310,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -384,7 +384,7 @@ public class ItemInfo {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -397,7 +397,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -474,7 +474,7 @@ public class ItemInfo {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -487,7 +487,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -589,7 +589,7 @@ public class ItemInfo {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -608,7 +608,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -739,7 +739,7 @@ public class ItemInfo {
 			
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -758,7 +758,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -851,7 +851,7 @@ public class ItemInfo {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -870,7 +870,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -939,7 +939,7 @@ public class ItemInfo {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -958,7 +958,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1094,7 +1094,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1250,7 +1250,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1331,7 +1331,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -1485,7 +1485,7 @@ public class ItemInfo {
 				valid = true;
 
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2, "Error in updateItem() " + ee);
 
 		} finally {
@@ -1497,7 +1497,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1652,7 +1652,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1708,7 +1708,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1745,7 +1745,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1786,7 +1786,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return inventoryID;
@@ -1834,7 +1834,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1920,7 +1920,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return fillList;
@@ -2024,7 +2024,7 @@ public class ItemInfo {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs1 != null) {
@@ -2055,7 +2055,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("TotalGrossprofit", totalGrossProfit);
@@ -2396,7 +2396,7 @@ public class ItemInfo {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		return b;
 	}
@@ -2622,7 +2622,7 @@ public class ItemInfo {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2635,7 +2635,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return b;
@@ -2665,7 +2665,7 @@ public class ItemInfo {
 
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (stmt != null) {
@@ -2675,7 +2675,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2699,7 +2699,7 @@ public class ItemInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2712,7 +2712,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return 0;
@@ -2752,7 +2752,7 @@ public class ItemInfo {
 			  }
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2765,7 +2765,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return valid;
@@ -3587,7 +3587,7 @@ public class ItemInfo {
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			File destinationFile = null;
@@ -3678,7 +3678,7 @@ public class ItemInfo {
   		}
   	  }catch (Exception e) {
   		// TODO: handle exception
-  		  e.printStackTrace();
+  		  Loger.log(e.toString());
   	}finally {
 		try {
 			if (rs != null) {
@@ -3691,7 +3691,7 @@ public class ItemInfo {
 				db.close(con);
 				}
 			} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
   	return v;
@@ -3724,7 +3724,7 @@ public class ItemInfo {
 			  }
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -3737,7 +3737,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return row;
@@ -3762,7 +3762,7 @@ public class ItemInfo {
 			  
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -3775,7 +3775,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return itemAsin;
@@ -3799,7 +3799,7 @@ public class ItemInfo {
 			  
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -3812,7 +3812,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return inventory;
@@ -3888,7 +3888,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return weightList;
@@ -3930,7 +3930,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		itemForm.setListOfExistingeSaleChannelList(eSaleChannelList);
@@ -3971,7 +3971,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return measurementList;
@@ -4010,7 +4010,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return subMeasurementList;
@@ -4060,7 +4060,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		form.setListOfExistingPriceLevels(priceLevelList);
@@ -4125,7 +4125,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		form.setListOfExistingeBayProducts(eBayProductList);
@@ -4170,7 +4170,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return locationList;
@@ -4212,7 +4212,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		itemForm.setListOfExistingChannelSettings(storeList);
@@ -4279,7 +4279,7 @@ public class ItemInfo {
 						}
 						
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return storeList;
@@ -4344,7 +4344,7 @@ public class ItemInfo {
 						db.close(con);
 						}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return productList;
@@ -4415,7 +4415,7 @@ public class ItemInfo {
 						db.close(con1);
 						}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return accountList;
@@ -4456,7 +4456,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -4498,7 +4498,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return subCategoryList;
@@ -4541,7 +4541,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return vendorList;

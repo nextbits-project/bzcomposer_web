@@ -1,32 +1,5 @@
 package com.avibha.bizcomposer.File.actions;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfoDao;
@@ -35,25 +8,30 @@ import com.avibha.bizcomposer.sales.dao.CustomerInfoDao;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.common.log.Loger;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author sarfrazmalik
  */
 @Service
 public class DataImportExportUtils {
-	
-	 private ConfigurationInfo configInfo;
-	 	@Autowired
-	    private SalesDetailsDao salesDetails;
-	    @Autowired
-	    public DataImportExportUtils(ConfigurationInfo configInfo) {
-			super();
-			this.configInfo = configInfo;
-		}
-	    
-	    public DataImportExportUtils() {
-			super();
-		}
 
     private final static String NEW_LINE_SEPARATOR = "\n";
     private final static String COMMA_DELIMITER = ",";
@@ -204,7 +182,7 @@ public class DataImportExportUtils {
                 fileOutputStream.close();
                 b = true;
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         writeFileToResponse(response, sourcefile);
@@ -367,7 +345,7 @@ public class DataImportExportUtils {
                 workbook.close();
                 inputStream.close();
             }
-            ConfigurationInfo cinfo = this.configInfo;
+            ConfigurationInfo cinfo = new ConfigurationInfo();
             cinfo.saveConfigurationRecordGeneral(configDto, request);
             cinfo.saveConfigurationRecordInventorySettting(configDto, Integer.parseInt(compId));
             cinfo.saveConfigurationRecord(configDto, Integer.parseInt(compId) ,request);
@@ -376,7 +354,7 @@ public class DataImportExportUtils {
             request.getSession().setAttribute("successMessage", "Success");
             status = true;
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         return status;
     }
@@ -493,7 +471,7 @@ public class DataImportExportUtils {
                 workbook.close();
                 fileOutputStream.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         writeFileToResponse(response, sourcefile);
@@ -644,7 +622,7 @@ public class DataImportExportUtils {
             }
             status = true;
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         return status;
     }
@@ -761,7 +739,7 @@ public class DataImportExportUtils {
                 workbook.close();
                 fileOutputStream.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         writeFileToResponse(response, sourcefile);
@@ -904,7 +882,7 @@ public class DataImportExportUtils {
             }
             status = true;
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         return status;
     }
@@ -987,7 +965,7 @@ public class DataImportExportUtils {
                 workbook.close();
                 fileOutputStream.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         writeFileToResponse(response, sourcefile);
@@ -998,7 +976,7 @@ public class DataImportExportUtils {
         boolean status = false;
         File file = new File(attachedFile.getOriginalFilename());
         String[] fileName = file.getName().split("\\.");
-       // SalesDetailsDao sdetails = new SalesDetailsDao();
+        SalesDetailsDao sdetails = new SalesDetailsDao();
         try{
             OutputStream os = new FileOutputStream(file);
             InputStream is = new BufferedInputStream(attachedFile.getInputStream());
@@ -1037,7 +1015,7 @@ public class DataImportExportUtils {
                     itemDto.setTaxable(data[13]);
                     itemDto.setTextAreaContent(data[14]);
 
-                    salesDetails.AddItem(request, itemDto);
+                    sdetails.AddItem(request, itemDto);
                 }
                 bfReader.close();
             }
@@ -1081,7 +1059,7 @@ public class DataImportExportUtils {
                             else if(count2 == 14) itemDto.setTextAreaContent(data);
                             count2++;
                         }
-                        salesDetails.AddItem(request, itemDto);
+                        sdetails.AddItem(request, itemDto);
                     }
                     workbook.close();
                     inputStream.close();
@@ -1089,7 +1067,7 @@ public class DataImportExportUtils {
             }
             status = true;
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         return status;
     }

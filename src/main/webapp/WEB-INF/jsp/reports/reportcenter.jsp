@@ -1225,12 +1225,12 @@ table.tabla-listados tbody tr td { font-size: .8em;padding: 5px 0px 5px 14px;bac
 // }
 
 	function SetRow(rid){
-		debugger;
+		
 		setTableVisible(rid);
 	}	
 	function setTableVisible(rid){
 		if(rid=="tr0"){
-			debugger;
+			
 			document.getElementById('customer').style.display='block';
 			document.getElementById('general').style.display='none';
 			document.getElementById('nw').style.display='none';
@@ -1277,7 +1277,7 @@ table.tabla-listados tbody tr td { font-size: .8em;padding: 5px 0px 5px 14px;bac
 			document.getElementById('img111').style.display='block';
 			document.getElementById('img122').style.display='none';
 			document.getElementById('img121').style.display='block'; */
-			debugger;
+			
 			document.getElementById('esalesnonsel').style.display='block';
 			document.getElementById('esalessel').style.display='none';
 			document.getElementById('img2A1').style.display='block';
@@ -1285,7 +1285,7 @@ table.tabla-listados tbody tr td { font-size: .8em;padding: 5px 0px 5px 14px;bac
             document.getElementById('AdjustInventoryDiv').style.display='none';
 		}
 		else if(rid=="tr1"){
-			debugger;
+			
 			document.getElementById('customer').style.display='none';
 			document.getElementById('general').style.display='block';
 			document.getElementById('nw').style.display='none';
@@ -1541,7 +1541,7 @@ table.tabla-listados tbody tr td { font-size: .8em;padding: 5px 0px 5px 14px;bac
             document.getElementById('AdjustInventoryDiv').style.display='none';
 		} */
 		else if(rid=="tr5"){
-			debugger;
+			
 			document.getElementById('customer').style.display='none';
 			document.getElementById('general').style.display='none';
 			document.getElementById('nw').style.display='none';
@@ -2140,7 +2140,7 @@ table.tabla-listados tbody tr td { font-size: .8em;padding: 5px 0px 5px 14px;bac
 	
 function init()
 {
-	debugger;
+	
 	SetRow('tr0');
 }
 </script>

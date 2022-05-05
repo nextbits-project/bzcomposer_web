@@ -3,6 +3,7 @@ package com.nxsol.bizcomposer.reportcenter.eSales;
 import com.avibha.bizcomposer.accounting.forms.AccountDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import org.jfree.chart.ChartFactory;
@@ -92,7 +93,7 @@ public class EsalesDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -106,7 +107,7 @@ public class EsalesDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -184,7 +185,7 @@ public class EsalesDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -198,7 +199,7 @@ public class EsalesDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -276,7 +277,7 @@ public class EsalesDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -290,7 +291,7 @@ public class EsalesDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -393,7 +394,7 @@ public class EsalesDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -407,7 +408,7 @@ public class EsalesDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -509,7 +510,7 @@ public class EsalesDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -534,7 +535,7 @@ public class EsalesDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -610,7 +611,7 @@ public class EsalesDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -624,7 +625,7 @@ public class EsalesDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return esalesList;

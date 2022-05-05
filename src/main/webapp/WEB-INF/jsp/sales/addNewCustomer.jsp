@@ -259,7 +259,7 @@ $(function() {
                                     <spring:message code="BzComposer.global.terminatedDate" />
                                 </td>
                                 <td>
-                                    <form:input path="terminatedDate" readonly="true" />
+                                    <form:input path="terminatedDate" readonly="false" />
                                     <img src="${pageContext.request.contextPath}/images/cal.gif"
                                         onclick="displayCalendar(document.CustomerForm.terminatedDate,'mm-dd-yyyy',this);">
                                 </td>
@@ -710,7 +710,7 @@ $(function() {
                                 </td>
                             </tr>
                             <tr>
-                                <tdcolspan="3">
+                                <td colspan="3">
                                     <spring:message code="BzComposer.addnewcustomer.billingaddress"/>
                                 </td>
                                 <td colspan="3">
@@ -1067,6 +1067,7 @@ function validate() {
     return true;
 }
 
+
 function numbersonly(e,val)
 {
 	var temp=val.indexOf(".");
@@ -1127,19 +1128,19 @@ function clearShippingAdd()
 	document.CustomerForm.shstate.value="0";
 }
 function CheckMambership() {
-	debugger;
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("CustomerSize")%>";
-	if(membershipLevel == "Standard"){
+	var st = "Standared";
+	var pf ="Professional";
+	if(membershipLevel.toLowerCase()===st.toLowerCase()){
 		if(size>=1000){
-			debugger;
 			return maxnumberofuserdialog();
 		}else {
 			return AddCustomer();
 		}
-	}else if(membershipLevel == "Professional"){
+	}else if(membershipLevel.toLowerCase() == pf.toLowerCase()){
 		if(size>=10000){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else {
 			return AddCustomer();
@@ -1148,7 +1149,7 @@ function CheckMambership() {
 }
 function AddCustomer()
 {
-	debugger;
+	
 	if(document.CustomerForm.cname.value==""){
 		document.CustomerForm.cname.focus();
 		return showNameDialog();
@@ -1182,7 +1183,7 @@ function AddCustomer()
 	{
 		if(validate())
 		{
-			debugger;
+			
 			event.preventDefault();
 			$("#addNewCustomerDialog").dialog({
                 resizable: false,
@@ -1191,7 +1192,7 @@ function AddCustomer()
                 modal: true,
                 buttons: {
                     "<spring:message code='BzComposer.global.ok'/>": function () {
-                        debugger;
+                        
                         $(this).dialog("close");
                         document.getElementById('tabid').value="AddCustomer";
                         document.forms["frmNewCustomer"].action = "Customer?tabid=AddCustomer" ;
@@ -1322,7 +1323,7 @@ function addToTable(form){
 
 		if(flag==1)		{
 
-			debugger;
+			
 			return showServiceValidationDialog();
 			return;
 		}
@@ -1720,7 +1721,7 @@ function showEmailValidationDialog(){
     return false;
 }
 function showServiceValidationDialog(){
-	debugger;
+	
 	event.preventDefault();
 	$("#showServiceValidationDialog").dialog({
     	resizable: false,

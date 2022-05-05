@@ -3,28 +3,11 @@ package com.avibha.bizcomposer.sales.actions;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseBoard;
 import com.avibha.bizcomposer.purchase.dao.PurchaseBoardDetails;
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
-import com.avibha.bizcomposer.sales.dao.EstimationBoard;
-import com.avibha.bizcomposer.sales.dao.EstimationBoardDetails;
-import com.avibha.bizcomposer.sales.dao.SalesBoard;
-import com.avibha.bizcomposer.sales.dao.SalesBoardDetails;
-import com.avibha.bizcomposer.sales.dao.SalesOrderBoardDetails;
+import com.avibha.bizcomposer.sales.dao.*;
 import com.avibha.bizcomposer.sales.forms.EstimationBoardDto;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
 import com.itextpdf.text.BaseColor;
@@ -39,23 +22,26 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.lowagie.text.DocumentException;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/PdfReport")
 public class PdfReportController {
-	@Autowired
-	private SalesBoardDetails salesBoardDtls;
-	@Autowired
-	private EstimationBoardDetails estimationBoardDetails;
-	@Autowired
-	private SalesOrderBoardDetails salesOrderBoardDetails;
-	@Autowired
-	private  PurchaseBoardDetails purchaseBoardDtls;
-	
+
     @GetMapping("/downloadInvoiceBoardReport")
     public void downloadPdfReport(@RequestParam List<Integer> selectedRowIDs, SalesBoardDto salesBoardDto, HttpServletRequest request, HttpServletResponse response) throws DocumentException, IOException {
-       // SalesBoardDetails sd = new SalesBoardDetails();
-        ArrayList<SalesBoard> objList = salesBoardDtls.getSalesBoardDetails(request, salesBoardDto);
+        SalesBoardDetails sd = new SalesBoardDetails();
+        ArrayList<SalesBoard> objList = sd.getSalesBoardDetails(request, salesBoardDto);
         DateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy");
         String reportFileName = "InvoiceBoardReport-" + dateFormatter.format(new Date());
         String reportTitle = "Invoice Board Report - " + dateFormatter.format(new Date());
@@ -118,8 +104,8 @@ public class PdfReportController {
 
     @GetMapping("/downloadEstimationBoardReport")
     public void downloadEstimationBoardReport(@RequestParam List<Integer> selectedRowIDs, EstimationBoardDto estBoardDto, HttpServletRequest request, HttpServletResponse response) throws DocumentException, IOException {
-       // EstimationBoardDetails estimationBoardDetails = new EstimationBoardDetails();
-        ArrayList<EstimationBoard> objList = estimationBoardDetails.getEstimationBoardDetails(request, estBoardDto);
+        EstimationBoardDetails ed = new EstimationBoardDetails();
+        ArrayList<EstimationBoard> objList = ed.getEstimationBoardDetails(request, estBoardDto);
         DateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy");
         String reportFileName = "EstimationBoardReport-" + dateFormatter.format(new Date());
         String reportTitle = "Estimation Board Report - " + dateFormatter.format(new Date());
@@ -177,8 +163,8 @@ public class PdfReportController {
 
     @GetMapping("/downloadSOBoardReport")
     public void downloadSOBoardReport(@RequestParam List<Integer> selectedRowIDs, SalesBoardDto salesBoardDto, HttpServletRequest request, HttpServletResponse response) throws DocumentException, IOException {
-       // SalesOrderBoardDetails salesOrderBoardDetails = new SalesOrderBoardDetails();
-        ArrayList<SalesBoard> objList = salesOrderBoardDetails.getSalesOrderBoardDetails(request, salesBoardDto);
+        SalesOrderBoardDetails sd = new SalesOrderBoardDetails();
+        ArrayList<SalesBoard> objList = sd.getSalesOrderBoardDetails(request, salesBoardDto);
         DateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy");
         String reportFileName = "SOBoardReport-" + dateFormatter.format(new Date());
         String reportTitle = "Sales Order Board Report - " + dateFormatter.format(new Date());
@@ -240,8 +226,8 @@ public class PdfReportController {
 
     @GetMapping("/downloadPOBoardReport")
     public void downloadPOBoardReport(@RequestParam List<Integer> selectedRowIDs, PurchaseBoardDto purchaseBoardDto, HttpServletRequest request, HttpServletResponse response) throws DocumentException, IOException {
-        //PurchaseBoardDetails pd = new PurchaseBoardDetails();
-        ArrayList<PurchaseBoard> objList = purchaseBoardDtls.getPurchaseBoardDetails(request, purchaseBoardDto);
+        PurchaseBoardDetails pd = new PurchaseBoardDetails();
+        ArrayList<PurchaseBoard> objList = pd.getPurchaseBoardDetails(request, purchaseBoardDto);
         DateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy");
         String reportFileName = "POBoardReport-" + dateFormatter.format(new Date());
         String reportTitle = "Purchase Order Board Report - " + dateFormatter.format(new Date());

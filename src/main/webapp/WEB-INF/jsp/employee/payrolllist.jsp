@@ -128,7 +128,7 @@
         window.location.href="${pageContext.request.contextPath}/DownloadPayroll?payrollID="+payrollid;
     }
     function deletePayroll(id){
-        debugger;
+        
         window.location.href= "${pageContext.request.contextPath}/Payroll?tabid=deletePayroll&payrollid="+id;
     }
 </script>

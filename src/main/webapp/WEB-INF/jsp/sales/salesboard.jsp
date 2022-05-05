@@ -1,11 +1,11 @@
 
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%-- <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%> --%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<%@include file="/include/headlogo.jsp"%>
+<%-- <%@include file="/include/headlogo.jsp"%> --%>
 <%@include file="/include/header.jsp"%>
 <title><bean:message key="BzComposer.Title.SalesBoard"/></title>
 
@@ -537,13 +537,13 @@ function makeUpdateInList()
 }
 
 function SaleSearch(){
-	debugger
+	
 	Myid="";
 	count=0;
 	size=document.getElementById("lSize").value;
 	type=document.getElementById("sType").value;
 	typeVal=document.getElementById("SearchVal").value;
-	debugger
+	
 
 	for(i=0;i<size;i++){
 		var row1=document.getElementById(i+"$$");

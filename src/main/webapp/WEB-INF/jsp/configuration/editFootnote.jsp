@@ -233,7 +233,7 @@ function DeleteFootnote()
 			        modal: true,
 			        buttons: {
 			        	"<spring:message code='BzComposer.global.ok'/>": function () {
-			            	debugger;
+			            	
 			            	document.getElementById('tid').value="UpdateFootnote";
 			        		document.forms[0].action="Configuration.do";
 			        		document.forms[0].submit();
@@ -342,7 +342,7 @@ function Save()
 	        modal: true,
 	        buttons: {
 	        	"<spring:message code='BzComposer.global.ok'/>": function () {
-	            	debugger;
+	            	
 	            	document.getElementById('tid').value="SaveFootnote";
 	        		document.forms[0].action="Configuration.do";
 	        		document.forms[0].submit();
@@ -374,7 +374,7 @@ function Update()
 	        modal: true,
 	        buttons: {
 	        	"<spring:message code='BzComposer.global.ok'/>": function () {
-	            	debugger;
+	            	
 	            	document.getElementById('tid').value="UpdateFootnote";
 	        		document.forms[0].action="Configuration.do";
 	        		document.forms[0].submit();

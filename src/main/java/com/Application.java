@@ -1,11 +1,7 @@
 package com;
 import java.util.Locale;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -23,12 +19,8 @@ import org.springframework.web.servlet.view.JstlView;
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer implements WebMvcConfigurer {
 
-	private static final Logger log = LoggerFactory.getLogger(Application.class);
 	public static void main(String[] args) {
-		log.info("Starting BZComposer Application. And This is a logger Test");
-		log.debug("Starting BZComposer Application. And This is a logger Test");
 		SpringApplication.run(Application.class, args);
-		log.debug("Bzcomposer Started");
 	}
 
 	@Bean
@@ -73,9 +65,5 @@ public class Application extends SpringBootServletInitializer implements WebMvcC
 	    registry.addInterceptor(localeChangeInterceptor());
 	}
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Application.class);
-    }
 	
 }

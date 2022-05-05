@@ -221,7 +221,7 @@ function addRowIndex(rowIndex){
     }
 }
 function callClick(rid, invId, cartID2) {
-    debugger;
+    
     let size = document.getElementById("lSize").value;
     let rowValue = rid.replace("$$", "");
     rowID = rowValue;
@@ -332,7 +332,7 @@ function callsave(){
     }
 }
 function callDelete() {
-    debugger;
+    
     if (typeof setInvId === 'undefined') {
         return showItemValidationDialog();
     }
@@ -340,7 +340,7 @@ function callDelete() {
 
         return showItemValidationDialog();
     } else {
-        debugger;
+        
         event.preventDefault();
         $("#deleteItemValidationDialog").dialog({
             resizable : false,
@@ -487,7 +487,7 @@ function SaleSearch(){
 }
 
 function checkduplicatenamedialog(){
-    debugger;
+    
     event.preventDefault();
     $("#checkduplicatenamedialog").dialog({
         resizable: false,
@@ -503,7 +503,7 @@ function checkduplicatenamedialog(){
     return false;
 }
 function showUpdateListDialog(){
-    debugger;
+    
     event.preventDefault();
     $("#showUpdateListDialog").dialog({
         resizable: false,

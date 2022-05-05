@@ -270,7 +270,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -422,7 +422,7 @@ public class PurchaseInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log(2,"SQLException in Class PurchaseInfo,  method -insertVendor & exception 1st" + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -430,7 +430,7 @@ public class PurchaseInfoDao {
 				if (pstmt_services != null) { db.close(pstmt_services); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -528,7 +528,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -594,7 +594,7 @@ public class PurchaseInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -665,7 +665,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -763,7 +763,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -809,7 +809,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return CVID;
@@ -854,7 +854,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -899,7 +899,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -944,7 +944,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -1012,7 +1012,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1240,7 +1240,7 @@ public class PurchaseInfoDao {
 			//System.out.println("vendorDetails1:"+customer.toString());
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -1260,7 +1260,7 @@ public class PurchaseInfoDao {
 				if (pstmt13 != null) { db.close(pstmt13); }
 				if(con != null){ db.close(con); }
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return vendorList;
@@ -1299,7 +1299,7 @@ public class PurchaseInfoDao {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -1310,7 +1310,7 @@ public class PurchaseInfoDao {
 					}
 					
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("ServiceList", serviceList);
@@ -1329,7 +1329,7 @@ public class PurchaseInfoDao {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				
@@ -1341,7 +1341,7 @@ public class PurchaseInfoDao {
 					}
 					
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("InvoiceName", invoiceName);
@@ -1376,7 +1376,7 @@ public class PurchaseInfoDao {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs2 != null) {
@@ -1389,7 +1389,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("BalenceDetails", balenceDetails);
@@ -1598,7 +1598,7 @@ public class PurchaseInfoDao {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		return ret;
@@ -1698,7 +1698,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return labelInfo;
@@ -1747,7 +1747,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1798,7 +1798,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1915,7 +1915,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}

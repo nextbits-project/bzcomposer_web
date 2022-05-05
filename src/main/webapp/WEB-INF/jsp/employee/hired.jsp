@@ -53,7 +53,7 @@
 		}
 		function getEmployeeInfo(employeeid,rowId)
 		{
-			debugger;
+			
 			var employee = employeeid;
 			//document.getElementById('venrId').value=vendor;
 			$("#venrId").val(employee);
@@ -122,7 +122,7 @@
 		}
 		function setRowId(rowid,rid)
 		{
-			debugger;
+			
 			size=document.getElementById("lSize").value;
 			//size1=document.getElementById("seSize").value;
 			for(i=0;i<size;i++)
@@ -398,7 +398,7 @@
 					$('#custTableBody').html('');
 					var custDetails = "";
 					for(var i=0; i<data.length; i++){
-						debugger;
+						
 						var objList = data[i];
 						var td = "";
 

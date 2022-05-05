@@ -240,7 +240,7 @@
 <script type="text/javascript">
 var progress;
 function downloadCustomerList(type){
-	debugger;
+	
 	document.forms[0].action = "Item?tabid=ExportItem&type="+type;
 	document.forms[0].submit();
 }
@@ -249,7 +249,7 @@ $(document).ready(function(){
 });
 
 $(function() {
-    debugger;
+    
 	  $( "#tabs1" ).tabs();
   } );
 </script>

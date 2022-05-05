@@ -17,7 +17,7 @@
 
 <script type="text/javascript">
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -38,7 +38,7 @@ $(document).ready(function()
         }
     });
 
-    debugger
+    
     var countryId = '<%= request.getAttribute("countryId")%>';
     //$("#description").val("");
 
@@ -258,7 +258,7 @@ $(document).ready(function()
 
         $("invoiceLocation").val(filePath);
         //document.configurationForm.invoiceLocation.value = filePath;
-        //debugger
+        //
     });
 
     $("#saveImage").change(function(){
@@ -266,13 +266,13 @@ $(document).ready(function()
 
         $("saveImage").val(filePath);
         //document.configurationForm.invoiceLocation.value = filePath;
-        //debugger
+        //
     });
 
     /* $("#form").submit(function(){
-        debugger
+        
         var form = $('form')[0]; // You need to use standard javascript object here
-        debugger
+        
         var formData = new FormData(form);
         formData.append('image', $('input[type=file]')[0].files[0]);
         $.ajax({
@@ -331,13 +331,13 @@ $(document).ready(function()
         {
             if(setup == "Location")
             {
-                debugger
+                
                 $.ajax({
                     type: "POST",
                     url:"Configuration?tabid=addDescription&Description="+text,
                     data:  { location : text }
                     }).done(function(data){
-                    debugger
+                    
                     //$("#state").html(data);
                     $(document).find('div#locationDiv table').replaceWith($(data).find('div#locationDiv').html());
                     //$('select[id="phonecode"]').find('option[id="'+selectedCountry+'"]').attr("selected",true);
@@ -347,7 +347,7 @@ $(document).ready(function()
                 document.getElementById('tabid').value="addDescription";
                 document.forms[0].action = "Configuration";
                 document.forms[0].submit();
-                debugger */
+                 */
             /*}
         }
     }); */
@@ -1287,7 +1287,7 @@ function SaveValues()
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
-                debugger;
+                
                 /*Customer Panel*/
                 document.configurationForm.sortBy.value = document.configurationForm.sortBy.value;
                 document.configurationForm.customerGroup.value = document.configurationForm.customerGroup.value;

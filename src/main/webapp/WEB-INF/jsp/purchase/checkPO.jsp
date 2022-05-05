@@ -32,7 +32,7 @@ background: #e1e5e9;
 <script type="text/javascript">
 function showUpdateDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showUpdateDialog").dialog({
 	    	resizable: false,
@@ -59,7 +59,7 @@ function showUpdateDialog()
 }
 function checkduplicatenamedialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#checkduplicatenamedialog").dialog({
 	    	resizable: false,
@@ -322,7 +322,7 @@ function makeUpdate(orderno,obj)
 
 function makeUpdateInList()
 {
-	debugger;
+	
 	for(var j=0;j<cnt;j++){
 		ord+=ordarr[j]+";";
 		status+=statusarr[j]+";";
@@ -331,8 +331,8 @@ function makeUpdateInList()
 	document.getElementById('ordId').value=ord;
 	document.getElementById("statusId").value=status;
 
-	debugger;
-	debugger;
+	
+	
 	return showUpdateDialog();
 	/* response = window.confirm("Do you want to update record?");
 	if(response){

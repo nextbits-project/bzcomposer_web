@@ -143,7 +143,7 @@
 	}
 	function readOnlyNonRetailCompanyList()
 	{
-		debugger;
+		
 		var companyId= $("#selectedRetailCompanyId").val();
 		if(companyId!="")
 		{
@@ -152,7 +152,7 @@
 	}
 	function readOnlyRetailCompanyList()
 	{
-		debugger;
+		
 		var companyId= $("#selectedNonRetailCompanyId").val();
 		if(companyId!="")
 		{

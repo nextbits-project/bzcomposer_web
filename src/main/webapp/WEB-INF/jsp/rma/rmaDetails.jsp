@@ -10,7 +10,7 @@ window.onload = initShowHideDivs;
 </script>
 <script type="text/javascript">
 function cancelRMADialog() {
-	debugger;
+	
     $("#cancelRMADialog").dialog({
     	resizable: false,
         height: 200,
@@ -19,7 +19,7 @@ function cancelRMADialog() {
         buttons: {
             "Ok": function () {
                 $(this).dialog("close");
-                debugger
+                
                 RID=document.getElementById("RMAID").value ;
         		document.forms[0].action = "RMA?tabid=R0R0M0&RMAno="+RID;
         		document.forms[0].submit();
@@ -34,7 +34,7 @@ function cancelRMADialog() {
 }
 
 function showRMAQuantityDialog() {
-	debugger;
+	
     $("#showRMAQuantityDialog").dialog({
     	resizable: false,
         height: 200,
@@ -43,7 +43,7 @@ function showRMAQuantityDialog() {
         buttons: {
             "Ok": function () {
                 $(this).dialog("close");
-                debugger
+                
             },
             Cancel: function () {
                 $(this).dialog("close");
@@ -55,7 +55,7 @@ function showRMAQuantityDialog() {
 }
 
 function RMADetailsDialog() {
-	debugger;
+	
     $("#RMADetailsDialog").dialog({
     	resizable: false,
         height: 200,
@@ -64,7 +64,7 @@ function RMADetailsDialog() {
         buttons: {
             "Ok": function () {
                 $(this).dialog("close");
-                debugger
+                
             },
             Cancel: function () {
                 $(this).dialog("close");
@@ -76,7 +76,7 @@ function RMADetailsDialog() {
 }
 
 function RMAQuantityDialog() {
-	debugger;
+	
     $("#RMAQuantityDialog").dialog({
     	resizable: false,
         height: 200,
@@ -85,7 +85,7 @@ function RMAQuantityDialog() {
         buttons: {
             "Ok": function () {
                 $(this).dialog("close");
-                debugger
+                
             },
             Cancel: function () {
                 $(this).dialog("close");
@@ -399,7 +399,7 @@ function approveRMA()
    
 function CancelRMA()
 {	
-	debugger;
+	
 	return cancelRMADialog();
 	/* if(confirm('<spring:message code="BzComposer.RMA.CancelRMA.Confirm" />'))
 	{
@@ -444,7 +444,7 @@ window.close();
 }
 
 function init(){
-	debugger;
+	
 	document.RMAForm.rma.value="";
 }
 

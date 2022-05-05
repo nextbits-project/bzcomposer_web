@@ -345,19 +345,19 @@ function setState(){
 	else{
 		window.location = "File?tabid=zipcode&&zipcode="+zip;
 	}
-	<%-- debugger
+	<%-- 
 	$.ajax({
 		type: "POST",
    		url:"File?tabid=zipcode&&zipcode="+zip,
      	data: { zip : zip }
  		}).done(function(data){
- 			debugger
+ 			
  			$(document).find('div#cityDiv').replaceWith($(data).find('div#cityDiv').html());
- 			debugger
+ 			
  			var stateName = '<%= request.getAttribute("state") %>';
- 			debugger
+ 			
  			$('select[id="sid"]').find('option[value="'+stateName+'"]').attr("selected",true);
- 			debugger
+ 			
 	}); --%>
 }
 
@@ -434,7 +434,7 @@ function writeSelect33()
     document.getElementById("t_statedata").innerHTML = o33.responseText ;
 }
 function init() {
-	debugger;
+	
     refreshItemsNow();
     setTimeout(function () {
         document.getElementById("sid").value = "<%= request.getAttribute("state")%>";
@@ -986,7 +986,7 @@ function init() {
 <script>
 function updateComapany()
 {
-    debugger;
+    
 	var sel = document.getElementById("businessTypeId");
     var businessTypeId = sel.options[sel.selectedIndex].value;
 

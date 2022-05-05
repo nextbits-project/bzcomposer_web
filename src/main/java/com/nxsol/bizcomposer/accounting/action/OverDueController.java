@@ -6,10 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.Action;
+/*import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMapping;*/
 
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
@@ -25,11 +25,13 @@ import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class OverDueController {
-
-	@GetMapping("/OverDueTab")
+	@RequestMapping(value ="/OverDueTab", method = {RequestMethod.GET, RequestMethod.POST})
+	//@GetMapping("/OverDueTab")
 	public ModelAndView OverDue(ReceivableListBean form, HttpServletRequest request,
 								HttpServletResponse response) throws Exception {
 		String forward = "/accounting/overDue";

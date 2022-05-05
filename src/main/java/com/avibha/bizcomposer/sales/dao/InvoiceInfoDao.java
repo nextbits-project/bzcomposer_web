@@ -1,4 +1,3 @@
-
 /*
  * Author : Avibha IT Solutions Copyright 2007 Avibha IT Solutions. All rights
  * reserved. AVIBHA PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -7,34 +6,12 @@
 
 package com.avibha.bizcomposer.sales.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.util.LabelValueBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.sales.forms.CreditCardDto;
-import com.avibha.bizcomposer.sales.forms.CustomerDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceForm;
-import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
-import com.avibha.bizcomposer.sales.forms.UpdateInvoiceForm;
+import com.avibha.bizcomposer.sales.forms.*;
+import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
@@ -42,15 +19,22 @@ import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.avibha.common.utility.MyUtility;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
+import org.apache.struts.util.LabelValueBean;
+
+import javax.servlet.http.HttpServletRequest;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /*
  * 
  */
-@Service
 public class InvoiceInfoDao {
 
-	@Autowired
-	private ConfigurationInfo configInfo;
 	public ArrayList getItemList(String compId) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
@@ -99,7 +83,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryWiseList;
@@ -113,7 +97,7 @@ public class InvoiceInfoDao {
 		ArrayList<InvoiceDto> objList = new ArrayList<>();
 		CountryState conState = new CountryState();
 		try {
-			//ConfigurationInfo configInfo = new ConfigurationInfo();
+			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
@@ -160,14 +144,14 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class InvoiceInfo and  method -shipAddress "+ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -180,7 +164,7 @@ public class InvoiceInfoDao {
 		PreparedStatement pstmt = null;
 		ArrayList<InvoiceDto> objList = new ArrayList<>();
 		try {
-			//ConfigurationInfo configInfo = new ConfigurationInfo();
+			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
@@ -227,7 +211,7 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class TaxInfo and  method -billAddress " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -235,7 +219,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -280,7 +264,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -351,7 +335,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -377,7 +361,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -406,7 +390,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -434,7 +418,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -462,7 +446,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -491,7 +475,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -519,7 +503,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -552,7 +536,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -562,10 +546,10 @@ public class InvoiceInfoDao {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
-		PreparedStatement pstmt = null;  
+		PreparedStatement pstmt = null;
 		int lastOrderNo = 0;
 		try {
-			//ConfigurationInfo configInfo = new ConfigurationInfo();
+			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			String sqlString = "SELECT OrderNum FROM bca_invoice WHERE CompanyID=? AND invoiceStatus in (0,2) ORDER BY OrderNum DESC";
@@ -580,14 +564,14 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return String.valueOf(lastOrderNo);
@@ -600,7 +584,7 @@ public class InvoiceInfoDao {
 		PreparedStatement pstmt = null;
 		int lastOrderNo = 0;
 		try {
-		//	ConfigurationInfo configInfo = new ConfigurationInfo();
+			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			String sqlString = "select SONum from bca_invoice  where CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID IN (1,7,9)  order by SONum desc";
@@ -615,14 +599,14 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getNewSalesOrderNo " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return String.valueOf(lastOrderNo);
@@ -651,7 +635,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		no = String.valueOf(invStyle);
@@ -684,7 +668,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return exist;
@@ -713,7 +697,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return exist;
@@ -739,7 +723,7 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		} finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -747,7 +731,7 @@ public class InvoiceInfoDao {
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return saveStatus;
@@ -776,7 +760,7 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -784,7 +768,7 @@ public class InvoiceInfoDao {
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return saveStatus;
@@ -819,6 +803,12 @@ public class InvoiceInfoDao {
 				String uweight = (invUWeights[i]!=null && invUWeights[i].length()>0) ?invUWeights[i]:"0.0";
 				String uprice = (invUPrices[i]!=null && invUPrices[i].length()>0) ?invUPrices[i]:"0.0";
 				String taxable = (invIsTaxables[i]!=null && invIsTaxables[i].length()>0) ?invIsTaxables[i]:"0";
+				String taxable1 ;
+				if(taxable.equalsIgnoreCase("Yes")) {
+					taxable1 = "1";
+				}else {
+					taxable1 = "0";
+				}
 				String itmTypeID = (invItemIDs[i]!=null && invItemIDs[i].length()>0) ?invItemIDs[i]:"0";
 				String itmOrder = invItemOrders[i];
 
@@ -840,7 +830,7 @@ public class InvoiceInfoDao {
 					pstmt.setDouble(7, Double.parseDouble(uweight));
 					pstmt.setDouble(8, 0.0);
 					pstmt.setDouble(9, Double.parseDouble(truncate(uprice)));
-					pstmt.setInt(10, Integer.parseInt(taxable));
+					pstmt.setInt(10, Integer.parseInt(taxable1));
 					pstmt.setInt(11, Integer.parseInt(itmTypeID));
 					pstmt.setInt(12, Integer.parseInt(itmOrder));
 					pstmt.setInt(13, cartID);
@@ -856,7 +846,7 @@ public class InvoiceInfoDao {
 		} 
 		catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -865,7 +855,7 @@ public class InvoiceInfoDao {
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -971,14 +961,14 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (pstmt1 != null) { db.close(pstmt1); }
 				if (pstmt3 != null) { db.close(pstmt3); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return saveStatus;
@@ -1001,14 +991,14 @@ public class InvoiceInfoDao {
 			}
 			updateStatus = true;
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log("Exception" + ee.toString());
 		} finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return updateStatus;
@@ -1133,7 +1123,7 @@ public class InvoiceInfoDao {
 			}
 			updateStatus = true;
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log("Exception" + ee.toString());
 		} finally {
 			try {
@@ -1144,7 +1134,7 @@ public class InvoiceInfoDao {
 				if (pstmt5 != null) { db.close(pstmt5); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return updateStatus;
@@ -1173,14 +1163,14 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return invoiceID;
@@ -1204,14 +1194,14 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return invoiceID;
@@ -1234,13 +1224,13 @@ public class InvoiceInfoDao {
 			pstmt.executeUpdate();
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1261,7 +1251,7 @@ public class InvoiceInfoDao {
 			pstmt.executeUpdate();
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		} finally {
 			try {
 				if (pstmt != null) {
@@ -1271,7 +1261,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1346,7 +1336,7 @@ public class InvoiceInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -1378,7 +1368,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1415,7 +1405,7 @@ public class InvoiceInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs1 != null) {
@@ -1428,7 +1418,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1652,7 +1642,7 @@ public class InvoiceInfoDao {
 			request.setAttribute("CustomerDetails", customer);
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -1672,7 +1662,7 @@ public class InvoiceInfoDao {
 				if (pstmt13 != null) { db.close(pstmt13); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return customerList;
@@ -1720,7 +1710,7 @@ public class InvoiceInfoDao {
 			sqlString.append(" order by bca_clientvendor.ClientVendorID ");
 
 			pstmt = con.prepareStatement(sqlString.toString());
-			//Loger.log(sqlString);
+			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 
 			String sqlString11 = "select ClientVendorID,ServiceID,DateAdded,InvoiceStyleID,ServiceBalance,DefaultService from bca_clientvendorservice where CompanyID = ? and ClientVendorID = ?";
@@ -1983,7 +1973,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2193,7 +2183,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -2260,7 +2250,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -2301,7 +2291,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -2324,7 +2314,7 @@ public class InvoiceInfoDao {
 			Loger.log("The no of uptation done is " + updateresult);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (pstmt5 != null) {
@@ -2334,7 +2324,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2367,7 +2357,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNums;
@@ -2477,7 +2467,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return form;
@@ -2584,7 +2574,7 @@ public class InvoiceInfoDao {
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return list;
@@ -2599,7 +2589,7 @@ public class InvoiceInfoDao {
 		String action = request.getParameter("tabid");
 		String sql="";
 		try {
-			if(action.equalsIgnoreCase("IBLU") || form.getTabid().equalsIgnoreCase("IBLU")){ //Send Invoice it
+			if(action.equalsIgnoreCase("IBLU")){ //Send Invoice it
 				 sql = " select InvoiceID,ClientVendorID,RefNum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,"
 						+ " ShipCarrierID,MessageID,SalesTaxID,Weight,SubTotal,Tax,SH,Total,AdjustedTotal,"
 						+ " BSAddressID,CompanyID,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,"
@@ -2709,7 +2699,7 @@ public class InvoiceInfoDao {
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return list;
@@ -2743,7 +2733,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNums;
@@ -2853,7 +2843,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return form;
@@ -2938,7 +2928,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -3010,7 +3000,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -3083,7 +3073,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -3182,7 +3172,7 @@ public class InvoiceInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -3191,7 +3181,7 @@ public class InvoiceInfoDao {
 				if (pstmt1 != null) { db.close(pstmt1); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -3223,7 +3213,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return isBalanceFound;
@@ -3275,7 +3265,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -3325,7 +3315,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -3376,7 +3366,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return content;
@@ -3407,7 +3397,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return form;
@@ -3504,7 +3494,7 @@ public class InvoiceInfoDao {
 
 		} catch (Exception e) {
 			System.out.println("EXpe "+e.toString() );
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -3523,7 +3513,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -3556,7 +3546,7 @@ public class InvoiceInfoDao {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		request.setAttribute("ServiceList", serviceList);
 
@@ -3574,7 +3564,7 @@ public class InvoiceInfoDao {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		request.setAttribute("InvoiceName", invoiceName);
 
@@ -3603,7 +3593,7 @@ public class InvoiceInfoDao {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -3628,7 +3618,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("BalenceDetails", balenceDetails);
@@ -3723,7 +3713,7 @@ public class InvoiceInfoDao {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs22  != null) {
@@ -3748,7 +3738,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("ServiceInfo", serviceinfo);
@@ -3794,7 +3784,7 @@ public class InvoiceInfoDao {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -3807,7 +3797,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return serviceid;
@@ -3834,7 +3824,7 @@ public class InvoiceInfoDao {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -3847,7 +3837,7 @@ public class InvoiceInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return serviceNm;
@@ -3897,7 +3887,7 @@ public class InvoiceInfoDao {
 			String sqlString = "select distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name from bca_clientvendor"
 					+ " where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
 					+ " and ( Deleted = '0') and CompanyID=? and Active=1 order by FirstName";
-
+            
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1, compId);
 			rs = pstmt.executeQuery();
@@ -3925,7 +3915,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -3961,7 +3951,7 @@ public class InvoiceInfoDao {
 			form.setCountry(MyUtility.checkDefaultCountryID(form.getCountry()));
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class InvoiceInfo and  method -updateBillingAddress :" + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -3969,7 +3959,7 @@ public class InvoiceInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return form;
@@ -4007,7 +3997,7 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class InvoiceInfo and  method -updateBillingAddress :" + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -4016,7 +4006,7 @@ public class InvoiceInfoDao {
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return status;
@@ -4054,7 +4044,7 @@ public class InvoiceInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class InvoiceInfo and  method -updateShippingAddress :" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -4062,10 +4052,9 @@ public class InvoiceInfoDao {
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return status;
 	}
 }
-

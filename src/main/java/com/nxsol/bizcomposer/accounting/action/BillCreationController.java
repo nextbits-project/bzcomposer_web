@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -114,7 +115,7 @@ public class BillCreationController {
 		return modelAndView;
 	}
 
-	@GetMapping("/BillCreationPost")
+	@PostMapping("/BillCreationPost")
 	public ModelAndView BillCreationPost(TblVendorDetail form, TblRecurrentPaymentPlan form1, HttpServletRequest request,
 									 HttpServletResponse response) throws Exception {
 

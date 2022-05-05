@@ -16,6 +16,10 @@ public class BillingStatement {
     public String statementFor = "";
     public String customerName = "";
     
+    public double paidAmount = 0.0;
+    public Date paidDate = null;
+    public double balance = 0.0;
+
     
 	public String getCustomerName() {
 		return customerName;
@@ -83,4 +87,24 @@ public class BillingStatement {
 	public void setOverDueServiceCharge(double overDueServiceCharge) {
 		this.overDueServiceCharge = overDueServiceCharge;
 	}
+	public double getPaidAmount() {
+		return paidAmount;
+	}
+	public void setPaidAmount(double paidAmount) {
+		this.paidAmount = paidAmount;
+	}
+	public Date getPaidDate() {
+		return paidDate;
+	}
+	public void setPaidDate(Date paidDate) {
+		this.paidDate = paidDate;
+	}
+	public double getBalance() {
+		return balance;
+	}
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+	
+	
 }

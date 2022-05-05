@@ -162,7 +162,7 @@ function addNewVendor(){
 	window.open("Vendor?tabid=AODOVO", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 }
 function editVendor(){
-	debugger;
+	
 	if (itemID == 0) {
 		return showSelectVendorDialog();
 	} else {
@@ -172,12 +172,12 @@ function editVendor(){
 }
 
 function DeleteVendor(){
-	debugger;
+	
 	if (itemID == 0) {
 		return showSelectVendorDialog();
 	}
 	else{
-		debugger;
+		
 		event.preventDefault();
 		$("#deleteRowDialog").dialog({
 	    	resizable: false,
@@ -186,7 +186,7 @@ function DeleteVendor(){
 	        modal: true,
 	        buttons: {
 	            "<spring:message code='BzComposer.global.ok'/>": function () {
-	            	debugger
+	            	
 	                $(this).dialog("close");
 	    			window.location = "Vendor?tabid=DeleteVendor&cvId="+itemID;
 	            },
@@ -200,7 +200,7 @@ function DeleteVendor(){
 }
 
 function showSelectVendorDialog(){
-	debugger;
+	
 	event.preventDefault();
 	$("#showSelectVendorDialog").dialog({
     	resizable: false,

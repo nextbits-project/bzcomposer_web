@@ -2003,13 +2003,9 @@ tax_rate=0;
 								
 				hidn_val=( (hidn_val/1) + 1);
 				document.getElementById('hidn').value=hidn_val;
-				
-				
-				
-				
+					
+		   			}
 			
-				
-   			}	
 		}
 		
 		function productItem(hidn_val){

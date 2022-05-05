@@ -10,6 +10,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.avibha.common.log.Loger;
+
 public class MailSender {
 
 	
@@ -74,7 +76,7 @@ public class MailSender {
 			
 			Transport.send(msg);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 
 	}
@@ -139,7 +141,7 @@ public class MailSender {
 //
 //
 // } catch (MessagingException me) {
-// me.printStackTrace();
+// mLoger.log(e.toString());
 // }
 // }
 
@@ -219,7 +221,7 @@ public class MailSender {
  * 
  * Transport.send(message); // this.sendFromGMail(); }
  * 
- * } catch (MessagingException me) { me.printStackTrace(); }
+ * } catch (MessagingException me) { mLoger.log(e.toString()); }
  * 
  * } }
  */
@@ -269,7 +271,7 @@ public class MailSender {
  * try { fromAddress = new InternetAddress(strSender); inetTo =
  * InternetAddress.parse(strRecipients); } catch (AddressException e) {
  * 
- * e.printStackTrace(); } for (int i = 0; i < inetTo.length; i++) {
+ * Loger.log(e.toString()); } for (int i = 0; i < inetTo.length; i++) {
  * message.setFrom(fromAddress); InternetAddress inetReceiver = new
  * InternetAddress( inetTo[i].getAddress());
  * 
@@ -285,5 +287,5 @@ public class MailSender {
  * // SMTPSSLTransport transport //
  * =(SMTPSSLTransport)session.getTransport("smtps");
  * 
- * } catch (MessagingException e) { e.printStackTrace(); } }
+ * } catch (MessagingException e) { Loger.log(e.toString()); } }
  */

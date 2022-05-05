@@ -551,7 +551,7 @@ function init1(){
 }
 function callClick(idVal, ttl) {
     sOldVal = "";
-    debugger;
+    
     document.getElementById("selectedTitle").innerHTML = ttl;
     document.getElementById("descriptionId").value = "";
     document.getElementById("tax_rate").value = "";
@@ -714,7 +714,7 @@ function buttonClick(idVal, ttl) {
 }
 
 function callSave() {
-    //debugger;
+    //
     sType = document.getElementById("selectedTitle").innerHTML
     sOld = sOldVal;
     sNew = document.getElementById("descriptionId").value;
@@ -764,7 +764,7 @@ function callSave() {
 }
 
 function callUpdate() {
-    //debugger;
+    //
     sType = document.getElementById("selectedTitle").innerHTML
     sOld = sOldVal;
     sNew = document.getElementById("descriptionId").value;
@@ -880,7 +880,7 @@ function saveSelectedItemDialog() {
 }
 
 function SaveValues(form) {
-    debugger;
+    
     let custTitleID = form.custTitleID.value;
     let shippingViaID = form.shippingViaID.value;
     let salesRepId = form.salesRepId.value;

@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForm;
 import com.avibha.bizcomposer.purchase.forms.PurchaseOrderForm;
 import com.avibha.bizcomposer.purchase.forms.VendorForm;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
+import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 
@@ -208,7 +209,7 @@ public class PurchaseOrderDetails {
 						"Purchase Order is successfully updated.");
 				getInvoiceInfo(request);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request.setAttribute("SaveStatus", "Purchase Order is not updated.");
 			}
 		} else {
@@ -218,7 +219,7 @@ public class PurchaseOrderDetails {
 				request.setAttribute("SaveStatus",
 						"Purchase Order is successfully saved.");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 				request.setAttribute("SaveStatus", "Purchase Order is not saved.");
 			}
 			
@@ -363,7 +364,7 @@ public class PurchaseOrderDetails {
 						"Purchase Order is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		} else {
 			val = false;

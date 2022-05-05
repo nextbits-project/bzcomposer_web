@@ -42,7 +42,7 @@
 		}
 		function getEmployeeInfo(employeeid,rowId)
 		{
-			debugger;
+			
 			var employee = employeeid;
 			//document.getElementById('venrId').value=vendor;
 			$("#venrId").val(employee);

@@ -1,29 +1,25 @@
 package com.avibha.bizcomposer.sales.actions;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.avibha.bizcomposer.sales.dao.SalesDetails;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.common.log.Loger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.avibha.bizcomposer.sales.dao.SalesDetails;
-import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * @author sarfrazmalik
  */
 @Controller
 public class UpdateCustController {
-	@Autowired 
-	private SalesDetails sdetails;
 
     @RequestMapping(value = {"/updateEditedCustomer"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(CustomerDto customerDto, HttpServletRequest request) throws IOException, ServletException {
-   //     SalesDetails sdetails = new SalesDetails();
+        SalesDetails sdetails = new SalesDetails();
         String action = request.getParameter("tabid");
         String cvId = null;
         if(action==null){

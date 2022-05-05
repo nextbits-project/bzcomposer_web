@@ -681,7 +681,7 @@ public class EmailInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return result;
@@ -716,7 +716,7 @@ public class EmailInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -752,7 +752,7 @@ public class EmailInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -870,7 +870,7 @@ public class EmailInfo {
 						executor.close(con);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 
 		}
@@ -1058,14 +1058,14 @@ public class EmailInfo {
 			}
 			isSaved = pstmt.executeUpdate()>0?true:false;
 		} catch(Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return isSaved;
@@ -1082,14 +1082,14 @@ public class EmailInfo {
 			pstmt.setInt(1, templateId);
 			isSaved = pstmt.executeUpdate()>0?true:false;
 		} catch(Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return isSaved;
@@ -1120,7 +1120,7 @@ public class EmailInfo {
 				listPOJOs.add(pojo);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1128,7 +1128,7 @@ public class EmailInfo {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return listPOJOs;

@@ -1,36 +1,29 @@
 package com.nxsol.bzcomposer.company;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.struts.util.LabelValueBean;
-import org.springframework.util.StringUtils;
-
-import com.Application;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
+import com.avibha.bizcomposer.employee.forms.StateTaxOtherDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class ConfigurationDAO {
 
-	private static final Logger logMsg = LoggerFactory.getLogger(Application.class);
     ConfigurationDto pojo = null;
     SimpleDateFormat formatterMMDDYYYY = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -57,7 +50,7 @@ public class ConfigurationDAO {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -65,7 +58,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingModules(listPOJOs);
@@ -106,7 +99,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -120,7 +113,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingselectedModules(listPOJOs);
@@ -152,7 +145,7 @@ public class ConfigurationDAO {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -160,7 +153,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingCategory(roots);
@@ -207,7 +200,7 @@ public class ConfigurationDAO {
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -221,7 +214,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingAccounts(listPOJOs);
@@ -249,7 +242,7 @@ public class ConfigurationDAO {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -257,7 +250,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingPayment(paymentType);
@@ -303,7 +296,7 @@ public class ConfigurationDAO {
         catch (SQLException e)
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -317,7 +310,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingPaymentGeneralAccount(paymentType);
@@ -343,7 +336,7 @@ public class ConfigurationDAO {
                 cList.add(pojo);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -351,7 +344,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingCountry(cList);
@@ -389,7 +382,7 @@ public class ConfigurationDAO {
         catch (SQLException e)
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -403,7 +396,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingState(sList);
@@ -440,7 +433,7 @@ public class ConfigurationDAO {
         catch (SQLException e)
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -454,7 +447,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingState(sList);
@@ -488,7 +481,7 @@ public class ConfigurationDAO {
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -502,7 +495,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingShipping(listPOJOs);
@@ -534,7 +527,7 @@ public class ConfigurationDAO {
                 listPOJOs.add(pojo);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -548,7 +541,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingTerm(listPOJOs);
@@ -582,7 +575,7 @@ public class ConfigurationDAO {
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -596,7 +589,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingCustomerGroup(listPOJOs);
@@ -636,7 +629,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -650,7 +643,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingModules(listPOJOs);
@@ -678,7 +671,7 @@ public class ConfigurationDAO {
             }
         }catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -691,7 +684,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return AdminPassword;
@@ -718,7 +711,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -732,7 +725,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return usercount;
@@ -768,7 +761,7 @@ public class ConfigurationDAO {
 
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -782,7 +775,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingUserList(listPOJOs);
@@ -819,7 +812,7 @@ public class ConfigurationDAO {
             String sql = "insert into bca_user(LoginID, Email_Address, Password, CompanyID,membershipLevel,jobPosition,Active) " +
                     "values ('"+userName+"','"+userEmail+"','"+userPassword+"',"+companyID+",'"+membershipLevel+"','"+""+"',"+1+")";
             ps = con.prepareStatement(sql);
-            logMsg.debug(sql);
+            Loger.log(sql);
             ps.execute();
             check = true;
 
@@ -834,11 +827,11 @@ public class ConfigurationDAO {
             // insert new user role in mapping table
             String sql3 = "insert into bca_usermapping(UserGroupID, UserID, Role, CompanyID, Active, Deleted) values ('"+groupID+"','"+NewUserID+"','User',"+companyID+",1,0)";
             ps2 = con.prepareStatement(sql3);
-            logMsg.debug(sql3);
+            Loger.log(sql3);
             ps2.execute();
             check = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
             check = false;
         }finally {
             try {
@@ -847,7 +840,7 @@ public class ConfigurationDAO {
                 if (stmt1 != null) db.close(stmt1);
                 if(con != null) db.close(con);
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return check;
@@ -870,7 +863,7 @@ public class ConfigurationDAO {
             stmt.executeUpdate(sql1);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
             return false;
         }
     }
@@ -896,7 +889,7 @@ public class ConfigurationDAO {
                 CustomerSize = rs.getString("COUNT(*)");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
             // TODO: handle exception
         }
         return CustomerSize;
@@ -917,7 +910,7 @@ public class ConfigurationDAO {
                 itemSize = rs.getString("COUNT(*)");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
             // TODO: handle exception
         }
         return itemSize;
@@ -942,7 +935,7 @@ public class ConfigurationDAO {
                 membershipLevel = rs.getString("membershipLevel");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
             // TODO: handle exception
         }
         return membershipLevel;
@@ -982,7 +975,7 @@ public class ConfigurationDAO {
                 result = true;
             }
         } catch (SQLException ee) {
-            logMsg.error("SQLException in Class ConfigurationDAO,  method -saveUserGroupDetails "+ ee);
+            Loger.log(2,"SQLException in Class ConfigurationDAO,  method -saveUserGroupDetails "+ ee.toString());
         }
         finally {
             try {
@@ -993,7 +986,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return result;
@@ -1017,7 +1010,7 @@ public class ConfigurationDAO {
                 result = true;
             }
         } catch (SQLException ee) {
-            logMsg.error("SQLException in Class ConfigurationDAO,  method -deleteUserGroupDetails "+ ee);
+            Loger.log(2,"SQLException in Class ConfigurationDAO,  method -deleteUserGroupDetails "+ ee.toString());
         }
         finally {
             try {
@@ -1028,7 +1021,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return result;
@@ -1059,7 +1052,7 @@ public class ConfigurationDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1073,7 +1066,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -1110,7 +1103,7 @@ public class ConfigurationDAO {
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1124,7 +1117,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingGroup(listPOJOs);
@@ -1160,7 +1153,7 @@ public class ConfigurationDAO {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		 finally
 	     {
@@ -1216,7 +1209,7 @@ public class ConfigurationDAO {
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1230,7 +1223,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingPaymentGateways(listPOJOs);
@@ -1257,7 +1250,7 @@ public class ConfigurationDAO {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1265,7 +1258,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingInvoiceStyle(listPOJOs);
@@ -1295,7 +1288,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1309,7 +1302,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingInvoiceStyle1(listPOJOs1);
@@ -1350,7 +1343,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1364,7 +1357,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingBillingType(listPOJOs);
@@ -1401,7 +1394,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1415,7 +1408,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingSalesRep(listPOJOs);
@@ -1442,7 +1435,7 @@ public class ConfigurationDAO {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1450,7 +1443,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setMessages(listPOJOs);
@@ -1475,7 +1468,7 @@ public class ConfigurationDAO {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1483,7 +1476,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingLocation(listPOJOs);
@@ -1520,7 +1513,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1534,7 +1527,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingSalesTax(listPOJOs);
@@ -1580,7 +1573,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1594,7 +1587,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingCreditTerm(listPOJOs);
@@ -1619,7 +1612,7 @@ public class ConfigurationDAO {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1627,7 +1620,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingRefundReason(listPOJOs);
@@ -1659,7 +1652,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1673,7 +1666,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingDefaultPrinter(listPOJOs);
@@ -1706,7 +1699,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1720,7 +1713,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingReasonType(listPOJOs);
@@ -1770,7 +1763,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1784,7 +1777,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingMasterReasonType(listPOJOs);
@@ -1826,7 +1819,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1840,7 +1833,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingBankAccount(listPOJOs);
@@ -1889,7 +1882,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1903,7 +1896,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingCreditCard(listPOJOs);
@@ -1932,7 +1925,7 @@ public class ConfigurationDAO {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1946,7 +1939,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingCreditCardType(listPOJOs);
@@ -1973,7 +1966,7 @@ public class ConfigurationDAO {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -1981,7 +1974,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingPaymentType(listPOJOs);
@@ -2007,7 +2000,7 @@ public class ConfigurationDAO {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2015,7 +2008,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingReceivedType(listPOJOs);
@@ -2084,7 +2077,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2098,7 +2091,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingStoreType(listPOJOs);
@@ -2144,7 +2137,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2158,7 +2151,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingStores(listPOJOs);
@@ -2190,7 +2183,7 @@ public class ConfigurationDAO {
                 listPOJOs.add(pojo);
             }
         } catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2198,7 +2191,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingTemplates(listPOJOs);
@@ -2229,7 +2222,7 @@ public class ConfigurationDAO {
             }
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2237,7 +2230,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingMailType(listPOJOs);
@@ -2277,7 +2270,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2291,7 +2284,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingPackageSize(listPOJOs);
@@ -2331,7 +2324,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2345,7 +2338,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingContainer(listPOJOs);
@@ -2389,7 +2382,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2403,7 +2396,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         if(shippingType == 0)
@@ -2455,7 +2448,7 @@ public class ConfigurationDAO {
             form.setListOfExistingUserDefiedShippingType(listPOJOs);
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2463,7 +2456,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return listPOJOs;
@@ -2490,7 +2483,7 @@ public class ConfigurationDAO {
             form.setListOfExistingUserDefiedShippingWeightAndPrice(listPOJOs);
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2498,7 +2491,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return listPOJOs;
@@ -2517,14 +2510,14 @@ public class ConfigurationDAO {
             rowAdded = pstmt.executeUpdate() > 0 ? true : false;
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return rowAdded;
@@ -2543,14 +2536,14 @@ public class ConfigurationDAO {
             rowAdded = pstmt.executeUpdate() > 0 ? true : false;
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return rowAdded;
@@ -2566,14 +2559,14 @@ public class ConfigurationDAO {
             rowAdded = pstmt.executeUpdate() > 0 ? true : false;
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return rowAdded;
@@ -2594,18 +2587,17 @@ public class ConfigurationDAO {
             pstmt.setInt(4, form.getPoTemplateType());
             pstmt.setInt(5, form.getPsTemplateType());
             pstmt.setString(6, companyID);
-            logMsg.debug("Records Updated Are : "+ form.toString());
             rowAdded = pstmt.executeUpdate() > 0 ? true : false;
         }
         catch(Exception e) {
-            logMsg.error("Error While Updating Invoice Template", e);
+            Loger.log(e.toString());
         }
         finally {
             try {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return rowAdded;
@@ -2641,7 +2633,7 @@ public class ConfigurationDAO {
             form.setListOfExistingUpsUSers(listPOJOs);
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2649,7 +2641,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return listPOJOs;
@@ -2692,7 +2684,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2706,7 +2698,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingUspsUSers(listPOJOs);
@@ -2723,11 +2715,11 @@ public class ConfigurationDAO {
         try {
             String sql = "insert into bca_shipcarrier(Name, CompanyID, ParentID) values ('"+shippingtype+"',"+companyID+","+ParentID+")";
             ps = con.prepareStatement(sql);
-            logMsg.debug(sql);
+            Loger.log(sql);
             ps.execute();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
             // TODO: handle exception
         }finally {
             try {
@@ -2741,7 +2733,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -2755,12 +2747,12 @@ public class ConfigurationDAO {
         try {
             String sql = "update bca_shipcarrier set Name='"+oldVal+"' where ShipCarrierID = "+oldId;
             pstmt = con.prepareStatement(sql);
-            logMsg.debug(sql);
+            Loger.log(sql);
             int count = pstmt.executeUpdate();
             if (count > 0)
                 valid = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
             // TODO: handle exception
         }finally {
             try {
@@ -2774,7 +2766,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -2789,12 +2781,12 @@ public class ConfigurationDAO {
         try {
             String sql = "update bca_shipcarrier set Active=0 where ShipCarrierID = "+oldId;
             pstmt = con.prepareStatement(sql);
-            logMsg.debug(sql);
+            Loger.log(sql);
             int count = pstmt.executeUpdate();
             if (count > 0)
                 valid = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
             // TODO: handle exception
         }finally {
             try {
@@ -2808,7 +2800,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -2849,7 +2841,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2863,7 +2855,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingFedexUSers(listPOJOs);
@@ -2898,7 +2890,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2912,7 +2904,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingStores(listPOJOs);
@@ -2946,7 +2938,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -2960,7 +2952,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingActiveStores(listPOJOs);
@@ -3009,7 +3001,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -3023,7 +3015,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingeBayCategories(listPOJOs);
@@ -3054,7 +3046,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -3068,7 +3060,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingTaxYear(listPOJOs);
@@ -3093,7 +3085,7 @@ public class ConfigurationDAO {
                     "SundayRate,UseHolidayRate,HolidayRate,BiWeekly, OptionId, StartingDate, DateAdded" +
                     " from bcp_tax_company where CompanyID =? and Active not like '0' ";
 
-            logMsg.debug(sqlString);
+            Loger.log(sqlString);
             pstmt = con.prepareStatement(sqlString);
             pstmt.setString(1, compId);
             rs = pstmt.executeQuery();
@@ -3138,9 +3130,9 @@ public class ConfigurationDAO {
             }
 
         } catch (SQLException ee) {
-            logMsg.error(
+            Loger.log(2,
                     " SQL Error in Class TaxInfo and  method -getCompanyTax "
-                            + " " + ee);
+                            + " " + ee.toString());
         }
         finally {
             try {
@@ -3148,7 +3140,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return dtos;
@@ -3219,9 +3211,9 @@ public class ConfigurationDAO {
              }
 
         } catch (SQLException ee) {
-            logMsg.error(
+            Loger.log(2,
                     " SQL Error in Class TaxInfo and  method -getCompanyTax "
-                            + " " + ee);
+                            + " " + ee.toString());
         }
         finally {
             try {
@@ -3229,7 +3221,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return dto;
@@ -3253,7 +3245,7 @@ public class ConfigurationDAO {
             }
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -3261,7 +3253,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -3326,7 +3318,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -3336,7 +3328,7 @@ public class ConfigurationDAO {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -3398,7 +3390,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -3408,7 +3400,7 @@ public class ConfigurationDAO {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return  dtos;
@@ -3568,14 +3560,14 @@ public class ConfigurationDAO {
             }
 
         } catch (SQLException ee) {
-            logMsg.error( "Error in editCompanyTaxOption() " + ee);
+            Loger.log(2, "Error in editCompanyTaxOption() " + ee);
         } finally {
             try {
                 if(con != null){
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -3689,8 +3681,8 @@ public class ConfigurationDAO {
             }
 
         } catch (SQLException ee) {
-            ee.printStackTrace();
-            logMsg.error("Error in editCompanyTaxOption() " + ee);
+            
+            Loger.log(2, "Error in editCompanyTaxOption() " + ee);
         } finally {
             try {
                 if(con != null){
@@ -3698,7 +3690,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -3738,8 +3730,8 @@ public class ConfigurationDAO {
 
 
         } catch (SQLException ee) {
-            ee.printStackTrace();
-            logMsg.error( "Error in editCompanyTaxOption() " + ee);
+            
+            Loger.log(2, "Error in editCompanyTaxOption() " + ee);
         } finally {
             try {
                 if(con != null){
@@ -3747,7 +3739,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -3782,8 +3774,8 @@ public class ConfigurationDAO {
 
 
         } catch (SQLException ee) {
-            ee.printStackTrace();
-            logMsg.error("Error in editCompanyTaxOption() " + ee);
+            
+            Loger.log(2, "Error in editCompanyTaxOption() " + ee);
         } finally {
             try {
                 if(con != null){
@@ -3791,7 +3783,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -3827,7 +3819,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -3837,7 +3829,7 @@ public class ConfigurationDAO {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return  dtos;
@@ -3868,7 +3860,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -3878,7 +3870,7 @@ public class ConfigurationDAO {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return  loadCompanyTaxOption(companyID);
@@ -3911,7 +3903,7 @@ public class ConfigurationDAO {
             form.setDeductionList(dtos);
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -3919,7 +3911,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -3972,7 +3964,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -3986,7 +3978,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfJobTitle(listPOJOs);
@@ -4059,7 +4051,7 @@ public class ConfigurationDAO {
         catch (SQLException e)
         {
             System.out.println(e.getMessage());
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4073,7 +4065,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         configForm.setListOfExistingModule(listPOJOs);
@@ -4099,7 +4091,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4111,7 +4103,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -4136,7 +4128,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4148,7 +4140,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -4171,7 +4163,7 @@ public class ConfigurationDAO {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4183,7 +4175,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -4223,7 +4215,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4237,7 +4229,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingModuleNames(listPOJOs);
@@ -4263,7 +4255,7 @@ public class ConfigurationDAO {
             }
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -4276,7 +4268,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return defaultModule;
@@ -4329,7 +4321,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4343,7 +4335,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         form.setListOfExistingWeights(listPOJOs);
@@ -4384,7 +4376,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4398,7 +4390,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         cForm.setListOfExistingPackingSlipTemplate(listPOJOs);
@@ -4431,7 +4423,7 @@ public class ConfigurationDAO {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4439,7 +4431,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         cForm.setListOfExistingJobCategory(listPOJOs);
@@ -4482,7 +4474,7 @@ public class ConfigurationDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4496,7 +4488,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         cForm.setListOfExistingActiveEmployee(listPOJOs);
@@ -4558,7 +4550,7 @@ public class ConfigurationDAO {
         catch (SQLException e)
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4574,7 +4566,7 @@ public class ConfigurationDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         cForm.setListOfExistingShipCarrier(listPOJOs);
@@ -4602,7 +4594,7 @@ public class ConfigurationDAO {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4610,7 +4602,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return listPOJOs;
@@ -4630,7 +4622,7 @@ public class ConfigurationDAO {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -4638,7 +4630,7 @@ public class ConfigurationDAO {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return ctTypeList;
@@ -4656,13 +4648,13 @@ public class ConfigurationDAO {
             pstmt = con.prepareStatement(sql3);
             pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -4675,13 +4667,13 @@ public class ConfigurationDAO {
             pstmt = con.prepareStatement("DELETE FROM bca_customer_type WHERE ID="+ID);
             pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }

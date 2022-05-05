@@ -33,11 +33,11 @@ $(function() {
 	var payMethodId = '<%= request.getAttribute("payMethodId")%>';
 	
 	//Added on 01-05-2020
-	debugger
+	
 	var sortId = '<%= request.getAttribute("sortById")%>';
-	debugger
+	
 	$('select[id="sortBy"]').find('option[value="'+sortId+'"]').attr("selected",true);
-	debugger
+	
 	//$("#description").val("");
 	
 	var packingSlipStyleId = '<%= request.getAttribute("packingSlipStyleId")%>';
@@ -297,7 +297,7 @@ $(function() {
 
 		$("invoiceLocation").val(filePath);
 		//document.configurationForm.invoiceLocation.value = filePath;
-		//debugger
+		//
 	});
 	
 	$("#saveImage").change(function(){
@@ -305,13 +305,13 @@ $(function() {
 
 		$("saveImage").val(filePath);
 		//document.configurationForm.invoiceLocation.value = filePath;
-		//debugger
+		//
 	});
 	
 	/* $("#form").submit(function(){
-		debugger
+		
 		var form = $('form')[0]; // You need to use standard javascript object here
-		debugger
+		
 		var formData = new FormData(form);
 		formData.append('image', $('input[type=file]')[0].files[0]);
 		$.ajax({
@@ -370,13 +370,13 @@ $(function() {
 		{
 			if(setup == "Location")
 			{
-				debugger
+				
 				$.ajax({
 					type: "POST",
 	   				url:"Configuration?tabid=addDescription&Description="+text,
 	               	data:  { location : text }
 	           		}).done(function(data){
-	           		debugger
+	           		
 	               	//$("#state").html(data);
 	           		$(document).find('div#locationDiv table').replaceWith($(data).find('div#locationDiv').html());
 	           		//$('select[id="phonecode"]').find('option[id="'+selectedCountry+'"]').attr("selected",true);
@@ -386,7 +386,7 @@ $(function() {
 				document.getElementById('tabid').value="addDescription";
 				document.forms[0].action = "Configuration";
 				document.forms[0].submit();
-				debugger */
+				 */
 			/*}	
 		}
 	}); */
@@ -590,7 +590,7 @@ function showSetupID()
 	
 	/* function AddDescription()
 	{
-		debugger
+		
 		var text = $('#description').val();
 		var setup = $("#setupID option:selected").val();
 		if(text == "" || text == " ")
@@ -601,14 +601,14 @@ function showSetupID()
 		{
 			if(setup == "Location")
 			{
-				debugger */
+				 */
 				/*
 				 $.ajax({
 					type: "POST",
 	   				url:"Configuration?tabid=addDescription&Description="+text,
 	               	data: { location : location } 
 	           		}).done(function(data){
-	           		debugger
+	           		
 	               	//$("#state").html(data);
 	           		$(document).find('div#locationDiv table').replaceWith($(data).find('div#locationDiv').html());
 	           		//$('select[id="phonecode"]').find('option[id="'+selectedCountry+'"]').attr("selected",true);
@@ -618,16 +618,16 @@ function showSetupID()
 				document.getElementById('tabid').value="addDescription";
 				document.forms[0].action = "Configuration";
 				document.forms[0].submit();
-				debugger
+				
 			}	
 			else if(setup == "Message")
 			{
-				debugger
+				
 				document.getElementById('Description').value = text;
 				document.getElementById('tabid').value="addNewMessage";
 				document.forms[0].action = "Configuration";
 				document.forms[0].submit();
-				debugger
+				
 			} */
 			/* else if(setup == "REP")
 			{
@@ -752,7 +752,7 @@ function showSetupID()
 	/*$(function () {
         $("#updateRefundReason").click(function () 
         {
-        	debugger
+        	
         	var oldReason = $('#refundReasonSel option:selected').text();
         	var newReason = $('#refundReason').text();
             if (oldReason == '' || oldReason == ' ') {
@@ -764,7 +764,7 @@ function showSetupID()
             }
             else
             {
-            	debugger
+            	
             	$('#refundReasonSel option:selected').remove();
             	$('#refundReasonSel').append($("<option value="+$('#refundReason').val()+" onclick=setReason()>" + $('#refundReason').val() + "</option>"));
             	/*$('#refundReasonSel').append($("<option>" + newReason + "</option>"));
@@ -774,7 +774,7 @@ function showSetupID()
 	
 	/* $(function () {
         $("#deleteRefundReason").click(function () {
-        	debugger
+        	
         	var reason = $('#refundReasonSel selected').val();
             if (reason == '') {
                 alert("<bean:message key='BzComposer.configuration.customerinvoice.selectreasonfromlist'/>");
@@ -785,7 +785,7 @@ function showSetupID()
             }
             else
             {
-            	debugger
+            	
             	var con = confirm("<bean:message key='BzComposer.configuration.customerinvoice.removereason'/>");
             	if(con)
             	//$('#refundReasonSel option:selected').remove();
@@ -797,7 +797,7 @@ function showSetupID()
 	
 	/*$(function () {
         $("#addJobCategory").click(function (e) {
-        	debugger
+        	
         	var cat = $("#txtJobCategory").val();
         	//var items = $("#jobCategory option").val();
             if (cat == '') {
@@ -833,7 +833,7 @@ function showSetupID()
         $("#updateJobCategory").click(function () {
         	var oldCategory = $('#jobCategory option:selected').text();
         	var newCategory = $('#txtJobCategory').val();
-        	debugger
+        	
             if (oldCategory == "") {
                 alert("<bean:message key='BzComposer.configuration.customerinvoice.selectjobfromlist'/>");
             }
@@ -843,7 +843,7 @@ function showSetupID()
             }
             else
             {
-            	debugger
+            	
             	$('#jobCategory option:selected').remove();
             	$('#jobCategory').append($("<option value="+newCategory+" onclick=setCategory()>" + newCategory + "</option>"));
             }
@@ -852,13 +852,13 @@ function showSetupID()
 	
 	/*$(function () {
         $("#deleteJobCategory").click(function () {
-        	debugger
+        	
             if ($("#jobCategory option").text() == "") {
                 alert("<bean:message key='BzComposer.configuration.customerinvoice.selectjobfromlist'/>");
             }
             else
             {
-            	debugger
+            	
             	var con = confirm("Are You Sure to remove this job?");
             	if(con)
             	//$('#jobCategory option:selected').remove();
@@ -1001,11 +1001,11 @@ function showSetupID()
 	}
 
 	function clearValues(){
-		debugger
+		
 		$("#reason").val("");
 		$("#parentReasonId option").prop("selected",false);
 		$("#availableReasons option").prop("selected",false);
 		//$('select[id="parentReasonId"]').find('option').prop("selected",false);
-		debugger
+		
 	}
 </script>

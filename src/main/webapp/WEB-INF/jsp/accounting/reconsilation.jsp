@@ -336,6 +336,7 @@ table.tabla-listados tbody tr td {
 						</label>
 						<div class="col-md-7">
 							<select class="form-control" id="CategoryTypeForReconsile" onchange="getCategoryAndCharge()">
+								<option></option>
 							    <c:forEach items="${categoryType}" var="curObject" varStatus="loop">
                                     <c:if test="${curObject.categoryTypeName == 'EXPENSE' || curObject.categoryTypeName == 'INCOME'}">
 								    <option value="${curObject.categoryTypeID}">${curObject.categoryTypeName}</option>
@@ -416,7 +417,7 @@ table.tabla-listados tbody tr td {
 				<button class="btn btn-info" onclick="return AddFromReconcileDlg()">
 					<spring:message code="BzComposer.global.add"/>
 				</button>
-				<button class="btn btn-info">
+				<button class="btn btn-info" onclick="CloseReconcileDlg()">
 					<spring:message code="BzComposer.global.close"/>
 				</button>
 			</div>
@@ -1038,7 +1039,7 @@ table.tabla-listados tbody tr td {
  		</div>
  	</div> 
 	<div class="bzbtn">
-  		<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  		<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onclick="CloseEditDlg()">
   			<spring:message code="BzComposer.global.cancel"/>
   		</button>	
   		<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;" onclick="return editTransaction()" id="addButtonForDeposit">
@@ -1054,7 +1055,7 @@ var accountId = -1;
 var tableName = "";
 function getPayments(index,payId,accId,type)
 {
-	debugger;
+	
 	this.inv = index;
 	this.paymentId = payId;
 	this.accountId = accId; 
@@ -1125,7 +1126,7 @@ $(document).ready(function () {
    
 }); 
 $(document).ready(function(){
-	debugger;
+	
 	$("#fromDate").val("11/14/2007");
 	$("#toDate").val((new Date().getMonth()+1) + "/" + new Date().getDate() + "/" + new Date().getFullYear());
 	$("#ReconcileDate").val((new Date().getMonth()+1) + "/" + new Date().getDate() + "/" + new Date().getFullYear());
@@ -1152,7 +1153,7 @@ $(function() {
 
 $(function() {
 	   $( "#ReconcileButton").on("click", function(){
-		  debugger;
+		  
 		  var bankAccountCombo = document.getElementById("account");
 		  $("#ReconcileBankName").html("Reconcile"+ " "+bankAccountCombo.options[bankAccountCombo.selectedIndex].text);
 		  
@@ -1168,7 +1169,7 @@ $(function() {
 	 });
 $(function() {
 	   $( "#AssetButton").on("click", function(){
-		  debugger;
+		  
 		
 		   $( "#AssetDlgId").dialog({
 	    	   modal: true,
@@ -1182,7 +1183,7 @@ $(function() {
 	 });
 /* $(function() {
 	   $( "#AddButton").on("click", function(){
-		  debugger;
+		  
 		
 		   $( "#AddDlgId").dialog({
 	    	   modal: true,
@@ -1196,14 +1197,14 @@ $(function() {
 	 }); */
 	 $(function() {
 		   $( "#AddButton").on("click", function(){
-			  debugger;
+			  
 
 				return gotobankandadddialog();
 		    });
 		 });
 $(function() {
 	   $( "#EditButton").on("click", function(){
-		  debugger;
+		  
 		
 		   $( "#EditDlgId").dialog({
 	    	   modal: true,
@@ -1217,7 +1218,7 @@ $(function() {
 	 });
 function editTransaction()
 {
-	debugger;
+	
 	var oldClientVendorId;
 	var oldAccountId;
 	var oldPaymentTypeId;
@@ -1251,10 +1252,11 @@ function editTransaction()
 	var paymentTypeName = paymenTypeNameString.options[paymenTypeNameString.selectedIndex].text; 
 	
 	var checkNumber = document.getElementById("checkNumberEdit").value;
+
 	var amount = document.getElementById("amountToEdit").value;
-	
+
 	var date = document.getElementById("devDateForEdit").value;
-	
+
 	var TblPayment={
 			   "cvID":customerId,
 			   "paymentTypeID":paymentTypeId,	   
@@ -1266,29 +1268,37 @@ function editTransaction()
 			   "oldPaymentTypeId":oldPaymentTypeId,
 			   "checkNumber":checkNumber,
 	   };
-	
+
 	var obj=JSON.stringify(TblPayment);
+	var requestData=""
+	if(amount=="" || amount==undefined)
+	{
+	requestData="row=" + obj + "&PaymentId=" + paymentId + "&date=" + date + "&tableName=" + tableName
+	}
+	else
+	{
+		"row=" + obj + "&PaymentId=" + paymentId + "&amount=" + amount + "&date=" + date + "&tableName=" + tableName
+	}
 	$('#EditDlgId').dialog('close'); 
+
 	$.ajax({
-		
 		type : "POST",
 		url : "ReconsilationPost?tabid=EditTransaction",
-		data : "row=" + obj + "&PaymentId=" + paymentId + "&amount=" +amount + "&date=" + date + "&tableName=" +tableName,
+		data : requestData,
 	    success : function(data) {
 			/* var html = "" + data.msg; */
-			debugger;   
+			   
 			updateReconsilationTab(data);
 		
 		},
 		 error : function(data) {
-
 			return showerrordialog();
 		} 
 	});
 }
 function executeQuery()
 {
-	debugger;
+	
 	var accountCombo = document.getElementById("account");
 	var accountId = accountCombo.options[accountCombo.selectedIndex].value;
 	
@@ -1308,7 +1318,7 @@ function executeQuery()
 	 	url : "ReconsilationPost?tabid=Payment",
 		data :"data=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			updateReconsilationTab(data);
 		},
@@ -1336,7 +1346,7 @@ function deletePayment()
 			 	url : "Reconsilation?tabid=DeletePayment",
 				data :"PaymentId=" + paymentId + "&AccountId=" +acId,
 			    success : function(data) {
-					debugger;
+					
 			    	
 					updateReconsilationTab(data);
 					paymentId = -1;
@@ -1351,7 +1361,7 @@ function deletePayment()
 		return false;
 	} */
 	
-	debugger;
+	
 	event.preventDefault();
 	$("#removeselectedtransactiondialog").dialog({
 	    	resizable: false,
@@ -1366,7 +1376,7 @@ function deletePayment()
 	    			 	url : "ReconsilationPost?tabid=DeletePayment",
 	    				data :"PaymentId=" + paymentId + "&AccountId=" +acId,
 	    			    success : function(data) {
-	    					debugger;
+	    					
 	    			    	
 	    					updateReconsilationTab(data);
 	    					paymentId = -1;
@@ -1406,7 +1416,7 @@ $.ajax({
 	 	url : "ReconsilationPost?tabid=CategoryType",
 		data :"data1=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			updateReconsilationTab(data);
 		},
@@ -1445,7 +1455,7 @@ $.ajax({
 	 	url : "ReconsilationPost?tabid=CategoryType",
 		data :"data2=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			/* updateReconsilationTab(data); */
 			updateChargeDropdown(data);
@@ -1471,16 +1481,32 @@ function getCheckboxForReconcile()
 		$("#checkNumberForReconcile").prop("disabled",true);
 	}
 }
+
+function CloseEditDlg()
+{ 
+	$('#EditDlgId').dialog('close');
+}
+function CloseReconcileDlg()
+{ 
+	$('#ReconcileDlgId').dialog('close');
+}
 function AddFromReconcileDlg()
 {
-	debugger;
 	
+
 	var checkNumber = "";
 	var categoryTypeCombo = document.getElementById("CategoryTypeForReconsile");
 	var categoryTypeId = categoryTypeCombo.options[categoryTypeCombo.selectedIndex].value;
 	var categoryCombo = document.getElementById("CategoryForReconsile");
-	var categoryId = categoryCombo.options[categoryCombo.selectedIndex].value;
-	
+	if(categoryCombo.options[categoryCombo.selectedIndex]!=undefined)
+		{
+		var categoryId = categoryCombo.options[categoryCombo.selectedIndex].value;
+		}
+	else
+		{
+		var categoryId ="";
+		}
+
 	var chargeForreconcileCombo = document.getElementById("ChrgeForReconsile");
 	if(chargeForreconcileCombo.length > 0)
 	{	
@@ -1533,7 +1559,7 @@ $.ajax({
 	  	url : "ReconsilationPost?tabid=AddReconcile",
 		data :"data3=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			updateReconsilationTab(data);
 		},
@@ -1545,7 +1571,7 @@ $.ajax({
 }
 function changeAssetCategory()
 {
-	debugger;
+	
 	var categoryCombo = document.getElementById("AssetCategoryId");
 	var categoryId = categoryCombo.options[categoryCombo.selectedIndex].value; 
 	
@@ -1563,7 +1589,7 @@ $.ajax({
 	  	url : "ReconsilationPost?tabid=SubAssetCategory",
 		data :"data4=" + obj,
 	    success : function(data) {
-			debugger;
+			
 	    	
 			$(document).find('div#AssetChargeCategoryDiv select').replaceWith($(data).find("div#AssetChargeCategoryDiv").html());
 		},
@@ -1574,7 +1600,7 @@ $.ajax({
 }
 function AddAssets()
 {
-	debugger;
+	
 	 $('#AssetDlgId').dialog('close');
 	 $("#AssetAmount").val("");
 	 $("#AssetCategoryId").val($("#AssetCategoryId option:first").val());
@@ -1711,6 +1737,7 @@ function entervalidnamedialog()
     });
     return false;
 }
+
 function entervalidamountdialog()
 {
 	event.preventDefault();
@@ -1872,7 +1899,7 @@ if(status == 'backward')
 	$("#fromDate").val(this.fromDate);
 	$("#toDate").val(this.toDate);
 }
- debugger;
+ 
 	executeQuery();									//calling method to execute
 }
 </script>

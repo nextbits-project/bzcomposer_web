@@ -25,7 +25,7 @@ function getObject(nameStr) {
 }
 function insertTime(val)
 {
-    debugger;
+    
    if(tdid !="")
    {
      h =document.getElementById("hour").value;

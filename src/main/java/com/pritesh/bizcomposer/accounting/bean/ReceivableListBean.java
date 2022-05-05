@@ -64,7 +64,10 @@ public class ReceivableListBean extends ActionForm {
     
     private int invoiceID =-1;    
     //order#
-    private int orderNum = 0 ;    
+    private int orderNum = 0 ; 
+    //orderNumStr
+	private String orderNumStr;
+
     //p.o#
     private int poNum = 0;
     //S.O#
@@ -444,7 +447,16 @@ public class ReceivableListBean extends ActionForm {
         this.orderNum = orderNum;
     }
 
-    public int getPoNum() {
+    public String getOrderNumStr() {
+		return orderNumStr;
+	}
+
+	public void setOrderNumStr(String orderNumStr) {
+		this.orderNumStr = orderNumStr;
+	}
+
+	public int getPoNum() {
+
         return poNum;
     }
 

@@ -365,12 +365,12 @@
 </form>	
 <script type="text/javascript">
 $(function() {
-	debugger;
+	
 	$("#tabs").tabs();
 });
 function submitform()
 {
-	debugger;
+	
 	if(!confirm("Do you want to save changes?"))
 	{	
 	 document.forms[0].action = "CompanyNew?tabid=createNewCompany8";
@@ -416,7 +416,7 @@ function finish() {
 			url : "CompanyNew?tabid=addVendor",
 			data : "json=" +json ,
 		    success : function(data) {
-				debugger;
+				
 				alert("<bean:message key='BzComposer.common.saveSuccess'/>");
 				document.forms[0].action = "CompanyNew?tabid=finish3";
 				document.forms[0].submit(); 
@@ -475,7 +475,7 @@ var unpaidbalance;var existingcredit;var transferstartdate;var taxable;var isCus
 
 function addgeneraldetail()
 {
-	debugger;
+	
 	if($("#addcompanybtn").text() == 'Edit')
 	{		
 		var a = document.getElementById("companyname").value;
@@ -499,11 +499,11 @@ function addgeneraldetail()
 		//objGlobal.remove(i);
 		
 		//$.each(data, function(i, el){ if (this.id == id){ data.splice(i, 1); } });
-		debugger;
+		
 		objGlobal.splice(objGlobal.indexOf(conceptName), 1);
 		//list.splice( list.indexOf('foo'), 1 );
 
-		debugger;
+		
 		objGlobal.push({name: a, firstname: fnm, lastname :lnm, address1 : address1, address2 : address2, city:city});
 		
 		 //$(".bca_companylist select").append(new Option(objGlobal[i].name,objGlobal[i].name));
@@ -516,7 +516,7 @@ function addgeneraldetail()
 		$("#addcompanybtn").text("Add");
 	}
 	else{
-		debugger;
+		
 		a = document.getElementById("companyname").value == ""?null:document.getElementById("companyname").value;
 		fnm = document.getElementById("fnm").value == ""?null:document.getElementById("fnm").value;
 		lnm = document.getElementById("lnm").value == ""?null:document.getElementById("lnm").value;
@@ -548,7 +548,7 @@ function addgeneraldetail()
 		/*memo*/
 		memo = document.getElementById("memo").value == ""?null:document.getElementById("memo").value;
 		
-		debugger;
+		
 		if(a==null)
 		{
 			alert("<bean:message key='BzComposer.NewCustomer.Name.Validation'/>");
@@ -625,27 +625,27 @@ function addgeneraldetail()
 			bIsElligibleTo1099:isBilling,
 			vMemoText:memo,
 		});			    
-		debugger;
+		
 		  
 		$(".bca_companylist select").append(new Option(objGlobal[i].vGeneralFirstName,objGlobal[i].vGeneralCompanyName));	
-		debugger;	
+			
 
 		$('#myform')[0].reset();
 		 
-		debugger;
+		
 		i++;
 	}	 
 }
 function getCompanyname()
 {
-	debugger;
+	
 	var conceptName = $('#customerlist :selected').text();
-	debugger;
+	
 	result = objGlobal.find(obj => {
 		return obj.firstname === conceptName
 	 });
 	
-	  debugger;
+	  
 	  document.getElementById("companyname").value=result.name;
 	  document.getElementById("fnm").value=result.firstname;
 	  document.getElementById("lnm").value=result.lastname;
@@ -683,7 +683,7 @@ function getCompanyname()
 }
 function removeSelectedCompany()
 {
-	debugger;
+	
 	$('#customerlist option:selected').remove();	
 	 $('#myform')[0].reset();
 }
@@ -706,7 +706,7 @@ function sortlist() {
 	}
 }
 $("#optionsRadios1").click(function() {	
-	debugger;
+	
 	 var $r = $("#customerlist option");
 	    $r.sort(function(a, b) {
 	        if (a.text < b.text) return -1;
@@ -717,7 +717,7 @@ $("#optionsRadios1").click(function() {
 	    $("#customerlist").append($($r));
 });
 $("#optionsRadios2").click(function() {
-	debugger;
+	
 	 var $r = $("#customerlist option");
 	    $r.sort(function(a, b) {
 	        if (a.value < b.value) return -1;

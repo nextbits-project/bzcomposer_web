@@ -138,7 +138,7 @@ public class Employee {
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -insertEmployee "
 							+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 
 		finally {
@@ -383,7 +383,7 @@ public class Employee {
 			Loger.log(2,
 					" General  Error in Class Employee and   method -getEmployeeList "
 							+ " " + e.toString());
-			e.printStackTrace();
+			
 		} finally {
 			db.close(con);
 
@@ -438,7 +438,7 @@ public class Employee {
 			Loger.log(2,
 					" General  Error in Class Employee and   method -getEmployeeList "
 							+ " " + e.toString());
-			e.printStackTrace();
+			
 		} finally {
 			db.close(con);
 
@@ -481,7 +481,7 @@ public class Employee {
 			Loger.log(2,
 					" General  Error in Class Employee and   method -getEmployeeList "
 							+ " " + e.toString());
-			e.printStackTrace();
+			
 		} finally {
 			db.close(con);
 
@@ -541,7 +541,7 @@ public class Employee {
 			Loger.log(2,
 					" General  Error in Class Employee and   method -getEmployeeList "
 							+ " " + e.toString());
-			e.printStackTrace();
+			
 		} finally {
 			db.close(con);
 
@@ -582,7 +582,7 @@ public class Employee {
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -deleteEmployee "
 							+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 
 		finally {
@@ -613,7 +613,7 @@ public class Employee {
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -deleteEmployee "
 							+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 
 		finally {
@@ -911,12 +911,12 @@ public class Employee {
 
 
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2,
 					" SQL Error in Class Employee and   method -getEmployeeList "
 							+ " " + ee.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			Loger.log(2,
 					" General  Error in Class Employee and   method -getEmployeeList "
 							+ " " + e.toString());
@@ -1131,7 +1131,7 @@ public class Employee {
 			}			
 
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -updateEmployee "
 							+ " " + ee.toString());
@@ -1406,7 +1406,7 @@ public class Employee {
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -deleteEmployee "
 							+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 
 		finally {
@@ -1489,7 +1489,7 @@ public class Employee {
 			}
 
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -CheckTimeSheet"
 							+ " " + ee.toString());
@@ -1533,7 +1533,7 @@ public class Employee {
 			pstmt.executeUpdate();
 
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -insertTimeSheet"
 							+ " " + ee.toString());
@@ -1581,7 +1581,7 @@ public class Employee {
 			pstmt.executeUpdate();
 
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -insertTimeSheet"
 							+ " " + ee.toString());
@@ -1626,7 +1626,7 @@ public class Employee {
 				ret = true;
 			}
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -updateTimeSheet"
 							+ " " + ee.toString());
@@ -1675,7 +1675,7 @@ public class Employee {
 				ret = true;
 			}
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2,
 					" SQL Error in Class Employee and  method -updateTimeSheet"
 							+ " " + ee.toString());

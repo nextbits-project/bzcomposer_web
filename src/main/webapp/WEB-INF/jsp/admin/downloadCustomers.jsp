@@ -205,7 +205,7 @@ function addNewCustomer(){
 	window.open("administer?tabid=AddVisitor", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 }
 function manageCustomer(cmd){
-    debugger;
+    
 	if (itemID == 0) {
 		return showCustomerValidationDialog();
 	} else {

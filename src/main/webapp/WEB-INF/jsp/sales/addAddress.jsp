@@ -102,17 +102,17 @@ function refreshItemsNow(val){
 
 function submitFormUpdate(form)
 {
-	debugger;
+	
 	//var addStatus = null;
-	debugger;
+	
 	if($('#addressStatusActive').prop('checked',true) && $('#addressStatusActive').prop('disabled',false) && $('#addressStatusDefault').prop('checked',false))
 	{
-		debugger
+		
 		status = "Active";
 	}
 	else
 	{
-		debugger
+		
 		status = "Default";
 	}
 	var st = status;
@@ -129,9 +129,9 @@ function submitFormUpdate(form)
 	var zipCode = form.zCode.value;
 	var phone = form.phone.value;
 	var fax = form.fax.value;
-	debugger
+	
 	document.getElementById("status1").value=st;
-	debugger;
+	
 
 	document.forms[0].action="Customer.do?tabid=addNewAddress&status="+st;
 	document.getElementById("tabid").value="addNewAddress";
@@ -145,15 +145,15 @@ function showSupplierForm()
 }
 function submitFormAdd(form)
 {
-	debugger;
+	
 	if($('#addressStatusActive').prop('checked',true) && $('#addressStatusActive').prop('disabled',false) && $('#addressStatusDefault').prop('checked',false))
 	{
-		debugger
+		
 		status = "Active";
 	}
 	else
 	{
-		debugger
+		
 		status = "Default";
 	}
 
@@ -171,17 +171,17 @@ function submitFormAdd(form)
 	var phone = form.phone.value;
 	var fax = form.fax.value;
 	var st = status;
-	debugger
+	
 	document.getElementById("status").value=status;
 	//$("#addressForm").submit();
 	
 	//window.location.href = "Customer.do?tabid=addNewAddress&&status="+status;
 	document.forms[0].action="Customer.do?tabid=addNewAddress&status="+st;
-	debugger
+	
 	document.getElementById("tabid").value="addNewAddress"; 
-	debugger
+	
 	document.forms[0].submit();
-	debugger
+	
 	//this.window.close();
 }
 </script>

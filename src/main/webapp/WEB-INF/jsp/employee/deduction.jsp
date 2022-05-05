@@ -252,7 +252,7 @@ function updateDeduction()
 	if(Id==0)
 	{
 
-		debugger;
+		
 		return showlisttoeditdialog();
 	}
 	else

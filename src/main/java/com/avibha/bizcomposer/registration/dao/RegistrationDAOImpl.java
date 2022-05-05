@@ -41,7 +41,7 @@ public class RegistrationDAOImpl implements RegistrationDAO
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return false;
@@ -70,7 +70,7 @@ public class RegistrationDAOImpl implements RegistrationDAO
 				if (stmt != null) { db.close(stmt); }
 				if(c != null){ db.close(c); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return false;
@@ -125,7 +125,7 @@ public class RegistrationDAOImpl implements RegistrationDAO
             pstmt3.executeUpdate();
         } 
         catch (SQLException e) {
-           e.printStackTrace();
+           Loger.log(e.toString());
         }
         finally {
 			try {
@@ -135,7 +135,7 @@ public class RegistrationDAOImpl implements RegistrationDAO
 				if (pstmt3 != null) { db.close(pstmt3); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		} 
         return userID;
@@ -181,7 +181,7 @@ public class RegistrationDAOImpl implements RegistrationDAO
             updatedRows = pstmt.executeUpdate();
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -189,7 +189,7 @@ public class RegistrationDAOImpl implements RegistrationDAO
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return updatedRows;

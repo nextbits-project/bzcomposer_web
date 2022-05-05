@@ -191,7 +191,7 @@ function closeWindow(){
 }
 
 function setHelp(){
-    alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
+    alert("<spring:message code='BzComposer.common.notSupportedYet'/>");
 }
 </script>
 <body>

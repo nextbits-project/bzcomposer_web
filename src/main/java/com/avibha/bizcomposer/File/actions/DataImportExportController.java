@@ -1,31 +1,17 @@
-
 package com.avibha.bizcomposer.File.actions;
-
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.util.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.purchase.dao.PurchaseInfoDao;
 import com.avibha.bizcomposer.purchase.dao.PurchaseOrderInfoDao;
 import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
-import com.avibha.bizcomposer.sales.dao.EstimationInfo;
-import com.avibha.bizcomposer.sales.dao.EstimationInfoDao;
-import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.sales.dao.*;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.common.utility.MyUtility;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -34,40 +20,38 @@ import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
 import com.pritesh.bizcomposer.accounting.bean.TblPayment;
+import org.apache.poi.util.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author sarfrazmalik
  */
 @Controller
 public class DataImportExportController {
-	@Autowired
-    private DataImportExportUtils importExportUtils;
-    
-    @Autowired
-    private InvoiceInfoDao invoice;
-   
-    @Autowired
-    private ConfigurationInfo configInfo;
 
-    @Autowired 
-    private EstimationInfo estInfo;
-    
     @Autowired
-    private EstimationInfoDao estInfoDao;
-    
-    private PurchaseOrderInfoDao purchaseInfDao;
-	@Autowired
-    public DataImportExportController( PurchaseOrderInfoDao purchaseInfDao) {
-		super();
-		this.purchaseInfDao = purchaseInfDao;
-	}
-	
-	    
+    private DataImportExportUtils importExportUtils;
+
     @GetMapping("/dataExportAction")
     public String dataExportAction(HttpServletRequest request, HttpServletResponse response) {
         String compId = (String) request.getSession().getAttribute("CID");
         String action = request.getParameter("tabid");
-       // ConfigurationInfo configInfo = new ConfigurationInfo();
+        ConfigurationInfo configInfo = new ConfigurationInfo();
         String forward = null;
         try {
             configInfo.setCurrentRequest(request);
@@ -85,7 +69,7 @@ public class DataImportExportController {
                 }
             }
             else if(action.equalsIgnoreCase("Invoices")) {
-                //InvoiceInfoDao invoice = new InvoiceInfoDao();
+                InvoiceInfoDao invoice = new InvoiceInfoDao();
                 InvoiceDto invoiceDto = new InvoiceDto();
                 invoiceDto.setTabid("SBLU");
                 ArrayList<InvoiceDto> invoiceList = invoice.getRecord(request, invoiceDto, compId, 0);
@@ -99,7 +83,7 @@ public class DataImportExportController {
                 System.out.println("BCA_InvoiceList Exported...");
             }
             else if(action.equalsIgnoreCase("Estimations")) {
-              //  EstimationInfoDao estInfoDao = new EstimationInfoDao();
+                EstimationInfoDao estInfoDao = new EstimationInfoDao();
                 EstimationDto estimationDto = new EstimationDto();
                 ArrayList<InvoiceDto> estList = estInfoDao.getRecord(request, estimationDto, compId, 0);
 
@@ -112,7 +96,7 @@ public class DataImportExportController {
                 System.out.println("BCA_EstimationList Exported...");
             }
             else if(action.equalsIgnoreCase("SalesOrders")) {
-                InvoiceInfoDao invoiceInfoDao = invoice;
+                InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
                 InvoiceDto invoiceDto = new InvoiceDto();
                 ArrayList<InvoiceDto> soList = invoiceInfoDao.getSalesOrderRecord(request, invoiceDto, compId, 0);
 
@@ -125,9 +109,9 @@ public class DataImportExportController {
                 System.out.println("BCA_SalesOrderList Exported...");
             }
             else if(action.equalsIgnoreCase("PurchaseOrders")) {
-                //PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
+                PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
                 PurchaseOrderDto poDto = new PurchaseOrderDto();
-                ArrayList<PurchaseOrderDto> poList = purchaseInfDao.getRecord(request, poDto, compId, 0);
+                ArrayList<PurchaseOrderDto> poList = poInfoDao.getRecord(request, poDto, compId, 0);
 
                 ObjectMapper mapper = new ObjectMapper();
                 ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
@@ -206,7 +190,7 @@ public class DataImportExportController {
     public String dataImportAction(@RequestParam("attachFile") MultipartFile attachFile, HttpServletRequest request) {
         String compId = (String) request.getSession().getAttribute("CID");
         String action = request.getParameter("tabid");
-       // ConfigurationInfo configInfo = new ConfigurationInfo();
+        ConfigurationInfo configInfo = new ConfigurationInfo();
         String forward = null;
         boolean status = false;
         try {
@@ -223,7 +207,7 @@ public class DataImportExportController {
             else if(action.equalsIgnoreCase("Invoices")) {
                 if(!attachFile.isEmpty()) {
                     boolean statusError = false;
-                    InvoiceInfoDao invoiceInfoDao = invoice;//new InvoiceInfoDao();
+                    InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
                     TypeReference<List<InvoiceDto>> typeReference = new TypeReference<List<InvoiceDto>>() {};
                     ObjectMapper mapper = new ObjectMapper();
                     List<InvoiceDto> invoiceList = mapper.readValue(attachFile.getInputStream(), typeReference);
@@ -240,7 +224,7 @@ public class DataImportExportController {
             else if(action.equalsIgnoreCase("Estimations")) {
                 if(!attachFile.isEmpty()) {
                     boolean statusError = false;
-                   // EstimationInfo estInfo = new EstimationInfo();
+                    EstimationInfo estInfo = new EstimationInfo();
                     TypeReference<List<EstimationDto>> typeReference = new TypeReference<List<EstimationDto>>() {};
                     ObjectMapper mapper = new ObjectMapper();
                     List<EstimationDto> estList = mapper.readValue(attachFile.getInputStream(), typeReference);
@@ -257,7 +241,7 @@ public class DataImportExportController {
             else if(action.equalsIgnoreCase("SalesOrders")) {
                 if(!attachFile.isEmpty()) {
                     boolean statusError = false;
-                    InvoiceInfoDao invoiceInfoDao = invoice;//new InvoiceInfoDao();
+                    InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
                     TypeReference<List<InvoiceDto>> typeReference = new TypeReference<List<InvoiceDto>>() {};
                     ObjectMapper mapper = new ObjectMapper();
                     List<InvoiceDto> invoiceList = mapper.readValue(attachFile.getInputStream(), typeReference);
@@ -274,13 +258,13 @@ public class DataImportExportController {
             else if(action.equalsIgnoreCase("PurchaseOrders")) {
                 if(!attachFile.isEmpty()) {
                     boolean statusError = false;
-                 //   PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+                    PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
                     TypeReference<List<PurchaseOrderDto>> typeReference = new TypeReference<List<PurchaseOrderDto>>() {};
                     ObjectMapper mapper = new ObjectMapper();
                     List<PurchaseOrderDto> invoiceList = mapper.readValue(attachFile.getInputStream(), typeReference);
                     for (PurchaseOrderDto purchaseOrderDto : invoiceList) {
-                        purchaseOrderDto.setOrderNo(purchaseInfDao.getNewPONum(compId));
-                        status = purchaseInfDao.Save(compId, purchaseOrderDto);
+                        purchaseOrderDto.setOrderNo(purchaseInfo.getNewPONum(compId));
+                        status = purchaseInfo.Save(compId, purchaseOrderDto);
                         if(!status && !statusError) statusError = true;
                     }
                     if(statusError) request.getSession().setAttribute("errorMessage", "success");
@@ -295,4 +279,3 @@ public class DataImportExportController {
     }
 
 }
-

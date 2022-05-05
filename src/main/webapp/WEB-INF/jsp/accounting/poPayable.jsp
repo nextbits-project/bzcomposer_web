@@ -2,7 +2,7 @@
 <%@page import="java.text.DecimalFormat"%>
 <%@ page isELIgnored="false"%>
 <%@page import="java.util.Currency"%>
-<%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%>
+<%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
@@ -284,10 +284,6 @@ margin-right: 10px;
 			    aria-controls="nav-home" aria-selected="true">
 			    	<spring:message code="BzComposer.popayable.tab.popayablelist"/>
 		    	</a>
-			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" 
-			    aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
-			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
-		    	</a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" 
 			    aria-controls="nav-contact" aria-selected="false" onclick="paidList()">
 			    	<spring:message code="BzComposer.popayable.tab.paidlist"/>
@@ -296,6 +292,10 @@ margin-right: 10px;
                 aria-controls="nav-contact" aria-selected="false">
                     <spring:message code="BzComposer.accountreceivable.tabs.VendorRMARefund"/>
                 </a>
+                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" 
+			    aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
+			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
+		    	</a>
 			  </div>
 			</nav>
 				<div class="table1" id="tblForInvoiceOrder">
@@ -367,7 +367,7 @@ margin-right: 10px;
 		</tbody>	
 	</table>
 	</div>
-	<div class="footer1">
+	<div class="footer1" style="margin-top: 50px">
 		<a class="btn btn-info" style="float: right;font-size:14px;color:white;" id="pay"><spring:message code="BzComposer.popayable.paybtn"/></a>
 		<!-- <button class="float-right" onclick="return received()">Pay</button> -->
 	</div>
@@ -425,7 +425,7 @@ margin-right: 10px;
 </form>
 </div>
    <div class=" col-4">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;">
+  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onclick="closePayableWindow()">
   		<spring:message code="BzComposer.global.cancel"/>
 	</button>	
   	<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;"
@@ -439,7 +439,7 @@ margin-right: 10px;
   </div>
 </div>
 <script type="text/javascript">
-	debugger;
+	
 	var indexNumber = -1;
 	var amtToPay = -1;
 	var invoiceId = -1;
@@ -461,7 +461,7 @@ margin-right: 10px;
 	selectCategoryAsPurchaseOrder6800FromDropDownList("categoryId");
 
    function selectrow(invoice,index) {
-	    debugger;
+	    
 	      $( "#demo" ).empty();  
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
@@ -549,7 +549,7 @@ margin-right: 10px;
    
    $(function() {
 	   $( "#pay").on("click", function(){ 
-		   debugger;
+		   
 		   var content;
 		   $( "#demo" ).empty();  
 		   if(invoiceId >= '0' && $('input[type="checkbox"]').is(':checked'))
@@ -560,7 +560,7 @@ margin-right: 10px;
 		        });
 				for(var index = 0;index < obj.length;index++)
 			{
-					debugger;
+					
 					var a = obj[index].AmountDue;
 					var b = obj[index].PaidAmount;
 			   content = "<tr>",
@@ -587,7 +587,7 @@ margin-right: 10px;
 			}		
 		   else
 		   {
-			   debugger;
+			   
 
 				return selectonepayabledialog();
 			   	obj = [];
@@ -597,7 +597,7 @@ margin-right: 10px;
 	 });
 								 							 	
    $( ".paymentOP" ).change(function() {
-	   debugger; 
+	    
 	  var pay = document.getElementById("payStatus");
 	  var payment = pay.options[pay.selectedIndex].value; 
 	 
@@ -610,7 +610,7 @@ margin-right: 10px;
 			  	{
 			  		return;
 			  	} */
-			  	debugger;
+			  	
 				event.preventDefault();
 				$("#savelayawaysinvoicedialog").dialog({
 				    	resizable: false,
@@ -656,16 +656,17 @@ margin-right: 10px;
    
    function save()
    {
-	   debugger;
+	   
 	   var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
 	  if(vendor == null){
 		  alert("<bean:message key='BzComposer.billcreation.selectvendorfirst'/>");
 	  } else{
 		  
-	   debugger;	
+	   	
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
-		/* var receivedAmount=document.getElementById("receivedAmount").value; */
+		/* 
+		var receivedAmount=document.getElementById("receivedAmount").value; */
 		receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
 		if(parseFloat(receivedAmount) == 0.0)
 		{
@@ -721,16 +722,19 @@ margin-right: 10px;
    }
   	}
    function sendMyValue(ReceivableListBean) {
-		debugger;
+		
 		var obj=JSON.stringify(ReceivableListBean);
    	    $.ajax({
 			type : "POST",
 			url : "PoPayablePost?tabid=UpdateRecord",
-		/* 	data : "row=" + row + "&paymentTypeId=" +paymentTypeId + "&memo=" + memo + "&accountId=" +accountId + "&categoryId=" +categoryId + "&receivedAmount=" +receivedAmount, */			
-				/* data :"row=" + obj + "&index="+indexNumber, */
+		/*
+		data : "row=" + row + "&paymentTypeId=" +paymentTypeId + "&memo=" + memo + "&accountId=" +accountId + "&categoryId=" +categoryId + "&receivedAmount=" +receivedAmount, */			
+				/*
+				data :"row=" + obj + "&index="+indexNumber, */
 				data : "row=" + obj + "&invoiceId="+invoiceId,
 		    success : function(data) {
-				/* var html = "" + data.msg; */
+				/*
+				var html = "" + data.msg; */
 				
 			window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
 			
@@ -763,7 +767,7 @@ margin-right: 10px;
    }
    function checkType()
    {
-		debugger;
+		
 		var type = document.getElementById("receivedType");
 		var ctype = type.options[type.selectedIndex].innerText;
 		   
@@ -782,7 +786,7 @@ margin-right: 10px;
    }
    function selectedRadio()
    {
-	 debugger;
+	 
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 	   {
 	   		$("#tblForInvoiceOrder").hide();
@@ -821,7 +825,7 @@ margin-right: 10px;
      	return d;
    }
    $(document).ready(function(){
-        debugger;
+        
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	    $("#poDate").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
@@ -856,18 +860,19 @@ margin-right: 10px;
    function clearTransaction()
    {
 	   var answer;
-	   debugger;
+	   
 	   if(parseInt(invoiceId) <= 0){
 	   		return selecttransactiondialog();
 	   		return false;
 	   }
 	   else{
-		  /* answer = window.confirm("<spring:message code='BzComposer.popayable.clearselectedtransaction'/>");
+		  /*
+		  answer = window.confirm("<spring:message code='BzComposer.popayable.clearselectedtransaction'/>");
 		  if(answer != true)
 		  {
 		  		return false;
 		  } */
-			debugger;
+			
 			event.preventDefault();
 			$("#selectcleartransactiondialog").dialog({
     			resizable: false,
@@ -906,7 +911,7 @@ margin-right: 10px;
    }
    function checkPaymentStatus()
    {
-	   debugger;
+	   
 	  	/* var pay = document.getElementById("payStatus");
 	  	vat option = pay.options[pay.selectedIndex].value; */
 	   $(document.forms[0]).submit(function( event ) {
@@ -916,7 +921,7 @@ margin-right: 10px;
    
   function payFromDialog()
   {
-	  debugger;
+	  
 	  var vendorName = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(1)').text();
 	  var invoiceId =  $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(9)').text();
 	  var vendorId = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(1)').attr('value');
@@ -948,7 +953,7 @@ margin-right: 10px;
 			data :"row=" + obj,
 		    success : function(data) {
 				/* var html = "" + data.msg; */
-				window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
+				//window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
 			},
 			 error : function(data) {
 
@@ -960,6 +965,9 @@ margin-right: 10px;
 		    event.preventDefault();
 		});
   }
+  function closePayableWindow(){
+		$('#popupWindow').dialog('close');
+	}
   function paidList()
   {
 	  window.location = "${pageContext.request.contextPath}/PaidListTab?tabid=paidList";

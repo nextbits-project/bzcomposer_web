@@ -34,7 +34,7 @@ function numbersonly(e,val)
 }
 function showEditVendor()
 {
-	debugger;
+	
 	var custid = $('#clientVendorID').val();
 	if(custid==0 || custid == null){
 		return showSelectVendorDialog();
@@ -46,7 +46,7 @@ function showEditVendor()
 }
 function getVendorInfo(vendorid, rowId)
 {
-	debugger
+	
 	$("#clientVendorID").val(vendorid);
 	//document.getElementById("tabid").value="VONODO";
 	/* document.forms[0].action="Vendor?";
@@ -73,7 +73,7 @@ function enableDisableFinanceCharges()
 }
 function initialize()
 {
-	debugger;
+	
 	$('#country').val($('#country2').val());
 	refreshItemsNow($('#country').val());
     <c:if test="${not empty VendorFrm}">
@@ -180,7 +180,7 @@ function clearShippingAdd()
 }
 function DeleteVendor()
 {
-	debugger;
+	
 	//vendorid=document.VendorForm.clientVendorID.value;
 	let vendorid = $('#clientVendorID').val();
 	if(vendorid==0 || vendorid == null){
@@ -188,7 +188,7 @@ function DeleteVendor()
 		return deleteVendorDialog();
 	}
 	else{
-		debugger;
+		
 		event.preventDefault();
 		$("#deleteRowDialog").dialog({
 	    	resizable: false,
@@ -197,7 +197,7 @@ function DeleteVendor()
 	        modal: true,
 	        buttons: {
 	            "<spring:message code='BzComposer.global.ok'/>": function () {
-	            	debugger
+	            	
 	                $(this).dialog("close");
 	                document.getElementById('venrId').value=vendorid;
 	                document.getElementById('cvId').value = vendorid;
@@ -316,7 +316,7 @@ function markSelectedCustomer(vendorID, rowId){
 }
 function setRowId(rowID, rid)
 {
-	debugger;
+	
 	size=document.getElementById("lSize").value;
 	for(i=0;i<size;i++){
 		var row1=document.getElementById(i+"$$");
@@ -339,7 +339,7 @@ function tableValue()
 }
 function showSelectVendorDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showSelectVendorDialog").dialog({
     	resizable: false,
@@ -357,7 +357,7 @@ function showSelectVendorDialog()
 }
 function deleteVendorDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#deleteVendorDialog").dialog({
     	resizable: false,
@@ -1357,7 +1357,7 @@ function setVendorListData(data){
     $('#custTableBody').html('');
     var custDetails = "";
     for(var i=0; i<data.length; i++){
-        debugger;
+        
         var objList = data[i];
         custDetails = custDetails +"<input type='hidden' name='listSize' id='lSize' value='"+data.length+"'>"
             +"<tr id='"+i+"$$' onmouseover='setCutomerDataById("+objList.clientVendorID+","+i+");'>"

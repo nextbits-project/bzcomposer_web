@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.*;
 
 import com.avibha.bizcomposer.employee.dao.*;
+import com.avibha.common.log.Loger;
 import com.avibha.common.utility.*;
 import org.springframework.stereotype.Component;
 
@@ -691,7 +692,7 @@ public class AddEmployeeForm {
 					errors.add("mobile", new ActionMessage("AddEmployeeForm.invalidmobile.problem"));
 			}
 		} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 		}
 
 		if (email == null || "".equals(email.trim())) {
@@ -745,10 +746,10 @@ public class AddEmployeeForm {
 				}
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 }catch (Exception e) {
-	e.printStackTrace();
+	Loger.log(e.toString());
 	// TODO: handle exception
 }
 		Title t = new Title();

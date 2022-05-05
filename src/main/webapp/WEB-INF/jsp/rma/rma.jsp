@@ -694,7 +694,7 @@ return false; //disable key press
 
 function checkName()
 {
-	debugger ;
+	 ;
 // if(trim(document.RMAForm.fnameTxt.value)=="" && trim(document.RMAForm.lnameTxt.value)==""){
 
 // 	document.RMAForm.fnameTxt.focus();

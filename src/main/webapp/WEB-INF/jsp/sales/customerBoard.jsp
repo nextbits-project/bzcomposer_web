@@ -397,7 +397,7 @@ table.tabla-listados tbody tr td {
 let clientVendorID = 0;
 function initialize()
 {
-	debugger;
+	
 	document.getElementById("dispay_info1").checked = true;
 	let selectedCvID = document.getElementById("selectedCvID").value;
 	let selectedCvIndex = document.getElementById("selectedCvIndex"+selectedCvID).value;

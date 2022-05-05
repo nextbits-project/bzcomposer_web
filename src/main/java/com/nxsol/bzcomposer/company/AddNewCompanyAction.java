@@ -27,7 +27,7 @@ import com.nxsol.bizcomposer.common.TblBusinessType;
 import net.sf.jasperreports.engine.JRException;
 
 public class AddNewCompanyAction extends Action
-{/*
+{
 	
 	public ActionForward execute(ActionMapping mapping, CompanyInfoDto companyInfoForm,
 			HttpServletRequest request, HttpServletResponse response)
@@ -53,12 +53,12 @@ public class AddNewCompanyAction extends Action
 			AddNewCompanyDAO dao = new AddNewCompanyDAO();
 			dao.getExistingCompanies(companyID,request,companyInfoForm);
 			dao.getdefaultmodules(companyID,request,companyInfoForm);
-			dao.getBusinessType(companyInfoForm);
+			dao.getBusinessType(companyID,request,companyInfoForm);
 			forward="Success1";
 		}
 		if(action.equalsIgnoreCase("createNewCompany2"))
 		{
-			request.getSession().setAttribute("createNewCompanyData", form);
+			/*request.getSession().setAttribute("createNewCompanyData", form);*/
 			request.getSession().setAttribute("CID", companyID);
 			AddNewCompanyDAO dao = new AddNewCompanyDAO();
 			boolean isDuplicateName = dao.getCheckDuplicateCompanyName(companyID,request,companyInfoForm);
@@ -208,5 +208,5 @@ public class AddNewCompanyAction extends Action
 		return mapping.findForward(forward);
 		
 	}
-*/	
+	
 }

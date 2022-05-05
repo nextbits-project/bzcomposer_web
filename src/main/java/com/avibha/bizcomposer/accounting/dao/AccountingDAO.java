@@ -104,7 +104,7 @@ public class AccountingDAO {
                         db.close(con);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Loger.log(e.toString());
                     Loger.log(2,"SQL Error in Class AccountingDAO and  method getAccountList"+ " " + e.toString());
                 }
             }
@@ -196,7 +196,7 @@ public class AccountingDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try {
@@ -223,7 +223,7 @@ public class AccountingDAO {
 
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
 
         }
@@ -314,7 +314,7 @@ public class AccountingDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try {
@@ -333,7 +333,7 @@ public class AccountingDAO {
 
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         request.setAttribute("total", totalAmount);
@@ -431,7 +431,7 @@ public class AccountingDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try {
@@ -449,7 +449,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         request.setAttribute("total", new DecimalFormat("#0.00").format(totalAmount));
@@ -539,7 +539,7 @@ public class AccountingDAO {
             ChartUtilities.saveChartAsPNG(fil1, pieChart, 600, 400);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try{
@@ -573,7 +573,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -675,7 +675,7 @@ public class AccountingDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try{
@@ -709,7 +709,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -799,7 +799,7 @@ public class AccountingDAO {
 		     ChartUtilities.saveChartAsPNG(fil1, pieChart, 600, 400);*/
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try{
@@ -833,7 +833,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -957,7 +957,7 @@ public class AccountingDAO {
             System.out.println(contextpath);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try{
@@ -991,7 +991,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -1144,7 +1144,7 @@ public class AccountingDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try{
@@ -1178,7 +1178,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -1307,7 +1307,7 @@ public class AccountingDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try{
@@ -1341,7 +1341,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -1681,7 +1681,7 @@ public class AccountingDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return accountCategories;
@@ -2801,7 +2801,7 @@ public class AccountingDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try{
@@ -2827,7 +2827,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -2971,7 +2971,7 @@ public class AccountingDAO {
             request.setAttribute("BalanceSheetAdjustAmount", new DecimalFormat("#0.00").format(amt));
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try{
@@ -3030,7 +3030,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -3302,7 +3302,7 @@ public class AccountingDAO {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try{
@@ -3409,7 +3409,7 @@ public class AccountingDAO {
                 }
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -3453,7 +3453,7 @@ public class AccountingDAO {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs1 != null) {
@@ -3466,7 +3466,7 @@ public class AccountingDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return form;

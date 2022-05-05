@@ -18,6 +18,8 @@ import org.apache.struts.action.ActionMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Date;
 @Controller
 public class BillPayableController{
-
-	@GetMapping("/BillPayable")
+	@RequestMapping(value ="/BillPayable", method = {RequestMethod.GET, RequestMethod.POST})
+	//@GetMapping("/BillPayable")
 	public ModelAndView billPayable(TblVendorDetailDto tblVendorDetailDto, HttpServletRequest request,
 									HttpServletResponse response) throws Exception {
 		String forward = "/accounting/billPayable";
@@ -70,8 +72,8 @@ public class BillPayableController{
 		ModelAndView modelAndView =new ModelAndView(forward);
 
 		return modelAndView;
-}
-	@PostMapping("/billPayablePost")
+}    @RequestMapping(value ="/billPayablePost", method = {RequestMethod.GET, RequestMethod.POST})
+	//@PostMapping("/billPayablePost")
 	public ModelAndView billPayablePost(TblVendorDetailDto tblVendorDetailDto, HttpServletRequest request,
 									HttpServletResponse response) throws Exception {
 		String forward = "/accounting/billPayable";
