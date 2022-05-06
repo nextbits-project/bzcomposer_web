@@ -677,7 +677,7 @@ table.tabla-listados tbody tr td {
 								for (int i = 0; i < payBillList.size(); i++) {
 							%>
 							<tr>
-								<td><input type="checkbox"></td>
+								<td><input type="checkbox" id="payBillList"></td>
 								<td>
 									<%
 									out.println(payBillList.get(i).getBillNo());
@@ -837,7 +837,6 @@ table.tabla-listados tbody tr td {
 						%>
 						<tr onclick="selectMemorizedTransactionList(<%=memTransIndex%>)">
 							<td><input type="checkbox"></td>
-							<td><input type="checkbox" id="payBillList"></td>
 							<td hidden="billNo">
 								<%
 								out.println(getMemorizeTransactionList.get(i).getBillNo());
@@ -1012,9 +1011,10 @@ table.tabla-listados tbody tr td {
 			var checkboxes=document.querySelectorAll("[id^='unpaidBillList']")
 		  	checkboxes.forEach((cb) => { cb.checked = true; });
 		}
-	  else{
-			var checkboxes=document.querySelectorAll("[id^='unpaidBillList']")
-	 }  
+	  	else{
+		  var checkboxes=document.querySelectorAll("[id^='unpaidBillList']")
+		  checkboxes.forEach((cb) => { cb.checked = false; });
+	 	}  
 	}
     
     var selectallbillsbtn1 = () => {

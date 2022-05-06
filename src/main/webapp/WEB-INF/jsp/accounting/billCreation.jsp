@@ -848,7 +848,7 @@ table.tabla-listados tbody tr td {
 							%>
 							<tr>
 								<td>
-									<input type="checkbox">
+									<input type="checkbox" id= "selectbillbutton">
 								</td>
 								<td>
 									<% out.println(payBillList.get(i).getBillNo());%>
@@ -879,7 +879,7 @@ table.tabla-listados tbody tr td {
 					</table>
 				</div>
 				<div class="mb-3">
-					<button type="button" class="btn btn-info" style="font-size: 14px;">
+					<button type="button" id="selectallbillsbtn" onclick ="selectallbillsbtn()" class="btn btn-info" style="font-size: 14px;">
 						<spring:message code="BzComposer.billpayable.selectallbillsbtn"/>
 					</button>
 				</div>
@@ -1761,7 +1761,7 @@ table.tabla-listados tbody tr td {
 											</select>
 										</td>
 										<td>
-                                    <input type="checkbox" id= "selectbillbutton">
+											<input type="checkbox">
 										</td>
 									</tr>
 								</tbody>
@@ -2208,7 +2208,7 @@ else
 			 });
 		 $(function() {
 			   $( "#EditRecurrentPaymentButtonId").on("click", function(){
-			   //$("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
+			   /* $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
 				  
 				   $( "#EditingRecurrentPaymentDlgId").dialog({
 			    	   modal: true,
