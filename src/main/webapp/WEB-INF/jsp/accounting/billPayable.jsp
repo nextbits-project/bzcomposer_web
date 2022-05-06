@@ -89,8 +89,7 @@ table.tabla-listados tbody tr td {
 </head>
 <body>
 	<div id="ddcolortabsline">&nbsp;</div>
-	<form:form action="/BillPayable" method="post"
-		styleId="billPayableForm">
+	<form:form action="/BillPayable" method="post" id="billPayableForm">
 		<div class="content1 clearfix">
 			<h3 class="title1">
 				<spring:message code="BzComposer.billpayable.billpayabletitle" />
@@ -400,12 +399,12 @@ table.tabla-listados tbody tr td {
 									</tbody>
 								</table>
 							</div>
-							<div class="footerForCreatingRecurrent">
+							<%-- <div class="footerForCreatingRecurrent">
 								<a class="btn btn-info" id="CreatingEditingRecurrentPaymentId"
 									style="color: white; font-size: 14px;"> <spring:message
 										code="BzComposer.billpayable.creatinrecurringpaymentbtn" />
 								</a>
-							</div>
+							</div> --%>
 							<div class="footer1">
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" type="checkbox"
@@ -423,10 +422,10 @@ table.tabla-listados tbody tr td {
 									style="font-size: 14px;">
 									<spring:message code="BzComposer.billpayable.addpayeebtn" />
 								</button>
-								<button type="button" class="btn btn-info"
+								<%-- <button type="button" class="btn btn-info"
 									onclick="billingInfo()" style="font-size: 14px;">
 									<spring:message code="BzComposer.billpayable.createbillbtn" />
-								</button>
+								</button> --%>
 								<button type="button" class="btn btn-info"
 									onclick="return deleteBill()" style="font-size: 14px;">
 									<spring:message code="BzComposer.billpayable.deletebillbtn" />
@@ -1311,8 +1310,9 @@ table.tabla-listados tbody tr td {
 						url : "billPayablePost?tabid=DeleteBill",
 				    	data :"BillNum=" + billNo,
 				    	success : function(data) {
-							
-							updateBillPayableTab(data);	
+							/* updateBillPayableTab(data); */
+				    		document.forms['billPayableForm'].action = "BillPayable?tabid=billpayable";
+				    		document.forms['billPayableForm'].submit();
 						},
 					 	error : function(data) {
 
