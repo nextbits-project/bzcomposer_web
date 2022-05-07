@@ -141,14 +141,31 @@ public class AccountingController{
 			p.setPathvalue(request.getContextPath());
 			request.getSession().setAttribute("path", p);
 
-			Gson gson=new Gson();
-			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), null);
-			double amtToPay = reListBean.getAmtToPay();
+			ReceivableListBean invoice = new ReceivableListBean();
+			
+			JSONObject newObj = new JSONObject();
+			try {
+		        newObj = new JSONObject(request.getParameter("row"));
+		    } catch (JSONException e) {
+		        e.printStackTrace();
+		    }
+			invoice.setOrderNum(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("orderNum")));
+			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("cvID")));
+			invoice.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("paymentTypeID")));
+			invoice.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("bankAccountID")));
+			invoice.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("adjustedTotal")));
+			invoice.setBalance(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("balance")));
+			invoice.setAmtToPay(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("amtToPay")));
+			invoice.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("categoryID")));
+			invoice.setMemo(newObj.getJSONObject("ReceivableListBean").getString("memo"));
+			invoice.setCheckNum(newObj.getJSONObject("ReceivableListBean").getString("checkNum"));
+			
+			double amtToPay = invoice.getAmtToPay();
 			/*String indexNumber = request.getParameter("index");*/
 			String invoiceId = request.getParameter("invoiceId");
-			String checkNumber = reListBean.getCheckNum();
-			reListBean.setCompanyID(ConstValue.companyId);
-			int i = rl.updateInvoiceByOrderNum(reListBean);
+			String checkNumber = invoice.getCheckNum();
+			invoice.setCompanyID(ConstValue.companyId);
+			int i = rl.updateInvoiceByOrderNum(invoice);
 			HttpSession session = request.getSession();
 			session.setAttribute("checkNum"+invoiceId, checkNumber);
 			session.setAttribute("invoiceId", invoiceId);

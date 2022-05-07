@@ -2514,8 +2514,8 @@ function selectVendor(vendorIndex,recurrentPayment)
 			break;
 		}
 	}
-	window.location.href = "BillCreation?tabid=billCreation&VendorId=" + vendorId;
-    /* $.ajax({
+	//window.location.href = "BillCreation?tabid=billCreation&VendorId=" + vendorId;
+     $.ajax({
 	 	type : "GET",
 		url : "BillCreation?tabid=billCreation",
 	    data :"VendorId=" + vendorId,
@@ -2526,7 +2526,7 @@ function selectVendor(vendorIndex,recurrentPayment)
 		 error : function(data) {
 			 alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
 		}
-	}); */
+	}); 
 }
 function AddPayee()
 {

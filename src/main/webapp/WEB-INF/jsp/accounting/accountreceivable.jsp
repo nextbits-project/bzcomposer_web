@@ -656,70 +656,71 @@ table.tabla-listados tbody tr td {
 				   		return false;
 				   }
 		}
-		this.amtToPay = document.getElementById("receivedAmount").value; 
-	   var ReceivableListBean={
-			   "orderNum":document.getElementById("ordernumber").innerHTML,
-			   "cvID":document.getElementById("customerName").value,
-			   "paymentTypeID":document.getElementById("receivedType").value,	   
-			   "bankAccountID":document.getElementById("depositId").value,
-			   "adjustedTotal": document.getElementById("devAmount").innerHTML,
-			   "balance":document.getElementById("receivedAmount").value,
-			   "amtToPay":amtToPay,
-			   "categoryID":document.getElementById("categoryId").value,
-			   "memo":document.getElementById("memo").value,
-			   "checkNum":document.getElementById("checkNum").value,
-	   }
-    sendMyValue(ReceivableListBean);
-  	}
-   function sendMyValue(ReceivableListBean) {
-		
-		var obj=JSON.stringify(ReceivableListBean);
-       	 $.ajax({
+		debugger;
+		this.amtToPay = document.getElementById("receivedAmount").value;
+		orderNum = document.getElementById("ordernumber").innerHTML;
+		var newON = orderNum.replace('PO2021-0','').replace(/\n/g, '');
+	   var ReceivableListBean = {
+	            "ReceivableListBean": {
+	            	 "orderNum": newON,
+	  			   "cvID":document.getElementById("customerName").value,
+	  			   "paymentTypeID":document.getElementById("receivedType").value,
+	  			   "bankAccountID":document.getElementById("depositId").value,
+	  			   "adjustedTotal": document.getElementById("devAmount").innerHTML,
+	  			   "balance":document.getElementById("receivedAmount").value,
+	  			   "amtToPay":amtToPay,
+	  			   "categoryID":document.getElementById("categoryId").value,
+	  			   "memo":document.getElementById("memo").value,
+	  			   "checkNum":document.getElementById("checkNum").value
+	            }};
+	   var obj1=JSON.stringify(ReceivableListBean);
+       $.ajax({
 			type : "POST",
 			url : "AccountReceivebleUpdate?tabid=UpdateRecord",
-			data : "row=" + obj + "&invoiceId="+invoiceId,
+			data : "row=" + obj1 + "&invoiceId="+invoiceId,
 		    success : function(data) {
-				
-				updateAccountReceivableTab(data);  
+
+				updateAccountReceivableTab(data);
 			 /*  window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; */
-			
+
 			},
 			 error : function(data) {
 
 				return showerrordialog();
-			} 
+			}
 		});
-   	$(document.forms[0]).submit(function( event ) {
+  	$(document.forms[0]).submit(function( event ) {
 	    event.preventDefault();
 	});
-	} 
+  	}
+
    function setInvoice(index)
    {
 	   $.ajax({
 			type : "POST",
 			url : "AccountReceiveble?tabid=selectrow&ordernum="+index,
-			data : "row=" +index, 			
+			data : "row=" +index,
 			success : function(data,status) {
 				window.location= "${pageContext.request.contextPath}/AccountReceiveble?tabid=selectrow&ordernum="+index;
 			},
 			 error : function(data) {
 
 				 return showerrordialog();
-			} 
+			}
 		});
    }
    function checkType(selectObject)
    {
-	   var value = selectObject.value; 
+	   var value = selectObject.value;
 		  if(value == '452'){
 			  $("#Check").show();
-		   }else{ 
+		   }else{
 		   		$("#Check").hide();
-		   } 
+		   }
    }
    function selectedRadio()
    {
-	
+
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 		   {
 		   		$("#tblForInvoiceOrder").hide();
