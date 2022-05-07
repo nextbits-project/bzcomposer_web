@@ -913,10 +913,28 @@ table.tabla-listados tbody tr td {
 						<label>
 							<spring:message code="BzComposer.billpayable.paymentaccount"/>
 						</label> 
-						<select class="form-control mb-2">
+					<%-- 	<select class="form-control mb-2">
 							<option value="Chase Bank">
 	  							<spring:message code="BzComposer.billpayable.chasebank"/>
   							</option>
+						</select> --%>
+						<select class="form-control devReceivedTypeDrp"
+							id="paymentAccountType" onclick="checkType()">
+							<%
+							/* ArrayList<TblAccount> accountForBill = (ArrayList) request.getAttribute("accountListForBill"); */
+							if (accountForBill != null) {
+								for (int i = 1; i < accountForBill.size(); i++) {
+							%>
+							<option value="<%=accountForBill.get(i).getAccountID()%>"
+								label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
+								<%
+								out.println(accountForBill.get(i).getName());
+								%>
+							</option>
+							<%
+							}
+							}
+							%>
 						</select>
 						<div class="form-group row">
 							<label for="staticEmail" class="col-sm-6 col-form-label">
@@ -933,7 +951,13 @@ table.tabla-listados tbody tr td {
 							<spring:message code="BzComposer.billpayable.paymentmethod"/>
 						</label> 
 						<select class="form-control mb-2">
-							<option value="Check"><spring:message code="BzComposer.billpayable.check"/></option>
+							<option value=""><spring:message
+									code="BzComposer.ComboBox.Select" /></option>
+							<option value="<spring:message code="BzComposer.payroll.Cash"/>"><spring:message
+									code="BzComposer.payroll.Cash" /></option>
+							<option
+								value="<spring:message code="BzComposer.payroll.Cheque"/>"><spring:message
+									code="BzComposer.payroll.Cheque" /></option>
 						</select>
 					</div>
 					<div class="col-md-3">
@@ -941,7 +965,7 @@ table.tabla-listados tbody tr td {
 							<spring:message code="BzComposer.billpayable.paymentdate"/>
 						</label>
 						<div class="d-flex">
-							<input type="text" class="form-control">
+							<input type="text" class="form-control" id="paymentdate">
 							<div class="input-group-append input-group-append1">
 								<a class="input-group-text" href="#">&#9662;</a>
 							</div>
@@ -2086,6 +2110,7 @@ else
 									+ new Date().getFullYear());
 					$("#schrduleMemorizedTransactionDate").val(dName + " " + ((new Date().getMonth()) + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear());
 					$("#payBillsDate").val(dName + " " + ((new Date().getMonth()) + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear());
+					$("#paymentdate").val(dName + " " + ((new Date().getMonth()) + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear());
 					$("#billDateCalendarText").val(dName + " " + ((new Date().getMonth()) + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear());
 					 $("#billDuedateCalendarText").val(dNameForDue + " " + (dateForDue.getMonth()+1) + "-" + dateForDue.getDate() + "-" + dateForDue.getFullYear()); 
 					$("#ScheduleMemorizedTransaction").hide();
