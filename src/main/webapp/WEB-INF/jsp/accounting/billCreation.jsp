@@ -1567,6 +1567,21 @@ table.tabla-listados tbody tr td {
 						<div class="col-md-8">
 							<select class="form-control" id="selectBankForCreateBill">
 								<option value="56933"><spring:message code="BzComposer.billpayable.chasebank"/></option>
+								<%
+							/* ArrayList<TblAccount> accountForBill = (ArrayList) request.getAttribute("accountListForBill"); */
+							if (accountForBill != null) {
+								for (int i = 1; i < accountForBill.size(); i++) {
+							%>
+							<option value="<%=accountForBill.get(i).getAccountID()%>"
+								label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
+								<%
+								out.println(accountForBill.get(i).getName());
+								%>
+							</option>
+							<%
+							}
+							}
+							%>
 							</select>
 						</div>
 					</div>
@@ -1761,7 +1776,8 @@ table.tabla-listados tbody tr td {
 													<spring:message code="BzComposer.billpayable.chasebank"/>
 												</option>
 											</select>
-										</td>
+										</td> 
+					
 										<td class="text-right">
 											<input class="form-control" type="text" value="">
 										</td>
