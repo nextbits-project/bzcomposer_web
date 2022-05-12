@@ -537,9 +537,9 @@ table.tabla-listados tbody tr td {
 	</div>  --%>
 				<div class="footer1">
 						<div class="form-check form-check-inline">
-						  <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1">
+						  <input class="form-check-input" onclick="checkAll1()" type="checkbox" id="inlineCheckbox2" value="option1">
 						  <label class="form-check-label" for="inlineCheckbox2">
-						    <spring:message code="BzComposer.accountreceivable.showall"/>
+						    <spring:message code="BzComposer.billpayable.selectall"/>
 						  </label>
 						</div>
 						<button class="btn btn-info" style="font-size: 14px;"><spring:message code="BzComposer.accountreceivable.paymenttobtn"/></button>
@@ -565,6 +565,17 @@ table.tabla-listados tbody tr td {
 	var amtToPay = -1;
 	var invoiceId = -1;
     selectChaseBankFromDropDownList("depositId");
+    
+    var checkAll1 = () => { 
+	if(document.getElementById('inlineCheckbox2').checked==true){
+		var checkboxes=document.querySelectorAll("[id^='Checkbox']")
+	  	checkboxes.forEach((cb) => { cb.checked = true; });
+	   }
+  	   else{
+	       var checkboxes=document.querySelectorAll("[id^='Checkbox']")
+	       checkboxes.forEach((cb) => { cb.checked = false; });
+ 	     }
+    }
 
    function selectrow(invoice,index) {
 	    

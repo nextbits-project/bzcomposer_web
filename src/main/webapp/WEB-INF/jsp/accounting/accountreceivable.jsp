@@ -417,7 +417,7 @@ table.tabla-listados tbody tr td {
 				  		ReceivableListBean rb = itr.next();
 				  %>
 				    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)">
-				      <td class="text-right"><input type="checkbox" id="Checkbox"></td>
+				      <td class="text-right"><input type="checkbox" id="Checkbox1"></td>
                       <td class="text-right" ><% out.println(rb.getOrderNumStr()); %></td>
 				      <td class="text-right"><% out.println(rb.getCompanyName()); %></td>
 				      <td value="<%=rb.getCvID() %>" class="text-right"><% out.println(rb.getCvName()); %></td>
@@ -484,7 +484,7 @@ table.tabla-listados tbody tr td {
 					  		ReceivableListBean rb1 = itrunpaid.next();
 					%>
 				    <tr>
-				      <td><input type="checkbox"></td>
+				      <td><input type="checkbox" id="Checkbox2"></td>
 				      <td class="text-right"><% out.println(rb1.getCompanyName()); %></td>
 				      <td class="text-right"><% out.println(rb1.getCvName()); %></td>
 				      <td class="text-right"><% out.println(rb1.getDateAdded()); %></td>
@@ -529,7 +529,7 @@ table.tabla-listados tbody tr td {
 					  		ReceivableListBean rb2 = itrunpaidCredit.next();
 					%>
 				    <tr>
-				      <td><input type="checkbox"></td>
+				      <td><input type="checkbox" id="Checkbox3"></td>
 				      <td class="text-right"><% out.println(rb2.getCompanyName()); %></td>
 				      <td class="text-right"><% out.println(rb2.getCvName()); %></td>
 				      <td class="text-right"><% out.println(rb2.getDateAdded()); %></td>
@@ -551,9 +551,9 @@ table.tabla-listados tbody tr td {
 	</div>
 				<div class="footer1">
 						<div class="form-check form-check-inline">
-						  <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1">
+						  <input class="form-check-input" onclick="checkAll1()"  type="checkbox" id="inlineCheckbox2" value="option1">
 						  	<label class="form-check-label" for="inlineCheckbox2">
-						  		<spring:message code="BzComposer.accountreceivable.showall"/>
+						  		<spring:message code="BzComposer.billpayable.selectall"/>
 					  		</label>
 						</div>
 						<button class="btn btn-info" style="color: white;font-size: 14px;" onclick="billingInfo()">
@@ -597,6 +597,55 @@ table.tabla-listados tbody tr td {
 		 }
     }
   
+    var checkAll1 = () => {
+         debugger;	
+    
+		if(document.getElementById('rdoInvoiceOrder').checked==true){
+    	   if(document.getElementById('inlineCheckbox2').checked==true){
+			var checkboxes=document.querySelectorAll("[id^='Checkbox1']")
+		  	checkboxes.forEach((cb) => { cb.checked = true; });
+		   }
+	  	   else{
+		       var checkboxes=document.querySelectorAll("[id^='Checkbox1']")
+		       checkboxes.forEach((cb) => { cb.checked = false; });
+	 	     }
+	   }
+		if(document.getElementById('rdoUnpaidOpeningBalance').checked==true){
+			if(document.getElementById('inlineCheckbox2').checked==true){
+				var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
+			  	checkboxes.forEach((cb) => { cb.checked = true; });
+			}
+		  	else{
+			  var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
+			  checkboxes.forEach((cb) => { cb.checked = false; });
+		 	  } 
+			}
+		 if(document.getElementById('rdoUnpaidCreditAmount').checked==true){
+			 if(document.getElementById('inlineCheckbox2').checked==true){
+					var checkboxes=document.querySelectorAll("[id^='Checkbox3']")
+				  	checkboxes.forEach((cb) => { cb.checked = true; });
+				}
+			  	else{
+				  var checkboxes=document.querySelectorAll("[id^='Checkbox3']")
+				  checkboxes.forEach((cb) => { cb.checked = false; });
+			 	  } 
+				}
+		 }
+		 
+		
+	
+    
+  /*   var checkAll1 = () => {
+		if(document.getElementById('inlineCheckbox2').checked==true){
+			var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
+		  	checkboxes.forEach((cb) => { cb.checked = true; });
+		}
+	  	else{
+		  var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
+		  checkboxes.forEach((cb) => { cb.checked = false; });
+	 	}  
+	} */
+    
    function selectrow(invoice,index) {
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
