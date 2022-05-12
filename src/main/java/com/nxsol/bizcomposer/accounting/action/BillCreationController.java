@@ -1,5 +1,7 @@
 package com.nxsol.bizcomposer.accounting.action;
 
+import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
+import com.avibha.bizcomposer.sales.dao.Item;
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
@@ -34,16 +36,22 @@ public class BillCreationController {
 								HttpServletResponse response) throws Exception {
 		
 		String forward = "/accounting/billCreation";
+		InvoiceInfoDao invoice = new InvoiceInfoDao();
+		String compId = (String) request.getSession().getAttribute("CID");
 		int cvID = 0;
 		int checkStatus = 0;
 		HttpSession sess=request.getSession();
 		Date payBillsDate = new Date();
 		String action = request.getParameter("tabid");
-		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl =  new ReceivableListImpl();
 		/*Iterator<ClientVendor> itr = cvForCombo.iterator();*/
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
+
+		/* Item List */
+		ArrayList<Item> itemList = invoice.getItemList(compId);
+		request.setAttribute("ItemList", itemList);
+
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<TblCategory> categoryListForCombo = rl.getCategoryListForPayment();
 		request.setAttribute("accountListForBill", accountListForBill);

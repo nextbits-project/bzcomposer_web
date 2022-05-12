@@ -98,9 +98,8 @@ table.tabla-listados tbody tr td {
 				<form>
 					<div class="row">
 						<div class="col-md-4">
-							<label> <spring:message
-									code="BzComposer.billpayable.billnumber" />
-							</label> <label id="ordernumber"> </label>
+							<label> <spring:message code="BzComposer.billpayable.billnumber" /></label>
+							<label id="ordernumber"></label>
 							<div class="form-group row">
 								<label class="col-md-4  col-form-label"> <spring:message
 										code="BzComposer.billpayable.payee" />
@@ -382,7 +381,7 @@ table.tabla-listados tbody tr td {
 												%>
 											</td>
 											<td class="text-right"><%=unpaidBillList.get(i).getStatus()%></td>
-											<td hidden="bankID"
+											<td hidden="bankID" id="receivedType2<%=index%>"
 												value="<%=unpaidBillList.get(i).getPayerId()%>"></td>
 											<td hidden="check"
 												value="<%=unpaidBillList.get(i).getCheckNo()%>"></td>
@@ -1017,7 +1016,6 @@ table.tabla-listados tbody tr td {
 	}
     
     var selectallbillsbtn1 = () => {
-		  debugger;
 		   if(document.getElementById('payBillList').checked==false){ 
 		  var checkboxes = document.querySelectorAll("[id^='payBillList']");
 		  checkboxes.forEach((cb) => { cb.checked = true; });
@@ -1028,30 +1026,32 @@ table.tabla-listados tbody tr td {
 	 }   
 	} 
     
-	
+	function deleteBankAccount(){
+
+	}
 
 	function selectrow(no, indexNumber)
 	{
 		
 		this.billNo = no;
 		this.index = indexNumber;
-		
 		 $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
 		 $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value'));
 		 $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text());
 		 $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text());
 		 $("#memo").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
-		 $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(11)').attr('value'));
+		 $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
 		 $("#orderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
 		 if($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value') != 'null' || $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value') != '')
 		{
-			 $(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
+			 $(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(13)').attr('value'));
 		}
 		 this.vendorName = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').text();
 		 this.vendorId = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value');
 		 document.getElementById("nameOfTransaction").value = vendorName; 
 		 $('#transactionGroup').append('<option value="'+vendorName+'" selected="selected">'+vendorName+'</option>');
 		 document.getElementById("categoryId").value = document.getElementById("categoryID2"+indexNumber).value;
+		 document.getElementById("receivedType").value = document.getElementById("receivedType2"+indexNumber).value;
 	}
 	function clearTransaction(){
 		document.getElementById("receivedType").value="";
@@ -1135,25 +1135,28 @@ table.tabla-listados tbody tr td {
 			return enterchecknumberdialog();
 			return false;
 		}
-		TblVendorDetail = {
-				"billNo": billNo,
-				"vendorID": vendorId,
-				"payerId": payerID,
-				"amount": paidAmount,
-				"checkNo" : checkNo,
-				"dueDate": dueDate,
-				"categoryID": categoryId,
-				"memo": memo,
-		};
+		billNoInt = parseInt(billNo);
+        var TblVendorDetail = {
+            "TblVendorDetail": {
+            "billNo": billNoInt+"",
+            "vendorID": vendorId,
+            "payerId": payerID,
+            "amount": paidAmount,
+            "checkNo" : checkNo,
+            "dueDate": dueDate,
+            "categoryID": categoryId,
+            "memo": memo
+            }};
 		var obj=JSON.stringify(TblVendorDetail);
 		$.ajax({
-				
 				type : "POST",
 				url : "billPayablePost?tabid=save",
 			    data :"data=" + obj,
 			    success : function(data) {
-				
-				updateBillPayableTab(data);	
+				/*updateBillPayableTab(data);*/
+                document.forms['billPayableForm'].action = "BillPayable?tabid=billpayable";
+                document.forms['billPayableForm'].submit();
+
 				},
 				 error : function(data) {
 
@@ -1168,7 +1171,7 @@ table.tabla-listados tbody tr td {
 
 	function makePayment()
 	{
-		
+		debugger;
 		var paidAmount;
 		var amountPaid;
 		var billNo = document.getElementById("ordernumber").innerHTML;
@@ -1247,9 +1250,11 @@ table.tabla-listados tbody tr td {
 			url : "billPayablePost?tabid=MakePayment",
 		    data :"data=" + obj,
 		    success : function(data) {
-			
 			amountToBepaid = 0.00;
-			updateBillPayableTab(data);	
+			//updateBillPayableTab(data);
+            document.forms['billPayableForm'].action = "BillPayable?tabid=billpayable";
+            document.forms['billPayableForm'].submit();
+
 			},
 			 error : function(data) {
 
@@ -1382,7 +1387,7 @@ table.tabla-listados tbody tr td {
 		 $(document).ready(function () {
 		    $("#categoryId option:contains(Rent & lease 6610)").attr('selected', 'selected');
 		    setTimeout(function() {
-               $('table.devAcRecDataTbl tbody tr:nth-child(1)').trigger('click');
+              // $('table.devAcRecDataTbl tbody tr:nth-child(1)').trigger('click');
             }, 1000);
             $('tr').click(function () {
                  var selected = $(this).hasClass("highlight");
@@ -1578,7 +1583,6 @@ table.tabla-listados tbody tr td {
 				howOften = "Never";
 				RecurringNumber = 2;
 			}
-			
 			TblVendorDetail = {
 					"billNo": billNo,
 					"transactionName": transactionName,
@@ -1600,21 +1604,19 @@ table.tabla-listados tbody tr td {
 				$('#MemorizeTransactionList').dialog('close');
 			} */
 			$.ajax({
-				
 			 	type : "POST",
 				url : "billPayablePost?tabid=MakeScheduleMemorizedTransaction",
 			    data :"data=" + obj,
 			    success : function(data) {
-				
 				amountToBepaid = 0.00;
-
-				updateBillPayableTab(data);	
+				//updateBillPayableTab(data);
+                document.forms['billPayableForm'].action = "BillPayable?tabid=billpayable";
+                document.forms['billPayableForm'].submit();
 				},
 				 error : function(data) {
 					 return showerrordialog();
 				} 
 			});
-	  	
 	  	$(document.forms[0]).submit(function( event ) {
 		    event.preventDefault();
 		});

@@ -35,7 +35,7 @@ import java.util.*;
  */
 public class InvoiceInfoDao {
 
-	public ArrayList getItemList(String compId) {
+	public ArrayList<Item> getItemList(String compId) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		PreparedStatement pstmt = null;

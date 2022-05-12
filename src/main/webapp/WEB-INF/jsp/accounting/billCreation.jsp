@@ -14,6 +14,7 @@
 <%@page import="java.util.Iterator"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="com.avibha.bizcomposer.sales.dao.Item"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -903,7 +904,7 @@ table.tabla-listados tbody tr td {
 						value="0.00">
 					</div>
 					<div class="col-sm-3">
-                    <button type="button" id="selectallbillsbtn" onclick ="selectallbillsbtn()" class="btn btn-info" style="font-size: 14px;">
+                    <button type="button" id="setcreditsbtn" class="btn btn-info" style="font-size: 14px;" disabled>
 							<spring:message code="BzComposer.billpayable.setcreditsbtn"/>
 						</button>
 					</div>
@@ -1729,14 +1730,15 @@ table.tabla-listados tbody tr td {
 								<tbody>
 									<tr>
 										<td>
-											<select class="form-control">
-												<option value="Inventory">
-													<spring:message code="BzComposer.billcreation.inventory"/>
-												</option>
-												<option value="Chase Bank">
-													<spring:message code="BzComposer.billpayable.chasebank"/>
-												</option>
-											</select>
+											<select class="form-control devCategoryDrp11" size="1" id="categoryId11">
+                                                <% ArrayList<Item> itemList = (ArrayList) request.getAttribute("ItemList");
+                                                    if(itemList!=null){
+                                                    for (int i = 1; i < itemList.size(); i++) {%>
+                                                        <option value="<%=itemList.get(i).getInvID()%>">
+                                                            <%out.println(itemList.get(i).getInvCode());%>
+                                                        </option>
+                                                <% }} %>
+                                            </select>
 										</td>
 										<td class="text-right">
 											<input class="form-control" type="text" value="">

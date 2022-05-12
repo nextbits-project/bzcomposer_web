@@ -90,7 +90,7 @@ margin-right: 10px;
  String invoiceNumber = "-1";
  %>
 <div id="ddcolortabsline">&nbsp;</div>
- <html:form action="AccountReceiveble" method="post" >  								
+ <form:form action="PoPayable" method="post" >
 	<div class="content1 clearfix">
 		<h3 class="title1"><spring:message code="BzComposer.popayable.payabletitle"/></h3>
 		<%
@@ -268,9 +268,9 @@ margin-right: 10px;
 							    </button>
 							</div>  
 						<div class="form-group">
-							<button class="btn btn-info" style="width: 100px;font-size: 14px;" onclick="return clearTransaction()">
+							<a class="btn btn-info" style="width: 100px;font-size: 14px;" >
 								<spring:message code="BzComposer.global.clear"/>
-							</button>
+							</a>
 						</div> 
 					</div>
 				</div>
@@ -405,7 +405,7 @@ margin-right: 10px;
   <div class="container-fluid">
   <div class=" row">
   <div class=" col-8">
-  <form>	
+  <form>
 	  <div class="form-group row mb-0">
 	    <label for="staticEmail" class="col-sm-5 col-form-label">
 	    	<spring:message code="BzComposer.popayable.totalpayable"/>
@@ -857,57 +857,17 @@ margin-right: 10px;
 	   window.open();
    }
    
-   function clearTransaction()
-   {
-	   var answer;
-	   
-	   if(parseInt(invoiceId) <= 0){
-	   		return selecttransactiondialog();
-	   		return false;
-	   }
-	   else{
-		  /*
-		  answer = window.confirm("<spring:message code='BzComposer.popayable.clearselectedtransaction'/>");
-		  if(answer != true)
-		  {
-		  		return false;
-		  } */
-			
-			event.preventDefault();
-			$("#selectcleartransactiondialog").dialog({
-    			resizable: false,
-        		height: 200,
-        		width: 500,
-        		modal: true,
-        		buttons: {
-        			"<spring:message code='BzComposer.global.ok'/>": function () {
-            	
-	            },
-    	        "<spring:message code='BzComposer.global.cancel'/>": function () {
-        	        	$(this).dialog("close");
-            	    	return false;
-            		}
-        		}
-    		});
-	   }
-	   var invId = invoiceId; 
-	   $.ajax({
-			
-			type : "POST",
-			url : "AccountReceivebleUpdate?tabid=ClearTransaction",
-			data :"invoiceId=" + invId,
-		    success : function(data) {
-				/* var html = "" + data.msg; */
-				window.location = "${pageContext.request.contextPath}/AccountReceivebleUpdate?tabid=AccountReceiveble";
-			},
-			 error : function(data) {
-
-				 return showerrordialog();
-			} 
-		});
-		$(document.forms[0]).submit(function( event ) {
-		    event.preventDefault();
-		});
+   function clearTransaction(){
+   	document.getElementById("custId").value="";
+   	document.getElementById("paymentType").value="";
+   	document.getElementById("payId").value="";
+   	document.getElementById("devAmount").innerHTML="";
+   	document.getElementById("receivedAmount").value="";
+   	document.getElementById("poDate").value="";
+   	document.getElementById("poPaidDate").value="";
+   	document.getElementById("categoryId").value="";
+   	document.getElementById("memo").value="";
+   	document.getElementById("payStatus").value="";
    }
    function checkPaymentStatus()
    {

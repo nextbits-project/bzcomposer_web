@@ -15,6 +15,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -95,8 +97,21 @@ public class BillPayableController{
 		request.setAttribute("categoryListForCombo", categoryListForCombo);
 		if(action.equals("save"))
 		{
-			Gson gson=new Gson();
-			TblVendorDetail vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
+			JSONObject newObj = new JSONObject();
+			try {
+				newObj = new JSONObject(request.getParameter("data"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			TblVendorDetail vDetail =  new TblVendorDetail();
+			vDetail.setBillNo(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("billNo")));
+			vDetail.setVendorId(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("vendorID")));
+			vDetail.setPayerId(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("payerId")));
+			vDetail.setAmount(Double.parseDouble(newObj.getJSONObject("TblVendorDetail").getString("amount")));
+			vDetail.setCheckNo(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("checkNo")));
+			vDetail.setDueDate(newObj.getJSONObject("TblVendorDetail").getString("dueDate"));
+			vDetail.setCategoryID(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("categoryID")));
+			vDetail.setMemo(newObj.getJSONObject("TblVendorDetail").getString("memo"));
 			rl.updateBill(vDetail);
 		}
 		if(action.equals("MakePayment"))
@@ -104,6 +119,7 @@ public class BillPayableController{
 			Gson gson=new Gson();
 			TblVendorDetail vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
 			System.out.println(vDetail);
+			cvID = vDetail.getVendorId();
 			rl.makePayment(vDetail, cvID);
 
 		}
