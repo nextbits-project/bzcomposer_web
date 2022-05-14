@@ -90,7 +90,7 @@ table.tabla-listados tbody tr td {
 	<% ArrayList<TblRecurrentPaymentPlan> recurrentPaymentList = (ArrayList)request.getAttribute("recurentPaymentList"); 
 	ArrayList<TblAccount> getAccountForRecurrent = (ArrayList)request.getAttribute("getAccountForRecurrent");
 	%>
-	<html:form action="AccountReceiveble" method="post" styleId="billPayableForm">
+	<html:form action="AccountReceiveble" method="post" id="billPayableForm">
 		<div class="content1 clearfix">
 			<h3 class="title1">
 				<spring:message code="BzComposer.billpayable.billpayabletitle"/>
@@ -2495,7 +2495,9 @@ function DeleteMemorizeTransaction()
 	    success : function(data) {
 		
 		amountToBepaid = 0.00;
-		updateBillPayableTab(data);	
+		//updateBillPayableTab(data);
+		document.forms['billPayableForm'].action = "BillPayable?tabid=billpayable";
+        document.forms['billPayableForm'].submit();
 		},
 		 error : function(data) {
 			 alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
