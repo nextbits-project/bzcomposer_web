@@ -268,7 +268,7 @@ margin-right: 10px;
 							    </button>
 							</div>  
 						<div class="form-group">
-							<a class="btn btn-info" style="width: 100px;font-size: 14px;" >
+							<a class="btn btn-info" style="width: 100px;font-size: 14px;color: #f8f9fa;" onclick="return clearTransaction()">
 								<spring:message code="BzComposer.global.clear"/>
 							</a>
 						</div> 
@@ -546,7 +546,7 @@ margin-right: 10px;
 		}	
 	
    }  
-   
+
    $(function() {
 	   $( "#pay").on("click", function(){ 
 		   

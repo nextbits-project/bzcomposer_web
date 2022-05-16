@@ -7,79 +7,28 @@ import com.nxsol.bizcomposer.common.BillingStatement;
 import com.nxsol.bizcomposer.jasper.pojo.BillingBoardReport;
 import com.nxsol.bizcomposer.jasper.pojo.BillingStatementReport;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.view.JRViewer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.swing.*;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
-/*import net.sf.jasperreports.engine.JRResultSetDataSource;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.view.JRViewer;*/
 @Controller
-public class BillingBoardController{
+public class BillingBoardController {
 
 	@GetMapping("/BillingBoard")
 	public String billingBoard(HttpServletRequest request) throws Exception {
-		
-		String forward = "/accounting/billingBoard";
-		HttpSession sess=request.getSession();
-		String action = request.getParameter("tabid");
-		String companyID = (String) sess.getAttribute("CID");
-		ReceivableLIst rl = new ReceivableListImpl();
-		Date from = null;
-		Date to = null;
-		String columnName = " OrderNum ";
-		int InvoiceType = 113;
-		int overdueDays = 0;
-		String alldata = "Default";
-		String advanceSearchCriteria = "";
-		String advanceSearchData = "";
-		String dataForBillStatement = "";
-		String criteriaForBillStatement = "";
-		InputStream fileInputStream;
-		 String jasperPath = "";
-		 String pdfName = "";
-		 String rpt = ""; 
-		 String destinationPsth = "";
-		 int x=50;
-		 int y=100;
-		 int width=900;
-		 int height=725;
-		 
-		Gson gson = new Gson();
-		ArrayList<ReceivableListBean> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
-		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement,criteriaForBillStatement);
-		request.setAttribute("billingStatementList", billingStatementList);
-		request.setAttribute("billingList", billingList);
-		return forward;
-	}
 
-	@PostMapping("/BillingBoardStatement")
-	public String billingBoardStatement(HttpServletRequest request) throws Exception {
 		String forward = "/accounting/billingBoard";
-		HttpSession sess=request.getSession();
+		HttpSession sess = request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl = new ReceivableListImpl();
@@ -98,38 +47,79 @@ public class BillingBoardController{
 		String pdfName = "";
 		String rpt = "";
 		String destinationPsth = "";
-		int x=50;
-		int y=100;
-		int width=900;
-		int height=725;
+		int x = 50;
+		int y = 100;
+		int width = 900;
+		int height = 725;
 
-		Gson gson=new Gson();
-		if(action.equals("CreateBillingStatement"))
-		{
+		Gson gson = new Gson();
+		ArrayList<ReceivableListBean> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
+		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement, criteriaForBillStatement);
+		request.setAttribute("billingStatementList", billingStatementList);
+		request.setAttribute("billingList", billingList);
+		return forward;
+	}
+
+	@PostMapping("/BillingBoardStatement")
+	public String billingBoardStatement(HttpServletRequest request) throws Exception {
+		String forward = "/accounting/billingBoard";
+		HttpSession sess = request.getSession();
+		String action = request.getParameter("tabid");
+		String companyID = (String) sess.getAttribute("CID");
+		ReceivableLIst rl = new ReceivableListImpl();
+		Date from = null;
+		Date to = null;
+		String columnName = " OrderNum ";
+		int InvoiceType = 113;
+		int overdueDays = 0;
+		String alldata = "Default";
+		String advanceSearchCriteria = "";
+		String advanceSearchData = "";
+		String dataForBillStatement = "";
+		String criteriaForBillStatement = "";
+		InputStream fileInputStream;
+		String jasperPath = "";
+		String pdfName = "";
+		String rpt = "";
+		String destinationPsth = "";
+		int x = 50;
+		int y = 100;
+		int width = 900;
+		int height = 725;
+
+		Gson gson = new Gson();
+		if (action.equals("CreateBillingStatement")) {
 			rl.insertIntoBillingStatement(Integer.parseInt(request.getParameter("invoiceId")));
 			ArrayList<BillingStatementReport> bill = rl.printBillingStatement(Integer.parseInt(request.getParameter("invoiceId")));
 			jasperPath = request.getServletContext().getRealPath("/JasperReport/billingStatement.jrxml");
 			JasperDesign design = JRXmlLoader.load(jasperPath);
 			JasperReport jasperreport = JasperCompileManager.compileReport(design);
+			final String filePath = request.getServletContext().getRealPath("/JasperReport/");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(), new JRBeanCollectionDataSource(bill));
-			JFrame frame = new JFrame("BillingStatement");
-			frame.getContentPane().add(new JRViewer(jasperPrint));
-			frame.setBounds(x, y, width,height);
-			frame.setVisible(true);
+			JasperExportManager.exportReportToPdfFile(jasperPrint, filePath + "billingStatement.pdf");
+			JRPrintServiceExporter exporter = new JRPrintServiceExporter();
+			//exporter.exportReport();
+
+			//printReport(jasperPrint);
+//			JFrame frame = new JFrame();
+//			frame.getContentPane().add(new JRViewer(jasperPrint));
+//			frame.setBounds(x, y, width,height);
+//			frame.setVisible(true);
 
 		}
-		if(action.equals("searchByColumn"))
-		{
+
+		if (action.equals("searchByColumn")) {
 			advanceSearchCriteria = request.getParameter("advanceSerchCriteria");
 			advanceSearchData = request.getParameter("advanceSearchData");
 		}
-		if(action.equals("searchForBillingStatement"))
-		{
+		if (action.equals("searchByOverDueDays")) {
+			overdueDays = Integer.parseInt(request.getParameter("overdueDays"));
+		}
+		if (action.equals("searchForBillingStatement")) {
 			criteriaForBillStatement = request.getParameter("advanceSerchCriteria");
 			dataForBillStatement = request.getParameter("advanceSearchData");
 		}
-		if(action.equals("PrintBill"))
-		{
+		if (action.equals("PrintBill")) {
 			String invoiceId = request.getParameter("invoiceId");
 			ArrayList<BillingBoardReport> bill = rl.getBillForPrint(Integer.parseInt(invoiceId));
 			jasperPath = request.getServletContext().getRealPath("/JasperReport/PrintBilling.jrxml");
@@ -153,4 +143,5 @@ public class BillingBoardController{
 		request.setAttribute("billingList", billingList);
 		return forward;
 	}
+
 }
