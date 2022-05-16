@@ -9677,7 +9677,7 @@ public class ReceivableListImpl implements ReceivableLIst {
         }
         
         if (overdueDays > 0) {
-
+			sql = sql + " AND (DATEDIFF(Date(now()),DATE(DATE_ADD(DATE(DATE_ADD(inv.DateAdded,INTERVAL ,term.Days  Day)), INTERVAL " + overdueDays + " Day)))=0) ";
         }
         
         sql = sql + advanceFilter;
@@ -9768,9 +9768,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 				else
 				{
-					day = 0;
-					month = 0;
-					year = 0;
+//					day = 0;
+//					month = 0;
+//					year = 0;
+					day = day + termDays;
+					month = month;
 				}
 				cal.clear();
 				cal.set(Calendar.DAY_OF_MONTH, day);

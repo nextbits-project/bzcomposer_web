@@ -193,21 +193,21 @@ color: red;
 					    <table cellpadding="5" id="section2DivId" style="margin: 0px;width: 90%;margin-left: 20px;">
 					        <tr>
 					            <td style="width:40%;"><spring:message code="BzComposer.billingboard.overdueinvoice"/></td>
-					            <td><button type="submit" style="font-size: 14px;" class="btn btn-info"><spring:message code="BzComposer.billingboard.search"/></button></td>
+					            <td><button type="submit" style="font-size: 14px;" class="btn btn-info" onclick="searchByOverDueDays();"><spring:message code="BzComposer.billingboard.search"/></button></td>
 					        </tr>
 					        <tr>
 					            <td colspan="2" style="padding-left: 40px;">
-					                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked />
+					                <input class="form-check-input" type="radio" name="exampleRadios" id="showallonverdueinvoice" value="showallonverdueinvoice" checked />
 					                <spring:message code="BzComposer.billingboard.showallonverdueinvoice"/>
 					            </td>
 					        </tr>
 					        <tr>
                                 <td style="padding-left: 40px;">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2" />
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="overduedate" value="overduedate" />
                                     <spring:message code="BzComposer.billingboard.overduedate"/>
                                 </td>
                                 <td>
-                                    <input type="text" id="inputAddress" style="width:150px;" />
+                                    <input type="text" id="OverDueDays" style="width:150px;" />
                                     <spring:message code="BzComposer.billingboard.days"/>
                                 </td>
                             </tr>
@@ -525,62 +525,96 @@ function PrintBilling()
 
 function CreateBillingStatement()
 {
+debugger;
 	if(invoiceId == -1)
 	{
-
 		return selectinvoicefirstdialog();
 		return false;
 	}
 	$.ajax({
-			
 			type : "POST",
 			url : "BillingBoardStatement?tabid=CreateBillingStatement",
 		 	data:"invoiceId=" +invoiceId ,
 		    success : function(data)
 		    {
-		    
-		    updateBillingBoard(data);
-				 
+		        updateBillingBoard(data);
 			},
 			 error : function(data) {
-
 				 return showerrordialog();
-			} 
-
-});
+			}
+    });
 }
-function searchByColumn()
-{
-	
+function searchByColumn(){
 	var searchCriteriaCombo = document.getElementById("advanceSearchCriteria");
 	var advanceSerchCriteria = searchCriteriaCombo.options[searchCriteriaCombo.selectedIndex].value;
-	
 	var advanceSearchData = $("#advanceSearchData").val();
 	if(advanceSearchData == '')
 	{
-
 		return showemptydatadialog();
 		return false;
 	}
 	 $.ajax({
-			
 			type : "POST",
 			url : "BillingBoardStatement?tabid=searchByColumn",
 		 	data:"advanceSerchCriteria=" + advanceSerchCriteria + "&advanceSearchData=" +advanceSearchData,
 		    success : function(data)
 		    {
-		    
-		    updateBillingBoard(data);
-				 
+		        updateBillingBoard(data);
 			},
 			 error : function(data) {
-
 				 return showerrordialog();
 			} 
-
-});
-	
+    });
 }
+function searchByOverDueDays(){
+    debugger;
+    var days = "0";
+	if (document.getElementById('showallonverdueinvoice').checked) {
+      days = "0";
+    }
+    if (document.getElementById('overduedate').checked) {
+        days = document.getElementById('OverDueDays').value;
+        if(days == ''){
+            return showemptydatadialog();
+        	return false;
+        }
+    }
+    $.ajax({
+    			type : "POST",
+    			url : "BillingBoardStatement?tabid=searchByOverDueDays",
+    		 	data:"overdueDays=" + days,
+    		    success : function(data)
+    		    {
+    		        updateBillingBoard(data);
+    			},
+    			 error : function(data) {
+    				 return showerrordialog();
+    			}
+        });
+  }
+function searchByOverDueDays1(){
+	if (document.getElementById('r1').checked) {
+      rate_value = document.getElementById('r1').value;
+    }
+	if(advanceSearchData == '')
+	{
+		return showemptydatadialog();
+		return false;
+	}
+	 $.ajax({
+			type : "POST",
+			url : "BillingBoardStatement?tabid=searchByOverDueDays",
+		 	data:"overdueDays=" + advanceSerchCriteria,
+		    success : function(data)
+		    {
+		        updateBillingBoard(data);
+			},
+			 error : function(data) {
+				 return showerrordialog();
+			}
+    });
+}
+
 function searchByColumnBillingStatement()
 {
 	

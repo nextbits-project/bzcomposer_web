@@ -318,18 +318,16 @@ table.tabla-listados tbody tr td {
 								<button class="btn btn-info btn1" onclick="return save(<%= receivablelistbean.getOrderNum()%>,<%= receivablelistbean.getPaidAmount()+receivablelistbean.getBalance()%>)">Save</button>
 							</div>
 						<% } %>  --%>
-							<div class="form-group">
-								<button class="btn btn-info"
-									style="width: 100px; font-size: 14px;" onclick="return save()">
-									<spring:message code="BzComposer.global.save" />
-								</button>
-							</div>
-							<div class="form-group">
-								<a class="btn btn-info" style="width: 100px; font-size: 14px;">
-									<spring:message code="BzComposer.global.clear" />
-								</a>
-							</div>
-						</div>
+						 <div class="form-group">
+								<button class="btn btn-info" style="width: 100px;font-size: 14px;" onclick="return save()">
+								    <spring:message code="BzComposer.global.save"/>
+							    </button>
+							</div>  
+						<div class="form-group">
+							<a class="btn btn-info" style="width: 100px;font-size: 14px;color: #f8f9fa;" onclick="return clearTransaction()">
+								<spring:message code="BzComposer.global.clear"/>
+							</a>
+						</div> 
 					</div>
 				</form>
 			</div>
@@ -683,7 +681,7 @@ table.tabla-listados tbody tr td {
 		}	
 	
    }  
-   
+
    $(function() {
 	   $( "#pay").on("click", function(){ 
 		   
@@ -1160,6 +1158,7 @@ function selecttransactiondialog()
     return false;
 }
 </script>
+</form:form>
 </body>
 </html>
 <!-- Dialog box used in this page -->

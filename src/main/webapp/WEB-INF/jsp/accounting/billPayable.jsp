@@ -360,11 +360,7 @@ table.tabla-listados tbody tr td {
 												%>
 											</td>
 											<td class="text-right"
-												value="<%=unpaidBillList.get(i).getVendorId()%>">
-												<%
-												out.println(unpaidBillList.get(i).getVendorName());
-												%>
-											</td>
+												value="<%=unpaidBillList.get(i).getVendorId()%>"><%out.println(unpaidBillList.get(i).getVendorName());%></td>
 											<td class="text-right"><%=unpaidBillList.get(i).getCategoryName() != null ? unpaidBillList.get(i).getCategoryName() : ""%></td>
 											<td class="text-right"><%=unpaidBillList.get(i).getDueDate()%></td>
 											<td class="text-right"><%=String.format("%.2f", unpaidBillList.get(i).getAmountPaid())%></td>
@@ -855,41 +851,19 @@ table.tabla-listados tbody tr td {
 						%>
 						<tr onclick="selectMemorizedTransactionList(<%=memTransIndex%>)">
 							<td><input type="checkbox"></td>
-							<td hidden="billNo">
-								<%
-								out.println(getMemorizeTransactionList.get(i).getBillNo());
-								%>
-							</td>
-							<td>
-								<%
-								out.println(getMemorizeTransactionList.get(i).getTransactionName());
-								%>
-							</td>
-							<td>
-								<%
-								out.println(getMemorizeTransactionList.get(i).getBankAccount());
-								%>
-							</td>
-							<td>
-								<%
-								out.println(getMemorizeTransactionList.get(i).getAmount());
-								%>
-							</td>
 							<td
-								value="<%=getMemorizeTransactionList.get(i).getRecurringPeriod()%>">
-								<%
-								out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());
-								%>
-							</td>
+							hidden="billNo"><%out.println(getMemorizeTransactionList.get(i).getBillNo());%></td>
+							<td><%out.println(getMemorizeTransactionList.get(i).getTransactionName());%></td>
+							<td><%out.println(getMemorizeTransactionList.get(i).getBankAccount());%></td>
+							<td><%out.println(getMemorizeTransactionList.get(i).getAmount());%></td>
+							<td
+							value="<%=getMemorizeTransactionList.get(i).getRecurringPeriod()%>"><%out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());%></td>
 							<%
 							if (getMemorizeTransactionList.get(i).getRemindOption() == 2) {
 							%>
 							<td
 								value="<%=getMemorizeTransactionList.get(i).getRemindOption()%>">
-								<%
-								out.println("Yes");
-								%>
-							</td>
+								<% out.println("Yes");%></td>
 							<%
 							} else {
 							%>
@@ -1679,7 +1653,9 @@ function DeleteMemorizeTransaction()
 	    success : function(data) {
 		
 		amountToBepaid = 0.00;
-		updateBillPayableTab(data);	
+		//updateBillPayableTab(data);
+		document.forms['billPayableForm'].action = "BillPayable?tabid=billpayable";
+        document.forms['billPayableForm'].submit();
 		},
 		 error : function(data) {
 

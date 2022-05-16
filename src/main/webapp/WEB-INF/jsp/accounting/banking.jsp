@@ -1144,6 +1144,10 @@ function closeAddTransaction(){
     $('#popupWindow').dialog('close');
 }
 
+function closeAddTransactionDialog(){
+
+    $('#AddAccountDialog').dialog('close');
+}
 function closeTransferFund(){
     $('#popupWindow').dialog('close');
 }
