@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@page import="java.text.DecimalFormat"%>
 <%@ page isELIgnored="false"%>
 <%@page import="java.util.Currency"%>
@@ -12,7 +12,8 @@
 <%@page import="java.util.Date"%>
 <%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+<%@page
+	import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
 <%@page import="java.util.ArrayList"%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -22,28 +23,32 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
-	<%@include file="/WEB-INF/jsp/include/header.jsp"%>
-	<%@include file="/WEB-INF/jsp/include/menu.jsp"%>
+<%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
+<%@include file="/WEB-INF/jsp/include/header.jsp"%>
+<%@include file="/WEB-INF/jsp/include/menu.jsp"%>
 
-<title><spring:message code="BzComposer.popayabletitle"/></title>
+<title><spring:message code="BzComposer.popayabletitle" /></title>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script
+	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <!--  Here Is the context path -->
- <script>var ctx = "${pageContext.request.contextPath}";</script>
+<script>var ctx = "${pageContext.request.contextPath}";</script>
 
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <style type="text/css">
 div#pie { /* 	color:#05A9C5;; */
 	padding: 10px 0px 20px 0px;
 }
+
 table.tabla-listados {
 	width: 100%;
 	border: 1px solid rgb(207, 207, 207);
 	margin: 20px 0px 20px 0px;
 }
+
 table.tabla-listados thead tr th {
 	font-size: .7em;
 	text-align: left;
@@ -54,6 +59,7 @@ table.tabla-listados thead tr th {
 	text-shadow: #999 0px 1px 1px;
 	white-space: nowrap;
 }
+
 table.tabla-listados tbody tr td {
 	font-size: .8em;
 	/* 	color: #666; */
@@ -62,130 +68,162 @@ table.tabla-listados tbody tr td {
 	background: #fff;
 	vertical-align: top;
 }
+
 #highlight {
- 		background-color: blue; 
-	 }
-#popupWindow
-{
-    width: 900;
-    height: 900;
-}	 
-.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-draggable.ui-resizable {
-    min-width: 45%;
-    min-height: 600px;
-    overflow:"auto";
-}
-.btn {
-margin-right: 10px;
+	background-color: blue;
 }
 
-.highlight { background-color: #00CED1 !important;color: #fff }
+#popupWindow {
+	width: 900;
+	height: 900;
+}
+
+.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-draggable.ui-resizable
+	{
+	min-width: 45%;
+	min-height: 600px;
+	overflow: "auto";
+}
+
+.btn {
+	margin-right: 10px;
+}
+
+.highlight {
+	background-color: #00CED1 !important;
+	color: #fff
+}
 </style>
 
 </head>
 <body>
-<% int find = 0;
- ReceivableListBean rb = null;
- ArrayList<ReceivableListBean> li = null;
- String invoiceNumber = "-1";
- %>
-<div id="ddcolortabsline">&nbsp;</div>
- <form:form action="PoPayable" method="post" >
-	<div class="content1 clearfix">
-		<h3 class="title1"><spring:message code="BzComposer.popayable.payabletitle"/></h3>
-		<%
-		if(request.getSession().getAttribute("invoiceId") != null)
-	 	{
-	 		find = Integer.parseInt(request.getSession().getAttribute("invoiceId").toString());
-	 	}	
-		%>
-		<div class="border1  clearfix">
-			<form>
-				<div class="row">
-					<div class="col-md-4">
-						<label><spring:message code="BzComposer.popayable.ponumber"/> #: </label>
-						<label id="poNumber"></label>
-						<div class="form-group row">
-							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.popayable.vendorname"/></label>
-							<label class="col-md-8" id="custId" for="vendorName"> </label>
-						</div>
-						
-						<div class="form-group row">
-							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.popayable.paymenttype"/></label>
-							<div class="col-md-8">
-								<select class="form-control devReceivedTypeDrp" id="paymentType" onclick="checkType()">
-								<%	
-								ArrayList<TblPaymentType> payType = (ArrayList)request.getAttribute("paymentTypeForPOcombo");
-								/* Iterator<TblPaymentType> itr3 = payType.iterator(); */
-								for(int i=0;i<payType.size();i++)
-								{
-								%>
-									<option value=<%= payType.get(i).getId() %> id="<%= payType.get(i).getId()%>"><%  out.println(payType.get(i).getTypeName()); %></option>
-							<%  } 
-								 
-								%>	
-						
-								</select>
+	<%
+	int find = 0;
+	ReceivableListBean rb = null;
+	ArrayList<ReceivableListBean> li = null;
+	String invoiceNumber = "-1";
+	%>
+	<div id="ddcolortabsline">&nbsp;</div>
+	<html:form action="PoPayable" method="post">
+		<div class="content1 clearfix">
+			<h3 class="title1">
+				<spring:message code="BzComposer.popayable.payabletitle" />
+			</h3>
+			<%
+			if (request.getSession().getAttribute("invoiceId") != null) {
+				find = Integer.parseInt(request.getSession().getAttribute("invoiceId").toString());
+			}
+			%>
+			<div class="border1  clearfix">
+				<form>
+					<div class="row">
+						<div class="col-md-4">
+							<label><spring:message
+									code="BzComposer.popayable.ponumber" /> #: </label> <label
+								id="poNumber"></label>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"><spring:message
+										code="BzComposer.popayable.vendorname" /></label> <label
+									class="col-md-8" id="custId" for="vendorName"> </label>
 							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.popayable.payfrom"/></label>
-							<div class="col-md-8">
-								<select class="form-control devDeposittypeDrp" id="payId">
-									
-								 <% ArrayList<TblAccount> account = (ArrayList)request.getAttribute("accountForCombo");
-									for(int i=0;i<account.size();i++)
-									{
-								%>	
-									<option value="<%= account.get(i).getAccountID()%>" id="<%= account.get(i).getAccountID()%>"><% out.println(account.get(i).getName());  %></option>
-								<%  } %>	
-								
-								</select>
-							</div>
-						</div>
-						 <div class="form-group row">
-						<label class="col-md-4  col-form-label"><spring:message code="BzComposer.popayable.amount"/></label>
-				    
-				    	<div class="col-md-8">	
-				    	<div class="input-group">
-							<div class="input-group-prepend">
-							 <span class="input-group-text" id="basic-addon1"><spring:message code="BzComposer.popayable.dollersign"/></span>
-							 </div>
-								<label  style="padding-left: 10px" id="devAmount" class="form-control"></label>
+
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"><spring:message
+										code="BzComposer.popayable.paymenttype" /></label>
+								<div class="col-md-8">
+									<select class="form-control devReceivedTypeDrp"
+										id="paymentType" onclick="checkType()">
+										<%
+										ArrayList<TblPaymentType> payType = (ArrayList) request.getAttribute("paymentTypeForPOcombo");
+										/* Iterator<TblPaymentType> itr3 = payType.iterator(); */
+										for (int i = 0; i < payType.size(); i++) {
+										%>
+										<option value=<%=payType.get(i).getId()%>
+											id="<%=payType.get(i).getId()%>">
+											<%
+											out.println(payType.get(i).getTypeName());
+											%>
+										</option>
+										<%
+										}
+										%>
+
+									</select>
 								</div>
-						</div>
-						</div>
-						 <div class="form-group row">
-							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.popayable.paymentamount"/></label>
-							 
-					<div class="col-md-8">
-						<div class="input-group">
-							<div class="input-group-prepend">
-							 <span class="input-group-text" id="basic-addon1"><spring:message code="BzComposer.popayable.dollersign"/></span>
-							  </div>
-							<input type="text" class="form-control devPaymentAmount" value="" width="20px" id="receivedAmount">
 							</div>
-						
-					</div>
-						</div> 
-						
-				<script>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"><spring:message
+										code="BzComposer.popayable.payfrom" /></label>
+								<div class="col-md-8">
+									<select class="form-control devDeposittypeDrp" id="payId">
+
+										<%
+										ArrayList<TblAccount> account = (ArrayList) request.getAttribute("accountForCombo");
+										for (int i = 0; i < account.size(); i++) {
+										%>
+										<option value="<%=account.get(i).getAccountID()%>"
+											id="<%=account.get(i).getAccountID()%>">
+											<%
+											out.println(account.get(i).getName());
+											%>
+										</option>
+										<%
+										}
+										%>
+
+									</select>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"><spring:message
+										code="BzComposer.popayable.amount" /></label>
+
+								<div class="col-md-8">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<span class="input-group-text" id="basic-addon1"><spring:message
+													code="BzComposer.popayable.dollersign" /></span>
+										</div>
+										<label style="padding-left: 10px" id="devAmount"
+											class="form-control"></label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"><spring:message
+										code="BzComposer.popayable.paymentamount" /></label>
+
+								<div class="col-md-8">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<span class="input-group-text" id="basic-addon1"><spring:message
+													code="BzComposer.popayable.dollersign" /></span>
+										</div>
+										<input type="text" class="form-control devPaymentAmount"
+											value="" width="20px" id="receivedAmount">
+									</div>
+
+								</div>
+							</div>
+
+							<script>
 					  var data = document.getElementById("Check");
 					  data.style.display = "none";
 				</script>
-				<div class="form-group row" id="Check">
-							<label class="col-md-4  col-form-label">
-								<spring:message code="BzComposer.popayable.checknumber"/>
-							</label>
-							<div class="col-md-8">
-							<input type="text" class="form-control devCheck" id="checkNum" name="checkNum">
+							<div class="form-group row" id="Check">
+								<label class="col-md-4  col-form-label"> <spring:message
+										code="BzComposer.popayable.checknumber" />
+								</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control devCheck" id="checkNum"
+										name="checkNum">
+								</div>
 							</div>
 						</div>
-					</div>
-					
-					<div class="col-md-4">
-						<label>&nbsp;</label>
-						<%-- <div class="form-group row">
+
+						<div class="col-md-4">
+							<label>&nbsp;</label>
+							<%-- <div class="form-group row">
 						   <label class="col-md-4  col-form-label">Order Date</label>
 							<div class="col-md-8">
 								<input type="text" class="form-control devOrderDate" value="" style="width: 275px">&nbsp;<img
@@ -195,65 +233,83 @@ margin-right: 10px;
 							
 						
 						</div> --%>
-						<div class="form-group row">
-							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.popayable.date"/></label>
-						   <%--  <html:text property="orderDate" readonly="false"></html:text>  --%>
-						    <div class="col-md-8 calendar-img"><input type="text" class="form-control poDate" value="" style="width: 275px" name="poDate" readonly="true" id="poDate">
-							<img
-								src="${pageContext.request.contextPath}/images/cal.gif" class="img-fluid" alt="Responsive image"
-								onclick="displayCalendar(document.ReceivableListForm.poDate,'mm-dd-yyyy',this);">
-							</div>   
-									
-						</div>
-						<div class="form-group row">
-							<label class="col-md-4  col-form-label">
-								<spring:message code="BzComposer.popayable.paiddate"/>
-							</label>
-						   <%--  <html:text property="orderDate" readonly="false"></html:text>  --%>
-						    <div class="col-md-8 calendar-img"><input type="text" class="form-control poPaidDate" value="" style="width: 275px" name="poPaidDate" readonly="true" id="poPaidDate">
-							<img
-								src="${pageContext.request.contextPath}/images/cal.gif" class="img-fluid" alt="Responsive image"
-								onclick="displayCalendar(document.ReceivableListForm.poPaidDate,'mm-dd-yyyy',this);">
-							</div>   
-									
-						</div>
-						<div class="form-group row">
-							<label class="col-md-4  col-form-label">
-								<spring:message code="BzComposer.popayable.category"/>
-							</label>
-							<div class="col-md-8">
-								<select class="form-control devCategoryDrp" size="1" id="categoryId">
-								<%
-									ArrayList<TblCategory> category = (ArrayList)request.getAttribute("categoryforcombo");
-							
-									for(int i=0;i<category.size();i++)
-									{
-								%>
-								<option value="<%= category.get(i).getId() %>" id="<%= category.get(i).getId() %>"><% out.println(category.get(i).getName() + " " +category.get(i).getCategoryNumber()); %></option>	
-								 <%} %> 
-								</select>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"><spring:message
+										code="BzComposer.popayable.date" /></label>
+								<%--  <html:text property="orderDate" readonly="false"></html:text>  --%>
+								<div class="col-md-8 calendar-img">
+									<input type="text" class="form-control poDate" value=""
+										style="width: 275px" name="poDate" readonly="true" id="poDate">
+									<img src="${pageContext.request.contextPath}/images/cal.gif"
+										class="img-fluid" alt="Responsive image"
+										onclick="displayCalendar(document.ReceivableListForm.poDate,'mm-dd-yyyy',this);">
+								</div>
+
 							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.global.memo"/></label>
-							<div class="col-md-8">
-								<input type="text" class="form-control devMemotext" id="memo">
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"> <spring:message
+										code="BzComposer.popayable.paiddate" />
+								</label>
+								<%--  <html:text property="orderDate" readonly="false"></html:text>  --%>
+								<div class="col-md-8 calendar-img">
+									<input type="text" class="form-control poPaidDate" value=""
+										style="width: 275px" name="poPaidDate" readonly="true"
+										id="poPaidDate"> <img
+										src="${pageContext.request.contextPath}/images/cal.gif"
+										class="img-fluid" alt="Responsive image"
+										onclick="displayCalendar(document.ReceivableListForm.poPaidDate,'mm-dd-yyyy',this);">
+								</div>
+
 							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.popayable.paymentstatus"/></label>
-							<div class="col-md-8">
-								<select class="form-control paymentOP" size="1" id="payStatus">
-									<option value="Unpaid"><spring:message code="BzComposer.popayable.unpaid"/></option>
-									<option value="Paid"><spring:message code="BzComposer.popayable.paid"/></option>
-									<option value="Consignment"><spring:message code="BzComposer.popayable.consignment"/></option>
-								</select>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"> <spring:message
+										code="BzComposer.popayable.category" />
+								</label>
+								<div class="col-md-8">
+									<select class="form-control devCategoryDrp" size="1"
+										id="categoryId">
+										<%
+										ArrayList<TblCategory> category = (ArrayList) request.getAttribute("categoryforcombo");
+
+										for (int i = 0; i < category.size(); i++) {
+										%>
+										<option value="<%=category.get(i).getId()%>"
+											id="<%=category.get(i).getId()%>">
+											<%
+											out.println(category.get(i).getName() + " " + category.get(i).getCategoryNumber());
+											%>
+										</option>
+										<%
+										}
+										%>
+									</select>
+								</div>
 							</div>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"><spring:message
+										code="BzComposer.global.memo" /></label>
+								<div class="col-md-8">
+									<input type="text" class="form-control devMemotext" id="memo">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"><spring:message
+										code="BzComposer.popayable.paymentstatus" /></label>
+								<div class="col-md-8">
+									<select class="form-control paymentOP" size="1" id="payStatus">
+										<option value="Unpaid"><spring:message
+												code="BzComposer.popayable.unpaid" /></option>
+										<option value="Paid"><spring:message
+												code="BzComposer.popayable.paid" /></option>
+										<option value="Consignment"><spring:message
+												code="BzComposer.popayable.consignment" /></option>
+									</select>
+								</div>
+							</div>
+
 						</div>
-						
-					</div>
-					<div class="col-md-4" style="top:35px;">
-					<%-- <% if(receivablelistbean == null) {%>
+						<div class="col-md-4" style="top: 35px;">
+							<%-- <% if(receivablelistbean == null) {%>
 						<div class="form-group">
 								<button class="btn btn-info btn1" onclick="return save(null,null)">Save</button>
 							</div>
@@ -262,183 +318,264 @@ margin-right: 10px;
 								<button class="btn btn-info btn1" onclick="return save(<%= receivablelistbean.getOrderNum()%>,<%= receivablelistbean.getPaidAmount()+receivablelistbean.getBalance()%>)">Save</button>
 							</div>
 						<% } %>  --%>
-						 <div class="form-group">
-								<button class="btn btn-info" style="width: 100px;font-size: 14px;" onclick="return save()">
-								    <spring:message code="BzComposer.global.save"/>
-							    </button>
-							</div>  
-						<div class="form-group">
-							<a class="btn btn-info" style="width: 100px;font-size: 14px;" >
-								<spring:message code="BzComposer.global.clear"/>
-							</a>
-						</div> 
+							<div class="form-group">
+								<button class="btn btn-info"
+									style="width: 100px; font-size: 14px;" onclick="return save()">
+									<spring:message code="BzComposer.global.save" />
+								</button>
+							</div>
+							<div class="form-group">
+								<a class="btn btn-info" style="width: 100px; font-size: 14px;">
+									<spring:message code="BzComposer.global.clear" />
+								</a>
+							</div>
+						</div>
 					</div>
-				</div>
-			</form>
-		</div>
-		<div class="content-tabs">
-				
-			<nav>
-			   <div class="nav nav-tabs" id="tabId" role="tablist">
-			    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" 
-			    aria-controls="nav-home" aria-selected="true">
-			    	<spring:message code="BzComposer.popayable.tab.popayablelist"/>
-		    	</a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" 
-			    aria-controls="nav-contact" aria-selected="false" onclick="paidList()">
-			    	<spring:message code="BzComposer.popayable.tab.paidlist"/>
-		    	</a>
-		    	<a class="nav-item nav-link" id="nav-vendorRMA-tab" data-toggle="tab" href="#nav-vendorRMA" role="tab"
-                aria-controls="nav-contact" aria-selected="false">
-                    <spring:message code="BzComposer.accountreceivable.tabs.VendorRMARefund"/>
-                </a>
-                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" 
-			    aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
-			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
-		    	</a>
-			  </div>
-			</nav>
+				</form>
+			</div>
+			<div class="content-tabs">
+
+				<nav>
+					<div class="nav nav-tabs" id="tabId" role="tablist">
+						<a class="nav-item nav-link active" id="nav-home-tab"
+							data-toggle="tab" href="#nav-home" role="tab"
+							aria-controls="nav-home" aria-selected="true"> <spring:message
+								code="BzComposer.popayable.tab.popayablelist" />
+						</a> <a class="nav-item nav-link" id="nav-contact-tab"
+							data-toggle="tab" href="#nav-contact" role="tab"
+							aria-controls="nav-contact" aria-selected="false"
+							onclick="paidList()"> <spring:message
+								code="BzComposer.popayable.tab.paidlist" />
+						</a> <a class="nav-item nav-link" id="nav-vendorRMA-tab"
+							data-toggle="tab" href="#nav-vendorRMA" role="tab"
+							aria-controls="nav-contact" aria-selected="false"> <spring:message
+								code="BzComposer.accountreceivable.tabs.VendorRMARefund" />
+						</a> <a class="nav-item nav-link" id="nav-profile-tab"
+							data-toggle="tab" href="#nav-profile" role="tab"
+							aria-controls="nav-profile" aria-selected="false"
+							onclick="consignmentTab()"> <spring:message
+								code="BzComposer.popayable.tab.consignmentsalepayment" />
+						</a>
+					</div>
+				</nav>
 				<div class="table1" id="tblForInvoiceOrder">
-				<table class="table table-bordered table-sm devAcRecDataTbl">
-				  <thead class="thead-light">
-				    <tr>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.pay"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.ponum"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.companyname"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.vendorname"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.date"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.payfrom"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.paymenttype"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.amount"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.paid"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.balance"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.credit"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.category"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.memo"/></th>
-				    </tr>
-				  </thead>
-				  <tbody>
-				   <%
-				  	li = (ArrayList)request.getAttribute("poList");		
-				  	Iterator<ReceivableListBean> itr =li.iterator();
-					int index = 1;
-				  	while(itr.hasNext()){
-				  		 rb = itr.next();
-				  %> 
-			 	    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)" id="rowId<%=index%>">
-				      <td><input type="checkbox" id="Checkbox[<%= index %>]" ></td>
-				      <td class="text-right"><% out.println(rb.getPoNum()); %></td>
-				      <td><% out.println(rb.getCompanyName()); %></td>
-				      <td value=<%=rb.getCvID() %>><% out.println(rb.getCvName()); %></td>
-				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded())); %></td>
-				      <td class="text-right" id="accdrpdwn" value= "<%=rb.getBankAccountID()%>"><% out.println(rb.getAccountName()); %></td>
-				      <td class="text-right" value="<%=rb.getPaymentTypeID() %>"><% out.println(rb.getPaymentTypeName()); %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getAdjustedTotal()) %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getPaidAmount()) %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getBalance()) %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getCustomercreditline()) %></td>
-				      <td class="text-right" value="<%= rb.getCategoryID() %>"><% out.println(rb.getCategoryName()); %></td>
-				      
-				       <td class="text-right"><% out.println(rb.getMemo()); %></td>
-				      <td hidden="PaymentTypeID" value="<%=rb.getPaymentTypeID()%>"></td>
-				      <td hidden="BankAccountId" value="<%=rb.getBankAccountID()%>"></td>
-				         <% if(find == rb.getInvoiceID()) {%>
-				      <td hidden="CheckNumberID" value=<%= request.getSession().getAttribute("checkNum"+rb.getInvoiceID())%>></td>
-				      <% } else {%>
-				        <td hidden="CheckNumberID" value=<%= request.getSession().getAttribute("checkNum"+rb.getInvoiceID())%>></td>
-				        <% }%>
-				        <% if(find == rb.getInvoiceID()) {%>
-				        <td hidden="amtToPayID" value=<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID())%>></td>
-				        <% } else {%>
-				        <td hidden="amtToPayID" value=<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID())%>></td>
-				        <% }%> 
-				      <%--   <% if(find == rb.getInvoiceID()) {%>
+					<table class="table table-bordered table-sm devAcRecDataTbl">
+						<thead class="thead-light">
+							<tr>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.pay" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.ponum" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.companyname" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.vendorname" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.date" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.payfrom" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.paymenttype" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.amount" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.paid" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.balance" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.credit" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.category" /></th>
+								<th scope="col" class="text-right"><spring:message
+										code="BzComposer.popayable.memo" /></th>
+							</tr>
+						</thead>
+						<tbody>
+							<%
+							li = (ArrayList) request.getAttribute("poList");
+							Iterator<ReceivableListBean> itr = li.iterator();
+							int index = 1;
+							while (itr.hasNext()) {
+								rb = itr.next();
+							%>
+							<tr onclick="selectrow(<%=rb.getInvoiceID() + "," + index%>)"
+								id="rowId<%=index%>">
+								<td><input type="checkbox" id="Checkbox[<%=index%>]"></td>
+								<td class="text-right">
+									<%
+									out.println(rb.getPoNum());
+									%>
+								</td>
+								<td>
+									<%
+									out.println(rb.getCompanyName());
+									%>
+								</td>
+								<td value=<%=rb.getCvID()%>>
+									<%
+									out.println(rb.getCvName());
+									%>
+								</td>
+								<td class="text-right">
+									<%
+									out.println(JProjectUtil.dateFormat.format(rb.getDateAdded()));
+									%>
+								</td>
+								<td class="text-right" id="accdrpdwn"
+									value="<%=rb.getBankAccountID()%>">
+									<%
+									out.println(rb.getAccountName());
+									%>
+								</td>
+								<td class="text-right" value="<%=rb.getPaymentTypeID()%>">
+									<%
+									out.println(rb.getPaymentTypeName());
+									%>
+								</td>
+								<td class="text-right"><%=String.format("%.2f", rb.getAdjustedTotal())%></td>
+								<td class="text-right"><%=String.format("%.2f", rb.getPaidAmount())%></td>
+								<td class="text-right"><%=String.format("%.2f", rb.getBalance())%></td>
+								<td class="text-right"><%=String.format("%.2f", rb.getCustomercreditline())%></td>
+								<td class="text-right" value="<%=rb.getCategoryID()%>">
+									<%
+									out.println(rb.getCategoryName());
+									%>
+								</td>
+
+								<td class="text-right">
+									<%
+									out.println(rb.getMemo());
+									%>
+								</td>
+								<td hidden="PaymentTypeID" value="<%=rb.getPaymentTypeID()%>"></td>
+								<td hidden="BankAccountId" value="<%=rb.getBankAccountID()%>"></td>
+								<%
+								if (find == rb.getInvoiceID()) {
+								%>
+								<td hidden="CheckNumberID"
+									value=<%=request.getSession().getAttribute("checkNum" + rb.getInvoiceID())%>></td>
+								<%
+								} else {
+								%>
+								<td hidden="CheckNumberID"
+									value=<%=request.getSession().getAttribute("checkNum" + rb.getInvoiceID())%>></td>
+								<%
+								}
+								%>
+								<%
+								if (find == rb.getInvoiceID()) {
+								%>
+								<td hidden="amtToPayID"
+									value=<%=request.getSession().getAttribute("amtToPay" + rb.getInvoiceID())%>></td>
+								<%
+								} else {
+								%>
+								<td hidden="amtToPayID"
+									value=<%=request.getSession().getAttribute("amtToPay" + rb.getInvoiceID())%>></td>
+								<%
+								}
+								%>
+								<%--   <% if(find == rb.getInvoiceID()) {%>
 				        <td hidden="totalId" value=<%= request.getSession().getAttribute("totalPayable"+rb.getInvoiceID())%>></td>
 				        <% } else {%>
 				        <td hidden="totalId" value=<%= request.getSession().getAttribute("totalPayable"+rb.getInvoiceID())%>></td>
 				        <% }%> 
 				      <td><input type="checkbox"></td> --%>
-				      
-				    </tr>
-			<%
-			index++;
-				  	}
-			%>	     
-		</tbody>	
-	</table>
-	</div>
-	<div class="footer1" style="margin-top: 50px">
-		<a class="btn btn-info" style="float: right;font-size:14px;color:white;" id="pay"><spring:message code="BzComposer.popayable.paybtn"/></a>
-		<!-- <button class="float-right" onclick="return received()">Pay</button> -->
-	</div>
-	</div>
-		<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-		<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-		<div class="tab-pane fade" id="nav-vendorRMA" role="tabpanel" aria-labelledby="nav-vendorRMA-tab">...</div>
-	</div>
-</div>
-</div>	
- </html:form>
- 	<div class="container  " id="popupWindow">                                                                                      
-  <div class="table-responsive" style="padding-top: 20px">  
-  <div class="d-flex flex-column full-height">    
-  
-  <div class="modal-body1">
-  <table class="table table-bordered table-sm dlgRecDataTable" id="myTable">
-   <tr><spring:message code="BzComposer.popayable.payablelist"/></tr>&nbsp;
-    <thead>
-      <tr>
-        <th><spring:message code="BzComposer.popayable.vendor"/></th>
-        <th><spring:message code="BzComposer.popayable.ponum"/></th>
-        <th><spring:message code="BzComposer.popayable.category"/></th>
-        <th><spring:message code="BzComposer.popayable.payfrom"/></th>
-        <th><spring:message code="BzComposer.popayable.amountdue"/></th>
-        <th><spring:message code="BzComposer.popayable.paid"/></th>
-        <th><spring:message code="BzComposer.popayable.paymenttype"/></th>
-        <th><spring:message code="BzComposer.popayable.checknumber"/></th>
-      </tr>
-    </thead>
-    <tbody id="demo"></tbody>
-  </table>
-  </div> 
-  
-  <div class="container-fluid">
-  <div class=" row">
-  <div class=" col-8">
-  <form>
-	  <div class="form-group row mb-0">
-	    <label for="staticEmail" class="col-sm-5 col-form-label">
-	    	<spring:message code="BzComposer.popayable.totalpayable"/>
-    	</label>
-	    <div class="col-sm-7">
-	      <div class="col-form-label" id="totalPayable"></div>
-	    </div>
-	  </div>
-	  <div class="form-group row mb-0">
-	    <label for="staticEmail" class="col-sm-5 col-form-label">
-	    	<spring:message code="BzComposer.popayable.totalamounttopay"/>
-    	</label>
-	    <div class="col-sm-7">
-	      <div class="col-form-label" id="totalAmtToPay"></div>
-	    </div>
-	  </div>
-</form>
-</div>
-   <div class=" col-4">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onclick="closePayableWindow()">
-  		<spring:message code="BzComposer.global.cancel"/>
-	</button>	
-  	<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;"
-  	onclick="payFromDialog()">
-  		<spring:message code="BzComposer.popayable.paybtn"/>
-	</button>
-  </div> 
-  </div> 
-  </div>
-   </div>
-  </div>
-</div>
-<script type="text/javascript">
+
+							</tr>
+							<%
+							index++;
+							}
+							%>
+						</tbody>
+					</table>
+				</div>
+				<div class="footer1" style="margin-top: 50px">
+					<a class="btn btn-info"
+						style="float: right; font-size: 14px; color: white;" id="pay"><spring:message
+							code="BzComposer.popayable.paybtn" /></a>
+					<!-- <button class="float-right" onclick="return received()">Pay</button> -->
+				</div>
+			</div>
+			<div class="tab-pane fade" id="nav-profile" role="tabpanel"
+				aria-labelledby="nav-profile-tab">...</div>
+			<div class="tab-pane fade" id="nav-contact" role="tabpanel"
+				aria-labelledby="nav-contact-tab">...</div>
+			<div class="tab-pane fade" id="nav-vendorRMA" role="tabpanel"
+				aria-labelledby="nav-vendorRMA-tab">...</div>
+		</div>
+		</div>
+		</div>
+		</html:form>
+		<div class="container  " id="popupWindow">
+			<div class="table-responsive" style="padding-top: 20px">
+				<div class="d-flex flex-column full-height">
+
+					<div class="modal-body1">
+						<table class="table table-bordered table-sm dlgRecDataTable"
+							id="myTable">
+							<tr>
+								<spring:message code="BzComposer.popayable.payablelist" />
+							</tr>
+							&nbsp;
+							<thead>
+								<tr>
+									<th><spring:message code="BzComposer.popayable.vendor" /></th>
+									<th><spring:message code="BzComposer.popayable.ponum" /></th>
+									<th><spring:message code="BzComposer.popayable.category" /></th>
+									<th><spring:message code="BzComposer.popayable.payfrom" /></th>
+									<th><spring:message code="BzComposer.popayable.amountdue" /></th>
+									<th><spring:message code="BzComposer.popayable.paid" /></th>
+									<th><spring:message
+											code="BzComposer.popayable.paymenttype" /></th>
+									<th><spring:message
+											code="BzComposer.popayable.checknumber" /></th>
+								</tr>
+							</thead>
+							<tbody id="demo"></tbody>
+						</table>
+					</div>
+
+					<div class="container-fluid">
+						<div class=" row">
+							<div class=" col-8">
+								<form>
+									<div class="form-group row mb-0">
+										<label for="staticEmail" class="col-sm-5 col-form-label">
+											<spring:message code="BzComposer.popayable.totalpayable" />
+										</label>
+										<div class="col-sm-7">
+											<div class="col-form-label" id="totalPayable"></div>
+										</div>
+									</div>
+									<div class="form-group row mb-0">
+										<label for="staticEmail" class="col-sm-5 col-form-label">
+											<spring:message code="BzComposer.popayable.totalamounttopay" />
+										</label>
+										<div class="col-sm-7">
+											<div class="col-form-label" id="totalAmtToPay"></div>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class=" col-4">
+								<button type="button" class="btn btn-info"
+									style="float: right; font-size: 14px;"
+									onclick="closePayableWindow()">
+									<spring:message code="BzComposer.global.cancel" />
+								</button>
+								<button type="button" class="btn btn-info"
+									style="float: right; margin-right: 10px; font-size: 14px;"
+									onclick="payFromDialog()">
+									<spring:message code="BzComposer.popayable.paybtn" />
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
 	
 	var indexNumber = -1;
 	var amtToPay = -1;
@@ -1026,24 +1163,39 @@ function selecttransactiondialog()
 </body>
 </html>
 <!-- Dialog box used in this page -->
-<div id="selectonepayabledialog" style="display:none;">
-	<p><spring:message code='BzComposer.popayable.selectonepayable'/></p>
+<div id="selectonepayabledialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.popayable.selectonepayable' />
+	</p>
 </div>
-<div id="savelayawaysinvoicedialog" style="display:none;">
-	<p><spring:message code='BzComposer.popayable.wantlayawaysinvoice'/></p>
+<div id="savelayawaysinvoicedialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.popayable.wantlayawaysinvoice' />
+	</p>
 </div>
-<div id="showerrordialog" style="display:none;">
-	<p><spring:message code='BzComposer.popayable.someerroroccurred'/></p>
+<div id="showerrordialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.popayable.someerroroccurred' />
+	</p>
 </div>
-<div id="savereceiveamountdialog" style="display:none;">
-	<p><spring:message code='BzComposer.popayable.receivedamountismorethanamount'/></p>
+<div id="savereceiveamountdialog" style="display: none;">
+	<p>
+		<spring:message
+			code='BzComposer.popayable.receivedamountismorethanamount' />
+	</p>
 </div>
-<div id="entervalidchecknumberdialog" style="display:none;">
-	<p><spring:message code='BzComposer.popayable.entervalidchecknumber'/></p>
+<div id="entervalidchecknumberdialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.popayable.entervalidchecknumber' />
+	</p>
 </div>
-<div id="selecttransactiondialog" style="display:none;">
-	<p><spring:message code='BzComposer.popayable.selecttransaction'/></p>
+<div id="selecttransactiondialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.popayable.selecttransaction' />
+	</p>
 </div>
-<div id="selectcleartransactiondialog" style="display:none;">
-	<p><spring:message code='BzComposer.popayable.clearselectedtransaction'/></p>
+<div id="selectcleartransactiondialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.popayable.clearselectedtransaction' />
+	</p>
 </div>

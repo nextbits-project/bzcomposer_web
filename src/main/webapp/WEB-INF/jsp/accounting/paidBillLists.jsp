@@ -507,6 +507,44 @@ table.tabla-listados tbody tr td {
 			 $(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
 		}
 	}
+	
+	   function selectedRadio()
+	   {
+
+		   if(document.getElementById("rdoRecurrentPayments").checked)
+			   {
+			   		$("#tblRecurrentPayment").show();
+			        $("#tblForInvoiceOrder").hide();
+			        $("#recurrentTotal").hide();
+			        $("#paidBillTotal").hide();
+			   }
+		   else if(document.getElementById("rdoPurchaseBill").checked)
+			   {
+					   	$("#tblRecurrentPayment").show();
+			            $("#tblForInvoiceOrder").hide();
+			            $("#recurrentTotal").hide();
+			            $("#paidBillTotal").hide();
+			   }
+			else if(document.getElementById("rdoUnpaidCreditPayments").checked)
+			   {
+						$("#tblRecurrentPayment").show();
+			            $("#tblForInvoiceOrder").hide();
+			            $("#recurrentTotal").hide();
+			            $("#paidBillTotal").hide();
+			   }   
+		   else
+			   {
+			   				$("#tblRecurrentPayment").hide();
+			                $("#tblForInvoiceOrder").show();
+			                $("#recurrentTotal").hide();
+			                $("#paidBillTotal").hide();
+			   }
+	   }
+	   
+	   
+	   tblRecurrentPayment
+	
+	
 	function save()
 	{
 		

@@ -502,6 +502,7 @@ $("#tabs").tabs({
 
 function PrintBilling()
 {
+	debugger;
 	if(invoiceId == -1){
 
 		return selectinvoicefirstdialog();

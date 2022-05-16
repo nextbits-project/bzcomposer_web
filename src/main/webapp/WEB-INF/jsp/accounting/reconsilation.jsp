@@ -502,7 +502,7 @@ table.tabla-listados tbody tr td {
 				<button class="btn btn-info" onclick="return AddAssets()">
 					<spring:message code="BzComposer.global.add"/>
 				</button>
-				<button class="btn btn-info">
+				<button class="btn btn-info" onclick="return closeAssets()">
 					<spring:message code="BzComposer.global.close"/>
 				</button>
 			</div>
@@ -1122,6 +1122,11 @@ function getPayments(index,payId,accId,type)
 		$(".devDate").val($('table.devDepositTable tbody tr:nth-child('+inv+')').find('td:nth-child(2)').text());
 	}
 }
+
+function closeAssets(){
+	$("#AssetDlgId").dialog("close");
+}
+
 $(document).ready(function () {
    
 }); 

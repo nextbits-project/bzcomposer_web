@@ -1019,7 +1019,7 @@ table.tabla-listados tbody tr td {
 		var range = rangeType.options[rangeType.selectedIndex].value;
 		$.ajax
 	  	({
-			type : "GET",
+			type : "POST",
 	 		url : "PaidListTabPost?tabid=slectedMenu&SelectedRange=" + range,
 	    	success : function(data)
 	    	{

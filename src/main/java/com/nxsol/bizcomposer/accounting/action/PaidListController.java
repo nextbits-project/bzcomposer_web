@@ -123,7 +123,8 @@ public class PaidListController extends Action{
 		ModelAndView modelAndView =new ModelAndView(forward);
 		return modelAndView;
 	}
-	@PostMapping("/PaidListTabPost")
+	@RequestMapping(value ="/PaidListTabPost", method = {RequestMethod.GET, RequestMethod.POST})
+	//@PostMapping("/PaidListTabPost")
 	public ModelAndView PaidListPost(TblPayment form, HttpServletRequest request,
 								 HttpServletResponse response) throws Exception {
 		Date fromDate = null;
