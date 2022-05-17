@@ -1158,7 +1158,6 @@ function selecttransactiondialog()
     return false;
 }
 </script>
-</form:form>
 </body>
 </html>
 <!-- Dialog box used in this page -->
