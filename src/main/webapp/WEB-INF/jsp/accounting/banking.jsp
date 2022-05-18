@@ -1,9 +1,9 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ page isELIgnored="false"%>
 <html>
 <head>
@@ -11,11 +11,13 @@
 <%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
-<title><spring:message code="BzComposer.bankingtitle"/></title>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<title><spring:message code="BzComposer.bankingtitle" /></title>
+<script
+	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<spring:url value="/cssresources/Myapp.css" var="mycss"/>
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<spring:url value="/cssresources/Myapp.css" var="mycss" />
 <script>var ctx = "${pageContext.request.contextPath}";</script>
 <style type="text/css">
 div#pie { /* 	color:#05A9C5;; */
@@ -47,10 +49,12 @@ table.tabla-listados tbody tr td {
 	background: #fff;
 	vertical-align: top;
 }
-#popupWindow{
-   /* width: 1500px;
+
+#popupWindow {
+	/* width: 1500px;
     height: 900px;*/
-}	 
+	
+}
 /* .ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-draggable.ui-resizable {
     min-width: 55%;
     min-height: 500px;
@@ -72,21 +76,63 @@ table.tabla-listados tbody tr td {
 	display: block;
 	z-index: 101;
 }
-#popupWindow{}
-.highlight { background-color: #00CED1 !important;color: #fff ;padding: 5px ;}	
- /* .table tr:hover { cursor: pointer;} */ 
- 
-.bz_dialogTable tr td{padding: 10px;}
-.bz_dialogTable tr td label{font-size: 12px;}
-.bz_dialogTable tr td input{font-size: 12px;}
-.bz_dialogTable tr td select{font-size: 12px;}
-.bzbtn{position: relative;top: 10px;}
-.highlight { background-color: #00CED1 !important;color: #fff }
-label {display: inline-block; margin-bottom: 0;}
-.nav{padding-left:15px;}
-.nav-item{border-color: #dee2e6! important;}
-.nav-item.active{border-color: 2px solid #dee2e6! important;}
-.errorField{color: red! important;}
+
+#popupWindow {
+	
+}
+
+.highlight {
+	background-color: #00CED1 !important;
+	color: #fff;
+	padding: 5px;
+}
+/* .table tr:hover { cursor: pointer;} */
+.bz_dialogTable tr td {
+	padding: 10px;
+}
+
+.bz_dialogTable tr td label {
+	font-size: 12px;
+}
+
+.bz_dialogTable tr td input {
+	font-size: 12px;
+}
+
+.bz_dialogTable tr td select {
+	font-size: 12px;
+}
+
+.bzbtn {
+	position: relative;
+	top: 10px;
+}
+
+.highlight {
+	background-color: #00CED1 !important;
+	color: #fff
+}
+
+label {
+	display: inline-block;
+	margin-bottom: 0;
+}
+
+.nav {
+	padding-left: 15px;
+}
+
+.nav-item {
+	border-color: #dee2e6 ! important;
+}
+
+.nav-item.active {
+	border-color: 2px solid #dee2e6 ! important;
+}
+
+.errorField {
+	color: red ! important;
+}
 </style>
 </head>
 <body>
@@ -94,30 +140,26 @@ label {display: inline-block; margin-bottom: 0;}
 	<form:form action="/Banking" method="post">
 		<div class="content1 clearfix">
 			<h3 class="title1">
-				<spring:message code="BzComposer.banking.bankingtitle"/>
+				<spring:message code="BzComposer.banking.bankingtitle" />
 			</h3>
 			<div class="filterbar filterbar1">
 				<div class="form-inline float-right">
-					<label>
-						<spring:message code="BzComposer.banking.datefrom"/>
-					</label> 
-					<input type="text" readonly="true" class="form-control" id="dateFrom">
+					<label> <spring:message code="BzComposer.banking.datefrom" />
+					</label> <input type="text" readonly="true" class="form-control"
+						id="dateFrom">
 					<div class="input-group-append">
 						<a class="input-group-text" href="#">&#9662;</a>
 					</div>
-					<label>
-						<spring:message code="BzComposer.banking.dateto"/>
-					</label> 
-					<input type="text" readonly="true" class="form-control" id="dateTo">
+					<label> <spring:message code="BzComposer.banking.dateto" />
+					</label> <input type="text" readonly="true" class="form-control"
+						id="dateTo">
 					<div class="input-group-append">
 						<a class="input-group-text" href="#">&#9662;</a>
 					</div>
 				</div>
 				<div class="form-inline">
-					<label>
-						<spring:message code="BzComposer.banking.filterby"/>
-					</label> 
-					<select class="form-control rangeOP" id="rangeId">
+					<label> <spring:message code="BzComposer.banking.filterby" />
+					</label> <select class="form-control rangeOP" id="rangeId">
 						<option value="1">All</option>
 						<option value="2">Custom</option>
 						<option value="3">Today</option>
@@ -134,11 +176,9 @@ label {display: inline-block; margin-bottom: 0;}
 						<option value="14">Last 30 Days</option>
 						<option value="15">Last 60 Days</option>
 						<option value="16">1 Week</option>
-					</select> 
-					<label>
-						<spring:message code="BzComposer.banking.show"/>
-					</label> 
-					<select class="form-control transactionFilter" id="transactionFilterId">
+					</select> <label> <spring:message code="BzComposer.banking.show" />
+					</label> <select class="form-control transactionFilter"
+						id="transactionFilterId">
 						<option value="">All Transaction</option>
 						<option value="ALLPAYMENTS">Payments</option>
 						<option value="ALLDEPOSITE">Deposits</option>
@@ -150,672 +190,811 @@ label {display: inline-block; margin-bottom: 0;}
 			<div class="row">
 				<div class="col-md-3 d-flex flex-column full-height">
 					<h4 class="title2">
-						<spring:message code="BzComposer.banking.accountcategory"/>
+						<spring:message code="BzComposer.banking.accountcategory" />
 					</h4>
 					<div id="treeView2" class="treeview">
 						<ul class="list-group">
-						<div style="float: left; width: 100%; margin-bottom: 10px;">
-							<spring:message code="BzComposer.banking.accountcategory"/>
-						</div>
-						<!-- List Bank-Accounts -->
-						<c:forEach items="${AccountCategoryList}" var="curObject" varStatus="loop">
-							<li class="list-group-item">
-							<label class="tree-toggler node-treeview2 node-selected" value="${curObject.accountCategoryID}" id="${curObject.accountCategoryID}" onclick="getAccountCategoryId(${curObject.accountCategoryID})">
-								<img src="${pageContext.request.contextPath}/images/folder-lightblue-icon.png" class="iconImg"/>
-									${curObject.name}
-							</label>
-								<c:forEach items="${accountList}" var="curObject2">
-								<c:if test="${curObject2.accountCategoryID == curObject.accountCategoryID}">
-									<ul class="nav nav-list tree">
-				      				<li><label style="font-size: 14px;cursor: pointer;" value="${curObject2.isitmainaccount}" id="${curObject2.accountID}"
-				      				    onclick="showTransaction(${curObject2.accountID}, ${curObject2.accountCategoryID}, '${curObject2.name}')">${curObject2.name}</label>
-				      				    <input type="hidden" id="IsItMain${curObject2.accountID}" value="${curObject2.isitmainaccount}" />
-				      				    <input type="hidden" id="Account${curObject2.accountID}" value="${curObject2.customerStartingBalance}" />
-				      				</li>
-									</ul>
-							    </c:if>
-							    </c:forEach>
-							</li>
-						</c:forEach>
+							<div style="float: left; width: 100%; margin-bottom: 10px">
+								<spring:message code="BzComposer.banking.accountcategory" />
+							</div>
+							<!-- List Bank-Accounts -->
+							<c:forEach items="${AccountCategoryList}" var="curObject"
+								varStatus="loop">
+								<li class="list-group-item"><label
+									class="tree-toggler node-treeview2 node-selected"
+									value="${curObject.accountCategoryID}"
+									id="${curObject.accountCategoryID}"
+									onclick="getAccountCategoryId(${curObject.accountCategoryID})">
+										<img
+										src="${pageContext.request.contextPath}/images/folder-lightblue-icon.png"
+										class="iconImg" /> ${curObject.name}
+								</label> <c:forEach items="${accountList}" var="curObject2">
+										<c:if
+											test="${curObject2.accountCategoryID == curObject.accountCategoryID}">
+											<ul class="nav nav-list tree">
+												<li><label style="font-size: 14px; cursor: pointer;"
+													value="${curObject2.isitmainaccount}"
+													id="${curObject2.accountID}"
+													onclick="showTransaction(${curObject2.accountID}, ${curObject2.accountCategoryID}, '${curObject2.name}')">${curObject2.name}</label>
+													<input type="hidden" id="IsItMain${curObject2.accountID}"
+													value="${curObject2.isitmainaccount}" /> <input
+													type="hidden" id="Account${curObject2.accountID}"
+													value="${curObject2.customerStartingBalance}" /></li>
+											</ul>
+										</c:if>
+									</c:forEach></li>
+							</c:forEach>
 							<!-- <li class="list-group-item">	<label class="  node-treeview2 node-selected">Header 2</label></li>
 						    <li class="list-group-item"><label class=" node-treeview2 node-selected">Header 3</label></li> -->
 						</ul>
 					</div>
 					<div class="mb-auto"></div>
 					<div class="filterbar filterbar1 text-center mb-0">
-						<a style="color: #fff; font-size: 14px;" class="btn btn-info" id="AddAccount"><spring:message code="BzComposer.global.add"/></a>
-						<a style="color: #fff; font-size: 14px;" class="btn btn-info" id="EditAccount"><spring:message code="BzComposer.global.edit"/></a>
-						<a style="color: #fff; font-size: 14px;" class="btn btn-info" id="TranseferFundsBtn"><spring:message code="BzComposer.banking.transeferfundsbtn"/></a>
+						<a style="color: #fff; font-size: 14px;" class="btn btn-info"
+							id="AddAccount"><spring:message code="BzComposer.global.add" /></a>
+						<a style="color: #fff; font-size: 14px;" class="btn btn-info"
+							id="EditAccount"><spring:message
+								code="BzComposer.global.edit" /></a> <a
+							style="color: #fff; font-size: 14px;" class="btn btn-info"
+							id="TranseferFundsBtn"><spring:message
+								code="BzComposer.banking.transeferfundsbtn" /></a>
 					</div>
-				</div>			
+				</div>
 				<div class="col-md-9 d-flex flex-column full-height">
 					<div id="selectedAccount">
-					  <h4 class="title2">${selectedAccount.name}</h4>
-					 <!-- <h4 class="title2">Personal Checking 5423</h4> --> 
+						<h4 class="title2">${selectedAccount.name}</h4>
+						<!-- <h4 class="title2">Personal Checking 5423</h4> -->
 					</div>
 					<div id="transactionTable">
-					<table class="table table-bordered table-sm  devBankingDatatable" style="font-size: 12px;">
-						<thead class="thead-light">
-							<tr>
-								<th scope="col" class="text-right"><spring:message code="BzComposer.banking.date"/></th>
-								<th scope="col" class="text-right"><spring:message code="BzComposer.banking.payerorpayee"/></th>
-								<th scope="col" class="text-right"><spring:message code="BzComposer.banking.payment"/></th>
-								<th scope="col" class="text-right"><spring:message code="BzComposer.banking.deposit"/></th>
-								<th scope="col" class="text-right"><spring:message code="BzComposer.banking.balance"/></th>
-								<th scope="col" class="text-right"><spring:message code="BzComposer.banking.invoiceorponumber"/></th>
-								<th scope="col" class="text-right"><spring:message code="BzComposer.banking.paymentmethod"/></th>
-								<th scope="col" class="text-right"><spring:message code="BzComposer.banking.category"/></th>
-								<th scope="col" class="text-right"><spring:message code="BzComposer.banking.memo"/></th>
-							</tr>
-						</thead>
-						<tbody>
-						<c:set var="vendorId" value="-1" scope="page" />
-	                    <c:set var="indexForVendor" value="-1" scope="page" />
-	                    <c:set var="checkNumber" value="" scope="page" />
-	                    <c:if test="${not empty payMentList}">
-	                    <c:if test="${not empty indexForPayeeVendor}">
-                            <c:set var="vendorId" value="${vendorID}" scope="page"/>
-                            <c:set var="indexForVendor" value="${indexForPayeeVendor}" scope="page"/>
-                        </c:if>
-                        <c:forEach items="${payMentList}" var="curObject" varStatus="loop">
-                        <c:if test="${selectedAccount.accountID == curObject.payeeID || selectedAccount.accountID == curObject.payerID}">
-      					<tr onclick="return selectRow(${loop.index+1}, ${curObject.id}, ${selectedAccount.accountID})">
-								<td class="text-right">
-								    <fmt:formatDate pattern="MM-dd-yyyy" value="${curObject.dateAdded}" />
-								</td>
-								<td class="text-right">
-								<c:choose>
-                                <c:when test="${curObject.payeeID == vendorId && vendorId != -1}">
+						<table class="table table-bordered table-sm  devBankingDatatable"
+							style="font-size: 12px;">
+							<thead class="thead-light">
+								<tr>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.date" /></th>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.payerorpayee" /></th>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.payment" /></th>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.deposit" /></th>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.balance" /></th>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.invoiceorponumber" /></th>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.paymentmethod" /></th>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.category" /></th>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.memo" /></th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:set var="vendorId" value="-1" scope="page" />
+								<c:set var="indexForVendor" value="-1" scope="page" />
+								<c:set var="checkNumber" value="" scope="page" />
+								<c:if test="${not empty payMentList}">
+									<c:if test="${not empty indexForPayeeVendor}">
+										<c:set var="vendorId" value="${vendorID}" scope="page" />
+										<c:set var="indexForVendor" value="${indexForPayeeVendor}"
+											scope="page" />
+									</c:if>
+									<c:forEach items="${payMentList}" var="curObject"
+										varStatus="loop">
+										<c:if
+											test="${selectedAccount.accountID == curObject.payeeID || selectedAccount.accountID == curObject.payerID}">
+											<tr
+												onclick="return selectRow(${loop.index+1}, ${curObject.id}, ${selectedAccount.accountID})">
+												<td class="text-right"><fmt:formatDate
+														pattern="MM-dd-yyyy" value="${curObject.dateAdded}" /></td>
+												<td class="text-right"><c:choose>
+														<c:when
+															test="${curObject.payeeID == vendorId && vendorId != -1}">
 								    ${cvList[indexForVendor].firstName} ${cvList[indexForVendor].lastName}
 								</c:when>
-								<c:otherwise>
-								<c:if test="${curObject.cvName == selectedAccount.name}">
-								    <c:if test="${not empty curObject.pyerAccountForBanking}"> ${curObject.pyerAccountForBanking}</c:if>
-								    <c:if test="${empty curObject.pyerAccountForBanking}"> ${fn:replace(curObject.categoryName, "[^A-Za-z]", "")}</c:if>
-							    </c:if>
-							    <c:if test="${curObject.cvName != selectedAccount.name}">
-							       <c:if test="${not empty curObject.cvName}">${curObject.cvName}</c:if>
-								    <c:if test="${empty curObject.cvName}">${fn:replace(curObject.categoryName, "[^A-Za-z]", "")}</c:if>
-								</c:if>
-								</c:otherwise>
-								</c:choose>
-								</td>
-								<td class="text-right">
-								    <c:if test="${selectedAccountId == curObject.payerID}">${curObject.amount}</c:if>
-								</td>
-								<td class="text-right">
-								    <c:if test="${selectedAccountId != curObject.payerID}">${curObject.toCurrentBalance}</c:if>
-								</td>
-								<td class="text-right">
-								    <fmt:formatNumber type="number" maxFractionDigits="2" value="${curObject.balanceForBanking}" />
-                                </td>
-								<td class="text-right">
-								<c:choose>
-								<c:when test="${curObject.orderNum != 0 && curObject.orderNum > 0}">Order#${curObject.orderNum}</c:when>
-								<c:when test="${curObject.poNum != 0 && curObject.poNum > 0}">PO#${curObject.poNum}</c:when>
-								<c:otherwise><c:if test="${curObject.billNum != -1}">Bill#${curObject.billNum}</c:if></c:otherwise>
-								</c:choose>
-								</td>
-								<td class="text-right">
-								 <c:if test="${not empty curObject.checkNumber}">
-								    <c:choose>
-								    <c:when test="${curObject.checkNumber.length()>5}"><c:set var="checkNumber" value="#${fn:substring(curObject.checkNumber, 0, 4)}" scope="page"/></c:when>
-								    <c:otherwise><c:set var="checkNumber" value="#${curObject.checkNumber}" scope="page"/></c:otherwise>
-								    </c:choose>
-                                     <c:if test="${curObject.paymentTypeID != -1}">${curObject.paymentTypeName}${checkNumber}</c:if>
-                                     <c:if test="${curObject.paymentTypeID == -1}">Check ${checkNumber}</c:if>
-                                 </c:if>
-							     <c:if test="${empty curObject.checkNumber}">
+														<c:otherwise>
+															<c:if test="${curObject.cvName == selectedAccount.name}">
+																<c:if
+																	test="${not empty curObject.pyerAccountForBanking}"> ${curObject.pyerAccountForBanking}</c:if>
+																<c:if test="${empty curObject.pyerAccountForBanking}"> ${fn:replace(curObject.categoryName, "[^A-Za-z]", "")}</c:if>
+															</c:if>
+															<c:if test="${curObject.cvName != selectedAccount.name}">
+																<c:if test="${not empty curObject.cvName}">${curObject.cvName}</c:if>
+																<c:if test="${empty curObject.cvName}">${fn:replace(curObject.categoryName, "[^A-Za-z]", "")}</c:if>
+															</c:if>
+														</c:otherwise>
+													</c:choose></td>
+												<td class="text-right"><c:if
+														test="${selectedAccountId == curObject.payerID}">${curObject.amount}</c:if>
+												</td>
+												<td class="text-right"><c:if
+														test="${selectedAccountId != curObject.payerID}">${curObject.toCurrentBalance}</c:if>
+												</td>
+												<td class="text-right"><fmt:formatNumber type="number"
+														maxFractionDigits="2"
+														value="${curObject.balanceForBanking}" /></td>
+												<td class="text-right"><c:choose>
+														<c:when
+															test="${curObject.orderNum != 0 && curObject.orderNum > 0}">Order#${curObject.orderNum}</c:when>
+														<c:when
+															test="${curObject.poNum != 0 && curObject.poNum > 0}">PO#${curObject.poNum}</c:when>
+														<c:otherwise>
+															<c:if test="${curObject.billNum != -1}">Bill#${curObject.billNum}</c:if>
+														</c:otherwise>
+													</c:choose></td>
+												<td class="text-right"><c:if
+														test="${not empty curObject.checkNumber}">
+														<c:choose>
+															<c:when test="${curObject.checkNumber.length()>5}">
+																<c:set var="checkNumber"
+																	value="#${fn:substring(curObject.checkNumber, 0, 4)}"
+																	scope="page" />
+															</c:when>
+															<c:otherwise>
+																<c:set var="checkNumber"
+																	value="#${curObject.checkNumber}" scope="page" />
+															</c:otherwise>
+														</c:choose>
+														<c:if test="${curObject.paymentTypeID != -1}">${curObject.paymentTypeName}${checkNumber}</c:if>
+														<c:if test="${curObject.paymentTypeID == -1}">Check ${checkNumber}</c:if>
+													</c:if> <c:if test="${empty curObject.checkNumber}">
 								    ${curObject.paymentTypeID != -1?curObject.paymentTypeName:"Check"}
-							    </c:if>
-							    </td>
-								<td class="text-right">
-								    ${curObject.categoryName == null || fn:startsWith(curObject.categoryName, 'null')?'':curObject.categoryName}
-								</td>
-								<td class="text-right"></td>
-								<td hidden="oldBankAccount" value="${selectedAccount.accountID}"></td>
-							</tr>
-						</c:if>
-						</c:forEach>
-						</c:if>
-						<tr><td hidden="totalrowCount" value="${payMentList.size()}" id="RowCount"></tr>
-						</tbody>
-					</table>
-	</div>				
+							    </c:if></td>
+												<td class="text-right">${curObject.categoryName == null || fn:startsWith(curObject.categoryName, 'null')?'':curObject.categoryName}
+												</td>
+												<td class="text-right"></td>
+												<td hidden="oldBankAccount"
+													value="${selectedAccount.accountID}"></td>
+											</tr>
+										</c:if>
+									</c:forEach>
+								</c:if>
+								<tr>
+									<td hidden="totalrowCount" value="${payMentList.size()}"
+										id="RowCount">
+								</tr>
+							</tbody>
+						</table>
+					</div>
 					<div class="mb-auto"></div>
 					<div class="filterbar filterbar1 text-center mb-0" id="bottom">
 						<label class=" float-left text-danger" style="font-size: 14px;">
-							<spring:message code="BzComposer.banking.deletetransactionnote"/>
-						</label>
-
-						<a style="color: white; font-size: 14px;" class="btn btn-info" id="AddTransaction"><spring:message code="BzComposer.global.add"/></a>
-						<a style="color: white; font-size: 14px;" class="btn btn-info" id="showEditTransactionDialog"><spring:message code="BzComposer.global.edit"/></a>
-						<a style="color: white; font-size: 14px;" class="btn btn-info" onclick="return clearTransaction()"><spring:message code="BzComposer.global.delete"/></a>
+							<spring:message code="BzComposer.banking.deletetransactionnote" />
+						</label> <a style="color: white; font-size: 14px;" class="btn btn-info"
+							id="AddTransaction"><spring:message
+								code="BzComposer.global.add" /></a> <a
+							style="color: white; font-size: 14px;" class="btn btn-info"
+							id="showEditTransactionDialog"><spring:message
+								code="BzComposer.global.edit" /></a> <a
+							style="color: white; font-size: 14px;" class="btn btn-info"
+							onclick="return clearTransaction()"><spring:message
+								code="BzComposer.global.delete" /></a>
 						<!--  <div id="totalLabel"> -->
 						<c:forEach items="${paymentList}" var="curObject" varStatus="loop">
-						<c:if test="${selectedAccount.accountID == curObject.accountID || selectedAccount.accountID == curObject.payeeID || selectedAccount.accountID == curObject.payerID()}">
-						 <label class="text-right float-right" id="totalLabel">${curObject.balanceForBanking}</label>
-						</c:if>
+							<c:if
+								test="${selectedAccount.accountID == curObject.accountID || selectedAccount.accountID == curObject.payeeID || selectedAccount.accountID == curObject.payerID()}">
+								<label class="text-right float-right" id="totalLabel">${curObject.balanceForBanking}</label>
+							</c:if>
 						</c:forEach>
 					</div>
 				</div>
 			</div>
 		</div>
-		<input type="hidden" id="tabid" name="tabid" value=""/>
+		<input type="hidden" id="tabid" name="tabid" value="" />
 	</form:form>
-<div class="container" id="popupWindow">                                                                                      
-  <div class="table-responsive" style="padding-top: 20px">  
-  <div class="d-flex flex-column full-height">    
-  
-  <div class="modal-body1">
-  <div class="content-tabs" id="dialogTabs">		
-			<nav>
-			   <div class="nav nav-tabs" id="tabId" role="tablist">
-			    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" onclick="fundTrasferTab()">
-			    	<spring:message code="BzComposer.banking.fundtransfer"/>
-		    	</a>
-			    <a class="nav-item nav-link" id="nav-home1-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" onclick="paymentTab()">
-			    	<spring:message code="BzComposer.banking.payment"/>
-		    	</a>
-			    <a class="nav-item nav-link" id="nav-home2-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="depositTab()">
-			    	<spring:message code="BzComposer.banking.deposit"/>
-		    	</a>
-			  </div>
-			</nav>
-  </div>
-  <!-- Here is the Fund Trasfer Tab Started -->
-  <div class="container-fluid" id="fundTrasferTab">
-  <div class=" row" >
-  <div class=" col-12">
-  <div class="border1 clearfix">
-  <form>	
-	 <div class="row">
-	 	<div class="col-md-6" id="firstTable">
-	 	<table class="bz_dialogTable">
-	 		<tr>		
-		 		<td width="40%">
-		 			<label><spring:message code="BzComposer.banking.payeraccount"/></label>
- 				</td>
-		 		<td>
-		 		    <input type="text" value="${selectedAccount.name}" readonly="true" style="width:150px" id="${selectedAccount.accountID}" />
-		 		    <input type="hidden" value="${selectedAccount.accountCategoryID}" id="categoryIdForPayer" />
-		 		</td>
-	 		</tr>
-	 		<tr>
-	 			<td>
-	 				<label>
-	 					<spring:message code="BzComposer.banking.paymethod"/>
- 					</label>
-				</td>
-	 			<td>
-	 			    <select style="width:100%" onchange="slectedPayMethod()" id="payMethodForDlg">
-	 			    <c:forEach items="${simpleTypes}" var="curObject" varStatus="loop">
-	 			        <c:if test="${not empty curObject.typeName}">
-	 				    <option id="${curObject.id}">${curObject.typeName}</option>
-	 				    </c:if>
-	 			    </c:forEach>
-	 			    </select>
-	 			</td>
-	 		</tr>
-	 		 <tr>
-	 			<td>
-	 				<label><spring:message code="BzComposer.banking.date"/></label>
-				</td>
-	 			<td>
-	 				<input type="text" readonly="true" style="width:150px" id="dlgDate"/></td>
-	 		</tr>				
-	 	</table>	
-	 	</div>
-	 <div class="col-md-6" id="secondTable">
-	 	<table class="bz_dialogTable">
-	 	<tr>
-            <td width="40%">
-                <label><spring:message code="BzComposer.banking.payamount"/></label>
-            </td>
-            <td>
-                <input type="number" style="width:150px" id="payAmount"/>
-            </td>
-        </tr>
-	 	<tr>
-	 		<td>
-	 			<label><spring:message code="BzComposer.banking.checkno"/></label>
-			</td>
-	 		<td><input type="text" style="width:150px" id="checkNumForDlg"/></td> 
-	 	</tr>
-	 	<tr>
-	 		<td>
-	 			<label><spring:message code="BzComposer.banking.payeeaccount"/></label>
-			</td>
-	 		<td>
-	 			<select style="width:100%" id="payeename" onchange="changeBank()">
-	 			<option></option>
-	 			<c:forEach items="${accountList}" var="curObject" varStatus="loop">
-	 			<c:if test="${curObject.accountCategoryID == 1 || curObject.accountCategoryID == 2 || curObject.accountCategoryID == 3}">
-	 		        <option value="${curObject.customerCurrentBalance}" id="${curObject.accountID}">${curObject.name}</option>
-	 			</c:if>
-	 			</c:forEach>
-	 		 	</select>
-	 		</td>
-	 	</tr>
-	 	<tr>
-	 		<td><!-- label><spring:message code="BzComposer.banking.endingbalance"/></label --></td>
-	 		<td>
-	 		    <input type="hidden" id="payeeBalance"/>
-	 		    <c:if test="${not empty payMentList}">
-	 		        <input type="hidden" value='${payMentList[0].balanceForBanking}' id="payerBalance"/>
-	 		    </c:if>
-	 		    <c:if test="${empty payMentList}">
-	 		        <input type="hidden" value='0.0' id="payerBalance"/>
-	 		    </c:if>
-	 		</td>
-	 	</tr>
-	 	
-	 	</table>
-	 	</div>
-	 </div>
-  </form>
-</div>
-</div>
-  </div> 
-  <div class="bzbtn">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onClick="closeAddTransaction()">
-		<spring:message code="BzComposer.global.cancel"/>
-	</button>	
-  	<button type="button" class="btn btn-info" onclick="return addTransactionFromDialog()" id="addButton" style="float: right;margin-right: 10px;font-size: 14px;">
-  		<spring:message code="BzComposer.global.add"/>
-	</button>
-  </div> 
-  </div>
-  <!-- Here is the Payment Tab started -->
-  <div class="container-fluid" id="paymentTab">
-  <div class=" row">
-  <div class=" col-12">
-  <div class="border1  clearfix">
-  <form>	
-	 <div class="row">
-	 	<div class="col-md-6" id="thirdTable">
-	 	<table class="bz_dialogTable">
-	 		<tr>		
-		 		<td width="40%">
-		 			<label><spring:message code="BzComposer.banking.payeraccount"/></label>
- 				</td>
-		 		<td><input type="text" value="${selectedAccount.name}" readonly="true" style="width:150px" id="${selectedAccount.accountID}"/></td>
-		 		<td><input type="hidden" value="${selectedAccount.accountCategoryID}" id="categoryIdForPayerForPayment"></td>
-	 		</tr>
-	 		<tr>
-	 			<td>
-	 				<label><spring:message code="BzComposer.banking.paymethod"/></label>
-				</td>
-	 			<td>
-	 			    <select style="width:100%" onchange="selectedPaymenthodForPayment()" id="payMethodForDlgForPayment">
-	 			    <c:forEach items="${simpleTypes}" var="curObject" varStatus="loop">
-	 			        <c:if test="${not empty curObject.typeName}">
-	 				    <option id="${curObject.id}">${curObject.typeName}</option>
-	 				    </c:if>
-	 			    </c:forEach>
-	 			</select></td>
-	 		</tr>
-	 		 <tr>
-	 			<td>
-	 				<label><spring:message code="BzComposer.banking.date"/></label>
-				</td>
-	 			<td><input type="text" readonly="true" style="width:150px" id="dlgDateForPayment"/></td>
-	 		</tr>				
-	 	</table>	
-	 	</div>
-	 <div class="col-md-6" id="fourthTable">
-	 	<table class="bz_dialogTable">
-	 	<tr>
-            <td width="40%">
-                <label><spring:message code="BzComposer.banking.payamount"/></label>
-            </td>
-            <td><input type="number" style="width:150px" id="payAmountForPayment"/></td>
-        </tr>
-	 	<tr>
-	 		<td>
-	 			<label><spring:message code="BzComposer.banking.checkno"/></label>
-			</td>
-	 		<td><input type="text" style="width:150px" id="checkNumForDlgForPayment"/></td> 
-	 	</tr>
-	 	<tr>
-	 		<td>
-	 			<label><spring:message code="BzComposer.banking.payeeaccount"/></label>
-			</td>
-	 		<td><select style="width:100%" id="payeenameForPayment" onchange="selectVendor()">
-	 			<c:forEach items="${cvList}" var="curObject" varStatus="loop">
-	 			    <c:forEach items="${accountForClientVendor}" var="curObject2">
-	 			        <c:if test="${curObject2 != null && curObject2.cvID == curObject.cvID}">
-	 					<option id="${curObject.cvID}" value="${curObject2.customerCurrentBalance}" label="${loop.index}">${curObject.firstName} ${curObject.lastName} (${curObject.name})</option>
-	 				    </c:if>
-	 				</c:forEach>
-	 			</c:forEach>
-	 		 	</select>
-	 		</td>
-	 	</tr>
-	 	<tr>
-	 		<td>
-	 			<label><spring:message code="BzComposer.banking.category"/></label>
-			</td>
-	 		<td><select style="width:100%" id="category">
-	 		<c:forEach items="${categoryListForPayment}" var="curObject">
-	 		    <option id="${curObject.id}">${curObject.categoryNumber} ${curObject.name}</option>
-	 		</c:forEach>
-	 		</select>
-	 		</td>
-	 	</tr>
-	 	<tr>
-	 		<td>
-	 			<!-- label><spring:message code="BzComposer.banking.endingbalance"/></label -->
-			</td>
-	 		<td>
-	 		    <input type="hidden" id="payeeBalance2"/>
-	 		    <c:if test="${not empty payMentList}">
-	 		        <input type="hidden" value='${payMentList[0].balanceForBanking}' id="payerBalance2"/></td>
-	 		    </c:if>
-	 		    <c:if test="${empty payMentList}">
-	 		        <input type="hidden" value='0.0' id="payerBalance2"/></td>
-	 		    </c:if>
-	 		</td>
-	 	</tr>
-	 	</table>
-	 	</div>
-	 </div>
-  </form>
-</div>
-</div>
-  </div> 
-   <div class="bzbtn">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;"  onClick="closeAddTransaction()">
-  		<spring:message code="BzComposer.global.cancel"/>
-	</button>	
-  	<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;"
-  	onclick="return addTransactionFromDialogForPayment()" id="addButtonForPayment">
-  		<spring:message code="BzComposer.global.add"/>
-	</button>
-  </div> 
-  </div>
-  <!--    Here is the Deposit tab started -->
-  <div class="container-fluid" id="depositTab">
-  <div class=" row">
-  <div class=" col-12">
-  <div class="border1  clearfix">
-  <form>
-	 <div class="row">
-	 	<div class="col-md-6" id="fifthTable">
-	 	<table class="bz_dialogTable">
-	 		<tr>		
-		 		<td width="40%">
-		 			<label><spring:message code="BzComposer.banking.payeraccount"/></label>
- 				</td>
-		 		<td><select id="payerForDeposit" onchange="selectVendorForDeposit()" style="width:100%;">
-		 		<option></option>
-		 		<c:forEach items="${cleintListForDeposit}" var="curObject" varStatus="loop">
-		 		    <c:if test="${accountForClientListForDeposit[loop.index] != null && accountForClientListForDeposit[loop.index].cvID == curObject.cvID}">
-		 		<option value="${accountForClientListForDeposit[loop.index].customerCurrentBalance}" id="${accountForClientListForDeposit[loop.index].accountID}"
-		 		    label="${accountForClientListForDeposit[loop.index].accountTypeID}">
-		 		    ${curObject.firstName} ${curObject.lastName} (${curObject.name})
-		 		</option>
-		 		</c:if>
-		 		</c:forEach>
-		 		</select></td>
-		 		<td><input type="hidden" value="" id="categoryIdForPayerForDeposit"></td>
-	 		</tr>
-	 		<tr>
-	 			<td><label><spring:message code="BzComposer.banking.paymethod"/></label></td>
-	 			<td>
-	 			    <select style="width:100%" onchange="selectedPaymenthodForPayment()" id="payMethodForDeposit">
-	 			    <c:forEach items="${simpleTypes}" var="curObject" varStatus="loop">
-	 			        <c:if test="${not empty curObject.typeName}">
-	 				    <option id="${curObject.id}">${curObject.typeName}</option>
-	 				    </c:if>
-	 			    </c:forEach>
-	 			    </select>
-	 			</td>
-	 		</tr>
-	 		 <tr>
-	 			<td><label><spring:message code="BzComposer.banking.date"/></label></td>
-	 			<td><input type="text" readonly="true" style="width:150px" id="dateForDeposit"/></td>
-	 		</tr>				
-	 	</table>	
-	 	</div>
-	 <div class="col-md-6" id="sixthTable">
-	 	<table class="bz_dialogTable">
-	 	<tr>
-            <td width="40%"><label><spring:message code="BzComposer.banking.payamount"/></label></td>
-            <td><input type="number" style="width:150px" id="payAmountForDeposit"/></td>
-        </tr>
-	 	<tr>
-	 		<td><label><spring:message code="BzComposer.banking.checkno"/></label></td>
-	 		<td><input type="text" style="width:150px" id="checkNumForDeposit"/></td> 
-	 	</tr>
-	 	<tr>
-	 		<td><label><spring:message code="BzComposer.banking.payeeaccount"/></label></td>
-	 		<td><select style="width:100%" id="payeenameForDeposit" onchange="changeBankForDeposit()">
-	 			<c:forEach items="${accountList}" var="curObject" varStatus="loop">
-	 			    <c:if test="${not empty curObject.name}">
-	 			    <option value="${curObject.customerCurrentBalance}" id="${curObject.accountID}">${curObject.name}</option>
-	 			    </c:if>
-	 		    </c:forEach>
-	 		 	</select>
-	 		</td>
-	 	</tr>
-	 	<tr>
-	 		<td><label><spring:message code="BzComposer.banking.category"/></label></td>
-	 		<td><select style="width:100%" id="categoryForDeposit">
-	 		<option></option>
-	 		<c:forEach items="${categoryListForDeposit}" var="curObject" varStatus="loop">
-	 		    <option id="${curObject.id}">${curObject.categoryNumber} ${curObject.name}</option>
-	 		</c:forEach>
-	 	</tr>
-	 	<tr>
-	 		<td><!-- label><spring:message code="BzComposer.banking.endingbalance"/></label --></td>
-	 		<td>
-	 		    <input type="hidden" id="payeeBalanceForDeposit"/>
-	 		    <c:if test="${not empty payMentList}">
-                    <input type="hidden" value="${payMentList[0].balanceForBanking}" id="payerBalanceForDeposit"/>
-                </c:if>
-                <c:if test="${empty payMentList}">
-                    <input type="hidden" value="0.0" id="payerBalanceForDeposit"/>
-                </c:if>
-	 		</td>
-	 	</tr>
-	 	
-	 	</table>
-	 	</div>
-	 </div>
-  </form>
-</div>
-</div>
-  </div> 
-   <div class="bzbtn">
-		<button type="button" class="btn btn-info" style="float: right;font-size: 14px;"  onClick="closeAddTransaction()">
-			<spring:message code="BzComposer.global.cancel"/>
-		</button>	
-  		<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;"
-  		onclick="return addTrafsactioFromDeposit()" id="addButtonForDeposit">
-  			<spring:message code="BzComposer.global.add"/>
-		</button>
-  </div> 
-  </div>
-   </div>
-   
-  </div>
-</div>
-</div>
+	<div class="container" id="popupWindow">
+		<div class="table-responsive" style="padding-top: 20px">
+			<div class="d-flex flex-column full-height">
 
-<!--    Here is the EditTransaction dialog started -->
-<div class="container-fluid" id="EditTransactionDialog">
-<div class="table-responsive" style="padding-top: 20px">  
-  <div class="d-flex flex-column full-height">    
-  
-   <div class="modal-body1">
-  <div class=" row">
-  <div class=" col-12">
-  <div class="border1  clearfix">
-  <form>	
-	 <div class="row">
-	 	<div class="col-md-6 " id="editTable1">
-	 	<table class="bz_dialogTable devFirstEditTable">
-	 		<tr>		
-		 		<td>
-		 			<label>
-		 				<spring:message code="BzComposer.banking.payer"/>
-		 			</label>
-	 			</td>
-		 		<td><select class="payerField" id="payerForEdit" onchange="" style="width:100%;">
-		 		<option></option>
-		 		<c:forEach items="${allClientVendor}" var="curObject" varStatus="loop">
-		 		    <option value="${curObject.cvID}">${curObject.firstName} ${curObject.lastName} (${curObject.name})</option>
-		 		</c:forEach>
-		 		</select></td>
-		 		<td><input type="hidden" value="" id="categoryIdForPayerForDeposit2"></td>
-	 		</tr>
-	 		<tr>
-		 		<td><label><spring:message code="BzComposer.banking.payee"/></label></td>
-		 		<td><select class="accountFieldForEdit" id="payeeForEdit">
-		 		<c:forEach items="${accountList}" var="curObject" varStatus="loop">
-		 			<option value="${curObject.accountID}">${curObject.name}</option>
-		 		</c:forEach>
-		 		</select></td>
-	 		</tr>
-	 		<tr>
-	 			<td><label><spring:message code="BzComposer.banking.paymethod"/></label></td>
-	 			<td><select class="payMethodForEdit" style="width:100%" onchange="" id="payMethodForEdit">
-	 			<c:forEach items="${allPaymentList}" var="curObject" varStatus="loop">
-	 				<option value="${curObject.id}">${curObject.typeName}</option>
-	 			</c:forEach>
-	 			</select></td>
-	 		</tr>
-	 		 <tr>
-	 			<td><label><spring:message code="BzComposer.banking.category"/></label></td>
-	 			<td><select class="categoryForEdit" id="categoryForEdit">
-	 			<c:forEach items="${allCategoryList}" var="curObject" varStatus="loop">
-	 				<option value="${curObject.id}">${curObject.name} ${curObject.categoryNumber}</option>
-	 			</c:forEach>
-	 			</select></td>
-	 		</tr>				
-	 	</table>	
-	 	</div>
-	 <div class="col-md-6 " id="editTable2">
-	 	<table class="bz_dialogTable devSecondEditTable">
-	 	<tr>
-	 		<td><label><spring:message code="BzComposer.banking.amount"/></label></td>
-	 		
-	 		<td><input class="devAmount" type="text" id="amountToEdit"/></td>
-	 		
-	 	</tr>
-	 	<tr>
-	 		<td><label><spring:message code="BzComposer.banking.date"/></label></td>
-	 		<td><input type="text" class="devDate" id="devDateForEdit"/></td> 
-	 	</tr>
-	 	<tr>
-	 		<td><label><spring:message code="BzComposer.banking.checknumber"/></label></td>
-	 		<td><input type="text" class="checkNumberForEdit" id="checkNumberEdit"/></td>
-	 	</tr>
-	 	</table>
-	 	</div>
-	 </div>
-  </form>
-</div>
-</div>
-  </div> 
- </div>
- </div>
- </div> 
-   <div class="bzbtn">
-  	<button type="button" class="btn btn-info" style="float: right;font-size: 14px;" onClick="closeEditTransaction()">
-  		<spring:message code="BzComposer.global.cancel"/>
-	</button>	
-  	<button type="button" class="btn btn-info" style="float: right;margin-right: 10px;font-size: 14px;" onclick="return editTransaction()" id="addButtonForDeposit">
-  		<spring:message code="BzComposer.global.save"/>
-	</button>
-  </div> 
-  </div>
-  <!--    Here is the AddAccount dialog started -->
-  <div class="container-fluid" id="AddAccountDialog">
-  <!--    Here is the AddMainCategory dialog started -->
-  <div class="table-responsive" style="padding:0 15px;font-size: 14px;">
-     <h6><spring:message code="BzComposer.banking.maincategoryinfo"/></h6>
-     <div class="boxborderd">
-        <div class="row">
-           <label class="col-sm-3"><spring:message code="BzComposer.banking.maincategory"/></label>
-           <div class="col-sm-9">
-           <select class="form-control" id="mainCategoryID" onchange="afterMainCategoryChange()" style="width:150px;">
-            <option value=""><spring:message code="BzComposer.ComboBox.Select" /></option>
-            <c:forEach items="${AccountCategoryList}" var="curObject" varStatus="loop">
-                  <option value="${curObject.accountCategoryID}">${curObject.name}</option>
-              </c:forEach>
-           </select>
-           </div>
-        </div>
-        <div class="row">
-           <label class="col-sm-3">
-                <spring:message code="BzComposer.banking.categoryname"/>
-                <span class="errorField">*</span>
-           </label>
-           <div class="col-sm-4">
-            <input type="text" id="mainCategoryName" class="form-control" style="width:150px;" />
-           </div>
-           <div class="col-sm-5">
-               <button type="button" class="btn btn-info" style="font-size: 14px;" id="mainCategoryBtnAdd" onclick="return saveMainCategory()"><spring:message code="BzComposer.global.save"/></button>
-               <button type="button" class="btn btn-info" style="font-size: 14px;" id="mainCategoryBtnUpdate" onclick="return saveMainCategory()"><spring:message code="BzComposer.global.update"/></button>
-           </div>
-        </div>
+				<div class="modal-body1">
+					<div class="content-tabs" id="dialogTabs">
+						<nav>
+							<div class="nav nav-tabs" id="tabId" role="tablist">
+								<a class="nav-item nav-link active" id="nav-home-tab"
+									data-toggle="tab" href="#nav-home" role="tab"
+									aria-controls="nav-home" aria-selected="true"
+									onclick="fundTrasferTab()"> <spring:message
+										code="BzComposer.banking.fundtransfer" />
+								</a> <a class="nav-item nav-link" id="nav-home1-tab"
+									data-toggle="tab" href="#nav-profile" role="tab"
+									aria-controls="nav-profile" aria-selected="false"
+									onclick="paymentTab()"> <spring:message
+										code="BzComposer.banking.payment" />
+								</a> <a class="nav-item nav-link" id="nav-home2-tab"
+									data-toggle="tab" href="#nav-contact" role="tab"
+									aria-controls="nav-contact" aria-selected="false"
+									onclick="depositTab()"> <spring:message
+										code="BzComposer.banking.deposit" />
+								</a>
+							</div>
+						</nav>
+					</div>
+					<!-- Here is the Fund Trasfer Tab Started -->
+					<div class="container-fluid" id="fundTrasferTab">
+						<div class=" row">
+							<div class=" col-12">
+								<div class="border1 clearfix">
+									<form>
+										<div class="row">
+											<div class="col-md-6" id="firstTable">
+												<table class="bz_dialogTable">
+													<tr>
+														<td width="40%"><label><spring:message
+																	code="BzComposer.banking.payeraccount" /></label></td>
+														<td><input type="text"
+															value="${selectedAccount.name}" readonly="true"
+															style="width: 150px" id="${selectedAccount.accountID}" />
+															<input type="hidden"
+															value="${selectedAccount.accountCategoryID}"
+															id="categoryIdForPayer" /></td>
+													</tr>
+													<tr>
+														<td><label> <spring:message
+																	code="BzComposer.banking.paymethod" />
+														</label></td>
+														<td><select style="width: 100%"
+															onchange="slectedPayMethod()" id="payMethodForDlg">
+																<c:forEach items="${simpleTypes}" var="curObject"
+																	varStatus="loop">
+																	<c:if test="${not empty curObject.typeName}">
+																		<option id="${curObject.id}">${curObject.typeName}</option>
+																	</c:if>
+																</c:forEach>
+														</select></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.date" /></label></td>
+														<td><input type="text" readonly="true"
+															style="width: 150px" id="dlgDate" /></td>
+													</tr>
+												</table>
+											</div>
+											<div class="col-md-6" id="secondTable">
+												<table class="bz_dialogTable">
+													<tr>
+														<td width="40%"><label><spring:message
+																	code="BzComposer.banking.payamount" /></label></td>
+														<td><input type="number" style="width: 150px"
+															id="payAmount" /></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.checkno" /></label></td>
+														<td><input type="text" style="width: 150px"
+															id="checkNumForDlg" /></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.payeeaccount" /></label></td>
+														<td><select style="width: 100%" id="payeename"
+															onchange="changeBank()">
+																<option></option>
+																<c:forEach items="${accountList}" var="curObject"
+																	varStatus="loop">
+																	<c:if
+																		test="${curObject.accountCategoryID == 1 || curObject.accountCategoryID == 2 || curObject.accountCategoryID == 3}">
+																		<option value="${curObject.customerCurrentBalance}"
+																			id="${curObject.accountID}">${curObject.name}</option>
+																	</c:if>
+																</c:forEach>
+														</select></td>
+													</tr>
+													<tr>
+														<td>
+															<!-- label><spring:message code="BzComposer.banking.endingbalance"/></label -->
+														</td>
+														<td><input type="hidden" id="payeeBalance" /> <c:if
+																test="${not empty payMentList}">
+																<input type="hidden"
+																	value='${payMentList[0].balanceForBanking}'
+																	id="payerBalance" />
+															</c:if> <c:if test="${empty payMentList}">
+																<input type="hidden" value='0.0' id="payerBalance" />
+															</c:if></td>
+													</tr>
 
-    </div>
-    </div>
-    <!--    Here is the AddMainCategory dialog End -->
+												</table>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="bzbtn">
+							<button type="button" class="btn btn-info"
+								style="float: right; font-size: 14px;"
+								onclick="closeAddTransaction()">
+								<spring:message code="BzComposer.global.cancel" />
+							</button>
+							<button type="button" class="btn btn-info"
+								onclick="return addTransactionFromDialog()" id="addButton"
+								style="float: right; margin-right: 10px; font-size: 14px;">
+								<spring:message code="BzComposer.global.add" />
+							</button>
+						</div>
+					</div>
+					<!-- Here is the Payment Tab started -->
+					<div class="container-fluid" id="paymentTab">
+						<div class=" row">
+							<div class=" col-12">
+								<div class="border1  clearfix">
+									<form>
+										<div class="row">
+											<div class="col-md-6" id="thirdTable">
+												<table class="bz_dialogTable">
+													<tr>
+														<td width="40%"><label><spring:message
+																	code="BzComposer.banking.payeraccount" /></label></td>
+														<td><input type="text"
+															value="${selectedAccount.name}" readonly="true"
+															style="width: 150px" id="${selectedAccount.accountID}" /></td>
+														<td><input type="hidden"
+															value="${selectedAccount.accountCategoryID}"
+															id="categoryIdForPayerForPayment"></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.paymethod" /></label></td>
+														<td><select style="width: 100%"
+															onchange="selectedPaymenthodForPayment()"
+															id="payMethodForDlgForPayment">
+																<c:forEach items="${simpleTypes}" var="curObject"
+																	varStatus="loop">
+																	<c:if test="${not empty curObject.typeName}">
+																		<option id="${curObject.id}">${curObject.typeName}</option>
+																	</c:if>
+																</c:forEach>
+														</select></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.date" /></label></td>
+														<td><input type="text" readonly="true"
+															style="width: 150px" id="dlgDateForPayment" /></td>
+													</tr>
+												</table>
+											</div>
+											<div class="col-md-6" id="fourthTable">
+												<table class="bz_dialogTable">
+													<tr>
+														<td width="40%"><label><spring:message
+																	code="BzComposer.banking.payamount" /></label></td>
+														<td><input type="number" style="width: 150px"
+															id="payAmountForPayment" /></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.checkno" /></label></td>
+														<td><input type="text" style="width: 150px"
+															id="checkNumForDlgForPayment" /></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.payeeaccount" /></label></td>
+														<td><select style="width: 100%"
+															id="payeenameForPayment" onchange="selectVendor()">
+																<c:forEach items="${cvList}" var="curObject"
+																	varStatus="loop">
+																	<c:forEach items="${accountForClientVendor}"
+																		var="curObject2">
+																		<c:if
+																			test="${curObject2 != null && curObject2.cvID == curObject.cvID}">
+																			<option id="${curObject.cvID}"
+																				value="${curObject2.customerCurrentBalance}"
+																				label="${loop.index}">${curObject.firstName}
+																				${curObject.lastName} (${curObject.name})</option>
+																		</c:if>
+																	</c:forEach>
+																</c:forEach>
+														</select></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.category" /></label></td>
+														<td><select style="width: 100%" id="category">
+																<c:forEach items="${categoryListForPayment}"
+																	var="curObject">
+																	<option id="${curObject.id}">${curObject.categoryNumber}
+																		${curObject.name}</option>
+																</c:forEach>
+														</select></td>
+													</tr>
+													<tr>
+														<td>
+															<!-- label><spring:message code="BzComposer.banking.endingbalance"/></label -->
+														</td>
+														<td><input type="hidden" id="payeeBalance2" /> <c:if
+																test="${not empty payMentList}">
+																<input type="hidden"
+																	value='${payMentList[0].balanceForBanking}'
+																	id="payerBalance2" /></td>
+														</c:if>
+														<c:if test="${empty payMentList}">
+															<input type="hidden" value='0.0' id="payerBalance2" />
+															</td>
+														</c:if>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="bzbtn">
+							<button type="button" class="btn btn-info"
+								style="float: right; font-size: 14px;"
+								onclick="closeAddTransaction()">
+								<spring:message code="BzComposer.global.cancel" />
+							</button>
+							<button type="button" class="btn btn-info"
+								style="float: right; margin-right: 10px; font-size: 14px;"
+								onclick="return addTransactionFromDialogForPayment()"
+								id="addButtonForPayment">
+								<spring:message code="BzComposer.global.add" />
+							</button>
+						</div>
+					</div>
+					<!--    Here is the Deposit tab started -->
+					<div class="container-fluid" id="depositTab">
+						<div class=" row">
+							<div class=" col-12">
+								<div class="border1  clearfix">
+									<form>
+										<div class="row">
+											<div class="col-md-6" id="fifthTable">
+												<table class="bz_dialogTable">
+													<tr>
+														<td width="40%"><label><spring:message
+																	code="BzComposer.banking.payeraccount" /></label></td>
+														<td><select id="payerForDeposit"
+															onchange="selectVendorForDeposit()" style="width: 100%;">
+																<option></option>
+																<c:forEach items="${cleintListForDeposit}"
+																	var="curObject" varStatus="loop">
+																	<c:if
+																		test="${accountForClientListForDeposit[loop.index] != null && accountForClientListForDeposit[loop.index].cvID == curObject.cvID}">
+																		<option
+																			value="${accountForClientListForDeposit[loop.index].customerCurrentBalance}"
+																			id="${accountForClientListForDeposit[loop.index].accountID}"
+																			label="${accountForClientListForDeposit[loop.index].accountTypeID}">
+																			${curObject.firstName} ${curObject.lastName}
+																			(${curObject.name})</option>
+																	</c:if>
+																</c:forEach>
+														</select></td>
+														<td><input type="hidden" value=""
+															id="categoryIdForPayerForDeposit"></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.paymethod" /></label></td>
+														<td><select style="width: 100%"
+															onchange="selectedPaymenthodForPayment()"
+															id="payMethodForDeposit">
+																<c:forEach items="${simpleTypes}" var="curObject"
+																	varStatus="loop">
+																	<c:if test="${not empty curObject.typeName}">
+																		<option id="${curObject.id}">${curObject.typeName}</option>
+																	</c:if>
+																</c:forEach>
+														</select></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.date" /></label></td>
+														<td><input type="text" readonly="true"
+															style="width: 150px" id="dateForDeposit" /></td>
+													</tr>
+												</table>
+											</div>
+											<div class="col-md-6" id="sixthTable">
+												<table class="bz_dialogTable">
+													<tr>
+														<td width="40%"><label><spring:message
+																	code="BzComposer.banking.payamount" /></label></td>
+														<td><input type="number" style="width: 150px"
+															id="payAmountForDeposit" /></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.checkno" /></label></td>
+														<td><input type="text" style="width: 150px"
+															id="checkNumForDeposit" /></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.payeeaccount" /></label></td>
+														<td><select style="width: 100%"
+															id="payeenameForDeposit"
+															onchange="changeBankForDeposit()">
+																<c:forEach items="${accountList}" var="curObject"
+																	varStatus="loop">
+																	<c:if test="${not empty curObject.name}">
+																		<option value="${curObject.customerCurrentBalance}"
+																			id="${curObject.accountID}">${curObject.name}</option>
+																	</c:if>
+																</c:forEach>
+														</select></td>
+													</tr>
+													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.category" /></label></td>
+														<td><select style="width: 100%"
+															id="categoryForDeposit">
+																<option></option>
+																<c:forEach items="${categoryListForDeposit}"
+																	var="curObject" varStatus="loop">
+																	<option id="${curObject.id}">${curObject.categoryNumber}
+																		${curObject.name}</option>
+																</c:forEach>
+													</tr>
+													<tr>
+														<td>
+															<!-- label><spring:message code="BzComposer.banking.endingbalance"/></label -->
+														</td>
+														<td><input type="hidden" id="payeeBalanceForDeposit" />
+															<c:if test="${not empty payMentList}">
+																<input type="hidden"
+																	value="${payMentList[0].balanceForBanking}"
+																	id="payerBalanceForDeposit" />
+															</c:if> <c:if test="${empty payMentList}">
+																<input type="hidden" value="0.0"
+																	id="payerBalanceForDeposit" />
+															</c:if></td>
+													</tr>
 
-<div class="table-responsive" style="padding:0 15px;font-size: 14px;">
-   <h6><spring:message code="BzComposer.banking.accountinformation"/></h6>
-   <div class="boxborderd">
+												</table>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="bzbtn">
+							<button type="button" class="btn btn-info"
+								style="float: right; font-size: 14px;"
+								onClick="closeAddTransaction()">
+								<spring:message code="BzComposer.global.cancel" />
+							</button>
+							<button type="button" class="btn btn-info"
+								style="float: right; margin-right: 10px; font-size: 14px;"
+								onclick="return addTrafsactioFromDeposit()"
+								id="addButtonForDeposit">
+								<spring:message code="BzComposer.global.add" />
+							</button>
+						</div>
+					</div>
+				</div>
 
-  <div class="row">
-     <label class="col-sm-3"><spring:message code="BzComposer.banking.accountcategory"/></label>
-     <div class="col-sm-9">
-     <select class="form-control" onchange="afterCategoryChange()" id="acForAddAccount" style="width:150px;">
-     	<c:forEach items="${AccountCategoryList}" var="curObject" varStatus="loop">
-            <option value="${curObject.accountCategoryID}">${curObject.name}</option>
-        </c:forEach>
-     </select>
-     </div>
-  </div>
+			</div>
+		</div>
+	</div>
 
-   <div class="row">
-   <label class="col-sm-3">
-        <spring:message code="BzComposer.banking.accountname"/>
-        <span class="errorField">*</span>
-   </label>
-   <div class="col-sm-9">
-   <input type="text" id="accountName" name="accountName" class="form-control" style="width:300px;" />
-   <!-- <label class="checkboxWrapLable" for="isCategory"><input type="checkbox" name="isCategory" id="isCategory" onclick="isCategory()"> Is Category</label> -->
-   </div>
-   </div>
-  
-   <div class="text-right">
-   <div class="inline-form">
-   <label><spring:message code="BzComposer.banking.subaccountof"/></label>
-   <select id="subaccountof" class="form-control"></select>
-   </div>
-  </div>
-  
-    <div class="text-left">
-   <div class="inline-form">  
-   <label class="checkboxWrapLable" for="mainbankAccount">
-   <input id="mainbankAccount" name="mainbankAccount" type="checkbox" /> <spring:message code="BzComposer.banking.isthatmainbankaccount"/></label>   
-   </div>
-   </div>
-  
-   <div class="row">
-   <label class="col-sm-3"><spring:message code="BzComposer.banking.description"/></label>
-   <div class="col-sm-9">
-   <input type="text" name="descriptionAd" class="form-control" id="descriptionAd"/>
-   </div>
-   </div>
-  
-	  <hr>
-	  
-   <!-- <div class="row">
+	<!--    Here is the EditTransaction dialog started -->
+	<div class="container-fluid" id="EditTransactionDialog">
+		<div class="table-responsive" style="padding-top: 20px">
+			<div class="d-flex flex-column full-height">
+
+				<div class="modal-body1">
+					<div class=" row">
+						<div class=" col-12">
+							<div class="border1  clearfix">
+								<form>
+									<div class="row">
+										<div class="col-md-6 " id="editTable1">
+											<table class="bz_dialogTable devFirstEditTable">
+												<tr>
+													<td><label> <spring:message
+																code="BzComposer.banking.payer" />
+													</label></td>
+													<td><select class="payerField" id="payerForEdit"
+														onchange="" style="width: 100%;">
+															<option></option>
+															<c:forEach items="${allClientVendor}" var="curObject"
+																varStatus="loop">
+																<option value="${curObject.cvID}">${curObject.firstName}
+																	${curObject.lastName} (${curObject.name})</option>
+															</c:forEach>
+													</select></td>
+													<td><input type="hidden" value=""
+														id="categoryIdForPayerForDeposit2"></td>
+												</tr>
+												<tr>
+													<td><label><spring:message
+																code="BzComposer.banking.payee" /></label></td>
+													<td><select class="accountFieldForEdit"
+														id="payeeForEdit">
+															<c:forEach items="${accountList}" var="curObject"
+																varStatus="loop">
+																<option value="${curObject.accountID}">${curObject.name}</option>
+															</c:forEach>
+													</select></td>
+												</tr>
+												<tr>
+													<td><label><spring:message
+																code="BzComposer.banking.paymethod" /></label></td>
+													<td><select class="payMethodForEdit"
+														style="width: 100%" onchange="" id="payMethodForEdit">
+															<c:forEach items="${allPaymentList}" var="curObject"
+																varStatus="loop">
+																<option value="${curObject.id}">${curObject.typeName}</option>
+															</c:forEach>
+													</select></td>
+												</tr>
+												<tr>
+													<td><label><spring:message
+																code="BzComposer.banking.category" /></label></td>
+													<td><select class="categoryForEdit"
+														id="categoryForEdit">
+															<c:forEach items="${allCategoryList}" var="curObject"
+																varStatus="loop">
+																<option value="${curObject.id}">${curObject.name}
+																	${curObject.categoryNumber}</option>
+															</c:forEach>
+													</select></td>
+												</tr>
+											</table>
+										</div>
+										<div class="col-md-6 " id="editTable2">
+											<table class="bz_dialogTable devSecondEditTable">
+												<tr>
+													<td><label><spring:message
+																code="BzComposer.banking.amount" /></label></td>
+
+													<td><input class="devAmount" type="text"
+														id="amountToEdit" /></td>
+
+												</tr>
+												<tr>
+													<td><label><spring:message
+																code="BzComposer.banking.date" /></label></td>
+													<td><input type="text" class="devDate"
+														id="devDateForEdit" /></td>
+												</tr>
+												<tr>
+													<td><label><spring:message
+																code="BzComposer.banking.checknumber" /></label></td>
+													<td><input type="text" class="checkNumberForEdit"
+														id="checkNumberEdit" /></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="bzbtn">
+			<button type="button" class="btn btn-info"
+				style="float: right; font-size: 14px;"
+				onclick="closeEditTransaction()">
+				<spring:message code="BzComposer.global.cancel" />
+			</button>
+			<button type="button" class="btn btn-info"
+				style="float: right; margin-right: 10px; font-size: 14px;"
+				onclick="return editTransaction()" id="addButtonForDeposit">
+				<spring:message code="BzComposer.global.save" />
+			</button>
+		</div>
+	</div>
+	<!--    Here is the AddAccount dialog started -->
+	<div class="container-fluid" id="AddAccountDialog">
+		<!--    Here is the AddMainCategory dialog started -->
+		<div class="table-responsive"
+			style="padding: 0 15px; font-size: 14px;">
+			<h6>
+				<spring:message code="BzComposer.banking.maincategoryinfo" />
+			</h6>
+			<div class="boxborderd">
+				<div class="row">
+					<label class="col-sm-3"><spring:message
+							code="BzComposer.banking.maincategory" /></label>
+					<div class="col-sm-9">
+						<select class="form-control" id="mainCategoryID"
+							onchange="afterMainCategoryChange()" style="width: 150px;">
+							<option value=""><spring:message
+									code="BzComposer.ComboBox.Select" /></option>
+							<c:forEach items="${AccountCategoryList}" var="curObject"
+								varStatus="loop">
+								<option value="${curObject.accountCategoryID}">${curObject.name}</option>
+							</c:forEach>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<label class="col-sm-3"> <spring:message
+							code="BzComposer.banking.categoryname" /> <span
+						class="errorField">*</span>
+					</label>
+					<div class="col-sm-4">
+						<input type="text" id="mainCategoryName" class="form-control"
+							style="width: 150px;" />
+					</div>
+					<div class="col-sm-5">
+						<button type="button" class="btn btn-info"
+							style="font-size: 14px;" id="mainCategoryBtnAdd"
+							onclick="return saveMainCategory()">
+							<spring:message code="BzComposer.global.save" />
+						</button>
+						<button type="button" class="btn btn-info"
+							style="font-size: 14px;" id="mainCategoryBtnUpdate"
+							onclick="return saveMainCategory()">
+							<spring:message code="BzComposer.global.update" />
+						</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!--    Here is the AddMainCategory dialog End -->
+
+		<div class="table-responsive"
+			style="padding: 0 15px; font-size: 14px;">
+			<h6>
+				<spring:message code="BzComposer.banking.accountinformation" />
+			</h6>
+			<div class="boxborderd">
+
+				<div class="row">
+					<label class="col-sm-3"><spring:message
+							code="BzComposer.banking.accountcategory" /></label>
+					<div class="col-sm-9">
+						<select class="form-control" onchange="afterCategoryChange()"
+							id="acForAddAccount" style="width: 150px;">
+							<c:forEach items="${AccountCategoryList}" var="curObject"
+								varStatus="loop">
+								<option value="${curObject.accountCategoryID}">${curObject.name}</option>
+							</c:forEach>
+						</select>
+					</div>
+				</div>
+
+				<div class="row">
+					<label class="col-sm-3"> <spring:message
+							code="BzComposer.banking.accountname" /> <span class="errorField">*</span>
+					</label>
+					<div class="col-sm-9">
+						<input type="text" id="accountName" name="accountName"
+							class="form-control" style="width: 300px;" />
+						<!-- <label class="checkboxWrapLable" for="isCategory"><input type="checkbox" name="isCategory" id="isCategory" onclick="isCategory()"> Is Category</label> -->
+					</div>
+				</div>
+
+				<div class="text-right">
+					<div class="inline-form">
+						<label><spring:message
+								code="BzComposer.banking.subaccountof" /></label> <select
+							id="subaccountof" class="form-control"></select>
+					</div>
+				</div>
+
+				<div class="text-left">
+					<div class="inline-form">
+						<label class="checkboxWrapLable" for="mainbankAccount"> <input
+							id="mainbankAccount" name="mainbankAccount" type="checkbox" /> <spring:message
+								code="BzComposer.banking.isthatmainbankaccount" /></label>
+					</div>
+				</div>
+
+				<div class="row">
+					<label class="col-sm-3"><spring:message
+							code="BzComposer.banking.description" /></label>
+					<div class="col-sm-9">
+						<input type="text" name="descriptionAd" class="form-control"
+							id="descriptionAd" />
+					</div>
+				</div>
+
+				<hr>
+
+				<!-- <div class="row">
    <label class="col-sm-3"><spring:message code="BzComposer.banking.openingbalance"/></label>
     <div class="col-sm-9">
    <div class="form-inline">
@@ -830,35 +1009,48 @@ label {display: inline-block; margin-bottom: 0;}
    </div>
 </div> -->
 
-   <div class="row">
-   <label class="col-sm-3"><spring:message code="BzComposer.banking.depositfrom"/></label>
-    <div class="col-sm-6">
-   <select class="form-control" id="devAdAccount">
-   <c:forEach items="${accountList}" var="curObject" varStatus="loop">
-        <option id="${curObject.accountID}" value="${curObject.depositPaymentID}">${curObject.name}</option>
-    </c:forEach>
-   </select>
-   </div>
-  </div>
+				<div class="row">
+					<label class="col-sm-3"><spring:message
+							code="BzComposer.banking.depositfrom" /></label>
+					<div class="col-sm-6">
+						<select class="form-control" id="devAdAccount">
+							<c:forEach items="${accountList}" var="curObject"
+								varStatus="loop">
+								<option id="${curObject.accountID}"
+									value="${curObject.depositPaymentID}">${curObject.name}</option>
+							</c:forEach>
+						</select>
+					</div>
+				</div>
 
-   <div class="row">
-   <label class="col-sm-3"><spring:message code="BzComposer.banking.checkno"/></label>
-   <div class="col-sm-6">
-   <input type="text" name="" class="form-control" id="devAdCheck"/>
-   </div>
-  </div>
+				<div class="row">
+					<label class="col-sm-3"><spring:message
+							code="BzComposer.banking.checkno" /></label>
+					<div class="col-sm-6">
+						<input type="text" name="" class="form-control" id="devAdCheck" />
+					</div>
+				</div>
 
-  </div>		
-  <div class="bzbtn text-center">
-  <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return deleteBankAccount()" id="deleteBank"><spring:message code="BzComposer.global.delete"/></button>
-  <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()" id="addButtonForDeposit"><spring:message code="BzComposer.global.save"/></button>
-  <!-- <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> -->
-  <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="closeAddTransactionDialog()" id="addButtonForDeposit"><spring:message code="BzComposer.global.cancel"/></button>
-  </div> 
-  </div>
- </div> 
+			</div>
+			<div class="bzbtn text-center">
+				<button type="button" class="btn btn-info" style="font-size: 14px;"
+					onclick="return deleteBankAccount()" id="deleteBank">
+					<spring:message code="BzComposer.global.delete" />
+				</button>
+				<button type="button" class="btn btn-info" style="font-size: 14px;"
+					onclick="return addAccount()" id="addButtonForDeposit">
+					<spring:message code="BzComposer.global.save" />
+				</button>
+				<!-- <button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> -->
+				<button type="button" class="btn btn-info" style="font-size: 14px;"
+					onclick="closeAddTransactionDialog()" id="addButtonForDeposit">
+					<spring:message code="BzComposer.global.cancel" />
+				</button>
+			</div>
+		</div>
+	</div>
 
-<script type="text/javascript">                               <!-- Javascript Begins Here -->
+	<script type="text/javascript">                               <!-- Javascript Begins Here -->
 	var accountId = -1;
 	var acID = -1;
 	var day = new Date().getDay();
@@ -926,7 +1118,16 @@ label {display: inline-block; margin-bottom: 0;}
 						}
 					
 				}); */
-	}       
+	}
+function closeEditTransaction(){
+		
+	    $('#EditTransactionDialog').dialog('close');
+	}
+function closeAddTransactionDialog(){
+	
+    $('#AddAccountDialog').dialog('close');
+}
+	
 function getAccountCategoryId(catId)
 {
 	
@@ -2083,57 +2284,93 @@ function showEnterRequiredFieldDialog(){
 </body>
 </html>
 <!-- Dialog box used in this page -->
-<div id="errorMessageDialog" style="display:none;">
-	<p><spring:message code="BzComposer.banking.erroroccured"/></p>
+<div id="errorMessageDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.banking.erroroccured" />
+	</p>
 </div>
-<div id="selectValidNumberDialog" style="display:none;">
-	<p><spring:message code="BzComposer.banking.entervalidchecknumber"/></p>
+<div id="selectValidNumberDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.banking.entervalidchecknumber" />
+	</p>
 </div>
-<div id="selectBankAccountDialog" style="display:none;">
-	<p><spring:message code="BzComposer.banking.selectbankaccount"/></p>
+<div id="selectBankAccountDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.banking.selectbankaccount" />
+	</p>
 </div>
-<div id="showInsufficientBalanceDialog" style="display:none;">
-	<p><spring:message code="BzComposer.banking.entervalidamount"/></p>
+<div id="showInsufficientBalanceDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.banking.entervalidamount" />
+	</p>
 </div>
-<div id="showInsufficientAmountDialog" style="display:none;">
-	<p><spring:message code="BzComposer.banking.insuffientamountinaccount"/></p>
+<div id="showInsufficientAmountDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.banking.insuffientamountinaccount" />
+	</p>
 </div>
-<div id="selectPaymentDialog" style="display:none;">
-	<p><spring:message code="BzComposer.banking.selectpayment"/></p>
+<div id="selectPaymentDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.banking.selectpayment" />
+	</p>
 </div>
-<div id="selectTransactionDialog" style="display:none;">
-	<p><spring:message code="BzComposer.banking.selecttransaction"/></p>
+<div id="selectTransactionDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.banking.selecttransaction" />
+	</p>
 </div>
-<div id="selectotherbankdialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.selectotherbank'/></p>
+<div id="selectotherbankdialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.selectotherbank' />
+	</p>
 </div>
-<div id="editableaccountcategorydialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.canteditaccountcategory'/></p>
+<div id="editableaccountcategorydialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.canteditaccountcategory' />
+	</p>
 </div>
-<div id="canteditesalesbankaccountdialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.canteditesalesbankaccount'/></p>
+<div id="canteditesalesbankaccountdialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.canteditesalesbankaccount' />
+	</p>
 </div>
-<div id="showselectcategorydialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.selectcategory'/></p>
+<div id="showselectcategorydialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.selectcategory' />
+	</p>
 </div>
-<div id="shownotdeletedaccountdialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.selectcategory'/></p>
+<div id="shownotdeletedaccountdialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.selectcategory' />
+	</p>
 </div>
-<div id="showremovetranactiondialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.removetransaction'/></p>
+<div id="showremovetranactiondialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.removetransaction' />
+	</p>
 </div>
-<div id="shostartingaccbalancedialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.startingaccountbalance'/></p>
+<div id="shostartingaccbalancedialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.startingaccountbalance' />
+	</p>
 </div>
-<div id="deleteaccountdialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.wanttodeleteaccount'/></p>
+<div id="deleteaccountdialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.wanttodeleteaccount' />
+	</p>
 </div>
-<div id="showEditableAccountNotSelectedDialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.selectbankaccounttoedit'/></p>
+<div id="showEditableAccountNotSelectedDialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.selectbankaccounttoedit' />
+	</p>
 </div>
-<div id="showSelectPayeeAccountFirstDialog" style="display:none;">
-	<p><spring:message code='BzComposer.banking.selectpayeeaccountfirst'/></p>
+<div id="showSelectPayeeAccountFirstDialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.selectpayeeaccountfirst' />
+	</p>
 </div>
-<div id="showEnterRequiredFieldDialog" style="display:none;">
-	<p><spring:message code='error.common.recover.required'/></p>
+<div id="showEnterRequiredFieldDialog" style="display: none;">
+	<p>
+		<spring:message code='error.common.recover.required' />
+	</p>
 </div>

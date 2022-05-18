@@ -8,116 +8,101 @@
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <title>BizComposer</title>
 <script type="text/javascript">
-var funsequence = 0;
-var _1 = navigator.userAgent.toLowerCase();
-var ___ = (_1.indexOf("msie") != -1);
-var ___5 = (_1.indexOf("msie 5") != -1);
-var _io = (_1.indexOf("opera") != -1);
-var _im = (_1.indexOf("mac") != -1);
-var ____gi = (_1.indexOf("gecko") != -1);
-var i____s = (_1.indexOf("safari") != -1);
-var o = null;
+	var funsequence = 0;
+	var _1 = navigator.userAgent.toLowerCase();
+	var ___ = (_1.indexOf("msie") != -1);
+	var ___5 = (_1.indexOf("msie 5") != -1);
+	var _io = (_1.indexOf("opera") != -1);
+	var _im = (_1.indexOf("mac") != -1);
+	var ____gi = (_1.indexOf("gecko") != -1);
+	var i____s = (_1.indexOf("safari") != -1);
+	var o = null;
 
-var r = null;
-var flag1=false;
-var flag2=false;
-function c(r) {
+	var r = null;
+	var flag1 = false;
+	var flag2 = false;
+	function c(r) {
 
-  if (___) {
-    var t = (___5) ? "Microsoft.XMLHTTP" : "Msxml2.XMLHTTP";
-    try {
-      o = new ActiveXObject(t);
-      o.onreadystatechange = r;
-    } catch (ex) {
-      alert("<bean:message key='BzComposer.common.needToEnableActiveXObject'/> ts.." + ex);
-    }
-  } else {
-    o = new XMLHttpRequest();
-    o.onload = r;
-    o.onerror = r;
-  }
-  return o;
-}
-function oGET(oo, url) {
-  try {
-    oo.open("GET", url, true);	
-    oo.send(null);
-  } catch (ex) {
-  }
-}
+		if (___) {
+			var t = (___5) ? "Microsoft.XMLHTTP" : "Msxml2.XMLHTTP";
+			try {
+				o = new ActiveXObject(t);
+				o.onreadystatechange = r;
+			} catch (ex) {
+				alert("<bean:message key='BzComposer.common.needToEnableActiveXObject'/> ts.."
+						+ ex);
+			}
+		} else {
+			o = new XMLHttpRequest();
+			o.onload = r;
+			o.onerror = r;
+		}
+		return o;
+	}
+	function oGET(oo, url) {
+		try {
+			oo.open("GET", url, true);
+			oo.send(null);
+		} catch (ex) {
+		}
+	}
 
-function writeSelect()
-{
-  
-   if (o.readyState != 4 || o.status != 200)
-    { 
-       
-      return;
-    }
-    
-    if(flag1==true)
-    {
-        document.getElementById("hdata").innerHTML="";
-        document.getElementById("hdata").innerHTML = o.responseText ;
-       
-       
-    }    
-    if(flag2==true)
-    {
-      document.getElementById("tdata").innerHTML="";
-      document.getElementById("tdata").innerHTML = o.responseText ;
-      
-    
-    }
-}
-function refreshItemsNow(val)
-{
- 
-  document.getElementById("hdata").innerHTML="";
-  document.getElementById("tdata").innerHTML="";
-  o = c(writeSelect);
-  oGET(o,'${pageContext.request.contextPath}/include/GetEmployeeList.jsp?type=' + val)
-}
+	function writeSelect() {
 
+		if (o.readyState != 4 || o.status != 200) {
 
-function showDivs(val)
-{
+			return;
+		}
 
-   if(val==1 && flag1==false)
-   {
-     document.getElementById('hanswer').style.display= 'block'; 
-     document.getElementById('tanswer').style.display= 'none';
-     flag1=true;
-     flag2=false;
-     refreshItemsNow(1);
-   }  
-   else
-   {
-    document.getElementById('hanswer').style.display= 'none'; 
-    flag1=false;
-      
-   }
-   if(val==0 && flag2==false)
-   {
-   
-      document.getElementById('hanswer').style.display= 'none'; 
-      document.getElementById('tanswer').style.display= 'block';
-      flag2=true;
-      flag1=false;
-      refreshItemsNow(0)
-   }
-   else
-   {
-       
-       document.getElementById('tanswer').style.display= 'none';
-       flag2=false;
-      
-   }
+		if (flag1 == true) {
+			document.getElementById("hdata").innerHTML = "";
+			document.getElementById("hdata").innerHTML = o.responseText;
 
-}
+		}
+		if (flag2 == true) {
+			document.getElementById("tdata").innerHTML = "";
+			document.getElementById("tdata").innerHTML = o.responseText;
 
+		}
+	}
+	function refreshItemsNow(val) {
 
+		document.getElementById("hdata").innerHTML = "";
+		document.getElementById("tdata").innerHTML = "";
+		o = c(writeSelect);
+		oGET(o,
+				'${pageContext.request.contextPath}/include/GetEmployeeList.jsp?type='
+						+ val)
+	}
 
+	function showDivs(val) {
+
+		if (val == 1 && flag1 == false) {
+			document.getElementById('hanswer').style.display = 'block';
+			document.getElementById('tanswer').style.display = 'none';
+			flag1 = true;
+			flag2 = false;
+			refreshItemsNow(1);
+		} else {
+			document.getElementById('hanswer').style.display = 'none';
+			flag1 = false;
+
+		}
+		if (val == 0 && flag2 == false) {
+
+			document.getElementById('hanswer').style.display = 'none';
+			document.getElementById('tanswer').style.display = 'block';
+			flag2 = true;
+			flag1 = false;
+			refreshItemsNow(0)
+		} else {
+
+			document.getElementById('tanswer').style.display = 'none';
+			flag2 = false;
+
+		}
+
+	}
 </script>
 
 
@@ -125,25 +110,30 @@ function showDivs(val)
 <body>
 
 
-<!-- begin shared/header -->
+	<!-- begin shared/header -->
 
-<div id="header">
-	<div id="header-content">
-	<ul id="ulnav">
-		<li><a
-			href="Invoice.do?tabid=Invoice"
-			title="Sales"  rel="section"><spring:message code="BzComposer.Sales" /></a></li>
-		<li><a href="PurchaseOrder?tabid=PurchaseOrder" title="Purchase"
-			rel="section"><spring:message code="BzComposer.Purchase" /></a></li>
+	<div id="header">
+		<div id="header-content">
+			<ul id="ulnav">
+				<li><a href="Invoice.do?tabid=Invoice" title="Sales"
+					rel="section"><spring:message code="BzComposer.Sales" /></a></li>
+				<li><a href="PurchaseOrder?tabid=PurchaseOrder"
+					title="Purchase" rel="section"><spring:message
+							code="BzComposer.Purchase" /></a></li>
 
-        <li><a href="Item?tabid=Item" title="Item"   rel="section"><span><spring:message code="BzComposer.sales.Item" /></span></a></li>
+				<li><a href="Item?tabid=Item" title="Item" rel="section"><span><spring:message
+								code="BzComposer.sales.Item" /></span></a></li>
 
-		<li><a href="Customer.do?tabid=Customer" title="Customer"  rel="section"><span><spring:message code="BzComposer.sales.Customer" /></span></a></li>
+				<li><a href="Customer.do?tabid=Customer" title="Customer"
+					rel="section"><span><spring:message
+								code="BzComposer.sales.Customer" /></span></a></li>
 
-		<li><a href="employee" title="Employee" class="selected" rel="section"><spring:message code="BzComposer.Employee" /></a></li>
-		<li><a	href="javascript: void(0)" title="Accounting" rel="section"><spring:message code="BzComposer.Accounting" /></a></li>
+				<li><a href="employee" title="Employee" class="selected"
+					rel="section"><spring:message code="BzComposer.Employee" /></a></li>
+				<li><a href="javascript: void(0)" title="Accounting"
+					rel="section"><spring:message code="BzComposer.Accounting" /></a></li>
 
-<%-- 		<li><a href="javascript: void(0)" title="Email" rel="section"><spring:message code="BzComposer.Email" /></a></li> -->
+				<%-- <%-- 		<li><a href="javascript: void(0)" title="Email" rel="section"><spring:message code="BzComposer.Email"></a></li> --%/> --%>
 		<li><a href="Configuration.do?tabid=config"  title="Confuguration" rel="section" >
 		        <spring:message code="BzComposer.Confuguration" /></a></li>
 	</ul>
