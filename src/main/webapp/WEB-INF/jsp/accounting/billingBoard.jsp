@@ -503,23 +503,10 @@ $("#tabs").tabs({
 function PrintBilling()
 {
 	if(invoiceId == -1){
-
 		return selectinvoicefirstdialog();
 		return false;
 	}
-	$.ajax({
-        type : "POST",
-        url : "BillingBoardStatement?tabid=PrintBill",
-        data:"invoiceId=" +invoiceId ,
-        success : function(data){
-            
-            updateBillingBoard(data);
-        },
-        error : function(data) {
-
-            return showerrordialog();
-        }
-    });
+    window.location = "/BillingBoardStatement?tabid=PrintBill&&invoiceId="+invoiceId;
 }
 
 function CreateBillingStatement()
@@ -530,18 +517,7 @@ debugger;
 		return selectinvoicefirstdialog();
 		return false;
 	}
-	$.ajax({
-			type : "POST",
-			url : "BillingBoardStatement?tabid=CreateBillingStatement",
-		 	data:"invoiceId=" +invoiceId ,
-		    success : function(data)
-		    {
-		        updateBillingBoard(data);
-			},
-			 error : function(data) {
-				 return showerrordialog();
-			}
-    });
+    window.location = "/BillingBoardStatement?tabid=CreateBillingStatement&&invoiceId="+invoiceId;
 }
 function searchByColumn(){
 	var searchCriteriaCombo = document.getElementById("advanceSearchCriteria");

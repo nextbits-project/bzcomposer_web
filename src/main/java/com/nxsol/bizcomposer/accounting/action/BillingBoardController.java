@@ -15,9 +15,21 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -60,8 +72,8 @@ public class BillingBoardController {
 		return forward;
 	}
 
-	@PostMapping("/BillingBoardStatement")
-	public String billingBoardStatement(HttpServletRequest request) throws Exception {
+	@RequestMapping(value ="/BillingBoardStatement", method = {RequestMethod.GET, RequestMethod.POST})
+	public String billingBoardStatement(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String forward = "/accounting/billingBoard";
 		HttpSession sess = request.getSession();
 		String action = request.getParameter("tabid");
@@ -89,23 +101,27 @@ public class BillingBoardController {
 
 		Gson gson = new Gson();
 		if (action.equals("CreateBillingStatement")) {
-			rl.insertIntoBillingStatement(Integer.parseInt(request.getParameter("invoiceId")));
-			ArrayList<BillingStatementReport> bill = rl.printBillingStatement(Integer.parseInt(request.getParameter("invoiceId")));
-			jasperPath = request.getServletContext().getRealPath("/JasperReport/billingStatement.jrxml");
-			JasperDesign design = JRXmlLoader.load(jasperPath);
-			JasperReport jasperreport = JasperCompileManager.compileReport(design);
-			final String filePath = request.getServletContext().getRealPath("/JasperReport/");
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(), new JRBeanCollectionDataSource(bill));
-			JasperExportManager.exportReportToPdfFile(jasperPrint, filePath + "billingStatement.pdf");
-			JRPrintServiceExporter exporter = new JRPrintServiceExporter();
-			//exporter.exportReport();
-
-			//printReport(jasperPrint);
-//			JFrame frame = new JFrame();
-//			frame.getContentPane().add(new JRViewer(jasperPrint));
-//			frame.setBounds(x, y, width,height);
-//			frame.setVisible(true);
-
+			try {
+				Integer invoiceId = Integer.parseInt(request.getParameter("invoiceId"));
+				rl.insertIntoBillingStatement(invoiceId);
+				ArrayList<BillingStatementReport> bill = rl.printBillingStatement(invoiceId);
+				jasperPath = request.getServletContext().getRealPath("/JasperReport/billingStatement.jrxml");
+				JasperDesign design = JRXmlLoader.load(jasperPath);
+				JasperReport jasperreport = JasperCompileManager.compileReport(design);
+				final String filePath = request.getServletContext().getRealPath("/JasperReport/");
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm");
+				LocalDateTime now = LocalDateTime.now();
+				System.out.println();
+				String fileName = invoiceId + "_"+dtf.format(now)+"_billingStatement.pdf";
+				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(), new JRBeanCollectionDataSource(bill));
+				//JasperExportManager.exportReportToPdfFile(jasperPrint, filePath + fileName);
+				response.setContentType("application/x-pdf");
+				response.addHeader("Content-Disposition", "inline; filename="+fileName+";");
+				ServletOutputStream outStream = response.getOutputStream();
+				JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 		}
 
 		if (action.equals("searchByColumn")) {
@@ -124,24 +140,27 @@ public class BillingBoardController {
 			ArrayList<BillingBoardReport> bill = rl.getBillForPrint(Integer.parseInt(invoiceId));
 			jasperPath = request.getServletContext().getRealPath("/JasperReport/PrintBilling.jrxml");
 			destinationPsth = request.getServletContext().getRealPath("/JasperReport/PrintBilling.pdf");
-			System.out.println(request.getServletContext().getContextPath());
-			/*
+
 			JasperDesign design = JRXmlLoader.load(jasperPath);
 			JasperReport jasperreport = JasperCompileManager.compileReport(design);
+			final String filePath = request.getServletContext().getRealPath("/JasperReport/");
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm");
+			LocalDateTime now = LocalDateTime.now();
+			System.out.println();
+			String fileName = invoiceId + "_"+dtf.format(now)+"_PrintBilling.pdf";
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(), new JRBeanCollectionDataSource(bill));
-			JFrame frame = new JFrame("Invoice");
-	        frame.getContentPane().add(new JRViewer(jasperPrint));
-	        frame.setBounds(x, y, width,height);
-	        frame.setVisible(true);
-	        */
-			System.out.println(invoiceId);
+			//JasperExportManager.exportReportToPdfFile(jasperPrint, filePath + fileName);
+			response.setContentType("application/x-pdf");
+			response.addHeader("Content-Disposition", "inline; filename="+fileName+";");
+			ServletOutputStream outStream = response.getOutputStream();
+			JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
 		}
-
 		ArrayList<ReceivableListBean> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
 		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement, criteriaForBillStatement);
 		request.setAttribute("billingStatementList", billingStatementList);
 		request.setAttribute("billingList", billingList);
 		return forward;
 	}
+
 
 }
