@@ -2,6 +2,7 @@ package com.nxsol.bzcomposer.company;
 
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
+import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
 import com.avibha.bizcomposer.employee.forms.StateTaxOtherDto;
@@ -781,7 +782,45 @@ public class ConfigurationDAO {
         form.setListOfExistingUserList(listPOJOs);
         return listPOJOs;
     }
+    public boolean updateSelctedUser(String companyID, String selectedUserId, String userEmail, String password1, String groupID, HttpServletRequest request) {
+        Connection con = null;
+        SQLExecutor db = new SQLExecutor();
+        PreparedStatement pstmt = null, pstmt2 = null;
+        boolean isUpdated = false;
+        con = db.getConnection();
+        try {
+            String sql1 =  "update bca_user set Email_Address= ? , Password=?, " +
+                    "Confirm_Password =?  where ID=? and CompanyID=?";
+            pstmt = con.prepareStatement(sql1);
+            pstmt.setString(1, userEmail);
+            pstmt.setString(2, password1);
+            pstmt.setString(3, password1);
+            pstmt.setString(4, selectedUserId);
+            pstmt.setString(5, companyID);
 
+            int updatedRows = pstmt.executeUpdate();
+            if (updatedRows > 0) {
+                String sql2 =  "update bca_usermapping set UserGroupID=? where UserId=? and CompanyID=?";
+                pstmt2 = con.prepareStatement(sql2);
+                pstmt2.setString(1, groupID);
+                pstmt2.setString(2, selectedUserId);
+                pstmt2.setString(3, companyID);
+                isUpdated = pstmt2.executeUpdate()>0?true:false;
+                return isUpdated;
+            }
+        } catch (SQLException ee) {
+            Loger.log("Exception" + ee.toString());
+        }finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if (pstmt2 != null) { db.close(pstmt2); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return isUpdated;
+    }
     public boolean addNewUser(String companyID, HttpServletRequest request) {
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
@@ -2157,7 +2196,40 @@ public class ConfigurationDAO {
         form.setListOfExistingStores(listPOJOs);
         return listPOJOs;
     }
+    public ArrayList <MailTemplateDto> getEmailActiveTemplates()
+    {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        Statement stmt = null;
+        ResultSet rs = null;
+        ArrayList<MailTemplateDto> listPOJOs = new ArrayList<>();
+        try {
+            String sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1";
 
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                MailTemplateDto pojo = new MailTemplateDto();
+                pojo.setTemplateID(rs.getInt("TemplateID"));
+                pojo.setTemplateName(rs.getString("TemplateName"));
+                pojo.setSubject(rs.getString("Subject"));
+                pojo.setContent(rs.getString("TemplateContent"));
+                listPOJOs.add(pojo);
+            }
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (rs != null) { db.close(rs); }
+                if (stmt != null) { db.close(stmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return listPOJOs;
+    }
     public ArrayList <ConfigurationDto> getActiveTemplates(int templateId, HttpServletRequest request, ConfigurationDto form)
     {
         SQLExecutor db = new SQLExecutor();

@@ -21,6 +21,14 @@ function addNewTemplate()
 	document.getElementById("txtTemplateSubject").style.display = "none";
 	document.getElementById("emailText").value = "<<name>>"+'\n'+"<<company name>>"+'\n'+"<<address>>"+'\n'+"<<phonenumber>>";	
 }
+function setContentData(templateID,templateName, subject, content){
+  debugger;
+    document.getElementById('selectedTemplateId').value = templateID;
+    document.getElementById('templateName').value = templateName;
+    document.getElementById('templateSubject').value = subject;
+    document.getElementById('emailText').value = content;
+}
+
 function setContent()
 {
 	
@@ -76,10 +84,10 @@ function setContent()
 	</tr>
 	<tr>
 		<td rowspan="4" style="font-size:12px;">
-			<select id="selectedTemplateId"  multiple="multiple" style="height:300px;" onchange="setContent()">
-				<c:if test="${not empty configurationForm.listOfExistingTemplates}">
-					<c:forEach items="${configurationForm.listOfExistingTemplates}" var="objList1">
-						<option value="${objList1.templateId}">${objList1.templateName}</option>
+			<select id="selectedTemplateId"  multiple="multiple" style="height:300px;">
+				<c:if test="${not empty mailTemplateDtoArrayList}">
+					<c:forEach items="${mailTemplateDtoArrayList}" var="objList1" varStatus="loop">
+						<option onclick="setContentData('${objList1.templateID}', '${objList1.templateName}', '${objList1.subject}', '${objList1.content}')" value="${objList1.templateID}">${objList1.templateName}</option>
 					</c:forEach>
 				</c:if>
 			</select>
@@ -129,5 +137,6 @@ function setContent()
 			</table>
 		</td>
 	</tr>
-</table> 
+	<input type="hidden" name="selectedTemplateId" id="selectedTemplateId" />
+</table>
 <!-- emailSetUp Ends -->

@@ -1873,7 +1873,7 @@ function init() {
 	}
 
 	function AddItem(form){
-		debugger;
+
 		if(form.itemID.value==0 || form.itemID.value==='01'){
 			document.getElementById('serialNo_id').value="";
 			document.getElementById('qty_id').value="";

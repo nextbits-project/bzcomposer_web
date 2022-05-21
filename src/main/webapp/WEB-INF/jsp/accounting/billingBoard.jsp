@@ -502,7 +502,7 @@ $("#tabs").tabs({
 
 function PrintBilling()
 {
-	debugger;
+
 	if(invoiceId == -1){
 		return selectinvoicefirstdialog();
 		return false;
@@ -512,7 +512,7 @@ function PrintBilling()
 
 function CreateBillingStatement()
 {
-debugger;
+
 	if(invoiceId == -1)
 	{
 		return selectinvoicefirstdialog();
@@ -543,7 +543,7 @@ function searchByColumn(){
     });
 }
 function searchByOverDueDays(){
-    debugger;
+
     var days = "0";
 	if (document.getElementById('showallonverdueinvoice').checked) {
       days = "0";

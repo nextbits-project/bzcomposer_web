@@ -1165,7 +1165,7 @@ table.tabla-listados tbody tr td {
 
 	function makePayment()
 	{
-		debugger;
+
 		var paidAmount;
 		var amountPaid;
 		var billNo = document.getElementById("ordernumber").innerHTML;

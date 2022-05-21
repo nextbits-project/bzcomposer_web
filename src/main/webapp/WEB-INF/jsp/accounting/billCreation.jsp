@@ -1847,7 +1847,7 @@ table.tabla-listados tbody tr td {
 	}
 	
 	var checkAll = () => {
-			  debugger;
+
 			  if(document.getElementById('inlineCheckbox2').checked==true){
 	            var checkboxes = document.querySelectorAll("[id^='allBillLists']");
 			  checkboxes.forEach((cb) => { cb.checked = true; });
@@ -1859,7 +1859,7 @@ table.tabla-listados tbody tr td {
 		}
 	
 	var selectallbillsbtn = () => {
-		  debugger;
+
 		   if(document.getElementById('selectbillbutton').checked==false){ 
 		  var checkboxes = document.querySelectorAll("[id^='selectbillbutton']");
 		  checkboxes.forEach((cb) => { cb.checked = true; });

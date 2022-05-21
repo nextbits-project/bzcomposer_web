@@ -4,8 +4,10 @@ import com.avibha.bizcomposer.File.dao.CompanyInfo;
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.dao.TestEmail;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
+import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
 import com.avibha.bizcomposer.login.dao.LoginDAO;
@@ -13,6 +15,8 @@ import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.common.utility.CountryState;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.nxsol.bizcomposer.accounting.action.CategoryManagerController;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
@@ -25,7 +29,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,6 +85,9 @@ public class ConfigurationController {
             dao.getSelectedModules(companyID, request, configDto);
             dao.getPaymentType(companyID, request, configDto);
             dao.getActiveTemplates(1, request, configDto);
+            ArrayList<MailTemplateDto> mailTemplateDtoArrayList = dao.getEmailActiveTemplates();
+
+            request.setAttribute("mailTemplateDtoArrayList", mailTemplateDtoArrayList);
 
             request.setAttribute("isSOBChecked", configDto.getSalesOrderBoard());
             request.setAttribute("isIRBChecked", configDto.getItemReceivedBoard());
@@ -1266,6 +1275,27 @@ public class ConfigurationController {
             cDetails.getConfigurationInfo(request, configDto);
             e.add("common.recoversucess", new ActionMessage("err.general.success"));
         }
+        else if (action.equalsIgnoreCase("testMailServer")) {
+            try {
+                String hostName = request.getParameter("HostName");
+                String authType = request.getParameter("authType");
+                String userEmail = request.getParameter("userEmail");
+                String password = request.getParameter("password");
+                if(hostName != null && !hostName.equals("") && authType != null && !authType.equals("")){
+                    TestEmail email = new TestEmail();
+                    boolean isConnect = email.Test(hostName, authType, userEmail, password);
+                    if(isConnect){
+                        status = "true";
+                    }else {
+                        status = "false";
+                    }
+                }else{
+                    status = "false";
+                }
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
         else if (action.equalsIgnoreCase("addNewUser")) {
             ConfigurationDAO dao = new ConfigurationDAO();
             LoginDAO loginDAO = new LoginDAOImpl();
@@ -1279,6 +1309,15 @@ public class ConfigurationController {
             } else {
                 System.out.println("Error");
             }
+        }
+        else if (action.equalsIgnoreCase("updateUser")){
+            ConfigurationDAO dao = new ConfigurationDAO();
+            String selectedUserId = request.getParameter("selectedUserId");
+            String userEmail = request.getParameter("userEmail");
+            String password1 = request.getParameter("userpassword");
+            String groupID = request.getParameter("groupID");
+            dao.updateSelctedUser(companyID, selectedUserId, userEmail, password1, groupID, request);
+            System.out.println("Success");
         }
         else if (action.equalsIgnoreCase("saveGroup")) {
             ConfigurationDAO dao = new ConfigurationDAO();

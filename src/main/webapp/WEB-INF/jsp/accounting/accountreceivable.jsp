@@ -598,7 +598,7 @@ table.tabla-listados tbody tr td {
     }
   
     var checkAll1 = () => {
-         debugger;	
+
     
 		if(document.getElementById('rdoInvoiceOrder').checked==true){
     	   if(document.getElementById('inlineCheckbox2').checked==true){
@@ -705,7 +705,7 @@ table.tabla-listados tbody tr td {
 				   		return false;
 				   }
 		}
-		debugger;
+
 		this.amtToPay = document.getElementById("receivedAmount").value;
 		orderNum = document.getElementById("ordernumber").innerHTML;
 		var newON = orderNum.replace('PO2021-0','').replace(/\n/g, '');
@@ -808,7 +808,7 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-		debugger;
+
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
 	   console.log(document.getElementById("receivedType").options[type.selectedIndex]);

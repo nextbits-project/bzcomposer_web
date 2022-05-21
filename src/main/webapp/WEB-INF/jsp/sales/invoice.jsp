@@ -2193,7 +2193,7 @@ function AddTotal(form){
 }
 
 function Init(){
-    debugger;
+
     var sortId = '<%= request.getAttribute("sortById")%>';
     TaxValue1(1);
     document.getElementById('tax_val').value=rate;
