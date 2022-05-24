@@ -24,6 +24,7 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import org.apache.struts.action.*;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -85,10 +86,8 @@ public class ConfigurationController {
             dao.getSelectedModules(companyID, request, configDto);
             dao.getPaymentType(companyID, request, configDto);
             dao.getActiveTemplates(1, request, configDto);
-            ArrayList<MailTemplateDto> mailTemplateDtoArrayList = dao.getEmailActiveTemplates();
-
+            ArrayList<MailTemplateDto> mailTemplateDtoArrayList = dao.getEmailActiveTemplates(0);
             request.setAttribute("mailTemplateDtoArrayList", mailTemplateDtoArrayList);
-
             request.setAttribute("isSOBChecked", configDto.getSalesOrderBoard());
             request.setAttribute("isIRBChecked", configDto.getItemReceivedBoard());
             request.setAttribute("isPOBChecked", configDto.getPoboard());
@@ -252,7 +251,7 @@ public class ConfigurationController {
             dao.getMasterReason(configDto);
             int templateId = Integer.parseInt(request.getParameter("templateId"));
             System.out.println("Selected Template ID:" + templateId);
-            dao.getActiveTemplates(templateId, request, configDto);
+            ArrayList<MailTemplateDto> mailTemplateDtoArrayList = dao.getEmailActiveTemplates(templateId);
             /*forward="success33";*/
             forward = "success11";
             System.out.println("goes to emailTemplate page with data");
@@ -1227,6 +1226,38 @@ public class ConfigurationController {
             String errorCode = cDetails.saveCustomerInvoiceSetting(configDto, request, companyID);
             System.out.println("UpdateStatusCode value:" + errorCode);
             status = errorCode;
+        }
+        else if (action.equalsIgnoreCase("con")) {
+            ConfigurationDAO dao = new ConfigurationDAO();
+            dao.getMasterReason(configDto);
+            int templateId = Integer.parseInt(request.getParameter("templateId"));
+            System.out.println("Selected Template ID:" + templateId);
+            ArrayList<MailTemplateDto> mailTemplateDtos = dao.getEmailActiveTemplates(templateId);
+
+            JSONObject json=new JSONObject();
+            json.put("TemplateID", mailTemplateDtos.get(0).getTemplateID());
+            json.put("TemplateName", mailTemplateDtos.get(0).getTemplateName());
+            json.put("Content", mailTemplateDtos.get(0).getContent());
+            json.put("Subject", mailTemplateDtos.get(0).getSubject());
+            status = json.toString();
+        }
+
+        else if (action.equalsIgnoreCase("addNewEmailTemplate")) {
+            ConfigurationDAO dao = new ConfigurationDAO();
+            String templateName = request.getParameter("templateName");
+            String subject = request.getParameter("subject");
+            String content = request.getParameter("content");
+            String selectedTemplateId = request.getParameter("selectedTemplateId");
+            if (selectedTemplateId != null){
+                dao.updateSelectedTemplate(selectedTemplateId,templateName, subject, content);
+            }else {
+                dao.addNewTemplates(templateName, subject, content);
+            }
+        }
+        else if (action.equalsIgnoreCase("deleteEmailTemplate")) {
+            ConfigurationDAO dao = new ConfigurationDAO();
+            String selectedTemplateId = request.getParameter("selectedTemplateId");
+            dao.deleteUserTemplate(selectedTemplateId);
         }
         else if (action.equalsIgnoreCase("saveVendorPurchaseValues")) {
             configDto.setSortBy(Integer.parseInt(request.getParameter("sortBy")));

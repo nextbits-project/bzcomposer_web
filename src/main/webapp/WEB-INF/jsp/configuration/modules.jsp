@@ -3,7 +3,6 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page isELIgnored="false"%>
-<%@ page errorPage="/include/sessionExpired.jsp"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -119,7 +118,7 @@ function toggleFunction() {
                                             </c:if>
                                         </select>
                                         <c:if test="${not empty configDto.listOfExistingInvoiceStyle}">
-                                            <input type="hidden" name="invoiceStyleId" id="invoiceStyleId" value="${configDto.listOfExistingInvoiceStyle[configDto.listOfExistingInvoiceStyle.length-1].invoiceStyle}">
+                                            <input type="hidden" name="invoiceStyleId" id="invoiceStyleId" value="">
                                         </c:if>
                                         <c:if test="${empty configDto.listOfExistingInvoiceStyle}">
                                             <input type="hidden" name="invoiceStyleId" id="invoiceStyleId" value="">

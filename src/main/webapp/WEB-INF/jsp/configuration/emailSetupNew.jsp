@@ -12,45 +12,79 @@ $(document).ready(function(){
 
 function addNewTemplate()
 {
-		
-	document.getElementById("templateName").style.display = "block";
-	document.getElementById("templateSubject").style.display = "block";
-	document.getElementById("emailText").style.display = "block";
-	document.getElementById("txtTemplateText").style.display = "none";
-	document.getElementById("txtTemplateName").style.display = "none";
-	document.getElementById("txtTemplateSubject").style.display = "none";
+	document.getElementById('selectedTemplateId').value = "";
+    document.getElementById('templateName').value = "";
+    document.getElementById('templateSubject').value = "";
 	document.getElementById("emailText").value = "<<name>>"+'\n'+"<<company name>>"+'\n'+"<<address>>"+'\n'+"<<phonenumber>>";	
 }
-function setContentData(templateID,templateName, subject, content){
-  debugger;
-    document.getElementById('selectedTemplateId').value = templateID;
-    document.getElementById('templateName').value = templateName;
-    document.getElementById('templateSubject').value = subject;
-    document.getElementById('emailText').value = content;
+function setContentData(templateID){
+    debugger;
+    $.ajax({
+    		type: "POST",
+         	url:"ConfigurationAjax/SaveConfiguration?tabid=con&templateId="+templateID,
+           	data: { emailText : templateID }
+       		}).done(function(data){
+       		const mailTemplate = JSON.parse(data);
+       		document.getElementById('selectedTemplateId').value = mailTemplate.TemplateID;
+            document.getElementById('templateName').value = mailTemplate.TemplateName;
+            document.getElementById('templateSubject').value = mailTemplate.Subject;
+            document.getElementById('emailText').value = mailTemplate.Content;
+           	//$(document).find('div#emailTextDiv table').replaceWith($(data).find('div#emailTextDiv').html());
+    });
 }
 
-function setContent()
-{
-	
-	var id = $("#selectedTemplateId option:selected").val();
-	document.getElementById("templateName").style.display = "none";
-	document.getElementById("txtTemplateName").style.display = "block";
-	document.getElementById("templateSubject").style.display = "none";
-	document.getElementById("txtTemplateSubject").style.display = "block";
-	document.getElementById("emailText").style.display = "none";
-	document.getElementById("txtTemplateText").style.display = "block";
-	
-	//window.open("Configuration.do?tabid=con&templateId="+id,null,"scrollbars=yes,height=600,width=1300,status=yes,toolbar=no,menubar=no,location=no");
-	$.ajax({
-		type: "POST",
-     	url:"Configuration.do?tabid=con&templateId="+id,
-       	data: { emailText : id }
-   		}).done(function(data){
-   		
-       	$(document).find('div#emailTextDiv table').replaceWith($(data).find('div#emailTextDiv').html());
-   	});
+function saveTemplate(){
+    debugger;
+    var selectedTemplateId = document.getElementById('selectedTemplateId').value;
+    var templateName = document.getElementById('templateName').value;
+    var subject = document.getElementById('templateSubject').value;
+    var content = document.getElementById('emailText').value;
+    var errorMessage="";
+    if(templateName == "" || templateName == null){
+        errorMessage = "<h3>Please Enter Template Name</h3>";
+    }else if(subject == "" || subject == null){
+        errorMessage = "<h3>Please Enter Subject</h3>";
+    }
+    if(errorMessage !=""){
+        document.getElementById("errors").innerHTML = errorMessage;
+        return false;
+        event.preventDefault();
+    }else{
+        $.ajax({
+                type : "POST",
+                url:"ConfigurationAjax/SaveConfiguration?tabid=addNewEmailTemplate",
+                data : "selectedTemplateId="+selectedTemplateId+"&templateName="+templateName+"&content="+content+"&subject="+subject,
+                success : function(data) {
+                    window.location = "/Configuration?tabid=config&&tab=tr2";
+                },
+                error : function(data) {
+                    alert("<spring:message code='BzComposer.common.erroroccurred'/>");
+                    return false;
+                }
+        });
+    }
 }
+function deleteTemplate(){
+    var selectedTemplateId = document.getElementById('selectedTemplateId').value;
+    if(selectedTemplateId == null && selectedTemplateId == ""){
+        alert("Please select template!");
+    }else{
+    $.ajax({
+            type : "POST",
+            url:"ConfigurationAjax/SaveConfiguration?tabid=deleteEmailTemplate",
+            data : "selectedTemplateId="+selectedTemplateId,
+            success : function(data) {
+                window.location = "/Configuration?tabid=config&&tab=tr2";
+            },
+            error : function(data) {
+                alert("<spring:message code='BzComposer.common.erroroccurred'/>");
+                return false;
+            }
+    });
 
+    }
+
+}
 </script>
 <!-- emailSetUp Starts -->
 <table class="table-notifications" width="100%">
@@ -59,6 +93,9 @@ function setContent()
 			<b><spring:message code="BzComposer.configuration.emailtemplate" /></b>
 		</th>
 	</tr>
+	<tr>
+        <td colspan="3" align="center"><div id="errors" style="color: red;"></div></td>
+    </tr>
 	<tr>
 		<td colspan="3" style="font-size:12px;">
 			<a href="#" onclick="addNewTemplate();" style="font-size:12px;">
@@ -84,10 +121,10 @@ function setContent()
 	</tr>
 	<tr>
 		<td rowspan="4" style="font-size:12px;">
-			<select id="selectedTemplateId"  multiple="multiple" style="height:300px;">
+			<select id="selectedTemplateId1"  multiple="multiple" style="height:300px;">
 				<c:if test="${not empty mailTemplateDtoArrayList}">
 					<c:forEach items="${mailTemplateDtoArrayList}" var="objList1" varStatus="loop">
-						<option onclick="setContentData('${objList1.templateID}', '${objList1.templateName}', '${objList1.subject}', '${objList1.content}')" value="${objList1.templateID}">${objList1.templateName}</option>
+						<option onclick="setContentData('${objList1.templateID}')" value="${objList1.templateID}">${objList1.templateName}</option>
 					</c:forEach>
 				</c:if>
 			</select>
@@ -95,6 +132,7 @@ function setContent()
 		<td style="font-size:12px;">
 			<spring:message code="BzComposer.configuration.templatename"/>* :
 		</td>
+
 		<td style="font-size:12px;">
 			<input type="text" id="templateName" style="display: block;">
 			<%-- <c:if test="${configurationForm.listOfExistingTemplates}"> --%>

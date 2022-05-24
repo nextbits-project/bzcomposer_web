@@ -332,7 +332,7 @@ function pleaseWaitDialog(){
 }
 </script>
 <body onload="init();">
-<form:form name="configurationForm" enctype="MULTIPART/FORM-DATA" method="post" modelAttribute="configDto">
+<form:form name="configurationForm" id="configurationForm" enctype="MULTIPART/FORM-DATA" method="post" modelAttribute="configDto">
 <div id="ddcolortabsline">&nbsp;</div>
 <div id="cos">
 <div class="statusquo ok">

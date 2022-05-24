@@ -2196,7 +2196,7 @@ public class ConfigurationDAO {
         form.setListOfExistingStores(listPOJOs);
         return listPOJOs;
     }
-    public ArrayList <MailTemplateDto> getEmailActiveTemplates()
+    public ArrayList <MailTemplateDto> getEmailActiveTemplates(int templateId)
     {
         SQLExecutor db = new SQLExecutor();
         Connection con = db.getConnection();
@@ -2204,7 +2204,12 @@ public class ConfigurationDAO {
         ResultSet rs = null;
         ArrayList<MailTemplateDto> listPOJOs = new ArrayList<>();
         try {
-            String sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1";
+            String sql ;
+            if (templateId != 0){
+                sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1 and TemplateID="+templateId;
+            }else {
+                sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1";
+            }
 
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -2229,6 +2234,84 @@ public class ConfigurationDAO {
             }
         }
         return listPOJOs;
+    }
+
+    public void addNewTemplates(String templateName, String subject, String content)
+    {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowAdded = false;
+        try {
+            String sql = "INSERT INTO bca_mailtemplate(TemplateName, Subject, TemplateContent, Active) Values(?,?,?,?)";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, templateName);
+            pstmt.setString(2, subject);
+            pstmt.setString(3, content);
+            pstmt.setInt(4, 1);
+            rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+    }
+    public void updateSelectedTemplate(String selectedTemplateId, String templateName, String subject, String content){
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowUpdated = false;
+        try {
+            String sql = "update bca_mailtemplate SET TemplateName = ?, Subject = ?, TemplateContent = ? where TemplateID = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, templateName);
+            pstmt.setString(2, subject);
+            pstmt.setString(3, content);
+            pstmt.setString(4, selectedTemplateId);
+            rowUpdated = pstmt.executeUpdate() > 0 ? true : false;
+
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+    }
+    public void deleteUserTemplate(String selectedTemplateId){
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowDeleted = false;
+        try {
+            String sql = "update bca_mailtemplate SET Active = ? where TemplateID = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, 0);
+            pstmt.setString(2, selectedTemplateId);
+            rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
     }
     public ArrayList <ConfigurationDto> getActiveTemplates(int templateId, HttpServletRequest request, ConfigurationDto form)
     {
