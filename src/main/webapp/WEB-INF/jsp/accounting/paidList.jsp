@@ -332,7 +332,7 @@ table.tabla-listados tbody tr td {
 			    	<spring:message code="BzComposer.popayable.tab.paidlist"/>
 		    	</a>
 		    	<a class="nav-item nav-link" id="nav-vendorRMA-tab" data-toggle="tab" href="#nav-vendorRMA" role="tab"
-                aria-controls="nav-contact" aria-selected="false">
+                aria-controls="nav-contact" aria-selected="false" onclick="vendorRMARefund()">
                     <spring:message code="BzComposer.accountreceivable.tabs.VendorRMARefund"/>
                 </a>
                 <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" 
@@ -590,6 +590,11 @@ table.tabla-listados tbody tr td {
 	var oldClientVendorId = -1;
 	var oldBankAccountId = -1;
 	var oldPaymentTypeId = -1;
+
+	function vendorRMARefund(){
+     window.location = "${pageContext.request.contextPath}/PoPayable?tabid=vendorRMARefund";
+    }
+
    function selectrow(invoice,index,payId) {
 	    
 	  if(document.getElementById("rdoPurchaseOrder").checked)

@@ -1,7 +1,6 @@
 <%@ page isELIgnored="false"%>
 <%@page import="java.util.Currency"%>
 <%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
-<%-- <%@ taglib prefix="bean" uri="http://struts.apache.org/tags-bean" %> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
@@ -14,6 +13,7 @@
 <%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <html>
@@ -22,8 +22,7 @@
 <%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
-<title>Layaway</title>
-
+<title><spring:message code="BzComposer.accountreceivabletitle"/></title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -64,18 +63,19 @@ table.tabla-listados tbody tr td {
  		background-color: blue; 
  
 	 }
-	 
 .highlight { background-color: #00CED1 !important;color: #fff }	
+ 
+	
 </style>
 
 </head>
 <body>
 <% int find = 0; %>
 <div id="ddcolortabsline">&nbsp;</div>
- <html:form action="AccountReceiveble" method="post" styleId="layawaysForm" >
+ <form:form action="AccountReceiveble" method="post" styleId="cancelledTabForm" >
 	<div class="content1 clearfix">
 		<h3 class="title1">
-		    <spring:message code="BzComposer.accountreceivable.tabs.layaways"/>
+		    <spring:message code="BzComposer.accountreceivable.tabs.cancelled"/>
 		</h3>
 		 <% ReceivableListBean receivablelistbean=(ReceivableListBean)request.getAttribute("Selectedrow");
 		 	TblPaymentType payment = (TblPaymentType)request.getAttribute("SelectedPayment");
@@ -94,7 +94,6 @@ table.tabla-listados tbody tr td {
 		 	{
 		 		find = Integer.parseInt(request.getSession().getAttribute("invoiceId").toString());
 		 	}
-		 	
 		 	
 		 %>
 		 
@@ -195,7 +194,9 @@ table.tabla-listados tbody tr td {
 					  data.style.display = "none";
 				</script>
 				<div class="form-group row" id="Check">
-							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.accountreceivable.checknumber"/></label>
+							<label class="col-md-4  col-form-label">
+							    <spring:message code="BzComposer.accountreceivable.checknumber"/>
+							</label>
 							<div class="col-md-8">
 							<input type="text" class="form-control devCheck" id="checkNum" name="checkNum">
 							</div>
@@ -217,6 +218,7 @@ table.tabla-listados tbody tr td {
 							
 						
 						</div>
+						
 						<div class="form-group row">
 							<label class="col-md-4  col-form-label">
 							    <spring:message code="BzComposer.accountreceivable.category"/>
@@ -240,18 +242,15 @@ table.tabla-listados tbody tr td {
 							    <spring:message code="BzComposer.accountreceivable.paymentstatus"/>
 							</label>
 							<div class="col-md-8">
-								<select class="form-control paymentOP" size="1" id="payStatus">
-									<option>Unpaid</option>
-									<option>Paid</option>
-									<option>Layaway</option>
+								<select class="form-control" size="1">
+									<option><spring:message code="BzComposer.accountreceivable.unpaid"/></option>
+                                    <option><spring:message code="BzComposer.accountreceivable.paid"/></option>
 								</select>
 							</div>
 						</div>
 						
 						<div class="form-group row">
-							<label class="col-md-4  col-form-label">
-							    <spring:message code="BzComposer.global.memo"/>
-							</label>
+							<label class="col-md-4  col-form-label"><spring:message code="BzComposer.global.memo"/></label>
 							<div class="col-md-8">
 								<input type="text" class="form-control devMemotext" id="memo">
 							</div>
@@ -260,121 +259,85 @@ table.tabla-listados tbody tr td {
 						
 					</div>
 					<div class="col-md-4" style="top:35px;">
-						 <div class="form-group">
-								<button class="btn btn-info" style="width:100px;font-size: 14px;" onclick="return save()"><spring:message code="BzComposer.global.save"/></button>
-							</div>  
 						<div class="form-group">
-							<button class="btn btn-info" style="width:100px;font-size: 14px;" onclick="return clearTransaction()"><spring:message code="BzComposer.global.clear"/></button>
+							<button class="btn btn-info" style="width:100px;font-size: 14px;" onclick="return clearTransaction()">
+							    <spring:message code="BzComposer.global.clear"/>
+							</button>
 						</div> 
 					</div>
 				</div>
 			</form>
 		</div>
-		
+				
 		<div class="content-tabs">
 			
 			<nav>
 			   <div class="nav nav-tabs" id="tabId" role="tablist">
-			    <a class="nav-item nav-link " id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" onclick="receivableList()"><spring:message code="BzComposer.accountreceivable.tabs.receivablelist"/></a>
+			    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" onclick="receivableList()"><spring:message code="BzComposer.accountreceivable.tabs.receivablelist"/></a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()"><spring:message code="BzComposer.accountreceivable.tabs.received"/></a>
-			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" onclick="overDueTab()"><spring:message code="BzComposer.accountreceivable.tabs.overdue"/></a>
+			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false"><spring:message code="BzComposer.accountreceivable.tabs.overdue"/></a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="cancelledTab()"><spring:message code="BzComposer.accountreceivable.tabs.cancelled"/></a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="vendorRMA()"><spring:message code="BzComposer.accountreceivable.tabs.vendorrma"/></a>
-			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()"><spring:message code="BzComposer.accountreceivable.tabs.layaways"/></a>
+			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false"><spring:message code="BzComposer.accountreceivable.tabs.vendorrma"/></a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()"><spring:message code="BzComposer.accountreceivable.tabs.layaways"/></a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">eSales</a>
 			  </div>
 			</nav>
 			<div class="tab-content" id="nav-tabContent">
 			  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-				
 				<div class="table1" id="tblForInvoiceOrder">
 				<table class="table table-bordered table-sm devAcRecDataTbl">
 				  <thead class="thead-light">
 				    <tr>
-				        <th scope="col"><spring:message code="BzComposer.accountreceivable.select"/></th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.sales.Order"/></th>
-                          <th scope="col"><spring:message code="BzComposer.accountreceivable.customername"/></th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.orderdate"/></th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.global.term"/></th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.duedate"/></th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.depositto"/>"</th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.receivedtype"/></th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.checknumber"/></th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.receivable"/></th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.amount"/></th>
-                          <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.category"/></th>
-                          <th scope="col"><spring:message code="BzComposer.global.memo"/></th>
-				    </tr>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmanumber" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmanumber" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.lastname" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.firstname" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.itemcode" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.itemdescription" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.reason" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmaquantity" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.unitprice" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.unitweight" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmarequest" /></th>
+                    </tr>
 				  </thead>
 				  <tbody>
-				  <%
-				  	ArrayList<ReceivableListBean> li = (ArrayList)request.getAttribute("ReceivableList");		
-				  	Iterator<ReceivableListBean> itr =li.iterator();
-							  int index=1;
-				  	while(itr.hasNext())
-				  	{
-				  		ReceivableListBean rb = itr.next();
-
-				  %>
-				    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)">	
-				      <td><input type="checkbox" id="Checkbox"></td>
-				      <td class="text-right"><% out.println(rb.getOrderNum()); %></td>
-				      <td value="<%=rb.getCvID() %>"><% out.println(rb.getCompanyName() + " ("+rb.getCvName() + ")"); %></td>
-				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded())); %></td>
-				      <td class="text-right"><% out.println(rb.getTermName()); %></td>
-				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded())); %></td>
-				      <td class="text-right" value="<%=rb.getBankAccountID() %>"><% out.println(rb.getAccountName()); %></td>
-				      <td class="text-right" value="<%= rb.getPaymentTypeID() %>"><% out.println(rb.getPaymentTypeName()); %></td>
-				      <% if(request.getSession().getAttribute("checkNum"+rb.getInvoiceID()) != null) {%>
-				      <td class="text-right"><% out.println(request.getSession().getAttribute("checkNum"+rb.getInvoiceID())); %> </td>
-				      <% } else {%>
-				      <td class="text-right"></td>
-				      <% } %>
-				      <td class="text-right"><% out.println(rb.getBalance()); %></td>
-				      <td class="text-right"><% out.println(rb.getAdjustedTotal()); %></td>
-				      <td class="text-right" value=<%=rb.getCategoryID() %>><% out.println(rb.getTblcategory()); %></td>
-				      <td class="text-right"><% out.println(rb.getMemo()); %></td>
-				      <% if(request.getSession().getAttribute("balance"+rb.getInvoiceID()) != null) {%>
-				      <td hidden="balnce" value="<%= request.getSession().getAttribute("balance"+rb.getInvoiceID()) %>"></td>
-				      <% } else {%>
-				      <td hidden="balnce" value="<%= request.getSession().getAttribute("balance"+rb.getInvoiceID()) %>"></td>
-				      <% }%>
-				       <% if(request.getSession().getAttribute("amtToPay"+rb.getInvoiceID()) != null) {%>
-				      <td hidden="amtToPay" value="<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID()) %>"></td>
-				      <% } else {%>
-				      <td hidden="amtToPay" value="<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID()) %>"></td>
-				      <% }%>
-				    </tr>
-			<%
-			index++;
-				  	}
-			%>	    
+				  <c:if test="${not empty vendorRMAList}">
+                        <input type="hidden" name="RMALID" id="lSize" value='${vendorRMAList.size()}'>
+                        <c:forEach items="${vendorRMAList}" var="RobjList" varStatus="loop">
+                            <tr id="${loop.index}$$" onclick="setRMA('${RobjList.order}','${RobjList.fname}','${RobjList.lname}','${loop.index}$$');">
+                                <td><input type="checkbox" id="Checkbox[${loop.index}]" ></td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.rma}</td>
+                                <td nowrap="nowrap" style="font-size: 14px;" >${RobjList.lname}</td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.fname}</td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.itemCode}</td>
+                                <td nowrap="nowrap" width="400" style="font-size: 14px;">${RobjList.itemDesc}</td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.reason}</td>
+                                <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.qty}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.unitPrice}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.unitWeight}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.sentDate}</td>
+                            </tr>
+                        </c:forEach>
+                    </c:if>
 		</tbody>	
 	</table>
 	</div>
-	
-				<div class="footer1">
-                    <button class="btn btn-info btn1" onclick="return received()">
-                        <spring:message code="BzComposer.accountreceivable.tabs.received"/>
-                    </button>
-				  </div>
-				</div>
-			  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-			  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-			</div>
-		
-		
-		</div>
+</div>
+</div>	
+</div>
 
 
 
 	</div>			
 
- </html:form>                                
+ </form:form>                                
 <script type="text/javascript">
 	var indexNumber = -1;
 	var amtToPay = -1;
 	var invoiceId = -1;
+    selectChaseBankFromDropDownList("depositId");
+
    function selectrow(invoice,index) {
 	    
 	    this.indexNumber = index;
@@ -383,7 +346,7 @@ table.tabla-listados tbody tr td {
 	    var matchFind = <%= request.getSession().getAttribute("indexNumber")%>;
 	   	$("#checkNum").val(''); 
 	    $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text());
-	    $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(3)').attr('value'));
+	    $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value'));
 	    var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text();
 	    var balanceString  = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
 	    var amount = parseInt(amountString);
@@ -397,23 +360,34 @@ table.tabla-listados tbody tr td {
 	    		var checkReceived = <%= request.getSession().getAttribute("checkReceived"+) %>;
 	    		$(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text());
 	    	} --%>
-	    $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(11)').text());
+	    $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text());
 	    $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text()); 
-	    $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(12)').attr('value'));
-	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').attr('value') == '192' || $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == '1')
+	    $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(13)').attr('value'));
+	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == '192' || $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == '1')
 	    {
 	    		$("#Check").show();
-	    		$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text());
 	    }
 	    else
 	    {
 	    		$("#Check").hide();
 	    }
-	    $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').attr('value'));
-	    $("select.devDeposittypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(7)').attr('value'));
-	    $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').text());
-	    $(".devMemotext").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(13)').text());
-	  
+	    $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value'));
+	    $("select.devDeposittypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value'));
+	    $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(7)').text());
+	    $(".devMemotext").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(14)').text());
+	 /*    $(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(17)').attr('value')); */
+	 	/* if(matchFind != inx)
+	 		{ */
+			 	/* $(".devCheck").val($('table.devRecDataTblForcheck tbody tr:nth-child(2)').find('td:nth-child(1)').attr('value')); */
+				if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value') != 'null')
+					{
+	 					$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value'));
+					}	
+			 	
+	 	/* 	} */
+	 
+	 	/* $('table.devRecDataTblForcheck tbody tr:nth-child(2)').find('td:nth-child(1)').attr('value'); */
+	    /* var ve = $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(15)').attr('value')) == 'check'; */ 
    }  
 								 							 	
    
@@ -422,41 +396,30 @@ table.tabla-listados tbody tr td {
 	   	
 
 	   var receivedAmount;
-	    var adjustTotalString = document.getElementById("devAmount").innerHTML;
-		var amtTopayString = document.getElementById("receivedAmount").value;
-		var adjustTotal = parseFloat(adjustTotalString);
-		var amtToPay = parseFloat(amtTopayString);
-		
-		var type = document.getElementById("receivedType");
-		var ctype = type.options[type.selectedIndex].label;
-		
-		if(ctype == 'Check')
+	    var adjustTotal = document.getElementById("devAmount").innerHTML;
+		/* var receivedAmount=document.getElementById("receivedAmount").value; */
+		receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
+		if(parseFloat(receivedAmount) == 0.0)
 			{
-                var checkNum = document.getElementById("checkNum").value;
-                if(checkNum == '' || checkNum == '0'){
-                    alert("<bean:message key='BzComposer.common.enterValidCheckNumber'/>");
-                    return false;
-                }
-			}
-	
-		if(amtToPay > amtTopayString)
-			{
-                alert("<bean:message key='BzComposer.common.cantPayMoreThanAmt'/>");
-                return false;
-			}
-		this.amtToPay = document.getElementById("receivedAmount").value; 
-		var balanceString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(14)').attr('value');
-		if(balanceString != null || balanceString != '' || balanceString == 'null')
-			{
-				var amtPayable = parseFloat(amtToPay);
-				var balance = parseFloat(balanceString);
-				
-				if(amtPayable > balance)
+				receivedAmount=document.getElementById("receivedAmount").value;
+				if(parseFloat(receivedAmount) > parseFloat(adjustTotal))
 					{
-					  alert("<bean:message key='BzComposer.common.cantPayMoreThanBalance'/>");
-					  return false;
+						alert("<bean:message key='BzComposer.common.receivedAmtShuouldNotBeGTAmt'/>");
+				   		return false;
 					}
 			}
+		else{
+				receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
+				var balance = document.getElementById("receivedAmount").value;
+				if(parseFloat(receivedAmount)+parseFloat(balance) > parseFloat(adjustTotal) )
+				   {
+				   		alert("<bean:message key='BzComposer.common.receivedAmtShuouldNotBeGTAmt'/>");
+				   		return false;
+				   }
+		}
+		
+		this.amtToPay = document.getElementById("receivedAmount").value; 
+	
 	   
 	   var ReceivableListBean={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
@@ -468,9 +431,9 @@ table.tabla-listados tbody tr td {
 			   "amtToPay":amtToPay,
 			   "categoryID":document.getElementById("categoryId").value,
 			   "memo":document.getElementById("memo").value,
-			   "checkNum":checkNum,
+			   "checkNum":document.getElementById("checkNum").value,
 	   }
-	
+	   
     sendMyValue(ReceivableListBean);
  
   	}
@@ -481,16 +444,16 @@ table.tabla-listados tbody tr td {
    	 $.ajax({
 		
 			type : "POST",
-			url : "Layaway?tabid=UpdateRecord",
-			data : "row=" + obj + "&invoiceId="+invoiceId,
+			url : "AccountReceiveble?tabid=UpdateRecord",
+				data : "row=" + obj + "&invoiceId="+invoiceId,
 		    success : function(data) {
 				
-		    	updateLayawayTab(data);
-			/* window.location = "${pageContext.request.contextPath}/Layaway?tabid=layawayTab"; */
+				updateCancelledTab(data);
+			/* window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; */
 			
 			},
 			 error : function(data) {
-				 alert("<spring:message code="BzComposer.common.erroroccurred"/>");
+				alert("<bean:message key='BzComposer.common.erroroccurred'/>");
 			} 
 		});
    	
@@ -509,7 +472,7 @@ table.tabla-listados tbody tr td {
 				window.location= "${pageContext.request.contextPath}/AccountReceiveble?tabid=selectrow&ordernum="+index;
 			},
 			 error : function(data) {
-				 alert("<spring:message code="BzComposer.common.erroroccurred"/>");
+				alert("<bean:message key='BzComposer.common.erroroccurred'/>");
 			} 
 		});
    }
@@ -583,14 +546,11 @@ table.tabla-listados tbody tr td {
 	   
 	   if(ctype == 'Check')
 	   {
-	   var checkNo = document.getElementById("checkNum").value;
-	   	if(checkNo == '0' || checkNo == '')
-            {
-                alert("<bean:message key='BzComposer.common.enterValidCheckNumber'/>");
-                return false;
-
-            }
-	   	 
+           var checkNo = document.getElementById("checkNum").value;
+           if(checkNo == '0' || checkNo == ''){
+               alert("<bean:message key='BzComposer.common.enterValidCheckNumber'/>");
+               return false;
+           }
 	   }
 	   var memo = document.getElementById("memo").value;
 	   var depositBank = document.getElementById("depositId");
@@ -601,12 +561,25 @@ table.tabla-listados tbody tr td {
 	   var selectedCustomer = customer.options[customer.selectedIndex].value;
 	   var selectedCategoryString = category.options[category.selectedIndex].value;
 	   var categoryId = parseInt(selectedCategoryString);
-	   var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(11)').text();
-	   var balaceString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(14)').text();
+	   var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text();
+	   var balaceString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
 	    var amount = parseFloat(amountString);
 	   var balance = parseInt(balaceString); 
 	   <%-- var receivedAmount = <%= request.getSession().getAttribute("amtToPay")%>; --%>
-	     var receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value');  
+	     var receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value');  
+	   /*   var total = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(19)').attr('value'); */
+	    /* var receivedAmountInt = parseInt(receivedAmount);
+	    var totalInt = parseInt(total);  */
+	    
+	   /*  if(receivedAmountInt > totalInt)
+	    	{
+	    		
+	    	  	receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').attr('value');
+	    	}
+	    else
+	    	{
+	    		 receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value');
+	    	} */
 	   if(amount == balance)
 		   {
 		  		 receivedAmountString =  $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
@@ -615,6 +588,9 @@ table.tabla-listados tbody tr td {
 		   {
 		  		 receivedAmountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
 		   }
+	   
+	  /*  	var receivedAmount = parseInt(receivedAmountString); */   
+	 /*   var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text(); */
 	   var ReceivableListBean={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":selectedCustomer,
@@ -632,17 +608,18 @@ table.tabla-listados tbody tr td {
 	   $.ajax({
 			
 			type : "POST",
-			url : "Layaway?tabid=ReceivedInvoice",
+			url : "AccountReceiveble?tabid=ReceivedInvoice",
+		/* 	data : "row=" + row + "&paymentTypeId=" +paymentTypeId + "&memo=" + memo + "&accountId=" +accountId + "&categoryId=" +categoryId + "&receivedAmount=" +receivedAmount, */			
 				data :"row=" + obj + "&index="+indexNumber,
 		    success : function(data) {
 				/* var html = "" + data.msg; */
 				
-			updateLayawayTab(data);	
-			/* window.location = "${pageContext.request.contextPath}/Layaway?tabid=layawayTab";  */
+			updateCancelledTab(data);
+			/* window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; */
+			
 			},
 			 error : function(data) {
-				 alert("<spring:message code="BzComposer.common.erroroccurred"/>");
-				/*  alert("<bean:message key='BzComposer.common.erroroccurred'/>"); */
+				alert("<bean:message key='BzComposer.common.erroroccurred'/>");
 			} 
 		});
   	
@@ -678,13 +655,12 @@ table.tabla-listados tbody tr td {
    {
 	   var answer;
 	   
-	   if(parseInt(invoiceId) <= 0)
-		   {
+	   if(parseInt(invoiceId) <= 0){
 		   alert("<spring:message code="BzComposer.accountreceivable.selecttransaction"/>");
-		   		return false;
-		   }
+            return false;
+       }
 	   else{
-		  answer = window.confirm("<spring:message code='BzComposer.accountreceivable.cleartransaction'/>");
+		  answer = window.confirm("Are you sure want to Clear the Transaction ?");
 		  if(answer != true)
 			  {
 			  		return false;
@@ -694,72 +670,20 @@ table.tabla-listados tbody tr td {
 	   $.ajax({
 			
 			type : "POST",
-			url : "Layaway?tabid=ClearTransaction",
+			url : "CancelledTabPost?tabid=ClearTransaction",
 			data :"invoiceId=" + invId,
 		    success : function(data) {
+				/* var html = "" + data.msg; */
 				
-		    	updateLayawayTab(data);
-				/* window.location = "${pageContext.request.contextPath}/Layaway?tabid=layawayTab"; */
+				updateCancelledTab(data);
+				/* window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab"; */
 				
 			},
 			 error : function(data) {
-				 alert("<spring:message code="BzComposer.common.erroroccurred"/>");
+				alert("<bean:message key='BzComposer.common.erroroccurred'/>");
 			} 
 		});
 		$(document.forms[0]).submit(function( event ) {
-		    event.preventDefault();
-		});
-   }
-   function receivableList()
-   {
-	   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble";
-   }
-   function cancelledTab()
-   {
-	   
-	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab";
-   }
-   function vendorRMA()
-   {
-    window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=vendorRMA";
-   }
-   function receivedTab()
-   {
-
-	   window.location = "${pageContext.request.contextPath}/ReceivedTab?tabid=receivedTab";
-   }
-   function overDueTab()
-   {
-	   window.location = "${pageContext.request.contextPath}/OverDueTab?tabid=overDueTab";
-   }
-   function billingInfo()
-   {
-	   
-	   var h = window.screen.height;
-	   var w = window.screen.width;
-	   
-	   var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
-	   var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
-	   
-	   var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
-	   var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
-	    
-	   var left = (screen.width/2) - (w / 2);
-	   var top = (screen.height/2) - (h / 2);
-	    
-	   /* window.open("BillingInfo?tabid=showBilling","Billing ","scrollbars=yes,width="+w/2+",height="+h/2+",top=150,left="+(left+300)+",status=yes,toolbar=no,menubar=no,location=no," ); */
-	   window.open("BillingInfo?tabid=showBilling","Billing ","scrollbars=yes,width="+w/2+",height="+h/2+",top=150,left="+(left+300)+",status=yes,toolbar=no,menubar=no,location=no," );
-	   
-	   $(document.forms[0]).submit(function( event ) {
-		    event.preventDefault();
-		});
-   }
-   function checkPaymentStatus()
-   {
-	   
-	  	/* var pay = document.getElementById("payStatus");
-	  	vat option = pay.options[pay.selectedIndex].value; */
-	   $(document.forms[0]).submit(function( event ) {
 		    event.preventDefault();
 		});
    }
@@ -771,6 +695,24 @@ table.tabla-listados tbody tr td {
 	             $(this).addClass("highlight");
 	    });
 	}); 
+   function receivableList()
+   {
+	   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble";
+   }
+   function cancelledTab()
+   {
+	   
+	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab";
+   }
+   function receivedTab()
+   {
+
+	   window.location = "${pageContext.request.contextPath}/ReceivedTab?tabid=receivedTab";
+   }
+   function layawaysTab()
+  {
+    window.location = "${pageContext.request.contextPath}/Layaway?tabid=layawayTab";
+  }
    function addCss()
    {
 	   $(document).ready(function () {
@@ -785,11 +727,10 @@ table.tabla-listados tbody tr td {
 		var dName = dayName(day);
 	   	$("#orderDate").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
    }
-   function updateLayawayTab(data)
+   function updateCancelledTab(data)
    {
-	   
 	   document.getElementById("devAmount").innerHTML = "";
-	   $("#layawaysForm")[0].reset();
+	   $("#cancelledTabForm")[0].reset();
 	   $(document).find('div#tblForInvoiceOrder table').replaceWith($(data).find('div#tblForInvoiceOrder').html());
 	   addCss();
    }

@@ -4,6 +4,8 @@ import com.avibha.bizcomposer.accounting.dao.AccountingDAO;
 import com.avibha.bizcomposer.accounting.forms.AccountDto;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.rma.dao.RMADetailsDao;
+import com.avibha.bizcomposer.rma.dao.RMAInfoDao;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
 import com.google.gson.Gson;
@@ -95,6 +97,26 @@ public class AccountingController{
 			}
 			if(action.equals("receivedTab")) {
 				forward = "/accounting/received";
+			}
+			if(action.equals("CustomerRMARefund"))
+			{
+				RMADetailsDao rd=new RMADetailsDao();
+				RMAInfoDao rmaInfo = new RMAInfoDao();
+				ArrayList CustomerRMAList = new ArrayList();
+				int invoiceTypeID = 2;
+				CustomerRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);
+				request.setAttribute("CustomerRMAList",CustomerRMAList);
+				forward = "/accounting/CustomerRMARefund";
+			}
+			if(action.equals("vendorRMA"))
+			{
+				RMADetailsDao rd=new RMADetailsDao();
+				RMAInfoDao rmaInfo = new RMAInfoDao();
+				ArrayList vendorRMAList = new ArrayList();
+				int invoiceTypeID = 1;
+				vendorRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);
+				request.setAttribute("vendorRMAList",vendorRMAList);
+				forward = "/accounting/vendorRMA";
 			}
 		}
 		Path p = new Path();

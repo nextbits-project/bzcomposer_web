@@ -312,8 +312,8 @@ table.tabla-listados tbody tr td {
 		<div class="content-tabs">
 			<nav>
 			   <div class="nav nav-tabs" id="tabId" role="tablist">
-			    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-			    aria-controls="nav-home" aria-selected="true">
+			    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+			    aria-controls="nav-home" aria-selected="true" onclick="ReceivebleList()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.receivablelist"/>
 		    	</a>
 				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
@@ -328,8 +328,8 @@ table.tabla-listados tbody tr td {
 			    aria-controls="nav-contact" aria-selected="false" onclick="cancelledTab()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.cancelled"/>
 		    	</a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-			    aria-controls="nav-contact" aria-selected="false" onclick="CustomerRMARefund()">
+			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+			    aria-controls="nav-contact" aria-selected="false">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.CustomerRMARefund"/>
 		    	</a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
@@ -361,100 +361,42 @@ table.tabla-listados tbody tr td {
 					  <label class="form-check-label" for="inlineRadio3">Unpaid Credit Amount</label>
 					</div>
 				</div> -->
-				<div class="filterbar" onclick="selectedRadio()">
-						<div class="form-check form-check-inline">
-						  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-						  <label class="form-check-label" for="inlineCheckbox1">
-						  		<spring:message code="BzComposer.accountreceivable.showall"/>
-					  		</label>
-						</div>
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdoInvoiceOrder" value="option1" checked="checked">
-					  <label class="form-check-label" for="inlineRadio1">
-							<spring:message code="BzComposer.accountreceivable.invoiceorder"/>
-						</label>
-					</div>
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdoUnpaidOpeningBalance" value="option2">
-					  	<label class="form-check-label" for="inlineRadio2">
-							<spring:message code="BzComposer.accountreceivable.unpaidopeningbalance"/>
-						</label>
-					</div>
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdoUnpaidCreditAmount" value="option2">
-					  	<label class="form-check-label" for="inlineRadio3">
-							<spring:message code="BzComposer.accountreceivable.unpaidcreditamount"/>
-						</label>
-					</div>
-				</div>
 				<div class="table1" id="tblForInvoiceOrder">
 				<table class="table table-bordered table-sm devAcRecDataTbl">
 				  <thead class="thead-light">
 				    <tr>
-				      <th scope="col" ><spring:message code="BzComposer.accountreceivable.select"/></th>
-				      <th scope="col" class="text-right"><spring:message code="Bizcomposer.invoice"/>#</th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.companyname"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.customername"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.orderdate"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.global.term"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.duedate"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.amount"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.received"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.balance"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.lineofcredit"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.availablecredit"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.accountreceivable.category"/></th>
-				      <th scope="col"><spring:message code="BzComposer.global.memo"/></th>
-				      <th scope="col"><spring:message code="BzComposer.accountreceivable.consigned"/></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmanumber" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmanumber" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.lastname" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.firstname" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.itemcode" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.itemdescription" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.reason" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmaquantity" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.unitprice" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.unitweight" /></th>
+                      <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmarequest" /></th>
 				    </tr>
 				  </thead>
 				  <tbody>
-				  <%
-				  	ArrayList<ReceivableListBean> li = (ArrayList)request.getAttribute("ReceivableList");
-				  	Iterator<ReceivableListBean> itr =li.iterator();
-					int index = 1;
-				  	while(itr.hasNext()){
-				  		ReceivableListBean rb = itr.next();
-				  %>
-				    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)">
-				      <td class="text-right"><input type="checkbox" id="Checkbox1"></td>
-                      <td class="text-right" ><% out.println(rb.getOrderNumStr()); %></td>
-				      <td class="text-right"><% out.println(rb.getCompanyName()); %></td>
-				      <td value="<%=rb.getCvID() %>" class="text-right"><% out.println(rb.getCvName()); %></td>
-				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded())); %></td>
-				      <td class="text-right"><% out.println(rb.getTblterm()); %></td>
-				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded())); %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getAdjustedTotal()) %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getPaidAmount()) %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getBalance()) %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getCustomercreditline()) %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getRemainingcreditamount()) %></td>
-				      <td class="text-right" value=<%=rb.getCategoryID() %>><% out.println(rb.getTblcategory()); %></td>
-				      <td class="text-right"><% out.println(rb.getMemo()); %></td>
-				      <td hidden="PaymentTypeID" value="<%=rb.getPaymentTypeID()%>"></td>
-				      <td hidden="BankAccountId" value="<%=rb.getBankAccountID()%>"></td>
-				         <% if(find == rb.getInvoiceID()) {%>
-				      <td hidden="CheckNumberID" value=<%= request.getSession().getAttribute("checkNum"+rb.getInvoiceID())%>></td>
-				      <% } else {%>
-				        <td hidden="CheckNumberID" value=<%= request.getSession().getAttribute("checkNum"+rb.getInvoiceID())%>></td>
-				        <% }%>
-				        <% if(find == rb.getInvoiceID()) {%>
-				        <td hidden="amtToPayID" value=<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID())%>></td>
-				        <% } else {%>
-				        <td hidden="amtToPayID" value=<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID())%>></td>
-				        <% }%>
-				        <% if(find == rb.getInvoiceID()) {%>
-				        <td hidden="totalId" value=<%= request.getSession().getAttribute("totalPayable"+rb.getInvoiceID())%>></td>
-				        <% } else {%>
-				        <td hidden="totalId" value=<%= request.getSession().getAttribute("totalPayable"+rb.getInvoiceID())%>></td>
-				        <% }%>
-				      <td><input type="checkbox"></td>
-
-				    </tr>
-			<%
-			index++;
-				  	}
-			%>
+				  <c:if test="${not empty CustomerRMAList}">
+                      <input type="hidden" name="RMALID" id="lSize" value='${CustomerRMAList.size()}'>
+                      <c:forEach items="${CustomerRMAList}" var="RobjList" varStatus="loop">
+                          <tr id="${loop.index}$$" onclick="setRMA('${RobjList.order}','${RobjList.fname}','${RobjList.lname}','${loop.index}$$');">
+                              <td><input type="checkbox" id="Checkbox[${loop.index}]" ></td>
+                              <td nowrap="nowrap" style="font-size: 14px;">${RobjList.rma}</td>
+                              <td nowrap="nowrap" style="font-size: 14px;" >${RobjList.lname}</td>
+                              <td nowrap="nowrap" style="font-size: 14px;">${RobjList.fname}</td>
+                              <td nowrap="nowrap" style="font-size: 14px;">${RobjList.itemCode}</td>
+                              <td nowrap="nowrap" width="400" style="font-size: 14px;">${RobjList.itemDesc}</td>
+                              <td nowrap="nowrap" style="font-size: 14px;">${RobjList.reason}</td>
+                              <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.qty}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                              <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.unitPrice}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                              <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.unitWeight}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                              <td nowrap="nowrap" style="font-size: 14px;">${RobjList.sentDate}</td>
+                          </tr>
+                      </c:forEach>
+                  </c:if>
 		</tbody>
 	</table>
 	</div>
@@ -549,27 +491,7 @@ table.tabla-listados tbody tr td {
 				    <% }%>
 				</table>
 	</div>
-				<div class="footer1">
-						<div class="form-check form-check-inline">
-						  <input class="form-check-input" onclick="checkAll1()"  type="checkbox" id="inlineCheckbox2" value="option1">
-						  	<label class="form-check-label" for="inlineCheckbox2">
-						  		<spring:message code="BzComposer.billpayable.selectall"/>
-					  		</label>
-						</div>
-						<button class="btn btn-info" style="color: white;font-size: 14px;" onclick="billingInfo()">
-							<spring:message code="BzComposer.accountreceivable.billing"/>
-						</button>
-						<button class="btn btn-info" style="color: white;font-size: 14px;" >
-							<spring:message code="BzComposer.accountreceivable.discountandcreditbtn"/>
-						</button>
-						<button class="btn btn-info"  style="color: white;font-size: 14px;" >
-							<spring:message code="BzComposer.accountreceivable.paymenttobtn"/>
-						</button>
-						<button class="btn btn-info" style="color: white;font-size: 14px;"  onclick="return received()">
-							<spring:message code="BzComposer.accountreceivable.received"/>
-						</button>
-				  </div>
-				</div>
+
 			  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
 			  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
 			</div>
@@ -1022,9 +944,9 @@ table.tabla-listados tbody tr td {
 	   window.location = "${pageContext.request.contextPath}/OverDueTab?tabid=overDueTab";
    }
 
-   function CustomerRMARefund()
+   function ReceivebleList()
    {
-	   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=CustomerRMARefund";
+	   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble";
    }
    function billingInfo()
    {

@@ -485,6 +485,64 @@ public class RMAInfoDao {
 		return objList;
 	}
 
+	public ArrayList getVendorRMAList(String compId, int invoiceTypeID) {
+		Connection con = null ;
+		PreparedStatement pstmt = null;
+		SQLExecutor db = new SQLExecutor();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ResultSet rs = null;
+		try {
+			con = db.getConnection();
+			String sqlString = "Select distinct rma.RMA_no, clientvendor. FirstName, clientvendor. LastName,"
+					+ " cart.InventoryCode, cart.InventoryName, rma.RMA_reason, rma.RMA_qty ,cart.UnitPrice ,"
+					+ "cart.UnitWeight, date_format(rma.DateAdded,'%m/%d/%Y') as DateAdded,invoice.OrderNum"
+					+ " From  bca_clientvendor clientvendor, bca_invoice invoice, bca_cart cart,"
+					+ " bca_rma rma Where invoice.ClientVendorID= clientvendor.ClientVendorID and  clientvendor.status in ('N','U')   and clientvendor.Active = 1  and "
+					+ "rma.InvoiceID = invoice. InvoiceID and   rma.CartID =  cart.CartID "
+					+ " and invoice.CompanyID like ? and invoice.InvoiceTypeID = ? order by rma.RMA_no asc";
+
+			pstmt = con.prepareStatement(sqlString);
+			pstmt.setString(1, compId);
+			pstmt.setInt(2, invoiceTypeID);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				RMAForm rma = new RMAForm();
+				rma.setRma(rs.getString(1));
+				rma.setFname(rs.getString(2));
+				rma.setLname(rs.getString(3));
+				rma.setItemCode(rs.getString(4));
+				rma.setItemDesc(rs.getString(5));
+				rma.setReason(rs.getString(6));
+				rma.setQty(rs.getString(7));
+				rma.setUnitPrice(rs.getString(8));
+				rma.setUnitWeight(rs.getString(9));
+				String sentdate = rs.getString(10);
+				sentdate = sentdate.substring(0, 10);
+				rma.setSentDate(sentdate);
+				rma.setOrder(rs.getString(11));
+				objList.add(rma);
+			}
+		} catch (SQLException ee) {
+			Loger.log(2, " SQL Error in Class RMAInfo and  method -getRMAList "
+					+ " " + ee.toString());
+		}finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if(con != null){
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return objList;
+	}
+
 	public int calculatePages(long compId,int limit) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;

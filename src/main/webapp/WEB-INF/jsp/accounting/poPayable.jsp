@@ -346,7 +346,8 @@ table.tabla-listados tbody tr td {
 								code="BzComposer.popayable.tab.paidlist" />
 						</a> <a class="nav-item nav-link" id="nav-vendorRMA-tab"
 							data-toggle="tab" href="#nav-vendorRMA" role="tab"
-							aria-controls="nav-contact" aria-selected="false"> <spring:message
+							aria-controls="nav-contact" aria-selected="false"
+							onclick="vendorRMARefund()"> <spring:message
 								code="BzComposer.accountreceivable.tabs.VendorRMARefund" />
 						</a> <a class="nav-item nav-link" id="nav-profile-tab"
 							data-toggle="tab" href="#nav-profile" role="tab"
@@ -1070,6 +1071,10 @@ table.tabla-listados tbody tr td {
   function consignmentTab()
   {
 	  window.location = "${pageContext.request.contextPath}/PoPayable?tabid=consignmentTab";
+  }
+
+  function vendorRMARefund(){
+	  window.location = "${pageContext.request.contextPath}/PoPayable?tabid=vendorRMARefund";
   }
    /*  $(document.forms[0]).submit(function( event ) {
 	    event.preventDefault();

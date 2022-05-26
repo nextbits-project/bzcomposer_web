@@ -292,100 +292,55 @@ margin-right: 10px;
 			    aria-controls="nav-contact" aria-selected="false" onclick="paidList()">
 			    	<spring:message code="BzComposer.popayable.tab.paidlist"/>
 		    	</a>
-		    	<a class="nav-item nav-link" id="nav-vendorRMA-tab" data-toggle="tab" href="#nav-vendorRMA" role="tab"
-                aria-controls="nav-contact" aria-selected="false" onclick="vendorRMARefund()">
+		    	<a class="nav-item nav-link active" id="nav-vendorRMA-tab" data-toggle="tab" href="#nav-vendorRMA" role="tab"
+                aria-controls="nav-contact" aria-selected="false">
                     <spring:message code="BzComposer.accountreceivable.tabs.VendorRMARefund"/>
                 </a>
-                <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" 
+                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
 			    role="tab" aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
 			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
 		    	</a>
 			  </div>
 			</nav>
-				<div class="table1" id="tblForInvoiceOrder">
+				<div class="table1" id="tblForInvoiceOrder" style="max-height: 500px;">
 				<table class="table table-bordered table-sm devAcRecDataTbl">
 				  <thead class="thead-light">
 				    <tr>
-				      <th scope="col"><spring:message code="BzComposer.popayable.pay"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.ponum"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.companyname"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.vendorname"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.category"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.payfrom"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.paymenttype"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.checknumber"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.date"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.amounttopay"/></th>
-				      <th scope="col" class="text-right"><spring:message code="BzComposer.popayable.amount"/></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmanumber" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmanumber" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.lastname" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.firstname" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.itemcode" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.itemdescription" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.reason" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmaquantity" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.unitprice" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.unitweight" /></th>
+                        <th scope="col" class="text-right"><spring:message code="BzComposer.rmalist.rmarequest" /></th>
 				    </tr>
 				  </thead>
 				  <tbody>
-				   <%
-				  	li = (ArrayList)request.getAttribute("consignList");		
-				  	Iterator<ReceivableListBean> itr =li.iterator();
-					int index = 1;
-				  	while(itr.hasNext()){
-				  		 rb = itr.next();
-				  %> 
-			 	    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)">
-				      <td><input type="checkbox" id="Checkbox[<%= index %>]" ></td>
-				      <td class="text-right"><% out.println(rb.getPoNum()); %></td>
-				      <td class="text-right"><% out.println(rb.getCompanyName()); %></td>
-				      <td value=<%=rb.getCvID() %> class="text-right"><% out.println(rb.getCvName()); %></td>
-				      <td class="text-right" value="<%= rb.getCategoryID() %>"><% out.println(rb.getCategoryName()); %></td>
-				      <td class="text-right" id="accdrpdwn" value= "<%=rb.getBankAccountID()%>"><% out.println(rb.getAccountName()); %></td>
-				      <td class="text-right" value="<%=rb.getPaymentTypeID() %>"><% out.println(rb.getPaymentTypeName()); %></td>
-				      <% if(find == rb.getInvoiceID()) {%>
-				      <td class="text-right"><%= request.getSession().getAttribute("checkNum"+rb.getInvoiceID())%></td>
-				      <% } else {%>
-				        <td class="text-right"></td>
-				        <% }%>
-				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded())); %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getBalance()) %></td>
-				      <td class="text-right"><%= String.format("%.2f", rb.getAdjustedTotal()) %></td>
-				      <% if(find == rb.getInvoiceID()) {%>
-				        <td hidden="amtToPayID" value=<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID())%>></td>
-				        <% } else {%>
-				        <td hidden="amtToPayID" value=<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID())%>></td>
-				        <% }%> 
-				      
-				      <%-- <td class="text-right"></td>
-				       <td class="text-right"><% out.println(rb.getMemo()); %></td>
-				      <td hidden="PaymentTypeID" value="<%=rb.getPaymentTypeID()%>"></td>
-				      <td hidden="BankAccountId" value="<%=rb.getBankAccountID()%>"></td>
-				         <% if(find == rb.getInvoiceID()) {%>
-				      <td hidden="CheckNumberID" value=<%= request.getSession().getAttribute("checkNum"+rb.getInvoiceID())%>></td>
-				      <% } else {%>
-				        <td hidden="CheckNumberID" value=<%= request.getSession().getAttribute("checkNum"+rb.getInvoiceID())%>></td>
-				        <% }%>
-				        <% if(find == rb.getInvoiceID()) {%>
-				        <td hidden="amtToPayID" value=<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID())%>></td>
-				        <% } else {%>
-				        <td hidden="amtToPayID" value=<%= request.getSession().getAttribute("amtToPay"+rb.getInvoiceID())%>></td>
-				        <% }%>  --%>
-				      <%--   <% if(find == rb.getInvoiceID()) {%>
-				        <td hidden="totalId" value=<%= request.getSession().getAttribute("totalPayable"+rb.getInvoiceID())%>></td>
-				        <% } else {%>
-				        <td hidden="totalId" value=<%= request.getSession().getAttribute("totalPayable"+rb.getInvoiceID())%>></td>
-				        <% }%> 
-				      <td><input type="checkbox"></td> --%>
-				      
-				    </tr>
-			<%
-			index++;
-				  	}
-			%>	     
-		</tbody>	
+                    <c:if test="${not empty VendorRMAList}">
+                        <input type="hidden" name="RMALID" id="lSize" value='${VendorRMAList.size()}'>
+                        <c:forEach items="${VendorRMAList}" var="RobjList" varStatus="loop">
+                            <tr id="${loop.index}$$" onclick="setRMA('${RobjList.order}','${RobjList.fname}','${RobjList.lname}','${loop.index}$$');">
+                                <td><input type="checkbox" id="Checkbox[${loop.index}]" ></td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.rma}</td>
+                                <td nowrap="nowrap" style="font-size: 14px;" >${RobjList.lname}</td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.fname}</td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.itemCode}</td>
+                                <td nowrap="nowrap" width="400" style="font-size: 14px;">${RobjList.itemDesc}</td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.reason}</td>
+                                <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.qty}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.unitPrice}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.unitWeight}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td nowrap="nowrap" style="font-size: 14px;">${RobjList.sentDate}</td>
+                            </tr>
+                        </c:forEach>
+                    </c:if>
+                </tbody>
 	</table>
 	</div>
-	
-			<div class="footer1">
-						
-						<button class="btn btn-info" style="font-size: 14px;float: right;" id="pay"><spring:message code="BzComposer.popayable.paybtn"/></button>
-						<!-- <button class="float-right" onclick="return received()">Pay</button> -->
-						
-				  </div>
-	
 	
 				</div>
 			  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
@@ -445,11 +400,6 @@ margin-right: 10px;
 	var catId = 0;
 	var obj = [];
 	var vendorId = 0;
-
-	function vendorRMARefund(){
-     window.location = "${pageContext.request.contextPath}/PoPayable?tabid=vendorRMARefund";
-    }
-
    function selectrow(invoice,index) {
 	    
 	      $( "#demo" ).empty();  

@@ -1,5 +1,8 @@
 package com.nxsol.bizcomposer.accounting.action;
 
+import com.avibha.bizcomposer.rma.dao.RMADetailsDao;
+import com.avibha.bizcomposer.rma.dao.RMAInfoDao;
+import com.avibha.bizcomposer.rma.forms.RMADto;
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 @Controller
 public class PoPayableController {
 	@GetMapping("/PoPayable")
-	public ModelAndView poPayable(ReceivableListDto receivableListDto, HttpServletRequest request,
+	public ModelAndView poPayable(RMADto rmaDto, ReceivableListDto receivableListDto, HttpServletRequest request,
 								  HttpServletResponse response) throws Exception {
 		String forward = "/accounting/consignmentSale";
 		HttpSession sess=request.getSession();
@@ -81,6 +84,16 @@ public class PoPayableController {
 			ArrayList<ReceivableListBean> cli =rl.getConsignmentSaleList();
 			request.setAttribute("consignList", cli);
 			forward = "/accounting/consignmentSale";
+		}
+		if(action.equals("vendorRMARefund"))
+		{
+			RMADetailsDao rd=new RMADetailsDao();
+			RMAInfoDao rmaInfo = new RMAInfoDao();
+			ArrayList VendorRMAList = new ArrayList();
+			int invoiceTypeID = 1;
+			VendorRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);
+			request.setAttribute("VendorRMAList",VendorRMAList);
+			forward = "/accounting/vendorRMARefund";
 		}
 		if(action.equals("popayable"))
 		{
