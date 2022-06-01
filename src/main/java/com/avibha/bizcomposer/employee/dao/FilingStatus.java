@@ -38,7 +38,7 @@ public class FilingStatus {
 		try {
 			String sqlString = "select FilingStatusID,FilingStatus from bcp_filingstatus where CompanyID=? and Active=?";
 			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, CompanyID);
+			pstmt.setString(1,  CompanyID);
 			pstmt.setString(2, "1");
 			rs = pstmt.executeQuery();
 			while (rs.next()) {

@@ -262,8 +262,8 @@
 						</a>
 						<ul>
 							<li class="current">
-								<!-- <a href="<%= session.getAttribute("path")%>/RMA?tabid=R0M0A0"> -->
-								<a href="RMA?tabid=R0M0A0">
+								<!-- <a href="<%= session.getAttribute("path")%>/SalesBord?tabid=ShowList"> -->
+								<a href="SalesBord?tabid=ShowList">
 									<spring:message code="BzComposer.RMA.CreateRma" />
 								</a>
 							</li>
