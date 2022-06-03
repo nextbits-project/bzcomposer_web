@@ -18,6 +18,8 @@ import com.avibha.common.mail.MailSend;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.avibha.common.utility.MyUtility;
+import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
+import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import org.apache.struts.util.LabelValueBean;
 
@@ -720,6 +722,8 @@ public class InvoiceInfoDao {
 				pstmt2.executeUpdate();
 				pstmt2.close();
 				saveStatus = Update(compId, form, invoiceID, custId);
+				ReceivableLIst rl = new ReceivableListImpl();
+				rl.insertIntoBillingStatement(invoiceID);
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());

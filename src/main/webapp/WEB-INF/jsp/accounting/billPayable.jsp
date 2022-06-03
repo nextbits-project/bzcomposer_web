@@ -923,7 +923,7 @@ table.tabla-listados tbody tr td {
 			</div>
 			<div class="memorizedbutton">
 				<ul>
-					<li><button style="font-size: 14px;">
+					<li><button style="font-size: 14px;" onclick="AddMemorizedTransaction()">
 							<spring:message code="BzComposer.global.add" />
 						</button></li>
 					<li><button style="font-size: 14px;"
@@ -1026,7 +1026,6 @@ table.tabla-listados tbody tr td {
 
 	function selectrow(no, indexNumber)
 	{
-		
 		this.billNo = no;
 		this.index = indexNumber;
 		 $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
@@ -1162,7 +1161,28 @@ table.tabla-listados tbody tr td {
 		    event.preventDefault();
 		});
 	}
-
+function AddMemorizedTransaction(){
+debugger;
+    var bill = parseInt($('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(2)').text());
+    if(isNaN(bill))
+    {
+        alert("Please select the bill to add")
+        return false;
+    }
+    $.ajax({
+        type : "POST",
+        url : "BillCreationPost?tabid=AddMemorizedTransaction",
+        data :"BillNumber=" + bill,
+        success : function(data) {
+        amountToBepaid = 0.00;
+        //updateBillPayableTab(data);
+        window.location = "BillPayable?tabid=billpayable";
+        },
+         error : function(data) {
+             alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
+        }
+    });
+}
 	function makePayment()
 	{
 
@@ -1619,7 +1639,7 @@ table.tabla-listados tbody tr td {
 }
 function EditMemorizedTransactionList()
 {
-	
+	debugger;
 	$( "#ScheduleMemorizedTransaction").dialog({
  	   modal: true,
  	   title: 'Schedule Memorized Transaction'

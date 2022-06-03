@@ -67,7 +67,7 @@ public class BillingBoardController {
 		Gson gson = new Gson();
 		ArrayList<ReceivableListBean> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
 		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement, criteriaForBillStatement);
-		request.setAttribute("billingStatementList", billingStatementList);
+		request.setAttribute("billingStatementList", billingStatementList); // paid bills
 		request.setAttribute("billingList", billingList);
 		return forward;
 	}
