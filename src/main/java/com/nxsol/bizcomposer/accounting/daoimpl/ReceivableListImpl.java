@@ -7,15 +7,11 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -7156,9 +7152,11 @@ public class ReceivableListImpl implements ReceivableLIst {
                 vDetail.setAmountPaid(rs.getDouble("AmountPaid"));
                 vDetail.setServiceID(rs.getLong("ServiceID"));
                 boolean status = rs.getBoolean("IsMemorized");
-                vDetail.setDateAdded(rs.getDate("DateAdded"));                
-
-                String billStatus = "Unpaid"; //"Unpaid";
+				vDetail.setDateAdded(rs.getDate("DateAdded"));
+				vDetail.setDate(rs.getString("DateAdded"));
+				vDetail.setRecurringPeriod(rs.getString("RecurringPeriod"));
+				vDetail.setNextDate(rs.getDate("NextDate"));
+				String billStatus = "Unpaid"; //"Unpaid";
                 if (status) {
                     billStatus =  "Memorized"; //"Memorized";
                 }
@@ -8053,19 +8051,24 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		
+
+		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+		Date DueDate=new SimpleDateFormat("dd-MM-yyyy").parse(vDetail.getDueDate());
+		String DueDate1 = DATE_FORMAT.format(DueDate);
+		String DateAdded1 = DATE_FORMAT.format(vDetail.getDateAdded());
+
 		String sql = "INSERT into bca_bill(VendorId,PayerID,CompanyID,DateAdded,DueDate,AmountDue,Status,Memo,BillType,Balance,NextDate,CategoryID,ServiceID) Values("
 				+ vDetail.getVendorId() + ","
 				+ vDetail.getAccountId() + ","
 				+ ConstValue.companyId + ","
-				+ "'" + JProjectUtil.getDateFormaterCommon().format(JProjectUtil.getDateForBanking().parse(vDetail.getDate())) + "'" + ","
-				+ "'" + JProjectUtil.getDateFormaterCommon().format(JProjectUtil.getDateForBanking().parse(vDetail.getDueDate())) + "'" + ","
+				+ "'" + DATE_FORMAT.format(vDetail.getDateAdded()) + "'" + ","
+				+ "'" + DueDate1 + "'" + ","
 				+ vDetail.getAmount() + ","
 				+ 0 + ","
 				+ "'" + vDetail.getMemo() + "'" + ","
 				+ vDetail.getBillType() + ","
 				+ vDetail.getAmount() + ","
-				+ "'" + JProjectUtil.getDateFormaterCommon().format(JProjectUtil.getDateForBanking().parse(vDetail.getDueDate())) + "'" + ","
+				+ "'" + DueDate1 + "'" + ","
 				+ vDetail.getCategoryID() + ","
 				+ -1 + ")";
 		
@@ -10159,7 +10162,43 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 		return statement;
 	}
-	
+
+	@Override
+	public String getRecurringDate(String period, String str_date) {
+
+		String recurringDate = null;
+		DateFormat formatter;
+		Date date;
+		try {
+			str_date = str_date.replaceAll("-","/");
+			formatter = new SimpleDateFormat("MM/dd/yyyy");
+			date = (Date) formatter.parse(str_date);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+
+			if (period.equals("Daily")) {
+				cal.add(Calendar.DATE, 1); // add 1 Day in period
+
+			} else if (period.equals("Weekly")) {
+				cal.add(Calendar.DAY_OF_WEEK_IN_MONTH, 1);  // add 1 week in period
+
+			} else if (period.equals("Monthly")) {
+				cal.add(Calendar.MONTH, 1);  // add 1 month in period
+
+			} else if (period.equals("Quarterly")) {
+				cal.add(Calendar.MONTH, 6); // add 6 Day in period
+
+			} else if (period.equals("Annually")) {
+				cal.add(Calendar.YEAR, 1);   // add 1 Year in period
+
+			}
+			recurringDate = JProjectUtil.getDateFormater().format(cal.getTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return recurringDate;
+	}
+
 }
 	
 	 

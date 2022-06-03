@@ -90,7 +90,7 @@ table.tabla-listados tbody tr td {
 	<% ArrayList<TblRecurrentPaymentPlan> recurrentPaymentList = (ArrayList)request.getAttribute("recurentPaymentList"); 
 	ArrayList<TblAccount> getAccountForRecurrent = (ArrayList)request.getAttribute("getAccountForRecurrent");
 	%>
-	<html:form action="AccountReceiveble" method="post" id="billPayableForm">
+	<html:form action="/BillCreation" method="post" id="billCreationForm">
 		<div class="content1 clearfix">
 			<h3 class="title1">
 				<spring:message code="BzComposer.billpayable.billpayabletitle"/>
@@ -1011,6 +1011,7 @@ table.tabla-listados tbody tr td {
 							<td hidden="billNo">
 								<% out.println(getMemorizeTransactionList.get(i).getBillNo());%>
 							</td>
+							<input type="hidden" id="billNumber" value="<% out.println(getMemorizeTransactionList.get(i).getBillNo());%>">
 							<td>
 								<% out.println(getMemorizeTransactionList.get(i).getTransactionName());%>
 							</td>
@@ -1073,7 +1074,7 @@ table.tabla-listados tbody tr td {
 			</div>
 			<div class="memorizedbutton">
 				<ul>
-					<li><button><spring:message code="BzComposer.global.add"/></button></li>
+					<li><button onclick="AddMemorizedTransaction()"><spring:message code="BzComposer.global.add"/></button></li>
 					<li><button onclick="EditMemorizedTransactionList()"><spring:message code="BzComposer.global.edit"/></button></li>
 					<li><button onclick="DeleteMemorizeTransaction()"><spring:message code="BzComposer.global.delete"/></button></li>
 					<li><button onclick="closeMomorizedTransactionList()"><spring:message code="BzComposer.global.close"/></button></li>
@@ -1897,7 +1898,7 @@ table.tabla-listados tbody tr td {
 	}
 	function selectMemorizedTransactionList(memTransListIndex)
 	{
-		
+
 		this.indexForMemTransList = memTransListIndex;
 		this.billNo = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(2)').text();
 		var name = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(3)').text();
@@ -1932,6 +1933,7 @@ table.tabla-listados tbody tr td {
 		$("#schrduleMemorizedTransactionDate").val(date);
 		$('#transactionGroup').append('<option value="'+name+'" selected="selected">'+name+'</option>');
 	}
+
 	function save()
 	{
 		
@@ -2300,9 +2302,7 @@ else
 		   }
 		function updateBillPayableTab(data)
 		{
-			
-			
-			$("#billPayableForm")[0].reset();
+			$("#billCreationForm")[0].reset();
 			$(document).find('div#tblForInvoiceOrder table').replaceWith($(data).find('div#tblForInvoiceOrder').html());
 			$(document).find('div#totalAmountLabelDiv label').eq(1).text(this.value).replaceWith($(data).find('div#totalAmountLabelDiv label').eq(1).text(this.value));
 			$(document).find('div#recurrentPaymentListForPayee table').replaceWith($(data).find('div#recurrentPaymentListForPayee').html());
@@ -2469,7 +2469,28 @@ function EditMemorizedTransactionList()
 function closeMomorizedTransactionList(){
 	$('#MemorizeTransactionList').dialog('close');
 }
-
+function AddMemorizedTransaction(){
+debugger;
+    var bill = parseInt($('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(2)').text());
+    if(isNaN(bill))
+    {
+        alert("Please select the bill to add")
+        return false;
+    }
+    $.ajax({
+        type : "POST",
+        url : "BillCreationPost?tabid=AddMemorizedTransaction",
+        data :"BillNumber=" + bill,
+        success : function(data) {
+        amountToBepaid = 0.00;
+        //updateBillPayableTab(data);
+        window.location = "BillCreation?tabid=billCreation";
+        },
+         error : function(data) {
+             alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
+        }
+    });
+}
 function DeleteMemorizeTransaction()
 {
 	
@@ -2488,16 +2509,14 @@ function DeleteMemorizeTransaction()
 	return false;
 	}
 	$.ajax({
-		
 	 	type : "POST",
 		url : "BillCreationPost?tabid=UpdateMemorizedTransaction",
 	    data :"BillNumber=" + bill,
 	    success : function(data) {
-		
 		amountToBepaid = 0.00;
 		//updateBillPayableTab(data);
-		document.forms['billPayableForm'].action = "BillPayable?tabid=billpayable";
-        document.forms['billPayableForm'].submit();
+		document.forms['billCreationForm'].action = "BillPayable?tabid=billpayable";
+        document.forms['billCreationForm'].submit();
 		},
 		 error : function(data) {
 			 alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
