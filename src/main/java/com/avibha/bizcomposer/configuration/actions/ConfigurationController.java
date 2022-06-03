@@ -613,9 +613,9 @@ public class ConfigurationController {
             //System.out.println("Inside config15 condition");
             ConfigurationDAO dao = new ConfigurationDAO();
             ArrayList<ConfigurationDto> udShipTypes = dao.getActiveUserdefinedShippingType(companyID, request, configDto);
-            dao.getActiveRealTimeShippingServices(0, request, configDto);
             dao.getActiveRealTimeShippingServices(1, request, configDto);
             dao.getActiveRealTimeShippingServices(2, request, configDto);
+            dao.getActiveRealTimeShippingServices(3, request, configDto);
 
             dao.getActiveMailType(request, configDto);
             dao.getActivePackageSize(request, configDto);
@@ -1387,6 +1387,10 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("setPrintingTemplates")) {
             System.out.println(configDto);
             return dao.setPrintingTemplates(companyID, configDto);
+        }
+        else if (action.equalsIgnoreCase("addUpsServiceNameandPrice")) {
+        	System.out.println("-----------addUpsServiceNameandPrice-------------" +configDto);
+            return dao.addUpsServiceNameandPrice(configDto);
         }
         else {
             System.out.println("-----------ERROR-ACTION-not-found-------------");

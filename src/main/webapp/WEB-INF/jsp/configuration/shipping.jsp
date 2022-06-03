@@ -196,12 +196,57 @@ function deleteSelectedWeightFee(){
     }
 }
 
-function setServices(){
-	
+//////////////////////////////////////////////////////////////////
+function addSelectedUps(){
+	debugger;
+	var udShipTypeId = $("#isUPSActive").val();
+	var uServiceName = $("#upsServiceName").val();
+	var uServicePrice = $("#upsServicePrice").val();
+	if(udShipTypeId == null || udShipTypeId == "" || udShipTypeId == 0){
+        return alertName();
+	}
+        else if(uServiceName == "" || uServicePrice == ""){
+        return alertName();
+    } else {
+        $.ajax({
+            type: "POST",
+            url:"/ConfigurationAjaxTest?tabid=addUpsServiceNameandPrice",
+            data:{realTimeShippingServiceId : parseInt(udShipTypeId), realTimeShippingService : uServiceName, realTimeShippingPrice : uServicePrice},
+            success:function(data){
+                if(data){   location.reload(); }
+            },
+            error:function(){
+              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+            }
+        });
+    }
+}
+/////////////////
+
+function alertName(){
+alert("Please Enter the value");
+} 
+
+
+///////////////////////////////////////////////////////////////////////////
+/* function setServices(){
+	debugger;
 	var serviceName = $.trim($("#upsSelect option:selected").text());
 	$("#upsServiceName").val(serviceName);
+} */
+/////////////////////////////////////
+function setServices(elementID){
+	debugger;
+      let selectedIndex = document.getElementById(elementID).selectedIndex;
+	 $('select[id="upsSelect"]').find('option').attr("selected", false);
+	 $("#upsSelect").prop('selectedIndex', selectedIndex);
+	 
+	 $("#upsServiceName").val( $("#upsSelect option:selected").text() ); 
+	 $("#editUps").attr('disabled',false);
+	 $("#deleteUps").attr('disabled',false);
+	  
 }
-
+////////////////////////////
 function setUSPSService(){
 	var uspsService = $("#uspsSelect option:selected").text();
 	$("#uspsServiceName").val(uspsService);
@@ -652,7 +697,7 @@ function removeTime(){
 														</tr>
 														<tr>
 															<td rowspan="4" style="font-size:12px;">
-																<form:select path="selectedRealTimeShippingServiceId" multiple="multiple" style="width:200px; height:200px;" onclick="setServices()" id="upsSelect">
+																<form:select path="selectedRealTimeShippingServiceId" multiple="multiple" style="width:200px; height:200px;" onclick="setServices('upsSelect')" id="upsSelect">
 																    <c:if test="${not empty configDto.listOfExistingRealTimeShippingServices}">
                                                                     	<c:forEach items="${configDto.listOfExistingRealTimeShippingServices}" var="objList1">
                                                                     		<option value="${objList1.realTimeShippingServiceId}">${objList1.realTimeShippingService}</option>
@@ -664,10 +709,10 @@ function removeTime(){
 															<td style="font-size:12px;">
 																<spring:message code="BzComposer.configuration.enterservicename"/> :
 																<br>
-																<form:input path="upsServiceName" id="upsServiceName" readonly="true" />
+																<form:input path="upsServiceName" id="upsServiceName" />
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="add" style="width:60px;" name="add" class="formButton">
+																<button type="button" id="addUps" onclick="addSelectedUps()" style="width:60px;" name="add" class="formButton">
 																    <spring:message code="BzComposer.global.add"/>
 																</button>
 															</td>
@@ -679,7 +724,7 @@ function removeTime(){
 																<form:input path="upsServicePrice" />
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="edit" style="width:60px;" class="formButton">
+																<button type="button" id="editUps" style="width:60px;" class="formButton">
 																    <spring:message code="BzComposer.global.edit"/>
 																</button>
 															</td>
@@ -688,7 +733,7 @@ function removeTime(){
 															<td>
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="edit" style="width:60px;"class="formButton">
+																<button type="button" id="deleteUps" style="width:60px;"class="formButton">
 																    <spring:message code="BzComposer.global.delete"/>
 																</button>
 															</td>

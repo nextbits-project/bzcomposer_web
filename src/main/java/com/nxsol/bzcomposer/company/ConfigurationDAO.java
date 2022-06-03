@@ -2514,7 +2514,7 @@ public class ConfigurationDAO {
             stmt = con.createStatement();
             sql = "SELECT ShippingServiceID,ShippingType,ShippingService,Price,Active "
                     +"FROM bca_realtimeshippingservice "
-                    +"WHERE ShippingType= "+shippingType
+                    +" WHERE ShippingType= "+shippingType
                     +" AND Active = 1 ";
             rs = stmt.executeQuery(sql);
             while (rs.next())
@@ -2554,15 +2554,15 @@ public class ConfigurationDAO {
                 Loger.log(e.toString());
             }
         }
-        if(shippingType == 0)
+        if(shippingType == 1)
         {
             form.setListOfExistingRealTimeShippingServices(listPOJOs);
         }
-        else if(shippingType == 1)
+        else if(shippingType == 2)
         {
             form.setListOfExistingRealTimeShippingServices1(listPOJOs);
         }
-        else
+        else if(shippingType == 3)
         {
             form.setListOfExistingRealTimeShippingServices2(listPOJOs);
         }
@@ -2677,6 +2677,35 @@ public class ConfigurationDAO {
         }
         return rowAdded;
     }
+    //////////////////////////////////////////////////////
+    
+    public boolean addUpsServiceNameandPrice(ConfigurationDto form) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowAdded = false;
+        try {
+            pstmt = con.prepareStatement("INSERT INTO bca_realtimeshippingservice(ShippingType,ShippingService, Price) Values(?,?,?,?)");
+            pstmt.setInt(1, form.getRealTimeShippingServiceId());
+            pstmt.setString(2, form.getRealTimeShippingService());
+            pstmt.setDouble(3, form.getRealTimeShippingPrice());
+			pstmt.setInt(4, 1);
+            rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+        }
+        catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return rowAdded;
+    }
+    //////////////////
 
     public boolean updateUserDefinedShippingWeightAndPrice(ConfigurationDto form) {
         SQLExecutor db = new SQLExecutor();

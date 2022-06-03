@@ -384,7 +384,7 @@ public class ConfigurationDto implements Serializable {
     private String accesskey;
     private String upsAccountNo;
     private String upsServiceName;
-    private String upsServicePrice;
+    private Double upsServicePrice;
     private String fedexAccountNumber;
     private String fedexMeterNumber;
     private String fedexPassword;
@@ -3154,11 +3154,11 @@ public class ConfigurationDto implements Serializable {
         this.upsServiceName = upsServiceName;
     }
 
-    public String getUpsServicePrice() {
+    public Double getUpsServicePrice() {
         return upsServicePrice;
     }
 
-    public void setUpsServicePrice(String upsServicePrice) {
+    public void setUpsServicePrice(double upsServicePrice) {
         this.upsServicePrice = upsServicePrice;
     }
 
