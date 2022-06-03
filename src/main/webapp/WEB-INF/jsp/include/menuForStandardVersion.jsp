@@ -223,7 +223,7 @@
 				</a>
 				<ul>
 					<li class="current">
-						<a href="/RMA?tabid=R0M0A0">
+						<a href="/SalesBord?tabid=ShowList">
 							<spring:message code="BzComposer.RMA.CreateRma" />
 						</a>
 					</li>

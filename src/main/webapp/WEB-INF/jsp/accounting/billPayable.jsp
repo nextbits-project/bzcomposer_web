@@ -1266,6 +1266,7 @@ table.tabla-listados tbody tr td {
 	}
 	function deleteBill()
 	{
+	debugger;
 		var status;
 		var amount = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text();
 		/* status = window.confirm("<spring:message code='BzComposer.billpayable.deleteselectedbill'/>")
@@ -1277,7 +1278,7 @@ table.tabla-listados tbody tr td {
 				url : "BillPayable?tabid=DeleteBill",			
 		    	data :"BillNum=" + billNo,
 		    	success : function(data) {
-					
+					debugger;
 					updateBillPayableTab(data);	
 				},
 			 	error : function(data) {

@@ -118,6 +118,10 @@ public class AccountingController{
 				request.setAttribute("vendorRMAList",vendorRMAList);
 				forward = "/accounting/vendorRMA";
 			}
+			if(action.equals("eSales"))
+			{
+				forward = "/accounting/eSales";
+			}
 		}
 		Path p = new Path();
 		p.setPathvalue(request.getContextPath());

@@ -241,6 +241,6 @@ public interface ReceivableLIst {
 	public ArrayList<BillingStatement> getBillStatementList(String dataForBillStatement,String criteriaForBillStatement);
 	
 	public ArrayList<BillingStatementReport> printBillingStatement(int invoiceId);
-	
 
+	String getRecurringDate(String period, String nextDate);
 }

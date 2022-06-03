@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 @Controller
@@ -151,6 +152,24 @@ public class BillCreationController {
 
 
 		}
+		if(action.equals("AddMemorizedTransaction"))
+		{
+			String billNumberInString  = request.getParameter("BillNumber");
+			int billNo = Integer.parseInt(billNumberInString);
+			System.out.println(billNo);
+			TblVendorDetail oldDetail = rl.getBillById(billNo);
+			oldDetail.setCheckNo(0);
+			oldDetail.setCreditUsed(0);
+			oldDetail.setAmountPaid(0);
+			String nextDate = JProjectUtil.getDateFormaterCommon().format(oldDetail.getNextDate());
+			String period = oldDetail.getRecurringPeriod();
+			//String nextDate2 = rl.getRecurringDate(period,nextDate);
+			//Date date1=new SimpleDateFormat("d/m/yy").parse(JProjectUtil.getDateLongFormater().format(nextDate2));
+			//oldDetail.setNextDate(date1);
+			rl.insertNewBill(oldDetail);
+			System.out.println(billNo);
+		}
+
 		if(action.equals("MakePayment"))
 		{
 			TblVendorDetail cfrm = (TblVendorDetail) form;

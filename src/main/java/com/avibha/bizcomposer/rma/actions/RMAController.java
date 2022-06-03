@@ -7,8 +7,10 @@ package com.avibha.bizcomposer.rma.actions;
 
 import com.avibha.bizcomposer.rma.dao.RMADetails;
 import com.avibha.bizcomposer.rma.dao.RMADetailsDao;
+import com.avibha.bizcomposer.rma.dao.RMAInfoDao;
 import com.avibha.bizcomposer.rma.forms.RMADto;
 import com.avibha.bizcomposer.rma.forms.RMAForm;
+import com.avibha.bizcomposer.sales.dao.SalesBoard;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
 import org.apache.struts.action.Action;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 @Controller
 public class RMAController {
@@ -39,12 +42,36 @@ public class RMAController {
 	public ModelAndView RMA(RMADto rmaDto, HttpServletRequest request) throws IOException, ServletException {
 		String forward = "/rma/rma";
 		String action = request.getParameter("tabid");
+		HttpSession sess = request.getSession();
+		String compId = (String) sess.getAttribute("CID");
 		Loger.log("Acc "+action);
 		request.setAttribute("rmaDto",rmaDto);
 		if(action == null){
 			RMADetailsDao rd=new RMADetailsDao();
 			rd.getRAMDetails(request, rmaDto);
 			forward = "/rma/rma";
+		}
+		else if (action.equalsIgnoreCase("CreateRMA")) {
+			RMADetailsDao rd=new RMADetailsDao();
+			int orderNo = Integer.parseInt(request.getParameter("orderNumber"));
+
+			// Get invoice Id using order number
+			RMAInfoDao rmaInfo = new RMAInfoDao();
+			int invoiceId = rmaInfo.getInvoiceId(orderNo, 1, compId); // 1 = InvoiceTypeID for Sales Order
+			// Get invoice Details using invoiceId
+			SalesBoard invoiceObj = rmaInfo.getInvoice(invoiceId, compId);
+
+			// Get Cart id using invoice ID
+			//int cartId = rmaInfo.getCartId(invoiceId, compId);
+			if (invoiceObj.isPaymentCompleted() && invoiceObj.getShipped() == 1) {
+				String reason = "Not Used";
+				rmaInfo.insertRMA2(invoiceObj.getInventoryQty(),reason,invoiceObj.getInventoryId());
+			}else{
+				System.out.println("RMA is created only for paid and shipped invoice.");
+			}
+			rd.getRAMDetails(request, rmaDto);
+			forward = "redirect:/RMA?tabid=R0L0S0";
+
 		}
 		else if (action.equalsIgnoreCase("R0M0A0")) { // For Fname and lname listing
 			RMADetailsDao rd=new RMADetailsDao();

@@ -63,9 +63,9 @@ table.tabla-listados tbody tr td {
 	vertical-align: top;
 }
 #highlight {
- 		background-color: blue; 
+ 		background-color: blue;
 	 }
-.highlight { background-color: #00CED1 !important;color: #fff }	 
+.highlight { background-color: #00CED1 !important;color: #fff }
 </style>
 </head>
 <body onload="init()">
@@ -199,7 +199,7 @@ table.tabla-listados tbody tr td {
 						<% } %>
 			<script>
 					  var data = document.getElementById("Check");
-				
+
 					  data.style.display = "none";
 				</script>
 				<div class="form-group row" id="Check">
@@ -219,7 +219,7 @@ table.tabla-listados tbody tr td {
 							</label>
 						   <%--  <html:text property="orderDate" readonly="false"></html:text>  --%>
 						    <div class="col-md-8 calendar-img"><input type="text" class="form-control devOrderDate" value="" style="width: 275px" name="orderDate" readonly="true" id="orderDate">
-							<img src="${pageContext.request.contextPath}/images/cal.gif" class="img-fluid" alt="Responsive image" 
+							<img src="${pageContext.request.contextPath}/images/cal.gif" class="img-fluid" alt="Responsive image"
 							onclick="displayCalendar(document.ReceivableListForm.orderDate,'mm-dd-yyyy',this);">
 							</div>
 
@@ -312,8 +312,8 @@ table.tabla-listados tbody tr td {
 		<div class="content-tabs">
 			<nav>
 			   <div class="nav nav-tabs" id="tabId" role="tablist">
-			    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-			    aria-controls="nav-home" aria-selected="true">
+			    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+			    aria-controls="nav-home" aria-selected="true" onclick="receivebleList()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.receivablelist"/>
 		    	</a>
 				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
@@ -336,61 +336,15 @@ table.tabla-listados tbody tr td {
 			    aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.layaways"/>
 		    	</a>
-		    	<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-                    aria-controls="nav-contact" aria-selected="false" onclick="eSales()">
-                    eSales
-                </a>
+		    	<a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+		    	    aria-controls="nav-contact" aria-selected="false">
+		    	    eSales
+		    	</a>
+
 			  </div>
 			</nav>
 			<div class="tab-content" id="nav-tabContent">
 			  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-
-				<!-- <div class="filterbar">
-
-						<div class="form-check form-check-inline">
-						  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-						  <label class="form-check-label" for="inlineCheckbox1">Show All</label>
-						</div>
-
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
-					  <label class="form-check-label" for="inlineRadio1">Invoice Order</label>
-					</div>
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-					  <label class="form-check-label" for="inlineRadio2">Unpaid Opening Balance</label>
-					</div>
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option2">
-					  <label class="form-check-label" for="inlineRadio3">Unpaid Credit Amount</label>
-					</div>
-				</div> -->
-				<div class="filterbar" onclick="selectedRadio()">
-						<div class="form-check form-check-inline">
-						  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-						  <label class="form-check-label" for="inlineCheckbox1">
-						  		<spring:message code="BzComposer.accountreceivable.showall"/>
-					  		</label>
-						</div>
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdoInvoiceOrder" value="option1" checked="checked">
-					  <label class="form-check-label" for="inlineRadio1">
-							<spring:message code="BzComposer.accountreceivable.invoiceorder"/>
-						</label>
-					</div>
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdoUnpaidOpeningBalance" value="option2">
-					  	<label class="form-check-label" for="inlineRadio2">
-							<spring:message code="BzComposer.accountreceivable.unpaidopeningbalance"/>
-						</label>
-					</div>
-					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdoUnpaidCreditAmount" value="option2">
-					  	<label class="form-check-label" for="inlineRadio3">
-							<spring:message code="BzComposer.accountreceivable.unpaidcreditamount"/>
-						</label>
-					</div>
-				</div>
 				<div class="table1" id="tblForInvoiceOrder">
 				<table class="table table-bordered table-sm devAcRecDataTbl">
 				  <thead class="thead-light">
@@ -553,27 +507,7 @@ table.tabla-listados tbody tr td {
 				    <% }%>
 				</table>
 	</div>
-				<div class="footer1">
-						<div class="form-check form-check-inline">
-						  <input class="form-check-input" onclick="checkAll1()"  type="checkbox" id="inlineCheckbox2" value="option1">
-						  	<label class="form-check-label" for="inlineCheckbox2">
-						  		<spring:message code="BzComposer.billpayable.selectall"/>
-					  		</label>
-						</div>
-						<button class="btn btn-info" style="color: white;font-size: 14px;" onclick="billingInfo()">
-							<spring:message code="BzComposer.accountreceivable.billing"/>
-						</button>
-						<button class="btn btn-info" style="color: white;font-size: 14px;" >
-							<spring:message code="BzComposer.accountreceivable.discountandcreditbtn"/>
-						</button>
-						<button class="btn btn-info"  style="color: white;font-size: 14px;" >
-							<spring:message code="BzComposer.accountreceivable.paymenttobtn"/>
-						</button>
-						<button class="btn btn-info" style="color: white;font-size: 14px;"  onclick="return received()">
-							<spring:message code="BzComposer.accountreceivable.received"/>
-						</button>
-				  </div>
-				</div>
+
 			  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
 			  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
 			</div>
@@ -589,21 +523,21 @@ table.tabla-listados tbody tr td {
     function init() {
     	checkReceivedType();
 	}
-    
+
     function checkReceivedType(){
 		var receivedType = document.getElementById("receivedType");
 		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
-		
+
 		if(selectedReceivedType == '452'){
 		 	$("#Check").show();
-		 }else{ 
+		 }else{
 		 	$("#Check").hide();
 		 }
     }
-  
+
     var checkAll1 = () => {
 
-    
+
 		if(document.getElementById('rdoInvoiceOrder').checked==true){
     	   if(document.getElementById('inlineCheckbox2').checked==true){
 			var checkboxes=document.querySelectorAll("[id^='Checkbox1']")
@@ -622,7 +556,7 @@ table.tabla-listados tbody tr td {
 		  	else{
 			  var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
 			  checkboxes.forEach((cb) => { cb.checked = false; });
-		 	  } 
+		 	  }
 			}
 		 if(document.getElementById('rdoUnpaidCreditAmount').checked==true){
 			 if(document.getElementById('inlineCheckbox2').checked==true){
@@ -632,13 +566,13 @@ table.tabla-listados tbody tr td {
 			  	else{
 				  var checkboxes=document.querySelectorAll("[id^='Checkbox3']")
 				  checkboxes.forEach((cb) => { cb.checked = false; });
-			 	  } 
+			 	  }
 				}
 		 }
-		 
-		
-	
-    
+
+
+
+
   /*   var checkAll1 = () => {
 		if(document.getElementById('inlineCheckbox2').checked==true){
 			var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
@@ -647,9 +581,9 @@ table.tabla-listados tbody tr td {
 	  	else{
 		  var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
 		  checkboxes.forEach((cb) => { cb.checked = false; });
-	 	}  
+	 	}
 	} */
-    
+
    function selectrow(invoice,index) {
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
@@ -658,7 +592,7 @@ table.tabla-listados tbody tr td {
 	    var selectedRow = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')');
 	    //$("#customerName option:contains("+selectedRow.find('td:nth-child(4)').text()+")").attr('selected', 'selected');
 
-	   	$("#checkNum").val(''); 
+	   	$("#checkNum").val('');
 	    $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text());
 	    $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value'));
 	    var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text();
@@ -666,7 +600,7 @@ table.tabla-listados tbody tr td {
 	    var amount = parseInt(amountString);
 	    var balance = parseInt(balanceString);
 	    $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text());
-	    $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text()); 
+	    $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text());
 	    $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(13)').attr('value'));
 	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == '192'
 	        || $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == '1'){
@@ -682,10 +616,10 @@ table.tabla-listados tbody tr td {
 	 		$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value'));
 		}
 		checkReceivedType();
-   }  
+   }
    function save()
    {
-	   	
+
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
 		receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
@@ -771,30 +705,8 @@ table.tabla-listados tbody tr td {
 		   		$("#Check").hide();
 		   }
    }
-   function selectedRadio()
-   {
-
-	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
-		   {
-		   		$("#tblForInvoiceOrder").hide();
-	   			$("#tblForUnpaidOpeningBalance").show();
-	   			$("#tblForUnpaidCreditAmount").hide();
-		   }
-	   else if(document.getElementById("rdoUnpaidCreditAmount").checked)
-		   {
-				   	$("#tblForInvoiceOrder").hide();
-		  			$("#tblForUnpaidOpeningBalance").hide();
-		  			$("#tblForUnpaidCreditAmount").show();
-		   }
-	   else
-		   {
-		   			$("#tblForInvoiceOrder").show();
-		   			$("#tblForUnpaidOpeningBalance").hide();
-		   			$("#tblForUnpaidCreditAmount").hide();
-		   }
-   }
    function dayName(date) {
-	 
+
        var days = new Array(31);
        var j = 0;
        var d  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -820,7 +732,7 @@ table.tabla-listados tbody tr td {
     	   alert("please select Received Type")
        }
        var ctype = type.options[type.selectedIndex].label;
-       
+
 	   var paymentTypeIdString = type.options[type.selectedIndex].id;
 	   var paymentTypeId = parseInt(paymentTypeIdString);
 	   if(ctype == 'Check')
@@ -846,16 +758,16 @@ table.tabla-listados tbody tr td {
 	   var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text();
 	   var balaceString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
 	    var amount = parseFloat(amountString);
-	   var balance = parseInt(balaceString); 
+	   var balance = parseInt(balaceString);
 	   <%-- var receivedAmount = <%= request.getSession().getAttribute("amtToPay")%>; --%>
-	     var receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value');  
+	     var receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value');
 	   /*   var total = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(19)').attr('value'); */
 	    /* var receivedAmountInt = parseInt(receivedAmount);
 	    var totalInt = parseInt(total);  */
-	    
+
 	   /*  if(receivedAmountInt > totalInt)
 	    	{
-	    		
+
 	    	  	receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').attr('value');
 	    	}
 	    else
@@ -870,25 +782,25 @@ table.tabla-listados tbody tr td {
 		   {
 		  		 receivedAmountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
 		   }
-	   
-	  /*  	var receivedAmount = parseInt(receivedAmountString); */   
+
+	  /*  	var receivedAmount = parseInt(receivedAmountString); */
 	    var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text();
-	  	var newON = orderNum.replace('PO2021-0','').replace(/\n/g, ''); 
-	  	
+	  	var newON = orderNum.replace('PO2021-0','').replace(/\n/g, '');
+
 	  	var receivedType = document.getElementById("receivedType");
 		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
-		
+
 		if(selectedReceivedType == '452'){
 			checkNum = document.getElementById("checkNum").value;
-		 }else{ 
+		 }else{
 			 checkNum = "0";
 		 }
 	   /* var ReceivableListBean={
 			   "orderNumStr":newON,
 			   "cvID":selectedCustomer,
-			   "paymentTypeID":paymentTypeId,	   
+			   "paymentTypeID":paymentTypeId,
 			   "bankAccountID":accountId,
-			   "adjustedTotal":amountString,	
+			   "adjustedTotal":amountString,
 			   "paidAmount":receivedAmount,
 			   "balance":balance,
 			   "categoryID":categoryId,
@@ -899,9 +811,9 @@ table.tabla-listados tbody tr td {
             "ReceivableListBean": {
             	"orderNumStr":newON,
  			   "cvID":selectedCustomer,
- 			   "paymentTypeID":paymentTypeIdString,	   
+ 			   "paymentTypeID":paymentTypeIdString,
  			   "bankAccountID":accountId,
- 			   "adjustedTotal":amountString,	
+ 			   "adjustedTotal":amountString,
  			   "paidAmount":receivedAmountString,
  			   "balance":balaceString,
  			   "categoryID":selectedCategoryString,
@@ -922,15 +834,15 @@ table.tabla-listados tbody tr td {
 			 error : function(data) {
 
 				 return showerrordialog();
-			} 
+			}
 		});
   	/* $(document.forms[0]).submit(function( event ) {
 	    event.preventDefault();
 	}); */
-	   return false;  
+	   return false;
    }
    $(document).ready(function(){
-		
+
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	   $("#tblForUnpaidOpeningBalance").hide();
@@ -950,7 +862,7 @@ table.tabla-listados tbody tr td {
        var arCatID = '<%= request.getAttribute("arCatId")%>';
        var arReceive = '<%= request.getAttribute("arReceiveType")%>';
        var arDeposit = '<%= request.getAttribute("arDepositTo")%>';
-       
+
        $('select[id="categoryId"]').find('option[value="'+arCatID+'"]').attr("selected",true);
        $('select[id="receivedType"]').find('option[value="'+arReceive+'"]').attr("selected",true);
        $('select[id="depositId"]').find('option[value="'+arDeposit+'"]').attr("selected",true);
@@ -974,7 +886,7 @@ table.tabla-listados tbody tr td {
 			  {
 			  		return false;
 			  } */
-	
+
 			event.preventDefault();
 			$("#showcleartransactiondialog").dialog({
 			    	resizable: false,
@@ -982,7 +894,7 @@ table.tabla-listados tbody tr td {
 			        width: 500,
 			        modal: true,
 			        buttons: {
-			        	"<spring:message code='BzComposer.global.ok'/>": function () {			            	
+			        	"<spring:message code='BzComposer.global.ok'/>": function () {
 			            },
 			            "<spring:message code='BzComposer.global.cancel'/>": function () {
 			                $(this).dialog("close");
@@ -990,10 +902,10 @@ table.tabla-listados tbody tr td {
 			            }
 			        }
 			    });
-			     return false; 
-		  
+			     return false;
+
 	   }
-	   var invId = invoiceId; 
+	   var invId = invoiceId;
 	   $.ajax({
 			type : "POST",
 			url : "AccountReceivebleUpdate?tabid=ClearTransaction",
@@ -1006,7 +918,7 @@ table.tabla-listados tbody tr td {
 			 error : function(data) {
 
 				 return showerrordialog();
-			} 
+			}
 		});
 		$(document.forms[0]).submit(function( event ) {
 		    event.preventDefault();
@@ -1014,17 +926,16 @@ table.tabla-listados tbody tr td {
    }
    function cancelledTab()
    {
-	
+
 	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab";
    }
    function receivedTab()
    {
 		window.location = "${pageContext.request.contextPath}/ReceivedTab?tabid=receivedTab";
    }
-      function eSales()
-      {
-   		window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=eSales";
-      }
+   function receivebleList(){
+		window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble";
+   }
    function overDueTab()
    {
 	   window.location = "${pageContext.request.contextPath}/OverDueTab?tabid=overDueTab";
@@ -1038,26 +949,26 @@ table.tabla-listados tbody tr td {
    {
 	   var h = window.screen.height;
 	   var w = window.screen.width;
-	   
+
 	   var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
 	   var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
-	   
+
 	   var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
 	   var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
-	    
+
 	   var left = (screen.width/2) - (w / 2);
 	   var top = (screen.height/2) - (h / 2);
-	    
+
 	   /* window.open("BillingInfo?tabid=showBilling","Billing ","scrollbars=yes,width="+w/2+",height="+h/2+",top=150,left="+(left+300)+",status=yes,toolbar=no,menubar=no,location=no," ); */
 	   window.open("BillingInfo?tabid=showBilling","Billing ","scrollbars=yes,width="+w/2+",height="+h/2+",top=150,left="+(left+300)+",status=yes,toolbar=no,menubar=no,location=no," );
-	   
+
 	   $(document.forms[0]).submit(function( event ) {
 		    event.preventDefault();
 		});
    }
    function checkPaymentStatus()
    {
-	 
+
 	  	/* var pay = document.getElementById("payStatus");
 	  	vat option = pay.options[pay.selectedIndex].value; */
 	   $(document.forms[0]).submit(function( event ) {
@@ -1065,9 +976,9 @@ table.tabla-listados tbody tr td {
 		});
    }
    $( ".paymentOP" ).change(function() {
-	
+
 	var pay = document.getElementById("payStatus");
-	var payment = pay.options[pay.selectedIndex].value; 
+	var payment = pay.options[pay.selectedIndex].value;
 	if(payment == 'Layaway')
 	{
 		/* var option = window.confirm("<spring:message code='BzComposer.accountreceivable.savelayawaysinvoice'/>")
@@ -1086,8 +997,8 @@ table.tabla-listados tbody tr td {
 			},
 			error : function(data) {
 
-				return showerrordialog(); 
-			} 
+				return showerrordialog();
+			}
 		});*/
 		event.preventDefault();
 		$("#savelayawaysinvoicedialod").dialog({
@@ -1116,19 +1027,19 @@ table.tabla-listados tbody tr td {
 			},
 			error : function(data) {
 
-				return showerrordialog(); 
-			} 
+				return showerrordialog();
+			}
 		});
 	}
 });
     $(document).ready(function () {
 	    $('tr').click(function () {
-	         var selected = $(this).hasClass("highlight"); 
+	         var selected = $(this).hasClass("highlight");
 	         $("tr").removeClass("highlight");
 	         if(!selected)
 	             $(this).addClass("highlight");
 	    });
-	}); 
+	});
    function layawaysTab()
    {
 	  window.location = "${pageContext.request.contextPath}/Layaway?tabid=layawayTab";
@@ -1137,12 +1048,12 @@ table.tabla-listados tbody tr td {
    {
 	   $(document).ready(function () {
 		    $('tr').click(function () {
-		         var selected = $(this).hasClass("highlight"); 
+		         var selected = $(this).hasClass("highlight");
 		         $("tr").removeClass("highlight");
 		         if(!selected)
 		             $(this).addClass("highlight");
 		    });
-		}); 
+		});
 	   	var day = new Date().getDay();
 		var dName = dayName(day);
 	   	$("#orderDate").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
@@ -1156,7 +1067,7 @@ table.tabla-listados tbody tr td {
 	   $(document).find('div#tblForUnpaidCreditAmount table').replaceWith($(data).find('div#tblForUnpaidCreditAmount').html());
 	   addCss();
    }
-   
+
 function showreceiveddialog()
 {
 	event.preventDefault();
@@ -1173,7 +1084,7 @@ function showreceiveddialog()
     });
     return false;
 }
-   
+
 function entervalidchecknumberdialog()
 {
 	event.preventDefault();

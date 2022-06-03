@@ -1127,7 +1127,7 @@ public class AddNewCompanyDAO {
                 return;
             }
 
-            sSqlItemCat = " Insert into bca_iteminventory" + " (CompanyID,ParentID,InventoryName,InventoryCode," + "isCategory," + "ItemTypeID,Active)" + " values (" + companyId + "," + "0" + "," + "'Upfront Deposit'" + "," + "'Upfront Deposit'" + "," + "1" + "," + //IsCategory
+            sSqlItemCat = " bca_iteminventory" + " (CompanyID,ParentID,InventoryName,InventoryCode," + "isCategory," + "ItemTypeID,Active)" + " values (" + companyId + "," + "0" + "," + "'Upfront Deposit'" + "," + "'Upfront Deposit'" + "," + "1" + "," + //IsCategory
                     " " + 6 + "," + //ItemTypeID = 6
                     "1" + " ) ";
             SqlMax = "Select max(InventoryID) from bca_iteminventory ";
