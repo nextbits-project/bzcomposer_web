@@ -1241,7 +1241,18 @@ public class ConfigurationController {
             json.put("Subject", mailTemplateDtos.get(0).getSubject());
             status = json.toString();
         }
+        else if (action.equalsIgnoreCase("getShippingServiceById")) {
+            ConfigurationDAO dao = new ConfigurationDAO();
+            int ShippingServiceId = Integer.parseInt(request.getParameter("ShippingServiceId"));
+            System.out.println("Selected ShippingServiceId ID:" + ShippingServiceId);
+            ConfigurationDto configurationDto = dao.getSelectedUSPSShippingService(ShippingServiceId);
 
+            JSONObject json=new JSONObject();
+            json.put("ShippingServiceId", configurationDto.getRealTimeShippingServiceId());
+            json.put("uspsServiceName", configurationDto.getRealTimeShippingService());
+            json.put("uspsServicePrice", configurationDto.getRealTimeShippingPrice());
+            status = json.toString();
+        }
         else if (action.equalsIgnoreCase("addNewEmailTemplate")) {
             ConfigurationDAO dao = new ConfigurationDAO();
             String templateName = request.getParameter("templateName");
@@ -1392,6 +1403,7 @@ public class ConfigurationController {
         	System.out.println("-----------addUpsServiceNameandPrice-------------" +configDto);
             return dao.addUpsServiceNameandPrice(configDto);
         }
+
         else if (action.equalsIgnoreCase("editUpsServiceNameandPrice")) {
         	System.out.println("-----------editUpsServiceNameandPrice-------------" +configDto);
             return dao.editUpsServiceNameandPrice(configDto);
@@ -1400,6 +1412,21 @@ public class ConfigurationController {
             int udShippingRateID = Integer.parseInt(request.getParameter("udShippingRateID"));
             return dao.deleteeditUpsServiceNameandPrice(udShippingRateID);
         }
+
+        else if (action.equalsIgnoreCase("addUspsShippingService")) {
+            int shippingTypeId = 2;
+            return dao.addShippingService(configDto, shippingTypeId);
+        }
+        else if (action.equalsIgnoreCase("addFedexShippingService")) {
+            int shippingTypeId = 3;
+            return dao.addShippingService(configDto, shippingTypeId);
+        }
+        else if (action.equalsIgnoreCase("deleteUspsShippingService")) {
+            int shippingServiceId = configDto.getRealTimeShippingServiceId();
+            return dao.deleteUspsShippingService(shippingServiceId);
+        }
+
+
         else {
             System.out.println("-----------ERROR-ACTION-not-found-------------");
         }

@@ -2499,7 +2499,58 @@ public class ConfigurationDAO {
         form.setListOfExistingContainer(listPOJOs);
         return listPOJOs;
     }
-
+    public ConfigurationDto getSelectedUSPSShippingService(int shippingServiceId) {
+        Connection con = null;
+        SQLExecutor db = new SQLExecutor();
+        Statement stmt = null;
+        ResultSet rs = null;
+        con = db.getConnection();
+        ConfigurationDto configurationDto = new ConfigurationDto();
+        String sql = "";
+        try
+        {
+            stmt = con.createStatement();
+            sql = "SELECT ShippingServiceID,ShippingType,ShippingService,Price,Active "
+                    +"FROM bca_realtimeshippingservice "
+                    +" WHERE ShippingServiceID = "+shippingServiceId
+                    +" AND Active = 1 ";
+            rs = stmt.executeQuery(sql);
+            if (rs.next())
+            {
+                configurationDto.setRealTimeShippingServiceId(rs.getInt("ShippingServiceID"));
+                configurationDto.setRealTimeShippingService(rs.getString("ShippingService"));
+                configurationDto.setRealTimeShippingPrice(rs.getDouble("Price"));
+                if(rs.getInt("Active") == 1)
+                {
+                    configurationDto.setRealTimeShippingActive(1);
+                }
+                else
+                {
+                    configurationDto.setRealTimeShippingActive(0);
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (rs != null) {
+                    db.close(rs);
+                }
+                if (stmt != null) {
+                    db.close(stmt);
+                }
+                if(con != null){
+                    db.close(con);
+                }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return configurationDto;
+    }
     public ArrayList <ConfigurationDto> getActiveRealTimeShippingServices(int shippingType,HttpServletRequest request, ConfigurationDto form)
     {
         Connection con = null;
@@ -4916,4 +4967,69 @@ public class ConfigurationDAO {
         }
     }
 
+    public boolean addShippingService(ConfigurationDto configDto, int shippingTypeId) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowAdded = false;
+        String sql = null;
+
+        try {
+            if (configDto.getRealTimeShippingServiceId() != 0){
+                sql = "update bca_realtimeshippingservice set ShippingService = ?, Price = ? where ShippingServiceID =?";
+                pstmt = con.prepareStatement(sql);
+                pstmt.setString(1, configDto.getRealTimeShippingService());
+                pstmt.setDouble(2, configDto.getRealTimeShippingPrice());
+                pstmt.setInt(3, configDto.getRealTimeShippingServiceId());
+            }else {
+                sql = "INSERT INTO bca_realtimeshippingservice(ShippingType,ShippingService, Price, Active) Values(?,?,?,?)";
+                pstmt = con.prepareStatement(sql);
+                pstmt.setInt(1, shippingTypeId);
+                pstmt.setString(2, configDto.getRealTimeShippingService());
+                pstmt.setDouble(3, configDto.getRealTimeShippingPrice());
+                pstmt.setInt(4, 1);
+            }
+            rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+        }
+        catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return rowAdded;
+    }
+
+    public boolean deleteUspsShippingService(int shippingServiceId) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowDeleted = false;
+        String sql = null;
+
+        try {
+            sql = "update bca_realtimeshippingservice set Active = ? where ShippingServiceID =?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, 0);
+            pstmt.setInt(2, shippingServiceId);
+            rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+        }
+        catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return rowDeleted;
+    }
 }

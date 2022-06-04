@@ -1005,57 +1005,29 @@ table.tabla-listados tbody tr td {
 								for (int i = 0; i < getMemorizeTransactionList.size(); i++) {
 						%>
 						<tr onclick="selectMemorizedTransactionList(<%=memTransIndex%>)">
-							<td>
-								<input type="checkbox">
-							</td>
-							<td hidden="billNo">
-								<% out.println(getMemorizeTransactionList.get(i).getBillNo());%>
-							</td>
-							<input type="hidden" id="billNumber" value="<% out.println(getMemorizeTransactionList.get(i).getBillNo());%>">
-							<td>
-								<% out.println(getMemorizeTransactionList.get(i).getTransactionName());%>
-							</td>
-							<td>
-								<% out.println(getMemorizeTransactionList.get(i).getBankAccount());%>
-							</td>
-							<td>
-								<% out.println(getMemorizeTransactionList.get(i).getAmount());%>
-							</td>
-							<td value="<%=getMemorizeTransactionList.get(i).getRecurringPeriod()%>">
-								<% out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());%>
-							</td>
+							<td><input type="checkbox"></td>
+							<td hidden="billNo"><% out.println(getMemorizeTransactionList.get(i).getBillNo());%></td>
+							<td><% out.println(getMemorizeTransactionList.get(i).getTransactionName());%></td>
+							<td><% out.println(getMemorizeTransactionList.get(i).getBankAccount());%></td>
+							<td><% out.println(getMemorizeTransactionList.get(i).getAmount());%></td>
+							<td value="<%=getMemorizeTransactionList.get(i).getRecurringPeriod()%>"><% out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());%></td>
 							<%
 								if (getMemorizeTransactionList.get(i).getRemindOption() == 2) {
 							%>
-							<td value="<%=getMemorizeTransactionList.get(i).getRemindOption()%>">
-								<% out.println("Yes");%>
-							</td>
+							<td value="<%=getMemorizeTransactionList.get(i).getRemindOption()%>"><% out.println("Yes");%></td>
 							<%
 								} else {
 							%>
-							<td value="<%=getMemorizeTransactionList.get(i).getRemindOption()%>">
-								<% out.println("No");%>
-							</td>
+							<td value="<%=getMemorizeTransactionList.get(i).getRemindOption()%>"><% out.println("No");%></td>
 							<%
 								}
 							%>
-							<td>
-								<% out.println(JProjectUtil.getdateFormat().format(getMemorizeTransactionList.get(i).getNextDate()));%>
-							</td>
+							<td><% out.println(JProjectUtil.getdateFormat().format(getMemorizeTransactionList.get(i).getNextDate()));%></td>
 							<td hidden="howOften">
-								<%
-									out.println(getMemorizeTransactionList.get(i).getHowOften());
-								%>
-							</td>
-							<td hidden="recurringPeriod">
-								<% out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());%>
-							</td>
-							<td hidden="recurringNumber">
-								<% out.println(getMemorizeTransactionList.get(i).getRecurringNumber());%>
-							</td>
-							<td hidden="dayInAdvance">
-								<% out.println(getMemorizeTransactionList.get(i).getDaysInAdvanceToEnter());%>
-							</td>
+								<%out.println(getMemorizeTransactionList.get(i).getHowOften());%></td>
+							<td hidden="recurringPeriod"><% out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());%></td>
+							<td hidden="recurringNumber"><% out.println(getMemorizeTransactionList.get(i).getRecurringNumber());%></td>
+							<td hidden="dayInAdvance"><% out.println(getMemorizeTransactionList.get(i).getDaysInAdvanceToEnter());%></td>
 						</tr>
 						<%
 							memTransIndex++;
@@ -1898,11 +1870,11 @@ table.tabla-listados tbody tr td {
 	}
 	function selectMemorizedTransactionList(memTransListIndex)
 	{
-
 		this.indexForMemTransList = memTransListIndex;
 		this.billNo = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(2)').text();
 		var name = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(3)').text();
 		document.getElementById("nameOfTransaction").value = name;
+
 		if($('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(7)').attr('value') == '2')
 		{
 			$("#automaticEnter").prop('checked',true);
@@ -2441,9 +2413,8 @@ else
 				url : "BillCreationPost?tabid=MakeScheduleMemorizedTransaction",
 			    data :"data=" + obj,
 			    success : function(data) {
-				
-				amountToBepaid = 0.00;
-				updateBillPayableTab(data);	
+				//updateBillPayableTab(data);
+				window.location = "BillCreation?tabid=billCreation";
 				},
 				 error : function(data) {
 					 alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
@@ -2470,7 +2441,7 @@ function closeMomorizedTransactionList(){
 	$('#MemorizeTransactionList').dialog('close');
 }
 function AddMemorizedTransaction(){
-debugger;
+
     var bill = parseInt($('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(2)').text());
     if(isNaN(bill))
     {
@@ -2515,8 +2486,8 @@ function DeleteMemorizeTransaction()
 	    success : function(data) {
 		amountToBepaid = 0.00;
 		//updateBillPayableTab(data);
-		document.forms['billCreationForm'].action = "BillPayable?tabid=billpayable";
-        document.forms['billCreationForm'].submit();
+		window.location = "BillCreation?tabid=billCreation";
+
 		},
 		 error : function(data) {
 			 alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");

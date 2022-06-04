@@ -209,9 +209,9 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 			<table align="center">
 				<tr align="center">
 					<td>
-					    <input type="button" style="padding: 10px;" class="formbutton" id="smail" disabled="disabled" onclick="sendToCreateRMA();"
+					    <input type="button" style="padding: 10px;" class="formbutton" id="smail" onclick="sendToCreateRMA();"
                     		value='<spring:message code="BzComposer.invoiceboard.createRMA" />' /> &nbsp;&nbsp;
-						<input type="button" style="padding: 10px;" class="formbutton" id="smail" disabled="disabled" onclick="sendToInvoice();"
+						<input type="button" style="padding: 10px;" class="formbutton" id="smail" onclick="sendToInvoice()"
 						    value='<spring:message code="BzComposer.invoiceboard.lookup" />' /> &nbsp;&nbsp;
                         <input type="button" class="formbutton" style="padding: 10px;" onclick="SendMail(this.form);" value='<spring:message code="BzComposer.global.sendmail" />' />
 						<input type="hidden" name="ONum" id="ONumId"> 
@@ -339,6 +339,7 @@ function getRecordID(currChkBox, rowIndex) {
 }
 
 function sendToInvoice(){
+
 	order_no = document.getElementById("ord_value").value;
 	window.location = "Invoice?tabid=SBLU&order_no="+order_no;
 }
