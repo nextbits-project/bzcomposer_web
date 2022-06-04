@@ -198,7 +198,7 @@ function deleteSelectedWeightFee(){
 
 //////////////////////////////////////////////////////////////////
 function addSelectedUps(){
-	debugger;
+	
 	var udShipTypeId = $("#isUPSActive").val();
 	var uServiceName = $("#upsServiceName").val();
 	var uServicePrice = $("#upsServicePrice").val();
@@ -206,7 +206,7 @@ function addSelectedUps(){
         return alertName();
 	}
         else if(uServiceName == "" || uServicePrice == ""){
-        return alertName();
+        return enterServiceNameAndPriceDialog();
     } else {
         $.ajax({
             type: "POST",
@@ -222,6 +222,50 @@ function addSelectedUps(){
     }
 }
 /////////////////
+function editSelectedUps(){
+	debugger;
+	var udShipId = $("#upsSelect").val();
+	var uServiceName = $("#upsServiceName").val();
+	var uServicePrice = $("#upsServicePrice").val();
+	if(udShipId == null || udShipId == "" || udShipId == 0){
+		return selectAtleast1RecordDialog();
+	}
+        else if(uServiceName == "" || uServicePrice == ""){
+        return alertName();
+    } else {
+        $.ajax({
+            type: "POST",
+            url:"/ConfigurationAjaxTest?tabid=editUpsServiceNameandPrice",
+            data:{realTimeShippingServiceId : parseInt(udShipId), realTimeShippingService : uServiceName, realTimeShippingPrice : uServicePrice},
+            success:function(data){
+                if(data){   location.reload(); }
+            },
+            error:function(){
+              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+            }
+        });
+    }
+}
+///////////////////////
+function deleteSelectedUps(){
+    var udShipId = $("#upsSelect").val();
+    if(udShipId == null || udShipId == "" || udShipId == 0){
+        return selectAtleast1RecordDialog();
+    } else {
+        if(confirm('<spring:message code="BzComposer.common.wantToDelete"/>')){
+            $.ajax({
+                type: "GET",
+                url:"/ConfigurationAjaxTest?tabid=deleteeditUpsServiceNameandPrice&udShippingRateID="+udShipId,
+                success:function(data){
+                    if(data){   location.reload(); }
+                },
+                error:function(){
+                  alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+                }
+            });
+        }
+    }
+}
 
 function alertName(){
 alert("Please Enter the value");
@@ -724,7 +768,7 @@ function removeTime(){
 																<form:input path="upsServicePrice" />
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="editUps" style="width:60px;" class="formButton">
+																<button type="button" id="editUps" onclick="editSelectedUps()" style="width:60px;" class="formButton">
 																    <spring:message code="BzComposer.global.edit"/>
 																</button>
 															</td>
@@ -733,7 +777,7 @@ function removeTime(){
 															<td>
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="deleteUps" style="width:60px;"class="formButton">
+																<button type="button" id="deleteUps" onclick="deleteSelectedUps()" style="width:60px;"class="formButton">
 																    <spring:message code="BzComposer.global.delete"/>
 																</button>
 															</td>
@@ -1338,6 +1382,23 @@ function enterWeightAndPriceDialog(){
     });
     return false;
 }
+
+function enterServiceNameAndPriceDialog(){
+	event.preventDefault();
+	$("#enterServiceNameAndPriceDialog").dialog({
+    	resizable: false,
+        height: 200,
+        width: 350,
+        modal: true,
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    return false;
+}
+
 function selectAtleast1RecordDialog(){
 	event.preventDefault();
 	$("#selectAtleast1RecordDialog").dialog({
@@ -1365,6 +1426,9 @@ function selectAtleast1RecordDialog(){
 </div>
 <div id="enterWeightAndPriceDialog" style="display:none;">
 	<p><spring:message code='BzComposer.configuration.tax.enterWeightAndPrice'/></p>
+</div>
+<div id="enterServiceNameAndPriceDialog" style="display:none;">
+	<p><spring:message code='BzComposer.configuration.tax.enterServiceNameAndPrice'/></p>
 </div>
 <div id="emptyvaluedialog" style="display:none;">
 	<p><spring:message code='BzComposer.configuration.tax.selectshippingviatoupdate'/></p>

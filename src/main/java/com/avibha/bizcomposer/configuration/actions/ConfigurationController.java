@@ -1392,6 +1392,14 @@ public class ConfigurationController {
         	System.out.println("-----------addUpsServiceNameandPrice-------------" +configDto);
             return dao.addUpsServiceNameandPrice(configDto);
         }
+        else if (action.equalsIgnoreCase("editUpsServiceNameandPrice")) {
+        	System.out.println("-----------editUpsServiceNameandPrice-------------" +configDto);
+            return dao.editUpsServiceNameandPrice(configDto);
+        }
+        else if (action.equalsIgnoreCase("deleteeditUpsServiceNameandPrice")) {
+            int udShippingRateID = Integer.parseInt(request.getParameter("udShippingRateID"));
+            return dao.deleteeditUpsServiceNameandPrice(udShippingRateID);
+        }
         else {
             System.out.println("-----------ERROR-ACTION-not-found-------------");
         }

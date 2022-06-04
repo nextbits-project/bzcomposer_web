@@ -2513,7 +2513,7 @@ public class ConfigurationDAO {
         {
             stmt = con.createStatement();
             sql = "SELECT ShippingServiceID,ShippingType,ShippingService,Price,Active "
-                    +"FROM bca_realtimeshippingservice "
+                    +" FROM bca_realtimeshippingservice "
                     +" WHERE ShippingType= "+shippingType
                     +" AND Active = 1 ";
             rs = stmt.executeQuery(sql);
@@ -2685,7 +2685,7 @@ public class ConfigurationDAO {
         PreparedStatement pstmt = null;
         boolean rowAdded = false;
         try {
-            pstmt = con.prepareStatement("INSERT INTO bca_realtimeshippingservice(ShippingType,ShippingService, Price) Values(?,?,?,?)");
+            pstmt = con.prepareStatement("INSERT INTO bca_realtimeshippingservice(ShippingType,ShippingService, Price, Active) Values(?,?,?,?)");
             pstmt.setInt(1, form.getRealTimeShippingServiceId());
             pstmt.setString(2, form.getRealTimeShippingService());
             pstmt.setDouble(3, form.getRealTimeShippingPrice());
@@ -2732,6 +2732,60 @@ public class ConfigurationDAO {
         }
         return rowAdded;
     }
+    
+    ///////////////////
+    public boolean editUpsServiceNameandPrice(ConfigurationDto form) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowAdded = false;
+        try {
+            pstmt = con.prepareStatement("UPDATE bca_realtimeshippingservice SET ShippingService=?, Price=?, Active =? WHERE ShippingServiceID=?");
+			/* pstmt.setInt(1, form.getRealTimeShippingServiceId()); */
+            pstmt.setString(1, form.getRealTimeShippingService());
+            pstmt.setDouble(2, form.getRealTimeShippingPrice());
+            pstmt.setInt(3, 1);
+            pstmt.setInt(4, form.getRealTimeShippingServiceId());
+			
+            rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+        }
+        catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return rowAdded;
+    }
+    /////////////////
+    public boolean deleteeditUpsServiceNameandPrice(int udShippingRateID) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowAdded = false;
+        try {
+            pstmt = con.prepareStatement("DELETE FROM bca_realtimeshippingservice WHERE ShippingServiceID="+udShippingRateID);
+            rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+        }
+        catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return rowAdded;
+    }
+    ////////////
 
     public boolean deleteUserDefinedShippingWeightAndPrice(int udShippingRateID) {
         SQLExecutor db = new SQLExecutor();
