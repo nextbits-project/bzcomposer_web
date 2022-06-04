@@ -292,8 +292,31 @@ function setServices(elementID){
 }
 ////////////////////////////
 function setUSPSService(){
-	var uspsService = $("#uspsSelect option:selected").text();
-	$("#uspsServiceName").val(uspsService);
+	var ShippingServiceId = $("#uspsSelect option:selected").val();
+	$.ajax({
+        type: "POST",
+        url:"ConfigurationAjax/SaveConfiguration?tabid=getShippingServiceById&ShippingServiceId="+ShippingServiceId,
+        data: { ShippingServiceId : ShippingServiceId }
+        }).done(function(data){
+        const shippingService = JSON.parse(data);
+        document.getElementById('uspsShippingServiceId').value = shippingService.ShippingServiceId;
+        document.getElementById('uspsServiceName').value = shippingService.uspsServiceName;
+        document.getElementById('uspsServicePrice').value = shippingService.uspsServicePrice;
+    });
+
+}
+function setFedexService(){
+	var ShippingServiceId = $("#fedexSelect option:selected").val();
+	$.ajax({
+        type: "POST",
+        url:"ConfigurationAjax/SaveConfiguration?tabid=getShippingServiceById&ShippingServiceId="+ShippingServiceId,
+        data: { ShippingServiceId : ShippingServiceId }
+        }).done(function(data){
+        const shippingService = JSON.parse(data);
+        document.getElementById('fedexShippingServiceId').value = shippingService.ShippingServiceId;
+        document.getElementById('fedexServiceName').value = shippingService.uspsServiceName;
+        document.getElementById('fedexServicePrice').value = shippingService.uspsServicePrice;
+    });
 }
 
 function setWeightPrice(){
@@ -841,10 +864,11 @@ function removeTime(){
 															<td style="font-size:12px;">
 																<spring:message code="BzComposer.configuration.enterservicename"/> :
 																<br>
-																<form:input path="upsServiceName" id="uspsServiceName" />
+																<input type="hidden" id="uspsShippingServiceId" />
+																<input type="text" id="uspsServiceName" />
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="add" style="width: 60px;" name="add" class="formButton">
+                                                                <button type="button" id="add" style="width: 60px;" name="add" class="formButton" onclick="addUSPS()">
 																    <spring:message code="BzComposer.global.add"/>
 																</button>
 															</td>
@@ -853,10 +877,10 @@ function removeTime(){
 															<td style="font-size:12px;">
 																<spring:message code="BzComposer.configuration.enterserviceprice"/> ($)
 																<br>
-																<form:input path="upsServicePrice" />
+                                                                <input type="number" id="uspsServicePrice" />
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="edit"style="width: 60px;" class="formButton">
+                                                                <button type="button" id="edit"style="width: 60px;" class="formButton" onclick="updateUSPS()">
 																    <spring:message code="BzComposer.global.edit"/>
 																</button>
 															</td>
@@ -865,7 +889,7 @@ function removeTime(){
 															<td>
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="edit" style="width: 60px;" class="formButton">
+                                                                <button type="button" id="edit" style="width: 60px;" class="formButton" onclick="deleteUSPS()">
 																    <spring:message code="BzComposer.global.delete"/>
 																</button>
 															</td>
@@ -958,7 +982,7 @@ function removeTime(){
 														</tr>
 														<tr>
 															<td rowspan="4" style="font-size:12px;">
-																<form:select path="selectedRealTimeShippingServiceId" multiple="multiple" style="width:200px; height:200px;">
+                                                                <form:select path="selectedRealTimeShippingServiceId" multiple="multiple" id="fedexSelect" style="width:200px; height:200px;" onclick="setFedexService()">
 																    <c:if test="${not empty configDto.listOfExistingRealTimeShippingServices2}">
                                                                     	<c:forEach items="${configDto.listOfExistingRealTimeShippingServices2}" var="objList1">
                                                                     		<option value="${objList1.realTimeShippingServiceId}">${objList1.realTimeShippingService}</option>
@@ -969,10 +993,12 @@ function removeTime(){
 															<td style="font-size:12px;">
 																<spring:message code="BzComposer.configuration.enterservicename"/> :
 																<br>
-																<form:input path="upsServiceName" />
+																<input type="hidden" id="fedexShippingServiceId" />
+																<input type="text" id="fedexServiceName" />
+
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="add" name="add" style="width:60px;" class="formButton">
+                                                                <button type="button" id="add" name="add" style="width:60px;" class="formButton" onclick="addFedex()">
 																    <spring:message code="BzComposer.global.add"/>
 																</button>
 															</td>
@@ -981,10 +1007,10 @@ function removeTime(){
 															<td style="font-size:12px;">
 																<spring:message code="BzComposer.configuration.enterserviceprice"/> ($) :
 																<br>
-																<form:input path="upsServicePrice" />
+																<input type="number" id="fedexServicePrice" />
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" id="edit" style="width:60px;"class="formButton">
+                                                                <button type="button" id="edit" style="width:60px;"class="formButton" onclick="updateFedex()">
 																    <spring:message code="BzComposer.global.edit"/>
 																</button>
 															</td>
@@ -993,7 +1019,7 @@ function removeTime(){
 															<td>
 															</td>
 															<td style="font-size:14px;">
-																<button type="button" style="width: 60px;" id="edit" class="formButton">
+                                                                <button type="button" style="width: 60px;" id="delete" class="formButton" onclick="deleteFedex()">
 																    <spring:message code="BzComposer.global.delete"/>
 																</button>
 															</td>
@@ -1334,6 +1360,153 @@ function selectshippingtypedialog(){
     });
     return false;
 }
+function addUSPS(){
+    var uspsServiceName = document.getElementById("uspsServiceName").value;
+    var uspsServicePrice = document.getElementById("uspsServicePrice").value;
+    if(uspsServiceName == ""){
+    debugger;
+            alert("Please enter the value of USPS service name")
+            return false;
+    }
+    if(uspsServicePrice == ""){
+            alert("Please enter the value of USPS service price")
+            return false;
+    }
+    $.ajax({
+        type: "POST",
+        url:"/ConfigurationAjaxTest?tabid=addUspsShippingService",
+        data:{realTimeShippingService : uspsServiceName, realTimeShippingPrice : uspsServicePrice},
+        success:function(data){
+            if(data){   location.reload(); }
+        },
+        error:function(){
+          alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+}
+
+function addFedex(){
+    var fedexServiceName = document.getElementById("fedexServiceName").value;
+    var fedexServicePrice = document.getElementById("fedexServicePrice").value;
+    if(fedexServiceName == ""){
+    debugger;
+            alert("Please enter the value of fedex service name")
+            return false;
+    }
+    if(fedexServicePrice == ""){
+            alert("Please enter the value of fedex service price")
+            return false;
+    }
+    $.ajax({
+        type: "POST",
+        url:"/ConfigurationAjaxTest?tabid=addFedexShippingService",
+        data:{realTimeShippingService : fedexServiceName, realTimeShippingPrice : fedexServicePrice},
+        success:function(data){
+            if(data){   location.reload(); }
+        },
+        error:function(){
+          alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+}
+
+function updateUSPS(){
+    var ShippingServiceId = document.getElementById("uspsShippingServiceId").value;
+    var uspsServiceName = document.getElementById("uspsServiceName").value;
+    var uspsServicePrice = document.getElementById("uspsServicePrice").value;
+    if(ShippingServiceId == ""){
+        alert("Please select a service")
+        return false;
+    }
+    if(uspsServiceName == ""){
+    debugger;
+            alert("Please enter the value of USPS service name")
+            return false;
+    }
+    if(uspsServicePrice == ""){
+            alert("Please enter the value of USPS service price")
+            return false;
+    }
+    $.ajax({
+        type: "POST",
+        url:"/ConfigurationAjaxTest?tabid=addUspsShippingService",
+        data:{realTimeShippingServiceId : parseInt(ShippingServiceId), realTimeShippingService : uspsServiceName, realTimeShippingPrice : uspsServicePrice},
+        success:function(data){
+            if(data){   location.reload(); }
+        },
+        error:function(){
+          alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+}
+
+function updateFedex(){
+    var ShippingServiceId = document.getElementById("fedexShippingServiceId").value;
+    var fedexServiceName = document.getElementById("fedexServiceName").value;
+    var fedexServicePrice = document.getElementById("fedexServicePrice").value;
+    if(ShippingServiceId == ""){
+        alert("Please select a service")
+        return false;
+        }
+    if(fedexServiceName == ""){
+        alert("Please enter the value of USPS service name")
+        return false;
+    }
+    if(fedexServicePrice == ""){
+        alert("Please enter the value of USPS service price")
+        return false;
+    }
+    $.ajax({
+        type: "POST",
+        url:"/ConfigurationAjaxTest?tabid=addUspsShippingService",
+        data:{realTimeShippingServiceId : parseInt(ShippingServiceId), realTimeShippingService : fedexServiceName, realTimeShippingPrice : fedexServicePrice},
+        success:function(data){
+            if(data){   location.reload(); }
+        },
+        error:function(){
+          alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+}
+function deleteUSPS(){
+    var ShippingServiceId = document.getElementById("uspsShippingServiceId").value;
+    if(ShippingServiceId == ""){
+    debugger;
+            alert("Please select a service")
+            return false;
+    }
+    $.ajax({
+        type: "POST",
+        url:"/ConfigurationAjaxTest?tabid=deleteUspsShippingService",
+        data:{realTimeShippingServiceId : parseInt(ShippingServiceId)},
+        success:function(data){
+            if(data){   location.reload(); }
+        },
+        error:function(){
+          alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+}
+function deleteFedex(){
+    var ShippingServiceId = document.getElementById("fedexShippingServiceId").value;
+    if(ShippingServiceId == ""){
+    debugger;
+            alert("Please select a service")
+            return false;
+    }
+    $.ajax({
+        type: "POST",
+        url:"/ConfigurationAjaxTest?tabid=deleteUspsShippingService",
+        data:{realTimeShippingServiceId : parseInt(ShippingServiceId)},
+        success:function(data){
+            if(data){   location.reload(); }
+        },
+        error:function(){
+          alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+}
+
 
 function emptyvaluedialog(){
 	event.preventDefault();
