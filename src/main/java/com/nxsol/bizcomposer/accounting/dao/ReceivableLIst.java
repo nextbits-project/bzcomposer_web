@@ -30,9 +30,11 @@ public interface ReceivableLIst {
 //	public Map<Integer, TblPaymentType> getPaymentType();
 	
 	public ArrayList<TblAccount> getAccount();
-	
+
 	public ReceivableListBean getInvoiceByOrderNUm(int ordernum,int companyId);
-	
+
+	public ReceivableListBean getInvoiceByPONum(int poNum,int companyId);
+
 	public TblPaymentType getPaymentTypeById(int id);
 	
 	public TblAccount getAccountById(int id);

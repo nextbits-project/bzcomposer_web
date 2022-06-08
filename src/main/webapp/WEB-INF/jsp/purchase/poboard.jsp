@@ -174,7 +174,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                                         <input type="hidden" class="invoiceID" value="${objList.invoiceID}" />
                                         <input type="checkbox" class="allRecordsCLS" id="allRecordsChk${loop.index}" onchange="getRecordID(this, ${loop.index});" value="${objList.po_no}" />
                                     </td>
-                                    <td><spring:message code="BzComposer.purchase.PONumPrefix" />${objList.poNumStr}</td>
+                                    <td>${objList.poNumStr}</td>
                                     <td>${objList.dateAdded}</td>
                                     <td>${objList.companyName}</td>
                                     <td>${objList.lastName}, ${objList.firstName}</td>

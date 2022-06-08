@@ -595,6 +595,109 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return rb;
 	}
 	@Override
+	public ReceivableListBean getInvoiceByPONum(int poNum,int companyId) {
+		// TODO Auto-generated method stub
+
+		Connection con;
+		Statement stmt = null;
+		SQLExecutor db = new SQLExecutor();
+		ResultSet rs = null;
+		con = db.getConnection();
+		ReceivableListBean rb = null;
+
+		try {
+			String sql = "SELECT INV.InvoiceID,INV.OrderNum,INV.PONum,INV.SubTotal,INV.Tax,INV.EmployeeID,INV.RefNum,INV.Memo,INV.ShipCarrierID,INV.ShippingMethod,"
+					+ " INV.SH," + "INV.ClientVendorID," + "INV.InvoiceTypeID," + "INV.Total," + "INV.AdjustedTotal,"
+					+ "INV.PaidAmount," + "(SELECT Sum(bca_payment.Amount) AS AB" + " FROM bca_payment"
+					+ " WHERE bca_payment.InvoiceID = INV.InvoiceID" + " AND bca_payment.Deleted != 1) AS PaidAmount12,"
+					+ "INV.Balance," + "INV.IsReceived," + "INV.TermID," + "INV.IsPaymentCompleted,"
+					+ "INV.DateConfirmed," + "INV.DateAdded," + "INV.invoiceStatus," + "INV.PaymentTypeID,"
+					+ "INV.CategoryID," + "INV.ServiceID," + "INV.SalesTaxID," + "INV.SalesRepID," + "INV.Taxable,"
+					+ "INV.Shipped," + "INV.JobCategoryID," + "term.Days," + "INV.BillingAddrID,"
+					+ "INV.ShippingAddrID," + "INV.TotalCommission," + "INV.BankAccountID" + " FROM bca_invoice AS INV"
+					+ " LEFT JOIN  bca_term AS term" + " ON INV.TermID = term.TermID"
+					+ " WHERE  ( ( ( InvoiceTypeID ) IN ( 2 )" + " AND INV.termid <> 3 )"
+					+ " OR INV.InvoiceTypeID = 11 )" + " AND INV.AdjustedTotal > 0" + " AND INV.IsPaymentCompleted = 0"
+					+ " AND INV.invoiceStatus = 0" + " AND INV.CompanyID =" + companyId + " AND INV.PONum="+poNum
+					+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
+					+ " WHERE  bca_payment.InvoiceID =" + "INV.InvoiceID" + " AND bca_payment.Deleted != 1)"
+					+ " OR (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
+					+ " WHERE  bca_payment.InvoiceID = INV.InvoiceID" + " AND bca_payment.Deleted != 1) IS NULL )"
+					+ "ORDER  BY ordernum DESC  ";
+
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				TblCategoryLoader category = new TblCategoryLoader();
+				rb = new ReceivableListBean();
+				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				TblTermLoader termloader = new TblTermLoader();
+				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
+				int cvId = rs.getInt("ClientVendorID");
+				ClientVendor cv = getClentVendor(cvId, companyId);
+				rb.setInvoiceID(rs.getInt("InvoiceID"));
+				rb.setOrderNum(rs.getInt("OrderNum"));
+				rb.setPoNum(rs.getInt("PONum"));
+				rb.setEmployeeId(rs.getInt("EmployeeID"));
+				rb.setRefNum(rs.getString("RefNum"));
+				rb.setMemo(rs.getString("Memo"));
+				rb.setCvID(cvId);
+				rb.setInvoiceTypeID(rs.getInt("InvoiceTypeID"));
+				rb.setTotal(rs.getDouble("Total"));
+				rb.setAdjustedTotal(rs.getDouble("AdjustedTotal"));
+				rb.setPaidAmount(rs.getDouble("PaidAmount"));
+				rb.setBalance(rs.getDouble("Balance"));
+				rb.setTermID(rs.getInt("TermID"));
+				rb.setPaymentTypeID(rs.getInt("PaymentTypeID"));
+				rb.setShipCarrierID(rs.getInt("ShipCarrierID"));
+				rb.setSh(rs.getDouble("SH")); // new changes
+				rb.setSubTotal(rs.getDouble("SubTotal"));
+				rb.setTax(rs.getDouble("Tax"));
+				rb.setShippingMethod(rs.getString("ShippingMethod"));
+				rb.setSalesTaxID(rs.getInt("SalesTaxID"));
+				rb.setTaxable(rs.getInt("Taxable") == 1 ? true : false);
+				rb.setReceived(rs.getBoolean("IsReceived"));
+				rb.setPaymentCompleted(rs.getBoolean("IsPaymentCompleted"));
+				rb.setDateConfirmed((java.util.Date) rs.getDate("DateConfirmed"));
+				rb.setDateAdded((java.util.Date) rs.getDate("DateAdded"));
+				rb.setCategoryID(rs.getInt("CategoryID"));
+				rb.setInvoiceStatus(rs.getInt("invoiceStatus"));
+				rb.setServiceID(rs.getLong("ServiceID"));
+				rb.setSalesRepID(rs.getInt("SalesRepID"));
+				rb.setShipped(rs.getInt("Shipped"));
+				rb.setJobCategoryID(rs.getInt("JobCategoryID"));
+				rb.setBillingAddrID(rs.getInt("BillingAddrID"));
+				rb.setShipToAddrID(rs.getInt("ShippingAddrID"));
+				rb.setCommission(rs.getDouble("TotalCommission"));
+				rb.setBankAccountID(rs.getInt("BankAccountID"));
+				rb.setCvName(cv.getFirstName()+" "+cv.getLastName());
+				rb.setCompanyName(cv.getName());
+				rb.setTblcategory(categoryName);
+				rb.setTblterm(tblterm);
+
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Loger.log(e.toString());
+		}finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if(con != null){
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return rb;
+	}
+	@Override
 	public ReceivableListBean getInvoiceForLayawaysByOrderNUm(int ordernum,int companyId) {
 		// TODO Auto-generated method stub
 		
@@ -924,12 +1027,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 	@Override
 	public int updateInvoiceByOrderNum(ReceivableListBean receivableListBean) {
 		// TODO Auto-generated method stub
-		ReceivableListBean rb = getInvoiceByOrderNUm(receivableListBean.getOrderNum(),receivableListBean.getCompanyID());
+		ReceivableListBean rb = getInvoiceByPONum(receivableListBean.getPoNum(),receivableListBean.getCompanyID());
 		if(rb == null)
 		{
 			try {
 				rb = getInvoiceByInvoiceID(receivableListBean.getInvoiceID());
 			} catch (SQLException e) {
+				e.printStackTrace();
 				// TODO Auto-generated catch block
 				Loger.log(e.toString());
 			}
@@ -961,6 +1065,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
+			e.printStackTrace();
 		}
 		finally {
 			try {

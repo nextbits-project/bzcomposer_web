@@ -119,8 +119,7 @@ table.tabla-listados tbody tr td {
 					<div class="row">
 						<div class="col-md-4">
 							<label><spring:message
-									code="BzComposer.popayable.ponumber" /> #: </label> <label
-								id="poNumber"></label>
+									code="BzComposer.popayable.ponumber" /> #: </label> <label id="poNumber"></label>
 							<div class="form-group row">
 								<label class="col-md-4  col-form-label"><spring:message
 										code="BzComposer.popayable.vendorname" /></label> <label
@@ -400,11 +399,7 @@ table.tabla-listados tbody tr td {
 							<tr onclick="selectrow(<%=rb.getInvoiceID() + "," + index%>)"
 								id="rowId<%=index%>">
 								<td><input type="checkbox" id="Checkbox[<%=index%>]"></td>
-								<td class="text-right">
-									<%
-									out.println(rb.getPoNum());
-									%>
-								</td>
+								<td class="text-right"><%out.println(rb.getOrderNumStr());%></td>
 								<td>
 									<%
 									out.println(rb.getCompanyName());
@@ -574,7 +569,7 @@ table.tabla-listados tbody tr td {
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript">
+<script type="text/javascript">
 	
 	var indexNumber = -1;
 	var amtToPay = -1;
@@ -597,7 +592,7 @@ table.tabla-listados tbody tr td {
 	selectCategoryAsPurchaseOrder6800FromDropDownList("categoryId");
 
    function selectrow(invoice,index) {
-	    
+	    debugger;
 	      $( "#demo" ).empty();  
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
@@ -610,7 +605,7 @@ table.tabla-listados tbody tr td {
 	    AmtDue = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text();
 	    if(parseInt($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text()) != 0.0)
 	    {
-	    	paid = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value');
+	    	paid = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text();
 	    }
 	    else
 	    {
@@ -684,10 +679,10 @@ table.tabla-listados tbody tr td {
    }  
 
    $(function() {
-	   $( "#pay").on("click", function(){ 
-		   
+	   $( "#pay").on("click", function(){
+
 		   var content;
-		   $( "#demo" ).empty();  
+		   $( "#demo" ).empty();
 		   if(invoiceId >= '0' && $('input[type="checkbox"]').is(':checked'))
 			   {
 			   $( "#popupWindow").dialog({
@@ -696,7 +691,7 @@ table.tabla-listados tbody tr td {
 		        });
 				for(var index = 0;index < obj.length;index++)
 			{
-					
+
 					var a = obj[index].AmountDue;
 					var b = obj[index].PaidAmount;
 			   content = "<tr>",
@@ -710,20 +705,20 @@ table.tabla-listados tbody tr td {
 			   content += "<td>"+obj[index].checkNum+"</td>";
 			   content += "<td hidden='invoiceId'>"+obj[index].InvoiceId+"</td>",
 			   content += "</tr>";
-			    $( "#demo" ).append(content); 
+			    $( "#demo" ).append(content);
 			    $("#totalAmtToPay").append(b);
-			    $("#totalPayable").append(a); 
-			   	$( "#popupWindow" ).show(); 
-			 
-			 
+			    $("#totalPayable").append(a);
+			   	$( "#popupWindow" ).show();
+
+
 		       $(document.forms[0]).submit(function(event) {
 				    event.preventDefault();
 				});
 			   }
-			}		
+			}
 		   else
 		   {
-			   
+
 
 				return selectonepayabledialog();
 			   	obj = [];
@@ -731,7 +726,7 @@ table.tabla-listados tbody tr td {
 			}
 	    });
 	 });
-								 							 	
+
    $( ".paymentOP" ).change(function() {
 	    
 	  var pay = document.getElementById("payStatus");
@@ -840,9 +835,11 @@ table.tabla-listados tbody tr td {
 		
 		this.amtToPay = document.getElementById("receivedAmount").value; 
 		var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
-	   
+	   debugger;
+        var poNumberString = document.getElementById("poNumber").innerHTML;
+        var poNum = parseInt(poNumberString);
 	   var ReceivableListBean={
-			   "poNum":document.getElementById("poNumber").innerHTML,
+			   "poNum":poNum,
 			   "cvID":vendor,
 			   "paymentTypeID":document.getElementById("paymentType").value,	   
 			   "bankAccountID":document.getElementById("payId").value,
@@ -872,7 +869,7 @@ table.tabla-listados tbody tr td {
 				/*
 				var html = "" + data.msg; */
 				
-			window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
+			window.location = "${pageContext.request.contextPath}/PoPayable?tabid=popayable";
 			
 			},
 			 error : function(data) {
@@ -960,7 +957,7 @@ table.tabla-listados tbody tr td {
         var d = days[date];
      	return d;
    }
-   $(document).ready(function(){
+  $(document).ready(function(){
         
 		var day = new Date().getDay();
 		var dName = dayName(day);
@@ -979,15 +976,13 @@ table.tabla-listados tbody tr td {
            $('#rowId1').trigger('click');
         }, 1000);
     });
-   $(document).ready(function () {
-	    $('tr').click(function () {
-	         var selected = $(this).hasClass("highlight"); 
+$('tr').click(function () {
+	         var selected = $(this).hasClass("highlight");
 	         $("tr").removeClass("highlight");
 	         if(!selected)
 	             $(this).addClass("highlight");
 	    });
-	}); 
-   
+
    function popUp()
    {
 	   window.open();
@@ -1030,18 +1025,22 @@ table.tabla-listados tbody tr td {
 	  var checkNum = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(8)').text();
 	  var balance = parseInt(AdjustedTotal) - parseInt(paidAmount);
 	  var ReceivableListBean={
-			   "poNum":PoNumber,
-			   "invoiceID":invoiceId,
-			   "cvID":vendorId,
-			   "paymentTypeID":paymentTypeId,	   
-			   "bankAccountID":bankAccId,
-			   "adjustedTotal":AdjustedTotal,	
-			   "paidAmount":paidAmount,
-			  /*  "balance":balance, */
-			   "categoryID":categoryId,
-			   "checkNum":checkNum,
+
 	   };
-	  var obj=JSON.stringify(ReceivableListBean);
+
+    var ReceivableListBean = {
+             "ReceivableListBean": {
+                "poNum":PoNumber,
+                "invoiceID":invoiceId,
+                "cvID":vendorId,
+                "paymentTypeID":paymentTypeId,
+                "bankAccountID":bankAccId,
+                "adjustedTotal":AdjustedTotal,
+                "paidAmount":paidAmount,
+                "categoryID":categoryId,
+                "checkNum":checkNum
+             }};
+    var obj=JSON.stringify(ReceivableListBean);
 	  $.ajax({
 			
 			type : "POST",
@@ -1049,7 +1048,7 @@ table.tabla-listados tbody tr td {
 			data :"row=" + obj,
 		    success : function(data) {
 				/* var html = "" + data.msg; */
-				//window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
+				window.location = "${pageContext.request.contextPath}/PoPayablePost?tabid=popayable";
 			},
 			 error : function(data) {
 
