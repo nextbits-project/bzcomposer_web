@@ -176,7 +176,9 @@ public interface ReceivableLIst {
 	public void deleteSelectedBill(int billNum);
 	
 	public ArrayList<TblVendorDetail> getAllBill(int cvID , int checkStatus);
-	
+
+	public TblVendorDetail getBillByBillNum(String billNum);
+
 	public void updateVendorBills(TblVendorDetail vDetail);
 	
 	public ArrayList<TblVendorDetail> getMemorizeTransactionList();

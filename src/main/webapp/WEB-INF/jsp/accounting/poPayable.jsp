@@ -1042,7 +1042,6 @@ $('tr').click(function () {
              }};
     var obj=JSON.stringify(ReceivableListBean);
 	  $.ajax({
-			
 			type : "POST",
 			url : "PoPayablePost?tabid=Pay",
 			data :"row=" + obj,

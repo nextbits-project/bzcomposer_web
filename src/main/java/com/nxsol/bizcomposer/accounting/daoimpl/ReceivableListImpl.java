@@ -4628,7 +4628,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				payFromBalance = (fromAccount.getCustomerCurrentBalance());
             
         		}	
-				TblAccount toAccount = getAccount(accountable.getPayeeID());
+				TblAccount toAccount = getAccount(accountable.getPayeeID()); // 57061
 				
 				if (toAccount != null) {
 		           adjustBankBalance(toAccount, accountable.getAmount());
@@ -4649,7 +4649,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				 }
 				 if (!isNeedToPrint) {
 				
-				payableId =insertIntoAccountable(accountable);
+				payableId =insertIntoAccountable(accountable); //30
 				int priority = getPriority();
 				insertIntoPaymentTable(accountable, payableId, payFromBalance, payToBalance, payment,priority);
 		}
@@ -7803,6 +7803,114 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 		return allBill;
 	}
+
+	@Override
+	public TblVendorDetail getBillByBillNum(String billNum) {
+			// TODO Auto-generated method stub
+			Connection con = null;
+			Statement stmt = null;
+			SQLExecutor db = new SQLExecutor();
+			con = db.getConnection();
+			ResultSet rs = null;
+			double totalUnpaidAmount = 0.00;
+			TblVendorDetail vDetail = new TblVendorDetail();
+
+			String Sql = " SELECT bill.BillNum,bill.DueDate,bill.AmountDue,bill.Status,bill.BillType," +
+					" bill.AmountPaid,bill.CreditUsed,bill.Balance,bill.Memo,bill.IsMemorized," +
+					" bill.VendorId,bill.CategoryID,bill.PayerID,bill.ServiceID,bill.DateAdded,bill.CHECKNO,bill.Status,ci.Name" +
+					" FROM bca_bill as bill INNER Join bca_clientvendor as ci"+
+					" ON bill.VENDORID=ci.CLIENTVENDORID"+
+					" WHERE " +
+					" bill.Status=0 and "+
+					" bill.CompanyID=" + ConstValue.companyId +" and bill.BillNum =" + billNum;
+			Sql += " AND ( bill.Status = 0 OR bill.Status = 1 )  And ci.STATUS='N'";
+
+			try {
+				stmt = con.createStatement();
+				rs = stmt.executeQuery(Sql);
+
+				while(rs.next())
+				{
+					vDetail.setIsSelected(false);
+					vDetail.setIsSelected(vDetail.getIsSelected());
+					vDetail.setVendorName(rs.getString("Name"));
+					vDetail.setCheckNo(rs.getInt("CHECKNO"));
+					vDetail.setBillNo(rs.getInt("BillNum"));
+					vDetail.setDueDate(JProjectUtil.getdateFormat().format(rs.getDate("DueDate")));
+					vDetail.setCreditUsed(rs.getDouble("CreditUsed"));
+					vDetail.setAmountTopay(rs.getDouble("Balance"));
+					double AmountDue = rs.getDouble("AmountDue");
+					vDetail.setAmount(AmountDue);
+					totalUnpaidAmount = totalUnpaidAmount+AmountDue;
+					vDetail.setTotalBillAmount(totalUnpaidAmount);
+					vDetail.setMemo(rs.getString("Memo"));
+					vDetail.setBillType(rs.getInt("BillType"));
+					vDetail.setVendorId(rs.getInt("VendorId"));
+					vDetail.setCategoryID(rs.getLong("CategoryID"));
+					vDetail.setPayerId(rs.getInt("PayerID"));
+					vDetail.setBalance(vDetail.getAmountTopay());
+					vDetail.setAmountPaid(rs.getDouble("AmountPaid"));
+					vDetail.setServiceID(rs.getLong("ServiceID"));
+					boolean status = rs.getBoolean("IsMemorized");
+					vDetail.setDateAdded(rs.getDate("DateAdded"));
+
+					String billStatus = "Unpaid"; //"Unpaid";
+					if (status) {
+						billStatus =  "Memorized"; //"Memorized";
+					}
+					int bStatus = rs.getInt("Status");
+					if(bStatus==1)
+						billStatus="Paid";
+					if(bStatus==2)
+						billStatus="Schedule";
+
+					vDetail.setStatus(billStatus);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				Loger.log(e.toString());
+			}finally {
+				try {
+					if (rs != null) {
+						db.close(rs);
+					}
+					if (stmt != null) {
+						db.close(stmt);
+					}
+					if(con != null){
+						db.close(con);
+					}
+				} catch (Exception e) {
+					Loger.log(e.toString());
+				}
+			}
+			return vDetail;
+	}
+	public void updateBillByBillNumForPaid(String BillNum) {
+		Connection con = null;
+		Statement stmt = null;
+		SQLExecutor db = new SQLExecutor();
+		con = db.getConnection();
+		String sql = "update bca_bill set Status = 1 where BillNum=" + BillNum;
+		try {
+			stmt = con.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Loger.log(e.toString());
+		} finally {
+			try {
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+	}
 	@Override
 	public void updateVendorBills(TblVendorDetail vDetail) {
 		// TODO Auto-generated method stub
@@ -8160,13 +8268,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 		Date DueDate=new SimpleDateFormat("dd-MM-yyyy").parse(vDetail.getDueDate());
 		String DueDate1 = DATE_FORMAT.format(DueDate);
-		String DateAdded1 = DATE_FORMAT.format(vDetail.getDateAdded());
 
 		String sql = "INSERT into bca_bill(VendorId,PayerID,CompanyID,DateAdded,DueDate,AmountDue,Status,Memo,BillType,Balance,NextDate,CategoryID,ServiceID) Values("
 				+ vDetail.getVendorId() + ","
 				+ vDetail.getAccountId() + ","
 				+ ConstValue.companyId + ","
-				+ "'" + DATE_FORMAT.format(vDetail.getDateAdded()) + "'" + ","
+				+ "'" + DATE_FORMAT.format(new Date()) + "'" + ","
 				+ "'" + DueDate1 + "'" + ","
 				+ vDetail.getAmount() + ","
 				+ 0 + ","
