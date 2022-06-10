@@ -113,6 +113,7 @@ public class BillPayableController{
 			vDetail.setCategoryID(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("categoryID")));
 			vDetail.setMemo(newObj.getJSONObject("TblVendorDetail").getString("memo"));
 			rl.updateBill(vDetail);
+
 		}
 		if(action.equals("MakePayment"))
 		{

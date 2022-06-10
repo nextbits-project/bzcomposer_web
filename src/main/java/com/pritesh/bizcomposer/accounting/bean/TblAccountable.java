@@ -215,5 +215,5 @@ public class TblAccountable {
     private long payableID = 0;
     private double invoiceTypeID = -1;
     private int rmaUniqueID = 0 ;
-    private int accountCategoryId=-1;
+	private int accountCategoryId=-1;
 }

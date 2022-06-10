@@ -197,7 +197,7 @@ table.tabla-listados tbody tr td {
 								<label class="col-md-4  col-form-label"> <spring:message
 										code="BzComposer.billpayable.date" />
 								</label>
-								  <!-- <html:text property="orderDate" readonly="false"></html:text> -->  
+								  <!-- <html:text property="orderDate" readonly="false"></html:text> -->
 								<div class="col-md-8 calendar-img">
 									<input type="text" class="form-control devOrderDate" value=""
 										style="width: 275px" name="orderDate" id="orderDate">
@@ -648,8 +648,8 @@ table.tabla-listados tbody tr td {
 						</select>
 					</div>
 				</div>
-				<div class="table1 popup-table1 mb-2 payBillsTableDiv">
-					<table class="table table-bordered table-sm">
+				<div class="table1 popup-table1 mb-2 ">
+					<table class="table table-bordered table-sm payBillsTableDiv">
 						<thead class="thead-light">
 							<tr>
 								<th><spring:message code="BzComposer.ComboBox.Select" /></th>
@@ -665,54 +665,16 @@ table.tabla-listados tbody tr td {
 							</tr>
 						</thead>
 						<tbody>
-							<%
-							ArrayList<TblVendorDetail> payBillList = (ArrayList) request.getAttribute("payBillList");
-							if (payBillList != null) {
-								for (int i = 0; i < payBillList.size(); i++) {
-							%>
 							<tr>
 								<td><input type="checkbox" id="payBillList"></td>
-								<td>
-									<%
-									out.println(payBillList.get(i).getBillNo());
-									%>
-								</td>
-								<td>
-									<%
-									out.println(payBillList.get(i).getDueDate());
-									%>
-								</td>
-								<td>
-									<%
-									out.println(payBillList.get(i).getVendorName());
-									%>
-								</td>
-								<td>
-									<%
-									out.println(payBillList.get(i).getAmount());
-									%>
-								</td>
-								<td>
-									<%
-									out.println(payBillList.get(i).getCreditUsed());
-									%>
-								</td>
-								<td>
-									<%
-									out.println(payBillList.get(i).getAmountTopay());
-									%>
-								</td>
-								<td>
-									<%
-									out.println(payBillList.get(i).getBankAccount());
-									%>
-								</td>
-
+								<td><span id="getBillNo"></span></td>
+								<td><span id="getDueDate"></span></td>
+								<td><span id="getVendorName"></span></td>
+								<td><span id="getAmount"></span></td>
+								<td><span id="getCreditUsed">0.0</span></td>
+								<td><span id="getAmountTopay"></span></td>
+								<td><span id="getBankAccount">null</span></td>
 							</tr>
-							<%
-							}
-							}
-							%>
 						</tbody>
 					</table>
 				</div>
@@ -815,7 +777,7 @@ table.tabla-listados tbody tr td {
 
 				<div class="bzbtn text-right">
 					<button type="button" style="font-size: 14px;" class="btn btn-info"
-						onclick="return deleteBankAccount()" id="deleteBank">
+						onclick="return payBill()" id="deleteBank">
 						<spring:message code="BzComposer.billpayable.payselectedbillsbtn" />
 					</button>
 					<button type="button" style="font-size: 14px;" class="btn btn-info"
@@ -916,7 +878,7 @@ table.tabla-listados tbody tr td {
   <li><button style="font-size: 14px;" onclick="EditMemorizedTransactionList()">Edit</button></li>
   <li><button style="font-size: 14px;" onclick="DeleteMemorizeTransaction()">Delete</button></li>
   <li><button style="font-size: 14px;">Close</button></li>
-    
+
   </ul>
     </div> -->
 
@@ -986,7 +948,7 @@ table.tabla-listados tbody tr td {
 		</div>
 	</form:form>
 	<script type="text/javascript">
-	
+
 	var billNo = -1;
 	var index = -1;
 	var amountToBepaid = 0.00;
@@ -997,7 +959,7 @@ table.tabla-listados tbody tr td {
     function closePayBill(){
     	$("#PayBills").dialog('close');
      }
-    
+
     var checkAll = () => {
 		if(document.getElementById('inlineCheckbox2').checked==true){
 			var checkboxes=document.querySelectorAll("[id^='unpaidBillList']")
@@ -1006,20 +968,20 @@ table.tabla-listados tbody tr td {
 	  	else{
 		  var checkboxes=document.querySelectorAll("[id^='unpaidBillList']")
 		  checkboxes.forEach((cb) => { cb.checked = false; });
-	 	}  
+	 	}
 	}
-    
+
     var selectallbillsbtn1 = () => {
-		   if(document.getElementById('payBillList').checked==false){ 
+		   if(document.getElementById('payBillList').checked==false){
 		  var checkboxes = document.querySelectorAll("[id^='payBillList']");
 		  checkboxes.forEach((cb) => { cb.checked = true; });
 		}
 	  else{
 		  var checkboxes = document.querySelectorAll("[id^='payBillList']");
 		  checkboxes.forEach((cb) => { cb.checked = false; });
-	 }   
-	} 
-    
+	 }
+	}
+
 	function deleteBankAccount(){
 
 	}
@@ -1041,10 +1003,22 @@ table.tabla-listados tbody tr td {
 		}
 		 this.vendorName = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').text();
 		 this.vendorId = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value');
-		 document.getElementById("nameOfTransaction").value = vendorName; 
+		 document.getElementById("nameOfTransaction").value = vendorName;
 		 $('#transactionGroup').append('<option value="'+vendorName+'" selected="selected">'+vendorName+'</option>');
 		 document.getElementById("categoryId").value = document.getElementById("categoryID2"+indexNumber).value;
 		 document.getElementById("receivedType").value = document.getElementById("receivedType2"+indexNumber).value;
+
+
+
+
+		 $("#getBillNo").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
+         $("#getDueDate").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
+         $("#getVendorName").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').text());
+         $("#getAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
+         //$("#getCreditUsed").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
+         $("#getAmountTopay").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
+         //$("#getBankAccount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
+
 	}
 	function clearTransaction(){
 		document.getElementById("receivedType").value="";
@@ -1056,12 +1030,28 @@ table.tabla-listados tbody tr td {
 		document.getElementById("orderDate").value="";
 		document.getElementById("memo").value="";
 		document.getElementById("payStatus").value="";
-	
-	}
 
+	}
+function payBill(){
+    var billNum =  $('table.payBillsTableDiv tbody tr:nth-child(1)').find('td:nth-child(2)').text();
+
+    $.ajax({
+        type : "POST",
+        url : "PoPayablePost?tabid=PayBills",
+        data :"billNum=" + parseInt(billNum),
+        success : function(data) {
+            /* var html = "" + data.msg; */
+            window.location = "${pageContext.request.contextPath}/BillPayable?tabid=billpayable";
+        },
+         error : function(data) {
+
+             return showerrordialog();
+        }
+    });
+}
 	function selectMemorizedTransactionList(memTransListIndex)
 	{
-		
+
 		this.indexForMemTransList = memTransListIndex;
 		this.billNo = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(2)').text();
 		var name = $('table#MemorizetranId tbody tr:nth-child('+indexForMemTransList+')').find('td:nth-child(3)').text();
@@ -1099,7 +1089,7 @@ table.tabla-listados tbody tr td {
 
 	function save()
 	{
-		
+
 		var billNo = document.getElementById("ordernumber").innerHTML;
 		var payerIdSelect = document.getElementById("receivedType");
 		console.log(payerIdSelect);
@@ -1107,13 +1097,13 @@ table.tabla-listados tbody tr td {
 			{
 			var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
 			}
-		
+
 		var paidAmount = document.getElementById("receivedAmount").value;
 		amountToBepaid  = document.getElementById("receivedAmount").value;
 		var checkNo = document.getElementById("checkNum").value;
 		var customerName = document.getElementById("customerName");
 		var vendorId = customerName.options[customerName.selectedIndex].value;
-		
+
 		var dueDate = document.getElementById("orderDate").value;
 		var categoryIdString  = document.getElementById("categoryId");
 		if(categoryIdString.options[categoryIdString.selectedIndex]!=undefined)
@@ -1121,7 +1111,7 @@ table.tabla-listados tbody tr td {
 			var categoryId = categoryIdString.options[categoryIdString.selectedIndex].value;
 		}
 		var memo = document.getElementById("memo").value;
-		
+
 		if(checkNo == '' || checkNo == '0')
 		{
 
@@ -1154,9 +1144,9 @@ table.tabla-listados tbody tr td {
 				 error : function(data) {
 
 					 return showerrordialog();
-				} 
+				}
 			});
-	  	
+
 	  	$(document.forms[0]).submit(function( event ) {
 		    event.preventDefault();
 		});
@@ -1199,7 +1189,7 @@ debugger;
 		var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
 		var totalAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text();
 		/*  if(!$('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text() == '')
-		{	
+		{
 			paidAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text();
 		}
 		else
@@ -1211,9 +1201,9 @@ debugger;
 			alert("<bean:message key='BzComposer.common.cantPayMoreThanBalance'/>");
 			return false;
 		}  */
-		
+
 		if(amountToBepaid != 0.00)
-		{	
+		{
 			paidAmount = amountToBepaid;
 			amountPaid = parseFloat(totalAmount) - parseFloat($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text());
 		}
@@ -1225,7 +1215,7 @@ debugger;
 		var checkNo = document.getElementById("checkNum").value;
 		var balance = parseFloat(totalAmount) - parseFloat(amountPaid);
 		var customerName = document.getElementById("customerName");
-		var vendorId = customerName.options[customerName.selectedIndex].value; 
+		var vendorId = customerName.options[customerName.selectedIndex].value;
 		var amount = document.getElementById("devAmount").innerHTML;
 		var dueDate = document.getElementById("orderDate").value;
 		var categoryIdString  = document.getElementById("categoryId");
@@ -1236,7 +1226,7 @@ debugger;
 		}
 		var categoryId = categoryIdString.options[categoryIdString.selectedIndex].value;
 		var memo = document.getElementById("memo").value;
-		
+
 		if(checkNo == '' || checkNo == '0')
 		{
 
@@ -1259,7 +1249,7 @@ debugger;
 		};
 		var obj=JSON.stringify(TblVendorDetail);
 		$.ajax({
-			
+
 			type : "POST",
 			url : "billPayablePost?tabid=MakePayment",
 		    data :"data=" + obj,
@@ -1273,9 +1263,9 @@ debugger;
 			 error : function(data) {
 
 				 return showerrordialog()
-			} 
+			}
 		});
-  	
+
   	$(document.forms[0]).submit(function( event ) {
 	    event.preventDefault();
 	});
@@ -1291,20 +1281,20 @@ debugger;
 		var amount = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text();
 		/* status = window.confirm("<spring:message code='BzComposer.billpayable.deleteselectedbill'/>")
 		if(status == true)
-		{			
+		{
 			$.ajax({
-			
+
 				type : "POST",
-				url : "BillPayable?tabid=DeleteBill",			
+				url : "BillPayable?tabid=DeleteBill",
 		    	data :"BillNum=" + billNo,
 		    	success : function(data) {
 					debugger;
-					updateBillPayableTab(data);	
+					updateBillPayableTab(data);
 				},
 			 	error : function(data) {
 
 					return showerrordialog();
-				} 
+				}
 			});
 			$(document.forms[0]).submit(function( event ) {
 	    	event.preventDefault();
@@ -1314,8 +1304,8 @@ debugger;
 		{
 			return false;
 		}	 */
-		
-		
+
+
 		event.preventDefault();
 		$("#deleteselectedbilldialog").dialog({
 			resizable: false,
@@ -1325,7 +1315,7 @@ debugger;
 		    buttons: {
 				"<spring:message code='BzComposer.global.ok'/>": function () {
 					$.ajax({
-						
+
 						type : "POST",
 						url : "billPayablePost?tabid=DeleteBill",
 				    	data :"BillNum=" + billNo,
@@ -1337,7 +1327,7 @@ debugger;
 					 	error : function(data) {
 
 							return showerrordialog();
-						} 
+						}
 					});
 					$(document.forms[0]).submit(function( event ) {
 			    	event.preventDefault();
@@ -1379,12 +1369,12 @@ debugger;
 					$("#PayBills").hide();
 					$("#MemorizeTransactionList").hide();
 					$("#CreatingEditingRecurrentPaymentDlgId").hide();
-					$("#numberRemaining" ).prop("disabled", true );  
+					$("#numberRemaining" ).prop("disabled", true );
 					$("#daysInAdvanceToEnter").prop( "disabled", true );
 					$("#transactionGroup").prop( "disabled", true );
 				});
 		 function dayName(date) {
-			 
+
 		       var days = new Array(31);
 		       var j = 0;
 		       var d  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -1415,13 +1405,13 @@ debugger;
 		 $(function() {
 			   $( "#MemorizeTransactionListId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  
+
 				   $( "#MemorizeTransactionList").dialog({
 			    	   modal: true,
 			    	   title: 'Memorized Transaction List'
-			        });   
+			        });
 			    });
-			    
+
 			   $(document.forms[0]).submit(function(event) {
 				    event.preventDefault();
 				});
@@ -1429,13 +1419,13 @@ debugger;
 		 $(function() {
 			   $( "#MemorizeBillId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  
+
 				   $( "#ScheduleMemorizedTransaction").dialog({
 			    	   modal: true,
 			    	   title: 'Schedule Memorized Transaction'
-			        });   
+			        });
 			    });
-			    
+
 			   $(document.forms[0]).submit(function(event) {
 				    event.preventDefault();
 				});
@@ -1443,13 +1433,13 @@ debugger;
 		 $(function() {
 			   $( "#PaybillId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  
+
 				   $( "#PayBills").dialog({
 			    	   modal: true,
 			    	   title: 'Pay Bill'
-			        });   
+			        });
 			    });
-			    
+
 			   $(document.forms['billPayableForm']).submit(function(event) {
 				    event.preventDefault();
 				});
@@ -1457,13 +1447,13 @@ debugger;
 		 $(function() {
 			   $( "#CreatingEditingRecurrentPaymentId").on("click", function(){
 				/*   $("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
-				  
+
 				   $( "#CreatingEditingRecurrentPaymentDlgId").dialog({
 			    	   modal: true,
 			    	   title: 'Creating Recurrent Payment Plan'
-			        });   
+			        });
 			    });
-			    
+
 			   $(document.forms[0]).submit(function(event) {
 				    event.preventDefault();
 				});
@@ -1472,19 +1462,19 @@ debugger;
 		   {
 			   $(document).ready(function () {
 				    $('tr').click(function () {
-				         var selected = $(this).hasClass("highlight"); 
+				         var selected = $(this).hasClass("highlight");
 				         $("tr").removeClass("highlight");
 				         if(!selected)
 				             $(this).addClass("highlight");
 				    });
-				}); 
+				});
 			   	var day = new Date().getDay();
 				var dName = dayName(day);
 			   	$("#orderDate").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
 		   }
 		function updateBillPayableTab(data)
 		{
-			
+
 			$("#billPayableForm").trigger("reset");
 			$(document).find('div#tblForInvoiceOrder table').replaceWith($(data).find('div#tblForInvoiceOrder').html());
 			$(document).find('div#totalAmountLabelDiv label').eq(1).text(this.value).replaceWith($(data).find('div#totalAmountLabelDiv label').eq(1).text(this.value));
@@ -1493,18 +1483,18 @@ debugger;
 		}
 		function remindMe()
 		{
-			
+
 			/* $("#numberRemaining").children().attr("disabled", "disabled"); */
 			/* document.getElementById("numberRemaining").disabled = true; */
 			/* $("#numberRemaining").disable(); */
 			this.scheduleTransactionRadioButtonValue = document.getElementById("remindMe").value;
-			 $("#numberRemaining" ).prop("disabled", true );  
+			 $("#numberRemaining" ).prop("disabled", true );
 			$("#daysInAdvanceToEnter").prop( "disabled", true );
 			$("#transactionGroup").prop( "disabled", true );
 		}
 		function dontRemindMe()
 		{
-			
+
 			this.scheduleTransactionRadioButtonValue = document.getElementById("dontRemindMe").value;
 			$( "#numberRemaining" ).prop( "disabled", true );
 			$( "#daysInAdvanceToEnter" ).prop( "disabled", true );
@@ -1514,7 +1504,7 @@ debugger;
 		}
 		function automaticEnter()
 		{
-			
+
 			this.scheduleTransactionRadioButtonValue = document.getElementById("automaticEnter").value;
 			$( "#howOften" ).prop( "disabled", false );
 			$( "#schrduleMemorizedTransactionDate" ).prop( "disabled", false );
@@ -1523,7 +1513,7 @@ debugger;
 		}
 		function withTransactionGroup()
 		{
-			
+
 			this.scheduleTransactionRadioButtonValue = document.getElementById("withTransactionGroup").value;
 			$( "#howOften" ).prop( "disabled", true );
 			$( "#schrduleMemorizedTransactionDate" ).prop( "disabled", true );
@@ -1536,7 +1526,7 @@ debugger;
 		}
 		function ScheduleMemorizedTransactionOkay()
 		{
-			
+
 			var remindOption = scheduleTransactionRadioButtonValue;
 			var transactionName = "";
 			var dayInAdvance = "";
@@ -1544,14 +1534,14 @@ debugger;
 			var nextDate = "";
 			var NumRemain = 0;
 			var RecurringOption = "";
-			var RecurringNumber = "";	
-			
+			var RecurringNumber = "";
+
 			if(remindOption == '0')
 			{
 				transactionName = document.getElementById("nameOfTransaction").value;
 				dayInAdvance = 0;
 				var howOftenOption = document.getElementById("howOften");
-				howOften = howOftenOption.options[howOftenOption.selectedIndex].value; 
+				howOften = howOftenOption.options[howOftenOption.selectedIndex].value;
 				nextDate = document.getElementById("schrduleMemorizedTransactionDate").value;
 				NumRemain = 0;
 			}
@@ -1560,14 +1550,14 @@ debugger;
 				transactionName = document.getElementById("nameOfTransaction").value;
 				dayInAdvance = 0;
 				howOften = "";
-				nextDate = document.getElementById("schrduleMemorizedTransactionDate").value;	
+				nextDate = document.getElementById("schrduleMemorizedTransactionDate").value;
 			}
 			else if(remindOption == '2')
 			{
 				transactionName = document.getElementById("nameOfTransaction").value;
 				var howOftenOption = document.getElementById("howOften");
 				howOften = howOftenOption.options[howOftenOption.selectedIndex].value;
-				
+
 				if(document.getElementById("numberRemaining").value == "" )
 				{
 
@@ -1586,7 +1576,7 @@ debugger;
 				else{
 					dayInAdvance =  document.getElementById("daysInAdvanceToEnter").value;
 				}
-				
+
 				nextDate = document.getElementById("schrduleMemorizedTransactionDate").value;
 			}
 			else if(remindOption == '3')
@@ -1631,7 +1621,7 @@ debugger;
 				},
 				 error : function(data) {
 					 return showerrordialog();
-				} 
+				}
 			});
 	  	$(document.forms[0]).submit(function( event ) {
 		    event.preventDefault();
@@ -1643,14 +1633,14 @@ function EditMemorizedTransactionList()
 	$( "#ScheduleMemorizedTransaction").dialog({
  	   modal: true,
  	   title: 'Schedule Memorized Transaction'
-     }); 
+     });
 }
 function closeMomorizedTransactionList(){
 	$('#MemorizeTransactionList').dialog('close');
 }
 function DeleteMemorizeTransaction()
 {
-	
+
 	if($('#MemorizeTransactionList').parents('.ui-dialog:visible').length)
 	{
 		$('#MemorizeTransactionList').dialog('close');
@@ -1667,12 +1657,12 @@ function DeleteMemorizeTransaction()
 		return false;
 		}
 	$.ajax({
-		
+
 	 	type : "POST",
 		url : "billPayablePost?tabid=UpdateMemorizedTransaction",
 	    data :"BillNumber=" + bill,
 	    success : function(data) {
-		
+
 		amountToBepaid = 0.00;
 		//updateBillPayableTab(data);
 		document.forms['billPayableForm'].action = "BillPayable?tabid=billpayable";
@@ -1681,14 +1671,14 @@ function DeleteMemorizeTransaction()
 		 error : function(data) {
 
 			return showerrordialog();
-		} 
+		}
 	});
 }
 function AddPayee()
 {
 	/* window.location = "${pageContext.request.contextPath}/Vendor?tabid=AODOVO"; */
 	window.open("Vendor?tabid=AODOVO",null,"scrollbars=yes,height=700,width=1300,status=yes,toolbar=no,menubar=no,location=no," );
-}	
+}
 function enterchecknumberdialog()
 {
 	event.preventDefault();

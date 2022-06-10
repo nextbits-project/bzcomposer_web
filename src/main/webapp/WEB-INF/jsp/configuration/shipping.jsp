@@ -447,7 +447,7 @@ function setContent(){
 function showTime(){
 	var h = document.getElementById("hours").value;
 	var m = document.getElementById("minutes").value;
-	var t = document.getElementById("selectedTime").value;
+	var period = document.getElementById("selectedTime").value;
 	if(h>=0 && h<10)	
 	{
 		h = "0"+h;
@@ -456,11 +456,61 @@ function showTime(){
 	{
 		m = "0"+m;
 	}
-	var time = h+" : "+ m +" "+ t;
+	var time = h+":"+ m +" "+ period;
 	$("#scheduleTime").append("<option value=" + time + ">"+ time + "</option>");
+
+    var ScheduleDateDto = {
+        "ScheduleDateDto": {
+            "hours": h,
+           "minutes":m,
+           "period":period
+        }};
+	var obj=JSON.stringify(ScheduleDateDto);
+    $.ajax({
+        type : "POST",
+        url : "Configuration?tabid=AddTimes",
+        data : "row=" + obj,
+        success : function(data) {
+            //window.location = "${pageContext.request.contextPath}/Configuration?tabid=config15&&tab=tr15";
+        },
+         error : function(data) {
+            //return showerrordialog();
+        }
+    });
+
+
 }
 function removeTime(){
+debugger;
+	var scheduleTimeId = $("#scheduleTime").val();
 	$('#scheduleTime option:selected').remove();
+    $.ajax({
+        type : "POST",
+        url : "Configuration?tabid=deleteTimes",
+        data : "scheduleTimeId=" + scheduleTimeId,
+        success : function(data) {
+            //window.location = "${pageContext.request.contextPath}/Configuration?tabid=config15&&tab=tr15";
+        },
+         error : function(data) {
+            //return showerrordialog();
+        }
+    });
+}
+function showerrordialog()
+{
+	event.preventDefault();
+	$("#showerrordialog").dialog({
+    	resizable: false,
+        height: 200,
+        width: 450,
+        modal: true,
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    return false;
 }
 </script>
 </head>
@@ -1062,8 +1112,13 @@ function removeTime(){
 										<spring:message code="BzComposer.configuration.scheduletimes"/> :
 									</div>
 									<div class="form-inline mx-sm-3 mb-2" style="font-size:12px;">
-										<select id="scheduleTime" name="scheduleTime" multiple="multiple" style="width: 180px;">
-										</select>
+										<form:select path="scheduleTime" multiple="multiple" id="scheduleTime" style="width: 180px;">
+                                            <c:if test="${not empty scheduleDateList}">
+                                                <c:forEach items="${scheduleDateList}" var="objList1">
+                                                    <option value="${objList1.id}">${objList1.time} ${objList1.period}</option>
+                                                </c:forEach>
+                                            </c:if>
+                                        </form:select>
 									</div>
 									<div class="form-inline mx-sm-3 mb-2 d-block">	
 										<p>
@@ -1099,15 +1154,15 @@ function removeTime(){
   																</td>
   																<td style="font-size: 12px;">
   																	<select id="hours">
-																		<option value="1">1</option>
-																		<option value="2">2</option>
-																		<option value="3">3</option>
-																		<option value="4">4</option>
-																		<option value="5">5</option>
-																		<option value="6">6</option>
-																		<option value="7">7</option>
-																		<option value="8">8</option>
-																		<option value="9">9</option>
+																		<option value="1">01</option>
+																		<option value="2">02</option>
+																		<option value="3">03</option>
+																		<option value="4">04</option>
+																		<option value="5">05</option>
+																		<option value="6">06</option>
+																		<option value="7">07</option>
+																		<option value="8">08</option>
+																		<option value="9">09</option>
 																		<option value="10">10</option>
 																		<option value="11">11</option>
 																		<option value="12">12</option>
@@ -1115,16 +1170,16 @@ function removeTime(){
 																</td>
 																<td style="font-size: 12px;">
 																	<select id="minutes"> 
-																		<option value="0">0</option>
-																		<option value="1">1</option>
-																		<option value="2">2</option>
-																		<option value="3">3</option>
-																		<option value="4">4</option>
-																		<option value="5">5</option>
-																		<option value="6">6</option>
-																		<option value="7">7</option>
-																		<option value="8">8</option>
-																		<option value="9">9</option>
+																		<option value="0">00</option>
+																		<option value="1">01</option>
+																		<option value="2">02</option>
+																		<option value="3">03</option>
+																		<option value="4">04</option>
+																		<option value="5">05</option>
+																		<option value="6">06</option>
+																		<option value="7">07</option>
+																		<option value="8">08</option>
+																		<option value="9">09</option>
 																		<option value="10">10</option>
 																		<option value="11">11</option>
 																		<option value="12">12</option>
@@ -1633,4 +1688,7 @@ function selectAtleast1RecordDialog(){
 <!-- Dialog box used in this page -->
 <div id="showsuccessdialog" style="display:none;">
 	<p>Record updated</p>
+</div>
+<div id="showerrordialog" style="display:none;">
+	<p><spring:message code='BzComposer.accountreceivable.erroroccurred'/></p>
 </div>

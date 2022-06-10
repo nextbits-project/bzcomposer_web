@@ -289,18 +289,14 @@ table.tabla-listados tbody tr td {
 									<label>
 										<spring:message code="BzComposer.billpayable.total"/> 
 									</label> 
-									<% ArrayList<TblVendorDetail> allBill = (ArrayList) request.getAttribute("allBillLists");%> 
+									<% ArrayList<TblVendorDetail> allBill = (ArrayList) request.getAttribute("allBillLists");%>
 									<label> 
 									
-									<%if(allBill !=null) { %>
-										<%= String.format("%.2f", allBill.get(allBill.size() - 1).getTotalBillAmount()) %>
-									<%} %>
+
 									</label>
 								</li>
 								<li>
-									<button>
-										<spring:message code="BzComposer.billpayable.payandprintbtn"/>
-									</button>
+								    <button><spring:message code="BzComposer.billpayable.payandprintbtn"/></button>
 								</li>
 								<li>
 									<button onclick="AddPayee()">
@@ -826,8 +822,8 @@ table.tabla-listados tbody tr td {
 						</select>
 					</div>
 				</div>
-				<div class="table1 popup-table1 mb-2 payBillsTableDiv">
-					<table class="table table-bordered table-sm">
+				<div class="table1 popup-table1 mb-2">
+					<table class="table table-bordered table-sm payBillsTableDiv">
 						<thead class="thead-light">
 							<tr>
 								<th><spring:message code="BzComposer.ComboBox.Select"/></th>
@@ -841,41 +837,16 @@ table.tabla-listados tbody tr td {
 							</tr>
 						</thead>
 						<tbody>
-							<%
-								ArrayList<TblVendorDetail> payBillList = (ArrayList) request.getAttribute("payBillList");
-							 if(payBillList!=null)
-							 {
-									for (int i = 0; i < payBillList.size(); i++) {
-							%>
 							<tr>
-								<td>
-									<input type="checkbox" id= "selectbillbutton">
-								</td>
-								<td>
-									<% out.println(payBillList.get(i).getBillNo());%>
-								</td>
-								<td>
-									<% out.println(payBillList.get(i).getDueDate());%>
-								</td>
-								<td>
-									<% out.println(payBillList.get(i).getVendorName());%>
-								</td>
-								<td>
-									<% out.println(payBillList.get(i).getAmount());%>
-								</td>
-								<td>
-									<% out.println(payBillList.get(i).getCreditUsed());%>
-								</td>
-								<td>
-									<%out.println(payBillList.get(i).getAmountTopay());%>
-								</td>
-								<td>
-									<% out.println(payBillList.get(i).getBankAccount());%>
-								</td>
-							</tr>
-							<%
-								}}
-							%>
+                                <td><input type="checkbox" id="payBillList"></td>
+                                <td><span id="getBillNo"></span></td>
+                                <td><span id="getDueDate"></span></td>
+                                <td><span id="getVendorName"></span></td>
+                                <td><span id="getAmount"></span></td>
+                                <td><span id="getCreditUsed">0.0</span></td>
+                                <td><span id="getAmountTopay"></span></td>
+                                <td><span id="getBankAccount">null</span></td>
+                            </tr>
 						</tbody>
 					</table>
 				</div>
@@ -974,7 +945,7 @@ table.tabla-listados tbody tr td {
 					</div>
 				</div>
 				<div class="bzbtn text-right">
-					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return deleteBankAccount()" id="deleteBank">
+					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="return payBill()" id="deleteBank">
 						<spring:message code="BzComposer.billpayable.payselectedbillsbtn"/>
 					</button>
 					<button type="button" class="btn btn-info" style="font-size: 14px;" onclick="closePayBill()" id="addButtonForDeposit">
@@ -1867,6 +1838,14 @@ table.tabla-listados tbody tr td {
 		 this.vendorId = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value');
 		 document.getElementById("nameOfTransaction").value = vendorName; 
 		 $('#transactionGroup').append('<option value="'+vendorName+'" selected="selected">'+vendorName+'</option>');
+
+	     $("#getBillNo").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
+         $("#getDueDate").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
+         $("#getVendorName").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').text());
+         $("#getAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
+         //$("#getCreditUsed").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
+         $("#getAmountTopay").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
+         //$("#getBankAccount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
 	}
 	function selectMemorizedTransactionList(memTransListIndex)
 	{
@@ -1905,7 +1884,23 @@ table.tabla-listados tbody tr td {
 		$("#schrduleMemorizedTransactionDate").val(date);
 		$('#transactionGroup').append('<option value="'+name+'" selected="selected">'+name+'</option>');
 	}
+function payBill(){
+    var billNum =  $('table.payBillsTableDiv tbody tr:nth-child(1)').find('td:nth-child(2)').text();
 
+    $.ajax({
+        type : "POST",
+        url : "PoPayablePost?tabid=PayBills",
+        data :"billNum=" + parseInt(billNum),
+        success : function(data) {
+            /* var html = "" + data.msg; */
+            window.location = "${pageContext.request.contextPath}/BillCreation?tabid=billCreation";
+        },
+         error : function(data) {
+
+             return showerrordialog();
+        }
+    });
+}
 	function save()
 	{
 		
@@ -2102,8 +2097,8 @@ else
 					$("#schrduleMemorizedTransactionDate").val(dName + " " + ((new Date().getMonth()) + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear());
 					$("#payBillsDate").val(dName + " " + ((new Date().getMonth()) + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear());
 					$("#paymentdate").val(dName + " " + ((new Date().getMonth()) + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear());
-					$("#billDateCalendarText").val(dName + " " + ((new Date().getMonth()) + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear());
-					 $("#billDuedateCalendarText").val(dNameForDue + " " + (dateForDue.getMonth()+1) + "-" + dateForDue.getDate() + "-" + dateForDue.getFullYear()); 
+					$("#billDateCalendarText").val(((new Date().getMonth()) + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear());
+					 $("#billDuedateCalendarText").val((dateForDue.getMonth()+1) + "-" + dateForDue.getDate() + "-" + dateForDue.getFullYear());
 					$("#ScheduleMemorizedTransaction").hide();
 					$("#EditingRecurrentPaymentDlgId").hide();
 					$("#PayBills").hide();
@@ -2730,9 +2725,9 @@ $.ajax({
 	    data :"data=" + obj + "&VendorId=" +Vendorid ,
 	    success : function(data) {
 		
-		updateBillPayableTab(data);	
-		vendorId = -1;
-		
+		//updateBillPayableTab(data);
+		//vendorId = -1;
+		window.location = "BillCreation?tabid=billCreation";
 		},
 		 error : function(data) {
 			 alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");

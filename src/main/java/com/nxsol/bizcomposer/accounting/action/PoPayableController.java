@@ -7,16 +7,16 @@ import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
+import com.nxsol.bizcomposer.common.TblVendorDetail;
 import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
-import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+import com.pritesh.bizcomposer.accounting.bean.*;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Scanner;
+
 @Controller
 public class PoPayableController {
 	@GetMapping("/PoPayable")
@@ -69,8 +72,8 @@ public class PoPayableController {
 			
 			forward = "/accounting/poPayable";
 		}
-		if(action.equals("Pay"))
-		{
+		if(action.equals("Pay")) {
+
 			Gson gson=new Gson();
 			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
 			ReceivableListBean inv = ReceivableListImpl.getInvoiceByInvoiceID(reListBean.getInvoiceID());
@@ -161,10 +164,58 @@ public class PoPayableController {
 
 			forward = "/accounting/poPayable";
 		}
+		if(action.equals("PayBills")) {
+			ReceivableListImpl receivableList = new ReceivableListImpl();
+			String billNum =  request.getParameter("billNum");
+			TblVendorDetail tblVendorDetail = rl.getBillByBillNum(billNum);
+
+
+			TblAccountable payable = new TblAccountable();
+			Calendar c1 = Calendar.getInstance();
+			double amount = 0.0;
+			payable.setBillNum(Integer.parseInt(billNum));
+			payable.setAmount(tblVendorDetail.getAmount());
+			payable.setCategoryId(546919728);
+			payable.setAccountCategoryId(546919728);
+			payable.setDateAdded(c1.getTime());
+			payable.setInvoiceId(tblVendorDetail.getInvoiceId());
+			payable.setPayeeCvId(tblVendorDetail.getVendorId());
+			//payable.setInvoiceTypeID(tblVendorDetail.getInvoiceId());
+
+			payable.setPayeeID(57061);
+			payable.setMemo(tblVendorDetail.getMemo());
+			//payable.setPaymentTypeId(tblVendorDetail.getPaymentTypeID());
+			//payable.setCheckNumber(bean.getCheckNum());
+
+			payable.setPayFromId(55574);
+
+			//payable.setPayeeCvServiceId((int)bean.getServiceID());
+			receivableList.insert(payable, false);
+			receivableList.updateBillByBillNumForPaid(billNum);
+			forward = "/accounting/poPayable";
+		}
 		if(action.equals("Pay"))
 		{
-			Gson gson=new Gson();
-			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			ReceivableListBean reListBean = new ReceivableListBean();
+			JSONObject newObj = new JSONObject();
+			try {
+				newObj = new JSONObject(request.getParameter("row"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			Scanner scan = new Scanner(newObj.getJSONObject("ReceivableListBean").getString("poNum"));
+			scan.skip("PO2021-");
+			reListBean.setPoNum(Integer.parseInt(scan.nextLine()));
+			reListBean.setInvoiceID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("invoiceID")));
+			reListBean.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("cvID")));
+			reListBean.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("paymentTypeID")));
+			reListBean.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("bankAccountID")));
+			reListBean.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("adjustedTotal")));
+			reListBean.setPaidAmount(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("paidAmount")));
+			reListBean.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("categoryID")));
+			reListBean.setCheckNum(newObj.getJSONObject("ReceivableListBean").getString("checkNum"));
+
+
 			ReceivableListBean inv = ReceivableListImpl.getInvoiceByInvoiceID(reListBean.getInvoiceID());
 			reListBean.setBalance(inv.getBalance());
 			reListBean.setInvoiceTypeID(inv.getInvoiceTypeID());
