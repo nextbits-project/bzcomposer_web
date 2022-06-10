@@ -48,10 +48,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 	</env-entry>
 
 
-  	 <!-- <env-entry>
+  	 <env-entry>
 		<env-entry-name>URL</env-entry-name>
 		<env-entry-value>
-			jdbc:mysql://localhost:3306/namemaxx_bzc?useSSL=false&amp;allowPublicKeyRetrieval=true
+			jdbc:mysql://localhost:3306/namemaxx_bzcomposer?useSSL=false&amp;allowPublicKeyRetrieval=true
 		</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
@@ -64,11 +64,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 		<env-entry-name>password</env-entry-name>
 		<env-entry-value>root@123</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry> -->
+	</env-entry>
 
 
 
-  	 <env-entry>
+  	 <!-- <env-entry>
 		<env-entry-name>URL</env-entry-name>
 		<env-entry-value>
 			jdbc:mysql://198.38.89.143:3306/namemaxx_bzcomposer?useSSL=false&amp;autoReconnect=true&amp;lower_case_table_names=1
@@ -84,7 +84,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 		<env-entry-name>password</env-entry-name>
 		<env-entry-value>VPU5^O!AD4ZL</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
+	</env-entry> -->
 
 	<!-- <env-entry>
 		<env-entry-name>URL</env-entry-name>

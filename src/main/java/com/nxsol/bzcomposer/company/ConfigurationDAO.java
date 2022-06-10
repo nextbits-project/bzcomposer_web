@@ -2757,6 +2757,34 @@ public class ConfigurationDAO {
         return rowAdded;
     }
     //////////////////
+    public boolean addValueAddedService(ConfigurationDto form) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowAdded = false;
+        try {
+            pstmt = con.prepareStatement("INSERT INTO bca_shippingservice(ContainerID, MailTypeID, PackageSizeID, HandlingFee) Values(?,?,?,?)");
+            pstmt.setInt(1, form.getContainerId());
+            pstmt.setInt(2, form.getMailTypeId());
+            pstmt.setInt(3, form.getPackageSizeId());
+			pstmt.setInt(4, form.getSpecialHandlingfee1());
+            rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+        }
+        catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return rowAdded;
+    }
+    
+    
 
     public boolean updateUserDefinedShippingWeightAndPrice(ConfigurationDto form) {
         SQLExecutor db = new SQLExecutor();

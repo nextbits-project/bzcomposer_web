@@ -433,9 +433,12 @@ public class ConfigurationController {
 
             String isDefault = (configDto.getIsRefundAllowed() != null && configDto.getIsRefundAllowed().equals("1")) ? "on" : "off";
             String isDefaultCreditTerm = (configDto.getIsDefaultCreditTerm() != null && configDto.getIsDefaultCreditTerm().equals("1")) ? "on" : "off";
-            String recurringServiceBill = (configDto.getRecurringServiceBill() != null && configDto.getRecurringServiceBill().equals("1")) ? "on" : "off";
+			/*
+			 * String recurringServiceBill = (configDto.getRecurringServiceBill() != null &&
+			 * configDto.getRecurringServiceBill().equals("1")) ? "on" : "off";
+			 */
             configDto.setIsDefaultCreditTerm(isDefaultCreditTerm);
-            configDto.setRecurringServiceBill(recurringServiceBill);
+			/* configDto.setRecurringServiceBill(recurringServiceBill); */
 
             request.setAttribute("countryId", configDto.getCustDefaultCountryID());
             request.setAttribute("stateId", configDto.getSelectedStateId());
@@ -450,6 +453,8 @@ public class ConfigurationController {
             request.setAttribute("salesShowTelephone", configDto.getSaleShowTelephone().equals("1") ? "on" : "off");
             request.setAttribute("isSalePrefix", configDto.getIsSalePrefix().equals("1") ? "on" : "off");
             request.setAttribute("extraCharge", configDto.getExtraChargeApplicable().equals("1") ? "on" : "off");
+            request.setAttribute("sBackOrderNeeded", configDto.getBackOrderNeeded().equals("1") ? "on" : "off");
+            request.setAttribute("recurringServiceBilling", configDto.getRecurringServiceBill().equals("1") ? "on" : "off");
 
             setConfigActiveTab(session, "customerInvoiceTab");
             for(ConfigurationDto conDto: configDto.getListOfExistingCountry()){
@@ -1222,6 +1227,8 @@ public class ConfigurationController {
             configDto.setIsSalePrefix(request.getParameter("isSalePrefix"));
             configDto.setExtraChargeApplicable(request.getParameter("extraChargeApplicable"));
             configDto.setIsRefundAllowed(request.getParameter("creditTermDays"));
+            configDto.setBackOrderNeeded(request.getParameter("backOrderNeeded"));
+            configDto.setRecurringServiceBill(request.getParameter("recurringServiceBill"));
 
             String errorCode = cDetails.saveCustomerInvoiceSetting(configDto, request, companyID);
             System.out.println("UpdateStatusCode value:" + errorCode);
@@ -1424,6 +1431,10 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("deleteUspsShippingService")) {
             int shippingServiceId = configDto.getRealTimeShippingServiceId();
             return dao.deleteUspsShippingService(shippingServiceId);
+        }
+        else if (action.equalsIgnoreCase("addValueAddedService")) {
+        	System.out.println("-----------addValueAddedService-------------" +configDto);
+            return dao.addValueAddedService(configDto);
         }
 
 

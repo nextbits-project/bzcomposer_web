@@ -216,7 +216,7 @@ $(document).ready(function()
     });
 
     $("#extraChargeApplicable").change(function()
-    {
+    {  
         var isChecked = '<%= request.getAttribute("extraCharge")%>';
         if($(this).prop("checked") == true){
             $("#extraChargeApplicable").attr('checked', true);
@@ -233,10 +233,30 @@ $(document).ready(function()
         }
         $("#extraChargeApplicable").val(isChecked);
     });
+    
+    $("#backOrderNeeded").change(function()
+    	    {   
+    	        var isChecked = '<%= request.getAttribute("sBackOrderNeeded")%>';
+    	        if($(this).prop("checked") == true){
+    	            $("#backOrderNeeded").attr('checked', true);
+    	            isChecked = "on";
+    	        }
+    	        else if($(this).prop("checked") == false){
+    	            $("#backOrderNeeded").attr('checked', false);
+    	             isChecked = "off";
+    	        }
+    	        else
+    	        {
+    	            $("#backOrderNeeded").attr('checked', isChecked);
+    	            document.configurationForm.backOrderNeeded.value = isChecked;
+    	        }
+    	        $("#backOrderNeeded").val(isChecked);
+    	    });
 
     $("#recurringServiceBill").change(function()
-    {
-        var isChecked = "on";
+    {  
+    	debugger;
+        var isChecked = '<%= request.getAttribute("recurringServiceBilling")%>';
         if($(this).prop("checked") == true){
             $("#recurringServiceBill").attr('checked', true);
             isChecked = "on";
@@ -769,7 +789,7 @@ $(document).ready(function()
 							</tr>
 							<tr>
 								<td style="font-size:12px;">
-									<input type="checkbox" name="extraChargeApplicable" value="${configDto.extraChargeApplicable}" ${configDto.extraChargeApplicable=='on'?'checked':''} />
+									<input type="checkbox" name="extraChargeApplicable" id="extraChargeApplicable" value="${configDto.extraChargeApplicable}" ${configDto.extraChargeApplicable=='on'?'checked':''} />
 									<label><spring:message code="BzComposer.configuration.isextrachargeppplicable"/></label>
 								</td>
 							</tr>
@@ -789,7 +809,7 @@ $(document).ready(function()
 							</tr>
 							<tr>
 								<td style="font-size:12px;">
-									<input type="checkbox" name="backOrderNeeded" value="0" />
+									<input type="checkbox" name="backOrderNeeded" id="backOrderNeeded" value="${configDto.backOrderNeeded}" ${configDto.backOrderNeeded=='on'?'checked':''} />
 									<spring:message code="BzComposer.configuration.backorderconfirmationneeded"/>
 								</td>
 							</tr>
@@ -818,7 +838,8 @@ $(document).ready(function()
                                     <spring:message code="BzComposer.configuration.recurringservicebillingname"/> :
                                 </td>
                                 <td style="font-size:12px;">
-                                    <input type="text" id="serviceBillName" name="serviceBillName" value="Recurring Service Billing" style="width:200px;">
+                                    <!-- <input type="text" id="serviceBillName" name="serviceBillName" value="Recurring Service Billing 1" style="width:200px;"> -->
+                                    <form:input path="serviceBillName" />
                                 </td>
                             </tr>
                             <tr>
@@ -1255,6 +1276,7 @@ $(document).ready(function()
 		<input type="hidden" name="extraChargeApplicable" id="extraChargeApplicable" value=""/>
 		<input type="hidden" name="resonId" id="resonId" />
 		<input type="hidden" id="pageActiveTab" value="${pageActiveTab}" />
+		<input type="hidden" name="backOrderNeeded" id="backOrderNeeded" value=""/>
 	</div>
 	</div>
 	<div align="center">
@@ -1323,10 +1345,11 @@ function SaveValues()
                 document.configurationForm.extraChargeApplicable.value = $("#extraChargeApplicable").val();
                 document.configurationForm.chargeAmount.value = document.configurationForm.chargeAmount.value;
                 document.configurationForm.orderAmount.value = document.configurationForm.orderAmount.value;
-
+                document.configurationForm.backOrderNeeded.value = $("#backOrderNeeded").val();
                 /*for Refund Settings panel*/
                 document.configurationForm.isRefundAllowed.value =  $("#isRefundAllowed").val();
                 document.configurationForm.recurringServiceBill.value =  $("#recurringServiceBill").val();
+                document.configurationForm.serviceBillName.value = document.configurationForm.serviceBillName.value;
 
                 /*for Invoice Save Option*/
                 //document.configurationForm.invoiceLocation.value = document.configurationForm.invoiceLocation.value ;
@@ -1336,6 +1359,7 @@ function SaveValues()
                 document.getElementById('saleShowTelephone').value = $("#saleShowTelephone").val();
                 document.getElementById('isSalePrefix').value = $("#isSalePrefix").val();
                 document.getElementById('extraChargeApplicable').value = $("#extraChargeApplicable").val();
+                document.getElementById('backOrderNeeded').value = $("#backOrderNeeded").val();
                 document.getElementById('creditTermDays').value = $("#isRefundAllowed").val();
                 if($("#parentReasonId").val() == null){
                     $("#parentReasonId").val(0);

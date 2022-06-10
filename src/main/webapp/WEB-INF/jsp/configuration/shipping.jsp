@@ -196,7 +196,6 @@ function deleteSelectedWeightFee(){
     }
 }
 
-//////////////////////////////////////////////////////////////////
 function addSelectedUps(){
 	
 	var udShipTypeId = $("#isUPSActive").val();
@@ -221,7 +220,31 @@ function addSelectedUps(){
         });
     }
 }
-/////////////////
+
+function addService1(){
+	debugger;
+	var mailTypeId = $("#selectedMailTypeId").val();
+	var packagetypeId = $("#selectedPackageSizeId").val();
+	var containerTypeId = $("#selectedContainerId").val();
+	var specialHandlingfee = $("#specialHandlingFee").val();
+    if(mailTypeId == null || packagetypeId == null|| containerTypeId == null || specialHandlingTypeId == ''){
+        return selectshippingtypedialog();
+    }
+    else {
+        $.ajax({
+            type: "POST",
+            url:"/ConfigurationAjaxTest?tabid=addValueAddedService",
+            data:{mailTypeId : parseInt(mailTypeId), packageSizeId : parseInt(packagetypeId), containerId : parseInt(containerTypeId),specialHandlingfee1: specialHandlingfee  },
+            success:function(data){
+                if(data){   location.reload(); }
+            },
+            error:function(){
+              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+            }
+        });
+    }
+} 
+
 function editSelectedUps(){
 	debugger;
 	var udShipId = $("#upsSelect").val();
@@ -246,7 +269,6 @@ function editSelectedUps(){
         });
     }
 }
-///////////////////////
 function deleteSelectedUps(){
     var udShipId = $("#upsSelect").val();
     if(udShipId == null || udShipId == "" || udShipId == 0){
@@ -290,7 +312,6 @@ function setServices(elementID){
 	 $("#deleteUps").attr('disabled',false);
 	  
 }
-////////////////////////////
 function setUSPSService(){
 	var ShippingServiceId = $("#uspsSelect option:selected").val();
 	$.ajax({
@@ -1278,7 +1299,7 @@ function removeTime(){
                                     <tr>
                                         <td>&nbsp;</td>
                                         <td style="font-size:14px;">
-                                            <button type="button" class="formButton" id="addService">
+                                            <button type="button" class="formButton" id="addService" onclick= "addService1()">
                                                 <spring:message code="BzComposer.configuration.addservicebtn"/>
                                             </button>
                                         </td>

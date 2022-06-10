@@ -19,7 +19,7 @@ public class ConfigurationDto implements Serializable {
             + "InvoiceStyleID,EstimationStyleID,SoStyleID,PoStyleID,FilterOption,AdminPassword,CustTaxable,AddressSettings,SalesTaxCode,SaleTaxRate,SaleTaxRate2,"
             + "HowOftenSalesTax,DropShipCharge,ExtraChargeApplicable,ChargeAmount,OrderAmount,IsRefundAllowed,PoShowCountry,PoShowTelephone,IsPurchasePrefix,"
             + "ShowReminder,AnnualInterestRate,MinCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge,MailServer,MailUserName,MailPassword,MailAuth,"
-            + "SenderEmail,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress";
+            + "SenderEmail,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,BackOrderNeeded,serviceBillName";
 
     public int preferenceID = -1;
     /*for Dashboard and General option*/
@@ -145,8 +145,17 @@ public class ConfigurationDto implements Serializable {
     private int chargeAmount;
 
     private int orderAmount;
+    private String serviceBillName;
 
-    private int packingSlipTemplateId;
+    public String getServiceBillName() {
+		return serviceBillName;
+	}
+
+	public void setServiceBillName(String serviceBillName) {
+		this.serviceBillName = serviceBillName;
+	}
+
+	private int packingSlipTemplateId;
     private String packingSlipTemplateName;
     private int baseTemplateId;
     private ArrayList<ConfigurationDto> listOfExistingPackingSlipTemplate;
@@ -413,8 +422,17 @@ public class ConfigurationDto implements Serializable {
 
     private int containerId;
     private int selectedContainerId;
-    private String container;
+    public int getSpecialHandlingfee1() {
+		return specialHandlingfee1;
+	}
+
+	public void setSpecialHandlingfee1(int specialHandlingfee1) {
+		this.specialHandlingfee1 = specialHandlingfee1;
+	}
+
+	private String container;
     private int containerActive;
+    private int specialHandlingfee1;
     private ArrayList<ConfigurationDto> listOfExistingContainer;
 
     private int realTimeShippingServiceId;
@@ -704,9 +722,17 @@ public class ConfigurationDto implements Serializable {
 
     private int custTitleID;
     private int shippingViaID;
+    private String backOrderNeeded;
 
+	public String getBackOrderNeeded() {
+		return backOrderNeeded;
+	}
 
-    private String scheduleTimes;
+	public void setBackOrderNeeded(String backOrderNeeded) {
+		this.backOrderNeeded = backOrderNeeded;
+	}
+
+	private String scheduleTimes;
     private String[] ScheduleTimesList;
     public String[] getScheduleTimesList() {
         return ScheduleTimesList;
