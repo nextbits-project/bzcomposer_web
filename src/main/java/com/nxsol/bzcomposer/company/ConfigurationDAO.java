@@ -2,6 +2,7 @@ package com.nxsol.bzcomposer.company;
 
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
+import com.avibha.bizcomposer.configuration.forms.ScheduleDateDto;
 import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
@@ -5017,6 +5018,117 @@ public class ConfigurationDAO {
             pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, 0);
             pstmt.setInt(2, shippingServiceId);
+            rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+        }
+        catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return rowDeleted;
+    }
+
+    public ArrayList<ScheduleDateDto> getScheduleTimes(String companyID) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        ArrayList<ScheduleDateDto> scheduleDateDtoArrayList = new ArrayList<>();
+        try {
+            stmt = con.createStatement();
+            String sql = "Select ScheduleId,ScheduleTime,ScheduleMinute,CategeoryType,StoreID From bca_scheduletimes Where  CompanyID ="+companyID+" order by ScheduleId asc";
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()) {
+                ScheduleDateDto scheduleDateDto = new ScheduleDateDto();
+                String period = "AM";
+                int h = rs.getInt("ScheduleTime");
+                if (h >= 12){
+                  h = h-12;
+                  period = "PM";
+                }
+                c.set(Calendar.HOUR_OF_DAY,h);
+                int m = rs.getInt("ScheduleMinute");
+                c.set(Calendar.MINUTE, m);
+                scheduleDateDto.setId(rs.getInt("ScheduleId"));
+                scheduleDateDto.setDate(c.getTime());
+                scheduleDateDto.setStoreID(-1);
+                scheduleDateDto.setType(rs.getInt("CategeoryType"));
+                scheduleDateDto.setTime( simpleDateFormat.format(c.getTime()));
+                scheduleDateDto.setPeriod(period);
+                scheduleDateDtoArrayList.add(scheduleDateDto);
+
+            }
+        }
+        catch (SQLException e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (rs != null) { db.close(rs); }
+                if (stmt != null) { db.close(stmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return scheduleDateDtoArrayList;
+    }
+
+    public boolean insertScheduleTime(int hour, int min, int type,int storeID, String companyId) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowAdded = false;
+        String sql = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM");
+
+        try {
+            sql = "INSERT INTO bca_scheduletimes(ScheduleTime,ScheduleMinute,ScheduleDate,CategeoryType,CompanyID)" +
+                    " Values (?,?,?,?,?)";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, hour);
+            pstmt.setInt(2, min);
+            pstmt.setString(3, simpleDateFormat.format(new Date()));
+            pstmt.setInt(4, type);
+            pstmt.setString(5, companyId);
+
+            rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+        }
+        catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return rowAdded;
+    }
+
+    public boolean deleteTimes(int scheduleId) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowDeleted = false;
+        String sql = null;
+
+        try {
+            sql = "delete From bca_scheduletimes Where  ScheduleId = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, scheduleId);
             rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
         }
         catch(Exception e) {

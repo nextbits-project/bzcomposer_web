@@ -7,6 +7,7 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.dao.TestEmail;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
+import com.avibha.bizcomposer.configuration.forms.ScheduleDateDto;
 import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
@@ -24,6 +25,7 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import org.apache.struts.action.*;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -617,6 +619,9 @@ public class ConfigurationController {
             dao.getActiveRealTimeShippingServices(2, request, configDto);
             dao.getActiveRealTimeShippingServices(3, request, configDto);
 
+            ArrayList<ScheduleDateDto> scheduleDateList =  dao.getScheduleTimes(companyID);
+            request.setAttribute("scheduleDateList", scheduleDateList);
+
             dao.getActiveMailType(request, configDto);
             dao.getActivePackageSize(request, configDto);
             dao.getActiveContainer(request, configDto);
@@ -631,6 +636,35 @@ public class ConfigurationController {
             forward = "/configuration/shipping";
             setConfigActiveTab(session, "shippingTab");
         }
+
+        else if (action.equalsIgnoreCase("AddTimes")) {
+            ConfigurationDAO dao = new ConfigurationDAO();
+            ScheduleDateDto scheduleDateDto = new ScheduleDateDto();
+            JSONObject newObj = new JSONObject();
+            try {
+                newObj = new JSONObject(request.getParameter("row"));
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+            int hour = Integer.parseInt(newObj.getJSONObject("ScheduleDateDto").getString("hours"));
+            int min = Integer.parseInt(newObj.getJSONObject("ScheduleDateDto").getString("minutes"));
+            String period = newObj.getJSONObject("ScheduleDateDto").getString("period");
+            Calendar c1 = Calendar.getInstance();
+            c1.set(Calendar.HOUR, hour);
+            c1.set(Calendar.MINUTE, min);
+            if (period.equalsIgnoreCase("PM")){
+                hour = hour + 12;
+            }
+            //c1.set(Calendar.AM_PM, period.equals("AM") ? 0 : 1);
+            //hour = period.equals("AM") ? hour : (hour + 12);
+            dao.insertScheduleTime(hour, min, 2, -1, companyID);
+
+        }
+        else if (action.equalsIgnoreCase("deleteTimes")) {
+            String scheduleTimeId = request.getParameter("scheduleTimeId");
+            ConfigurationDAO dao = new ConfigurationDAO();
+            dao.deleteTimes(Integer.parseInt(scheduleTimeId));
+        }
         else if (action.equalsIgnoreCase("addshippingtype")) {
             String Newval = request.getParameter("shippingtype");
             ConfigurationDAO dao = new ConfigurationDAO();
@@ -639,6 +673,7 @@ public class ConfigurationController {
             System.out.println("goes to shipping page......................");
             forward = "redirect:Configuration?tabid=config15&&tab=tr15";
         }
+
         else if (action.equalsIgnoreCase("editshippingtype")) {
             String oldVal = request.getParameter("oldshippingtype");
             String oldId = request.getParameter("oldId");
