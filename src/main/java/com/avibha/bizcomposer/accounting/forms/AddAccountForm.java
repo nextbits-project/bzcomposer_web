@@ -11,12 +11,7 @@
 
 package com.avibha.bizcomposer.accounting.forms;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-
-public class AddAccountForm extends ActionForm{
+public class AddAccountForm {
 	
   private static final long serialVersionUID = 1L;
   private String checkno;
@@ -170,20 +165,7 @@ public void setBankId(String bankId) {
 	this.bankId = bankId;
 }
 
-public void reset(ActionMapping mapping, HttpServletRequest request) {
-	System.out.println("inside resent method");
-	  checkno = null;
-	  date=null;
-	  openingBalance=null;
-	   accountName=null;
-	   isCategory=null;
-	   isSubAccount=null;
-	  description=null;
-	   subAccountId=null;
-	   depositBankName=null;
-	   accCategoryId=null;
-	   bankId=null;
-}
+
 public String getSubAccountName() {
 	return subAccountName;
 }

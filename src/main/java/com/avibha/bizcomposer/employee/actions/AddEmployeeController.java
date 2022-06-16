@@ -6,24 +6,25 @@
 
 package com.avibha.bizcomposer.employee.actions;
 
-import com.avibha.bizcomposer.employee.dao.Employee;
-import com.avibha.bizcomposer.employee.forms.AddEmployeeForm;
-import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
-import com.avibha.common.utility.CountryState;
-import com.avibha.common.utility.Path;
-import com.nxsol.bzcomposer.company.ConfigurationDAO;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.avibha.bizcomposer.employee.dao.Employee;
+import com.avibha.bizcomposer.employee.forms.AddEmployeeForm;
+import com.avibha.common.utility.CountryState;
+import com.avibha.common.utility.Path;
 
 @Controller
 public class AddEmployeeController {

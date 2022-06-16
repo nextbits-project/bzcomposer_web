@@ -1,8 +1,6 @@
 package com.nxsol.bizcomposer.common;
 
-import org.apache.struts.action.ActionForm;
-
-public class TblRecurrentPaymentPlan extends ActionForm{
+public class TblRecurrentPaymentPlan{
 
 	private int PlanID =-1;
     private int PayeeID =-1;

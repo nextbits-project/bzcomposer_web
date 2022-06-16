@@ -88,9 +88,7 @@ public class AuthorizeNetUtils {
                 }
             }
         }
-        else {
-            System.out.println("Null Response.");
-        }
+       
 
         return response;
 

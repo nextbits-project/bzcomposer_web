@@ -1,10 +1,9 @@
 package com.pritesh.bizcomposer.accounting.bean;
 
-import com.nxsol.bizcompser.global.table.TblCategory;
-import com.nxsol.bizcompser.global.table.TblTerm;
-import org.apache.struts.action.ActionForm;
-
 import java.util.Date;
+
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
+import com.nxsol.bizcompser.global.table.TblTerm;
 
 public class ReceivableListDto{
 
@@ -219,7 +218,7 @@ public class ReceivableListDto{
 
     private String billType = "";
 
-    private TblCategory tblcategory = null;
+    private TblCategoryDto TblCategoryDto = null;
 
     private TblTerm tblterm = null;
 
@@ -1382,12 +1381,12 @@ public class ReceivableListDto{
         this.bankAccountID = bankAccountID;
     }
 
-	public TblCategory getTblcategory() {
-		return tblcategory;
+	public TblCategoryDto getTblcategory() {
+		return TblCategoryDto;
 	}
 
-	public void setTblcategory(TblCategory tblcategory) {
-		this.tblcategory = tblcategory;
+	public void setTblcategory(TblCategoryDto TblCategoryDto) {
+		this.TblCategoryDto = TblCategoryDto;
 	}
 
 	public TblTerm getTblterm() {
@@ -1433,18 +1432,5 @@ public class ReceivableListDto{
 		this.checkNum = checkNum;
 	}
     
-//    public class Row
-//    {
-//    	public TblCategory category = null; 
-//    	
-//    	public void setCategory(TblCategory category)
-//    	{
-//    		this.category = category;
-//    	}
-//    	
-//    	public TblCategory getCategory()
-//    	{
-//    		return category;
-//    	}
-//    }
+
 }

@@ -12,16 +12,14 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.avibha.bizcomposer.email.forms.MailTemplateDto;
-import org.apache.struts.action.ActionForm;
-
 import com.avibha.bizcomposer.email.forms.EmailForm;
+import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 
 public class EmailDetails {
 
-	public void getEmailSearch(HttpServletRequest request, ActionForm form) {
+	public void getEmailSearch(HttpServletRequest request, EmailForm form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		EmailInfo EmailInfo = new EmailInfo();
@@ -43,7 +41,7 @@ public class EmailDetails {
 		request.setAttribute("EmailDetails", EmailDetails);
 	}
 
-	public void sendEmail(HttpServletRequest request, ActionForm form) {
+	public void sendEmail(HttpServletRequest request, EmailForm form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		EmailInfo EmailInfo = new EmailInfo();

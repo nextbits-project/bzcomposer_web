@@ -3,7 +3,7 @@ package com.nxsol.bizcomposer.common;
 public class TblPayment {
 
 	 private int id = -1;
-	    
+	       
 	    private double amount = 0.0;
 	    
 	    private int paymentTypeID = -1;

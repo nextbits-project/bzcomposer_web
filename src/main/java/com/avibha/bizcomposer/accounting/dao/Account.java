@@ -966,7 +966,7 @@ public class Account {
 
     public ArrayList getSubCategory(long categoryId,long compId){
         //ArrayList list = new ArrayList();
-        ArrayList<CategoryListForm> categoryList=new ArrayList<CategoryListForm>();
+        ArrayList<CategoryListDto> categoryList=new ArrayList<CategoryListDto>();
         Connection con = null;
         PreparedStatement pstmt = null;
         PreparedStatement pstmt_subCat = null;
@@ -987,7 +987,7 @@ public class Account {
             rs = pstmt.executeQuery();
             Loger.log("Inside getsub Category method");
             while(rs.next()){
-                CategoryListForm cf=new CategoryListForm();
+                CategoryListDto cf=new CategoryListDto();
                 cf.setBudgetcategoryId(rs.getString(1));
                 cf.setBudgetCategoryName(rs.getString(2));
                 categoryList.add(cf);
@@ -999,7 +999,7 @@ public class Account {
                 pstmt_subCat.setInt(3,1);
                 rs_subCat = pstmt_subCat.executeQuery();
                 while(rs_subCat.next()){
-                    CategoryListForm cf1=new CategoryListForm();
+                    CategoryListDto cf1=new CategoryListDto();
 
                     cf1.setBudgetcategoryId(rs.getString(1));
                     cf1.setBudgetCategoryName(rs.getString(2));
@@ -1083,10 +1083,10 @@ public class Account {
         Statement stmt = null,stmt1 = null,stmt2 = null,stmt3 = null;
         ResultSet rs = null,rs1 = null,rs2 = null,rs3 = null;
         SQLExecutor db = new SQLExecutor();
-        ArrayList<CategoryListForm> objList = new ArrayList<>();
-        ArrayList<CategoryListForm> tr = new ArrayList<>();
-        ArrayList<CategoryListForm> tc = new ArrayList<>();
-        ArrayList<CategoryListForm> v = new ArrayList<>();
+        ArrayList<CategoryListDto> objList = new ArrayList<>();
+        ArrayList<CategoryListDto> tr = new ArrayList<>();
+        ArrayList<CategoryListDto> tc = new ArrayList<>();
+        ArrayList<CategoryListDto> v = new ArrayList<>();
         con = db.getConnection();
         int i = 0;
         int subLevel = 0;
@@ -1128,7 +1128,7 @@ public class Account {
             rs = stmt.executeQuery(sql1);
             while(rs.next())
             {
-                CategoryListForm f = new CategoryListForm();
+                CategoryListDto f = new CategoryListDto();
                 f.setCategoryId(rs.getString("CategoryID"));
                 f.setCategoryTypeId(rs.getString("CategoryTypeID"));
                 f.setParent(rs.getString("Parent"));
@@ -1143,7 +1143,7 @@ public class Account {
             rs1 = stmt1.executeQuery(sql2);
             while(rs1.next())
             {
-                CategoryListForm f = new CategoryListForm();
+                CategoryListDto f = new CategoryListDto();
                 f.setCategoryId(rs1.getString("CategoryID"));
                 f.setCategoryTypeId(rs1.getString("CategoryTypeID"));
                 f.setParent(rs1.getString("Parent"));
@@ -1156,13 +1156,13 @@ public class Account {
             }
             while (i < tr.size()) {
                 int j = 0;
-                String id1 = ((CategoryListForm) tr.get(i)).getCategoryId().toString();
+                String id1 = ((CategoryListDto) tr.get(i)).getCategoryId().toString();
                 while (j < tc.size()) {
-                    String id2 = ((CategoryListForm) tc.get(j)).getParent();
+                    String id2 = ((CategoryListDto) tc.get(j)).getParent();
                     if (id1.equals(id2)) {
-                        int subLevel1 = ((CategoryListForm) tr.get(i)).getSubLevel();
+                        int subLevel1 = ((CategoryListDto) tr.get(i)).getSubLevel();
 
-                        ((CategoryListForm) tc.get(j)).setSubLevel(subLevel1 + 1);
+                        ((CategoryListDto) tc.get(j)).setSubLevel(subLevel1 + 1);
 
                         tr.add(i + 1, tc.get(j));
 
@@ -1176,13 +1176,13 @@ public class Account {
             }
             String[] sortByJ = {"INCOME","EXPENSE"};
             for (int c = 0; c < sortByJ.length; c++) {
-                CategoryListForm r = new CategoryListForm();
+                CategoryListDto r = new CategoryListDto();
                 r.setName(sortByJ[c]);
                 v.add(r);
 
                 int c1 = 0;
                 while (c1 < tr.size()) {
-                    CategoryListForm d = (CategoryListForm) tr.get(c1);
+                    CategoryListDto d = (CategoryListDto) tr.get(c1);
                     String strType = d.getCategorytypeName().trim();
                     if (strType.equals(sortByJ[c])) {
                         String cat = "SELECT ( Sum(adjustedtotal) + Sum(upfrontamount) ) AS amt, "
@@ -1224,7 +1224,7 @@ public class Account {
                         c1++;
                     }
                 }
-                r = new CategoryListForm();
+                r = new CategoryListDto();
                 r.setName("TotalINCOME");
                 v.add(r);
                 if(sortByJ[c].equals("INCOME")){
@@ -1233,7 +1233,7 @@ public class Account {
                     r.setName("TotalEXPENSE");
                     r.setAmount(expenseTotal);
                 }
-                r = new CategoryListForm();
+                r = new CategoryListDto();
                 r.setName("");
                 v.add(r);
                 /*     r = new TableData();
@@ -1308,11 +1308,11 @@ public class Account {
         ResultSet rs1 = null,rs2 = null,rs3 = null,rs4 = null,rs5 = null,rs6 = null;
         SQLExecutor db = new SQLExecutor();
         con = db.getConnection();
-        ArrayList<CategoryListForm> objList = new ArrayList<>();
+        ArrayList<CategoryListDto> objList = new ArrayList<>();
         String dateBetween = "",sql = "";
         ArrayList<Date> selectedRange = new ArrayList<>();
-        ArrayList<CategoryListForm> tr = new ArrayList<>();
-        ArrayList<CategoryListForm> tc = new ArrayList<>();
+        ArrayList<CategoryListDto> tr = new ArrayList<>();
+        ArrayList<CategoryListDto> tc = new ArrayList<>();
         CustomerInfo cInfo = new CustomerInfo();
         DateInfo dInfo = new DateInfo();
         double totalgrossIncome = 0D;
@@ -1390,7 +1390,7 @@ public class Account {
             rs1 = stmt1.executeQuery(sql);
             while(rs1.next())
             {
-                CategoryListForm c = new CategoryListForm();
+                CategoryListDto c = new CategoryListDto();
                 c.setId(rs1.getString("ID"));
                 c.setAmount(rs1.getDouble("SP"));
                 totalgrossIncome+=c.getAmount();
@@ -1442,7 +1442,7 @@ public class Account {
             rs5 = stmt5.executeQuery(sql4);
             while(rs5.next())
             {
-                CategoryListForm c = new CategoryListForm();
+                CategoryListDto c = new CategoryListDto();
                 c.setCategoryId(rs5.getString("CategoryID"));
                 c.setCategoryTypeId(rs5.getString("CategoryTypeID"));
                 c.setParent(rs5.getString("Parent"));
@@ -1462,7 +1462,7 @@ public class Account {
             rs6 = stmt6.executeQuery(sql5);
             while(rs6.next())
             {
-                CategoryListForm c = new CategoryListForm();
+                CategoryListDto c = new CategoryListDto();
                 c.setCategoryId(rs6.getString("CategoryID"));
                 c.setCategoryTypeId(rs6.getString("CategoryTypeID"));
                 c.setParent(rs6.getString("Parent"));

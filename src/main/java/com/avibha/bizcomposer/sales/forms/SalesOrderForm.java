@@ -1,9 +1,7 @@
 
 package com.avibha.bizcomposer.sales.forms;
 
-import org.apache.struts.action.ActionForm;
-
-public class SalesOrderForm extends ActionForm {
+public class SalesOrderForm  {
 	
 	private static final long serialVersionUID = 0;
 

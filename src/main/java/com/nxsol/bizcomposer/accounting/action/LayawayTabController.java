@@ -1,32 +1,30 @@
 package com.nxsol.bizcomposer.accounting.action;
 
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategory;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblPayment;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 @Controller
 public class LayawayTabController {
 	@GetMapping("/Layaway")
-	public ModelAndView LayawayTab(ReceivableListBean form, HttpServletRequest request,
+	public ModelAndView LayawayTab(ReceivableListDto form, HttpServletRequest request,
 								HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		
@@ -36,7 +34,7 @@ public class LayawayTabController {
 		String companyID = (String) sess.getAttribute("CID");		
 		ReceivableLIst rl = new ReceivableListImpl();
 		TblCategoryLoader category = new TblCategoryLoader();
-		ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
+		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
 		ArrayList<TblAccount> account =rl.getAccount();
@@ -47,9 +45,9 @@ public class LayawayTabController {
 		
 		if(action.equals("UpdateRecord"))
 		{
-			ReceivableListBean cfrm = (ReceivableListBean) form;
+			ReceivableListDto cfrm = (ReceivableListDto) form;
 			Gson gson=new Gson();
-			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			ReceivableListDto reListBean = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
 			double amtToPay = reListBean.getAmtToPay();
 			/*String indexNumber = request.getParameter("index");*/
 			String invoiceId = request.getParameter("invoiceId");
@@ -64,18 +62,18 @@ public class LayawayTabController {
 		}
 		if(action.equals("ReceivedInvoice"))
 		{
-			ReceivableListBean cfrm = (ReceivableListBean) form;
+			ReceivableListDto cfrm = (ReceivableListDto) form;
 			Gson gson=new Gson();
-			ReceivableListBean invoice = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			ReceivableListDto invoice = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
 			String rowId = request.getParameter("index"); 
 			/*System.out.println(invoice.getPaidAmount());*/
 			int orderNum = invoice.getOrderNum();
-		    ReceivableListBean rb = rl.getInvoiceForLayawaysByOrderNUm(orderNum, ConstValue.companyId);
+		    ReceivableListDto rb = rl.getInvoiceForLayawaysByOrderNUm(orderNum, ConstValue.companyId);
 		    int invoiceId = rb.getInvoiceID();
-		    TblPayment payment = rl.setPayment(invoice,invoiceId,ConstValue.companyId);
-		    payment.setInvoiceTypeID(ReceivableListBean.LAYAWAYS_TYPE);
+		    TblPaymentDto payment = rl.setPayment(invoice,invoiceId,ConstValue.companyId);
+		    payment.setInvoiceTypeID(ReceivableListDto.LAYAWAYS_TYPE);
 		    int balance = (int) (invoice.getAdjustedTotal() - (rl.getSum(invoiceId) + invoice.getPaidAmount()));
-//		    ReceivableListBean invoice = new ReceivableListBean();
+//		    ReceivableListDto invoice = new ReceivableListDto();
 		    invoice.setBalance(balance);
 		    invoice.setInvoiceID(invoiceId);
 		    rl.insertAccount(payment, invoice);
@@ -101,7 +99,7 @@ public class LayawayTabController {
 		{
 			forward = "/accounting/layaway";
 		}
-		ArrayList<ReceivableListBean> ReceivableList = rl.getLayawayList();
+		ArrayList<ReceivableListDto> ReceivableList = rl.getLayawayList();
 		request.setAttribute("ReceivableList", ReceivableList);
 		ModelAndView modelAndView =new ModelAndView(forward);
 		return modelAndView;
