@@ -117,7 +117,7 @@ $(document).ready(function(){
 								<th colspan="5"><spring:message code="BzComposer.addnewcustomer.customerinfo" /></th>
 							</tr>
 						</thead>
-						<tbody>  
+						<tbody>
 							<tr>
 							    <td style="width:18%;"><spring:message code="BzComposer.global.titlename" /></td>
                                 <td style="width:31%;">
@@ -1090,7 +1090,7 @@ function writeSelect(){
     document.getElementById("t_statedata").innerHTML = o.responseText ;
 }
 function refreshItemsNow(val){
-	debugger;
+	
 	if(val == "3"){
 		$(".provinceShow").show();
 		$(".postalcodeShow").show();
@@ -1215,7 +1215,7 @@ function CopyAddress() {
 	document.getElementsByName('bsstate')[0].value = state;
 }
 function samemn(){
-    debugger;
+    
     var checkBoxValue = $('#checkBox').is(':checked')?$('#checkBox').val():false;
     if(checkBoxValue == "true"){
         var phonenumber = document.getElementById("phone").value;
@@ -1425,7 +1425,7 @@ function showAddPaymentMethodDialog(){
                     cardZip.classList.add('errorClass');
                     return false;
                 }else{
-                debugger;
+                
                     $(this).dialog("close");
                     let cardInfo = {
                         custId : itemID,
@@ -1521,19 +1521,19 @@ function reloadPage() {
     location.reload();
 }
 function CheckMambership() {
-    debugger;
+    
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("CustomerSize")%>";
 	if(membershipLevel == "Standard"){
 		if(size>=1000){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else {
 			return AddCustomer();
 		}
 	}else if(membershipLevel == "Professional"){
 		if(size>=10000){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else {
 			return AddCustomer();
@@ -1542,7 +1542,7 @@ function CheckMambership() {
 }
 function AddCustomer()
 {
-	debugger;
+	
 	if(document.CustomerForm.firstName.value==""){
 		document.CustomerForm.firstName.focus();
 		return showFirstNameDialog();
@@ -1574,7 +1574,7 @@ function AddCustomer()
 	}
 	else {
 		if(validate()){
-			debugger;
+			
 			event.preventDefault();
 			$("#saveCustomerInfoDialog").dialog({
                 resizable: false,
@@ -1583,7 +1583,7 @@ function AddCustomer()
                 modal: true,
                 buttons: {
                     "<spring:message code='BzComposer.global.ok'/>": function () {
-                        debugger;
+                        
                         $(this).dialog("close");
                         if(document.CustomerForm.chk_setaddress.checked){
                             hidebsaddress(document.CustomerForm);
@@ -2092,7 +2092,7 @@ function showEmailValidationDialog(){
     return false;
 }
 function showServiceValidationDialog(){
-	debugger;
+	
 	event.preventDefault();
 	$("#showServiceValidationDialog").dialog({
     	resizable: false,

@@ -174,7 +174,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                                         <input type="hidden" class="invoiceID" value="${objList.invoiceID}" />
                                         <input type="checkbox" class="allRecordsCLS" id="allRecordsChk${loop.index}" onchange="getRecordID(this, ${loop.index});" value="${objList.po_no}" />
                                     </td>
-                                    <td><spring:message code="BzComposer.purchase.PONumPrefix" />${objList.poNumStr}</td>
+                                    <td>${objList.poNumStr}</td>
                                     <td>${objList.dateAdded}</td>
                                     <td>${objList.companyName}</td>
                                     <td>${objList.lastName}, ${objList.firstName}</td>
@@ -399,7 +399,7 @@ function makeUpdate(orderno, cartID, obj)
 }
 
 function makeUpdateReceivedInList(){
-	debugger;
+	
 	for(var j=0;j<cnt;j++){
 		ord+=ordarr[j]+";";
 		status+=statusarr[j]+";";
@@ -419,7 +419,7 @@ function makeUpdateReceivedInList(){
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
-                debugger;
+                
                 document.getElementById("tabid").value="UpdateCheckPO";
                 document.forms['frmpoboard'].action ="CheckPO?tabid=UpdateCheckPO";
                 document.forms['frmpoboard'].submit();
@@ -436,7 +436,7 @@ function makeUpdateReceivedInList(){
 
 function makeUpdateInList()
 {
-	debugger;
+	
 	for(j=0;j<cnt;j++)
 	{
 		ord+=ordarr[j]+";";
@@ -501,7 +501,7 @@ function SaleSearch(filterType)
 }
 function showList()
 {
-	debugger;
+	
 	var sortType1 = document.getElementById("sortType1").value;
 	var sortType2 = document.getElementById("sortType2").value;
 	if(sortType1 == 0 || sortType2 == 0){
@@ -513,7 +513,7 @@ function showList()
 		
 	}
 }
-/* debugger;
+/*
 var sortType1 = document.getElementById("sortType1").value;
 var sortType2 = document.getElementById("sortType2").value;
 

@@ -14,9 +14,9 @@
 	<title><spring:message code="BzComposer.homepagetitle"/></title>
 
 	<!-- for opening dialog these files added on 26-09-2019 -->
-	<script src="${pageContext.request.contextPath}/includeAll/jquery-1.11.1.min.js"></script> 
+	<%-- <script src="${pageContext.request.contextPath}/includeAll/jquery-1.11.1.min.js"></script> --%>
 	<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-	<!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/jquery-ui.css" /> -->
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/jquery-ui.css" />
 
 	<%@ include file="templateHeader.jsp"%>
 
@@ -109,7 +109,7 @@
 		}
 		function showLocale()
 		{
-			debugger;
+			
 			var lang = document.getElementById("locale").value;
 
 			if(lang == "")
@@ -122,12 +122,12 @@
                 url:"Locale.do?request_locale="+lang,
                 data:{lang : lang},
                 }).done(function(data){
-                    debugger;
+                    
             }); */
 		}
 		function showLocaleMobile()
 		{
-			debugger;
+			
 			var lang = document.getElementById("localeMobile").value;
 			if(lang == "")
 				alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
@@ -140,7 +140,7 @@
                 url:"Locale.do?request_locale="+lang,
                 data:{lang : lang},
                 }).done(function(data){
-                    debugger;
+                    
             }); */
 		}
 		function showUsernameDialog()
@@ -358,7 +358,7 @@
                                 <li><a href="${pageContext.request.contextPath}/futureUpdate.jsp">Future Update</a></li> --%>
 							<li><a href="${pageContext.request.contextPath}/ourServices"><spring:message code="BzComposer.ourservices"/></a></li>
 							<li><a href="${pageContext.request.contextPath}/industries"><spring:message code="BzComposer.industires"/></a></li>
-							<li class="drop"><a href="${pageContext.request.contextPath}/features><spring:message code="BzComposer.features"/></a>
+							<li class="drop"><a href="${pageContext.request.contextPath}/features"><spring:message code="BzComposer.features"/></a>
 						 <span class="arrow"><i></i></span>
 								<ul class="drop-menu bottom-right">
 									<li><a href="${pageContext.request.contextPath}/features#easySetup"><spring:message code="BzComposer.features.easysetup"/></a></li>

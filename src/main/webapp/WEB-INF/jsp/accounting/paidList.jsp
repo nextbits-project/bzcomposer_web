@@ -3,7 +3,7 @@
 <%@ page isELIgnored="false"%>
 <%@page import="java.text.DecimalFormat"%>
 <%@page import="java.util.Currency"%>
-<%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%>
+<%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
@@ -327,18 +327,18 @@ table.tabla-listados tbody tr td {
 			    aria-controls="nav-home" aria-selected="true" onclick="poPayableTab()">
 			    	<spring:message code="BzComposer.popayable.tab.popayablelist"/>
 		    	</a>
-			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" 
-			    aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
-			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
-		    	</a>
 			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-profile"
 			    role="tab" aria-controls="nav-profile" aria-selected="false" onclick="overDueTab()">
 			    	<spring:message code="BzComposer.popayable.tab.paidlist"/>
 		    	</a>
 		    	<a class="nav-item nav-link" id="nav-vendorRMA-tab" data-toggle="tab" href="#nav-vendorRMA" role="tab"
-                aria-controls="nav-contact" aria-selected="false">
+                aria-controls="nav-contact" aria-selected="false" onclick="vendorRMARefund()">
                     <spring:message code="BzComposer.accountreceivable.tabs.VendorRMARefund"/>
                 </a>
+                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" 
+			    aria-controls="nav-profile" aria-selected="false" onclick="consignmentTab()">
+			    	<spring:message code="BzComposer.popayable.tab.consignmentsalepayment"/>
+		    	</a>
 			  </div>
 			</nav>
 			<div class="tab-content">
@@ -590,8 +590,13 @@ table.tabla-listados tbody tr td {
 	var oldClientVendorId = -1;
 	var oldBankAccountId = -1;
 	var oldPaymentTypeId = -1;
+
+	function vendorRMARefund(){
+     window.location = "${pageContext.request.contextPath}/PoPayable?tabid=vendorRMARefund";
+    }
+
    function selectrow(invoice,index,payId) {
-	    debugger;
+	    
 	  if(document.getElementById("rdoPurchaseOrder").checked)
 	  {  	
 	    this.indexNumber = index;
@@ -676,7 +681,7 @@ table.tabla-listados tbody tr td {
    
    function save()
    {
-	   debugger;	
+	   	
 
 	  /*   var customer = document.getElementById("customerName"); */
 	 	var customerId = oldClientVendorId;
@@ -728,7 +733,7 @@ table.tabla-listados tbody tr td {
  
   	}
    function sendMyValue(TblPayment,receivedAmount,paidDate) {
-		debugger;
+		
 		var obj=JSON.stringify(TblPayment);
    	 $.ajax({
 		
@@ -754,7 +759,7 @@ table.tabla-listados tbody tr td {
 	} 
    function checkType()
    {
-	 	debugger;
+	 	
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].innerText;
 	   
@@ -791,7 +796,7 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-		debugger;
+		
 	
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
@@ -922,7 +927,7 @@ table.tabla-listados tbody tr td {
    }
 
    $(document).ready(function(){
-		debugger;
+		
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	   $("#fromDate").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
@@ -939,7 +944,7 @@ table.tabla-listados tbody tr td {
 });
    function selectedRadio()
    {
-	 debugger;
+	 
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 		   {
 		   		$("#tblForInvoiceOrder").hide();
@@ -966,7 +971,7 @@ table.tabla-listados tbody tr td {
    }
    function cancelledTab()
    {
-	   debugger;
+	   
 	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab";
    }
    function receivedTab()
@@ -998,13 +1003,13 @@ table.tabla-listados tbody tr td {
 	}); 
    function viewConsignmentSaleTable()
    {
-	   debugger;
+	   
 	   $("#tblForPaidPO").hide();
 	   $("#tblForPaidConsignment").show();
    }
    function viewPaidPOTable()
    {
-	   debugger;
+	   
 	   $("#tblForPaidConsignment").hide();
 	   $("#tblForPaidPO").show();
    }
@@ -1014,16 +1019,16 @@ table.tabla-listados tbody tr td {
    }
 	$( ".rangeOP" ).change(function() 
 	{
-	   debugger;  
+	     
 	   var rangeType = document.getElementById("rangeId");
 		var range = rangeType.options[rangeType.selectedIndex].value;
 		$.ajax
 	  	({
-			type : "GET",
+			type : "POST",
 	 		url : "PaidListTabPost?tabid=slectedMenu&SelectedRange=" + range,
 	    	success : function(data)
 	    	{
-	    		debugger;
+	    		
 		 		$(document).find('div#tblForPaidPO table').replaceWith($(data).find('div#tblForPaidPO').html());
 			},
 			error : function(data) 

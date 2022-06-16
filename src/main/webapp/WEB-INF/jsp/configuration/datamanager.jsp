@@ -3,7 +3,7 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page isELIgnored="false"%>
-<%-- <%@ page errorPage="/include/sessionExpired.jsp"%> --%>
+<%@ page errorPage="/include/sessionExpired.jsp"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -70,7 +70,7 @@
                                     <c:if test="${not empty customerTitle}">
                                         <input type="hidden" id="ctSize" value='${customerTitle.size()}'>
                                         <c:forEach items="${customerTitle}" var="curObject" varStatus="loop">
-                                            <input type="hidden" value='${curObject.titleId}' id='${loop.index}ctitleID' />
+                                            <input type="hidden" value='${curObject.titleID}' id='${loop.index}ctitleID' />
                                             <input type="hidden" value='${curObject.title}' id='${loop.index}ctitleNm' />
                                         </c:forEach>
                                     </c:if>
@@ -79,8 +79,8 @@
                                     <c:if test="${not empty SalesRep}">
                                         <input type="hidden" id="rSize" value='${SalesRep.size()}'>
                                         <c:forEach items="${SalesRep}" var="curObject" varStatus="loop">
-                                            <input type="hidden" value='${curObject.salesRepId}' id='${loop.index}repID' />
-                                            <input type="hidden" value='${curObject.salesRepname}' id='${loop.index}repNm' />
+                                            <input type="hidden" value='${curObject.salesRepID}' id='${loop.index}repID' />
+                                            <input type="hidden" value='${curObject.salesRepName}' id='${loop.index}repNm' />
                                         </c:forEach>
                                     </c:if>
                                 </div>
@@ -98,7 +98,7 @@
                                         <input type="hidden" id="tSize" value='${salesTerms.size()}'>
                                         <c:forEach items="${salesTerms}" var="curObject" varStatus="loop">
                                             <input type="hidden" value='${curObject.termId}' id='${loop.index}termID' />
-                                            <input type="hidden" value='${curObject.bcaTermName}' id='${loop.index}termNm' />
+                                            <input type="hidden" value='${curObject.termName}' id='${loop.index}termNm' />
                                         </c:forEach>
                                     </c:if>
                                 </div>
@@ -107,7 +107,7 @@
                                     <c:if test="${not empty SalesCatType}">
                                         <input type="hidden" id="catSize" value='${SalesCatType.size()}'>
                                         <c:forEach items="${SalesCatType}" var="curObject" varStatus="loop">
-                                            <input type="hidden" value='${curObject.cvCategoryId}' id='${loop.index}typeID' />
+                                            <input type="hidden" value='${curObject.cvCategoryID}' id='${loop.index}typeID' />
                                             <input type="hidden" value='${curObject.cvCategoryName}' id='${loop.index}typeNm' />
                                         </c:forEach>
                                     </c:if>
@@ -143,7 +143,7 @@
                                     <c:if test="${not empty CreditCardType}">
                                         <input type="hidden" id="ccSize" value='${CreditCardType.size()}'>
                                         <c:forEach items="${CreditCardType}" var="curObject" varStatus="loop">
-                                            <input type="hidden" value='${curObject.ccTypeId}' id='${loop.index}ccTypeId' />
+                                            <input type="hidden" value='${curObject.ccTypeID}' id='${loop.index}ccTypeID' />
                                             <input type="hidden" value='${curObject.ccTypeName}' id='${loop.index}ccTypeNm' />
                                         </c:forEach>
                                     </c:if>
@@ -152,7 +152,7 @@
                                     <c:if test="${not empty SalesTax}">
                                         <input type="hidden" id="txSize" value='${SalesTax.size()}'>
                                         <c:forEach items="${SalesTax}" var="curObject" varStatus="loop">
-                                            <input type="hidden" value='${curObject.salesTaxId}' id='${loop.index}txID' />
+                                            <input type="hidden" value='${curObject.salesTaxID}' id='${loop.index}txID' />
                                             <input type="hidden" value='${curObject.state}' id='${loop.index}txNm' />
                                             <input type="hidden" value='${curObject.salesRate}' id='${loop.index}txRate' />
                                         </c:forEach>
@@ -163,17 +163,8 @@
                                     <c:if test="${not empty SalesMessage}">
                                         <input type="hidden" id="mSize" value='${SalesMessage.size()}'>
                                         <c:forEach items="${SalesMessage}" var="curObject" varStatus="loop">
-                                            <input type="hidden" value='${curObject.messageId}' id='${loop.index}msgID' />
+                                            <input type="hidden" value='${curObject.messageID}' id='${loop.index}msgID' />
                                             <input type="hidden" value='${curObject.messageName}' id='${loop.index}msgNm' />
-                                        </c:forEach>
-                                    </c:if>
-                                </div>
-                                <div id="unitOfMeasure">
-                                    <c:if test="${not empty UnitOfMeasure}">
-                                        <input type="hidden" id="umSize" value='${UnitOfMeasure.size()}'>
-                                        <c:forEach items="${UnitOfMeasure}" var="curObject" varStatus="loop">
-                                            <input type="hidden" value='${curObject.unitCategoryId}' id='${loop.index}umID' />
-                                            <input type="hidden" value='${curObject.unitName}' id='${loop.index}umNm' />
                                         </c:forEach>
                                     </c:if>
                                 </div>
@@ -197,7 +188,7 @@
                                                                     onclick="callClick(this.id, '<spring:message code="BzComposer.datamanager.customertitle" />');">
                                                                 <c:if test="${not empty customerTitle}">
                                                                     <c:forEach items="${customerTitle}" var="curObject" varStatus="loop">
-                                                                        <option value="${curObject.titleId}">${curObject.title}</option>
+                                                                        <option value='${curObject.titleID}' ${curObject.defaultItem==true?'selected':''}>${curObject.title}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -222,7 +213,7 @@
                                                                     onclick="callClick(this.id, '<spring:message code="BzComposer.datamanager.shippingvia" />');">
                                                                 <c:if test="${not empty Via}">
                                                                     <c:forEach items="${Via}" var="curObject" varStatus="loop">
-                                                                        <option value="${curObject.shipCarrierID}" }">${curObject.shipCarrierName}</option>
+                                                                        <option value='${curObject.shipCarrierID}' ${curObject.defaultItem==true?'selected':''}>${curObject.shipCarrierName}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -248,7 +239,7 @@
                                                                     onclick="callClick(this.id, '<spring:message code="BzComposer.datamanager.representative" />');">
                                                                 <c:if test="${not empty SalesRep}">
                                                                     <c:forEach items="${SalesRep}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.salesRepId}' >${curObject.salesRepname}</option>
+                                                                        <option value='${curObject.salesRepID}' ${curObject.defaultItem==true?'selected':''}>${curObject.salesRepName}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -273,7 +264,7 @@
                                                                     onclick="callClick(this.id, '<spring:message code="BzComposer.datamanager.terms" />');">
                                                                 <c:if test="${not empty salesTerms}">
                                                                     <c:forEach items="${salesTerms}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.termId}' }>${curObject.bcaTermName}</option>
+                                                                        <option value='${curObject.termId}' ${curObject.defaultItem==true?'selected':''}>${curObject.termName}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -298,7 +289,7 @@
                                                                     onclick="callClick(this.id,'<spring:message code="BzComposer.datamanager.businessType" />');">
                                                                 <c:if test="${not empty SalesCatType}">
                                                                     <c:forEach items="${SalesCatType}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.cvCategoryId}' >${curObject.cvCategoryName}</option>
+                                                                        <option value='${curObject.cvCategoryID}' ${curObject.defaultItem==true?'selected':''}>${curObject.cvCategoryName}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -323,7 +314,7 @@
                                                                     onclick="callClick(this.id,'<spring:message code="BzComposer.datamanager.paymenttype" />');">
                                                                 <c:if test="${not empty SalesPaymentMethod}">
                                                                     <c:forEach items="${SalesPaymentMethod}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.paymentTypeId}' }>${curObject.paymentTypeName}</option>
+                                                                        <option value='${curObject.paymentTypeId}' ${curObject.defaultItem==true?'selected':''}>${curObject.paymentTypeName}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -349,7 +340,7 @@
                                                                     onclick="callClick(this.id,'<spring:message code="BzComposer.datamanager.receivedtype" />');">
                                                                 <c:if test="${not empty SalesReceivedType}">
                                                                     <c:forEach items="${SalesReceivedType}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.paymentTypeId}' }>${curObject.paymentTypeName}</option>
+                                                                        <option value='${curObject.paymentTypeId}' ${curObject.defaultItem==true?'selected':''}>${curObject.paymentTypeName}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -378,7 +369,7 @@
                                                                     onclick="callClick(this.id, '<spring:message code="BzComposer.datamanager.creditcard" />');">
                                                                 <c:if test="${not empty CreditCardType}">
                                                                     <c:forEach items="${CreditCardType}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.ccTypeId}' }>${curObject.ccTypeName}</option>
+                                                                        <option value='${curObject.ccTypeID}' ${curObject.defaultItem==true?'selected':''}>${curObject.ccTypeName}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -408,7 +399,7 @@
                                                                     onclick="callClick(this.id, '<spring:message code="BzComposer.datamanager.message" />');">
                                                                 <c:if test="${not empty SalesMessage}">
                                                                     <c:forEach items="${SalesMessage}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.messageId}' }>${curObject.messageName}</option>
+                                                                        <option value='${curObject.messageID}' ${curObject.defaultItem==true?'selected':''}>${curObject.messageName}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -422,19 +413,19 @@
                                                         </tr>
                                                     </table>
                                                 </td>
-                                                <td >
+                                                <td style="display:none;">
                                                     <table width="130" height="180" class="table-notifications">
                                                         <tr>
                                                             <th style="font-size: 14px;"><spring:message code="BzComposer.datamanager.tax" /></th>
                                                         </tr>
                                                         <tr>
                                                             <td style="font-size: 12px;">
-                                                            <select name="salesTaxId" size="10" style="overflow: auto; width: 140px" id="11$$"
+                                                            <select name="salesTaxID" size="10" style="width: 120px" id="11$$"
                                                                     onchange="callClick(this.id, '<spring:message code="BzComposer.datamanager.tax" />');"
                                                                     onclick="callClick(this.id, '<spring:message code="BzComposer.datamanager.tax" />');">
                                                                 <c:if test="${not empty SalesTax}">
                                                                     <c:forEach items="${SalesTax}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.salesTaxId}'>${curObject.state}</option>
+                                                                        <option value='${curObject.salesTaxID}'>${curObject.state}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -461,7 +452,7 @@
                                                                     onclick="callClick(this.id,'<spring:message code="BzComposer.datamanager.location" />');">
                                                                 <c:if test="${not empty SalesLocation}">
                                                                     <c:forEach items="${SalesLocation}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.locationId}' }>${curObject.locationName}</option>
+                                                                        <option value='${curObject.locationId}' ${curObject.defaultItem==true?'selected':''}>${curObject.locationName}</option>
                                                                     </c:forEach>
                                                                 </c:if>
                                                             </select></td>
@@ -475,38 +466,21 @@
                                                         </tr>
                                                     </table>
                                                 </td>
-                                                <td>
-                                                    <table width="130" height="180"
-                                                           class="table-notifications">
-                                                        <tr>
-                                                            <th style="font-size: 14px;"><spring:message code="BzComposer.datamanager.unitofmeasure" /></th>
-                                                        </tr>
-                                                        <tr>
-                                                            <td style="font-size: 12px;">
-                                                                <select name="unitOfMeasure" size="10" style="width: 120px" id="12$$"
-                                                                    onchange="callClick(this.id,'<spring:message code="BzComposer.datamanager.unitofmeasure" />');"
-                                                                    onclick="callClick(this.id,'<spring:message code="BzComposer.datamanager.unitofmeasure" />');">
-                                                                <c:if test="${not empty UnitOfMeasure}">
-                                                                    <c:forEach items="${UnitOfMeasure}" var="curObject" varStatus="loop">
-                                                                        <option value='${curObject.unitCategoryId}' }>${curObject.unitName}</option>
-                                                                    </c:forEach>
-                                                                </c:if>
-                                                            </select></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <TD align="center" style="font-size: 14px;">
-                                                                <input type="button" class="formbutton" name="unit_measure"
-                                                                    onclick="buttonClick('12$$','<spring:message code="BzComposer.datamanager.unitofmeasure" />');"
-                                                                    value='<spring:message code="BzComposer.datamanager.unitofmeasure" />'>
-                                                            </TD>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td  colspan="4" align="center"  style="background-color: rgb(247, 247, 247);">
-                                                    <table class="table-notifications" id="dataTable">
+                                                <td colspan="4" align="center"  style="background-color: rgb(247, 247, 247);">
+                                                    <table class="table-notifications">
                                                         <tr>
                                                             <td colspan="2" align="center" style="font-size: 25px;">
-                                                                <h4 id="selectedTitle"><spring:message code="BzComposer.datamanager.tax" /></h4>
+                                                                <h4 id="selectedTitle"><spring:message code="BzComposer.datamanager.setvalues" /></h4>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" id="taxRate" style="visibility: hidden">
+                                                                <spring:message code="BzComposer.datamanager.taxrate" />
+                                                                <input type="text" id="tax_rate" name="taxRateVal" onkeydown="return numbersonly(event,this.value)" tabindex="2" />
+                                                                <input type="hidden" name="sTitleval" id="sTitleId" value="" />
+                                                                <input type="hidden" name="sOldval" id="sOldId" value="" />
+                                                                <input type="hidden" name="sNewval" id="sNewId" value="" />
+                                                                <input type="hidden" name="sNewvalID" id="newIDD" value="" />
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -516,21 +490,10 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td colspan="2" id="taxRate" align="center" style="font-size: 14px; width: 70%; padding-left: 10px;">
-                                                                <spring:message code="BzComposer.datamanager.taxrate" />
-                                                                <input type="text" id="tax_rate" name="taxRateVal" onkeydown="return numbersonly(event,this.value)" tabindex="2" />
-                                                                <input type="hidden" name="sTitleval" id="sTitleId" value="" />
-                                                                <input type="hidden" name="sOldval" id="sOldId" value="" />
-                                                                <input type="hidden" name="sNewval" id="sNewId" value="" />
-                                                                <input type="hidden" name="sNewvalID" id="newIDD" value="" />
-                                                            </td>
-                                                        </tr>
-                                                        
-                                                        <tr>
                                                             <td colspan="2" align="center" style="font-size: 14px; ">
                                                                 <a class="formbutton" name="save" onclick="callSave();" tabindex="3" style="font-size: 14px;"><spring:message code="BzComposer.global.add" /></a>
-                                                                <a class="formbutton" name="save" onclick="callUpdateDelete(false);" tabindex="3" style="font-size: 14px;"><spring:message code="BzComposer.global.update" /></a>
-                                                                <a name="Delete" class="formbutton" onclick="callUpdateDelete(true);" tabindex="4" style="font-size: 14px;"><spring:message code="BzComposer.global.delete" /></a>
+                                                                <a class="formbutton" name="save" onclick="callUpdate();" tabindex="3" style="font-size: 14px;"><spring:message code="BzComposer.global.update" /></a>
+                                                                <a name="Delete" class="formbutton" onclick="callDelete();" tabindex="4" style="font-size: 14px;"><spring:message code="BzComposer.global.delete" /></a>
                                                                 <a name="Cancel" class="formbutton" onclick="callClear();" tabindex="5" style="font-size: 14px;"><spring:message code="BzComposer.global.clear" /></a>
                                                             </td>
                                                         </tr>
@@ -588,27 +551,22 @@ function init1(){
 }
 function callClick(idVal, ttl) {
     sOldVal = "";
+    
     document.getElementById("selectedTitle").innerHTML = ttl;
     document.getElementById("descriptionId").value = "";
     document.getElementById("tax_rate").value = "";
-    document.getElementById("dataTable").style.visibility ="visible";
-    if (idVal == "11$$"){
-        document.getElementById("tax_rate").style.visibility ="visible";
+    if (idVal == "11$$")
         document.getElementById("taxRate").style.visibility = "visible";
-    }
-    else{
+    else
         document.getElementById("taxRate").style.visibility = "hidden";
-        document.getElementById("tax_rate").style.visibility ="hidden";
-    }
 
-    for (i = 1; i <= 12; i++) {
+    for (i = 1; i <= 10; i++) {
         document.getElementById(i + "$$").style.background = '#ffffff'
         //if (idVal != i + "$$")
         //    document.getElementById(i + "$$").selectedIndex = -1;
     }
     document.getElementById("" + idVal).style.background = '#AAAAAA';
     id = document.getElementById("" + idVal).value;
-    console.log("id="+id);
     var i = 0;
     var sval;
     if (ttl == "CUSTOMER TITLE") {
@@ -702,7 +660,7 @@ function callClick(idVal, ttl) {
     } else if (ttl == "CREDIT CARD") {
         size = document.getElementById('ccSize').value;
         for (i = 0; i < size; i++) {
-            idd = document.getElementById(i + "ccTypeId").value;
+            idd = document.getElementById(i + "ccTypeID").value;
             if (id == idd) {
                 document.getElementById("descriptionId").value = document.getElementById(i + "ccTypeNm").value;
                 sOldVal = document.getElementById(i + "ccTypeNm").value;
@@ -733,17 +691,6 @@ function callClick(idVal, ttl) {
                 break;
             }
         }
-    }else if (ttl == "UNIT OF MEASURE") {
-        size = document.getElementById('umSize').value;
-        for (i = 0; i < size; i++) {
-            idd = document.getElementById(i + "umID").value;
-            if (id == idd) {
-                document.getElementById("descriptionId").value = document.getElementById(i + "umNm").value;
-                sOldVal = document.getElementById(i + "umNm").value;
-                document.getElementById("newIDD").value = idd;
-                break;
-            }
-        }
     }
 }
 
@@ -753,26 +700,21 @@ function buttonClick(idVal, ttl) {
     document.getElementById("selectedTitle").innerHTML = ttl;
     document.getElementById("descriptionId").value = "";
     document.getElementById("tax_rate").value = "";
-    document.getElementById("dataTable").style.visibility ="visible";
-    if (idVal == "11$$"){
-        document.getElementById("tax_rate").style.visibility ="visible";
+    if (idVal == "11$$")
         document.getElementById("taxRate").style.visibility = "visible";
-    }
-    else{
+    else
         document.getElementById("taxRate").style.visibility = "hidden";
-        document.getElementById("tax_rate").style.visibility ="hidden";
-    }
 
-     for (i = 1; i <= 12; i++) {
+    for (i = 1; i <= 10; i++) {
         document.getElementById(i + "$$").style.background = '#ffffff'
         //if(idVal!=i+"$$")
         document.getElementById(i + "$$").selectedIndex = -1;
-    } 
+    }
     document.getElementById("" + idVal).style.background = '#AAAAAA';
 }
 
 function callSave() {
-    //debugger;
+    //
     sType = document.getElementById("selectedTitle").innerHTML
     sOld = sOldVal;
     sNew = document.getElementById("descriptionId").value;
@@ -782,13 +724,11 @@ function callSave() {
     document.getElementById("sOldId").value = sOld;
     document.getElementById("sNewId").value = sNew;
     document.getElementById("newIDD").value = newID;
-    console.log("sTitleId="+sType+", sOldId="+sOld+", sNewId="+sNew+", newIDD="+newID);
-    /* return false;
     if (sOld != "") {
         showemptynewDescriptionDialog();
         document.getElementById("descriptionId").focus();
         return false;
-    } */
+    }
     if (sType == "") {
         alert("<bean:message key='BzComposer.datamanager.selectitemvalidation'/>");
     } else {
@@ -823,8 +763,8 @@ function callSave() {
     }
 }
 
-function callUpdateDelete(isDelete) {
-    //debugger;
+function callUpdate() {
+    //
     sType = document.getElementById("selectedTitle").innerHTML
     sOld = sOldVal;
     sNew = document.getElementById("descriptionId").value;
@@ -834,13 +774,6 @@ function callUpdateDelete(isDelete) {
     document.getElementById("sOldId").value = sOld;
     document.getElementById("sNewId").value = sNew;
     document.getElementById("newIDD").value = newID;
-    var updateUrl= "Configuration?tabid=DM_Update";
-    var dialogs = "#saveSelectedItemDialog";
-    if(isDelete){
-    	updateUrl = "Configuration?tabid=DM_Delete";
-    	dialogs= "#deleteSelectedItemDialog";
-    }
-    console.log("Deleted Clicked = "+isDelete+", url to hit ="+updateUrl);
     if (sOld == "") {
         showemptyupdateDescriptionDialog();
         return false;
@@ -857,7 +790,7 @@ function callUpdateDelete(isDelete) {
             return showBlankDiscriptionDialog();
         } else {
             event.preventDefault();
-            $(dialogs).dialog({
+            $("#saveSelectedItemDialog").dialog({
                 resizable: false,
                 height: 200,
                 width: 400,
@@ -866,7 +799,7 @@ function callUpdateDelete(isDelete) {
                     "<spring:message code='BzComposer.global.ok'/>": function () {
                         $(this).dialog("close");
                         document.getElementById("tabid").value = "DM_Update";
-                        document.forms['dmForm'].action = updateUrl
+                        document.forms['dmForm'].action = "Configuration?tabid=DM_Update";
                         document.forms['dmForm'].submit();
                     },
                     "<spring:message code='BzComposer.global.cancel'/>" : function () {
@@ -888,8 +821,6 @@ function callDelete() {
     document.getElementById("sOldId").value = sOld;
     document.getElementById("sNewId").value = sNew;
     document.getElementById("newIDD").value = newID;
-    console.log("sTitleId="+sType+", sOldId="+sOld+", sNewId="+sNew+", newIDD="+newID);
-    return false;
     if (sNew == "") {
         document.getElementById("descriptionId").focus();
         return showBlankDiscriptionDialog();
@@ -903,7 +834,7 @@ function callDelete() {
             buttons : {
                 "<spring:message code='BzComposer.global.ok'/>" : function() {
                     $(this).dialog("close");
-                    window.location ="Configuration?tabid=DM_Delete";
+                    window.location ="Configuration?tabid=DM_Delete&sTitleval="+sType+"&sNewvalID="+sNew;
                 },
                 "<spring:message code='BzComposer.global.cancel'/>" : function() {
                     $(this).dialog("close");
@@ -919,11 +850,8 @@ function callClear() {
     document.getElementById("descriptionId").value = "";
     document.getElementById("tax_rate").value = "";
     document.getElementById("newIDD").value = "";
-    document.getElementById("tax_rate").style.visibility="hidden";
-    document.getElementById("dataTable").style.visibility="hidden";
-    document.getElementById("taxRate").style.visibility = "hidden";
     sOldVal = "";
-    for (i = 1; i <= 12; i++) {
+    for (i = 1; i <= 10; i++) {
         document.getElementById(i + "$$").style.background = '#ffffff'
         document.getElementById(i + "$$").selectedIndex = -1;
     }
@@ -952,7 +880,7 @@ function saveSelectedItemDialog() {
 }
 
 function SaveValues(form) {
-    debugger;
+    
     let custTitleID = form.custTitleID.value;
     let shippingViaID = form.shippingViaID.value;
     let salesRepId = form.salesRepId.value;

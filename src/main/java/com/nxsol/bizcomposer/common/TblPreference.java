@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
 
 public class TblPreference {
 
@@ -296,7 +297,7 @@ public class TblPreference {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 
@@ -460,7 +461,7 @@ public class TblPreference {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 
@@ -800,7 +801,7 @@ public class TblPreference {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	    }
@@ -1098,7 +1099,7 @@ Connection con = null;
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	        return instance;
@@ -1231,7 +1232,7 @@ Connection con = null;
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	        return preference;
@@ -1489,7 +1490,7 @@ Connection con = null;
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	      /*  TblPreference.getInstance().readPreferences();*/
@@ -1535,7 +1536,7 @@ Connection con = null;
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	        return performance;
@@ -1570,7 +1571,7 @@ Connection con = null;
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	    }
@@ -1602,7 +1603,7 @@ Connection con = null;
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	    }
@@ -2115,7 +2116,7 @@ Connection con = null;
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	    }

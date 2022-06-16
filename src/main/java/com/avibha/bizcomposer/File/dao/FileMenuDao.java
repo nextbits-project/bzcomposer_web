@@ -1,9 +1,25 @@
 package com.avibha.bizcomposer.File.dao;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
+import com.avibha.bizcomposer.sales.dao.CustomerInfoDao;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
+import com.nxsol.bizcomposer.common.*;
+import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,20 +28,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.web.multipart.MultipartFile;
-
-import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
-import com.avibha.common.db.SQLExecutor;
-import com.avibha.common.utility.LabelValueBean;
-import com.nxsol.bizcomposer.common.ClientVendorHasService;
-import com.nxsol.bizcomposer.common.ConstValue;
-import com.nxsol.bizcomposer.common.JProjectUtil;
-import com.nxsol.bizcomposer.common.TblStore;
-import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import java.util.Iterator;
+import java.util.List;
 
 public class FileMenuDao {
 
@@ -192,7 +196,7 @@ public class FileMenuDao {
             stmt.executeUpdate(sql);
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -206,7 +210,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -231,7 +235,7 @@ public class FileMenuDao {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -244,7 +248,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return Code;
@@ -354,13 +358,13 @@ public class FileMenuDao {
                 }
             }
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return b;
@@ -427,7 +431,7 @@ public class FileMenuDao {
             };
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -443,7 +447,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return 1;
@@ -465,7 +469,7 @@ public class FileMenuDao {
             stmt.executeUpdate(sql);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) {
@@ -475,7 +479,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -519,7 +523,7 @@ public class FileMenuDao {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -532,7 +536,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -547,7 +551,7 @@ public class FileMenuDao {
 
         }catch (Exception e) {
             // TODO: handle exception\
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) {
@@ -557,7 +561,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -586,7 +590,7 @@ public class FileMenuDao {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -599,7 +603,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -622,7 +626,7 @@ public class FileMenuDao {
             stmt.executeUpdate(sql);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) {
@@ -632,7 +636,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -660,7 +664,7 @@ public class FileMenuDao {
             stmt.executeUpdate(sql);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) {
@@ -670,7 +674,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
     }
@@ -701,7 +705,7 @@ public class FileMenuDao {
                 cvId = 1;
             }
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
 
             // TODO: handle exception
         }finally {
@@ -716,7 +720,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return cvId;
@@ -761,7 +765,7 @@ public class FileMenuDao {
             stmt.executeUpdate(sql2);
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) {
@@ -771,7 +775,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -892,7 +896,7 @@ public class FileMenuDao {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) {
@@ -923,7 +927,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         if (cv == null) {
@@ -961,7 +965,7 @@ public class FileMenuDao {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         } finally {
             try {
                 if (rs != null) {
@@ -974,7 +978,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return stores;
@@ -999,7 +1003,7 @@ public class FileMenuDao {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         } finally {
             try {
                 if (rs != null) {
@@ -1012,7 +1016,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return qbStoreID;
@@ -1080,7 +1084,7 @@ public class FileMenuDao {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         } finally {
             try {
                 if (rs != null) {
@@ -1093,7 +1097,7 @@ public class FileMenuDao {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return storeId;
@@ -1114,14 +1118,14 @@ public class FileMenuDao {
                 storID = rs.getInt("StoreID");
             }
         }catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         } finally {
             try {
                 if (rs != null) { db.close(rs); }
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return storID;

@@ -195,7 +195,7 @@ function refreshItemsNow(val)
 </div>
 </div>
 </div>
-<%@ include file="/include/footer.jsp"%></div>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%></div>
 <script>
 document.SearchForm.type[0].checked=true;
 

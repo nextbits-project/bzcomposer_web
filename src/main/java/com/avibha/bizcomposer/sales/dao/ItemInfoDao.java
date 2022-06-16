@@ -5,30 +5,13 @@
  */
 package com.avibha.bizcomposer.sales.dao;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.StringTokenizer;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.avibha.bizcomposer.employee.dao.Employee;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
+import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
-import com.avibha.common.utility.LabelValueBean;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -38,7 +21,26 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 import com.nxsol.bizcomposer.common.TblItemInventory;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.struts.action.ActionServlet;
+import org.apache.struts.upload.FormFile;
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.nio.file.Files;
+import java.sql.*;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.*;
 
 /*
  * 
@@ -206,7 +208,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -274,7 +276,7 @@ public class ItemInfoDao {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -287,7 +289,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -360,7 +362,7 @@ public class ItemInfoDao {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -373,7 +375,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -449,7 +451,7 @@ public class ItemInfoDao {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -462,7 +464,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -561,7 +563,7 @@ public class ItemInfoDao {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -580,7 +582,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -595,7 +597,7 @@ public class ItemInfoDao {
 		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		String cat = "";
 		String inventoryName = "";
-		ReceivableListDto invoice = null;
+		ReceivableListBean invoice = null;
 		String sql = "";
 
 		DateInfo dInfo = new DateInfo();
@@ -706,7 +708,7 @@ public class ItemInfoDao {
 			
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -725,7 +727,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -818,7 +820,7 @@ public class ItemInfoDao {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -837,7 +839,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -903,7 +905,7 @@ public class ItemInfoDao {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -922,7 +924,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1058,7 +1060,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1214,7 +1216,7 @@ public class ItemInfoDao {
 					db.close(con);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1253,14 +1255,14 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return item;
@@ -1289,14 +1291,14 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1346,14 +1348,14 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1429,14 +1431,14 @@ public class ItemInfoDao {
 			request.setAttribute("FileName", file);
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return itemList;
@@ -1474,13 +1476,13 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in getAdjustInventoryList() " + ee);
-			ee.printStackTrace();
+			
 		} finally {
 			try {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ItemsList;
@@ -1507,13 +1509,13 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in getAdjustInventoryList() " + ee);
-			ee.printStackTrace();
+			
 		} finally {
 			try {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ItemList;
@@ -1547,13 +1549,13 @@ public class ItemInfoDao {
 				valid = true;
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in AddAdjustInventory() " + ee);
-			ee.printStackTrace();
+			
 		} finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1589,13 +1591,13 @@ public class ItemInfoDao {
 			con.commit();
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in UpdateInventory() " + ee);
-			ee.printStackTrace();
+			
 		} finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1713,14 +1715,14 @@ public class ItemInfoDao {
 			if (count > 0)
 				valid = true;
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2, "Error in updateItem() " + ee);
 		} finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1852,7 +1854,7 @@ public class ItemInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1907,7 +1909,7 @@ public class ItemInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1927,7 +1929,7 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in deleteItem() " + ee);
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -1935,7 +1937,7 @@ public class ItemInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return isChildExists;
@@ -1959,7 +1961,7 @@ public class ItemInfoDao {
 			pstmtUpdate.close();
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in deleteItem() " + ee);
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -1967,7 +1969,7 @@ public class ItemInfoDao {
 				if (pstmtUpdate != null) { db.close(pstmtUpdate); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return isDeleted;
@@ -2002,7 +2004,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -2040,7 +2042,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return inventoryID;
@@ -2088,7 +2090,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -2174,7 +2176,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return fillList;
@@ -2277,7 +2279,7 @@ public class ItemInfoDao {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs1 != null) {
@@ -2308,14 +2310,14 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("TotalGrossprofit", totalGrossProfit);
 		return objList;
 	}
 
-	/*public void uploadImage(ItemDto itemFrm, ActionServlet servlet) {
+	public void uploadImage(ItemDto itemFrm, ActionServlet servlet) {
 		String fileSep = System.getProperty("file.separator");
 		FileOutputStream fo = null;
 		try {
@@ -2372,7 +2374,7 @@ public class ItemInfoDao {
 		}
 
 	}
-*/
+
 	public boolean insertdataintodatabase(ArrayList al, HttpServletRequest request) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con=null;
@@ -2590,7 +2592,7 @@ public class ItemInfoDao {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2603,7 +2605,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return b;
@@ -2633,7 +2635,7 @@ public class ItemInfoDao {
 
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (stmt != null) {
@@ -2643,7 +2645,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2666,7 +2668,7 @@ public class ItemInfoDao {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2679,7 +2681,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return 0;
@@ -2719,7 +2721,7 @@ public class ItemInfoDao {
 			  }
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2732,7 +2734,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return valid;
@@ -2772,7 +2774,7 @@ public class ItemInfoDao {
   		}
   	  }catch (Exception e) {
   		// TODO: handle exception
-  		  e.printStackTrace();
+  		  Loger.log(e.toString());
   	}finally {
 		try {
 			if (rs != null) {
@@ -2785,7 +2787,7 @@ public class ItemInfoDao {
 				db.close(con);
 				}
 			} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
   	return v;
@@ -2818,7 +2820,7 @@ public class ItemInfoDao {
 			  }
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2831,7 +2833,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return row;
@@ -2856,7 +2858,7 @@ public class ItemInfoDao {
 			  
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2869,7 +2871,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return itemAsin;
@@ -2893,7 +2895,7 @@ public class ItemInfoDao {
 			  
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2906,7 +2908,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return inventory;
@@ -2982,7 +2984,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return weightList;
@@ -3024,7 +3026,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		ItemDto.setListOfExistingeSaleChannelList(eSaleChannelList);
@@ -3065,7 +3067,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return measurementList;
@@ -3104,7 +3106,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return subMeasurementList;
@@ -3154,7 +3156,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		form.setListOfExistingPriceLevels(priceLevelList);
@@ -3219,7 +3221,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		form.setListOfExistingeBayProducts(eBayProductList);
@@ -3244,14 +3246,14 @@ public class ItemInfoDao {
 		} 
 		catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getExistingLocation " + " " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return locationList;
@@ -3293,7 +3295,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		ItemDto.setListOfExistingChannelSettings(storeList);
@@ -3360,7 +3362,7 @@ public class ItemInfoDao {
 						}
 						
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return storeList;
@@ -3425,7 +3427,7 @@ public class ItemInfoDao {
 						db.close(con);
 						}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return productList;
@@ -3478,7 +3480,7 @@ public class ItemInfoDao {
 				if (pstmt1 != null) { db.close(pstmt1); }
 				if(con1 != null){ db.close(con1); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return accountList;
@@ -3507,7 +3509,7 @@ public class ItemInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -3549,7 +3551,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return subCategoryList;
@@ -3591,7 +3593,7 @@ public class ItemInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("vendorNameList", vendorNameList);

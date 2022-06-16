@@ -73,14 +73,14 @@ $(document).ready(function(){
 	//$(".esb_tab2_details_inner_tab2_details").hide();
 	
 	$("#mpw_tab1").click(function(){
-		debugger;
+		
         $(".mpw_tab1_details").show();
         $(".mpw_tab2_details").hide();
     });
 	
 	
 	$("#mpw_tab2").click(function(){
-		debugger;
+		
         $(".mpw_tab1_details").hide();
         $(".mpw_tab2_details").show();
     });
@@ -98,7 +98,7 @@ $(document).ready(function(){
 $('.addfeature').on('click', function() {
 	var options1 = $('select.featureName1 option:selected').sort().clone();
     var selectedfeatures =$('select.featureName1 option:selected').val(); 
-    debugger;
+    
     if(selectedfeatures == undefined){
     	alert("Please select any value first");
     } else {
@@ -125,7 +125,7 @@ $('.removefeature').on('click', function() {
     $('select.featureName2 option:selected').remove();				
     var options1 = $('select.featureName2 option:selected').sort().clone();
     var selectedfeatures =$('select.featureName2 option:selected').val();
-    debugger;
+    
     $('select.featureName1').append(options1);
     //$("select.featureName2 option").prop("selected",true);
     //$("select.featureName1 option").prop("selected",false);
@@ -141,7 +141,7 @@ function vAcctCategory()
 	var items = document.querySelectorAll("#testul li");
 	var objSelect = document.getElementById("selecttest");
 	
-	debugger;
+	
 	
 	var selectedValue = null;
 	
@@ -151,7 +151,7 @@ function vAcctCategory()
 			items[i].onclick = function(){
 				
 				//document.getElementById("selecttest").value = this.innerHTML;
-				debugger;
+				
 				selectedValue = this.innerHTML;
 				setSelectedValue(objSelect, selectedValue);
 				
@@ -174,7 +174,7 @@ function vAcctCategory()
 }
 
 /*$("#add").click(function(){
-	debugger;
+	
     $("#testul").append("<li>Appended item</li>");
 });*/
 
@@ -193,7 +193,7 @@ function add()
 			var candidate = document.getElementById("accname");
 			$('.bca_bankaccountlist #myUL .caret #nested li').each(function(i)
 					{
-				debugger;
+				
 				
 			 livalue = $(this).attr('id');
 				
@@ -205,20 +205,20 @@ function add()
 	else
 		{
 		
-		debugger;
+		
 		
 		var selectedValue = list;
 		
 		$('#myUL li').each(function(i)
 		{
 			
-			debugger;
+			
 			var livalue = $(this).attr('id');
 			
-			debugger;
+			
 			if(livalue == selectedValue)
 				{
-				debugger;
+				
 					
 					var ul = $("#myUL #"+livalue+" #nested")[0];
 					var candidate = document.getElementById("accname");
@@ -236,7 +236,7 @@ function add()
 				}
 			/*else
 				{
-				debugger;
+				
 					alert("false");
 				}*/
 			
@@ -281,7 +281,7 @@ $(document).on('click', '.bca_bankaccountlist #myUL .caret #nested', function(){
 /*screen 5*/
 /*$(document).on('click', '.bca_setuppreference_add', function(){
 	
-	debugger;
+	
 	var items = document.querySelectorAll("#myUL li");
 	//var terms = document.getElementById("#term_");
 	
@@ -294,14 +294,14 @@ $(document).on('click', '.bca_bankaccountlist #myUL .caret #nested', function(){
 	$('#myUL li').each(function(i)
 			{
 		
-		debugger;
+		
 		
 			var livalue = $(this).attr('class');
 			
-			debugger;
+			
 			if(livalue == textid)
 				{
-				debugger;
+				
 					
 					var ul = $("#myUL ."+livalue+" #nested")[0];
 					var settextboxid = document.getElementById("term_day");
@@ -332,7 +332,7 @@ $(document).on('click', '.bca_preferencelist #myUL .caret #nested', function(){
 	{
 		items[i].onclick = function(){
 			
-			debugger;
+			
 			document.getElementById("caret").value = this.innerHTML;
 			document.getElementById("term_day").value = $(this).attr('id');
 			
@@ -591,7 +591,7 @@ $(document).on('click','.caret7',function(e)
 });
 
 $(document).on('click','#add',function(){
-	debugger;
+	
 
 	if(globalSelectedPreferenceType != null)
 	{	
@@ -610,13 +610,13 @@ $(document).on('click','#add',function(){
 	globalSelectedPreferenceType = null;
 });
 $(document).on('click','#edit',function(e){
-	debugger;
+	
 	alert(this.id);
 	
 });
 function preference1()
 {
-	debugger;
+	
 	var ul = $("#myUL #"+1+" #nested");
 	var candidate = document.getElementById("term_");
     var li = document.createElement("li");

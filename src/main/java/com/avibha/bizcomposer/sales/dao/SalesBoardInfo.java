@@ -19,9 +19,6 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
@@ -29,12 +26,10 @@ import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
+import com.nxsol.bizcomposer.common.TblBudget;
 
-@Service
 public class SalesBoardInfo {
 
-	@Autowired
-	private ConfigurationInfo configInfo;
 	public ArrayList SalesRecordSearch(String compId, String invoiceReportType, SalesBoardDto salesBoardDto) {
 
 		String oDate1 = salesBoardDto.getOrderDate1();
@@ -55,7 +50,7 @@ public class SalesBoardInfo {
 		String sqlString="";
 		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<SalesBoard> objList = new ArrayList<>();
-		//ConfigurationInfo configInfo = new ConfigurationInfo();
+		ConfigurationInfo configInfo = new ConfigurationInfo();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
 			stmt = con.createStatement();
@@ -65,15 +60,15 @@ public class SalesBoardInfo {
 			Loger.log("oDate1:" + oDate1 + " oDate2:" + oDate2);
 
 	        if(invoiceReportType.equalsIgnoreCase("2")){
-				 sqlString = "select InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
+                sqlString = "select IsPaymentCompleted,InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
 							"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
 							"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 and IsPaymentCompleted =1";// AND
 			}else if(invoiceReportType.equalsIgnoreCase("3")){
-				 sqlString = "select InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
+                sqlString = "select IsPaymentCompleted, InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
 							"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
 							"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 and IsPaymentCompleted =0"; // AND
 		    }else{
-		    	 sqlString = "select InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
+                sqlString = "select IsPaymentCompleted, InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
 						"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
 						"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 ";// AND
 		    }
@@ -132,6 +127,7 @@ public class SalesBoardInfo {
 			while(rs.next()) {
 				SalesBoard d = new SalesBoard();
 				d.setInvoiceID(rs.getInt("InvoiceID"));
+                d.setPaymentCompleted(rs.getBoolean("IsPaymentCompleted"));
 				d.setOrderid(rs.getInt("orderid"));
 				d.setOrderNum(rs.getLong("OrderNum"));
 				String orderNo = (rs.getString("OrderNum"));
@@ -214,7 +210,7 @@ public class SalesBoardInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -228,7 +224,7 @@ public class SalesBoardInfo {
 				if (stmt4 != null) { db.close(stmt4); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -473,7 +469,7 @@ public class SalesBoardInfo {
 	}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -505,7 +501,7 @@ public class SalesBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -540,7 +536,7 @@ public class SalesBoardInfo {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -554,7 +550,7 @@ public class SalesBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return bal;
@@ -587,7 +583,7 @@ public class SalesBoardInfo {
 		 }
 		}catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -601,7 +597,7 @@ public class SalesBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return refBal;
@@ -691,7 +687,7 @@ public class SalesBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -763,7 +759,7 @@ public class SalesBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return result;
@@ -845,7 +841,7 @@ public class SalesBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;

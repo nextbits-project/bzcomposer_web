@@ -45,7 +45,7 @@ function openThumbnail()
   document.getElementById("imgupload1").click();
   var ima = $('#imgupload1').val();
   /* var im = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '');
-  debugger */
+   */
   $('#thumbnail').val(ima);
 }
 
@@ -72,12 +72,12 @@ function showSelectedProduct(productId,productName,productCode,productQty,produc
 	pSKU = productName;
 	pQty = productQty;
 	pAmount = productPrice;
-	debugger
+	
 	$("#eBayProductTable tr").each(function() {
 		$("#eBayProductTable tr").removeClass("draft");
 	});
 	var rows = document.getElementById("eBayProductTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
-	debugger
+	
 	for(i=0;i<rows;i++){
 		var row1=document.getElementById("productId"+productId);
 		row1.className = "draft";
@@ -90,7 +90,7 @@ function highlightSelectedSupplier(supplierId)
 		$("#supplierName tr").removeClass("draft");
 	});
 	var rows = document.getElementById("supplierName").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
-	debugger
+	
 	for(i=0;i<rows;i++)
 	{
 		var row1=document.getElementById("supplier"+supplierId);
@@ -104,7 +104,7 @@ function showSelectedCrossSellProduct(productId)
 		$("#crossSellProductTable tr").removeClass("draft");
 	});
 	var rows = document.getElementById("crossSellProductTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
-	debugger
+	
 	for(i=0;i<rows;i++)
 	{
 		var row1=document.getElementById("crossSellProductId"+productId);
@@ -114,9 +114,9 @@ function showSelectedCrossSellProduct(productId)
 
 function addToCrossSellProduct()
 {
-	debugger
+	
 	var rows = document.getElementById("eBayProductTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
-	debugger
+	
 	for(i=0;i<rows;i++)
 	{
 		var rowId = document.getElementById("ProductId");
@@ -131,12 +131,12 @@ function addToCrossSellProduct()
 
 function Remove() {
 	/* var row = document.getElementById("rowId").value;
-   	debugger
+   	
    	//var name = row.getElementsByTagName("TD")[0].innerHTML;
    	if (confirm("Do you want to delete: " + row + "Row?")) {
 	//Get the reference of the Table.
 	var table = document.getElementById("addTableRow");
-	debugger */
+	 */
     $(this).parent().parent('tr').remove();
 	//}
 };
@@ -148,7 +148,7 @@ function addData()
 
 function showCategoryDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showCategoryDialog").dialog({
 		resizable: false,
@@ -182,7 +182,7 @@ function showCantaddItemDialog()
 
 function showitemcodedialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showitemcodedialog").dialog({
 		resizable: false,
@@ -200,7 +200,7 @@ function showitemcodedialog()
 
 function showsalepricedialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showsalepricedialog").dialog({
 		resizable: false,
@@ -217,7 +217,7 @@ function showsalepricedialog()
 }
 
 function showpurchasepricedialog(){
-	debugger;
+	
 	event.preventDefault();
 	$("#showpurchasepricedialog").dialog({
 		resizable: false,
@@ -235,7 +235,7 @@ function showpurchasepricedialog(){
 
 function showqueantitydialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showqueantitydialog").dialog({
 		resizable: false,
@@ -253,7 +253,7 @@ function showqueantitydialog()
 
 function showweightdialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showweightdialog").dialog({
 		resizable: false,
@@ -271,7 +271,7 @@ function showweightdialog()
 
 function showcodediscountdialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showcodediscountdialog").dialog({
 		resizable: false,
@@ -289,7 +289,7 @@ function showcodediscountdialog()
 
 function showitemcodesubdialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showitemcodesubdialog").dialog({
 		resizable: false,
@@ -307,7 +307,7 @@ function showitemcodesubdialog()
 
 function showservicenamedialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showservicenamedialog").dialog({
 		resizable: false,
@@ -402,7 +402,7 @@ $(function() {
 					{
 						$(this).remove();
 					}*/
-					debugger;
+					
 					event.preventDefault();
 					$("#deleteCrossSellProductDialog").dialog({
 				    	resizable: false,
@@ -411,10 +411,10 @@ $(function() {
 				        modal: true,
 				        buttons: {
 				            "<spring:message code='BzComposer.global.ok'/>": function () {
-				            	debugger;
+				            	
 				                $(this).dialog("close");
 				                $(this).remove();
-				                debugger;
+				                
 				            },
 				            "<spring:message code='BzComposer.global.cancel'/>": function () {
 				                $(this).dialog("close");
@@ -441,16 +441,16 @@ $(function() {
 
 	$('#clientVendor').change(function()
 	{
-		debugger
+		
 		var id = $("#clientVendor").val();
-		debugger
+		
 		var name = $('#clientVendor option:selected').text();
 		var myWindow;
 		if(id == 0)
 		{
-			debugger
+			
 			 mywindow = window.open("Customer?tabid=addSupplier","_blank","scrollbars=No,height=900,width=1400,status=yes,toolbar=no,menubar=no,location=no");
-			debugger
+			
 			myWindow.moveTo(90,90);
 		}
 		else if(id = 10101010)
@@ -460,20 +460,20 @@ $(function() {
 	});
 
 	$('#addSupplierBtn').click(function(){
-		debugger
+		
 		var id = $("#clientVendor").val();
-		debugger
+		
 		var name = $('#clientVendor option:selected').text();
 		var names = name.split(' ');
-		debugger
+		
 		if(id == 0){
 			alert("<bean:message key='BzComposer.common.selectSupplier'/>");
 		}
 		else{
 			var rows = document.getElementById("supplierName").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
-			debugger
+			
 			if(rows<3){
-				debugger
+				
 				var isAvailable = $('#supplierName tr > td:contains('+name+')').length;
 				if(isAvailable == 0){
 					$('#supplierName').append("<tr id='supplier"+id+"' onclick='highlightSelectedSupplier("+id+");'><td id="+id+">"+name+"</td></tr>");
@@ -683,9 +683,9 @@ $(function() {
 
 
 	/* $('#deleteOptionBtn').click(function(){
-		debugger
+		
 	    $(this).parent().parent('tr').remove();
-		debugger
+		
 	});  */
 
 	/* $('#addTableRow').on('click', 'input[type="button"]', function () {
@@ -771,7 +771,7 @@ $(function() {
 				<td colspan="3" align="center" style="padding-right: 14px;">
 					<!-- productTab Starts -->
 					<div id="productTab">
-						<div id="tabs" style="height:650px;">
+						<div id="tabs" >
 							<ul id="tabsAddItem">
 								<li style="font-size: 12px;"><a href="#productInfo-1"><spring:message code="BzComposer.tabs.productinformation"/></a></li>
 								<li style="font-size: 12px;"><a href="#pricing-2"><spring:message code="BzComposer.tabs.pricing"/></a></li>
@@ -2943,19 +2943,23 @@ function showCombo(){
 		document.getElementById("cmdbox").disabled=true;
 }
 function CheckMambership(form) {
-	debugger;
+	
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("itemSize")%>";
-	if(membershipLevel == "Standard"){
+	var st = "Standared";
+	var pf ="Professional";
+	if(membershipLevel.toLowerCase()===st.toLowerCase()){
 		if(size>=100){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else {
 			return  ShowAdd(form);
 		}
-	}else if(membershipLevel == "Professional"){
+		
+	}
+	else if(membershipLevel.toLowerCase() == pf.toLowerCase()){
 		if(size>=500){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else {
 			return  ShowAdd(form);
@@ -2963,7 +2967,7 @@ function CheckMambership(form) {
 	}
 	/* else if(membershipLevel == "Enterprise"){
 		if(size>=10){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
@@ -2987,7 +2991,7 @@ function maxnumberofuserdialog()
     return false;
 }
 function ShowAdd(form){
-	val = form.itemType.value;
+		val = form.itemType.value;
 	if(val=="1"){
 		cat = false;    // document.getElementById('chk_cat').checked;
 		if(cat==false){
@@ -3299,35 +3303,35 @@ function call11(value){
 		document.getElementById('servicesTab').style.display='none';
 	}
 	else if(value==2){
-		debugger
+		
 		document.getElementById('inventoryTab').style.display='none';
-		debugger
+		
 		document.getElementById('discountTab').style.display='block';
-		debugger
+		
 		document.getElementById('subtotalTab').style.display='none';
-		debugger
+		
 		document.getElementById('servicesTab').style.display='none';
 	}
 	else if(value==3){
-		debugger
+		
 		document.getElementById('inventoryTab').style.display='none';
-		debugger
+		
 		document.getElementById('discountTab').style.display='none';
-		debugger
+		
 		document.getElementById('subtotalTab').style.display='block';
-		debugger
+		
 		document.getElementById('servicesTab').style.display='none';
 	}
 	else if(value==4)
 	{
 		document.getElementById('inventoryTab').style.display='none';
-		debugger
+		
 		document.getElementById('discountTab').style.display='none';
-		debugger
+		
 		document.getElementById('subtotalTab').style.display='none';
-		debugger
+		
 		document.getElementById('servicesTab').style.display='block';
-		debugger
+		
 	} */
 	if(value==1)
 	{

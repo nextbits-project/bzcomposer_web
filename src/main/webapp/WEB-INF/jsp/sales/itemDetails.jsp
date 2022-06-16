@@ -448,7 +448,7 @@
 		}
 	}
 	function updateItem(form){
-		debugger;
+		
 		val = document.getElementById('inId').value;
 		type = document.getElementById('itmType').value;
 		var res = window.confirm('<spring:message code="BizComposer.ItemDetails.Update.Validation" />')

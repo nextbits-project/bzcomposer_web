@@ -51,7 +51,7 @@ function openThumbnail()
   document.getElementById("imgupload1").click();
   var ima = $('#imgupload1').val();
   /* var im = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '');
-  debugger */
+   */
   $('#thumbnail').val(ima);
 }
 
@@ -68,7 +68,7 @@ function highlightSelectedSupplier(supplierId)
 		$("#supplierName tr").removeClass("draft");
 	});
 	var rows = document.getElementById("supplierName").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
-	debugger
+	
 	for(i=0;i<rows;i++)
 	{
 		var row1=document.getElementById("supplier"+supplierId);
@@ -82,7 +82,7 @@ function showSelectedCrossSellProduct(productId)
 		$("#crossSellProductTable tr").removeClass("draft");
 	});
 	var rows = document.getElementById("crossSellProductTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
-	debugger
+	
 	for(i=0;i<rows;i++)
 	{
 		var row1=document.getElementById("crossSellProductId"+productId);
@@ -137,7 +137,7 @@ $(function() {
 	});
 
 	$('#addSupplierBtn').click(function(){
-		debugger
+		
 		var id = $("#clientVendor").val();
 		var name = $('#clientVendor option:selected').text();
 		var names = name.split(' ');
@@ -147,7 +147,7 @@ $(function() {
 		else{
 			var rows = document.getElementById("supplierName").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
 			if(rows<3){
-				debugger
+				
 				var isAvailable = $('#supplierName tr > td:contains('+name+')').length;
 				if(isAvailable == 0){
 					$('#supplierName').append("<tr id='supplier"+id+"' onclick='highlightSelectedSupplier("+id+");'><td id="+id+">"+name+"</td></tr>");
@@ -1565,19 +1565,19 @@ function reloadPage() {
     location.reload();
 }
 function CheckMambership(form) {
-	debugger;
+	
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("itemSize")%>";
 	if(membershipLevel == "Standard"){
 		if(size>=100){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else {
 			return  ShowAdd(form);
 		}
 	}else if(membershipLevel == "Professional"){
 		if(size>=500){
-			debugger;
+			
 			return maxnumberofuserdialog();
 		}else {
 			return  ShowAdd(form);

@@ -7,19 +7,20 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
+import com.avibha.common.utility.MyUtility;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.common.BillingStatement;
 import com.nxsol.bizcomposer.common.ConstValue;
@@ -27,36 +28,27 @@ import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblBudgetCategory;
 import com.nxsol.bizcomposer.common.TblCategoryType;
 import com.nxsol.bizcomposer.common.TblRecurrentPaymentPlan;
-import com.nxsol.bizcomposer.common.TblVendorDetailDto;
+import com.nxsol.bizcomposer.common.TblVendorDetail;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcomposer.jasper.pojo.BillingBoardReport;
 import com.nxsol.bizcomposer.jasper.pojo.BillingStatementReport;
-import com.nxsol.bizcompser.global.table.TblCategoryDto;
-import com.nxsol.bizcompser.global.table.TblCategoryLoader;
-import com.nxsol.bizcompser.global.table.TblTerm;
-import com.nxsol.bizcompser.global.table.TblTermLoader;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
-import com.pritesh.bizcomposer.accounting.bean.SalesBillingTable;
-import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
-import com.pritesh.bizcomposer.accounting.bean.TblAccountable;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+import com.nxsol.bizcompser.global.table.*;
+import com.pritesh.bizcomposer.accounting.bean.*;
 
 public class ReceivableListImpl implements ReceivableLIst {
 
 	public static int pID=0;
-	public static TblPaymentDto p = new TblPaymentDto();
+	public static TblPayment p = new TblPayment();
 	boolean flag = false;
 	Date paidDate = null;
 	Date frDate = null;
 	Date tdate = null;
 	double partialDepositAmount = 0.0;
 	String strName = "";
-	TblPaymentDto paymentForReceived = null;
+	TblPayment paymentForReceived = null;
 	double receivedAmountForRL = 0.00;
 	TblAccount payerAccount = null;
-	ReceivableListDto inv = null;
+	ReceivableListBean inv = null;
 	double totalAmount = 0.0;
 	int priorityForAddBank = -1;
 	String statusForAddBank = "";
@@ -66,7 +58,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 	private ArrayList<TblAccountCategory> root = new ArrayList<TblAccountCategory>();
 	ArrayList<TblAccount> parent = new ArrayList<TblAccount>();
 	ArrayList<TblBudgetCategory> vRows = new ArrayList<TblBudgetCategory>();
-	TblCategoryDto category = null;
+	TblCategory category = null;
+	ConfigurationInfo configInfo = new ConfigurationInfo();
+	ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 	public double getTotalAmountForLabel()
 	{
@@ -74,12 +68,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 	
 	@Override
-	public ArrayList<ReceivableListDto> getReceivableList(int companyId) {
+	public ArrayList<ReceivableListBean> getReceivableList(int companyId) {
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<ReceivableListDto> rlb = new ArrayList<>();
+		ArrayList<ReceivableListBean> rlb = new ArrayList<>();
 		con = db.getConnection();
 		try {
 			String sql = "SELECT I.InvoiceID,I.OrderNum,I.PONum,I.SubTotal,I.Tax,I.EmployeeID,I.RefNum,I.Memo,I.ShipCarrierID,I.ShippingMethod,"
@@ -99,8 +93,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				ReceivableListDto rb = new ReceivableListDto();
-				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				ReceivableListBean rb = new ReceivableListBean();
+				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -112,6 +106,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				rb.setOrderNum(rs.getInt("OrderNum"));
+				int orderNo = (rs.getInt("OrderNum"));
+                rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo), AppConstants.POType, configDto, false));
 				rb.setPoNum(rs.getInt("PONum"));
 				rb.setEmployeeId(rs.getInt("EmployeeID"));
 				rb.setRefNum(rs.getString("RefNum"));
@@ -153,27 +149,27 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rlb.add(rb);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
 	}
 
 	@Override
-	public ArrayList<ReceivableListDto> getCancelledTableList(int companyId) {
+	public ArrayList<ReceivableListBean> getCancelledTableList(int companyId) {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<ReceivableListDto> rlb = new ArrayList<ReceivableListDto>();
+		ArrayList<ReceivableListBean> rlb = new ArrayList<ReceivableListBean>();
 		con = db.getConnection();
 
 		try {
@@ -189,7 +185,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					+ " LEFT JOIN  bca_term AS term" + " ON INV.TermID = term.TermID"
 					+ " WHERE  ( ( ( InvoiceTypeID ) IN ( 1, 12 )" + " AND INV.TermID <> 3 )"
 					+ " OR INV.InvoiceTypeID = 11 )" + " AND INV.AdjustedTotal > 0" + " AND INV.IsPaymentCompleted = 0"
-					+ " AND INV.invoiceStatus ="+ReceivableListDto.CANCELLED_INVOICE_STATUS + " AND INV.CompanyID =" + companyId
+					+ " AND INV.invoiceStatus ="+ReceivableListBean.CANCELLED_INVOICE_STATUS + " AND INV.CompanyID =" + companyId
 					+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
 					+ " WHERE  bca_payment.InvoiceID =" + "INV.InvoiceID" + " AND bca_payment.Deleted != 1)"
 					+ " OR (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
@@ -201,8 +197,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				ReceivableListDto rb = new ReceivableListDto();
-				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				ReceivableListBean rb = new ReceivableListBean();
+				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -250,7 +246,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -263,7 +259,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
@@ -293,7 +289,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -307,7 +303,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cv;
@@ -353,7 +349,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -367,7 +363,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return alc;
@@ -409,7 +405,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -423,7 +419,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paymentType;
@@ -475,7 +471,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -489,14 +485,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return accountForCombo;
 	}
 
 	@Override
-	public ReceivableListDto getInvoiceByOrderNUm(int ordernum,int companyId) {
+	public ReceivableListBean getInvoiceByOrderNUm(int ordernum,int companyId) {
 		// TODO Auto-generated method stub
 		
 		Connection con;
@@ -504,7 +500,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ReceivableListDto rb = null;
+		ReceivableListBean rb = null;
 		
 		try {
 			String sql = "SELECT INV.InvoiceID,INV.OrderNum,INV.PONum,INV.SubTotal,INV.Tax,INV.EmployeeID,INV.RefNum,INV.Memo,INV.ShipCarrierID,INV.ShippingMethod,"
@@ -531,8 +527,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				rb = new ReceivableListDto();
-				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				rb = new ReceivableListBean();
+				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -580,7 +576,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -593,13 +589,116 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rb;
 	}
 	@Override
-	public ReceivableListDto getInvoiceForLayawaysByOrderNUm(int ordernum,int companyId) {
+	public ReceivableListBean getInvoiceByPONum(int poNum,int companyId) {
+		// TODO Auto-generated method stub
+
+		Connection con;
+		Statement stmt = null;
+		SQLExecutor db = new SQLExecutor();
+		ResultSet rs = null;
+		con = db.getConnection();
+		ReceivableListBean rb = null;
+
+		try {
+			String sql = "SELECT INV.InvoiceID,INV.OrderNum,INV.PONum,INV.SubTotal,INV.Tax,INV.EmployeeID,INV.RefNum,INV.Memo,INV.ShipCarrierID,INV.ShippingMethod,"
+					+ " INV.SH," + "INV.ClientVendorID," + "INV.InvoiceTypeID," + "INV.Total," + "INV.AdjustedTotal,"
+					+ "INV.PaidAmount," + "(SELECT Sum(bca_payment.Amount) AS AB" + " FROM bca_payment"
+					+ " WHERE bca_payment.InvoiceID = INV.InvoiceID" + " AND bca_payment.Deleted != 1) AS PaidAmount12,"
+					+ "INV.Balance," + "INV.IsReceived," + "INV.TermID," + "INV.IsPaymentCompleted,"
+					+ "INV.DateConfirmed," + "INV.DateAdded," + "INV.invoiceStatus," + "INV.PaymentTypeID,"
+					+ "INV.CategoryID," + "INV.ServiceID," + "INV.SalesTaxID," + "INV.SalesRepID," + "INV.Taxable,"
+					+ "INV.Shipped," + "INV.JobCategoryID," + "term.Days," + "INV.BillingAddrID,"
+					+ "INV.ShippingAddrID," + "INV.TotalCommission," + "INV.BankAccountID" + " FROM bca_invoice AS INV"
+					+ " LEFT JOIN  bca_term AS term" + " ON INV.TermID = term.TermID"
+					+ " WHERE  ( ( ( InvoiceTypeID ) IN ( 2 )" + " AND INV.termid <> 3 )"
+					+ " OR INV.InvoiceTypeID = 11 )" + " AND INV.AdjustedTotal > 0" + " AND INV.IsPaymentCompleted = 0"
+					+ " AND INV.invoiceStatus = 0" + " AND INV.CompanyID =" + companyId + " AND INV.PONum="+poNum
+					+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
+					+ " WHERE  bca_payment.InvoiceID =" + "INV.InvoiceID" + " AND bca_payment.Deleted != 1)"
+					+ " OR (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
+					+ " WHERE  bca_payment.InvoiceID = INV.InvoiceID" + " AND bca_payment.Deleted != 1) IS NULL )"
+					+ "ORDER  BY ordernum DESC  ";
+
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				TblCategoryLoader category = new TblCategoryLoader();
+				rb = new ReceivableListBean();
+				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				TblTermLoader termloader = new TblTermLoader();
+				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
+				int cvId = rs.getInt("ClientVendorID");
+				ClientVendor cv = getClentVendor(cvId, companyId);
+				rb.setInvoiceID(rs.getInt("InvoiceID"));
+				rb.setOrderNum(rs.getInt("OrderNum"));
+				rb.setPoNum(rs.getInt("PONum"));
+				rb.setEmployeeId(rs.getInt("EmployeeID"));
+				rb.setRefNum(rs.getString("RefNum"));
+				rb.setMemo(rs.getString("Memo"));
+				rb.setCvID(cvId);
+				rb.setInvoiceTypeID(rs.getInt("InvoiceTypeID"));
+				rb.setTotal(rs.getDouble("Total"));
+				rb.setAdjustedTotal(rs.getDouble("AdjustedTotal"));
+				rb.setPaidAmount(rs.getDouble("PaidAmount"));
+				rb.setBalance(rs.getDouble("Balance"));
+				rb.setTermID(rs.getInt("TermID"));
+				rb.setPaymentTypeID(rs.getInt("PaymentTypeID"));
+				rb.setShipCarrierID(rs.getInt("ShipCarrierID"));
+				rb.setSh(rs.getDouble("SH")); // new changes
+				rb.setSubTotal(rs.getDouble("SubTotal"));
+				rb.setTax(rs.getDouble("Tax"));
+				rb.setShippingMethod(rs.getString("ShippingMethod"));
+				rb.setSalesTaxID(rs.getInt("SalesTaxID"));
+				rb.setTaxable(rs.getInt("Taxable") == 1 ? true : false);
+				rb.setReceived(rs.getBoolean("IsReceived"));
+				rb.setPaymentCompleted(rs.getBoolean("IsPaymentCompleted"));
+				rb.setDateConfirmed((java.util.Date) rs.getDate("DateConfirmed"));
+				rb.setDateAdded((java.util.Date) rs.getDate("DateAdded"));
+				rb.setCategoryID(rs.getInt("CategoryID"));
+				rb.setInvoiceStatus(rs.getInt("invoiceStatus"));
+				rb.setServiceID(rs.getLong("ServiceID"));
+				rb.setSalesRepID(rs.getInt("SalesRepID"));
+				rb.setShipped(rs.getInt("Shipped"));
+				rb.setJobCategoryID(rs.getInt("JobCategoryID"));
+				rb.setBillingAddrID(rs.getInt("BillingAddrID"));
+				rb.setShipToAddrID(rs.getInt("ShippingAddrID"));
+				rb.setCommission(rs.getDouble("TotalCommission"));
+				rb.setBankAccountID(rs.getInt("BankAccountID"));
+				rb.setCvName(cv.getFirstName()+" "+cv.getLastName());
+				rb.setCompanyName(cv.getName());
+				rb.setTblcategory(categoryName);
+				rb.setTblterm(tblterm);
+
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Loger.log(e.toString());
+		}finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if(con != null){
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return rb;
+	}
+	@Override
+	public ReceivableListBean getInvoiceForLayawaysByOrderNUm(int ordernum,int companyId) {
 		// TODO Auto-generated method stub
 		
 		Connection con;
@@ -607,7 +706,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ReceivableListDto rb = null;
+		ReceivableListBean rb = null;
 		
 		try {
 			String sql = "SELECT INV.InvoiceID,INV.OrderNum,INV.PONum,INV.SubTotal,INV.Tax,INV.EmployeeID,INV.RefNum,INV.Memo,INV.ShipCarrierID,INV.ShippingMethod,"
@@ -634,8 +733,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				rb = new ReceivableListDto();
-				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				rb = new ReceivableListBean();
+				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -683,7 +782,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -696,7 +795,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rb;
@@ -733,7 +832,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -747,7 +846,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -796,7 +895,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -810,7 +909,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
@@ -851,7 +950,7 @@ public class ReceivableListImpl implements ReceivableLIst {
             }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -864,7 +963,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -872,9 +971,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public TblPaymentDto getPaymentByPaymentId(int id) {
+	public TblPayment getPaymentByPaymentId(int id) {
 		// TODO Auto-generated method stub
-		TblPaymentDto payment = null;
+		TblPayment payment = null;
 		
 		Connection con;
 		Statement stmt = null;
@@ -891,7 +990,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				payment = new TblPaymentDto();
+				payment = new TblPayment();
 				payment.setId(rs.getInt("PaymentID"));
 				payment.setAmount(rs.getDouble("Amount"));
 				payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -904,7 +1003,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -918,7 +1017,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 				
@@ -926,19 +1025,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public int updateInvoiceByOrderNum(ReceivableListDto ReceivableListDto) {
+	public int updateInvoiceByOrderNum(ReceivableListBean receivableListBean) {
 		// TODO Auto-generated method stub
-		ReceivableListDto rb = getInvoiceByOrderNUm(ReceivableListDto.getOrderNum(),ReceivableListDto.getCompanyID());
+		ReceivableListBean rb = getInvoiceByPONum(receivableListBean.getPoNum(),receivableListBean.getCompanyID());
 		if(rb == null)
 		{
 			try {
-				rb = getInvoiceByInvoiceID(ReceivableListDto.getInvoiceID());
+				rb = getInvoiceByInvoiceID(receivableListBean.getInvoiceID());
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				// TODO Auto-generated catch block
+				Loger.log(e.toString());
 			}
 		}
-		double paidAmount = rb.getPaidAmount()+ReceivableListDto.getBalance();
+		double paidAmount = rb.getPaidAmount()+receivableListBean.getBalance();
 		double balance = rb.getAdjustedTotal() - paidAmount;
 		int i = 0;
 		Connection con;
@@ -947,23 +1047,24 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ResultSet rs = null;
 		con = db.getConnection();
 		String sql = "";
-		if(ReceivableListDto.getPoNum() == 0)
+		if(receivableListBean.getPoNum() == 0)
 		{
-			 sql = "update bca_invoice SET PaymentTypeID ="+ReceivableListDto.getPaymentTypeID()+ "," + " BankAccountID="+ReceivableListDto.getBankAccountID()+ "," + "CategoryID="+ReceivableListDto.getCategoryID()
-				+ "," + " PaidAmount="+paidAmount+ "," + " Balance="+balance+ ","+"ClientVendorID="+ ReceivableListDto.getCvID() + ", Memo='"+ ReceivableListDto.getMemo() +"'"+ 
-				" Where OrderNum="+ReceivableListDto.getOrderNum()+" AND CompanyID="+ReceivableListDto.getCompanyID();
+			 sql = "update bca_invoice SET PaymentTypeID ="+receivableListBean.getPaymentTypeID()+ "," + " BankAccountID="+receivableListBean.getBankAccountID()+ "," + "CategoryID="+receivableListBean.getCategoryID()
+				+ "," + " PaidAmount="+paidAmount+ "," + " Balance="+balance+ ","+"ClientVendorID="+ receivableListBean.getCvID() + ", Memo='"+ receivableListBean.getMemo() +"'"+ 
+				" Where OrderNum="+receivableListBean.getOrderNum()+" AND CompanyID="+receivableListBean.getCompanyID();
 		}
 		else
 		{	
-				 sql = "update bca_invoice SET PaymentTypeID ="+ReceivableListDto.getPaymentTypeID()+ "," + " BankAccountID="+ReceivableListDto.getBankAccountID()+ "," + "CategoryID="+ReceivableListDto.getCategoryID()
-				+ "," + " PaidAmount="+paidAmount+ "," + " Balance="+balance+ ","+"ClientVendorID="+ ReceivableListDto.getCvID() + ", Memo='"+ ReceivableListDto.getMemo() +"'"+ 
-				" Where PONum="+ReceivableListDto.getPoNum()+" AND CompanyID="+ReceivableListDto.getCompanyID();
+				 sql = "update bca_invoice SET PaymentTypeID ="+receivableListBean.getPaymentTypeID()+ "," + " BankAccountID="+receivableListBean.getBankAccountID()+ "," + "CategoryID="+receivableListBean.getCategoryID()
+				+ "," + " PaidAmount="+paidAmount+ "," + " Balance="+balance+ ","+"ClientVendorID="+ receivableListBean.getCvID() + ", Memo='"+ receivableListBean.getMemo() +"'"+ 
+				" Where PONum="+receivableListBean.getPoNum()+" AND CompanyID="+receivableListBean.getCompanyID();
 		}
 		try {
 			stmt = con.createStatement();
 			i = stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			Loger.log(e.toString());
 			e.printStackTrace();
 		}
 		finally {
@@ -978,14 +1079,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return i;
 	}
 
 	@Override
-	public ArrayList<ReceivableListDto> getInvoiceForUnpaidOpeningbal(int copanyId) {
+	public ArrayList<ReceivableListBean> getInvoiceForUnpaidOpeningbal(int copanyId) {
 		// TODO Auto-generated method stub
 		double openingBalance = 0.0;
 		Connection con;
@@ -993,7 +1094,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ArrayList<ReceivableListDto> rlb = new ArrayList<ReceivableListDto>();
+		ArrayList<ReceivableListBean> rlb = new ArrayList<ReceivableListBean>();
 		
 		String sql = "SELECT * "
 				+ " FROM bca_clientvendor  WHERE Deleted=0 AND CompanyID ="+copanyId
@@ -1008,7 +1109,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				ReceivableListDto rb = new ReceivableListDto();
+				ReceivableListBean rb = new ReceivableListBean();
 				openingBalance = rs.getDouble("CustomerOpenDebit");
 				rb.setCvName(rs.getString("FirstName")+" "+rs.getString("LastName"));
 				rb.setCompanyName(rs.getString("Name"));
@@ -1031,7 +1132,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1045,7 +1146,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
@@ -1073,7 +1174,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1087,14 +1188,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return balnace;
 	}
 
 	@Override
-	public ArrayList<ReceivableListDto> getUnpaidCreditAmount(int companyId) {
+	public ArrayList<ReceivableListBean> getUnpaidCreditAmount(int companyId) {
 		// TODO Auto-generated method stub
 		double openingBalance = 0.0;
 		Connection con;
@@ -1102,7 +1203,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ArrayList<ReceivableListDto> rlb = new ArrayList<ReceivableListDto>();
+		ArrayList<ReceivableListBean> rlb = new ArrayList<ReceivableListBean>();
 		
 		/*int cvTypeIdForCustomer = getCustomerTypeId(ConstValue.CUSTOMER);
 		int cvTypeIdForDealer = getCustomerTypeId(ConstValue.DEALER);
@@ -1112,7 +1213,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ " a.ClientVendorID,a.CategoryID,b.InvoiceID,b.Credit,b.Total_Credit ,a.TermID,b.Memo"
 				+ " FROM bca_clientvendor AS a  INNER JOIN bca_invoicecredit AS b ON b.cvId = a.ClientVendorID "
 				+ " WHERE a.Deleted=0 AND b.Deleted = 0 AND b.Credit > 0 "
-				+ " AND b.InvoiceTypeID NOT IN("+ReceivableListDto.PURCHASE_ORDER_INVOICE_TYPE+") AND CompanyID ="+companyId
+				+ " AND b.InvoiceTypeID NOT IN("+ReceivableListBean.PURCHASE_ORDER_INVOICE_TYPE+") AND CompanyID ="+companyId
 				+ " AND Status = 'N'"
 				+ " AND CVTypeID IN("+getCustomerTypeId(ConstValue.CUSTOMER)+","+getCustomerTypeId(ConstValue.DEALER)+","+getCustomerTypeId(ConstValue.CustVenBoth)+","+getCustomerTypeId(ConstValue.DealerVenBoth)+") ORDER BY b.DateAdded DESC";
 				/*+ " AND CVTypeID IN("+cvTypeIdForCustomer+","+cvTypeIdForDealer+","+cvTypeIdForBoth+","+cvTypeIdForDealerVendor+") ORDER BY b.DateAdded DESC";*/
@@ -1123,7 +1224,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				ReceivableListDto uca = new ReceivableListDto();
+				ReceivableListBean uca = new ReceivableListBean();
 				openingBalance = rs.getDouble("Credit");
 				uca.setInvoiceID(rs.getInt("InvoiceID"));
 //				uca.setPaymentTypeID(paymentTypeID);
@@ -1133,7 +1234,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				uca.setCreditAmount(openingBalance);
 				uca.setTotalCreditAmount(rs.getDouble("Total_Credit"));
 				uca.setBalance(openingBalance);
-				uca.setInvoiceTypeID(ReceivableListDto.UNPAID_CREDIT_TYPE);
+				uca.setInvoiceTypeID(ReceivableListBean.UNPAID_CREDIT_TYPE);
 //				uca.setpayFrom(PayFrom);
 //				uca.setCategoryID(categoryID);
 				uca.setDateAdded(rs.getDate("DateAdded"));
@@ -1146,7 +1247,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1160,7 +1261,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
@@ -1188,7 +1289,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1202,7 +1303,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cvTypeId;
@@ -1232,7 +1333,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1246,18 +1347,18 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return amount;
 	}
 
 	@Override
-	public TblPaymentDto setPayment(ReceivableListDto bean,int InvoiceID,int CompanyID) {
+	public TblPayment setPayment(ReceivableListBean bean,int InvoiceID,int CompanyID) {
 		// TODO Auto-generated method stub
 		int cvId = bean.getCvID();
 		TblAccount account = getAccountForPayer(cvId, CompanyID);
-		TblPaymentDto payment = new TblPaymentDto();
+		TblPayment payment = new TblPayment();
 		payment.setAmount(bean.getPaidAmount());
 		payment.setPaymentTypeID(bean.getPaymentTypeID());
 		payment.setCvID(cvId);
@@ -1308,7 +1409,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1322,7 +1423,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
@@ -1368,7 +1469,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1382,7 +1483,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
@@ -1428,7 +1529,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1442,14 +1543,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
 	}
 
 	@Override
-	public void insertAccount(TblPaymentDto payment, ReceivableListDto bean) throws SQLException {
+	public void insertAccount(TblPayment payment, ReceivableListBean bean) throws SQLException {
 		// TODO Auto-generated method stub
 		Savepoint payment_svpt = null;
 		Connection con = null;
@@ -1467,7 +1568,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				System.out.println("P id is :66"+pID);
 				p.setpID(pID);
 		}
-		catch(Exception e){e.printStackTrace();}
+		catch(Exception e){Loger.log(e.toString());}
 		
 		invoicePaid(bean, true);
 		
@@ -1481,7 +1582,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 }
 	
-	public int transaction(TblPaymentDto payment) throws SQLException
+	public int transaction(TblPayment payment) throws SQLException
 	{
 		int paymentId = -1;
         double payFromBalance = 0.00;
@@ -1545,7 +1646,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	        	p.setpID(pID);
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -1558,7 +1659,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         	
@@ -1602,12 +1703,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 	
-	public static void invoicePaid(ReceivableListDto invoice,boolean b) throws SQLException
+	public static void invoicePaid(ReceivableListBean invoice,boolean b) throws SQLException
 	{
 		boolean paymentCompleted = false;
         double paidAmount = 0.0;
@@ -1618,7 +1719,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ResultSet rs = null;
 		con = db.getConnection();
 		
-        invoice.setInvoiceStatus(ReceivableListDto.NORMAL_INVOICE_STATUS);
+        invoice.setInvoiceStatus(ReceivableListBean.NORMAL_INVOICE_STATUS);
         
         if (b) {
             if (invoice.getBalance() == 0.0) {
@@ -1653,7 +1754,7 @@ public class ReceivableListImpl implements ReceivableLIst {
       }
       catch(SQLException e)
       {
-    	  e.printStackTrace();
+    	  Loger.log(e.toString());
       }
       finally {
 			try {
@@ -1667,13 +1768,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 
 	@Override
-	public void getLastId(TblPaymentDto payment) {
+	public void getLastId(TblPayment payment) {
 		// TODO Auto-generated method stub
 		 	Connection con;
 			Statement stmt = null;
@@ -1695,7 +1796,7 @@ public class ReceivableListImpl implements ReceivableLIst {
                  }
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -1709,14 +1810,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		
 	}
 
 	@Override
-	public void depositTo(TblPaymentDto payment, TblAccount account,int priority) throws SQLException {
+	public void depositTo(TblPayment payment, TblAccount account,int priority) throws SQLException {
 		// TODO Auto-generated method stub
 		boolean state = false;
 		Connection con;
@@ -1765,13 +1866,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
        
 	}
 	
-	public void adjustCurrentBalance(TblPaymentDto payment) throws SQLException
+	public void adjustCurrentBalance(TblPayment payment) throws SQLException
 	{
 		double payFromBalance = 0.0;
         double payToBalance = 0.0;
@@ -1812,13 +1913,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
   }
 
 	@Override
-	public double getAmountByInvoiceId(ReceivableListDto invoice) {
+	public double getAmountByInvoiceId(ReceivableListBean invoice) {
 		// TODO Auto-generated method stub
 		double amount = 0.0;
 		Connection con;
@@ -1841,7 +1942,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1855,14 +1956,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return amount;
 	}
 
 	@Override
-	public ArrayList<TblPaymentDto> getReceivedList(int compantId,String dateStr) {
+	public ArrayList<TblPayment> getReceivedList(int compantId,String dateStr) {
 		// TODO Auto-generated method stub
 		double amount = 0.0;
 		Connection con;
@@ -1870,7 +1971,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ArrayList<TblPaymentDto> rl = new ArrayList<TblPaymentDto>();
+		ArrayList<TblPayment> rl = new ArrayList<TblPayment>();
 		
 		String sql = "SELECT a.* "
                 + " FROM bca_payment a , bca_invoice b"
@@ -1880,7 +1981,7 @@ public class ReceivableListImpl implements ReceivableLIst {
                 + " AND b.InvoiceTypeID IN (1,11,12,16,17,31) "
                 + " AND a.InvoiceID=b.InvoiceID "
                 + " AND a.Deleted=0"
-                + " AND a.TransactionType <> "+ReceivableListDto.UNPAID_CREDIT_TYPE    //+ " AND a.TransactionType <> 19"
+                + " AND a.TransactionType <> "+ReceivableListBean.UNPAID_CREDIT_TYPE    //+ " AND a.TransactionType <> 19"
                 + " AND a.CategoryID <> -11";
 		
 		if (!dateStr.equals("")) {
@@ -1895,9 +1996,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblPaymentDto payment = new TblPaymentDto();
+				TblPayment payment = new TblPayment();
 				TblCategoryLoader category = new TblCategoryLoader();
-				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				ClientVendor cv = getClentVendor(rs.getInt("ClientVendorID"), ConstValue.companyId);
 				payment.setId(rs.getInt("PaymentID"));
                 payment.setAmount(rs.getDouble("Amount"));
@@ -1925,7 +2026,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1939,7 +2040,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rl;
@@ -1966,7 +2067,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -1980,7 +2081,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return account;
@@ -2007,7 +2108,7 @@ public class ReceivableListImpl implements ReceivableLIst {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
 			try {
@@ -2021,7 +2122,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return paymentTypeName;
@@ -2048,7 +2149,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -2062,7 +2163,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -2108,7 +2209,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				// TODO Auto-generated catch block
 				fromDate = new Date();
 	            toDate = new Date();
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -2122,7 +2223,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		 al.add(fromDate);
@@ -2201,7 +2302,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -2215,7 +2316,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		return PaidOrUnpaid;
@@ -2230,7 +2331,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		
 		String sql = "Update bca_invoice "
-		+" SET invoiceStatus="+ReceivableListDto.CANCELLED_INVOICE_STATUS
+		+" SET invoiceStatus="+ReceivableListBean.CANCELLED_INVOICE_STATUS
 		+ " ,MEMO='Cancelled Payment'"
 		+ " WHERE CompanyID="+ConstValue.companyId
 		+ " AND InvoiceID="+invoiceId;
@@ -2241,7 +2342,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			System.out.println("Invoice Updated :-----" +i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -2252,7 +2353,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -2267,7 +2368,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		
 		String sql = "Update bca_invoice "
-		+" SET invoiceStatus="+ReceivableListDto.NORMAL_INVOICE_STATUS
+		+" SET invoiceStatus="+ReceivableListBean.NORMAL_INVOICE_STATUS
 		+ " ,MEMO='Cancelled Payment'"
 		+ " WHERE CompanyID="+ConstValue.companyId
 		+ " AND InvoiceID="+invoiceId;
@@ -2278,7 +2379,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			System.out.println("Invoice Updated :-----" +i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -2289,7 +2390,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -2318,7 +2419,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}		
 		finally {
 			try {
@@ -2332,7 +2433,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -2340,14 +2441,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public TblPaymentDto getObjectOfStoragePayment(int paymentId) {
+	public TblPayment getObjectOfStoragePayment(int paymentId) {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		TblPaymentDto payment = new TblPaymentDto();
+		TblPayment payment = new TblPayment();
 		
 		String sql = "SELECT PaymentID,AccountID,Amount,PayeeID,"
                 + " PayerID,Deleted,CategoryID,AccountCategoryID,PaymentTypeID,"
@@ -2392,7 +2493,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -2406,20 +2507,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
 		return payment;
 	}
-	public static ReceivableListDto getInvoiceByInvoiceID(int invoiceID) throws SQLException
+	public static ReceivableListBean getInvoiceByInvoiceID(int invoiceID) throws SQLException
 	{
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ReceivableListDto invoice = new ReceivableListDto();
+		ReceivableListBean invoice = new ReceivableListBean();
 		String sql = " SELECT * "
                 + " FROM bca_invoice "
                 + " WHERE InvoiceID = " + invoiceID
@@ -2493,7 +2594,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2506,14 +2607,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return invoice;
 	}
 
 	@Override
-	public void updateTransaction(TblPaymentDto payment,double receivedAmount,String receivedName,Date date) throws SQLException {
+	public void updateTransaction(TblPayment payment,double receivedAmount,String receivedName,Date date) throws SQLException {
 		// TODO Auto-generated method stub
 		strName = receivedName;
 		receivedAmountForRL = receivedAmount;
@@ -2556,12 +2657,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		
 		
 	}
-	public void adjustPaymentBalance(TblPaymentDto payment, double amount)
+	public void adjustPaymentBalance(TblPayment payment, double amount)
 	{
 		 double payFromBalance = 0.00;
 	     double payToBalance = 0.00;
@@ -2612,7 +2713,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -2625,7 +2726,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}      
 	     
@@ -2689,11 +2790,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
     }
-	public void adjustDepositBalance(TblPaymentDto payment,double amount)throws SQLException
+	public void adjustDepositBalance(TblPayment payment,double amount)throws SQLException
 	{
 		double payFromBalance = 0.00;
         double payToBalance = 0.00, payToBalanceAmount = 0.0;
@@ -2769,11 +2870,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
-	private void updateRefundTransaction(TblPaymentDto payment,double amount)
+	private void updateRefundTransaction(TblPayment payment,double amount)
 	{
 		Statement stmt = null;
 		Connection con = null;
@@ -2791,7 +2892,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(Sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2804,7 +2905,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2836,7 +2937,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				db.close(con);
 				}
 			} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 		
@@ -2894,7 +2995,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (stmt != null) {
@@ -2904,11 +3005,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
-	final public static void updateInvoicemodifiedforBankingedited(ReceivableListDto invoice,boolean b)throws SQLException
+	final public static void updateInvoicemodifiedforBankingedited(ReceivableListBean invoice,boolean b)throws SQLException
 	{
 		Connection con;
 		Statement stmt = null;
@@ -3002,7 +3103,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	        
@@ -3045,7 +3146,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				db.close(con);
 				}
 			} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	}
@@ -3090,7 +3191,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				db.close(con);
 				}
 			} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	}
@@ -3098,7 +3199,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	private boolean checkEdits()throws SQLException
 	{
 		if (paymentForReceived.getInvoiceID() > 0) {
-	          ReceivableListDto invoice = getInvoiceByInvoiceID(paymentForReceived.getInvoiceID());
+	          ReceivableListBean invoice = getInvoiceByInvoiceID(paymentForReceived.getInvoiceID());
 	          if(invoice!=null)
 	          {
 	        	  partialDepositAmount = receivedAmountForRL - paymentForReceived.getAmount() + invoice.getPaidAmount();
@@ -3188,7 +3289,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		 finally {
 				try {
@@ -3199,7 +3300,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		
@@ -3237,7 +3338,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3251,14 +3352,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return 0;
 	}
 
 	@Override
-	public void setDeletedmodified(TblPaymentDto payment, boolean isDeleted, String tableName, int isUpfrontDeposit) {
+	public void setDeletedmodified(TblPayment payment, boolean isDeleted, String tableName, int isUpfrontDeposit) {
 		// TODO Auto-generated method stub
 		
 		boolean isDepositAccount = false;
@@ -3279,7 +3380,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				deleteAccountable(payment.getPayableID());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		deleteAccountablemodified(payment.getInvoiceID());
@@ -3305,7 +3406,7 @@ public class ReceivableListImpl implements ReceivableLIst {
               }
                 catch(SQLException e)
                 {
-                	e.printStackTrace();
+                	Loger.log(e.toString());
                 }
                 finally {
         			try {
@@ -3316,7 +3417,7 @@ public class ReceivableListImpl implements ReceivableLIst {
         					db.close(con);
         					}
         				} catch (Exception e) {
-        				e.printStackTrace();
+        				Loger.log(e.toString());
         			}
         		}
             }
@@ -3347,7 +3448,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            stmt.executeUpdate(sql);
 
 	        } catch (SQLException e) {
-	            e.printStackTrace();
+	            Loger.log(e.toString());
 	        } finally {
 				try {
 					if (stmt != null) {
@@ -3357,11 +3458,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	    }
-	public void deletePayment(TblPaymentDto payment)
+	public void deletePayment(TblPayment payment)
 	{
 		Connection con;
 		Statement stmt = null;
@@ -3377,7 +3478,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3391,14 +3492,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
 		
 
 	}
-	public void updateBcaPaymentForToSetIsneedTodeposit(TblPaymentDto payment)
+	public void updateBcaPaymentForToSetIsneedTodeposit(TblPayment payment)
 	{
 		Connection con;
 		Statement stmt = null;
@@ -3414,7 +3515,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3425,12 +3526,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 	
-	public static void adjustCurrentBalancemodified(TblPaymentDto payment, TblAccount payerAccount, TblAccount payeeAccount, double paymentAmount)
+	public static void adjustCurrentBalancemodified(TblPayment payment, TblAccount payerAccount, TblAccount payeeAccount, double paymentAmount)
 	{
 		double payFromBalance = 0.00;
         double payToBalance = 0.00;
@@ -3515,7 +3616,7 @@ public class ReceivableListImpl implements ReceivableLIst {
              
         }catch(SQLException e)
         {
-        	e.printStackTrace();
+        	Loger.log(e.toString());
         }
         finally {
 			try {
@@ -3532,7 +3633,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -3572,7 +3673,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		 finally {
 				try {
@@ -3589,7 +3690,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	}
@@ -3629,7 +3730,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -3645,15 +3746,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
 	}
 	
-	public static void updateInvoice(TblPaymentDto payment)
+	public static void updateInvoice(TblPayment payment)
 	{
-		ReceivableListDto invoice;
+		ReceivableListBean invoice;
 		
 		try {
 			invoice = getInvoiceByInvoiceID(payment.getInvoiceID());
@@ -3674,7 +3775,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	public static void deleteAccountablemodified(int payableID)
@@ -3692,7 +3793,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3703,14 +3804,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
 		
 	}
 	
-	public static void updateTransaction(TblPaymentDto payment,boolean b)
+	public static void updateTransaction(TblPayment payment,boolean b)
 	{
 		Connection con;
 		Statement stmt = null;
@@ -3732,7 +3833,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			int count = stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3743,7 +3844,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -3804,7 +3905,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -3818,7 +3919,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return sl;
@@ -3876,7 +3977,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return cv;
@@ -3914,7 +4015,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            }
 	        } catch (SQLException e) {
 
-	            e.printStackTrace();
+	            Loger.log(e.toString());
 
 	        } finally {
 				try {
@@ -3928,7 +4029,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 
@@ -3942,14 +4043,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 			SQLExecutor db = new SQLExecutor();
 			con = db.getConnection();
 			
-			String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListDto.LAYAWAYS_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
+			String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListBean.LAYAWAYS_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
 			try {
 				stmt = con.createStatement();
 				int  i = stmt.executeUpdate(sql);
 				System.out.println("update layaways : ------"+i);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -3961,19 +4062,19 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 			
 	}
 	@Override
-	public ArrayList<ReceivableListDto> getLayawayList() {
+	public ArrayList<ReceivableListBean> getLayawayList() {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<ReceivableListDto> rlb = new ArrayList<ReceivableListDto>();
+		ArrayList<ReceivableListBean> rlb = new ArrayList<ReceivableListBean>();
 		con = db.getConnection();
 		
 		try {
@@ -3990,7 +4091,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					+ " LEFT JOIN  bca_term AS term" + " ON INV.TermID = term.TermID"
 					+ " LEFT JOIN bca_paymenttype AS pay ON INV.PaymentTypeID = pay.PaymentTypeID" 
                     + " LEFT JOIN bca_account AS account ON INV.BankAccountID = account.AccountID"
-					+ " WHERE  ( ( ( InvoiceTypeID ) IN ("+ReceivableListDto.LAYAWAYS_TYPE+")" + " AND INV.TermID <> 3 )"
+					+ " WHERE  ( ( ( InvoiceTypeID ) IN ("+ReceivableListBean.LAYAWAYS_TYPE+")" + " AND INV.TermID <> 3 )"
 					+ " OR INV.InvoiceTypeID = 11 )" + " AND INV.AdjustedTotal > 0" + " AND INV.IsPaymentCompleted = 0"
 					+ " AND INV.invoiceStatus = 0" + " AND INV.CompanyID =" + ConstValue.companyId
 					+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
@@ -4004,8 +4105,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			while (rs.next()) {
 				TblCategoryLoader category = new TblCategoryLoader();
-				ReceivableListDto rb = new ReceivableListDto();
-				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				ReceivableListBean rb = new ReceivableListBean();
+				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(rs.getInt("TermID"));
 				int cvId = rs.getInt("ClientVendorID");
@@ -4058,7 +4159,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -4071,16 +4172,16 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rlb;
 
 	}
 	@Override
-	public double updateInvoiceForLayaways(ReceivableListDto bean) {
+	public double updateInvoiceForLayaways(ReceivableListBean bean) {
 		// TODO Auto-generated method stub
-		ReceivableListDto rb = getInvoiceForLayawaysByOrderNUm(bean.getOrderNum(),bean.getCompanyID());
+		ReceivableListBean rb = getInvoiceForLayawaysByOrderNUm(bean.getOrderNum(),bean.getCompanyID());
 		double paidAmount = rb.getPaidAmount()+bean.getBalance();
 		double balance = rb.getAdjustedTotal() - paidAmount;
 		int i = 0;
@@ -4100,7 +4201,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			i = stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4114,14 +4215,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return balance;
 		
 	}
 	@Override
-	public ArrayList<TblPaymentDto> getPartiallyReceivedLayaways() {
+	public ArrayList<TblPayment> getPartiallyReceivedLayaways() {
 		// TODO Auto-generated method stub
 		
 		Connection con;
@@ -4129,7 +4230,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		ArrayList<TblPaymentDto> rl = new ArrayList<TblPaymentDto>();
+		ArrayList<TblPayment> rl = new ArrayList<TblPayment>();
 		
 		String sql = "SELECT * , "
 				+ " b.Name As PaymentTypeName,"
@@ -4150,9 +4251,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblPaymentDto payment = new TblPaymentDto();
+				TblPayment payment = new TblPayment();
 				TblCategoryLoader category = new TblCategoryLoader();
-				TblCategoryDto categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
+				TblCategory categoryName = category.getCategoryOf(rs.getInt("CategoryID"));
 				ClientVendor cv = getClentVendor(rs.getInt("ClientVendorID"), ConstValue.companyId);
 				payment.setId(rs.getInt("PaymentID"));
                 payment.setAmount(rs.getDouble("Amount"));
@@ -4182,7 +4283,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4196,7 +4297,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rl;
@@ -4211,7 +4312,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		
 		String sql = "Update bca_invoice "
-		+" SET InvoiceTypeId="+ReceivableListDto.INVOICE_TYPE
+		+" SET InvoiceTypeId="+ReceivableListBean.INVOICE_TYPE
 		+ " WHERE CompanyID="+ConstValue.companyId
 		+ " AND InvoiceID="+invoiceId;
 		
@@ -4221,7 +4322,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			System.out.println("Invoice Updated :-----" +i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4232,7 +4333,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -4272,7 +4373,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4286,16 +4387,16 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paymentType;
 	
 	}
 	@Override
-	public ArrayList<ReceivableListDto> getPoPayableList() {
+	public ArrayList<ReceivableListBean> getPoPayableList() {
 		// TODO Auto-generated method stub
-		ArrayList<ReceivableListDto> pli = new ArrayList<ReceivableListDto>();
+		ArrayList<ReceivableListBean> pli = new ArrayList<ReceivableListBean>();
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -4345,11 +4446,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				ReceivableListDto rb = new ReceivableListDto();
+				ReceivableListBean rb = new ReceivableListBean();
 				
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				/*rb.setOrderNum(rs.getInt("OrderNum"));*/
 				rb.setPoNum(rs.getInt("PONum"));
+				int orderNo = (rs.getInt("PONum"));
+				rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo), AppConstants.POType, configDto, false));
 				/*rb.setEmployeeId(rs.getInt("EmployeeID"));*/
 				/*rb.setRefNum(rs.getString("RefNum"));*/
 				rb.setMemo(rs.getString("Memo"));
@@ -4392,7 +4495,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -4405,7 +4508,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -4413,7 +4516,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return pli;
 }
 	@Override
-	public void getInvoices(ReceivableListDto bean) throws SQLException {
+	public void getInvoices(ReceivableListBean bean) throws SQLException {
 		// TODO Auto-generated method stub
 		TblAccountable payable = new TblAccountable();
 		Calendar c1 = Calendar.getInstance();
@@ -4499,7 +4602,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -4525,7 +4628,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				payFromBalance = (fromAccount.getCustomerCurrentBalance());
             
         		}	
-				TblAccount toAccount = getAccount(accountable.getPayeeID());
+				TblAccount toAccount = getAccount(accountable.getPayeeID()); // 57061
 				
 				if (toAccount != null) {
 		           adjustBankBalance(toAccount, accountable.getAmount());
@@ -4535,7 +4638,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (fromAccount != null && fromAccount.getAccountTypeID() == 2) {
 		            payToBalance = 0.0;
 		        }
-				 TblPaymentDto payment = new TblPaymentDto();
+				 TblPayment payment = new TblPayment();
 				 if(accountable.getInvoiceTypeId() == 2)
 				 {	 
 					 payment.setInvoiceTypeID(2);
@@ -4546,7 +4649,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				 }
 				 if (!isNeedToPrint) {
 				
-				payableId =insertIntoAccountable(accountable);
+				payableId =insertIntoAccountable(accountable); //30
 				int priority = getPriority();
 				insertIntoPaymentTable(accountable, payableId, payFromBalance, payToBalance, payment,priority);
 		}
@@ -4608,12 +4711,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 							db.close(con);
 							}
 						} catch (Exception e) {
-						e.printStackTrace();
+						Loger.log(e.toString());
 				}
 				return payableId;					
 	}
 	
-	public void insertIntoPaymentTable(TblAccountable accountable,int payableId,double payFromBalance,double payToBalance,TblPaymentDto payment,int priority)throws SQLException
+	public void insertIntoPaymentTable(TblAccountable accountable,int payableId,double payFromBalance,double payToBalance,TblPayment payment,int priority)throws SQLException
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -4669,11 +4772,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 	}
 	@Override
-	public ArrayList<TblPaymentDto> getPaidList(Date fromDate , Date toDate) {
+	public ArrayList<TblPayment> getPaidList(Date fromDate , Date toDate) {
 		// TODO Auto-generated method stub
 		String dataStr = "";
 		String sql = "";
@@ -4682,7 +4785,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		dataStr = getSQL4Date(fromDate, toDate);
-		ArrayList<TblPaymentDto> paidL = new ArrayList<TblPaymentDto>();
+		ArrayList<TblPayment> paidL = new ArrayList<TblPayment>();
 		
 		sql = " SELECT a.*"
 		 + " ,acc.Name AS AccountName"
@@ -4726,7 +4829,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				 TblPaymentDto payment = new TblPaymentDto();
+				 TblPayment payment = new TblPayment();
                  payment.setId(rs.getInt("PaymentID"));
                  payment.setAmount(rs.getDouble("Amount"));
                  payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -4755,7 +4858,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -4769,16 +4872,16 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
 		return paidL;
 	}
 	@Override
-	public ArrayList<ReceivableListDto> getConsignmentSaleList() {
+	public ArrayList<ReceivableListBean> getConsignmentSaleList() {
 		// TODO Auto-generated method stub
-		ArrayList<ReceivableListDto> cli = new ArrayList<ReceivableListDto>();
+		ArrayList<ReceivableListBean> cli = new ArrayList<ReceivableListBean>();
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -4811,7 +4914,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	  + " WHERE INV.CompanyID="+ConstValue.companyId
 	  + " AND INV.IsPaymentCompleted = 0"
 	  + " AND INV.InvoiceStatus = 0"
-	  + " AND INV.InvoiceTypeID ="+ReceivableListDto.CONSIGNMENT_SALE_TYPE
+	  + " AND INV.InvoiceTypeID ="+ReceivableListBean.CONSIGNMENT_SALE_TYPE
 	  + " AND bca_clientvendor.Status = 'N'"
 	  + " AND bca_clientvendor.CompanyID = 1"
 	  + " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)"
@@ -4828,7 +4931,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				ReceivableListDto rb = new ReceivableListDto();
+				ReceivableListBean rb = new ReceivableListBean();
 				
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				rb.setPoNum(rs.getInt("PONum"));
@@ -4854,7 +4957,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -4867,7 +4970,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cli;
@@ -4881,14 +4984,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		
-		String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListDto.CONSIGNMENT_SALE_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
+		String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListBean.CONSIGNMENT_SALE_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
 		try {
 			stmt = con.createStatement();
 			int  i = stmt.executeUpdate(sql);
 			System.out.println("update Consignment : ------"+i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (stmt != null) {
@@ -4898,18 +5001,18 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 	@Override
-	public ArrayList<TblPaymentDto> getPaidConsignPaymentList() {
+	public ArrayList<TblPayment> getPaidConsignPaymentList() {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
-		ArrayList<TblPaymentDto> paidConsign = new ArrayList<TblPaymentDto>();
+		ArrayList<TblPayment> paidConsign = new ArrayList<TblPayment>();
 		
 		String sql = " SELECT a.*"
 		 + " ,acc.Name AS AccountName"
@@ -4932,7 +5035,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		 		+ " AND ( a.invoiceid <> -1 "
 		 				+" OR a.invoiceid <> 0 )"
 		 		+ " AND a.rmano <= 0"
-		 	    + " AND b.invoicetypeid IN ( "+ReceivableListDto.CONSIGNMENT_SALE_TYPE+" )"
+		 	    + " AND b.invoicetypeid IN ( "+ReceivableListBean.CONSIGNMENT_SALE_TYPE+" )"
 		 		+ " AND a.invoiceid = b.invoiceid"
 		 		+ " AND a.deleted = 0"
 		 		+ " AND a.transactiontype <> 16"
@@ -4948,7 +5051,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				 TblPaymentDto payment = new TblPaymentDto();
+				 TblPayment payment = new TblPayment();
                  payment.setId(rs.getInt("PaymentID"));
                  payment.setAmount(rs.getDouble("Amount"));
                  payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -4976,7 +5079,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -4989,7 +5092,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paidConsign;
@@ -5003,14 +5106,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		
-		String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListDto.PURCHASE_ORDER_INVOICE_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
+		String sql = "UPDATE bca_invoice SET InvoiceTypeID="+ReceivableListBean.PURCHASE_ORDER_INVOICE_TYPE + " WHERE CompanyID="+ConstValue.companyId + " AND InvoiceID="+invoiceID;
 		try {
 			stmt = con.createStatement();
 			int  i = stmt.executeUpdate(sql);
 			System.out.println("update Consignment : ------"+i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -5021,7 +5124,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -5274,14 +5377,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				categories.add(category);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categories;
@@ -5374,7 +5477,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			 }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -5388,7 +5491,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -5475,12 +5578,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Override
-	public ArrayList<TblPaymentDto> getPaymentsForBanking(TblAccount account, Date from , Date to,String transType , Boolean useFilter) {
+	public ArrayList<TblPayment> getPaymentsForBanking(TblAccount account, Date from , Date to,String transType , Boolean useFilter) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
-		ArrayList<TblPaymentDto> payments = new ArrayList<>();
+		ArrayList<TblPayment> payments = new ArrayList<>();
 		
 		String trans = "";
 		String dateAdded = "";
@@ -5534,7 +5637,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			rs = stmt.executeQuery(sql.toString());
 			while(rs.next())
 			{
-				TblPaymentDto payment = new TblPaymentDto();
+				TblPayment payment = new TblPayment();
 				payment.setId(rs.getInt("PaymentID"));
 				payment.setAmount(rs.getDouble("Amount"));
 				payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -5584,14 +5687,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				payments.add(payment);
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return payments;
@@ -5620,7 +5723,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5633,7 +5736,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return priority;
@@ -5669,7 +5772,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -5683,14 +5786,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return types;
 	}
 
 	@Override
-	public int bankTransfer(TblPaymentDto payment , double amount, Date transferDate , int priority) {
+	public int bankTransfer(TblPayment payment , double amount, Date transferDate , int priority) {
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -5733,21 +5836,21 @@ public class ReceivableListImpl implements ReceivableLIst {
 	        	paymentId = rs.getInt("LastID");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) db.close(rs);
 				if (stmt != null) db.close(stmt);
 				if(con != null) db.close(con);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paymentId;
 	}
 
 	@Override
-	public void adjustBankForBanking(TblPaymentDto payment) {
+	public void adjustBankForBanking(TblPayment payment) {
 		// TODO Auto-generated method stub
 		TblAccount fromAccount = getAccountById(payment.getPayerID());
 		TblAccount toAccount = getAccountById(payment.getPayeeID());
@@ -5757,7 +5860,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			adjustBankBalance(toAccount, payment.getAmount());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		
 	}
@@ -5797,7 +5900,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5810,21 +5913,21 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cvList;
 		
 	}
 	@Override
-	public ArrayList<TblCategoryDto> getCategoryListForPayment() {
+	public ArrayList<TblCategory> getCategoryListForPayment() {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
+		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
 		
 		String sql = "SELECT * from bca_category where CompanyID=" + ConstValue.companyId
 				    + " AND CategoryTypeID IN (1841648525) AND isActive = 1 ORDER BY Name ASC";
@@ -5835,7 +5938,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategoryDto category = new TblCategoryDto();
+				TblCategory category = new TblCategory();
 				category.setId(rs.getInt("CategoryID"));
                 category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 category.setParent(rs.getString("Parent"));
@@ -5848,7 +5951,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5861,7 +5964,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -5883,7 +5986,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public void adjustBankBalanceForVendor(TblPaymentDto payment) {
+	public void adjustBankBalanceForVendor(TblPayment payment) {
 		// TODO Auto-generated method stub
 		
 		TblAccount fromAccount = getAccountById(payment.getPayerID());
@@ -5894,7 +5997,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			adjustBankBalance(toAccount, payment.getAmount());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	@Override
@@ -5931,7 +6034,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5944,13 +6047,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return clientList;
 	}
 	@Override
-	public ArrayList<TblCategoryDto> getCategoryListForDeposit() {
+	public ArrayList<TblCategory> getCategoryListForDeposit() {
 		// TODO Auto-generated method stub
 		
 		Connection con;
@@ -5958,7 +6061,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
+		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
 		
 		String sql = "SELECT * from bca_category where CompanyID=" + ConstValue.companyId
 				    + " AND CategoryTypeID IN (1973117447) AND isActive = 1 ORDER BY Name ASC";
@@ -5969,7 +6072,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategoryDto category = new TblCategoryDto();
+				TblCategory category = new TblCategory();
 				category.setId(rs.getInt("CategoryID"));
                 category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 category.setParent(rs.getString("Parent"));
@@ -5982,7 +6085,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -5995,13 +6098,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
 	}
 	@Override
-	public int bankTransferFromDeposit(TblPaymentDto payment, double amount, Date transferDate, int priority) {
+	public int bankTransferFromDeposit(TblPayment payment, double amount, Date transferDate, int priority) {
 		// TODO Auto-generated method stub
 		Connection con;
 		Statement stmt = null;
@@ -6070,7 +6173,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6083,14 +6186,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paymentId;
 		
         }
 	@Override
-	public void adjustBankAfterDeposit(TblPaymentDto payment) {
+	public void adjustBankAfterDeposit(TblPayment payment) {
 		// TODO Auto-generated method stub
 		TblAccount toAccount = getAccountById(payment.getPayeeID());
 		
@@ -6098,7 +6201,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			adjustBankBalance(toAccount, payment.getAmount());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	@Override
@@ -6130,7 +6233,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6143,15 +6246,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return allClientvendor;
 	}
 	@Override
-	public ArrayList<TblCategoryDto> getAllCategory() {
+	public ArrayList<TblCategory> getAllCategory() {
 		// TODO Auto-generated method stub
-		ArrayList<TblCategoryDto> allCategory = new ArrayList<TblCategoryDto>();
+		ArrayList<TblCategory> allCategory = new ArrayList<TblCategory>();
 		
 		Connection con;
 		Statement stmt = null;
@@ -6167,7 +6270,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategoryDto category = new TblCategoryDto();
+				TblCategory category = new TblCategory();
 				category.setId(rs.getInt("CategoryID"));
                 category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 category.setParent(rs.getString("Parent"));
@@ -6179,7 +6282,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6192,7 +6295,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return allCategory;
@@ -6229,7 +6332,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6243,14 +6346,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return allPayment;
 	}
 
 	@Override
-	public void addAccount(TblPaymentDto payment,int priority,String status , int AccountId) {
+	public void addAccount(TblPayment payment,int priority,String status , int AccountId) {
 		int bankID = 0;
 		priorityForAddBank = priority;
 		statusForAddBank = status;
@@ -6264,7 +6367,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						updatedefaultbank(bankID);
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			} else {
 				editBankAccmodified(accountInfo ,AccountId);
@@ -6292,7 +6395,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6303,7 +6406,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -6319,14 +6422,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -6348,20 +6451,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rowUpdated = stmt.executeUpdate(sql);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return rowUpdated;
 	}
 	
-	public int insertBankAccountmodified(TblAccount account , int depositFrom , TblPaymentDto payment) throws SQLException
+	public int insertBankAccountmodified(TblAccount account , int depositFrom , TblPayment payment) throws SQLException
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -6405,7 +6508,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		 int depositFromId = payment.getAccountID() == -1 ? -1 : payment.getAccountID();
 		 int cateoryID = (depositFromId == -1 ? -7 : -9);
 		 
-		 TblPaymentDto pay = new TblPaymentDto();
+		 TblPayment pay = new TblPayment();
 		 pay.setAmount(account.getCustomerStartingBalance());
 		 pay.setPaymentTypeID(account.getAccountCategoryID());
 		 pay.setPayerID(depositFromId);
@@ -6417,7 +6520,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		 pay.setDateAdded(account.getDateAdded());
 		 pay.setCategoryId(cateoryID);
 		 
-		 TblCategoryDto category = getCategory("Bank Deposit");
+		 TblCategory category = getCategory("Bank Deposit");
 		 
 		 pay.setAccountCategoryId((int)category.getId());
 		 int paymentId = addBankTransaction(pay);
@@ -6443,7 +6546,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(" UPDATE bca_account SET DepositPaymentID=" + paymentId + " WHERE AccountID=" + accountId);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6454,11 +6557,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
-	public void updateBankBalance(TblPaymentDto payment)
+	public void updateBankBalance(TblPayment payment)
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -6487,7 +6590,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql_put);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6501,11 +6604,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
-	public int addBankTransaction(TblPaymentDto payment)
+	public int addBankTransaction(TblPayment payment)
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -6526,7 +6629,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				 payFromBalance = (fromAccount.getCustomerCurrentBalance());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 	    	 
 	     }
@@ -6538,7 +6641,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				payToBalance = (toAccount.getVendorCurrentBalance());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 	     }
 	     if (fromAccount != null && fromAccount.getAccountTypeID() == 2) {
@@ -6601,7 +6704,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}*/
 	     /*finally {
 	            if (rs != null) {
@@ -6609,7 +6712,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						rs.close();
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Loger.log(e.toString());
 					}
 	            }
 	            if (stmt != null) {
@@ -6617,7 +6720,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						stmt.close();
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Loger.log(e.toString());
 					}
 	            }
 	        }*/
@@ -6626,7 +6729,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 	     return paymentId;
 	}
@@ -6651,7 +6754,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6664,13 +6767,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
 		return paymentId;
 	}
-	public void insertRecord(TblPaymentDto payment,double payFromBalance , double payToBalance)
+	public void insertRecord(TblPayment payment,double payFromBalance , double payToBalance)
 	{
 		Connection con = null;
 		Statement stmt = null;
@@ -6711,7 +6814,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6725,18 +6828,18 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
-	public TblCategoryDto getCategory(String categoryName)
+	public TblCategory getCategory(String categoryName)
 	{
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		TblCategoryDto category = new TblCategoryDto();
+		TblCategory category = new TblCategory();
 		
 		String sql = "SELECT * FROM bca_category WHERE companyID = "+ConstValue.companyId +" and Name = '" + categoryName + "'";
 		 try {
@@ -6757,7 +6860,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		 finally {
 				try {
@@ -6771,20 +6874,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		 return category;
 		
 	}
-	public TblCategoryDto getCategoryById(int categoryId)
+	public TblCategory getCategoryById(int categoryId)
 	{
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		con = db.getConnection();
-		TblCategoryDto category = new TblCategoryDto();
+		TblCategory category = new TblCategory();
 		
 		String sql = " SELECT * FROM bca_category WHERE CompanyID = "+ ConstValue.companyId
 				    + " AND CategoryID = " + categoryId;
@@ -6805,7 +6908,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -6819,12 +6922,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return category;
 	}
-	public TblAccount getAccountInfo(TblPaymentDto payment)
+	public TblAccount getAccountInfo(TblPayment payment)
 	{
 		TblAccount account  = new TblAccount(); 
 		 int parentId = -1;
@@ -6881,7 +6984,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		account.setDateAdded(new Date());
 		return account;
 	}
-	public boolean getIsAccountNameExists(TblPaymentDto payment)
+	public boolean getIsAccountNameExists(TblPayment payment)
 	{	
 		Connection con = null;
 		Statement stmt = null;
@@ -6902,7 +7005,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -6915,7 +7018,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		 return false;
@@ -6945,7 +7048,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql2);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				
@@ -6956,7 +7059,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -7008,7 +7111,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7022,13 +7125,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cvList;
 	}
 	@Override
-	public ArrayList<TblVendorDetailDto> getUnpaidBillList(int cvID , int checkStatus) {
+	public ArrayList<TblVendorDetail> getUnpaidBillList(int cvID , int checkStatus) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
@@ -7036,7 +7139,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		ResultSet rs = null;
 		double totalUnpaidAmount = 0.00; 
-		ArrayList<TblVendorDetailDto> unpaidBill = new ArrayList<TblVendorDetailDto>();
+		ArrayList<TblVendorDetail> unpaidBill = new ArrayList<TblVendorDetail>();
 		
 		String Sql = " SELECT bill.BillNum,bill.DueDate,bill.AmountDue,bill.Status,bill.BillType,bill.AmountPaid,bill.CreditUsed," +
                 " bill.Balance,bill.Memo,bill.IsMemorized,bill.VendorId,bill.CategoryID,bill.PayerID " +
@@ -7058,7 +7161,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblVendorDetailDto vDetail = new TblVendorDetailDto();
+				TblVendorDetail vDetail = new TblVendorDetail();
                 vDetail.setIsSelected(false);
                 vDetail.setIsSelected(vDetail.getIsSelected());
                 vDetail.setVendorName(rs.getString("Name"));             
@@ -7098,7 +7201,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -7111,20 +7214,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return unpaidBill;
 	}
 	@Override
-	public TblVendorDetailDto getBillById(int billNum) {
+	public TblVendorDetail getBillById(int billNum) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		TblVendorDetailDto vDetail = null;
+		TblVendorDetail vDetail = null;
 		
 		String sql = "SELECT * FROM bca_bill AS bill WHERE bill.BillNum = " +billNum
 				+ " AND bill.CompanyID =" + ConstValue.companyId;
@@ -7135,7 +7238,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			if(rs.next())
 			{
-				vDetail = new TblVendorDetailDto();
+				vDetail = new TblVendorDetail();
 				vDetail.setCheckNo(rs.getInt("CheckNo"));                
                 vDetail.setBillNo(rs.getInt("BillNum"));
                 vDetail.setDueDate(JProjectUtil.getdateFormat().format(rs.getDate("DueDate")));
@@ -7154,9 +7257,11 @@ public class ReceivableListImpl implements ReceivableLIst {
                 vDetail.setAmountPaid(rs.getDouble("AmountPaid"));
                 vDetail.setServiceID(rs.getLong("ServiceID"));
                 boolean status = rs.getBoolean("IsMemorized");
-                vDetail.setDateAdded(rs.getDate("DateAdded"));                
-
-                String billStatus = "Unpaid"; //"Unpaid";
+				vDetail.setDateAdded(rs.getDate("DateAdded"));
+				vDetail.setDate(rs.getString("DateAdded"));
+				vDetail.setRecurringPeriod(rs.getString("RecurringPeriod"));
+				vDetail.setNextDate(rs.getDate("NextDate"));
+				String billStatus = "Unpaid"; //"Unpaid";
                 if (status) {
                     billStatus =  "Memorized"; //"Memorized";
                 }
@@ -7169,7 +7274,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -7182,19 +7287,19 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return vDetail;
 		
 	}
 	@Override
-	public void updateBill(TblVendorDetailDto vDetail) {
+	public void updateBill(TblVendorDetail vDetail) {
 		// TODO Auto-generated method stub
 		double paidAmount = 0.00;
 		double balance = 0.00;
 		
-		TblVendorDetailDto oldDetail = getBillById(vDetail.getBillNo());
+		TblVendorDetail oldDetail = getBillById(vDetail.getBillNo());
 		paidAmount = oldDetail.getAmountPaid() + vDetail.getAmount();
 		balance = oldDetail.getAmount() - paidAmount;
 		
@@ -7203,19 +7308,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		TblVendorDetailDto detail = null;
+		TblVendorDetail detail = null;
 		
 		String sql = " Update bca_bill SET PayerID = " + vDetail.getPayerId()
 		           + " ,VendorID = " + vDetail.getVendorId() + " ,Memo = '"+vDetail.getMemo()+"'" 
 		           + " ,CheckNo = " + vDetail.getCheckNo() + " ,AmountPaid = " +paidAmount + " ,Balance = " + balance
 		           + " ,CategoryID = " + vDetail.getCategoryID()
+                   + " ,PayerID = " + vDetail.getAccountId()
 		           + " WHERE BillNum = " + vDetail.getBillNo() + " AND CompanyID = " + ConstValue.companyId;
 		try {
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7229,13 +7335,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
 	}
 	@Override
-	public void makePayment(TblVendorDetailDto vDetail, int cvID) {
+	public void makePayment(TblVendorDetail vDetail, int cvID) {
 		// TODO Auto-generated method stub
 		try {
 			
@@ -7272,10 +7378,10 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
-	public void updateBillTab(TblVendorDetailDto v)
+	public void updateBillTab(TblVendorDetail v)
 	{
 	    int paymentID = 0;
 	    
@@ -7376,7 +7482,7 @@ public class ReceivableListImpl implements ReceivableLIst {
              }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -7392,13 +7498,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
 	}
 	@Override
-	public ArrayList<TblPaymentDto> getPaidBillLists() {
+	public ArrayList<TblPayment> getPaidBillLists() {
 		// TODO Auto-generated method stub
 		
 		Connection con = null;
@@ -7406,7 +7512,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs_paidUC = null;
-		ArrayList<TblPaymentDto> paidBillLists = new ArrayList<TblPaymentDto>();
+		ArrayList<TblPayment> paidBillLists = new ArrayList<TblPayment>();
 		StringBuffer Sql = new StringBuffer();
 		double totaAmount = 0.00;
 		
@@ -7443,7 +7549,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs_paidUC.next())
 			{	
-				TblPaymentDto payment = new TblPaymentDto();
+				TblPayment payment = new TblPayment();
 				payment.setId(rs_paidUC.getInt("PaymentID"));
 				  payment.setAmount(rs_paidUC.getDouble("Amount"));
 				  totaAmount = totalAmount + rs_paidUC.getDouble("Amount");
@@ -7471,7 +7577,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7485,21 +7591,21 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return paidBillLists;
 		
 	}
 	@Override
-	public ArrayList<TblPaymentDto> getRecurrentBillPayment() {
+	public ArrayList<TblPayment> getRecurrentBillPayment() {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs_paidUC = null;
-		ArrayList<TblPaymentDto> recurrentPaymentList = new ArrayList<TblPaymentDto>();
+		ArrayList<TblPayment> recurrentPaymentList = new ArrayList<TblPayment>();
 		double totaAmount = 0.00;
 		
 		StringBuffer Sql = new StringBuffer();
@@ -7533,7 +7639,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs_paidUC.next())
 			{
-				TblPaymentDto payment = new TblPaymentDto();
+				TblPayment payment = new TblPayment();
 				payment.setId(rs_paidUC.getInt("PaymentID"));
 				  payment.setAmount(rs_paidUC.getDouble("Amount"));
 				  totaAmount = totaAmount + rs_paidUC.getDouble("Amount");
@@ -7552,7 +7658,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7566,7 +7672,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return recurrentPaymentList;
@@ -7580,7 +7686,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
-		
 		String sql = "UPDATE bca_bill SET Status = 1 WHERE CompanyID = " + ConstValue.companyId
 				+ " AND BillNum = "+billNum;
 		String sql2 = "DELETE FROM bca_billdetail WHERE CompanyID = "+ConstValue.companyId 
@@ -7589,9 +7694,10 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 			stmt.executeUpdate(sql2);
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7602,12 +7708,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 	@Override
-	public ArrayList<TblVendorDetailDto> getAllBill(int cvID, int checkStatus) {
+	public ArrayList<TblVendorDetail> getAllBill(int cvID, int checkStatus) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
@@ -7615,14 +7721,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		ResultSet rs = null;
 		double totalUnpaidAmount = 0.00; 
-		ArrayList<TblVendorDetailDto> allBill = new ArrayList<TblVendorDetailDto>();
+		ArrayList<TblVendorDetail> allBill = new ArrayList<TblVendorDetail>();
 		
 		String Sql = " SELECT bill.BillNum,bill.DueDate,bill.AmountDue,bill.Status,bill.BillType," +
                 " bill.AmountPaid,bill.CreditUsed,bill.Balance,bill.Memo,bill.IsMemorized," +
                 " bill.VendorId,bill.CategoryID,bill.PayerID,bill.ServiceID,bill.DateAdded,bill.CHECKNO,bill.Status,ci.Name" +
                 " FROM bca_bill as bill INNER Join bca_clientvendor as ci"+
                 " ON bill.VENDORID=ci.CLIENTVENDORID"+
-                " WHERE " +                    
+                " WHERE " +   
+                " bill.Status=0 and "+
                 " bill.CompanyID=" + ConstValue.companyId;
 		
 		if(cvID>0){
@@ -7638,7 +7745,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblVendorDetailDto vDetail = new TblVendorDetailDto();
+				TblVendorDetail vDetail = new TblVendorDetail();
                 vDetail.setIsSelected(false);
                 vDetail.setIsSelected(vDetail.getIsSelected());
                 vDetail.setVendorName(rs.getString("Name"));             
@@ -7678,7 +7785,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -7691,13 +7798,121 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return allBill;
 	}
+
 	@Override
-	public void updateVendorBills(TblVendorDetailDto vDetail) {
+	public TblVendorDetail getBillByBillNum(String billNum) {
+			// TODO Auto-generated method stub
+			Connection con = null;
+			Statement stmt = null;
+			SQLExecutor db = new SQLExecutor();
+			con = db.getConnection();
+			ResultSet rs = null;
+			double totalUnpaidAmount = 0.00;
+			TblVendorDetail vDetail = new TblVendorDetail();
+
+			String Sql = " SELECT bill.BillNum,bill.DueDate,bill.AmountDue,bill.Status,bill.BillType," +
+					" bill.AmountPaid,bill.CreditUsed,bill.Balance,bill.Memo,bill.IsMemorized," +
+					" bill.VendorId,bill.CategoryID,bill.PayerID,bill.ServiceID,bill.DateAdded,bill.CHECKNO,bill.Status,ci.Name" +
+					" FROM bca_bill as bill INNER Join bca_clientvendor as ci"+
+					" ON bill.VENDORID=ci.CLIENTVENDORID"+
+					" WHERE " +
+					" bill.Status=0 and "+
+					" bill.CompanyID=" + ConstValue.companyId +" and bill.BillNum =" + billNum;
+			Sql += " AND ( bill.Status = 0 OR bill.Status = 1 )  And ci.STATUS='N'";
+
+			try {
+				stmt = con.createStatement();
+				rs = stmt.executeQuery(Sql);
+
+				while(rs.next())
+				{
+					vDetail.setIsSelected(false);
+					vDetail.setIsSelected(vDetail.getIsSelected());
+					vDetail.setVendorName(rs.getString("Name"));
+					vDetail.setCheckNo(rs.getInt("CHECKNO"));
+					vDetail.setBillNo(rs.getInt("BillNum"));
+					vDetail.setDueDate(JProjectUtil.getdateFormat().format(rs.getDate("DueDate")));
+					vDetail.setCreditUsed(rs.getDouble("CreditUsed"));
+					vDetail.setAmountTopay(rs.getDouble("Balance"));
+					double AmountDue = rs.getDouble("AmountDue");
+					vDetail.setAmount(AmountDue);
+					totalUnpaidAmount = totalUnpaidAmount+AmountDue;
+					vDetail.setTotalBillAmount(totalUnpaidAmount);
+					vDetail.setMemo(rs.getString("Memo"));
+					vDetail.setBillType(rs.getInt("BillType"));
+					vDetail.setVendorId(rs.getInt("VendorId"));
+					vDetail.setCategoryID(rs.getLong("CategoryID"));
+					vDetail.setPayerId(rs.getInt("PayerID"));
+					vDetail.setBalance(vDetail.getAmountTopay());
+					vDetail.setAmountPaid(rs.getDouble("AmountPaid"));
+					vDetail.setServiceID(rs.getLong("ServiceID"));
+					boolean status = rs.getBoolean("IsMemorized");
+					vDetail.setDateAdded(rs.getDate("DateAdded"));
+
+					String billStatus = "Unpaid"; //"Unpaid";
+					if (status) {
+						billStatus =  "Memorized"; //"Memorized";
+					}
+					int bStatus = rs.getInt("Status");
+					if(bStatus==1)
+						billStatus="Paid";
+					if(bStatus==2)
+						billStatus="Schedule";
+
+					vDetail.setStatus(billStatus);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				Loger.log(e.toString());
+			}finally {
+				try {
+					if (rs != null) {
+						db.close(rs);
+					}
+					if (stmt != null) {
+						db.close(stmt);
+					}
+					if(con != null){
+						db.close(con);
+					}
+				} catch (Exception e) {
+					Loger.log(e.toString());
+				}
+			}
+			return vDetail;
+	}
+	public void updateBillByBillNumForPaid(String BillNum) {
+		Connection con = null;
+		Statement stmt = null;
+		SQLExecutor db = new SQLExecutor();
+		con = db.getConnection();
+		String sql = "update bca_bill set Status = 1 where BillNum=" + BillNum;
+		try {
+			stmt = con.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Loger.log(e.toString());
+		} finally {
+			try {
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+	}
+	@Override
+	public void updateVendorBills(TblVendorDetail vDetail) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
@@ -7718,7 +7933,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7729,7 +7944,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -7737,14 +7952,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 	}
 	@Override
-	public ArrayList<TblVendorDetailDto> getMemorizeTransactionList() {
+	public ArrayList<TblVendorDetail> getMemorizeTransactionList() {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblVendorDetailDto> vDetail = new ArrayList<TblVendorDetailDto>();
+		ArrayList<TblVendorDetail> vDetail = new ArrayList<TblVendorDetail>();
 		
 		String sql =  " SELECT bill.*, bca_account.Name AS AccountName FROM bca_bill AS bill "
                       + " LEFT JOIN bca_account ON bill.PayerID = bca_account.AccountID"
@@ -7756,7 +7971,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{	
-				TblVendorDetailDto detail = new TblVendorDetailDto();
+				TblVendorDetail detail = new TblVendorDetail();
 				detail.setBillNo(rs.getInt("BillNum"));
 				detail.setTransactionName(rs.getString("TransactionName"));
 				detail.setBankAccount(rs.getString("AccountName"));
@@ -7772,7 +7987,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7786,7 +8001,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		 return vDetail;
@@ -7807,7 +8022,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7818,19 +8033,19 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 	@Override
-	public ArrayList<TblVendorDetailDto> getPayBillsLists(Date dateFormat) {
+	public ArrayList<TblVendorDetail> getPayBillsLists(Date dateFormat) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblVendorDetailDto> vDetail = new ArrayList<TblVendorDetailDto>();
+		ArrayList<TblVendorDetail> vDetail = new ArrayList<TblVendorDetail>();
 		
 		String sql = " SELECT a.firstname,"
        + " a.lastname,"
@@ -7865,7 +8080,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblVendorDetailDto detail = new TblVendorDetailDto();
+				TblVendorDetail detail = new TblVendorDetail();
 				detail.setBillNo(rs.getInt("BillNum"));
 				detail.setVendorName(rs.getString("FirstName") + " " + rs.getString("LastName"));
 				detail.setDueDate(JProjectUtil.getdateFormat().format(rs.getDate("DueDate")));
@@ -7877,7 +8092,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -7891,13 +8106,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return vDetail;
 	}
 	@Override
-	public ArrayList<TblCategoryDto> getAllCategories() {
+	public ArrayList<TblCategory> getAllCategories() {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
@@ -7905,8 +8120,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 		con = db.getConnection();
 		ResultSet rs = null;
 		
-		ArrayList<TblCategoryDto> vRoot = new ArrayList<TblCategoryDto>();
-		ArrayList<TblCategoryDto> vSub = new ArrayList<TblCategoryDto>();
+		ArrayList<TblCategory> vRoot = new ArrayList<TblCategory>();
+		ArrayList<TblCategory> vSub = new ArrayList<TblCategory>();
 		
 		   String sql1 = " Select * from bca_category" +
 	                " where CompanyID = " + ConstValue.companyId +
@@ -7926,7 +8141,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategoryDto r = new TblCategoryDto();
+				TblCategory r = new TblCategory();
 				r.setId(rs.getInt("CategoryID"));
                 r.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 r.setParent(rs.getString("Parent"));
@@ -7942,7 +8157,7 @@ public class ReceivableListImpl implements ReceivableLIst {
                 
                 while(rs.next())
                 {
-                	TblCategoryDto r1 = new TblCategoryDto();
+                	TblCategory r1 = new TblCategory();
                 	r1.setId(rs.getInt("CategoryID"));
                 	r1.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 	r1.setParent(rs.getString("Parent"));
@@ -7956,7 +8171,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	       finally {
 				try {
@@ -7970,7 +8185,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	       int i = 0;
@@ -7995,7 +8210,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            i++;
 	        }
 
-	        vRoot.add(0, new TblCategoryDto());
+	        vRoot.add(0, new TblCategory());
 	        vSub = null;
 	        return vRoot;	  
 	}
@@ -8022,7 +8237,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8036,32 +8251,36 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return maxBillId; 
 	}
 	@Override
-	public void insertNewBill(TblVendorDetailDto vDetail) throws ParseException {
+	public void insertNewBill(TblVendorDetail vDetail) throws ParseException {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		Statement stmt = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		
+
+		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+		Date DueDate=new SimpleDateFormat("dd-MM-yyyy").parse(vDetail.getDueDate());
+		String DueDate1 = DATE_FORMAT.format(DueDate);
+
 		String sql = "INSERT into bca_bill(VendorId,PayerID,CompanyID,DateAdded,DueDate,AmountDue,Status,Memo,BillType,Balance,NextDate,CategoryID,ServiceID) Values("
 				+ vDetail.getVendorId() + ","
 				+ vDetail.getAccountId() + ","
 				+ ConstValue.companyId + ","
-				+ "'" + JProjectUtil.getDateFormaterCommon().format(JProjectUtil.getDateForBanking().parse(vDetail.getDate())) + "'" + ","
-				+ "'" + JProjectUtil.getDateFormaterCommon().format(JProjectUtil.getDateForBanking().parse(vDetail.getDueDate())) + "'" + ","
+				+ "'" + DATE_FORMAT.format(new Date()) + "'" + ","
+				+ "'" + DueDate1 + "'" + ","
 				+ vDetail.getAmount() + ","
 				+ 0 + ","
 				+ "'" + vDetail.getMemo() + "'" + ","
 				+ vDetail.getBillType() + ","
 				+ vDetail.getAmount() + ","
-				+ "'" + JProjectUtil.getDateFormaterCommon().format(JProjectUtil.getDateForBanking().parse(vDetail.getDueDate())) + "'" + ","
+				+ "'" + DueDate1 + "'" + ","
 				+ vDetail.getCategoryID() + ","
 				+ -1 + ")";
 		
@@ -8082,7 +8301,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sql1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -8095,7 +8314,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -8154,7 +8373,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
+		Loger.log(e.toString());
 	}
 	  finally {
 			try {
@@ -8168,7 +8387,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	  return recurrentPayment;
@@ -8201,15 +8420,17 @@ public class ReceivableListImpl implements ReceivableLIst {
 	            payment.setNumberOfPayments(noOfPayments);             
 	        }
 		 try{
+
 			 firstPaymentDate = JProjectUtil.getDateForBanking().parse(payment.getFirstPaymentDate());
+
 		 }
 		 catch(Exception e)
 		 {
 			 firstPaymentDate = JProjectUtil.getdateFormat().parse(payment.getFirstPaymentDate());
 		 }
 		 try{
-			 
-			 lastPaymentDate = JProjectUtil.getDateForBanking().parse(payment.getLastPaymentDate());
+				 lastPaymentDate = JProjectUtil.getDateForBanking().parse(payment.getLastPaymentDate());
+		
 		 }
 		 catch(Exception e1)
 		 {
@@ -8251,7 +8472,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				insertRecurrentPayments(payment,planID);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -8265,7 +8486,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	}
@@ -8319,7 +8540,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		            pst.addBatch();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
            
             Calendar calendar1 = getCalendar(recurrentPlan.getFirstPaymentDate());
@@ -8334,7 +8555,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				pst.executeBatch();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
             finally {
     			try {
@@ -8345,7 +8566,7 @@ public class ReceivableListImpl implements ReceivableLIst {
     					db.close(con);
     					}
     				} catch (Exception e) {
-    				e.printStackTrace();
+    				Loger.log(e.toString());
     			}
     		}
             
@@ -8366,7 +8587,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				stmt.executeUpdate(sql);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
     		finally {
     			try {
@@ -8377,7 +8598,7 @@ public class ReceivableListImpl implements ReceivableLIst {
     					db.close(con);
     					}
     				} catch (Exception e) {
-    				e.printStackTrace();
+    				Loger.log(e.toString());
     			}
     		}
         }
@@ -8452,7 +8673,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
         finally {
 			try {
@@ -8466,7 +8687,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return planId;
@@ -8480,7 +8701,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			insertRecurrentPaymentPlan(rPayment, true);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
 	public void updatePlan(int planID , boolean active , boolean status)
@@ -8506,7 +8727,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				stmt.executeUpdate(sSQL);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 			finally {
 				try {
@@ -8517,7 +8738,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	}
@@ -8544,7 +8765,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt.executeUpdate(sSQL);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8555,7 +8776,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -8566,26 +8787,26 @@ public class ReceivableListImpl implements ReceivableLIst {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
-		TblCategoryDto TblCategoryDto = null;
+		TblCategoryDto tblCategory = null;
 
 		String sql1 = "SELECT * FROM bca_category WHERE CategoryID="+categoryId;
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql1);
 			while(rs.next()) {
-				TblCategoryDto = new TblCategoryDto();
-				TblCategoryDto.setId(rs.getInt("CategoryID"));
-				TblCategoryDto.setCategoryTypeID(rs.getLong("CategoryTypeID"));
-				TblCategoryDto.setParent(rs.getString("Parent"));
-				TblCategoryDto.setDescription(rs.getString("Description"));
-				TblCategoryDto.setName(rs.getString("Name"));
-				TblCategoryDto.setCategoryNumber(rs.getString("CateNumber"));
-				TblCategoryDto.setBudgetCategoryID(rs.getInt("BudgetCategoryID"));
-				TblCategoryDto.setSubLevel(1);
-				TblCategoryDto.setActive(rs.getBoolean("isActive"));
+				tblCategory = new TblCategoryDto();
+				tblCategory.setId(rs.getInt("CategoryID"));
+				tblCategory.setCategoryTypeID(rs.getLong("CategoryTypeID"));
+				tblCategory.setParent(rs.getString("Parent"));
+				tblCategory.setDescription(rs.getString("Description"));
+				tblCategory.setName(rs.getString("Name"));
+				tblCategory.setCategoryNumber(rs.getString("CateNumber"));
+				tblCategory.setBudgetCategoryID(rs.getInt("BudgetCategoryID"));
+				tblCategory.setSubLevel(1);
+				tblCategory.setActive(rs.getBoolean("isActive"));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8593,22 +8814,22 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if (con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
-		return TblCategoryDto;
+		return tblCategory;
 	}
 	
 	@Override
-	public ArrayList<TblCategoryDto> getListOfCategoryForCategoryManager() {
+	public ArrayList<TblCategory> getListOfCategoryForCategoryManager() {
 		Statement stmt = null;
         SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
 		
-		ArrayList<TblCategoryDto> vRoot = new ArrayList<>();
-		ArrayList<TblCategoryDto> vSub = new ArrayList<>();
-		ArrayList<TblCategoryDto> cList = new ArrayList<>();
+		ArrayList<TblCategory> vRoot = new ArrayList<>();
+		ArrayList<TblCategory> vSub = new ArrayList<>();
+		ArrayList<TblCategory> cList = new ArrayList<>();
 		
 		String sql1 = " SELECT a.*,b.CategoryTypeName FROM bca_category a, bca_categorytype b WHERE a.categorytypeid = b.categorytypeid "
 				+ " AND a.isActive=1 AND a.companyid=" +ConstValue.companyId+ " ORDER BY a.CateNumber";
@@ -8620,7 +8841,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql1);
 			while(rs.next()) {
-				TblCategoryDto r = new TblCategoryDto();
+				TblCategory r = new TblCategory();
 				r.setId(rs.getInt("CategoryID"));
                 r.setCategoryTypeID(rs.getLong("CategoryTypeID"));
                 r.setParent(rs.getString("Parent"));
@@ -8637,7 +8858,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 //			rs = stmt.executeQuery(sql2);
 //			while(rs.next()) {
-//				TblCategoryDto r1 = new TblCategoryDto();
+//				TblCategory r1 = new TblCategory();
 //				r1.setId(rs.getInt("CategoryID"));
 //				r1.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 //				r1.setParent(rs.getString("Parent"));
@@ -8651,7 +8872,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				vSub.add(r1);
 //			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	   	finally {
 			try {
@@ -8659,7 +8880,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if (con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 //	   	int i = 0;
@@ -8693,14 +8914,14 @@ public class ReceivableListImpl implements ReceivableLIst {
         return new TblBudgetCategory();   
     }
 
-	public ArrayList<TblCategoryDto> sort(ArrayList<TblCategoryDto> catList)
+	public ArrayList<TblCategory> sort(ArrayList<TblCategory> catList)
 	{
-		ArrayList<TblCategoryDto> category = new ArrayList<TblCategoryDto>();
+		ArrayList<TblCategory> category = new ArrayList<TblCategory>();
 		String[] sortBy = {"ASSETS", "INCOME", "EXPENSE","PAYROLL"};
 		for (int c = 0; c < sortBy.length; c++) {
             int c1 = 0;
             while (c1 < catList.size()) {
-                TblCategoryDto d = (TblCategoryDto) catList.get(c1);
+                TblCategory d = (TblCategory) catList.get(c1);
                 String strType = d.getCategoryTypeName().trim();
                 if (strType.equals(sortBy[c])) {
                 	category.add(d);
@@ -8733,7 +8954,7 @@ public class ReceivableListImpl implements ReceivableLIst {
                 vTemp.add(row);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8741,7 +8962,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		vRows = (ArrayList<TblBudgetCategory>) vTemp.clone();
@@ -8770,7 +8991,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8778,14 +8999,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryType;
 	}
 
 	@Override
-	public boolean saveCategory(TblCategoryDto category) {
+	public boolean saveCategory(TblCategory category) {
 		Statement stmt = null, stmt2 = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -8835,7 +9056,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt2 = con.createStatement();
 			stmt2.executeUpdate(sql3);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		 finally {
 			try {
@@ -8846,14 +9067,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (pstmt != null) db.close(pstmt);
 				if(con != null) db.close(con);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
          return b;
 	}
 
 	@Override
-	public void updateCategory(TblCategoryDto category, String categoryId) {
+	public void updateCategory(TblCategory category, String categoryId) {
 		Statement stmt = null, stmt1 = null, stmt2 = null;
 		Connection con = null;
         SQLExecutor db = new SQLExecutor();
@@ -8900,7 +9121,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt2 = con.createStatement();
 			stmt2.executeUpdate(sql_1);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		 finally {
 			try {
@@ -8910,7 +9131,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt2 != null) db.close(stmt2);
 				if(con != null) db.close(con);
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -8932,7 +9153,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				b = true;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8940,7 +9161,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return b;
@@ -8966,7 +9187,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -8974,7 +9195,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return b;
@@ -8992,26 +9213,26 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 
 	@Override
-	public ArrayList<TblPaymentDto> getPaymentsList(TblPaymentDto payment, Date fromDate, Date toDate) {
+	public ArrayList<TblPayment> getPaymentsList(TblPayment payment, Date fromDate, Date toDate) {
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblPaymentDto> listOfPayments = new ArrayList<>();
+		ArrayList<TblPayment> listOfPayments = new ArrayList<>();
 		String sql = "";
 		sql = "SELECT a.paymentid,a.amount,a.paymenttypeid,a.invoiceid,a.dateadded,a.istobeprinted,a.isneedtodeposit,a.PayerID,a.checknumber,"
 			+ " c.Name AS CategoryName,c.BudgetCategoryID,b.BudgetCategoryName,cl.Name AS CompanyName "
@@ -9034,7 +9255,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while(rs.next()) {
-				TblPaymentDto payment1 = new TblPaymentDto();
+				TblPayment payment1 = new TblPayment();
 				payment1.setId(rs.getInt("PaymentID"));
 				payment1.setAmount(rs.getDouble("Amount"));
 				payment1.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -9053,27 +9274,27 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) db.close(rs);
 				if (stmt != null) db.close(stmt);
 				if(con != null) db.close(con);
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return listOfPayments;
 	}
 
 	@Override
-	public ArrayList<TblPaymentDto> getDepositsList(TblPaymentDto payment,Date fromDate,Date toDate) {
+	public ArrayList<TblPayment> getDepositsList(TblPayment payment,Date fromDate,Date toDate) {
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblPaymentDto> listOfPayments = new ArrayList<TblPaymentDto>();
+		ArrayList<TblPayment> listOfPayments = new ArrayList<TblPayment>();
 		String sql = "";
 		sql = "SELECT a.paymentid,a.amount,a.paymenttypeid,a.invoiceid,a.dateadded,a.istobeprinted,a.isneedtodeposit,a.PayeeID,a.checknumber,"
 			   + " c.Name AS CategoryName,c.BudgetCategoryID,b.BudgetCategoryName,cl.Name AS CompanyName"
@@ -9096,7 +9317,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while(rs.next()) {
-				TblPaymentDto payment1 = new TblPaymentDto();
+				TblPayment payment1 = new TblPayment();
 				payment1.setId(rs.getInt("PaymentID"));
 				payment1.setAmount(rs.getDouble("Amount"));
 				payment1.setPaymentTypeID(rs.getInt("PaymentTypeID"));
@@ -9115,28 +9336,28 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) db.close(rs);
 				if (stmt != null) db.close(stmt);
 				if(con != null) db.close(con);
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return listOfPayments;
 	}
 
 	@Override
-	public ArrayList<TblPaymentDto> getPaymentOfReconciliation(int accountId, Date fromDate, Date toDate) {
+	public ArrayList<TblPayment> getPaymentOfReconciliation(int accountId, Date fromDate, Date toDate) {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblPaymentDto> listOfpayment = new ArrayList<TblPaymentDto>();
+		ArrayList<TblPayment> listOfpayment = new ArrayList<TblPayment>();
 		double totalAmount = 0.00;
 		
 		String datebetween = "";
@@ -9190,7 +9411,7 @@ public class ReceivableListImpl implements ReceivableLIst {
              
              while(rs.next())
              {
-            	 TblPaymentDto payment = new TblPaymentDto();
+            	 TblPayment payment = new TblPayment();
             	 payment.setId(rs.getInt("PaymentID"));
             	 payment.setCvName(rs.getString("LastName") + " " + rs.getString("FirstName") + "(" + rs.getString("CompanyName") + ")");
             	 payment.setCheckNumber(rs.getString("CheckNumber"));
@@ -9210,7 +9431,7 @@ public class ReceivableListImpl implements ReceivableLIst {
             
         }catch(Exception e)
         {
-        	e.printStackTrace();
+        	Loger.log(e.toString());
         }
         finally {
 			try {
@@ -9224,20 +9445,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return listOfpayment;
 	}
 	@Override
-	public ArrayList<TblPaymentDto> getDepositOfReconciliation(int accountId, Date fromDate, Date toDate) {
+	public ArrayList<TblPayment> getDepositOfReconciliation(int accountId, Date fromDate, Date toDate) {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblPaymentDto> listDepositAmount = new ArrayList<TblPaymentDto>();
+		ArrayList<TblPayment> listDepositAmount = new ArrayList<TblPayment>();
 		double totalAmount = 0.00;
 		
 		String datebetween = "";
@@ -9291,7 +9512,7 @@ public class ReceivableListImpl implements ReceivableLIst {
              
              while(rs.next())
              {
-            	 TblPaymentDto payment = new TblPaymentDto();
+            	 TblPayment payment = new TblPayment();
             	 payment.setId(rs.getInt("PaymentID"));
             	 payment.setCvName(rs.getString("LastName") + " " + rs.getString("FirstName") + "(" + rs.getString("CompanyName") + ")");
             	 payment.setCheckNumber(rs.getString("CheckNumber"));
@@ -9311,7 +9532,7 @@ public class ReceivableListImpl implements ReceivableLIst {
             
         }catch(Exception e)
         {
-        	e.printStackTrace();
+        	Loger.log(e.toString());
         }
         finally {
 			db.close(con);
@@ -9319,20 +9540,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 				con.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return listDepositAmount;
 	}
 	@Override
-	public ArrayList<TblCategoryDto> initTblCategory(long CategoryTypeId) {
+	public ArrayList<TblCategory> initTblCategory(long CategoryTypeId) {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
+		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
 		
 		boolean b = true;
 		 
@@ -9346,7 +9567,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategoryDto cat = new TblCategoryDto();
+				TblCategory cat = new TblCategory();
 				cat.setCategoryNumber(rs.getString("Name"));
 				cat.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 				cat.setId(rs.getLong("CategoryID"));
@@ -9360,7 +9581,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9374,20 +9595,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
 	}
 	@Override
-	public ArrayList<TblCategoryDto> initComboCharge(TblCategoryDto category) {
+	public ArrayList<TblCategory> initComboCharge(TblCategory category) {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
+		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
 		
 		String sql = " SELECT * FROM bca_category" +
                     " WHERE Parent='" + category.getId() + "'" +
@@ -9400,7 +9621,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategoryDto cat = new TblCategoryDto();
+				TblCategory cat = new TblCategory();
 				cat.setCategoryNumber(rs.getString("Name"));
 				cat.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 				cat.setId(rs.getLong("CategoryID"));
@@ -9409,7 +9630,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9423,13 +9644,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
 	}
 	@Override
-	public void addBankCharge(TblPaymentDto payment) throws ParseException {
+	public void addBankCharge(TblPayment payment) throws ParseException {
 		// TODO Auto-generated method stub
 		String date = JProjectUtil.getDateFormaterCommon().format(new SimpleDateFormat("MM/dd/yyyy").parse(payment.getFromDate()));
 		double amount = payment.getAmount();
@@ -9453,7 +9674,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	     
 	     account.setLastCheckNo(checkNum);
 	     
-	     TblCategoryDto category = getCategoryById(payment.getCategoryId());
+	     TblCategory category = getCategoryById(payment.getCategoryId());
 	     
 	     if (category.getCategoryTypeID() == 1841648525) {
 	            //Expense
@@ -9499,7 +9720,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	     }
 	     catch(Exception e)
 	     {
-	    	 e.printStackTrace();
+	    	 Loger.log(e.toString());
 	     }finally {
 				try {
 					if (rs != null) {
@@ -9512,19 +9733,19 @@ public class ReceivableListImpl implements ReceivableLIst {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 	}
 	@Override
-	public ArrayList<TblCategoryDto> getCategoryForAsset() {
+	public ArrayList<TblCategory> getCategoryForAsset() {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
+		ArrayList<TblCategory> categoryList = new ArrayList<TblCategory>();
 		
 		String sql =  " SELECT * FROM bca_category"
                     + " WHERE CategoryTypeID = -450722500"
@@ -9538,7 +9759,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 			while(rs.next())
 			{
-				TblCategoryDto category = new TblCategoryDto();
+				TblCategory category = new TblCategory();
 				category.setCategoryNumber(rs.getString("Name"));
 				category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
 				category.setId(rs.getLong("CategoryID"));
@@ -9547,7 +9768,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9561,7 +9782,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -9571,7 +9792,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		// TODO Auto-generated method stub
 		
 		 boolean isRefundedTransaction = false;
-         TblPaymentDto payment = null;
+         TblPayment payment = null;
          
          payment = getObjectOfStoragePayment(paymentId);
          
@@ -9588,7 +9809,7 @@ public class ReceivableListImpl implements ReceivableLIst {
          
 	}
 	@Override
-	public ArrayList<ReceivableListDto> getAllInvoicesForBillingBoardWithSearchOption(Date from, Date to,
+	public ArrayList<ReceivableListBean> getAllInvoicesForBillingBoardWithSearchOption(Date from, Date to,
 			String ascent, String columnName, int InvoiceType, int overdueDays, String alldata, String advanceSearchCriteria,String advanceSearchData) {
 		
 		Statement stmt = null;
@@ -9596,7 +9817,7 @@ public class ReceivableListImpl implements ReceivableLIst {
         SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 		ResultSet rs = null;
-		ArrayList<ReceivableListDto> list = new ArrayList<ReceivableListDto>();
+		ArrayList<ReceivableListBean> list = new ArrayList<ReceivableListBean>();
 		
 		String dateStr = getSQL4Date(from, to);
 		String advanceFilter = "";
@@ -9671,7 +9892,7 @@ public class ReceivableListImpl implements ReceivableLIst {
         }
         
         if (overdueDays > 0) {
-
+			sql = sql + " AND (DATEDIFF(Date(now()),DATE(DATE_ADD(DATE(DATE_ADD(inv.DateAdded,INTERVAL ,term.Days  Day)), INTERVAL " + overdueDays + " Day)))=0) ";
         }
         
         sql = sql + advanceFilter;
@@ -9686,13 +9907,13 @@ public class ReceivableListImpl implements ReceivableLIst {
 			   int year = 0;
 			   int month = 0;
 			   int day = 0;
-				ReceivableListDto invoice = new ReceivableListDto();
+				ReceivableListBean invoice = new ReceivableListBean();
 				ordNo = rs.getInt("OrderNum");
 
                 invoice.setInvoiceID(rs.getInt("InvoiceID"));
 
                 invoice.setOrderNum(ordNo);
-
+                invoice.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(ordNo), AppConstants.InvoiceType, configDto, false));
                 invoice.setMemo(rs.getString("Memo"));
 
                 invoice.setNote(rs.getString("Note"));
@@ -9731,7 +9952,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					date = JProjectUtil.qbFormatter().parse("2017-01-23");
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}*/
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(date);
@@ -9762,9 +9983,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 				}
 				else
 				{
-					day = 0;
-					month = 0;
-					year = 0;
+//					day = 0;
+//					month = 0;
+//					year = 0;
+					day = day + termDays;
+					month = month;
 				}
 				cal.clear();
 				cal.set(Calendar.DAY_OF_MONTH, day);
@@ -9777,7 +10000,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
         finally {
 			try {
@@ -9791,7 +10014,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return list;
@@ -9902,7 +10125,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9916,7 +10139,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -9942,7 +10165,7 @@ public class ReceivableListImpl implements ReceivableLIst {
         SQLExecutor db = null;
 		ResultSet rs = null;
 		try {
-			ReceivableListDto invoice = getInvoiceByInvoiceID(invoiceId);
+			ReceivableListBean invoice = getInvoiceByInvoiceID(invoiceId);
 			
 			db = new SQLExecutor();
 			con = db.getConnection();
@@ -9961,7 +10184,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -9975,7 +10198,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -9990,11 +10213,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ResultSet rs = null;
 		ArrayList<BillingStatement> billingList = new ArrayList<BillingStatement>();
 		
-		String sql = "SELECT bill.statementno, bill.statementdate,bill.clientvendorid,bill.invoiceid,bill.iscombined,bill.type,bill.amount,"
+        String sql = "SELECT inv.Balance, inv.DateAdded, inv.PaidAmount, bill.statementno, bill.statementdate,bill.clientvendorid,bill.invoiceid,bill.iscombined,bill.type,bill.amount,"
 				+ "bill.overdueamount,bill.overdueservicecharge,c.Name AS CompanyName,c.FirstName,c.LastName,inv.OrderNum"
 				+ " FROM   bca_billingstatements AS bill"
 				+ " LEFT JOIN bca_clientvendor AS c on bill.ClientVendorID = c.ClientVendorID"
-				+ " LEFT JOIN bca_invoice AS inv ON bill.InvoiceID = inv.InvoiceID"
+				+ " JOIN bca_invoice AS inv ON bill.InvoiceID = inv.InvoiceID"
 				+ " WHERE   c.Status IN ('U','N') "
 				+ " AND c.CompanyID = " + ConstValue.companyId;
 		 if(criteriaForBillStatement.equals("Statement#"))
@@ -10020,12 +10243,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 				bs.setCustomerName(rs.getString("FirstName") + " " + rs.getString("LastName") + "(" + rs.getString("CompanyName") + ")");
 				bs.setStatementDate(rs.getDate("StatementDate"));
 				bs.setAmount(rs.getDouble("Amount"));
+                bs.setPaidAmount(rs.getDouble("PaidAmount"));
+				bs.setPaidDate(rs.getDate("DateAdded"));
+
 				
 				billingList.add(bs);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -10039,7 +10265,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -10129,7 +10355,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -10143,12 +10369,48 @@ public class ReceivableListImpl implements ReceivableLIst {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return statement;
 	}
-	
+
+	@Override
+	public String getRecurringDate(String period, String str_date) {
+
+		String recurringDate = null;
+		DateFormat formatter;
+		Date date;
+		try {
+			str_date = str_date.replaceAll("-","/");
+			formatter = new SimpleDateFormat("MM/dd/yyyy");
+			date = (Date) formatter.parse(str_date);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+
+			if (period.equals("Daily")) {
+				cal.add(Calendar.DATE, 1); // add 1 Day in period
+
+			} else if (period.equals("Weekly")) {
+				cal.add(Calendar.DAY_OF_WEEK_IN_MONTH, 1);  // add 1 week in period
+
+			} else if (period.equals("Monthly")) {
+				cal.add(Calendar.MONTH, 1);  // add 1 month in period
+
+			} else if (period.equals("Quarterly")) {
+				cal.add(Calendar.MONTH, 6); // add 6 Day in period
+
+			} else if (period.equals("Annually")) {
+				cal.add(Calendar.YEAR, 1);   // add 1 Year in period
+
+			}
+			recurringDate = JProjectUtil.getDateFormater().format(cal.getTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return recurringDate;
+	}
+
 }
 	
 	 

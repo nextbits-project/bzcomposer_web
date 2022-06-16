@@ -12,9 +12,6 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
@@ -23,11 +20,7 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
 
-@Service
 public class SalesOrderBoardInfo {
-	
-	@Autowired
-	private ConfigurationInfo configInfo;
 
 	public ArrayList SalesRecordSearch(String compId, SalesBoardDto sform) {
 
@@ -49,7 +42,7 @@ public class SalesOrderBoardInfo {
 		con = db.getConnection();
 		String mark = null;
 		CustomerInfo cinfo = new CustomerInfo();
-	///	ConfigurationInfo configInfo = new ConfigurationInfo();
+		ConfigurationInfo configInfo = new ConfigurationInfo();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
 			stmt = con.createStatement();
@@ -166,7 +159,7 @@ public class SalesOrderBoardInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class TaxInfo and  method -getFederalTax "+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -178,7 +171,7 @@ public class SalesOrderBoardInfo {
 				if (stmt2 != null) { db.close(stmt2); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -249,7 +242,7 @@ public class SalesOrderBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return result;

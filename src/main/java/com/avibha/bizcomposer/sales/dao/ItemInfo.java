@@ -5,10 +5,16 @@
  */
 package com.avibha.bizcomposer.sales.dao;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,28 +26,39 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.avibha.bizcomposer.sales.forms.ItemDto;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.struts.action.ActionServlet;
+import org.apache.struts.upload.FormFile;
+import org.apache.struts.util.LabelValueBean;
 
+import com.avibha.bizcomposer.accounting.dao.Invoice;
+import com.avibha.bizcomposer.accounting.forms.CategoryListForm;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
-import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.bizcomposer.sales.forms.CustomerForm;
+import com.avibha.bizcomposer.sales.forms.InvoiceForm;
+import com.avibha.bizcomposer.sales.forms.ItemForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
-import com.avibha.common.utility.FormFile;
-import com.avibha.common.utility.LabelValueBean;
+import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 import com.nxsol.bizcomposer.common.TblItemInventory;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
+import com.nxsol.bizcomposer.common.TblStore;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 
 /*
  * 
@@ -49,11 +66,11 @@ import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 public class ItemInfo {
 
 	public ArrayList getDicontinuedItemList(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemDto form) {
+			String cId, HttpServletRequest request, ItemForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
+		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
 		ResultSet rs = null, rs1 = null;
 		con = db.getConnection();
 		ArrayList<Date> selectedRange = new ArrayList<>();
@@ -159,7 +176,7 @@ public class ItemInfo {
 				for (int counter = 0; counter < rsSize; counter++) {
 
 					Loger.log("Not Null");
-					ItemDto item = new ItemDto();
+					ItemForm item = new ItemForm();
 					item.setInventoryId(newInventory[counter][0] == null ? "0" : newInventory[counter][0]); // inventory
 																											// id
 					item.setCategory(newInventory[counter][1] == null ? "0" : newInventory[counter][1]); // Category
@@ -211,19 +228,19 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
 
 	public ArrayList getDamagedInvList(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemDto form) {
+			HttpServletRequest request, ItemForm form) {
 
 		Connection con = null ;
 		Statement stmt = null;
 		ResultSet rs = null;
-		ArrayList<ItemDto> objList = new ArrayList<>();
+		ArrayList<ItemForm> objList = new ArrayList<>();
 		String sql = "";
 		SQLExecutor db = new SQLExecutor();
 		DateInfo dInfo = new DateInfo();
@@ -269,7 +286,7 @@ public class ItemInfo {
 					+ " AND reason = 'Defective'" + dateBetween;
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				form = new ItemDto();
+				form = new ItemForm();
 				form.setInventoryId(rs.getString("InventoryID"));
 				form.setInventoryCode(rs.getString("InventoryCode"));
 				form.setOldQty(rs.getInt("oldQty"));
@@ -280,7 +297,7 @@ public class ItemInfo {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -293,7 +310,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -302,12 +319,12 @@ public class ItemInfo {
 
 	/* missing */
 	public ArrayList getMissingInventoryList(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemDto form) {
+			String cId, HttpServletRequest request, ItemForm form) {
 
 		Connection con = null ;
 		Statement stmt = null;
 		ResultSet rs = null;
-		ArrayList<ItemDto> objList = new ArrayList<>();
+		ArrayList<ItemForm> objList = new ArrayList<>();
 		String sql = "";
 		SQLExecutor db = new SQLExecutor();
 		DateInfo dInfo = new DateInfo();
@@ -357,7 +374,7 @@ public class ItemInfo {
 					+ "       AND refrmano <= 0 " + "       AND parentreasonid = 3" + dateBetween;
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				form = new ItemDto();
+				form = new ItemForm();
 				form.setInventoryName(rs.getString(1));
 				form.setAdjustqty(rs.getInt(5));
 				form.setDateAdded(rs.getString(6));
@@ -367,7 +384,7 @@ public class ItemInfo {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -380,7 +397,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -389,12 +406,12 @@ public class ItemInfo {
 
 	/* return inventory */
 	public ArrayList getReturnInventoryList(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemDto form) {
+			String cId, HttpServletRequest request, ItemForm form) {
 
 		Connection con = null ;
 		Statement stmt = null;
 		ResultSet rs = null;
-		ArrayList<ItemDto> objList = new ArrayList<>();
+		ArrayList<ItemForm> objList = new ArrayList<>();
 		String sql = "";
 		SQLExecutor db = new SQLExecutor();
 		DateInfo dInfo = new DateInfo();
@@ -444,7 +461,7 @@ public class ItemInfo {
 					+ "       AND refrmano <= 0 " + "       AND parentreasonid = 2" + dateBetween;
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				form = new ItemDto();
+				form = new ItemForm();
 				form.setInventoryName(rs.getString(1));
 				form.setInventoryID(rs.getInt(2));
 				form.setRmaitemqty(rs.getString(3));
@@ -457,7 +474,7 @@ public class ItemInfo {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs != null) {
@@ -470,7 +487,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -479,13 +496,13 @@ public class ItemInfo {
 	/**/
 
 	public ArrayList getInventoryValSummary(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemDto form1) {
+			String cId, HttpServletRequest request, ItemForm form1) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null, stmt1 = null;
 		ResultSet rs = null, rs1 = null;
 		String sql = "";
-		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
+		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
 		int count = 0;
 		String cat = "";
 		DateInfo dInfo = new DateInfo();
@@ -537,7 +554,7 @@ public class ItemInfo {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				ItemDto form = new ItemDto();
+				ItemForm form = new ItemForm();
 				if (count <= 0) {
 					String sql1 = "" + "SELECT Sum(a.qty), " + "       Sum(a.purchaseprice * a.qty) AS AssetValue, "
 							+ "       Sum(a.qty * a.saleprice)     AS RetailValue " + "FROM   bca_iteminventory AS a "
@@ -572,7 +589,7 @@ public class ItemInfo {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -591,22 +608,22 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
 
 	public ArrayList getInvValDetail(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemDto form1) {
+			HttpServletRequest request, ItemForm form1) {
 		Connection con = null ;
 		Statement stmt = null, stmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null, rs1 = null;
-		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
+		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
 		String cat = "";
 		String inventoryName = "";
-		ReceivableListDto invoice = null;
+		ReceivableListBean invoice = null;
 		String sql = "";
 
 		DateInfo dInfo = new DateInfo();
@@ -658,7 +675,7 @@ public class ItemInfo {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				ItemDto f = new ItemDto();
+				ItemForm f = new ItemForm();
 				f.setCategory(rs.getString("InventoryCode"));
 				if (cat.equals(f.getCategory())) {
 					f.setCategory("");
@@ -707,7 +724,7 @@ public class ItemInfo {
 					if (rs1.next()) {
 						f.setCvName(rs1.getString("Name"));
 					}
-					f.setDateAdded(""+rs.getDate("DateAdded"));
+					f.setDateAdded(rs.getDate("DateAdded"));
 					
 					if (rs1 != null) {
 						db.close(rs1);
@@ -722,7 +739,7 @@ public class ItemInfo {
 			
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -741,18 +758,18 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
 
 	public ArrayList getInvOrderReport(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemDto form1) {
+			HttpServletRequest request, ItemForm form1) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null, stmt1 = null;
-		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
+		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
 		ResultSet rs = null, rs1 = null;
 		String sql = "";
 		String str = "";
@@ -800,7 +817,7 @@ public class ItemInfo {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				ItemDto f = new ItemDto();
+				ItemForm f = new ItemForm();
 
 				String sql_cat = "SELECT InventoryCode FROM bca_iteminventory WHERE InventoryID = " + rs.getInt("ParentID")
 						+ " AND CompanyID ='" + cId + "'";
@@ -834,7 +851,7 @@ public class ItemInfo {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -853,19 +870,19 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
 
 	public ArrayList getInvStatisticReport(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemDto form1) {
+			HttpServletRequest request, ItemForm form1) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null, rs1 = null;
 		Statement stmt = null, stmt1 = null;
-		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
+		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
 
 		DateInfo dInfo = new DateInfo();
 		CustomerInfo cInfo = new CustomerInfo();
@@ -913,7 +930,7 @@ public class ItemInfo {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				ItemDto f = new ItemDto();
+				ItemForm f = new ItemForm();
 				f.setInventoryId(Long.toString(rs.getLong("InventoryID")));
 				f.setInventoryCode(rs.getString("InventoryCode"));
 				f.setInvName(rs.getString("InventoryName"));
@@ -922,7 +939,7 @@ public class ItemInfo {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -941,7 +958,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -949,11 +966,11 @@ public class ItemInfo {
 	}
 
 	public ArrayList getReportItemList(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemDto form) {
+			HttpServletRequest request, ItemForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
+		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
 		ResultSet rs = null;
 		String dateBetween = "";
 		DateInfo dInfo = new DateInfo();
@@ -1034,7 +1051,7 @@ public class ItemInfo {
 				for (int counter = 0; counter < rsSize; counter++) {
 					if (inventory[counter][0] != null) {
 						Loger.log("Not Null");
-						ItemDto item = new ItemDto();
+						ItemForm item = new ItemForm();
 						item.setInventoryId(inventory[counter][0] == null ? "0" : inventory[counter][0]); // inventory
 																											// id
 						item.setIscategory(inventory[counter][2] == null ? "0" : inventory[counter][2]); // is
@@ -1077,7 +1094,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1087,7 +1104,7 @@ public class ItemInfo {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
+		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
 		ResultSet rs = null;
 		con = db.getConnection();
 
@@ -1186,7 +1203,7 @@ public class ItemInfo {
 				for (int counter = 0; counter < rsSize; counter++) {
 					if (inventory[counter][0] != null) {
 						Loger.log("Not Null");
-						ItemDto item = new ItemDto();
+						ItemForm item = new ItemForm();
 						item.setInventoryId(inventory[counter][0] == null ? "0" : inventory[counter][0]); // inventory
 																												// id
 						item.setIscategory(inventory[counter][2] == null ? "0" : inventory[counter][2]); // is
@@ -1233,7 +1250,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1243,7 +1260,7 @@ public class ItemInfo {
 		Connection con = null ;
 		PreparedStatement pstmt =  null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
+		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
 		ResultSet rs = null;
 		con = db.getConnection();
 
@@ -1265,7 +1282,7 @@ public class ItemInfo {
 			String file = "";
 			while (rs.next()) {
 
-				ItemDto item = new ItemDto();
+				ItemForm item = new ItemForm();
 				item.setInventoryId(invId);
 				item.setItemName(rs.getString(2));
 				item.setItemCode(rs.getString(3));
@@ -1314,7 +1331,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -1468,7 +1485,7 @@ public class ItemInfo {
 				valid = true;
 
 		} catch (SQLException ee) {
-			ee.printStackTrace();
+			
 			Loger.log(2, "Error in updateItem() " + ee);
 
 		} finally {
@@ -1480,7 +1497,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1635,7 +1652,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1691,7 +1708,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1728,7 +1745,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1769,7 +1786,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return inventoryID;
@@ -1817,7 +1834,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1847,7 +1864,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			int invID;
 			while (rs.next()) {
-				fillList.add(new LabelValueBean(rs.getString(2), rs.getString(1)));
+				fillList.add(new org.apache.struts.util.LabelValueBean(rs.getString(2), rs.getString(1)));
 				String sqlString1 = "select InventoryID,InventoryCode from bca_iteminventory where ParentID=? and ItemTypeID in (1,4) and Active=1 and isCategory=1 and CompanyID=?";
 				invID = rs.getInt(1);
 				pstmt1 = con.prepareStatement(sqlString1);
@@ -1857,14 +1874,14 @@ public class ItemInfo {
 				int ivcode = 0;
 				while (rs1.next()) {
 					ivcode = rs1.getInt(1);
-					fillList.add(new LabelValueBean(rs1.getString(2), rs1.getString(1)));
+					fillList.add(new org.apache.struts.util.LabelValueBean(rs1.getString(2), rs1.getString(1)));
 					pstmt_th = con.prepareStatement(
 							"select InventoryID,InventoryCode from bca_iteminventory where ParentID=? and ItemTypeID in (1,4) and Active=1 and isCategory=1 and CompanyID=?");
 					pstmt_th.setInt(1, ivcode);
 					pstmt_th.setInt(2, cid);
 					rs_th = pstmt_th.executeQuery();
 					while (rs_th.next()) {
-						fillList.add(new LabelValueBean(rs_th.getString(2), rs_th.getString(1)));
+						fillList.add(new org.apache.struts.util.LabelValueBean(rs_th.getString(2), rs_th.getString(1)));
 					}
 
 				}
@@ -1903,19 +1920,19 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return fillList;
 	}
 
 	public ArrayList getProfitLossReportByItem(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemDto form) {
+			String cId, HttpServletRequest request, ItemForm form) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt1 = null, stmt2 = null, stmt3 = null, stmt4 = null;
 		ResultSet rs1 = null, rs2 = null, rs3 = null, rs4 = null;
-		ArrayList<ItemDto> objList = new ArrayList<>();
+		ArrayList<ItemForm> objList = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
 		String dateBetween = "", sql = "";
 		double totalPurchPrice = 0.0;
@@ -1969,7 +1986,7 @@ public class ItemInfo {
 
 			rs1 = stmt1.executeQuery(sql);
 			while (rs1.next()) {
-				ItemDto f = new ItemDto();
+				ItemForm f = new ItemForm();
 				f.setInventoryId(rs1.getString("InventoryID"));
 				f.setInventoryCode(rs1.getString("InventoryCode"));
 				f.setSalePrice(new DecimalFormat("#0.00").format(rs1.getDouble("SalePrice")));
@@ -2007,7 +2024,7 @@ public class ItemInfo {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs1 != null) {
@@ -2038,7 +2055,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("TotalGrossprofit", totalGrossProfit);
@@ -2103,7 +2120,7 @@ public class ItemInfo {
 
 	}
 
-	/*public boolean saveUploadFile(FormFile selectedFile, HttpServletRequest request) {
+	public boolean saveUploadFile(FormFile selectedFile, HttpServletRequest request) {
 
 		File file = new File(selectedFile.getFileName());
 		ArrayList al = new ArrayList();
@@ -2319,13 +2336,13 @@ public class ItemInfo {
 
 			else {
 				if (name[1].equals("xlsx")) {
-					
+					/*
 					 * FileInputStream inputStream=null; XSSFWorkbook
 					 * workbook=null; inputStream = new FileInputStream(file);
 					 * workbook=new XSSFWorkbook(inputStream); XSSFSheet
 					 * firstSheet = workbook.getSheetAt(0); Iterator<Row>
 					 * iterator = firstSheet.iterator(); //row int count1=0;
-					 
+					 */
 				} else {
 					FileInputStream inputStream = null;
 					HSSFWorkbook workbook = null;
@@ -2379,11 +2396,11 @@ public class ItemInfo {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		return b;
 	}
-*/
+
 	public boolean insertdataintodatabase(ArrayList al, HttpServletRequest request) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con=null;
@@ -2605,7 +2622,7 @@ public class ItemInfo {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2618,7 +2635,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return b;
@@ -2648,7 +2665,7 @@ public class ItemInfo {
 
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (stmt != null) {
@@ -2658,7 +2675,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -2682,7 +2699,7 @@ public class ItemInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2695,7 +2712,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return 0;
@@ -2735,7 +2752,7 @@ public class ItemInfo {
 			  }
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2748,7 +2765,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return valid;
@@ -3570,7 +3587,7 @@ public class ItemInfo {
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			File destinationFile = null;
@@ -3661,7 +3678,7 @@ public class ItemInfo {
   		}
   	  }catch (Exception e) {
   		// TODO: handle exception
-  		  e.printStackTrace();
+  		  Loger.log(e.toString());
   	}finally {
 		try {
 			if (rs != null) {
@@ -3674,7 +3691,7 @@ public class ItemInfo {
 				db.close(con);
 				}
 			} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 	}
   	return v;
@@ -3707,7 +3724,7 @@ public class ItemInfo {
 			  }
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -3720,7 +3737,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return row;
@@ -3745,7 +3762,7 @@ public class ItemInfo {
 			  
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -3758,7 +3775,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return itemAsin;
@@ -3782,7 +3799,7 @@ public class ItemInfo {
 			  
 		  }catch (Exception e) {
 			// TODO: handle exception
-			  e.printStackTrace();
+			  Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -3795,7 +3812,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		  return inventory;
@@ -3839,7 +3856,7 @@ public class ItemInfo {
 				int ivcode = 0;
 				while (rs1.next()) 
 				{
-					weightList.add(new LabelValueBean(rs1.getString(4),rs1.getString(1)));
+					weightList.add(new org.apache.struts.util.LabelValueBean(rs1.getString(4),rs1.getString(1)));
 				}
 				
 				if(null!=rs1) {
@@ -3871,18 +3888,18 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return weightList;
 	}
 	
-	public ArrayList filleSalesChannel(ItemDto ItemDto) 
+	public ArrayList filleSalesChannel(ItemForm itemForm) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemDto> eSaleChannelList = new ArrayList<>();
+		ArrayList<ItemForm> eSaleChannelList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try 
@@ -3892,7 +3909,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				ItemDto iForm = new ItemDto();
+				ItemForm iForm = new ItemForm();
 				iForm.seteSaleChannelListName("Don't Synch with "+ rs.getString("StoreTypeName"));
 				eSaleChannelList.add(iForm);
 			}
@@ -3913,10 +3930,10 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
-		ItemDto.setListOfExistingeSaleChannelList(eSaleChannelList);
+		itemForm.setListOfExistingeSaleChannelList(eSaleChannelList);
 		return eSaleChannelList;
 	}
 
@@ -3935,7 +3952,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				measurementList.add(new LabelValueBean(rs.getString(4), rs.getString(1)));
+				measurementList.add(new org.apache.struts.util.LabelValueBean(rs.getString(4), rs.getString(1)));
 			}
 		} 
 		catch (SQLException ee) 
@@ -3954,7 +3971,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return measurementList;
@@ -3975,7 +3992,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				subMeasurementList.add(new LabelValueBean(rs.getString(4), rs.getString(2)));
+				subMeasurementList.add(new org.apache.struts.util.LabelValueBean(rs.getString(4), rs.getString(2)));
 			}
 		} 
 		catch (SQLException ee) 
@@ -3993,18 +4010,18 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return subMeasurementList;
 	}
 
-	public ArrayList setPriceLevel(String compId,ItemDto form) 
+	public ArrayList setPriceLevel(String compId,ItemForm form) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemDto> priceLevelList = new ArrayList<>();
+		ArrayList<ItemForm> priceLevelList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try 
@@ -4018,14 +4035,14 @@ public class ItemInfo {
 				priceLevelList.add(rs.getString("Name"));
 				priceLevelList.add(rs.getLong("FixedPercentage"));*/
 				
-				ItemDto fo = new ItemDto();
+				ItemForm fo = new ItemForm();
 				fo.setPriceLevelId(rs.getInt("PriceLevelID"));
 				fo.setPriceLevel(rs.getString("Name"));
 				fo.setPricePercentage(rs.getLong("FixedPercentage"));
 				
 				priceLevelList.add(fo);
 				
-				//priceLevelList.add(new LabelValueBean(rs.getString("Name"),rs.getString("PriceLevelId")));
+				//priceLevelList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"),rs.getString("PriceLevelId")));
 			}
 		} 
 		catch (SQLException ee) 
@@ -4043,19 +4060,19 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		form.setListOfExistingPriceLevels(priceLevelList);
 		return priceLevelList;
 	}
 
-	public ArrayList eBayProductList(String compId,ItemDto form) 
+	public ArrayList eBayProductList(String compId,ItemForm form) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemDto> eBayProductList = new ArrayList<>();
+		ArrayList<ItemForm> eBayProductList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try 
@@ -4065,7 +4082,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				ItemDto iForm = new ItemDto();
+				ItemForm iForm = new ItemForm();
 				iForm.seteBayProductId(rs.getInt("InventoryID"));
 				iForm.seteBayProductCode(rs.getString("InventoryCode"));
 				iForm.seteBayProductName(rs.getString("InventoryName"));
@@ -4108,7 +4125,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		form.setListOfExistingeBayProducts(eBayProductList);
@@ -4117,7 +4134,7 @@ public class ItemInfo {
 	
 	
 	
-	public ArrayList getExistingLocation(String compId, HttpServletRequest request, ItemDto ItemDto) 
+	public ArrayList getExistingLocation(String compId, HttpServletRequest request, ItemForm itemForm) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -4135,7 +4152,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				locationList.add(new LabelValueBean(rs.getString("Name"), rs.getString("LocationID")));
+				locationList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"), rs.getString("LocationID")));
 			}
 		} 
 		catch (SQLException ee) 
@@ -4153,18 +4170,18 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return locationList;
 	}
 
-	public ArrayList filleStoreList(String compId, ItemDto ItemDto) 
+	public ArrayList filleStoreList(String compId, ItemForm itemForm) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemDto> storeList = new ArrayList<>();
+		ArrayList<ItemForm> storeList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try 
@@ -4174,7 +4191,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				ItemDto iForm = new ItemDto();
+				ItemForm iForm = new ItemForm();
 				iForm.setChannelSettingName(rs.getString("StoreTypeName")+"-"+rs.getString("StoreName"));
 				
 				storeList.add(iForm);
@@ -4195,10 +4212,10 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
-		ItemDto.setListOfExistingChannelSettings(storeList);
+		itemForm.setListOfExistingChannelSettings(storeList);
 		return storeList;
 	}
 
@@ -4227,8 +4244,8 @@ public class ItemInfo {
 				{
 					if(storeTypeId == 3 || storeTypeId == 9)
 					{
-						storeList.add(new LabelValueBean(rs.getString("StoreTypeName"), rs.getString("StoreTypeID")));
-						storeList.add(new LabelValueBean(rs1.getString("StoreName"), rs1.getString("StoreID")));
+						storeList.add(new org.apache.struts.util.LabelValueBean(rs.getString("StoreTypeName"), rs.getString("StoreTypeID")));
+						storeList.add(new org.apache.struts.util.LabelValueBean(rs1.getString("StoreName"), rs1.getString("StoreID")));
 					}
 				}
 				if (rs1 != null) {
@@ -4262,7 +4279,7 @@ public class ItemInfo {
 						}
 						
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return storeList;
@@ -4273,7 +4290,7 @@ public class ItemInfo {
 		Connection con=null;
 		PreparedStatement pstmt=null,pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemDto> productList = new ArrayList<>();
+		ArrayList<ItemForm> productList = new ArrayList<>();
 		ResultSet rs=null,rs1 = null;
 		con = db.getConnection();
 		try 
@@ -4291,7 +4308,7 @@ public class ItemInfo {
 				
 				while(rs1.next())
 				{
-					ItemDto iForm = new ItemDto();
+					ItemForm iForm = new ItemForm();
 					iForm.setItemCode(rs1.getString("InventoryCode"));
 					iForm.setItemName(rs1.getString("SKU"));
 					productList.add(iForm);
@@ -4327,7 +4344,7 @@ public class ItemInfo {
 						db.close(con);
 						}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return productList;
@@ -4352,7 +4369,7 @@ public class ItemInfo {
 			{
 				String category = rs.getString("Name")+" "+ rs.getString("CateNumber");
 				int categoryId = rs.getInt("CategoryID");
-				accountList.add(new LabelValueBean(category, rs.getString("CategoryID")));
+				accountList.add(new org.apache.struts.util.LabelValueBean(category, rs.getString("CategoryID")));
 				pstmt1 = con1.prepareStatement(sqlString1);
 				rs1 = pstmt1.executeQuery();
 				
@@ -4362,7 +4379,7 @@ public class ItemInfo {
 					String category1 = rs1.getString("Name")+" "+ rs1.getString("CateNumber");
 					if(categoryId == parentId)
 					{
-						accountList.add(new LabelValueBean("	"+category1, rs1.getString("CategoryID")));
+						accountList.add(new org.apache.struts.util.LabelValueBean("	"+category1, rs1.getString("CategoryID")));
 					}
 				}
 				if (rs1 != null) {
@@ -4398,7 +4415,7 @@ public class ItemInfo {
 						db.close(con1);
 						}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return accountList;
@@ -4412,7 +4429,7 @@ public class ItemInfo {
 		ArrayList<LabelValueBean> categoryList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
 		
-		ItemDto form = new ItemDto();
+		ItemForm form = new ItemForm();
 		try 
 		{
 			con = db.getConnection();
@@ -4421,7 +4438,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				categoryList.add(new LabelValueBean(rs.getString("InventoryCode"),rs.getString("InventoryID")));	
+				categoryList.add(new org.apache.struts.util.LabelValueBean(rs.getString("InventoryCode"),rs.getString("InventoryID")));	
 			}
 		} 
 		catch (SQLException ee) 
@@ -4439,7 +4456,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
@@ -4453,7 +4470,7 @@ public class ItemInfo {
 		ArrayList<LabelValueBean> subCategoryList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
 		
-		ItemDto form = new ItemDto();
+		ItemForm form = new ItemForm();
 		try 
 		{
 			con = db.getConnection();
@@ -4462,7 +4479,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				subCategoryList.add(new LabelValueBean(rs.getString("InventoryCode"),rs.getString("ParentID")));	
+				subCategoryList.add(new org.apache.struts.util.LabelValueBean(rs.getString("InventoryCode"),rs.getString("ParentID")));	
 			}
 		} 
 		catch (SQLException ee) 
@@ -4481,7 +4498,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return subCategoryList;
@@ -4495,7 +4512,7 @@ public class ItemInfo {
 		ArrayList<LabelValueBean> vendorList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
 		
-		ItemDto form = new ItemDto();
+		ItemForm form = new ItemForm();
 		try 
 		{
 			con = db.getConnection();
@@ -4505,7 +4522,7 @@ public class ItemInfo {
 			while (rs.next()) 
 			{
 				String name = rs.getString("LastName")+" "+rs.getString("FirstName")+"("+rs.getString("Name")+")";
-				vendorList.add(new LabelValueBean(name,rs.getString("ClientVendorID")));	
+				vendorList.add(new org.apache.struts.util.LabelValueBean(name,rs.getString("ClientVendorID")));	
 			}
 		} 
 		catch (SQLException ee) 
@@ -4524,7 +4541,7 @@ public class ItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return vendorList;

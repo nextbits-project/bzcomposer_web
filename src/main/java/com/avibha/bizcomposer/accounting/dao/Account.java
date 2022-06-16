@@ -132,7 +132,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return customerServiceList;
@@ -181,7 +181,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return BankList;
@@ -234,7 +234,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return customerList;
@@ -281,7 +281,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         Loger.log("Size of term list in db is"+termList.size());
@@ -333,7 +333,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return categoryList;
@@ -382,7 +382,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return paymentList;
@@ -440,7 +440,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return invoiceList;
@@ -501,7 +501,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return billList;
@@ -560,7 +560,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return billList;
@@ -614,7 +614,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return invoiceList;
@@ -676,7 +676,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return invoice;
@@ -717,7 +717,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         if(no!=0)
@@ -759,7 +759,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         if(no!=0)
@@ -837,7 +837,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return customerServiceList;
@@ -894,7 +894,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return receivableList;
@@ -1024,7 +1024,7 @@ public class Account {
                     executor.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return categoryList;
@@ -1072,7 +1072,7 @@ public class Account {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return categoryTypeList;
@@ -1256,7 +1256,7 @@ public class Account {
 
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try {
@@ -1295,7 +1295,7 @@ public class Account {
                 db.close(con);
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return v;
@@ -1513,7 +1513,7 @@ public class Account {
             request.setAttribute("netIncome", new DecimalFormat("#0.0").format(netIncome));
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally{
 
             try {
@@ -1568,7 +1568,7 @@ public class Account {
                 db.close(con);
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return tr;
@@ -1592,7 +1592,7 @@ public class Account {
             }
         }catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
 
             try {
@@ -1611,7 +1611,7 @@ public class Account {
 
             }catch (Exception e) {
                 // TODO: handle exception
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return amount;

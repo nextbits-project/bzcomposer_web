@@ -2,10 +2,11 @@ package com.avibha.bizcomposer.File.actions;
 
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.common.log.Loger;
+
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.util.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -21,11 +22,9 @@ import java.util.Date;
 @Controller
 public class ExcelReportController {
 
-	@Autowired
-    private SalesDetailsDao saleDetailsDao;
     @GetMapping("/downloadAdjustInventoryReport")
     public void downloadAdjustInventoryReport(ItemDto itemDto, HttpServletRequest request, HttpServletResponse response) {
-        //SalesDetailsDao saleDetailsDao = new SalesDetailsDao();
+        SalesDetailsDao saleDetailsDao = new SalesDetailsDao();
         ArrayList<ItemDto> itemList = saleDetailsDao.ItemsList(request, itemDto);
         boolean isWholeData = Boolean.parseBoolean(request.getParameter("isWholeData"));
         String reportName = request.getParameter("reportName");
@@ -105,7 +104,7 @@ public class ExcelReportController {
             IOUtils.copy(stream, response.getOutputStream());
             System.out.println("Excel Report created...");
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
     }
 

@@ -5,23 +5,19 @@
  */
 package com.avibha.bizcomposer.purchase.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.sales.dao.CustomerInfo;
-import com.avibha.bizcomposer.sales.dao.Item;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import org.apache.struts.util.LabelValueBean;
+
+import com.avibha.bizcomposer.purchase.forms.*;
+import com.avibha.bizcomposer.sales.dao.*;
+import com.avibha.bizcomposer.sales.forms.InvoiceForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
-import com.avibha.common.utility.LabelValueBean;
 
 public class PurchaseOrderInfo {
 	
@@ -30,7 +26,7 @@ public class PurchaseOrderInfo {
 	 * ship to.   
 	 */
 	public ArrayList dropShipTo(String compId,String name){
-		ArrayList<PurchaseOrderDto> dlist = new ArrayList<PurchaseOrderDto>();
+		ArrayList<PurchaseOrderForm> dlist = new ArrayList<PurchaseOrderForm>();
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		PreparedStatement pstmt=null;
@@ -45,7 +41,7 @@ public class PurchaseOrderInfo {
 			pstmt.setString(1,compId);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				PurchaseOrderDto pform = new PurchaseOrderDto();
+				PurchaseOrderForm pform = new PurchaseOrderForm();
 				pform.setFullName(rs.getString("LastName")+", "+rs.getString("FirstName"));
 				pform.setClientVendorID(rs.getString("ClientVendorID"));
 				dlist.add(pform);
@@ -68,7 +64,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -80,7 +76,7 @@ public class PurchaseOrderInfo {
 	 * the purchase order to select perticular vendor. 
 	 */
 	public ArrayList getVendorList(String compId,String name,String companyValue){
-			ArrayList<PurchaseOrderDto> vList = new ArrayList<PurchaseOrderDto>();
+			ArrayList<PurchaseOrderForm> vList = new ArrayList<PurchaseOrderForm>();
 			Connection con = null ;
 			SQLExecutor db = new SQLExecutor();
 			PreparedStatement pstmt=null;
@@ -98,7 +94,7 @@ public class PurchaseOrderInfo {
 					pstmt.setString(1,compId);
 					rs=pstmt.executeQuery();
 					while(rs.next()){
-						PurchaseOrderDto pform = new PurchaseOrderDto();
+						PurchaseOrderForm pform = new PurchaseOrderForm();
 						pform.setCompanyID(rs.getString("Name"));
 						pform.setClientVendorID(rs.getString("ClientVendorID"));
 						vList.add(pform);
@@ -113,7 +109,7 @@ public class PurchaseOrderInfo {
 					pstmt.setString(1,compId);
 					rs=pstmt.executeQuery();
 					while(rs.next()){
-						PurchaseOrderDto pform = new PurchaseOrderDto();
+						PurchaseOrderForm pform = new PurchaseOrderForm();
 						pform.setCompanyID(rs.getString("LastName")+", "+rs.getString("FirstName"));
 						pform.setClientVendorID(rs.getString("ClientVendorID"));
 						vList.add(pform);
@@ -136,7 +132,7 @@ public class PurchaseOrderInfo {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}			
 		return vList;
@@ -145,8 +141,8 @@ public class PurchaseOrderInfo {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		//ArrayList<InvoiceDto> objList = new ArrayList<InvoiceDto>();
-		ArrayList<PurchaseOrderDto> objList = new ArrayList<PurchaseOrderDto>();
+		//ArrayList<InvoiceForm> objList = new ArrayList<InvoiceForm>();
+		ArrayList<PurchaseOrderForm> objList = new ArrayList<PurchaseOrderForm>();
 		ResultSet rs = null;
 		
 		CountryState conState = new CountryState();
@@ -161,7 +157,7 @@ public class PurchaseOrderInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {			
 				//PurchaseForm customer = new PurchaseForm();
-				PurchaseOrderDto customer = new PurchaseOrderDto();
+				PurchaseOrderForm customer = new PurchaseOrderForm();
 				customer.setCompanyID(String.valueOf(cid));
 				customer.setBsAddressID(rs.getString(1));
 				customer.setClientVendorID(rs.getString(2));
@@ -199,7 +195,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -209,7 +205,7 @@ public class PurchaseOrderInfo {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<PurchaseOrderDto> objList = new ArrayList<PurchaseOrderDto>();
+		ArrayList<PurchaseOrderForm> objList = new ArrayList<PurchaseOrderForm>();
 		ResultSet rs = null;
 		
 		CountryState conState = new CountryState();
@@ -223,7 +219,7 @@ public class PurchaseOrderInfo {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				PurchaseOrderDto customer = new PurchaseOrderDto();
+				PurchaseOrderForm customer = new PurchaseOrderForm();
 				customer.setBsAddressID(rs.getString(1));
 				customer.setClientVendorID(rs.getString(2));
 				customer.setFullName(rs.getString(4) + "  " + rs.getString(5));
@@ -267,7 +263,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -294,7 +290,7 @@ public class PurchaseOrderInfo {
 				rs = pstmt.executeQuery();
 				while(rs.next()){								
 					cvId = rs.getString("ClientVendorID");
-					objList.add(new LabelValueBean(rs.getString("LastName")+ " , " + rs.getString("FirstName"), cvId));			
+					objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("LastName")+ " , " + rs.getString("FirstName"), cvId));			
 				}			
 		}catch(SQLException ex){
 			Loger.log("Exception in the dropShipTo" +
@@ -311,7 +307,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}			
 	return objList;
@@ -322,7 +318,7 @@ public class PurchaseOrderInfo {
 	 * company name. vendor's first name,last name,etc.
 	 * 
 	 */
-	public PurchaseOrderDto getVendorDetails(String compId,String cvId,String companyValue){
+	public PurchaseOrderForm getVendorDetails(String compId,String cvId,String companyValue){
 		Connection con = null ;
 		PreparedStatement pstmt_clientInfo=null;
 		PreparedStatement pstmt_bsaAddr=null;
@@ -331,7 +327,7 @@ public class PurchaseOrderInfo {
 		ResultSet rs_clientInfo = null;
 		ResultSet rs_bsaAddr=null;
 		
-		PurchaseOrderDto recvForm = new PurchaseOrderDto();
+		PurchaseOrderForm recvForm = new PurchaseOrderForm();
 		
 		try{
 			con = db.getConnection();
@@ -399,7 +395,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -411,7 +407,7 @@ public class PurchaseOrderInfo {
 	 *  vendor,also provides the ship address information
 	 *  The information is provided by the vendor id.
 	 */
-	public PurchaseOrderDto getDropShipDetails(String compId,String cvId){
+	public PurchaseOrderForm getDropShipDetails(String compId,String cvId){
 		Connection con = null ;
 		PreparedStatement pstmt_clientInfo=null;
 		PreparedStatement pstmt_bsaAddr=null;
@@ -419,7 +415,7 @@ public class PurchaseOrderInfo {
 		CountryState conState = new CountryState();
 		ResultSet rs_clientInfo = null;
 		ResultSet rs_bsaAddr=null;
-		PurchaseOrderDto recvForm = new PurchaseOrderDto();
+		PurchaseOrderForm recvForm = new PurchaseOrderForm();
 		try{
 			con = db.getConnection();
 			pstmt_clientInfo=con.prepareStatement("select LastName,FirstName from bca_clientvendor where Active=1" +
@@ -475,7 +471,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -527,7 +523,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -573,7 +569,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		no = String.valueOf(orderNo = orderNo + 1);
@@ -620,7 +616,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return String.valueOf(poStyleID);
@@ -667,7 +663,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return exist;
@@ -715,7 +711,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return shipAddr;
@@ -750,7 +746,7 @@ public class PurchaseOrderInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -763,7 +759,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return invoiceID;
@@ -773,7 +769,7 @@ public class PurchaseOrderInfo {
 	 * to the database. Also it saves the items for the purchase 
 	 * order.
 	 */
-	public void Save(String compId, PurchaseOrderDto form) {
+	public void Save(String compId, PurchaseOrderForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
@@ -894,7 +890,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -903,7 +899,7 @@ public class PurchaseOrderInfo {
 	 * to the database. Also it updates the items for the purchase 
 	 * order.
 	 */
-	public void Update(String compId, PurchaseOrderDto form, int invoiceID) {
+	public void Update(String compId, PurchaseOrderForm form, int invoiceID) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
@@ -1004,13 +1000,13 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 
 	
-	public void SaveUpdate(String compId, PurchaseOrderDto form, int invoiceID) {
+	public void SaveUpdate(String compId, PurchaseOrderForm form, int invoiceID) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
@@ -1110,7 +1106,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1120,7 +1116,7 @@ public class PurchaseOrderInfo {
 	 * purchase order.
 	 * 
 	 */
-	public void AddItem(int invoiceID, int cid, PurchaseOrderDto form) {
+	public void AddItem(int invoiceID, int cid, PurchaseOrderForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
@@ -1257,7 +1253,7 @@ public class PurchaseOrderInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -1273,7 +1269,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	
@@ -1340,7 +1336,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -1350,7 +1346,7 @@ public class PurchaseOrderInfo {
 	 * purchase order according to the purchase order number.
 	 * 
 	 */
-	public ArrayList getRecord(HttpServletRequest request, PurchaseOrderDto form,
+	public ArrayList getRecord(HttpServletRequest request, PurchaseOrderForm form,
 			String compId, long PONum) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -1358,7 +1354,7 @@ public class PurchaseOrderInfo {
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		ResultSet rsTemp = null;
-		ArrayList<PurchaseOrderDto> list = new ArrayList<PurchaseOrderDto>();
+		ArrayList<PurchaseOrderForm> list = new ArrayList<PurchaseOrderForm>();
 		if (db == null)
 			return null;
 		con = db.getConnection();
@@ -1515,7 +1511,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return list;
@@ -1569,7 +1565,7 @@ public class PurchaseOrderInfo {
 				cart.add(inForm);
 			}
 			request.setAttribute("Cart", cart);
-			InvoiceDto form = new InvoiceDto();
+			InvoiceForm form = new InvoiceForm();
 			form.setTaxValue(Double.parseDouble(truncate(String
 					.valueOf(taxTotal))));
 			request.setAttribute("TaxValue", form);
@@ -1588,7 +1584,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1634,7 +1630,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -1683,7 +1679,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -1732,7 +1728,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -1782,7 +1778,7 @@ public class PurchaseOrderInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rsInvoice != null) {
@@ -1798,7 +1794,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1807,7 +1803,7 @@ public class PurchaseOrderInfo {
 	 * ship address of purticular vendor.
 	 * 
 	 */
-	public void showConfirmAddress(String custID,VendorDto vForm,HttpServletRequest request,String cType){
+	public void showConfirmAddress(String custID,VendorForm vForm,HttpServletRequest request,String cType){
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1852,7 +1848,7 @@ public class PurchaseOrderInfo {
 			request.setAttribute("state",vForm.getState());
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		} finally {
 			try {
 				if (rs != null) {
@@ -1865,7 +1861,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1874,7 +1870,7 @@ public class PurchaseOrderInfo {
 	 *  of perticular vendor to the database.
 	 * 
 	 */
-	public boolean addBillConfirmAddress(VendorDto vForm,HttpServletRequest request){
+	public boolean addBillConfirmAddress(VendorForm vForm,HttpServletRequest request){
 		boolean isUpdated=false;
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -1975,7 +1971,7 @@ public class PurchaseOrderInfo {
 			
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -1988,7 +1984,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return isUpdated;
@@ -1998,7 +1994,7 @@ public class PurchaseOrderInfo {
 	 *  of perticular vendor to the database.
 	 * 
 	 */
-	public boolean addShipConfirmAddress(VendorDto vForm,HttpServletRequest request){
+	public boolean addShipConfirmAddress(VendorForm vForm,HttpServletRequest request){
 		boolean isUpdated=false;
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -2099,7 +2095,7 @@ public class PurchaseOrderInfo {
 			
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -2112,7 +2108,7 @@ public class PurchaseOrderInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return isUpdated;

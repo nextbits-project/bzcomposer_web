@@ -1256,7 +1256,7 @@ function oGET(oo, url) {
 
 	function UpdateVendorData()
 	{
-	    debugger;
+	    
 		if(document.getElementById("cname").value=="")
 		{
 
@@ -1717,7 +1717,7 @@ function oGET(oo, url) {
 
 	function init()
 	{
-		debugger;
+		
 		<c:if test = "${CustomerDetails}">
 		<%--<logic:equal name="CustomerDetails"	path="fsUseIndividual" value="1">--%>
 		</c:if>

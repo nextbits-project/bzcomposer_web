@@ -1,32 +1,18 @@
 package com.avibha.bizcomposer.sales.dao;
 
-import java.util.ArrayList;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.avibha.bizcomposer.sales.forms.EstimationBoardDto;
 import com.avibha.common.log.Loger;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 
-@Service 
 public class EstimationBoardDetails {
-	@Autowired  
-	private EstimationBoardInfo estimationInfo;
-	
-	
-    public EstimationBoardDetails(EstimationBoardInfo estimationInfo) {
-		super();
-		this.estimationInfo = estimationInfo;
-	}
 
-	public ArrayList getEstimationBoardDetails(HttpServletRequest request, EstimationBoardDto eform) {
+    public ArrayList getEstimationBoardDetails(HttpServletRequest request, EstimationBoardDto eform) {
         HttpSession sess = request.getSession();
         String compId = (String) sess.getAttribute("CID");
-        //EstimationBoardInfo EstimationInfo = new EstimationBoardInfo();
-        ArrayList estBoardList = estimationInfo.EstimationRecordSearch(compId, eform);
+        EstimationBoardInfo EstimationInfo = new EstimationBoardInfo();
+        ArrayList estBoardList = EstimationInfo.EstimationRecordSearch(compId, eform);
         request.setAttribute("EstimationBoardDetails", estBoardList);
         request.setAttribute("Market", eform.getFilterMarket());
         return estBoardList;

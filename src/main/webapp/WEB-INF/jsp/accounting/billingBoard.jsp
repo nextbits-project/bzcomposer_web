@@ -1,13 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@page import="com.nxsol.bizcomposer.common.BillingStatement"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentType"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page isELIgnored="false"%>
 <%@page import="java.text.DecimalFormat"%>
-<%@page import="com.nxsol.bizcomposer.common.TblPayment"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
@@ -181,7 +181,7 @@ color: red;
                             <tr>
                                 <td><spring:message code="BzComposer.billingboard.text"/></td>
                                 <td><input type="text" class="form-control" id="advanceSearchData" /><span id="errmsg"></span></td>
-                                <td><button class="btn btn-info" style="font-size: 14px;" disabled="disabled" id="clearButtonId">
+                                <td><button class="btn btn-info" style="font-size: 14px;" onclick="location.reload();" disabled="disabled"  id="clearButtonId">
                                         <spring:message code="BzComposer.global.clear"/>
                                     </button>
                                 </td>
@@ -193,21 +193,21 @@ color: red;
 					    <table cellpadding="5" id="section2DivId" style="margin: 0px;width: 90%;margin-left: 20px;">
 					        <tr>
 					            <td style="width:40%;"><spring:message code="BzComposer.billingboard.overdueinvoice"/></td>
-					            <td><button type="submit" style="font-size: 14px;" class="btn btn-info"><spring:message code="BzComposer.billingboard.search"/></button></td>
+					            <td><button type="submit" style="font-size: 14px;" class="btn btn-info" onclick="searchByOverDueDays();"><spring:message code="BzComposer.billingboard.search"/></button></td>
 					        </tr>
 					        <tr>
 					            <td colspan="2" style="padding-left: 40px;">
-					                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked />
+					                <input class="form-check-input" type="radio" name="exampleRadios" id="showallonverdueinvoice" value="showallonverdueinvoice" checked />
 					                <spring:message code="BzComposer.billingboard.showallonverdueinvoice"/>
 					            </td>
 					        </tr>
 					        <tr>
                                 <td style="padding-left: 40px;">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2" />
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="overduedate" value="overduedate" />
                                     <spring:message code="BzComposer.billingboard.overduedate"/>
                                 </td>
                                 <td>
-                                    <input type="text" id="inputAddress" style="width:150px;" />
+                                    <input type="text" id="OverDueDays" style="width:150px;" />
                                     <spring:message code="BzComposer.billingboard.days"/>
                                 </td>
                             </tr>
@@ -276,12 +276,12 @@ color: red;
 				<ul>
 					<li class="tab">
 						<a href="#tabs-1">
-							<spring:message code="BzComposer.billingboard.tabs.unpaidbillsandinvoice"/>
+						<spring:message code="BzComposer.billingboard.tabs.unpaidbills"/>
 						</a>
 					</li>
 					<li class="tab">
 						<a href="#tabs-2">
-							<spring:message code="BzComposer.billingboard.tabs.paidbillsandinvoice"/>
+                            <spring:message code="BzComposer.billingboard.tabs.paidbills"/>
 						</a>
 					</li>
 					<li class="tab">
@@ -299,7 +299,6 @@ color: red;
 									<%-- <th scope="col"><spring:message code="BzComposer.billingboard.billinumber"/></th> --%>
 									<th scope="col"><spring:message code="BzComposer.billingboard.invoicenumber"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.customername"/></th>
-									<th scope="col"><spring:message code="BzComposer.billingboard.customerjob"/></th>
 									<%-- <th scope="col"><spring:message code="BzComposer.global.email"/></th> --%>
 									<th scope="col"><spring:message code="BzComposer.billingboard.billingcycle"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.orderdate"/></th>
@@ -316,12 +315,11 @@ color: red;
 							</thead>
 							<tbody>
                                 <c:forEach items="${billingList}" var="objList" varStatus="loop">
-								<tr onclick="selctRow(${objList.invoiceID}, ${loop.index}">
+								<tr onclick="selctRow(${objList.invoiceID}, ${loop.index})">
 									<th><input type="checkbox" name="checkbox"></th>
 									<!-- <td>&nbsp;</td> -->
-									<td class="text-right">${objList.orderNum}</td>
+									<td class="text-right">${objList.orderNumStr}</td>
 									<td class="text-right">${objList.cvName}</td>
-									<td>&nbsp;</td>
 									<!-- <td>&nbsp;</td> -->
 									<td>&nbsp;</td>
 									<td class="text-right">${objList.dateAdded}</td>
@@ -348,11 +346,15 @@ color: red;
 							<thead>
 								<tr>
 									<th scope="col"><spring:message code="BzComposer.billingboard.select"/></th>
-									<th scope="col"><spring:message code="BzComposer.billingboard.statementnumber"/></th>
-									<th scope="col"><spring:message code="BzComposer.billingboard.statementfor"/></th>
+									<th scope="col"><spring:message code="BzComposer.billingboard.invoiceno"/></th>
+									<%-- <th scope="col"><spring:message code="BzComposer.billingboard.statementfor"/></th> --%>
 									<th scope="col"><spring:message code="BzComposer.billingboard.customername"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.statementdate"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.amount"/></th>
+									<th scope="col"><spring:message code="BzComposer.billingboard.paidamount"/></th>
+									<th scope="col"><spring:message code="BzComposer.popayable.paiddate"/></th>
+									<th scope="col"><spring:message code="BzComposer.popayable.balance"/></th>
+									
 								</tr>
 							</thead>
 							<tbody>
@@ -363,10 +365,14 @@ color: red;
 								<tr>
 									<th><input type="checkbox" name="checkbox"></th>
 									<td><% out.println(billingStatementList.get(i).getStatementNo());%></td>
-									<td class="text-right"><%= billingStatementList.get(i).getStatementFor()%></td>
+									<%-- <td class="text-right"><%= billingStatementList.get(i).getStatementFor()%></td> --%>
 									<td class="text-right"><%= billingStatementList.get(i).getCustomerName()%></td>
 									<td class="text-right"><%= JProjectUtil.getdateFormat().format(billingStatementList.get(i).getStatementDate())%></td>
 									<td class="text-right"><%= String.format("%.2f", billingStatementList.get(i).getAmount())%></td>
+									<td class="text-right"><%= billingStatementList.get(i).getPaidAmount()%></td>
+									<td class="text-right"><%= billingStatementList.get(i).getPaidDate()%></td>
+									<td class="text-right"><%= billingStatementList.get(i).getBalance()%></td>
+									
 								</tr>
 								<% } %>
 							</tbody>
@@ -402,7 +408,7 @@ color: red;
 		</div>
 		<script>
 			$(function() {
-				debugger;
+				
 				$("#tabs").tabs();
 			});
 		</script>
@@ -412,7 +418,7 @@ var invoiceId = -1;
 var index = -1;
 function selctRow(id,inv)
 {
-	debugger;
+	
 	this.invoiceId = id;
 	this.index = inv;
 }
@@ -467,7 +473,7 @@ function showemptydatadialog()
 $("#tabs").tabs({
   
 	activate: function(event, ui) {
-		debugger;
+		
         
         var activeTab = $('#tabs').tabs('option', 'active');
         if(activeTab == 1)
@@ -496,87 +502,98 @@ $("#tabs").tabs({
 
 function PrintBilling()
 {
-	if(invoiceId == -1){
 
+	if(invoiceId == -1){
 		return selectinvoicefirstdialog();
 		return false;
 	}
-	$.ajax({
-        type : "POST",
-        url : "BillingBoardStatement?tabid=PrintBill",
-        data:"invoiceId=" +invoiceId ,
-        success : function(data){
-            debugger;
-            updateBillingBoard(data);
-        },
-        error : function(data) {
-
-            return showerrordialog();
-        }
-    });
+    window.location = "/BillingBoardStatement?tabid=PrintBill&&invoiceId="+invoiceId;
 }
 
 function CreateBillingStatement()
 {
+
 	if(invoiceId == -1)
 	{
-
 		return selectinvoicefirstdialog();
 		return false;
 	}
-	$.ajax({
-			
-			type : "POST",
-			url : "BillingBoardStatement?tabid=CreateBillingStatement",
-		 	data:"invoiceId=" +invoiceId ,
-		    success : function(data)
-		    {
-		    debugger;
-		    updateBillingBoard(data);
-				 
-			},
-			 error : function(data) {
-
-				 return showerrordialog();
-			} 
-
-});
+    window.location = "/BillingBoardStatement?tabid=CreateBillingStatement&&invoiceId="+invoiceId;
 }
-function searchByColumn()
-{
-	debugger;
+function searchByColumn(){
 	var searchCriteriaCombo = document.getElementById("advanceSearchCriteria");
 	var advanceSerchCriteria = searchCriteriaCombo.options[searchCriteriaCombo.selectedIndex].value;
-	
 	var advanceSearchData = $("#advanceSearchData").val();
 	if(advanceSearchData == '')
 	{
-
 		return showemptydatadialog();
 		return false;
 	}
 	 $.ajax({
-			
 			type : "POST",
 			url : "BillingBoardStatement?tabid=searchByColumn",
 		 	data:"advanceSerchCriteria=" + advanceSerchCriteria + "&advanceSearchData=" +advanceSearchData,
 		    success : function(data)
 		    {
-		    debugger;
-		    updateBillingBoard(data);
-				 
+		        updateBillingBoard(data);
 			},
 			 error : function(data) {
-
 				 return showerrordialog();
 			} 
-
-});
-	
+    });
 }
+function searchByOverDueDays(){
+
+    var days = "0";
+	if (document.getElementById('showallonverdueinvoice').checked) {
+      days = "0";
+    }
+    if (document.getElementById('overduedate').checked) {
+        days = document.getElementById('OverDueDays').value;
+        if(days == ''){
+            return showemptydatadialog();
+        	return false;
+        }
+    }
+    $.ajax({
+    			type : "POST",
+    			url : "BillingBoardStatement?tabid=searchByOverDueDays",
+    		 	data:"overdueDays=" + days,
+    		    success : function(data)
+    		    {
+    		        updateBillingBoard(data);
+    			},
+    			 error : function(data) {
+    				 return showerrordialog();
+    			}
+        });
+  }
+function searchByOverDueDays1(){
+	if (document.getElementById('r1').checked) {
+      rate_value = document.getElementById('r1').value;
+    }
+	if(advanceSearchData == '')
+	{
+		return showemptydatadialog();
+		return false;
+	}
+	 $.ajax({
+			type : "POST",
+			url : "BillingBoardStatement?tabid=searchByOverDueDays",
+		 	data:"overdueDays=" + advanceSerchCriteria,
+		    success : function(data)
+		    {
+		        updateBillingBoard(data);
+			},
+			 error : function(data) {
+				 return showerrordialog();
+			}
+    });
+}
+
 function searchByColumnBillingStatement()
 {
-	debugger;
+	
 	var searchCriteriaCombo = document.getElementById("searchDataForBillingStatement");
 	var advanceSerchCriteria = searchCriteriaCombo.options[searchCriteriaCombo.selectedIndex].value;
 	
@@ -594,7 +611,7 @@ function searchByColumnBillingStatement()
 		 	data:"advanceSerchCriteria=" + advanceSerchCriteria + "&advanceSearchData=" +advanceSearchData,
 		    success : function(data)
 		    {
-		    debugger;
+		    
 		    updateBillingBoard(data);
 				 
 			},
@@ -620,13 +637,20 @@ $(document).ready(function () {
 		$("#columnSearchId").prop("disabled",true);
 		$("#clearButtonId").prop("disabled",true);
 	}
+	else
+	{
+		$("#columnSearchId").prop("disabled",false);
+		$("#clearButtonId").prop("disabled",false);
+	}
 	$("#section3DivId").hide();
 	$("#searchDataForBillingStatement").hide();
 	$("#columnSearchForBilling").hide();
 });
-/* $("#advanceSearchData").keypress(function (e) {
+
+/* This function remove
+ $("#advanceSearchData").keypress(function (e) {
     //if the letter is not digit then display error and don't type anything
-    debugger;
+    
     var searchCriteriaCombo = document.getElementById("advanceSearchCriteria");
 	var advanceSerchCriteria = searchCriteriaCombo.options[searchCriteriaCombo.selectedIndex].value;
 if(advanceSerchCriteria == "Invoice#" || advanceSerchCriteria == "Bill#")

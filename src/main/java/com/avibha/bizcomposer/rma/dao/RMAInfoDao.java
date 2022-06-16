@@ -6,10 +6,13 @@
 
 package com.avibha.bizcomposer.rma.dao;
 
-import com.avibha.bizcomposer.rma.forms.RMADto;
+import com.avibha.bizcomposer.rma.forms.RMAForm;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
+import com.avibha.bizcomposer.sales.dao.SalesBoard;
+import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.avibha.common.utility.MyUtility;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMADto> objList = new ArrayList<RMADto>();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -40,7 +43,7 @@ public class RMAInfoDao {
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMADto rma = new RMADto();
+				RMAForm rma = new RMAForm();
 				rma.setFname(rs.getString(1));
 				rma.setLname(rs.getString(2));
 				objList.add(rma);
@@ -61,7 +64,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -72,7 +75,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMADto> objList = new ArrayList<RMADto>();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -107,7 +110,7 @@ public class RMAInfoDao {
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMADto rma = new RMADto();
+				RMAForm rma = new RMAForm();
 				rma.setFname(rs.getString(1));
 				rma.setLname(rs.getString(2));
 				rma.setRma(rs.getString(3));
@@ -131,7 +134,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -140,7 +143,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMADto> objList = new ArrayList<RMADto>();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -157,7 +160,7 @@ public class RMAInfoDao {
 				Loger.log(sqlString);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					RMADto rma = new RMADto();
+					RMAForm rma = new RMAForm();
 					rma.setFname(rs.getString(1));
 					objList.add(rma);
 				}
@@ -179,7 +182,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -189,7 +192,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMADto> objList = new ArrayList<RMADto>();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -207,7 +210,7 @@ public class RMAInfoDao {
 				Loger.log(sqlString);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					RMADto rma = new RMADto();
+					RMAForm rma = new RMAForm();
 					rma.setLname(rs.getString(1));
 					objList.add(rma);
 				}
@@ -229,7 +232,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -240,7 +243,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMADto> objList = new ArrayList<RMADto>();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
 		ResultSet rs = null;
 		CustomerInfo cinfo = new CustomerInfo();
 		try {
@@ -278,7 +281,7 @@ public class RMAInfoDao {
 			pstmt.setString(1, compId);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMADto rma = new RMADto();
+				RMAForm rma = new RMAForm();
 				rma.setRma(rs.getString(1));
 				rma.setFname(rs.getString(2));
 				rma.setLname(rs.getString(3));
@@ -308,7 +311,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -318,7 +321,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMADto> objList = new ArrayList<RMADto>();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -332,7 +335,7 @@ public class RMAInfoDao {
 			pstmt.setString(2, compId);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMADto rma = new RMADto();
+				RMAForm rma = new RMAForm();
 				rma.setItemCode(rs.getString(1));
 				rma.setItemDesc(rs.getString(2));
 				rma.setQty(rs.getString(3));
@@ -359,7 +362,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -369,7 +372,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMADto> objList = new ArrayList<RMADto>();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
@@ -389,7 +392,7 @@ public class RMAInfoDao {
 			rs = pstmt.executeQuery();
 			Loger.log(sqlString);
 			while (rs.next()) {
-				RMADto rma = new RMADto();
+				RMAForm rma = new RMAForm();
 				rma.setRma(rs.getString(1));
 				rma.setFname(rs.getString(2));
 				rma.setLname(rs.getString(3));
@@ -418,7 +421,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -429,7 +432,7 @@ public class RMAInfoDao {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMADto> objList = new ArrayList<RMADto>();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
 		ResultSet rs = null;
 		int start = ((startValue - 1) * limit);
 		try {
@@ -448,7 +451,7 @@ public class RMAInfoDao {
 			pstmt.setInt(3, limit);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				RMADto rma = new RMADto();
+				RMAForm rma = new RMAForm();
 				rma.setRma(rs.getString(1));
 				rma.setFname(rs.getString(2));
 				rma.setLname(rs.getString(3));
@@ -479,7 +482,65 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
+			}
+		}
+		return objList;
+	}
+
+	public ArrayList getVendorRMAList(String compId, int invoiceTypeID) {
+		Connection con = null ;
+		PreparedStatement pstmt = null;
+		SQLExecutor db = new SQLExecutor();
+		ArrayList<RMAForm> objList = new ArrayList<RMAForm>();
+		ResultSet rs = null;
+		try {
+			con = db.getConnection();
+			String sqlString = "Select distinct rma.RMA_no, clientvendor. FirstName, clientvendor. LastName,"
+					+ " cart.InventoryCode, cart.InventoryName, rma.RMA_reason, rma.RMA_qty ,cart.UnitPrice ,"
+					+ "cart.UnitWeight, date_format(rma.DateAdded,'%m/%d/%Y') as DateAdded,invoice.OrderNum"
+					+ " From  bca_clientvendor clientvendor, bca_invoice invoice, bca_cart cart,"
+					+ " bca_rma rma Where invoice.ClientVendorID= clientvendor.ClientVendorID and  clientvendor.status in ('N','U')   and clientvendor.Active = 1  and "
+					+ "rma.InvoiceID = invoice. InvoiceID and   rma.CartID =  cart.CartID "
+					+ " and invoice.CompanyID like ? and invoice.InvoiceTypeID = ? order by rma.RMA_no asc";
+
+			pstmt = con.prepareStatement(sqlString);
+			pstmt.setString(1, compId);
+			pstmt.setInt(2, invoiceTypeID);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				RMAForm rma = new RMAForm();
+				rma.setRma(rs.getString(1));
+				rma.setFname(rs.getString(2));
+				rma.setLname(rs.getString(3));
+				rma.setItemCode(rs.getString(4));
+				rma.setItemDesc(rs.getString(5));
+				rma.setReason(rs.getString(6));
+				rma.setQty(rs.getString(7));
+				rma.setUnitPrice(rs.getString(8));
+				rma.setUnitWeight(rs.getString(9));
+				String sentdate = rs.getString(10);
+				sentdate = sentdate.substring(0, 10);
+				rma.setSentDate(sentdate);
+				rma.setOrder(rs.getString(11));
+				objList.add(rma);
+			}
+		} catch (SQLException ee) {
+			Loger.log(2, " SQL Error in Class RMAInfo and  method -getRMAList "
+					+ " " + ee.toString());
+		}finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if(con != null){
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -527,7 +588,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return pages;
@@ -564,7 +625,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return lastRMA;
@@ -605,7 +666,7 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return status;
@@ -644,7 +705,45 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
+			}
+		}
+		return valid;
+	}
+	public boolean insertRMA2(int qty, String Reason,
+							 int cartId) {
+		boolean valid = false;
+		Connection con = null ;
+		PreparedStatement pstmt = null;
+		SQLExecutor db = new SQLExecutor();
+		try {
+			con = db.getConnection();
+			String sqlString = "insert into  bca_rma(CartId, InvoiceID, RMA_qty, RMA_reason, DateAdded) " +
+					"values(?,(Select InvoiceID from bca_cart where CartID ='"
+					+ cartId + "'),?,?,now())";
+			pstmt = con.prepareStatement(sqlString);
+			// setting parameters in the prepared statement
+			pstmt.setInt(1, cartId);
+			pstmt.setInt(2, qty);
+			pstmt.setString(3, Reason);
+
+			int num = pstmt.executeUpdate();
+			if (num > 0)
+				valid = true;
+			Loger.log(sqlString);
+			pstmt.close();
+		} catch (Exception ee) {
+			Loger.log("Error in update image in dvdinfo " + ee);
+		}finally {
+			try {
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if(con != null){
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -677,10 +776,160 @@ public class RMAInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return status;
 	}
 
+    public int getInvoiceId(int orderNo, int invoiceTypeID, String compId) {
+		Connection con = null ;
+		PreparedStatement pstmt = null;
+		SQLExecutor db = new SQLExecutor();
+		int invoiceId = 0;
+		ResultSet rs = null;
+		try {
+			con = db.getConnection();
+			String sql = null;
+			if (invoiceTypeID == 1) {
+				sql = "SELECT InvoiceID FROM bca_invoice WHERE OrderNum = ? AND CompanyID = ?";
+			}else if(invoiceTypeID == 2){
+				sql = "SELECT InvoiceID FROM bca_invoice WHERE PONum = ? AND CompanyID = ?";
+			}
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, orderNo);
+			pstmt.setString(2, compId);
+			rs = pstmt.executeQuery();
+			Loger.log(sql);
+			if (rs.next()) {
+				invoiceId = rs.getInt(1);
+			}
+			pstmt.close();
+			rs.close();
+		} catch (SQLException ee) {
+			Loger.log(2,
+					" SQL Error in Class RMAInfoDao and  method -getInvoiceId "
+							+ " " + ee.toString());
+		}finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if(con != null){
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return invoiceId;
+    }
+
+	public SalesBoard getInvoice(int invoiceId, String compId) {
+		Connection con = null ;
+		PreparedStatement pstmt = null, pstmt2 = null;
+		SQLExecutor db = new SQLExecutor();
+		SalesBoard d = new SalesBoard();
+		ResultSet rs = null, rs2= null;
+		try {
+			con = db.getConnection();
+			String sqlString = "select IsPaymentCompleted,InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
+					"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
+					"from bca_invoice as i where InvoiceID = "+invoiceId;
+			pstmt = con.prepareStatement(sqlString);
+			rs = pstmt.executeQuery();
+			Loger.log(sqlString);
+			if (rs.next()) {
+				d.setInvoiceID(rs.getInt("InvoiceID"));
+				d.setPaymentCompleted(rs.getBoolean("IsPaymentCompleted"));
+				d.setOrderid(rs.getInt("orderid"));
+				d.setOrderNum(rs.getLong("OrderNum"));
+				String orderNo = (rs.getString("OrderNum"));
+				d.setOrderNum(Long.parseLong(orderNo));
+				d.setPo_no(rs.getLong("PONum"));
+				d.setRcv_no(rs.getLong("RcvNum"));
+				d.setEst_no(rs.getLong("EstNum"));
+				d.setCvID(rs.getInt("ClientVendorID"));
+				d.setBsAddressID(rs.getInt("BSAddressID"));
+
+				d.setTransactionID(rs.getString("orderid"));
+				d.setDateAdded(rs.getString("DateAdded"));
+				d.setSaleDate(rs.getString("DateConfirmed"));
+				d.setPrinted(rs.getBoolean("IsPrinted"));
+				d.setShipped(rs.getInt("Shipped"));
+				d.setEmailed(rs.getInt("IsEmailed"));
+				String sql3 = " select CartID, InventoryName, Qty  from bca_cart  where InvoiceID =" + invoiceId + " and CompanyID = " + compId;
+				pstmt2 = con.prepareStatement(sql3);
+				rs2 = pstmt2.executeQuery();
+				if (rs2.next()) {
+					d.setInventoryId(rs2.getInt("CartID"));
+					d.setItemName(rs2.getString("InventoryName"));
+					d.setInventoryQty(rs2.getInt("Qty"));
+				}
+			}
+			pstmt.close();
+			rs.close();
+		} catch (SQLException ee) {
+			Loger.log(2,
+					" SQL Error in Class RMAInfoDao and  method -getInvoiceId "
+							+ " " + ee.toString());
+		}finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if(con != null){
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return d;
+	}
+
+	public int getCartId(int invoiceId, String compId) {
+		Connection con = null ;
+		PreparedStatement pstmt = null;
+		SQLExecutor db = new SQLExecutor();
+		int cartId = 0;
+		ResultSet rs = null;
+		try {
+			con = db.getConnection();
+			String sql = "select CartId  from bca_cart  where InvoiceID =" + invoiceId + " and CompanyID = " + compId;
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			Loger.log(sql);
+			if (rs.next()) {
+				cartId = rs.getInt(1);
+			}
+			pstmt.close();
+			rs.close();
+		} catch (SQLException ee) {
+			Loger.log(2,
+					" SQL Error in Class RMAInfoDao and  method -getInvoiceId "
+							+ " " + ee.toString());
+		}finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if(con != null){
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return cartId;
+	}
 }

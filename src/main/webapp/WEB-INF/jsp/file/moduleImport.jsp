@@ -209,7 +209,7 @@
 
 <script type="text/javascript">
 $(function() {
-    debugger;
+    
 	  $( "#tabs1" ).tabs();
   } );
 </script>			

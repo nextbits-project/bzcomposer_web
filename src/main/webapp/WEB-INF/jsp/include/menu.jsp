@@ -262,8 +262,8 @@
 						</a>
 						<ul>
 							<li class="current">
-								<!-- <a href="<%= session.getAttribute("path")%>/RMA?tabid=R0M0A0"> -->
-								<a href="RMA?tabid=R0M0A0">
+								<!-- <a href="<%= session.getAttribute("path")%>/SalesBord?tabid=ShowList"> -->
+								<a href="SalesBord?tabid=ShowList">
 									<spring:message code="BzComposer.RMA.CreateRma" />
 								</a>
 							</li>
@@ -1041,7 +1041,7 @@
 	}
 	function ShowProfitLossByJob()
 	{
-		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
+		alert("<spring:message code='BzComposer.common.notSupportedYet'/>");
 	}
 	function showSalesReport(action)
 	{
@@ -1190,12 +1190,12 @@
 	function ShowSalesTaxSummary()
 	{
 		//window.open("Item?tabid=ShowSalesTaxSummary",null,"scrollbars=yes,height=600,width=850,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
+		alert("<spring:message code='BzComposer.common.notSupportedYet'/>");
 	}
 	function ShowReportTaxDetail()
 	{
 		//window.open("Item?tabid=ShowSalesTaxSummary",null,"scrollbars=yes,height=600,width=850,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
+		alert("<spring:message code='BzComposer.common.notSupportedYet'/>");
 	}
 	function showDamagedInventoryList()
 	{
@@ -1256,7 +1256,7 @@
 	function TransactionDeatail()
 	{
 		//window.open("BankingAccounting?tabid=BillDetail",null,"scrollbars=yes,height=600,width=1200,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
+		alert("<spring:message code='BzComposer.common.notSupportedYet'/>");
 	}
 	function ShowAccountReceivableGraph()
 	{
@@ -1301,7 +1301,7 @@
 	function ShowCashFlowForeCast()
 	{
 		//window.open("ShowCashFlowForeCast?tabid=ShowCashFlowForeCast",null,"scrollbars=yes,height=500,width=800,status=yes,toolbar=no,menubar=no,location=no" );
-		alert("<bean:message key='BzComposer.common.notSupportedYet'/>");
+		alert("<spring:message code='BzComposer.common.notSupportedYet'/>");
 	}
 	function IncomeExpenseGraph()
 	{

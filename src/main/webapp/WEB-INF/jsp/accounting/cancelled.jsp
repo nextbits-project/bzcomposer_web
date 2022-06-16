@@ -1,16 +1,16 @@
 <%@ page isELIgnored="false"%>
 <%@page import="java.util.Currency"%>
-<%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%>
+<%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
-<%@page import="com.nxsol.bizcomposer.common.TblPayment"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentType"%>
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -77,10 +77,10 @@ table.tabla-listados tbody tr td {
 		<h3 class="title1">
 		    <spring:message code="BzComposer.accountreceivable.tabs.cancelled"/>
 		</h3>
-		 <% ReceivableListDto ReceivableListDto=(ReceivableListDto)request.getAttribute("Selectedrow");
+		 <% ReceivableListBean receivablelistbean=(ReceivableListBean)request.getAttribute("Selectedrow");
 		 	TblPaymentType payment = (TblPaymentType)request.getAttribute("SelectedPayment");
 		 	TblAccount Selectedaccount = (TblAccount)request.getAttribute("SelectedAccount");
-		 	TblCategoryDto SelectedCategory = (TblCategoryDto)request.getAttribute("SelectedCategory");
+		 	TblCategory SelectedCategory = (TblCategory)request.getAttribute("SelectedCategory");
 		 	TblPayment SelcetedPaymentForCheck = (TblPayment)request.getAttribute("Payment");
 		 	/* System.out.println(request.getSession().getAttribute("checkNum")); */
 		 	/* int find = 0; */
@@ -140,6 +140,23 @@ table.tabla-listados tbody tr td {
 								 
 								%>	
 						
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-4  col-form-label">
+							    <spring:message code="BzComposer.accountreceivable.depositto"/>
+							</label>
+							<div class="col-md-8">
+								<select class="form-control devDeposittypeDrp" id="depositId">
+									
+								<% ArrayList<TblAccount> account = (ArrayList)request.getAttribute("AccountForCombo");
+									for(int i=0;i<account.size();i++)
+									{
+								%>	
+									<option value="<%= account.get(i).getAccountID()%>" id="<%= account.get(i).getAccountID()%>"><% out.println(account.get(i).getName());  %></option>
+								<%  } %>	
+								
 								</select>
 							</div>
 						</div>
@@ -204,30 +221,13 @@ table.tabla-listados tbody tr td {
 						
 						<div class="form-group row">
 							<label class="col-md-4  col-form-label">
-							    <spring:message code="BzComposer.accountreceivable.depositto"/>
-							</label>
-							<div class="col-md-8">
-								<select class="form-control devDeposittypeDrp" id="depositId">
-									
-								<% ArrayList<TblAccount> account = (ArrayList)request.getAttribute("AccountForCombo");
-									for(int i=0;i<account.size();i++)
-									{
-								%>	
-									<option value="<%= account.get(i).getAccountID()%>" id="<%= account.get(i).getAccountID()%>"><% out.println(account.get(i).getName());  %></option>
-								<%  } %>	
-								
-								</select>
-							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-4  col-form-label">
 							    <spring:message code="BzComposer.accountreceivable.category"/>
 							</label>
 							<div class="col-md-8">
 								<select class="form-control devCategoryDrp" size="1" id="categoryId">
 								<%
-									ArrayList<TblCategoryDto> category = (ArrayList)request.getAttribute("CategoryCombo");
-							/* 		Iterator<TblCategoryDto> itr2 = category.iterator(); */
+									ArrayList<TblCategory> category = (ArrayList)request.getAttribute("CategoryCombo");
+							/* 		Iterator<TblCategory> itr2 = category.iterator(); */
 									for(int i=0;i<category.size();i++)
 									{
 								%>
@@ -274,11 +274,11 @@ table.tabla-listados tbody tr td {
 			<nav>
 			   <div class="nav nav-tabs" id="tabId" role="tablist">
 			    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" onclick="receivableList()"><spring:message code="BzComposer.accountreceivable.tabs.receivablelist"/></a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()"><spring:message code="BzComposer.accountreceivable.tabs.received"/></a>
 			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false"><spring:message code="BzComposer.accountreceivable.tabs.overdue"/></a>
 			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="cancelledTab()"><spring:message code="BzComposer.accountreceivable.tabs.cancelled"/></a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false"><spring:message code="BzComposer.accountreceivable.tabs.vendorrma"/></a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="vendorRMA()"><spring:message code="BzComposer.accountreceivable.tabs.vendorrma"/></a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()"><spring:message code="BzComposer.accountreceivable.tabs.layaways"/></a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()"><spring:message code="BzComposer.accountreceivable.tabs.received"/></a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">eSales</a>
 			  </div>
 			</nav>
@@ -307,11 +307,11 @@ table.tabla-listados tbody tr td {
 				  </thead>
 				  <tbody>
 				  <%
-				  	ArrayList<ReceivableListDto> li = (ArrayList)request.getAttribute("ReceivableList");		
-				  	Iterator<ReceivableListDto> itr =li.iterator();
+				  	ArrayList<ReceivableListBean> li = (ArrayList)request.getAttribute("ReceivableList");		
+				  	Iterator<ReceivableListBean> itr =li.iterator();
 					int index = 1;
 				  	while(itr.hasNext()){
-				  		ReceivableListDto rb = itr.next();
+				  		ReceivableListBean rb = itr.next();
 				  %>
 				    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)">
 				      <td><input type="checkbox" id="Checkbox"></td>
@@ -371,7 +371,7 @@ table.tabla-listados tbody tr td {
     selectChaseBankFromDropDownList("depositId");
 
    function selectrow(invoice,index) {
-	    debugger;
+	    
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
 	    var count = 1;
@@ -425,7 +425,7 @@ table.tabla-listados tbody tr td {
    
    function save()
    {
-	   debugger;	
+	   	
 
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
@@ -453,7 +453,7 @@ table.tabla-listados tbody tr td {
 		this.amtToPay = document.getElementById("receivedAmount").value; 
 	
 	   
-	   var ReceivableListDto={
+	   var ReceivableListBean={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":document.getElementById("customerName").value,
 			   "paymentTypeID":document.getElementById("receivedType").value,	   
@@ -466,12 +466,12 @@ table.tabla-listados tbody tr td {
 			   "checkNum":document.getElementById("checkNum").value,
 	   }
 	   
-    sendMyValue(ReceivableListDto);
+    sendMyValue(ReceivableListBean);
  
   	}
-   function sendMyValue(ReceivableListDto) {
-		debugger;
-		var obj=JSON.stringify(ReceivableListDto);
+   function sendMyValue(ReceivableListBean) {
+		
+		var obj=JSON.stringify(ReceivableListBean);
 		
    	 $.ajax({
 		
@@ -510,7 +510,7 @@ table.tabla-listados tbody tr td {
    }
    function checkType()
    {
-	 	debugger;
+	 	
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].innerText;
 	   
@@ -530,7 +530,7 @@ table.tabla-listados tbody tr td {
    }
    function selectedRadio()
    {
-	 debugger;
+	 
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 		   {
 		   		$("#tblForInvoiceOrder").hide();
@@ -569,7 +569,7 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-		debugger;
+		
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
 	   var ctype = type.options[type.selectedIndex].label;
@@ -623,7 +623,7 @@ table.tabla-listados tbody tr td {
 	   
 	  /*  	var receivedAmount = parseInt(receivedAmountString); */   
 	 /*   var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text(); */
-	   var ReceivableListDto={
+	   var ReceivableListBean={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":selectedCustomer,
 			   "paymentTypeID":paymentTypeId,	   
@@ -635,7 +635,7 @@ table.tabla-listados tbody tr td {
 			   "memo":memo,
 			   "checkNum":checkNo,
 	   };
-	   var obj=JSON.stringify(ReceivableListDto);
+	   var obj=JSON.stringify(ReceivableListBean);
 	   
 	   $.ajax({
 			
@@ -663,7 +663,7 @@ table.tabla-listados tbody tr td {
    }
 
    $(document).ready(function(){
-		debugger;
+		
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	   $("#tblForUnpaidOpeningBalance").hide();
@@ -686,9 +686,9 @@ table.tabla-listados tbody tr td {
    function clearTransaction()
    {
 	   var answer;
-	   debugger;
+	   
 	   if(parseInt(invoiceId) <= 0){
-            alert("<bean:message key='BzComposer.accountreceivable.selecttransaction'/>");
+		   alert("<spring:message code="BzComposer.accountreceivable.selecttransaction"/>");
             return false;
        }
 	   else{
@@ -731,9 +731,13 @@ table.tabla-listados tbody tr td {
    {
 	   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble";
    }
+   function vendorRMA()
+   {
+    window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=vendorRMA";
+   }
    function cancelledTab()
    {
-	   debugger;
+	   
 	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab";
    }
    function receivedTab()

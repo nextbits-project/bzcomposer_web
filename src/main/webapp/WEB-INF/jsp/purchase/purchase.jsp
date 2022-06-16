@@ -421,16 +421,19 @@ function init() {
 													</button>
 												</c:if>
 
-                                                <c:if test="${not empty Enable}">
+													<button type="button" class="formbutton" id="sendMailEnabled" onclick="SendMail(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;">
+                                                        <spring:message code="BzComposer.global.sendmail" />
+                                                    </button>
+                                                <%-- <c:if test="${Enable==null}">
                                                     <button type="button" class="formbutton" id="sendMailEnabled" onclick="SendMail(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;">
                                                         <spring:message code="BzComposer.global.sendmail" />
                                                     </button>
                                                 </c:if>
-                                                <c:if test="${Enable == null}">
-                                                    <button type="button" class="formbutton" id="sendMailDisabled" disabled="true" style="padding: 8px 20px 8px 20px; font-size: 16px;">
+                                                <c:if test="${Enable}">
+                                                    <button type="button" class="formbutton" id="sendMailDisabled" disabled="true" style="padding: 8px 20px 8px 20px; font-size: 16px;    background-color: lightgrey">
                                                         <spring:message code="BzComposer.global.sendmail" />
                                                     </button>
-                                                </c:if>
+                                                </c:if> --%>
                                                 <button type="button" class="formbutton" onclick="printCustomerOrder(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;">
                                                     <spring:message code='BzComposer.global.Print' />
                                                 </button>
@@ -766,7 +769,7 @@ function init() {
 				</tr>
 				<tr>
 					<td id="td2" style="font-size:14px;">
-						<select name="itemID" onchange="ItemChange(this.value);">
+						<select name="itemID" id="itemID" onchange="ItemChange(this.value);">
 							<option value="0">
 								<spring:message code="BzComposer.ComboBox.Select" />
 							</option>
@@ -1870,6 +1873,7 @@ function init() {
 	}
 
 	function AddItem(form){
+
 		if(form.itemID.value==0 || form.itemID.value==='01'){
 			document.getElementById('serialNo_id').value="";
 			document.getElementById('qty_id').value="";
@@ -2028,6 +2032,13 @@ function init() {
 			document.getElementById('hidn').value=hidn_val;
 
 		}
+		document.getElementById('serialNo_id').value="";
+		document.getElementById('qty_id').value="";
+		document.getElementById('itemID').value="0";
+		document.getElementById('unitPrice_id').value="";
+		document.getElementById('amount_id').value="";
+		document.getElementById('weight_id').value="";
+		document.getElementById('pname_id').value="";
 	}
 
 	function Assignment(custID, form){
@@ -2286,7 +2297,11 @@ function init() {
 	}
 
 	function SendMail(form){
-        cid=form.orderNo.value;
+		
+		cid=form.custID.value;
+		if(cid==0){
+			return showValidationDialog();
+		}
         window.open("Invoice?tabid=ShowEmail&OrderType=PO&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
     }
 

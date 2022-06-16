@@ -491,7 +491,7 @@ table.tabla-listados tbody tr td {
 	var amountToBepaid = 0.00;
 	function selectrow(no , indexNumber)
 	{
-		debugger;
+		
 		this.billNo = no;
 		this.index = indexNumber;
 		
@@ -507,9 +507,47 @@ table.tabla-listados tbody tr td {
 			 $(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
 		}
 	}
+	
+	   function selectedRadio()
+	   {
+
+		   if(document.getElementById("rdoRecurrentPayments").checked)
+			   {
+			   		$("#tblRecurrentPayment").show();
+			        $("#tblForInvoiceOrder").hide();
+			        $("#recurrentTotal").hide();
+			        $("#paidBillTotal").hide();
+			   }
+		   else if(document.getElementById("rdoPurchaseBill").checked)
+			   {
+					   	$("#tblRecurrentPayment").show();
+			            $("#tblForInvoiceOrder").hide();
+			            $("#recurrentTotal").hide();
+			            $("#paidBillTotal").hide();
+			   }
+			else if(document.getElementById("rdoUnpaidCreditPayments").checked)
+			   {
+						$("#tblRecurrentPayment").show();
+			            $("#tblForInvoiceOrder").hide();
+			            $("#recurrentTotal").hide();
+			            $("#paidBillTotal").hide();
+			   }   
+		   else
+			   {
+			   				$("#tblRecurrentPayment").hide();
+			                $("#tblForInvoiceOrder").show();
+			                $("#recurrentTotal").hide();
+			                $("#paidBillTotal").hide();
+			   }
+	   }
+	   
+	   
+	   tblRecurrentPayment
+	
+	
 	function save()
 	{
-		debugger;
+		
 		var billNo = document.getElementById("ordernumber").innerHTML;
 		var payerIdSelect = document.getElementById("receivedType");
 		var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
@@ -546,7 +584,7 @@ table.tabla-listados tbody tr td {
 				url : "billPayablePost?tabid=save",
 			    data :"data=" + obj,
 			    success : function(data) {
-				debugger;
+				
 				updateBillPayableTab(data);	
 				},
 				 error : function(data) {
@@ -561,7 +599,7 @@ table.tabla-listados tbody tr td {
 	}
 	function makePayment()
 	{
-		debugger;
+		
 		var paidAmount;
 		var amountPaid;
 		var billNo = document.getElementById("ordernumber").innerHTML;
@@ -627,7 +665,7 @@ table.tabla-listados tbody tr td {
 			url : "billPayablePost?tabid=MakePayment",
 		    data :"data=" + obj,
 		    success : function(data) {
-			debugger;
+			
 			amountToBepaid = 0.00;
 			updateBillPayableTab(data);	
 			},
@@ -656,7 +694,7 @@ table.tabla-listados tbody tr td {
 	}
 		$(document).ready(
 				function() {
-					//debugger;
+					//
 					var day = new Date().getDay();
 					var dName = dayName(day);
 					$("#tblForUnpaidOpeningBalance").hide();
@@ -709,7 +747,7 @@ table.tabla-listados tbody tr td {
 		   }
 		function updateBillPayableTab(data)
 		{
-			debugger;
+			
 			$("#billPayableForm")[0].reset();
 			$(document).find('div#tblForInvoiceOrder table').replaceWith($(data).find('div#tblForInvoiceOrder').html());
 			$(document).find('div#totalAmountLabelDiv label').eq(1).text(this.value).replaceWith($(data).find('div#totalAmountLabelDiv label').eq(1).text(this.value));

@@ -12,9 +12,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.apache.struts.util.LabelValueBean;
+
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
-import com.avibha.common.utility.LabelValueBean;
 
 /*
  * 
@@ -39,14 +40,14 @@ public class Title {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in  Class Title and  method -getTitleList " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -89,7 +90,7 @@ public class Title {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 

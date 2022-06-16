@@ -1,4 +1,3 @@
-
 <script
 	src="<bean:write name="path" property="pathvalue"/>/scripts/sortable.js"
 	type="text/javascript"></script>

@@ -13,7 +13,7 @@ $(document).ready(function () {
     $("#SubAccountOfCategoryForUpdate").prop('disabled', true);
 
     $('.hideShowMyCat').click(function () {
-    debugger
+    
          var selected = $(this).hasClass("highlight0");
          $(".hideShowMyCat").removeClass("highlight0");
          if(!selected)
@@ -60,7 +60,7 @@ function hideShowMyCat(catTypeID){
 }
 function selectRow(catId, inv)
 {
-	debugger;
+	
 	this.categoryId = catId;
 	this.index = inv;
 	let selectedROW = $('table.devAcCategoryListTable tbody tr:nth-child('+index+')');
@@ -120,7 +120,7 @@ function loadCategoryForUpdate(){
         url : "CategoryManagerAJAX/Exists?tabid=CheckChildCategory",
         data :"CategoryId=" + categoryId,
         success : function(isExists) {
-            debugger;
+            
             if(isExists === false){
                  $.ajax({
                     type : "GET",
@@ -131,7 +131,7 @@ function loadCategoryForUpdate(){
                             return alert(categoryUsedForOtherInvoice);
                         }
                         else{
-                            debugger;
+                            
                             if(window.confirm(wantToDeleteMsg) == true){
                                 $.ajax({
                                     type : "POST",
@@ -182,7 +182,7 @@ $(function() {
 });
 
 function saveNewCategory(){
-    debugger;
+    
     document.getElementById("CategoryNameForAdd").style = '';
     document.getElementById("accountNumberForAdd").style = '';
     document.getElementById("descriptionForAdd").style = '';
@@ -243,7 +243,7 @@ function saveNewCategory(){
 }
 
   function updateCategory(){
-     debugger;
+     
      document.getElementById("CategoryNameForUpdate").style = '';
      document.getElementById("AccountNumberForUpdate").style = '';
      document.getElementById("DescriptionForUpdate").style = '';
@@ -312,7 +312,7 @@ function saveNewCategory(){
   }
   function updateCategoryManager(data)
   {
-	  debugger;
+	  
 	  $(document).find('div#devCategoryTable table').replaceWith($(data).find('div#devCategoryTable').html());
 	  $(document).find('div#subCategoryList select').replaceWith("<select class='form-control' id='addCategoryCombo'>"+$(data).find('div#subCategoryList select').html() + "</select>");
 	  $('#AddNewCategoryDlgId').find('input:text').val('');

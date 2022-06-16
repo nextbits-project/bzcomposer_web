@@ -19,11 +19,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
-import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
+import com.avibha.bizcomposer.purchase.forms.PrintLabelForm;
+import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.purchase.forms.VendorForm;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
+import com.avibha.bizcomposer.sales.forms.ItemForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -209,15 +210,15 @@ public class PurchaseInfo {
 	}
 	
 	/*vendor contact list*/
-	public ArrayList vendorContactList(String datesCombo,String fromDate,String toDate,String sortBy,String cId,HttpServletRequest request,PurchaseBoardDto form)
+	public ArrayList vendorContactList(String datesCombo,String fromDate,String toDate,String sortBy,String cId,HttpServletRequest request,PurchaseBoardForm form)
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt_clientSer = null;
 		PreparedStatement pstmt_ser = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
-		ArrayList<VendorDto> serviceList = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> objList = new ArrayList<VendorForm>();
+		ArrayList<VendorForm> serviceList = new ArrayList<VendorForm>();
 		ResultSet rs = null;
 		ResultSet rs_clientSer = null;
 		ResultSet rs_ser = null;
@@ -276,7 +277,7 @@ public class PurchaseInfo {
 			CountryState cs=new CountryState();
 			while (rs.next()) {
 
-				VendorDto vendor = new VendorDto();
+				VendorForm vendor = new VendorForm();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
 				vendor.setFirstName(rs.getString(3));
@@ -301,7 +302,7 @@ public class PurchaseInfo {
 				rs_clientSer = pstmt_clientSer.executeQuery();
 				String services = "select ServiceName from bca_servicetype where ServiceID=?";
 				while (rs_clientSer.next()) {
-					VendorDto vendorService = new VendorDto();
+					VendorForm vendorService = new VendorForm();
 					pstmt_ser = con.prepareStatement(services);
 					pstmt_ser.setInt(1, rs_clientSer.getInt("ServiceID"));
 					rs_ser = pstmt_ser.executeQuery();
@@ -349,7 +350,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -361,7 +362,7 @@ public class PurchaseInfo {
 	 * to that vendor such as finance charges,services,bsaaddress,etc.
 	 */
 
-	public boolean insertVendor(String cvId, VendorDto c, String compID,
+	public boolean insertVendor(String cvId, VendorForm c, String compID,
 			int istaxable, int isAlsoClient, int useIndividualFinanceCharges,
 			int AssessFinanceChk, int FChargeInvoiceChk, String status, String stateName) {
 		boolean ret = false;
@@ -558,7 +559,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -640,7 +641,7 @@ public class PurchaseInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class Employee and  method -insertEmployee "+" " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -648,7 +649,7 @@ public class PurchaseInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -695,14 +696,14 @@ public class PurchaseInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2," SQL Error in Class PurchaseInfo and  method -insertVendorBSAddress: " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -772,7 +773,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -870,7 +871,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -904,7 +905,7 @@ public class PurchaseInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return CVID;
@@ -949,7 +950,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -994,7 +995,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -1039,7 +1040,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -1101,7 +1102,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1124,7 +1125,7 @@ public class PurchaseInfo {
 		PreparedStatement pstmt13 = null;
 		SQLExecutor db = new SQLExecutor();
 		// ArrayList objList = new ArrayList();
-		ArrayList<VendorDto> serviceinfo = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> serviceinfo = new ArrayList<VendorForm>();
 		ResultSet rs = null, rs3 = null;
 		ResultSet rs1 = null, rs2 = null, rs22 = null;
 		ResultSet rs12 = null, rs13 = null;
@@ -1134,7 +1135,7 @@ public class PurchaseInfo {
 		con = db.getConnection();
 		if (con == null)
 			return;
-		VendorDto customer = new VendorDto();
+		VendorForm customer = new VendorForm();
 		try {
 			StringBuffer sqlString = new StringBuffer();
 			sqlString
@@ -1199,7 +1200,7 @@ public class PurchaseInfo {
 			rs22 = pstmt2.executeQuery();
 			String default_ser = "";
 			while (rs22.next()) {
-				VendorDto uform1 = new VendorDto();
+				VendorForm uform1 = new VendorForm();
 				uform1.setServiceBalance((rs22.getDouble("ServiceBalance")));
 
 				uform1.setDefaultService(rs22.getInt("DefaultService"));
@@ -1452,7 +1453,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -1466,9 +1467,9 @@ public class PurchaseInfo {
 	public void getServices(HttpServletRequest request, String compId,
 			String cvId) {
 		// TODO Auto-generated method stub
-		ArrayList<VendorDto> serviceList = new ArrayList<VendorDto>();
-		ArrayList<VendorDto> invoiceName = new ArrayList<VendorDto>();
-		ArrayList<VendorDto> balenceDetails = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> serviceList = new ArrayList<VendorForm>();
+		ArrayList<VendorForm> invoiceName = new ArrayList<VendorForm>();
+		ArrayList<VendorForm> balenceDetails = new ArrayList<VendorForm>();
 		ResultSet rs = null, rs1 = null, rs2 = null;
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
@@ -1482,7 +1483,7 @@ public class PurchaseInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				VendorDto uform = new VendorDto();
+				VendorForm uform = new VendorForm();
 				uform.setServiceID(rs.getInt(1));
 				uform.setServiceName(rs.getString(2));
 				uform.setInvoiceStyleId(rs.getInt(3));
@@ -1491,7 +1492,7 @@ public class PurchaseInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -1502,7 +1503,7 @@ public class PurchaseInfo {
 					}
 					
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("ServiceList", serviceList);
@@ -1511,7 +1512,7 @@ public class PurchaseInfo {
 			pstmt1 = con.prepareStatement(sqlString1);
 			rs1 = pstmt1.executeQuery();
 			while (rs1.next()) {
-				VendorDto uform = new VendorDto();
+				VendorForm uform = new VendorForm();
 				//Loger.log("The Incoice style id is " + rs1.getString(1));
 				uform.setInvoiceStyleId(rs1.getInt(1));
 				//Loger.log("The Invoice Style name is " + rs1.getString(2));
@@ -1521,7 +1522,7 @@ public class PurchaseInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				
@@ -1533,7 +1534,7 @@ public class PurchaseInfo {
 					}
 					
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("InvoiceName", invoiceName);
@@ -1545,7 +1546,7 @@ public class PurchaseInfo {
 
 			rs2 = pstmt2.executeQuery();
 			while (rs2.next()) {
-				VendorDto uform = new VendorDto();
+				VendorForm uform = new VendorForm();
 
 				uform.setClientVendorID(String.valueOf(rs2
 						.getInt("ClientVendorID")));
@@ -1568,7 +1569,7 @@ public class PurchaseInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs2 != null) {
@@ -1581,7 +1582,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("BalenceDetails", balenceDetails);
@@ -1785,7 +1786,7 @@ public class PurchaseInfo {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		return ret;
@@ -1797,13 +1798,13 @@ public class PurchaseInfo {
 	 */
 	public ArrayList getPrintLabelInfo(HttpServletRequest request, String compId,int startValue,int limit) {
 		Connection con = null;
-		ArrayList<VendorDto> labelInfo = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> labelInfo = new ArrayList<VendorForm>();
 		CountryState conState = new CountryState();
 		PreparedStatement pstmt_client = null;
 		PreparedStatement pstmt_clientSer = null;
 		PreparedStatement pstmt_ser = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<VendorDto> serviceList = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> serviceList = new ArrayList<VendorForm>();
 		ResultSet rs_client = null;
 		ResultSet rs_clientSer = null;
 		ResultSet rs_ser = null;
@@ -1822,7 +1823,7 @@ public class PurchaseInfo {
 			pstmt_client.setInt(3, limit);
 			rs_client = pstmt_client.executeQuery();
 			while (rs_client.next()) {
-				VendorDto vendor = new VendorDto();
+				VendorForm vendor = new VendorForm();
 				vendor.setClientVendorID(rs_client.getString("ClientVendorID"));
 				vendor.setCname(rs_client.getString("Name"));
 				vendor.setFullName(rs_client.getString("FirstName") + " "
@@ -1844,7 +1845,7 @@ public class PurchaseInfo {
 				rs_clientSer = pstmt_clientSer.executeQuery();
 				String services = "select ServiceName from bca_servicetype where ServiceID=?";
 				while (rs_clientSer.next()) {
-					VendorDto vendorService = new VendorDto();
+					VendorForm vendorService = new VendorForm();
 					pstmt_ser = con.prepareStatement(services);
 					pstmt_ser.setInt(1, rs_clientSer.getInt("ServiceID"));
 					rs_ser = pstmt_ser.executeQuery();
@@ -1888,7 +1889,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return labelInfo;
@@ -1898,7 +1899,7 @@ public class PurchaseInfo {
 	 * width,height,top margin,etc. from its label
 	 * id.
 	 */
-	public void getLabel(int lblId, PrintLabelDto label) {
+	public void getLabel(int lblId, PrintLabelForm label) {
 		Connection con = null ;
 		PreparedStatement pstmt_lbl = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1937,7 +1938,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1945,7 +1946,7 @@ public class PurchaseInfo {
 	/*	Saves the new label to the database with
 	 * its related information.
 	 */
-	public void saveLabel(PrintLabelDto form) {
+	public void saveLabel(PrintLabelForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
@@ -1988,14 +1989,14 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 	/*		Delete the label selected by user from existing
 	 * labels. It delete the labels according to their ids.
 	 */
-	public void deleteLabel(int lblId, PrintLabelDto form) {
+	public void deleteLabel(int lblId, PrintLabelForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt_delete = null, pstmt_id = null;
 		SQLExecutor db = new SQLExecutor();
@@ -2054,7 +2055,7 @@ public class PurchaseInfo {
 	 * by its id. 
 	 */
 
-	public void updateLabel(int labelID, PrintLabelDto form) {
+	public void updateLabel(int labelID, PrintLabelForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -2105,7 +2106,7 @@ public class PurchaseInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}

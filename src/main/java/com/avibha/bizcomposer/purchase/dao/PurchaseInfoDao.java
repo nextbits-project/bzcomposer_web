@@ -39,8 +39,8 @@ public class PurchaseInfoDao {
 		PreparedStatement pstmt_clientSer = null;
 		PreparedStatement pstmt_ser = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
-		ArrayList<VendorDto> serviceList = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> objList = new ArrayList<VendorForm>();
+		ArrayList<VendorForm> serviceList = new ArrayList<VendorForm>();
 		ResultSet rs = null;
 		ResultSet rs_clientSer = null;
 		ResultSet rs_ser = null;
@@ -58,7 +58,7 @@ public class PurchaseInfoDao {
 			CountryState cs=new CountryState();
 			while (rs.next()) 
 			{
-				VendorDto vendor = new VendorDto();
+				VendorForm vendor = new VendorForm();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
 				vendor.setFirstName(rs.getString(3));
@@ -85,7 +85,7 @@ public class PurchaseInfoDao {
 				String services = "select ServiceName from bca_servicetype where ServiceID=?";
 				while (rs_clientSer.next()) 
 				{
-					VendorDto vendorService = new VendorDto();
+					VendorForm vendorService = new VendorForm();
 					pstmt_ser = con.prepareStatement(services);
 					pstmt_ser.setInt(1, rs_clientSer.getInt("ServiceID"));
 					rs_ser = pstmt_ser.executeQuery();
@@ -143,8 +143,8 @@ public class PurchaseInfoDao {
 		PreparedStatement pstmt_clientSer = null;
 		PreparedStatement pstmt_ser = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
-		ArrayList<VendorDto> serviceList = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> objList = new ArrayList<VendorForm>();
+		ArrayList<VendorForm> serviceList = new ArrayList<VendorForm>();
 		ResultSet rs = null;
 		ResultSet rs_clientSer = null;
 		ResultSet rs_ser = null;
@@ -203,7 +203,7 @@ public class PurchaseInfoDao {
 			CountryState cs=new CountryState();
 			while (rs.next()) {
 
-				VendorDto vendor = new VendorDto();
+				VendorForm vendor = new VendorForm();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
 				vendor.setFirstName(rs.getString(3));
@@ -228,7 +228,7 @@ public class PurchaseInfoDao {
 				rs_clientSer = pstmt_clientSer.executeQuery();
 				String services = "select ServiceName from bca_servicetype where ServiceID=?";
 				while (rs_clientSer.next()) {
-					VendorDto vendorService = new VendorDto();
+					VendorForm vendorService = new VendorForm();
 					pstmt_ser = con.prepareStatement(services);
 					pstmt_ser.setInt(1, rs_clientSer.getInt("ServiceID"));
 					rs_ser = pstmt_ser.executeQuery();
@@ -270,7 +270,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -422,7 +422,7 @@ public class PurchaseInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log(2,"SQLException in Class PurchaseInfo,  method -insertVendor & exception 1st" + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -430,7 +430,7 @@ public class PurchaseInfoDao {
 				if (pstmt_services != null) { db.close(pstmt_services); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -528,7 +528,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -594,7 +594,7 @@ public class PurchaseInfoDao {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -665,7 +665,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -763,7 +763,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -809,7 +809,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return CVID;
@@ -854,7 +854,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -899,7 +899,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -944,7 +944,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ID;
@@ -1012,7 +1012,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return valid;
@@ -1240,7 +1240,7 @@ public class PurchaseInfoDao {
 			//System.out.println("vendorDetails1:"+customer.toString());
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -1260,7 +1260,7 @@ public class PurchaseInfoDao {
 				if (pstmt13 != null) { db.close(pstmt13); }
 				if(con != null){ db.close(con); }
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return vendorList;
@@ -1274,9 +1274,9 @@ public class PurchaseInfoDao {
 	public void getServices(HttpServletRequest request, String compId,
 			String cvId) {
 		// TODO Auto-generated method stub
-		ArrayList<VendorDto> serviceList = new ArrayList<VendorDto>();
-		ArrayList<VendorDto> invoiceName = new ArrayList<VendorDto>();
-		ArrayList<VendorDto> balenceDetails = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> serviceList = new ArrayList<VendorForm>();
+		ArrayList<VendorForm> invoiceName = new ArrayList<VendorForm>();
+		ArrayList<VendorForm> balenceDetails = new ArrayList<VendorForm>();
 		ResultSet rs = null, rs1 = null, rs2 = null;
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
@@ -1290,7 +1290,7 @@ public class PurchaseInfoDao {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				VendorDto uform = new VendorDto();
+				VendorForm uform = new VendorForm();
 				uform.setServiceID(rs.getInt(1));
 				uform.setServiceName(rs.getString(2));
 				uform.setInvoiceStyleId(rs.getInt(3));
@@ -1299,7 +1299,7 @@ public class PurchaseInfoDao {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -1310,7 +1310,7 @@ public class PurchaseInfoDao {
 					}
 					
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("ServiceList", serviceList);
@@ -1319,7 +1319,7 @@ public class PurchaseInfoDao {
 			pstmt1 = con.prepareStatement(sqlString1);
 			rs1 = pstmt1.executeQuery();
 			while (rs1.next()) {
-				VendorDto uform = new VendorDto();
+				VendorForm uform = new VendorForm();
 				//Loger.log("The Incoice style id is " + rs1.getString(1));
 				uform.setInvoiceStyleId(rs1.getInt(1));
 				//Loger.log("The Invoice Style name is " + rs1.getString(2));
@@ -1329,7 +1329,7 @@ public class PurchaseInfoDao {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				
@@ -1341,7 +1341,7 @@ public class PurchaseInfoDao {
 					}
 					
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("InvoiceName", invoiceName);
@@ -1353,7 +1353,7 @@ public class PurchaseInfoDao {
 
 			rs2 = pstmt2.executeQuery();
 			while (rs2.next()) {
-				VendorDto uform = new VendorDto();
+				VendorForm uform = new VendorForm();
 
 				uform.setClientVendorID(String.valueOf(rs2
 						.getInt("ClientVendorID")));
@@ -1376,7 +1376,7 @@ public class PurchaseInfoDao {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs2 != null) {
@@ -1389,7 +1389,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("BalenceDetails", balenceDetails);
@@ -1598,7 +1598,7 @@ public class PurchaseInfoDao {
 						db.close(con);
 						}
 					} catch (Exception e) {
-					e.printStackTrace();
+					Loger.log(e.toString());
 				}
 			}
 		return ret;
@@ -1610,13 +1610,13 @@ public class PurchaseInfoDao {
 	 */
 	public ArrayList getPrintLabelInfo(HttpServletRequest request, String compId,int startValue,int limit) {
 		Connection con = null;
-		ArrayList<VendorDto> labelInfo = new ArrayList<>();
+		ArrayList<VendorForm> labelInfo = new ArrayList<>();
 		CountryState conState = new CountryState();
 		PreparedStatement pstmt_client = null;
 		PreparedStatement pstmt_clientSer = null;
 		PreparedStatement pstmt_ser = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<VendorDto> serviceList = new ArrayList<>();
+		ArrayList<VendorForm> serviceList = new ArrayList<>();
 		ResultSet rs_client = null;
 		ResultSet rs_clientSer = null;
 		ResultSet rs_ser = null;
@@ -1634,7 +1634,7 @@ public class PurchaseInfoDao {
 			pstmt_client.setInt(3, limit);
 			rs_client = pstmt_client.executeQuery();
 			while (rs_client.next()) {
-				VendorDto vendor = new VendorDto();
+				VendorForm vendor = new VendorForm();
 				vendor.setClientVendorID(rs_client.getString("ClientVendorID"));
 				vendor.setCname(rs_client.getString("Name"));
 				vendor.setFirstName(rs_client.getString("FirstName"));
@@ -1656,7 +1656,7 @@ public class PurchaseInfoDao {
 				rs_clientSer = pstmt_clientSer.executeQuery();
 				String services = "select ServiceName from bca_servicetype where ServiceID=?";
 				while (rs_clientSer.next()) {
-					VendorDto vendorService = new VendorDto();
+					VendorForm vendorService = new VendorForm();
 					pstmt_ser = con.prepareStatement(services);
 					pstmt_ser.setInt(1, rs_clientSer.getInt("ServiceID"));
 					rs_ser = pstmt_ser.executeQuery();
@@ -1698,7 +1698,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return labelInfo;
@@ -1747,7 +1747,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1798,7 +1798,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1915,7 +1915,7 @@ public class PurchaseInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}

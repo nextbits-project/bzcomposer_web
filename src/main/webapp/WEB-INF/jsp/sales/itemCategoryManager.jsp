@@ -326,7 +326,7 @@ input:checked + .slider:before {
 
 <script>
 $(document).ready(function () {
-    debugger;
+    
     $('tr').click(function () {
          var selected = $(this).hasClass("highlight");
          $("tr").removeClass("highlight");
@@ -360,7 +360,7 @@ $(document).ready(function () {
          $("#categoryID").val($("#categoryIDA").val());
          $("#parentID").val($("#parentIDA").val());
          $("#categoryName").val($("#categoryNameA").val());
-         //$("#description").val($("#categoryDetailsA").val());
+         $("#description").val($("#description").val());
          $("#active").val($("#categoryEnabled").is(":checked")?1:0);
      });
      $( "#AddItemBtn").on("click", function(){
@@ -434,7 +434,7 @@ function mainCategoryClicked(categoryID, active, categoryName, description){
     document.getElementById('categoryIDA').value = categoryID;
     document.getElementById('categoryEnabled').checked = active;
     document.getElementById('categoryNameA').value = categoryName;
-    //document.getElementById('categoryDetailsA').value = description;
+    document.getElementById('description').value = description;
 }
 function subCategoryClicked(categoryID, parentID, active, categoryName, description){
     let tblRows = document.getElementById('ItemListTbl').getElementsByTagName("tr");
@@ -450,7 +450,7 @@ function subCategoryClicked(categoryID, parentID, active, categoryName, descript
     document.getElementById('parentIDA').value = parentID;
     document.getElementById('categoryEnabled').checked = active;
     document.getElementById('categoryNameA').value = categoryName;
-    //document.getElementById('categoryDetailsA').value = description;
+    document.getElementById('description').value = description;
 }
 
 function setCategoryType(catType){

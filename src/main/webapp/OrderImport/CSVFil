@@ -1,0 +1,7 @@
+{
+"MappingOrderFields":["order-id","purchase-date","","","","",""]
+,"MappingAddressFields":["","","","buyer-email","","","","","","","","",""]
+,"MappingItemLineFields":["sku","","quantity-purchased","price","",""]
+,"ImportFrom":["C:\\Users\\avibha\\Desktop\\Amazon Marketplace_12108.csv"]
+,"OrderType":["Invoice Order"]
+}

@@ -12,9 +12,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.apache.struts.util.LabelValueBean;
+
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
-import com.avibha.common.utility.LabelValueBean;
 
 public class FilingStatus {
 	/*
@@ -37,11 +38,11 @@ public class FilingStatus {
 		try {
 			String sqlString = "select FilingStatusID,FilingStatus from bcp_filingstatus where CompanyID=? and Active=?";
 			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, CompanyID);
+			pstmt.setString(1,  CompanyID);
 			pstmt.setString(2, "1");
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
+				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("FilingStatus"), rs
 						.getString("FilingStatusID")));
 			}
@@ -61,7 +62,7 @@ public class FilingStatus {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -105,7 +106,7 @@ public class FilingStatus {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 

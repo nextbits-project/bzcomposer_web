@@ -503,7 +503,7 @@ $(function() {
 <script type="text/javascript">
 function submitform()
 {
-	debugger;
+	
 	if(!confirm("Do you want to save changes?"))
 	{
 		var expmonth = document.getElementById("iSalesCardExpMonth").value;
@@ -513,7 +513,7 @@ function submitform()
 	 document.forms['newcompany6'].submit();
 	}
 	else{
-		debugger;
+		
 		addgeneraldetail();
 
 		var json = JSON.stringify(objGlobalForGeneral);

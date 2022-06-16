@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ page isELIgnored="false"%>
 <%@ page errorPage="/include/sessionExpired.jsp"%>
 <html>
@@ -2001,13 +2003,9 @@ tax_rate=0;
 								
 				hidn_val=( (hidn_val/1) + 1);
 				document.getElementById('hidn').value=hidn_val;
-				
-				
-				
-				
+					
+		   			}
 			
-				
-   			}	
 		}
 		
 		function productItem(hidn_val){

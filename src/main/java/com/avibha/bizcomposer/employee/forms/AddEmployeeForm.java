@@ -6,6 +6,15 @@
 
 package com.avibha.bizcomposer.employee.forms;
 
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.*;
+
+import com.avibha.bizcomposer.employee.dao.*;
+import com.avibha.common.log.Loger;
+import com.avibha.common.utility.*;
 import org.springframework.stereotype.Component;
 
 /*
@@ -203,7 +212,42 @@ public class AddEmployeeForm {
 		this.zip = zip;
 	}
 
-	
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+
+		this.fname = "";
+		this.lname = "";
+		this.mname = "";
+		this.address1 = "";
+		this.address2 = "";
+		this.title = "";
+		this.jtitle = "";
+		this.dob = "";
+		this.doa = "";
+		this.dot = "";
+		this.dot = "";
+		this.dos = "";
+		this.zip = "";
+		this.city = "";
+		this.province = "";
+		this.country = "";
+		this.state = "";
+		this.phone = "";
+		this.mobile = "";
+		this.email = "";
+		this.emptype = "";
+		this.ssn = "";
+		this.terminated = "";
+		this.memo = "";
+		this.filingStatus = "";
+		this.stateworked = "";
+		this.allowance = "";
+		this.stateworked = "";
+		this.amount = "";
+		this.payperiod = "";
+
+		// super.reset(mapping, request);
+	}
+
 	/**
 	 * @return Returns the address1.
 	 */
@@ -564,7 +608,185 @@ public class AddEmployeeForm {
 		this.employeeID = employeeID;
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.struts.action.ActionForm#validate(org.apache.struts.action
+	 * .ActionMapping, javax.servlet.http.HttpServletRequest)
+	 */
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
+		String fname = request.getParameter("fname");
+		String lname = request.getParameter("lname");
+		String title = request.getParameter("title");
+		String jtitle = request.getParameter("jtitle");
+		String dob = request.getParameter("dob");
+		String dos = request.getParameter("dos");
+		String doa = request.getParameter("doa");
+		String address1 = request.getParameter("address1");
+		String city = request.getParameter("city");
+		String country = request.getParameter("country");
+		// String state=request.getParameter("state");
+		String phone = request.getParameter("phone");
+		String mobile = request.getParameter("mobile");
+		String email = request.getParameter("email");
+		String emptype = request.getParameter("emptype");
+		String ssn = request.getParameter("ssn");
+		String terminated = request.getParameter("terminated");
+		String dot = request.getParameter("dot");
+		String zip = request.getParameter("zip");
+		String filingStatus = request.getParameter("filingStatus");
+		String allowance = request.getParameter("allowance");
+		String stateworked = request.getParameter("stateworked");
+		String payperiod = request.getParameter("payperiod");
+		String amount = request.getParameter("amount");
+		Validate v = new Validate();
+		try{
+		if (fname == null || "".equals(fname.trim())) {
+			errors.add("fname", new ActionMessage("AddEmployeeForm.fname.problem"));
+		}
+		if (lname == null || "".equals(lname.trim())) {
+			errors.add("lname", new ActionMessage("AddEmployeeForm.lname.problem"));
+		}
+		if (title == null || "".equals(title.trim())) {
+			errors.add("title", new ActionMessage("AddEmployeeForm.title.problem"));
+		}
+		if (jtitle == null || "".equals(jtitle.trim())) {
+			errors.add("jtitle", new ActionMessage("AddEmployeeForm.jtitle.problem"));
+		}
+		if (dob == null || "".equals(dob.trim())) {
+			errors.add("dob", new ActionMessage("AddEmployeeForm.dob.problem"));
+		}
+		if (dos == null || "".equals(dos.trim())) {
+			errors.add("dos", new ActionMessage("AddEmployeeForm.dos.problem"));
+		}
+		if (doa == null || "".equals(doa.trim())) {
+			errors.add("doa", new ActionMessage("AddEmployeeForm.doa.problem"));
+		}
+		if (address1 == null || "".equals(address1.trim())) {
+			errors.add("address1", new ActionMessage("AddEmployeeForm.address1.problem"));
+		}
+		if (city == null || "".equals(city.trim())) {
+			errors.add("city",new ActionMessage("AddEmployeeForm.city.problem"));
+		}
+		if (country == null || "".equals(country.trim())) {
+			errors.add("country", new ActionMessage("AddEmployeeForm.country.problem"));
+		}
+		// if(state==null||"".equals(state.trim()))
+		// {
+		// errors.add("state", new ActionMessage(
+		// "AddEmployeeForm.state.problem"));
+		// }
+		if (phone == null || "".equals(phone.trim())) {
+			errors.add("phone", new ActionMessage("AddEmployeeForm.phone.problem"));
+
+		}else{
+			if (!v.isNumber(phone))
+				errors.add("phone", new ActionMessage("AddEmployeeForm.invalidphone.problem"));
+		}
+		try {
+			if (mobile != null || !"".equals(mobile.trim())) {		
+				if (!v.isNumber(mobile))
+					errors.add("mobile", new ActionMessage("AddEmployeeForm.invalidmobile.problem"));
+			}
+		} catch (Exception e) {
+				Loger.log(e.toString());
+		}
+
+		if (email == null || "".equals(email.trim())) {
+			errors.add("email", new ActionMessage("AddEmployeeForm.email.problem"));
+
+		} else {
+			if (!v.isValidEmailAddress(email))
+				errors.add("email", new ActionMessage("AddEmployeeForm.invalidemail.problem"));
+		}
+		if (emptype == null || "".equals(emptype.trim())) {
+			errors.add("emptype", new ActionMessage("AddEmployeeForm.emptype.problem"));
+		}
+		if (ssn == null || "".equals(ssn.trim())) {
+			errors.add("ssn", new ActionMessage("AddEmployeeForm.ssn.problem"));
+		}
+		if (zip == null || "".equals(zip.trim())) {
+			errors.add("zip", new ActionMessage("AddEmployeeForm.zip.problem"));
+		} else {
+			if (!v.isNumber(zip))
+				errors.add("zip", new ActionMessage("AddEmployeeForm.invalidzip.problem"));
+		}
+		if (filingStatus == null || "".equals(filingStatus.trim())) {
+			errors.add("filingStatus", new ActionMessage("AddEmployeeForm.filingStatus.problem"));
+		}
+
+		if (allowance == null || "".equals(allowance.trim())) {
+			errors.add("allowance", new ActionMessage("AddEmployeeForm.allowance.problem"));
+		} else {
+			if (!v.isNumber(allowance))
+				errors.add("allowance", new ActionMessage("AddEmployeeForm.invalidallowance.problem"));
+
+		}
+
+		if (stateworked == null || "".equals(stateworked.trim())) {
+			errors.add("stateworked", new ActionMessage("AddEmployeeForm.stateworked.problem"));
+		}
+		if (payperiod == null || "".equals(payperiod.trim())) {
+			errors.add("payperiod", new ActionMessage("AddEmployeeForm.payperiod.problem"));
+		}
+		if (amount == null || "".equals(amount.trim())) {
+			errors.add("amount", new ActionMessage("AddEmployeeForm.amount.problem"));
+		} else {
+			if (!v.isDouble(amount))
+				errors.add("amount", new ActionMessage("AddEmployeeForm.invalidamount.problem"));
+		}
+			try {
+				if (terminated != null && !"".equals(terminated.trim())) {
+					if (dot == null || "".equals(dot.trim()))
+						errors.add("dot", new ActionMessage(
+								"AddEmployeeForm.dot.problem"));
+				}
+
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+}catch (Exception e) {
+	Loger.log(e.toString());
+	// TODO: handle exception
+}
+		Title t = new Title();
+		ArrayList titleList = t.getTitleList("1");
+		request.setAttribute("titleList", titleList);
+		// job title List
+		JobTitle j = new JobTitle();
+		ArrayList jobtitleList = j.getJobTitleList("1");
+		request.setAttribute("jtitleList", jobtitleList);
+
+		// country List
+		CountryState cs = new CountryState();
+		ArrayList cList = cs.getCountry();
+		request.setAttribute("cList", cList);
+
+		// Employee Type
+		EmployeeType et = new EmployeeType();
+		ArrayList emptype1 = et.getEmployeeTypeList("1");
+		request.setAttribute("emptypeList", emptype1);
+
+		// Filing status
+		FilingStatus fs = new FilingStatus();
+		ArrayList flist = fs.getFilingStatusList("1");
+		request.setAttribute("filingList", flist);
+
+		// State worked
+		FilingState fstate = new FilingState();
+		ArrayList fstatelist = fstate.getFilingStateList("1");
+		request.setAttribute("statewList", fstatelist);
+
+		// periodList
+		PayrollPeriod pp = new PayrollPeriod();
+		ArrayList pList = pp.getPayrollPeriodList("1");
+		request.setAttribute("periodList", pList);
+		return errors;
+	}
+
 	public void setSortBy(int sortBy) {
 		this.sortBy = sortBy;
 	}

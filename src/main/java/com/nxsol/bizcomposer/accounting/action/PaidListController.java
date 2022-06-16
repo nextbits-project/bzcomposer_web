@@ -1,33 +1,37 @@
 package com.nxsol.bizcomposer.accounting.action;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.JProjectUtil;
-import com.nxsol.bizcompser.global.table.TblCategoryDto;
+import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
+import com.pritesh.bizcomposer.accounting.bean.TblPayment;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 
 @Controller
-public class PaidListController{
-
-	@GetMapping("/PaidListTab")
-	public ModelAndView PaidList(TblPaymentDto form, HttpServletRequest request,
+public class PaidListController extends Action{
+	@RequestMapping(value ="/PaidListTab", method = {RequestMethod.GET, RequestMethod.POST})
+	//@GetMapping("/PaidListTab")
+	public ModelAndView PaidList(TblPayment form, HttpServletRequest request,
 								HttpServletResponse response) throws Exception {
 
 		Date fromDate = null;
@@ -40,9 +44,9 @@ public class PaidListController{
 		String selectedRange = request.getParameter("SelectedRange");
 		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl = new ReceivableListImpl();
-		ArrayList<TblPaymentDto> paidList = null;
+		ArrayList<TblPayment> paidList = null;
 		TblCategoryLoader category = new TblCategoryLoader();
-		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
+		ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<TblPaymentType> paymentTypeForPOcombo = rl.getPaymentTypeForPoPayable();
 		ArrayList<TblAccount> accountForCombo =rl.getAccount();
 		request.setAttribute("categoryforcombo", categoryforcombo);
@@ -67,13 +71,13 @@ public class PaidListController{
 			request.setAttribute("paidList", paidList);
 		}
 		paidList = rl.getPaidList(fromDate,toDate);
-		ArrayList<TblPaymentDto> paidConsign = rl.getPaidConsignPaymentList();
+		ArrayList<TblPayment> paidConsign = rl.getPaidConsignPaymentList();
 	/*	request.setAttribute("paidList", paidList);*/
 		request.setAttribute("paidConsignment", paidConsign);
-		Iterator<TblPaymentDto> pay = paidList.iterator();
+		Iterator<TblPayment> pay = paidList.iterator();
 		while(pay.hasNext())
 		{
-			TblPaymentDto payment = pay.next();
+			TblPayment payment = pay.next();
 			String PaidOrUnpaid = rl.getPaidOrUnpaid(payment.getInvoiceID(),payment.getPayableID());
 			Double totalAmount = rl.getTotalAmountByInvoiceId(payment.getInvoiceID());
 			request.getSession().setAttribute("PaidOrUnpaid"+payment.getInvoiceID(), PaidOrUnpaid);
@@ -81,14 +85,14 @@ public class PaidListController{
 		
 		if(action.equals("UpdateRecord"))
 		{
-			TblPaymentDto cfrm = (TblPaymentDto)form;
+			TblPayment cfrm = (TblPayment)form;
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPayment.class);
 			int paymentId = Integer.parseInt(request.getParameter("PaymentId"));
 			String paidDate = request.getParameter("PaidDate");
 			Date datePaid = JProjectUtil.getdateFormat().parse(paidDate);
 			double receivedAmount = Double.parseDouble(request.getParameter("ReceivedAmount"));
-			TblPaymentDto payment = rl.getObjectOfStoragePayment(paymentId);
+			TblPayment payment = rl.getObjectOfStoragePayment(paymentId);
 			payment.setOldclientVendorID(paymentFromAjax.getOldclientVendorID());
 			payment.setOldAccountID(paymentFromAjax.getOldAccountID());
 			payment.setPaymentTypeID(paymentFromAjax.getPaymentTypeID());
@@ -102,7 +106,7 @@ public class PaidListController{
 		if(action.equals("clearTransaction"))
 		{
 			int paymentId = Integer.parseInt(request.getParameter("paymentId"));
-			TblPaymentDto payment = rl.getObjectOfStoragePayment(paymentId);
+			TblPayment payment = rl.getObjectOfStoragePayment(paymentId);
 			int invoiceId = payment.getInvoiceID();
 			/*int invoiceStatus = rl.readInvoiceStatus(payment.getInvoiceID());
 			 if (invoiceStatus == ReceivableListBean.REFUND_INVOICE_STATUS || invoiceStatus == ReceivableListBean.PARTIAL_REFUND_INVOICE_STATUS) {
@@ -119,8 +123,9 @@ public class PaidListController{
 		ModelAndView modelAndView =new ModelAndView(forward);
 		return modelAndView;
 	}
-	@PostMapping("/PaidListTabPost")
-	public ModelAndView PaidListPost(TblPaymentDto form, HttpServletRequest request,
+	@RequestMapping(value ="/PaidListTabPost", method = {RequestMethod.GET, RequestMethod.POST})
+	//@PostMapping("/PaidListTabPost")
+	public ModelAndView PaidListPost(TblPayment form, HttpServletRequest request,
 								 HttpServletResponse response) throws Exception {
 		Date fromDate = null;
 		Date toDate = null;
@@ -132,9 +137,9 @@ public class PaidListController{
 		String selectedRange = request.getParameter("SelectedRange");
 		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl = new ReceivableListImpl();
-		ArrayList<TblPaymentDto> paidList = null;
+		ArrayList<TblPayment> paidList = null;
 		TblCategoryLoader category = new TblCategoryLoader();
-		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
+		ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<TblPaymentType> paymentTypeForPOcombo = rl.getPaymentTypeForPoPayable();
 		ArrayList<TblAccount> accountForCombo =rl.getAccount();
 		request.setAttribute("categoryforcombo", categoryforcombo);
@@ -142,14 +147,14 @@ public class PaidListController{
 		request.setAttribute("accountForCombo", accountForCombo);
 		if(action.equals("UpdateRecord"))
 		{
-			TblPaymentDto cfrm = (TblPaymentDto)form;
+			TblPayment cfrm = (TblPayment)form;
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPayment.class);
 			int paymentId = Integer.parseInt(request.getParameter("PaymentId"));
 			String paidDate = request.getParameter("PaidDate");
 			Date datePaid = JProjectUtil.getdateFormat().parse(paidDate);
 			double receivedAmount = Double.parseDouble(request.getParameter("ReceivedAmount"));
-			TblPaymentDto payment = rl.getObjectOfStoragePayment(paymentId);
+			TblPayment payment = rl.getObjectOfStoragePayment(paymentId);
 			payment.setOldclientVendorID(paymentFromAjax.getOldclientVendorID());
 			payment.setOldAccountID(paymentFromAjax.getOldAccountID());
 			payment.setPaymentTypeID(paymentFromAjax.getPaymentTypeID());
@@ -163,7 +168,7 @@ public class PaidListController{
 		if(action.equals("clearTransaction"))
 		{
 			int paymentId = Integer.parseInt(request.getParameter("paymentId"));
-			TblPaymentDto payment = rl.getObjectOfStoragePayment(paymentId);
+			TblPayment payment = rl.getObjectOfStoragePayment(paymentId);
 			int invoiceId = payment.getInvoiceID();
 			/*int invoiceStatus = rl.readInvoiceStatus(payment.getInvoiceID());
 			 if (invoiceStatus == ReceivableListBean.REFUND_INVOICE_STATUS || invoiceStatus == ReceivableListBean.PARTIAL_REFUND_INVOICE_STATUS) {

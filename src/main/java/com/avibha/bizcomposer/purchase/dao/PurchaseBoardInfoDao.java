@@ -1,24 +1,10 @@
 package com.avibha.bizcomposer.purchase.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
+import com.avibha.bizcomposer.purchase.forms.VendorForm;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.constants.AppConstants;
@@ -32,15 +18,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 
-@Service
+import javax.servlet.http.HttpServletRequest;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 public class PurchaseBoardInfoDao {
-	
-	    private ConfigurationInfo configInfo;
-	    @Autowired
-	    public PurchaseBoardInfoDao(ConfigurationInfo configInfo) {
-			super();
-			this.configInfo = configInfo;
-		}
 
 	public ArrayList PurchaseRecordSearch(HttpServletRequest request, String compId, String action, PurchaseBoardDto form) {
 
@@ -69,7 +54,7 @@ public class PurchaseBoardInfoDao {
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
-		//ConfigurationInfo configInfo = new ConfigurationInfo();
+		ConfigurationInfo configInfo = new ConfigurationInfo();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		
 		if(datesCombo != null && !datesCombo.equals("8")) {
@@ -306,7 +291,7 @@ public class PurchaseBoardInfoDao {
 			request.setAttribute("total", totalBalance);
 		} catch (SQLException ee) {
 			Loger.log(2,"SQL Error in Class TaxInfo and  method -getFederalTax "+ ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -377,7 +362,7 @@ public class PurchaseBoardInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2,"SQL Error in Class TaxInfo and  method -getFederalTax "+ ee.toString());
-			ee.printStackTrace();
+			
 		}
 		finally {
 			try {
@@ -452,7 +437,7 @@ public class PurchaseBoardInfoDao {
 			}
 			con.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 			Loger.log(2, "Error in DeleteReceivedItem() " + e);
 		}
 		finally {
@@ -487,7 +472,7 @@ public class PurchaseBoardInfoDao {
 				status = true;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 			Loger.log(2, "Error in DeleteReceivedItem() " + e);
 		}
 		finally {
@@ -515,7 +500,7 @@ public class PurchaseBoardInfoDao {
 			Loger.log(sqlString);
 			int count = pstmtUpdate.executeUpdate();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 			Loger.log(2, "Error in DeleteReceivedItem() " + e);
 		}
 		return true;
@@ -604,7 +589,7 @@ public class PurchaseBoardInfoDao {
 			
 		}catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -618,7 +603,7 @@ public class PurchaseBoardInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -629,7 +614,7 @@ public class PurchaseBoardInfoDao {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null,stmt2=null;
-		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> objList = new ArrayList<VendorForm>();
 		double totalbalance=0;
 		ResultSet rs = null,rs2=null;
 		con = db.getConnection();
@@ -690,7 +675,7 @@ public class PurchaseBoardInfoDao {
 			if(!rs.next())
 				break;
 
-				VendorDto vendor = new VendorDto();
+				VendorForm vendor = new VendorForm();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
 				
@@ -864,7 +849,7 @@ public class PurchaseBoardInfoDao {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -883,7 +868,7 @@ public class PurchaseBoardInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -946,7 +931,7 @@ public class PurchaseBoardInfoDao {
 			}
 			
 		}catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -955,7 +940,7 @@ public class PurchaseBoardInfoDao {
 				if (stmt1 != null) { db.close(stmt1); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1030,7 +1015,7 @@ public class PurchaseBoardInfoDao {
 			
 			while(rs.next())
 			{
-				PurchaseBoardDto pb = new PurchaseBoardDto();
+				PurchaseBoardForm pb = new PurchaseBoardForm();
 				
 				/*pb.setVendorName(rs.getString(3));
 				pb.setTotal(rs.);
@@ -1040,7 +1025,7 @@ public class PurchaseBoardInfoDao {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -1059,7 +1044,7 @@ public class PurchaseBoardInfoDao {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -1083,7 +1068,7 @@ public class PurchaseBoardInfoDao {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally{
 			try {
 				if (rs != null)
@@ -1229,7 +1214,7 @@ public class PurchaseBoardInfoDao {
 		Connection con = null ;
 		Statement stmt = null, stmt1 = null, stmt2 = null,stm3=null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<PurchaseBoardDto> objList = new ArrayList<PurchaseBoardDto>();
+		ArrayList<PurchaseBoardForm> objList = new ArrayList<PurchaseBoardForm>();
 		ResultSet rs = null, rs2 = null, rs3 = null,rs4=null;
 		con = db.getConnection();
 		String mark = null;
@@ -1370,11 +1355,11 @@ public class PurchaseBoardInfoDao {
 			rs = stmt.executeQuery(sqlString);
 			rs2 = stmt1.executeQuery(sql2);
 			
-			PurchaseBoardDto pb = null;
+			PurchaseBoardForm pb = null;
 			
 			while(rs.next())
 			{
-				pb = new PurchaseBoardDto();
+				pb = new PurchaseBoardForm();
 				
 				pb.setDateAdded(rs.getString(4));
 				pb.setClientvendor(rs.getString(9));
@@ -1397,7 +1382,7 @@ public class PurchaseBoardInfoDao {
 			Loger.log(2,
 					" SQL Error in Class TaxInfo and  method -getFederalTax "
 							+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 
 		finally {

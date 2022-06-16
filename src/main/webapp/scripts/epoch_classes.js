@@ -10,7 +10,7 @@ var marr= new Array(31,28,31,30,31,30,31,31,30,31,30,31);
 
 function Epoch(name,mode,targetelement,multiselect)
 {
-	debugger;
+	
 	this.state = 0;
 	this.name = name;
 	this.curDate = new Date();
@@ -876,7 +876,7 @@ Array.prototype.arrayIndex = function(searchVal,startIndex) //similar to array.i
 
 function getDate123()
 {
-	debugger;
+	
       var temp=""+seldate;
 	
 	  var tdate =date;

@@ -23,7 +23,7 @@ function deleteEmployee1(Id)
 	document.forms[0].action = "manageemployee?act=delete&eid="+Id;
 	document.forms[0].submit();
 	} */
-	debugger;
+	
 	//event.preventDefault();
 	$("#deleteEmployeeDialog").dialog({
 		resizable: false,

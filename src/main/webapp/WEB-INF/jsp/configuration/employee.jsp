@@ -19,7 +19,7 @@
 </head>
 <script type="text/javascript">
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -212,19 +212,19 @@ function AddJobCode()
 
 function AddJobTitle()
 {
-	debugger;
+	
 	var jobTitle = $("#txtjobTitle").val();
-	debugger
+	
 	var availableJobTitle = $.trim($("#selectedJobTitle option:selected").val());
 	
 	var availablejobs = $.trim($("#selectedJobTitle option[value='"+jobTitle+"']").val());
-	debugger
+	
 	var camelized = jobTitle.toLowerCase().replace(/\b[a-z]/g, function(letter) {
 	    return letter.toUpperCase();
 	});
-	debugger
+	
 
-	debugger
+	
 	if(jobTitle == "")
 	{
 
@@ -249,7 +249,7 @@ function AddJobTitle()
 			url : "Configuration?tabid=saveJobTitle&jobTitle="+jobTitle+"&operation=add",
 			data : formData,
 			success : function(data) {
-				debugger
+				
 				//$("#showsaverecorddialog").dialog("close");
 				$("#showsuccessdialog").dialog({
 						resizable: false,
@@ -281,19 +281,19 @@ function AddJobTitle()
 function EditJobTitle()
 {
 	var jobTitle = $("#txtjobTitle").val();
-	debugger
+	
 	var availableJobTitle = $.trim($("#selectedJobTitle option:selected").val());
 	
 	var selectedJobtitleId = $("#selectedJobTitle").children(":selected").attr("id");
 	
 	var availablejobs = $.trim($("#selectedJobTitle option[value='"+jobTitle+"']").val());
-	debugger
+	
 	var camelized = jobTitle.toLowerCase().replace(/\b[a-z]/g, function(letter) {
 	    return letter.toUpperCase();
 	});
-	debugger
+	
 
-	debugger
+	
 	if(jobTitle == "")
 	{
 
@@ -320,13 +320,13 @@ function EditJobTitle()
 
 function DeleteJobTitle()
 {
-	debugger
+	
 	var selectedJobTitleId = $("#selectedJobTitle").children(":selected").attr("id");
-	debugger
+	
 	var deletedJobTitle = $("#selectedJobTitle option:selected").val();
-	debugger
+	
 	var jobTitle = $("#txtjobTitle").val();
-	debugger
+	
 	if(selectedJobTitleId == "")
 	{
 
@@ -557,28 +557,28 @@ function showSetupID()
 	
 	function setDefaultReason()
 	{
-		debugger
+		
 		var reason = $('#refundReasonSel :selected').text();
 		if(reason == "")
 		{
-			debugger
+			
 			alert("<spring:message code='BzComposer.configuration.customerinvoice.selectreasonfromlist'/>");
 		}
 	}
 	
 	function setJobTitle()
 	{
-		debugger
+		
 		var jobTitle = $.trim($("#selectedJobTitle option:selected").val());
-		debugger
+		
 		//$("#txtJobTitle").html(jobTitle);
 		document.getElementById("txtjobTitle").value = jobTitle;
-		debugger
+		
 	}
 	
 	function setReason()
 	{
-		debugger
+		
 		var oldReason = $('#refundReasonSel option:selected').text();
 		$('#refundReasonSel option:selected').remove();
     	document.getElementById("refundReason").value = oldReason;	
@@ -586,7 +586,7 @@ function showSetupID()
 	
 	function setCategory()
 	{
-		debugger
+		
 		var oldCategory = $('#jobCategory option:selected').text();
 		$('#jobCategory option:selected').remove();
     	document.getElementById("txtJobCategory").value = oldCategory;	
@@ -637,7 +637,7 @@ function showSetupID()
 	
 	function AddDescription()
 	{
-		debugger
+		
 		var text = $('#description').val();
 		if(text == "" || text == " ")
 		{
@@ -688,7 +688,7 @@ function showSetupID()
 	$(function () {
         $("#addRefundReason").click(function (e) {
         	
-        	debugger
+        	
         	//var item = $('#refundReasonSel option').val();
         	var r = $("#refundReason").val();
             if (r == '') {
@@ -722,7 +722,7 @@ function showSetupID()
 	$(function () {
         $("#updateRefundReason").click(function () 
         {
-        	debugger
+        	
         	var oldReason = $('#refundReasonSel option:selected').text();
         	var newReason = $('#refundReason').text();
             if (oldReason == '' || oldReason == ' ') {
@@ -734,7 +734,7 @@ function showSetupID()
             }
             else
             {
-            	debugger
+            	
             	//var addDisc = $("#refundReason").text();
             	$('#refundReasonSel option:selected').remove();
             	$('#refundReasonSel').append($("<option value="+$('#refundReason').val()+" onclick=setReason()>" + $('#refundReason').val() + "</option>"));
@@ -745,7 +745,7 @@ function showSetupID()
 	
 	$(function () {
         $("#deleteRefundReason").click(function () {
-        	debugger
+        	
         	var reason = $('#refundReasonSel selected').val();
             if (reason == '') {
                 alert("<spring:message code='BzComposer.configuration.customerinvoice.selectreasonfromlist'/>");
@@ -756,7 +756,7 @@ function showSetupID()
             }
             else
             {
-            	debugger
+            	
             	var con = confirm("<spring:message code='BzComposer.configuration.customerinvoice.removereason'/>");
 
             	if(con)
@@ -769,7 +769,7 @@ function showSetupID()
 	
 	$(function () {
         $("#addJobCategory").click(function (e) {
-        	debugger
+        	
         	var cat = $("#txtJobCategory").val();
         	//var items = $("#jobCategory option").val();
             if (cat == '') {
@@ -805,7 +805,7 @@ function showSetupID()
         $("#updateJobCategory").click(function () {
         	var oldCategory = $('#jobCategory option:selected').text();
         	var newCategory = $('#txtJobCategory').val();
-        	debugger
+        	
             if (oldCategory == "") {
                 alert("<spring:message code='BzComposer.configuration.customerinvoice.selectjobfromlist'/>");
             }
@@ -815,7 +815,7 @@ function showSetupID()
             }
             else
             {
-            	debugger
+            	
             	$('#jobCategory option:selected').remove();
             	$('#jobCategory').append($("<option value="+newCategory+" onclick=setCategory()>" + newCategory + "</option>"));
             }
@@ -824,13 +824,13 @@ function showSetupID()
 	
 	$(function () {
         $("#deleteJobCategory").click(function () {
-        	debugger
+        	
             if ($("#jobCategory option").text() == "") {
                 alert("<spring:message code='BzComposer.configuration.customerinvoice.selectjobfromlist'/>");
             }
             else
             {
-            	debugger
+            	
             	var con = confirm("<spring:message code='BzComposer.configuration.customerinvoice.removeselectedjob'/>");
             	if(con)
             	//$('#jobCategory option:selected').remove();

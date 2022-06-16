@@ -1,68 +1,38 @@
 package com.avibha.bizcomposer.configuration.dao;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
-import com.avibha.common.utility.LabelValueBean;
 import com.avibha.common.utility.MyUtility;
-import com.bzcomposer.configuration.module.form.templates.BCA_FormTemplateType;
-import com.bzcomposer.configuration.module.form.templates.FormTemplateService;
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.web.multipart.MultipartFile;
 
-@Controller
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 public class ConfigurationInfo {
-	private FormTemplateService service;    
-	
-	private static HttpServletRequest request;
-	
+
+    private static HttpServletRequest request;
     public void setCurrentRequest(HttpServletRequest req){
         request = req;
     }
-       
-    @Autowired 
-    public ConfigurationInfo(FormTemplateService service) {
-		super();
-		this.service = service;
-	}
-    
-    public ConfigurationInfo() {
-		super();
-	}
-    
- 
 
     public ConfigurationDto getDefaultCongurationDataBySession() {
-        String companyId = (String) request.getSession().getAttribute("CID");     
+    	//HttpSession sess = request.getSession();
+        String companyID = "1";//(String) request.getSession().getAttribute("CID");
         ConfigurationDto configDto = null;
-        String templateType=(String)  request.getSession().getAttribute("templateName");
-        if(request.getSession().getAttribute("DefaultCongurationData") != null) {
-            configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
-            if(templateType !=null) {
-         	   BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,templateType);
-         	   configDto.setFormTemplateType(formTemplateType);
-         	}
-        }else{
-        	
-            configDto = getDefaultCongurationData(companyId);
-            BCA_FormTemplateType formTemplateType = service.findInvoiceTemplateType(companyId,templateType);
-      	   	configDto.setFormTemplateType(formTemplateType);
-        }
+//        if(request.getSession().getAttribute("DefaultCongurationData") != null) {
+//            configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
+//        }else{
+//            configDto = getDefaultCongurationData(companyID);
+//        }
+        configDto = getDefaultCongurationData(companyID);
         return configDto;
     }
 
@@ -417,7 +387,7 @@ public class ConfigurationInfo {
                     + "Mail_username,Mail_password,Mail_Auth,poboard,itemsReceivedBoard,itemsShippedBoard,SalesOrderBoard,ProductCategoryID,LocationID,ReOrderPoint,"
                     + "VendorBusinessTypeID,VendorInvoiceStyleId,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,"
                     + "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod, EstimationStyleID,SOStyleID,"
-                    + "SalesTaxRate2,InvoiceTemplateType"
+                    + "SalesTaxRate2,isBackOrderNeeded,isRecurringServiceBill,serviceBillName "
                     + " FROM bca_preference WHERE CompanyID="+companyID;
             pstmt = con.prepareStatement(recordQuery);
 //			pstmt.setString(1, compId);
@@ -622,8 +592,10 @@ public class ConfigurationInfo {
                 cForm.setEstimationStyleID(rs.getInt("EstimationStyleID"));
                 cForm.setSoStyleID(rs.getInt("SOStyleID"));
                 cForm.setSaleTaxRate2(rs.getDouble("SalesTaxRate2"));
-                cForm.setBillsTemplateType(6);//need to remove this
-            }  
+                cForm.setBackOrderNeeded("1".equals(rs.getString("isBackOrderNeeded"))? "on" : "off");
+                cForm.setRecurringServiceBill("1".equals(rs.getString("isRecurringServiceBill"))? "on" : "off");
+                cForm.setServiceBillName(rs.getString("serviceBillName"));
+            }
             pstmt.close();
             rs.close();
         } catch (SQLException ex) {
@@ -646,7 +618,7 @@ public class ConfigurationInfo {
             pstmt.close();
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             executor.close(con);
         }
@@ -673,7 +645,7 @@ public class ConfigurationInfo {
             rs.close();
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             executor.close(con);
         }
@@ -810,7 +782,7 @@ public class ConfigurationInfo {
             pstmt1.close();
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            Loger.log(e.toString());
         } finally {
             executor.close(con);
         }
@@ -899,7 +871,7 @@ public class ConfigurationInfo {
 //            }
 //            pstmt2.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         } finally {
             executor.close(con);
         }
@@ -1797,7 +1769,7 @@ public class ConfigurationInfo {
                     + "SaleShowTelephone=?,IsSalePrefix=?,ExtraCharge=?,ChargeAmount=?,OrderAmount=?,HowOftenSalestax=?,DropShipCharge=?,SalesTaxCode=?,SalesTaxRate=?,"
                     + "DropShipCharge=?,ShowDropShipItems=?,isRefundAllowed=?,StartingEstimationNumber=?,InvoiceStyleID =?,POTermID=?, SalesRepID=?, POPayMethodID=?,"
                     + "Charge_interest=?, Charge_minimum=?, Charge_grace=?, Charge_reassess=?, Charge_MarkFinance=?, StartingSalesOrderNumber=?, DisplayPeriod=?,"
-                    + "EstimationStyleID=?, SOStyleID=?, SalesTaxRate2=? "
+                    + "EstimationStyleID=?, SOStyleID=?, SalesTaxRate2=?, isBackOrderNeeded=?, isRecurringServiceBill=?,serviceBillName=?  "
                     + " WHERE companyID = ?";
             int r =cForm.getSortBy();
             pstmt = con.prepareStatement(updateQuery);
@@ -1847,7 +1819,10 @@ public class ConfigurationInfo {
             pstmt.setInt(43, cForm.getEstimationStyleID());
             pstmt.setInt(44, cForm.getSoStyleID());
             pstmt.setDouble(45, cForm.getSaleTaxRate2());
-            pstmt.setInt(46, compId);
+            pstmt.setString(46, "on".equals(cForm.getBackOrderNeeded())?"1" :"0");
+            pstmt.setString(47, "on".equals(cForm.getRecurringServiceBill())?"1" :"0");
+            pstmt.setString(48, cForm.getServiceBillName());
+            pstmt.setInt(49, compId);
 
             int updated = pstmt.executeUpdate();
             if (updated > 0) {
@@ -2647,14 +2622,14 @@ public class ConfigurationInfo {
             status = stmt.executeBatch().length > 0 ? true : false;
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return status;

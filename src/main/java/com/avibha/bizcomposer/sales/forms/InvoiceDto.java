@@ -5,14 +5,11 @@
  */
 package com.avibha.bizcomposer.sales.forms;
 
+import com.avibha.bizcomposer.sales.dao.Item;
+import org.apache.struts.action.ActionForm;
+
 import java.util.ArrayList;
 import java.util.Date;
-
-import com.avibha.bizcomposer.sales.dao.Item;
-import com.bzcomposer.configuration.module.form.templates.BCA_FormTemplateType;
-
-import lombok.Getter;
-import lombok.Setter;
 
 public class InvoiceDto  {
 	
@@ -121,8 +118,6 @@ public class InvoiceDto  {
 	private String category;
 	private int templateType;
 	private ArrayList<Item> cart;
-	
-	private @Setter @Getter BCA_FormTemplateType formTemplateType;
 	
 	public String getCountry() {
 		return country;

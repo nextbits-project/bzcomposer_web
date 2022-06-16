@@ -12,9 +12,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+import org.apache.struts.util.LabelValueBean;
+
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 
 /*
  * 
@@ -69,7 +71,7 @@ public class PayMethod {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -114,7 +116,7 @@ public class PayMethod {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 

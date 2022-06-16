@@ -1,29 +1,40 @@
 package com.nxsol.bizcomposer.accounting.action;
 
-import java.util.ArrayList;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
-
+import com.avibha.bizcomposer.rma.dao.RMADetailsDao;
+import com.avibha.bizcomposer.rma.dao.RMAInfoDao;
+import com.avibha.bizcomposer.rma.forms.RMADto;
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
-import com.nxsol.bizcompser.global.table.TblCategoryDto;
+import com.nxsol.bizcomposer.common.TblVendorDetail;
+import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
-import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+import com.pritesh.bizcomposer.accounting.bean.*;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Scanner;
+
 @Controller
 public class PoPayableController {
 	@GetMapping("/PoPayable")
-	public ModelAndView poPayable(ReceivableListDto receivableListDto, HttpServletRequest request,
+	public ModelAndView poPayable(RMADto rmaDto, ReceivableListDto receivableListDto, HttpServletRequest request,
 								  HttpServletResponse response) throws Exception {
 		String forward = "/accounting/consignmentSale";
 		HttpSession sess=request.getSession();
@@ -32,10 +43,10 @@ public class PoPayableController {
 		ReceivableLIst rl = new ReceivableListImpl();
 		
 		TblCategoryLoader category = new TblCategoryLoader();
-		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
+		ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<TblPaymentType> paymentTypeForPOcombo = rl.getPaymentTypeForPoPayable();
 		ArrayList<TblAccount> accountForCombo =rl.getAccount();
-		ArrayList<ReceivableListDto> poList = rl.getPoPayableList();
+		ArrayList<ReceivableListBean> poList = rl.getPoPayableList();
 		
 		request.setAttribute("categoryforcombo", categoryforcombo);
 		request.setAttribute("paymentTypeForPOcombo", paymentTypeForPOcombo);
@@ -46,7 +57,7 @@ public class PoPayableController {
 		{
 
 			Gson gson=new Gson();
-			ReceivableListDto reListBean = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
+			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
 			double amtToPay = reListBean.getAmtToPay();
 			/*String indexNumber = request.getParameter("index");*/
 			String invoiceId = request.getParameter("invoiceId");
@@ -61,11 +72,11 @@ public class PoPayableController {
 			
 			forward = "/accounting/poPayable";
 		}
-		if(action.equals("Pay"))
-		{
+		if(action.equals("Pay")) {
+
 			Gson gson=new Gson();
-			ReceivableListDto reListBean = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
-			ReceivableListDto inv = ReceivableListImpl.getInvoiceByInvoiceID(reListBean.getInvoiceID());
+			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
+			ReceivableListBean inv = ReceivableListImpl.getInvoiceByInvoiceID(reListBean.getInvoiceID());
 			reListBean.setBalance(inv.getBalance());
 			reListBean.setInvoiceTypeID(inv.getInvoiceTypeID());
 			ReceivableListImpl.invoicePaid(reListBean, true);
@@ -73,9 +84,19 @@ public class PoPayableController {
 		}
 		if(action.equals("consignmentTab"))
 		{
-			ArrayList<ReceivableListDto> cli =rl.getConsignmentSaleList();
+			ArrayList<ReceivableListBean> cli =rl.getConsignmentSaleList();
 			request.setAttribute("consignList", cli);
 			forward = "/accounting/consignmentSale";
+		}
+		if(action.equals("vendorRMARefund"))
+		{
+			RMADetailsDao rd=new RMADetailsDao();
+			RMAInfoDao rmaInfo = new RMAInfoDao();
+			ArrayList VendorRMAList = new ArrayList();
+			int invoiceTypeID = 1;
+			VendorRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);
+			request.setAttribute("VendorRMAList",VendorRMAList);
+			forward = "/accounting/vendorRMARefund";
 		}
 		if(action.equals("popayable"))
 		{
@@ -88,7 +109,7 @@ public class PoPayableController {
 		}
 		if(action.equals("consignmentTab"))
 		{
-			ArrayList<ReceivableListDto> cli =rl.getConsignmentSaleList();
+			ArrayList<ReceivableListBean> cli =rl.getConsignmentSaleList();
 			request.setAttribute("consignList", cli);
 			forward = "/accounting/consignmentSale";
 		}
@@ -96,7 +117,7 @@ public class PoPayableController {
 		ModelAndView modelAndView =new ModelAndView(forward);
 		return modelAndView;
 	}
-	@PostMapping("/PoPayablePost")
+	@RequestMapping(value ="/PoPayablePost", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView poPayablePost(ReceivableListDto receivableListDto, HttpServletRequest request,
 								  HttpServletResponse response) throws Exception {
 		String forward = "/accounting/consignmentSale";
@@ -106,10 +127,10 @@ public class PoPayableController {
 		ReceivableLIst rl = new ReceivableListImpl();
 
 		TblCategoryLoader category = new TblCategoryLoader();
-		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
+		ArrayList<TblCategory> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<TblPaymentType> paymentTypeForPOcombo = rl.getPaymentTypeForPoPayable();
 		ArrayList<TblAccount> accountForCombo = rl.getAccount();
-		ArrayList<ReceivableListDto> poList = rl.getPoPayableList();
+		ArrayList<ReceivableListBean> poList = rl.getPoPayableList();
 
 		request.setAttribute("categoryforcombo", categoryforcombo);
 		request.setAttribute("paymentTypeForPOcombo", paymentTypeForPOcombo);
@@ -128,7 +149,7 @@ public class PoPayableController {
 		{
 
 			Gson gson=new Gson();
-			ReceivableListDto reListBean = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
+			ReceivableListBean reListBean = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
 			double amtToPay = reListBean.getAmtToPay();
 			/*String indexNumber = request.getParameter("index");*/
 			String invoiceId = request.getParameter("invoiceId");
@@ -143,15 +164,64 @@ public class PoPayableController {
 
 			forward = "/accounting/poPayable";
 		}
+		if(action.equals("PayBills")) {
+			ReceivableListImpl receivableList = new ReceivableListImpl();
+			String billNum =  request.getParameter("billNum");
+			TblVendorDetail tblVendorDetail = rl.getBillByBillNum(billNum);
+
+
+			TblAccountable payable = new TblAccountable();
+			Calendar c1 = Calendar.getInstance();
+			double amount = 0.0;
+			payable.setBillNum(Integer.parseInt(billNum));
+			payable.setAmount(tblVendorDetail.getAmount());
+			payable.setCategoryId(546919728);
+			payable.setAccountCategoryId(546919728);
+			payable.setDateAdded(c1.getTime());
+			payable.setInvoiceId(tblVendorDetail.getInvoiceId());
+			payable.setPayeeCvId(tblVendorDetail.getVendorId());
+			//payable.setInvoiceTypeID(tblVendorDetail.getInvoiceId());
+
+			payable.setPayeeID(57061);
+			payable.setMemo(tblVendorDetail.getMemo());
+			//payable.setPaymentTypeId(tblVendorDetail.getPaymentTypeID());
+			//payable.setCheckNumber(bean.getCheckNum());
+
+			payable.setPayFromId(55574);
+
+			//payable.setPayeeCvServiceId((int)bean.getServiceID());
+			receivableList.insert(payable, false);
+			receivableList.updateBillByBillNumForPaid(billNum);
+			forward = "/accounting/poPayable";
+		}
 		if(action.equals("Pay"))
 		{
-			Gson gson=new Gson();
-			ReceivableListDto reListBean = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
-			ReceivableListDto inv = ReceivableListImpl.getInvoiceByInvoiceID(reListBean.getInvoiceID());
+			ReceivableListBean reListBean = new ReceivableListBean();
+			JSONObject newObj = new JSONObject();
+			try {
+				newObj = new JSONObject(request.getParameter("row"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			Scanner scan = new Scanner(newObj.getJSONObject("ReceivableListBean").getString("poNum"));
+			scan.skip("PO2021-");
+			reListBean.setPoNum(Integer.parseInt(scan.nextLine()));
+			reListBean.setInvoiceID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("invoiceID")));
+			reListBean.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("cvID")));
+			reListBean.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("paymentTypeID")));
+			reListBean.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("bankAccountID")));
+			reListBean.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("adjustedTotal")));
+			reListBean.setPaidAmount(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("paidAmount")));
+			reListBean.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("categoryID")));
+			reListBean.setCheckNum(newObj.getJSONObject("ReceivableListBean").getString("checkNum"));
+
+
+			ReceivableListBean inv = ReceivableListImpl.getInvoiceByInvoiceID(reListBean.getInvoiceID());
 			reListBean.setBalance(inv.getBalance());
 			reListBean.setInvoiceTypeID(inv.getInvoiceTypeID());
 			ReceivableListImpl.invoicePaid(reListBean, true);
 			rl.getInvoices(reListBean);
+			forward = "redirect:/PoPayablePost?tabid=popayable";
 		}
 		if(action.equals("clearFromConsignTab"))
 		{

@@ -42,14 +42,14 @@ public class ItemCategoryManagerDao {
                 objList.add(itemCategoryDto);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) { db.close(rs); }
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -81,14 +81,14 @@ public class ItemCategoryManagerDao {
                 objList.add(itemCategoryDto);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) { db.close(rs); }
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -118,14 +118,14 @@ public class ItemCategoryManagerDao {
                 itemCategoryDto.setDateAdded(rs.getString("DateAdded"));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) { db.close(rs); }
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return itemCategoryDto;
@@ -148,13 +148,13 @@ public class ItemCategoryManagerDao {
                 status = true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return status;
@@ -194,13 +194,13 @@ public class ItemCategoryManagerDao {
             int count = pstmt.executeUpdate();
             if (count > 0) status = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return status;
@@ -234,14 +234,14 @@ public class ItemCategoryManagerDao {
                 objList.add(itemCategoryDto);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) { db.close(rs); }
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return objList;
@@ -271,14 +271,14 @@ public class ItemCategoryManagerDao {
                 itemCategoryDto.setDateAdded(rs.getString("DateAdded"));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (rs != null) { db.close(rs); }
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return itemCategoryDto;
@@ -301,13 +301,13 @@ public class ItemCategoryManagerDao {
                 status = true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (stmt != null) { db.close(stmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return status;
@@ -351,13 +351,13 @@ public class ItemCategoryManagerDao {
             int count = pstmt.executeUpdate();
             if (count > 0) status = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }finally {
             try {
                 if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return status;

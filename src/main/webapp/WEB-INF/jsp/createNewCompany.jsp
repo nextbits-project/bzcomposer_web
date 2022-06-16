@@ -22,7 +22,7 @@
 <script type="text/javascript">
 function init()
 		{
-		debugger;
+		
 		var BusinessTypeId = 1;
 		$('select[id="businessTypeId"]').find('option[value="'+BusinessTypeId+'"]').attr("selected",true);
 
@@ -170,7 +170,7 @@ function init()
 				 		<spring:message code="bca.Thestartdateisthedateyouchoosetobegintrackingyourbusiness" />
 			 		</p>
 				 	<ul>
-				 		<%-- <li>  
+				 		<%-- <li>
 				 			<spring:message code="bca.StartDate" />
 			 				<input type="text" id="sStartDate" name="sStartDate" size="15"/>
 		 					<img src="${pageContext.request.contextPath}/images/cal.gif"
@@ -211,7 +211,7 @@ function init()
 <script type="text/javascript">
 function submitform()
 {
-debugger;
+
 	document.forms['createNewCompany'].action = "CompanyNew?tabid=createNewCompany3";
 	document.forms['createNewCompany'].submit();
 }

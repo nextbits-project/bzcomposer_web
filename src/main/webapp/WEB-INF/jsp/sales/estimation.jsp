@@ -2,7 +2,6 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page isELIgnored="false"%>
 <html>
 <head>
@@ -165,7 +164,7 @@ table.cart tbody tr td {
 					<input type="button" class="formbutton" title="Send Mail to..." onclick="SendMail(this.form);" style="padding: 8px 30px 8px 30px; font-size: 16px;" value="<spring:message code='BzComposer.global.sendmail' />" />
 				</c:if>
 				<c:if test="${empty Enable}">
-					<input type="button" class="formbutton" title="Send Mail to..." onclick="SendMail(this.form);" disabled="true" style="padding: 8px 30px 8px 30px; font-size: 16px;" value="<spring:message code='BzComposer.global.sendmail' />" />
+					<input type="button" class="formbutton" title="Send Mail to..." onclick="SendMailDisabled(this.form);" style="padding: 8px 30px 8px 30px; font-size: 16px;" value="<spring:message code='BzComposer.global.sendmail' />" />
 				</c:if>
 				<input type="button" class="formbutton" onclick="printCustomerOrder(this.form);" style="padding: 8px 30px 8px 30px; font-size: 16px;" value="<spring:message code='BzComposer.global.Print' />" />
 			</td>
@@ -188,20 +187,10 @@ table.cart tbody tr td {
 					</tr>
 					<tr>
 					    <td style="font-size: 14px;">
-                            <%-- <form:select path="templateType">
+                            <form:select path="templateType">
                                 <form:option value="3">Product Standard</form:option>
                                 <form:option value="4">Product Charcoal</form:option>
-                            </form:select> --%>
-                            
-                            <c:set var="invoiceType" scope="page" value="${fn:toLowerCase(fn:substring(estimationDto.formTemplateType.templateName,0,3))}"/> 
-											<form:select path="templateType">
-												 <c:forEach var="estItems" items="${estimationDto.formTemplateType.mappingData}" varStatus="status">
-												 
-												 <c:set var="selectID" scope="page" value="${estItems.templateNo}"/>
-												 
-												 	<form:option value="${selectID}" selected="${estItems.isSelected==true?'selected':''}">${estItems.templateType}</form:option>
-												 </c:forEach>
-											 </form:select>   
+                            </form:select>
                         </td>
                         <td style="font-size:14px;">
                             <form:select path="invoiceStyle" onchange="StyleChange(this.value);" onkeydown="StyleChange(this.value);" onkeyup="StyleChange(this.value);">
@@ -691,7 +680,7 @@ table.cart tbody tr td {
 			</td>
 			<td style="font-size:14px;" colspan="3">
 				<table>
-					<tr>
+					<%-- <tr>
 						<td style="font-size:14px;">
 							<div id="tax_field">
 								<spring:message code="BzComposer.estimation.taxfield" />
@@ -708,17 +697,35 @@ table.cart tbody tr td {
 						<td style="font-size:14px;">
 							<form:input path="shipping" onclick="clearShippingCol()" onchange="sumShippingTotal()" style="width: 170px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
 						</td>
-					</tr>
+					</tr> --%>
 				</table>
 			</td>
 			<td style="font-size:14px;" colspan="3">
-				<table>
+				<table align="right">
 					<tr>
 						<td align="right" style="font-size:14px;">
 							<spring:message code="BzComposer.estimation.subtotal" />
 						</td>
 						<td style="font-size:14px;">
 							<form:input path="subtotal" readonly="true" style="text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
+						</td>
+					</tr>
+					<tr>
+						<td align="right" style="font-size:14px;">
+							<div id="tax_field">
+								<spring:message code="BzComposer.estimation.taxfield" />
+							</div>
+						</td>
+						<td style="font-size:14px;">
+							<form:input path="tax" readonly="true" style="width: 170px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
+						</td>
+					</tr>
+					<tr>
+						<td align="right" style="font-size: 14px;">
+							<spring:message code="BzComposer.estimation.shipping" />
+						</td>
+						<td style="font-size:14px;">
+							<form:input path="shipping" onclick="clearShippingCol()" onchange="sumShippingTotal()" style="width: 170px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
 						</td>
 					</tr>
 					<tr>
@@ -792,7 +799,7 @@ table.cart tbody tr td {
 </div>
 </div>
 </div>
-<%@include file="/WEB-INF/jsp/include/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>
 <script type="text/javascript">
@@ -847,12 +854,14 @@ $(function() {
 function clearShippingCol(){
 	var convertSubData  =  parseFloat(document.EstimationForm.total.value) -  parseFloat(document.EstimationForm.shipping.value);
 	document.EstimationForm.total.value = parseFloat(convertSubData).toFixed(2);
+	document.EstimationForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
 	document.EstimationForm.shipping.value = 0;
 }
 //myFunction() - this function sum Shipping value in total
 function sumShippingTotal() {
 	var convertSubData  =  parseFloat(document.EstimationForm.total.value) +  parseFloat(document.EstimationForm.shipping.value);
 	document.EstimationForm.total.value = parseFloat(convertSubData).toFixed(2);
+	document.EstimationForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
 }
 
 /* //this function clear input value, 
@@ -1543,7 +1552,7 @@ function StyleChange(value){
 		}
 
 		function TaxValue1(value){
-			debugger;
+			
 			size=document.getElementById("tSize").value;
 			if(value==0){
 				document.getElementById('tax_field').innerHTML="0.0 %";
@@ -1594,6 +1603,7 @@ function StyleChange(value){
 			document.EstimationForm.tax.value=rate;
 			total = ((tot/1) + (subtotal/1)+(rate)/1);
 			document.EstimationForm.total.value=total.toFixed(2);
+			document.EstimationForm.adjustedtotal.value=total.toFixed(2);
 		}
 		
 		function AddItem(form){
@@ -1697,7 +1707,7 @@ function StyleChange(value){
 				tot=(form.shipping.value);
 				total = ((tot/1) + (subtotal/1) + (tax_val/1)).toFixed(2);
 				form.total.value=total;
-   				
+				form.adjustedtotal.value=total;
    				form.subtotal.value=subtotal;
 				document.getElementById('amt_id').value=subtotal;
 				
@@ -1759,7 +1769,15 @@ function StyleChange(value){
 							
 				hidn_val=( (hidn_val/1) + 1);
 				document.getElementById('hidn').value=hidn_val;
-   			}	
+   			}
+			document.getElementById('serialNo_id').value="";
+			document.getElementById('qty_id').value="";
+		
+			document.getElementById('unitPrice_id').value="";
+			document.getElementById('amount_id').value="";
+			document.getElementById('weight_id').value="";
+			document.getElementById('pname_id').value="";
+			document.getElementById('itemID').value="0";
 		}
 		
 function productItem(hidn_val)
@@ -1950,7 +1968,7 @@ function ItemChange(value)
 				document.getElementById('qty_id').max = qtyVal;
 				var qtyMax = document.getElementById('qty_id').max;
 				
-				debugger;
+				
 				//you can replace eventListner like keyup keypress blur change
 
 				$(".minutesInput").on('keyup', function(e) {
@@ -2036,9 +2054,9 @@ function saveNewItemName()
            			url:"Estimation?tabid=saveUnitPrice&price="+price+"&itemID="+itemId,
            			data:{price : price,itemID:itemId},
            			}).done(function(data){
-           			debugger
+           			
            			//$(document).find('div#itemDiv').replaceWith($(data).find('div#itemDiv').html());
-           			debugger
+           			
            			}); */
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
@@ -2054,7 +2072,7 @@ function AddTotal(form){
 	form.adjustedtotal.value=value;
 }
 function Init(){
-    debugger
+    
 	var sortId = '<%= request.getAttribute("sortById")%>';
 	isItemExist = document.getElementById('CartSize').value;
 	TaxValue1(1);
@@ -2131,7 +2149,7 @@ function Init(){
 
 function onSave(form)
 {
-    debugger;
+    
 	No=form.orderNo.value;
 	cid = form.custID.value;
 	if(cid==0){
@@ -2155,7 +2173,7 @@ function onSave(form)
 			            "<spring:message code='BzComposer.global.ok'/>": function () {
 			                
 			            	$(this).dialog("close");
-			            	debugger;
+			            	
 							var rt=0;
 							subtotal=form.subtotal.value;
 							value = form.taxID.value;
@@ -2292,7 +2310,9 @@ function SendMail(form)
 	cid=form.orderNo.value;
 	window.open("Invoice?tabid=ShowEmail&OrderType=estimation&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }
-
+function SendMailDisabled(form){
+	return showItemOrderNumberDialog();
+}
 function DeleteRow(d,form)
 {
 	event.preventDefault();
@@ -2359,6 +2379,7 @@ function DeleteRow(d,form)
 							shipping = document.EstimationForm.shipping.value;
 							total = ( (rt/1) + (subtotal/1) + (shipping/1));
 							document.EstimationForm.total.value=total.toFixed(2);
+							document.EstimationForm.adjustedtotal.value=total.toFixed(2);
 							document.EstimationForm.tax.value=rt;
 				
 							break;
@@ -2426,6 +2447,7 @@ function DeleteRow1(d,form)
 	    						
 	    						total = ((tot/1) + (subtotal/1) + (tx/1));
 	    						document.EstimationForm.total.value=total.toFixed(2);
+	    						document.EstimationForm.adjustedtotal.value=total.toFixed(2);
 	    						deleted++;
 	    					}
 	    				}
@@ -2501,11 +2523,14 @@ function showItemOrderNumberDialog(){
 
 function getEstimationDetailsByBtnName(form, url){
     //window.location.href="Estimation?tabid=FirstEstimation";
+    console.log("/Estimation?tabid="+url)
     $.ajax({
         type : "GET",
         url : "/Estimation?tabid="+url,
         success : function(data) {
+        	
             $(document).find('div#fullPageDetails section').replaceWith($(data).find('div#fullPageDetails').html());
+           
             let cvID2 = form.clientVendorID.value;
             if(cvID2!=null && cvID2!=''){
                 form.custID.value = cvID2;

@@ -1,4 +1,6 @@
-
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,7 +16,7 @@ $(document).ready(function () {
     $("#tabs").tabs();
     $("#tabsAddress").tabs(); 
     
-    debugger;
+    
     var addStatus = "<%= request.getAttribute("addressStatus")%>";
 	var addName = "<%= request.getAttribute("addressName")%>";
 	var f_Name = "<%= request.getAttribute("fName")%>";
@@ -33,7 +35,7 @@ $(document).ready(function () {
 
 	$('#addAddress').click(function(){
 		/* var myWindow = window.open("Customer.do?tabid=addAddress&chkStatus=Active","_blank","scrollbars=No,height=900,width=1400,status=yes,toolbar=no,menubar=no,location=no");
-		debugger
+		
 		myWindow.moveTo(90,90); */
 		
 		var rows = document.getElementById("billingAddress").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
@@ -53,7 +55,7 @@ $(document).ready(function () {
 			window.location = "Customer.do?tabid=addAddress&chkStatus="+st+"&fname="+fname+"&lname="+lname+"&address1="+add1+"&address2="+add2+"&status="+status;
 		}
 		/*event.preventDefault(); */
-		/* debugger
+		/* 
 		$.ajax({
 			type: "POST",
 	     	url: "Customer.do?tabid=addAddress",
@@ -68,7 +70,7 @@ $(document).ready(function () {
 	/*  */
 	$('#editAddress').click(function(event){
 		var isChecked = $('#selectAddress').prop("checked");
-		debugger
+		
 		var rows = document.getElementById("billingAddress").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
 		if(isChecked== true)
 		{
@@ -183,13 +185,13 @@ function refreshItemsNow(val){
 
 function showPanel() 
 {
-	debugger;
+	
 	var selectedTab = $("#tabs").tabs('option','active');
-	debugger;
+	
 	if(selectedTab == 3)
     {
     	//these values comes from textbox of General tab.
-    	debugger;
+    	
     	var fName = $("#firstName").val();
 		var lName = $("#lastName").val();
     	var address1 = $("#address1").val();
@@ -197,7 +199,7 @@ function showPanel()
     	
     	var isAvailable = $('#billingAddress tr > td:contains('+fName+')').length;
     	
-    	debugger;
+    	
     	//new address data
     	var addStatus = "<%= request.getAttribute("addressStatus")%>";
     	var addName = "<%= request.getAttribute("addressName")%>";
@@ -206,7 +208,7 @@ function showPanel()
     	var add_1 = "<%= request.getAttribute("add1")%>";
     	var add_2 = "<%= request.getAttribute("add2")%>";
     	
-    	debugger;
+    	
     	//old address data
     	var addStatusOld = "<%= request.getAttribute("newAddressStatus")%>";
     	var addNameOld = "<%= request.getAttribute("newAddressName")%>";
@@ -215,13 +217,13 @@ function showPanel()
     	var add_1Old = "<%= request.getAttribute("newAdd1")%>";
     	var add_2Old = "<%= request.getAttribute("newAdd2")%>";
     	
-    	debugger;
+    	
     	var isAvailable1 = $('#billingAddress tr > td:contains('+f_NameOld+')').length;
     	
     	/*condition 1:check whether firstname,lastname and address1 had values or not?*/
     	if(fName == "" || lName == "")
     	{
-    		debugger;
+    		
     	    alert("<bean:message key='BzComposer.common.insertFirstOrLastname'/>");
     	    $( "#tabs" ).tabs( "option", "active", 0 );
     	}
@@ -233,7 +235,7 @@ function showPanel()
     	/*condition 2(A):if firstName,lastName and address1 had values then check whether is it old address value or new address value.if new values are there then add old and new values.*/
     	else if(fName == f_Name && lName == l_Name && address1 == add_1 && f_Name != "null" && l_Name != "null" && add_1 != "null" && add_2 != "null" && addName != "null" && addStatus != "null" && f_NameOld != "null" && l_NameOld != "null" && add_1Old != "null" && add_2Old != "null" && addNameOld != "null" && addStatusOld != "null")
 		{
-    		debugger;
+    		
 			$('#billingAddress').append("<tr id="+f_NameOld+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addNameOld+"</td><td style='font-size: 1.1em;' id='fname'>"+f_NameOld+"</td><td style='font-size: 1.1em;' id='lname'>"+l_NameOld+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1Old+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2Old+"</td><td style='font-size: 1.1em;' id='status'>"+addStatusOld+"</td></tr>");
     		$('#billingAddress').append("<tr id="+f_Name+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addName+"</td><td style='font-size: 1.1em;' id='fname'>"+f_Name+"</td><td style='font-size: 1.1em;' id='lname'>"+l_Name+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2+"</td><td style='font-size: 1.1em;' id='status'>"+addStatus+"</td></tr>");
 
@@ -253,7 +255,7 @@ function showPanel()
     	/*condition 2(B):if firstName,lastName and address1 had values then check whether is it old address value or new address value.if old values are there then add only old values.*/
     	else if(addStatusOld != "null" && addNameOld != "null" && f_NameOld != "null" && l_NameOld != "null" && add_1Old != "null" && add_2Old != "null")
 		{
-			debugger;
+			
 
 			$('#billingAddress').append("<tr id="+f_NameOld+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addNameOld+"</td><td style='font-size: 1.1em;' id='fname'>"+f_NameOld+"</td><td style='font-size: 1.1em;' id='lname'>"+l_NameOld+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1Old+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2Old+"</td><td style='font-size: 1.1em;' id='status'>"+addStatusOld+"</td></tr>");
 			addStatusOld = "null";
@@ -266,7 +268,7 @@ function showPanel()
     	/*condition 3:check whether value is already available or not?if yes then not added and if no then add as new record*/
     	else if(isAvailable1 == 0 && fName == f_Name && lName == l_Name && address1 == add_1 && f_Name != "null" && l_Name != "null" && add_1 != "null" && add_2 != "null")
 		{
-			debugger;
+			
 			$('#billingAddress').append("<tr id="+f_Name+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>"+addName+"</td><td style='font-size: 1.1em;' id='fname'>"+f_Name+"</td><td style='font-size: 1.1em;' id='lname'>"+l_Name+"</td><td style='font-size: 1.1em;' id='add1'>"+add_1+"</td><td style='font-size: 1.1em;' id='add2'>"+add_2+"</td><td style='font-size: 1.1em;' id='status'>"+addStatus+"</td></tr>");
 			addStatusOld = "null";
 			addNameOld = "null";
@@ -278,19 +280,19 @@ function showPanel()
     	/*condition 4:check whether value is already available or not?if yes then not added and if no then add as new record*/
 		else if(isAvailable == 0)
 		{
-			debugger;
+			
 			$('#billingAddress').append("<tr id="+fName+"><td><input type='radio' id='selectAddress' name='selectAddress' value='checked'/></td><td style='font-size: 1.1em;' id='status'>Default</td><td style='font-size: 1.1em;' id='fname'>"+fName+"</td><td style='font-size: 1.1em;' id='lname'>"+lName+"</td><td style='font-size: 1.1em;' id='add1'>"+address1+"</td><td style='font-size: 1.1em;' id='add2'>"+address2+"</td><td style='font-size: 1.1em;' id='status'>Default</td></tr>");    	
 		}
     	else
     	{
     		alert("<bean:message key='Bzcomposer.additem.notadditem'/>");
-        	debugger;
+        	
         	$( "#tabs" ).tabs( "option", "active", 3 );
     	}
     }
 	
 	/*After satisfy all condition now we'll remove data so that it can't add twice when we redirect to again General tab and Manage Muliple Address tab*/
-	debugger;
+	
 	addStatusOld = "null";
 	addNameOld = "null";
 	f_NameOld = "null";
@@ -298,7 +300,7 @@ function showPanel()
 	add_1Old = "null";
 	add_2Old = "null";
 	
-	debugger;
+	
 	addName = "null";
 	addStatus = "null";
 	f_Name = "null";
@@ -306,7 +308,7 @@ function showPanel()
 	add_1 = "null";
 	add_2 = "null";
 	
-	debugger;
+	
 }
 
 /* function checkCheckbox()

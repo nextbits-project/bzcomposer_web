@@ -3,6 +3,7 @@ package com.nxsol.bizcomposer.reportcenter.lists;
 import com.avibha.bizcomposer.accounting.forms.AccountDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 
@@ -103,7 +104,7 @@ public class ListsDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -117,7 +118,7 @@ public class ListsDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -200,7 +201,7 @@ public class ListsDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -214,7 +215,7 @@ public class ListsDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -300,7 +301,7 @@ public class ListsDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -314,7 +315,7 @@ public class ListsDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -400,7 +401,7 @@ public class ListsDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -414,7 +415,7 @@ public class ListsDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return listPOJOs;
@@ -498,7 +499,7 @@ public class ListsDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -512,7 +513,7 @@ public class ListsDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
         return listPOJOs;
@@ -597,7 +598,7 @@ public class ListsDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -611,7 +612,7 @@ public class ListsDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -698,7 +699,7 @@ public class ListsDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -712,7 +713,7 @@ public class ListsDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 
@@ -795,7 +796,7 @@ public class ListsDAO {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Loger.log(e.toString());
         }
         finally {
             try {
@@ -809,7 +810,7 @@ public class ListsDAO {
                     db.close(con);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Loger.log(e.toString());
             }
         }
 

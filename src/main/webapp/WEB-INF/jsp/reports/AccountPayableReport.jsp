@@ -130,7 +130,7 @@ table.tabla-customListOds tbody tr td { font-size: 14px; }
 var modal = document.getElementById('myModal');
 function hideShowHeader()
 {
-	debugger;
+	
 	document.getElementById("headerBar").style.display = "none";
 	/* $("#btnHeader1").hide(); */
 	document.getElementById("headerBar").style.display = "none";

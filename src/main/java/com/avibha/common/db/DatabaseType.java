@@ -6,6 +6,8 @@
  */
 package com.avibha.common.db;
 import java.sql.*;
+
+import com.avibha.common.log.Loger;
 /**
  * @author avibha
  * 
@@ -51,7 +53,7 @@ public class DatabaseType
         catch (SQLException e)
         {
             System.out.println("Exception: unknown database");
-            e.printStackTrace();                        
+            Loger.log(e.toString());                        
         }
         return(dbType);
     }

@@ -1,4 +1,4 @@
-
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <div style="width: 100%" class="header-section">
    <div class="bzclogo">
       <ul class="sf-menu" id="example" style="text-align: center; width: max-content;">

@@ -1,13 +1,9 @@
 package com.avibha.common.utility;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
-
-import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
+import org.apache.struts.util.LabelValueBean;
+import com.avibha.bizcomposer.File.forms.CompanyInfoForm;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.City;
 import com.avibha.common.Country;
@@ -109,7 +105,7 @@ public class CountryState {
 	}
 	
 	public ArrayList getStatesNew(String cid) {
-		ArrayList<CompanyInfoDto> sList = new ArrayList<CompanyInfoDto>();
+		ArrayList<CompanyInfoForm> sList = new ArrayList<CompanyInfoForm>();
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
@@ -118,7 +114,7 @@ public class CountryState {
 			pstmt.setString(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				CompanyInfoDto customer = new CompanyInfoDto();
+				CompanyInfoForm customer = new CompanyInfoForm();
 				customer.setStateName(rs.getString(2));
 				customer.setCity(rs.getString(3));
 				sList.add(customer);
@@ -155,7 +151,7 @@ public class CountryState {
 	}
 	
 	public ArrayList getCountryNew() {
-		ArrayList<CompanyInfoDto> cList = new ArrayList<CompanyInfoDto>();
+		ArrayList<CompanyInfoForm> cList = new ArrayList<CompanyInfoForm>();
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
@@ -163,7 +159,7 @@ public class CountryState {
 			PreparedStatement pstmt = con.prepareStatement("select * from country");
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				CompanyInfoDto customer = new CompanyInfoDto();
+				CompanyInfoForm customer = new CompanyInfoForm();
 				customer.setCountryId(rs.getInt(1));
 				customer.setCountry(rs.getString(2));
 				cList.add(customer);
@@ -268,7 +264,7 @@ public class CountryState {
 				if (stmt != null) { db.close(stmt); }
 				if(c != null){ db.close(c); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return countryList;
@@ -298,7 +294,7 @@ public class CountryState {
 				if (stmt != null) { db.close(stmt); }
 				if(c != null){ db.close(c); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return stateList;
@@ -328,7 +324,7 @@ public class CountryState {
 				if (stmt != null) { db.close(stmt); }
 				if(c != null){ db.close(c); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return cityList;

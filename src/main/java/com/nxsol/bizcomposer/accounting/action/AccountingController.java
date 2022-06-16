@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.avibha.bizcomposer.accounting.dao.AccountingDAO;
 import com.avibha.bizcomposer.accounting.forms.AccountDto;
+import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.rma.dao.RMADetailsDao;
+import com.avibha.bizcomposer.rma.dao.RMAInfoDao;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
 import com.google.gson.Gson;
@@ -27,6 +31,30 @@ import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryLoader;
+import com.pritesh.bizcomposer.accounting.bean.*;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+/*import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;*/
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+/*import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;*/
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+/*import org.springframework.web.servlet.ModelAndView;*/
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.ArrayList;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
@@ -39,8 +67,12 @@ public class AccountingController{
 			return "bzComposer";
 		}
 
-	@GetMapping("/AccountReceiveble")
-	public String accounting(ReceivableListDto receivableListDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@Autowired
+    ConfigurationDetails configDetails;
+
+	@RequestMapping(value ="/AccountReceiveble", method = {RequestMethod.GET, RequestMethod.POST})
+	//@GetMapping("/AccountReceiveble")
+	public String accounting(ConfigurationDto configDto, ReceivableListDto receivableListDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String forward = "/accounting/accountreceivable";   //jsp name without ext
 		HttpSession sess=request.getSession();
 		String action = request.getParameter("tabid");
@@ -53,6 +85,12 @@ public class AccountingController{
 		ArrayList<TblAccount> account =rl.getAccount();
 		/*request.setAttribute("listForUnpaidCreditAmount", listForUnpaidCreditAmount);
 		request.setAttribute("listForUnpaidOpeningBal", listForUnpaidOpeningBal);*/
+		configDetails.getConfigurationInfo(request, configDto);
+
+		request.setAttribute("arCatId", configDto.getArCategory());
+		request.setAttribute("arReceiveType", configDto.getArReceivedType());
+		request.setAttribute("arDepositTo", configDto.getArDepositTo());
+
 		request.setAttribute("AccountForCombo", account);
 		request.setAttribute("PaymentTypeForCombo", paymentType);
 		request.setAttribute("CategoryCombo", categoryforcombo);
@@ -79,6 +117,30 @@ public class AccountingController{
 			if(action.equals("receivedTab")) {
 				forward = "/accounting/received";
 			}
+			if(action.equals("CustomerRMARefund"))
+			{
+				RMADetailsDao rd=new RMADetailsDao();
+				RMAInfoDao rmaInfo = new RMAInfoDao();
+				ArrayList CustomerRMAList = new ArrayList();
+				int invoiceTypeID = 2;
+				CustomerRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);
+				request.setAttribute("CustomerRMAList",CustomerRMAList);
+				forward = "/accounting/CustomerRMARefund";
+			}
+			if(action.equals("vendorRMA"))
+			{
+				RMADetailsDao rd=new RMADetailsDao();
+				RMAInfoDao rmaInfo = new RMAInfoDao();
+				ArrayList vendorRMAList = new ArrayList();
+				int invoiceTypeID = 1;
+				vendorRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);
+				request.setAttribute("vendorRMAList",vendorRMAList);
+				forward = "/accounting/vendorRMA";
+			}
+			if(action.equals("eSales"))
+			{
+				forward = "/accounting/eSales";
+			}
 		}
 		Path p = new Path();
 		p.setPathvalue(request.getContextPath());
@@ -92,7 +154,8 @@ public class AccountingController{
 		return forward;
 	}
 
-	@PostMapping("/AccountReceivebleUpdate")
+	//@PostMapping("/AccountReceivebleUpdate")
+	@RequestMapping(value ="/AccountReceivebleUpdate", method = {RequestMethod.GET, RequestMethod.POST})
 	public String accountingpost(ReceivableListDto receivableListDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String forward = "/accounting/accountreceivable";   //jsp name without ext
 		HttpSession sess = request.getSession();
@@ -123,14 +186,31 @@ public class AccountingController{
 			p.setPathvalue(request.getContextPath());
 			request.getSession().setAttribute("path", p);
 
-			Gson gson=new Gson();
-			ReceivableListDto reListBean = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
-			double amtToPay = reListBean.getAmtToPay();
+			ReceivableListBean invoice = new ReceivableListBean();
+
+			JSONObject newObj = new JSONObject();
+			try {
+		        newObj = new JSONObject(request.getParameter("row"));
+		    } catch (JSONException e) {
+		        e.printStackTrace();
+		    }
+			invoice.setOrderNum(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("orderNum")));
+			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("cvID")));
+			invoice.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("paymentTypeID")));
+			invoice.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("bankAccountID")));
+			invoice.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("adjustedTotal")));
+			invoice.setBalance(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("balance")));
+			invoice.setAmtToPay(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("amtToPay")));
+			invoice.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("categoryID")));
+			invoice.setMemo(newObj.getJSONObject("ReceivableListBean").getString("memo"));
+			invoice.setCheckNum(newObj.getJSONObject("ReceivableListBean").getString("checkNum"));
+
+			double amtToPay = invoice.getAmtToPay();
 			/*String indexNumber = request.getParameter("index");*/
 			String invoiceId = request.getParameter("invoiceId");
-			String checkNumber = reListBean.getCheckNum();
-			reListBean.setCompanyID(ConstValue.companyId);
-			int i = rl.updateInvoiceByOrderNum(reListBean);
+			String checkNumber = invoice.getCheckNum();
+			invoice.setCompanyID(ConstValue.companyId);
+			int i = rl.updateInvoiceByOrderNum(invoice);
 			HttpSession session = request.getSession();
 			session.setAttribute("checkNum"+invoiceId, checkNumber);
 			session.setAttribute("invoiceId", invoiceId);
@@ -142,16 +222,16 @@ public class AccountingController{
 		{
 
 			Gson gson=new Gson();
-			ReceivableListDto invoice = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
+			ReceivableListBean invoice = gson.fromJson(request.getParameter("row"), ReceivableListBean.class);
 			String rowId = request.getParameter("index");
 			/*System.out.println(invoice.getPaidAmount());*/
 			int orderNum = invoice.getOrderNum();
-			ReceivableListDto rb = rl.getInvoiceByOrderNUm(orderNum, ConstValue.companyId);
+			ReceivableListBean rb = rl.getInvoiceByOrderNUm(orderNum, ConstValue.companyId);
 			int invoiceId = rb.getInvoiceID();
-			TblPaymentDto payment = rl.setPayment(invoice,invoiceId,ConstValue.companyId);
+			TblPayment payment = rl.setPayment(invoice,invoiceId,ConstValue.companyId);
 			payment.setInvoiceTypeID(1);
 			int balance = (int) (invoice.getAdjustedTotal() - (rl.getSum(invoiceId) + invoice.getPaidAmount()));
-//	    ReceivableListDto invoice = new ReceivableListDto();
+//	    ReceivableListBean invoice = new ReceivableListBean();
 			invoice.setBalance(balance);
 			invoice.setInvoiceID(invoiceId);
 			rl.insertAccount(payment, invoice);

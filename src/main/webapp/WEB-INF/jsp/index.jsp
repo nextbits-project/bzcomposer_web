@@ -5,7 +5,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ page isELIgnored="false"%>
-<%@ page import="java.util.*"%>     
+<%@ page import="java.util.*"%>
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -14,9 +14,8 @@
 
 <!-- for opening dialog these files added on 26-09-2019 -->
 <%-- <script src="<bean:write name="path" property="pathvalue"/>/includeAll/jquery-1.11.1.min.js"></script> --%>
-<script src="../includeAll/jquery-1.11.1.min.js"></script> 
 <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script> 
-<link rel="stylesheet" href="../includeAll/jquery-ui.css" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/jquery-ui.css" />
 <!-- <script src="http://code.jquery.com/jquery-1.9.1.js"></script> -->
 <%@ include file="templateHeader.jsp"%>
 
@@ -113,7 +112,7 @@ function showLocale(){
 
 function showLocaleMobile()
 {
-	debugger;
+	
 	var lang = document.getElementById("localeMobile").value;
 	if(lang == "")
 		alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
@@ -126,7 +125,7 @@ function showLocaleMobile()
 		url:"Locale.do?request_locale="+lang,
 		data:{lang : lang},
 		}).done(function(data){
-			debugger;
+			
 	}); */
 }
 function showUsernameDialog()
@@ -148,7 +147,7 @@ function showUsernameDialog()
 
 function showLanguageDialog()
 {
-	debugger;
+	
 	event.preventDefault();
 	$("#showLanguageDialog").dialog({
     	resizable: false,
@@ -354,7 +353,7 @@ function showLanguageDialog()
 					<li><a href="${pageContext.request.contextPath}/futureUpdate.jsp">Future Update</a></li> --%>
 					<li><a href="${pageContext.request.contextPath}/ourServices"><spring:message code="BzComposer.ourservices"/></a></li>
 					<li><a href="${pageContext.request.contextPath}/industries"><spring:message code="BzComposer.industires"/></a></li>
-					<li class="drop"><a href="${pageContext.request.contextPath}/features><spring:message code="BzComposer.features"/></a>
+					<li class="drop"><a href="${pageContext.request.contextPath}/features"><spring:message code="BzComposer.features"/></a>
 						 <span class="arrow"><i></i></span>
 						<ul class="drop-menu bottom-right">
 							<li><a href="${pageContext.request.contextPath}/features#easySetup"><spring:message code="BzComposer.features.easysetup"/></a></li>

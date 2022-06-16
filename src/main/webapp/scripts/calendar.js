@@ -1188,7 +1188,7 @@ function setTimeProperties()
 
 function displayCalendar(inputField,format,buttonObj,displayTime,timeInput)
 {
-	debugger;
+	
 	if(displayTime)calendarDisplayTime=true; else calendarDisplayTime = false;
 	if(inputField.value.length==format.length){
 		var monthPos = format.indexOf('mm');

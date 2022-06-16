@@ -1,5 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -100,17 +102,17 @@ function refreshItemsNow(val){
 
 function submitFormUpdate(form)
 {
-	debugger;
+	
 	//var addStatus = null;
-	debugger;
+	
 	if($('#addressStatusActive').prop('checked',true) && $('#addressStatusActive').prop('disabled',false) && $('#addressStatusDefault').prop('checked',false))
 	{
-		debugger
+		
 		status = "Active";
 	}
 	else
 	{
-		debugger
+		
 		status = "Default";
 	}
 	var st = status;
@@ -127,9 +129,9 @@ function submitFormUpdate(form)
 	var zipCode = form.zCode.value;
 	var phone = form.phone.value;
 	var fax = form.fax.value;
-	debugger
+	
 	document.getElementById("status1").value=st;
-	debugger;
+	
 
 	document.forms[0].action="Customer.do?tabid=addNewAddress&status="+st;
 	document.getElementById("tabid").value="addNewAddress";
@@ -143,15 +145,15 @@ function showSupplierForm()
 }
 function submitFormAdd(form)
 {
-	debugger;
+	
 	if($('#addressStatusActive').prop('checked',true) && $('#addressStatusActive').prop('disabled',false) && $('#addressStatusDefault').prop('checked',false))
 	{
-		debugger
+		
 		status = "Active";
 	}
 	else
 	{
-		debugger
+		
 		status = "Default";
 	}
 
@@ -169,17 +171,17 @@ function submitFormAdd(form)
 	var phone = form.phone.value;
 	var fax = form.fax.value;
 	var st = status;
-	debugger
+	
 	document.getElementById("status").value=status;
 	//$("#addressForm").submit();
 	
 	//window.location.href = "Customer.do?tabid=addNewAddress&&status="+status;
 	document.forms[0].action="Customer.do?tabid=addNewAddress&status="+st;
-	debugger
+	
 	document.getElementById("tabid").value="addNewAddress"; 
-	debugger
+	
 	document.forms[0].submit();
-	debugger
+	
 	//this.window.close();
 }
 </script>

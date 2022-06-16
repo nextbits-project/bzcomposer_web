@@ -13,12 +13,13 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.util.LabelValueBean;
+
 import com.avibha.bizcomposer.sales.dao.Item;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
-import com.avibha.common.utility.LabelValueBean;
 
 public class ReceivedItemInfo {
 
@@ -40,8 +41,8 @@ public class ReceivedItemInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				InvoiceDto invFrm = new InvoiceDto();
-				arr.add(new LabelValueBean(rs
+				InvoiceForm invFrm = new InvoiceForm();
+				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("Name"), rs.getString("InvoiceStyleID")));
 			}
 			pstmt.close();
@@ -62,7 +63,7 @@ public class ReceivedItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -86,7 +87,7 @@ public class ReceivedItemInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
+				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("Name"), rs.getString("MessageID")));
 			}
 			pstmt.close();
@@ -106,7 +107,7 @@ public class ReceivedItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -115,7 +116,7 @@ public class ReceivedItemInfo {
 	}
 
 	public ArrayList getTaxes(String compId) {
-		ArrayList<InvoiceDto> arr = new ArrayList<InvoiceDto>();
+		ArrayList<InvoiceForm> arr = new ArrayList<InvoiceForm>();
 		Connection con = null ;
 		PreparedStatement pstmt=null;
 		SQLExecutor db = new SQLExecutor();
@@ -133,7 +134,7 @@ public class ReceivedItemInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				InvoiceDto invoice = new InvoiceDto();
+				InvoiceForm invoice = new InvoiceForm();
 				invoice.setSalesTaxID(rs.getString(1));
 				invoice.setState(rs.getString(2));
 				invoice.setRate(rs.getInt(3));
@@ -156,7 +157,7 @@ public class ReceivedItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -276,7 +277,7 @@ public class ReceivedItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return list;
@@ -290,8 +291,8 @@ public class ReceivedItemInfo {
 		PreparedStatement pstmt_clientSer=null;
 		PreparedStatement pstmt_ser=null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<InvoiceDto> list = new ArrayList<InvoiceDto>();
-		ArrayList<InvoiceDto> services = new ArrayList<InvoiceDto>();
+		ArrayList<InvoiceForm> list = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceForm> services = new ArrayList<InvoiceForm>();
 		ResultSet rs = null;
 		ResultSet rs_clientSer=null;
 		ResultSet rs_ser=null;
@@ -304,7 +305,7 @@ public class ReceivedItemInfo {
 			pstmt.setString(3,companyId);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				InvoiceDto recvForm = new InvoiceDto();
+				InvoiceForm recvForm = new InvoiceForm();
 				recvForm.setClientVendorID(rs.getString("ClientVendorID"));
 				recvForm.setCompanyID(rs.getString("Name"));
 				String sqlServiceID="select ServiceID from bca_clientvendorservice where ClientVendorID=?";
@@ -314,7 +315,7 @@ public class ReceivedItemInfo {
 				String serviceQuery="select ServiceName from bca_servicetype where ServiceID=?";
 				
 				while(rs_clientSer.next()){
-					InvoiceDto serviceInfo = new InvoiceDto();
+					InvoiceForm serviceInfo = new InvoiceForm();
 					pstmt_ser=con.prepareStatement(serviceQuery);
 					pstmt_ser.setInt(1,rs_clientSer.getInt("ServiceID"));
 					rs_ser=pstmt_ser.executeQuery();
@@ -358,19 +359,19 @@ public class ReceivedItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return list;
 	}
 	
-	public InvoiceDto getVendorDetails(String compId,String cvId,String serviceNm){
+	public InvoiceForm getVendorDetails(String compId,String cvId,String serviceNm){
 		Connection con = null ;
 		PreparedStatement pstmt_clientInfo=null,pstmt_bsaAddr=null;
 		SQLExecutor db = new SQLExecutor();
 		CountryState conState = new CountryState();
 		ResultSet rs_clientInfo = null,rs_bsaAddr=null;
-		InvoiceDto recvForm = new InvoiceDto();
+		InvoiceForm recvForm = new InvoiceForm();
 		try{
 			con = db.getConnection();
 			pstmt_clientInfo=con.prepareStatement("select FirstName,LastName,Taxable,ShipCarrierID,PaymentTypeID,TermID,SalesRepID from bca_clientvendor where Active=1 and Deleted=0 and Status in ('U','N') and CVTypeID in (1,2) and ClientVendorID=? and CompanyID=? ");
@@ -454,7 +455,7 @@ public class ReceivedItemInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return recvForm;

@@ -11,34 +11,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.avibha.bizcomposer.sales.forms.EstimationDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import org.apache.struts.util.LabelValueBean;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.sales.forms.EstimationDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
-import com.avibha.common.utility.LabelValueBean;
+import com.avibha.common.utility.CountryState;
 
 /*
  * 
  */
-@Service
 public class EstimationInfo {
 
-	@Autowired
-    private InvoiceInfoDao invoice;
-	
 	public ArrayList getItemList(String compId) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
@@ -141,7 +134,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return list;
@@ -169,7 +162,7 @@ public class EstimationInfo {
 			while (rs.next()) {
 				cvId = rs.getString(1);
 				EstimationDto invForm = new EstimationDto();
-				objList.add(new LabelValueBean(rs
+				objList.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString(3)
 						+ " , " + rs.getString(2), cvId));
 				invForm.setClientVendorID(cvId);
@@ -197,7 +190,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -222,7 +215,7 @@ public class EstimationInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
+				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("Name"), rs.getString("InvoiceStyleID")));
 			}
 
@@ -242,7 +235,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -269,7 +262,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
+				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("Name"), rs.getString("SalesRepID")));
 			}
 
@@ -288,7 +281,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -315,7 +308,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
+				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("Name"), rs.getString("ShipCarrierID")));
 			}
 
@@ -334,7 +327,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -360,7 +353,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
+				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("Name"), rs.getString("TermID")));
 			}
 
@@ -379,7 +372,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -405,7 +398,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
+				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("Name"), rs.getString("PaymentTypeID")));
 			}
 
@@ -425,7 +418,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -451,7 +444,7 @@ public class EstimationInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
+				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("Name"), rs.getString("MessageID")));
 			}
 
@@ -470,7 +463,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -518,7 +511,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return arr;
@@ -574,7 +567,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		no = String.valueOf(orderNo + 1);
@@ -619,7 +612,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return exist;
@@ -714,7 +707,7 @@ public class EstimationInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -724,7 +717,7 @@ public class EstimationInfo {
 				if (pstmt3 != null) { db.close(pstmt3); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return saveStatus;
@@ -857,7 +850,7 @@ public class EstimationInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -873,7 +866,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -959,14 +952,14 @@ public class EstimationInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (pstmt1 != null) { db.close(pstmt1); }
 				if (pstmt3 != null) { db.close(pstmt3); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return saveStatus;
@@ -997,7 +990,7 @@ public class EstimationInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -1010,7 +1003,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return invoiceID;
@@ -1035,7 +1028,7 @@ public class EstimationInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (pstmt != null) {
@@ -1045,12 +1038,12 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
 
-	public void getBillShipAddr(int custID, UpdateInvoiceDto form) {
+	public void getBillShipAddr(int custID, UpdateInvoiceForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
 		PreparedStatement pstmt3 = null;
@@ -1121,7 +1114,7 @@ public class EstimationInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs != null) {
@@ -1152,14 +1145,14 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
 	}
 
 	public void getCountry(HttpServletRequest request, String country,
-			UpdateInvoiceDto form) {
+			UpdateInvoiceForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1190,7 +1183,7 @@ public class EstimationInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (rs1 != null) {
@@ -1203,7 +1196,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1220,7 +1213,7 @@ public class EstimationInfo {
 		PreparedStatement pstmt12 = null;
 		PreparedStatement pstmt13 = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<UpdateInvoiceDto> serviceinfo = new ArrayList<UpdateInvoiceDto>();
+		ArrayList<UpdateInvoiceForm> serviceinfo = new ArrayList<UpdateInvoiceForm>();
 		ResultSet rs = null;
 		ResultSet rs1 = null;
 		ResultSet rs2 = null;
@@ -1233,7 +1226,7 @@ public class EstimationInfo {
 		con = db.getConnection();
 		if (con == null)
 			return;
-		UpdateInvoiceDto customer = new UpdateInvoiceDto();
+		UpdateInvoiceForm customer = new UpdateInvoiceForm();
 		try {
 			StringBuffer sqlString = new StringBuffer();
 			sqlString
@@ -1298,7 +1291,7 @@ public class EstimationInfo {
 			Loger.log("The Client Vendor ID is" + cvId);
 			rs22 = pstmt2.executeQuery();
 			while (rs22.next()) {
-				UpdateInvoiceDto uform1 = new UpdateInvoiceDto();
+				UpdateInvoiceForm uform1 = new UpdateInvoiceForm();
 				Loger.log("we r in Search Customer");
 				Loger.log("The InvoiceStyleID from client vendor  is "
 						+ rs22.getString("InvoiceStyleID"));
@@ -1548,13 +1541,13 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
 	}
 
-	public boolean insertCustomer(String cId, UpdateInvoiceDto c, String compID, int istaxable, int isAlsoClient,
+	public boolean insertCustomer(String cId, UpdateInvoiceForm c, String compID, int istaxable, int isAlsoClient,
 			int useIndividualFinanceCharges, int AssessFinanceChk, int FChargeInvoiceChk, String status) {
 		boolean ret = false;
 		Connection con = null ;
@@ -1656,13 +1649,13 @@ public class EstimationInfo {
 
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class Employee and  method -insertEmployee " + ee.toString());
-			ee.printStackTrace();
+			
 		}finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;
@@ -1718,7 +1711,7 @@ public class EstimationInfo {
 				form.setMemo(rs.getString("Memo"));
 			}
 			/* Bill Address */
-			//InvoiceInfoDao invoice = new InvoiceInfoDao();
+			InvoiceInfoDao invoice = new InvoiceInfoDao();
 			ArrayList<InvoiceDto> billAddresses = invoice.billAddress(compId, form.getCustID());
 			if(!billAddresses.isEmpty()) {
 				InvoiceDto invoiceBillAddr = billAddresses.get(0);
@@ -1749,7 +1742,7 @@ public class EstimationInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return list;
@@ -1819,7 +1812,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 	}
@@ -1891,7 +1884,7 @@ public class EstimationInfo {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -2000,7 +1993,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -2044,7 +2037,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
@@ -2108,7 +2101,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 
@@ -2164,7 +2157,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return content;
@@ -2209,7 +2202,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return result;
@@ -2291,7 +2284,7 @@ public class EstimationInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -2310,7 +2303,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -2320,9 +2313,9 @@ public class EstimationInfo {
 	public void getServices(HttpServletRequest request, String compId,
 			String cvId) {
 		// TODO Auto-generated method stub
-		ArrayList<UpdateInvoiceDto> serviceList = new ArrayList<UpdateInvoiceDto>();
-		ArrayList<UpdateInvoiceDto> invoiceName = new ArrayList<UpdateInvoiceDto>();
-		ArrayList<UpdateInvoiceDto> balenceDetails = new ArrayList<UpdateInvoiceDto>();
+		ArrayList<UpdateInvoiceForm> serviceList = new ArrayList<UpdateInvoiceForm>();
+		ArrayList<UpdateInvoiceForm> invoiceName = new ArrayList<UpdateInvoiceForm>();
+		ArrayList<UpdateInvoiceForm> balenceDetails = new ArrayList<UpdateInvoiceForm>();
 		ResultSet rs = null;
 		ResultSet rs1 = null;
 		ResultSet rs2 = null;
@@ -2340,7 +2333,7 @@ public class EstimationInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				UpdateInvoiceDto uform = new UpdateInvoiceDto();
+				UpdateInvoiceForm uform = new UpdateInvoiceForm();
 				uform.setServiceID(rs.getInt(1));
 				uform.setServiceName(rs.getString(2));
 				uform.setInvoiceStyleId(rs.getInt(3));
@@ -2359,7 +2352,7 @@ public class EstimationInfo {
 					db.close(pstmt);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("ServiceList", serviceList);
@@ -2368,7 +2361,7 @@ public class EstimationInfo {
 			pstmt1 = con.prepareStatement(sqlString1);
 			rs1 = pstmt1.executeQuery();
 			while (rs1.next()) {
-				UpdateInvoiceDto uform = new UpdateInvoiceDto();
+				UpdateInvoiceForm uform = new UpdateInvoiceForm();
 				Loger.log("The Incoice style id is " + rs1.getString(1));
 				uform.setInvoiceStyleId(rs1.getInt(1));
 				Loger.log("The Invoice Style name is " + rs1.getString(2));
@@ -2378,7 +2371,7 @@ public class EstimationInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs1 != null) {
@@ -2388,7 +2381,7 @@ public class EstimationInfo {
 					db.close(pstmt1);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("InvoiceName", invoiceName);
@@ -2400,7 +2393,7 @@ public class EstimationInfo {
 
 			rs2 = pstmt2.executeQuery();
 			while (rs2.next()) {
-				UpdateInvoiceDto uform = new UpdateInvoiceDto();
+				UpdateInvoiceForm uform = new UpdateInvoiceForm();
 
 				uform.setClientVendorID(String.valueOf(rs2
 						.getInt("ClientVendorID")));
@@ -2426,7 +2419,7 @@ public class EstimationInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		} finally {
 			try {
 				if (rs2 != null) {
@@ -2439,7 +2432,7 @@ public class EstimationInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		request.setAttribute("BalenceDetails", balenceDetails);

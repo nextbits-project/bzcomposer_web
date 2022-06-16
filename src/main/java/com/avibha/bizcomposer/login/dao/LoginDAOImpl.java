@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.avibha.bizcomposer.login.forms.LoginForm;
 import com.avibha.bizcomposer.login.forms.MultiUserForm;
-import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.bizcomposer.sales.forms.CustomerForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
@@ -38,7 +38,7 @@ public class LoginDAOImpl implements LoginDAO
         	   Role = rs.getString("UM.Role");
            }
     	}catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
     	finally {
 			try {
@@ -48,7 +48,7 @@ public class LoginDAOImpl implements LoginDAO
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
 				System.out.println("Error in catch of final block of checkUserLogin:");
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return Role;
@@ -126,7 +126,7 @@ public class LoginDAOImpl implements LoginDAO
        		}
 		}
     	catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
     	finally {
 			try {
@@ -137,7 +137,7 @@ public class LoginDAOImpl implements LoginDAO
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
 				System.out.println("Error in catch of final block of checkUserLogin:");
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return loginStatus;
@@ -166,14 +166,14 @@ public class LoginDAOImpl implements LoginDAO
 				objList.add(multiUserForm);
 			}		
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs1 != null) { db.close(rs1); }
 				if (stmt1 != null) { db.close(stmt1); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -188,7 +188,7 @@ public class LoginDAOImpl implements LoginDAO
 		ResultSet rs1 = null;
 		
 		con = db.getConnection();		//comment this when upload in live server
-		ArrayList<CustomerDto> objList = new ArrayList<>();
+		ArrayList<CustomerForm> objList = new ArrayList<>();
 		try {
 			stmt1 = con.createStatement();
 			String sql = "SELECT c.ClientVendorID, company.Name, c.FirstName, c.LastName, c.Phone, c.Email "
@@ -198,7 +198,7 @@ public class LoginDAOImpl implements LoginDAO
 			
 			while(rs1.next())
 			{
-				CustomerDto customer = new CustomerDto();
+				CustomerForm customer = new CustomerForm();
 				//customer.setCompanyid(rs1.getString("CompanyID"));
 				customer.setClientVendorID(rs1.getString("c.ClientVendorID"));
 				customer.setCompanyName(rs1.getString("company.Name"));
@@ -209,7 +209,7 @@ public class LoginDAOImpl implements LoginDAO
 			}		
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs1 != null) {
@@ -222,7 +222,7 @@ public class LoginDAOImpl implements LoginDAO
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -255,7 +255,7 @@ public class LoginDAOImpl implements LoginDAO
 			}		
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs1 != null) {
@@ -268,7 +268,7 @@ public class LoginDAOImpl implements LoginDAO
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -295,7 +295,7 @@ public class LoginDAOImpl implements LoginDAO
 			}
 		} 
 		catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -303,7 +303,7 @@ public class LoginDAOImpl implements LoginDAO
 				if (stmt1 != null) { db.close(stmt1); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -330,7 +330,7 @@ public class LoginDAOImpl implements LoginDAO
 				objList.add(b);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -359,7 +359,7 @@ public class LoginDAOImpl implements LoginDAO
 			 check = rs.next();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) { db.close(rs); }
@@ -461,7 +461,7 @@ public class LoginDAOImpl implements LoginDAO
 				if(con != null){ db.close(con); }
 				if(c != null){ db.close(c); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return loginStatus;		
@@ -489,7 +489,7 @@ public class LoginDAOImpl implements LoginDAO
 				if (stmt != null) { db1.close(stmt); }
 				if(c != null){ db1.close(c); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
         return loginStatus;
@@ -537,7 +537,7 @@ public class LoginDAOImpl implements LoginDAO
 			}
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -545,7 +545,7 @@ public class LoginDAOImpl implements LoginDAO
 				if (stmt != null) { db.close(stmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return users;
@@ -562,13 +562,13 @@ public class LoginDAOImpl implements LoginDAO
 			ret = pstmt.executeUpdate()>0;
 		} catch (Exception e) {
 			Loger.log(2, "Exception... deleteUserDetails. --->" + e.getMessage());
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (pstmt != null) { db.close(pstmt); }
 				if(con != null){ db.close(con); }
 			} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return ret;

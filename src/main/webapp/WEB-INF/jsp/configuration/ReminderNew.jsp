@@ -22,7 +22,7 @@ function invaliddaysdialog()
 $(document).ready(function()
 {
 	//var invoiceMemoDays = $("#invoiceMemoDays").val();
-	debugger
+	
 	var invoiceMemo = document.configurationForm.invoiceMemo.value;
 	var memorizeEstimation = document.configurationForm.memorizeEstimation.value;
 	var overdueInvoice = document.configurationForm.overdueInvoice.value;
@@ -43,7 +43,7 @@ $(document).ready(function()
 		$("#showReminder").attr("checked",false);
 	} --%>
 	 
-	debugger
+	
 	
 	if(invoiceMemo == 1)
 	{
@@ -130,17 +130,17 @@ $(document).ready(function()
 	$("#invoiceMemoRemindMe").click(function()
 	{
 
-		debugger
+		
 		document.configurationForm.invoiceMemo.value = 1;
-		debugger
+		
 	});
 	
 	$("#invoiceMenoDontRemindMe").click(function()
 	{
 
-		debugger
+		
 		document.configurationForm.invoiceMemo.value = 0;
-		debugger
+		
 	});
 	
 	$('#invoiceMemoDays').change(function()
@@ -227,28 +227,28 @@ $(document).ready(function()
 	$('#showReminder').change(function()
 	{
 		var isChecked = '<%= request.getAttribute("showReminderStatus")%>';
-		debugger
+		
 		if($(this).prop("checked") == true)
 		{
 
 	        $("#showReminder").attr('checked', true);
-	        debugger
+	        
 	        isChecked = "on"; 
 		}
 	    else if($(this).prop("checked") == false)
 	    {
 
 	        $("#showReminder").attr('checked', false);
-	        debugger
+	        
 	        isChecked = "off";
 		}	
 	    else
 	    {
 
 	        $("#showReminder").attr('checked', isChecked);
-	        debugger
+	        
 	    	document.configurationForm.showReminder.value = isChecked;
-	    	debugger
+	    	
 	    }	
 		$("#showReminder").val(isChecked);
 	});

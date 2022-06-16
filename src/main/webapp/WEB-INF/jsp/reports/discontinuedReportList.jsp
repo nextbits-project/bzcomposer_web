@@ -213,7 +213,7 @@ function callRefresh(){
 }
 function hideShowHeader()
 {
-	debugger;
+	
 	document.getElementById("headerBar").style.display = "none";
 	/* $("#btnHeader1").hide(); */
 	document.getElementById("headerBar").style.display = "none";

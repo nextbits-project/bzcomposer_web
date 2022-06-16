@@ -18,7 +18,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 </style>
 </head>
 <body>
-<form:form method="post" modelAttribute="emailSenderDto">
+<form:form method="post" id="frmSendMail" modelAttribute="emailSenderDto">
 	<div id="cos">
 	<div class="statusquo ok">
 	<div id="hoja">
@@ -90,8 +90,9 @@ function Send(emailaddr){
 		alert("<spring:message code='BzComposer.companyinfo.enteremailaddress' />");
 	}
 	else{
-		document.forms[0].action="Invoice?tabid=SendMail&OrderNo="+document.getElementById('ordId').value;
-		document.forms[0].submit();
+		//document.forms["frmSendMail"].action = "Invoice?tabid=SendMail&OrderNo="+document.getElementById('ordId').value;
+		document.forms["frmSendMail"].action = "Invoice?tabid=SendMail";
+		document.forms["frmSendMail"].submit();
 	}
 }
 </script>

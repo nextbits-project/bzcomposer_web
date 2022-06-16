@@ -191,7 +191,7 @@
  * for (int i = 0; i < conPool.size(); i++) { PooledConnection pc =
  * (PooledConnection) conPool.get(i); if (pc.getConnection().isClosed()) //
  * remove any closed // connections { conPool.remove(i); done = false; break; }
- * } } } catch (SQLException e) { e.printStackTrace(); } }
+ * } } } catch (SQLException e) { Loger.log(e.toString()); } }
  * 
  *//**
 	 * Gets available connection from the pool

@@ -1,4 +1,3 @@
-
 <%@ page isELIgnored="false" %>
 <%@	page
 	import="com.avibha.bizcomposer.purchase.dao.ReceivedItemInfo,java.util.ArrayList"%>

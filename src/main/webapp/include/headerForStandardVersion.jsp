@@ -1,4 +1,4 @@
-
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 
 <!-- CSS Files starts -->
 
@@ -151,7 +151,7 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-	/* debugger; */
+	/*  */
    $('#exportPd').DataTable( {
 	   "aaSorting": [],
 	   "paging":   false, 

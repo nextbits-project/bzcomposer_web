@@ -39,7 +39,7 @@ if(Role=='User'){
 	$("#userlistlable").hide();
 }
 function toggleFunction() {
-	debugger;
+	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -123,7 +123,7 @@ $(function() {
 });
 $(document).ready(function()
 {
-	debugger;
+	
 	var isSOBChecked = "<%= request.getAttribute("isSOBChecked")%>";
 	var isISBChecked = "<%= request.getAttribute("isISBChecked")%>";
 	var isIRBChecked = "<%= request.getAttribute("isIRBChecked")%>";
@@ -210,6 +210,7 @@ $(document).ready(function()
 
 function TestConnection()
 {
+    pleaseWaitDialog();
     var authType = 'false';
 	var host = document.configurationForm.mailServer.value;
 	var userEmail = document.configurationForm.mailUserName.value;
@@ -225,8 +226,22 @@ function TestConnection()
         }
         authType = 'true';
     }
-	oEmail = c(CheckEmailConnection);
-	oGET(oEmail, 'include/testMailServerConnection.jsp?HostName='+host+'&authType='+authType+'&userEmail='+userEmail+'&password='+password);
+    $.ajax({
+        type : "POST",
+        url :  "ConfigurationAjax/SaveConfiguration?tabid=testMailServer&HostName="+host+"&authType="+authType+"&userEmail="+userEmail+"&password="+password,
+        success : function(data) {
+            $('#pleaseWaitDialog').dialog("close");
+            if(data == "true"){
+                serverConnectedSeccessDialog();
+            }else{
+                serverConnectedErrorDialog();
+            }
+        },
+        error : function(data) {
+            alert("<spring:message code='BzComposer.common.erroroccurred'/>");
+        }
+    });
+
 }
 
 function CheckEmailConnection()
@@ -317,7 +332,7 @@ function pleaseWaitDialog(){
 }
 </script>
 <body onload="init();">
-<form:form name="configurationForm" enctype="MULTIPART/FORM-DATA" method="post" modelAttribute="configDto">
+<form:form name="configurationForm" id="configurationForm" enctype="MULTIPART/FORM-DATA" method="post" modelAttribute="configDto">
 <div id="ddcolortabsline">&nbsp;</div>
 <div id="cos">
 <div class="statusquo ok">
@@ -1159,7 +1174,118 @@ function pleaseWaitDialog(){
                                             </form>
                                             <br>
                                         </div>
-
+                                        <!-- Update user modal -->
+                                        <div id="updateUser" class="modal" style="height:auto;">
+                                            <form name="addnewuser1">
+                                                <div id="ddcolortabsline">&nbsp;</div>
+                                                <div id="cos">
+                                                    <div class="statusquo ok">
+                                                        <div id="hoja">
+                                                            <div id="blanquito">
+                                                                <div id="padding">
+                                                                    <div>
+                                                                        <div id="table-negotiations">
+                                                                            <table>
+                                                                                <tr>
+                                                                                    <td colspan="3">
+                                                                                        <div id="addUserNameAndPassword1" style="display: block; width: 450px;">
+                                                                                            <table style="font-size: 12px;">
+                                                                                                <tr height="30px;">
+                                                                                                    <th colspan="2" align="left">
+                                                                                                        <spring:message code="BizComposer.Configuration.Networking.userNameAndPassword"/>
+                                                                                                    </th>
+                                                                                                </tr>
+                                                                                                <tr height="30px;">
+                                                                                                    <th colspan="2" align="left">
+                                                                                                        <spring:message code="BizComposer.Configuration.Networking.provideUserNameAndPassword"/>
+                                                                                                    </th>
+                                                                                                </tr>
+                                                                                                <tr height="30px;">
+                                                                                                    <td>
+                                                                                                        <spring:message code="BzComposer.contactus.formemail"/>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <input class="diveUserEmail" type="email" name="userEmail" id="userEmail1" style="width:250px;">
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <tr height="30px;">
+                                                                                                    <td>
+                                                                                                        <spring:message code="Bizcomposer.password"/>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <input class="divUserPassword" type="password" name="userPassword" id="userPassword1" style="width:250px;">
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <tr height="30px;">
+                                                                                                    <td>
+                                                                                                        <spring:message code="Bizcomposer.confirmPassword"/>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <input class="divcpwd" type="password" id="cpwd1" style="width: 250px;">
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <tr height="30px;">
+                                                                                                    <td>
+                                                                                                        <spring:message code="Bizcomposer.adminPassword"/>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <input class="divadminpassword" type="password"  name="adminpassword" id="adminpassword1" style="width: 250px;">
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <tr height="30px;">
+                                                                                                    <th colspan="2" align="left">
+                                                                                                        <spring:message code="BizComposer.Configuration.Networking.selectGroupForAccessPermissions"/>
+                                                                                                    </th>
+                                                                                                </tr>
+                                                                                                <tr height="30px;">
+                                                                                                    <td width="120px;">
+                                                                                                        <spring:message code="Bizcomposer.groupName"/>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <form:select path="groupID" id="groupID1" style="width:250px;">
+                                                                                                            <form:options items="${configDto.listOfExistingGroup}" itemValue="selectedGroupId" itemLabel="groupName" />
+                                                                                                        </form:select>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <td></td>
+                                                                                                    <td style="font-size:14px;">
+                                                                                                        <button type="button" class="formButton" onclick="viewGroupPermissions()">
+                                                                                                            <spring:message code="BizComposer.Configuration.Networking.viewGroupPermissions"/>
+                                                                                                        </button>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <td colspan="2" align="right" style="font-size:14px;padding-top:10px;">
+                                                                                                        <button type="button" class="formButton" id="next" onclick="updateUserValues()">
+                                                                                                            <spring:message code="BzComposer.global.update" />
+                                                                                                        </button>&nbsp;&nbsp;
+                                                                                                        <input type="button" class="formButton" id="finish" value="Finish" readonly="readonly" style="display:none;" onclick="submitForm()">
+                                                                                                        <button type="button" class="formButton" id="help" onclick="showHelp()">
+                                                                                                            <spring:message code="BzComposer.Help" />
+                                                                                                        </button>&nbsp;&nbsp;
+                                                                                                        <a href="#" rel="modal:close">
+                                                                                                            <button type="reset" class="formButton" name="Cancel" id="Cancel">
+                                                                                                                <spring:message code="BzComposer.global.cancel" />
+                                                                                                            </button>
+                                                                                                        </a>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            </table>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <br>
+                                        </div>
                                         <!--  Networking & Security Starts -->
                                         <div id="nw">
                                         <table class="table-notifications" width="80%">
@@ -1231,7 +1357,7 @@ function pleaseWaitDialog(){
                                                         <c:if test="${not empty configDto.listOfExistingUserList}">
                                                             <input type="hidden" id="usersSize" value='${configDto.listOfExistingUserList.size()}' />
                                                             <c:forEach items="${configDto.listOfExistingUserList}" var="objList1" varStatus="loop">
-                                                                <tr id='${loop.index}usrIndex' onclick="selectUserData('${objList1.upsUserId}', '${objList1.groupID}', '${loop.index}usrIndex');">
+                                                                <tr id='${loop.index}usrIndex' onclick="selectUserData('${objList1.upsUserId}', '${objList1.groupID}', '${objList1.emailAddress}', '${objList1.password}', '${objList1.groupName}','${objList1.status}', '${loop.index}usrIndex');">
                                                                     <td>${objList1.emailAddress}</td>
                                                                     <td>${objList1.password}</td>
                                                                     <td>${objList1.groupName}</td>
@@ -1247,7 +1373,7 @@ function pleaseWaitDialog(){
                                                     <button type="button" class="formButton" onclick="adduser1();" style="width:120px;">
                                                         <spring:message code="BzComposer.configuration.adduserbtn"/>
                                                     </button><br/><br/>
-                                                    <button type="button" class="formButton" style="width:120px;">
+                                                    <button type="button" class="formButton" style="width:120px;" onclick="updateUser();">
                                                         <spring:message code="BzComposer.configuration.savechangesbtn"/>
                                                     </button><br/><br/>
                                                     <button type="button" class="formButton" onclick="Deleteuser();" style="width:120px;">
@@ -1354,7 +1480,7 @@ function pleaseWaitDialog(){
 EnableDisableFields2();
 function updateComapany()
 {
-    debugger;
+    
 	var sel = document.getElementById("businessTypeId");
     var businessTypeId = sel.options[sel.selectedIndex].value;
 	var email = document.getElementById("email").value;
@@ -1486,7 +1612,7 @@ function SaveValues()
 	return false;
 }
 function SaveSecurityValues(){
-	debugger;
+	
 	event.preventDefault();
 	$("#showsaverecorddialog").dialog({
         resizable: false,
@@ -1581,9 +1707,10 @@ function SaveValuesFeatures()
 	}
 }
 function RevokeValues(){
-	document.getElementById('tid').value="config";
-	document.forms[0].action = "Configuration";
-	document.forms[0].submit();
+	//document.getElementById('tid').value="config";
+	//document.forms['configurationForm'].action = "/Configuration?tabid=config";
+	//document.forms['configurationForm'].submit();
+	window.location = "/Configuration?tabid=config";
 }
 
 function SetLabelName(lblid){
@@ -1599,7 +1726,7 @@ function SetLabelName(lblid){
 
 function updateComapanySecurity()
 {
-    debugger;
+    
 	var password = document.getElementById("password").value;
 	var confirmPassword = document.getElementById("confirmPassword").value;
 
@@ -1699,29 +1826,28 @@ o_config = {
 }
 // validator constructor call
 var v = new validator('login', a_fields, o_config);
-
 //========================================== Security-Module-JS =================================================
+function updateUser(){
+    $('#updateUser').modal('show');
+    }
 function adduser1() {
-	debugger;
+
 	var membershipLevel = "<%= request.getAttribute("membershipLevel")%>";
 	var size = "<%= request.getAttribute("userSize")%>";
-	if(membershipLevel == "Standard"){
+	if(membershipLevel == "Standard" || membershipLevel == "standard"){
 		if(size>=1){
-			debugger;
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
 		}
-	}else if(membershipLevel == "Professional"){
+	}else if(membershipLevel == "Professional" || membershipLevel == "professional"){
 		if(size>=5){
-			debugger;
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
 		}
-	}else if(membershipLevel == "Enterprise"){
+	}else if(membershipLevel == "Enterprise" || membershipLevel == "enterprise"){
 		if(size>=10){
-			debugger;
 			return maxnumberofuserdialog();
 		}else{
 			$('#AddUser').modal('show');
@@ -1750,8 +1876,91 @@ function Deleteuser() {
     });
 }
 
+function updateUserValues(){
+
+    var selectedUserId = $("#selectedUserId").val();
+    var userEmail = $("#userEmail1").val();
+    var password1 = $("#userPassword1").val();
+    var password2 = $("#cpwd1").val();
+    var groupID = $("#groupID1").val();
+    var adminPWD = $("#adminpassword1").val();
+    var AdminPassword = '<%= request.getAttribute("AdminPassword")%>';
+    var checkEmailAddress = (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail));
+    if (checkEmailAddress == false){
+        alert("<spring:message code='BzComposer.common.enterValidEmail'/>");
+        return;
+    }
+    else if(userEmail == ""){
+        alert("<spring:message code='BzComposer.common.emailCantBlank'/>");
+        return;
+    }
+    else if(password1.length < 6){
+        alert("<spring:message code='BzComposer.common.passwordHint'/>");
+        return;
+    }
+    else if(password1 != password2){
+         alert("<spring:message code='BzComposer.common.bothPwdsNotMatch'/>");
+         alert(password1+'\n'+password2);
+         return;
+    }
+    else if(adminPWD != AdminPassword){
+         alert("<spring:message code='BzComposer.common.enterValidAdminPwd'/>");
+         return;
+    }
+    else if(groupID == "" || groupID == 0){
+        alert("<spring:message code='BzComposer.common.selectGroupFirst'/>");
+        return;
+    }
+    else{
+        var formData = $('addnewuser1').serialize();
+        $.ajax({
+            type : "POST",
+            url : "ConfigurationAjax/SaveConfiguration?tabid=updateUser&selectedUserId="+selectedUserId+"&userEmail="+userEmail+"&userpassword="+password1+"&groupID="+groupID,
+            data : formData,
+            success : function(data) {
+                if(data == 'emailExists'){
+                    $("#showEmailAlreadyExistsDialog").dialog({
+                        resizable: false,
+                        height: 200,
+                        width: 500,
+                        modal: true,
+                        buttons: {
+                            "<spring:message code='BzComposer.global.ok'/>": function () {
+                                $(this).dialog("close");
+                                return false;
+                            }
+                        }
+                    });
+                }else{
+                    $("#showsuccessdialog").dialog({
+                        resizable: false,
+                        height: 200,
+                        width: 500,
+                        modal: true,
+                        buttons: {
+                            "<spring:message code='BzComposer.global.ok'/>": function () {
+                                $(this).dialog("close");
+                                window.location.href= "Configuration?tabid=config&tab=tr2";
+                                return false;
+                            },
+                            "<spring:message code='BzComposer.global.cancel'/>": function () {
+                                $(this).dialog("close");
+                                window.location.href= "Configuration?tabid=config&tab=tr2";
+                                return false;
+                            }
+                        }
+                    });
+                }
+            },
+            error : function(data) {
+                alert("<spring:message code='BzComposer.common.erroroccurred'/>");
+                return false;
+            }
+        });
+    }
+}
 function checkValidation(){
-    debugger;
+    
     var userEmail = $("#userEmail").val();
     var password1 = $("#userPassword").val();
     var password2 = $("#cpwd").val();
@@ -1858,7 +2067,7 @@ function editGroup(){
     }
 }
 
-function selectUserData(selectedUserId, userGroupId, rID){
+function selectUserData(selectedUserId, userGroupId, emailAddress, password, groupName, status, rID){
     var size = document.getElementById('usersSize').value;
     for(i=0; i<size; i++){
         if(document.getElementById(i+"usrIndex").classList.contains('draft')){
@@ -1868,6 +2077,11 @@ function selectUserData(selectedUserId, userGroupId, rID){
     document.getElementById(rID).className = "draft";
     document.getElementById('selectedUserId').value = selectedUserId;
     document.getElementById('userGroupId').value = userGroupId;
+    // set value for update user
+    document.getElementById('userEmail1').value = emailAddress;
+    document.getElementById('userPassword1').value = password;
+    document.getElementById('cpwd1').value = password;
+    $('select[id="groupID1"]').find('option[value="'+userGroupId+'"]').attr("selected",true);
 }
 
 function selectGroupData(selectedGroupId, rID){

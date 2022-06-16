@@ -3,15 +3,15 @@
 <%@page import="java.util.Currency"%>
 <%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
-<%@page import="com.nxsol.bizcomposer.common.TblPayment"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentType"%>
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
 <%@page import="java.util.ArrayList"%>
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -68,18 +68,18 @@ table.tabla-listados tbody tr td {
 .highlight { background-color: #00CED1 !important;color: #fff }	 
 </style>
 </head>
-<body>
+<body onload="init()">
 <% int find = 0; %>
 <div id="ddcolortabsline">&nbsp;</div>
- <form action="AccountReceiveble" name="ReceivableListForm" id="receivableForm">
+ <form action="AccountReceiveble" method="post" name="ReceivableListForm" id="receivableForm">
 	<div class="content1 clearfix">
 		<h3 class="title1">
 			<spring:message code="BzComposer.accountreceivable.accountreceivabletitle"/>
 		</h3>
-		 <% ReceivableListDto ReceivableListDto=(ReceivableListDto)request.getAttribute("Selectedrow");
+		 <% ReceivableListBean receivablelistbean=(ReceivableListBean)request.getAttribute("Selectedrow");
 		 	TblPaymentType payment = (TblPaymentType)request.getAttribute("SelectedPayment");
 		 	TblAccount Selectedaccount = (TblAccount)request.getAttribute("SelectedAccount");
-		 	TblCategoryDto SelectedCategory = (TblCategoryDto)request.getAttribute("SelectedCategory");
+		 	TblCategory SelectedCategory = (TblCategory)request.getAttribute("SelectedCategory");
 		 	TblPayment SelcetedPaymentForCheck = (TblPayment)request.getAttribute("Payment");
 		 	/* System.out.println(request.getSession().getAttribute("checkNum")); */
 		 	/* int find = 0; */
@@ -122,7 +122,7 @@ table.tabla-listados tbody tr td {
 								<spring:message code="BzComposer.accountreceivable.receivedtype"/>
 							</label>
 							<div class="col-md-8">
-								<select class="form-control devReceivedTypeDrp" id="receivedType" onclick="checkType()">
+								<select class="form-control devReceivedTypeDrp" id="receivedType" onchange="checkType(this)">
 								<%-- <%if(payment!=null)
 								{ %>
 								 <option selected="selected"><% out.println(payment.getTypeName()); } else{ %> --%>
@@ -135,6 +135,23 @@ table.tabla-listados tbody tr td {
 									<option value=<%= payType.get(i).getId() %> id="<%= payType.get(i).getId()%>"><%  out.println(payType.get(i).getTypeName()); %></option>
 							<%  }
 								%>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-4  col-form-label">
+								<spring:message code="BzComposer.accountreceivable.depositto"/>
+							</label>
+							<div class="col-md-8">
+								<select class="form-control devDeposittypeDrp" id="depositId">
+
+								<% ArrayList<TblAccount> account = (ArrayList)request.getAttribute("AccountForCombo");
+									for(int i=0;i<account.size();i++)
+									{
+								%>
+									<option value="<%= account.get(i).getAccountID()%>" id="<%= account.get(i).getAccountID()%>"><% out.println(account.get(i).getName());  %></option>
+								<%  } %>
+
 								</select>
 							</div>
 						</div>
@@ -157,21 +174,17 @@ table.tabla-listados tbody tr td {
 								<spring:message code="BzComposer.accountreceivable.receivedamount"/>
 							</label>
 
-					<div class="col-md-8">
-						<div class="input-group">
-							<div class="input-group-prepend">
-							 <span class="input-group-text" id="basic-addon1">$</span>
-							  </div>
-							<input type="text" class="form-control devReceiveAmount" value="" width="20px" id="receivedAmount">
+							<div class="col-md-8">
+								<div class="input-group">
+									<div class="input-group-prepend">
+									 	<span class="input-group-text" id="basic-addon1">$</span>
+									</div>
+									<input type="text" class="form-control devReceiveAmount" value="" width="20px" id="receivedAmount">
+								</div>
 							</div>
-					</div>
 						</div>
 
-					<%-- <% if(SelcetedPaymentForCheck != null) {%>
-					<script>
-					  var data = document.getElementById("Check");
-					  data.style.display = "none";
-					</script>
+					 <% if(SelcetedPaymentForCheck != null) {%>
 						<div class="form-group row" id="Check">
 							<label class="col-md-5  col-form-label">Check #</label>
 							<div class="col-md-7">
@@ -183,9 +196,10 @@ table.tabla-listados tbody tr td {
 								<% } %>
 							</div>
 						</div>
-						<% } %> --%>
-				<script>
+						<% } %>
+			<script>
 					  var data = document.getElementById("Check");
+
 					  data.style.display = "none";
 				</script>
 				<div class="form-group row" id="Check">
@@ -205,14 +219,13 @@ table.tabla-listados tbody tr td {
 							</label>
 						   <%--  <html:text property="orderDate" readonly="false"></html:text>  --%>
 						    <div class="col-md-8 calendar-img"><input type="text" class="form-control devOrderDate" value="" style="width: 275px" name="orderDate" readonly="true" id="orderDate">
-							<img
-								src="${pageContext.request.contextPath}/images/cal.gif" class="img-fluid" alt="Responsive image"
-								onclick="displayCalendar(document.ReceivableListForm.orderDate,'mm-dd-yyyy',this);">
+							<img src="${pageContext.request.contextPath}/images/cal.gif" class="img-fluid" alt="Responsive image"
+							onclick="displayCalendar(document.ReceivableListForm.orderDate,'mm-dd-yyyy',this);">
 							</div>
 
 						</div>
 
-						<div class="form-group row">
+						<%-- <div class="form-group row">
 							<label class="col-md-4  col-form-label">
 								<spring:message code="BzComposer.accountreceivable.depositto"/>
 							</label>
@@ -228,7 +241,7 @@ table.tabla-listados tbody tr td {
 
 								</select>
 							</div>
-						</div>
+						</div> --%>
 						<div class="form-group row">
 							<label class="col-md-4  col-form-label">
 								<spring:message code="BzComposer.accountreceivable.category"/>
@@ -236,8 +249,8 @@ table.tabla-listados tbody tr td {
 							<div class="col-md-8">
 								<select class="form-control devCategoryDrp" size="1" id="categoryId">
 								<%
-									ArrayList<TblCategoryDto> category = (ArrayList)request.getAttribute("CategoryCombo");
-							/* 		Iterator<TblCategoryDto> itr2 = category.iterator(); */
+									ArrayList<TblCategory> category = (ArrayList)request.getAttribute("CategoryCombo");
+							/* 		Iterator<TblCategory> itr2 = category.iterator(); */
 									for(int i=0;i<category.size();i++)
 									{
 								%>
@@ -267,13 +280,13 @@ table.tabla-listados tbody tr td {
 						</div>
 					</div>
 					<div class="col-md-4" style="top:35px;">
-					<%-- <% if(ReceivableListDto == null) {%>
+					<%-- <% if(receivablelistbean == null) {%>
 						<div class="form-group">
 								<button class="btn btn-info btn1" onclick="return save(null,null)">Save</button>
 							</div>
 						<%} else {%>
 							<div class="form-group">
-								<button class="btn btn-info btn1" onclick="return save(<%= ReceivableListDto.getOrderNum()%>,<%= ReceivableListDto.getPaidAmount()+ReceivableListDto.getBalance()%>)">Save</button>
+								<button class="btn btn-info btn1" onclick="return save(<%= receivablelistbean.getOrderNum()%>,<%= receivablelistbean.getPaidAmount()+receivablelistbean.getBalance()%>)">Save</button>
 							</div>
 						<% } %>  --%>
 						 <div class="form-group">
@@ -281,6 +294,11 @@ table.tabla-listados tbody tr td {
 									<spring:message code="BzComposer.global.save"/>
 								</button>
 							</div>
+						<div class="form-group">
+							<button class="btn btn-info" style="width: 100px;font-size: 14px;" onclick="return save()">
+								<spring:message code="BzComposer.global.new"/>
+							</button>
+						</div>
 						<div class="form-group">
 							<button class="btn btn-info" style="width: 100px;font-size: 14px;" onclick="return clearTransaction()">
 								<spring:message code="BzComposer.global.clear"/>
@@ -298,6 +316,10 @@ table.tabla-listados tbody tr td {
 			    aria-controls="nav-home" aria-selected="true">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.receivablelist"/>
 		    	</a>
+				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+			    aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()">
+			    	<spring:message code="BzComposer.accountreceivable.tabs.received"/>
+		    	</a>
 			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
 			    aria-controls="nav-profile" aria-selected="false" onclick="overDueTab()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.overdue"/>
@@ -307,17 +329,17 @@ table.tabla-listados tbody tr td {
 			    	<spring:message code="BzComposer.accountreceivable.tabs.cancelled"/>
 		    	</a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-			    aria-controls="nav-contact" aria-selected="false">
+			    aria-controls="nav-contact" aria-selected="false" onclick="CustomerRMARefund()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.CustomerRMARefund"/>
 		    	</a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
 			    aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.layaways"/>
 		    	</a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-			    aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()">
-			    	<spring:message code="BzComposer.accountreceivable.tabs.received"/>
-		    	</a>
+		    	<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+                    aria-controls="nav-contact" aria-selected="false" onclick="eSales()">
+                    eSales
+                </a>
 			  </div>
 			</nav>
 			<div class="tab-content" id="nav-tabContent">
@@ -392,15 +414,15 @@ table.tabla-listados tbody tr td {
 				  </thead>
 				  <tbody>
 				  <%
-				  	ArrayList<ReceivableListDto> li = (ArrayList)request.getAttribute("ReceivableList");
-				  	Iterator<ReceivableListDto> itr =li.iterator();
+				  	ArrayList<ReceivableListBean> li = (ArrayList)request.getAttribute("ReceivableList");
+				  	Iterator<ReceivableListBean> itr =li.iterator();
 					int index = 1;
 				  	while(itr.hasNext()){
-				  		ReceivableListDto rb = itr.next();
+				  		ReceivableListBean rb = itr.next();
 				  %>
 				    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)">
-				      <td class="text-right"><input type="checkbox" id="Checkbox"></td>
-				      <td class="text-right" ><% out.println(rb.getOrderNum()); %></td>
+				      <td class="text-right"><input type="checkbox" id="Checkbox1"></td>
+                      <td class="text-right" ><% out.println(rb.getOrderNumStr()); %></td>
 				      <td class="text-right"><% out.println(rb.getCompanyName()); %></td>
 				      <td value="<%=rb.getCvID() %>" class="text-right"><% out.println(rb.getCvName()); %></td>
 				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded())); %></td>
@@ -459,14 +481,14 @@ table.tabla-listados tbody tr td {
 				    </tr>
 				  </thead>
 				  <tbody>
-				  <% ArrayList<ReceivableListDto> list = (ArrayList)request.getAttribute("listForUnpaidOpeningBal");
-						Iterator<ReceivableListDto> itrunpaid =list.iterator();
+				  <% ArrayList<ReceivableListBean> list = (ArrayList)request.getAttribute("listForUnpaidOpeningBal");
+						Iterator<ReceivableListBean> itrunpaid =list.iterator();
 						while(itrunpaid.hasNext())
 					  	{
-					  		ReceivableListDto rb1 = itrunpaid.next();
+					  		ReceivableListBean rb1 = itrunpaid.next();
 					%>
 				    <tr>
-				      <td><input type="checkbox"></td>
+				      <td><input type="checkbox" id="Checkbox2"></td>
 				      <td class="text-right"><% out.println(rb1.getCompanyName()); %></td>
 				      <td class="text-right"><% out.println(rb1.getCvName()); %></td>
 				      <td class="text-right"><% out.println(rb1.getDateAdded()); %></td>
@@ -504,14 +526,14 @@ table.tabla-listados tbody tr td {
 				    </tr>
 				  </thead>
 				  <tbody>
-				  <% ArrayList<ReceivableListDto> listforUnpaidCredit = (ArrayList)request.getAttribute("listForUnpaidCreditAmount");
-						Iterator<ReceivableListDto> itrunpaidCredit = listforUnpaidCredit.iterator();
+				  <% ArrayList<ReceivableListBean> listforUnpaidCredit = (ArrayList)request.getAttribute("listForUnpaidCreditAmount");
+						Iterator<ReceivableListBean> itrunpaidCredit = listforUnpaidCredit.iterator();
 						while(itrunpaidCredit.hasNext())
 					  	{
-					  		ReceivableListDto rb2 = itrunpaidCredit.next();
+					  		ReceivableListBean rb2 = itrunpaidCredit.next();
 					%>
 				    <tr>
-				      <td><input type="checkbox"></td>
+				      <td><input type="checkbox" id="Checkbox3"></td>
 				      <td class="text-right"><% out.println(rb2.getCompanyName()); %></td>
 				      <td class="text-right"><% out.println(rb2.getCvName()); %></td>
 				      <td class="text-right"><% out.println(rb2.getDateAdded()); %></td>
@@ -533,23 +555,23 @@ table.tabla-listados tbody tr td {
 	</div>
 				<div class="footer1">
 						<div class="form-check form-check-inline">
-						  <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1">
+						  <input class="form-check-input" onclick="checkAll1()"  type="checkbox" id="inlineCheckbox2" value="option1">
 						  	<label class="form-check-label" for="inlineCheckbox2">
-						  		<spring:message code="BzComposer.accountreceivable.showall"/>
+						  		<spring:message code="BzComposer.billpayable.selectall"/>
 					  		</label>
 						</div>
-						<a class="btn btn-info" style="color: white;font-size: 14px;" onclick="billingInfo()">
+						<button class="btn btn-info" style="color: white;font-size: 14px;" onclick="billingInfo()">
 							<spring:message code="BzComposer.accountreceivable.billing"/>
-						</a>
-						<a class="btn btn-info" style="color: white;font-size: 14px;"  onclick="popUp()">
+						</button>
+						<button class="btn btn-info" style="color: white;font-size: 14px;" >
 							<spring:message code="BzComposer.accountreceivable.discountandcreditbtn"/>
-						</a>
-						<a class="btn btn-info"  style="color: white;font-size: 14px;" >
+						</button>
+						<button class="btn btn-info"  style="color: white;font-size: 14px;" >
 							<spring:message code="BzComposer.accountreceivable.paymenttobtn"/>
-						</a>
-						<a class="btn btn-info" style="color: white;font-size: 14px;"  onclick="return received()">
+						</button>
+						<button class="btn btn-info" style="color: white;font-size: 14px;"  onclick="return received()">
 							<spring:message code="BzComposer.accountreceivable.received"/>
-						</a>
+						</button>
 				  </div>
 				</div>
 			  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
@@ -564,8 +586,71 @@ table.tabla-listados tbody tr td {
 	var invoiceId = -1;
     selectChaseBankFromDropDownList("depositId");
 
+    function init() {
+    	checkReceivedType();
+	}
+
+    function checkReceivedType(){
+		var receivedType = document.getElementById("receivedType");
+		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
+
+		if(selectedReceivedType == '452'){
+		 	$("#Check").show();
+		 }else{
+		 	$("#Check").hide();
+		 }
+    }
+
+    var checkAll1 = () => {
+
+
+		if(document.getElementById('rdoInvoiceOrder').checked==true){
+    	   if(document.getElementById('inlineCheckbox2').checked==true){
+			var checkboxes=document.querySelectorAll("[id^='Checkbox1']")
+		  	checkboxes.forEach((cb) => { cb.checked = true; });
+		   }
+	  	   else{
+		       var checkboxes=document.querySelectorAll("[id^='Checkbox1']")
+		       checkboxes.forEach((cb) => { cb.checked = false; });
+	 	     }
+	   }
+		if(document.getElementById('rdoUnpaidOpeningBalance').checked==true){
+			if(document.getElementById('inlineCheckbox2').checked==true){
+				var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
+			  	checkboxes.forEach((cb) => { cb.checked = true; });
+			}
+		  	else{
+			  var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
+			  checkboxes.forEach((cb) => { cb.checked = false; });
+		 	  }
+			}
+		 if(document.getElementById('rdoUnpaidCreditAmount').checked==true){
+			 if(document.getElementById('inlineCheckbox2').checked==true){
+					var checkboxes=document.querySelectorAll("[id^='Checkbox3']")
+				  	checkboxes.forEach((cb) => { cb.checked = true; });
+				}
+			  	else{
+				  var checkboxes=document.querySelectorAll("[id^='Checkbox3']")
+				  checkboxes.forEach((cb) => { cb.checked = false; });
+			 	  }
+				}
+		 }
+
+
+
+
+  /*   var checkAll1 = () => {
+		if(document.getElementById('inlineCheckbox2').checked==true){
+			var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
+		  	checkboxes.forEach((cb) => { cb.checked = true; });
+		}
+	  	else{
+		  var checkboxes=document.querySelectorAll("[id^='Checkbox2']")
+		  checkboxes.forEach((cb) => { cb.checked = false; });
+	 	}
+	} */
+
    function selectrow(invoice,index) {
-	    debugger;
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
 	    var count = 1;
@@ -595,11 +680,12 @@ table.tabla-listados tbody tr td {
 	    $(".devMemotext").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(14)').text());
 		if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value') != 'null'){
 	 		$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value'));
-		}	
+		}
+		checkReceivedType();
    }  
    function save()
    {
-	   debugger;	
+
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
 		receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
@@ -624,7 +710,7 @@ table.tabla-listados tbody tr td {
 				   }
 		}
 		this.amtToPay = document.getElementById("receivedAmount").value; 
-	   var ReceivableListDto={
+	   var ReceivableListBean={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":document.getElementById("customerName").value,
 			   "paymentTypeID":document.getElementById("receivedType").value,	   
@@ -636,67 +722,58 @@ table.tabla-listados tbody tr td {
 			   "memo":document.getElementById("memo").value,
 			   "checkNum":document.getElementById("checkNum").value,
 	   }
-    sendMyValue(ReceivableListDto);
+    sendMyValue(ReceivableListBean);
   	}
-   function sendMyValue(ReceivableListDto) {
+   function sendMyValue(ReceivableListBean) {
 		debugger;
-		var obj=JSON.stringify(ReceivableListDto);
+		var obj=JSON.stringify(ReceivableListBean);
        	 $.ajax({
 			type : "POST",
 			url : "AccountReceivebleUpdate?tabid=UpdateRecord",
-			data : "row=" + obj + "&invoiceId="+invoiceId,
+			data : "row=" + obj1 + "&invoiceId="+invoiceId,
 		    success : function(data) {
-				debugger;
-				updateAccountReceivableTab(data);  
+
+				updateAccountReceivableTab(data);
 			 /*  window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; */
-			
+
 			},
 			 error : function(data) {
 
 				return showerrordialog();
-			} 
+			}
 		});
-   	$(document.forms[0]).submit(function( event ) {
+  	$(document.forms[0]).submit(function( event ) {
 	    event.preventDefault();
 	});
-	} 
+  	}
+
    function setInvoice(index)
    {
 	   $.ajax({
 			type : "POST",
 			url : "AccountReceiveble?tabid=selectrow&ordernum="+index,
-			data : "row=" +index, 			
+			data : "row=" +index,
 			success : function(data,status) {
 				window.location= "${pageContext.request.contextPath}/AccountReceiveble?tabid=selectrow&ordernum="+index;
 			},
 			 error : function(data) {
 
 				 return showerrordialog();
-			} 
+			}
 		});
    }
-   function checkType()
+   function checkType(selectObject)
    {
-	 	debugger;
-	   var type = document.getElementById("receivedType");
-	   var ctype = type.options[type.selectedIndex].innerText;
-	   if(ctype == 'Cash')
-		   {
-		   		document.getElementById("Check").style.display = "none";
+	   var value = selectObject.value;
+		  if(value == '452'){
+			  $("#Check").show();
+		   }else{
+		   		$("#Check").hide();
 		   }
-	   else if(ctype == 'Check')
-		   {
-		   		
-		   		$("#Check").show();
-		   	} 
-	    else
-		{ 
-	    		$("#Check").hide();
-	    } 
    }
    function selectedRadio()
    {
-	 debugger;
+
 	   if(document.getElementById("rdoUnpaidOpeningBalance").checked)
 		   {
 		   		$("#tblForInvoiceOrder").hide();
@@ -735,15 +812,21 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-		debugger;
+
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
-	   var ctype = type.options[type.selectedIndex].label;
+	   console.log(document.getElementById("receivedType").options[type.selectedIndex]);
+	   if(!type.options[type.selectedIndex]){
+    	   alert("please select Received Type")
+       }
+       var ctype = type.options[type.selectedIndex].label;
+
 	   var paymentTypeIdString = type.options[type.selectedIndex].id;
 	   var paymentTypeId = parseInt(paymentTypeIdString);
 	   if(ctype == 'Check')
 	   {
 	   var checkNo = document.getElementById("checkNum").value;
+	   console.log(checkNo,"hjgyhghh")
 	   	if(checkNo == '0' || checkNo == '')
 		{
 
@@ -790,7 +873,7 @@ table.tabla-listados tbody tr td {
 	   
 	  /*  	var receivedAmount = parseInt(receivedAmountString); */   
 	 /*   var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text(); */
-	   var ReceivableListDto={
+	   var ReceivableListBean={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":selectedCustomer,
 			   "paymentTypeID":paymentTypeId,	   
@@ -802,27 +885,27 @@ table.tabla-listados tbody tr td {
 			   "memo":memo,
 			   "checkNum":checkNo,
 	   };
-	   var obj=JSON.stringify(ReceivableListDto);
+	   var obj=JSON.stringify(ReceivableListBean);
 	   $.ajax({
 			type : "POST",
 			url : "AccountReceivebleUpdate?tabid=ReceivedInvoice",
-				data :"row=" + obj + "&index="+indexNumber,
+				data :"row=" + obj1 + "&index="+indexNumber,
 		    success : function(data) {
-			updateAccountReceivableTab(data);	
+		    	document.forms['receivableForm'].action = "AccountReceiveble";
+                document.forms['receivableForm'].submit();
 			},
 			 error : function(data) {
 
 				 return showerrordialog();
 			} 
 		});
-  	$(document.forms[0]).submit(function( event ) {
+  	/* $(document.forms[0]).submit(function( event ) {
 	    event.preventDefault();
-	});
+	}); */
 	   return false;
-	   
    }
    $(document).ready(function(){
-		debugger;
+
 		var day = new Date().getDay();
 		var dName = dayName(day);
 	   $("#tblForUnpaidOpeningBalance").hide();
@@ -833,12 +916,19 @@ table.tabla-listados tbody tr td {
 	   if(ctype != 'Check'){
              $("#Check").hide();
        }
-       $("#receivedType option:contains(Check)").attr('selected', 'selected');
-       $("#depositId option:contains(US State Bank)").attr('selected', 'selected');
-       $("#categoryId option:contains(Inventory 6810)").attr('selected', 'selected');
-       setTimeout(function() {
+       //$("#receivedType option:contains(Check)").attr('selected', 'selected');
+       //$("#depositId option:contains(US State Bank)").attr('selected', 'selected');
+       //$("#categoryId option:contains(Inventory 6810)").attr('selected', 'selected');
+       /* setTimeout(function() {
            $('table.devAcRecDataTbl tbody tr:nth-child(1)').trigger('click');
-       }, 1000);
+       }, 1000); */
+       var arCatID = '<%= request.getAttribute("arCatId")%>';
+       var arReceive = '<%= request.getAttribute("arReceiveType")%>';
+       var arDeposit = '<%= request.getAttribute("arDepositTo")%>';
+
+       $('select[id="categoryId"]').find('option[value="'+arCatID+'"]').attr("selected",true);
+       $('select[id="receivedType"]').find('option[value="'+arReceive+'"]').attr("selected",true);
+       $('select[id="depositId"]').find('option[value="'+arDeposit+'"]').attr("selected",true);
 });
   function popUp()
    {
@@ -847,10 +937,8 @@ table.tabla-listados tbody tr td {
    function clearTransaction()
    {
 	   var answer;
-	   debugger;
 	   if(parseInt(invoiceId) <= 0)
 		   {
-
 		   		return selecttranactiondialog();
 		   		return false;
 		   }
@@ -861,7 +949,7 @@ table.tabla-listados tbody tr td {
 			  {
 			  		return false;
 			  } */
-		   debugger;
+
 			event.preventDefault();
 			$("#showcleartransactiondialog").dialog({
 			    	resizable: false,
@@ -870,7 +958,6 @@ table.tabla-listados tbody tr td {
 			        modal: true,
 			        buttons: {
 			        	"<spring:message code='BzComposer.global.ok'/>": function () {
-			            	
 			            },
 			            "<spring:message code='BzComposer.global.cancel'/>": function () {
 			                $(this).dialog("close");
@@ -878,7 +965,7 @@ table.tabla-listados tbody tr td {
 			            }
 			        }
 			    });
-			    return false;
+			     return false;
 		  
 	   }
 	   var invId = invoiceId; 
@@ -902,20 +989,28 @@ table.tabla-listados tbody tr td {
    }
    function cancelledTab()
    {
-	   debugger;
+
 	   window.location = "${pageContext.request.contextPath}/CancelledTab?tabid=canCelledTab";
    }
    function receivedTab()
    {
 		window.location = "${pageContext.request.contextPath}/ReceivedTab?tabid=receivedTab";
    }
+      function eSales()
+      {
+   		window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=eSales";
+      }
    function overDueTab()
    {
 	   window.location = "${pageContext.request.contextPath}/OverDueTab?tabid=overDueTab";
    }
+
+   function CustomerRMARefund()
+   {
+	   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=CustomerRMARefund";
+   }
    function billingInfo()
    {
-	   debugger;
 	   var h = window.screen.height;
 	   var w = window.screen.width;
 	   
@@ -937,7 +1032,6 @@ table.tabla-listados tbody tr td {
    }
    function checkPaymentStatus()
    {
-	   debugger;
 
 	  	/* var pay = document.getElementById("payStatus");
 	  	vat option = pay.options[pay.selectedIndex].value; */
@@ -946,7 +1040,7 @@ table.tabla-listados tbody tr td {
 		});
    }
    $( ".paymentOP" ).change(function() {
-	debugger;
+
 	var pay = document.getElementById("payStatus");
 	var payment = pay.options[pay.selectedIndex].value; 
 	if(payment == 'Layaway')

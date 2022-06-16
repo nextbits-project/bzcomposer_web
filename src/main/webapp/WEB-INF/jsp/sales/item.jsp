@@ -24,7 +24,7 @@
     <script>
         $(function () {
             $('#sortBy').change(function () {
-                debugger;
+                
                 var sortBy = $(this).val();
                 $.ajax({
                     type: "POST",
@@ -34,7 +34,7 @@
                     $('#ItemDetails').html('');
                     var custDetails = "";
                     for (var i = 0; i < data.length; i++) {
-                        debugger;
+                        
                         var objList = data[i];
                         custDetails = custDetails +
                             "<input type='hidden' name='listSize' id='lSize' value='" + data.length + "'>"
@@ -1786,7 +1786,7 @@
     }
 
     function manageItem(cmd) {
-        debugger;
+        
         var itemid = document.getElementById("inventoryId11").value;
         if (itemid == 0) {
 

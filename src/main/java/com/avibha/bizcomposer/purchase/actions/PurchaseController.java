@@ -5,37 +5,31 @@
  */
 package com.avibha.bizcomposer.purchase.actions;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.purchase.dao.PurchaseDetails;
 import com.avibha.bizcomposer.purchase.dao.PurchaseDetailsDao;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
+import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
+import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
+import com.avibha.common.utility.Path;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
 
 @Controller
 public class PurchaseController {
 
-	private ConfigurationInfo configInfo;
-	@Autowired
-    private InvoiceInfoDao invoice;
-    @Autowired
-    public PurchaseController(ConfigurationInfo configInfo) {
-		super();
-		this.configInfo = configInfo;
-	}
 	@RequestMapping(value = {"/Vendor"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String vendor(VendorDto vendorDto, UpdateInvoiceDto updateInvoiceDto, HttpServletRequest request) throws IOException, ServletException {
 		String forward = "a";
@@ -74,15 +68,14 @@ public class PurchaseController {
 		else if (action.equalsIgnoreCase("AODOVO")) { // Goto Add-Vendor Page
 			String compId = (String) request.getSession().getAttribute("CID");
 			String cvId = request.getParameter("CustId");
-			//InvoiceInfoDao invoice = new InvoiceInfoDao();
+			InvoiceInfoDao invoice = new InvoiceInfoDao();
 
 			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			pdetails.getAllList(request);
 			invoice.set(cvId, request, updateInvoiceDto, compId);
 			invoice.getServices(request, compId, cvId);
-			
-			request.setAttribute("templateName", "Purchase Order");
-			//ConfigurationInfo configInfo = new ConfigurationInfo();
+
+			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);
 

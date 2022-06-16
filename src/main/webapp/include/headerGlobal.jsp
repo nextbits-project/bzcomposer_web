@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%> --%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script type="text/javascript">
 $(document).ready(function() 
@@ -11,7 +12,7 @@ $(document).ready(function()
 });  
 function showLocale()
 {
-	debugger;
+	
 	var lang = document.getElementById("locale").value;
 	if(lang == "")
 		alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
@@ -24,12 +25,12 @@ function showLocale()
 		url:"Locale.do?request_locale="+lang,
 		data:{lang : lang},
 		}).done(function(data){
-			debugger;
+			
 	}); */
 }
 function showLocaleMobile()
 {
-	debugger;
+	
 	var lang = document.getElementById("localeMobile").value;
 	if(lang == "")
 		alert("<bean:message key='BzComposer.common.selectlanguagetochange'/>");
@@ -42,7 +43,7 @@ function showLocaleMobile()
 		url:"Locale.do?request_locale="+lang,
 		data:{lang : lang},
 		}).done(function(data){
-			debugger;
+			
 	}); */
 }
 </script>

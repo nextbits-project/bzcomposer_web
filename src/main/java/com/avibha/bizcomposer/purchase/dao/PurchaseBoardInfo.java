@@ -10,18 +10,21 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
-import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import org.apache.struts.action.ActionError;
+
+import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
+import com.avibha.bizcomposer.purchase.forms.VendorForm;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 
 public class PurchaseBoardInfo {
 	public ArrayList PurchaseRecordSearch(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action, String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form) {
+			String sOption1, String sOption2, String sType,String action, String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form) {
 
 		//Loger.log("From PurchaseInfo" + compId);
 		Connection con = null ;
@@ -284,7 +287,7 @@ public class PurchaseBoardInfo {
 			Loger.log(sqlString);
 			int count = pstmtUpdate.executeUpdate();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loger.log(e.toString());
 			Loger.log(2, "Error in DeleteReceivedItem() " + e);
 			// TODO: handle exception
 		}
@@ -294,7 +297,7 @@ public class PurchaseBoardInfo {
 	}
 	public ArrayList getPurchaseBillLists(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action , String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
+			String sOption1, String sOption2, String sType,String action , String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form)
 	{
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
@@ -375,7 +378,7 @@ public class PurchaseBoardInfo {
 			
 		}catch(Exception e)
 		{
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}
 		finally {
 			try {
@@ -389,17 +392,17 @@ public class PurchaseBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
 	//  vendor symmary  report 
-	public ArrayList VendorSummaryRecordSearch(HttpServletRequest request,String compId, String saleDate1, String saleDate2, String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form) {
+	public ArrayList VendorSummaryRecordSearch(HttpServletRequest request,String compId, String saleDate1, String saleDate2, String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null,stmt2=null;
-		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
+		ArrayList<VendorForm> objList = new ArrayList<VendorForm>();
 		double totalbalance=0;
 		ResultSet rs = null,rs2=null;
 		con = db.getConnection();
@@ -460,7 +463,7 @@ public class PurchaseBoardInfo {
 			if(!rs.next())
 				break;
 
-				VendorDto vendor = new VendorDto();
+				VendorForm vendor = new VendorForm();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
 				
@@ -528,7 +531,7 @@ public class PurchaseBoardInfo {
 	}
 	public ArrayList getCancelledPuBillRefList(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
+			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form)
 	{
 		Connection con=null;
 		Statement stmt = null,stmt1 = null;
@@ -634,7 +637,7 @@ public class PurchaseBoardInfo {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -653,7 +656,7 @@ public class PurchaseBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		
@@ -661,7 +664,7 @@ public class PurchaseBoardInfo {
 	}
 	public ArrayList getVendor1099List(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
+			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form)
 	{
 		Connection con=null;
 		Statement stmt = null,stmt1 = null;
@@ -748,7 +751,7 @@ public class PurchaseBoardInfo {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -767,7 +770,7 @@ public class PurchaseBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -776,7 +779,7 @@ public class PurchaseBoardInfo {
 	/*getVendor1099TransactionSummary*/
 	public ArrayList getVendor1099TransactionSummary(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
+			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form)
 	{
 		Connection con=null;
 		Statement stmt = null,stmt1 = null;
@@ -842,7 +845,7 @@ public class PurchaseBoardInfo {
 			
 			while(rs.next())
 			{
-				PurchaseBoardDto pb = new PurchaseBoardDto();
+				PurchaseBoardForm pb = new PurchaseBoardForm();
 				
 				/*pb.setVendorName(rs.getString(3));
 				pb.setTotal(rs.);
@@ -852,7 +855,7 @@ public class PurchaseBoardInfo {
 			
 		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally {
 			try {
 				if (rs != null) {
@@ -871,7 +874,7 @@ public class PurchaseBoardInfo {
 					db.close(con);
 					}
 				} catch (Exception e) {
-				e.printStackTrace();
+				Loger.log(e.toString());
 			}
 		}
 		return objList;
@@ -895,7 +898,7 @@ public class PurchaseBoardInfo {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Loger.log(e.toString());
 		}finally{
 			try {
 				if (rs != null)
@@ -1027,13 +1030,13 @@ public class PurchaseBoardInfo {
 	/*get all purchse order*/
 	public ArrayList getAllPurchaseOrderList(HttpServletRequest request,String compId, String oDate1,
 			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action, String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form) {
+			String sOption1, String sOption2, String sType,String action, String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardForm form) {
 
 		Loger.log("From PurchaseInfo" + compId);
 		Connection con = null ;
 		Statement stmt = null, stmt1 = null, stmt2 = null,stm3=null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<PurchaseBoardDto> objList = new ArrayList<PurchaseBoardDto>();
+		ArrayList<PurchaseBoardForm> objList = new ArrayList<PurchaseBoardForm>();
 		ResultSet rs = null, rs2 = null, rs3 = null,rs4=null;
 		con = db.getConnection();
 		String mark = null;
@@ -1178,11 +1181,11 @@ public class PurchaseBoardInfo {
 			rs = stmt.executeQuery(sqlString);
 			rs2 = stmt1.executeQuery(sql2);
 			
-			PurchaseBoardDto pb = null;
+			PurchaseBoardForm pb = null;
 			
 			while(rs.next())
 			{
-				pb = new PurchaseBoardDto();
+				pb = new PurchaseBoardForm();
 				
 				pb.setDateAdded(rs.getString(4));
 				pb.setClientvendor(rs.getString(9));
@@ -1205,7 +1208,7 @@ public class PurchaseBoardInfo {
 			Loger.log(2,
 					" SQL Error in Class TaxInfo and  method -getFederalTax "
 							+ " " + ee.toString());
-			ee.printStackTrace();
+			
 		}
 
 		finally {
