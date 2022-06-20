@@ -6,13 +6,13 @@
 
 package com.avibha.bizcomposer.rma.dao;
 
-import java.util.ArrayList;
+import com.avibha.bizcomposer.rma.forms.RMADto;
+import com.avibha.bizcomposer.rma.forms.RMAForm;
+import com.avibha.common.log.Loger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import com.avibha.bizcomposer.rma.forms.RMADto;
-import com.avibha.common.log.Loger;
+import java.util.ArrayList;
 
 public class RMADetailsDao {
 

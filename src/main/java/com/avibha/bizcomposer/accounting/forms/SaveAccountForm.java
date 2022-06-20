@@ -7,7 +7,9 @@
 
 package com.avibha.bizcomposer.accounting.forms;
 
-public class SaveAccountForm {
+import org.apache.struts.action.ActionForm;
+
+public class SaveAccountForm extends ActionForm{
 	
 	private static final long serialVersionUID = 1L;
 	private String accountId;

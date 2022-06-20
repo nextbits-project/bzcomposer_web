@@ -6,9 +6,10 @@
 
 package com.avibha.bizcomposer.purchase.forms;
 
-import java.util.List;
-
 import com.avibha.bizcomposer.sales.dao.Item;
+import org.apache.struts.action.ActionForm;
+
+import java.util.List;
 
 public class PurchaseOrderDto {
 

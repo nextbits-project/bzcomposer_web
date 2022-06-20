@@ -1,5 +1,10 @@
+<%-- test comment --%>
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 
-<form action="Item.do" method="post">
+<ROOT>
+<html:form action="Item.do" method="post">
 
 	<table class="tabla-listados" cellspacing="0">
 
@@ -22,11 +27,11 @@
 				key="BzComposer.Item.DiscountTitle" /></td>
 		</tr>
 		<tr>
-			<td colspan="4"><textarea property="invTitle" /></td>
+			<td colspan="4"><html:textarea property="invTitle" /></td>
 		</tr>
 
 	</table>
-</form>
+</html:form>
 <script type="text/javascript">
 	function numbersonly(e,val){
 		var temp=val.indexOf(".");
@@ -81,4 +86,4 @@
 		}
 	}
 </script>
-
+</ROOT>

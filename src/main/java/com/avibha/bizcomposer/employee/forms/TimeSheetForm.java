@@ -1,6 +1,14 @@
 package com.avibha.bizcomposer.employee.forms;
 
-public class TimeSheetForm  {
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+
+import com.avibha.common.log.Loger;
+
+public class TimeSheetForm extends ActionForm {
 
 	private static final long serialVersionUID = 0;
 	
@@ -55,5 +63,13 @@ public class TimeSheetForm  {
 		this.timedata = timedata;
 	}
 
-	
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
+
+		// String time=request.getParameter("timedata");
+		if (timedata == null)
+			Loger.log("Time data is null");
+		return errors;
+	}
 }

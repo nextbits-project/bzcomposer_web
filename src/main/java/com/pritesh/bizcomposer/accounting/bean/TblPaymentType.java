@@ -2,7 +2,7 @@ package com.pritesh.bizcomposer.accounting.bean;
 
 public class TblPaymentType {
 
-	 private int id = -1;  
+	 private int id = -1;
 	    
 	    private String typeName = "";
 	    

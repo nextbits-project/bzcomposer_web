@@ -6,10 +6,16 @@
 
 package com.avibha.bizcomposer.sales.forms;
 
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.upload.FormFile;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import com.avibha.common.utility.FormFile;
+import java.util.Date;
 
 public class ItemDto implements Serializable {
 	
@@ -1033,7 +1039,33 @@ public class ItemDto implements Serializable {
 
 	}*/
 
-	
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
+		if (("").equals(itemCode)) {
+			errors.add("ItemCode", new ActionMessage(
+					"ItemDto.ItemCode.Required"));
+		}
+		String type = request.getParameter("ItemType");
+		if (("1").equals(type)) {
+			if (("").equals(salePrice)) {
+				errors.add("SalePrice", new ActionMessage(
+						"ItemDto.SalePrice.Required"));
+			}
+			if (("").equals(purchasePrice)) {
+				errors.add("PurchasePrice", new ActionMessage(
+						"ItemDto.PurchasePrice.Required"));
+			}
+			if (("").equals(qty)) {
+				errors.add("Qty", new ActionMessage("ItemDto.Qty.Required"));
+			}
+			if (("").equals(weight)) {
+				errors.add("Weight", new ActionMessage(
+						"ItemDto.Weight.Required"));
+			}
+		}
+		return errors;
+	}
 
 	public String getCategory() {
 		return category;

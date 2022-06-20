@@ -1,6 +1,8 @@
-/*package com.nxsol.bizcompser.global.table;
+package com.nxsol.bizcompser.global.table;
 
-public class TblCategory {
+import org.apache.struts.action.ActionForm;
+
+public class TblCategory extends ActionForm {
 
     private long id = -1;
     private int accountID = -1;
@@ -67,7 +69,7 @@ public class TblCategory {
 		this.categoryTypeName = categoryTypeName;
 	}
 
-	*//** Creates a new instance of tblCategory *//*
+	/** Creates a new instance of tblCategory */
     public TblCategory() {
     }
 
@@ -150,4 +152,3 @@ public class TblCategory {
        return null;
     }
 }
-*/

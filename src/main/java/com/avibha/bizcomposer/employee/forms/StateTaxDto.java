@@ -7,8 +7,9 @@
 package com.avibha.bizcomposer.employee.forms;
 
 
+import org.apache.struts.action.ActionForm;
 
-public class StateTaxDto {
+public class StateTaxDto extends ActionForm{
 	
 	private static final long serialVersionUID = 0;
 
@@ -216,5 +217,40 @@ public class StateTaxDto {
 		this.stTaxId = stTaxId;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping,
+	 *      javax.servlet.http.HttpServletRequest)
+	 */
+	/*public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
 
+		return errors;
+	}*/
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping,
+	 *      javax.servlet.http.HttpServletRequest)
+	 */
+	/*public void reset(ActionMapping mapping, HttpServletRequest request) {
+		super.reset(mapping, request);
+
+		flSt = null;
+		stTaxId = null;
+		sitVal = null;
+		sitName = null;
+		othVal1 = null;
+		othName1 = null;
+		othRate1 = 0;
+		othUpto = 0;
+		othVal2 = null;
+		othName2 = null;
+		othRate2 = 0;
+		fstate = null;
+
+	}*/
 }

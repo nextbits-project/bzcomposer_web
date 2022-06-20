@@ -6,6 +6,9 @@
 
 package com.avibha.bizcomposer.employee.forms;
 
+
+import org.apache.struts.action.ActionForm;
+
 public class StateTaxOtherDto{
 	
 	private static final long serialVersionUID = 0;

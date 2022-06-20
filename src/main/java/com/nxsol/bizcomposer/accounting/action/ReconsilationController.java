@@ -1,27 +1,28 @@
 package com.nxsol.bizcomposer.accounting.action;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblCategoryType;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategoryDto;
-import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+import com.nxsol.bizcompser.global.table.TblCategory;
+import com.pritesh.bizcomposer.accounting.bean.*;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 @Controller
 public class ReconsilationController {
@@ -36,29 +37,29 @@ public class ReconsilationController {
 		Date defaultToDate = new Date();
 		Date defaultFromDate = new Date("11/14/2007");
 		int defaultAccountId = 56933;
-		ArrayList<TblCategoryDto> initCategory = null;
-		ArrayList<TblCategoryDto> initCharge = null;
+		ArrayList<TblCategory> initCategory = null;
+		ArrayList<TblCategory> initCharge = null;
 		ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<TblCategoryType> categoryType = rl.getCategoryType();
-		ArrayList<TblCategoryDto> subCategoryChrgeListForAsset = null;
+		ArrayList<TblCategory> subCategoryChrgeListForAsset = null;
 		if(action.equals("reconsilation")) {
 			
 		}
 		Gson gson=new Gson();
-		TblPaymentDto payment = gson.fromJson(request.getParameter("data"), TblPaymentDto.class);
+		TblPayment payment = gson.fromJson(request.getParameter("data"), TblPayment.class);
 		if(payment != null) {
 			defaultToDate = new SimpleDateFormat("MM/dd/yyyy").parse(payment.getToDate());
 			defaultFromDate = new SimpleDateFormat("MM/dd/yyyy").parse(payment.getFromDate());
 			defaultAccountId = payment.getAccountID();
 		}
 		if(action.equals("EditTransaction")) {
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPayment.class);
 			int paymentId = Integer.parseInt(request.getParameter("PaymentId"));
 			String paidDate = request.getParameter("date");
 			Date datePaid = JProjectUtil.getdateFormat().parse(paidDate);
 			double receivedAmount = Double.parseDouble(request.getParameter("amount"));
 			strName = request.getParameter("tableName");
-			TblPaymentDto paymentEdit = rl.getObjectOfStoragePayment(paymentId);
+			TblPayment paymentEdit = rl.getObjectOfStoragePayment(paymentId);
 			paymentEdit.setOldclientVendorID(paymentFromAjax.getOldclientVendorID());
 			paymentEdit.setOldAccountID(paymentFromAjax.getOldAccountID());
 			paymentEdit.setPaymentTypeID(paymentFromAjax.getPaymentTypeID());
@@ -69,15 +70,15 @@ public class ReconsilationController {
 			System.out.println("oldAccountId" + paymentId);
 		}
 		
-		ArrayList<TblCategoryDto> getCategoryListForAsset = rl.getCategoryForAsset();
-		ArrayList<TblPaymentDto> listOfPayments = rl.getPaymentOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
-		ArrayList<TblPaymentDto> listOfDepositPayments = rl.getDepositOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
+		ArrayList<TblCategory> getCategoryListForAsset = rl.getCategoryForAsset();
+		ArrayList<TblPayment> listOfPayments = rl.getPaymentOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
+		ArrayList<TblPayment> listOfDepositPayments = rl.getDepositOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<ClientVendor> allClientVendor = rl.getAllClientVendor();
 		ArrayList<TblPaymentType> allPaymentList = rl.getAllPaymentList();
-		ArrayList<TblCategoryDto> allCategoryList = rl.getAllCategory();
+		ArrayList<TblCategory> allCategoryList = rl.getAllCategory();
 		
 		request.setAttribute("allCategoryList", allCategoryList);
 		request.setAttribute("allPaymentList", allPaymentList);
@@ -104,11 +105,11 @@ public class ReconsilationController {
 		Date defaultToDate = new Date();
 		Date defaultFromDate = new Date("11/14/2007");
 		int defaultAccountId = 56933;
-		ArrayList<TblCategoryDto> initCategory = null;
-		ArrayList<TblCategoryDto> initCharge = null;
+		ArrayList<TblCategory> initCategory = null;
+		ArrayList<TblCategory> initCharge = null;
 		ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<TblCategoryType> categoryType = rl.getCategoryType();
-		ArrayList<TblCategoryDto> subCategoryChrgeListForAsset = null;
+		ArrayList<TblCategory> subCategoryChrgeListForAsset = null;
 		Gson gson=new Gson();
 		if(action.equals("DeletePayment")) {
 			String paymentIdString = request.getParameter("PaymentId");
@@ -124,7 +125,7 @@ public class ReconsilationController {
 				initCharge = rl.initComboCharge(initCategory.get(0));
 				defaultAccountId = categoryType1.getAccountID();
 			}
-			TblCategoryDto category = gson.fromJson(request.getParameter("data2"), TblCategoryDto.class);
+			TblCategory category = gson.fromJson(request.getParameter("data2"), TblCategory.class);
 			if(category != null) {
 				initCharge = rl.initComboCharge(category);
 				defaultAccountId = category.getAccountID();
@@ -134,25 +135,25 @@ public class ReconsilationController {
 			initCharge = rl.initComboCharge(initCategory.get(0));
 		}
 		if(action.equals("AddReconcile")) {
-			TblPaymentDto payment1 = gson.fromJson(request.getParameter("data3"), TblPaymentDto.class);
+			TblPayment payment1 = gson.fromJson(request.getParameter("data3"), TblPayment.class);
 			rl.addBankCharge(payment1);
 			defaultAccountId = payment1.getAccountID();
 		}
 		if(action.equals("SubAssetCategory")) {
-			TblCategoryDto category = gson.fromJson(request.getParameter("data4"), TblCategoryDto.class);
+			TblCategory category = gson.fromJson(request.getParameter("data4"), TblCategory.class);
 			defaultAccountId = category.getAccountID();
 			subCategoryChrgeListForAsset = rl.initComboCharge(category);
 		}
 
-		ArrayList<TblCategoryDto> getCategoryListForAsset = rl.getCategoryForAsset();
-		ArrayList<TblPaymentDto> listOfPayments = rl.getPaymentOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
-		ArrayList<TblPaymentDto> listOfDepositPayments = rl.getDepositOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
+		ArrayList<TblCategory> getCategoryListForAsset = rl.getCategoryForAsset();
+		ArrayList<TblPayment> listOfPayments = rl.getPaymentOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
+		ArrayList<TblPayment> listOfDepositPayments = rl.getDepositOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<ClientVendor> allClientVendor = rl.getAllClientVendor();
 		ArrayList<TblPaymentType> allPaymentList = rl.getAllPaymentList();
-		ArrayList<TblCategoryDto> allCategoryList = rl.getAllCategory();
+		ArrayList<TblCategory> allCategoryList = rl.getAllCategory();
 
 		request.setAttribute("allCategoryList", allCategoryList);
 		request.setAttribute("allPaymentList", allPaymentList);

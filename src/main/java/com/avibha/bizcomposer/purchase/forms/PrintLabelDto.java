@@ -5,6 +5,8 @@
  */
 package com.avibha.bizcomposer.purchase.forms;
 
+import org.apache.struts.action.ActionForm;
+
 public class PrintLabelDto {
 	
 	private static final long serialVersionUID = 0;
