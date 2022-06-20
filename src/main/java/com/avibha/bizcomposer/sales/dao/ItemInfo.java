@@ -32,6 +32,8 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 
 import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.common.utility.FormFile;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -39,15 +41,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.struts.action.ActionServlet;
-import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
 
 import com.avibha.bizcomposer.accounting.dao.Invoice;
-import com.avibha.bizcomposer.accounting.forms.CategoryListForm;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
-import com.avibha.bizcomposer.sales.forms.CustomerForm;
-import com.avibha.bizcomposer.sales.forms.InvoiceForm;
-import com.avibha.bizcomposer.sales.forms.ItemForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
@@ -66,11 +63,11 @@ import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 public class ItemInfo {
 
 	public ArrayList getDicontinuedItemList(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemForm form) {
+			String cId, HttpServletRequest request, ItemDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
+		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		ResultSet rs = null, rs1 = null;
 		con = db.getConnection();
 		ArrayList<Date> selectedRange = new ArrayList<>();
@@ -176,7 +173,7 @@ public class ItemInfo {
 				for (int counter = 0; counter < rsSize; counter++) {
 
 					Loger.log("Not Null");
-					ItemForm item = new ItemForm();
+					ItemDto item = new ItemDto();
 					item.setInventoryId(newInventory[counter][0] == null ? "0" : newInventory[counter][0]); // inventory
 																											// id
 					item.setCategory(newInventory[counter][1] == null ? "0" : newInventory[counter][1]); // Category
@@ -235,12 +232,12 @@ public class ItemInfo {
 	}
 
 	public ArrayList getDamagedInvList(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemForm form) {
+			HttpServletRequest request, ItemDto form) {
 
 		Connection con = null ;
 		Statement stmt = null;
 		ResultSet rs = null;
-		ArrayList<ItemForm> objList = new ArrayList<>();
+		ArrayList<ItemDto> objList = new ArrayList<>();
 		String sql = "";
 		SQLExecutor db = new SQLExecutor();
 		DateInfo dInfo = new DateInfo();
@@ -286,7 +283,7 @@ public class ItemInfo {
 					+ " AND reason = 'Defective'" + dateBetween;
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				form = new ItemForm();
+				form = new ItemDto();
 				form.setInventoryId(rs.getString("InventoryID"));
 				form.setInventoryCode(rs.getString("InventoryCode"));
 				form.setOldQty(rs.getInt("oldQty"));
@@ -319,12 +316,12 @@ public class ItemInfo {
 
 	/* missing */
 	public ArrayList getMissingInventoryList(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemForm form) {
+			String cId, HttpServletRequest request, ItemDto form) {
 
 		Connection con = null ;
 		Statement stmt = null;
 		ResultSet rs = null;
-		ArrayList<ItemForm> objList = new ArrayList<>();
+		ArrayList<ItemDto> objList = new ArrayList<>();
 		String sql = "";
 		SQLExecutor db = new SQLExecutor();
 		DateInfo dInfo = new DateInfo();
@@ -374,7 +371,7 @@ public class ItemInfo {
 					+ "       AND refrmano <= 0 " + "       AND parentreasonid = 3" + dateBetween;
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				form = new ItemForm();
+				form = new ItemDto();
 				form.setInventoryName(rs.getString(1));
 				form.setAdjustqty(rs.getInt(5));
 				form.setDateAdded(rs.getString(6));
@@ -406,12 +403,12 @@ public class ItemInfo {
 
 	/* return inventory */
 	public ArrayList getReturnInventoryList(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemForm form) {
+			String cId, HttpServletRequest request, ItemDto form) {
 
 		Connection con = null ;
 		Statement stmt = null;
 		ResultSet rs = null;
-		ArrayList<ItemForm> objList = new ArrayList<>();
+		ArrayList<ItemDto> objList = new ArrayList<>();
 		String sql = "";
 		SQLExecutor db = new SQLExecutor();
 		DateInfo dInfo = new DateInfo();
@@ -461,7 +458,7 @@ public class ItemInfo {
 					+ "       AND refrmano <= 0 " + "       AND parentreasonid = 2" + dateBetween;
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				form = new ItemForm();
+				form = new ItemDto();
 				form.setInventoryName(rs.getString(1));
 				form.setInventoryID(rs.getInt(2));
 				form.setRmaitemqty(rs.getString(3));
@@ -496,13 +493,13 @@ public class ItemInfo {
 	/**/
 
 	public ArrayList getInventoryValSummary(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemForm form1) {
+			String cId, HttpServletRequest request, ItemDto form1) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null, stmt1 = null;
 		ResultSet rs = null, rs1 = null;
 		String sql = "";
-		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
+		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		int count = 0;
 		String cat = "";
 		DateInfo dInfo = new DateInfo();
@@ -554,7 +551,7 @@ public class ItemInfo {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				ItemForm form = new ItemForm();
+				ItemDto form = new ItemDto();
 				if (count <= 0) {
 					String sql1 = "" + "SELECT Sum(a.qty), " + "       Sum(a.purchaseprice * a.qty) AS AssetValue, "
 							+ "       Sum(a.qty * a.saleprice)     AS RetailValue " + "FROM   bca_iteminventory AS a "
@@ -615,15 +612,15 @@ public class ItemInfo {
 	}
 
 	public ArrayList getInvValDetail(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemForm form1) {
+			HttpServletRequest request, ItemDto form1) {
 		Connection con = null ;
 		Statement stmt = null, stmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null, rs1 = null;
-		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
+		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		String cat = "";
 		String inventoryName = "";
-		ReceivableListBean invoice = null;
+		ReceivableListDto invoice = null;
 		String sql = "";
 
 		DateInfo dInfo = new DateInfo();
@@ -675,7 +672,7 @@ public class ItemInfo {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				ItemForm f = new ItemForm();
+				ItemDto f = new ItemDto();
 				f.setCategory(rs.getString("InventoryCode"));
 				if (cat.equals(f.getCategory())) {
 					f.setCategory("");
@@ -724,7 +721,7 @@ public class ItemInfo {
 					if (rs1.next()) {
 						f.setCvName(rs1.getString("Name"));
 					}
-					f.setDateAdded(rs.getDate("DateAdded"));
+					f.setDateAdded(rs.getDate("DateAdded").toString());
 					
 					if (rs1 != null) {
 						db.close(rs1);
@@ -765,11 +762,11 @@ public class ItemInfo {
 	}
 
 	public ArrayList getInvOrderReport(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemForm form1) {
+			HttpServletRequest request, ItemDto form1) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null, stmt1 = null;
-		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
+		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		ResultSet rs = null, rs1 = null;
 		String sql = "";
 		String str = "";
@@ -817,7 +814,7 @@ public class ItemInfo {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				ItemForm f = new ItemForm();
+				ItemDto f = new ItemDto();
 
 				String sql_cat = "SELECT InventoryCode FROM bca_iteminventory WHERE InventoryID = " + rs.getInt("ParentID")
 						+ " AND CompanyID ='" + cId + "'";
@@ -877,12 +874,12 @@ public class ItemInfo {
 	}
 
 	public ArrayList getInvStatisticReport(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemForm form1) {
+			HttpServletRequest request, ItemDto form1) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null, rs1 = null;
 		Statement stmt = null, stmt1 = null;
-		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
+		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 
 		DateInfo dInfo = new DateInfo();
 		CustomerInfo cInfo = new CustomerInfo();
@@ -930,7 +927,7 @@ public class ItemInfo {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				ItemForm f = new ItemForm();
+				ItemDto f = new ItemDto();
 				f.setInventoryId(Long.toString(rs.getLong("InventoryID")));
 				f.setInventoryCode(rs.getString("InventoryCode"));
 				f.setInvName(rs.getString("InventoryName"));
@@ -966,11 +963,11 @@ public class ItemInfo {
 	}
 
 	public ArrayList getReportItemList(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-			HttpServletRequest request, ItemForm form) {
+			HttpServletRequest request, ItemDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
+		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		ResultSet rs = null;
 		String dateBetween = "";
 		DateInfo dInfo = new DateInfo();
@@ -1051,7 +1048,7 @@ public class ItemInfo {
 				for (int counter = 0; counter < rsSize; counter++) {
 					if (inventory[counter][0] != null) {
 						Loger.log("Not Null");
-						ItemForm item = new ItemForm();
+						ItemDto item = new ItemDto();
 						item.setInventoryId(inventory[counter][0] == null ? "0" : inventory[counter][0]); // inventory
 																											// id
 						item.setIscategory(inventory[counter][2] == null ? "0" : inventory[counter][2]); // is
@@ -1104,7 +1101,7 @@ public class ItemInfo {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
+		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 
@@ -1203,7 +1200,7 @@ public class ItemInfo {
 				for (int counter = 0; counter < rsSize; counter++) {
 					if (inventory[counter][0] != null) {
 						Loger.log("Not Null");
-						ItemForm item = new ItemForm();
+						ItemDto item = new ItemDto();
 						item.setInventoryId(inventory[counter][0] == null ? "0" : inventory[counter][0]); // inventory
 																												// id
 						item.setIscategory(inventory[counter][2] == null ? "0" : inventory[counter][2]); // is
@@ -1260,7 +1257,7 @@ public class ItemInfo {
 		Connection con = null ;
 		PreparedStatement pstmt =  null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemForm> objList = new ArrayList<ItemForm>();
+		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		ResultSet rs = null;
 		con = db.getConnection();
 
@@ -1282,7 +1279,7 @@ public class ItemInfo {
 			String file = "";
 			while (rs.next()) {
 
-				ItemForm item = new ItemForm();
+				ItemDto item = new ItemDto();
 				item.setInventoryId(invId);
 				item.setItemName(rs.getString(2));
 				item.setItemCode(rs.getString(3));
@@ -1927,12 +1924,12 @@ public class ItemInfo {
 	}
 
 	public ArrayList getProfitLossReportByItem(String datesCombo, String fromDate, String toDate, String sortBy,
-			String cId, HttpServletRequest request, ItemForm form) {
+			String cId, HttpServletRequest request, ItemDto form) {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt1 = null, stmt2 = null, stmt3 = null, stmt4 = null;
 		ResultSet rs1 = null, rs2 = null, rs3 = null, rs4 = null;
-		ArrayList<ItemForm> objList = new ArrayList<>();
+		ArrayList<ItemDto> objList = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
 		String dateBetween = "", sql = "";
 		double totalPurchPrice = 0.0;
@@ -1986,7 +1983,7 @@ public class ItemInfo {
 
 			rs1 = stmt1.executeQuery(sql);
 			while (rs1.next()) {
-				ItemForm f = new ItemForm();
+				ItemDto f = new ItemDto();
 				f.setInventoryId(rs1.getString("InventoryID"));
 				f.setInventoryCode(rs1.getString("InventoryCode"));
 				f.setSalePrice(new DecimalFormat("#0.00").format(rs1.getDouble("SalePrice")));
@@ -3894,12 +3891,12 @@ public class ItemInfo {
 		return weightList;
 	}
 	
-	public ArrayList filleSalesChannel(ItemForm itemForm) 
+	public ArrayList filleSalesChannel(ItemDto itemForm) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemForm> eSaleChannelList = new ArrayList<>();
+		ArrayList<ItemDto> eSaleChannelList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try 
@@ -3909,7 +3906,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				ItemForm iForm = new ItemForm();
+				ItemDto iForm = new ItemDto();
 				iForm.seteSaleChannelListName("Don't Synch with "+ rs.getString("StoreTypeName"));
 				eSaleChannelList.add(iForm);
 			}
@@ -4016,12 +4013,12 @@ public class ItemInfo {
 		return subMeasurementList;
 	}
 
-	public ArrayList setPriceLevel(String compId,ItemForm form) 
+	public ArrayList setPriceLevel(String compId,ItemDto form) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemForm> priceLevelList = new ArrayList<>();
+		ArrayList<ItemDto> priceLevelList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try 
@@ -4035,7 +4032,7 @@ public class ItemInfo {
 				priceLevelList.add(rs.getString("Name"));
 				priceLevelList.add(rs.getLong("FixedPercentage"));*/
 				
-				ItemForm fo = new ItemForm();
+				ItemDto fo = new ItemDto();
 				fo.setPriceLevelId(rs.getInt("PriceLevelID"));
 				fo.setPriceLevel(rs.getString("Name"));
 				fo.setPricePercentage(rs.getLong("FixedPercentage"));
@@ -4067,12 +4064,12 @@ public class ItemInfo {
 		return priceLevelList;
 	}
 
-	public ArrayList eBayProductList(String compId,ItemForm form) 
+	public ArrayList eBayProductList(String compId,ItemDto form) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemForm> eBayProductList = new ArrayList<>();
+		ArrayList<ItemDto> eBayProductList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try 
@@ -4082,7 +4079,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				ItemForm iForm = new ItemForm();
+				ItemDto iForm = new ItemDto();
 				iForm.seteBayProductId(rs.getInt("InventoryID"));
 				iForm.seteBayProductCode(rs.getString("InventoryCode"));
 				iForm.seteBayProductName(rs.getString("InventoryName"));
@@ -4134,7 +4131,7 @@ public class ItemInfo {
 	
 	
 	
-	public ArrayList getExistingLocation(String compId, HttpServletRequest request, ItemForm itemForm) 
+	public ArrayList getExistingLocation(String compId, HttpServletRequest request, ItemDto itemForm) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -4176,12 +4173,12 @@ public class ItemInfo {
 		return locationList;
 	}
 
-	public ArrayList filleStoreList(String compId, ItemForm itemForm) 
+	public ArrayList filleStoreList(String compId, ItemDto itemForm) 
 	{
 		Connection con = null ;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemForm> storeList = new ArrayList<>();
+		ArrayList<ItemDto> storeList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try 
@@ -4191,7 +4188,7 @@ public class ItemInfo {
 			rs = pstmt.executeQuery();
 			while (rs.next()) 
 			{
-				ItemForm iForm = new ItemForm();
+				ItemDto iForm = new ItemDto();
 				iForm.setChannelSettingName(rs.getString("StoreTypeName")+"-"+rs.getString("StoreName"));
 				
 				storeList.add(iForm);
@@ -4290,7 +4287,7 @@ public class ItemInfo {
 		Connection con=null;
 		PreparedStatement pstmt=null,pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<ItemForm> productList = new ArrayList<>();
+		ArrayList<ItemDto> productList = new ArrayList<>();
 		ResultSet rs=null,rs1 = null;
 		con = db.getConnection();
 		try 
@@ -4308,7 +4305,7 @@ public class ItemInfo {
 				
 				while(rs1.next())
 				{
-					ItemForm iForm = new ItemForm();
+					ItemDto iForm = new ItemDto();
 					iForm.setItemCode(rs1.getString("InventoryCode"));
 					iForm.setItemName(rs1.getString("SKU"));
 					productList.add(iForm);
@@ -4429,7 +4426,7 @@ public class ItemInfo {
 		ArrayList<LabelValueBean> categoryList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
 		
-		ItemForm form = new ItemForm();
+		ItemDto form = new ItemDto();
 		try 
 		{
 			con = db.getConnection();
@@ -4470,7 +4467,7 @@ public class ItemInfo {
 		ArrayList<LabelValueBean> subCategoryList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
 		
-		ItemForm form = new ItemForm();
+		ItemDto form = new ItemDto();
 		try 
 		{
 			con = db.getConnection();
@@ -4512,7 +4509,7 @@ public class ItemInfo {
 		ArrayList<LabelValueBean> vendorList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
 		
-		ItemForm form = new ItemForm();
+		ItemDto form = new ItemDto();
 		try 
 		{
 			con = db.getConnection();

@@ -9,7 +9,6 @@ import com.avibha.bizcomposer.employee.dao.Label;
 import com.avibha.bizcomposer.purchase.dao.PurchaseDetails;
 import com.avibha.bizcomposer.purchase.dao.PurchaseDetailsDao;
 import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
-import com.avibha.bizcomposer.purchase.forms.PrintLabelForm;
 import com.avibha.bizcomposer.sales.dao.SalesDetails;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.common.utility.Path;

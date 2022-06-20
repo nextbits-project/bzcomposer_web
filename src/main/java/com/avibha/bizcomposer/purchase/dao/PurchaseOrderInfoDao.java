@@ -8,15 +8,12 @@ package com.avibha.bizcomposer.purchase.dao;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderForm;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.purchase.forms.VendorForm;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.dao.Item;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -42,7 +39,7 @@ public class PurchaseOrderInfoDao {
 	 * ship to.   
 	 */
 	public ArrayList dropShipTo(String compId,String name){
-		ArrayList<PurchaseOrderForm> dlist = new ArrayList<PurchaseOrderForm>();
+		ArrayList<PurchaseOrderDto> dlist = new ArrayList<PurchaseOrderDto>();
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		PreparedStatement pstmt=null;
@@ -57,7 +54,7 @@ public class PurchaseOrderInfoDao {
 			pstmt.setString(1,compId);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				PurchaseOrderForm pform = new PurchaseOrderForm();
+				PurchaseOrderDto pform = new PurchaseOrderDto();
 				pform.setFullName(rs.getString("LastName")+", "+rs.getString("FirstName"));
 				pform.setClientVendorID(rs.getString("ClientVendorID"));
 				dlist.add(pform);
@@ -92,7 +89,7 @@ public class PurchaseOrderInfoDao {
 	 * the purchase order to select perticular vendor. 
 	 */
 	public ArrayList getVendorList(String compId,String name,String companyValue){
-			ArrayList<PurchaseOrderForm> vList = new ArrayList<PurchaseOrderForm>();
+			ArrayList<PurchaseOrderDto> vList = new ArrayList<PurchaseOrderDto>();
 			Connection con = null ;
 			SQLExecutor db = new SQLExecutor();
 			PreparedStatement pstmt=null;
@@ -110,7 +107,7 @@ public class PurchaseOrderInfoDao {
 					pstmt.setString(1,compId);
 					rs=pstmt.executeQuery();
 					while(rs.next()){
-						PurchaseOrderForm pform = new PurchaseOrderForm();
+						PurchaseOrderDto pform = new PurchaseOrderDto();
 						pform.setCompanyID(rs.getString("Name"));
 						pform.setClientVendorID(rs.getString("ClientVendorID"));
 						vList.add(pform);
@@ -125,7 +122,7 @@ public class PurchaseOrderInfoDao {
 					pstmt.setString(1,compId);
 					rs=pstmt.executeQuery();
 					while(rs.next()){
-						PurchaseOrderForm pform = new PurchaseOrderForm();
+						PurchaseOrderDto pform = new PurchaseOrderDto();
 						pform.setCompanyID(rs.getString("LastName")+", "+rs.getString("FirstName"));
 						pform.setClientVendorID(rs.getString("ClientVendorID"));
 						vList.add(pform);
@@ -324,7 +321,7 @@ public class PurchaseOrderInfoDao {
 	 * company name. vendor's first name,last name,etc.
 	 * 
 	 */
-	public PurchaseOrderForm getVendorDetails(String compId,String cvId,String companyValue){
+	public PurchaseOrderDto getVendorDetails(String compId,String cvId,String companyValue){
 		Connection con = null ;
 		PreparedStatement pstmt_clientInfo=null;
 		PreparedStatement pstmt_bsaAddr=null;
@@ -333,7 +330,7 @@ public class PurchaseOrderInfoDao {
 		ResultSet rs_clientInfo = null;
 		ResultSet rs_bsaAddr=null;
 		
-		PurchaseOrderForm recvForm = new PurchaseOrderForm();
+		PurchaseOrderDto recvForm = new PurchaseOrderDto();
 		
 		try{
 			con = db.getConnection();
@@ -413,7 +410,7 @@ public class PurchaseOrderInfoDao {
 	 *  vendor,also provides the ship address information
 	 *  The information is provided by the vendor id.
 	 */
-	public PurchaseOrderForm getDropShipDetails(String compId,String cvId){
+	public PurchaseOrderDto getDropShipDetails(String compId,String cvId){
 		Connection con = null ;
 		PreparedStatement pstmt_clientInfo=null;
 		PreparedStatement pstmt_bsaAddr=null;
@@ -421,7 +418,7 @@ public class PurchaseOrderInfoDao {
 		CountryState conState = new CountryState();
 		ResultSet rs_clientInfo = null;
 		ResultSet rs_bsaAddr=null;
-		PurchaseOrderForm recvForm = new PurchaseOrderForm();
+		PurchaseOrderDto recvForm = new PurchaseOrderDto();
 		try{
 			con = db.getConnection();
 			pstmt_clientInfo=con.prepareStatement("select LastName,FirstName from bca_clientvendor where Active=1" +

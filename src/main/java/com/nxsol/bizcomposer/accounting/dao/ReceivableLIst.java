@@ -15,13 +15,12 @@ import com.nxsol.bizcomposer.common.TblVendorDetail;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcomposer.jasper.pojo.BillingBoardReport;
 import com.nxsol.bizcomposer.jasper.pojo.BillingStatementReport;
-import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.pritesh.bizcomposer.accounting.bean.*;
 
 public interface ReceivableLIst {
 
-	public ArrayList<ReceivableListBean> getReceivableList(int companyId);
+	public ArrayList<ReceivableListDto> getReceivableList(int companyId);
 	
 	public ArrayList<ClientVendor> getClientVendorForCombo();
 	
@@ -31,37 +30,37 @@ public interface ReceivableLIst {
 	
 	public ArrayList<TblAccount> getAccount();
 
-	public ReceivableListBean getInvoiceByOrderNUm(int ordernum,int companyId);
+	public ReceivableListDto getInvoiceByOrderNUm(int ordernum,int companyId);
 
-	public ReceivableListBean getInvoiceByPONum(int poNum,int companyId);
+	public ReceivableListDto getInvoiceByPONum(int poNum,int companyId);
 
 	public TblPaymentType getPaymentTypeById(int id);
 	
 	public TblAccount getAccountById(int id);
 	
-	public TblPayment getPaymentByPaymentId(int id);
+	public TblPaymentDto getPaymentByPaymentId(int id);
 	
-	public int updateInvoiceByOrderNum(ReceivableListBean receivableListBean);
+	public int updateInvoiceByOrderNum(ReceivableListDto receivableListBean);
 
-    public ArrayList<ReceivableListBean> getInvoiceForUnpaidOpeningbal(int copanyId);
+    public ArrayList<ReceivableListDto> getInvoiceForUnpaidOpeningbal(int copanyId);
 	
-	public ArrayList<ReceivableListBean> getUnpaidCreditAmount(int companyId);
+	public ArrayList<ReceivableListDto> getUnpaidCreditAmount(int companyId);
 	
 	public double getSum(int invoiceId);
 	
-	public TblPayment setPayment(ReceivableListBean bean,int InvoiceID,int CompanyID);
+	public TblPaymentDto setPayment(ReceivableListDto bean,int InvoiceID,int CompanyID);
 	
-	public void insertAccount(TblPayment payment,ReceivableListBean bean) throws SQLException;
+	public void insertAccount(TblPaymentDto payment,ReceivableListDto bean) throws SQLException;
 	
-	public void getLastId(TblPayment payment);
+	public void getLastId(TblPaymentDto payment);
 	
 	public int getPriority();
 	
-	public void depositTo(TblPayment payment,TblAccount account,int priority) throws SQLException;
+	public void depositTo(TblPaymentDto payment,TblAccount account,int priority) throws SQLException;
 	
-	public double getAmountByInvoiceId(ReceivableListBean invoice);
+	public double getAmountByInvoiceId(ReceivableListDto invoice);
 	
-	public ArrayList<TblPayment> getReceivedList(int compantId,String dateString);
+	public ArrayList<TblPaymentDto> getReceivedList(int compantId,String dateString);
 	
 	public ArrayList<Date> getDateRange();
 	
@@ -73,45 +72,45 @@ public interface ReceivableLIst {
 	
 	public void updateInvoiceStatusForCancelled(int invoiceId);
 	
-	public ArrayList<ReceivableListBean> getCancelledTableList(int companyId);
+	public ArrayList<ReceivableListDto> getCancelledTableList(int companyId);
 	
 	public double getTotalAmountByInvoiceId(int invoiceId);
 	
-	public TblPayment getObjectOfStoragePayment(int paymentId);
+	public TblPaymentDto getObjectOfStoragePayment(int paymentId);
 	
-	public void updateTransaction(TblPayment payment,double receivedAmount,String tableName,Date date)throws SQLException;
+	public void updateTransaction(TblPaymentDto payment,double receivedAmount,String tableName,Date date)throws SQLException;
 	
 	public int readInvoiceStatus(int invoiceId);
 	
-	public void setDeletedmodified(TblPayment payment,boolean isDeleted,String tableName,int isUpfrontDeposit);
+	public void setDeletedmodified(TblPaymentDto payment,boolean isDeleted,String tableName,int isUpfrontDeposit);
 	
 	public ArrayList<SalesBillingTable> getSalesBillingList();
 	
 	public void changeInvoiceStatusForLayaway(int invoiceID);
 	
-	public ArrayList<ReceivableListBean> getLayawayList();
+	public ArrayList<ReceivableListDto> getLayawayList();
 	
-	public double updateInvoiceForLayaways(ReceivableListBean bean);
+	public double updateInvoiceForLayaways(ReceivableListDto bean);
 	
-	public ReceivableListBean getInvoiceForLayawaysByOrderNUm(int orderNnm , int companyId);
+	public ReceivableListDto getInvoiceForLayawaysByOrderNUm(int orderNnm , int companyId);
 	
-	public ArrayList<TblPayment> getPartiallyReceivedLayaways();
+	public ArrayList<TblPaymentDto> getPartiallyReceivedLayaways();
 	
 	public void changeInvoiceTypeForLayawaysByInvoiceId(int invoiceId);
 	
 	public ArrayList<TblPaymentType> getPaymentTypeForPoPayable();
 	
-	public ArrayList<ReceivableListBean> getPoPayableList();
+	public ArrayList<ReceivableListDto> getPoPayableList();
 	
-	public void getInvoices(ReceivableListBean bean) throws SQLException;
+	public void getInvoices(ReceivableListDto bean) throws SQLException;
 	
-	public ArrayList<TblPayment> getPaidList(Date fromDate,Date toDate);
+	public ArrayList<TblPaymentDto> getPaidList(Date fromDate,Date toDate);
 	
-	public ArrayList<ReceivableListBean> getConsignmentSaleList();
+	public ArrayList<ReceivableListDto> getConsignmentSaleList();
 	
 	public void changeInvoiceTypeIdForConsignment(int invoiceID);
 	
-	public ArrayList<TblPayment> getPaidConsignPaymentList();
+	public ArrayList<TblPaymentDto> getPaidConsignPaymentList();
 	
 	public void clearFromConsignmentTab(int invoiceID);
 	
@@ -123,39 +122,39 @@ public interface ReceivableLIst {
 	
 	public ArrayList<TblAccount> getBankAccountsTreeForFundTransfer(ArrayList<TblAccountCategory> categoryList);
 	
-	public ArrayList<TblPayment> getPaymentsForBanking(TblAccount account , Date from , Date to ,String transType , Boolean useFilter);
+	public ArrayList<TblPaymentDto> getPaymentsForBanking(TblAccount account , Date from , Date to ,String transType , Boolean useFilter);
 	
 	public ArrayList<TblPaymentType> getOnlySimplePaymentTypes();
 	
-	public int bankTransfer(TblPayment payment , double amount , Date transferDate , int priority); 
+	public int bankTransfer(TblPaymentDto payment , double amount , Date transferDate , int priority); 
 	
-	public void adjustBankForBanking(TblPayment payment);
+	public void adjustBankForBanking(TblPaymentDto payment);
 	
 	public ArrayList<ClientVendor> getAllClientVendorList();
 	
-	public ArrayList<TblCategory> getCategoryListForPayment();
+	public ArrayList<TblCategoryDto> getCategoryListForPayment();
 	
 	public ArrayList<TblAccount> getCustomerCurrentBalanceForvendor(ArrayList<ClientVendor> cvList);
 	
-	public void adjustBankBalanceForVendor(TblPayment payment);
+	public void adjustBankBalanceForVendor(TblPaymentDto payment);
 	
 	public ArrayList<ClientVendor> getClientForDeposit();
 	
-	public ArrayList<TblCategory> getCategoryListForDeposit();
+	public ArrayList<TblCategoryDto> getCategoryListForDeposit();
 	
-	public int bankTransferFromDeposit(TblPayment payment , double amount , Date transferDate , int priority);
+	public int bankTransferFromDeposit(TblPaymentDto payment , double amount , Date transferDate , int priority);
 	
-	public void adjustBankAfterDeposit(TblPayment payment);
+	public void adjustBankAfterDeposit(TblPaymentDto payment);
 	
 	public ArrayList<ClientVendor> getAllClientVendor();
 	
-	public ArrayList<TblCategory> getAllCategory();
+	public ArrayList<TblCategoryDto> getAllCategory();
 	
 	public ArrayList<TblPaymentType> getAllPaymentList();
 	
 	public int saveAccountCategory(TblPaymentDto paymentDto, String status);
 
-	public void addAccount(TblPayment payment,int priority,String status , int AccountId);
+	public void addAccount(TblPaymentDto payment,int priority,String status , int AccountId);
 	
 	public void deleteBankAccount(int accountId);
 	
@@ -169,9 +168,9 @@ public interface ReceivableLIst {
 	
 	public void makePayment(TblVendorDetail vDetail, int cvID);
 	
-	public ArrayList<TblPayment> getPaidBillLists();
+	public ArrayList<TblPaymentDto> getPaidBillLists();
 	
-	public ArrayList<TblPayment> getRecurrentBillPayment();
+	public ArrayList<TblPaymentDto> getRecurrentBillPayment();
 	
 	public void deleteSelectedBill(int billNum);
 	
@@ -187,7 +186,7 @@ public interface ReceivableLIst {
 	
 	public ArrayList<TblVendorDetail> getPayBillsLists(Date dateFormat);
 	
-	public ArrayList<TblCategory> getAllCategories();
+	public ArrayList<TblCategoryDto> getAllCategories();
 	 
 	public int getmaxBill();
 	
@@ -200,15 +199,15 @@ public interface ReceivableLIst {
 	public void updateRecurrentPayment(TblRecurrentPaymentPlan rPayment);
 
 	public TblCategoryDto getCategoryCategoryDetails(String categoryId);
-	public ArrayList<TblCategory> getListOfCategoryForCategoryManager();
+	public ArrayList<TblCategoryDto> getListOfCategoryForCategoryManager();
 	
 	public ArrayList<TblBudgetCategory> readBudgetCategory();
 	
 	public ArrayList<TblCategoryType> getCategoryType();
 	
-	public boolean saveCategory(TblCategory category);
+	public boolean saveCategory(TblCategoryDto category);
 	
-	public void updateCategory(TblCategory category,String categoryId);
+	public void updateCategory(TblCategoryDto category,String categoryId);
 	
 	public boolean checkCategory(String categoryId);
 	
@@ -216,25 +215,25 @@ public interface ReceivableLIst {
 	
 	public void deleteCategory(int categoryId);
 	
-	public ArrayList<TblPayment> getPaymentsList(TblPayment payment,Date fromDate,Date toDate);
+	public ArrayList<TblPaymentDto> getPaymentsList(TblPaymentDto payment,Date fromDate,Date toDate);
 	
-	public ArrayList<TblPayment> getDepositsList(TblPayment payment,Date fromDate,Date toDate);
+	public ArrayList<TblPaymentDto> getDepositsList(TblPaymentDto payment,Date fromDate,Date toDate);
 	
-	public ArrayList<TblPayment> getPaymentOfReconciliation(int accountId,Date fromDate,Date toDate);
+	public ArrayList<TblPaymentDto> getPaymentOfReconciliation(int accountId,Date fromDate,Date toDate);
 	
-	public ArrayList<TblPayment> getDepositOfReconciliation(int accountId,Date fromDate,Date toDate);
+	public ArrayList<TblPaymentDto> getDepositOfReconciliation(int accountId,Date fromDate,Date toDate);
 	
-	public ArrayList<TblCategory> initTblCategory(long CategoryTypeId);
+	public ArrayList<TblCategoryDto> initTblCategory(long CategoryTypeId);
 	
-	public ArrayList<TblCategory> initComboCharge(TblCategory category);
+	public ArrayList<TblCategoryDto> initComboCharge(TblCategoryDto category);
 	
-	public void addBankCharge(TblPayment payment)throws ParseException;
+	public void addBankCharge(TblPaymentDto payment)throws ParseException;
 	
-	public ArrayList<TblCategory> getCategoryForAsset();
+	public ArrayList<TblCategoryDto> getCategoryForAsset();
 	
 	public void setDeleted(int paymentId);
 	
-	public ArrayList<ReceivableListBean> getAllInvoicesForBillingBoardWithSearchOption(Date from, Date to, String ascent, String columnName, int InvoiceType, int overdueDays, String alldata,String advanceSearchCriteria,String advanceSearchData);
+	public ArrayList<ReceivableListDto> getAllInvoicesForBillingBoardWithSearchOption(Date from, Date to, String ascent, String columnName, int InvoiceType, int overdueDays, String alldata,String advanceSearchCriteria,String advanceSearchData);
 	
 	public ArrayList<BillingBoardReport> getBillForPrint(int invoiceId);
 	

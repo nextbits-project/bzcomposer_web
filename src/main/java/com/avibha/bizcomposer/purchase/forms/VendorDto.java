@@ -9,8 +9,9 @@ package com.avibha.bizcomposer.purchase.forms;
 import java.util.List;
 
 import com.avibha.bizcomposer.sales.forms.CreditCardDto;
+import org.apache.struts.action.ActionForm;
 
-public class VendorDto{
+public class VendorDto extends ActionForm {
 	
 	private static final long serialVersionUID = 0;
 	public static final String vendorColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"

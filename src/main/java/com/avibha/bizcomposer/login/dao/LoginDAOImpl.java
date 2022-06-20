@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.avibha.bizcomposer.login.forms.LoginForm;
 import com.avibha.bizcomposer.login.forms.MultiUserForm;
-import com.avibha.bizcomposer.sales.forms.CustomerForm;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
@@ -188,7 +188,7 @@ public class LoginDAOImpl implements LoginDAO
 		ResultSet rs1 = null;
 		
 		con = db.getConnection();		//comment this when upload in live server
-		ArrayList<CustomerForm> objList = new ArrayList<>();
+		ArrayList<CustomerDto> objList = new ArrayList<>();
 		try {
 			stmt1 = con.createStatement();
 			String sql = "SELECT c.ClientVendorID, company.Name, c.FirstName, c.LastName, c.Phone, c.Email "
@@ -198,7 +198,7 @@ public class LoginDAOImpl implements LoginDAO
 			
 			while(rs1.next())
 			{
-				CustomerForm customer = new CustomerForm();
+				CustomerDto customer = new CustomerDto();
 				//customer.setCompanyid(rs1.getString("CompanyID"));
 				customer.setClientVendorID(rs1.getString("c.ClientVendorID"));
 				customer.setCompanyName(rs1.getString("company.Name"));

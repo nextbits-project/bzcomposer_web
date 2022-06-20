@@ -168,7 +168,7 @@ public class EstimationController {
 
         }
         else if (action.equalsIgnoreCase("EstimationBoard")) { // to add Vendor
-            EstimationBoardForm estimationBoardForm = new EstimationBoardForm();
+            EstimationBoardDto estimationBoardForm = new EstimationBoardDto();
             estimationBoardForm.setOrderDate1("");
             estimationBoardForm.setOrderDate2("");
             estimationBoardForm.setSaleDate1("");

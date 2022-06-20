@@ -7,10 +7,10 @@ import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblVendorDetail;
 import com.nxsol.bizcomposer.common.TblVendorDetailDto;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategory;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
-import com.pritesh.bizcomposer.accounting.bean.TblPayment;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -47,7 +47,7 @@ public class BillPayableController{
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
-		ArrayList<TblCategory> categoryListForCombo = rl.getCategoryListForPayment();
+		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
 		
 		request.setAttribute("cvForCombo", cvForCombo);
 		request.setAttribute("accountListForBill", accountListForBill);
@@ -58,8 +58,8 @@ public class BillPayableController{
 		}
 		if(action.equals("PaidBillLists"))
 		{	
-			ArrayList<TblPayment> paidBillLists = rl.getPaidBillLists();
-			ArrayList<TblPayment> recurrentPaymentList = rl.getRecurrentBillPayment();
+			ArrayList<TblPaymentDto> paidBillLists = rl.getPaidBillLists();
+			ArrayList<TblPaymentDto> recurrentPaymentList = rl.getRecurrentBillPayment();
 			request.setAttribute("recurrentPaymentList", recurrentPaymentList);
 			request.setAttribute("paidBillLists", paidBillLists);
 			forward = "/accounting/paidBillLists";
@@ -90,7 +90,7 @@ public class BillPayableController{
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
-		ArrayList<TblCategory> categoryListForCombo = rl.getCategoryListForPayment();
+		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
 
 		request.setAttribute("cvForCombo", cvForCombo);
 		request.setAttribute("accountListForBill", accountListForBill);

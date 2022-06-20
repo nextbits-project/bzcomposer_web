@@ -9,6 +9,7 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.*;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
@@ -1336,7 +1337,7 @@ public class AddNewCompanyDAO {
                 accountId = rs1.getInt("LastID");
             }
             account.setAccountID(accountId);
-            com.pritesh.bizcomposer.accounting.bean.TblPayment payment = new com.pritesh.bizcomposer.accounting.bean.TblPayment();
+            TblPaymentDto payment = new TblPaymentDto();
             payment.setAmount(account.getCustomerStartingBalance());
             payment.setPaymentTypeID(account.getAccountCategoryID());
             payment.setPayerID(-1);
@@ -1377,7 +1378,7 @@ public class AddNewCompanyDAO {
         }
         return accountId;
     }
-    public void updateBankBalance(com.pritesh.bizcomposer.accounting.bean.TblPayment payment)
+    public void updateBankBalance(TblPaymentDto payment)
     {
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
@@ -1423,7 +1424,7 @@ public class AddNewCompanyDAO {
             }
         }
     }
-    public int transaction(com.pritesh.bizcomposer.accounting.bean.TblPayment payment,int companyId)
+    public int transaction(TblPaymentDto payment,int companyId)
     {
         Statement stmt = null,stmt1 = null;
         ResultSet rs = null;

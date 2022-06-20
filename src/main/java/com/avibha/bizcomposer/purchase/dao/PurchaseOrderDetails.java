@@ -5,13 +5,10 @@
 package com.avibha.bizcomposer.purchase.dao;
 
 import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
-
+import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import org.apache.struts.action.ActionForm;
-
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderForm;
-import com.avibha.bizcomposer.purchase.forms.VendorForm;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -25,7 +22,7 @@ public class PurchaseOrderDetails {
 	 * order date,next purchase order no.,etc. 
 	 */
 	public void newPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		form.setOrderNo(purchaseInfo.getNewPONum(compId));
@@ -79,7 +76,7 @@ public class PurchaseOrderDetails {
 	 * the information such asorder date,next purchase order no.,etc. 
 	 */
 	public void notExistPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		DateInfo date = new DateInfo();
 		int month = date.getMonth();
 		int day = date.getDay();
@@ -188,7 +185,7 @@ public class PurchaseOrderDetails {
 	 * 
 	 */
 	public void savePurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		boolean exist = purchaseInfo.poNumExist(compId, form.getOrderNo());
@@ -236,7 +233,7 @@ public class PurchaseOrderDetails {
 	 * 
 	 */
 	public void firstPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -260,7 +257,7 @@ public class PurchaseOrderDetails {
 	 * 
 	 */
 	public void lastPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		
@@ -285,7 +282,7 @@ public class PurchaseOrderDetails {
 	 * 
 	 */
 	public void nextPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
@@ -314,7 +311,7 @@ public class PurchaseOrderDetails {
 	 * 
 	 */
 	public void prevoiusPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
@@ -349,7 +346,7 @@ public class PurchaseOrderDetails {
 	 */
 	public boolean deletePurchaseOrder(HttpServletRequest request, ActionForm frm) {
 		boolean val = false;
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -380,19 +377,19 @@ public class PurchaseOrderDetails {
 	 */
 	public void getConfirmAddress(HttpServletRequest request,ActionForm frm,String cType){
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
-		VendorForm form =(VendorForm)frm;
+		VendorDto form =(VendorDto)frm;
 		CountryState cs = new CountryState();
 		request.setAttribute("cList", cs.getCountry());
 		purchaseInfo.showConfirmAddress(request.getParameter("custID"),form,request,cType);
-		
+
 	}
-	
-	/* Add the bill or ship address of the perticular 
-	 * vendor selected by user to the database. 
+
+	/* Add the bill or ship address of the perticular
+	 * vendor selected by user to the database.
 	 */
 	public void addConfirmAddress(HttpServletRequest request,ActionForm frm){
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
-		VendorForm form =(VendorForm)frm;
+		VendorDto form =(VendorDto) frm;
 		if(form.getAddressType()==1){
 			boolean updated=purchaseInfo.addBillConfirmAddress(form,request);
 			if(updated)
@@ -411,7 +408,7 @@ public class PurchaseOrderDetails {
 	 */
 	
 	public void getPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
@@ -430,7 +427,7 @@ public class PurchaseOrderDetails {
 	 * is exist in the database or not.
 	 */
 	public void isPoNumExist(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderForm form = (PurchaseOrderForm) frm;
+		PurchaseOrderDto form = (PurchaseOrderDto) frm;
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
 		String compId = (String) request.getSession().getAttribute("CID");

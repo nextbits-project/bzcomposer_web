@@ -28,8 +28,6 @@ public class AuthenticationFilter implements Filter {
 
 	private ArrayList<String> urlList;
 	
-	@Value("${avoid.urls}")
-	private @Setter@Getter String urls;
 
 	public void destroy() { }
 
@@ -74,7 +72,7 @@ public class AuthenticationFilter implements Filter {
 	 */
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		String urls = this.urls; //config.getInitParameter("avoid-urls");
+		String urls = config.getInitParameter("avoid-urls");
 		
 		StringTokenizer token = new StringTokenizer(urls, ",");
 

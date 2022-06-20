@@ -10,13 +10,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import org.apache.struts.util.LabelValueBean;
-
 import com.avibha.bizcomposer.sales.dao.Item;
-import com.avibha.bizcomposer.sales.forms.InvoiceForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -41,7 +39,7 @@ public class ReceivedItemInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				InvoiceForm invFrm = new InvoiceForm();
+				InvoiceDto invFrm = new InvoiceDto();
 				arr.add(new org.apache.struts.util.LabelValueBean(rs
 						.getString("Name"), rs.getString("InvoiceStyleID")));
 			}
@@ -116,7 +114,7 @@ public class ReceivedItemInfo {
 	}
 
 	public ArrayList getTaxes(String compId) {
-		ArrayList<InvoiceForm> arr = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> arr = new ArrayList<InvoiceDto>();
 		Connection con = null ;
 		PreparedStatement pstmt=null;
 		SQLExecutor db = new SQLExecutor();
@@ -134,7 +132,7 @@ public class ReceivedItemInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				InvoiceForm invoice = new InvoiceForm();
+				InvoiceDto invoice = new InvoiceDto();
 				invoice.setSalesTaxID(rs.getString(1));
 				invoice.setState(rs.getString(2));
 				invoice.setRate(rs.getInt(3));
@@ -291,8 +289,8 @@ public class ReceivedItemInfo {
 		PreparedStatement pstmt_clientSer=null;
 		PreparedStatement pstmt_ser=null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<InvoiceForm> list = new ArrayList<InvoiceForm>();
-		ArrayList<InvoiceForm> services = new ArrayList<InvoiceForm>();
+		ArrayList<InvoiceDto> list = new ArrayList<InvoiceDto>();
+		ArrayList<InvoiceDto> services = new ArrayList<InvoiceDto>();
 		ResultSet rs = null;
 		ResultSet rs_clientSer=null;
 		ResultSet rs_ser=null;
@@ -305,7 +303,7 @@ public class ReceivedItemInfo {
 			pstmt.setString(3,companyId);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				InvoiceForm recvForm = new InvoiceForm();
+				InvoiceDto recvForm = new InvoiceDto();
 				recvForm.setClientVendorID(rs.getString("ClientVendorID"));
 				recvForm.setCompanyID(rs.getString("Name"));
 				String sqlServiceID="select ServiceID from bca_clientvendorservice where ClientVendorID=?";
@@ -315,7 +313,7 @@ public class ReceivedItemInfo {
 				String serviceQuery="select ServiceName from bca_servicetype where ServiceID=?";
 				
 				while(rs_clientSer.next()){
-					InvoiceForm serviceInfo = new InvoiceForm();
+					InvoiceDto serviceInfo = new InvoiceDto();
 					pstmt_ser=con.prepareStatement(serviceQuery);
 					pstmt_ser.setInt(1,rs_clientSer.getInt("ServiceID"));
 					rs_ser=pstmt_ser.executeQuery();
@@ -365,13 +363,13 @@ public class ReceivedItemInfo {
 		return list;
 	}
 	
-	public InvoiceForm getVendorDetails(String compId,String cvId,String serviceNm){
+	public InvoiceDto getVendorDetails(String compId,String cvId,String serviceNm){
 		Connection con = null ;
 		PreparedStatement pstmt_clientInfo=null,pstmt_bsaAddr=null;
 		SQLExecutor db = new SQLExecutor();
 		CountryState conState = new CountryState();
 		ResultSet rs_clientInfo = null,rs_bsaAddr=null;
-		InvoiceForm recvForm = new InvoiceForm();
+		InvoiceDto recvForm = new InvoiceDto();
 		try{
 			con = db.getConnection();
 			pstmt_clientInfo=con.prepareStatement("select FirstName,LastName,Taxable,ShipCarrierID,PaymentTypeID,TermID,SalesRepID from bca_clientvendor where Active=1 and Deleted=0 and Status in ('U','N') and CVTypeID in (1,2) and ClientVendorID=? and CompanyID=? ");

@@ -7,6 +7,7 @@ import com.nxsol.bizcomposer.common.BillingStatement;
 import com.nxsol.bizcomposer.jasper.pojo.BillingBoardReport;
 import com.nxsol.bizcomposer.jasper.pojo.BillingStatementReport;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
@@ -65,7 +66,7 @@ public class BillingBoardController {
 		int height = 725;
 
 		Gson gson = new Gson();
-		ArrayList<ReceivableListBean> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
+		ArrayList<ReceivableListDto> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
 		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement, criteriaForBillStatement);
 		request.setAttribute("billingStatementList", billingStatementList); // paid bills
 		request.setAttribute("billingList", billingList);
@@ -155,7 +156,7 @@ public class BillingBoardController {
 			ServletOutputStream outStream = response.getOutputStream();
 			JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
 		}
-		ArrayList<ReceivableListBean> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
+		ArrayList<ReceivableListDto> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
 		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement, criteriaForBillStatement);
 		request.setAttribute("billingStatementList", billingStatementList);
 		request.setAttribute("billingList", billingList);

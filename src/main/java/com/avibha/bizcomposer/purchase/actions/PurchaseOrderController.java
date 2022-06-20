@@ -12,10 +12,9 @@ import com.avibha.bizcomposer.purchase.dao.PurchaseDetails;
 import com.avibha.bizcomposer.purchase.dao.PurchaseDetailsDao;
 import com.avibha.bizcomposer.purchase.dao.PurchaseOrderDetails;
 import com.avibha.bizcomposer.purchase.dao.PurchaseOrderDetailsDao;
-import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
+import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
 import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.purchase.forms.VendorForm;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.dao.SalesDetails;
@@ -169,7 +168,7 @@ public class PurchaseOrderController {
 				forward = "/purchase/purchase";
 			}
 			else if (action.equalsIgnoreCase("PurchaseBoard")) { // to add Purchase
-				PurchaseBoardForm purchaseBoardForm = new PurchaseBoardForm();
+				PurchaseBoardDto purchaseBoardForm = new PurchaseBoardDto();
 				purchaseBoardForm.setOrderDate1("");
 				purchaseBoardForm.setOrderDate2("");
 				purchaseBoardForm.setSaleDate1("");

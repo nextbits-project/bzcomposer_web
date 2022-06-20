@@ -3,8 +3,7 @@ package com.avibha.bizcomposer.purchase.dao;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
-import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
-import com.avibha.bizcomposer.purchase.forms.VendorForm;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.constants.AppConstants;
@@ -614,7 +613,7 @@ public class PurchaseBoardInfoDao {
 		Connection con = null ;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null,stmt2=null;
-		ArrayList<VendorForm> objList = new ArrayList<VendorForm>();
+		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
 		double totalbalance=0;
 		ResultSet rs = null,rs2=null;
 		con = db.getConnection();
@@ -675,7 +674,7 @@ public class PurchaseBoardInfoDao {
 			if(!rs.next())
 				break;
 
-				VendorForm vendor = new VendorForm();
+				VendorDto vendor = new VendorDto();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
 				
@@ -1015,7 +1014,7 @@ public class PurchaseBoardInfoDao {
 			
 			while(rs.next())
 			{
-				PurchaseBoardForm pb = new PurchaseBoardForm();
+				PurchaseBoardDto pb = new PurchaseBoardDto();
 				
 				/*pb.setVendorName(rs.getString(3));
 				pb.setTotal(rs.);
@@ -1214,7 +1213,7 @@ public class PurchaseBoardInfoDao {
 		Connection con = null ;
 		Statement stmt = null, stmt1 = null, stmt2 = null,stm3=null;
 		SQLExecutor db = new SQLExecutor();
-		ArrayList<PurchaseBoardForm> objList = new ArrayList<PurchaseBoardForm>();
+		ArrayList<PurchaseBoardDto> objList = new ArrayList<PurchaseBoardDto>();
 		ResultSet rs = null, rs2 = null, rs3 = null,rs4=null;
 		con = db.getConnection();
 		String mark = null;
@@ -1354,12 +1353,12 @@ public class PurchaseBoardInfoDao {
 			Loger.log(sqlString);
 			rs = stmt.executeQuery(sqlString);
 			rs2 = stmt1.executeQuery(sql2);
-			
-			PurchaseBoardForm pb = null;
+
+			PurchaseBoardDto pb = null;
 			
 			while(rs.next())
 			{
-				pb = new PurchaseBoardForm();
+				pb = new PurchaseBoardDto();
 				
 				pb.setDateAdded(rs.getString(4));
 				pb.setClientvendor(rs.getString(9));

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +20,6 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
-import com.nxsol.bizcompser.global.table.TblCategoryLoader;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
@@ -39,7 +39,7 @@ public class ReceivedTabController {
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl = new ReceivableListImpl();
-		TblCategoryLoader category = new TblCategoryLoader();
+		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
 		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();

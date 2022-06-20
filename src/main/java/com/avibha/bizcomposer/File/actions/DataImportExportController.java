@@ -19,7 +19,7 @@ import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
-import com.pritesh.bizcomposer.accounting.bean.TblPayment;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 import org.apache.poi.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -148,7 +148,7 @@ public class DataImportExportController {
             }
             else if(action.equalsIgnoreCase("BankingTransactions")) {
                 ReceivableLIst rl = new ReceivableListImpl();
-                ArrayList<TblPayment> payments = rl.getPaymentsForBanking(new TblAccount(), null, null, "",true);
+                ArrayList<TblPaymentDto> payments = rl.getPaymentsForBanking(new TblAccount(), null, null, "",true);
 
                 ObjectMapper mapper = new ObjectMapper();
                 ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();

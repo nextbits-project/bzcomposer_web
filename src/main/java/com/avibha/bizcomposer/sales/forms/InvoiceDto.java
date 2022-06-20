@@ -11,7 +11,7 @@ import org.apache.struts.action.ActionForm;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class InvoiceDto  {
+public class InvoiceDto  extends ActionForm{
 	
 	private static final long serialVersionUID = 0;
 

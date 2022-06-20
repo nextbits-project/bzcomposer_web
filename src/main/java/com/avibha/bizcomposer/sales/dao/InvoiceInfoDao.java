@@ -1269,7 +1269,7 @@ public class InvoiceInfoDao {
 			}
 		}
 	}
-	public void getBillShipAddr(int custID, UpdateInvoiceForm form) {
+	public void getBillShipAddr(int custID, UpdateInvoiceDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
 		PreparedStatement pstmt3 = null;
@@ -1378,7 +1378,7 @@ public class InvoiceInfoDao {
 	}
 
 	public void getCountry(HttpServletRequest request, String country,
-			UpdateInvoiceForm form) {
+			UpdateInvoiceDto form) {
 		Connection con = null ;
 		PreparedStatement pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -2917,7 +2917,7 @@ public class InvoiceInfoDao {
 			invoiceDto.setItemTypeID(invItemIDs.toString());
 			invoiceDto.setItemOrder(invItemOrders.toString());
 
-			InvoiceForm form = new InvoiceForm();
+			InvoiceDto form = new InvoiceDto();
 			form.setTaxValue(Double.parseDouble(truncate(String.valueOf(taxTotal))));
 			request.setAttribute("TaxValue", form);
 			request.setAttribute("Cart", cart);

@@ -10,8 +10,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.avibha.common.utility.FormFile;
+import org.apache.struts.action.ActionForm;
 
-public class ItemDto implements Serializable {
+public class ItemDto extends ActionForm implements Serializable {
 	
 	private static final long serialVersionUID = 0;
 	public static final String ItemColumns = "Category,ItemCode,ItemTitle,ItemType,SerialNum,Qty,AvailableQty,ReorderPoint,Weight,ProductSKU," +

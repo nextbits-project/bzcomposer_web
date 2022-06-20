@@ -65,6 +65,7 @@ public class ReceivableListDto{
     private int orderNum = 0 ;
     //p.o#
     private int poNum = 0;
+    private String orderNumStr;
     //S.O#
     private int soNum = 0;
     //Rcv#
@@ -448,6 +449,14 @@ public class ReceivableListDto{
 
     public void setPoNum(int poNum) {
         this.poNum = poNum;
+    }
+
+    public String getOrderNumStr() {
+        return orderNumStr;
+    }
+
+    public void setOrderNumStr(String orderNumStr) {
+        this.orderNumStr = orderNumStr;
     }
 
     public int getRcvNum() {

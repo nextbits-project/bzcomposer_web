@@ -17,11 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.avibha.bizcomposer.accounting.dao.AccountingDAO;
+import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
 import com.avibha.bizcomposer.sales.forms.*;
+import com.avibha.common.utility.FormFile;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionServlet;
-import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
 
 import com.avibha.bizcomposer.employee.dao.Title;
@@ -33,7 +34,6 @@ import com.avibha.bizcomposer.purchase.dao.Rep;
 import com.avibha.bizcomposer.purchase.dao.Shipping;
 import com.avibha.bizcomposer.purchase.dao.Term;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -127,7 +127,7 @@ public class SalesDetails {
 		// ............................................Id generation finished
 
 		CustomerInfo customer = new CustomerInfo();
-		CustomerForm cfrm = (CustomerForm) form;
+		CustomerDto cfrm = (CustomerDto) form;
 		
 		try{
 			boolean addCust = customer.insertCustomer(cvID + "", cfrm, compId, istax, isclient,
@@ -289,7 +289,7 @@ public class SalesDetails {
 	}
 	public void uploadItemFile(HttpServletRequest request,ActionForm form)
 	{
-		ItemForm im = (ItemForm)form;
+		ItemDto im = (ItemDto)form;
 		ItemInfo info = new ItemInfo();
 		FormFile attachFile = im.getUploadItem();
 		boolean b = info.saveUploadFile(attachFile, request);
@@ -300,7 +300,7 @@ public class SalesDetails {
 	}
 	public void exportFile(HttpServletRequest request,ActionForm form,String type)
 	{
-		ItemForm im = (ItemForm)form;
+		ItemDto im = (ItemDto)form;
 		ItemInfo info = new ItemInfo();
 		if(type != null && (type.equals("xls") || type.equals("csv")))
 		{	
@@ -340,28 +340,28 @@ public class SalesDetails {
 		request.setAttribute("CustomerDetails", CustomerDetails);
 	}
 	
-	public ArrayList<CustomerForm> getCustomerSortByFirstName(HttpServletRequest request, CustomerForm frm) {
+	public ArrayList<CustomerDto> getCustomerSortByFirstName(HttpServletRequest request, CustomerDto frm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		CustomerInfo customer = new CustomerInfo();
-		ArrayList<CustomerForm> CustomerDetails = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> CustomerDetails = new ArrayList<CustomerDto>();
 		CustomerDetails = customer.customerDetailsSortByFirstName(compId);
 		request.setAttribute("CustomerDetails", CustomerDetails);
 		return CustomerDetails;
 	}
 
-	public ArrayList<CustomerForm> getCustomerSortByLastName(HttpServletRequest request, CustomerForm frm) {
+	public ArrayList<CustomerDto> getCustomerSortByLastName(HttpServletRequest request, CustomerDto frm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		CustomerInfo customer = new CustomerInfo();
-		ArrayList<CustomerForm> CustomerDetails = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> CustomerDetails = new ArrayList<CustomerDto>();
 		CustomerDetails = customer.customerDetailsSortByLastName(compId);
 		request.setAttribute("CustomerDetails", CustomerDetails);
 		return CustomerDetails;
 	}
 	public void getLabel(HttpServletRequest request,ActionForm form)  {
 		CustomerInfo customer = new CustomerInfo();
-		CustomerForm cform = (CustomerForm)form;
+		CustomerDto cform = (CustomerDto)form;
 		int labelId = Integer.parseInt(request.getParameter("lblId"));
 		customer.getLabel(labelId,cform);
 	}
@@ -375,7 +375,7 @@ public class SalesDetails {
 	}
 
 	public void addNewLabel(ActionForm form){
-		CustomerForm cform = (CustomerForm)form ;
+		CustomerDto cform = (CustomerDto)form ;
 		cform.setLabelName("");
 		cform.setTopMargin("0.0");
 		cform.setLeftMargin("0.0");
@@ -388,7 +388,7 @@ public class SalesDetails {
 	public boolean saveLabel(HttpServletRequest request, ActionForm form) {
 		boolean result=false;
 		CustomerInfo customer = new CustomerInfo();
-		CustomerForm cfrm = (CustomerForm) form;
+		CustomerDto cfrm = (CustomerDto) form;
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
 		if (labelID == 0) {
 			customer.saveLabel(cfrm);
@@ -402,7 +402,7 @@ public class SalesDetails {
 	
 	public void deleteLabel(HttpServletRequest request, ActionForm form) {
 		CustomerInfo customer = new CustomerInfo();
-		CustomerForm cfrm = (CustomerForm) form;
+		CustomerDto cfrm = (CustomerDto) form;
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
 		Loger.log("LABEL   "+labelID);
 		customer.deleteLabel(labelID, cfrm);	
@@ -552,7 +552,7 @@ public class SalesDetails {
 		} else if (("off").equalsIgnoreCase(FChargeInvoiceChk))
 			fICharge = 1;
 
-		// UpdateInvoiceForm cfrm= new UpdateInvoiceForm();
+		// UpdateInvoiceDto cfrm= new UpdateInvoiceDto();
 		customer1.insertCustomer(cvId, uform, compId, istax, isclient,
 				indCharge, aFCharge, fICharge, "U");
 		updateInvoice(cvId, request);
@@ -573,7 +573,7 @@ public class SalesDetails {
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfo item = new ItemInfo();
 		ArrayList ItemDetails = new ArrayList();
-		ItemForm itemForm = (ItemForm) form;
+		ItemDto itemForm = (ItemDto) form;
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
@@ -588,7 +588,7 @@ public class SalesDetails {
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfo item = new ItemInfo();
 		ArrayList ItemDetails = new ArrayList();
-		ItemForm itemForm = (ItemForm) form;
+		ItemDto itemForm = (ItemDto) form;
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
@@ -623,7 +623,7 @@ public class SalesDetails {
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfo item = new ItemInfo();
 		ArrayList ItemDetails = new ArrayList();
-		ItemForm itemForm = (ItemForm) form;
+		ItemDto itemForm = (ItemDto) form;
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
@@ -640,7 +640,7 @@ public class SalesDetails {
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfo item = new ItemInfo();
 		ArrayList ItemDetails = new ArrayList();
-		ItemForm itemForm = (ItemForm) form;
+		ItemDto itemForm = (ItemDto) form;
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
@@ -658,7 +658,7 @@ public class SalesDetails {
 		ItemInfo item = new ItemInfo();
 		ArrayList ItemDetails = new ArrayList();
 		
-		ItemForm itemForm = (ItemForm) form;
+		ItemDto itemForm = (ItemDto) form;
 		
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
@@ -677,7 +677,7 @@ public class SalesDetails {
 	   String compId = (String)ss.getAttribute("CID");
 	   ItemInfo info = new ItemInfo();
 	   
-	   ItemForm form1 = (ItemForm)form;
+	   ItemDto form1 = (ItemDto)form;
 	   
 	   String orderDate1 = form1.getOrderDate1();
 	   String orderDate2 = form1.getOrderDate2();
@@ -696,7 +696,7 @@ public class SalesDetails {
 	   HttpSession ss = request.getSession();
 	   String compId = (String)ss.getAttribute("CID");
 	   ItemInfo info = new ItemInfo();
-	   ItemForm form1 = (ItemForm)form;
+	   ItemDto form1 = (ItemDto)form;
 	   
 	   String orderDate1 = form1.getOrderDate1();
 	   String orderDate2 = form1.getOrderDate2();
@@ -715,7 +715,7 @@ public class SalesDetails {
 	   HttpSession ss = request.getSession();
 	   String compId = (String)ss.getAttribute("CID");
 	   ItemInfo info = new ItemInfo();
-	   ItemForm form1 = (ItemForm)form;
+	   ItemDto form1 = (ItemDto)form;
 	   
 	   String sortByDay = form1.getSortByDay();
 	   String orderDate1 = form1.getOrderDate1();
@@ -735,7 +735,7 @@ public class SalesDetails {
 	   HttpSession ss = request.getSession();
 	   String compId = (String)ss.getAttribute("CID");
 	   ItemInfo info = new ItemInfo();
-	   ItemForm form1 = (ItemForm)form;
+	   ItemDto form1 = (ItemDto)form;
 	   
 	   String sortByDay = form1.getSortByDay();
 	   String orderDate1 = form1.getOrderDate1();
@@ -756,7 +756,7 @@ public class SalesDetails {
 	   HttpSession ss = request.getSession();
 	   String compId = (String)ss.getAttribute("CID");
 	   
-	   CustomerForm cform = (CustomerForm)form;
+	   CustomerDto cform = (CustomerDto)form;
 	   
 	   CustomerInfo info = new CustomerInfo();
 	   
@@ -770,7 +770,7 @@ public class SalesDetails {
 	   
 	   
 	   
-	   ArrayList<CustomerForm> cList = new ArrayList<>();
+	   ArrayList<CustomerDto> cList = new ArrayList<>();
 	   cList = info.getAccountPayableReport(compId,request,datesCombo, fromDate, toDate, sortBy, cform);
 	   request.setAttribute("acPayList", cList);
 	   
@@ -782,7 +782,7 @@ public class SalesDetails {
 		item.fillCombo(compId);
 		String invId = request.getParameter("InvId");
 
-		ItemForm itemFrm = (ItemForm) form;
+		ItemDto itemFrm = (ItemDto) form;
 		
 
 		// Loger.log("The ItemTypeId ="+itemtypeid);
@@ -893,7 +893,7 @@ public class SalesDetails {
 		String[][] oldInventory = new String[invSize][3];
 
 		for (int i = 0; i < invSize; i++) {
-			ItemForm itemForm = (ItemForm) Inventory.get(i);
+			ItemDto itemForm = (ItemDto) Inventory.get(i);
 			String invId = itemForm.getInventoryId();
 			oldInventory[i][0] = invId;
 			if (request.getParameter("newQty" + invId) != null) {
@@ -919,13 +919,13 @@ public class SalesDetails {
 
 	}
 	
-	public void updateBillingAddress(InvoiceForm frm, String cId, String billAddressId) 
+	public void updateBillingAddress(InvoiceDto frm, String cId, String billAddressId) 
 	{
 		InvoiceInfo invoice = new InvoiceInfo();
 		invoice.updateBillingAddress(frm, cId,billAddressId);
 	}
 	
-	public void updateShippingAddress(InvoiceForm frm, String cId, String billAddressId) {
+	public void updateShippingAddress(InvoiceDto frm, String cId, String billAddressId) {
 		InvoiceInfo invoice = new InvoiceInfo();
 		invoice.updateShippingAddress(frm, cId,billAddressId);
 	}
@@ -1066,7 +1066,7 @@ public class SalesDetails {
 		// TODO Auto-generated method stub
 		String compId = (String) request.getSession().getAttribute("CID");
 		HttpSession sess = request.getSession();
-		ItemForm itemForm = (ItemForm) form;
+		ItemDto ItemDto = (ItemDto) form;
 
 		ItemInfo item = new ItemInfo();
 
@@ -1091,11 +1091,11 @@ public class SalesDetails {
 		sess.setAttribute("weightList", product);
 		
 		ArrayList storeList = new ArrayList();
-		storeList = item.filleStoreList(compId,itemForm);
+		storeList = item.filleStoreList(compId,ItemDto);
 		sess.setAttribute("storeList", storeList);
 		
 		ArrayList eSaleChannel = new ArrayList();
-		eSaleChannel = item.filleSalesChannel(itemForm);
+		eSaleChannel = item.filleSalesChannel(ItemDto);
 		sess.setAttribute("eSalesChannelList", eSaleChannel);
 		
 		ArrayList measurement = new ArrayList();
@@ -1107,17 +1107,17 @@ public class SalesDetails {
 		sess.setAttribute("unitMeasurementList", unitMeasurement);
 		
 		ArrayList priceLevelList = new ArrayList();
-		priceLevelList = item.setPriceLevel(compId,itemForm);
+		priceLevelList = item.setPriceLevel(compId,ItemDto);
 		sess.setAttribute("priceLevelList", priceLevelList);
 		sess.setAttribute("priceLevelSize", priceLevelList.size());
 		
 		ArrayList eBayProductList = new ArrayList();
-		eBayProductList = item.eBayProductList(compId,itemForm);
+		eBayProductList = item.eBayProductList(compId,ItemDto);
 		sess.setAttribute("eBayProductList", eBayProductList);
 		sess.setAttribute("eBayProductListSize", eBayProductList.size());
 		
 		ArrayList locationList = new ArrayList();
-		locationList = item.getExistingLocation(compId, request, itemForm);
+		locationList = item.getExistingLocation(compId, request, ItemDto);
 		sess.setAttribute("locationList", locationList);
 		
 		ArrayList itemStoreList = new ArrayList();
@@ -1134,14 +1134,14 @@ public class SalesDetails {
        	request.setAttribute("vendorList",vendorList);
 	}
 
-	public void getInitialize(String ordNo, HttpServletRequest request, InvoiceForm form) {
+	public void getInitialize(String ordNo, HttpServletRequest request, InvoiceDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		long orderNo = Long.parseLong(ordNo);
 		InvoiceInfo invoice = new InvoiceInfo();
 		invoice.getRecord(request, form, compId, orderNo);
 	}
 
-	public void getSalesOrderInitialize(String salesOrderNo, HttpServletRequest request, InvoiceForm form) {
+	public void getSalesOrderInitialize(String salesOrderNo, HttpServletRequest request, InvoiceDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		long soNo = Long.parseLong(salesOrderNo); // Sales Order Num SO Num
 		InvoiceInfo invoice = new InvoiceInfo();
@@ -1155,7 +1155,7 @@ public class SalesDetails {
  		estimation.getRecord(request, form, compId, estimationNo);
 	}
 
-	public void getInitializePurchase(String poNo, HttpServletRequest request, PurchaseOrderForm form) {
+	public void getInitializePurchase(String poNo, HttpServletRequest request, PurchaseOrderDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		long purchaseNo = Long.parseLong(poNo);
 		PurchaseOrderInfo purchase = new PurchaseOrderInfo();
@@ -1163,7 +1163,7 @@ public class SalesDetails {
 	}
 
 	public void newSalesOrder(HttpServletRequest request, ActionForm frm) { // New Sales Order
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		form.setOrderNo(invoice.getNewSalesOrderNo(compId));
@@ -1218,7 +1218,7 @@ public class SalesDetails {
 	}
 	
 	public void newInvoice(HttpServletRequest request, ActionForm frm) {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		form.setOrderNo(invoice.getNewOrderNo(compId));
@@ -1273,7 +1273,7 @@ public class SalesDetails {
 	}
 	
 	public void dropShipInvoice(HttpServletRequest request, ActionForm frm) {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		form.setOrderNo(invoice.getNewOrderNo(compId));
@@ -1326,7 +1326,7 @@ public class SalesDetails {
 
 
 	public void saveInvoice(HttpServletRequest request, ActionForm frm,String custID) {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		//custID = form.getCustID();
@@ -1371,7 +1371,7 @@ public class SalesDetails {
 		}
 	}
 	public void saveOrder(HttpServletRequest request, ActionForm frm) throws SQLException {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		getInvoiceInfo(request);
@@ -1405,7 +1405,7 @@ public class SalesDetails {
 	public boolean deleteInvoice(HttpServletRequest request, ActionForm frm,String custID) throws SQLException {
 		boolean val = false;
 		// boolean exist=invoice.invoiceExist(compId,form.getOrderNo());
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1434,7 +1434,7 @@ public class SalesDetails {
 	public boolean deleteSalesOrder(HttpServletRequest request, ActionForm frm) throws SQLException {
 		boolean val = false;
 		// boolean exist=invoice.invoiceExist(compId,form.getOrderNo());
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1474,7 +1474,7 @@ public class SalesDetails {
 	}
 
 	public void firstInvoice(HttpServletRequest request, ActionForm frm) {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1507,7 +1507,7 @@ public class SalesDetails {
 		
 	}
 	public void firstSalesOrder(HttpServletRequest request, ActionForm frm) {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1527,7 +1527,7 @@ public class SalesDetails {
 		
 	}
 	public void lastSalesOrder(HttpServletRequest request, ActionForm frm) {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
 		
@@ -1548,7 +1548,7 @@ public class SalesDetails {
 	}
 
 	public void lastInvoice(HttpServletRequest request, ActionForm frm) {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
 		
@@ -1569,7 +1569,7 @@ public class SalesDetails {
 	}
 
 	public void nextInvoice(HttpServletRequest request, ActionForm frm) throws SQLException {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
 		
@@ -1590,7 +1590,7 @@ public class SalesDetails {
 		form.setItemID("0");
 	}
 	public void nextSalesOrder(HttpServletRequest request, ActionForm frm) throws SQLException {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1610,7 +1610,7 @@ public class SalesDetails {
 		form.setItemID("0");
 	}
 	public void prevoiusInvoice(HttpServletRequest request, ActionForm frm) throws SQLException {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1632,7 +1632,7 @@ public class SalesDetails {
 		form.setItemID("0");
 	}
 	public void prevoiusSalesOrder(HttpServletRequest request, ActionForm frm) throws SQLException {
-		InvoiceForm form = (InvoiceForm) frm;
+		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1720,7 +1720,7 @@ public class SalesDetails {
 		InvoiceInfo invoice = new InvoiceInfo();
 		ArrayList lookDetails = new ArrayList();
 
-		CustomerForm uform = (CustomerForm) form;
+		CustomerDto uform = (CustomerDto) form;
 		cond = uform.getDispay_info();
 		Loger.log("The Show all" + uform.getDispay_info());
 		Loger.log("The Client Vendor Id is" + cvId);
@@ -1859,7 +1859,7 @@ public class SalesDetails {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		CustomerInfo customer = new CustomerInfo();
-		CustomerForm cForm = (CustomerForm)form;
+		CustomerDto cForm = (CustomerDto)form;
 		String fromDate = cForm.getFromDate();
 		String toDate = cForm.getToDate();
 		String sortBy = cForm.getSortBy();
@@ -1872,12 +1872,12 @@ public class SalesDetails {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfo itemInfo = new ItemInfo();
-		ItemForm iForm = (ItemForm)form;
+		ItemDto iForm = (ItemDto)form;
 		String fromDate = iForm.getFromDate();
 		String toDate = iForm.getToDate();
 		String sortBy = iForm.getSortBy();
 		String datesCombo = iForm.getDatesCombo();
-		ArrayList<ItemForm> profitLossByItem = itemInfo.getProfitLossReportByItem(datesCombo, fromDate, toDate, sortBy, compId, request, iForm);
+		ArrayList<ItemDto> profitLossByItem = itemInfo.getProfitLossReportByItem(datesCombo, fromDate, toDate, sortBy, compId, request, iForm);
 		request.setAttribute("profitLossByItem", profitLossByItem);
 	}
 	
@@ -1909,12 +1909,12 @@ public class SalesDetails {
 		request.setAttribute("Year", year);
 	}
 
-	public ArrayList<CustomerForm> getSortedCustomer(HttpServletRequest request, CustomerForm frm, int sortById) 
+	public ArrayList<CustomerDto> getSortedCustomer(HttpServletRequest request, CustomerDto frm, int sortById) 
 	{
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		CustomerInfo customer = new CustomerInfo();
-		ArrayList<CustomerForm> CustomerDetails = new ArrayList<CustomerForm>();
+		ArrayList<CustomerDto> CustomerDetails = new ArrayList<CustomerDto>();
 		if(sortById==1)
 		{
 			CustomerDetails = customer.customerDetailsSort(compId,"Name");

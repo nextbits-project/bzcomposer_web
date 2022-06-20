@@ -2,9 +2,9 @@ package com.pritesh.bizcomposer.accounting.bean;
 
 import java.util.Date;
 
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import org.apache.struts.action.ActionForm;
 
-import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblTerm;
 
 public class ReceivableListBean extends ActionForm {
@@ -223,7 +223,7 @@ public class ReceivableListBean extends ActionForm {
 
     private String billType = "";
     
-    private TblCategory tblcategory = null;
+    private TblCategoryDto tblcategory = null;
     
     private TblTerm tblterm = null;
     
@@ -1395,11 +1395,11 @@ public class ReceivableListBean extends ActionForm {
         this.bankAccountID = bankAccountID;
     }
 
-	public TblCategory getTblcategory() {
+	public TblCategoryDto getTblcategory() {
 		return tblcategory;
 	}
 
-	public void setTblcategory(TblCategory tblcategory) {
+	public void setTblcategory(TblCategoryDto tblcategory) {
 		this.tblcategory = tblcategory;
 	}
 

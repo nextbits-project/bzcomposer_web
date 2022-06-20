@@ -2,8 +2,9 @@ package com.avibha.common.utility;
 
 import java.sql.*;
 import java.util.ArrayList;
+
+import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import org.apache.struts.util.LabelValueBean;
-import com.avibha.bizcomposer.File.forms.CompanyInfoForm;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.City;
 import com.avibha.common.Country;
@@ -105,7 +106,7 @@ public class CountryState {
 	}
 	
 	public ArrayList getStatesNew(String cid) {
-		ArrayList<CompanyInfoForm> sList = new ArrayList<CompanyInfoForm>();
+		ArrayList<CompanyInfoDto> sList = new ArrayList<CompanyInfoDto>();
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
@@ -114,7 +115,7 @@ public class CountryState {
 			pstmt.setString(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				CompanyInfoForm customer = new CompanyInfoForm();
+				CompanyInfoDto customer = new CompanyInfoDto();
 				customer.setStateName(rs.getString(2));
 				customer.setCity(rs.getString(3));
 				sList.add(customer);
@@ -151,7 +152,7 @@ public class CountryState {
 	}
 	
 	public ArrayList getCountryNew() {
-		ArrayList<CompanyInfoForm> cList = new ArrayList<CompanyInfoForm>();
+		ArrayList<CompanyInfoDto> cList = new ArrayList<CompanyInfoDto>();
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
@@ -159,7 +160,7 @@ public class CountryState {
 			PreparedStatement pstmt = con.prepareStatement("select * from country");
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				CompanyInfoForm customer = new CompanyInfoForm();
+				CompanyInfoDto customer = new CompanyInfoDto();
 				customer.setCountryId(rs.getInt(1));
 				customer.setCountry(rs.getString(2));
 				cList.add(customer);

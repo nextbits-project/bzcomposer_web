@@ -6,9 +6,11 @@
 
 package com.avibha.bizcomposer.sales.forms;
 
+import org.apache.struts.action.ActionForm;
+
 import java.util.List;
 
-public class CustomerDto {
+public class CustomerDto extends ActionForm {
 
 	private static final long serialVersionUID = 0;
 	public static final String customerColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"

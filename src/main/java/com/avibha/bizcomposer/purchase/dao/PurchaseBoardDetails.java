@@ -1,10 +1,7 @@
 package com.avibha.bizcomposer.purchase.dao;
 
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
-import com.avibha.bizcomposer.purchase.forms.PurchaseBoardForm;
 import com.avibha.common.log.Loger;
-import org.apache.struts.action.ActionForm;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;

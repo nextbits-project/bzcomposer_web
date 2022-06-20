@@ -9,10 +9,10 @@ import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblRecurrentPaymentPlan;
 import com.nxsol.bizcomposer.common.TblVendorDetail;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategory;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
-import com.pritesh.bizcomposer.accounting.bean.TblPayment;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -54,7 +54,7 @@ public class BillCreationController {
 		request.setAttribute("ItemList", itemList);
 
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
-		ArrayList<TblCategory> categoryListForCombo = rl.getCategoryListForPayment();
+		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
 		request.setAttribute("accountListForBill", accountListForBill);
 		request.setAttribute("categoryListForCombo", categoryListForCombo);
 		if(action.equals("billpayable"))
@@ -64,8 +64,8 @@ public class BillCreationController {
 
 		if(action.equals("PaidBillLists"))
 		{	
-			ArrayList<TblPayment> paidBillLists = rl.getPaidBillLists();
-			ArrayList<TblPayment> recurrentPaymentList = rl.getRecurrentBillPayment();
+			ArrayList<TblPaymentDto> paidBillLists = rl.getPaidBillLists();
+			ArrayList<TblPaymentDto> recurrentPaymentList = rl.getRecurrentBillPayment();
 			request.setAttribute("recurrentPaymentList", recurrentPaymentList);
 			request.setAttribute("paidBillLists", paidBillLists);
 			forward = "success2";
@@ -93,7 +93,7 @@ public class BillCreationController {
 		}
 		ArrayList<TblVendorDetail> allBillLists = rl.getAllBill(cvID, checkStatus);
 		request.setAttribute("allBillLists", allBillLists);
-		ArrayList<TblCategory> allcategoryList = rl.getAllCategories();
+		ArrayList<TblCategoryDto> allcategoryList = rl.getAllCategories();
 		ArrayList<ClientVendor> getClientForBill = rl.getClientVendorForCombo();
 		ArrayList<TblAccount> getAccountForRecurrent = rl.getAccount();
 		ArrayList<TblPaymentType> getPayMentTypeForRecurrent = rl.getPaymentType();
@@ -140,7 +140,7 @@ public class BillCreationController {
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
-		ArrayList<TblCategory> categoryListForCombo = rl.getCategoryListForPayment();
+		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
 		request.setAttribute("accountListForBill", accountListForBill);
 		request.setAttribute("categoryListForCombo", categoryListForCombo);
 		if(action.equals("save"))

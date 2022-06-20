@@ -12,6 +12,7 @@ import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
+import com.avibha.common.utility.FormFile;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,6 +23,7 @@ import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 import com.nxsol.bizcomposer.common.TblItemInventory;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -29,7 +31,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.struts.action.ActionServlet;
-import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -597,7 +598,7 @@ public class ItemInfoDao {
 		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
 		String cat = "";
 		String inventoryName = "";
-		ReceivableListBean invoice = null;
+		ReceivableListDto invoice = null;
 		String sql = "";
 
 		DateInfo dInfo = new DateInfo();
