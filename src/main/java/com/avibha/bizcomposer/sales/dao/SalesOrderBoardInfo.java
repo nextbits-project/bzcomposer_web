@@ -50,7 +50,7 @@ public class SalesOrderBoardInfo {
 			stmt2 = con.createStatement();
 			Loger.log("oDate1:" + oDate1 + " oDate2:" + oDate2);
 
-			String sqlString = "select InvoiceID,OrderNum,PONum,SONum,RcvNum,EstNum,"
+			String sqlString = "select Total, InvoiceID,OrderNum,PONum,SONum,RcvNum,EstNum,"
 					+ "ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsInvoice  "
 					+ "from bca_invoice as i where CompanyID ='" + compId + "' and invoiceStatus =0 ";// AND
 
@@ -82,6 +82,7 @@ public class SalesOrderBoardInfo {
 			while (rs.next()) {
 				SalesBoard d = new SalesBoard();
 				d.setInvoiceID(rs.getInt("InvoiceID"));
+				d.setTotal(rs.getDouble("Total"));
 				d.setOrderid(rs.getInt("orderid"));
 				d.setOrderNum(rs.getLong("OrderNum"));
 				d.setSo_no(rs.getLong("SONum")); // Sales Order Num

@@ -156,6 +156,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 									<th style="font-size:14px;"><spring:message code="BzComposer.estimationboard.companyname" /></th>
 									<th style="font-size:14px;"><spring:message code="BzComposer.estimationboard.name" /></th>
 									<th style="font-size:14px;"><spring:message code="BzComposer.estimationboard.emailid" /></th>
+									<th style="font-size:14px;"><spring:message code="BzComposer.sales.SalesAmount" /></th>
 									<th style="font-size:14px;"><spring:message code="BzComposer.estimationboard.estimationdate" /></th>
 									<th style="font-size:14px;"><spring:message code="BzComposer.estimationboard.saledate" /></th>
 									<th style="font-size:14px;"><spring:message code="BzComposer.estimationboard.printed" /></th>
@@ -173,6 +174,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                                         <td style="font-size:14px;">${objList.companyName}</td>
                                         <td style="font-size:14px;">${objList.lastName}, ${objList.firstName}</td>
                                         <td style="font-size:14px;">${objList.email}</td>
+                                        <td style="font-size:14px;">${objList.total}</td>
                                         <td style="font-size:14px;">${objList.saleDate}</td>
                                         <td style="font-size:14px;">${objList.dateAdded}</td>
                                         <td style="font-size:14px;">

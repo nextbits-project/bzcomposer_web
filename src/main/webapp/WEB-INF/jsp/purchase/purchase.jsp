@@ -1010,9 +1010,9 @@ function init() {
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12" style="font-size: 16px;" align="center">
-				    <input type="button" id="NewPurchaseOrder" class="formbutton" onclick="NewPurchaseOrder();" title="New PurchaseOrder" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.global.new' />" />
+				    <!-- <input type="button" id="NewPurchaseOrder" class="formbutton" onclick="NewPurchaseOrder();" title="New PurchaseOrder" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.global.new' />" /> -->
                     <input type="button" class="formbutton" onclick="onSave(this.form);" title="Save PurchaseOrder" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.global.saveUpdate' />" />
-                    <input type="button" id="btnUpdateCustomer" class="formbutton" onclick="showEditVendorPage(this.form);" title="Update Customer information" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.updatecustomer.updatecustomer' />" />
+                    <!-- <input type="button" id="btnUpdateCustomer" class="formbutton" onclick="showEditVendorPage(this.form);" title="Update Customer information" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.updatecustomer.updatecustomer' />" /> -->
 				</div>
 			</div>
 		</div>

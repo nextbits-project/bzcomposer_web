@@ -202,10 +202,12 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 				<td style="font-size:14px;">
 					<input type="button" class="formbutton" name="smailbtn" id="smail" disabled="disabled" style="padding: 10px;" onclick="sendToPurchase();"
 					    value='<spring:message code="BzComposer.purchaseorderboard.lookup" />' />&nbsp;&nbsp;
-                    <input type="button" class="formbutton" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
-                        value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp;
-                    <input type="button" class="formbutton" disabled="disabled" id="modi" style="padding: 10px;" onclick="makeUpdateReceivedInList();"
-                    	value='<spring:message code="BzComposer.checkpurchaseorder.checkpoorders" />' />
+                    <input type="button" class="formbutton" id="sendMailEnabled" style="padding: 10px;" title="Send Mail to..." onclick="SendMail();"
+                                        	value="<spring:message code='BzComposer.Invoice.SendMail' />" />
+                    <!-- <input type="button" class="formbutton" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
+                        value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp; -->
+                    <!-- <input type="button" class="formbutton" disabled="disabled" id="modi" style="padding: 10px;" onclick="makeUpdateReceivedInList();"
+                    	value='<spring:message code="BzComposer.checkpurchaseorder.checkpoorders" />' /> -->
 					<input type="hidden" name="ONum" id="ONumId"> 
 					<input type="hidden" name="sEmail" id="sEmailID"> 
 					<input type="hidden" name="rNum" id="rowONum"> 
@@ -252,6 +254,12 @@ function Init(){
     setTimeout(function () {
         document.getElementById("0$$").click();
     }, 1000);
+}
+
+function SendMail(){
+    debugger;
+    cid=document.getElementById("po_value").value;
+    window.open("Invoice?tabid=ShowEmail&OrderType=invoice&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }
 function setIsEmail()
 {

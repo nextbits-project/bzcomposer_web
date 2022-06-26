@@ -51,7 +51,7 @@ private int id = -1;
     private boolean deleted=false;
 
     private long orderNum=0L;
-
+    private String orderNumStr;
     private int payableID=0;
 
     private String transactionID="";
@@ -502,7 +502,15 @@ private int id = -1;
     public void setOrderNum(long orderNum) {
         this.orderNum = orderNum;
     }
-    
+
+    public String getOrderNumStr() {
+        return orderNumStr;
+    }
+
+    public void setOrderNumStr(String orderNumStr) {
+        this.orderNumStr = orderNumStr;
+    }
+
     public int getRmaNo() {
         return rmaNo;
     }

@@ -226,20 +226,21 @@ public class ConfigurationDAO {
     public ArrayList<ConfigurationDto> getPaymentType(String cId, HttpServletRequest request, ConfigurationDto form) {
         Connection con = null;
         SQLExecutor db = new SQLExecutor();
-        Statement stmt = null;
+        PreparedStatement pstmt = null;
         ResultSet rs = null;
         con = db.getConnection();
-        ArrayList<ConfigurationDto> paymentType = new ArrayList<>();
+                ArrayList<ConfigurationDto> paymentType = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM bca_paymenttype WHERE CompanyID = "+cId+" AND Active =1 AND TypeCategory=1 ORDER BY Name";
-            stmt = con.createStatement();
-            rs = stmt.executeQuery(sql);
+            String sql = "select PaymentTypeID,Name,IsDefault from bca_receicedtype where CompanyID='" +cId+ "' and Active=1 and TypeCategory=1 ORDER BY Name";
+            //String sql = "SELECT * FROM bca_paymenttype WHERE CompanyID = "+cId+" AND Active =1 AND TypeCategory=1 ORDER BY Name";
+            pstmt = con.prepareStatement(sql);
+            Loger.log(sql);
+            rs = pstmt.executeQuery();
             while(rs.next()) {
                 pojo = new ConfigurationDto();
-                pojo.setArReceivedType(rs.getInt("PaymentTypeID"));
-                pojo.setSelectedPaymentId(rs.getInt("PaymentTypeID"));
-                pojo.setPaymentId(rs.getInt("PaymentTypeID"));
-                pojo.setPaymentName(rs.getString("Name"));
+                pojo.setPaymentTypeId(rs.getInt(1));
+                pojo.setPaymentName(rs.getString(2));
+                pojo.setDefaultPaymentTypeId(rs.getBoolean(3));
                 paymentType.add(pojo);
             }
         }
@@ -249,7 +250,7 @@ public class ConfigurationDAO {
         finally {
             try {
                 if (rs != null) { db.close(rs); }
-                if (stmt != null) { db.close(stmt); }
+                if (pstmt != null) { db.close(pstmt); }
                 if(con != null){ db.close(con); }
             } catch (Exception e) {
                 Loger.log(e.toString());

@@ -323,7 +323,7 @@ $(document).ready(function()
 													<form:select path="selectedPaymentId">
 													    <c:if test="${not empty configDto.listOfExistingPayment}">
                                                             <c:forEach items="${configDto.listOfExistingPayment}" var="objList1">
-                                                                <option value="${objList1.paymentId}">${objList1.paymentName}</option>
+                                                                <option value="${objList1.paymentTypeId}">${objList1.paymentName}</option>
                                                             </c:forEach>
                                                         </c:if>
 													</form:select>
@@ -630,11 +630,11 @@ $(document).ready(function()
                                         </td>
                                         <td style="font-size: 12px;">
                                             <form:select path="bpReceivedType" id="bpReceivedType" styleClass="width:50%" >
-                                                <c:if test="${not empty configDto.listOfExistingPaymentGeneralAccount}">
-                                                    <c:forEach items="${configDto.listOfExistingPaymentGeneralAccount}" var="objList1">
-                                                        <option value="${objList1.bpReceivedType}">${objList1.paymentName}</option>
-                                                    </c:forEach>
-                                                </c:if>
+                                                <c:if test="${not empty configDto.listOfExistingPayment}">
+                                                   <c:forEach items="${configDto.listOfExistingPayment}" var="objList1">
+                                                       <option value="${objList1.paymentTypeId}">${objList1.paymentName}</option>
+                                                   </c:forEach>
+                                               </c:if>
                                             </form:select>
                                         </td>
                                     </tr>

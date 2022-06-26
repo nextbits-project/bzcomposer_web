@@ -62,6 +62,8 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                             <th align="center"><spring:message code="BzComposer.Item.ItemCode"/></th>
                             <th align="center" style="padding-right:150px;"><spring:message code="BzComposer.additem.itemtitle"/></th>
                             <th><spring:message code="BzComposer.additem.quantity"/></th>
+                            <th><spring:message code="BzComposer.ReorderPoint"/></th>
+                            <th><spring:message code="BzComposer.Purchase.ReceivedItem.vendor"/></th>
                             <th align="center"><spring:message code="BzComposer.additem.purchaseprice"/></th>
                             <th align="center"><spring:message code="BzComposer.additem.saleprice"/></th>
                             <th align="center"><spring:message code="BzComposer.additem.dealerprice"/></th>
@@ -77,6 +79,8 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                                         <td>${objList.itemCode}</td>
                                         <td>${objList.itemName}</td>
                                         <td>${objList.qty}</td>
+                                        <td>${objList.reorderPoint}</td>
+                                        <td></td>
                                         <td>${objList.purchasePrice}</td>
                                         <td>${objList.salePrice}</td>
                                         <td>${objList.dealerPrice}</td>
