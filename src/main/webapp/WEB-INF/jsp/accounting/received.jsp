@@ -451,7 +451,7 @@ table.tabla-listados tbody tr td {
 				    %>
 				  <tr onclick="selectrow(<%=rb.getInvoiceID()+","+indexForpli+","+rb.getId()%>)">
 				      <td><input type="checkbox"></td>
-				      <td class="text-right"><% out.println(rb.getOrderNum()); %></td>
+                      <td class="text-right"><% out.println(rb.getOrderNumStr()); %></td>
 				      <td class="text-right" value="<%= rb.getCvID()%>"><% out.println(rb.getCvName()+ " (" +rb.getCompanyName() + ")") ;%></td>
 				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded()));%></td>
 				      <% if(rb.getPaymentTypeName().equals("Check")) {%>

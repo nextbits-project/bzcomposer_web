@@ -712,7 +712,7 @@ table.tabla-listados tbody tr td {
 
 		this.amtToPay = document.getElementById("receivedAmount").value;
 		orderNum = document.getElementById("ordernumber").innerHTML;
-		var newON = orderNum.replace('PO2021-0','').replace(/\n/g, '');
+		var newON = orderNum.replace('IV2021-0','').replace(/\n/g, '');
 	   var ReceivableListBean = {
 	            "ReceivableListBean": {
 	            	 "orderNum": newON,
@@ -794,7 +794,7 @@ table.tabla-listados tbody tr td {
 		   }
    }
    function dayName(date) {
-	 
+
        var days = new Array(31);
        var j = 0;
        var d  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -820,7 +820,7 @@ table.tabla-listados tbody tr td {
     	   alert("please select Received Type")
        }
        var ctype = type.options[type.selectedIndex].label;
-       
+
 	   var paymentTypeIdString = type.options[type.selectedIndex].id;
 	   var paymentTypeId = parseInt(paymentTypeIdString);
 	   if(ctype == 'Check')
@@ -846,16 +846,16 @@ table.tabla-listados tbody tr td {
 	   var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text();
 	   var balaceString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
 	    var amount = parseFloat(amountString);
-	   var balance = parseInt(balaceString); 
+	   var balance = parseInt(balaceString);
 	   <%-- var receivedAmount = <%= request.getSession().getAttribute("amtToPay")%>; --%>
-	     var receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value');  
+	     var receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value');
 	   /*   var total = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(19)').attr('value'); */
 	    /* var receivedAmountInt = parseInt(receivedAmount);
 	    var totalInt = parseInt(total);  */
-	    
+
 	   /*  if(receivedAmountInt > totalInt)
 	    	{
-	    		
+
 	    	  	receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').attr('value');
 	    	}
 	    else
@@ -870,10 +870,10 @@ table.tabla-listados tbody tr td {
 		   {
 		  		 receivedAmountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
 		   }
-	   
-	  /*  	var receivedAmount = parseInt(receivedAmountString); */   
+
+	  /*  	var receivedAmount = parseInt(receivedAmountString); */
 	    var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text();
-	  	var newON = orderNum.replace('PO2021-0','').replace(/\n/g, ''); 
+	  	var newON = orderNum.replace('IV2021-0','').replace(/\n/g, '');
 	  	
 	  	var receivedType = document.getElementById("receivedType");
 		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
