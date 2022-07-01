@@ -74,7 +74,12 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                         <tbody>
                             <c:if test="${not empty ItemDetails}">
                                 <c:forEach items="${ItemDetails}" var="objList" varStatus="loop">
-                                    <tr id='${loop.index}$$' onclick="setRowId(${objList.inventoryId}, ${loop.index}, true);">
+                                    <c:if test="${objList.qty < objList.reorderPoint}">
+                                        <tr style="color: red;" id='${loop.index}$$' onclick="setRowId(${objList.inventoryId}, ${loop.index}, true);">
+                                    </c:if>
+                                    <c:if test="${objList.qty > objList.reorderPoint}">
+                                        <tr id='${loop.index}$$' onclick="setRowId(${objList.inventoryId}, ${loop.index}, true);">
+                                    </c:if>
                                         <td><b>${objList.categoryName}</b></td>
                                         <td>${objList.itemCode}</td>
                                         <td>${objList.itemName}</td>
@@ -122,7 +127,9 @@ $(document).ready(function () {
         }
     });
 });
-
+function abc(qty){
+return "12";
+}
 function initialize() {
     let lSize = document.getElementById("lSize").value;
     if(lSize > 0){
