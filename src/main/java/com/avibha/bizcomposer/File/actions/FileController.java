@@ -5,6 +5,7 @@ import com.avibha.bizcomposer.File.dao.CompanyInfo;
 import com.avibha.bizcomposer.File.dao.FileMenuDao;
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.login.forms.LoginFormDto;
 import com.avibha.bizcomposer.login.forms.MultiUserFormDto;
@@ -18,6 +19,7 @@ import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.Path;
 import com.nxsol.bizcomposer.common.TblStore;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
+import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -293,6 +295,28 @@ public class FileController {
 
             CompanyInfo customer = new CompanyInfo();
             customer.updateComapanyinfo(companyInfoDto, userID, compId);
+
+            /* Reminders */
+            ConfigurationDto cForm =  new ConfigurationDto();
+            cForm.setShowReminder("1".equals(request.getParameter("showReminder")) ? "1" : "0");
+            cForm.setInvoiceMemo(Integer.parseInt(request.getParameter("invoiceMemo").toString()));
+            cForm.setInvoiceMemoDays(Integer.parseInt(request.getParameter("invoiceMemoDays").toString()));
+            cForm.setOverdueInvoice(Integer.parseInt(request.getParameter("overdueInvoice").toString()));
+            cForm.setOverdueInvoiceDays(Integer.parseInt(request.getParameter("overdueInvoiceDays").toString()));
+            cForm.setInventoryOrder(Integer.parseInt(request.getParameter("inventoryOrder").toString()));
+            cForm.setInventoryOrderDays(Integer.parseInt(request.getParameter("inventoryOrderDays").toString()));
+            cForm.setBillsToPay(Integer.parseInt(request.getParameter("billsToPay").toString()));
+            cForm.setBillsToPayDays(Integer.parseInt(request.getParameter("billsToPayDays").toString()));
+            cForm.setMemorizeEstimation(Integer.parseInt(request.getParameter("EstimationMemo").toString()));
+            cForm.setMemorizeEstimationDays(Integer.parseInt(request.getParameter("memorizeEstimationDays").toString()));
+            cForm.setMemorizeBill(Integer.parseInt(request.getParameter("memorizeBill").toString()));
+            cForm.setMemorizeBillDays(Integer.parseInt(request.getParameter("memorizeBillDays").toString()));
+            cForm.setMemorizePurchaseOrder(Integer.parseInt(request.getParameter("memorizePurchaseOrder").toString()));
+            cForm.setMemorizePurchaseOrderDays(Integer.parseInt(request.getParameter("memorizePurchaseOrderDays").toString()));
+            cForm.setServiceBilling(Integer.parseInt(request.getParameter("serviceBilling").toString()));
+            cForm.setServiceBillingDays(Integer.parseInt(request.getParameter("serviceBillingDays").toString()));
+            ConfigurationDAO dao = new ConfigurationDAO();
+            dao.updateRemindersInfo(cForm, compId);
             status = "Success";
         }
         else if (action.equalsIgnoreCase("editSecurity")) {

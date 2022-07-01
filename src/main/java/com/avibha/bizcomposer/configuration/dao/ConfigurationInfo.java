@@ -534,12 +534,12 @@ public class ConfigurationInfo {
                 cForm.setBillsToPayDays(rs.getInt("BillstoPayDays"));
                 cForm.setMemorizeEstimation(rs.getInt("EstimationMemo"));
                 cForm.setMemorizeEstimationDays(rs.getInt("EstimationMemoDays"));
-                cForm.setMemorizeBill(rs.getInt("POMemo"));
-                cForm.setMemorizeBillDays(rs.getInt("PoMemoDays"));
+                cForm.setMemorizeBill(rs.getInt("MemoBill"));
+                cForm.setMemorizeBillDays(rs.getInt("MemoBillDays"));
+                cForm.setMemorizePurchaseOrder(rs.getInt("POMemo"));
+                cForm.setMemorizePurchaseOrderDays(rs.getInt("PoMemoDays"));
                 cForm.setServiceBilling(rs.getInt("ServiceBillsMemo"));
                 cForm.setServiceBillingDays(rs.getInt("ServiceBillsMemoDays"));
-                cForm.setMemorizePurchaseOrder(rs.getInt("MemoBill"));
-                cForm.setMemorizePurchaseOrderDays(rs.getInt("MemoBillDays"));
 
                 /* Finance Charge */
                 cForm.setAnnualInterestRate(rs.getDouble("Charge_interest"));

@@ -5173,4 +5173,49 @@ public class ConfigurationDAO {
         }
         return rowDeleted;
     }
+
+    public void updateRemindersInfo(ConfigurationDto cForm, String compId) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowUpdated = false;
+        try {
+            String sql = "update bca_preference set ShowReminder = ?, InvoiceMemo = ?,InvoiceMemoDays = ?, " +
+                         "OverdueInvoice = ?, OverdueinvoiceDays = ?, InventoryOrder = ?, InventoryOrderDays = ?, " +
+                         "BillstoPay = ?,BillstoPayDays = ?,Memobill = ?,MemobillDays = ?,EstimationMemo = ?,EstimationMemoDays = ?, " +
+                    "POMemo = ?,POMemoDays = ?,ServiceBillsMemo = ?,ServiceBillsMemoDays = ? Where CompanyID = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, cForm.getShowReminder());
+            pstmt.setInt(2, cForm.getInvoiceMemo());
+            pstmt.setInt(3, cForm.getInvoiceMemoDays());
+            pstmt.setInt(4, cForm.getOverdueInvoice());
+            pstmt.setInt(5, cForm.getOverdueInvoiceDays());
+            pstmt.setInt(6, cForm.getInventoryOrder());
+            pstmt.setInt(7, cForm.getInventoryOrderDays());
+            pstmt.setInt(8, cForm.getBillsToPay());
+            pstmt.setInt(9, cForm.getBillsToPayDays());
+            pstmt.setInt(10, cForm.getMemorizeBill());
+            pstmt.setInt(11, cForm.getMemorizeBillDays());
+            pstmt.setInt(12, cForm.getMemorizeEstimation());
+            pstmt.setInt(13, cForm.getMemorizeEstimationDays());
+            pstmt.setInt(14, cForm.getMemorizePurchaseOrder());
+            pstmt.setInt(15, cForm.getMemorizePurchaseOrderDays());
+            pstmt.setInt(16, cForm.getServiceBilling());
+            pstmt.setInt(17, cForm.getServiceBillingDays());
+            pstmt.setString(18, compId);
+
+            rowUpdated = pstmt.executeUpdate() > 0 ? true : false;
+
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+    }
 }
