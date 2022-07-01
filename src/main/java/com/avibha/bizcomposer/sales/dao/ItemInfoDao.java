@@ -8,7 +8,6 @@ package com.avibha.bizcomposer.sales.dao;
 import com.avibha.bizcomposer.employee.dao.Employee;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
-import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
