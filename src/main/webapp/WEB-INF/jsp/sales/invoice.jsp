@@ -1086,7 +1086,7 @@ function ShippedItem(){
 }
 
 function Assignment(value, form){
-    
+    debugger;
     if(value==0){
         
         document.InvoiceForm.billTo.value="";
@@ -1133,7 +1133,7 @@ function Assignment(value, form){
                 if(custBalance == "true") document.getElementById("CustomerBalanceBtn").style.backgroundColor = "red";
                 else document.getElementById("CustomerBalanceBtn").style.backgroundColor = "#05A9C5";
                 let viaItem = document.getElementById(i+"va").value;
-                if(viaItem==""){
+                /* if(viaItem==""){
                     document.InvoiceForm.via.value="0";
                 }
                 else{
@@ -1143,7 +1143,7 @@ function Assignment(value, form){
                     document.InvoiceForm.term.value = document.getElementById(i+"trm").value;
                     document.InvoiceForm.taxable.checked = (document.getElementById("a"+i+"txable").value == "1")?true:false;
                     break;
-                }
+                } */
             }
         }
     }
