@@ -85,7 +85,7 @@ function toggleFunction() {
                                         <spring:message code="BzComposer.configuration.templatecustomization" />
                                     </th>
                                 </tr>
-                                <!-- <tr>
+                                <tr>
                                     <td style="font-size:12px;">
                                         <spring:message code="BzComposer.configuration.selecttype"/>:
                                     </td>
@@ -97,7 +97,7 @@ function toggleFunction() {
                                             <option value="3"><spring:message code="BzComposer.configuration.packingslips"/></option>
                                         </select>
                                     </td>
-                                </tr> -->
+                                </tr>
                                 <tr>
                                     <td style="font-size:12px;">
                                         <spring:message code="BzComposer.configuration.active"/>
@@ -110,7 +110,7 @@ function toggleFunction() {
                                 </tr>
                                 <tr>
                                     <td style="width:60px;font-size:12px;">
-                                        <select id="ActiveInvoiceStyleId" name="InvoiceStyleId" style="display:block; width: 200px; height: 200px;" multiple="multiple">
+                                        <select id="ActiveInvoiceStyleId" name="InvoiceStyleId" style="display:block; width: 200px; height: 200px;" multiple="multiple" onchange="setDescription(this);">
                                             <c:if test="${not empty configDto.listOfExistingInvoiceStyle}">
                                                 <c:forEach items="${configDto.listOfExistingInvoiceStyle}" var="objList1">
                                                     <option value="${objList1.invoiceStyleId}">${objList1.invoiceStyle}</option>
@@ -140,16 +140,23 @@ function toggleFunction() {
                                         </c:if>
                                         </select>
                                     </td>
+                                    <td style="font-size:12px;">
+                                              <spring:message code="BzComposer.datamanager.description" />
+                                              <input type="text" name="des" id="descriptionId" tabindex="1">
+                                          <div colspan="2" align="left" style="font-size: 14px; margin-top: 15px;margin-left: 65px; ">
+                                              <button type="button" id="Add" style="width: 40px;font-size:14px;" name="Add" class="formButton" onclick="addNewTemplate()">
+	                                            <spring:message code="BzComposer.global.add"/>
+	                                        </button>&nbsp;&nbsp;
+	                                        <button type="button" id="updateRefundReason" class="formButton" onclick="updateExistingTemplate()" style="width: 80px; font-size: 14px;">
+                                        <spring:message code="BzComposer.global.update"/>
+                                    </button>&nbsp;&nbsp;
+                                    <button type="button" id="deleteRefundReason" class="formbutton" onclick="deleteSelectedTemplate()" style="width: 60px; font-size: 14px;">
+                                        <spring:message code="BzComposer.global.delete"/>
+                                    </button>
+                                         </div>
+                                   </td>
                                 </tr>
-                                <tr>
-                                    <td></td>
-                                    <td style="width: 50px;">
-                                        <button type="button" id="Add" style="width: 40px;font-size:14px;" name="Add" class="formButton">
-                                            <spring:message code="BzComposer.global.add"/>
-                                        </button>
-                                    </td>
-                                    <td></td>
-                                </tr>
+                              
                                 <tr>
                                     <td colspan="3">
                                     <table class="table-notifications" >
@@ -172,7 +179,7 @@ function toggleFunction() {
 											</td>
 										</tr>
 										<tr>
-											<td style="font-size: 12px; width: 250px;">
+											<td style="font-size: 12px; width: 60px;">
 												<form:select path="selectedModuleId" id="selectedModuleId" style="width: 200px; height: 200px;font-size: 1em;" class="featureName1" multiple="true">
 												    <c:if test="${not empty configDto.listOfExistingModules}">
                                                     	<c:forEach items="${configDto.listOfExistingModules}" var="objList1">
@@ -181,7 +188,7 @@ function toggleFunction() {
                                                     </c:if>
 												</form:select>
 											</td>
-											<td style="font-size: 12px; width: 100px;">
+											<td align="center" style="font-size: 12px; width: 100px;">
 												<br><br>
 												<a class="addfeature" style="font-size: 16px;padding-right: 10px; padding-left: 10px;color: #fff; background-color: #05A9C5; ">
 													<spring:message code="BzComposer.configuration.lefttorightbtn"/>
@@ -369,6 +376,100 @@ function setactivate() {
 	opt.appendChild( document.createTextNode(selectValue) );
 	opt.value = selectValue1;
 	sel1.appendChild(opt);
+}
+
+function setDescription()
+{
+	var oldTemplate = $.trim($('#ActiveInvoiceStyleId option:selected').text());
+	//$('#refundReasonSel option:selected').remove();
+	document.getElementById("descriptionId").value = oldTemplate;	
+}
+
+function addNewTemplate()
+{ debugger;
+	var newDesc = $("#descriptionId").val().trim();
+	var camelized = newDesc.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+    	return letter.toUpperCase();
+	});
+	var selectedDesc = $('select[id="ActiveInvoiceStyleId"]').find('option[id="'+camelized+'"]').attr("selected",true);
+	var isAvailable = $.trim($("#ActiveInvoiceStyleId option:selected").text());
+	if(newDesc == ""){
+		alert("<spring:message code='BzComposer.configuration.module.enterdescription'/>");
+		return false;
+	}
+	else if((newDesc.match("^no") || newDesc.match("^No"))&&(newDesc.match("descriptionId$") || newDesc.match("DescriptionId$"))) {
+        alert("<spring:message code='BzComposer.configuration.module.entervaliddescription'/>");
+        return false;
+    }
+    else if(camelized == isAvailable || newDesc == isAvailable) {
+        alert("<spring:message code='BzComposer.configuration.module.descriptionalreadyexists'/>");
+        return false;
+    }
+    else {
+        var parentReasonId = $("#templateCust option:selected").val();
+        var parentReason = $("#templateCust option:selected").text();
+        $.ajax({
+            type: "POST",
+            url:"/ConfigurationAjax/SaveConfiguration?tabid=addNewTemplate",
+            data:{Name : newDesc, Active : 1},
+            success:function(data){
+                if(data){   location.reload(); }
+            },
+            error:function(){
+              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+            }
+        });
+    }
+}
+function updateExistingTemplate()
+{
+	debugger;
+	var oldTem = $('#ActiveInvoiceStyleId option:selected').text();
+	var newTem = $('#descriptionId').val().trim();
+    if (oldTem == '') {
+        alert("<spring:message code='BzComposer.configuration.module.selecttemplatefromlist'/>");
+    }
+    else if(oldTem == newTem){
+    	alert("<spring:message code='BzComposer.configuration.module.sametemplatecantupdate'/>");	
+    }
+    else{
+        $.ajax({
+            type: "POST",
+            url:"/ConfigurationAjax/SaveConfiguration?tabid=updateExistingTemplate",
+            data:{oldDescription : oldTem, newDescription : newTem},
+            success:function(data){
+                if(data){   location.reload(); }
+            },
+            error:function(){
+              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+            }
+        });
+    }
+}
+
+function deleteSelectedTemplate()
+{
+	var oldTem = $('#ActiveInvoiceStyleId option:selected').text();
+
+    if (oldTem == '') {
+        alert("<spring:message code='BzComposer.configuration.module.selecttemplatefromlist'/>");
+    }
+    else {
+    	var con = confirm("<spring:message code='BzComposer.configuration.module.removetemplate'/>");
+    	if(con){
+    	     $.ajax({
+    	            type: "POST",
+    	            url:"/ConfigurationAjax/SaveConfiguration?tabid=deleteSelectedTemplate",
+    	            data:{oldDescription : oldTem},
+    	            success:function(data){
+    	                if(data){   location.reload(); }
+    	            },
+    	            error:function(){
+    	              alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+    	            }
+    	        });
+    	}
+    }
 }
 </script>
 <jsp:include page="/WEB-INF/jsp/include/footer.jsp" />

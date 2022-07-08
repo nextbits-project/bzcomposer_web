@@ -19,7 +19,7 @@ public class ConfigurationDto implements Serializable {
             + "InvoiceStyleID,EstimationStyleID,SoStyleID,PoStyleID,FilterOption,AdminPassword,CustTaxable,AddressSettings,SalesTaxCode,SaleTaxRate,SaleTaxRate2,"
             + "HowOftenSalesTax,DropShipCharge,ExtraChargeApplicable,ChargeAmount,OrderAmount,IsRefundAllowed,PoShowCountry,PoShowTelephone,IsPurchasePrefix,"
             + "ShowReminder,AnnualInterestRate,MinCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge,MailServer,MailUserName,MailPassword,MailAuth,"
-            + "SenderEmail,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,BackOrderNeeded,serviceBillName";
+            + "SenderEmail,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,BackOrderNeeded,serviceBillName,Name";
 
     public int preferenceID = -1;
     /*for Dashboard and General option*/
@@ -381,8 +381,44 @@ public class ConfigurationDto implements Serializable {
 
     private ArrayList<ConfigurationDto> listOfExistingReasonType;
     private ArrayList<ConfigurationDto> listOfExistingMasterReasonType;		//Added On 30-04-2019
+    /* Module   */
+    private String Name;
+    private int locationId;
+    private String newDescription;
+    private String oldDescription;
+    public String getName() {
+		return Name;
+	}
 
-    /* for shipping option*/
+	public void setName(String name) {
+		Name = name;
+	}
+
+	public int getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(int locationId) {
+		this.locationId = locationId;
+	}
+
+	public String getNewDescription() {
+		return newDescription;
+	}
+
+	public void setNewDescription(String newDescription) {
+		this.newDescription = newDescription;
+	}
+
+	public String getOldDescription() {
+		return oldDescription;
+	}
+
+	public void setOldDescription(String oldDescription) {
+		this.oldDescription = oldDescription;
+	}
+
+	/* for shipping option*/
     private int shippingAPI;
     private int isUPSActive;
     private int isUSPSActive;

@@ -823,6 +823,85 @@ public class ConfigurationDAO {
         }
         return isUpdated;
     }
+    
+    public void addNewTemplate(String templateName, String Active)
+    {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowAdded = false;
+        try {
+            String sql = "INSERT INTO bca_invoicestyle(Name, Active) Values(?,?)";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, templateName);
+            pstmt.setString(2, Active);       
+            rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+    }
+    
+    
+    public boolean updateExistingTemplate(String companyID, String oldTem, String newTem, HttpServletRequest request) {
+        Connection con = null;
+        SQLExecutor db = new SQLExecutor();
+        PreparedStatement pstmt = null, pstmt2 = null;
+        boolean isUpdated = false;
+        con = db.getConnection();
+        try {
+        	String ID= "select InvoiceStyleID From bca_invoicestyle where Name="+oldTem;
+            String sql1 =  "update bca_invoicestyle set Name=? where Name=?";
+            pstmt = con.prepareStatement(sql1);
+            pstmt.setString(1, newTem);
+            pstmt.setString(2,oldTem); 
+            pstmt.executeUpdate();
+         
+        } catch (SQLException ee) {
+            Loger.log("Exception" + ee.toString());
+        }finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if (pstmt2 != null) { db.close(pstmt2); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return isUpdated;
+    }
+    
+    public void deleteSelectedTemplate(String selectedTemplate){
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowDeleted = false;
+        try {
+            String sql = "delete From bca_invoicestyle where Name = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, selectedTemplate);
+            rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+    }
     public boolean addNewUser(String companyID, HttpServletRequest request) {
         Connection con = null;
         SQLExecutor db = new SQLExecutor();

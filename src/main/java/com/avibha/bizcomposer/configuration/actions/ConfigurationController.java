@@ -1403,6 +1403,25 @@ public class ConfigurationController {
             dao.updateSelctedUser(companyID, selectedUserId, userEmail, password1, groupID, request);
             System.out.println("Success");
         }
+        else if (action.equalsIgnoreCase("addNewTemplate")) {
+            ConfigurationDAO dao = new ConfigurationDAO();
+            String templateName = request.getParameter("Name");
+            String Active = request.getParameter("Active");          
+             dao.addNewTemplate(templateName, Active);
+             System.out.println("Success");
+        }
+        else if (action.equalsIgnoreCase("updateExistingTemplate")){
+            ConfigurationDAO dao = new ConfigurationDAO();
+            String oldTem = request.getParameter("oldDescription");
+            String newTemp = request.getParameter("newDescription");
+            dao.updateExistingTemplate(companyID, oldTem, newTemp, request);
+            System.out.println("Success");
+        }
+        else if (action.equalsIgnoreCase("deleteSelectedTemplate")) {
+            ConfigurationDAO dao = new ConfigurationDAO();
+            String selectedTemplate = request.getParameter("oldDescription");
+            dao.deleteSelectedTemplate(selectedTemplate);
+        }
         else if (action.equalsIgnoreCase("saveGroup")) {
             ConfigurationDAO dao = new ConfigurationDAO();
             boolean result = dao.saveUserGroupDetails(companyID, configDto);
