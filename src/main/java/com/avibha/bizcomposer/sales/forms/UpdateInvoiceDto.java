@@ -12,7 +12,6 @@ import java.util.List;
 public class UpdateInvoiceDto {
 	
 	private static final long serialVersionUID = 0;
-	
 	private String custId;
 
 	private int companyID;
@@ -22,7 +21,9 @@ public class UpdateInvoiceDto {
 	private String clientVendorID;
 
 	private String bsAddressID;
-
+	private String dbaName;
+	private String bsdbaName;
+	private String shdbaName;
 	private String fullName;
 
 	private String rvName;
@@ -1700,5 +1701,29 @@ public class UpdateInvoiceDto {
 
 	public void setDateInput(String dateInput) {
 		this.dateInput = dateInput;
+	}
+
+	public String getDbaName() {
+		return dbaName;
+	}
+
+	public void setDbaName(String dbaName) {
+		this.dbaName = dbaName;
+	}
+
+	public String getBsdbaName() {
+		return bsdbaName;
+	}
+
+	public void setBsdbaName(String bsdbaName) {
+		this.bsdbaName = bsdbaName;
+	}
+
+	public String getShdbaName() {
+		return shdbaName;
+	}
+
+	public void setShdbaName(String shdbaName) {
+		this.shdbaName = shdbaName;
 	}
 }

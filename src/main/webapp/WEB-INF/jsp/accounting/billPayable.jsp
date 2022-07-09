@@ -10,10 +10,10 @@
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
 <%@page import="java.util.Iterator"%>
 <%@page
-	import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+	import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
 <%@page import="java.util.ArrayList"%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -214,7 +214,7 @@ table.tabla-listados tbody tr td {
 									<select class="form-control devCategoryDrp" size="1"
 										id="categoryId">
 										<%
-										ArrayList<TblCategory> categoryList = (ArrayList) request.getAttribute("categoryListForCombo");
+										ArrayList<TblCategoryDto> categoryList = (ArrayList) request.getAttribute("categoryListForCombo");
 										if (categoryList != null) {
 											for (int i = 1; i < categoryList.size(); i++) {
 										%>

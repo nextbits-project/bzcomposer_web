@@ -10,10 +10,10 @@
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
 <%@page import="java.util.Iterator"%>
 <%@page
-	import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+	import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
 <%@page import="java.util.ArrayList"%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -99,8 +99,8 @@ table.tabla-listados tbody tr td {
 <body>
 	<%
 	int find = 0;
-	ReceivableListBean rb = null;
-	ArrayList<ReceivableListBean> li = null;
+	ReceivableListDto rb = null;
+	ArrayList<ReceivableListDto> li = null;
 	String invoiceNumber = "-1";
 	%>
 	<div id="ddcolortabsline">&nbsp;</div>
@@ -268,7 +268,7 @@ table.tabla-listados tbody tr td {
 									<select class="form-control devCategoryDrp" size="1"
 										id="categoryId">
 										<%
-										ArrayList<TblCategory> category = (ArrayList) request.getAttribute("categoryforcombo");
+										ArrayList<TblCategoryDto> category = (ArrayList) request.getAttribute("categoryforcombo");
 
 										for (int i = 0; i < category.size(); i++) {
 										%>
@@ -308,13 +308,13 @@ table.tabla-listados tbody tr td {
 
 						</div>
 						<div class="col-md-4" style="top: 35px;">
-							<%-- <% if(receivablelistbean == null) {%>
+							<%-- <% if(ReceivableListDto == null) {%>
 						<div class="form-group">
 								<button class="btn btn-info btn1" onclick="return save(null,null)">Save</button>
 							</div>
 						<%} else {%>
 							<div class="form-group">
-								<button class="btn btn-info btn1" onclick="return save(<%= receivablelistbean.getOrderNum()%>,<%= receivablelistbean.getPaidAmount()+receivablelistbean.getBalance()%>)">Save</button>
+								<button class="btn btn-info btn1" onclick="return save(<%= ReceivableListDto.getOrderNum()%>,<%= ReceivableListDto.getPaidAmount()+ReceivableListDto.getBalance()%>)">Save</button>
 							</div>
 						<% } %>  --%>
 						 <div class="form-group">
@@ -391,7 +391,7 @@ table.tabla-listados tbody tr td {
 						<tbody>
 							<%
 							li = (ArrayList) request.getAttribute("poList");
-							Iterator<ReceivableListBean> itr = li.iterator();
+							Iterator<ReceivableListDto> itr = li.iterator();
 							int index = 1;
 							while (itr.hasNext()) {
 								rb = itr.next();
@@ -838,7 +838,7 @@ table.tabla-listados tbody tr td {
 	   debugger;
         var poNumberString = document.getElementById("poNumber").innerHTML;
         var poNum = parseInt(poNumberString);
-	   var ReceivableListBean={
+	   var ReceivableListDto={
 			   "poNum":poNum,
 			   "cvID":vendor,
 			   "paymentTypeID":document.getElementById("paymentType").value,	   
@@ -851,12 +851,12 @@ table.tabla-listados tbody tr td {
 			   "checkNum":document.getElementById("checkNum").value,
 	   }
 	   
-     sendMyValue(ReceivableListBean); 
+     sendMyValue(ReceivableListDto);
    }
   	}
-   function sendMyValue(ReceivableListBean) {
+   function sendMyValue(ReceivableListDto) {
 		
-		var obj=JSON.stringify(ReceivableListBean);
+		var obj=JSON.stringify(ReceivableListDto);
    	    $.ajax({
 			type : "POST",
 			url : "PoPayablePost?tabid=UpdateRecord",
@@ -1024,12 +1024,12 @@ $('tr').click(function () {
 	  var paymentTypeId = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(7)').attr('value');
 	  var checkNum = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(8)').text();
 	  var balance = parseInt(AdjustedTotal) - parseInt(paidAmount);
-	  var ReceivableListBean={
+	  var ReceivableListDto={
 
 	   };
 
-    var ReceivableListBean = {
-             "ReceivableListBean": {
+    var ReceivableListDto = {
+             "ReceivableListDto": {
                 "poNum":PoNumber,
                 "invoiceID":invoiceId,
                 "cvID":vendorId,
@@ -1040,7 +1040,7 @@ $('tr').click(function () {
                 "categoryID":categoryId,
                 "checkNum":checkNum
              }};
-    var obj=JSON.stringify(ReceivableListBean);
+    var obj=JSON.stringify(ReceivableListDto);
 	  $.ajax({
 			type : "POST",
 			url : "PoPayablePost?tabid=Pay",

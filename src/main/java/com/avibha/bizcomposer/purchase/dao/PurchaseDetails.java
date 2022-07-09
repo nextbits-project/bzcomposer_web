@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
@@ -115,7 +116,7 @@ public class PurchaseDetails {
 			//Id generation finished
 		
 			PurchaseInfo purchase = new PurchaseInfo();
-			VendorForm vfrm = (VendorForm) form;
+			VendorDto vfrm = (VendorDto) form;
 			try{
 			boolean isAdded = purchase.insertVendor(cvID + "", vfrm, compId, istax, isclient,
 					indCharge, aFCharge, fICharge, "N",stateName);
@@ -299,7 +300,7 @@ public class PurchaseDetails {
 	 */
 	public void getLabel(HttpServletRequest request,ActionForm form)  {
 		PurchaseInfo customer = new PurchaseInfo();
-		PrintLabelForm vform = (PrintLabelForm)form;
+		PrintLabelDto vform = (PrintLabelDto)form;
 		int labelId = Integer.parseInt(request.getParameter("lblId"));
 		customer.getLabel(labelId,vform);
 	}
@@ -310,7 +311,7 @@ public class PurchaseDetails {
 	public boolean saveLabel(HttpServletRequest request, ActionForm form) {
 		boolean result=false;
 		PurchaseInfo purchase = new PurchaseInfo();
-		PrintLabelForm cfrm = (PrintLabelForm) form;
+		PrintLabelDto cfrm = (PrintLabelDto) form;
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
 		if (labelID == 0) {
 			purchase.saveLabel(cfrm);
@@ -335,7 +336,7 @@ public class PurchaseDetails {
 	}
 	public void deleteLabel(HttpServletRequest request, ActionForm form) {
 		PurchaseInfo purchase = new PurchaseInfo();
-		PrintLabelForm vfrm = (PrintLabelForm) form;
+		PrintLabelDto vfrm = (PrintLabelDto) form;
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
 		Loger.log("LABEL   "+labelID);
 		purchase.deleteLabel(labelID, vfrm);

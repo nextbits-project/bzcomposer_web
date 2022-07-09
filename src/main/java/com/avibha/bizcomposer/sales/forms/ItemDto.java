@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import org.apache.struts.action.ActionForm;
 import java.util.Date;
 
-public class ItemDto implements Serializable {
+public class ItemDto extends ActionForm implements Serializable {
 	
 	private static final long serialVersionUID = 0;
 	public static final String ItemColumns = "Category,ItemCode,ItemTitle,ItemType,SerialNum,Qty,AvailableQty,ReorderPoint,Weight,ProductSKU," +

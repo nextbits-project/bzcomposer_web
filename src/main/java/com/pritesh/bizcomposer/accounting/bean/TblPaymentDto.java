@@ -1,6 +1,7 @@
 package com.pritesh.bizcomposer.accounting.bean;
 
 import com.nxsol.bizcompser.global.table.TblCategory;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import org.apache.struts.action.ActionForm;
 
 public class TblPaymentDto{
@@ -83,10 +84,10 @@ private int id = -1;
 
     private int oldPaymentTypeId = -1;
 
-    private TblCategory tblcategory = null;
+    private TblCategoryDto tblcategory = null;
 
     private TblAccount accountName;
-
+    private String orderNumStr;
     private String accountNameString = "";
 
     private String categoryName = "";
@@ -327,11 +328,11 @@ private int id = -1;
 		return accountName;
 	}
 
-	public TblCategory getTblcategory() {
+	public TblCategoryDto getTblcategory() {
 		return tblcategory;
 	}
 
-	public void setTblcategory(TblCategory tblcategory) {
+	public void setTblcategory(TblCategoryDto tblcategory) {
 		this.tblcategory = tblcategory;
 	}
 
@@ -665,7 +666,7 @@ private int id = -1;
     }
 
     /**
-     * @param clientVendorID the clientVendorID to set
+     * @param oldclientVendorID the clientVendorID to set
      */
     public void setOldClientVendorID(int oldclientVendorID) {
         this.oldclientVendorID = oldclientVendorID;
@@ -706,4 +707,12 @@ private int id = -1;
 //	public void setChecknum(String checknum) {
 //		this.checknum = checknum;
 //	}
+
+    public String getOrderNumStr() {
+        return orderNumStr;
+    }
+
+    public void setOrderNumStr(String orderNumStr) {
+        this.orderNumStr = orderNumStr;
+    }
 }

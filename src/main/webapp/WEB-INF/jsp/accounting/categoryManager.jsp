@@ -531,7 +531,7 @@ function saveNewCategory(){
         document.getElementById("descriptionForAdd").style.borderColor = "red";
         return;
     }
-    TblCategory = {
+    TblCategoryDto = {
          "categoryTypeID":categoryTypeId,
          "name":categoryName,
          "subAccountOf":subAccountOf,
@@ -541,7 +541,7 @@ function saveNewCategory(){
          "budgetCategoryID":budgetCategoryId
     };
 
-    var obj = JSON.stringify(TblCategory);
+    var obj = JSON.stringify(TblCategoryDto);
     $.ajax({
         type : "POST",
         url : "categoryManagerPost?tabid=AddNewCategory",
@@ -592,7 +592,7 @@ function saveNewCategory(){
          document.getElementById("DescriptionForUpdate").style.borderColor = "red";
          return;
      }
-     TblCategory = {
+     TblCategoryDto = {
           "id":categoryId,
           "categoryTypeID":categoryTypeId,
           "name":categoryName,
@@ -603,7 +603,7 @@ function saveNewCategory(){
           "budgetCategoryID":budgetCategoryId
      };
 
-     var obj = JSON.stringify(TblCategory);
+     var obj = JSON.stringify(TblCategoryDto);
      $.ajax({
         type : "POST",
         url : "categoryManagerPost?tabid=UpdateCategory",

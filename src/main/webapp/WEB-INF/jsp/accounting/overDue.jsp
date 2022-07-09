@@ -9,9 +9,9 @@
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -78,10 +78,10 @@ table.tabla-listados tbody tr td {
 		<h3 class="title1">
 		    <spring:message code="BzComposer.accountreceivable.accountreceivabletitle"/>
 		</h3>
-		<% ReceivableListBean receivablelistbean=(ReceivableListBean)request.getAttribute("Selectedrow");
+		<% ReceivableListDto ReceivableListDto=(ReceivableListDto)request.getAttribute("Selectedrow");
 		 	TblPaymentType payment = (TblPaymentType)request.getAttribute("SelectedPayment");
 		 	TblAccount Selectedaccount = (TblAccount)request.getAttribute("SelectedAccount");
-		 	TblCategory SelectedCategory = (TblCategory)request.getAttribute("SelectedCategory");
+		 	TblCategoryDto SelectedCategory = (TblCategoryDto)request.getAttribute("SelectedCategory");
 		 	TblPayment SelcetedPaymentForCheck = (TblPayment)request.getAttribute("Payment");
 		 	/* System.out.println(request.getSession().getAttribute("checkNum")); */
 		 	/* int find = 0; */
@@ -260,8 +260,8 @@ table.tabla-listados tbody tr td {
 							<div class="col-md-8">
 								<select class="form-control devCategoryDrp" size="1" id="categoryId">
 								<%
-									ArrayList<TblCategory> category = (ArrayList)request.getAttribute("CategoryCombo");
-							/* 		Iterator<TblCategory> itr2 = category.iterator(); */
+									ArrayList<TblCategoryDto> category = (ArrayList)request.getAttribute("CategoryCombo");
+							/* 		Iterator<TblCategoryDto> itr2 = category.iterator(); */
 									for(int i=0;i<category.size();i++)
 									{
 								%>
@@ -295,13 +295,13 @@ table.tabla-listados tbody tr td {
 						
 					</div>
 					<div class="col-md-4" style="top:35px;">
-					<%-- <% if(receivablelistbean == null) {%>
+					<%-- <% if(ReceivableListDto == null) {%>
 						<div class="form-group">
 								<button class="btn btn-info btn1" onclick="return save(null,null)"><spring:message code="BzComposer.global.save"/></button>
 							</div>
 						<%} else {%>
 							<div class="form-group">
-								<button class="btn btn-info btn1" onclick="return save(<%= receivablelistbean.getOrderNum()%>,<%= receivablelistbean.getPaidAmount()+receivablelistbean.getBalance()%>)">
+								<button class="btn btn-info btn1" onclick="return save(<%= ReceivableListDto.getOrderNum()%>,<%= ReceivableListDto.getPaidAmount()+ReceivableListDto.getBalance()%>)">
 								    <spring:message code="BzComposer.global.save"/>
 								</button>
 							</div>
@@ -389,11 +389,11 @@ table.tabla-listados tbody tr td {
 				  </thead>
 				  <tbody>
 				  <%
-				  	ArrayList<ReceivableListBean> li = (ArrayList)request.getAttribute("ReceivableList");		
-				  	Iterator<ReceivableListBean> itr =li.iterator();
+				  	ArrayList<ReceivableListDto> li = (ArrayList)request.getAttribute("ReceivableList");
+				  	Iterator<ReceivableListDto> itr =li.iterator();
 				    int index = 1;
 				  	while(itr.hasNext()){
-				  		ReceivableListBean rb = itr.next();
+				  		ReceivableListDto rb = itr.next();
 				  %>
 				    <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index%>)">
 				      <td><input type="checkbox" id="Checkbox"></td>
@@ -408,7 +408,7 @@ table.tabla-listados tbody tr td {
 				      <td class="text-right"><%= String.format("%.2f", rb.getBalance()) %></td>
 				      <td class="text-right"><%= String.format("%.2f", rb.getCustomercreditline()) %></td>
 				      <td class="text-right"><%= String.format("%.2f", rb.getRemainingcreditamount()) %></td>
-				      <td class="text-right" value=<%=rb.getCategoryID() %>><% out.println(rb.getTblcategory()); %></td>
+				      <td class="text-right" value=<%=rb.getCategoryID() %>><% out.println(rb.getTblCategoryDto()); %></td>
 				      <td class="text-right"><% out.println(rb.getMemo()); %></td>
 				      <td hidden="PaymentTypeID" value="<%=rb.getPaymentTypeID()%>"></td>
 				      <td hidden="BankAccountId" value="<%=rb.getBankAccountID()%>"></td>
@@ -463,11 +463,11 @@ table.tabla-listados tbody tr td {
 				    </tr>
 				  </thead>
 				  <tbody>
-				  <% ArrayList<ReceivableListBean> list = (ArrayList)request.getAttribute("listForUnpaidOpeningBal");
-						Iterator<ReceivableListBean> itrunpaid =list.iterator();
+				  <% ArrayList<ReceivableListDto> list = (ArrayList)request.getAttribute("listForUnpaidOpeningBal");
+						Iterator<ReceivableListDto> itrunpaid =list.iterator();
 						while(itrunpaid.hasNext())
 					  	{
-					  		ReceivableListBean rb1 = itrunpaid.next();
+					  		ReceivableListDto rb1 = itrunpaid.next();
 					%>
 				    <tr>
 				      <td><input type="checkbox"></td>
@@ -508,11 +508,11 @@ table.tabla-listados tbody tr td {
 				    </tr>
 				  </thead>
 				  <tbody>
-				  <% ArrayList<ReceivableListBean> listforUnpaidCredit = (ArrayList)request.getAttribute("listForUnpaidCreditAmount");
-						Iterator<ReceivableListBean> itrunpaidCredit = listforUnpaidCredit.iterator();
+				  <% ArrayList<ReceivableListDto> listforUnpaidCredit = (ArrayList)request.getAttribute("listForUnpaidCreditAmount");
+						Iterator<ReceivableListDto> itrunpaidCredit = listforUnpaidCredit.iterator();
 						while(itrunpaidCredit.hasNext())
 					  	{
-					  		ReceivableListBean rb2 = itrunpaidCredit.next();
+					  		ReceivableListDto rb2 = itrunpaidCredit.next();
 					%>
 				    <tr>
 				      <td><input type="checkbox"></td>
@@ -660,7 +660,7 @@ table.tabla-listados tbody tr td {
 		this.amtToPay = document.getElementById("receivedAmount").value; 
 	
 	   
-	   var ReceivableListBean={
+	   var ReceivableListDto={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":document.getElementById("customerName").value,
 			   "paymentTypeID":document.getElementById("receivedType").value,	   
@@ -680,12 +680,12 @@ table.tabla-listados tbody tr td {
 	}   */
 
 /* 	 sendMyValue(row,paymentTypeId,checkNo,memo,accountId,categoryId,receivedAmount); */
-    sendMyValue(ReceivableListBean);
+    sendMyValue(ReceivableListDto);
  
   	}
-   function sendMyValue(ReceivableListBean) {
+   function sendMyValue(ReceivableListDto) {
 		
-		var obj=JSON.stringify(ReceivableListBean);
+		var obj=JSON.stringify(ReceivableListDto);
    	    $.ajax({
 		
 			type : "POST",
@@ -838,7 +838,7 @@ table.tabla-listados tbody tr td {
 	   
 	  /*  	var receivedAmount = parseInt(receivedAmountString); */   
 	 /*   var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text(); */
-	   var ReceivableListBean={
+	   var ReceivableListDto={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":selectedCustomer,
 			   "paymentTypeID":paymentTypeId,	   
@@ -850,7 +850,7 @@ table.tabla-listados tbody tr td {
 			   "memo":memo,
 			   "checkNum":checkNo,
 	   };
-	   var obj=JSON.stringify(ReceivableListBean);
+	   var obj=JSON.stringify(ReceivableListDto);
 	   
 	   $.ajax({
 			

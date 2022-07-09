@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcompser.global.table.TblCategory;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
 import com.pritesh.bizcomposer.accounting.bean.TblPayment;
@@ -54,12 +55,12 @@ public class CategoryDetailController {
 		Gson gson = new Gson();
 		Date fromdate = null;
 		Date toDate = null;
-		TblPayment payment = gson.fromJson(request.getParameter("data"), TblPayment.class);
+		TblPaymentDto payment = gson.fromJson(request.getParameter("data"), TblPaymentDto.class);
 		if(payment != null) {
 			fromdate = new Date(payment.getFromDate());
 			toDate = new Date(payment.getToDate());
 		}else{
-			payment = new TblPayment();
+			payment = new TblPaymentDto();
 		}
 		request.setAttribute("listOfPayments", rl.getPaymentsList(payment, fromdate, toDate));
 		request.setAttribute("listOfDepositPayments", rl.getDepositsList(payment, fromdate, toDate));
@@ -77,7 +78,7 @@ public class CategoryDetailController {
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 		request.setAttribute("accountList", accountList);
-		ArrayList<TblCategory> listOfCategory = rl.getListOfCategoryForCategoryManager();
+		ArrayList<TblCategoryDto> listOfCategory = rl.getListOfCategoryForCategoryManager();
 		request.setAttribute("listOfCategory", listOfCategory);
 		if(action.equals("Payment")) {
 			/*TblPayment cfrm = (TblPayment)form;

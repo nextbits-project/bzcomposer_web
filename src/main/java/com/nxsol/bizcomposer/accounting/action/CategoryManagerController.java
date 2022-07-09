@@ -23,7 +23,7 @@ public class CategoryManagerController {
 		ReceivableLIst rl = new ReceivableListImpl();
 
 		ArrayList<TblBudgetCategory> budgetCategoryList = rl.readBudgetCategory();
-		ArrayList<TblCategory> listOfCategory = rl.getListOfCategoryForCategoryManager();
+		ArrayList<TblCategoryDto> listOfCategory = rl.getListOfCategoryForCategoryManager();
 		ArrayList<TblCategoryType> categoryType = rl.getCategoryType();
 		filterCategoryList(listOfCategory, categoryType);
 		request.setAttribute("listOfCategory", listOfCategory);
@@ -38,13 +38,13 @@ public class CategoryManagerController {
 		ReceivableLIst rl = new ReceivableListImpl();
 		if(action.equals("AddNewCategory")) {
 			Gson gson=new Gson();
-			TblCategory category = gson.fromJson(request.getParameter("data"), TblCategory.class);
+			TblCategoryDto category = gson.fromJson(request.getParameter("data"), TblCategoryDto.class);
 			boolean b = rl.saveCategory(category);
 			System.out.println(category.getParent());
 		}
 		else if(action.equals("UpdateCategory")) {
 			Gson gson=new Gson();
-			TblCategory category = gson.fromJson(request.getParameter("data"), TblCategory.class);
+			TblCategoryDto category = gson.fromJson(request.getParameter("data"), TblCategoryDto.class);
 			rl.updateCategory(category, category.getId()+"");
 		}
 		else if(action.equals("DeleteCategory")) {
@@ -84,10 +84,10 @@ public class CategoryManagerController {
 		return status;
 	}
 
-	private void filterCategoryList(ArrayList<TblCategory> listOfCategory, ArrayList<TblCategoryType> categoryType){
+	private void filterCategoryList(ArrayList<TblCategoryDto> listOfCategory, ArrayList<TblCategoryType> categoryType){
 		for(TblCategoryType cType: categoryType){
 			int count = 0;
-			for(TblCategory cat: listOfCategory){
+			for(TblCategoryDto cat: listOfCategory){
 				if(cat.getCategoryTypeID() == cType.getCategoryTypeID()){
 					count++;
 				}

@@ -1,6 +1,7 @@
 package com.pritesh.bizcomposer.accounting.bean;
 
 import com.nxsol.bizcompser.global.table.TblCategory;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblTerm;
 import org.apache.struts.action.ActionForm;
 
@@ -220,7 +221,7 @@ public class ReceivableListDto{
 
     private String billType = "";
 
-    private TblCategory tblcategory = null;
+    private TblCategoryDto tblcategory = null;
 
     private TblTerm tblterm = null;
 
@@ -1391,11 +1392,11 @@ public class ReceivableListDto{
         this.bankAccountID = bankAccountID;
     }
 
-	public TblCategory getTblcategory() {
+	public TblCategoryDto getTblcategory() {
 		return tblcategory;
 	}
 
-	public void setTblcategory(TblCategory tblcategory) {
+	public void setTblcategory(TblCategoryDto tblcategory) {
 		this.tblcategory = tblcategory;
 	}
 

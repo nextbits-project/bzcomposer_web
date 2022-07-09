@@ -10,9 +10,9 @@
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -192,7 +192,7 @@ table.tabla-listados tbody tr td {
 								<div class="col-md-8">
 									<select class="form-control devCategoryDrp" size="1" id="categoryId">
 										<%
-											ArrayList<TblCategory> categoryList = (ArrayList) request.getAttribute("categoryListForCombo");
+											ArrayList<TblCategoryDto> categoryList = (ArrayList) request.getAttribute("categoryListForCombo");
 												for (int i = 1; i < categoryList.size(); i++) {
 										%>
 										<option value="<%=categoryList.get(i).getId()%>">

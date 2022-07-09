@@ -1408,12 +1408,12 @@ function getCategoryAndCharge()
 	
 	var bankAccountCombo = document.getElementById("account");
 	var accountId = bankAccountCombo.options[bankAccountCombo.selectedIndex].value;
-	TblCategoryType = {
+	TblCategoryDtoType = {
 			
 		"categoryTypeID":categoryTypeId,	
 		"accountID": accountId
 	};
-	var obj = JSON.stringify(TblCategoryType);
+	var obj = JSON.stringify(TblCategoryDtoType);
 	
 $.ajax({
 		
@@ -1442,17 +1442,17 @@ function getCharge()
 	var bankAccountCombo = document.getElementById("account");
 	var accountId = bankAccountCombo.options[bankAccountCombo.selectedIndex].value;
 	
-	TblCategory = {
+	TblCategoryDto = {
 			
 		"id":categoryId,
 		"accountID": accountId
 	};
-	/* TblCategoryType = {
+	/* TblCategoryDtoType = {
 			
 			"categoryTypeID":categoryTypeId	
 		}; */
-	/* var obj1 = JSON.stringify(TblCategoryType); */
-	var obj = JSON.stringify(TblCategory);
+	/* var obj1 = JSON.stringify(TblCategoryDtoType); */
+	var obj = JSON.stringify(TblCategoryDto);
 	
 $.ajax({
 		
@@ -1583,11 +1583,11 @@ function changeAssetCategory()
 	var bankAccountCombo = document.getElementById("account");
 	var accountId = bankAccountCombo.options[bankAccountCombo.selectedIndex].value;
 	
-	TblCategory = {
+	TblCategoryDto = {
 			"id":categoryId,
 			"accountID": accountId
 	};
-	var obj = JSON.stringify(TblCategory);
+	var obj = JSON.stringify(TblCategoryDto);
 $.ajax({
 		
 		type : "POST",

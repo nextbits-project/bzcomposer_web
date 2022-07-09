@@ -8,9 +8,9 @@
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -77,10 +77,10 @@ table.tabla-listados tbody tr td {
 		<h3 class="title1">
 		    <spring:message code="BzComposer.accountreceivable.tabs.cancelled"/>
 		</h3>
-		 <% ReceivableListBean receivablelistbean=(ReceivableListBean)request.getAttribute("Selectedrow");
+		 <% ReceivableListDto ReceivableListDto=(ReceivableListDto)request.getAttribute("Selectedrow");
 		 	TblPaymentType payment = (TblPaymentType)request.getAttribute("SelectedPayment");
 		 	TblAccount Selectedaccount = (TblAccount)request.getAttribute("SelectedAccount");
-		 	TblCategory SelectedCategory = (TblCategory)request.getAttribute("SelectedCategory");
+		 	TblCategoryDto SelectedCategory = (TblCategoryDto)request.getAttribute("SelectedCategory");
 		 	TblPayment SelcetedPaymentForCheck = (TblPayment)request.getAttribute("Payment");
 		 	/* System.out.println(request.getSession().getAttribute("checkNum")); */
 		 	/* int find = 0; */
@@ -226,8 +226,8 @@ table.tabla-listados tbody tr td {
 							<div class="col-md-8">
 								<select class="form-control devCategoryDrp" size="1" id="categoryId">
 								<%
-									ArrayList<TblCategory> category = (ArrayList)request.getAttribute("CategoryCombo");
-							/* 		Iterator<TblCategory> itr2 = category.iterator(); */
+									ArrayList<TblCategoryDto> category = (ArrayList)request.getAttribute("CategoryCombo");
+							/* 		Iterator<TblCategoryDto> itr2 = category.iterator(); */
 									for(int i=0;i<category.size();i++)
 									{
 								%>
@@ -421,7 +421,7 @@ table.tabla-listados tbody tr td {
 		this.amtToPay = document.getElementById("receivedAmount").value; 
 	
 	   
-	   var ReceivableListBean={
+	   var ReceivableListDto={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":document.getElementById("customerName").value,
 			   "paymentTypeID":document.getElementById("receivedType").value,	   
@@ -434,12 +434,12 @@ table.tabla-listados tbody tr td {
 			   "checkNum":document.getElementById("checkNum").value,
 	   }
 	   
-    sendMyValue(ReceivableListBean);
+    sendMyValue(ReceivableListDto);
  
   	}
-   function sendMyValue(ReceivableListBean) {
+   function sendMyValue(ReceivableListDto) {
 		
-		var obj=JSON.stringify(ReceivableListBean);
+		var obj=JSON.stringify(ReceivableListDto);
 		
    	 $.ajax({
 		
@@ -591,7 +591,7 @@ table.tabla-listados tbody tr td {
 	   
 	  /*  	var receivedAmount = parseInt(receivedAmountString); */   
 	 /*   var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text(); */
-	   var ReceivableListBean={
+	   var ReceivableListDto={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":selectedCustomer,
 			   "paymentTypeID":paymentTypeId,	   
@@ -603,7 +603,7 @@ table.tabla-listados tbody tr td {
 			   "memo":memo,
 			   "checkNum":checkNo,
 	   };
-	   var obj=JSON.stringify(ReceivableListBean);
+	   var obj=JSON.stringify(ReceivableListDto);
 	   
 	   $.ajax({
 			

@@ -9,9 +9,9 @@
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
 <%@page import="com.nxsol.bizcomposer.common.JProjectUtil"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.nxsol.bizcompser.global.table.TblCategory"%>
+<%@page import="com.nxsol.bizcompser.global.table.TblCategoryDto"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListBean"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.ReceivableListDto"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -89,8 +89,8 @@ margin-right: 10px;
 </head>
 <body>
 <% int find = 0;
- ReceivableListBean rb = null;
- ArrayList<ReceivableListBean> li = null;
+ ReceivableListDto rb = null;
+ ArrayList<ReceivableListDto> li = null;
  String invoiceNumber = "-1";
  %>
 <div id="ddcolortabsline">&nbsp;</div>
@@ -235,7 +235,7 @@ margin-right: 10px;
 							<div class="col-md-8">
 								<select class="form-control devCategoryDrp" size="1" id="categoryId">
 								<%
-									ArrayList<TblCategory> category = (ArrayList)request.getAttribute("categoryforcombo");
+									ArrayList<TblCategoryDto> category = (ArrayList)request.getAttribute("categoryforcombo");
 							
 									for(int i=0;i<category.size();i++)
 									{
@@ -571,7 +571,7 @@ margin-right: 10px;
 		this.amtToPay = document.getElementById("receivedAmount").value; 
 		var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
 	   
-	   var ReceivableListBean={
+	   var ReceivableListDto={
 			   "poNum":document.getElementById("poNumber").innerHTML,
 			   "cvID":vendor,
 			   "paymentTypeID":document.getElementById("paymentType").value,	   
@@ -584,12 +584,12 @@ margin-right: 10px;
 			   "checkNum":document.getElementById("checkNum").value,
 	   }
 	   
-     sendMyValue(ReceivableListBean); 
+     sendMyValue(ReceivableListDto);
  
   	}
-   function sendMyValue(ReceivableListBean) {
+   function sendMyValue(ReceivableListDto) {
 		
-		var obj=JSON.stringify(ReceivableListBean);
+		var obj=JSON.stringify(ReceivableListDto);
    	 $.ajax({
 		
 			type : "POST",
@@ -728,7 +728,7 @@ margin-right: 10px;
 	   
 	  /*  	var receivedAmount = parseInt(receivedAmountString); */   
 	 /*   var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text(); */
-	   var ReceivableListBean={
+	   var ReceivableListDto={
 			   "orderNum":document.getElementById("ordernumber").innerHTML,
 			   "cvID":selectedCustomer,
 			   "paymentTypeID":paymentTypeId,	   
@@ -740,7 +740,7 @@ margin-right: 10px;
 			   "memo":memo,
 			   "checkNum":checkNo,
 	   };
-	   var obj=JSON.stringify(ReceivableListBean);
+	   var obj=JSON.stringify(ReceivableListDto);
 	   
 	   $.ajax({
 			
@@ -936,7 +936,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
 	  var paymentTypeId = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(7)').attr('value');
 	  var checkNum = $('table.dlgRecDataTable tbody tr:nth-child(1)').find('td:nth-child(8)').text();
 	  var balance = parseInt(AdjustedTotal) - parseInt(paidAmount);
-	  var ReceivableListBean={
+	  var ReceivableListDto={
 			   "poNum":PoNumber,
 			   "invoiceID":invoiceId,
 			   "cvID":vendorId,
@@ -948,7 +948,7 @@ $("td#accdrpdwn").click(function(e){     //function_td
 			   "categoryID":categoryId,
 			   "checkNum":checkNum,
 	   };
-	  var obj=JSON.stringify(ReceivableListBean);
+	  var obj=JSON.stringify(ReceivableListDto);
 	  $.ajax({
 			
 			type : "POST",
