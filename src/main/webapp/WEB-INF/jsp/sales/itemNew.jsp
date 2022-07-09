@@ -55,13 +55,15 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                         </div>
                     </div>
                     <input type="hidden" name="listSize" id="lSize" value='${ItemDetails.size()}' />
-                    <table id="custTable" class="tabla-listados sortable" cellspacing="0" style="width: 100%; margin-top: 10px; border: 0; padding: 0;height: auto;" align="center">
+                    <table id="custTable" class="tabla-listados sortable devItemList" cellspacing="0" style="width: 100%; margin-top: 10px; border: 0; padding: 0;height: auto;" align="center">
                         <thead>
                         <tr valign="top">
                             <th align="center"><spring:message code="BzComposer.categorymanager.category"/></th>
                             <th align="center"><spring:message code="BzComposer.Item.ItemCode"/></th>
                             <th align="center" style="padding-right:150px;"><spring:message code="BzComposer.additem.itemtitle"/></th>
                             <th><spring:message code="BzComposer.additem.quantity"/></th>
+                            <th><spring:message code="BzComposer.ReorderPoint"/></th>
+                            <th><spring:message code="BzComposer.Purchase.ReceivedItem.vendor"/></th>
                             <th align="center"><spring:message code="BzComposer.additem.purchaseprice"/></th>
                             <th align="center"><spring:message code="BzComposer.additem.saleprice"/></th>
                             <th align="center"><spring:message code="BzComposer.additem.dealerprice"/></th>
@@ -72,11 +74,18 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                         <tbody>
                             <c:if test="${not empty ItemDetails}">
                                 <c:forEach items="${ItemDetails}" var="objList" varStatus="loop">
-                                    <tr id='${loop.index}$$' onclick="setRowId(${objList.inventoryId}, ${loop.index}, true);">
+                                    <c:if test="${objList.qty < objList.reorderPoint}">
+                                        <tr style="color: red;" id='${loop.index}$$' onclick="setRowId(${objList.inventoryId}, ${loop.index}, true);">
+                                    </c:if>
+                                    <c:if test="${objList.qty > objList.reorderPoint}">
+                                        <tr id='${loop.index}$$' onclick="setRowId(${objList.inventoryId}, ${loop.index}, true);">
+                                    </c:if>
                                         <td><b>${objList.categoryName}</b></td>
                                         <td>${objList.itemCode}</td>
                                         <td>${objList.itemName}</td>
                                         <td>${objList.qty}</td>
+                                        <td>${objList.reorderPoint}</td>
+                                        <td></td>
                                         <td>${objList.purchasePrice}</td>
                                         <td>${objList.salePrice}</td>
                                         <td>${objList.dealerPrice}</td>
@@ -92,6 +101,14 @@ table.tabla-listados tbody tr td { font-size: 12px; }
         </div>
     </div>
 </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" style="font-size: 16px;" align="center">
+            <input type="button" class="formbutton" onclick="goPurchaseOrder()" style="padding: 8px 20px 8px 20px;font-size: 13px;" value="Create <spring:message code='BzComposer.purchase.PurchaseOrder' />" />
+        </div>
+    </div>
+</div>
+
 <%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
@@ -110,7 +127,9 @@ $(document).ready(function () {
         }
     });
 });
-
+function abc(qty){
+return "12";
+}
 function initialize() {
     let lSize = document.getElementById("lSize").value;
     if(lSize > 0){
@@ -144,7 +163,9 @@ function hightlightROW(){
         currROW2.className = "draft";
     }
 }
-
+function goPurchaseOrder(){
+    window.location = "PurchaseOrder?tabid=PurchaseOrder";
+}
 function manageItem(cmd) {
     
     if (itemID == 0) {
@@ -173,7 +194,6 @@ function manageItem(cmd) {
         });
     }
 }
-
 function addNewItem() {
     //window.location = "Item?tabid=ShowAdd&ItemType=1";
     window.open("Item?tabid=ShowAdd&ItemType=1", null,"scrollbars=yes,height=620,width=1200,status=yes,toolbar=no,menubar=no,location=no");

@@ -2,10 +2,14 @@ package com.avibha.bizcomposer.login.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
 
 import com.avibha.common.log.Loger;
 
-public class LoginForm  {
+public class LoginForm extends ActionForm {
 
 	String userName;
 	String password;
@@ -128,7 +132,20 @@ public class LoginForm  {
 		this.paymentPlan = paymentPlan;
 	}
 
-
+	@Override
+	public ActionErrors validate(ActionMapping mapping,HttpServletRequest request) {
+		//Loger.log(this.getClass()+"Validating login values");
+		ActionErrors e=new ActionErrors();
+    	if(getUserName()=="" || getPassword()==""){
+			e.add("login", new ActionMessage("err.user.username.required"));
+			request.setAttribute("username", "");
+			request.setAttribute("password", "");
+			setRememberMe("off");
+		}
+    		// TODO Auto-generated method stub
+    		return e;
+    	}
+	
 	public String getRememberMe() {
 		return rememberMe;
 	}
@@ -145,10 +162,51 @@ public class LoginForm  {
 		this.usersubmit = usersubmit;
 	}
 
-	
-}
+	public void reset(ActionMapping mapping, HttpServletRequest request) 
+	{
+		rememberMe = null;
+		usersubmit = null;
+	}
+	/*public ActionErrors validate(ActionMapping mapping, ServletRequest request) {
+    	Loger.log(this.getClass()+"Validating login values");
+    	
+    	if(getUserName()=="" || getPassword()==""){
+			ActionErrors e=new ActionErrors();
+			e.add("login", new ActionMessage("error.loginblankvalues"));
+		}
+    		// TODO Auto-generated method stub
+    		return super.validate(mapping, request);
+    	}*/
 
+	public String isChecked(ActionMapping mapping, HttpServletRequest request) {
+		if(rememberMe.equals("on"))
+		{
+			this.rememberMe = "on";
+		}
+		else
+		{
+			this.rememberMe = "off";
+		}
+		return rememberMe;
+	}
+	}
 	
 	
+	/*public void reset(ActionMapping mapping, HttpServletRequest request) {
+			userName="";
+			password="";
 	
+	}*/
 	
+	/*public String isChecked(ActionMapping mapping, HttpServletRequest request)
+	{
+		if(this.rememberMe.equals("on"))
+		{
+			rememberMe = "on";
+		}
+		else
+		{
+			rememberMe = "off";
+		}
+		return rememberMe;
+	}*/

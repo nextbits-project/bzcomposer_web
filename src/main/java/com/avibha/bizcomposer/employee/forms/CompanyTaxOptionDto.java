@@ -6,6 +6,13 @@
 
 package com.avibha.bizcomposer.employee.forms;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+
+// public class CompanyTaxOptionDto extends ActionForm {
 public class CompanyTaxOptionDto{
 
 	private static final long serialVersionUID = 0;
@@ -275,5 +282,76 @@ public class CompanyTaxOptionDto{
 		return createdAt;
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping,
+	 *      javax.servlet.http.HttpServletRequest)
+	 */
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
+
+		return errors;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping,
+	 *      javax.servlet.http.HttpServletRequest)
+	 */
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		// super.reset(mapping, request);
+
+		 optionId = null;
+
+		 daily=null;
+
+		 weekly=null;
+
+		 monthly=null;
+
+		 annually=null;
+
+		 biweekly=null;
+
+		 quarterly=null;
+
+		 semiAnnually=null;
+
+		 semiMonthly=null;
+
+		 dailyOver=null;
+
+		 weeklyOver=null;
+
+		 wendSt=null;
+		
+		 wendStRate=null;
+
+		wendSn=null;
+		
+		wendSnRate=null;
+		
+		 holiday=null;
+		
+		 holidayRate=null;
+		
+		 dayOfWeek=null;
+		
+		 dayOfWeekVal=null;
+		
+		 dayOfMonth=null;
+		
+		dayOfMonthVal=null;
+		
+		overtimeRate=null;
+		 
+		dailyOverVal=null;
+
+		weeklyOverVal=null;
+		
+
+	}
 }

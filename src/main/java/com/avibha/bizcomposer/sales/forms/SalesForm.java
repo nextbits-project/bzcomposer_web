@@ -1,8 +1,17 @@
-
+/*
+ * Author : Avibha IT Solutions Copyright 2007 Avibha IT Solutions. All rights
+ * reserved. AVIBHA PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * www.avibha.com
+ */
 
 package com.avibha.bizcomposer.sales.forms;
 
-public class SalesForm  {
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+
+public class SalesForm extends ActionForm {
 	
 	private static final long serialVersionUID = 0;
 	
@@ -206,6 +215,27 @@ public class SalesForm  {
 	public boolean isDefaultItem() { return defaultItem; }
 	public void setDefaultItem(boolean defaultItem) { this.defaultItem = defaultItem; }
 
-	
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		super.reset(mapping, request);
+		titleID = null;
+		title = null;
+		salesRepID = null;
+		salesRepName = null;
+		cvCategoryID = null;
+		cvCategoryName = null;
+		termId = null;
+		termName = null;
+		locationId = null;
+		locationName = null;
+		paymentTypeId = null;
+		paymentTypeName = null;
+		ccTypeID = null;
+		ccTypeName = null;
+		messageID = null;
+		messageName = null;
+		salesTaxID = null;
+		state = null;
+		salesRate = null;
+	}
 
 }

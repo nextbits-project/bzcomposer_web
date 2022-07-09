@@ -510,6 +510,7 @@ public class ConfigurationDto implements Serializable {
     private String paymentType;
     private int paymentTypeId;
     private int receivedTypeId;
+    private boolean defaultPaymentTypeId;
     private ArrayList<ConfigurationDto> listOfExistingPaymentType;
 
     private int selectedCreditCardId;
@@ -2859,6 +2860,14 @@ public class ConfigurationDto implements Serializable {
 
     public int getReceivedTypeId() { return receivedTypeId; }
     public void setReceivedTypeId(int receivedTypeId) { this.receivedTypeId = receivedTypeId; }
+
+    public boolean isDefaultPaymentTypeId() {
+        return defaultPaymentTypeId;
+    }
+
+    public void setDefaultPaymentTypeId(boolean defaultPaymentTypeId) {
+        this.defaultPaymentTypeId = defaultPaymentTypeId;
+    }
 
     public ArrayList<ConfigurationDto> getListOfExistingPaymentType() {
         return listOfExistingPaymentType;

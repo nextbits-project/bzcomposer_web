@@ -6,7 +6,13 @@
 
 package com.avibha.bizcomposer.employee.forms;
 
-public class CompanyTaxDto  {
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+
+public class CompanyTaxDto extends ActionForm {
 
 	private static final long serialVersionUID = 0;
 	
@@ -75,7 +81,12 @@ public class CompanyTaxDto  {
 		this.srNo = srNo;
 	}
 
-	
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
+
+		return errors;
+	}
 	
 	public String getDdId() {
 		return ddId;
@@ -85,4 +96,27 @@ public class CompanyTaxDto  {
 		this.ddId = ddId;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping,
+	 *      javax.servlet.http.HttpServletRequest)
+	 */
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		super.reset(mapping, request);
+
+		dname=null;
+
+		drate=null;
+
+		damount=null;
+
+		taxExmp=null;
+
+		isRate=null;
+		
+		srNo=0;
+
+
+	}
 }

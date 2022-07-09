@@ -30,6 +30,7 @@ import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.pritesh.bizcomposer.accounting.bean.*;
 
@@ -220,9 +221,24 @@ public class AccountingController{
 		}
 		if(action.equals("ReceivedInvoice"))
 		{
+			JSONObject newObj = new JSONObject();
+			try {
+		        newObj = new JSONObject(request.getParameter("row"));
+		    } catch (JSONException e) {
+		        e.printStackTrace();
+		    }
+			ReceivableListDto invoice = new ReceivableListDto();
+			invoice.setOrderNum(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("orderNumStr")));
+			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("cvID")));
+			invoice.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("paymentTypeID")));
+			invoice.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("bankAccountID")));
+			invoice.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("adjustedTotal")));
+			invoice.setPaidAmount(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("paidAmount")));
+			invoice.setBalance(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("balance")));
+			invoice.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("categoryID")));
+			invoice.setMemo(newObj.getJSONObject("ReceivableListBean").getString("memo"));
+			invoice.setCheckNum(newObj.getJSONObject("ReceivableListBean").getString("checkNo"));
 
-			Gson gson=new Gson();
-			ReceivableListDto invoice = gson.fromJson(request.getParameter("row"), ReceivableListDto.class);
 			String rowId = request.getParameter("index");
 			/*System.out.println(invoice.getPaidAmount());*/
 			int orderNum = invoice.getOrderNum();

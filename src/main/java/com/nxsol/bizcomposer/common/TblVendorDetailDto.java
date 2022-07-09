@@ -1,12 +1,10 @@
 package com.nxsol.bizcomposer.common;
 
-import java.util.Date;
-
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
+import org.apache.struts.action.ActionForm;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Date;
 
 public class TblVendorDetailDto {
 
@@ -80,7 +78,7 @@ public class TblVendorDetailDto {
 	    private int expenseClientVendorId = 0;
 	    private int billAble = 0;
 	    private int accountId = 0;
-	    private @Setter@Getter String categoryName = "";
+
 	    public int getAccountId() {
 			return accountId;
 		}

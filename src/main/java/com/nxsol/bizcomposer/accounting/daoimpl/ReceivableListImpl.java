@@ -107,7 +107,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				rb.setOrderNum(rs.getInt("OrderNum"));
 				int orderNo = (rs.getInt("OrderNum"));
-                rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo), AppConstants.POType, configDto, false));
+                rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo), AppConstants.InvoiceType, configDto, false));
 				rb.setPoNum(rs.getInt("PONum"));
 				rb.setEmployeeId(rs.getInt("EmployeeID"));
 				rb.setRefNum(rs.getString("RefNum"));
@@ -2010,8 +2010,10 @@ public class ReceivableListImpl implements ReceivableLIst {
                 payment.setAccountName(getAccountNameById(payment.getAccountID()));
                 payment.setCvID(rs.getInt("ClientVendorID"));
                 payment.setInvoiceID(rs.getInt("InvoiceID"));
-                payment.setOrderNum(getOrderNUmberByInvoiceId(payment.getInvoiceID()));
-                payment.setCategoryId(rs.getInt("CategoryID"));
+				long orderNum = getOrderNUmberByInvoiceId(payment.getInvoiceID());
+				payment.setOrderNum(orderNum);
+				payment.setOrderNumStr(MyUtility.getOrderNumberByConfigData(String.valueOf(orderNum), AppConstants.InvoiceType, configDto, false));
+				payment.setCategoryId(rs.getInt("CategoryID"));
                 payment.setAccountCategoryId(rs.getInt("AccountCategoryID"));
                 payment.setDateAdded(rs.getDate("DateAdded"));
                 payment.setNeedToDeposit(rs.getBoolean("isNeedtoDeposit"));

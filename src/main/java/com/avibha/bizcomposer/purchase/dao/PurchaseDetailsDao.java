@@ -6,21 +6,25 @@
 
 package com.avibha.bizcomposer.purchase.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
+import com.avibha.bizcomposer.purchase.forms.PrintLabelForm;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import com.avibha.bizcomposer.purchase.forms.VendorForm;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
 import com.avibha.bizcomposer.sales.dao.TrHistoryLookUp;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.nxsol.bizcomposer.common.ConstValue;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMessage;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PurchaseDetailsDao {
 
@@ -125,12 +129,12 @@ public class PurchaseDetailsDao {
 		try{
 			boolean isAdded = purchase.insertVendor(form, compId);
 			if(isAdded){
-				request.setAttribute("SaveStatus","Vendor Information is Successfully Added !");
+				request.setAttribute("SaveStatus",new ActionMessage("Vendor Information is Successfully Added !"));
 				request.setAttribute("Added","true");
 				request.getSession().setAttribute("actionMsg", "Vendor Information is Successfully Added!");
 			}
 		}catch (Exception e) {
-			request.setAttribute("Status","Vendor Information is Not Insert !");
+			request.setAttribute("Status",new ActionMessage("Vendor Information is Not Insert !"));
 		}
 	}
 
@@ -233,10 +237,10 @@ public class PurchaseDetailsDao {
 		boolean updated = purchase.updateInsertVendor(cvId, form, compId, istax, isclient, indCharge, aFCharge, fICharge,"U");
 		
 		if(updated){
-			request.setAttribute("SaveStatus","Vendor information is successfully updated.");
+			request.setAttribute("SaveStatus",new ActionMessage("Vendor information is successfully updated."));
 			request.getSession().setAttribute("actionMsg", "Vendor Information is Successfully updated!");
 		} else {
-			request.setAttribute("SaveStatus","Vendor information is not updated.");
+			request.setAttribute("SaveStatus",new ActionMessage("Vendor information is not updated."));
 		}
 		
 		if(form.getDispay_info()== null){

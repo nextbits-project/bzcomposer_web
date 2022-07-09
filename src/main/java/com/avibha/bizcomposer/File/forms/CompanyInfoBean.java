@@ -188,42 +188,42 @@ public class CompanyInfoBean {
 	private int taxable;
 	private boolean dropShip;
 	private boolean discontinued;
-	public ArrayList<CompanyInfoDto> getListOfCountries() {
+	public ArrayList<CompanyInfoForm> getListOfCountries() {
 		return listOfCountries;
 	}
 
-	public void setListOfCountries(ArrayList<CompanyInfoDto> listOfCountries) {
+	public void setListOfCountries(ArrayList<CompanyInfoForm> listOfCountries) {
 		this.listOfCountries = listOfCountries;
 	}
 
-	public ArrayList<CompanyInfoDto> getListOfStates() {
+	public ArrayList<CompanyInfoForm> getListOfStates() {
 		return listOfStates;
 	}
 
-	public void setListOfStates(ArrayList<CompanyInfoDto> listOfStates) {
+	public void setListOfStates(ArrayList<CompanyInfoForm> listOfStates) {
 		this.listOfStates = listOfStates;
 	}
 
-	private ArrayList<CompanyInfoDto> listOfExistingCompanies;
-	private ArrayList<CompanyInfoDto> listOfdefaultmodules;
-	private ArrayList<CompanyInfoDto> listOfBusinessType;
-	private ArrayList<CompanyInfoDto> listOfExistingModules;
-	private ArrayList<CompanyInfoDto> listOfCountries;
-	private ArrayList<CompanyInfoDto> listOfStates;
+	private ArrayList<CompanyInfoForm> listOfExistingCompanies;
+	private ArrayList<CompanyInfoForm> listOfdefaultmodules;
+	private ArrayList<CompanyInfoForm> listOfBusinessType;
+	private ArrayList<CompanyInfoForm> listOfExistingModules;
+	private ArrayList<CompanyInfoForm> listOfCountries;
+	private ArrayList<CompanyInfoForm> listOfStates;
 
-	public ArrayList<CompanyInfoDto> getListOfExistingModules() {
+	public ArrayList<CompanyInfoForm> getListOfExistingModules() {
 		return listOfExistingModules;
 	}
 
-	public void setListOfExistingModules(ArrayList<CompanyInfoDto> listOfExistingModules) {
+	public void setListOfExistingModules(ArrayList<CompanyInfoForm> listOfExistingModules) {
 		this.listOfExistingModules = listOfExistingModules;
 	}
 
-	public ArrayList<CompanyInfoDto> getListOfBusinessType() {
+	public ArrayList<CompanyInfoForm> getListOfBusinessType() {
 		return listOfBusinessType;
 	}
 
-	public void setListOfBusinessType(ArrayList<CompanyInfoDto> listOfBusinessType) {
+	public void setListOfBusinessType(ArrayList<CompanyInfoForm> listOfBusinessType) {
 		this.listOfBusinessType = listOfBusinessType;
 	}
 
@@ -404,19 +404,19 @@ public class CompanyInfoBean {
 
 	private int selectedModuleId;
 
-	public ArrayList<CompanyInfoDto> getListOfExistingCompanies() {
+	public ArrayList<CompanyInfoForm> getListOfExistingCompanies() {
 		return listOfExistingCompanies;
 	}
 
-	public void setListOfExistingCompanies(ArrayList<CompanyInfoDto> listOfExistingCompanies) {
+	public void setListOfExistingCompanies(ArrayList<CompanyInfoForm> listOfExistingCompanies) {
 		this.listOfExistingCompanies = listOfExistingCompanies;
 	}
 
-	public ArrayList<CompanyInfoDto> getListOfdefaultmodules() {
+	public ArrayList<CompanyInfoForm> getListOfdefaultmodules() {
 		return listOfdefaultmodules;
 	}
 
-	public void setListOfdefaultmodules(ArrayList<CompanyInfoDto> listOfdefaultmodules) {
+	public void setListOfdefaultmodules(ArrayList<CompanyInfoForm> listOfdefaultmodules) {
 		this.listOfdefaultmodules = listOfdefaultmodules;
 	}
 

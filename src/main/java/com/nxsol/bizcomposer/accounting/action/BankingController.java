@@ -1,26 +1,25 @@
 package com.nxsol.bizcomposer.accounting.action;
 
-import java.util.ArrayList;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
+import com.avibha.common.utility.CountryState;
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategoryDto;
-import com.pritesh.bizcomposer.accounting.bean.TblAccount;
-import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
-import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+import com.nxsol.bizcompser.global.table.TblCategory;
+import com.pritesh.bizcomposer.accounting.bean.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Date;
 
 @Controller
 public class BankingController {
@@ -39,16 +38,16 @@ public class BankingController {
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl = new ReceivableListImpl();
-		ArrayList<TblPaymentDto> payment = null;
+		ArrayList<TblPayment> payment = null;
 		ArrayList<TblPaymentType> simpleTypes = rl.getOnlySimplePaymentTypes();
 		ArrayList<ClientVendor> cvList = rl.getAllClientVendorList();
 		ArrayList<TblAccount> accountForClientVendor = rl.getCustomerCurrentBalanceForvendor(cvList);
-		ArrayList<TblCategoryDto> categoryListForPayment = rl.getCategoryListForPayment();
-		ArrayList<TblCategoryDto> categoryListForDeposit = rl.getCategoryListForDeposit();
+		ArrayList<TblCategory> categoryListForPayment = rl.getCategoryListForPayment();
+		ArrayList<TblCategory> categoryListForDeposit = rl.getCategoryListForDeposit();
 		ArrayList<ClientVendor> cleintListForDeposit = rl.getClientForDeposit();
 		ArrayList<TblAccount> accountForClientListForDeposit = rl.getCustomerCurrentBalanceForvendor(cleintListForDeposit);
 		ArrayList<ClientVendor> allClientVendor = rl.getAllClientVendor();
-		ArrayList<TblCategoryDto> allCategoryList = rl.getAllCategory();
+		ArrayList<TblCategory> allCategoryList = rl.getAllCategory();
 		ArrayList<TblPaymentType> allPaymentList = rl.getAllPaymentList();
 		String selectedRange = request.getParameter("SelectedRange");
 		request.setAttribute("simpleTypes", simpleTypes);
@@ -71,7 +70,7 @@ public class BankingController {
 		}		
 			request.setAttribute("selectedAccountId", accountId);
 			TblAccount account = rl.getAccountById(accountId);
-			/*ArrayList<TblPaymentDto> payment = rl.getPaymentsForBanking(account);
+			/*ArrayList<TblPayment> payment = rl.getPaymentsForBanking(account);
 			request.setAttribute("payMentList", payment);
 			request.setAttribute("selectedAccount", account);*/
 		
@@ -80,7 +79,7 @@ public class BankingController {
 			int accountIds = Integer.parseInt(ids);
 			request.getSession().setAttribute("selectedAccountId", accountIds);
 			TblAccount accounts = rl.getAccountById(accountIds);
-			ArrayList<TblPaymentDto> payments = rl.getPaymentsForBanking(accounts);
+			ArrayList<TblPayment> payments = rl.getPaymentsForBanking(accounts);
 			request.getSession().setAttribute("payMentList", payments);
 			request.getSession().setAttribute("selectedAccount", accounts);
 			forward = "success1";*/
@@ -88,7 +87,7 @@ public class BankingController {
 		if(action.equals("Transferfund")) {
 
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPaymentDto.class);	
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPayment.class);	
 			String dateString = request.getParameter("date");
 			/*Date date = JProjectUtil.formater.parse(dateString);*/
 			/*String date = JProjectUtil.getDateFormaterCommon().format(dateString);*/
@@ -100,7 +99,7 @@ public class BankingController {
 		}
 		if(action.equals("TransferfundFromPayment")) {
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPaymentDto.class);	
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPayment.class);	
 			String index = request.getParameter("index");
 			String dateString = request.getParameter("date");
 			/*Date date = JProjectUtil.formater.parse(dateString);*/
@@ -115,7 +114,7 @@ public class BankingController {
 		}
 		if(action.equals("TransferfundFromDeposit")) {
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPaymentDto.class);	
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPayment.class);	
 			String dateString = request.getParameter("date");
 			Date date = JProjectUtil.getDateForBanking().parse(dateString);
 			int priority = rl.getPriority();
@@ -124,13 +123,13 @@ public class BankingController {
 		}
 		if(action.equals("EditTransaction")) {
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPayment.class);
 			int paymentId = Integer.parseInt(request.getParameter("PaymentId"));
 			String paidDate = request.getParameter("date");
 			Date datePaid = JProjectUtil.getdateFormat().parse(paidDate);
 			double receivedAmount = Double.parseDouble(request.getParameter("amount"));
 			strName = request.getParameter("tableName");
-			TblPaymentDto paymentEdit = rl.getObjectOfStoragePayment(paymentId);
+			TblPayment paymentEdit = rl.getObjectOfStoragePayment(paymentId);
 			paymentEdit.setOldclientVendorID(paymentFromAjax.getOldclientVendorID());
 			paymentEdit.setOldAccountID(paymentFromAjax.getOldAccountID());
 			paymentEdit.setPaymentTypeID(paymentFromAjax.getPaymentTypeID());
@@ -142,12 +141,12 @@ public class BankingController {
 		}
 		if(action.equals("deleteTransaction")) {
 			int paymentId = Integer.parseInt(request.getParameter("paymentId"));
-			TblPaymentDto paymentForDelete = rl.getObjectOfStoragePayment(paymentId);
+			TblPayment paymentForDelete = rl.getObjectOfStoragePayment(paymentId);
 			rl.setDeletedmodified(paymentForDelete, true, "bca_payment", 0);
 		}
 		if(action.equals("AddAccount")) {
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("obj"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("obj"), TblPayment.class);
 			String date = request.getParameter("date");
 			//Date dateForAccount = JProjectUtil.getDateForBanking().parse(date);
 			String status = request.getParameter("Status");
@@ -212,16 +211,16 @@ public class BankingController {
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
 		ReceivableLIst rl = new ReceivableListImpl();
-		ArrayList<TblPaymentDto> payment = null;
+		ArrayList<TblPayment> payment = null;
 		ArrayList<TblPaymentType> simpleTypes = rl.getOnlySimplePaymentTypes();
 		ArrayList<ClientVendor> cvList = rl.getAllClientVendorList();
 		ArrayList<TblAccount> accountForClientVendor = rl.getCustomerCurrentBalanceForvendor(cvList);
-		ArrayList<TblCategoryDto> categoryListForPayment = rl.getCategoryListForPayment();
-		ArrayList<TblCategoryDto> categoryListForDeposit = rl.getCategoryListForDeposit();
+		ArrayList<TblCategory> categoryListForPayment = rl.getCategoryListForPayment();
+		ArrayList<TblCategory> categoryListForDeposit = rl.getCategoryListForDeposit();
 		ArrayList<ClientVendor> cleintListForDeposit = rl.getClientForDeposit();
 		ArrayList<TblAccount> accountForClientListForDeposit = rl.getCustomerCurrentBalanceForvendor(cleintListForDeposit);
 		ArrayList<ClientVendor> allClientVendor = rl.getAllClientVendor();
-		ArrayList<TblCategoryDto> allCategoryList = rl.getAllCategory();
+		ArrayList<TblCategory> allCategoryList = rl.getAllCategory();
 		ArrayList<TblPaymentType> allPaymentList = rl.getAllPaymentList();
 		String selectedRange = request.getParameter("SelectedRange");
 		request.setAttribute("simpleTypes", simpleTypes);
@@ -244,7 +243,7 @@ public class BankingController {
 		}
 		request.setAttribute("selectedAccountId", accountId);
 		TblAccount account = rl.getAccountById(accountId);
-			/*ArrayList<TblPaymentDto> payment = rl.getPaymentsForBanking(account);
+			/*ArrayList<TblPayment> payment = rl.getPaymentsForBanking(account);
 			request.setAttribute("payMentList", payment);
 			request.setAttribute("selectedAccount", account);*/
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
@@ -271,13 +270,13 @@ public class BankingController {
 		}
 		if(action.equals("EditTransaction")) {
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("row"), TblPayment.class);
 			int paymentId = Integer.parseInt(request.getParameter("PaymentId"));
 			String paidDate = request.getParameter("date");
 			Date datePaid = JProjectUtil.getdateFormat().parse(paidDate);
 			double receivedAmount = Double.parseDouble(request.getParameter("amount"));
 			strName = request.getParameter("tableName");
-			TblPaymentDto paymentEdit = rl.getObjectOfStoragePayment(paymentId);
+			TblPayment paymentEdit = rl.getObjectOfStoragePayment(paymentId);
 			paymentEdit.setOldclientVendorID(paymentFromAjax.getOldclientVendorID());
 			paymentEdit.setOldAccountID(paymentFromAjax.getOldAccountID());
 			paymentEdit.setPaymentTypeID(paymentFromAjax.getPaymentTypeID());
@@ -293,7 +292,7 @@ public class BankingController {
 		}
 		if(action.equals("AddAccount")) {
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("obj"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("obj"), TblPayment.class);
 			String date = request.getParameter("date");
 			//Date dateForAccount = JProjectUtil.getDateForBanking().parse(date);
 			String status = request.getParameter("Status");
@@ -314,7 +313,7 @@ public class BankingController {
 		}
 		if(action.equals("deleteTransaction")) {
 			int paymentId = Integer.parseInt(request.getParameter("paymentId"));
-			TblPaymentDto paymentForDelete = rl.getObjectOfStoragePayment(paymentId);
+			TblPayment paymentForDelete = rl.getObjectOfStoragePayment(paymentId);
 			rl.setDeletedmodified(paymentForDelete, true, "bca_payment", 0);
 		}
 		if(action.equals("DeleteAccount")) {
@@ -324,7 +323,7 @@ public class BankingController {
 		}
 		if(action.equals("Transferfund")) {
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPayment.class);
 			String dateString = request.getParameter("date");
 			/*Date date = JProjectUtil.formater.parse(dateString);*/
 			/*String date = JProjectUtil.getDateFormaterCommon().format(dateString);*/
@@ -337,7 +336,7 @@ public class BankingController {
 		if(action.equals("TransferfundFromPayment"))
 		{
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPayment.class);
 			String index = request.getParameter("index");
 			String dateString = request.getParameter("date");
 			/*Date date = JProjectUtil.formater.parse(dateString);*/
@@ -352,7 +351,7 @@ public class BankingController {
 		}
 		if(action.equals("TransferfundFromDeposit")) {
 			Gson gson=new Gson();
-			TblPaymentDto paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPaymentDto.class);
+			TblPayment paymentFromAjax = gson.fromJson(request.getParameter("payment"), TblPayment.class);
 			String dateString = request.getParameter("date");
 			Date date = JProjectUtil.getDateForBanking().parse(dateString);
 			int priority = rl.getPriority();

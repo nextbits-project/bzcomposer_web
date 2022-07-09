@@ -1,6 +1,7 @@
 package com.avibha.bizcomposer.login.actions;
 
 import com.avibha.bizcomposer.File.dao.CompanyInfo;
+import com.avibha.bizcomposer.configuration.forms.configurationForm;
 import com.avibha.bizcomposer.login.dao.LoginDAO;
 import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.login.forms.LoginForm;
@@ -490,8 +491,12 @@ public class LoginController
 			} else {
 				boolean status = loginDAO.checkUserLogin(username, password, loginFormDto.getCompanyid(), request);
 				forward = "/welcomescreen";
-				
-				if (status) {
+				if (status == false) {
+					loginFormDto.setUserName("");
+					loginFormDto.setPassword("");
+					forward = "/loginPage1";
+				}
+				if (status == true) {
 					if (forward == "/index") {
 						System.out.println("Inside Failure");
 						loginFormDto.setUserName("");
@@ -508,7 +513,7 @@ public class LoginController
 					request.setAttribute("acList", list);
 					request.setAttribute("acList2", list2);
 					set(request, response, loginFormDto, username, password, remember);
-					request.getSession().setAttribute("userInSession", loginFormDto);
+
 					System.out.println("Membership Level: " + request.getSession().getAttribute("membershipLevel"));
 
 					if (request.getSession().getAttribute("membershipLevel") != null && request.getSession().getAttribute("membershipLevel").equals("standard")) {
@@ -519,10 +524,6 @@ public class LoginController
 //						forward = "/welcomescreen";
 					}
 					SQLExecutor.dissable_ONLY_FULL_GROUP_BY();
-				}else{
-					loginFormDto.setUserName("");
-					loginFormDto.setPassword("");
-					forward = "/loginPage1";
 				}
 				request.setAttribute("loginError", status);
 			}
@@ -606,6 +607,7 @@ public class LoginController
 		else if(action.equalsIgnoreCase("selectedCompany"))
 		{
 			ConfigurationDAO dao = new ConfigurationDAO();
+			configurationForm configurationForm = null;
 			String companyName = request.getParameter("companyName");
 			p.setPathvalue(request.getContextPath());
 			//request.getSession().setAttribute("path", p);

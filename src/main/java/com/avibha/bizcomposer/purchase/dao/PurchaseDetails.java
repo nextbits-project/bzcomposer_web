@@ -11,8 +11,14 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMessage;
+
 import com.avibha.bizcomposer.employee.dao.Title;
-import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
+import com.avibha.bizcomposer.purchase.forms.PrintLabelForm;
+import com.avibha.bizcomposer.purchase.forms.VendorForm;
+import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 
@@ -64,7 +70,7 @@ public class PurchaseDetails {
 	/* Add new vendor with its related information to
 	 * the database. 
 	 */
-	/*public void AddVendor(HttpServletRequest request, VendorDto form,String compId, String stateName) {
+	public void AddVendor(HttpServletRequest request, ActionForm form,String compId, String stateName) {
 			//String compId = (String) request.getSession().getAttribute("CID");
 			String istaxable = request.getParameter("isTaxable");
 			String isAlsoClient = request.getParameter("isAlsoClient");
@@ -109,12 +115,12 @@ public class PurchaseDetails {
 			//Id generation finished
 		
 			PurchaseInfo purchase = new PurchaseInfo();
-			VendorDto vfrm = (VendorDto) form;
+			VendorForm vfrm = (VendorForm) form;
 			try{
 			boolean isAdded = purchase.insertVendor(cvID + "", vfrm, compId, istax, isclient,
 					indCharge, aFCharge, fICharge, "N",stateName);
-			request.setAttribute("SaveStatus",
-					"Vendor Information is Successfully Added !");
+			/*request.setAttribute("SaveStatus",
+					"Vendor Information is Successfully Added !");*/
 			if(isAdded){
 				request.setAttribute("SaveStatus",new ActionMessage("Vendor Information is Successfully Added !"));
 				request.setAttribute("Added","true");
@@ -123,7 +129,7 @@ public class PurchaseDetails {
 				// TODO: handle exception
 				request.setAttribute("Status",new ActionMessage("Vendor Information is Not Insert !"));
 			}
-	}*/
+	}
 
 	/*		Get all general information related to
 	 * the vendor. 
@@ -166,19 +172,77 @@ public class PurchaseDetails {
 
 	}
 	
-	
+	/*		Search the vendor from his id provided.
+	 * & provide his related information.
+	 */
+	public void searchVendor(String cvId, HttpServletRequest request, ActionForm form) {
+		HttpSession sess = request.getSession();
+		String compId = (String) sess.getAttribute("CID");
+		PurchaseInfo purchase = new PurchaseInfo();
+		//Loger.log("The Client vendor is from sales detail is " + cvId);
+		purchase.SearchVendor (compId, cvId, request);
+		purchase.getServices(request, compId, cvId);
+		//request.setAttribute("CustomerDetails",CustomerDetails);
+	}
 	
 	/*		Update the existing vendor & his related 
 	 * information.
 	 */
-	
+	public void UpdateVendor(HttpServletRequest request, VendorDto form) {
+		HttpSession sess = request.getSession();
+		String compId = (String) sess.getAttribute("CID");
+		PurchaseInfo purchase =new  PurchaseInfo();
+		CustomerInfo customer = new CustomerInfo();
+		String cvId = (String) sess.getAttribute("editedCVID");
+
+		customer.UpdateCustomer(compId, cvId);
+
+		String istaxable = request.getParameter("isTaxable");
+		String isAlsoClient = request.getParameter("isAlsoClient");
+		String UseIndividualFinanceCharges = request.getParameter("UseIndividualFinanceCharges");
+		String AssessFinanceChk = request.getParameter("AssessFinanceChk");
+		String FChargeInvoiceChk = request.getParameter("FChargeInvoiceChk");
+
+		int istax = (istaxable!=null && istaxable.equalsIgnoreCase("on"))?1:0;
+		int isclient = (isAlsoClient!=null && isAlsoClient.equalsIgnoreCase("on"))?1:3; // 2 for vendor in cvtype table
+		int indCharge = (UseIndividualFinanceCharges!=null && UseIndividualFinanceCharges.equalsIgnoreCase("on"))?1:0;
+		int aFCharge = (AssessFinanceChk!=null && AssessFinanceChk.equalsIgnoreCase("on"))?1:0;
+		int fICharge = (FChargeInvoiceChk!=null && FChargeInvoiceChk.equalsIgnoreCase("on"))?1:0;
+
+		form.setAnnualIntrestRate(request.getParameter("AnualRate"));
+		form.setMinFCharges(request.getParameter("MinFinance"));
+		form.setGracePrd(request.getParameter("GracePeriod"));
+		boolean updated = purchase.updateInsertVendor(cvId, form, compId, istax, isclient, indCharge, aFCharge, fICharge, "U");
+		
+		if(updated){
+			request.setAttribute("SaveStatus",new ActionMessage("Vendor information is successfully updated."));
+		}
+		else{
+			request.setAttribute("SaveStatus",new ActionMessage("Vendor information is not updated."));
+		}
+		
+		if(form.getDispay_info()== null){
+			request.setAttribute("RadioVal","1");
+			
+		}
+		else if(form.getDispay_info().equals("ShowAll")){
+			request.setAttribute("RadioVal","1");
+			
+		}
+		else
+			request.setAttribute("RadioVal","2");
+			
+		if(request.getParameter("Flag").equals("1")){
+			request.setAttribute("ClientID",cvId);
+		}
+	}
 	
 	/*		Provides the information required for the 
 	 * print label such as vendor list with his/her
 	 * services,total no. of pages, etc. 
 	 * 
 	 */
-	public void getPrintLabelInfo(HttpServletRequest request,PrintLabelDto pForm){
+	public void getPrintLabelInfo(HttpServletRequest request,PrintLabelForm pForm){
 		
 		PurchaseInfo purchase = new PurchaseInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -230,5 +294,50 @@ public class PurchaseDetails {
 				
 	}
 	
+	/*	Provides the information related the label of the  
+	 * the given label id.
+	 */
+	public void getLabel(HttpServletRequest request,ActionForm form)  {
+		PurchaseInfo customer = new PurchaseInfo();
+		PrintLabelForm vform = (PrintLabelForm)form;
+		int labelId = Integer.parseInt(request.getParameter("lblId"));
+		customer.getLabel(labelId,vform);
+	}
 	
+	/*		Saves or updates the label & related information.
+	 * 
+	 */
+	public boolean saveLabel(HttpServletRequest request, ActionForm form) {
+		boolean result=false;
+		PurchaseInfo purchase = new PurchaseInfo();
+		PrintLabelForm cfrm = (PrintLabelForm) form;
+		int labelID = Integer.parseInt(request.getParameter("LabelID"));
+		if (labelID == 0) {
+			purchase.saveLabel(cfrm);
+			result=true;
+		} else {
+			purchase.updateLabel(labelID, cfrm);
+			result=false;
+		}
+		return result;
+	}
+	
+	
+	public void addNewLabel(ActionForm form){
+		PrintLabelForm cform = (PrintLabelForm)form ;
+		cform.setLabelName("");
+		cform.setTopMargin("0.0");
+		cform.setLeftMargin("0.0");
+		cform.setHorizon("0.0");
+		cform.setVertical("0.0");
+		cform.setLabelHeight("0.0");
+		cform.setLabelWidth("0.0");
+	}
+	public void deleteLabel(HttpServletRequest request, ActionForm form) {
+		PurchaseInfo purchase = new PurchaseInfo();
+		PrintLabelForm vfrm = (PrintLabelForm) form;
+		int labelID = Integer.parseInt(request.getParameter("LabelID"));
+		Loger.log("LABEL   "+labelID);
+		purchase.deleteLabel(labelID, vfrm);
+	}
 }

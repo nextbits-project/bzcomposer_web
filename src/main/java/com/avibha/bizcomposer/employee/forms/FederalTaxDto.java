@@ -5,10 +5,15 @@
  */
 package com.avibha.bizcomposer.employee.forms;
 
+import org.apache.struts.action.ActionForm;
+
+import javax.servlet.http.HttpServletRequest;
+
+
 /*
  * 
  */
-public class FederalTaxDto {
+public class FederalTaxDto extends ActionForm {
 	
 	private static final long serialVersionUID = 0;
 

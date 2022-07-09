@@ -22,7 +22,6 @@ function invaliddaysdialog()
 $(document).ready(function()
 {
 	//var invoiceMemoDays = $("#invoiceMemoDays").val();
-	
 	var invoiceMemo = document.configurationForm.invoiceMemo.value;
 	var memorizeEstimation = document.configurationForm.memorizeEstimation.value;
 	var overdueInvoice = document.configurationForm.overdueInvoice.value;
@@ -30,7 +29,7 @@ $(document).ready(function()
 	var serviceBilling = document.configurationForm.serviceBilling.value;
 	var billsPay = document.configurationForm.billsToPay.value;
 	var memorizeBill = document.configurationForm.memorizeBill.value;
-	var purchaseOrder= memorizeBill;
+	var purchaseOrder= document.configurationForm.memorizePurchaseOrder.value;
 	
 	<%-- var showReminder = '<%= request.getAttribute("showReminderStatus")%>';
 
@@ -45,7 +44,7 @@ $(document).ready(function()
 	 
 	
 	
-	if(invoiceMemo == 1)
+	if(invoiceMemo != 1)
 	{
 		$("#invoiceMenoDontRemindMe").prop("checked",true);
 	}
@@ -55,7 +54,7 @@ $(document).ready(function()
 	}
 	
 	//var memorizeEstimationDays = $("#memorizeEstimationDays").val();
-	if(memorizeEstimation == 1)
+	if(memorizeEstimation != 1)
 	{
 		$("#memorizeDontRemindMe").prop("checked",true);
 	}
@@ -65,7 +64,7 @@ $(document).ready(function()
 	}
 	
 	//var overdueInvoiceDays = $("#overdueInvoiceDays").val();
-	if(overdueInvoice == 1)
+	if(overdueInvoice != 1)
 	{
 		$("#overdueInvoiceDontRemindMe").prop("checked",true);
 	}
@@ -74,7 +73,7 @@ $(document).ready(function()
 		$("#overdueInvoiceRemindMe").prop("checked",true);
 	}
 	//var inventoryOrderDays = $("#inventoryOrderDays").val();
-	if(inventoryOrder == 1)
+	if(inventoryOrder != 1)
 	{
 		$("#inventoryOrderDontRemindme").prop("checked",true);	
 	}
@@ -84,7 +83,7 @@ $(document).ready(function()
 	}
 	
 	//var serviceBillingDays = $("#serviceBillingDays").val();
-	if(serviceBilling == 1)
+	if(serviceBilling != 1)
 	{
 		$("#serviceBillingDontRemindMe").prop("checked",true);
 	}
@@ -94,7 +93,7 @@ $(document).ready(function()
 	}
 	
 	//var billsToPayDays = $("#billsToPayDays").val();
-	if(billsPay == 1)
+	if(billsPay != 1)
 	{
 		$("#billsToPayDontRemindMe").prop("checked",true);
 	}
@@ -104,27 +103,23 @@ $(document).ready(function()
 	}
 	
 	//var memorizePurchaseOrderDays = $("#memorizePurchaseOrderDays").val();
-	if(purchaseOrder == 1)
-	{
-		$("#memorizeBillRemindMe").prop("checked",true);
-		$("#memorizePurchaseOrderDontRemindMe").prop("checked",false);
-	}
-	else
+	if(purchaseOrder != 1)
 	{
 		$("#memorizePurchaseOrderDontRemindMe").prop("checked",true);
-		$("#memorizeBillRemindMe").prop("checked",false);
-	}
-	
-	//var memorizeBillDays = $("#memorizeBillDays").val();
-	if(memorizeBill == 1)
-	{
-		$("#memorizeBillDontRemindMe").prop("checked",true);
-		$("#memorizePurchaseOrderRemindMe").prop("checked",false);
 	}
 	else
 	{
 		$("#memorizePurchaseOrderRemindMe").prop("checked",true);
-		$("#memorizeBillDontRemindMe").prop("checked",false);
+	}
+
+	//var memorizeBillDays = $("#memorizeBillDays").val();
+	if(memorizeBill != 1)
+	{
+		$("#memorizeBillDontRemindMe").prop("checked",true);
+	}
+	else
+	{
+		$("#memorizeBillRemindMe").prop("checked",true);
 	}
 	
 	$("#invoiceMemoRemindMe").click(function()
@@ -137,10 +132,7 @@ $(document).ready(function()
 	
 	$("#invoiceMenoDontRemindMe").click(function()
 	{
-
-		
 		document.configurationForm.invoiceMemo.value = 0;
-		
 	});
 	
 	$('#invoiceMemoDays').change(function()

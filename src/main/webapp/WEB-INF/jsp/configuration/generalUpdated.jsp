@@ -1480,7 +1480,65 @@ function pleaseWaitDialog(){
 EnableDisableFields2();
 function updateComapany()
 {
-    
+
+    var showReminder = document.getElementById('showReminder').value;
+    if (document.getElementById('invoiceMemoRemindMe').checked) {
+      var invoiceMemo = document.getElementById('invoiceMemoRemindMe').value;
+    }
+    if (document.getElementById('invoiceMenoDontRemindMe').checked) {
+      var invoiceMemo = document.getElementById('invoiceMenoDontRemindMe').value;
+    }
+    var invoiceMemoDays = document.getElementById('invoiceMemoDays').value;
+    if (document.getElementById('memorizeRemindMe').checked) {
+      var EstimationMemo = document.getElementById('memorizeRemindMe').value;
+    }
+    if (document.getElementById('memorizeDontRemindMe').checked) {
+      var EstimationMemo = document.getElementById('memorizeDontRemindMe').value;
+    }
+    var memorizeEstimationDays = document.getElementById('memorizeEstimationDays').value;
+    if (document.getElementById('overdueInvoice').checked) {
+      var overdueInvoice = document.getElementById('overdueInvoice').value;
+    }
+    if (document.getElementById('overdueInvoiceDontRemindMe').checked) {
+      var overdueInvoice = document.getElementById('overdueInvoiceDontRemindMe').value;
+    }
+    var overdueInvoiceDays = document.getElementById('overdueInvoiceDays').value;
+    if (document.getElementById('inventoryOrderRemindMe').checked) {
+      var inventoryOrder = document.getElementById('inventoryOrderRemindMe').value;
+    }
+    if (document.getElementById('inventoryOrderDontRemindme').checked) {
+      var inventoryOrder = document.getElementById('inventoryOrderDontRemindme').value;
+    }
+    var inventoryOrderDays = document.getElementById('inventoryOrderDays').value;
+    if (document.getElementById('serviceBillingRemindMe').checked) {
+      var serviceBilling = document.getElementById('serviceBillingRemindMe').value;
+    }
+    if (document.getElementById('serviceBillingDontRemindMe').checked) {
+      var serviceBilling = document.getElementById('serviceBillingDontRemindMe').value;
+    }
+    var serviceBillingDays = document.getElementById('serviceBillingDays').value;
+    if (document.getElementById('billsToPayRemindMe').checked) {
+      var billsToPay = document.getElementById('billsToPayRemindMe').value;
+    }
+    if (document.getElementById('billsToPayDontRemindMe').checked) {
+      var billsToPay = document.getElementById('billsToPayDontRemindMe').value;
+    }
+    var billsToPayDays = document.getElementById('billsToPayDays').value;
+    if (document.getElementById('memorizePurchaseOrderRemindMe').checked) {
+      var memorizePurchaseOrder = document.getElementById('memorizePurchaseOrderRemindMe').value;
+    }
+    if (document.getElementById('memorizePurchaseOrderDontRemindMe').checked) {
+      var memorizePurchaseOrder = document.getElementById('memorizePurchaseOrderDontRemindMe').value;
+    }
+    var memorizePurchaseOrderDays = document.getElementById('memorizePurchaseOrderDays').value;
+    if (document.getElementById('memorizeBillRemindMe').checked) {
+      var memorizeBill = document.getElementById('memorizeBillRemindMe').value;
+    }
+    if (document.getElementById('memorizeBillDontRemindMe').checked) {
+      var memorizeBill = document.getElementById('memorizeBillDontRemindMe').value;
+    }
+    var memorizeBillDays = document.getElementById('memorizeBillDays').value;
+
 	var sel = document.getElementById("businessTypeId");
     var businessTypeId = sel.options[sel.selectedIndex].value;
 	var email = document.getElementById("email").value;
@@ -1543,7 +1601,23 @@ function updateComapany()
 			url:"updateEditedCompanyinfo?tabid=edit&companyName="+companyName+"&nickName="+nickName+"&businessTypeId="+businessTypeId
                     +"&fName="+fName+"&lName="+lName+"&add1="+address1+"&add2="+address2+"&cityID="+cityID+"&zip="+zip+"&province="+province
                     +"&countryId="+countryId+"&phone="+phone+"&cellphone="+cellphone+"&fax="+fax+"&email="+email+"&stateID="+stateID
-                    +"&membershipLevel="+membershipLevel+"&sameAsPhoneNumber="+sameAsPhoneNumber+"&taxID="+taxID+"&jobPosition="+jobPosition,
+                    +"&membershipLevel="+membershipLevel+"&sameAsPhoneNumber="+sameAsPhoneNumber+"&taxID="+taxID+"&jobPosition="+jobPosition
+                    +"&invoiceMemo="+invoiceMemo
+                    +"&invoiceMemoDays="+invoiceMemoDays
+                    +"&EstimationMemo="+EstimationMemo
+                    +"&memorizeEstimationDays="+memorizeEstimationDays
+                    +"&overdueInvoice="+overdueInvoice
+                    +"&overdueInvoiceDays="+overdueInvoiceDays
+                    +"&inventoryOrder="+inventoryOrder
+                    +"&inventoryOrderDays="+inventoryOrderDays
+                    +"&serviceBilling="+serviceBilling
+                    +"&serviceBillingDays="+serviceBillingDays
+                    +"&billsToPay="+billsToPay
+                    +"&billsToPayDays="+billsToPayDays
+                    +"&memorizePurchaseOrder="+memorizePurchaseOrder
+                    +"&memorizePurchaseOrderDays="+memorizePurchaseOrderDays
+                    +"&memorizeBill="+memorizeBill
+                    +"&memorizeBillDays="+memorizeBillDays,
  			success : function() {
 				$("#stateID").find('option[value="'+stateID+'"]').attr("selected",true);
 				document.getElementById("errors").innerHTML = "<h3>Record updated</h3>";

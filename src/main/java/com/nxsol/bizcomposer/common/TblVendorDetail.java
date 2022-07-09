@@ -2,10 +2,12 @@ package com.nxsol.bizcomposer.common;
 
 import java.util.Date;
 
+import org.apache.struts.action.ActionForm;
+
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 
-public class TblVendorDetail {
+public class TblVendorDetail extends ActionForm {
 
 	    String vName="";
 	    double vBalance=0.0;

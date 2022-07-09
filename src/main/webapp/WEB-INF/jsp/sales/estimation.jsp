@@ -327,7 +327,7 @@ table.cart tbody tr td {
 			</thead>
 			<tr>
 				<td id="td1" style="pading-left: 30px;font-size:14px;">
-					<spring:message code="BzComposer.estimation.itemid" />
+					<spring:message code="Bizcomposer.itemCode" />
 				</td>
 				<td style="font-size: 14px;">
                     <div style="font-size: 14px;">
@@ -784,9 +784,9 @@ table.cart tbody tr td {
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12" style="font-size: 16px;" align="center">
-				<input type="button" id="btnNewEstimation" class="formbutton" onclick="NewEstimation();" title="New Estimation" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.global.new' />" />
+				<!-- <input type="button" id="btnNewEstimation" class="formbutton" onclick="NewEstimation();" title="New Estimation" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.global.new' />" /> -->
 				<input type="button" id="btnSaveEstimation" class="formbutton" onclick="onSave(this.form);" title="Save Estimation" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.global.saveUpdate' />" />
-				<input type="button" id="btnUpdateCustomer" class="formbutton" onclick="ShowUpdate(this.form);" title="Update Customer information" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.updatecustomer.updatecustomer' />" />
+				<!-- <input type="button" id="btnUpdateCustomer" class="formbutton" onclick="ShowUpdate(this.form);" title="Update Customer information" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.updatecustomer.updatecustomer' />" /> -->
 			</div>
 		</div>
 	</div>

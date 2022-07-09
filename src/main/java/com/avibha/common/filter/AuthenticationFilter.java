@@ -15,33 +15,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import com.avibha.bizcomposer.login.forms.LoginFormDto;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Service
 public class AuthenticationFilter implements Filter {
 
 	private ArrayList<String> urlList;
-	
+
 
 	public void destroy() { }
 
-	/**  
+	/**
 	 * Checking the session for valid CID
 	 */
-	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 		String ipAddress = req.getRemoteAddr();
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
 		HttpSession session = request.getSession();
 		String contextPath = request.getContextPath();
-		LoginFormDto formDto =(LoginFormDto) session.getAttribute("userInSession");
+
 		String requestUrl = request.getRequestURI();
 		String tabId = request.getParameter("tabid");
 		System.out.println("IP " + ipAddress + ", Time " + new Date().toString() + "  requestUrl : " +requestUrl);
@@ -59,7 +49,7 @@ public class AuthenticationFilter implements Filter {
 		else if ( null !=tabId && (tabId.equalsIgnoreCase("register") || tabId.equalsIgnoreCase("contactUs") || tabId.equalsIgnoreCase("chkLoginDetails"))) {
 			chain.doFilter(request, response);
 		}
-		else if (null == session || session.getAttribute("CID") == null || formDto==null) {
+		else if (null == session || session.getAttribute("CID") == null) {
 			response.sendRedirect(contextPath + "/Login?tabid=loginPage");
 		}
 		else {
@@ -70,14 +60,12 @@ public class AuthenticationFilter implements Filter {
 	/**
 	 *
 	 */
-	@Override
 	public void init(FilterConfig config) throws ServletException {
 		String urls = config.getInitParameter("avoid-urls");
-		
 		StringTokenizer token = new StringTokenizer(urls, ",");
 
 		urlList = new ArrayList<String>();
-  
+
 		while (token.hasMoreTokens()) {
 			urlList.add(token.nextToken());
 

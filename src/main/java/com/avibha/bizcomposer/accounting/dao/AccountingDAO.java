@@ -1,22 +1,15 @@
 package com.avibha.bizcomposer.accounting.dao;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.File;
-import java.nio.file.Files;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.avibha.bizcomposer.accounting.forms.AccountDto;
+import com.avibha.bizcomposer.accounting.forms.AddAccountForm;
+import com.avibha.bizcomposer.accounting.forms.SaveAccountForm;
+import com.avibha.bizcomposer.sales.dao.CustomerInfo;
+import com.avibha.bizcomposer.sales.forms.InvoiceForm;
+import com.avibha.common.db.SQLExecutor;
+import com.avibha.common.log.Loger;
+import com.avibha.common.utility.DateInfo;
+import com.nxsol.bizcomposer.common.JProjectUtil;
+import org.apache.struts.util.LabelValueBean;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -27,16 +20,16 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import com.avibha.bizcomposer.accounting.forms.AccountDto;
-import com.avibha.bizcomposer.accounting.forms.AddAccountForm;
-import com.avibha.bizcomposer.accounting.forms.SaveAccountForm;
-import com.avibha.bizcomposer.sales.dao.CustomerInfo;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.common.db.SQLExecutor;
-import com.avibha.common.log.Loger;
-import com.avibha.common.utility.DateInfo;
-import com.avibha.common.utility.LabelValueBean;
-import com.nxsol.bizcomposer.common.JProjectUtil;
+import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.sql.*;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Vector;
 
 public class AccountingDAO {
 
@@ -1668,7 +1661,7 @@ public class AccountingDAO {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sqlString);
             while (rs.next()) {
-                accountCategories.add(new LabelValueBean(rs
+                accountCategories.add(new org.apache.struts.util.LabelValueBean(rs
                         .getString("Name"), rs.getString("acctCategoryId")));
             }
         }
@@ -1713,7 +1706,7 @@ public class AccountingDAO {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sqlString);
             while (rs.next()) {
-                bankList.add(new LabelValueBean(rs
+                bankList.add(new org.apache.struts.util.LabelValueBean(rs
                         .getString("name"), rs.getString("accountId")));
             }
         }
@@ -1761,7 +1754,7 @@ public class AccountingDAO {
             rs = stmt.executeQuery(sqlString);
 
             while (rs.next()) {
-                subAccountList.add(new LabelValueBean(rs
+                subAccountList.add(new org.apache.struts.util.LabelValueBean(rs
                         .getString("Name"), rs.getString("accountId")));
 
             }
@@ -2627,7 +2620,7 @@ public class AccountingDAO {
         Statement stmt = null,stmt1 = null,stmt2 = null,stmt3 = null;
         SQLExecutor db = new SQLExecutor();
         ResultSet rs = null,rs1 = null,rs2 = null,rs3 = null;
-        ArrayList<InvoiceDto> objList = new ArrayList<>();
+        ArrayList<InvoiceForm> objList = new ArrayList<>();
         CustomerInfo cusInfo = new CustomerInfo();
         DateInfo dInfo = new DateInfo();
         String sql = "";
@@ -2659,7 +2652,7 @@ public class AccountingDAO {
             rs = stmt.executeQuery(sql);
             while(rs.next())
             {
-                InvoiceDto f = new InvoiceDto();
+                InvoiceForm f = new InvoiceForm();
                 f.setInvoiceId(rs.getInt("InvoiceID"));
                 f.setCvId(rs.getInt("ClientVendorID"));
                 f.setBalance(rs.getDouble("Balance"));
@@ -2765,7 +2758,7 @@ public class AccountingDAO {
         Connection con = null;
         Statement stmt = null,stmt1 = null;
         ResultSet rs = null,rs1 = null;
-        ArrayList<InvoiceDto> objList = new ArrayList<>();
+        ArrayList<InvoiceForm> objList = new ArrayList<>();
         double total = 0.00;
         SQLExecutor db = new SQLExecutor();
         String sql = "";
@@ -2790,7 +2783,7 @@ public class AccountingDAO {
             rs = stmt.executeQuery(sql);
             while(rs.next())
             {
-                InvoiceDto f = new InvoiceDto();
+                InvoiceForm f = new InvoiceForm();
                 f.setFirstName(rs.getString(3));
                 f.setLastName(rs.getString(4));
                 f.setCompanyName(rs.getString(2));

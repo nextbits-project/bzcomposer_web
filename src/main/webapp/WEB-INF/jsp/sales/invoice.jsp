@@ -560,7 +560,7 @@ function ShowShippingAddressPage(form){
 							</thead>				
 							<tr>
 								<td id="td1" style="font-size: 14px;">
-									<spring:message code="BzComposer.Invoice.ItemID" />
+									<spring:message code="Bizcomposer.itemCode" />
 								</td>
 								<td style="font-size: 14px;">
                                     <div>
@@ -639,7 +639,7 @@ function ShowShippingAddressPage(form){
                                     <div style="padding-top: 0px;" style="display:block;" id="td5">
                                         <input class="minutesInput" style="text-align: right;" min="1" type="text" size="10" id="qty_id" onchange="Multiplication();" onkeypress="return numbersonly(event,this.value);" />
                                     </div>
-                                    <div id="saveQuantity" title="Update quantity" style="display:none;">
+                                    <div id=ReceivableListDto title="Update quantity" style="display:none;">
                                         <p><spring:message code="BzComposer.invoice.saveItemQuantity"/></p>
                                     </div>
                                 </td>
@@ -986,9 +986,9 @@ function ShowShippingAddressPage(form){
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12" style="font-size: 16px;" align="center">
-					<input type="button" id="btnNewInvoice" class="formbutton" onclick="NewInvoice();" title="New Invoice" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.global.new' />" />
+					<!-- <input type="button" id="btnNewInvoice" class="formbutton" onclick="NewInvoice();" title="New Invoice" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.global.new' />" />-->
 					<input type="button" id="btnSaveInvoice" class="formbutton" onclick="onSave(this.form);" title="Save Invoice" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.global.saveUpdate' />" />
-					<input type="button" id="btnUpdateInvoice" class="formbutton" onclick="ShowUpdate(this.form);" title="Update Customer information" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.updatecustomer.updatecustomer' />" />
+					<!-- <input type="button" id="btnUpdateInvoice" class="formbutton" onclick="ShowUpdate(this.form);" title="Update Customer information" style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.updatecustomer.updatecustomer' />" />-->
 					<!-- <input type="button" id="btnDeleteInvoice" title="Delete Invoice" class="formbutton" onclick="onDelete(this.form);"  style="padding: 8px 20px 8px 20px;" value="<spring:message code='BzComposer.Invoice.DeleteBtn' />" /> -->
 				</div>
 			</div>
@@ -1086,7 +1086,7 @@ function ShippedItem(){
 }
 
 function Assignment(value, form){
-    
+    debugger;
     if(value==0){
         
         document.InvoiceForm.billTo.value="";
@@ -1133,7 +1133,7 @@ function Assignment(value, form){
                 if(custBalance == "true") document.getElementById("CustomerBalanceBtn").style.backgroundColor = "red";
                 else document.getElementById("CustomerBalanceBtn").style.backgroundColor = "#05A9C5";
                 let viaItem = document.getElementById(i+"va").value;
-                if(viaItem==""){
+                /* if(viaItem==""){
                     document.InvoiceForm.via.value="0";
                 }
                 else{
@@ -1143,7 +1143,7 @@ function Assignment(value, form){
                     document.InvoiceForm.term.value = document.getElementById(i+"trm").value;
                     document.InvoiceForm.taxable.checked = (document.getElementById("a"+i+"txable").value == "1")?true:false;
                     break;
-                }
+                } */
             }
         }
     }
@@ -2598,6 +2598,21 @@ event.preventDefault();
 }
 
 function getInvoiceDetailsByBtnName(form, url){
+    debugger;
+    No = form.orderNo.value;
+    var bill = form.billTo.value;
+    if(form.custID.value==0){
+        // return showValidationDialog();
+    }
+    else if(isItemExist <=0){
+        // return showSelectItemDialog();
+    } else {
+        if(No.length==0 || No==0) {
+            // return showItemOrderNumberDialog();
+        } else {
+        onSave(form);
+        }
+    }
     //window.location.href="Invoice?tabid=FirstInvoice";
     $.ajax({
         type : "GET",
