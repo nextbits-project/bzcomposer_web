@@ -2370,6 +2370,88 @@ public class ConfigurationDAO {
             }
         }
     }
+    
+    public void saveNewLabel(String addlabelType, String addmar_top, String addmar_left, String addsize_width,String addsize_height,String addspacing_hor,String addspacing_vert){
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowUpdated = false;
+        try {
+            String sql = "INSERT INTO bca_label(LabelType, Mar_Top, Mar_Left, Size_Width,Size_Height,Spacing_Hor,Spacing_Vert) Values(?,?,?,?,?,?,?)";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, addlabelType);
+            pstmt.setString(2, addmar_top);
+            pstmt.setString(3, addmar_left);
+            pstmt.setString(4, addsize_width);
+            pstmt.setString(5, addsize_height);
+            pstmt.setString(6, addspacing_hor);
+            pstmt.setString(7, addspacing_vert);
+            rowUpdated = pstmt.executeUpdate() > 0 ? true : false;
+
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+    }
+    public void updateLabel(String labelTypeId, String addmar_top, String addmar_left, String addsize_width,String addsize_height,String addspacing_hor,String addspacing_vert){
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowUpdated = false;
+        try {
+            String sql = "UPDATE `bca_label` SET `Mar_Top` = ?,`Mar_Left` =?,`Size_Width` =?,`Size_Height` =?,`Spacing_Hor` =?,`Spacing_Vert` =? WHERE `ID` = ?";
+            pstmt = con.prepareStatement(sql);
+            
+            pstmt.setString(1, addmar_top);
+            pstmt.setString(2, addmar_left);
+            pstmt.setString(3, addsize_width);
+            pstmt.setString(4, addsize_height);
+            pstmt.setString(5, addspacing_hor);
+            pstmt.setString(6, addspacing_vert);
+            pstmt.setString(7, labelTypeId);
+            rowUpdated = pstmt.executeUpdate() > 0 ? true : false;
+
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+    }
+    public void deleteLabel(String defaultLabelID1){
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowDeleted = false;
+        try {
+            String sql = "Delete From bca_label Where ID= "+defaultLabelID1 ;
+            pstmt = con.prepareStatement(sql);
+            rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+
+        } catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+    }
     public void deleteUserTemplate(String selectedTemplateId){
         SQLExecutor db = new SQLExecutor();
         Connection con = db.getConnection();
@@ -2632,6 +2714,56 @@ public class ConfigurationDAO {
         }
         return configurationDto;
     }
+    
+    public ConfigurationDto getdefaultLabelID(int labelId) {
+        Connection con = null;
+        SQLExecutor db = new SQLExecutor();
+        Statement stmt = null;
+        ResultSet rs = null;
+        con = db.getConnection();
+        ConfigurationDto configurationDto = new ConfigurationDto();
+        String sql = "";
+        try
+        {
+            stmt = con.createStatement();
+            sql =  " SELECT ID,LabelType,Mar_Top,Mar_Left,Size_Width,Size_Height,Spacing_Hor,Spacing_Vert " 
+                   + " FROM bca_label where ID = " +labelId ;
+                    
+            rs = stmt.executeQuery(sql);
+            if (rs.next())
+            {
+                configurationDto.setId(rs.getInt("ID"));
+                configurationDto.setLabelType(ConstValue.hateNull(rs.getString("LabelType")));
+                configurationDto.setMar_top(rs.getDouble("Mar_Top"));
+                configurationDto.setMar_left(rs.getDouble("Mar_Left"));
+                configurationDto.setSize_width(rs.getDouble("Size_Width"));
+                configurationDto.setSize_height(rs.getDouble("Size_Height"));
+                configurationDto.setSpacing_hor(rs.getDouble("Spacing_Hor"));
+                configurationDto.setSpacing_vert(rs.getDouble("Spacing_Vert"));
+         
+            }
+        }
+        catch(Exception e)
+        {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (rs != null) {
+                    db.close(rs);
+                }
+                if (stmt != null) {
+                    db.close(stmt);
+                }
+                if(con != null){
+                    db.close(con);
+                }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return configurationDto;
+    }
     public ArrayList <ConfigurationDto> getActiveRealTimeShippingServices(int shippingType,HttpServletRequest request, ConfigurationDto form)
     {
         Connection con = null;
@@ -2865,6 +2997,36 @@ public class ConfigurationDAO {
         return rowAdded;
     }
     
+    public boolean saveNewLabel(ConfigurationDto form) {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement pstmt = null;
+        boolean rowAdded = false;
+        try {
+            pstmt = con.prepareStatement("INSERT INTO bca_label(LabelType, Mar_Top, Mar_Left, Size_Width,Size_Height,Spacing_Hor,Spacing_Vert) Values(?,?,?,?,?,?,?)");
+            pstmt.setString(1, form.getLabelType());
+            pstmt.setDouble(2, form.getMar_top());
+            pstmt.setDouble(3, form.getMar_left());
+			pstmt.setDouble(4, form.getSize_width());
+			pstmt.setDouble(5, form.getSize_height());
+			pstmt.setDouble(6, form.getSpacing_hor());
+			pstmt.setDouble(7, form.getSpacing_vert());
+
+            rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+        }
+        catch(Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (pstmt != null) { db.close(pstmt); }
+                if(con != null){ db.close(con); }
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return rowAdded;
+    }
     
 
     public boolean updateUserDefinedShippingWeightAndPrice(ConfigurationDto form) {

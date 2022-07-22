@@ -552,10 +552,12 @@ function pleaseWaitDialog(){
 											</td>
 										</tr>
 										<tr>
-											<td colspan="2" align="center" style="font-size: 14px;">
-												<button type="button" class="formButton" title='<spring:message code="BzComposer.configuration.setuplabeltooltip"/>'>
+											<td colspan="2" align="center" style="font-size: 20px;">
+											<a href="#uLabel" rel="modal:open">
+												<button type="button" name="setuplabel" class="formButton" onclick="setLabelUpValue()" title='<spring:message code="BzComposer.configuration.setuplabeltooltip"/>'>
 												    <spring:message code="BzComposer.configuration.setuplabelbtn"/>
 												</button>
+												</a>
 											</td>
 										</tr>
 										<!-- <tr>
@@ -1005,6 +1007,111 @@ function pleaseWaitDialog(){
                                         </tr>
                                     </table>
                                     </form:form>
+                                    
+                                     <!-- ------------------- Label up Start here ----------------- -->
+                                     <form:form name="LabelUpForm" method="post" id="form" modelAttribute="configDto">
+                                    <div id="uLabel" class="modal" style="height:auto;">
+                                            <form name="setuplabel">
+                                                <table border="2" style="width:100%">
+                                                <tr>
+                                                    <td colspan="2" align="center" style="font-size: 14px; padding: 5px;">
+                                                    <spring:message code="BzComposer.configuration.labelup"/>
+                                                    </td>
+                                                </tr>
+                                                <tr colspan="2">
+											<td style="font-size: 14px;">
+												<spring:message code="BzComposer.configuration.defaultlabel" />
+											</td>
+											<td style="font-size: 14px;">
+											
+												<c:if test="${not empty Labels}">
+													<form:select path="defaultLabelID" onchange="setLabelUpValue()" style="width:167" id="defaultLabelID1">
+														<form:option value="0">
+															<spring:message code="BzComposer.configuration.select"/>
+														</form:option>
+														<form:options items="${Labels}" itemValue="value" itemLabel="label" />
+													</form:select>
+												</c:if>
+												<form:input type="text"  path="labelType" id="NewlabelType" style="display: none;"/>
+											</td>
+										      </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px;">
+                                                        <spring:message code="BzComposer.configuration.margins"/>:
+                                                    </td>
+                                                    <td style="font-size: 14px;">
+                                                        <form:input type="text" path="mar_top" id="mar_top"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px;">
+                                                        <spring:message code="BzComposer.configuration.marginsleft"/>:
+                                                    </td>
+
+                                                    <td style="font-size: 14px;">
+                                                        <form:input type="text"  path="mar_left" id="mar_left"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px;">
+                                                        <spring:message code="BzComposer.configuration.labelwidth"/>:
+                                                    </td>
+                                                    <td style="font-size: 14px;">
+                                                        <form:input type="text" path="size_width" id="size_width"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size: 14px;">
+                                                        <spring:message code="BzComposer.configuration.labelheight"/>:
+                                                    </td>
+                                                    <td style="font-size:14px;">
+                                                        <form:input type="text" path="size_height" id="size_height"/>
+                                                    </td>
+                                                </tr>
+                                                      <tr>
+                                                    <td style="font-size: 14px;">
+                                                        <spring:message code="BzComposer.configuration.spacehorizon"/>:
+                                                    </td>
+                                                    <td style="font-size:14px;">
+                                                        <form:input type="text" path="spacing_hor" id="spacing_hor"/>
+                                                    </td>
+                                                </tr>
+                                                      <tr>
+                                                    <td style="font-size: 14px;">
+                                                        <spring:message code="BzComposer.configuration.spacevertical"/>:
+                                                    </td>
+                                                    <td style="font-size:14px;">
+                                                        <form:input type="text" path="spacing_vert" id="spacing_vert"/>
+                                                    </td>
+                                                </tr>
+                                                
+                                                </table>
+                                                <table>
+                                                <tr>
+                                                    <td style="font-size:14px;">
+                                                        <input type="submit" class="bottomButton formButton" name="saveLabel" id="saveLabel" value='<spring:message code="BzComposer.configuration.save"/>' onclick="saveLabel()"/>
+                                                    </td>
+                                                    <td style="font-size:14px;">
+                                                        <input type="submit" class="bottomButton formButton" name="addnew" id="addnew" value='<spring:message code="BzComposer.configuration.addNew"/>' onclick="addNewLabel()"/>
+                                                    </td>  
+                                                    <td style="font-size:14px;">
+                                                        <input type="submit" class="bottomButton formButton" name="updatelable" id="updatelable" value='<spring:message code="BzComposer.configuration.updateLabel"/>' onclick="updateLabel()"/>
+                                                    </td>                                
+                                                      <td style="font-size:14px;">
+                                                        <input type="submit" class="bottomButton formButton" name="delete" id="delete" value='<spring:message code="BzComposer.configuration.delete"/>' onclick="deleteLabel()"/>
+                                                    </td>
+                                                    <td style="font-size:14px;">
+                                                        <a href="#" rel="modal:close">
+                                                            <input type="reset" class="bottomButton formButton" name="Cancel" id="Cancel" value='<spring:message code="BzComposer.global.cancel"/>' />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </table>
+
+                                            </form>
+                                            <br>
+                                          </div>
+                                        </form:form>
 
                                     <!-- ------------------- Admin-Security Start here ----------------- -->
                                     <form:form name="AdminSecurityForm" method="post" id="form" modelAttribute="configDto">
@@ -1631,6 +1738,129 @@ function updateComapany()
 		});
 	}
 }
+
+function setLabelUpValue(){
+	
+	    debugger;
+	    var labelId = $("#defaultLabelID1 option:selected").val();
+	    $.ajax({
+        type: "POST",
+        url:"ConfigurationAjax/SaveConfiguration?tabid=getLabelId&labelId="+labelId,
+        data: { labelId : labelId }
+        }).done(function(data){
+        const labelUp = JSON.parse(data);
+       // document.getElementById('defaultLabelID1').value = labelUp.defaultLabelID1;
+        document.getElementById('mar_top').value = labelUp.mar_top;
+        document.getElementById('mar_left').value = labelUp.mar_left;
+        document.getElementById('size_width').value = labelUp.size_width;
+        document.getElementById('size_height').value = labelUp.size_height;
+        document.getElementById('spacing_hor').value = labelUp.spacing_hor;
+        document.getElementById('spacing_vert').value = labelUp.spacing_vert;
+    });
+}
+
+function addNewLabel(){
+	debugger;
+	document.getElementById("defaultLabelID1").style.display = "none";
+	document.getElementById("NewlabelType").style.display = "block";
+	document.getElementById('mar_top').value = "0.0";
+    document.getElementById('mar_left').value = "0.0";
+    document.getElementById('size_width').value ="0.0";
+    document.getElementById('size_height').value ="0.0";
+    document.getElementById('spacing_hor').value = "0.0";
+    document.getElementById('spacing_vert').value = "0.0";
+	/* debugger;
+	var labelType = $("#NewlabelType").val();
+	var mar_top = $("#mar_top").val();
+	var mar_left = $("#mar_left").val();
+	var size_width = $("#size_width").val();
+	var size_height = $("#size_height").val();
+	var spacing_hor = $("#spacing_hor").val();
+	var spacing_vert = $("#spacing_vert").val();
+	
+	 $.ajax({
+         type: "POST",
+         url:"ConfigurationAjax/SaveConfiguration?tabid=addNewLabel",
+         data:{ addlabelType : labelType, addmar_top : mar_top,addmar_left : mar_left,addsize_width : size_width, addsize_height : size_height,addspacing_hor : spacing_hor, addspacing_vert : spacing_vert},
+         success:function(data){
+             if(data){   location.reload(); }
+         },
+         error:function(){
+           alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+         }
+     });
+	 */
+	
+}
+function saveLabel(){
+	debugger;
+	var labelType1 = $("#defaultLabelID1").val();
+	var labelType = $("#NewlabelType").val();
+	var mar_top = $("#mar_top").val();
+	var mar_left = $("#mar_left").val();
+	var size_width = $("#size_width").val();
+	var size_height = $("#size_height").val();
+	var spacing_hor = $("#spacing_hor").val();
+	var spacing_vert = $("#spacing_vert").val();
+	if(labelType==""){
+		updateLabel();
+		
+	}
+	else{
+	 $.ajax({
+         type: "POST",
+         url:"/ConfigurationAjax/SaveConfiguration?tabid=saveNewLabel",
+         data:{ addlabelType : labelType, addmar_top : mar_top, addmar_left : mar_left, addsize_width : size_width, addsize_height : size_height, addspacing_hor : spacing_hor, addspacing_vert : spacing_vert},
+         success:function(data){
+             if(data){   location.reload(); }
+         },
+         error:function(){
+           alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+         }
+     });
+   
+  }
+ }
+ function updateLabel(){
+	 debugger;
+		var labelTypeId = $("#defaultLabelID1").val();
+		var labelType = $("#NewlabelType").val();
+		var mar_top = $("#mar_top").val();
+		var mar_left = $("#mar_left").val();
+		var size_width = $("#size_width").val();
+		var size_height = $("#size_height").val();
+		var spacing_hor = $("#spacing_hor").val();
+		var spacing_vert = $("#spacing_vert").val();
+		
+		 $.ajax({
+	         type: "POST",
+	         url:"/ConfigurationAjax/SaveConfiguration?tabid=updateLabel",
+	         data:{ labelTypeId : labelTypeId, addmar_top : mar_top, addmar_left : mar_left, addsize_width : size_width, addsize_height : size_height, addspacing_hor : spacing_hor, addspacing_vert : spacing_vert},
+	         success:function(data){
+	             if(data){   location.reload(); }
+	         },
+	         error:function(){
+	           alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+	         }
+	     }); 
+ }
+ 
+function deleteLabel(){
+    var defaultLabelID1 = document.getElementById("defaultLabelID1").value;
+
+    $.ajax({
+        type: "POST",
+        url:"/ConfigurationAjax/SaveConfiguration?tabid=deleteLabel",
+        data:{defaultLabelID1 : parseInt(defaultLabelID1)},
+        success:function(data){
+            if(data){   location.reload(); }
+        },
+        error:function(){
+          alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+}
+ 
 function SaveValues()
 {
 	event.preventDefault();
@@ -1788,6 +2018,7 @@ function RevokeValues(){
 }
 
 function SetLabelName(lblid){
+	debugger;
 	size = document.getElementById('lblsize').value;
 	for(cnt=0;cnt<size;cnt++){
 		lid = document.getElementById(cnt+'lid').value;
@@ -2191,6 +2422,22 @@ function deleteGroup(){
     });
 }
 
+function enterDefaultlabelDialog(){
+	event.preventDefault();
+	$("#enterDefaultlabelDialog").dialog({
+    	resizable: false,
+        height: 200,
+        width: 350,
+        modal: true,
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    return false;
+}
+
 function maxnumberofuserdialog()
 {
 	event.preventDefault();
@@ -2212,6 +2459,9 @@ function maxnumberofuserdialog()
 <!-- Dialog box used in this page -->
 <div id="showsaverecorddialog" style="display:none;">
 	<p><spring:message code="BzComposer.configuration.saveconfirm"/></p>
+</div>
+<div id="enterDefaultlabelDialog" style="display:none;">
+	<p><spring:message code="BzComposer.configuration.enterLabel"/></p>
 </div>
 <div id="serverConnectedErrorDialog" style="display:none;">
 	<p><spring:message code="BzComposer.configuration.manageservicetype.serverconnectederror"/></p>

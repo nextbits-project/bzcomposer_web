@@ -66,6 +66,88 @@ public class ConfigurationDto implements Serializable {
 
     public String printBills = "off";
     public String mailToCustomer ="off";	//Both printBills and mailToCustomer are added on 29-04-2019
+    private int id = -1;
+    
+    private String labelType = "";
+    
+    private double mar_top = 0.0;
+    
+    public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getLabelType() {
+		return labelType;
+	}
+
+	public void setLabelType(String labelType) {
+		this.labelType = labelType;
+	}
+
+
+
+	private double mar_left = 0.0;
+    
+    private double size_width = 0.0;
+	private double size_height = 0.0;
+    
+    private double spacing_hor = 0.0;
+    
+    private double spacing_vert = 0.0;
+    
+    public double getMar_top() {
+		return mar_top;
+	}
+
+	public void setMar_top(double mar_top) {
+		this.mar_top = mar_top;
+	}
+
+	public double getMar_left() {
+		return mar_left;
+	}
+
+	public void setMar_left(double mar_left) {
+		this.mar_left = mar_left;
+	}
+
+	public double getSize_width() {
+		return size_width;
+	}
+
+	public void setSize_width(double size_width) {
+		this.size_width = size_width;
+	}
+
+	public double getSize_height() {
+		return size_height;
+	}
+
+	public void setSize_height(double size_height) {
+		this.size_height = size_height;
+	}
+
+	public double getSpacing_hor() {
+		return spacing_hor;
+	}
+
+	public void setSpacing_hor(double spacing_hor) {
+		this.spacing_hor = spacing_hor;
+	}
+
+	public double getSpacing_vert() {
+		return spacing_vert;
+	}
+
+	public void setSpacing_vert(double spacing_vert) {
+		this.spacing_vert = spacing_vert;
+	}
+
+
 
     /* For Networking and security */
     private String userName;

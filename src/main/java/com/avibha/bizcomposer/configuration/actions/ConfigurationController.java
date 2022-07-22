@@ -1295,6 +1295,24 @@ public class ConfigurationController {
             json.put("uspsServicePrice", configurationDto.getRealTimeShippingPrice());
             status = json.toString();
         }
+        
+        else if (action.equalsIgnoreCase("getLabelId")) {
+            ConfigurationDAO dao = new ConfigurationDAO();
+            int labelId = Integer.parseInt(request.getParameter("labelId"));
+            System.out.println("Selected labelId ID:" + labelId);
+            ConfigurationDto configurationDto = dao.getdefaultLabelID(labelId);
+
+            JSONObject json=new JSONObject();
+            json.put("defaultLabelID1", configurationDto.getId());
+            json.put("defaultLabelID1", configurationDto.getLabelType());
+            json.put("mar_top", configurationDto.getMar_top());
+            json.put("mar_left", configurationDto.getMar_left());
+            json.put("size_width", configurationDto.getSize_width());
+            json.put("size_height", configurationDto.getSize_height());
+            json.put("spacing_hor", configurationDto.getSpacing_hor());
+            json.put("spacing_vert", configurationDto.getSpacing_vert());
+            status = json.toString();
+        }
         else if (action.equalsIgnoreCase("addNewEmailTemplate")) {
             ConfigurationDAO dao = new ConfigurationDAO();
             String templateName = request.getParameter("templateName");
@@ -1422,6 +1440,37 @@ public class ConfigurationController {
             String selectedTemplate = request.getParameter("oldDescription");
             dao.deleteSelectedTemplate(selectedTemplate);
         }
+        else if (action.equalsIgnoreCase("updateLabel")) {
+        	ConfigurationDAO dao = new ConfigurationDAO();
+        	System.out.println("-----------update Label-------------" +configDto);
+        	String labelTypeId = request.getParameter("labelTypeId");
+        	String addmar_top = request.getParameter("addmar_top");
+        	String addmar_left = request.getParameter("addmar_left");
+        	String addsize_width = request.getParameter("addsize_width");
+        	String addsize_height = request.getParameter("addsize_height");
+        	String addspacing_hor = request.getParameter("addspacing_hor");
+        	String addspacing_vert = request.getParameter("addspacing_vert");
+        	dao.updateLabel(labelTypeId,addmar_top,addmar_left,addsize_width,addsize_height,addspacing_hor,addspacing_vert);
+        	System.out.println("Success");
+        }
+        else if (action.equalsIgnoreCase("saveNewLabel")) {
+        	ConfigurationDAO dao = new ConfigurationDAO();
+        	System.out.println("-----------saveNewLabel-------------" +configDto);
+        	String addlabelType = request.getParameter("addlabelType");
+        	String addmar_top = request.getParameter("addmar_top");
+        	String addmar_left = request.getParameter("addmar_left");
+        	String addsize_width = request.getParameter("addsize_width");
+        	String addsize_height = request.getParameter("addsize_height");
+        	String addspacing_hor = request.getParameter("addspacing_hor");
+        	String addspacing_vert = request.getParameter("addspacing_vert");
+        	dao.saveNewLabel(addlabelType,addmar_top,addmar_left,addsize_width,addsize_height,addspacing_hor,addspacing_vert);
+        	System.out.println("Success");
+        }
+        else if (action.equalsIgnoreCase("deleteLabel")) {
+            ConfigurationDAO dao = new ConfigurationDAO();
+            String defaultLabelID1 = request.getParameter("defaultLabelID1");
+            dao.deleteLabel(defaultLabelID1);
+        }
         else if (action.equalsIgnoreCase("saveGroup")) {
             ConfigurationDAO dao = new ConfigurationDAO();
             boolean result = dao.saveUserGroupDetails(companyID, configDto);
@@ -1490,6 +1539,7 @@ public class ConfigurationController {
         	System.out.println("-----------addValueAddedService-------------" +configDto);
             return dao.addValueAddedService(configDto);
         }
+       
 
 
         else {
