@@ -348,7 +348,7 @@
 					        <spring:message code="BzComposer.Purchase.ReceivedItem" /></a></li> --%>
 				</ul>
 			</li>
-			<!-- 	<li><a	href="javascript: void(0)" title="Accounting" ><spring:message code="BzComposer.Accounting" /></a></li> -->
+			<li><a	href="POS?tabid=pos" title="pos" ><spring:message code="BzComposer.pos" /></a></li>
 			<li>
 				<a href="Banking?tabid=Banking" title="Accounting" style="cursor: pointer;" class="uppercaseText">
 					<spring:message code="BzComposer.Accounting" />

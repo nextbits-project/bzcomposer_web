@@ -1,3 +1,22 @@
+<!-- POS design  -->
+<link href="${pageContext.request.contextPath}/posStyle/css/style.css" rel="stylesheet" type="text/css" />
+<link href="${pageContext.request.contextPath}/posStyle/css/font_awesome_all.css" rel="stylesheet" type="text/css" />
+<link href="${pageContext.request.contextPath}/posStyle/css/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+<link href="${pageContext.request.contextPath}/posStyle/css/select2.min.css" rel="stylesheet" type="text/css" />
+<link href="${pageContext.request.contextPath}/posStyle/css/jquery-ui.css" rel="stylesheet" type="text/css" />
+
+
+<script src="${pageContext.request.contextPath}/posStyle/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/jquery-ui.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/sweetalert2.all.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/select2.full.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/calculator.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/marquee.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/custom.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/items.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/datable.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/posStyle/js/jquery.cookie.js" type="text/javascript"></script>
 
 <!-- CSS Files -->
 <link href="${pageContext.request.contextPath}/dist/css/emailPopUpModal.css" rel="stylesheet" type="text/css" />
@@ -24,7 +43,7 @@
 <link href="${pageContext.request.contextPath}/tableStyle/css/defaultTheme.css" rel="stylesheet" media="screen" />
 <link href="${pageContext.request.contextPath}/tableStyle/css/myTheme.css" rel="stylesheet" media="screen" />
 <link href="${pageContext.request.contextPath}/dist/css/superfish.css" rel="stylesheet" type="text/css" media="screen"/>
-	
+
 <!-- Date 18-10-2018:datatable export css and js files -->
 <!-- <link type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>
 <link type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
@@ -62,7 +81,7 @@
 <script src="${pageContext.request.contextPath}/tableStyle/js/jquery.fixedheadertable.js"></script>
 <%-- commented on 25-09-2019
 <script src="${pageContext.request.contextPath}/tableStyle/js/demo.js"></script> --%>
-	
+
 <!-- script add by pritesh -->
 <script src="${pageContext.request.contextPath}/dist/jsPdf/jspdf.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/dist/jsPdf/html.js" type="text/javascript"></script>
@@ -71,9 +90,9 @@
 <script src="${pageContext.request.contextPath}/dist/jsPdf/standard_fonts_metrics.js" type="text/javascript"></script>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script src="https://rawgit.com/someatoms/jsPDF-AutoTable/master/dist/jspdf.plugin.autotable.js"></script> -->
-  
+
 <!--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script> -->
-  	
+
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
@@ -112,7 +131,7 @@
 <%--   <link href="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui-tab.css" rel="stylesheet" media="screen" /> --%>
 <%--   <script src="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui.js"></script> --%>
 
-<!-- Script end by pritesh -->	
+<!-- Script end by pritesh -->
 	<script>
 
 		(function($){ //create closure so we can safely use $ as alias for jQuery
@@ -120,7 +139,7 @@
 			$(document).ready(function(){
 
 				// initialise plugin
-				/* commented on 25-09-2019 
+				/* commented on 25-09-2019
 				var example = $('#example').superfish({
 					//add options here if required
 				}); */
@@ -164,20 +183,20 @@ body {
 	padding: 0px;
 	font-family: "Bitstream Vera Sans", "Lucida Grande","Trebuchet MS",Arial, Helvetica, sans-serif;
 }
-</style>	
+</style>
 <script type="text/javascript">
 
 $(document).ready(function() {
-  /* commented on 25-09-2019 because of this error:jquery-3.3.1.slim.min.js:2 Uncaught TypeError: $(...).DataTable is not a function at HTMLDocument.<anonymous>  
+  /* commented on 25-09-2019 because of this error:jquery-3.3.1.slim.min.js:2 Uncaught TypeError: $(...).DataTable is not a function at HTMLDocument.<anonymous>
   $('#exportPd').DataTable({
 	   "aaSorting": [],
-	   "paging":   false, 
+	   "paging":   false,
 	   dom: 'Bfrtip',
        buttons: [
            'copyHtml5',
            'excelHtml5',
            'pdfHtml5'
-           
+
        ]
    }); */
 });
