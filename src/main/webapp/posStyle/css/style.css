@@ -256,8 +256,8 @@ button:hover,.holder .operation_button:hover{
     border-bottom: 0px solid #000000;
     padding: 10px 0px 0px 22px; 
 }
-#show_tables_modal{padding-top:20px;}
-#show_tables_modal2{padding-top:20px;}
+#show_tables_modal{padding-top:20px;max-width: 1051px;}
+#show_tables_modal2{padding-top:20px;max-width: 1051px;}
 #asset_modal{padding-top:20px;}
 #show_sale_hold_modal,#order_detail_modal,#show_last_ten_sales_modal{padding-top:20px;}
 #kitchen_status_modal {
@@ -616,7 +616,7 @@ display:none;
 .select_table_modal_info_holder2 .single_order_table{
     height: 300px;
     text-align: center;
-    width: 23%;
+    width: 43%;
     margin: 5px .86%;
 }
 .remove_table_order{cursor:pointer;}
@@ -950,7 +950,9 @@ display:none;
     margin: 20px 0px 0px 0px;
 }
 #show_sale_hold_modal .hold_sale_modal_info_holder .detail_hold_sale_holder .hold_sale_right .bottom .button_holder,.order_detail_modal_info_holder .bottom .button_holder,.last_ten_sales_holder .bottom .button_holder{
-
+  height: 570px;
+border: 0px solid #000;
+border-radius: 5px;
 }
 #show_sale_hold_modal .hold_sale_modal_info_holder .detail_hold_sale_holder .hold_sale_right .bottom .button_holder .single_button_holder,.order_detail_modal_info_holder .bottom .button_holder .single_button_holder,.last_ten_sales_holder .bottom .button_holder .single_button_holder{
     float:left;
@@ -1155,6 +1157,8 @@ display:none;
     height: 35px;
 }
 #item_modal .section7,#add_customer_modal .section7,#generate_sale_hold_modal .section7{
+	width: 95%;
+	 height: 35px;
 	margin: 7px 0px 15px 0px;
 }
 #item_modal .section7 .sec7_inside,#add_customer_modal .section7 .sec7_inside,#show_tables_modal  .section7 .sec7_inside,#generate_sale_hold_modal .section7 .sec7_inside{float:left;width:50%}

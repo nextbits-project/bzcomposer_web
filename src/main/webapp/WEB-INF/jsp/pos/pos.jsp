@@ -29,14 +29,13 @@
                      </div>
                   </div>
                   <div class="header_part_left fix">
-                     <button id="open_hold_sales" style="padding:0px 10px;"><i class="fas fa-folder-open"></i> Open Hold Sales</button>
+                     <button id="open_hold_sales" data-bs-toggle="modal" data-bs-target="#show_sale_hold_modal" onclick="openHoldSales()" style="padding:0px 10px;"><i class="fas fa-folder-open"></i> Open Hold Sales</button>
                      <form action="https://posmaxx.com/administrator/Authentication/setlanguage" method="POST" style="display: inline-block;width: 20%;">
                         <select tabindex="2" class="form-control select2" name="language" style="width: 100%;" onchange='this.form.submit()'>
                            <option value="english"
                               selected>English</option>
                            <option value="spanish"
-                              >Spanish</option>
-                           <
+                              >Spanish</option>                     
                            <option value="french"
                               >French</option>
                            <option value="arabic"
@@ -50,10 +49,10 @@
                   </div>
                   <div class="header_part_right fix">
                      <div class="header_single_button_holder" style="width:19%">
-                        <button style="float:left;" id="last_ten_sales_button"><i class="fas fa-history"></i> Last 10 Sales</button>
+                        <button style="float:left;" id="last_ten_sales_button" data-bs-target="#show_last_ten_sales_modal" onclick="lastTenSales()"><i class="fas fa-history"></i> Last 10 Sales</button>
                      </div>
                      <div style="text-align:center;width:28%" class="header_single_button_holder">
-                        <button id="notification_button"><i class="fas fa-bell"></i> Kitchen Notification (<span id="notification_counter">0</span>)</button>
+                        <button id="notification_button" data-bs-toggle="modal" data-bs-target="#notification_list_modal" onclick="notifactionList()"><i class="fas fa-bell"></i> Kitchen Notification (<span id="notification_counter">0</span>)</button>
                      </div>
                      <div class="header_single_button_holder" style="width:20%;">
                         <a href="#" id="register_close"><button style="float:right;"><i class="fas fa-times"></i> Register</button></a>
@@ -67,7 +66,7 @@
                   </div>
                </div>
                <div id="main_part fix">
-                  <div class="main_left fix" style="height: 846px;">
+                  <div class="main_left fix" style="height: 800px;">
                      <div class="holder fix">
                         <div id="running_order_header">
                            <h3>Running Orders</h3>
@@ -124,11 +123,11 @@
                         </div>
                      </div>
                   </div>
-                  <div class="main_middle fix" style="height: 956px;">
+                  <div class="main_middle fix" style="height: 800px;">
                      <div class="main_top fix">
                         <div class="button_holder fix">
                            <div class="single_button_middle_holder fix">
-                              <button data-selected="unselected" style="float:left;margin-left:2px;" id="dine_in_button"><i class="fas fa-table"></i> Dine In</button>
+                              <button data-selected="unselected" style="float:left;margin-left:2px;" data-bs-target="#show_tables_modal2" onclick="myFunction()" id="dine_in_button"><i class="fas fa-table"></i> Dine In</button>
                            </div>
                            <div style="text-align:center;" class="single_button_middle_holder fix">
                               <button id="take_away_button"><i class="fas fa-shopping-bag"></i> Take Away</button>
@@ -152,7 +151,7 @@
                                     <option value="2" >Walkin 033</option>
                                  </select>
                                  <i class="fas fa-pencil-alt" id="edit_customer" style="cursor:pointer;"></i>
-                                 <button id="plus_button"><i class="fas fa-plus-square"></i></button>
+                                 <button id="plus_button" data-bs-toggle="modal" data-bs-target="#add_customer_modal" onclick="plusButton()"><i class="fas fa-plus-square"></i></button>
                               </div>
                            </div>
                            <div class="single_button_middle_holder">
@@ -237,7 +236,7 @@
                         </div>
                      </div>
                   </div>
-                  <div class="main_right fix" style="height: 946px;">
+                  <div class="main_right fix" style="height: 800px;">
                      <input type="text" name="search" id="search" placeholder="Name or Code or Category or VEG or BEV or BAR" />
                      <div class="select_category fix">
                         <button class="category_next_prev" id="previous_category"><i class="fas fa-angle-left"></i></i></button>
@@ -1137,8 +1136,20 @@
 function myFunction(){
     $(show_tables_modal2).modal('show');
 }
+function openHoldSales(){
+    $(show_sale_hold_modal).modal('show');
+}
 function helpModalOpen(){
     $(help_modal).modal('show');
+}
+function plusButton(){
+    $(add_customer_modal).modal('show');
+}
+function lastTenSales(){
+    $(show_last_ten_sales_modal).modal('show');
+}
+function notifactionList(){
+    $(notification_list_modal).modal('show');
 }
 </script>
 </body>
