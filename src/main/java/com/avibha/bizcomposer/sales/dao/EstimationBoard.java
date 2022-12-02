@@ -1,5 +1,6 @@
 package com.avibha.bizcomposer.sales.dao;
 
+import java.math.BigDecimal;
 
 public class EstimationBoard {
 	private int invoiceID;
@@ -77,7 +78,7 @@ public class EstimationBoard {
 
 	private boolean isUpdated;
 
-	private double total;
+	private BigDecimal total;
 	
 	private String rep;
 	/**
@@ -575,11 +576,11 @@ public class EstimationBoard {
 		this.zipCode = zipCode;
 	}
 
-	public double getTotal() {
+	public BigDecimal getTotal() {
 		return total;
 	}
 
-	public void setTotal(double total) {
+	public void setTotal(BigDecimal total) {
 		this.total = total;
 	}
 

@@ -163,6 +163,16 @@ public class PurchaseBoardInfoDao {
 				pb.setOrderNum(rs.getLong("OrderNum"));
 				pb.setPo_no(rs.getLong("PONum"));
 				String orderNo = (rs.getString("PONum"));
+				
+				
+				String orderNo = (rs.getString("OrderNum"));
+				String yearPart = MyUtility.getYearPart(rs.getString("DateAdded"));
+				if(configDto.getIsPurchasePrefix().equals("on")) {
+					d.setOrderNumStr("IV".concat(yearPart).concat("-"+MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.InvoiceType, configDto, false)));
+				}else {
+					d.setOrderNumStr(MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.InvoiceType, configDto, false));
+				}
+				
 				pb.setPoNumStr(MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.POType, configDto, false));
 				pb.setRcv_no(rs.getLong("RcvNum"));
 				pb.setEst_no(rs.getLong("EstNum"));

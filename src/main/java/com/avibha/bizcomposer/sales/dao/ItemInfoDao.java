@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.sql.*;
 import java.text.DecimalFormat;
@@ -48,8 +49,8 @@ import java.util.*;
 public class ItemInfoDao {
 
 	public ArrayList getDicontinuedItemList(String datesCombo, String fromDate, String toDate, String sortBy,
-											String cId, HttpServletRequest request, ItemDto form) {
-		Connection con = null ;
+			String cId, HttpServletRequest request, ItemDto form) {
+		Connection con = null;
 		PreparedStatement pstmt = null, pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
@@ -132,11 +133,11 @@ public class ItemInfoDao {
 							while (rs1.next()) {
 								newInventory[count][i] = rs1.getString("InventoryCode");
 							}
-						if (rs1 != null) {
-							db.close(rs1);
+							if (rs1 != null) {
+								db.close(rs1);
 							}
-						if (pstmt1 != null) {
-							db.close(pstmt1);
+							if (pstmt1 != null) {
+								db.close(pstmt1);
 							}
 						} else {
 							newInventory[count][i] = rs.getString(i + 1);
@@ -190,24 +191,24 @@ public class ItemInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -215,9 +216,9 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList getDamagedInvList(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-									   HttpServletRequest request, ItemDto form) {
+			HttpServletRequest request, ItemDto form) {
 
-		Connection con = null ;
+		Connection con = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		ArrayList<ItemDto> objList = new ArrayList<>();
@@ -277,18 +278,18 @@ public class ItemInfoDao {
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -298,9 +299,9 @@ public class ItemInfoDao {
 
 	/* missing */
 	public ArrayList getMissingInventoryList(String datesCombo, String fromDate, String toDate, String sortBy,
-											 String cId, HttpServletRequest request, ItemDto form) {
+			String cId, HttpServletRequest request, ItemDto form) {
 
-		Connection con = null ;
+		Connection con = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		ArrayList<ItemDto> objList = new ArrayList<>();
@@ -367,14 +368,14 @@ public class ItemInfoDao {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -384,9 +385,9 @@ public class ItemInfoDao {
 
 	/* return inventory */
 	public ArrayList getReturnInventoryList(String datesCombo, String fromDate, String toDate, String sortBy,
-											String cId, HttpServletRequest request, ItemDto form) {
+			String cId, HttpServletRequest request, ItemDto form) {
 
-		Connection con = null ;
+		Connection con = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		ArrayList<ItemDto> objList = new ArrayList<>();
@@ -456,14 +457,14 @@ public class ItemInfoDao {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -473,8 +474,8 @@ public class ItemInfoDao {
 	/**/
 
 	public ArrayList getInventoryValSummary(String datesCombo, String fromDate, String toDate, String sortBy,
-											String cId, HttpServletRequest request, ItemDto form1) {
-		Connection con = null ;
+			String cId, HttpServletRequest request, ItemDto form1) {
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null, stmt1 = null;
 		ResultSet rs = null, rs1 = null;
@@ -522,8 +523,7 @@ public class ItemInfoDao {
 			sql += "SELECT a.inventoryid, a.inventoryname, a.inventorycode, b.inventorycode AS Category, a.qty, a.purchaseprice, "
 					+ " ( a.purchaseprice * a.qty ) AS AssetValue, a.saleprice, ( a.qty * a.saleprice ) AS RetailValue "
 					+ "FROM bca_iteminventory AS a RIGHT JOIN bca_iteminventory AS b ON a.parentid = b.inventoryid "
-					+ "WHERE a.companyid = '" + cId + "'" + " AND a.itemtypeid = 1 AND a.active = 1 "
-					+ dateBetween;
+					+ "WHERE a.companyid = '" + cId + "'" + " AND a.itemtypeid = 1 AND a.active = 1 " + dateBetween;
 
 			con = db.getConnection();
 			stmt = con.createStatement();
@@ -541,11 +541,11 @@ public class ItemInfoDao {
 						form.setTotalBal(rs1.getInt(1));
 						form.setTotalRetailValue(new DecimalFormat("#0.00").format(rs1.getDouble(3)));
 					}
-				if (rs1 != null) {
-					db.close(rs1);
+					if (rs1 != null) {
+						db.close(rs1);
 					}
-				if (stmt1 != null) {
-					db.close(stmt1);
+					if (stmt1 != null) {
+						db.close(stmt1);
 					}
 					count++;
 				}
@@ -564,24 +564,24 @@ public class ItemInfoDao {
 
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -589,8 +589,8 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList getInvValDetail(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-									 HttpServletRequest request, ItemDto form1) {
-		Connection con = null ;
+			HttpServletRequest request, ItemDto form1) {
+		Connection con = null;
 		Statement stmt = null, stmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null, rs1 = null;
@@ -638,7 +638,8 @@ public class ItemInfoDao {
 		sql = "SELECT cart.qty, cart.dateadded, cart.invoiceid, a.inventorycode, b.inventoryname, b.purchaseprice, b.saleprice, b.qty AS QtyOnHand "
 				+ " FROM (bca_iteminventory AS a INNER JOIN bca_iteminventory AS b ON a.inventoryid = b.parentid) "
 				+ " LEFT JOIN bca_cart AS cart ON b.inventoryid = cart.inventoryid "
-				+ " WHERE b.active = 1 AND b.itemtypeid = 1 AND b.companyid = '" + cId + "'" + dateBetween + "ORDER  BY a.inventorycode, b.inventoryname";
+				+ " WHERE b.active = 1 AND b.itemtypeid = 1 AND b.companyid = '" + cId + "'" + dateBetween
+				+ "ORDER  BY a.inventorycode, b.inventoryname";
 		try {
 			con = db.getConnection();
 			stmt = con.createStatement();
@@ -694,39 +695,38 @@ public class ItemInfoDao {
 						f.setCvName(rs1.getString("Name"));
 					}
 					f.setDateAdded(rs.getString("DateAdded"));
-					
+
 					if (rs1 != null) {
 						db.close(rs1);
-						}
+					}
 					if (stmt1 != null) {
 						db.close(stmt1);
-						}
+					}
 				}
 
 				objList.add(f);
 			}
-			
 
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -734,8 +734,8 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList getInvOrderReport(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-									   HttpServletRequest request, ItemDto form1) {
-		Connection con = null ;
+			HttpServletRequest request, ItemDto form1) {
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null, stmt1 = null;
 		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
@@ -779,8 +779,8 @@ public class ItemInfoDao {
 			}
 		}
 
-		sql += "SELECT * FROM bca_iteminventory WHERE active = 1 AND companyid = '" + cId + "'"
-				+ " AND itemtypeid = 1 " + " AND NOT( parentid = 0 )" + dateBetween;
+		sql += "SELECT * FROM bca_iteminventory WHERE active = 1 AND companyid = '" + cId + "'" + " AND itemtypeid = 1 "
+				+ " AND NOT( parentid = 0 )" + dateBetween;
 		try {
 			con = db.getConnection();
 			stmt = con.createStatement();
@@ -788,8 +788,8 @@ public class ItemInfoDao {
 			while (rs.next()) {
 				ItemDto f = new ItemDto();
 
-				String sql_cat = "SELECT InventoryCode FROM bca_iteminventory WHERE InventoryID = " + rs.getInt("ParentID")
-						+ " AND CompanyID ='" + cId + "'";
+				String sql_cat = "SELECT InventoryCode FROM bca_iteminventory WHERE InventoryID = "
+						+ rs.getInt("ParentID") + " AND CompanyID ='" + cId + "'";
 				stmt1 = con.createStatement();
 				rs1 = stmt1.executeQuery(sql_cat);
 				if (rs1.next()) {
@@ -810,35 +810,35 @@ public class ItemInfoDao {
 				}
 				f.setSalePrice(new DecimalFormat("#0.00").format(rs.getDouble("SalePrice")));
 				objList.add(f);
-				
+
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
+				}
 			}
 
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -846,8 +846,8 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList getInvStatisticReport(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-										   HttpServletRequest request, ItemDto form1) {
-		Connection con = null ;
+			HttpServletRequest request, ItemDto form1) {
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null, rs1 = null;
 		Statement stmt = null, stmt1 = null;
@@ -889,8 +889,8 @@ public class ItemInfoDao {
 		}
 
 		String sql = "SELECT inventoryid, inventorycode, inventoryname, location, qty, reorderpoint FROM bca_iteminventory "
-				+ "WHERE active = 1 AND iscategory = 0 AND itemtypeid <> 6 "
-				+ " AND companyid = '" + cId + "'" + dateBetween + "ORDER  BY inventorycode, inventoryname";
+				+ "WHERE active = 1 AND iscategory = 0 AND itemtypeid <> 6 " + " AND companyid = '" + cId + "'"
+				+ dateBetween + "ORDER  BY inventorycode, inventoryname";
 		try {
 			con = db.getConnection();
 			stmt = con.createStatement();
@@ -906,24 +906,24 @@ public class ItemInfoDao {
 
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -932,8 +932,8 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList getReportItemList(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
-									   HttpServletRequest request, ItemDto form) {
-		Connection con = null ;
+			HttpServletRequest request, ItemDto form) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
@@ -1048,26 +1048,26 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class Report and  method -getSalesRep " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
-	public ArrayList sortItemList(String compId,String sortname)
-	{
-		Connection con = null ;
+
+	public ArrayList sortItemList(String compId, String sortname) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> objList = new ArrayList<ItemDto>();
@@ -1077,7 +1077,7 @@ public class ItemInfoDao {
 		try {
 
 			String sqlString = "select InventoryID,parentID,isCategory,inventoryName,InventoryCode,SalePrice,PurchasePrice,qty,weight,location,taxable,serialNum,itemtypeid,date_format(DateAdded,'%m-%d-%Y') as DateAdded from bca_iteminventory where CompanyID like '"
-					+ compId + "' and Active like '1' and ItemtypeId not like '0' order by "+sortname;
+					+ compId + "' and Active like '1' and ItemtypeId not like '0' order by " + sortname;
 
 			pstmt = con.prepareStatement(sqlString);
 			Loger.log(sqlString);
@@ -1136,31 +1136,33 @@ public class ItemInfoDao {
 						for (int cval = 0; cval < rsSize && newInvCounter < rsSize; cval++) {
 							if (("" + getInvId).equalsIgnoreCase(inventory[cval][1])) {
 								// it finds the invoice id = parent id
-								/* Commented on 13-09-2019
-								 * Loger.log("inside getInvId:" + getInvId);
-								Loger.log("inside getParentId:" + inventory[cval][1]);
-								Loger.log("inside isCategory:" + inventory[cval][2]);*/
+								/*
+								 * Commented on 13-09-2019 Loger.log("inside getInvId:" + getInvId);
+								 * Loger.log("inside getParentId:" + inventory[cval][1]);
+								 * Loger.log("inside isCategory:" + inventory[cval][2]);
+								 */
 								// if("true".equalsIgnoreCase(inventory[cval][2])){
-								/* Commented on 13-09-2019
-								 * Loger.log("inside Catogary");
-								Loger.log("The value id VCAL is " + cval);
-								Loger.log("Inside **");*/
+								/*
+								 * Commented on 13-09-2019 Loger.log("inside Catogary");
+								 * Loger.log("The value id VCAL is " + cval); Loger.log("Inside **");
+								 */
 								newInventory[newInvCounter] = inventory[cval];// here
 								// they assign the whole row having parent id =invoice id
 								newInventory[newInvCounter][14] = "**";
 								newInvCounter++;
 								String getChInvId = inventory[cval][0];
-								//Loger.log("The Value of getChInvId is " + getChInvId);// it brings the invoice id of the child
+								// Loger.log("The Value of getChInvId is " + getChInvId);// it brings the
+								// invoice id of the child
 								for (int childCount = 0; childCount < rsSize; childCount++) {
 									if (("" + getChInvId).equalsIgnoreCase(inventory[childCount][1])) {
-										//Loger.log("Inside ***");
+										// Loger.log("Inside ***");
 										newInventory[newInvCounter] = inventory[childCount];
 										newInventory[newInvCounter][14] = "***";
 										newInvCounter++;
 									}
 								} // end of if
 							} // end for
-							// }
+								// }
 
 						}
 					}
@@ -1190,9 +1192,10 @@ public class ItemInfoDao {
 						// num
 						item.setItemType(inventory[counter][12] == null ? "" : inventory[counter][12]); // item
 						// type
-						item.setDateAdded(inventory[counter][13] == null ? "" : inventory[counter][13]);	// id
+						item.setDateAdded(inventory[counter][13] == null ? "" : inventory[counter][13]); // id
 						item.setPutcharacter(inventory[counter][14] == null ? "" : inventory[counter][14]);
-						//Loger.log("ITEM ANME=>  " + item.getItemName() + "  CATEGORY=>  " + item.getIscategory());		//Commented on 13-09-2019
+						// Loger.log("ITEM ANME=> " + item.getItemName() + " CATEGORY=> " +
+						// item.getIscategory()); //Commented on 13-09-2019
 						item.getDateAdded();
 						String name = inventory[counter][3];
 						System.out.println(name);
@@ -1204,7 +1207,7 @@ public class ItemInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
@@ -1212,7 +1215,7 @@ public class ItemInfoDao {
 				if (pstmt != null) {
 					db.close(pstmt);
 				}
-				if(con != null){
+				if (con != null) {
 					db.close(con);
 				}
 			} catch (Exception e) {
@@ -1223,16 +1226,17 @@ public class ItemInfoDao {
 	}
 
 	public ItemDto getItemDetails(String compId, String inventoryID) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ItemDto item = new ItemDto();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try {
-			String sqlString = "select InventoryID,parentID,isCategory,inventoryName,InventoryCode,SalePrice,PurchasePrice,qty,weight,location," +
-					"taxable,serialNum,itemtypeid,date_format(DateAdded,'%m-%d-%Y') as DateAdded, date_format(DateReceived,'%m-%d-%Y') as DateReceived,Memo " +
-					" from bca_iteminventory where CompanyID = '" + compId + "' and InventoryID = '"+inventoryID+"' LIMIT 1";
+			String sqlString = "select InventoryID,parentID,isCategory,inventoryName,InventoryCode,SalePrice,PurchasePrice,qty,weight,location,"
+					+ "taxable,serialNum,itemtypeid,date_format(DateAdded,'%m-%d-%Y') as DateAdded, date_format(DateReceived,'%m-%d-%Y') as DateReceived,Memo "
+					+ " from bca_iteminventory where CompanyID = '" + compId + "' and InventoryID = '" + inventoryID
+					+ "' LIMIT 1";
 
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
@@ -1255,13 +1259,19 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-			
-		}finally {
+
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
-				} catch (Exception e) {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -1269,15 +1279,15 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList getItemNameList(String compId) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> objList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try {
-			String sqlString = "select InventoryID,inventoryName,InventoryCode FROM bca_iteminventory " +
-					" WHERE CompanyID like '" + compId + "' and Active like '1' and ItemtypeId not like '0'";
+			String sqlString = "select InventoryID,inventoryName,InventoryCode FROM bca_iteminventory "
+					+ " WHERE CompanyID like '" + compId + "' and Active like '1' and ItemtypeId not like '0'";
 
 			pstmt = con.prepareStatement(sqlString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			Loger.log(sqlString);
@@ -1291,12 +1301,18 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-			
-		}finally {
+
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1305,18 +1321,19 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList getItemList(String compId) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> objList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try {
-			String sqlString = "SELECT a.InventoryID,a.ParentID,a.isCategory,a.InventoryCode,a.InventoryName,a.SalePrice,a.PurchasePrice,a.DealerPrice," +
-					"a.Qty,a.Weight,a.taxable,a.serialNum,a.itemtypeid,date_format(a.DateAdded,'%m-%d-%Y') as DateAdded, l.Name As Location, " +
-					"date_format(a.DateReceived,'%m-%d-%Y') as DateReceived,a.Memo,a.ExpectedQty,b.InventoryCode AS Category,a.ReorderPoint " +
-					" FROM bca_iteminventory AS a INNER JOIN bca_iteminventory AS b ON a.ParentID=b.InventoryID LEFT JOIN bca_location AS l ON l.LocationID=a.Location " +
-					" WHERE a.CompanyID="+compId+" AND a.ParentID<>0 AND a.Active=1 AND a.ItemtypeId<>0 ORDER BY a.ParentID";
+			String sqlString = "SELECT a.InventoryID,a.ParentID,a.isCategory,a.InventoryCode,a.InventoryName,a.SalePrice,a.PurchasePrice,a.DealerPrice,"
+					+ "a.Qty,a.Weight,a.taxable,a.serialNum,a.itemtypeid,date_format(a.DateAdded,'%m-%d-%Y') as DateAdded, l.Name As Location, "
+					+ "date_format(a.DateReceived,'%m-%d-%Y') as DateReceived,a.Memo,a.ExpectedQty,b.InventoryCode AS Category,a.ReorderPoint "
+					+ " FROM bca_iteminventory AS a INNER JOIN bca_iteminventory AS b ON a.ParentID=b.InventoryID LEFT JOIN bca_location AS l ON l.LocationID=a.Location "
+					+ " WHERE a.CompanyID=" + compId
+					+ " AND a.ParentID<>0 AND a.Active=1 AND a.ItemtypeId<>0 ORDER BY a.ParentID";
 
 			pstmt = con.prepareStatement(sqlString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			Loger.log(sqlString);
@@ -1329,13 +1346,29 @@ public class ItemInfoDao {
 				item.setIscategory(rs.getString("isCategory"));
 				item.setItemCode(rs.getString("InventoryCode"));
 				item.setItemName(rs.getString("InventoryName"));
-				item.setPurchasePrice(rs.getString("PurchasePrice"));
-				item.setSalePrice(rs.getString("SalePrice"));
-				item.setDealerPrice(rs.getString("DealerPrice"));
+				if (rs.getString("PurchasePrice") != null) {
+					item.setPurchasePrice(
+							String.valueOf(rs.getBigDecimal("PurchasePrice").setScale(2, BigDecimal.ROUND_HALF_UP)));
+				} else {
+					item.setPurchasePrice(rs.getString("PurchasePrice"));
+				}
+				if (rs.getString("SalePrice") != null) {
+					item.setSalePrice(
+							String.valueOf(rs.getBigDecimal("SalePrice").setScale(2, BigDecimal.ROUND_HALF_UP)));
+				} else {
+					item.setSalePrice(rs.getString("SalePrice"));
+				}
+
+				if (rs.getString("DealerPrice") != null) {
+					item.setDealerPrice(
+							String.valueOf(rs.getBigDecimal("DealerPrice").setScale(2, BigDecimal.ROUND_HALF_UP)));
+				} else {
+					item.setDealerPrice(rs.getString("DealerPrice"));
+				}
 				item.setQty(rs.getString("Qty"));
 				item.setWeight(rs.getString("Weight"));
 				item.setLocation(rs.getString("Location"));
-				item.setTaxable(rs.getString("taxable")==null?"0":rs.getString("taxable"));
+				item.setTaxable(rs.getString("taxable") == null ? "0" : rs.getString("taxable"));
 				item.setSerialNum(rs.getString("serialNum"));
 				item.setItemType(rs.getString("itemtypeid"));
 				item.setDateAdded(rs.getString("DateAdded"));
@@ -1348,12 +1381,18 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-			
-		}finally {
+
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1362,15 +1401,16 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList SearchItem(String compId, String invId, ItemDto item, HttpServletRequest request) {
-		Connection con = null ;
-		PreparedStatement pstmt =  null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> itemList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
 		try {
-			String sqlString = "select * from bca_iteminventory where CompanyID="+compId+" and Active=1 and ItemtypeId <> 0 ";
-			if(invId != null){
+			String sqlString = "select * from bca_iteminventory where CompanyID=" + compId
+					+ " and Active=1 and ItemtypeId <> 0 ";
+			if (invId != null) {
 				sqlString = sqlString + " and inventoryId = " + invId;
 			}
 			pstmt = con.prepareStatement(sqlString);
@@ -1378,7 +1418,7 @@ public class ItemInfoDao {
 			rs = pstmt.executeQuery();
 			String file = "";
 			while (rs.next()) {
-				if(!itemList.isEmpty()){
+				if (!itemList.isEmpty()) {
 					item = new ItemDto();
 				}
 				item.setInventoryId(rs.getString("InventoryId"));
@@ -1396,14 +1436,14 @@ public class ItemInfoDao {
 				item.setLocation(rs.getString("location"));
 				item.setItemType(rs.getString("itemtypeid"));
 				item.setSerialNum(rs.getString("serialNum"));
-				item.setTaxable(rs.getString("taxable")==null?"0":rs.getString("taxable"));
+				item.setTaxable(rs.getString("taxable") == null ? "0" : rs.getString("taxable"));
 				item.setIscategory(rs.getString("isCategory"));
-				item.setConsignedItem(rs.getInt("isConsignedItem")==1?true:false);
+				item.setConsignedItem(rs.getInt("isConsignedItem") == 1 ? true : false);
 				item.setDiscontinued(rs.getString("isDiscontinued"));
-				item.setItemTaxable(rs.getInt("isItemTaxable")==1?true:false);
-				item.setDropShipping(rs.getInt("isDropShip")==1?true:false);
-				item.setDiscounted(rs.getInt("isDiscounted")==1?true:false);
-				item.setPrimarySupplier(rs.getInt("isPrimarySupplier")==1?true:false);
+				item.setItemTaxable(rs.getInt("isItemTaxable") == 1 ? true : false);
+				item.setDropShipping(rs.getInt("isDropShip") == 1 ? true : false);
+				item.setDiscounted(rs.getInt("isDiscounted") == 1 ? true : false);
+				item.setPrimarySupplier(rs.getInt("isPrimarySupplier") == 1 ? true : false);
 
 				item.setInvTitle(rs.getString("inventoryDescription"));
 				item.setBarcode(rs.getString("InventoryBarCode"));
@@ -1431,12 +1471,18 @@ public class ItemInfoDao {
 			request.setAttribute("FileName", file);
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-			
-		}finally {
+
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1454,7 +1500,7 @@ public class ItemInfoDao {
 		try {
 			String[] dataArray = {};
 			ItemDto itemDto = new ItemDto();
-			String sqlString = "SELECT * FROM bca_AdjustInventory WHERE ID="+invId;
+			String sqlString = "SELECT * FROM bca_AdjustInventory WHERE ID=" + invId;
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sqlString);
 			if (rs.next()) {
@@ -1463,11 +1509,12 @@ public class ItemInfoDao {
 				itemDto.setDateAdded(employee.getDateToShow(rs.getDate("DateAdded")));
 				dataArray = rs.getString("Data").split(",");
 			}
-			for(ItemDto item: ItemsList){
-				for(String invData: dataArray){
-					if(invData.isEmpty()) continue;
+			for (ItemDto item : ItemsList) {
+				for (String invData : dataArray) {
+					if (invData.isEmpty())
+						continue;
 					String invDataArr[] = invData.split(":");
-					if(item.getInventoryId().equals(invDataArr[0])){
+					if (item.getInventoryId().equals(invDataArr[0])) {
 						item.setQty(invDataArr[1]);
 						item.setExpectedQty(invDataArr[2]);
 						break;
@@ -1476,11 +1523,15 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in getAdjustInventoryList() " + ee);
-			
+
 		} finally {
 			try {
-				if (stmt != null) { db.close(stmt); }
-				if(con != null){ db.close(con); }
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1497,7 +1548,7 @@ public class ItemInfoDao {
 		Employee employee = new Employee();
 		ArrayList<ItemDto> ItemList = new ArrayList<>();
 		try {
-			String sqlString = "SELECT * FROM bca_AdjustInventory WHERE CompanyID="+compId;
+			String sqlString = "SELECT * FROM bca_AdjustInventory WHERE CompanyID=" + compId;
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sqlString);
 			while (rs.next()) {
@@ -1509,11 +1560,15 @@ public class ItemInfoDao {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in getAdjustInventoryList() " + ee);
-			
+
 		} finally {
 			try {
-				if (stmt != null) { db.close(stmt); }
-				if(con != null){ db.close(con); }
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1531,12 +1586,14 @@ public class ItemInfoDao {
 			String compId = (String) request.getSession().getAttribute("CID");
 			ArrayList<ItemDto> ItemList = getItemList(compId);
 			StringBuilder data = new StringBuilder();
-			for(ItemDto itemDto: ItemList) {
-				data.append(itemDto.getInventoryId()+":"+itemDto.getQty()+":"+itemDto.getExpectedQty()+",");
+			for (ItemDto itemDto : ItemList) {
+				data.append(itemDto.getInventoryId() + ":" + itemDto.getQty() + ":" + itemDto.getExpectedQty() + ",");
 			}
 			Calendar calendar = Calendar.getInstance();
-			String currDate =  calendar.get(Calendar.MONTH)+1 +"-"+ calendar.get(Calendar.DAY_OF_MONTH) +"-"+calendar.get(Calendar.YEAR);
-			String reportName = "Adjust Inventory report dated on "+currDate; // Adjust Inventory report dated on June 22, 2021
+			String currDate = calendar.get(Calendar.MONTH) + 1 + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-"
+					+ calendar.get(Calendar.YEAR);
+			String reportName = "Adjust Inventory report dated on " + currDate; // Adjust Inventory report dated on June
+																				// 22, 2021
 
 			String sqlString = "insert into bca_AdjustInventory(CompanyID,ReportName,Data,DateAdded) values(?,?,?,?)";
 			pstmt = con.prepareStatement(sqlString);
@@ -1549,11 +1606,15 @@ public class ItemInfoDao {
 				valid = true;
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in AddAdjustInventory() " + ee);
-			
+
 		} finally {
 			try {
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1562,7 +1623,7 @@ public class ItemInfoDao {
 	}
 
 	public boolean UpdateInventory(HttpServletRequest request) {
-		Connection con = null ;
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
 		boolean valid = false;
 		PreparedStatement pstmt = null;
@@ -1572,30 +1633,36 @@ public class ItemInfoDao {
 //			String expectedQty = request.getParameter("expectedQty");
 //			String memo = request.getParameter("memo");
 			JsonParser parse = new JsonParser();
-			JsonArray InventoryArr = (JsonArray)parse.parse(request.getParameter("InventoryArr"));
+			JsonArray InventoryArr = (JsonArray) parse.parse(request.getParameter("InventoryArr"));
 
 			con.setAutoCommit(false);
-			pstmt = con.prepareStatement("UPDATE bca_iteminventory SET Qty=?, ExpectedQty=?, Memo=?, DateReceived=NOW() WHERE InventoryId=?");
-			for(JsonElement sss: InventoryArr) {
+			pstmt = con.prepareStatement(
+					"UPDATE bca_iteminventory SET Qty=?, ExpectedQty=?, Memo=?, DateReceived=NOW() WHERE InventoryId=?");
+			for (JsonElement sss : InventoryArr) {
 				JsonObject invItem = sss.getAsJsonObject();
 				String countedQty = invItem.get("countedQty").getAsString().trim();
 				String expectedQty = invItem.get("expectedQty").getAsString().trim();
-				pstmt.setInt(1, countedQty.isEmpty()?0:Integer.parseInt(countedQty));
-				pstmt.setInt(2, expectedQty.isEmpty()?0:Integer.parseInt(expectedQty));
+				pstmt.setInt(1, countedQty.isEmpty() ? 0 : Integer.parseInt(countedQty));
+				pstmt.setInt(2, expectedQty.isEmpty() ? 0 : Integer.parseInt(expectedQty));
 				pstmt.setString(3, invItem.get("memo").getAsString());
 				pstmt.setInt(4, invItem.get("inventoryId").getAsInt());
 				pstmt.addBatch();
 			}
 			int[] count = pstmt.executeBatch();
-			if (count.length > 0) valid = true;
+			if (count.length > 0)
+				valid = true;
 			con.commit();
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in UpdateInventory() " + ee);
-			
+
 		} finally {
 			try {
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1604,7 +1671,7 @@ public class ItemInfoDao {
 	}
 
 	public boolean updateItem(String compId, ItemDto itemFrm) {
-		Connection con = null ;
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
 		boolean valid = false;
 		PreparedStatement pstmt = null;
@@ -1619,20 +1686,23 @@ public class ItemInfoDao {
 			String qty = itemFrm.getQty();
 			String weight = itemFrm.getWeight();
 			String actualWeight = itemFrm.getActualWeight();
-			String taxable = (itemFrm.getTaxable() != null && itemFrm.getTaxable().equalsIgnoreCase("on"))?"1":"0";
+			String taxable = (itemFrm.getTaxable() != null && itemFrm.getTaxable().equalsIgnoreCase("on")) ? "1" : "0";
 			String serialNum = itemFrm.getSerialNum();
 			String itemDesc = itemFrm.getInvTitle();
 			String barCode = itemFrm.getBarcode();
-			int itemType = itemFrm.getItemType()==null?1:Integer.parseInt(itemFrm.getItemType());
-			String isCategory = (itemFrm.getIscategory() != null && itemFrm.getIscategory().equalsIgnoreCase("on"))?"1":"0";
-			String discontinued = (itemFrm.getDiscontinued() != null && itemFrm.getDiscontinued().equalsIgnoreCase("on"))?"1":"0";
+			int itemType = itemFrm.getItemType() == null ? 1 : Integer.parseInt(itemFrm.getItemType());
+			String isCategory = (itemFrm.getIscategory() != null && itemFrm.getIscategory().equalsIgnoreCase("on"))
+					? "1"
+					: "0";
+			String discontinued = (itemFrm.getDiscontinued() != null
+					&& itemFrm.getDiscontinued().equalsIgnoreCase("on")) ? "1" : "0";
 			String supplierIDs = itemFrm.getSupplierIDs();
-			supplierIDs = supplierIDs.startsWith(",")?supplierIDs.replaceFirst(",", ""):supplierIDs;
+			supplierIDs = supplierIDs.startsWith(",") ? supplierIDs.replaceFirst(",", "") : supplierIDs;
 
 			if (parentID == (-1)) {
 				parentID = 0;
 			}
-			if(inventoryName==null || inventoryName.isEmpty()){
+			if (inventoryName == null || inventoryName.isEmpty()) {
 				inventoryName = itemFrm.getItemTitle();
 			}
 			if (PurchasePrice == null || PurchasePrice.trim().isEmpty()) {
@@ -1651,13 +1721,13 @@ public class ItemInfoDao {
 			if (dealerPrice == null || dealerPrice.trim().isEmpty()) {
 				dealerPrice = "0";
 			}
-			if (qty==null || qty.trim().isEmpty()) {
+			if (qty == null || qty.trim().isEmpty()) {
 				qty = "0";
 			}
-			if (weight==null || weight.trim().isEmpty()) {
+			if (weight == null || weight.trim().isEmpty()) {
 				weight = "0";
 			}
-			if (actualWeight==null || actualWeight.trim().isEmpty()) {
+			if (actualWeight == null || actualWeight.trim().isEmpty()) {
 				actualWeight = "0";
 			}
 
@@ -1690,11 +1760,11 @@ public class ItemInfoDao {
 			pstmt.setDate(18, pinfo.getdate("now()"));
 			pstmt.setString(19, discontinued);
 			pstmt.setInt(20, itemFrm.getItemSubCategory());
-			pstmt.setInt(21, itemFrm.isConsignedItem()==true?1:0);
-			pstmt.setInt(22, itemFrm.isItemTaxable()==true?1:0);
-			pstmt.setInt(23, itemFrm.isDropShipping()==true?1:0);
-			pstmt.setInt(24, itemFrm.isDiscounted()==true?1:0);
-			pstmt.setInt(25, itemFrm.isPrimarySupplier()==true?1:0);
+			pstmt.setInt(21, itemFrm.isConsignedItem() == true ? 1 : 0);
+			pstmt.setInt(22, itemFrm.isItemTaxable() == true ? 1 : 0);
+			pstmt.setInt(23, itemFrm.isDropShipping() == true ? 1 : 0);
+			pstmt.setInt(24, itemFrm.isDiscounted() == true ? 1 : 0);
+			pstmt.setInt(25, itemFrm.isPrimarySupplier() == true ? 1 : 0);
 			pstmt.setString(26, itemFrm.getProductSKU());
 			pstmt.setString(27, itemFrm.getSupplierSKU());
 			pstmt.setInt(28, itemFrm.getOrderUnit());
@@ -1715,12 +1785,16 @@ public class ItemInfoDao {
 			if (count > 0)
 				valid = true;
 		} catch (SQLException ee) {
-			
+
 			Loger.log(2, "Error in updateItem() " + ee);
 		} finally {
 			try {
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1745,20 +1819,23 @@ public class ItemInfoDao {
 			String qty = itemFrm.getQty();
 			String weight = itemFrm.getWeight();
 			String actualWeight = itemFrm.getActualWeight();
-			String taxable = (itemFrm.getTaxable() != null && itemFrm.getTaxable().equalsIgnoreCase("on"))?"1":"0";
+			String taxable = (itemFrm.getTaxable() != null && itemFrm.getTaxable().equalsIgnoreCase("on")) ? "1" : "0";
 			String serialNum = itemFrm.getSerialNum();
 			String itemDesc = itemFrm.getInvTitle();
 			String barCode = itemFrm.getBarcode();
-			int itemType = itemFrm.getItemType()==null?1:Integer.parseInt(itemFrm.getItemType());
-			String isCategory = (itemFrm.getIscategory() != null && itemFrm.getIscategory().equalsIgnoreCase("on"))?"1":"0";
-			String discontinued = (itemFrm.getDiscontinued() != null && itemFrm.getDiscontinued().equalsIgnoreCase("on"))?"1":"0";
-			String supplierIDs = itemFrm.getSupplierIDs()!=null?itemFrm.getSupplierIDs():"";
-			supplierIDs = supplierIDs.startsWith(",")?supplierIDs.replaceFirst(",", ""):supplierIDs;
+			int itemType = itemFrm.getItemType() == null ? 1 : Integer.parseInt(itemFrm.getItemType());
+			String isCategory = (itemFrm.getIscategory() != null && itemFrm.getIscategory().equalsIgnoreCase("on"))
+					? "1"
+					: "0";
+			String discontinued = (itemFrm.getDiscontinued() != null
+					&& itemFrm.getDiscontinued().equalsIgnoreCase("on")) ? "1" : "0";
+			String supplierIDs = itemFrm.getSupplierIDs() != null ? itemFrm.getSupplierIDs() : "";
+			supplierIDs = supplierIDs.startsWith(",") ? supplierIDs.replaceFirst(",", "") : supplierIDs;
 
 			if (parentID == (-1)) {
 				parentID = 0;
 			}
-			if(inventoryName==null || inventoryName.isEmpty()){
+			if (inventoryName == null || inventoryName.isEmpty()) {
 				inventoryName = itemFrm.getItemTitle();
 			}
 			if (PurchasePrice == null || PurchasePrice.trim().isEmpty()) {
@@ -1777,28 +1854,29 @@ public class ItemInfoDao {
 			if (dealerPrice == null || dealerPrice.trim().isEmpty()) {
 				dealerPrice = "0";
 			}
-			if (qty==null || qty.trim().isEmpty()) {
+			if (qty == null || qty.trim().isEmpty()) {
 				qty = "0";
 			}
-			if (weight==null || weight.trim().isEmpty()) {
+			if (weight == null || weight.trim().isEmpty()) {
 				weight = "0";
 			}
-			if (actualWeight==null || actualWeight.trim().isEmpty()) {
+			if (actualWeight == null || actualWeight.trim().isEmpty()) {
 				actualWeight = "0";
 			}
-			pstmt2 = con.prepareStatement("SELECT InventoryID FROM bca_iteminventory WHERE Active='1' AND InventoryCode=?");
+			pstmt2 = con
+					.prepareStatement("SELECT InventoryID FROM bca_iteminventory WHERE Active='1' AND InventoryCode=?");
 			pstmt2.setString(1, itemFrm.getCategoryName());
 			rs = pstmt2.executeQuery();
-			if(rs.next()){
+			if (rs.next()) {
 				parentID = rs.getInt(1);
 			}
 
-			String sqlString = "insert into bca_iteminventory(InventoryId,ParentID,CompanyID,inventoryName,InventoryCode," +
-					"SalePrice,PurchasePrice,DealerPrice,qty,weight,Location,taxable ,serialNum ,isCategory,inventoryDescription," +
-					"InventoryBarCode,ItemtypeId,Active,dateAdded,PictureURL,isDiscontinued,itemSubCategory,isConsignedItem,isItemTaxable," +
-					"isDropShip,isDiscounted,isPrimarySupplier,productSKU,supplierSKU,OrderUnit,minOrderUnit,ReorderPoint,weightUnit," +
-					"textAreaContent,supplierIDs,actualWeight,accountId,measurementId,subMeasurementId ) " +
-					"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sqlString = "insert into bca_iteminventory(InventoryId,ParentID,CompanyID,inventoryName,InventoryCode,"
+					+ "SalePrice,PurchasePrice,DealerPrice,qty,weight,Location,taxable ,serialNum ,isCategory,inventoryDescription,"
+					+ "InventoryBarCode,ItemtypeId,Active,dateAdded,PictureURL,isDiscontinued,itemSubCategory,isConsignedItem,isItemTaxable,"
+					+ "isDropShip,isDiscounted,isPrimarySupplier,productSKU,supplierSKU,OrderUnit,minOrderUnit,ReorderPoint,weightUnit,"
+					+ "textAreaContent,supplierIDs,actualWeight,accountId,measurementId,subMeasurementId ) "
+					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 			Loger.log(sqlString);
 			pstmt = con.prepareStatement(sqlString);
@@ -1824,11 +1902,11 @@ public class ItemInfoDao {
 			pstmt.setString(20, photoUrl);
 			pstmt.setString(21, discontinued);
 			pstmt.setInt(22, itemFrm.getItemSubCategory());
-			pstmt.setInt(23, itemFrm.isConsignedItem()==true?1:0);
-			pstmt.setInt(24, itemFrm.isItemTaxable()==true?1:0);
-			pstmt.setInt(25, itemFrm.isDropShipping()==true?1:0);
-			pstmt.setInt(26, itemFrm.isDiscounted()==true?1:0);
-			pstmt.setInt(27, itemFrm.isPrimarySupplier()==true?1:0);
+			pstmt.setInt(23, itemFrm.isConsignedItem() == true ? 1 : 0);
+			pstmt.setInt(24, itemFrm.isItemTaxable() == true ? 1 : 0);
+			pstmt.setInt(25, itemFrm.isDropShipping() == true ? 1 : 0);
+			pstmt.setInt(26, itemFrm.isDiscounted() == true ? 1 : 0);
+			pstmt.setInt(27, itemFrm.isPrimarySupplier() == true ? 1 : 0);
 			pstmt.setString(28, itemFrm.getProductSKU());
 			pstmt.setString(29, itemFrm.getSupplierSKU());
 			pstmt.setInt(30, itemFrm.getOrderUnit());
@@ -1849,10 +1927,14 @@ public class ItemInfoDao {
 		} catch (SQLException ex) {
 			Loger.log(2, "Error in updateItem() " + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1904,10 +1986,14 @@ public class ItemInfoDao {
 		} catch (SQLException ex) {
 			Loger.log(2, "Error in insertItemAsCategory() " + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1922,20 +2008,26 @@ public class ItemInfoDao {
 		Connection con = db.getConnection();
 		boolean isChildExists = false;
 		try {
-			pstmt = con.prepareStatement("select inventoryID from bca_iteminventory where Active='1' AND parentID=" + invId);
+			pstmt = con.prepareStatement(
+					"select inventoryID from bca_iteminventory where Active='1' AND parentID=" + invId);
 			rs = pstmt.executeQuery();
-			if(rs.next()){
+			if (rs.next()) {
 				isChildExists = true;
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in deleteItem() " + ee);
-			
-		}
-		finally {
+
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1952,7 +2044,7 @@ public class ItemInfoDao {
 		boolean isDeleted = false;
 		try {
 			String sqlString = "update bca_iteminventory set Active='0' where CompanyID=" + compId
-					+ " and Active='1' and ItemtypeId not like '0' and inventoryId=" +invId;
+					+ " and Active='1' and ItemtypeId not like '0' and inventoryId=" + invId;
 			pstmtUpdate = con.prepareStatement(sqlString);
 			Loger.log(sqlString);
 			int count = pstmtUpdate.executeUpdate();
@@ -1961,13 +2053,18 @@ public class ItemInfoDao {
 			pstmtUpdate.close();
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in deleteItem() " + ee);
-			
-		}
-		finally {
+
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmtUpdate != null) { db.close(pstmtUpdate); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmtUpdate != null) {
+					db.close(pstmtUpdate);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -1977,7 +2074,7 @@ public class ItemInfoDao {
 
 	public boolean updatePicName(String picPath) {
 
-		Connection con = null ;
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
 		boolean valid = false;
 		Statement stmt = null;
@@ -1987,7 +2084,8 @@ public class ItemInfoDao {
 		try {
 			int InventoryId = getInventoryId();
 			stmt = con.createStatement();
-			String sqlString = "update  bca_iteminventory  set PictureURL='" + picPath + "'  where  inventoryId like '" + InventoryId + "' ";
+			String sqlString = "update  bca_iteminventory  set PictureURL='" + picPath + "'  where  inventoryId like '"
+					+ InventoryId + "' ";
 			Loger.log(sqlString);
 			int count = stmt.executeUpdate(sqlString);
 			if (count > 0)
@@ -1995,15 +2093,15 @@ public class ItemInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in deleteItem() " + ee);
-		}finally {
+		} finally {
 			try {
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -2012,7 +2110,7 @@ public class ItemInfoDao {
 	}
 
 	public int getInventoryId() {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		int inventoryID = 0;
@@ -2030,18 +2128,18 @@ public class ItemInfoDao {
 
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -2050,7 +2148,7 @@ public class ItemInfoDao {
 
 	public boolean adjustInventory(String compId, String[][] inventory, int invSize) {
 
-		Connection con = null ;
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null;
 
@@ -2082,14 +2180,14 @@ public class ItemInfoDao {
 			Loger.log("Error in adjustInventory() " + ee);
 		} finally {
 			try {
-				
+
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -2098,7 +2196,7 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList fillCombo(String compId) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt_th = null;
@@ -2143,39 +2241,38 @@ public class ItemInfoDao {
 				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
+				}
 			}
 
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (rs_th != null) {
 					db.close(rs_th);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
+				}
 				if (pstmt_th != null) {
 					db.close(pstmt_th);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -2183,8 +2280,8 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList getProfitLossReportByItem(String datesCombo, String fromDate, String toDate, String sortBy,
-											   String cId, HttpServletRequest request, ItemDto form) {
-		Connection con = null ;
+			String cId, HttpServletRequest request, ItemDto form) {
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt1 = null, stmt2 = null, stmt3 = null, stmt4 = null;
 		ResultSet rs1 = null, rs2 = null, rs3 = null, rs4 = null;
@@ -2262,9 +2359,9 @@ public class ItemInfoDao {
 							invoiceQty = invoiceQty + total;
 						}
 					}
-					
+
 					rs3.close();
-					
+
 				}
 				double TotalPurchasePrice = rs1.getDouble("PurchasePrice") * pOQty;
 				double TotalSalesPrice = rs1.getDouble("SalePrice") * invoiceQty;
@@ -2280,36 +2377,36 @@ public class ItemInfoDao {
 		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (rs2 != null) {
 					db.close(rs2);
-					}
+				}
 				if (rs3 != null) {
 					db.close(rs3);
-					}
+				}
 				if (rs4 != null) {
 					db.close(rs4);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
+				}
 				if (stmt2 != null) {
 					db.close(stmt2);
-					}
+				}
 				if (stmt3 != null) {
 					db.close(stmt3);
-					}
+				}
 				if (stmt4 != null) {
 					db.close(stmt4);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -2377,13 +2474,13 @@ public class ItemInfoDao {
 
 	public boolean insertdataintodatabase(ArrayList al, HttpServletRequest request) {
 		SQLExecutor db = new SQLExecutor();
-		Connection con=null;
-    	con=db.getConnection();
+		Connection con = null;
+		con = db.getConnection();
 		SimpleDateFormat dtformate = null;
 		String sql_5 = null;
 		ResultSet rs = null;
 		Statement stmt = null;
-		boolean b = false; 
+		boolean b = false;
 		String name = al.get(0).toString();
 		int size = al.size();
 		int progress = 0;
@@ -2397,7 +2494,7 @@ public class ItemInfoDao {
 				int taxable = inventory.getTaxable();
 				if (al.get(0).toString() != null) {
 					if (!(al.get(0).equals("0"))) {
-						/*ResultSet rs = null;*/
+						/* ResultSet rs = null; */
 						stmt = con.createStatement();
 						String sql = "SELECT InventoryId FROM bca_iteminventory WHERE InventoryCode = " + "'"
 								+ al.get(0).toString() + "'" + " " + "" + "AND CompanyID = " + ConstValue.companyId;
@@ -2422,237 +2519,225 @@ public class ItemInfoDao {
 				} else {
 					parentID = getInventoryIDofUnclassifiedCatagery();
 				}
-				int a=Checkdubliction(al);
-				 if(a==1)
-                 {
-					 if(al.get(1).toString()!=null || al.get(1).toString()!="0")
-	                 {
-						 inventory.setInventoryCode(al.get(1).toString());
-	                 }
-					 if (al.get(8).toString() != null || al.get(8).toString() !="0") {
-                         inventory.setSKU(al.get(8).toString());
-                     }
-					 if (al.get(9).toString() != null || al.get(9).toString() !="0") {
-                         inventory.setInventoryBarCode(al.get(9).toString());
-                     }
-					 if(al.get(5).toString()!="0" || al.get(5).toString()!=null){
-		                 double value=Double.parseDouble(al.get(5).toString());
-		                 inventory.setAvailableQty((int) value);
-		             }
-					 if(al.get(4).toString()!="0" || al.get(4).toString()!=null){
-	                     double value=Double.parseDouble(al.get(4).toString());
-	                    inventory.setQty((int) value);
-					 }
-					 if(al.get(14).toString()!=null || al.get(14).toString()!="0"){
-		                    inventory.setTaxCode(al.get(14).toString());
-		               }if(al.get(13).toString()!=null || al.get(13).toString()!="0"){
-		                    inventory.setDealerPrice(Double.parseDouble(al.get(13).toString()));
-		               }
-		               if(al.get(12).toString()!=null || al.get(12).toString()!="0"){
-		                   inventory.setSalePrice(Double.parseDouble(al.get(12).toString()));
-		               }
-		               if(al.get(3).toString()!=null || al.get(3).toString()!="0"){
-		                   inventory.setInventoryName(al.get(3).toString());
-		                }
-		                   
-		                if(al.get(6).toString()!=null || al.get(6).toString()!="0"){
-		                       double value=Double.parseDouble(al.get(6).toString());
-		                       inventory.setReorderPoint((long) value);
-		                 }
-		                 if(al.get(7).toString()!=null || al.get(7).toString()!="0"){
-		                	 inventory.setWeight(Double.parseDouble(al.get(7).toString()));
-		                 }
-		                 dtformate = new SimpleDateFormat("yyyy-MM-dd");
-		                 inventory.setItemTypeID(1);
-		                 String sql = " INSERT INTO  bca_iteminventory (CompanyID,ParentID,"
-		                         + " InventoryCode,SerialNum,InventoryName,InventoryDescription,"
-		                         + " Qty,Weight,PurchasePrice,SalePrice,DealerPrice,"
-		                         + " Taxable,isCategory,Location,PictureURL,Active,DateAdded,InventoryBarCode,SKU,ItemTypeID,Message,"
-		                         + " SpecialHanding,ReorderPoint,isDropShip,isDiscontinued,OrderUnit,"
-		                         + " StoreTypeID,SMCInventoryID,EBayInventoryID,ServiceUnit,CategoryID,SalesTaxRate,taxCode,"
-		                         + " AvailableQty,AssemblyCost,isConsignedItem) VALUES ( " + ConstValue.companyId + ","
-		                         + parentID + "," + "'"
-		                         + inventory.getInventoryCode() + "'" + "," + "'"
-		                         + inventory.getSerialNum().replaceAll("'", "''") + "'" + "," + "'"
-		                         + inventory.getInventoryName() + "'" + "," + "'"
-		                         + inventory.getDescription().replaceAll("'", "''") + "'" + ","
-		                         + inventory.getQty() + ","
-		                         + inventory.getWeight() + ","
-		                         + inventory.getPurchasePrice() + ","
-		                         + inventory.getSalePrice() + ","
-		                         + inventory.getDealerPrice() + "," + taxable + ","
-		                         + (inventory.isCategory() == true ? 1 : 0) + "," + "'"
-		                         + inventory.getLocation().replaceAll("'", "''") + "'" + "," + "'"
-		                         + inventory.getPictureURL() + "'" + "," + " 1 " + "," + "'"
-		                         + (dtformate.format(new Date())) + "'" + "," + "'"
-		                         + inventory.getInventoryBarCode().replaceAll("'", "''") + "'" + "," + "'"
-		                         + inventory.getSKU() + "'" + ","
-		                         + inventory.getItemTypeID() + "," + //inventory.getMessage() + "','" +
-		                         "'" + inventory.getMessage().replaceAll("'", "''") + "'" + "," + "'"
-		                         + inventory.getSpecialHanding() + "',"
-		                         + inventory.getReorderPoint() + ","
-		                         + (inventory.isDropShip() == true ? 1 : 0) + ","
-		                         + (inventory.isDiscontinued() == true ? 1 : 0) + ",'" 
-		                         + 0 + "',"        //changed by pritesh(17-01-2019)
-		                         + inventory.getStoreTypeID() + ",'"
-		                         + inventory.getSMCInventoryID() + "', '"
-		                         + inventory.getEBayInventoryID() + "'" + ",'"
-		                         + inventory.getServiceUnit() + "',"
-		                         + inventory.getCategoryID() + "," + (taxable == 1 ? inventory.getTaxRate() : -1) + ",'"
-		                         + inventory.getTaxCode() + "'" + ","
-		                         + inventory.getAvailableQty() + ","
-		                         + inventory.getAssemblyCost() + ","
-		                         + (inventory.isConsignedItem() == true ? 1 : 0) + " )";
-		                 
-		                 stmt =con.createStatement();
-		                 int  i = stmt.executeUpdate(sql);
-		                 if(i>0)
-		                 {
-		                	 b = true;
-		                 }
-		                 rs = stmt.executeQuery("Select Max(InventoryID) AS LastID from bca_iteminventory ");
-		                 if (rs.next()) {
-		                     inventoryID = rs.getInt("LastID");
-		                 }
-		                 if (inventory.getItemTypeID() == 1) {
-		                     inventory.setInventoryID(inventoryID);
-		                     /*tblUnitofMeasureLoader.getLoader(false).insertInventoryMeasure(inventory.getUnit(), inventoryID);*/
-		                 }
-		                 sql_5 = "INSERT INTO smd_iteminventoryinfo (InventoryId,"
-		                         + "MenuID,Manufacturer,"
-		                         + "SupplierName,ShortDescription,`Show`,Flag1,Flag2,Flag3,"
-		                         + "Flag4,isHtmDescription,IsGiftCertificate,IsExpire,ExpireDate,"
-		                         + "ExpireDays,Item_rank,Item_Review," + "ItemClassID,DiscountGroupID,"
-		                         + "Keywords,"
-		                         + "LongDescription,MetatagTitle,MetatagDesc,MetatagKeyword,"
-		                         + "ReorderLevel," + "MaxQty,ItemUploadable,StorePrice,"
-		                         + "weightUnit,heightUnit,amazon_FeedSubmissionId) " + "VALUES(" + inventoryID + "," +//InventoryId
-		                         "'" + String.valueOf(parentID) + "'," //MenuID
-		                         + "''" + "," + //Manufacturer
-		                         "'" + String.valueOf(0) + "'" + "," + //SupplierName
-		                         "'" + inventory.getInventoryCode().replaceAll("'", "''") + "'" + "," + //ShortDescription
-		                         "'M'" + "," + //Show
-		                         "'Y'" + "," + //Flag1
-		                         "'Y'" + "," + //Flag2
-		                         "'Y'" + "," + //Flag3
-		                         "'Y'" + "," + //Flag4
-		                         "'N'" + "," + //isHtmDescription
-		                         "'N'" + "," + //IsGiftCertificate
-		                         "'Y'" + "," + //IsExpire
-		                         "'" + JProjectUtil.getDateFormaterCommon().format(Calendar.getInstance().getTime()) + "'" + "," + //ExpireDate
-		                         "0" + "," + //ExpireDays
-		                         "4" + "," + //Item_rank
-		                         "''" + "," +//Item_Review
-		                         "0" + "," +//ItemClassID
-		                         "0" + "," +//DiscountGroupID
-		                         "'" + inventory.getItemKeyword().replaceAll("'", "''") + "'" + "," + //Keywords
-		                         "'" + inventory.getDescription().replaceAll("'", "''") + "'" + "," + //LongDescription
-		                         "'" + inventory.getInventoryName().replaceAll("'", "''") + "'" + "," + //MetatagTitle
-		                         "'" + inventory.getInventoryName().replaceAll("'", "''") + "'" + "," + //MetatagDesc
-		                         "'" + inventory.getInventoryName().replaceAll("'", "''") + "'" + "," + //MetatagKeyword
-		                         inventory.getReorderPoint() + "," +//ReorderLevel
-		                         +inventory.getQty() + "," + //MaxQty
-		                         "''" + "," +//ItemUploadable
-		                         "" + inventory.getSalePrice() + "" + "," + //StorePrice
-		                         "'" + (inventory.getUnit() != null ? inventory.getUnit().getWeightID() : "0") + "'" + "," + //weightUnit
-		                         "'" + (inventory.getUnit() != null ? inventory.getUnit().getSizeH() : "0") + "'" + "," + //heightUnit
-		                         "'" + inventory.getItemAsin().replaceAll("'", "''") + "'" + ")";
-		                 stmt.close();
+				int a = Checkdubliction(al);
+				if (a == 1) {
+					if (al.get(1).toString() != null || al.get(1).toString() != "0") {
+						inventory.setInventoryCode(al.get(1).toString());
+					}
+					if (al.get(8).toString() != null || al.get(8).toString() != "0") {
+						inventory.setSKU(al.get(8).toString());
+					}
+					if (al.get(9).toString() != null || al.get(9).toString() != "0") {
+						inventory.setInventoryBarCode(al.get(9).toString());
+					}
+					if (al.get(5).toString() != "0" || al.get(5).toString() != null) {
+						double value = Double.parseDouble(al.get(5).toString());
+						inventory.setAvailableQty((int) value);
+					}
+					if (al.get(4).toString() != "0" || al.get(4).toString() != null) {
+						double value = Double.parseDouble(al.get(4).toString());
+						inventory.setQty((int) value);
+					}
+					if (al.get(14).toString() != null || al.get(14).toString() != "0") {
+						inventory.setTaxCode(al.get(14).toString());
+					}
+					if (al.get(13).toString() != null || al.get(13).toString() != "0") {
+						inventory.setDealerPrice(Double.parseDouble(al.get(13).toString()));
+					}
+					if (al.get(12).toString() != null || al.get(12).toString() != "0") {
+						inventory.setSalePrice(Double.parseDouble(al.get(12).toString()));
+					}
+					if (al.get(3).toString() != null || al.get(3).toString() != "0") {
+						inventory.setInventoryName(al.get(3).toString());
+					}
 
-		                 stmt = con.createStatement();
-		                 stmt.executeUpdate(sql_5);
+					if (al.get(6).toString() != null || al.get(6).toString() != "0") {
+						double value = Double.parseDouble(al.get(6).toString());
+						inventory.setReorderPoint((long) value);
+					}
+					if (al.get(7).toString() != null || al.get(7).toString() != "0") {
+						inventory.setWeight(Double.parseDouble(al.get(7).toString()));
+					}
+					dtformate = new SimpleDateFormat("yyyy-MM-dd");
+					inventory.setItemTypeID(1);
+					String sql = " INSERT INTO  bca_iteminventory (CompanyID,ParentID,"
+							+ " InventoryCode,SerialNum,InventoryName,InventoryDescription,"
+							+ " Qty,Weight,PurchasePrice,SalePrice,DealerPrice,"
+							+ " Taxable,isCategory,Location,PictureURL,Active,DateAdded,InventoryBarCode,SKU,ItemTypeID,Message,"
+							+ " SpecialHanding,ReorderPoint,isDropShip,isDiscontinued,OrderUnit,"
+							+ " StoreTypeID,SMCInventoryID,EBayInventoryID,ServiceUnit,CategoryID,SalesTaxRate,taxCode,"
+							+ " AvailableQty,AssemblyCost,isConsignedItem) VALUES ( " + ConstValue.companyId + ","
+							+ parentID + "," + "'" + inventory.getInventoryCode() + "'" + "," + "'"
+							+ inventory.getSerialNum().replaceAll("'", "''") + "'" + "," + "'"
+							+ inventory.getInventoryName() + "'" + "," + "'"
+							+ inventory.getDescription().replaceAll("'", "''") + "'" + "," + inventory.getQty() + ","
+							+ inventory.getWeight() + "," + inventory.getPurchasePrice() + ","
+							+ inventory.getSalePrice() + "," + inventory.getDealerPrice() + "," + taxable + ","
+							+ (inventory.isCategory() == true ? 1 : 0) + "," + "'"
+							+ inventory.getLocation().replaceAll("'", "''") + "'" + "," + "'"
+							+ inventory.getPictureURL() + "'" + "," + " 1 " + "," + "'" + (dtformate.format(new Date()))
+							+ "'" + "," + "'" + inventory.getInventoryBarCode().replaceAll("'", "''") + "'" + "," + "'"
+							+ inventory.getSKU() + "'" + "," + inventory.getItemTypeID() + "," + // inventory.getMessage()
+																									// + "','" +
+							"'" + inventory.getMessage().replaceAll("'", "''") + "'" + "," + "'"
+							+ inventory.getSpecialHanding() + "'," + inventory.getReorderPoint() + ","
+							+ (inventory.isDropShip() == true ? 1 : 0) + ","
+							+ (inventory.isDiscontinued() == true ? 1 : 0) + ",'" + 0 + "'," // changed by
+																								// pritesh(17-01-2019)
+							+ inventory.getStoreTypeID() + ",'" + inventory.getSMCInventoryID() + "', '"
+							+ inventory.getEBayInventoryID() + "'" + ",'" + inventory.getServiceUnit() + "',"
+							+ inventory.getCategoryID() + "," + (taxable == 1 ? inventory.getTaxRate() : -1) + ",'"
+							+ inventory.getTaxCode() + "'" + "," + inventory.getAvailableQty() + ","
+							+ inventory.getAssemblyCost() + "," + (inventory.isConsignedItem() == true ? 1 : 0) + " )";
 
-		                 String sql_6 = "INSERT INTO smd_itemgroupprice (CompanyID,InventoryID,"
-		                         + "CustomerGroupID,DefaultPrice,Price) " + "values (" + ConstValue.companyId + "," + //CompanyID
-		                         "'" + String.valueOf(inventoryID) + "'," + //InventoryID
-		                         0 + "," +//CustomerGroupID
-		                         "'N'" + "," + //DefaultPrice
-		                         "" + inventory.getSalePrice() + ")"; //Price
-		                 stmt.close();
-		                 stmt = con.createStatement();
-		                 stmt.executeUpdate(sql_6);
-		                 
-		                 String sql_7 = "SELECT InventoryId FROM  bca_iteminventory WHERE InventoryId = " + parentID + " AND isCategory = 0 AND CompanyID = " + ConstValue.companyId;
-		                 stmt.close();
-		                 stmt = con.createStatement();
-		                 rs = stmt.executeQuery(sql_7);
-		                 while (rs.next()) {
-		                     String sql_8 = "INSERT INTO  smd_subproduct(MasterProductID,"
-		                             + "SubProductID) " + "values (" + parentID + "," + inventoryID + ")";
-		                     try {
-		                         stmt = con.createStatement();
-		                         stmt.executeUpdate(sql_8);
-		                         stmt.close();
-		                     } catch (Exception ex) {
-		                         ex.printStackTrace();
-		                     }
-		                 }
-		                 saveItemImage(inventory);
-                 }
+					stmt = con.createStatement();
+					int i = stmt.executeUpdate(sql);
+					if (i > 0) {
+						b = true;
+					}
+					rs = stmt.executeQuery("Select Max(InventoryID) AS LastID from bca_iteminventory ");
+					if (rs.next()) {
+						inventoryID = rs.getInt("LastID");
+					}
+					if (inventory.getItemTypeID() == 1) {
+						inventory.setInventoryID(inventoryID);
+						/*
+						 * tblUnitofMeasureLoader.getLoader(false).insertInventoryMeasure(inventory.
+						 * getUnit(), inventoryID);
+						 */
+					}
+					sql_5 = "INSERT INTO smd_iteminventoryinfo (InventoryId," + "MenuID,Manufacturer,"
+							+ "SupplierName,ShortDescription,`Show`,Flag1,Flag2,Flag3,"
+							+ "Flag4,isHtmDescription,IsGiftCertificate,IsExpire,ExpireDate,"
+							+ "ExpireDays,Item_rank,Item_Review," + "ItemClassID,DiscountGroupID," + "Keywords,"
+							+ "LongDescription,MetatagTitle,MetatagDesc,MetatagKeyword," + "ReorderLevel,"
+							+ "MaxQty,ItemUploadable,StorePrice," + "weightUnit,heightUnit,amazon_FeedSubmissionId) "
+							+ "VALUES(" + inventoryID + "," + // InventoryId
+							"'" + String.valueOf(parentID) + "'," // MenuID
+							+ "''" + "," + // Manufacturer
+							"'" + String.valueOf(0) + "'" + "," + // SupplierName
+							"'" + inventory.getInventoryCode().replaceAll("'", "''") + "'" + "," + // ShortDescription
+							"'M'" + "," + // Show
+							"'Y'" + "," + // Flag1
+							"'Y'" + "," + // Flag2
+							"'Y'" + "," + // Flag3
+							"'Y'" + "," + // Flag4
+							"'N'" + "," + // isHtmDescription
+							"'N'" + "," + // IsGiftCertificate
+							"'Y'" + "," + // IsExpire
+							"'" + JProjectUtil.getDateFormaterCommon().format(Calendar.getInstance().getTime()) + "'"
+							+ "," + // ExpireDate
+							"0" + "," + // ExpireDays
+							"4" + "," + // Item_rank
+							"''" + "," + // Item_Review
+							"0" + "," + // ItemClassID
+							"0" + "," + // DiscountGroupID
+							"'" + inventory.getItemKeyword().replaceAll("'", "''") + "'" + "," + // Keywords
+							"'" + inventory.getDescription().replaceAll("'", "''") + "'" + "," + // LongDescription
+							"'" + inventory.getInventoryName().replaceAll("'", "''") + "'" + "," + // MetatagTitle
+							"'" + inventory.getInventoryName().replaceAll("'", "''") + "'" + "," + // MetatagDesc
+							"'" + inventory.getInventoryName().replaceAll("'", "''") + "'" + "," + // MetatagKeyword
+							inventory.getReorderPoint() + "," + // ReorderLevel
+							+inventory.getQty() + "," + // MaxQty
+							"''" + "," + // ItemUploadable
+							"" + inventory.getSalePrice() + "" + "," + // StorePrice
+							"'" + (inventory.getUnit() != null ? inventory.getUnit().getWeightID() : "0") + "'" + "," + // weightUnit
+							"'" + (inventory.getUnit() != null ? inventory.getUnit().getSizeH() : "0") + "'" + "," + // heightUnit
+							"'" + inventory.getItemAsin().replaceAll("'", "''") + "'" + ")";
+					stmt.close();
+
+					stmt = con.createStatement();
+					stmt.executeUpdate(sql_5);
+
+					String sql_6 = "INSERT INTO smd_itemgroupprice (CompanyID,InventoryID,"
+							+ "CustomerGroupID,DefaultPrice,Price) " + "values (" + ConstValue.companyId + "," + // CompanyID
+							"'" + String.valueOf(inventoryID) + "'," + // InventoryID
+							0 + "," + // CustomerGroupID
+							"'N'" + "," + // DefaultPrice
+							"" + inventory.getSalePrice() + ")"; // Price
+					stmt.close();
+					stmt = con.createStatement();
+					stmt.executeUpdate(sql_6);
+
+					String sql_7 = "SELECT InventoryId FROM  bca_iteminventory WHERE InventoryId = " + parentID
+							+ " AND isCategory = 0 AND CompanyID = " + ConstValue.companyId;
+					stmt.close();
+					stmt = con.createStatement();
+					rs = stmt.executeQuery(sql_7);
+					while (rs.next()) {
+						String sql_8 = "INSERT INTO  smd_subproduct(MasterProductID," + "SubProductID) " + "values ("
+								+ parentID + "," + inventoryID + ")";
+						try {
+							stmt = con.createStatement();
+							stmt.executeUpdate(sql_8);
+							stmt.close();
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+					}
+					saveItemImage(inventory);
+				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return b;
 	}
 
-	public void saveItemImage(TblItemInventory inventory)
-	{
-		SQLExecutor db= new SQLExecutor();
-		Connection con=null;
-    	con=db.getConnection();
+	public void saveItemImage(TblItemInventory inventory) {
+		SQLExecutor db = new SQLExecutor();
+		Connection con = null;
+		con = db.getConnection();
 		Statement stmt = null;
-		  try{
-			  String sql = "INSERT INTO smd_itemimage (InventoryId,"
-		                + "CompanyId,Image,TitleImage) "
-		                + "VALUES ('" + String.valueOf(inventory.getInventoryID()) + "',"
-		                + ConstValue.companyId+ ",'"
-		                + inventory.getThumbnailURL() + "','Y')";
+		try {
+			String sql = "INSERT INTO smd_itemimage (InventoryId," + "CompanyId,Image,TitleImage) " + "VALUES ('"
+					+ String.valueOf(inventory.getInventoryID()) + "'," + ConstValue.companyId + ",'"
+					+ inventory.getThumbnailURL() + "','Y')";
 
-		        String sql1 = "INSERT INTO smd_itemimage (InventoryId,"
-		                + "CompanyId,Image,TitleImage) "
-		                + "VALUES ('" + String.valueOf(inventory.getInventoryID()) + "',"
-		                + ConstValue.companyId + ",'" + inventory.getImageURL() + "','N')";
-			  stmt = con.createStatement();
-			  stmt.executeUpdate(sql);
-	          stmt.executeUpdate(sql1);
-              stmt.close();
+			String sql1 = "INSERT INTO smd_itemimage (InventoryId," + "CompanyId,Image,TitleImage) " + "VALUES ('"
+					+ String.valueOf(inventory.getInventoryID()) + "'," + ConstValue.companyId + ",'"
+					+ inventory.getImageURL() + "','N')";
+			stmt = con.createStatement();
+			stmt.executeUpdate(sql);
+			stmt.executeUpdate(sql1);
+			stmt.close();
 
-		  }catch (Exception e) {
+		} catch (Exception e) {
 			// TODO: handle exception
-			  Loger.log(e.toString());
-		}finally {
+			Loger.log(e.toString());
+		} finally {
 			try {
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 	}
+
 	public int getInventoryIDofUnclassifiedCatagery() {
 		SQLExecutor db = new SQLExecutor();
-		Connection con=null;
-    	con=db.getConnection();
+		Connection con = null;
+		con = db.getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
 
@@ -2664,259 +2749,251 @@ public class ItemInfoDao {
 			while (rs.next()) {
 				return rs.getInt("InventoryID");
 			}
-            stmt.close();
+			stmt.close();
 
 		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return 0;
 	}
-	public int Checkdubliction(ArrayList al)
-	{
-		  SQLExecutor db= new SQLExecutor();
-		  Connection con=null;
-      	  con=db.getConnection();
-		  Statement stmt = null;
-		  ResultSet rs = null;
-		  int valid = 0;
-		  try{
-			  if(!(al.get(1).equals("0") || al.get(8).equals("0"))){
-				  String sql="SELECT InventoryCode,SKU FROM  bca_iteminventory "
-		                    + "WHERE Active =1 "+"AND CompanyID = " + ConstValue.companyId;
-				  stmt = con.createStatement();
-				  rs = stmt.executeQuery(sql);
-				  while(rs.next())
-				  {
-					  if(al.get(1).toString().equalsIgnoreCase(rs.getString("InventoryCode"))){
-                          String name="Item Code "+al.get(1)+"Is Already Exist";
-                          valid = 0;
-					  }
-					  if(al.get(8).toString().equalsIgnoreCase(rs.getString("SKU"))){
-                          String name="Sku"+al.get(8)+"Is Already Exist";
-                          valid =  0;
-					  }
-					  
-				  };
-				  valid =  1;
-	              stmt.close();
 
-			  }
-			  else{
-				  valid = 0;
-			  }
-		  }catch (Exception e) {
+	public int Checkdubliction(ArrayList al) {
+		SQLExecutor db = new SQLExecutor();
+		Connection con = null;
+		con = db.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+		int valid = 0;
+		try {
+			if (!(al.get(1).equals("0") || al.get(8).equals("0"))) {
+				String sql = "SELECT InventoryCode,SKU FROM  bca_iteminventory " + "WHERE Active =1 "
+						+ "AND CompanyID = " + ConstValue.companyId;
+				stmt = con.createStatement();
+				rs = stmt.executeQuery(sql);
+				while (rs.next()) {
+					if (al.get(1).toString().equalsIgnoreCase(rs.getString("InventoryCode"))) {
+						String name = "Item Code " + al.get(1) + "Is Already Exist";
+						valid = 0;
+					}
+					if (al.get(8).toString().equalsIgnoreCase(rs.getString("SKU"))) {
+						String name = "Sku" + al.get(8) + "Is Already Exist";
+						valid = 0;
+					}
+
+				}
+				;
+				valid = 1;
+				stmt.close();
+
+			} else {
+				valid = 0;
+			}
+		} catch (Exception e) {
 			// TODO: handle exception
-			  Loger.log(e.toString());
-		}finally {
+			Loger.log(e.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
-		  return valid;
+		return valid;
 	}
 
-	public ArrayList<TblItemInventory> getSupplierDetail(TblItemInventory item)
-	{
+	public ArrayList<TblItemInventory> getSupplierDetail(TblItemInventory item) {
 		TblItemInventory d = null;
-        ArrayList<TblItemInventory> v = new ArrayList<>();
-        SQLExecutor db= new SQLExecutor();
-        Connection con=null;
-    	con=db.getConnection();
-	  	Statement stmt = null;
-	  	ResultSet rs = null;
-  	  
-  	  try{
-  		String sql = "SELECT * FROM bca_inventorysupplierdetail "
-                + "WHERE InventoryID = " + item.getInventoryID() + " " + " AND CompanyID =" + ConstValue.companyId + " "
-                + "AND Deleted = 0 Order By SupplierNumber,ID ASC";
-  		
-  		  stmt = con.createStatement();
-  		rs = stmt.executeQuery(sql);
-  		while(rs.next())
-  		{
-  			d = new TblItemInventory();
-            d.setSupplierId(rs.getLong("SupplierID"));
-            d.setPurchasePrice(rs.getDouble("SupplierPurchasePrice"));
-            d.setOrderUnit(rs.getLong("SupplierOrderUnit"));
-            d.setSupplierBarCode(rs.getString("SupplierBarCode"));
-            d.setSupplierSKU(rs.getString("SupplierSKU"));
-            d.setSupplierOrderQty(rs.getLong("OrderQty"));
-            d.setSupplierNumber(rs.getInt("SupplierNumber"));
-            d.setInventoryID(rs.getInt("InventoryID"));
-            d.setAutoIncrementID(rs.getLong("ID"));
-            d.setCommssion(rs.getDouble("SupplierCommission"));
-            v.add(d);
-  		}
-  	  }catch (Exception e) {
-  		// TODO: handle exception
-  		  Loger.log(e.toString());
-  	}finally {
+		ArrayList<TblItemInventory> v = new ArrayList<>();
+		SQLExecutor db = new SQLExecutor();
+		Connection con = null;
+		con = db.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+
 		try {
-			if (rs != null) {
-				db.close(rs);
+			String sql = "SELECT * FROM bca_inventorysupplierdetail " + "WHERE InventoryID = " + item.getInventoryID()
+					+ " " + " AND CompanyID =" + ConstValue.companyId + " "
+					+ "AND Deleted = 0 Order By SupplierNumber,ID ASC";
+
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				d = new TblItemInventory();
+				d.setSupplierId(rs.getLong("SupplierID"));
+				d.setPurchasePrice(rs.getDouble("SupplierPurchasePrice"));
+				d.setOrderUnit(rs.getLong("SupplierOrderUnit"));
+				d.setSupplierBarCode(rs.getString("SupplierBarCode"));
+				d.setSupplierSKU(rs.getString("SupplierSKU"));
+				d.setSupplierOrderQty(rs.getLong("OrderQty"));
+				d.setSupplierNumber(rs.getInt("SupplierNumber"));
+				d.setInventoryID(rs.getInt("InventoryID"));
+				d.setAutoIncrementID(rs.getLong("ID"));
+				d.setCommssion(rs.getDouble("SupplierCommission"));
+				v.add(d);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			Loger.log(e.toString());
+		} finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
 				}
-			if (stmt != null) {
-				db.close(stmt);
+				if (stmt != null) {
+					db.close(stmt);
 				}
-				if(con != null){
-				db.close(con);
+				if (con != null) {
+					db.close(con);
 				}
 			} catch (Exception e) {
-			Loger.log(e.toString());
+				Loger.log(e.toString());
+			}
 		}
+		return v;
 	}
-  	return v;
-	}
-	public TblInventoryUnitMeasure readInventoryUnitMeasure(int inventoryID)
-	{
-		SQLExecutor db= new SQLExecutor();
-		Connection con=null;
-    	con=db.getConnection();
+
+	public TblInventoryUnitMeasure readInventoryUnitMeasure(int inventoryID) {
+		SQLExecutor db = new SQLExecutor();
+		Connection con = null;
+		con = db.getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
 		TblInventoryUnitMeasure row = new TblInventoryUnitMeasure();
-		  try{
-			  String sql =
-		                " SELECT * " +
-		                " FROM bca_inventoryunitmeasure " +
-		                " WHERE InventoryID = " +inventoryID+
-		                " AND CompanyID = " + ConstValue.companyId ;
-			  stmt = con.createStatement();
-			  rs = stmt.executeQuery(sql);
-			  while(rs.next())
-			  {
-				  	row.setInventoryID(rs.getInt("InventoryID"));
-	                row.setUnitCategoryID(rs.getInt("UnitCategoryID"));
-	                row.setSubUnitCategoryID(rs.getInt("subUnitCategoryID"));
-	                row.setWeightID(rs.getInt("WeightID"));
-	                row.setSizeH(rs.getInt("SizeH"));
-	                row.setSizeW(rs.getInt("SizeW"));
-	                row.setSizeL(rs.getInt("SizeL"));
-			  }
-		  }catch (Exception e) {
+		try {
+			String sql = " SELECT * " + " FROM bca_inventoryunitmeasure " + " WHERE InventoryID = " + inventoryID
+					+ " AND CompanyID = " + ConstValue.companyId;
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				row.setInventoryID(rs.getInt("InventoryID"));
+				row.setUnitCategoryID(rs.getInt("UnitCategoryID"));
+				row.setSubUnitCategoryID(rs.getInt("subUnitCategoryID"));
+				row.setWeightID(rs.getInt("WeightID"));
+				row.setSizeH(rs.getInt("SizeH"));
+				row.setSizeW(rs.getInt("SizeW"));
+				row.setSizeL(rs.getInt("SizeL"));
+			}
+		} catch (Exception e) {
 			// TODO: handle exception
-			  Loger.log(e.toString());
-		}finally {
+			Loger.log(e.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
-		  return row;
+		return row;
 	}
-	public String readItemAsin(int inventory)
-	{
-		SQLExecutor db= new SQLExecutor();
-		Connection con=null;
-    	con=db.getConnection();
+
+	public String readItemAsin(int inventory) {
+		SQLExecutor db = new SQLExecutor();
+		Connection con = null;
+		con = db.getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
 		String itemAsin = "";
-		  try{
-			  String sql1 = "Select * from smd_iteminventoryinfo where InventoryId=" + inventory;
-			  stmt = con.createStatement();
-			  TblItemInventory d;
-			  rs = stmt.executeQuery(sql1);
-			  while(rs.next())
-			  {
-				  itemAsin = rs.getString("amazon_FeedSubmissionId");
-			  }
-			  
-		  }catch (Exception e) {
+		try {
+			String sql1 = "Select * from smd_iteminventoryinfo where InventoryId=" + inventory;
+			stmt = con.createStatement();
+			TblItemInventory d;
+			rs = stmt.executeQuery(sql1);
+			while (rs.next()) {
+				itemAsin = rs.getString("amazon_FeedSubmissionId");
+			}
+
+		} catch (Exception e) {
 			// TODO: handle exception
-			  Loger.log(e.toString());
-		}finally {
+			Loger.log(e.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
-		  return itemAsin;
+		return itemAsin;
 	}
-	public TblItemInventory getsmdIteminfo(TblItemInventory inventory)
-	{
-		SQLExecutor db= new SQLExecutor();
-		Connection con=null;
-    	con=db.getConnection();
+
+	public TblItemInventory getsmdIteminfo(TblItemInventory inventory) {
+		SQLExecutor db = new SQLExecutor();
+		Connection con = null;
+		con = db.getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
 		int isadded = 0;
-		  try{
-			  String sql = "Select Keywords from smd_iteminventoryinfo where" + //ItemImageId ="+inventory.getItemImageId()+
-		                " InventoryId=" + inventory.getInventoryID();
-			  stmt = con.createStatement();
-			  rs = stmt.executeQuery(sql);
-			  while (rs.next()) {
-	                inventory.setItemKeyword(ConstValue.hateNull(rs.getString("Keywords")));
-	            }
-			  
-		  }catch (Exception e) {
+		try {
+			String sql = "Select Keywords from smd_iteminventoryinfo where" + // ItemImageId
+																				// ="+inventory.getItemImageId()+
+					" InventoryId=" + inventory.getInventoryID();
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				inventory.setItemKeyword(ConstValue.hateNull(rs.getString("Keywords")));
+			}
+
+		} catch (Exception e) {
 			// TODO: handle exception
-			  Loger.log(e.toString());
-		}finally {
+			Loger.log(e.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
-		  return inventory;
+		return inventory;
 	}
 
-	public ArrayList fillWeight(String compId) 
-	{
-		Connection con = null ;
+	public ArrayList fillWeight(String compId) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -2928,104 +3005,88 @@ public class ItemInfoDao {
 		int cid = Integer.parseInt(compId);
 		try {
 
-			String sqlString = "SELECT UnitCategoryID " +
-                    " FROM bca_unitofmeasure " +
-                    " WHERE CompanyID = " + cid +
-                    " AND ParentId = 0" +
-                    " AND Name='Weight'" +
-                    " AND Active = 1 ";
+			String sqlString = "SELECT UnitCategoryID " + " FROM bca_unitofmeasure " + " WHERE CompanyID = " + cid
+					+ " AND ParentId = 0" + " AND Name='Weight'" + " AND Active = 1 ";
 
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			int invID;
-			while (rs.next()) 
-			{
+			while (rs.next()) {
 				parentId = rs.getInt(1);
-				
-				String sqlString1 = "SELECT * " +
-                " FROM bca_unitofmeasure " +
-                " WHERE CompanyID = " +cid +
-                " AND ParentId = " +parentId+
-                " AND Active = 1";
+
+				String sqlString1 = "SELECT * " + " FROM bca_unitofmeasure " + " WHERE CompanyID = " + cid
+						+ " AND ParentId = " + parentId + " AND Active = 1";
 				pstmt1 = con.prepareStatement(sqlString1);
 				rs1 = pstmt1.executeQuery();
 				int ivcode = 0;
-				while (rs1.next()) 
-				{
-					weightList.add(new LabelValueBean(rs1.getString(4),rs1.getString(1)));
+				while (rs1.next()) {
+					weightList.add(new LabelValueBean(rs1.getString(4), rs1.getString(1)));
 				}
-				
-				if(null!=rs1) {
-               	 rs1.close();
-                }
-				if(null!=pstmt1) {
+
+				if (null != rs1) {
+					rs1.close();
+				}
+				if (null != pstmt1) {
 					pstmt1.close();
-                }
+				}
 			}
 
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -fillWeight " + " " + ee.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return weightList;
 	}
-	
-	public ArrayList filleSalesChannel(ItemDto ItemDto)
-	{
-		Connection con = null ;
+
+	public ArrayList filleSalesChannel(ItemDto ItemDto) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> eSaleChannelList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
-		try 
-		{
+		try {
 			String sqlString = "SELECT DISTINCT StoreTypeID,StoreTypeName,isProductSubmission FROM bca_storetype WHERE StoreTypeID IN(3,4,6,9)";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
+			while (rs.next()) {
 				ItemDto iForm = new ItemDto();
-				iForm.seteSaleChannelListName("Don't Synch with "+ rs.getString("StoreTypeName"));
+				iForm.seteSaleChannelListName("Don't Synch with " + rs.getString("StoreTypeName"));
 				eSaleChannelList.add(iForm);
 			}
-		} 
-		catch (SQLException ee) 
-		{
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -filleSalesChannel " + " " + ee.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -3033,129 +3094,118 @@ public class ItemInfoDao {
 		return eSaleChannelList;
 	}
 
-	public ArrayList getMeasurementList(String compId) 
-	{
-		Connection con = null ;
+	public ArrayList getMeasurementList(String compId) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> measurementList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
 		con = db.getConnection();
-		try 
-		{
-			String sqlString = "SELECT * FROM bca_unitofmeasure WHERE CompanyID = "+compId+" AND ParentId=0 AND Name <> 'Weight' AND Active =1";
+		try {
+			String sqlString = "SELECT * FROM bca_unitofmeasure WHERE CompanyID = " + compId
+					+ " AND ParentId=0 AND Name <> 'Weight' AND Active =1";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
+			while (rs.next()) {
 				measurementList.add(new LabelValueBean(rs.getString("Name"), rs.getString("UnitCategoryID")));
 			}
-		} 
-		catch (SQLException ee) 
-		{
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getMeasurementList " + " " + ee.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return measurementList;
 	}
 
-	public ArrayList getUnitMeasurementList(String compId)
-	{
-		Connection con = null ;
+	public ArrayList getUnitMeasurementList(String compId) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> subMeasurementList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
 		con = db.getConnection();
-		try 
-		{
-			String sqlString = "SELECT * FROM bca_unitofmeasure WHERE CompanyID = "+compId+" AND Name <> 'Weight' AND Active =1";
+		try {
+			String sqlString = "SELECT * FROM bca_unitofmeasure WHERE CompanyID = " + compId
+					+ " AND Name <> 'Weight' AND Active =1";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
+			while (rs.next()) {
 				subMeasurementList.add(new LabelValueBean(rs.getString("Name"), rs.getString("ParentId")));
 			}
-		} 
-		catch (SQLException ee) 
-		{
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getUnitMeasurementList " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return subMeasurementList;
 	}
 
-	public ArrayList setPriceLevel(String compId, ItemDto form)
-	{
-		Connection con = null ;
+	public ArrayList setPriceLevel(String compId, ItemDto form) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> priceLevelList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
-		try 
-		{
-			String sqlString = "SELECT * FROM bca_pricelevel WHERE CompanyID = "+compId;
+		try {
+			String sqlString = "SELECT * FROM bca_pricelevel WHERE CompanyID = " + compId;
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
-				/*priceLevelList.add(rs.getInt("PriceLevelID"));
-				priceLevelList.add(rs.getString("Name"));
-				priceLevelList.add(rs.getLong("FixedPercentage"));*/
-				
+			while (rs.next()) {
+				/*
+				 * priceLevelList.add(rs.getInt("PriceLevelID"));
+				 * priceLevelList.add(rs.getString("Name"));
+				 * priceLevelList.add(rs.getLong("FixedPercentage"));
+				 */
+
 				ItemDto fo = new ItemDto();
 				fo.setPriceLevelId(rs.getInt("PriceLevelID"));
 				fo.setPriceLevel(rs.getString("Name"));
 				fo.setPricePercentage(rs.getLong("FixedPercentage"));
-				
+
 				priceLevelList.add(fo);
-				
-				//priceLevelList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"),rs.getString("PriceLevelId")));
+
+				// priceLevelList.add(new
+				// org.apache.struts.util.LabelValueBean(rs.getString("Name"),rs.getString("PriceLevelId")));
 			}
-		} 
-		catch (SQLException ee) 
-		{
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -setPriceLevel " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -3163,73 +3213,60 @@ public class ItemInfoDao {
 		return priceLevelList;
 	}
 
-	public ArrayList eBayProductList(String compId, ItemDto form)
-	{
-		Connection con = null ;
+	public ArrayList eBayProductList(String compId, ItemDto form) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> eBayProductList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
-		try 
-		{
-			String sqlString = "select * from bca_iteminventory where Active = 1 and CompanyID = "+compId+" order by InventoryCode DESC";
+		try {
+			String sqlString = "select * from bca_iteminventory where Active = 1 and CompanyID = " + compId
+					+ " order by InventoryCode DESC";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
+			while (rs.next()) {
 				ItemDto iForm = new ItemDto();
 				iForm.seteBayProductId(rs.getInt("InventoryID"));
 				iForm.seteBayProductCode(rs.getString("InventoryCode"));
 				iForm.seteBayProductName(rs.getString("InventoryName"));
 				int itemType = rs.getInt("itemtypeid");
-				String item="";
-				if(itemType == 1)
-				{
+				String item = "";
+				if (itemType == 1) {
 					item = "Inventory";
-				}
-				else if(itemType==2)
-				{
+				} else if (itemType == 2) {
 					item = "Discount";
-				}
-				else if(itemType == 3)
-				{
+				} else if (itemType == 3) {
 					item = "SubTotal";
-				}
-				else if(itemType == 4)
-				{
+				} else if (itemType == 4) {
 					item = "Service";
 				}
 				iForm.seteBayProductType(item);
 				iForm.seteBayProductQty(rs.getLong("AvailableQty"));
 				iForm.seteBayProductPrice(rs.getDouble("SalePrice"));
-				eBayProductList.add(iForm);	
+				eBayProductList.add(iForm);
 			}
-		} 
-		catch (SQLException ee) 
-		{
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -productList " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		form.setListOfExistingeBayProducts(eBayProductList);
 		return eBayProductList;
 	}
-	
-	
-	
+
 	public ArrayList getExistingLocation(String compId, HttpServletRequest request, ItemDto ItemDto) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
@@ -3237,21 +3274,27 @@ public class ItemInfoDao {
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		try {
-			String sqlString = "SELECT LocationID,Name FROM bca_location WHERE CompanyID ="+compId+" AND Active =1 ORDER BY Name";
+			String sqlString = "SELECT LocationID,Name FROM bca_location WHERE CompanyID =" + compId
+					+ " AND Active =1 ORDER BY Name";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				locationList.add(new LabelValueBean(rs.getString("Name"), rs.getString("LocationID")));
 			}
-		} 
-		catch (SQLException ee) {
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getExistingLocation " + " " + ee.toString());
-			
-		}finally {
+
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -3259,42 +3302,38 @@ public class ItemInfoDao {
 		return locationList;
 	}
 
-	public ArrayList filleStoreList(String compId, ItemDto ItemDto)
-	{
-		Connection con = null ;
+	public ArrayList filleStoreList(String compId, ItemDto ItemDto) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> storeList = new ArrayList<>();
 		ResultSet rs = null;
 		con = db.getConnection();
-		try 
-		{
-			String sqlString = "SELECT StoreTypeID,StoreTypeName,StoreName,StoreID FROM bca_store WHERE CompanyID = "+compId+" AND Deleted = 1 AND StoreTypeID IN (3,4,9,6,5,12) ORDER BY StoreTypeName";
+		try {
+			String sqlString = "SELECT StoreTypeID,StoreTypeName,StoreName,StoreID FROM bca_store WHERE CompanyID = "
+					+ compId + " AND Deleted = 1 AND StoreTypeID IN (3,4,9,6,5,12) ORDER BY StoreTypeName";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
+			while (rs.next()) {
 				ItemDto iForm = new ItemDto();
-				iForm.setChannelSettingName(rs.getString("StoreTypeName")+"-"+rs.getString("StoreName"));
-				
+				iForm.setChannelSettingName(rs.getString("StoreTypeName") + "-" + rs.getString("StoreName"));
+
 				storeList.add(iForm);
 			}
-		} 
-		catch (SQLException ee) 
-		{
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -filleSalesChannel " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -3302,95 +3341,87 @@ public class ItemInfoDao {
 		return storeList;
 	}
 
-	public ArrayList getStoreList(String compId) 
-	{
-		Connection con= null;
-		PreparedStatement pstmt=null,pstmt1 = null;
+	public ArrayList getStoreList(String compId) {
+		Connection con = null;
+		PreparedStatement pstmt = null, pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> storeList = new ArrayList<LabelValueBean>();
-		ResultSet rs=null,rs1 = null;
+		ResultSet rs = null, rs1 = null;
 		con = db.getConnection();
-		try 
-		{
+		try {
 			String sqlString = "SELECT * FROM bca_storetype Where StoreTypeID NOT IN (10,12) Order By StoreTypeName ASC";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
+			while (rs.next()) {
 				int storeTypeId = rs.getInt("StoreTypeID");
-				//con1 = db.getConnection();				
-				String query = "SELECT * FROM bca_store WHERE CompanyID=" + compId + " AND StoreTypeID = " + storeTypeId+" AND Active = 1 AND Deleted = 1";
+				// con1 = db.getConnection();
+				String query = "SELECT * FROM bca_store WHERE CompanyID=" + compId + " AND StoreTypeID = " + storeTypeId
+						+ " AND Active = 1 AND Deleted = 1";
 				pstmt1 = con.prepareStatement(query);
 				rs1 = pstmt1.executeQuery();
-				
-				while(rs1.next())
-				{
-					if(storeTypeId == 3 || storeTypeId == 9)
-					{
+
+				while (rs1.next()) {
+					if (storeTypeId == 3 || storeTypeId == 9) {
 						storeList.add(new LabelValueBean(rs.getString("StoreTypeName"), rs.getString("StoreTypeID")));
 						storeList.add(new LabelValueBean(rs1.getString("StoreName"), rs1.getString("StoreID")));
 					}
 				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
-				
+				}
+
 			}
-		} 
-		catch (SQLException ee) 
-		{
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getStoreList " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-					if (rs1 != null) {
-						db.close(rs1);
-						}
-					if (pstmt1 != null) {
-						db.close(pstmt1);
-						}
-						
-				} catch (Exception e) {
+				}
+				if (rs1 != null) {
+					db.close(rs1);
+				}
+				if (pstmt1 != null) {
+					db.close(pstmt1);
+				}
+
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return storeList;
 	}
 
-	public ArrayList getActiveProductList(String compId) 
-	{
-		Connection con=null;
-		PreparedStatement pstmt=null,pstmt1 = null;
+	public ArrayList getActiveProductList(String compId) {
+		Connection con = null;
+		PreparedStatement pstmt = null, pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> productList = new ArrayList<>();
-		ResultSet rs=null,rs1 = null;
+		ResultSet rs = null, rs1 = null;
 		con = db.getConnection();
-		try 
-		{
-			String sqlString = "select * from bca_iteminventory where Active = 1 and CompanyID ="+compId+" and ParentID = 0 Order by InventoryCode DESC";
+		try {
+			String sqlString = "select * from bca_iteminventory where Active = 1 and CompanyID =" + compId
+					+ " and ParentID = 0 Order by InventoryCode DESC";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
+			while (rs.next()) {
 				int inventoryId = rs.getInt("InventoryID");
-							
-				String query = "select * from bca_iteminventory where Active = 1 and CompanyID = "+compId+" and ParentID ="+inventoryId;
+
+				String query = "select * from bca_iteminventory where Active = 1 and CompanyID = " + compId
+						+ " and ParentID =" + inventoryId;
 				pstmt1 = con.prepareStatement(query);
 				rs1 = pstmt1.executeQuery();
-				
-				while(rs1.next())
-				{
+
+				while (rs1.next()) {
 					ItemDto iForm = new ItemDto();
 					iForm.setItemCode(rs1.getString("InventoryCode"));
 					iForm.setItemName(rs1.getString("SKU"));
@@ -3398,65 +3429,63 @@ public class ItemInfoDao {
 				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
+				}
 			}
-		} 
-		catch (SQLException ee) 
-		{
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getActiveProductList " + " " + ee.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					
-					if (rs1 != null) {
-						db.close(rs1);
-						}
-					if (pstmt1 != null) {
-						db.close(pstmt1);
-						}
-					if(con != null){
-						db.close(con);
-						}
-				} catch (Exception e) {
+				}
+
+				if (rs1 != null) {
+					db.close(rs1);
+				}
+				if (pstmt1 != null) {
+					db.close(pstmt1);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return productList;
 	}
 
-	public ArrayList fillAccountList(String compId) 
-	{
-		Connection con=null,con1=null;
-		PreparedStatement pstmt=null,pstmt1 = null;
+	public ArrayList fillAccountList(String compId) {
+		Connection con = null, con1 = null;
+		PreparedStatement pstmt = null, pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> accountList = new ArrayList<LabelValueBean>();
-		ResultSet rs=null,rs1 = null;
+		ResultSet rs = null, rs1 = null;
 		con = db.getConnection();
 		con1 = db.getConnection();
 		try {
-			String sqlString = "Select * from bca_category where CompanyID = "+compId+" and isActive = 1 and Parent = 'root' order by CategoryTypeID,Name";
-			String sqlString1 = "Select * from bca_category where CompanyID = "+compId+" and isActive = 1 and NOT (Parent = 'root') order by CategoryTypeID,Name";
+			String sqlString = "Select * from bca_category where CompanyID = " + compId
+					+ " and isActive = 1 and Parent = 'root' order by CategoryTypeID,Name";
+			String sqlString1 = "Select * from bca_category where CompanyID = " + compId
+					+ " and isActive = 1 and NOT (Parent = 'root') order by CategoryTypeID,Name";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				String category = rs.getString("Name")+" "+ rs.getString("CateNumber");
+				String category = rs.getString("Name") + " " + rs.getString("CateNumber");
 				int categoryId = rs.getInt("CategoryID");
 				accountList.add(new LabelValueBean(category, rs.getString("CategoryID")));
 				pstmt1 = con1.prepareStatement(sqlString1);
 				rs1 = pstmt1.executeQuery();
-				while(rs1.next()) {
+				while (rs1.next()) {
 					int parentId = rs1.getInt("Parent");
-					String category1 = rs1.getString("Name")+" "+ rs1.getString("CateNumber");
-					if(categoryId == parentId) {
+					String category1 = rs1.getString("Name") + " " + rs1.getString("CateNumber");
+					if (categoryId == parentId) {
 						accountList.add(new LabelValueBean(category1, rs1.getString("CategoryID")));
 					}
 				}
@@ -3467,18 +3496,28 @@ public class ItemInfoDao {
 					db.close(pstmt1);
 				}
 			}
-		} 
-		catch (SQLException ee) {
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -fillAccountList " + ee.toString());
-		}
-		finally {
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
-				if (rs1 != null) { db.close(rs1); }
-				if (pstmt1 != null) { db.close(pstmt1); }
-				if(con1 != null){ db.close(con1); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+				if (rs1 != null) {
+					db.close(rs1);
+				}
+				if (pstmt1 != null) {
+					db.close(pstmt1);
+				}
+				if (con1 != null) {
+					db.close(con1);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -3487,112 +3526,112 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList fillItemCategory(String compId) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> categoryList = new ArrayList<>();
 		ResultSet rs = null;
 		try {
 			con = db.getConnection();
-			String sqlString = "select * from bca_iteminventory where Active=1 and CompanyID="+compId+" and ParentID=0 order by InventoryCode DESC";
+			String sqlString = "select * from bca_iteminventory where Active=1 and CompanyID=" + compId
+					+ " and ParentID=0 order by InventoryCode DESC";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				categoryList.add(new LabelValueBean(rs.getString("InventoryCode"), rs.getString("InventoryID")));
 			}
-		} 
-		catch (SQLException ee) {
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -fillItemCategory " + " " + ee.toString());
-		}finally {
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
-				} catch (Exception e) {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return categoryList;
 	}
 
-	public ArrayList fillItemSubCategory(String compId) 
-	{
-		Connection con = null ;
+	public ArrayList fillItemSubCategory(String compId) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> subCategoryList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
-		
+
 		ItemDto form = new ItemDto();
-		try 
-		{
+		try {
 			con = db.getConnection();
-			String sqlString = "select * from bca_iteminventory where Active = 1 and CompanyID = "+compId+" order by InventoryCode DESC";
+			String sqlString = "select * from bca_iteminventory where Active = 1 and CompanyID = " + compId
+					+ " order by InventoryCode DESC";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) 
-			{
-				subCategoryList.add(new LabelValueBean(rs.getString("InventoryCode"),rs.getString("ParentID")));
+			while (rs.next()) {
+				subCategoryList.add(new LabelValueBean(rs.getString("InventoryCode"), rs.getString("ParentID")));
 			}
-		} 
-		catch (SQLException ee) 
-		{
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -fillItemCategory " + " " + ee.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return subCategoryList;
 	}
 
-	public ArrayList getVendorDetails(String compId, HttpServletRequest request) 
-	{
-		Connection con = null ;
+	public ArrayList getVendorDetails(String compId, HttpServletRequest request) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<LabelValueBean> vendorList = new ArrayList<LabelValueBean>();
 		ArrayList<LabelValueBean> vendorNameList = new ArrayList<LabelValueBean>();
 		ResultSet rs = null;
 		ItemDto form = new ItemDto();
-		try 
-		{
+		try {
 			con = db.getConnection();
-			String sqlString = "select Name,ClientVendorID,FirstName,LastName from bca_clientvendor where CVTypeID in (1,3) and Status in ('U','N') and Active=1 and Deleted=0 and'" +compId +"' order by LastName";
+			String sqlString = "select Name,ClientVendorID,FirstName,LastName from bca_clientvendor where CVTypeID in (1,3) and Status in ('U','N') and Active=1 and Deleted=0 and'"
+					+ compId + "' order by LastName";
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				String name = rs.getString("LastName")+" "+rs.getString("FirstName")+"("+rs.getString("Name")+")";
+				String name = rs.getString("LastName") + " " + rs.getString("FirstName") + "(" + rs.getString("Name")
+						+ ")";
 				vendorList.add(new LabelValueBean(name, rs.getString("ClientVendorID")));
-				vendorNameList.add(new LabelValueBean(rs.getString("LastName")+" "+rs.getString("FirstName"), rs.getString("ClientVendorID")));
+				vendorNameList.add(new LabelValueBean(rs.getString("LastName") + " " + rs.getString("FirstName"),
+						rs.getString("ClientVendorID")));
 			}
-		} 
-		catch (SQLException ee) {
+		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -fillItemCategory " + " " + ee.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -3600,11 +3639,11 @@ public class ItemInfoDao {
 		return vendorList;
 	}
 
-	private String getActualPriceAmount(String amount){
+	private String getActualPriceAmount(String amount) {
 		String finalAmount = "0.0";
 		String amountArr[] = amount.split(",");
-		for (String ss: amountArr){
-			if (!ss.trim().isEmpty()){
+		for (String ss : amountArr) {
+			if (!ss.trim().isEmpty()) {
 				finalAmount = ss;
 				break;
 			}

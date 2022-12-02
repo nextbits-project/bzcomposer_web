@@ -24,6 +24,8 @@ import com.nxsol.bizcomposer.common.EmailSenderDto;
 import org.apache.struts.util.LabelValueBean;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,7 +61,12 @@ public class InvoiceInfoDao {
 				item1.setInvDesc(rs.getString("InventoryDescription"));
 				item1.setQty(rs.getInt("Qty"));
 				item1.setWeight(rs.getDouble("Weight"));
-				item1.setSalePrice(rs.getDouble("SalePrice"));
+				if(rs.getBigDecimal("SalePrice") != null) {
+					item1.setSalePrice(rs.getBigDecimal("SalePrice").setScale(2, BigDecimal.ROUND_HALF_UP));
+				}else {
+					item1.setSalePrice(rs.getBigDecimal("SalePrice"));
+				}
+				
 				item1.setIsCategory(rs.getInt("isCategory"));
 				item1.setItemTypeID(rs.getInt("ItemTypeID"));
 				item1.setSerialNo(rs.getString("SerialNum"));

@@ -6,6 +6,8 @@
 
 package com.avibha.bizcomposer.sales.dao;
 
+import java.math.BigDecimal;
+
 public class Item {
 
 	private double amount;
@@ -22,7 +24,7 @@ public class Item {
 
 	private double weight;
 
-	private double salePrice;
+	private BigDecimal salePrice;
 	
 	private double purchasePrice;
 	
@@ -125,10 +127,10 @@ public class Item {
 		this.qty = qty;
 	}
 
-	public double getSalePrice() {
+	public BigDecimal getSalePrice() {
 		return salePrice;
 	}
-	public void setSalePrice(double salePrice) {
+	public void setSalePrice(BigDecimal salePrice) {
 		this.salePrice = salePrice;
 	}
 

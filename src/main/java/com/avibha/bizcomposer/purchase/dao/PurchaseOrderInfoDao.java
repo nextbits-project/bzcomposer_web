@@ -765,7 +765,7 @@ public class PurchaseOrderInfoDao {
 				pstmt1.setString(3, "");
 
 				pstmt1.setString(4, form.getCustID());
-				pstmt1.setString(5, form.getBillAddrValue());
+				pstmt1.setInt(5, Integer.parseInt(form.getBillAddrValue().isEmpty()? "0" : form.getBillAddrValue()));
 				pstmt1.setString(6, form.getInvoiceStyle());
 				pstmt1.setInt(7, 2);
 		
@@ -788,7 +788,7 @@ public class PurchaseOrderInfoDao {
 					pstmt1.setInt(19, 0);
 				}
 				pstmt1.setString(20, form.getMemo());
-				pstmt1.setString(21, form.getBillAddrValue());
+				pstmt1.setInt(21, Integer.parseInt(form.getBillAddrValue().isEmpty()? "0" : form.getBillAddrValue()));
 				pstmt1.setString(22, form.getShipAddr());
 				pstmt1.setDate(23, (form.getOrderDate().equals("")) ? cinfo.string2date("now()") : cinfo.string2date(form.getOrderDate()));
 				pstmt1.setInt(24, 0);

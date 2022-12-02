@@ -365,7 +365,7 @@ table.tabla-listados tbody tr td {
 					  <label class="form-check-label" for="inlineRadio3">Unpaid Credit Amount</label>
 					</div>
 				</div> -->
-				<div class="filterbar" onclick="selectedRadio()">
+				<%-- <div class="filterbar" onclick="selectedRadio()">
 						<div class="form-check form-check-inline">
 						  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
 						  <label class="form-check-label" for="inlineCheckbox1">
@@ -390,7 +390,7 @@ table.tabla-listados tbody tr td {
 							<spring:message code="BzComposer.accountreceivable.unpaidcreditamount"/>
 						</label>
 					</div>
-				</div>
+				</div> --%>
 				<div class="table1" id="tblForInvoiceOrder">
 				<table class="table table-bordered table-sm devAcRecDataTbl">
 				  <thead class="thead-light">

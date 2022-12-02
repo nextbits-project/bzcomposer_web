@@ -240,7 +240,7 @@ public class ConfigurationDAO {
                 pojo = new ConfigurationDto();
                 pojo.setPaymentTypeId(rs.getInt(1));
                 pojo.setPaymentName(rs.getString(2));
-                pojo.setDefaultPaymentTypeId(rs.getBoolean(3));
+				pojo.setDefaultPaymentTypeId(rs.getBoolean(3));
                 paymentType.add(pojo);
             }
         }

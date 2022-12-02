@@ -195,6 +195,25 @@ $(document).ready(function()
         }
         $("#ratePriceChangable").val(isChecked);
     });
+    
+    $("#usePrefixIV").change(function()
+    	    {
+    	        var isChecked = '<%=request.getAttribute("usePrefixIV")%>';
+    	        if($(this).prop("checked") == true){
+    	            $("#usePrefixIV").attr('checked', true);
+    	            isChecked = "on";
+    	        }
+    	        else if($(this).prop("checked") == false){
+    	            $("#usePrefixIV").attr('checked', false);
+    	             isChecked = "off";
+    	        }
+    	        else
+    	        {
+    	            $("#usePrefixIV").attr('checked', isChecked);
+    	            document.configurationForm.usePrefixIV.value = isChecked;
+    	        }
+    	        $("#usePrefixIV").val(isChecked);
+    	    });
 
     $("#saleShowTelephone").change(function()
     {
@@ -751,6 +770,10 @@ $(document).ready(function()
 												<label><spring:message code="BzComposer.configuration.ratepricechangable"/></label>
 											</td>
 											<td style="font-size:12px;">
+												<input type="checkbox" name="usePrefixIV" id="usePrefixIV" value="${configDto.usePrefixIV}" ${configDto.usePrefixIV=='on'?'checked':''} />
+												<label><spring:message code="BzComposer.configuration.useprefixiv"/></label>
+											</td>
+											<td style="font-size:12px;">
 												<input type="checkbox" name="saleShowTelephone" id="saleShowTelephone" value="${configDto.saleShowTelephone}" ${configDto.saleShowTelephone=='on'?'checked':''} />
 												<label><spring:message code="BzComposer.configuration.showtelephonefaxoninvoice"/></label>
 											</td>
@@ -1271,6 +1294,7 @@ $(document).ready(function()
 		
 		<input type="hidden" name="saleShowCountry" id="saleShowCountry" value=""/>
 		<input type="hidden" name="ratePriceChangable" id="ratePriceChangable" value=""/>
+		<input type="hidden" name="usePrefixIV" id="usePrefixIV" value=""/>
 		<input type="hidden" name="saleShowTelephone" id="saleShowTelephone" value=""/>
 		<input type="hidden" name="isSalePrefix" id="isSalePrefix" value=""/>
 		<input type="hidden" name="extraChargeApplicable" id="extraChargeApplicable" value=""/>
@@ -1334,6 +1358,7 @@ function SaveValues()
 
                 document.configurationForm.saleShowCountry.value = $("#saleShowCountry").val();
                 document.configurationForm.ratePriceChangable.value = $("#ratePriceChangable").val();
+                document.configurationForm.usePrefixIV.value = $("#usePrefixIV").val();
                 document.configurationForm.saleShowTelephone.value = $("#saleShowTelephone").val();
                 document.configurationForm.isSalePrefix.value = $("#isSalePrefix").val();
 
@@ -1356,6 +1381,7 @@ function SaveValues()
 
                 document.getElementById('saleShowCountry').value = $("#saleShowCountry").val();
                 document.getElementById('ratePriceChangable').value = $("#ratePriceChangable").val();
+                document.getElementById('usePrefixIV').value = $("#usePrefixIV").val();
                 document.getElementById('saleShowTelephone').value = $("#saleShowTelephone").val();
                 document.getElementById('isSalePrefix').value = $("#isSalePrefix").val();
                 document.getElementById('extraChargeApplicable').value = $("#extraChargeApplicable").val();

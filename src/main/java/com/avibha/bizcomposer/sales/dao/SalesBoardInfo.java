@@ -6,16 +6,20 @@
 
 package com.avibha.bizcomposer.sales.dao;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Formatter;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,10 +48,10 @@ public class SalesBoardInfo {
 
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
-		ResultSet rs = null, rs2 = null, rs3 = null,rs4 = null;
-		Statement stmt = null, stmt1 = null, stmt2 = null,stmt4 = null;
+		ResultSet rs = null, rs2 = null, rs3 = null, rs4 = null;
+		Statement stmt = null, stmt1 = null, stmt2 = null, stmt4 = null;
 		String mark = null;
-		String sqlString="";
+		String sqlString = "";
 		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<SalesBoard> objList = new ArrayList<>();
 		ConfigurationInfo configInfo = new ConfigurationInfo();
@@ -59,42 +63,45 @@ public class SalesBoardInfo {
 			stmt4 = con.createStatement();
 			Loger.log("oDate1:" + oDate1 + " oDate2:" + oDate2);
 
-	        if(invoiceReportType.equalsIgnoreCase("2")){
-                sqlString = "select IsPaymentCompleted,InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
-							"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
-							"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 and IsPaymentCompleted =1";// AND
-			}else if(invoiceReportType.equalsIgnoreCase("3")){
-                sqlString = "select IsPaymentCompleted, InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
-							"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
-							"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 and IsPaymentCompleted =0"; // AND
-		    }else{
-                sqlString = "select IsPaymentCompleted, InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
-						"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  " +
-						"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 ";// AND
-		    }
+			if (invoiceReportType.equalsIgnoreCase("2")) {
+				sqlString = "select IsPaymentCompleted,InvoiceID,OrderNum,PONum,RcvNum,EstNum,"
+						+ "ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  "
+						+ "from bca_invoice as i where CompanyID ='" + compId
+						+ "' and invoiceStatus =0 and IsPaymentCompleted =1";// AND
+			} else if (invoiceReportType.equalsIgnoreCase("3")) {
+				sqlString = "select IsPaymentCompleted, InvoiceID,OrderNum,PONum,RcvNum,EstNum,"
+						+ "ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  "
+						+ "from bca_invoice as i where CompanyID ='" + compId
+						+ "' and invoiceStatus =0 and IsPaymentCompleted =0"; // AND
+			} else {
+				sqlString = "select IsPaymentCompleted, InvoiceID,OrderNum,PONum,RcvNum,EstNum,"
+						+ "ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,IsEmailed,Total,SalesRepID  "
+						+ "from bca_invoice as i where CompanyID ='" + compId + "' and invoiceStatus =0 ";// AND
+			}
 
-	        if(orderNoFrom != null && orderNoTo != null && !orderNoFrom.isEmpty() && !orderNoTo.isEmpty()){
-				sqlString += " and i.OrderNum between " +orderNoFrom+ " AND " +orderNoTo+ " ";
+			if (orderNoFrom != null && orderNoTo != null && !orderNoFrom.isEmpty() && !orderNoTo.isEmpty()) {
+				sqlString += " and i.OrderNum between " + orderNoFrom + " AND " + orderNoTo + " ";
 			}
-			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1 && oDate2.trim().length() > 1 ) {
-				sqlString += "	and i.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '" + cinfo.string2date(oDate2) + "' ";
+			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1 && oDate2.trim().length() > 1) {
+				sqlString += "	and i.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
+						+ cinfo.string2date(oDate2) + "' ";
+			} else if (oDate1 != null && oDate1.trim().length() > 1) {
+				sqlString += "	and i.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
+						+ cinfo.string2date("now()") + "' ";
+			} else if (oDate2 != null && oDate2.trim().length() > 1) {
+				sqlString += "	and i.DateConfirmed <= '" + cinfo.string2date(oDate2) + "'  ";
 			}
-			else if(oDate1 != null && oDate1.trim().length() > 1){
-				sqlString += "	and i.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '" + cinfo.string2date("now()") + "' ";
+			if (saleDate1 != null && saleDate2 != null && saleDate1.trim().length() > 1
+					&& saleDate2.trim().length() > 1) {
+				sqlString += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
+						+ cinfo.string2date(saleDate2) + "'  ";
+			} else if (saleDate1 != null && saleDate1.trim().length() > 1) {
+				sqlString += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
+						+ cinfo.string2date("now()") + "' ";
+			} else if (saleDate2 != null && saleDate2.trim().length() > 1) {
+				sqlString += "	and i.DateAdded <= '" + cinfo.string2date(saleDate2) + "'  ";
 			}
-			else if(oDate2!=null && oDate2.trim().length() > 1){
-				sqlString += "	and i.DateConfirmed <= '"+ cinfo.string2date(oDate2) + "'  ";
-			}
-			if (saleDate1 != null && saleDate2 != null && saleDate1.trim().length() > 1 && saleDate2.trim().length() > 1) {
-				sqlString += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '" + cinfo.string2date(saleDate2) + "'  ";
-			}
-			else if(saleDate1 != null && saleDate1.trim().length() > 1){
-				sqlString += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '" + cinfo.string2date("now()") + "' ";
-			}
-			else if(saleDate2!=null && saleDate2.trim().length() > 1){
-				sqlString += "	and i.DateAdded <= '"+ cinfo.string2date(saleDate2) + "'  ";
-			}
-			if(searchTxt != null && !searchTxt.trim().isEmpty()) {
+			if (searchTxt != null && !searchTxt.trim().isEmpty()) {
 				if (searchType.equals("2") || searchType.equals("3")) {
 					sqlString += " AND OrderNum LIKE '%" + searchTxt + "%' ";
 				}
@@ -119,25 +126,30 @@ public class SalesBoardInfo {
 				sqlString += "and i.OrderType=9";
 				mark = "Price Grabber";
 			}
-			// sqlString += " and i.IsSalestype=1"; 
-			 sqlString += " and i.OrderNum > 0 and i.InvoiceTypeID=1 ORDER BY i.OrderNum DESC";
+			// sqlString += " and i.IsSalestype=1";
+			sqlString += " and i.OrderNum > 0 and i.InvoiceTypeID=1 ORDER BY i.OrderNum DESC";
 
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sqlString);
-			while(rs.next()) {
+			while (rs.next()) {
 				SalesBoard d = new SalesBoard();
 				d.setInvoiceID(rs.getInt("InvoiceID"));
-                d.setPaymentCompleted(rs.getBoolean("IsPaymentCompleted"));
+				d.setPaymentCompleted(rs.getBoolean("IsPaymentCompleted"));
 				d.setOrderid(rs.getInt("orderid"));
 				d.setOrderNum(rs.getLong("OrderNum"));
 				String orderNo = (rs.getString("OrderNum"));
-				d.setOrderNumStr(MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.InvoiceType, configDto, false));
+				String yearPart = MyUtility.getYearPart(rs.getString("DateAdded"));
+				if(configDto.getUsePrefixIV().equals("on")) {
+					d.setOrderNumStr("IV".concat(yearPart).concat("-"+MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.InvoiceType, configDto, false)));
+				}else {
+					d.setOrderNumStr(MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.InvoiceType, configDto, false));
+				}
 				d.setPo_no(rs.getLong("PONum"));
 				d.setRcv_no(rs.getLong("RcvNum"));
 				d.setEst_no(rs.getLong("EstNum"));
 				d.setCvID(rs.getInt("ClientVendorID"));
 				d.setBsAddressID(rs.getInt("BSAddressID"));
-			
+
 				d.setTransactionID(rs.getString("orderid"));
 				d.setDateAdded(rs.getString("DateAdded"));
 				d.setSaleDate(rs.getString("DateConfirmed"));
@@ -145,32 +157,39 @@ public class SalesBoardInfo {
 				d.setShipped(rs.getInt("Shipped"));
 				d.setEmailed(rs.getInt("IsEmailed"));
 				d.setMarketPlaceName(mark);
-				
-				d.setTotal(rs.getDouble("Total"));
-				String rep=rs.getString("SalesRepID");
-				   if(rep != null){
-					 rs4 = stmt4.executeQuery("select Name from bca_salesrep where SalesRepID ="+rep);
-					 while(rs4.next()){
-						 d.setRep(rs4.getString("Name"));
-					 }
-				   }
+
+				// update by ferdous
+				// BigDecimal bigTotal = new BigDecimal(rs.getDouble("Total")).setScale(2,
+				// RoundingMode.HALF_UP);
+
+				d.setTotal(rs.getBigDecimal("Total").setScale(2));
+				String rep = rs.getString("SalesRepID");
+				if (rep != null) {
+					rs4 = stmt4.executeQuery("select Name from bca_salesrep where SalesRepID =" + rep);
+					while (rs4.next()) {
+						d.setRep(rs4.getString("Name"));
+					}
+				}
 				String sql2 = "SELECT a.LastName,a.FirstName,a.Email, b.Address1,b.Address2,b.City,b.State,b.Country,b.ZipCode,a.Name "
-						+ " FROM bca_clientvendor a, bca_billingaddress b  WHERE a.ClientVendorID = " + d.getCvID() + " and b.AddressID =" + d.getBsAddressID()
+						+ " FROM bca_clientvendor a, bca_billingaddress b  WHERE a.ClientVendorID = " + d.getCvID()
+						+ " and b.AddressID =" + d.getBsAddressID()
 						+ " and a.Active=1 and b.Active=1 and a.Status IN ('N', 'U') and b.Status IN ('N', 'U') and a.Deleted=0 and b.isDefault=1 ";
 
-				if(searchTxt != null && !searchTxt.trim().isEmpty()){
-					if(searchType.equals("1")){
-						sql2 += " AND (a.FirstName LIKE '%"+searchTxt+"%' OR a.LastName LIKE '%"+searchTxt+"%')";
-					}else if(searchType.equals("4")){
-						sql2 += "AND (b.Address1 LIKE '%"+searchTxt+"%' OR b.Address2 LIKE '%"+searchTxt+"%' OR b.City LIKE '%"+searchTxt+"%' OR b.Country LIKE '%"+searchTxt+"%'))";
-					}else if(searchType.equals("5")){
-						sql2 += "AND a.Name LIKE '%"+searchTxt+"%'";
-					}else if(searchType.equals("6")){
-						sql2 += "AND a.Email LIKE '%"+searchTxt+"%'";
+				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
+					if (searchType.equals("1")) {
+						sql2 += " AND (a.FirstName LIKE '%" + searchTxt + "%' OR a.LastName LIKE '%" + searchTxt
+								+ "%')";
+					} else if (searchType.equals("4")) {
+						sql2 += "AND (b.Address1 LIKE '%" + searchTxt + "%' OR b.Address2 LIKE '%" + searchTxt
+								+ "%' OR b.City LIKE '%" + searchTxt + "%' OR b.Country LIKE '%" + searchTxt + "%'))";
+					} else if (searchType.equals("5")) {
+						sql2 += "AND a.Name LIKE '%" + searchTxt + "%'";
+					} else if (searchType.equals("6")) {
+						sql2 += "AND a.Email LIKE '%" + searchTxt + "%'";
 					}
 				}
 				rs2 = stmt1.executeQuery(sql2);
-				while ( rs2.next()) {
+				while (rs2.next()) {
 					d.setFirstName(rs2.getString("FirstName"));
 					d.setLastName(rs2.getString("LastName"));
 					d.setAddress1(rs2.getString("Address1"));
@@ -182,19 +201,21 @@ public class SalesBoardInfo {
 					d.setEmail(rs2.getString("Email"));
 					d.setCompanyName(rs2.getString("Name"));
 				}
-				if(searchTxt != null && !searchTxt.trim().isEmpty()){
-					if(searchType.equals("1") && d.getFirstName()==null && d.getLastName()==null ){
+				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
+					if (searchType.equals("1") && d.getFirstName() == null && d.getLastName() == null) {
 						continue;
-					}else if(searchType.equals("4") && d.getAddress1()==null && d.getAddress2()==null && d.getCity()==null && d.getCountry()==null){
+					} else if (searchType.equals("4") && d.getAddress1() == null && d.getAddress2() == null
+							&& d.getCity() == null && d.getCountry() == null) {
 						continue;
-					}else if(searchType.equals("5") && d.getCompanyName()==null){
+					} else if (searchType.equals("5") && d.getCompanyName() == null) {
 						continue;
-					}else if(searchType.equals("6") && d.getEmail()==null){
+					} else if (searchType.equals("6") && d.getEmail() == null) {
 						continue;
 					}
 				}
-				
-				String sql3 = " select InventoryName, Qty  from bca_cart  where InvoiceID =" + d.getInvoiceID() + " and CompanyID = " + compId;
+
+				String sql3 = " select InventoryName, Qty  from bca_cart  where InvoiceID =" + d.getInvoiceID()
+						+ " and CompanyID = " + compId;
 				rs3 = stmt2.executeQuery(sql3);
 				int item_c = 0;
 				do {
@@ -210,26 +231,43 @@ public class SalesBoardInfo {
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-			
-		}
-		finally {
+
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (rs2 != null) { db.close(rs2); }
-				if (rs3 != null) { db.close(rs3); }
-				if (rs4 != null) { db.close(rs4); }
-				if (stmt != null) { db.close(stmt); }
-				if (stmt1 != null) { db.close(stmt1); }
-				if (stmt2 != null) { db.close(stmt2); }
-				if (stmt4 != null) { db.close(stmt4); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (rs2 != null) {
+					db.close(rs2);
+				}
+				if (rs3 != null) {
+					db.close(rs3);
+				}
+				if (rs4 != null) {
+					db.close(rs4);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (stmt1 != null) {
+					db.close(stmt1);
+				}
+				if (stmt2 != null) {
+					db.close(stmt2);
+				}
+				if (stmt4 != null) {
+					db.close(stmt4);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
-	
+
 	public ArrayList getSaleReportCustomerSearch(String cId, String invoiceReportType1, SalesBoardDto salesBoardDto) {
 
 		String date1 = salesBoardDto.getOrderDate1();
@@ -242,9 +280,9 @@ public class SalesBoardInfo {
 		String sOpt1 = salesBoardDto.getSortType1();
 		String sOpt2 = salesBoardDto.getSortType2();
 		String sType1 = salesBoardDto.getSearchType();
-		
+
 		ArrayList<SalesBoard> objList = new ArrayList<>();
-		Connection con = null ;
+		Connection con = null;
 		Statement stmt1 = null, stmt2 = null, stmt3 = null, stmt4 = null;
 		ResultSet rs1 = null, rs2 = null, rs3 = null, rs4 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -252,123 +290,89 @@ public class SalesBoardInfo {
 		String sql = "";
 		CustomerInfo info = new CustomerInfo();
 		try {
-			
-			if("1".equals(invoiceReportType1))
-			{
+
+			if ("1".equals(invoiceReportType1)) {
 				double sales = 0.00;
 				double ref = 0.00;
 				stmt1 = con.createStatement();
-				sql = ""
-						+ "SELECT cv.clientvendorid, "
-						+ "       cv.NAME, "
-						+ "       cv.firstname, "
-						+ "       cv.lastname, "
-						+ "       s.clientvendorid, "
-						+ "       s.serviceid "
-						+ "FROM   bca_clientvendor AS cv "
-						+ "       LEFT JOIN bca_clientvendorservice AS s "
-						+ "              ON cv.clientvendorid = s.clientvendorid "
-						+ "WHERE  ( cv.status = 'U' "
-						+ "          OR cv.status = 'N' ) "
-						+ "       AND cv.deleted = 0 "
-						+ "       AND cv.companyid = '" + cId + "'"
-						+ "       AND cv.cvtypeid IN ( 1, 2 )";		
-			       if(date1 != null && date2 != null && date1.trim().length()>1 && date2.trim().length()>1)
-			       {
-			    	   sql+=" AND cv.DateAdded BETWEEN '"
-			    			   + info.string2date(date1)+ "' AND '"  + info.string2date(date2) + "'"; 
-			    			   
-			       }
-			
-			rs1 = stmt1.executeQuery(sql);
-			while(rs1.next())
-			{
-				SalesBoard d = new SalesBoard();
-				d.setCompanyName(rs1.getString(1));
-				d.setCvName(rs1.getString(2) + " " + rs1.getString(3));
-				sales = getBalanceForReportForCustoemr(rs1.getLong(1), cId);
-				d.setSalesTotal(sales);
-				ref = calculateRefundBalance(rs1.getLong(1), cId);
-				d.setRefTotal(ref);
-				d.setAdjTotal(sales-ref);
-				objList.add(d);
-			}
-		}
-			else if(invoiceReportType1.equals("2"))
-			{
-				int  Soldqty = 0;
-				double  Soldamt = 0.0;
+				sql = "" + "SELECT cv.clientvendorid, " + "       cv.NAME, " + "       cv.firstname, "
+						+ "       cv.lastname, " + "       s.clientvendorid, " + "       s.serviceid "
+						+ "FROM   bca_clientvendor AS cv " + "       LEFT JOIN bca_clientvendorservice AS s "
+						+ "              ON cv.clientvendorid = s.clientvendorid " + "WHERE  ( cv.status = 'U' "
+						+ "          OR cv.status = 'N' ) " + "       AND cv.deleted = 0 "
+						+ "       AND cv.companyid = '" + cId + "'" + "       AND cv.cvtypeid IN ( 1, 2 )";
+				if (date1 != null && date2 != null && date1.trim().length() > 1 && date2.trim().length() > 1) {
+					sql += " AND cv.DateAdded BETWEEN '" + info.string2date(date1) + "' AND '" + info.string2date(date2)
+							+ "'";
+
+				}
+
+				rs1 = stmt1.executeQuery(sql);
+				while (rs1.next()) {
+					SalesBoard d = new SalesBoard();
+					d.setCompanyName(rs1.getString(1));
+					d.setCvName(rs1.getString(2) + " " + rs1.getString(3));
+					sales = getBalanceForReportForCustoemr(rs1.getLong(1), cId);
+					d.setSalesTotal(sales);
+					ref = calculateRefundBalance(rs1.getLong(1), cId);
+					d.setRefTotal(ref);
+					d.setAdjTotal(sales - ref);
+					objList.add(d);
+				}
+			} else if (invoiceReportType1.equals("2")) {
+				int Soldqty = 0;
+				double Soldamt = 0.0;
 				int refqty = 0;
 				double refAmt = 0.00;
-				double  adjusted_amt = 0.0;
-				double totalsolamt=0;
+				double adjusted_amt = 0.0;
+				double totalsolamt = 0;
 				stmt2 = con.createStatement();
-				sql = ""
-						+ "SELECT a.*, "
-						+ "       b.inventorycode AS Category "
-						+ "FROM   bca_iteminventory AS a "
-						+ "       RIGHT JOIN bca_iteminventory AS b "
-						+ "               ON a.parentid = b.inventoryid "
-						+ "WHERE  a.companyid = '" + cId + "'"
-						+ "       AND a.inventoryid <> -1 "
+				sql = "" + "SELECT a.*, " + "       b.inventorycode AS Category " + "FROM   bca_iteminventory AS a "
+						+ "       RIGHT JOIN bca_iteminventory AS b " + "               ON a.parentid = b.inventoryid "
+						+ "WHERE  a.companyid = '" + cId + "'" + "       AND a.inventoryid <> -1 "
 						+ "       AND a.active = 1";
-				 if(date1 != null && date2 != null && date1.trim().length()>1 && date2.trim().length()>1)
-			       {
-			    	   sql+=" AND b.DateAdded BETWEEN '"
-			    			   + info.string2date(date1)+ "' AND '"  + info.string2date(date2) + "'"; 
-			    			   
-			       }
-				
+				if (date1 != null && date2 != null && date1.trim().length() > 1 && date2.trim().length() > 1) {
+					sql += " AND b.DateAdded BETWEEN '" + info.string2date(date1) + "' AND '" + info.string2date(date2)
+							+ "'";
+
+				}
+
 				rs2 = stmt2.executeQuery(sql);
-				while(rs2.next())
-				{
+				while (rs2.next()) {
 					SalesBoard d = new SalesBoard();
 					d.setInventoryCode(rs2.getString(4));
 					d.setCategory(rs2.getBoolean("isCategory"));
 					d.setInventoryId(rs2.getInt("InventoryID"));
-					if(!d.isCategory())
-					{
-						
-						String sql1 = ""
-						+ "SELECT qty, "
-						+ "       unitprice, "
-						+ "       b.invoiceid, "
-						+ "       a.cartid "
-						+ "FROM   bca_cart a, "
-						+ "       bca_invoice b "
-						+ "WHERE  a.invoiceid = b.invoiceid "
-						+ "       AND b.invoicetypeid = 1 "
-						+ "       AND b.companyid = '" + cId + "'"
-						+ "       AND NOT ( b.invoicestatus = 1 ) "
-						+ "       AND inventoryid = "+d.getInventoryId();
-						
+					if (!d.isCategory()) {
+
+						String sql1 = "" + "SELECT qty, " + "       unitprice, " + "       b.invoiceid, "
+								+ "       a.cartid " + "FROM   bca_cart a, " + "       bca_invoice b "
+								+ "WHERE  a.invoiceid = b.invoiceid " + "       AND b.invoicetypeid = 1 "
+								+ "       AND b.companyid = '" + cId + "'" + "       AND NOT ( b.invoicestatus = 1 ) "
+								+ "       AND inventoryid = " + d.getInventoryId();
+
 						stmt3 = con.createStatement();
 						rs3 = stmt3.executeQuery(sql1);
-						while(rs3.next())
-						{
+						while (rs3.next()) {
 							Loger.log(sql1);
 							int qty = rs3.getInt("Qty");
-							 Soldqty = Soldqty + qty;
-							 Soldamt = Soldamt + qty * rs3.getDouble("UnitPrice");
-							 
-							 String refund = "SELECT RmaItemQty,Total " +
-				                        " FROM bca_rmaitem as a" +
-				                        " INNER JOIN bca_rmamaster as b " +
-				                        " ON a.RmaNo=b.RmaID " +
-				                        " WHERE CartID = " + rs3.getInt("CartID") +
-				                        " AND NOT (b.Status = 'Canceled')";
-							 stmt4 = con.createStatement();
-							 rs4 = stmt4.executeQuery(refund);
-							 while(rs4.next())
-							 {
-								 int qty_1 = rs4.getInt("RmaItemQty");
-								 refqty = refqty + qty_1;
-								 refAmt = refAmt + rs4.getDouble("Total");
-							 }
-							 
-							 adjusted_amt = Soldamt - refAmt;
-				             Soldqty = Soldqty - refqty;
-				             Soldamt = Soldamt - refAmt;
+							Soldqty = Soldqty + qty;
+							Soldamt = Soldamt + qty * rs3.getDouble("UnitPrice");
+
+							String refund = "SELECT RmaItemQty,Total " + " FROM bca_rmaitem as a"
+									+ " INNER JOIN bca_rmamaster as b " + " ON a.RmaNo=b.RmaID " + " WHERE CartID = "
+									+ rs3.getInt("CartID") + " AND NOT (b.Status = 'Canceled')";
+							stmt4 = con.createStatement();
+							rs4 = stmt4.executeQuery(refund);
+							while (rs4.next()) {
+								int qty_1 = rs4.getInt("RmaItemQty");
+								refqty = refqty + qty_1;
+								refAmt = refAmt + rs4.getDouble("Total");
+							}
+
+							adjusted_amt = Soldamt - refAmt;
+							Soldqty = Soldqty - refqty;
+							Soldamt = Soldamt - refAmt;
 						}
 					}
 					d.setSoldQty(Soldqty);
@@ -378,81 +382,58 @@ public class SalesBoardInfo {
 					d.setAdjTotal(adjusted_amt);
 					objList.add(d);
 				}
-			}
-			else if(invoiceReportType1.equals("3"))
-			{
+			} else if (invoiceReportType1.equals("3")) {
 				int IVID = -1;
-		        String invName = "";
-		        int qtyTotal = 0;
-		        double amtTotal = 0.0;
-		        double balTotal = 0.0;
-		        
-				sql = ""
-						+ "SELECT cart.inventoryname, "
-						+ "       cart.dateadded, "
-						+ "       cart.inventoryid, "
-						+ "       invoice.ordernum, "
-						+ "       invoice.memo, "
-						+ "       clientVendor.NAME, "
-						+ "       clientVendor.clientvendorid, "
-						+ "       cart.qty, "
-						+ "       cart.unitprice, "
-						+ "       ( cart.qty * cart.unitprice ) AS Amount "
-						+ "FROM   bca_cart AS cart, "
-						+ "       bca_invoice AS invoice, "
-						+ "       bca_clientvendor AS clientVendor "
-						+ "WHERE  ( clientVendor.status = 'U' "
-						+ "          OR clientVendor.status = 'N' ) "
+				String invName = "";
+				int qtyTotal = 0;
+				double amtTotal = 0.0;
+				double balTotal = 0.0;
+
+				sql = "" + "SELECT cart.inventoryname, " + "       cart.dateadded, " + "       cart.inventoryid, "
+						+ "       invoice.ordernum, " + "       invoice.memo, " + "       clientVendor.NAME, "
+						+ "       clientVendor.clientvendorid, " + "       cart.qty, " + "       cart.unitprice, "
+						+ "       ( cart.qty * cart.unitprice ) AS Amount " + "FROM   bca_cart AS cart, "
+						+ "       bca_invoice AS invoice, " + "       bca_clientvendor AS clientVendor "
+						+ "WHERE  ( clientVendor.status = 'U' " + "          OR clientVendor.status = 'N' ) "
 						+ "       AND clientVendor.deleted = 0 "
 						+ "       AND invoice.clientvendorid = clientVendor.clientvendorid "
 						+ "       AND invoice.invoiceid = cart.invoiceid "
-						+ "       AND NOT ( invoice.invoicestatus = 1 ) "
-						+ "       AND invoice.invoicetypeid = 1 "
-						+ "       AND cart.inventoryid <> -1 "
-						+ "       AND invoice.companyid = '" + cId + "'";
-				
+						+ "       AND NOT ( invoice.invoicestatus = 1 ) " + "       AND invoice.invoicetypeid = 1 "
+						+ "       AND cart.inventoryid <> -1 " + "       AND invoice.companyid = '" + cId + "'";
+
 				stmt1 = con.createStatement();
 				rs1 = stmt1.executeQuery(sql);
-				while(rs1.next())
-				{
+				while (rs1.next()) {
 					SalesBoard d = new SalesBoard();
 					invName = rs1.getString("InventoryName");
-					/*d.setInventoryName(rs1.getString("InventoryName"));*/
+					/* d.setInventoryName(rs1.getString("InventoryName")); */
 					d.setInventoryId(rs1.getInt("InventoryID"));
-					if(d.getInventoryId() == IVID || IVID == -1)
-					{
+					if (d.getInventoryId() == IVID || IVID == -1) {
 						Loger.log(sql);
 						d.setInventoryName(invName);
 						IVID = d.getInventoryId();
 						d.setCvName(rs1.getString("Name"));
 						d.setInventoryQty(rs1.getInt("Qty"));
 						d.setAmount(rs1.getDouble("Amount"));
-					}
-					else{
-						
+					} else {
+
 						d.setInventoryId(rs1.getInt("InventoryID"));
 						d.setInventoryName(rs1.getString("InventoryName"));
-						
-						String sql1 = ""
-										+ "SELECT Sum(cart.qty) AS QtySum, "
-										+ "       Sum(( cart.qty * cart.unitprice )) AS AmountSum "
-										+ "FROM   bca_cart AS cart, "
-										+ "       bca_invoice AS invoice, "
-										+ "       bca_clientvendor AS clientVendor "
-										+ "WHERE  ( clientVendor.status = 'U' "
-										+ "          OR clientVendor.status = 'N' ) "
-										+ "       AND clientVendor.deleted = 0 "
-										+ "       AND invoice.clientvendorid = clientVendor.clientvendorid "
-										+ "       AND invoice.invoiceid = cart.invoiceid "
-										+ "       AND NOT ( invoice.invoicestatus = 1 ) "
-										+ "       AND invoice.companyid = '" + cId + "'"
-										+ "       AND invoice.invoicetypeid = 1 "
-										+ "       AND cart.inventoryid = " + d.getInventoryId();
+
+						String sql1 = "" + "SELECT Sum(cart.qty) AS QtySum, "
+								+ "       Sum(( cart.qty * cart.unitprice )) AS AmountSum "
+								+ "FROM   bca_cart AS cart, " + "       bca_invoice AS invoice, "
+								+ "       bca_clientvendor AS clientVendor " + "WHERE  ( clientVendor.status = 'U' "
+								+ "          OR clientVendor.status = 'N' ) " + "       AND clientVendor.deleted = 0 "
+								+ "       AND invoice.clientvendorid = clientVendor.clientvendorid "
+								+ "       AND invoice.invoiceid = cart.invoiceid "
+								+ "       AND NOT ( invoice.invoicestatus = 1 ) " + "       AND invoice.companyid = '"
+								+ cId + "'" + "       AND invoice.invoicetypeid = 1 " + "       AND cart.inventoryid = "
+								+ d.getInventoryId();
 
 						stmt2 = con.createStatement();
 						rs2 = stmt2.executeQuery(sql1);
-						if(rs2.next())
-						{
+						if (rs2.next()) {
 							qtyTotal = rs2.getInt("QtySum");
 							amtTotal = rs2.getDouble("AmountSum");
 							balTotal = amtTotal;
@@ -464,186 +445,160 @@ public class SalesBoardInfo {
 					}
 					objList.add(d);
 				}
-				
+
 			}
-	}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (rs2 != null) {
 					db.close(rs2);
-					}
+				}
 				if (rs3 != null) {
 					db.close(rs3);
-					}
+				}
 				if (rs4 != null) {
 					db.close(rs4);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
+				}
 				if (stmt2 != null) {
 					db.close(stmt2);
-					}
+				}
 				if (stmt3 != null) {
 					db.close(stmt3);
-					}
+				}
 				if (stmt4 != null) {
 					db.close(stmt4);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
-		
+
 		return objList;
-		
+
 	}
-	public double getBalanceForReportForCustoemr(long cvId,String comId)
-	{
-		Connection con = null ;
+
+	public double getBalanceForReportForCustoemr(long cvId, String comId) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		String sql = "";
 		double bal = 0.00;
-		try
-		{
-			sql = ""
-					+ "SELECT Sum(inv.adjustedtotal) AS salesTotal "
-					+ "FROM   bca_invoice AS inv "
-					+ "WHERE  inv.clientvendorid =  " + cvId
-					+ "       AND inv.companyid = '" + comId + "'"
-					+ "       AND inv.invoicetypeid = 1 "
-					+ "       AND NOT ( inv.invoicestatus = 1 )";
-			
+		try {
+			sql = "" + "SELECT Sum(inv.adjustedtotal) AS salesTotal " + "FROM   bca_invoice AS inv "
+					+ "WHERE  inv.clientvendorid =  " + cvId + "       AND inv.companyid = '" + comId + "'"
+					+ "       AND inv.invoicetypeid = 1 " + "       AND NOT ( inv.invoicestatus = 1 )";
+
 			con = db.getConnection();
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
-			if(rs.next())
-			{
+			if (rs.next()) {
 				bal = rs.getDouble(1);
 			}
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return bal;
 	}
-	public double calculateRefundBalance(long cvId,String comId)
-	{
-		Connection con = null ;
+
+	public double calculateRefundBalance(long cvId, String comId) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		String sql = "";
 		double refBal = 0.00;
-		
-		try { 
-			sql = ""
-					+ " SELECT Sum(item.total) AS refundTotal "
-					+ " FROM   bca_rmamaster AS master "
-					+ "       INNER JOIN bca_rmaitem AS item "
-					+ "               ON item.rmano = master.rmano "
-					+ " WHERE  master.companyid = '" + comId + "'"
-					+ "       AND clientvendorid =" + cvId
+
+		try {
+			sql = "" + " SELECT Sum(item.total) AS refundTotal " + " FROM   bca_rmamaster AS master "
+					+ "       INNER JOIN bca_rmaitem AS item " + "               ON item.rmano = master.rmano "
+					+ " WHERE  master.companyid = '" + comId + "'" + "       AND clientvendorid =" + cvId
 					+ " GROUP  BY master.rmano";
-			
-		 con = db.getConnection();
-		 pstmt = con.prepareStatement(sql);
-		 rs = pstmt.executeQuery();
-		 if(rs.next())
-		 {
-			 refBal = rs.getDouble(1);
-		 }
-		}catch(Exception e)
-		{
+
+			con = db.getConnection();
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				refBal = rs.getDouble(1);
+			}
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return refBal;
 	}
+
 	public ArrayList SalesReportByRep(String compId, String oDate1, String oDate2) {
-	
+
 		Loger.log("From SalesRepInfo" + compId);
-		Connection con = null ;
-		Statement stmt1 = null,stmt2 = null;
+		Connection con = null;
+		Statement stmt1 = null, stmt2 = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<SalesBoard> objList = new ArrayList<SalesBoard>();
-		ResultSet rs1 = null,rs2 = null;
+		ResultSet rs1 = null, rs2 = null;
 		con = db.getConnection();
-		String sql1="";
+		String sql1 = "";
 		CustomerInfo cinfo = new CustomerInfo();
 		try {
-			stmt1  = con.createStatement();		
+			stmt1 = con.createStatement();
 			stmt2 = con.createStatement();
-			    
-		     sql1 = "SELECT SUM(total) AS Total , SUM(qty) AS Qty ,salesRepId FROM ( SELECT Total total, SUM(Qty) qty, bi.SalesRepID salesRepId " +
-		     		       "FROM bca_invoice AS bi, bca_cart AS bc WHERE bi.companyId = '"+compId+"' " +
-		     		       "AND bi.InvoiceID = bc.InvoiceID " +
-		     		       "AND bi.InvoiceTypeID = '1' " +
-		     		       "AND bi.OrderNum > 0 " +
-		     		       "AND bi.invoiceStatus = 0 ";
-		     		    			
-			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1
-					&& oDate2.trim().length() > 1 ) {
-				
-				sql1 += "	and bi.DateConfirmed between '"
-						+ cinfo.string2date(oDate1) + "' and '"
+
+			sql1 = "SELECT SUM(total) AS Total , SUM(qty) AS Qty ,salesRepId FROM ( SELECT Total total, SUM(Qty) qty, bi.SalesRepID salesRepId "
+					+ "FROM bca_invoice AS bi, bca_cart AS bc WHERE bi.companyId = '" + compId + "' "
+					+ "AND bi.InvoiceID = bc.InvoiceID " + "AND bi.InvoiceTypeID = '1' " + "AND bi.OrderNum > 0 "
+					+ "AND bi.invoiceStatus = 0 ";
+
+			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1 && oDate2.trim().length() > 1) {
+
+				sql1 += "	and bi.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
 						+ cinfo.string2date(oDate2) + "' ";
+			} else if (oDate1 != null && oDate1.trim().length() > 1) {
+				sql1 += "	and bi.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
+						+ cinfo.string2date("now()") + "' ";
+			} else if (oDate2 != null && oDate2.trim().length() > 1) {
+				sql1 += "	and bi.DateConfirmed <= '" + cinfo.string2date(oDate2) + "'  ";
+
 			}
-			else if(oDate1 != null && oDate1.trim().length() > 1){
-				sql1 += "	and bi.DateConfirmed between '"
-					+ cinfo.string2date(oDate1) + "' and '"
-					+ cinfo.string2date("now()") + "' ";
-			}
-			else if(oDate2!=null && oDate2.trim().length() > 1){
-				sql1 += "	and bi.DateConfirmed <= '"+
-					cinfo.string2date(oDate2) + "'  ";
-				
-			}
-			 sql1 += "GROUP BY bi.SalesRepID, total)" ;
-		     sql1 += "sales_summary ";							
-			 sql1 += "GROUP BY salesRepId";
+			sql1 += "GROUP BY bi.SalesRepID, total)";
+			sql1 += "sales_summary ";
+			sql1 += "GROUP BY salesRepId";
 
 			stmt1 = con.createStatement();
 			rs1 = stmt1.executeQuery(sql1);
@@ -652,47 +607,47 @@ public class SalesBoardInfo {
 				if (!rs1.next())
 					break;
 				SalesBoard d = new SalesBoard();
-				d.setTotal(rs1.getDouble("Total"));
+				d.setTotal(rs1.getBigDecimal("Total").setScale(2));
 				d.setInventoryQty(rs1.getInt("Qty"));
 				String rep = rs1.getString("salesRepId");
-				   if(rep != null){
-					 String sql4="select Name from bca_salesrep where SalesRepID ="+rep;  
-					 rs2 = stmt2.executeQuery(sql4);
-					 while(rs2.next()){
-						 d.setRep(rs2.getString("Name"));
-					 }
-				   }				
+				if (rep != null) {
+					String sql4 = "select Name from bca_salesrep where SalesRepID =" + rep;
+					rs2 = stmt2.executeQuery(sql4);
+					while (rs2.next()) {
+						d.setRep(rs2.getString("Name"));
+					}
+				}
 				objList.add(d);
 
 			} while (true);
 
 		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class SalesReportByRep and  method -SalesReportByRep "+ " " + ee.toString());
-		}
-		finally {
+			Loger.log(2, " SQL Error in Class SalesReportByRep and  method -SalesReportByRep " + " " + ee.toString());
+		} finally {
 			try {
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
+				}
 				if (rs2 != null) {
 					db.close(rs2);
-					}
+				}
 				if (stmt2 != null) {
 					db.close(stmt2);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return objList;
 
 	}
+
 	public java.sql.Date getdate(String d) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -710,7 +665,7 @@ public class SalesBoardInfo {
 
 	public boolean update(HttpServletRequest request) {
 		boolean result = false;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmtUpdate = null;
 		SQLExecutor db = new SQLExecutor();
 
@@ -746,79 +701,63 @@ public class SalesBoardInfo {
 			}
 
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class TaxInfo and  method -getFederalTax "
-							+ " " + ee.toString());
-		}
-		finally {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
+		} finally {
 			try {
 				if (pstmtUpdate != null) {
 					db.close(pstmtUpdate);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return result;
 	}
 
-	public ArrayList getRefundInvoiceReport(String compId, String oDate1, String oDate2) 
-	{
-		Connection con = null ;
+	public ArrayList getRefundInvoiceReport(String compId, String oDate1, String oDate2) {
+		Connection con = null;
 		Statement stmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<SalesBoard> objList = new ArrayList<SalesBoard>();
 		ResultSet rs = null;
 		con = db.getConnection();
-		String sql1="";
-		try 
-		{
-			stmt1  = con.createStatement();		
+		String sql1 = "";
+		try {
+			stmt1 = con.createStatement();
 			sql1 = "SELECT ref.OrderNum, ref.DateAdded, ref.ClientVendorID, cv.Name,cv.FirstName,cv.LastName,srep.Name AS SRName, ref.RefundReasonID, "
-					+ "ref.OrderPaymentTypeID, ref.Amount "
-					+ "FROM ((bca_clientvendor AS cv INNER JOIN bca_refundlist "
-					+ "AS ref ON ref.ClientVendorID = cv.ClientVendorID) "
-					+ "LEFT JOIN bca_salesrep AS srep  "
-					+ "ON srep.SalesRepID = ref.SalesRepID) "
-					+ "WHERE ref.Status = 1  AND ref.InvoiceTypeID =1  "
-					+ "And (cv.Status='U' Or cv.Status='N')  "
-					+ "AND Deleted = 0  AND ref.CompanyID = "+compId;
-			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1
-					&& oDate2.trim().length() > 1 ) {
-				
-				sql1 += "	and cv.DateConfirmed between '"
-						+ cinfo.string2date(oDate1) + "' and '"
+					+ "ref.OrderPaymentTypeID, ref.Amount " + "FROM ((bca_clientvendor AS cv INNER JOIN bca_refundlist "
+					+ "AS ref ON ref.ClientVendorID = cv.ClientVendorID) " + "LEFT JOIN bca_salesrep AS srep  "
+					+ "ON srep.SalesRepID = ref.SalesRepID) " + "WHERE ref.Status = 1  AND ref.InvoiceTypeID =1  "
+					+ "And (cv.Status='U' Or cv.Status='N')  " + "AND Deleted = 0  AND ref.CompanyID = " + compId;
+			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1 && oDate2.trim().length() > 1) {
+
+				sql1 += "	and cv.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
 						+ cinfo.string2date(oDate2) + "' ";
+			} else if (oDate1 != null && oDate1.trim().length() > 1) {
+				sql1 += "	and cv.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
+						+ cinfo.string2date("now()") + "' ";
+			} else if (oDate2 != null && oDate2.trim().length() > 1) {
+				sql1 += "	and cv.DateConfirmed <= '" + cinfo.string2date(oDate2) + "'  ";
+
 			}
-			else if(oDate1 != null && oDate1.trim().length() > 1){
-				sql1 += "	and cv.DateConfirmed between '"
-					+ cinfo.string2date(oDate1) + "' and '"
-					+ cinfo.string2date("now()") + "' ";
-			}
-			else if(oDate2!=null && oDate2.trim().length() > 1){
-				sql1 += "	and cv.DateConfirmed <= '"+
-					cinfo.string2date(oDate2) + "'  ";
-				
-			}
-			 sql1 += "GROUP BY cv.SalesRepID, total)" ;
-		     sql1 += "sales_summary ";							
-			 sql1 += "GROUP BY salesRepId";
+			sql1 += "GROUP BY cv.SalesRepID, total)";
+			sql1 += "sales_summary ";
+			sql1 += "GROUP BY salesRepId";
 
 			stmt1 = con.createStatement();
 			rs = stmt1.executeQuery(sql1);
 
-			do 
-			{
+			do {
 				if (!rs.next())
 					break;
 				SalesBoard d = new SalesBoard();
 				d.setInvoiceID(rs.getInt("OrderNum"));
 				d.setDateAdded(rs.getString("DateAdded"));
-				d.setCvName(rs.getString("FirstName")+" "+rs.getString("LastName"));
+				d.setCvName(rs.getString("FirstName") + " " + rs.getString("LastName"));
 				d.setFirstName(rs.getString("FirstName"));
 				d.setLastName(rs.getString("LastName"));
 				d.setAmount(rs.getDouble("Amount"));
@@ -826,24 +765,26 @@ public class SalesBoardInfo {
 
 			} while (true);
 		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class SalesReportByRep and  method -getRefundInvoiceReport "+ " " + ee.toString());
+			Loger.log(2,
+					" SQL Error in Class SalesReportByRep and  method -getRefundInvoiceReport " + " " + ee.toString());
 		}
 
 		finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
+	
 }

@@ -107,7 +107,16 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				rb.setOrderNum(rs.getInt("OrderNum"));
 				int orderNo = (rs.getInt("OrderNum"));
-                rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo), AppConstants.InvoiceType, configDto, false));
+				String yearPart = MyUtility.getYearPart(new SimpleDateFormat("dd-mm-yyyy").format(rs.getDate("DateAdded")));
+				
+				if (configDto.getUsePrefixIV().equals("on")) {
+					rb.setOrderNumStr("IV".concat(yearPart)
+							.concat("-" + MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo),
+									AppConstants.InvoiceType, configDto, false)));
+				} else {
+					rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo),
+							AppConstants.InvoiceType, configDto, false));
+				}
 				rb.setPoNum(rs.getInt("PONum"));
 				rb.setEmployeeId(rs.getInt("EmployeeID"));
 				rb.setRefNum(rs.getString("RefNum"));
@@ -1039,7 +1048,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 		}
 		double paidAmount = rb.getPaidAmount()+receivableListBean.getBalance();
-		double balance = rb.getAdjustedTotal() - paidAmount;
+		//double balance = rb.getAdjustedTotal() - paidAmount;
+		double balance = paidAmount - rb.getAdjustedTotal();
 		int i = 0;
 		Connection con;
 		Statement stmt = null;

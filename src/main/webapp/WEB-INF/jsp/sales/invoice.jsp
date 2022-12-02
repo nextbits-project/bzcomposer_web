@@ -1032,7 +1032,7 @@ rate = 0;
 function clearShippingCol(){
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) -  parseFloat(document.InvoiceForm.shipping.value);
 	document.InvoiceForm.total.value = parseFloat(convertSubData).toFixed(2);
-	document.InvoiceForm.shipping.value = 0;
+	document.InvoiceForm.shipping.value = 0.00;
 }
 // this function sum Shipping value in total
 function sumShippingTotal() {
@@ -1044,7 +1044,7 @@ function sumShippingTotal() {
 
 //this function clear input value, 
 function clearDiscountCol(){
-	document.InvoiceForm.adjustedtotal.value = 0;
+	document.InvoiceForm.adjustedtotal.value = 0.00;
 	var convertSubData  =  parseFloat(document.InvoiceForm.total.value) + parseFloat(document.InvoiceForm.balance.value);
 	document.InvoiceForm.balance.value = "";
 }

@@ -1,5 +1,6 @@
 package com.nxsol.bizcomposer.accounting.action;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.common.constants.AppConstants;
+import com.avibha.common.utility.MyUtility;
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
@@ -53,6 +58,10 @@ public class ReceivedTabController {
 		request.setAttribute("PaymentTypeForCombo", paymentType);
 		request.setAttribute("CategoryCombo", categoryforcombo);
 		request.setAttribute("ClineVendorForCombo", clientVendorForCombo);
+		
+		ConfigurationInfo configInfo = new ConfigurationInfo();
+		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+		
 		if(action.equals("UpdateRecord"))
 		{
 			TblPaymentDto cfrm = (TblPaymentDto)form;
@@ -102,8 +111,15 @@ public class ReceivedTabController {
 			request.getSession().setAttribute("PaidOrUnpaid"+payment.getInvoiceID(), PaidOrUnpaid);
 			request.getSession().setAttribute("invoiceId", payment.getInvoiceID());
 			request.getSession().setAttribute("totalAmount"+payment.getInvoiceID(), totalAmount);
+			String yearPart = MyUtility.getYearPart(new SimpleDateFormat("dd-mm-yyyy").format(payment.getDateAdded()));
+			if(configDto.getUsePrefixIV().equals("on")) {
+				payment.setOrderNumStr("IV".concat(yearPart).concat("-"+MyUtility.getOrderNumberByConfigData(String.valueOf(payment.getOrderNum()), AppConstants.InvoiceType, configDto, false)));
+			}else {
+				payment.setOrderNumStr(MyUtility.getOrderNumberByConfigData(String.valueOf(payment.getOrderNum()), AppConstants.InvoiceType, configDto, false));
+			}
 		}
 		ArrayList<TblPaymentDto> partiallyReceivedLayaways = rl.getPartiallyReceivedLayaways();
+		
 		request.setAttribute("partiallyReceivedLayaways", partiallyReceivedLayaways);
 		request.setAttribute("receivedList", receivedPaymentList);
 

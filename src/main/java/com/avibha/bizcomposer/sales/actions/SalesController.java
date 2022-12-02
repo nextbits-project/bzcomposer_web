@@ -47,9 +47,11 @@ import java.util.List;
 @Controller
 public class SalesController {
 
-	@RequestMapping(value = {"/Invoice", "/Customer", "/Item", "/SalesOrder" ,"/DataManager"}, method = {RequestMethod.GET, RequestMethod.POST})
-	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto, UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto,
-					Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
+			RequestMethod.GET, RequestMethod.POST })
+	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
+			UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto, Model model, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		String IN_URI = request.getRequestURI();
 		String CUSTOMER_URI = "/Customer";
 		String ITEM_URI = "/Item";
@@ -60,61 +62,58 @@ public class SalesController {
 		configInfo.setCurrentRequest(request);
 
 		String forward = "sales/invoice";
-		if (IN_URI.endsWith(CUSTOMER_URI)){
+		if (IN_URI.endsWith(CUSTOMER_URI)) {
 			forward = "/sales/customerNew";
 			model.addAttribute("customerDto", customerDto);
 			model.addAttribute("emailSenderDto", emailSenderDto);
-		}else if (IN_URI.endsWith(ITEM_URI)){
+		} else if (IN_URI.endsWith(ITEM_URI)) {
 			forward = "/sales/itemNew";
 			model.addAttribute("itemDto", itemDto);
 			model.addAttribute("emailSenderDto", emailSenderDto);
-		}else if (IN_URI.endsWith(INVOICE_URI)){
+		} else if (IN_URI.endsWith(INVOICE_URI)) {
 			forward = "/sales/invoice";
 			model.addAttribute("invoiceDto", invoiceDto);
-		}else if (IN_URI.endsWith(SALES_ORDER_URI)){
+		} else if (IN_URI.endsWith(SALES_ORDER_URI)) {
 			forward = "sales/salesorder";
 			model.addAttribute("invoiceDto", invoiceDto);
-		}else if (IN_URI.endsWith(SALES_MANAGER_URI)){
+		} else if (IN_URI.endsWith(SALES_MANAGER_URI)) {
 			forward = "/sales/datamanager";
 		}
 
 		int ordernum = 0;
-		String action  = request.getParameter("tabid");			//action initialized on 14-06-2019
+		String action = request.getParameter("tabid"); // action initialized on 14-06-2019
 		// String companyID="1";
 		HttpSession sess = request.getSession();
 		String companyID = (String) sess.getAttribute("CID");
-		String user = (String) sess.getAttribute("username");	//Added on 15-06-2019
+		String user = (String) sess.getAttribute("username"); // Added on 15-06-2019
 		String userRole = (String) sess.getAttribute("userRole");
-		System.out.println("User is:"+user);
+		System.out.println("User is:" + user);
 		ConstValue c = new ConstValue();
 		c.setCompanyId(Integer.parseInt(companyID));
 
 		boolean readData;
-		if(companyID.equals("2") || companyID.equals("3") || companyID.equals("4")) {
-			if(userRole.equals("User")) {
+		if (companyID.equals("2") || companyID.equals("3") || companyID.equals("4")) {
+			if (userRole.equals("User")) {
 				request.getSession().setAttribute("username", "user");
 				request.setAttribute("readData", true);
-				readData= true;
+				readData = true;
 				System.out.println("readData is true");
 			} else {
 				request.getSession().setAttribute("username", user);
 				request.setAttribute("readData", false);
-				readData= false;
+				readData = false;
 				System.out.println("readData is false");
 			}
 		}
-		/*else if(userRole.equals("User")&&companyID.equals("1")){
-			System.out.println("This is new condition added for readonly data.");
-			request.getSession().setAttribute("username", user);
-			request.setAttribute("readData", true);
-			readData= true;
-			System.out.println("readData is true");
-		}
-		else{
-			request.setAttribute("readData", false);
-			readData = false;
-			System.out.println("readData is false for other compaies");
-		}*/
+		/*
+		 * else if(userRole.equals("User")&&companyID.equals("1")){
+		 * System.out.println("This is new condition added for readonly data.");
+		 * request.getSession().setAttribute("username", user);
+		 * request.setAttribute("readData", true); readData= true;
+		 * System.out.println("readData is true"); } else{
+		 * request.setAttribute("readData", false); readData = false;
+		 * System.out.println("readData is false for other compaies"); }
+		 */
 		try {
 			action = request.getParameter("tabid");
 			if (action.equals("SetInfoForAccountReceiveble")) {
@@ -165,22 +164,22 @@ public class SalesController {
 		else if (action.equalsIgnoreCase("DataManager")) { // for DataManager tab
 			SalesDetailsDao sd = new SalesDetailsDao();
 			sd.getdataManager(request);
-			if (IN_URI.endsWith(SALES_MANAGER_URI)){
+			if (IN_URI.endsWith(SALES_MANAGER_URI)) {
 				forward = "sales/datamanager";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
 		}
-		
+
 		else if (action.equalsIgnoreCase("DM_Save")) { // save of DataManager tab
 			SalesDetailsDao sd = new SalesDetailsDao();
 			String sTitleval = request.getParameter("sTitleval");
 			String sNewval = request.getParameter("sNewval");
 			sd.getdataManagerSave(request);
 			sd.getdataManager(request);
-			if (IN_URI.endsWith(SALES_MANAGER_URI)){
+			if (IN_URI.endsWith(SALES_MANAGER_URI)) {
 				forward = "redirect:/DataManager?tabid=datamanager";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
 		}
@@ -189,18 +188,17 @@ public class SalesController {
 			SalesDetailsDao sd = new SalesDetailsDao();
 			sd.getdataManagerDelete(request);
 			sd.getdataManager(request);
-			if (IN_URI.endsWith(SALES_MANAGER_URI)){
+			if (IN_URI.endsWith(SALES_MANAGER_URI)) {
 				forward = "redirect:/DataManager?tabid=datamanager";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
-		}
-		else if (action.equalsIgnoreCase("Customer")) { // Show CustomerList page
+		} else if (action.equalsIgnoreCase("Customer")) { // Show CustomerList page
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
 			SalesDetailsDao sd = new SalesDetailsDao();
 			String firstCvID = sd.getCustomerList(request);
-			if (cvId == null){
+			if (cvId == null) {
 				cvId = firstCvID;
 			}
 			sd.searchSelectedCustomer(cvId, request, customerDto);
@@ -208,12 +206,12 @@ public class SalesController {
 
 			if (rowId != null) {
 				customerDto.setSelectedRowID(rowId);
-			}else {
+			} else {
 				customerDto.setSelectedRowID("0");
 			}
 			if (cvId != null) {
 				customerDto.setClientVendorID(cvId);
-			}else {
+			} else {
 				customerDto.setClientVendorID("0");
 			}
 			if (rowId != null) {
@@ -221,11 +219,10 @@ public class SalesController {
 			}
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/sales/customerNew";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
-		}
-		else if (action.equalsIgnoreCase("CustomerBoard")) { // Show CustomerBoard page
+		} else if (action.equalsIgnoreCase("CustomerBoard")) { // Show CustomerBoard page
 			SalesDetailsDao sd = new SalesDetailsDao();
 			String firstCvID = sd.getCustomerList(request);
 			sd.getAllList(request);
@@ -235,49 +232,50 @@ public class SalesController {
 			customerDto.setPeriodTo(MyUtility.getCurrentDate());
 			request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
 			forward = "/sales/customerBoard";
-		}
-		else if (action.equalsIgnoreCase("ContactBoard")) { // Show ContactBoard page
+		} else if (action.equalsIgnoreCase("ContactBoard")) { // Show ContactBoard page
 			SalesDetailsDao sd = new SalesDetailsDao();
 			String firstCvID = sd.getCustomerList(request);
 			sd.getAllList(request);
 			forward = "/sales/customerContactBoard";
 		}
 
-		else if (action.equalsIgnoreCase("makeCustomerCardDefault")) { // set customer credit card as default, From Customer-Edit
+		else if (action.equalsIgnoreCase("makeCustomerCardDefault")) { // set customer credit card as default, From
+																		// Customer-Edit
 			String cvId = request.getParameter("cvId");
 			String cardID = request.getParameter("cardID");
-			//String itemIndex = request.getParameter("itemIndex");
+			// String itemIndex = request.getParameter("itemIndex");
 			SalesDetailsDao sd = new SalesDetailsDao();
 			boolean status = sd.makeCustomerCardDefault(cvId, cardID);
-			//forward = "redirect:Customer?tabid=editCustomer&cvId="+cvId+"&itemIndex="+itemIndex;
-			forward = "redirect:Customer?tabid=editCustomer&cvId="+cvId;
-		}
-		else if (action.equalsIgnoreCase("makeCustomerCardDefault2")) { // set customer credit card as default, From Vendor-Edit
+			// forward =
+			// "redirect:Customer?tabid=editCustomer&cvId="+cvId+"&itemIndex="+itemIndex;
+			forward = "redirect:Customer?tabid=editCustomer&cvId=" + cvId;
+		} else if (action.equalsIgnoreCase("makeCustomerCardDefault2")) { // set customer credit card as default, From
+																			// Vendor-Edit
 			String cvId = request.getParameter("cvId");
 			String cardID = request.getParameter("cardID");
 			SalesDetailsDao sd = new SalesDetailsDao();
 			boolean status = sd.makeCustomerCardDefault(cvId, cardID);
-			forward = "redirect:Customer?tabid=editCustomer&cvId="+cvId;
+			forward = "redirect:Customer?tabid=editCustomer&cvId=" + cvId;
 		}
-		
-		else if(action.equalsIgnoreCase("openCustomer")) {
+
+		else if (action.equalsIgnoreCase("openCustomer")) {
 			String cvId = request.getParameter("cvId");
-			//String rowId = request.getParameter("SelectedRID");
+			// String rowId = request.getParameter("SelectedRID");
 			SalesDetailsDao sd = new SalesDetailsDao();
 			String firstCvID = sd.getCustomerList(request);
-			if (cvId == null){
+			if (cvId == null) {
 				cvId = firstCvID;
 			}
 			sd.searchSelectedCustomer(cvId, request, customerDto);
 			sd.getAllList(request);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/sales/customerNew";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
 		}
-		
-		else if(action.equalsIgnoreCase("viewCustomerDetails")) {
+
+		else if (action.equalsIgnoreCase("viewCustomerDetails")) {
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("selectedRID");
 			SalesDetailsDao sd = new SalesDetailsDao();
@@ -298,46 +296,19 @@ public class SalesController {
 			}
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/sales/customerNew";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
-		}
-		else if (action.equalsIgnoreCase("Banking")) {
-			forward = "/sales/invoice";
-		}
-		
-		else if(action.equalsIgnoreCase("SortByFirstName"))
-		{
-			int sortById = Integer.parseInt(request.getParameter("SortBy"));
-			String cvId = request.getParameter("cvId");
-			String rowId = request.getParameter("SelectedRID");
-			SalesDetailsDao sd = new SalesDetailsDao();
-			sd.getCustomerSortByFirstName(request,customerDto);
-			sd.searchSelectedCustomer(cvId, request, customerDto);
-			sd.getAllList(request);
-			
-			if (rowId != null)
-				customerDto.setSelectedRowID(rowId);
-			else
-				customerDto.setSelectedRowID("0");
-			if (cvId != null)
-				customerDto.setClientVendorID(cvId);
-			else
-				customerDto.setClientVendorID("0");
-			if (rowId != null) {
-				request.setAttribute("VendorFrm", customerDto.getSelectedRowID());
-			}
-			request.setAttribute("sortById", sortById);
+		} else if (action.equalsIgnoreCase("Banking")) {
 			forward = "/sales/invoice";
 		}
 
-		else if(action.equalsIgnoreCase("sortInvoice"))
-		{
+		else if (action.equalsIgnoreCase("SortByFirstName")) {
 			int sortById = Integer.parseInt(request.getParameter("SortBy"));
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
 			SalesDetailsDao sd = new SalesDetailsDao();
-			sd.getSortedCustomer(request,customerDto,sortById);
+			sd.getCustomerSortByFirstName(request, customerDto);
 			sd.searchSelectedCustomer(cvId, request, customerDto);
 			sd.getAllList(request);
 
@@ -353,20 +324,18 @@ public class SalesController {
 				request.setAttribute("VendorFrm", customerDto.getSelectedRowID());
 			}
 			request.setAttribute("sortById", sortById);
-			System.out.println("SortBy:"+sortById);
-			//sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
 			forward = "/sales/invoice";
 		}
-		else if(action.equalsIgnoreCase("SortByLastName"))
-		{
+
+		else if (action.equalsIgnoreCase("sortInvoice")) {
 			int sortById = Integer.parseInt(request.getParameter("SortBy"));
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
 			SalesDetailsDao sd = new SalesDetailsDao();
-			sd.getCustomerSortByLastName(request,customerDto);
+			sd.getSortedCustomer(request, customerDto, sortById);
 			sd.searchSelectedCustomer(cvId, request, customerDto);
 			sd.getAllList(request);
-			
+
 			if (rowId != null)
 				customerDto.setSelectedRowID(rowId);
 			else
@@ -379,75 +348,95 @@ public class SalesController {
 				request.setAttribute("VendorFrm", customerDto.getSelectedRowID());
 			}
 			request.setAttribute("sortById", sortById);
-			System.out.println("SortBy:"+sortById);
+			System.out.println("SortBy:" + sortById);
+			// sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
+			forward = "/sales/invoice";
+		} else if (action.equalsIgnoreCase("SortByLastName")) {
+			int sortById = Integer.parseInt(request.getParameter("SortBy"));
+			String cvId = request.getParameter("cvId");
+			String rowId = request.getParameter("SelectedRID");
+			SalesDetailsDao sd = new SalesDetailsDao();
+			sd.getCustomerSortByLastName(request, customerDto);
+			sd.searchSelectedCustomer(cvId, request, customerDto);
+			sd.getAllList(request);
+
+			if (rowId != null)
+				customerDto.setSelectedRowID(rowId);
+			else
+				customerDto.setSelectedRowID("0");
+			if (cvId != null)
+				customerDto.setClientVendorID(cvId);
+			else
+				customerDto.setClientVendorID("0");
+			if (rowId != null) {
+				request.setAttribute("VendorFrm", customerDto.getSelectedRowID());
+			}
+			request.setAttribute("sortById", sortById);
+			System.out.println("SortBy:" + sortById);
 			forward = "/sales/invoice";
 		}
-		
-		else if(action.equalsIgnoreCase("SortInvoice"))
-		{
+
+		else if (action.equalsIgnoreCase("SortInvoice")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
+			sdetails.getSortedInvoiceInfo(request, request.getParameter("SortBy"));
 			forward = "/sales/invoice";
 		}
-		
-		else if(action.equalsIgnoreCase("saveUnitPrice"))
-		{
+
+		else if (action.equalsIgnoreCase("saveUnitPrice")) {
 			int itemId = Integer.parseInt(request.getParameter("itemID"));
-			//float price = Float.parseFloat(request.getParameter("price"));
-			double p1  = Double.parseDouble(request.getParameter("price"));
-			System.out.println("method:saveUnitPrice\nitemId:"+itemId+"\nPrice:"+p1);
+			// float price = Float.parseFloat(request.getParameter("price"));
+			double p1 = Double.parseDouble(request.getParameter("price"));
+			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nPrice:" + p1);
 			SalesDetailsDao sd = new SalesDetailsDao();
-			sd.setUnitPrice(companyID,itemId,p1);
+			sd.setUnitPrice(companyID, itemId, p1);
 			sd.getInvoiceInfo(request);
 			forward = "/sales/invoice";
 		}
-		
-		else if(action.equalsIgnoreCase("saveItemName"))
-		{
+
+		else if (action.equalsIgnoreCase("saveItemName")) {
 			int itemId = Integer.parseInt(request.getParameter("itemID"));
 			String itemName = request.getParameter("itemName");
-			System.out.println("method:saveUnitPrice\nitemId:"+itemId+"\nItemName:"+itemName);
+			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nItemName:" + itemName);
 			SalesDetailsDao sd = new SalesDetailsDao();
-			sd.setItemName(companyID,itemId,itemName);
+			sd.setItemName(companyID, itemId, itemName);
 			sd.getInvoiceInfo(request);
 			forward = "/sales/invoice";
-		}
-		else if(action.equalsIgnoreCase("getBillingAddress")){
+		} else if (action.equalsIgnoreCase("getBillingAddress")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getBillingAddress(invoiceDto, request);
 			String targetURL = "/Invoice";
-			if (IN_URI.endsWith(SALES_ORDER_URI)){
+			if (IN_URI.endsWith(SALES_ORDER_URI)) {
 				targetURL = SALES_ORDER_URI;
 			}
-			if(request.getParameter("addressType").equalsIgnoreCase("bill")) {
-				request.setAttribute("URL", targetURL+"?tabid=updateBillingAddress");
+			if (request.getParameter("addressType").equalsIgnoreCase("bill")) {
+				request.setAttribute("URL", targetURL + "?tabid=updateBillingAddress");
 				request.setAttribute("addressType", "bill");
-			}else{
-				request.setAttribute("URL", targetURL+"?tabid=updateShippingAddress");
+			} else {
+				request.setAttribute("URL", targetURL + "?tabid=updateShippingAddress");
 				request.setAttribute("addressType", "ship");
 			}
 			forward = "/sales/addressCustomer";
-		}
-		else if(action.equalsIgnoreCase("updateBillingAddress")) {
+		} else if (action.equalsIgnoreCase("updateBillingAddress")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.updateBillingAddress(invoiceDto, request);
 			String targetURL = "/Invoice";
-			if (IN_URI.endsWith(SALES_ORDER_URI)){
+			if (IN_URI.endsWith(SALES_ORDER_URI)) {
 				targetURL = SALES_ORDER_URI;
 			}
-			forward = "redirect:"+targetURL+"?tabid=getBillingAddress&addressType=bill&cvID="+invoiceDto.getClientVendorID()+"&addressID="+invoiceDto.getAddressID();
-		}
-		else if(action.equalsIgnoreCase("updateShippingAddress")) {
+			forward = "redirect:" + targetURL + "?tabid=getBillingAddress&addressType=bill&cvID="
+					+ invoiceDto.getClientVendorID() + "&addressID=" + invoiceDto.getAddressID();
+		} else if (action.equalsIgnoreCase("updateShippingAddress")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.updateShippingAddress(invoiceDto, request);
 			String targetURL = "/Invoice";
-			if (IN_URI.endsWith(SALES_ORDER_URI)){
+			if (IN_URI.endsWith(SALES_ORDER_URI)) {
 				targetURL = SALES_ORDER_URI;
 			}
-			forward = "redirect:"+targetURL+"?tabid=getBillingAddress&addressType=ship&cvID="+invoiceDto.getClientVendorID()+"&addressID="+invoiceDto.getAddressID();
+			forward = "redirect:" + targetURL + "?tabid=getBillingAddress&addressType=ship&cvID="
+					+ invoiceDto.getClientVendorID() + "&addressID=" + invoiceDto.getAddressID();
 		}
-			
-		else if (action.equalsIgnoreCase("AccountReceiveble")) { 
+
+		else if (action.equalsIgnoreCase("AccountReceiveble")) {
 			ReceivableLIst rl = new ReceivableListImpl();
 			ArrayList<ReceivableListDto> ReceivableList = rl.getReceivableList(Integer.parseInt(companyID));
 			TblCategoryDtoLoader category = new TblCategoryDtoLoader();
@@ -461,32 +450,30 @@ public class SalesController {
 			request.setAttribute("ReceivableList", ReceivableList);
 			request.setAttribute("ClineVendorForCombo", clientVendorForCombo);
 			forward = "/sales/invoice";
-		}
-		else if (action.equals("SetInfoForAccountReceiveble")) {
+		} else if (action.equals("SetInfoForAccountReceiveble")) {
 			request.setAttribute("OrderNum", ordernum);
 			forward = "/sales/invoice";
 		}
 
 		else if (action.equalsIgnoreCase("PrintLabels")) { // for Vendor category
 			SalesDetailsDao sd = new SalesDetailsDao();
-			sd.getCustomerList(request);	// to print lables
+			sd.getCustomerList(request); // to print lables
 			Label lbl = new Label();
 			ArrayList labelList = lbl.getLabelList();
 			request.setAttribute("Labels", labelList);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/sales/printLabels";
-			}else{
+			} else {
 				forward = "/sales/updateInvoice";
 			}
-		}
-		else if (action.equalsIgnoreCase("UpdateLabel")) {
+		} else if (action.equalsIgnoreCase("UpdateLabel")) {
 			SalesDetailsDao sd = new SalesDetailsDao();
 			sd.getLabel(request, customerDto);
 			sd.getLabelType(request);
 			request.setAttribute("Customer", "customer");
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/sales/setUpLabel";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
 		}
@@ -498,7 +485,7 @@ public class SalesController {
 			sd.addNewLabel(customerDto);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/sales/addLabel";
-			}else{
+			} else {
 				forward = "/sales/printInvoice";
 			}
 		}
@@ -513,7 +500,7 @@ public class SalesController {
 				msg = "Label is saved successfully";
 				if (IN_URI.endsWith(CUSTOMER_URI)) {
 					forward = "/sales/addLabel";
-				}else{
+				} else {
 					forward = "/sales/printInvoice";
 				}
 			} else {
@@ -521,7 +508,7 @@ public class SalesController {
 				msg = "Label is updated successfully";
 				if (IN_URI.endsWith(CUSTOMER_URI)) {
 					forward = "/sales/setUpLabel";
-				}else{
+				} else {
 					forward = "/sales/invoice";
 				}
 			}
@@ -556,42 +543,41 @@ public class SalesController {
 			invoice.getServices(request, companyID, cvId);
 			sdetails.getInvoiceInfo(request);
 			sdetails.getAllList(request);
-			//sdetails.getCustomerList(request);
+			// sdetails.getCustomerList(request);
 
 			ConfigurationDAO dao = new ConfigurationDAO();
 			request.setAttribute("membershipLevel", dao.getmembershipLevel(companyID, request));
-			request.setAttribute("CustomerSize", dao.getNumberOfCustomer(companyID,request));
+			request.setAttribute("CustomerSize", dao.getNumberOfCustomer(companyID, request));
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);
 
-			customerDto.setCountry(configDto.getCustDefaultCountryID()+"");
-			customerDto.setState(configDto.getSelectedStateId()+"");
+			customerDto.setCountry(configDto.getCustDefaultCountryID() + "");
+			customerDto.setState(configDto.getSelectedStateId() + "");
 			customerDto.setTaxAble(configDto.getCustTaxable());
-			customerDto.setTerm(configDto.getSelectedTermId()+"");
-			customerDto.setPaymentType(configDto.getSelectedPaymentId()+"");
-			customerDto.setRep(configDto.getSelectedSalesRepId()+"");
-			customerDto.setShipping(configDto.getCustomerShippingId()+"");
-			customerDto.setAnnualIntrestRate(configDto.getAnnualInterestRate()+"");
-			customerDto.setMinFCharges(configDto.getMinCharge()+"");
-			customerDto.setGracePrd(configDto.getGracePeriod()+"");
+			customerDto.setTerm(configDto.getSelectedTermId() + "");
+			customerDto.setPaymentType(configDto.getSelectedPaymentId() + "");
+			customerDto.setRep(configDto.getSelectedSalesRepId() + "");
+			customerDto.setShipping(configDto.getCustomerShippingId() + "");
+			customerDto.setAnnualIntrestRate(configDto.getAnnualInterestRate() + "");
+			customerDto.setMinFCharges(configDto.getMinCharge() + "");
+			customerDto.setGracePrd(configDto.getGracePeriod() + "");
 			customerDto.setFsAssessFinanceCharge(configDto.getAssessFinanceCharge());
 			customerDto.setFsMarkFinanceCharge(configDto.getMarkFinanceCharge());
 
 			PurchaseInfo pinfo = new PurchaseInfo();
-			customerDto.setClientVendorID((pinfo.getLastClientVendorID()+1)+"");
+			customerDto.setClientVendorID((pinfo.getLastClientVendorID() + 1) + "");
 			customerDto.setDateAdded(invoice.setCurrentDate());
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/sales/addNewCustomer";
-			}else{
+			} else {
 				forward = "/sales/payHistory";
 			}
-		}
-		else if (action.equalsIgnoreCase("editCustomer")) { // Edit Customer Info
+		} else if (action.equalsIgnoreCase("editCustomer")) { // Edit Customer Info
 			String cvId = request.getParameter("cvId");
 			request.getSession().setAttribute("editedCVID", cvId);
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			//sdetails.getCustomerList(request);
+			// sdetails.getCustomerList(request);
 			sdetails.getCustomerDetails(cvId, request, customerDto);
 			sdetails.getInvoiceInfo(request);
 			sdetails.getAllList(request);
@@ -599,48 +585,45 @@ public class SalesController {
 			ConfigurationDAO dao = new ConfigurationDAO();
 			String membershipLevel = dao.getmembershipLevel(companyID, request);
 			request.setAttribute("membershipLevel", membershipLevel);
-			String CustomerSize = dao.getNumberOfCustomer(companyID,request);
+			String CustomerSize = dao.getNumberOfCustomer(companyID, request);
 			request.setAttribute("CustomerSize", CustomerSize);
 			forward = "/sales/updateCustomer";
-		}
-		else if (action.equalsIgnoreCase("deleteCustomer")) { // Delete Customer Info
+		} else if (action.equalsIgnoreCase("deleteCustomer")) { // Delete Customer Info
 			String CustIDs = request.getParameter("CustIDs");
 			CustomerInfo ci = new CustomerInfo();
-			for(String cvID1: CustIDs.split(":")){
+			for (String cvID1 : CustIDs.split(":")) {
 				ci.deleteCustomer(cvID1, companyID);
 			}
 			forward = "redirect:/Customer?tabid=ContactBoard";
-		}
-		else if (action.equalsIgnoreCase("SearchCustomer")) { // to update customer information.
+		} else if (action.equalsIgnoreCase("SearchCustomer")) { // to update customer information.
 			String cvId = request.getParameter("cvId");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.searchCustomer(cvId, request, customerDto);
 			sdetails.getAllList(request);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/sales/addNewCustomer";
-			}else {
+			} else {
 				forward = "/sales/sendEMail";
 			}
 		}
 
 		else if (action.equalsIgnoreCase("AddCustomer")) { // to add/Save Customer details
 			String cvId = request.getParameter("CustId");
-			//String itemIndex = request.getParameter("itemIndex");
+			// String itemIndex = request.getParameter("itemIndex");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.AddCustomer(request, customerDto);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "redirect:/Customer?tabid=NewCustomer";
-			}else {
+			} else {
 				forward = "/sales/payHistory";
 			}
-		}
-		else if (action.equalsIgnoreCase("UpdateCustomer")) { // to update Vendor
-			//String itemIndex = request.getParameter("itemIndex");
+		} else if (action.equalsIgnoreCase("UpdateCustomer")) { // to update Vendor
+			// String itemIndex = request.getParameter("itemIndex");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.UpdateCustomer(request, customerDto);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
-				forward = "redirect:/Customer?tabid=editCustomer&cvId="+customerDto.getClientVendorID();
-			}else {
+				forward = "redirect:/Customer?tabid=editCustomer&cvId=" + customerDto.getClientVendorID();
+			} else {
 				forward = "/sales/sendEMail";
 			}
 		}
@@ -655,13 +638,11 @@ public class SalesController {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.AdjustInventory(request, itemDto);
 			forward = "/sales/adjustInventory";
-		}
-		else if (action.equalsIgnoreCase("editInventory")) { // For get Received-Item-details
+		} else if (action.equalsIgnoreCase("editInventory")) { // For get Received-Item-details
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getItemDetails(request);
 			forward = "/sales/updateInventoryQty";
-		}
-		else if (action.equalsIgnoreCase("UpdateInventory")) { // for Update Inventory-details
+		} else if (action.equalsIgnoreCase("UpdateInventory")) { // for Update Inventory-details
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.UpdateInventory(request);
 			forward = "redirect:Item?tabid=AdjustInventory";
@@ -692,16 +673,14 @@ public class SalesController {
 			sdetails.FillCombo(request, itemDto);
 			sdetails.ItemsList(request, itemDto);
 			forward = "sales/itemNew";
-		}
-		else if (action.equalsIgnoreCase("SearchItemView")) { // get searched items
+		} else if (action.equalsIgnoreCase("SearchItemView")) { // get searched items
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.ItemsList(request, itemDto);
 			sdetails.searchItem(request, itemDto);
 			sdetails.FillCombo(request, itemDto);
 			request.setAttribute("selectedRID", request.getParameter("selectedRID"));
 			forward = "sales/itemNew";
-		}
-		else if (action.equalsIgnoreCase("ShowAdd")) { // to add new item
+		} else if (action.equalsIgnoreCase("ShowAdd")) { // to add new item
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			// request.getSession().setAttribute("ItemType", "1");
 			// request.setAttribute("ItemType","1");
@@ -720,28 +699,26 @@ public class SalesController {
 			itemDto.setLocationId(configDto.getLocationID());
 			itemDto.setReorderPoint(configDto.getReorderPoint());
 			itemDto.setCustomerType(configDto.getCustomerType());
-			if (IN_URI.endsWith(ITEM_URI)){
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "sales/addItem";
-			}else {
+			} else {
 				forward = "sales/payHistory";
 			}
-		}
-		else if (action.equalsIgnoreCase("AddItem")) { // to save Items
+		} else if (action.equalsIgnoreCase("AddItem")) { // to save Items
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.AddItem(request, itemDto);
 			sdetails.FillCombo(request, itemDto);
 			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "redirect:Item?tabid=ShowAdd&ItemType=1";
-			}else {
+			} else {
 				forward = "/sales/payHistory";
 			}
-		}
-		else if (action.equalsIgnoreCase("AddItemAsCategory")) { // to save Item-Category
+		} else if (action.equalsIgnoreCase("AddItemAsCategory")) { // to save Item-Category
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.insertItemAsCategory(companyID, itemDto);
 			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "redirect:Item?tabid=ShowAdd&ItemType=1";
-			}else {
+			} else {
 				forward = "/sales/payHistory";
 			}
 		}
@@ -750,25 +727,22 @@ public class SalesController {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.searchItem(request, itemDto);
 			sdetails.FillCombo(request, itemDto);
-			forward = "/sales/updateItemDetails";	//itemDetails
-		}
-		else if (action.equalsIgnoreCase("UpdateItem")) { // to update item
+			forward = "/sales/updateItemDetails"; // itemDetails
+		} else if (action.equalsIgnoreCase("UpdateItem")) { // to update item
 			String invId = request.getParameter("InvId");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.UpdateItem(request, itemDto);
 			sdetails.searchItem(request, itemDto);
 			sdetails.FillCombo(request, itemDto);
 			forward = "/sales/invoice";
-			if (IN_URI.endsWith(ITEM_URI)){
-				forward = "redirect:Item?tabid=SearchItem&InvId="+invId;
+			if (IN_URI.endsWith(ITEM_URI)) {
+				forward = "redirect:Item?tabid=SearchItem&InvId=" + invId;
 			}
-		}
-		else if (action.equalsIgnoreCase("DeleteItem")) { // to delete item
+		} else if (action.equalsIgnoreCase("DeleteItem")) { // to delete item
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.DeleteItem(request);
 			forward = "redirect:Item?tabid=Item";
-		}
-		else if (action.equalsIgnoreCase("Invoice") || action.equalsIgnoreCase("NewInvoice")) {
+		} else if (action.equalsIgnoreCase("Invoice") || action.equalsIgnoreCase("NewInvoice")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.newInvoice(request, invoiceDto);
 			sdetails.getInvoiceInfo(request);
@@ -776,162 +750,158 @@ public class SalesController {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			InvoiceDto invoice = new InvoiceDto();
 			invoice.setSalesTaxID("1");
-			invoice.setState("Tax "+configDto.getSaleTaxRate()+"%");
+			invoice.setState("Tax " + configDto.getSaleTaxRate() + "%");
 			invoice.setRate(configDto.getSaleTaxRate());
 			List<InvoiceDto> taxRates = new ArrayList<>();
 			taxRates.add(invoice);
-			invoiceDto.setRep(configDto.getSelectedSalesRepId()+"");
-			invoiceDto.setTerm(configDto.getSelectedTermId()+"");
-			invoiceDto.setPayMethod(configDto.getSelectedPaymentId()+"");
-			invoiceDto.setVia(configDto.getCustomerShippingId()+"");
+			invoiceDto.setRep(configDto.getSelectedSalesRepId() + "");
+			invoiceDto.setTerm(configDto.getSelectedTermId() + "");
+			invoiceDto.setPayMethod(configDto.getSelectedPaymentId() + "");
+			invoiceDto.setVia(configDto.getCustomerShippingId() + "");
 			invoiceDto.setTemplateType(configDto.getInvoiceTemplateType());
-			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.InvoiceType, configDto, false));
+			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(),
+					AppConstants.InvoiceType, configDto, false));
 			request.setAttribute("TaxRates", taxRates);
 			forward = "/sales/invoice";
-		}
-		else if (action.equalsIgnoreCase("FirstInvoice") || action.equalsIgnoreCase("LastInvoice")
+		} else if (action.equalsIgnoreCase("FirstInvoice") || action.equalsIgnoreCase("LastInvoice")
 				|| action.equalsIgnoreCase("NextInvoice") || action.equalsIgnoreCase("PreviousInvoice")) {
 			// get-Invoice-Details-By-BtnName
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInvoiceInfo(request);
-			sdetails.getInvoiceDetailsByBtnName(request,invoiceDto);
+			sdetails.getInvoiceDetailsByBtnName(request, invoiceDto);
 			sdetails.getAllList(request);
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			invoiceDto.setSalesTaxID("1");
-			invoiceDto.setState("Tax "+configDto.getSaleTaxRate()+"%");
+			invoiceDto.setState("Tax " + configDto.getSaleTaxRate() + "%");
 			invoiceDto.setRate(configDto.getSaleTaxRate());
 			List<InvoiceDto> taxRates = new ArrayList<>();
 			taxRates.add(invoiceDto);
 			invoiceDto.setTemplateType(configDto.getInvoiceTemplateType());
 			request.setAttribute("TaxRates", taxRates);
-			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.InvoiceType, configDto, false));
+			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(),
+					AppConstants.InvoiceType, configDto, false));
 			forward = "/sales/invoice";
-		}
-		else if (action.equalsIgnoreCase("addSupplier")) {// to add
+		} else if (action.equalsIgnoreCase("addSupplier")) {// to add
 			String addressStatus = request.getParameter("status");
 			String addressName = request.getParameter("addName");
 			String fName = request.getParameter("fName");
 			String lName = request.getParameter("lName");
 			String add1 = request.getParameter("add1");
 			String add2 = request.getParameter("add2");
-			
-			//fatching old address data
-			String addName =  (String) sess.getAttribute("oldAddressName");
+
+			// fatching old address data
+			String addName = (String) sess.getAttribute("oldAddressName");
 			String first = (String) sess.getAttribute("oldFname");
 			String last = (String) sess.getAttribute("oldlName");
 			String address1 = (String) sess.getAttribute("oldAddress1");
 			String address2 = (String) sess.getAttribute("oldAddress2");
 			String stat = (String) sess.getAttribute("oldStatus");
-			
+
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.addSupplierDetails(request);
 			ArrayList serviceList = new ArrayList();
 			serviceList = sdetails.addServices(companyID);
 			request.setAttribute("serviceList", serviceList);
-			
-			//new address data
+
+			// new address data
 			request.setAttribute("addressStatus", addressStatus);
 			request.setAttribute("addressName", addressName);
 			request.setAttribute("fName", fName);
 			request.setAttribute("lName", lName);
 			request.setAttribute("add1", add1);
 			request.setAttribute("add2", add2);
-			
-			//old address data 
-			request.setAttribute("newAddressName",addName);
-			request.setAttribute("newfName",first);
-			request.setAttribute("newlName",last);
-			request.setAttribute("newAdd1",address1);
-			request.setAttribute("newAdd2",address2);
+
+			// old address data
+			request.setAttribute("newAddressName", addName);
+			request.setAttribute("newfName", first);
+			request.setAttribute("newlName", last);
+			request.setAttribute("newAdd1", address1);
+			request.setAttribute("newAdd2", address2);
 			request.setAttribute("newAddressStatus", stat);
-            forward = "/sales/addSupplier";
+			forward = "/sales/addSupplier";
 		}
-		
-		else if(action.equalsIgnoreCase("addNewSupplier"))
-		{
+
+		else if (action.equalsIgnoreCase("addNewSupplier")) {
 			String addressStatus = request.getParameter("status");
 			String addressName = request.getParameter("addName");
 			String fName = request.getParameter("fName");
 			String lName = request.getParameter("lName");
 			String add1 = request.getParameter("add1");
 			String add2 = request.getParameter("add2");
-			
-			//fatching old address data
-			String addName =  (String) sess.getAttribute("oldAddressName");
+
+			// fatching old address data
+			String addName = (String) sess.getAttribute("oldAddressName");
 			String first = (String) sess.getAttribute("oldFname");
 			String last = (String) sess.getAttribute("oldlName");
 			String address1 = (String) sess.getAttribute("oldAddress1");
 			String address2 = (String) sess.getAttribute("oldAddress2");
 			String stat = (String) sess.getAttribute("oldStatus");
-			
-			System.out.println("New Supplier To be added:"+addressStatus+" "+addressName+" "+fName+" "+lName+" "+add1+" "+add2);
-			
+
+			System.out.println("New Supplier To be added:" + addressStatus + " " + addressName + " " + fName + " "
+					+ lName + " " + add1 + " " + add2);
+
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.addSupplierDetails(request);
 
 			ArrayList serviceList = new ArrayList();
 			serviceList = sdetails.addServices(companyID);
 			request.setAttribute("serviceList", serviceList);
-			
+
 			CustomerDto frm1 = new CustomerDto();
-			
-			//new address data
+
+			// new address data
 			request.setAttribute("addressStatus", addressStatus);
 			request.setAttribute("addressName", addressName);
 			request.setAttribute("fName", fName);
 			request.setAttribute("lName", lName);
 			request.setAttribute("add1", add1);
 			request.setAttribute("add2", add2);
-			
-			//old address data 
-			request.setAttribute("newAddressName",addName);
-			request.setAttribute("newfName",first);
-			request.setAttribute("newlName",last);
-			request.setAttribute("newAdd1",address1);
-			request.setAttribute("newAdd2",address2);
+
+			// old address data
+			request.setAttribute("newAddressName", addName);
+			request.setAttribute("newfName", first);
+			request.setAttribute("newlName", last);
+			request.setAttribute("newAdd1", address1);
+			request.setAttribute("newAdd2", address2);
 			request.setAttribute("newAddressStatus", stat);
-            forward = "/sales/addSupplier";
-		}
-		else if(action.equalsIgnoreCase("addAddress")) {
+			forward = "/sales/addSupplier";
+		} else if (action.equalsIgnoreCase("addAddress")) {
 			// country List
 			CountryState cs = new CountryState();
 			request.setAttribute("cList", cs.getCountry());
 			request.setAttribute("sList", cs.getStates(companyID));
-			
+
 			String chkStatus = request.getParameter("chkStatus");
-			System.out.println("Status is:"+chkStatus);
+			System.out.println("Status is:" + chkStatus);
 			request.setAttribute("chkStatus", chkStatus);
-			if(customerDto!=null) {
-				/*frm.setCname(frm.getCname());
-				frm.setFirstName(frm.getFirstName());
-				frm.setLastName(frm.getLastName());
-				frm.setAddress1(frm.getAddress1());
-				frm.setAddress2(frm.getAddress2());
-				frm.setProvince(frm.getProvince());
-				frm.setCity(frm.getCity());
-				frm.setState(frm.getState());
-				frm.setCountry(frm.getCountry());
-				frm.setZipCode(frm.getZipCode());
-				frm.setPhone(frm.getPhone());
-				frm.setFax(frm.getFax());*/
-				if(chkStatus.equals("Default")) {
+			if (customerDto != null) {
+				/*
+				 * frm.setCname(frm.getCname()); frm.setFirstName(frm.getFirstName());
+				 * frm.setLastName(frm.getLastName()); frm.setAddress1(frm.getAddress1());
+				 * frm.setAddress2(frm.getAddress2()); frm.setProvince(frm.getProvince());
+				 * frm.setCity(frm.getCity()); frm.setState(frm.getState());
+				 * frm.setCountry(frm.getCountry()); frm.setZipCode(frm.getZipCode());
+				 * frm.setPhone(frm.getPhone()); frm.setFax(frm.getFax());
+				 */
+				if (chkStatus.equals("Default")) {
 					customerDto.setStatus(chkStatus);
 				} else {
 					customerDto.setStatus("");
 				}
 			}
-			//Old Address Data..
-			//HttpSession s = request.getSession();
+			// Old Address Data..
+			// HttpSession s = request.getSession();
 			String addressName = request.getParameter("status");
 			String fname = request.getParameter("fname");
 			String lname = request.getParameter("lname");
 			String add1 = request.getParameter("address1");
 			String add2 = request.getParameter("address2");
 			String stat = request.getParameter("status");
-			System.out.println("Old Address data:firstName:"+fname+"\nlastName:"+lname+"\nAddress1:"+add1+"\nAddress2:"+add2+"\nStatus:"+stat+"\nAddressName:"+addressName);
-			
-			//old address data...
+			System.out.println("Old Address data:firstName:" + fname + "\nlastName:" + lname + "\nAddress1:" + add1
+					+ "\nAddress2:" + add2 + "\nStatus:" + stat + "\nAddressName:" + addressName);
+
+			// old address data...
 			sess.setAttribute("oldAddressName", addressName);
 			sess.setAttribute("oldFname", fname);
 			sess.setAttribute("oldlName", lname);
@@ -940,16 +910,16 @@ public class SalesController {
 			sess.setAttribute("oldStatus", stat);
 			forward = "success22";
 		}
-		
-		else if(action.equalsIgnoreCase("editAddress")) {
+
+		else if (action.equalsIgnoreCase("editAddress")) {
 			String fname = request.getParameter("fName");
 			String lname = request.getParameter("lName");
 			String add1 = request.getParameter("add1");
 			String add2 = request.getParameter("add2");
 			String stat = request.getParameter("status");
-			System.out.println("Received data:"+fname+" "+lname+" "+add1+" "+add2+" "+stat);
-			
-			//Removing old address data..
+			System.out.println("Received data:" + fname + " " + lname + " " + add1 + " " + add2 + " " + stat);
+
+			// Removing old address data..
 			sess.removeAttribute("oldAddressName");
 			sess.removeAttribute("oldFname");
 			sess.removeAttribute("oldlName");
@@ -960,33 +930,32 @@ public class SalesController {
 			CountryState cs = new CountryState();
 			request.setAttribute("cList", cs.getCountry());
 			request.setAttribute("sList", cs.getStates(companyID));
-			
+
 			String chkStatus = request.getParameter("chkStatus");
-			System.out.println("Status is:"+chkStatus);
+			System.out.println("Status is:" + chkStatus);
 			request.setAttribute("chkStatus", chkStatus);
-			if(customerDto!=null) {
+			if (customerDto != null) {
 				customerDto.setFirstName(fname);
 				customerDto.setLastName(lname);
 				customerDto.setAddress1(add1);
 				customerDto.setAddress2(add2);
-				if(chkStatus.equals("Default")) {
-					//frm.setStatus(stat);
+				if (chkStatus.equals("Default")) {
+					// frm.setStatus(stat);
 					customerDto.setStatus("Default");
 				} else {
 					customerDto.setStatus("Active");
 				}
 			}
 			forward = "success22";
-		}
-		else if(action.equalsIgnoreCase("editExistingAddress")) {
+		} else if (action.equalsIgnoreCase("editExistingAddress")) {
 			String status = request.getParameter("status1");
 			// country List
 			CountryState cs = new CountryState();
 			request.setAttribute("cList", cs.getCountry());
 			request.setAttribute("sList", cs.getStates(companyID));
-			
+
 			String chkStatus = request.getParameter("chkStatus");
-			System.out.println("Status is:"+chkStatus);
+			System.out.println("Status is:" + chkStatus);
 			request.setAttribute("chkStatus", chkStatus);
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.addSupplierDetails(request);
@@ -994,24 +963,24 @@ public class SalesController {
 			ArrayList serviceList = new ArrayList();
 			serviceList = sdetails.addServices(companyID);
 			request.setAttribute("serviceList", serviceList);
-			if(customerDto!=null) {
+			if (customerDto != null) {
 				request.setAttribute("addressStatus", status);
-				request.setAttribute("fName",customerDto.getFirstName());
-				request.setAttribute("lName",customerDto.getLastName());
-				request.setAttribute("addressName",customerDto.getTitle());
-				request.setAttribute("add1",customerDto.getAddress1());
-				request.setAttribute("add2",customerDto.getAddress2());
-				request.setAttribute("addressStatus",customerDto.getStatus());
+				request.setAttribute("fName", customerDto.getFirstName());
+				request.setAttribute("lName", customerDto.getLastName());
+				request.setAttribute("addressName", customerDto.getTitle());
+				request.setAttribute("add1", customerDto.getAddress1());
+				request.setAttribute("add2", customerDto.getAddress2());
+				request.setAttribute("addressStatus", customerDto.getStatus());
 			}
 			forward = "/sales/invoice";
 		}
-		
-		else if(action.equalsIgnoreCase("addNewAddress")) {
+
+		else if (action.equalsIgnoreCase("addNewAddress")) {
 			String status = request.getParameter("status");
 			CountryState cs = new CountryState();
 			request.setAttribute("cList", cs.getCountry());
 			request.setAttribute("sList", cs.getStates(companyID));
-			
+
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.addSupplierDetails(request);
 
@@ -1019,42 +988,44 @@ public class SalesController {
 			serviceList = sdetails.addServices(companyID);
 			request.setAttribute("serviceList", serviceList);
 
-			String addName =  (String) sess.getAttribute("oldAddressName");
+			String addName = (String) sess.getAttribute("oldAddressName");
 			String first = (String) sess.getAttribute("oldFname");
 			String last = (String) sess.getAttribute("oldlName");
 			String add1 = (String) sess.getAttribute("oldAddress1");
 			String add2 = (String) sess.getAttribute("oldAddress2");
 			String stat = (String) sess.getAttribute("oldStatus");
-			
-			System.out.println("Old Address Data:\nAddressName:"+addName+"\nFirstName:"+first+"\nLastName:"+last+"\nAddress1:"+
-			add1+"\nAddress2:"+add2+"\nStatus:"+stat);
-			
-			/*if(form!=null)
-			{*/
-				//new address data....
-				request.setAttribute("addressStatus", status);
-				request.setAttribute("fName",customerDto.getFirstName());
-				request.setAttribute("lName",customerDto.getLastName());
-				request.setAttribute("addressName",customerDto.getTitle());
-				request.setAttribute("add1",customerDto.getAddress1());
-				request.setAttribute("add2",customerDto.getAddress2());
-				request.setAttribute("companyAddressName",customerDto.getStatus());
-				
-				//old address data
-				request.setAttribute("newAddressName",addName);
-				request.setAttribute("newfName",first);
-				request.setAttribute("newlName",last);
-				request.setAttribute("newAdd1",add1);
-				request.setAttribute("newAdd2",add2);
-				request.setAttribute("newAddressStatus", stat);
-			//}
+
+			System.out.println("Old Address Data:\nAddressName:" + addName + "\nFirstName:" + first + "\nLastName:"
+					+ last + "\nAddress1:" + add1 + "\nAddress2:" + add2 + "\nStatus:" + stat);
+
+			/*
+			 * if(form!=null) {
+			 */
+			// new address data....
+			request.setAttribute("addressStatus", status);
+			request.setAttribute("fName", customerDto.getFirstName());
+			request.setAttribute("lName", customerDto.getLastName());
+			request.setAttribute("addressName", customerDto.getTitle());
+			request.setAttribute("add1", customerDto.getAddress1());
+			request.setAttribute("add2", customerDto.getAddress2());
+			request.setAttribute("companyAddressName", customerDto.getStatus());
+
+			// old address data
+			request.setAttribute("newAddressName", addName);
+			request.setAttribute("newfName", first);
+			request.setAttribute("newlName", last);
+			request.setAttribute("newAdd1", add1);
+			request.setAttribute("newAdd2", add2);
+			request.setAttribute("newAddressStatus", stat);
+			// }
 			System.out.println("New Address Data:");
-			System.out.println("addressStatus:"+status+"\nfirstName:"+customerDto.getFirstName()
-			+"\nLastName:"+customerDto.getLastName()+"\naddressName:"+customerDto.getTitle()+"\nAddress1:"+customerDto.getAddress1()+"\nAddress2:"+customerDto.getAddress2());
+			System.out.println("addressStatus:" + status + "\nfirstName:" + customerDto.getFirstName() + "\nLastName:"
+					+ customerDto.getLastName() + "\naddressName:" + customerDto.getTitle() + "\nAddress1:"
+					+ customerDto.getAddress1() + "\nAddress2:" + customerDto.getAddress2());
 
 			forward = "/sales/invoice";
 		}
-		
+
 		else if (action.equalsIgnoreCase("NewItem")) { // to add
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			// request.getSession().setAttribute("ItemType", "1");
@@ -1068,26 +1039,24 @@ public class SalesController {
 			String reqType = request.getParameter("reqType");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.makeSelectedOrderAsInvoice(request, invoiceID);
-			if(reqType.equalsIgnoreCase("EST")) {
+			if (reqType.equalsIgnoreCase("EST")) {
 				forward = "redirect:/EstimationBoard?tabid=ShowList";
-			} else if(reqType.equalsIgnoreCase("SO")) {
+			} else if (reqType.equalsIgnoreCase("SO")) {
 				forward = "redirect:/SalesOrderBoard?tabid=ShowList";
-			} else if(reqType.equalsIgnoreCase("PO")) {
+			} else if (reqType.equalsIgnoreCase("PO")) {
 				forward = "redirect:/PurchaseBoard?tabid=ShowList";
 			} else {
 				forward = "redirect:/Invoice?tabid=Invoice";
 			}
-		}
-		else if (action.equalsIgnoreCase("SaveInvoice")) {
+		} else if (action.equalsIgnoreCase("SaveInvoice")) {
 			String custID = request.getParameter("custID");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.saveInvoice(request, invoiceDto, custID);
 			forward = "redirect:Invoice?tabid=Invoice";
-		}
-		else if (action.equalsIgnoreCase("DeleteInvoice")) {
+		} else if (action.equalsIgnoreCase("DeleteInvoice")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			String customerID = request.getParameter("CustomerID");
-			sdetails.deleteInvoice(request, invoiceDto,customerID);
+			sdetails.deleteInvoice(request, invoiceDto, customerID);
 			forward = "redirect:Invoice?tabid=Invoice";
 		}
 
@@ -1099,16 +1068,14 @@ public class SalesController {
 			sdetails.getAllList(request);
 			forward = "/sales/updateInvoice";
 
-		}
-		else if (action.equalsIgnoreCase("UpdateInvoice")) { // to add Vendor
+		} else if (action.equalsIgnoreCase("UpdateInvoice")) { // to add Vendor
 			String cvId = request.getParameter("CustId");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.UpdateCustInfo(request, customerDto);
 			sdetails.getCustomerDetails(cvId, request, customerDto);
 			sdetails.getAllList(request);
 			forward = "/sales/updateInvoice";
-		}
-		else if (action.equalsIgnoreCase("UpdateCustInfo")) {
+		} else if (action.equalsIgnoreCase("UpdateCustInfo")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.UpdateCustInfo(request, customerDto);
 
@@ -1116,61 +1083,55 @@ public class SalesController {
 			System.out.println("Updated");
 			forward = "/sales/updateInvoice";
 
-		}
-		else if (action.equalsIgnoreCase("PaymentHistory")) {
+		} else if (action.equalsIgnoreCase("PaymentHistory")) {
 			String cvId = request.getParameter("CustId");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.payHistory(cvId, request);
 			forward = "/sales/payHistory";
 
-		}
-		else if (action.equalsIgnoreCase("ShowEmail")) {
+		} else if (action.equalsIgnoreCase("ShowEmail")) {
 			String orderNo = request.getParameter("OrderNo");
 			String orderType = request.getParameter("OrderType");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.sendEmailInfo(orderNo, request, orderType, invoiceDto);
 			forward = "/sales/sendEMail";
 
-		}
-		else if (action.equalsIgnoreCase("SendMail")) {
+		} else if (action.equalsIgnoreCase("SendMail")) {
 			String orderNo = request.getParameter("OrderNo");
-			if(null != orderNo) {
+			if (null != orderNo) {
 				SalesDetailsDao sdetails = new SalesDetailsDao();
 				sdetails.sendEmail(request, invoiceDto);
 				sdetails.sendEmailInfo(orderNo, request, "invoice", invoiceDto);
 				forward = "/sales/sendEMail";
-			}else {
+			} else {
 				SalesDetailsDao sdetails = new SalesDetailsDao();
 				sdetails.sendEmail(request, invoiceDto);
 				forward = "redirect:/Customer?tabid=ContactBoard";
 			}
-		}
-		else if (action.equalsIgnoreCase("ShowEmailOnCustomerBoard")) {
+		} else if (action.equalsIgnoreCase("ShowEmailOnCustomerBoard")) {
 			String CustIDs = request.getParameter("CustIDs");
 			InvoiceInfoDao invoice = new InvoiceInfoDao();
 			EmailSenderDto emsDto = invoice.getEmailSenderInfo(companyID);
 			CustomerInfoDao info = new CustomerInfoDao();
 			ArrayList<CustomerDto> custList = info.customerDetails(companyID);
 			String emails = "";
-			for(String custID: CustIDs.split(":")){
-				for(CustomerDto cust: custList){
-					if(!custID.isEmpty() && custID.equals(cust.getClientVendorID())){
-						emails = emails + cust.getEmail() +",";
+			for (String custID : CustIDs.split(":")) {
+				for (CustomerDto cust : custList) {
+					if (!custID.isEmpty() && custID.equals(cust.getClientVendorID())) {
+						emails = emails + cust.getEmail() + ",";
 						break;
 					}
 				}
 			}
-			emails = emails.substring(0, emails.length()-1);
+			emails = emails.substring(0, emails.length() - 1);
 			emailSenderDto.setTo(emails);
 			emailSenderDto.setFrom(emsDto.getMailSenderEmail());
 			forward = "/sales/customerBoardSendEmail";
-		}
-		else if (action.equalsIgnoreCase("SendMailOnCustomerBoard")) {
+		} else if (action.equalsIgnoreCase("SendMailOnCustomerBoard")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.sendEmailOnCustomerBoard(request, emailSenderDto);
 			forward = "/sales/sendEMail";
-		}
-		else if (action.equalsIgnoreCase("SBLU")) { // Action For Look up Button // From SalesBoard.jsp
+		} else if (action.equalsIgnoreCase("SBLU")) { // Action For Look up Button // From SalesBoard.jsp
 			String orderNo = request.getParameter("order_no");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInvoiceInfo(request);
@@ -1180,16 +1141,16 @@ public class SalesController {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			InvoiceDto invoice = new InvoiceDto();
 			invoice.setSalesTaxID("1");
-			invoice.setState("Tax "+configDto.getSaleTaxRate()+"%");
+			invoice.setState("Tax " + configDto.getSaleTaxRate() + "%");
 			invoice.setRate(configDto.getSaleTaxRate());
 			List<InvoiceDto> taxRates = new ArrayList<>();
 			taxRates.add(invoice);
 			invoiceDto.setTemplateType(configDto.getInvoiceTemplateType());
-			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.InvoiceType, configDto, false));
+			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(),
+					AppConstants.InvoiceType, configDto, false));
 			request.setAttribute("TaxRates", taxRates);
 			forward = "/sales/invoice";
-		}
-		else if (action.equalsIgnoreCase("IBLU")) { // Action Send to invoice it// From SalesBoard.jsp
+		} else if (action.equalsIgnoreCase("IBLU")) { // Action Send to invoice it// From SalesBoard.jsp
 			String orderNo = request.getParameter("order_no");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInvoiceInfo(request);
@@ -1199,38 +1160,33 @@ public class SalesController {
 			invoice.invoiceIt(orderNo); // Action Sales Board InInvoice True
 			request.setAttribute("Enable", "true");
 			forward = "/sales/invoice";
-		}
-		else if (action.equalsIgnoreCase("CUSTLOOKUP")) {
+		} else if (action.equalsIgnoreCase("CUSTLOOKUP")) {
 			String cvId = request.getParameter("CustId");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getCustomerDetails(cvId, request, customerDto);
 			sdetails.getAllList(request);
 			sdetails.getCustLookup(cvId, request, customerDto);
 			forward = "/sales/sendEMail";
-		}
-		else if (action.equalsIgnoreCase("ShowPrint")) {
+		} else if (action.equalsIgnoreCase("ShowPrint")) {
 			// String ordNo=request.getParameter("OrderNo");
 
 			// SalesDetails sdetails=new SalesDetails();
 			// sdetails.payHistory(cvId,request);
 			forward = "/sales/printInvoice";
-		}
-		else if (action.equalsIgnoreCase("DropShipInvoice")) {
+		} else if (action.equalsIgnoreCase("DropShipInvoice")) {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.dropShipInvoice(request, invoiceDto, configDto);
 			sdetails.getInvoiceInfo(request);
 			forward = "/sales/invoice";
-		}
-		else if (action.equalsIgnoreCase("accounting")) {
+		} else if (action.equalsIgnoreCase("accounting")) {
 			String orderNo = request.getParameter("orderno");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInvoiceInfo(request);
 			sdetails.getInitialize(orderNo, request, invoiceDto);
 			request.setAttribute("Enable", "true");
 			forward = "/accounting/test";
-		}
-		else if (action.equalsIgnoreCase("SalesOrder")) {
+		} else if (action.equalsIgnoreCase("SalesOrder")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.newSalesOrder(request, invoiceDto);
 			sdetails.getInvoiceInfo(request);
@@ -1238,80 +1194,75 @@ public class SalesController {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			InvoiceDto invoice = new InvoiceDto();
 			invoice.setSalesTaxID("1");
-			invoice.setState("Tax "+configDto.getSaleTaxRate()+"%");
+			invoice.setState("Tax " + configDto.getSaleTaxRate() + "%");
 			invoice.setRate(configDto.getSaleTaxRate());
 			List<InvoiceDto> taxRates = new ArrayList<>();
 			taxRates.add(invoice);
 			request.setAttribute("TaxRates", taxRates);
-			invoiceDto.setRep(configDto.getSelectedSalesRepId()+"");
-			invoiceDto.setTerm(configDto.getSelectedTermId()+"");
-			invoiceDto.setPayMethod(configDto.getSelectedPaymentId()+"");
-			invoiceDto.setVia(configDto.getCustomerShippingId()+"");
+			invoiceDto.setRep(configDto.getSelectedSalesRepId() + "");
+			invoiceDto.setTerm(configDto.getSelectedTermId() + "");
+			invoiceDto.setPayMethod(configDto.getSelectedPaymentId() + "");
+			invoiceDto.setVia(configDto.getCustomerShippingId() + "");
 			invoiceDto.setTemplateType(configDto.getSoTemplateType());
-			invoiceDto.setInvoiceStyle(configDto.getSoStyleID()+"");
-			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType, configDto, false));
-			if (IN_URI.endsWith(SALES_ORDER_URI)){
+			invoiceDto.setInvoiceStyle(configDto.getSoStyleID() + "");
+			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType,
+					configDto, false));
+			if (IN_URI.endsWith(SALES_ORDER_URI)) {
 				forward = "/sales/salesorder";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
-		}
-		else if (action.equalsIgnoreCase("FirstSalesOrder") || action.equalsIgnoreCase("LastSalesOrder")
+		} else if (action.equalsIgnoreCase("FirstSalesOrder") || action.equalsIgnoreCase("LastSalesOrder")
 				|| action.equalsIgnoreCase("NextSalesOrder") || action.equalsIgnoreCase("PreviousSalesOrder")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInvoiceInfo(request);
-			sdetails.getSalesOrderDetailsByBtnName(request, invoiceDto );
+			sdetails.getSalesOrderDetailsByBtnName(request, invoiceDto);
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			invoiceDto.setSalesTaxID("1");
-			invoiceDto.setState("Tax "+configDto.getSaleTaxRate()+"%");
+			invoiceDto.setState("Tax " + configDto.getSaleTaxRate() + "%");
 			invoiceDto.setRate(configDto.getSaleTaxRate());
 			List<InvoiceDto> taxRates = new ArrayList<>();
 			taxRates.add(invoiceDto);
 			request.setAttribute("TaxRates", taxRates);
 			invoiceDto.setTemplateType(configDto.getSoTemplateType());
-			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType, configDto, false));
-			if (IN_URI.endsWith(SALES_ORDER_URI)){
+			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType,
+					configDto, false));
+			if (IN_URI.endsWith(SALES_ORDER_URI)) {
 				forward = "/sales/salesorder";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
-		}
-		else if(action.equalsIgnoreCase("SortCustomerOfSalesOrder")) {
+		} else if (action.equalsIgnoreCase("SortCustomerOfSalesOrder")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
+			sdetails.getSortedInvoiceInfo(request, request.getParameter("SortBy"));
 			forward = "/sales/invoice";
-		}
-		else if(action.equalsIgnoreCase("saveUnitPriceForSalesOrder")) {
+		} else if (action.equalsIgnoreCase("saveUnitPriceForSalesOrder")) {
 			int itemId = Integer.parseInt(request.getParameter("itemID"));
-			//float price = Float.parseFloat(request.getParameter("price"));
-			double p1  = Double.parseDouble(request.getParameter("price"));
-			System.out.println("method:saveUnitPrice\nitemId:"+itemId+"\nPrice:"+p1);
+			// float price = Float.parseFloat(request.getParameter("price"));
+			double p1 = Double.parseDouble(request.getParameter("price"));
+			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nPrice:" + p1);
 			SalesDetailsDao sd = new SalesDetailsDao();
-			sd.setUnitPrice(companyID,itemId,p1);
+			sd.setUnitPrice(companyID, itemId, p1);
 			sd.getInvoiceInfo(request);
 			forward = "successSalesOrder";
-		}
-		else if(action.equalsIgnoreCase("saveItemNameForSalesOrder")) {
+		} else if (action.equalsIgnoreCase("saveItemNameForSalesOrder")) {
 			int itemId = Integer.parseInt(request.getParameter("itemID"));
 			String itemName = request.getParameter("itemName");
-			System.out.println("method:saveUnitPrice\nitemId:"+itemId+"\nItemName:"+itemName);
+			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nItemName:" + itemName);
 			SalesDetailsDao sd = new SalesDetailsDao();
-			sd.setItemName(companyID,itemId,itemName);
+			sd.setItemName(companyID, itemId, itemName);
 			sd.getInvoiceInfo(request);
 			forward = "successSalesOrder";
-		}
-		else if (action.equalsIgnoreCase("SaveOrder")) { // save Sales Order
+		} else if (action.equalsIgnoreCase("SaveOrder")) { // save Sales Order
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.saveOrder(request, invoiceDto);
 			forward = "redirect:SalesOrder?tabid=SalesOrder";
-		}
-		else if (action.equalsIgnoreCase("DeleteSalesOrder")) {
+		} else if (action.equalsIgnoreCase("DeleteSalesOrder")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.deleteSalesOrder(request, invoiceDto);
 			forward = "/sales/invoice";
-		}
-		else if (action.equalsIgnoreCase("SalesOrderBoard")) {
+		} else if (action.equalsIgnoreCase("SalesOrderBoard")) {
 			SalesOrderBoardForm salesorderForm = new SalesOrderBoardForm();
 			salesorderForm.setOrderDate1("");
 			salesorderForm.setOrderDate2("");
@@ -1319,8 +1270,7 @@ public class SalesController {
 			salesorderForm.setSaleDate2("");
 			request.setAttribute("BlankValue", salesorderForm);
 			forward = "/sales/invoice";
-		}
-		else if (action.equalsIgnoreCase("SOBLU")) { // Action For Look up Button // From SalesOrderBoard.jsp
+		} else if (action.equalsIgnoreCase("SOBLU")) { // Action For Look up Button // From SalesOrderBoard.jsp
 			String orderNo = request.getParameter("order_no");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.newSalesOrder(request, invoiceDto);
@@ -1330,343 +1280,314 @@ public class SalesController {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			InvoiceDto invoice = new InvoiceDto();
 			invoice.setSalesTaxID("1");
-			invoice.setState("Tax "+configDto.getSaleTaxRate()+"%");
+			invoice.setState("Tax " + configDto.getSaleTaxRate() + "%");
 			invoice.setRate(configDto.getSaleTaxRate());
 			List<InvoiceDto> taxRates = new ArrayList<>();
 			taxRates.add(invoice);
 			request.setAttribute("TaxRates", taxRates);
 			invoiceDto.setTemplateType(configDto.getSoTemplateType());
-			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType, configDto, false));
+			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(), AppConstants.SOType,
+					configDto, false));
 			request.setAttribute("Enable", "true");
-			if (IN_URI.endsWith(SALES_ORDER_URI)){
+			if (IN_URI.endsWith(SALES_ORDER_URI)) {
 				forward = "/sales/salesorder";
-			}else{
+			} else {
 				forward = "/sales/invoice";
 			}
-		}
-		else if (action.equalsIgnoreCase("InventoryList")) { // for Inventory List Report
+		} else if (action.equalsIgnoreCase("InventoryList")) { // for Inventory List Report
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.ItemsList(request, itemDto);
-			if(IN_URI.endsWith(ITEM_URI)){
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/inventoryList";
-			}else{
+			} else {
 				forward = "/sales/printInvoice";
 			}
-		}
-		else if (action.equalsIgnoreCase("AdjustInventoryList")) { // for Adjust-Inventory List Report
+		} else if (action.equalsIgnoreCase("AdjustInventoryList")) { // for Adjust-Inventory List Report
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getAdjustInventoryListByDate(request);
-			if(IN_URI.endsWith(ITEM_URI)){
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/adjustInventoryList";
-			}else{
+			} else {
 				forward = "/sales/printInvoice";
 			}
-		}
-		else if (action.equalsIgnoreCase("ReceivedItemList")) { // for Received-Item List Report
+		} else if (action.equalsIgnoreCase("ReceivedItemList")) { // for Received-Item List Report
 			PurchaseBoardDetails pd = new PurchaseBoardDetails();
 			pd.getPurchaseBoardDetails(request, new PurchaseBoardDto());
 			forward = "/reports/receivedItemList";
-		}
-		else if (action.equalsIgnoreCase("ItemPriceList")) { // for ItemPriceList List Report
+		} else if (action.equalsIgnoreCase("ItemPriceList")) { // for ItemPriceList List Report
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.ItemsReportList(request, itemDto);
 			forward = "/reports/itempricelist";
-		}
-		else if (action.equalsIgnoreCase("DiscontinuedList")) { // for DiscontinuedList List Report
+		} else if (action.equalsIgnoreCase("DiscontinuedList")) { // for DiscontinuedList List Report
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.ItemsDicontinuedList(request, itemDto);
 			forward = "/reports/discontinuedReportList";
-		}
-		else if (action.equalsIgnoreCase("CustomerList")) { // for CustomerList Report
+		} else if (action.equalsIgnoreCase("CustomerList")) { // for CustomerList Report
 			CustomerInfo cinfo = new CustomerInfo();
 			ArrayList Customerlist = new ArrayList();
 			Customerlist = cinfo.customerDetails(companyID);
 			model.addAttribute("customerlist", Customerlist);
-			if(IN_URI.endsWith(CUSTOMER_URI)){
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustomerListReport";
-			}else{
+			} else {
 				forward = "success9";
 			}
-		}
-		else if(action.equalsIgnoreCase("CustomerPhoneList")) {
+		} else if (action.equalsIgnoreCase("CustomerPhoneList")) {
 			CustomerInfo cinfo = new CustomerInfo();
 			ArrayList CustomerPhoneList = cinfo.customerDetails(companyID);
 			model.addAttribute("customerphonelist", CustomerPhoneList);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustomerPhoneList";
-			}else{
+			} else {
 				forward = "success10";
 			}
-		}
-		else if(action.equalsIgnoreCase("CustomerContactList")) {
+		} else if (action.equalsIgnoreCase("CustomerContactList")) {
 			CustomerInfo cinfo = new CustomerInfo();
 			ArrayList customerContactList = cinfo.customerDetails(companyID);
 			model.addAttribute("customerContactList", customerContactList);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustomerContactList";
-			}else{
+			} else {
 				forward = "success11";
 			}
-		}
-		else if(action.equalsIgnoreCase("CustomerTransactionList")) {
+		} else if (action.equalsIgnoreCase("CustomerTransactionList")) {
 			CustomerInfoDao info = new CustomerInfoDao();
 			String fromDate = customerDto.getFromDate();
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList transactionList = info.getTransactionList(datesCombo, fromDate, toDate, sortBy, companyID, request, customerDto);
+			ArrayList transactionList = info.getTransactionList(datesCombo, fromDate, toDate, sortBy, companyID,
+					request, customerDto);
 			model.addAttribute("customerTransactionList", transactionList);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustomerTransactionList";
-			}else{
+			} else {
 				forward = "success12";
 			}
-		}
-		else if(action.equalsIgnoreCase("CustomerBalanceSummary")) {
+		} else if (action.equalsIgnoreCase("CustomerBalanceSummary")) {
 			CustomerInfoDao info = new CustomerInfoDao();
 			String fromDate = customerDto.getFromDate();
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList balanceSummanyList = info.getBalanceSummaryList(datesCombo, fromDate, toDate, sortBy, companyID, request, customerDto);
+			ArrayList balanceSummanyList = info.getBalanceSummaryList(datesCombo, fromDate, toDate, sortBy, companyID,
+					request, customerDto);
 			model.addAttribute("balanceSummanyList", balanceSummanyList);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustBalSummary";
-			}else{
+			} else {
 				forward = "success13";
 			}
-		}
-		else if(action.equalsIgnoreCase("CustomerBalDetail")) {
+		} else if (action.equalsIgnoreCase("CustomerBalDetail")) {
 			CustomerInfoDao info = new CustomerInfoDao();
 			String fromDate = customerDto.getFromDate();
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList balanceDetail = info.getBalanceDetail(datesCombo, fromDate, toDate, sortBy, companyID, request, customerDto);
+			ArrayList balanceDetail = info.getBalanceDetail(datesCombo, fromDate, toDate, sortBy, companyID, request,
+					customerDto);
 			model.addAttribute("balanceDetail", balanceDetail);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustBalDetail";
-			}else{
+			} else {
 				forward = "success14";
 			}
-		}
-		else if(action.equalsIgnoreCase("SalesByCustomerSummary")) {
+		} else if (action.equalsIgnoreCase("SalesByCustomerSummary")) {
 			CustomerInfoDao info = new CustomerInfoDao();
 			String fromDate = customerDto.getFromDate();
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList getSalesCustomerSummary = info.getSalesByCustomerSummary(datesCombo, fromDate, toDate, sortBy, companyID, request, customerDto);
+			ArrayList getSalesCustomerSummary = info.getSalesByCustomerSummary(datesCombo, fromDate, toDate, sortBy,
+					companyID, request, customerDto);
 			model.addAttribute("getSalesCustomerSummary", getSalesCustomerSummary);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/SalesByCustomerSummary";
-			}else{
+			} else {
 				forward = "success15";
 			}
-		}
-		else if(action.equalsIgnoreCase("IncomeCustomerSummary")) {
+		} else if (action.equalsIgnoreCase("IncomeCustomerSummary")) {
 			CustomerInfoDao info = new CustomerInfoDao();
 			String fromDate = customerDto.getFromDate();
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList incomeCustomerSummary = info.getIncomeByCustomerSymmary(datesCombo, fromDate, toDate, sortBy, companyID, request, customerDto);
+			ArrayList incomeCustomerSummary = info.getIncomeByCustomerSymmary(datesCombo, fromDate, toDate, sortBy,
+					companyID, request, customerDto);
 			model.addAttribute("incomeCustomerSummary", incomeCustomerSummary);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/IncomeCustomerSummary";
-			}else{
+			} else {
 				forward = "success16";
 			}
-		}
-		else if(action.equalsIgnoreCase("DamagedInvList")) {
+		} else if (action.equalsIgnoreCase("DamagedInvList")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getDamagedInvenotyList(request, itemDto);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/damagedInventoryList";
-			}else {
+			} else {
 				forward = "success9";
 			}
-		}
-		else if(action.equalsIgnoreCase("MissingInventoryList")) {
+		} else if (action.equalsIgnoreCase("MissingInventoryList")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getMissingInventoryList(request, itemDto);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/missingInventoryList";
-			}else{
+			} else {
 				forward = "success15";
 			}
-		}
-		else if(action.equalsIgnoreCase("ReturnInventoryList")) {
+		} else if (action.equalsIgnoreCase("ReturnInventoryList")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getReturnInventoryList(request, itemDto);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/returnInventoryList";
-			}else{
+			} else {
 				forward = "success17";
 			}
-		}
-		else if(action.equalsIgnoreCase("InventoryValSummary")) {
+		} else if (action.equalsIgnoreCase("InventoryValSummary")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInventoryValuationSummary(request, itemDto);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/inventoryValuationSummary";
-			}else{
+			} else {
 				forward = "success10";
 			}
-		}
-		else if(action.equalsIgnoreCase("InvValDetail")) {
+		} else if (action.equalsIgnoreCase("InvValDetail")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInventoryValuationDetail(request, itemDto);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/inventoryValuationDetail";
-			}else{
+			} else {
 				forward = "success11";
 			}
-		}
-		else if(action.equalsIgnoreCase("InvOrderReport")) {
+		} else if (action.equalsIgnoreCase("InvOrderReport")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInventoryOrderReport(request, itemDto);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/inventoryOrderReport";
-			}else{
+			} else {
 				forward = "success12";
 			}
-		}
-		else if(action.equalsIgnoreCase("InvStatistic")) {
+		} else if (action.equalsIgnoreCase("InvStatistic")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getInventoryStatistics(request, itemDto);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/inventoryStatisticReport";
-			}else{
+			} else {
 				forward = "success13";
 			}
-		}
-		else if(action.equalsIgnoreCase("AccountPayable")) {
+		} else if (action.equalsIgnoreCase("AccountPayable")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getAccountPayableReport(request, customerDto);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/reports/AccountPayableReport";
-			}else{
+			} else {
 				forward = "success17";
 			}
-		}
-		else if(action.equalsIgnoreCase("ProfitLossDetail")) {
+		} else if (action.equalsIgnoreCase("ProfitLossDetail")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getProfitLossDetail(request, customerDto);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/reports/profitLossDetail";
-			}else{
+			} else {
 				forward = "success18";
 			}
-		}
-		else if(action.equalsIgnoreCase("BudgetVsActual")) {
+		} else if (action.equalsIgnoreCase("BudgetVsActual")) {
 			System.out.println("ProfitLossDetail action called....");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getBudgetVsActual(request);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/reports/budgetVsActualReport";
 				model.addAttribute("salesBoardDto", new SalesBoardDto());
-			}else{
+			} else {
 				forward = "success20";
 			}
-		}
-		else if(action.equalsIgnoreCase("BudgetOverview")) {
+		} else if (action.equalsIgnoreCase("BudgetOverview")) {
 			System.out.println("BudgetOverview action called....");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getBudgetOverview(request);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/reports/budgetOverviewReport";
 				model.addAttribute("salesBoardDto", new SalesBoardDto());
-			}else {
+			} else {
 				forward = "success21";
 			}
-		}
-		else if(action.equalsIgnoreCase("ProfitLossByItem")) {
+		} else if (action.equalsIgnoreCase("ProfitLossByItem")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getProfitLosByItem(request, itemDto);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/profitLossByItemReport";
-			}else {
+			} else {
 				forward = "success14";
 			}
-		}
-		else if(action.equalsIgnoreCase("AccountPayableGraph")) {
+		} else if (action.equalsIgnoreCase("AccountPayableGraph")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getAccountPayableGraph(request);
-			if(IN_URI.endsWith(CUSTOMER_URI)) {
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/reports/accountPayableGraph";
-			}else {
+			} else {
 				forward = "success19";
 			}
-		}
-		else if(action.equalsIgnoreCase("showDamageInventoryList")) {
+		} else if (action.equalsIgnoreCase("showDamageInventoryList")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			//sdetails.getAccountPayableGraph(request, form);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			// sdetails.getAccountPayableGraph(request, form);
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/damageInventoryList";
-			}else {
+			} else {
 				forward = "success20";
 			}
-		}
-		else if(action.equalsIgnoreCase("showUnknownInventoryList")) {
+		} else if (action.equalsIgnoreCase("showUnknownInventoryList")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			//sdetails.getAccountPayableGraph(request, form);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			// sdetails.getAccountPayableGraph(request, form);
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/showUnknownInventoryList";
-			}else {
+			} else {
 				forward = "success21";
 			}
-		}
-		else if(action.equalsIgnoreCase("showReturnedInventoryList")) {
+		} else if (action.equalsIgnoreCase("showReturnedInventoryList")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			//sdetails.getAccountPayableGraph(request, form);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			// sdetails.getAccountPayableGraph(request, form);
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/showReturnedInventoryList";
-			}else {
+			} else {
 				forward = "success22";
 			}
-		}
-		else if(action.equalsIgnoreCase("showDailyItemSummary")) {
+		} else if (action.equalsIgnoreCase("showDailyItemSummary")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			//sdetails.getAccountPayableGraph(request, form);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			// sdetails.getAccountPayableGraph(request, form);
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/showDailyItemSummary";
-			}else {
+			} else {
 				forward = "success23";
 			}
-		}
-		else if(action.equalsIgnoreCase("showDailySalesSummary")) {
+		} else if (action.equalsIgnoreCase("showDailySalesSummary")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			//sdetails.getAccountPayableGraph(request, form);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			// sdetails.getAccountPayableGraph(request, form);
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/showDailySalesSummary";
-			}else {
+			} else {
 				forward = "success24";
 			}
-		}
-		else if(action.equalsIgnoreCase("ShowSalesTaxSummary")) {
+		} else if (action.equalsIgnoreCase("ShowSalesTaxSummary")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			//sdetails.getAccountPayableGraph(request, form);
+			// sdetails.getAccountPayableGraph(request, form);
 			forward = "success25";
-		}
-		else if(action.equalsIgnoreCase("UploadItem")) {
-			if(IN_URI.endsWith(ITEM_URI)) {
+		} else if (action.equalsIgnoreCase("UploadItem")) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/file/uploadItem";
-			}else {
+			} else {
 				forward = "success26";
 			}
-		}
-		else if(action.equals("ExportItem")) {
+		} else if (action.equals("ExportItem")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			String type = request.getParameter("type");
 			sdetails.exportFile(request, itemDto, type, response);
-			if(IN_URI.endsWith(ITEM_URI)) {
+			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/file/exportItem";
-			}else {
+			} else {
 				forward = "success27";
 			}
-		}
-		else if (action.equalsIgnoreCase("PrintInvoice") || action.equalsIgnoreCase("PrintPackingSlip")) {
+		} else if (action.equalsIgnoreCase("PrintInvoice") || action.equalsIgnoreCase("PrintPackingSlip")) {
 			String compId = (String) request.getSession().getAttribute("CID");
 			String custID = request.getParameter("custID");
 			String orderNo = request.getParameter("orderNo");
@@ -1675,22 +1596,22 @@ public class SalesController {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			List<String> orderNums = sdetails.getCustomerInvoiceOrderNums(custID, compId);
 			request.setAttribute("PrintOrderNums", orderNums);
-			if((orderNo==null || orderNo.isEmpty()) && !orderNums.isEmpty()) {
+			if ((orderNo == null || orderNo.isEmpty()) && !orderNums.isEmpty()) {
 				orderNo = orderNums.get(0);
 			}
-			if(orderNo!=null && !orderNo.trim().isEmpty()) {
-				request.setAttribute("PrintOrderDetails", sdetails.getRecordForInvoice(compId, orderNo, invoiceDto, request));
+			if (orderNo != null && !orderNo.trim().isEmpty()) {
+				request.setAttribute("PrintOrderDetails",
+						sdetails.getRecordForInvoice(compId, orderNo, invoiceDto, request));
 			}
 			request.setAttribute("custID", custID);
 			request.setAttribute("templateType", templateType);
-			request.setAttribute("baseURL", "/Invoice?tabid="+action);
+			request.setAttribute("baseURL", "/Invoice?tabid=" + action);
 			if (action.equalsIgnoreCase("PrintInvoice")) {
-				forward = "/templates/invoiceTemplate"+templateType;
-			}else {
+				forward = "/templates/invoiceTemplate" + templateType;
+			} else {
 				forward = "/templates/invoicePackingSlip";
 			}
-		}
-		else if (action.equalsIgnoreCase("PrintSO")) { // Action to Print-Sales-Order
+		} else if (action.equalsIgnoreCase("PrintSO")) { // Action to Print-Sales-Order
 			String compId = (String) request.getSession().getAttribute("CID");
 			String custID = request.getParameter("custID");
 			String orderNo = request.getParameter("orderNo");
@@ -1699,29 +1620,31 @@ public class SalesController {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			List<String> orderNums = sdetails.getCustomerSalesOrderNums(custID, compId);
 			request.setAttribute("PrintOrderNums", orderNums);
-			if((orderNo==null || orderNo.isEmpty()) && !orderNums.isEmpty()) {
+			if ((orderNo == null || orderNo.isEmpty()) && !orderNums.isEmpty()) {
 				orderNo = orderNums.get(0);
 			}
-			if(orderNo!=null && !orderNo.trim().isEmpty()) {
-				request.setAttribute("PrintOrderDetails", sdetails.getRecordForSalesOrder(compId, orderNo, invoiceDto, request));
+			if (orderNo != null && !orderNo.trim().isEmpty()) {
+				request.setAttribute("PrintOrderDetails",
+						sdetails.getRecordForSalesOrder(compId, orderNo, invoiceDto, request));
 			}
 			request.setAttribute("custID", custID);
 			request.setAttribute("templateType", templateType);
 			request.setAttribute("baseURL", "/SalesOrder?tabid=PrintSO");
-			forward = "/templates/invoiceTemplate"+templateType;
+			forward = "/templates/invoiceTemplate" + templateType;
 		}
 		return forward;
 	}
 
 	@PostMapping("/ItemFileUpload")
-	public String ItemFileUpload(ItemDto itemDto, HttpServletRequest request, @RequestParam("attachFile") MultipartFile attachFile) {
+	public String ItemFileUpload(ItemDto itemDto, HttpServletRequest request,
+			@RequestParam("attachFile") MultipartFile attachFile) {
 		String forward = "/include/dashboard";
 		String action = request.getParameter("tabid");
 
 		System.out.println("--------------SalesController-------ItemFileUpload------tabid: " + action);
-		if(action.equalsIgnoreCase("UploadItemFile")) {
+		if (action.equalsIgnoreCase("UploadItemFile")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
-			if(!attachFile.isEmpty()) {
+			if (!attachFile.isEmpty()) {
 				sdetails.uploadItemFile(request, attachFile);
 			}
 			forward = "redirect:/Item?tabid=UploadItem";
@@ -1731,21 +1654,21 @@ public class SalesController {
 
 	@ResponseBody
 	@PostMapping("/ItemAjax")
-	public Object ItemAjaxCall(ItemDto itemDto, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public Object ItemAjaxCall(ItemDto itemDto, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String action = request.getParameter("tabid");
 		String status = "Success";
-		System.out.println("------------ItemAjax-------------action: "+ action);
-		if(action.equalsIgnoreCase("sortItem")) {
+		System.out.println("------------ItemAjax-------------action: " + action);
+		if (action.equalsIgnoreCase("sortItem")) {
 			int sortById = Integer.parseInt(request.getParameter("SortBy"));
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			ArrayList<ItemDto> itemData = sdetails.sortItemsList(request, itemDto, sortById);
 			request.setAttribute("sortById", sortById);
-			//sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
+			// sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
 			return itemData;
-		}
-		else if (action.equalsIgnoreCase("loadItemByTemplate")) { // load-Item-By-Template/ID
+		} else if (action.equalsIgnoreCase("loadItemByTemplate")) { // load-Item-By-Template/ID
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			return sdetails.searchItem(request, itemDto);
 		}
@@ -1754,19 +1677,20 @@ public class SalesController {
 
 	@ResponseBody
 	@PostMapping("/CustomerAjax")
-	public Object CustomerAjaxCall(CustomerDto customerDto, InvoiceDto invoiceDto, HttpServletRequest request) throws Exception {
+	public Object CustomerAjaxCall(CustomerDto customerDto, InvoiceDto invoiceDto, HttpServletRequest request)
+			throws Exception {
 		String action = request.getParameter("tabid");
 		String status = "Success";
 		String companyID = (String) request.getSession().getAttribute("CID");
 		SalesDetailsDao sd = new SalesDetailsDao();
 		InvoiceInfo invoiceInfo = new InvoiceInfo();
 		InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
-		System.out.println("------------CustomerAjax-------------action: "+ action);
-		if(action.equalsIgnoreCase("sortInvoice")) {
+		System.out.println("------------CustomerAjax-------------action: " + action);
+		if (action.equalsIgnoreCase("sortInvoice")) {
 			int sortById = Integer.parseInt(request.getParameter("SortBy"));
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
-			ArrayList<CustomerDto> CustomerDetails = sd.getSortedCustomer(request,customerDto,sortById);
+			ArrayList<CustomerDto> CustomerDetails = sd.getSortedCustomer(request, customerDto, sortById);
 			sd.searchSelectedCustomer(cvId, request, customerDto);
 			sd.getAllList(request);
 			if (rowId != null)
@@ -1781,13 +1705,12 @@ public class SalesController {
 				request.setAttribute("VendorFrm", customerDto.getSelectedRowID());
 			}
 			request.setAttribute("sortById", sortById);
-			//sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
+			// sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
 			return CustomerDetails;
 		}
-		if(action.equalsIgnoreCase("searchCustomers")) {
+		if (action.equalsIgnoreCase("searchCustomers")) {
 			return sd.getSearchedCustomers(request);
-		}
-		else if(action.equalsIgnoreCase("getCustomerDetails")) {
+		} else if (action.equalsIgnoreCase("getCustomerDetails")) {
 			String cvId = request.getParameter("cvId");
 			sd.getCustomerDetails(cvId, request, customerDto);
 			ArrayList<InvoiceDto> shipAddress = invoiceInfoDao.shipAddress(companyID, cvId);
@@ -1797,22 +1720,20 @@ public class SalesController {
 			customerDto.setLast1YearAmt(hlookup.getLast1YearAmt());
 			customerDto.setTotalOverdueAmt(hlookup.getTotalOverdueAmt());
 			customerDto.setLastOrderDate(hlookup.getLastOrderDate());
-			for (InvoiceDto invoice: shipAddress){
-				String shipTo = invoice.getShipTo()!=null?invoice.getShipTo().replace("\n", "<br/>"):"";
+			for (InvoiceDto invoice : shipAddress) {
+				String shipTo = invoice.getShipTo() != null ? invoice.getShipTo().replace("\n", "<br/>") : "";
 				customerDto.setShipTo(shipTo);
 			}
-			for (InvoiceDto invoice: billAddress){
-				String billTo = invoice.getBillTo()!=null?invoice.getBillTo().replace("\n", "<br/>"):"";
+			for (InvoiceDto invoice : billAddress) {
+				String billTo = invoice.getBillTo() != null ? invoice.getBillTo().replace("\n", "<br/>") : "";
 				customerDto.setBillTo(billTo);
 			}
 			return customerDto;
-		}
-		else if(action.equalsIgnoreCase("zipcode")){
+		} else if (action.equalsIgnoreCase("zipcode")) {
 			String zipcode = request.getParameter("zipcode");
 			CountryState cs = new CountryState();
 			return cs.getAddressDetailsByZipcode(zipcode);
-		}
-		else if(action.equalsIgnoreCase("addPaymentMethod")){
+		} else if (action.equalsIgnoreCase("addPaymentMethod")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.addCustomerCreditCard(customerDto, request);
 			return "Success";

@@ -159,5 +159,15 @@ public class MyUtility {
 
         return conOrderNo.substring(0, conOrderNo.indexOf("-")+1) + get3DigitNumber(orderNo, add1);
     }
+    
+    public static String getYearPart(String date) {
+    	
+    	String [] dateParts = date.split("-");
+    	String day = dateParts[0];
+    	String month = dateParts[1];
+    	String year = dateParts[2];
+    	
+    	return year;
+    }
 
 }

@@ -4,7 +4,7 @@
 <%@page import="java.util.Currency"%>
 <%-- <%@page import="jdk.nashorn.internal.runtime.linker.JavaAdapterFactory"%> --%>
 <%@page import="javax.script.ScriptEngineManager"%>
-<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPayment"%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentDto"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblAccount"%>
 <%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentType"%>
 <%@page import="com.nxsol.bizcomposer.global.clientvendor.ClientVendor"%>
@@ -111,7 +111,7 @@ table.tabla-listados tbody tr td {
 		 	TblPaymentType payment = (TblPaymentType)request.getAttribute("SelectedPayment");
 		 	TblAccount Selectedaccount = (TblAccount)request.getAttribute("SelectedAccount");
 		 	TblCategoryDto SelectedCategory = (TblCategoryDto)request.getAttribute("SelectedCategory");
-		 	TblPayment SelcetedPaymentForCheck = (TblPayment)request.getAttribute("Payment");
+		 	TblPaymentDto SelcetedPaymentForCheck = (TblPaymentDto)request.getAttribute("Payment");
 		 	if(request.getSession().getAttribute("invoiceId") != null)
 		 	{
 		 		find = Integer.parseInt(request.getSession().getAttribute("invoiceId").toString());
@@ -389,15 +389,15 @@ table.tabla-listados tbody tr td {
 				  </thead>
 				  <tbody> 
 				  <%
-				  	ArrayList<TblPayment> li = (ArrayList)request.getAttribute("receivedList");		
-				  	Iterator<TblPayment> itr =li.iterator();
+				  	ArrayList<TblPaymentDto> li = (ArrayList)request.getAttribute("receivedList");		
+				  	Iterator<TblPaymentDto> itr =li.iterator();
 				    int index = 1;
 				  	while(itr.hasNext()){
-				  		TblPayment rb = itr.next();
+				  		TblPaymentDto rb = itr.next();
 				    %>
 				  <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index+","+rb.getId()%>)">
 				      <td><input type="checkbox"></td>
-				      <td class="text-right"><% out.println(rb.getOrderNum()); %></td>
+				      <td class="text-right"><% out.println(rb.getOrderNumStr()); %></td>
 				      <td class="text-right" value="<%= rb.getCvID()%>"><% out.println(rb.getCvName()+ " (" +rb.getCompanyName() + ")") ;%></td>
 				      <td class="text-right"><% out.println(JProjectUtil.dateFormat.format(rb.getDateAdded()));%></td>
 				      <td class="text-right" value="<%= rb.getAccountID()%>"><% out.println(rb.getAccountName()); %></td>
@@ -412,7 +412,7 @@ table.tabla-listados tbody tr td {
 				      <% } else { %>
 				      <td class="text-right"><% out.println("Yes"); %></td>
 				      <% } %>
-				      <td class="text-right" value="<%= rb.getCategoryId()%>"><% out.println(rb.getTblCategoryDto());%></td>
+				      <td class="text-right" value="<%= rb.getCategoryId()%>"><% out.println(rb.getTblcategory());%></td>
 				      <td class="text-right"></td>
 				      <td hidden="PaidOrUnpaid" value="<%= request.getSession().getAttribute("PaidOrUnpaid"+rb.getInvoiceID()) %>"></td>
 				      <td hidden="totalAmount" value="<%= request.getSession().getAttribute("totalAmount"+rb.getInvoiceID()) %>"></td>
@@ -442,12 +442,12 @@ table.tabla-listados tbody tr td {
 				  </thead>
 				  <tbody> 
 				  <%
-				  	ArrayList<TblPayment> pli = (ArrayList)request.getAttribute("partiallyReceivedLayaways");		
-				  	Iterator<TblPayment> itr1 =pli.iterator();
+				  	ArrayList<TblPaymentDto> pli = (ArrayList)request.getAttribute("partiallyReceivedLayaways");		
+				  	Iterator<TblPaymentDto> itr1 =pli.iterator();
 							  int indexForpli=1;
 				  	while(itr1.hasNext())
 				  	{
-				  		TblPayment rb = itr1.next();
+				  		TblPaymentDto rb = itr1.next();
 				    %>
 				  <tr onclick="selectrow(<%=rb.getInvoiceID()+","+indexForpli+","+rb.getId()%>)">
 				      <td><input type="checkbox"></td>
@@ -466,7 +466,7 @@ table.tabla-listados tbody tr td {
 				      <% } else { %>
 				      <td class="text-right"><% out.println("Yes"); %></td>
 				      <% } %>
-				      <td class="text-right" value="<%= rb.getCategoryId()%>"><% out.println(rb.getTblCategoryDto());%></td>
+				      <td class="text-right" value="<%= rb.getCategoryId()%>"><% out.println(rb.getTblcategory());%></td>
 				      <td class="text-right">partially Received Layaways</td>
 				      <td hidden="PaidOrUnpaid" value="<%= request.getSession().getAttribute("PaidOrUnpaid"+rb.getInvoiceID()) %>"></td>
 				      <td hidden="totalAmount" value="<%= request.getSession().getAttribute("totalAmount"+rb.getInvoiceID()) %>"></td>

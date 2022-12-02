@@ -6,6 +6,8 @@
 
 package com.avibha.bizcomposer.sales.dao;
 
+import java.math.BigDecimal;
+
 public class SalesBoard {
 	private int invoiceID;
 
@@ -80,7 +82,7 @@ public class SalesBoard {
 	
 	private int emailed;
 
-	private double total;
+	private BigDecimal total;
 	
 	private String rep;
 	
@@ -779,10 +781,10 @@ public class SalesBoard {
 		this.so_no = so_no;
 	}
 
-	public double getTotal() {
-		return total;
+	public BigDecimal getTotal() {
+		return total.setScale(2);
 	}
-	public void setTotal(double total) {
+	public void setTotal(BigDecimal total) {
 		this.total = total;
 	}
 

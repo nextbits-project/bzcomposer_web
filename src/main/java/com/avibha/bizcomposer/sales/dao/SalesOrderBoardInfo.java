@@ -82,7 +82,7 @@ public class SalesOrderBoardInfo {
 			while (rs.next()) {
 				SalesBoard d = new SalesBoard();
 				d.setInvoiceID(rs.getInt("InvoiceID"));
-				d.setTotal(rs.getDouble("Total"));
+				d.setTotal(rs.getBigDecimal("Total").setScale(2));
 				d.setOrderid(rs.getInt("orderid"));
 				d.setOrderNum(rs.getLong("OrderNum"));
 				d.setSo_no(rs.getLong("SONum")); // Sales Order Num

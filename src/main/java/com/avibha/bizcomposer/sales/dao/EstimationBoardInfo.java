@@ -1,10 +1,12 @@
 package com.avibha.bizcomposer.sales.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import com.avibha.common.utility.MyUtility;
 public class EstimationBoardInfo {
 	
 	public ArrayList EstimationRecordSearch(String compId, EstimationBoardDto eform) {
+		
+		DecimalFormat decim = new DecimalFormat("#,###.##");
 
 		String oDate1 = eform.getOrderDate1();
 		String oDate2 = eform.getOrderDate2();
@@ -86,7 +90,7 @@ public class EstimationBoardInfo {
 			while (rs.next()) {
 				EstimationBoard d = new EstimationBoard();
 				d.setInvoiceID(rs.getInt("InvoiceID"));
-				d.setTotal(rs.getDouble("Total"));
+				d.setTotal(rs.getBigDecimal("Total").setScale(2, BigDecimal.ROUND_HALF_UP));
 				d.setOrderid(rs.getInt("orderid"));
 				d.setOrderNum(rs.getLong("OrderNum"));
 				d.setPo_no(rs.getLong("PONum"));
@@ -103,7 +107,7 @@ public class EstimationBoardInfo {
 				d.setShipped(rs.getInt("Shipped"));
 				d.setMarketPlaceName(mark);
 				
-				d.setTotal(rs.getDouble("Total"));
+				d.setTotal(rs.getBigDecimal("Total").setScale(2,BigDecimal.ROUND_HALF_UP));
 				String rep=rs.getString("SalesRepID");
 				 if(rep != null){
 					 rs4 = stmt4.executeQuery("select Name from bca_salesrep where SalesRepID ="+rep);

@@ -59,7 +59,7 @@ public class EstimationInfo {
 				item1.setInvDesc(rs.getString(3));
 				item1.setQty(rs.getInt(4));
 				item1.setWeight(rs.getDouble(5));
-				item1.setSalePrice(rs.getDouble(6));
+				item1.setSalePrice(rs.getBigDecimal(6));
 				item1.setIsCategory(rs.getInt(7));
 				item1.setItemTypeID(rs.getInt(8));
 				item1.setSerialNo(rs.getString("SerialNum"));
@@ -81,7 +81,7 @@ public class EstimationInfo {
 					item2.setInvDesc(rs1.getString(3));
 					item2.setQty(rs1.getInt(4));
 					item2.setWeight(rs1.getDouble(5));
-					item2.setSalePrice(rs1.getDouble(6));
+					item2.setSalePrice(rs1.getBigDecimal(6));
 					item2.setIsCategory(rs1.getInt(7));
 					item2.setSerialNo(rs1.getString("SerialNum"));
 					list.add(item2);
@@ -97,7 +97,7 @@ public class EstimationInfo {
 						item3.setInvDesc(rs2.getString(3));
 						item3.setQty(rs2.getInt(4));
 						item3.setWeight(rs2.getDouble(5));
-						item3.setSalePrice(rs2.getDouble(6));
+						item3.setSalePrice(rs2.getBigDecimal(6));
 						item3.setIsCategory(rs2.getInt(7));
 						item3.setSerialNo(rs2.getString("SerialNum"));
 						list.add(item3);

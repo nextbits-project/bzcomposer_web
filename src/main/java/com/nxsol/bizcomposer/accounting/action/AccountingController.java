@@ -195,16 +195,21 @@ public class AccountingController{
 		    } catch (JSONException e) {
 		        e.printStackTrace();
 		    }
-			invoice.setOrderNum(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("orderNum")));
-			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("cvID")));
-			invoice.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("paymentTypeID")));
-			invoice.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("bankAccountID")));
-			invoice.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("adjustedTotal")));
-			invoice.setBalance(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("balance")));
-			invoice.setAmtToPay(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("amtToPay")));
-			invoice.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("categoryID")));
-			invoice.setMemo(newObj.getJSONObject("ReceivableListBean").getString("memo"));
-			invoice.setCheckNum(newObj.getJSONObject("ReceivableListBean").getString("checkNum"));
+			
+			String orderNumberStr = newObj.getJSONObject("ReceivableListDto").getString("orderNum");
+			String [] ordStrParts = orderNumberStr.split("-");
+			String strOrderNum = ordStrParts[1];
+			
+			invoice.setOrderNum(Integer.parseInt(strOrderNum));
+			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("cvID")));
+			invoice.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("paymentTypeID")));
+			invoice.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("bankAccountID")));
+			invoice.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListDto").getString("adjustedTotal")));
+			invoice.setBalance(Double.parseDouble(newObj.getJSONObject("ReceivableListDto").getString("balance")));
+			invoice.setAmtToPay(Double.parseDouble(newObj.getJSONObject("ReceivableListDto").getString("amtToPay")));
+			invoice.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("categoryID")));
+			invoice.setMemo(newObj.getJSONObject("ReceivableListDto").getString("memo"));
+			invoice.setCheckNum(newObj.getJSONObject("ReceivableListDto").getString("checkNum"));
 
 			double amtToPay = invoice.getAmtToPay();
 			/*String indexNumber = request.getParameter("index");*/
@@ -228,16 +233,21 @@ public class AccountingController{
 		        e.printStackTrace();
 		    }
 			ReceivableListDto invoice = new ReceivableListDto();
-			invoice.setOrderNum(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("orderNumStr")));
-			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("cvID")));
-			invoice.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("paymentTypeID")));
-			invoice.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("bankAccountID")));
-			invoice.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("adjustedTotal")));
-			invoice.setPaidAmount(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("paidAmount")));
-			invoice.setBalance(Double.parseDouble(newObj.getJSONObject("ReceivableListBean").getString("balance")));
-			invoice.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListBean").getString("categoryID")));
-			invoice.setMemo(newObj.getJSONObject("ReceivableListBean").getString("memo"));
-			invoice.setCheckNum(newObj.getJSONObject("ReceivableListBean").getString("checkNo"));
+			String orderNumberStr = newObj.getJSONObject("ReceivableListDto").getString("orderNumStr");
+			String [] ordStrParts = orderNumberStr.split("-");
+			String strOrderNum = ordStrParts[1];
+			
+			invoice.setOrderNum(Integer.parseInt(strOrderNum));
+			//invoice.setOrderNum(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("orderNumStr")));
+			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("cvID")));
+			invoice.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("paymentTypeID")));
+			invoice.setBankAccountID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("bankAccountID")));
+			invoice.setAdjustedTotal(Double.parseDouble(newObj.getJSONObject("ReceivableListDto").getString("adjustedTotal")));
+			invoice.setPaidAmount(Double.parseDouble(newObj.getJSONObject("ReceivableListDto").getString("paidAmount")));
+			invoice.setBalance(Double.parseDouble(newObj.getJSONObject("ReceivableListDto").getString("balance")));
+			invoice.setCategoryID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("categoryID")));
+			invoice.setMemo(newObj.getJSONObject("ReceivableListDto").getString("memo"));
+			invoice.setCheckNum(newObj.getJSONObject("ReceivableListDto").getString("checkNo"));
 
 			String rowId = request.getParameter("index");
 			/*System.out.println(invoice.getPaidAmount());*/

@@ -304,7 +304,7 @@ public class ConfigurationInfo {
                     + "Charge_interest,Charge_minimum,Charge_grace,Charge_reassess,Charge_MarkFinance,ProductCategoryID,LocationID,ReOrderPoint,VendorInvoiceStyleId,"
                     + "CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,SalesTaxRate,ShowUSAInBillShipAddress,"
                     + "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod,"
-                    + "StartingInvoiceNumber,StartingEstimationNumber,StartingSalesOrderNumber,StartingPONumber,EstimationStyleID,SOStyleID "
+                    + "StartingInvoiceNumber,StartingEstimationNumber,StartingSalesOrderNumber,StartingPONumber,EstimationStyleID,SOStyleID,UsePrefixIv "
                     + " FROM bca_preference WHERE Active=1 AND CompanyID="+companyID;
             pstmt = con.prepareStatement(recordQuery);
             rs = pstmt.executeQuery();
@@ -346,6 +346,7 @@ public class ConfigurationInfo {
                 cForm.setStartPONum(rs.getString("StartingPONumber"));
                 cForm.setEstimationStyleID(rs.getInt("EstimationStyleID"));
                 cForm.setSoStyleID(rs.getInt("SOStyleID"));
+                cForm.setUsePrefixIV("1".equals(rs.getString("UsePrefixIv")) ? "on" : "off");
             }
             pstmt.close();
             rs.close();
@@ -387,7 +388,7 @@ public class ConfigurationInfo {
                     + "Mail_username,Mail_password,Mail_Auth,poboard,itemsReceivedBoard,itemsShippedBoard,SalesOrderBoard,ProductCategoryID,LocationID,ReOrderPoint,"
                     + "VendorBusinessTypeID,VendorInvoiceStyleId,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,"
                     + "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod, EstimationStyleID,SOStyleID,"
-                    + "SalesTaxRate2,isBackOrderNeeded,isRecurringServiceBill,serviceBillName "
+                    + "SalesTaxRate2,isBackOrderNeeded,isRecurringServiceBill,serviceBillName, UsePrefixIv "
                     + " FROM bca_preference WHERE CompanyID="+companyID;
             pstmt = con.prepareStatement(recordQuery);
 //			pstmt.setString(1, compId);
@@ -595,6 +596,7 @@ public class ConfigurationInfo {
                 cForm.setBackOrderNeeded("1".equals(rs.getString("isBackOrderNeeded"))? "on" : "off");
                 cForm.setRecurringServiceBill("1".equals(rs.getString("isRecurringServiceBill"))? "on" : "off");
                 cForm.setServiceBillName(rs.getString("serviceBillName"));
+                cForm.setUsePrefixIV("1".equals(rs.getString("UsePrefixIv"))? "on" : "off");
             }
             pstmt.close();
             rs.close();
@@ -1769,7 +1771,7 @@ public class ConfigurationInfo {
                     + "SaleShowTelephone=?,IsSalePrefix=?,ExtraCharge=?,ChargeAmount=?,OrderAmount=?,HowOftenSalestax=?,DropShipCharge=?,SalesTaxCode=?,SalesTaxRate=?,"
                     + "DropShipCharge=?,ShowDropShipItems=?,isRefundAllowed=?,StartingEstimationNumber=?,InvoiceStyleID =?,POTermID=?, SalesRepID=?, POPayMethodID=?,"
                     + "Charge_interest=?, Charge_minimum=?, Charge_grace=?, Charge_reassess=?, Charge_MarkFinance=?, StartingSalesOrderNumber=?, DisplayPeriod=?,"
-                    + "EstimationStyleID=?, SOStyleID=?, SalesTaxRate2=?, isBackOrderNeeded=?, isRecurringServiceBill=?,serviceBillName=?  "
+                    + "EstimationStyleID=?, SOStyleID=?, SalesTaxRate2=?, isBackOrderNeeded=?, isRecurringServiceBill=?,serviceBillName=?, UsePrefixIv=?  "
                     + " WHERE companyID = ?";
             int r =cForm.getSortBy();
             pstmt = con.prepareStatement(updateQuery);
@@ -1822,7 +1824,8 @@ public class ConfigurationInfo {
             pstmt.setString(46, "on".equals(cForm.getBackOrderNeeded())?"1" :"0");
             pstmt.setString(47, "on".equals(cForm.getRecurringServiceBill())?"1" :"0");
             pstmt.setString(48, cForm.getServiceBillName());
-            pstmt.setInt(49, compId);
+            pstmt.setString(49, "on".equals(cForm.getUsePrefixIV())?"1" :"0");
+            pstmt.setInt(50, compId);
 
             int updated = pstmt.executeUpdate();
             if (updated > 0) {
