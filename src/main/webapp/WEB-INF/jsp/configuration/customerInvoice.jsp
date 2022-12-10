@@ -196,23 +196,23 @@ $(document).ready(function()
         $("#ratePriceChangable").val(isChecked);
     });
     
-    $("#usePrefixIV").change(function()
+    $("#isSalePrefix").change(function()
     	    {
-    	        var isChecked = '<%=request.getAttribute("usePrefixIV")%>';
+    	        var isChecked = '<%=request.getAttribute("isSalePrefix")%>';
     	        if($(this).prop("checked") == true){
-    	            $("#usePrefixIV").attr('checked', true);
+    	            $("#isSalePrefix").attr('checked', true);
     	            isChecked = "on";
     	        }
     	        else if($(this).prop("checked") == false){
-    	            $("#usePrefixIV").attr('checked', false);
+    	            $("#isSalePrefix").attr('checked', false);
     	             isChecked = "off";
     	        }
     	        else
     	        {
-    	            $("#usePrefixIV").attr('checked', isChecked);
-    	            document.configurationForm.usePrefixIV.value = isChecked;
+    	            $("#isSalePrefix").attr('checked', isChecked);
+    	            document.configurationForm.isSalePrefix.value = isChecked;
     	        }
-    	        $("#usePrefixIV").val(isChecked);
+    	        $("#isSalePrefix").val(isChecked);
     	    });
 
     $("#saleShowTelephone").change(function()
@@ -769,18 +769,18 @@ $(document).ready(function()
 												<input type="checkbox" name="ratePriceChangable" id="ratePriceChangable" value="${configDto.ratePriceChangable}" ${configDto.ratePriceChangable=='on'?'checked':''} />
 												<label><spring:message code="BzComposer.configuration.ratepricechangable"/></label>
 											</td>
-											<td style="font-size:12px;">
+											<%-- <td style="font-size:12px;">
 												<input type="checkbox" name="usePrefixIV" id="usePrefixIV" value="${configDto.usePrefixIV}" ${configDto.usePrefixIV=='on'?'checked':''} />
 												<label><spring:message code="BzComposer.configuration.useprefixiv"/></label>
-											</td>
+											</td> --%>
 											<td style="font-size:12px;">
 												<input type="checkbox" name="saleShowTelephone" id="saleShowTelephone" value="${configDto.saleShowTelephone}" ${configDto.saleShowTelephone=='on'?'checked':''} />
 												<label><spring:message code="BzComposer.configuration.showtelephonefaxoninvoice"/></label>
 											</td>
-											<!-- <td style="font-size:12px;">
+											<td style="font-size:12px;">
 												<input type="checkbox" name="isSalePrefix" id="isSalePrefix" value="${configDto.isSalePrefix}" ${configDto.isSalePrefix=='on'?'checked':''} />
 												<label><spring:message code="BzComposer.configuration.useprefix"/></label>
-											</td> -->
+											</td>
 										</tr>
 							<tr>
 								<th colspan="4" align="left" style="font-size:12px; padding: 5px;">
@@ -1294,7 +1294,7 @@ $(document).ready(function()
 		
 		<input type="hidden" name="saleShowCountry" id="saleShowCountry" value=""/>
 		<input type="hidden" name="ratePriceChangable" id="ratePriceChangable" value=""/>
-		<input type="hidden" name="usePrefixIV" id="usePrefixIV" value=""/>
+		<!-- <input type="hidden" name="usePrefixIV" id="usePrefixIV" value=""/> -->
 		<input type="hidden" name="saleShowTelephone" id="saleShowTelephone" value=""/>
 		<input type="hidden" name="isSalePrefix" id="isSalePrefix" value=""/>
 		<input type="hidden" name="extraChargeApplicable" id="extraChargeApplicable" value=""/>
@@ -1358,7 +1358,7 @@ function SaveValues()
 
                 document.configurationForm.saleShowCountry.value = $("#saleShowCountry").val();
                 document.configurationForm.ratePriceChangable.value = $("#ratePriceChangable").val();
-                document.configurationForm.usePrefixIV.value = $("#usePrefixIV").val();
+              /*   document.configurationForm.usePrefixIV.value = $("#usePrefixIV").val(); */
                 document.configurationForm.saleShowTelephone.value = $("#saleShowTelephone").val();
                 document.configurationForm.isSalePrefix.value = $("#isSalePrefix").val();
 
@@ -1381,7 +1381,7 @@ function SaveValues()
 
                 document.getElementById('saleShowCountry').value = $("#saleShowCountry").val();
                 document.getElementById('ratePriceChangable').value = $("#ratePriceChangable").val();
-                document.getElementById('usePrefixIV').value = $("#usePrefixIV").val();
+               /*  document.getElementById('usePrefixIV').value = $("#usePrefixIV").val(); */
                 document.getElementById('saleShowTelephone').value = $("#saleShowTelephone").val();
                 document.getElementById('isSalePrefix').value = $("#isSalePrefix").val();
                 document.getElementById('extraChargeApplicable').value = $("#extraChargeApplicable").val();

@@ -19,7 +19,7 @@ public class ConfigurationDto implements Serializable {
 			+ "InvoiceStyleID,EstimationStyleID,SoStyleID,PoStyleID,FilterOption,AdminPassword,CustTaxable,AddressSettings,SalesTaxCode,SaleTaxRate,SaleTaxRate2,"
 			+ "HowOftenSalesTax,DropShipCharge,ExtraChargeApplicable,ChargeAmount,OrderAmount,IsRefundAllowed,PoShowCountry,PoShowTelephone,IsPurchasePrefix,"
 			+ "ShowReminder,AnnualInterestRate,MinCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge,MailServer,MailUserName,MailPassword,MailAuth,"
-			+ "SenderEmail,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,BackOrderNeeded,serviceBillName,UsePrefixIv";
+			+ "SenderEmail,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,BackOrderNeeded,serviceBillName ";
 
 	public int preferenceID = -1;
 	/* for Dashboard and General option */
@@ -149,7 +149,6 @@ public class ConfigurationDto implements Serializable {
 
 	private int orderAmount;
 	private String serviceBillName;
-	private String usePrefixIV;
 
 	public String getServiceBillName() {
 		return serviceBillName;
@@ -4626,12 +4625,5 @@ public class ConfigurationDto implements Serializable {
 		this.shippingViaID = shippingViaID;
 	}
 
-	public String getUsePrefixIV() {
-		return usePrefixIV;
-	}
-
-	public void setUsePrefixIV(String usePrefixIV) {
-		this.usePrefixIV = usePrefixIV;
-	}
 
 }

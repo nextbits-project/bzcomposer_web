@@ -139,7 +139,7 @@ public class SalesBoardInfo {
 				d.setOrderNum(rs.getLong("OrderNum"));
 				String orderNo = (rs.getString("OrderNum"));
 				String yearPart = MyUtility.getYearPart(rs.getString("DateAdded"));
-				if(configDto.getUsePrefixIV().equals("on")) {
+				if(configDto.getIsSalePrefix().equals("on")) {
 					d.setOrderNumStr("IV".concat(yearPart).concat("-"+MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.InvoiceType, configDto, false)));
 				}else {
 					d.setOrderNumStr(MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.InvoiceType, configDto, false));

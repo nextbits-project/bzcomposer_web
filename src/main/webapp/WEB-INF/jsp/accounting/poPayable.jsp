@@ -399,7 +399,7 @@ table.tabla-listados tbody tr td {
 							<tr onclick="selectrow(<%=rb.getInvoiceID() + "," + index%>)"
 								id="rowId<%=index%>">
 								<td><input type="checkbox" id="Checkbox[<%=index%>]"></td>
-								<td class="text-right"><%out.println(rb.getOrderNumStr());%></td>
+								<td class="text-right"><%out.println(rb.getPoNumStr());%></td>
 								<td>
 									<%
 									out.println(rb.getCompanyName());

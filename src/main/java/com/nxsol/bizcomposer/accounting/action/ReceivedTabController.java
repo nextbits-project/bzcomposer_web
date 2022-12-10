@@ -112,7 +112,7 @@ public class ReceivedTabController {
 			request.getSession().setAttribute("invoiceId", payment.getInvoiceID());
 			request.getSession().setAttribute("totalAmount"+payment.getInvoiceID(), totalAmount);
 			String yearPart = MyUtility.getYearPart(new SimpleDateFormat("dd-mm-yyyy").format(payment.getDateAdded()));
-			if(configDto.getUsePrefixIV().equals("on")) {
+			if(configDto.getIsSalePrefix().equals("on")) {
 				payment.setOrderNumStr("IV".concat(yearPart).concat("-"+MyUtility.getOrderNumberByConfigData(String.valueOf(payment.getOrderNum()), AppConstants.InvoiceType, configDto, false)));
 			}else {
 				payment.setOrderNumStr(MyUtility.getOrderNumberByConfigData(String.valueOf(payment.getOrderNum()), AppConstants.InvoiceType, configDto, false));

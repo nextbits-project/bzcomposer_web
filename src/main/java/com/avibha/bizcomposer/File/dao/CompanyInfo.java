@@ -13,6 +13,8 @@ import com.avibha.common.utility.MyUtility;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class CompanyInfo {
@@ -97,7 +99,7 @@ public class CompanyInfo {
     }
     //Below methods are added on 18-05-2020
 
-    public ArrayList<InvoiceDto> selectPurchaseOrders(String compId, ConfigurationInfo configInfo) {
+    public ArrayList<InvoiceDto> selectPurchaseOrders(String compId, ConfigurationInfo configInfo) throws ParseException {
         Connection con = null ;
         PreparedStatement pstmt = null;
         SQLExecutor db = new SQLExecutor();
@@ -117,7 +119,34 @@ public class CompanyInfo {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 InvoiceDto purchaseOrder = new InvoiceDto();
-                purchaseOrder.setPoNum(MyUtility.getOrderNumberByConfigData(rs.getString(1), AppConstants.POType, configDto, false));
+                
+                String orderNo = (rs.getString("PONum"));
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+                java.util.Date d = sdf.parse(rs.getString(2));
+                
+                String dateStr = sdf2.format(d);
+				
+				// added by ferdous
+				
+				
+				  String yearPart = MyUtility.getYearPart(dateStr);
+				  
+				  if (configDto.getIsPurchasePrefix().equals("on")) {
+				  purchaseOrder.setPoNum("PO".concat(yearPart).concat("-" +
+				  MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.POType, configDto,
+				  false))); } else { purchaseOrder.setPoNum(
+				  MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.POType, configDto,
+				  false)); }
+				 
+                
+				
+				/*
+				 * purchaseOrder.setPoNum(MyUtility.getOrderNumberByConfigData(rs.getString(1),
+				 * AppConstants.POType, configDto, false));
+				 */
+				 
+                
                 purchaseOrder.setDateAdded(rs.getString(2));
                 purchaseOrder.setFirstName(rs.getString(3));
                 purchaseOrder.setLastName(rs.getString(4));
@@ -179,7 +208,7 @@ public class CompanyInfo {
         return objSalesOrderList;
     }
 
-    public ArrayList<InvoiceDto> selectInvoiceDetails(String compId, ConfigurationInfo configInfo) {
+    public ArrayList<InvoiceDto> selectInvoiceDetails(String compId, ConfigurationInfo configInfo) throws ParseException {
         Connection con = null ;
         PreparedStatement pstmt = null;
         SQLExecutor db = new SQLExecutor();
@@ -199,7 +228,33 @@ public class CompanyInfo {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 InvoiceDto salesOrder = new InvoiceDto();
-                salesOrder.setOrderNo(MyUtility.getOrderNumberByConfigData(rs.getString(1), AppConstants.InvoiceType, configDto, false));
+                
+				/*
+				 * salesOrder.setOrderNo(MyUtility.getOrderNumberByConfigData(rs.getString(1),
+				 * AppConstants.InvoiceType, configDto, false));
+				 */
+                
+                String orderNo = rs.getString(1);
+                
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+                java.util.Date d = sdf.parse(rs.getString(2));
+                
+                String dateStr = sdf2.format(d);
+				
+				// added by ferdous
+				
+				
+				  String yearPart = MyUtility.getYearPart(dateStr);
+				  
+				  if (configDto.getIsSalePrefix().equals("on")) {
+				  salesOrder.setOrderNo("IV".concat(yearPart).concat("-" +
+				  MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.InvoiceType, configDto,
+				  false))); } else { salesOrder.setOrderNo(
+				  MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.InvoiceType, configDto,
+				  false)); }
+				 
+                
                 salesOrder.setDateAdded(rs.getString(2));
                 salesOrder.setFirstName(rs.getString(3));
                 salesOrder.setLastName(rs.getString(4));

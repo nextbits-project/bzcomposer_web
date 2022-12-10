@@ -435,7 +435,7 @@ public class ConfigurationController {
 
             String isDefault = (configDto.getIsRefundAllowed() != null && configDto.getIsRefundAllowed().equals("1")) ? "on" : "off";
             String isDefaultCreditTerm = (configDto.getIsDefaultCreditTerm() != null && configDto.getIsDefaultCreditTerm().equals("1")) ? "on" : "off";
-            String usePrefixIV = (configDto.getUsePrefixIV() != null && configDto.getUsePrefixIV().equals("1")) ? "on" : "off";
+           
 			/*
 			 * String recurringServiceBill = (configDto.getRecurringServiceBill() != null &&
 			 * configDto.getRecurringServiceBill().equals("1")) ? "on" : "off";
@@ -458,7 +458,7 @@ public class ConfigurationController {
             request.setAttribute("extraCharge", configDto.getExtraChargeApplicable().equals("1") ? "on" : "off");
             request.setAttribute("sBackOrderNeeded", configDto.getBackOrderNeeded().equals("1") ? "on" : "off");
             request.setAttribute("recurringServiceBilling", configDto.getRecurringServiceBill().equals("1") ? "on" : "off");
-            request.setAttribute("usePrefixIV", usePrefixIV);
+          
 
             setConfigActiveTab(session, "customerInvoiceTab");
             for(ConfigurationDto conDto: configDto.getListOfExistingCountry()){
@@ -1266,7 +1266,7 @@ public class ConfigurationController {
             configDto.setIsRefundAllowed(request.getParameter("creditTermDays"));
             configDto.setBackOrderNeeded(request.getParameter("backOrderNeeded"));
             configDto.setRecurringServiceBill(request.getParameter("recurringServiceBill"));
-            configDto.setUsePrefixIV(request.getParameter("usePrefixIV"));
+           
 
             String errorCode = cDetails.saveCustomerInvoiceSetting(configDto, request, companyID);
             System.out.println("UpdateStatusCode value:" + errorCode);

@@ -182,7 +182,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                                     <td>${objList.email}</td>
                                     <td align="center">
                                         <input type="checkbox" name="isEmailValCHK" id="isEmailId" title="isEmailed"
-                                            disabled="true" ${objList.emailed == '1'?"checked='true'":""} />
+                                            ${objList.emailed == '1'?"checked='true'":""} />
                                     </td>
                                     <td align="center">
                                         <input type="checkbox" name="isReceived${loop.index}" id="isReceived${loop.index}" value="${objList.po_no}" title="isReceived"

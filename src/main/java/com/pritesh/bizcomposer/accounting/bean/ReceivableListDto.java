@@ -236,6 +236,8 @@ public class ReceivableListDto{
     private String poDate = "";
 
     private String vendorName = "";
+    
+    private String poNumStr = "";
 
     private TblAccountable accountable = null;
 
@@ -1442,6 +1444,16 @@ public class ReceivableListDto{
 	public void setCheckNum(String checkNum) {
 		this.checkNum = checkNum;
 	}
+
+	public String getPoNumStr() {
+		return poNumStr;
+	}
+
+	public void setPoNumStr(String poNumStr) {
+		this.poNumStr = poNumStr;
+	}
+	
+	
     
 //    public class Row
 //    {
