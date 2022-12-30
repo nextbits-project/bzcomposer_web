@@ -81,7 +81,7 @@ public class AccountingController{
 		ReceivableLIst rl = new ReceivableListImpl();
 		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
 		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
-		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
+		ArrayList<ClientVendor> clientVendorForCombo = rl.getAllClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
 		ArrayList<TblAccount> account =rl.getAccount();
 		/*request.setAttribute("listForUnpaidCreditAmount", listForUnpaidCreditAmount);
@@ -198,7 +198,7 @@ public class AccountingController{
 			
 			String orderNumberStr = newObj.getJSONObject("ReceivableListDto").getString("orderNum");
 			String [] ordStrParts = orderNumberStr.split("-");
-			String strOrderNum = ordStrParts[1];
+			String strOrderNum = ordStrParts[1].trim();
 			
 			invoice.setOrderNum(Integer.parseInt(strOrderNum));
 			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("cvID")));
@@ -235,8 +235,8 @@ public class AccountingController{
 			ReceivableListDto invoice = new ReceivableListDto();
 			String orderNumberStr = newObj.getJSONObject("ReceivableListDto").getString("orderNumStr");
 			String [] ordStrParts = orderNumberStr.split("-");
-			String strOrderNum = ordStrParts[1];
-			
+			String strOrderNum = ordStrParts[1].trim();
+			System.out.println(Integer.parseInt(strOrderNum));
 			invoice.setOrderNum(Integer.parseInt(strOrderNum));
 			//invoice.setOrderNum(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("orderNumStr")));
 			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("cvID")));

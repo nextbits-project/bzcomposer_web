@@ -1,4 +1,5 @@
 <%-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> --%>
+<%@page import="com.pritesh.bizcomposer.accounting.bean.TblPaymentDto"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page isELIgnored="false"%>
 <%@page import="java.text.DecimalFormat"%>
@@ -435,13 +436,14 @@ table.tabla-listados tbody tr td {
 				  </thead>
 				  <tbody id="tblForPaidPOBody"> 
 				  <%
-				  	ArrayList<TblPayment> li = (ArrayList)request.getAttribute("paidList");		
-				  	Iterator<TblPayment> itr =li.iterator();
+				  	ArrayList<TblPaymentDto> li = (ArrayList)request.getAttribute("paidList");		
+				  	Iterator<TblPaymentDto> itr =li.iterator();
 					int index = 1;
 				  	while(itr.hasNext()){
-				  		TblPayment rb = itr.next();
+				  		TblPaymentDto rb = itr.next(); 
+				  		
 				    %>
-				  <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index+","+rb.getId()%>)">
+				   <tr onclick="selectrow(<%=rb.getInvoiceID()+","+index+","+rb.getId()%>)">
 			
 				      <td class="text-right"><% out.println(rb.getPoNum()); %></td>
 				      <td class="text-right" value="<%= rb.getCvID()%>"><% out.println(rb.getCvName()) ;%></td>
@@ -456,10 +458,10 @@ table.tabla-listados tbody tr td {
 				      <td class="text-right"></td>
 				       <td hidden="PaidOrUnpaid" value="<%= request.getSession().getAttribute("PaidOrUnpaid"+rb.getInvoiceID()) %>"></td>
 				 
-				    </tr>
+				    </tr> 
 			<%
-			index++;
-				} %>
+			 index++;
+				}  %>
 		</tbody>	
 	</table>
 </div>

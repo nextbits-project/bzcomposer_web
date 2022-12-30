@@ -198,9 +198,16 @@ public class PoPayableController {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			Scanner scan = new Scanner(newObj.getJSONObject("ReceivableListDto").getString("poNum"));
-			scan.skip("PO2021-");
-			reListBean.setPoNum(Integer.parseInt(scan.nextLine()));
+			//Scanner scan = new Scanner(newObj.getJSONObject("ReceivableListDto").getString("poNum"));
+			//scan.skip("PO2022-");
+			//
+			String poNumberStr = newObj.getJSONObject("ReceivableListDto").getString("poNum");
+			String [] poStrParts = poNumberStr.split("-");
+			String strPoNum = poStrParts[1].trim();
+			System.out.println(Integer.parseInt(strPoNum));
+			reListBean.setPoNum(Integer.parseInt(strPoNum));
+			//
+			//reListBean.setPoNum(Integer.parseInt(scan.nextLine()));
 			reListBean.setInvoiceID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("invoiceID")));
 			reListBean.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("cvID")));
 			reListBean.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("paymentTypeID")));

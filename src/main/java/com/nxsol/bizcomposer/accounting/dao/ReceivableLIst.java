@@ -23,6 +23,7 @@ public interface ReceivableLIst {
 	public ArrayList<ReceivableListDto> getReceivableList(int companyId);
 	
 	public ArrayList<ClientVendor> getClientVendorForCombo();
+	public ArrayList<ClientVendor> getAllClientVendorForCombo();
 	
 	public ArrayList<TblPaymentType> getPaymentType();
 	

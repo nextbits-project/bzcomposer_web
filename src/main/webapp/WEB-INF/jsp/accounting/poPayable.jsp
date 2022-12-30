@@ -206,8 +206,8 @@ table.tabla-listados tbody tr td {
 							</div>
 
 							<script>
-					  var data = document.getElementById("Check");
-					  data.style.display = "none";
+					  //var data = document.getElementById("Check");
+					  //data.style.display = "block";
 				</script>
 							<div class="form-group row" id="Check">
 								<label class="col-md-4  col-form-label"> <spring:message
@@ -823,7 +823,7 @@ table.tabla-listados tbody tr td {
 		var type = document.getElementById("paymentType");
 		var ptype = type.options[type.selectedIndex].label;
 		
-		if(ptype == 'Check')
+		/* if(ptype == 'Check')
 			{
 				if(document.getElementById("checkNum").value == '0' || document.getElementById("checkNum").value == '')
 					{
@@ -831,7 +831,7 @@ table.tabla-listados tbody tr td {
 						return entervalidchecknumberdialog();
 						return false;
 					}
-			}
+			} */
 		
 		this.amtToPay = document.getElementById("receivedAmount").value; 
 		var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
@@ -901,9 +901,11 @@ table.tabla-listados tbody tr td {
    function checkType()
    {
 		
-		var type = document.getElementById("receivedType");
-		var ctype = type.options[type.selectedIndex].innerText;
-		   
+		var type = document.getElementById("paymentType");
+		var ctype = type.options[type.selectedIndex].text;
+		
+		//elt.options[elt.selectedIndex].text;
+		//alert(ctype);   
 		if(ctype == 'Cash')
 		{
 			document.getElementById("Check").style.display = "none";
@@ -966,8 +968,10 @@ table.tabla-listados tbody tr td {
 	    $("#popupWindow").hide(); 
 	    var type = document.getElementById("paymentType");
 	    var ctype = type.options[type.selectedIndex].innerText;
+	    ctype=ctype.replace(/\s/g, "");
 	    if(ctype != 'Check'){
 	  		 $("#Check").hide();
+	  		//alert(ctype);
 	    }
 	    $("#paymentType option:contains(Check)").attr('selected', 'selected');
         $("#payId option:contains(US State Bank)").attr('selected', 'selected');
@@ -1160,6 +1164,13 @@ function selecttransactiondialog()
     });
     return false;
 }
+
+
+//A $( document ).ready() block.
+$( document ).ready(function() {
+ console.log( "ready!" );
+ checkType();
+});
 </script>
 </body>
 </html>

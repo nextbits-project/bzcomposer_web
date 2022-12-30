@@ -70,7 +70,7 @@ public class PaidListController extends Action{
 			paidList = rl.getPaidList(fromDate,toDate);
 			request.setAttribute("paidList", paidList);
 		}
-		paidList = rl.getPaidList(fromDate,toDate);
+//		paidList = rl.getPaidList(fromDate,toDate);
 		ArrayList<TblPaymentDto> paidConsign = rl.getPaidConsignPaymentList();
 	/*	request.setAttribute("paidList", paidList);*/
 		request.setAttribute("paidConsignment", paidConsign);

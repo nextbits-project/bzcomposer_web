@@ -111,6 +111,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						.getYearPart(new SimpleDateFormat("dd-mm-yyyy").format(rs.getDate("DateAdded")));
 
 				if (configDto.getIsSalePrefix().equals("on")) {
+
 					rb.setOrderNumStr("IV".concat(yearPart)
 							.concat("-" + MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo),
 									AppConstants.InvoiceType, configDto, false)));
@@ -395,6 +396,58 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return alc;
 	}
 
+	@Override
+	public ArrayList<ClientVendor> getAllClientVendorForCombo() {
+		// TODO Auto-generated method stub
+		ArrayList<ClientVendor> alc = new ArrayList<ClientVendor>();
+		ClientVendor cv = null;
+		Connection con;
+		int cvId = 0;
+		Statement stmt = null;
+		SQLExecutor db = new SQLExecutor();
+		ResultSet rs = null;
+
+		con = db.getConnection();
+
+		String sql = " SELECT * " + " FROM  bca_clientvendor " + " WHERE CompanyID = " + ConstValue.companyId
+				+ " AND Status IN ('U', 'N' ) AND Active IN (0, 1) ORDER BY LastName";
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				cv = new ClientVendor();
+				cv.setCvID(rs.getInt("ClientVendorID"));
+				cv.setName(rs.getString("Name"));
+				cv.setDetail(rs.getString("Detail"));
+				cv.setCustomerTitle(rs.getString("CustomerTitle"));
+				cv.setCustomerTitleID(rs.getInt("CustomerTitleID"));
+				cv.setFirstName(rs.getString("FirstName"));
+				cv.setLastName(rs.getString("LastName"));
+
+				alc.add(cv);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Loger.log(e.toString());
+		} finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return alc;
+	}
+	
 	@Override
 	public ArrayList<TblPaymentType> getPaymentType() {
 		// TODO Auto-generated method stub
@@ -1053,19 +1106,19 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ResultSet rs = null;
 		con = db.getConnection();
 		String sql = "";
-		if (receivableListBean.getPoNum() == 0) {
+		if (rb.getPoNum() == 0) {
 			sql = "update bca_invoice SET PaymentTypeID =" + receivableListBean.getPaymentTypeID() + ","
 					+ " BankAccountID=" + receivableListBean.getBankAccountID() + "," + "CategoryID="
 					+ receivableListBean.getCategoryID() + "," + " PaidAmount=" + paidAmount + "," + " Balance="
 					+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
-					+ receivableListBean.getMemo() + "'" + " Where OrderNum=" + receivableListBean.getOrderNum()
+					+ receivableListBean.getMemo().trim() + "'" + " Where InvoiceID=" + receivableListBean.getInvoiceID()
 					+ " AND CompanyID=" + receivableListBean.getCompanyID();
 		} else {
 			sql = "update bca_invoice SET PaymentTypeID =" + receivableListBean.getPaymentTypeID() + ","
 					+ " BankAccountID=" + receivableListBean.getBankAccountID() + "," + "CategoryID="
 					+ receivableListBean.getCategoryID() + "," + " PaidAmount=" + paidAmount + "," + " Balance="
 					+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
-					+ receivableListBean.getMemo() + "'" + " Where PONum=" + receivableListBean.getPoNum()
+					+ receivableListBean.getMemo().trim() + "'" + " Where InvoiceID=" + rb.getInvoiceID()
 					+ " AND CompanyID=" + receivableListBean.getCompanyID();
 		}
 		try {
@@ -4250,7 +4303,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ " LEFT JOIN bca_category AS Category ON INV.CategoryID = Category.CategoryID"
 				+ " WHERE INV.CompanyID=" + ConstValue.companyId + " AND INV.IsPaymentCompleted = 0"
 				+ " AND INV.InvoiceStatus = 0" + " AND INV.InvoiceTypeID = 2" + " AND bca_clientvendor.Status = 'N'"
-				+ " AND bca_clientvendor.CompanyID = 1" + " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)"
+				+ " AND bca_clientvendor.CompanyID ="+ ConstValue.companyId + " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)"
 				+ " FROM   bca_payment" + " WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1)"
 
 				+ "  OR (SELECT Sum(bca_payment.Amount) FROM bca_payment WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1) IS NULL )"
@@ -4267,6 +4320,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb.setInvoiceID(rs.getInt("InvoiceID"));
 				/* rb.setOrderNum(rs.getInt("OrderNum")); */
 				rb.setPoNum(rs.getInt("PONum"));
+//<<<<<<< Updated upstream
 				int poNo = (rs.getInt("PONum"));
 				String yearPart = MyUtility
 						.getYearPart(new SimpleDateFormat("dd-mm-yyyy").format(rs.getDate("DateAdded")));
@@ -4280,6 +4334,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 							AppConstants.POType, configDto, false));
 				}
 
+//=======
+//				int orderNo = (rs.getInt("PONum"));
+//				rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo), AppConstants.POType,
+//						configDto, false));
+//>>>>>>> Stashed changes
 				/* rb.setEmployeeId(rs.getInt("EmployeeID")); */
 				/* rb.setRefNum(rs.getString("RefNum")); */
 				rb.setMemo(rs.getString("Memo"));
