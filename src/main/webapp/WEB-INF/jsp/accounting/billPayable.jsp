@@ -990,11 +990,12 @@ table.tabla-listados tbody tr td {
 	{
 		this.billNo = no;
 		this.index = indexNumber;
+		//alert(indexNumber);
 		 $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
 		 $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value'));
 		 $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text());
 		 $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text());
-		 $("#memo").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
+		 $("#memo").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(9)').text().trim());
 		 $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
 		 $("#orderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
 		 if($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value') != 'null' || $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value') != '')
@@ -1005,10 +1006,15 @@ table.tabla-listados tbody tr td {
 		 this.vendorId = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value');
 		 document.getElementById("nameOfTransaction").value = vendorName;
 		 $('#transactionGroup').append('<option value="'+vendorName+'" selected="selected">'+vendorName+'</option>');
-		 document.getElementById("categoryId").value = document.getElementById("categoryID2"+indexNumber).value;
-		 document.getElementById("receivedType").value = document.getElementById("receivedType2"+indexNumber).value;
-
-
+		 //alert(document.getElementById("categoryID21"+indexNumber).value);
+		 /* document.getElementById("categoryId").value = document.getElementById("categoryID2"+indexNumber).value;
+		 document.getElementById("receivedType").value = document.getElementById("receivedType2"+indexNumber).value; */
+		 //alert(document.getElementById("categoryID2"+indexNumber).value);
+		 //$("#receivedType").val($("#receivedType2"+indexNumber).val());
+		 //alert($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
+		 $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
+		 //$("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(15)').attr('value'));
+		 document.getElementById("categoryId").value = document.getElementById("categoryID2"+index).value;
 
 
 		 $("#getBillNo").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
@@ -1097,7 +1103,6 @@ function payBill(){
 			{
 			var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
 			}
-
 		var paidAmount = document.getElementById("receivedAmount").value;
 		amountToBepaid  = document.getElementById("receivedAmount").value;
 		var checkNo = document.getElementById("checkNum").value;
@@ -1111,13 +1116,14 @@ function payBill(){
 			var categoryId = categoryIdString.options[categoryIdString.selectedIndex].value;
 		}
 		var memo = document.getElementById("memo").value;
-
-		if(checkNo == '' || checkNo == '0')
+		
+		//disable checkno verification
+		/* if(checkNo == '' || checkNo == '0')
 		{
 
 			return enterchecknumberdialog();
 			return false;
-		}
+		} */
 		billNoInt = parseInt(billNo);
         var TblVendorDetail = {
             "TblVendorDetail": {

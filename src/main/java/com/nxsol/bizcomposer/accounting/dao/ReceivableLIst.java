@@ -171,6 +171,8 @@ public interface ReceivableLIst {
 	
 	public ArrayList<TblPaymentDto> getPaidBillLists();
 	
+	public ArrayList<TblPayment> getPaidBillListsPayment();
+	
 	public ArrayList<TblPaymentDto> getRecurrentBillPayment();
 	
 	public void deleteSelectedBill(int billNum);

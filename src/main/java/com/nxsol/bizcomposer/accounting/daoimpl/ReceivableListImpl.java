@@ -447,7 +447,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 		return alc;
 	}
-	
+
 	@Override
 	public ArrayList<TblPaymentType> getPaymentType() {
 		// TODO Auto-generated method stub
@@ -1106,21 +1106,46 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ResultSet rs = null;
 		con = db.getConnection();
 		String sql = "";
-		if (rb.getPoNum() == 0) {
-			sql = "update bca_invoice SET PaymentTypeID =" + receivableListBean.getPaymentTypeID() + ","
-					+ " BankAccountID=" + receivableListBean.getBankAccountID() + "," + "CategoryID="
-					+ receivableListBean.getCategoryID() + "," + " PaidAmount=" + paidAmount + "," + " Balance="
-					+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
-					+ receivableListBean.getMemo().trim() + "'" + " Where InvoiceID=" + receivableListBean.getInvoiceID()
-					+ " AND CompanyID=" + receivableListBean.getCompanyID();
+		if (receivableListBean.getPoNum() == 0) {
+			if (receivableListBean.getInvoiceID() < 0) {
+				sql = "update bca_invoice SET PaymentTypeID =" + receivableListBean.getPaymentTypeID() + ","
+						+ " BankAccountID=" + receivableListBean.getBankAccountID() + "," + "CategoryID="
+						+ receivableListBean.getCategoryID() + "," + " PaidAmount=" + paidAmount + "," + " Balance="
+						+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
+						+ receivableListBean.getMemo().trim() + "'" + " Where OrderNum="
+						+ receivableListBean.getOrderNum() + " AND CompanyID=" + receivableListBean.getCompanyID();
+			} else {
+				sql = "update bca_invoice SET PaymentTypeID =" + receivableListBean.getPaymentTypeID() + ","
+						+ " BankAccountID=" + receivableListBean.getBankAccountID() + "," + "CategoryID="
+						+ receivableListBean.getCategoryID() + "," + " PaidAmount=" + paidAmount + "," + " Balance="
+						+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
+						+ receivableListBean.getMemo().trim() + "'" + " Where InvoiceID="
+						+ receivableListBean.getInvoiceID() + " AND CompanyID=" + receivableListBean.getCompanyID();
+			}
+
 		} else {
 			sql = "update bca_invoice SET PaymentTypeID =" + receivableListBean.getPaymentTypeID() + ","
 					+ " BankAccountID=" + receivableListBean.getBankAccountID() + "," + "CategoryID="
 					+ receivableListBean.getCategoryID() + "," + " PaidAmount=" + paidAmount + "," + " Balance="
 					+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
-					+ receivableListBean.getMemo().trim() + "'" + " Where InvoiceID=" + rb.getInvoiceID()
+					+ receivableListBean.getMemo().trim() + "'" + " Where PONum=" + receivableListBean.getPoNum()
 					+ " AND CompanyID=" + receivableListBean.getCompanyID();
 		}
+//		if (rb.getPoNum() == 0) {
+//			sql = "update bca_invoice SET PaymentTypeID =" + receivableListBean.getPaymentTypeID() + ","
+//					+ " BankAccountID=" + receivableListBean.getBankAccountID() + "," + "CategoryID="
+//					+ receivableListBean.getCategoryID() + "," + " PaidAmount=" + paidAmount + "," + " Balance="
+//					+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
+//					+ receivableListBean.getMemo().trim() + "'" + " Where InvoiceID=" + receivableListBean.getInvoiceID()
+//					+ " AND CompanyID=" + receivableListBean.getCompanyID();
+//		} else {
+//			sql = "update bca_invoice SET PaymentTypeID =" + receivableListBean.getPaymentTypeID() + ","
+//					+ " BankAccountID=" + receivableListBean.getBankAccountID() + "," + "CategoryID="
+//					+ receivableListBean.getCategoryID() + "," + " PaidAmount=" + paidAmount + "," + " Balance="
+//					+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
+//					+ receivableListBean.getMemo().trim() + "'" + " Where InvoiceID=" + rb.getInvoiceID()
+//					+ " AND CompanyID=" + receivableListBean.getCompanyID();
+//		}
 		try {
 			stmt = con.createStatement();
 			i = stmt.executeUpdate(sql);
@@ -4303,8 +4328,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ " LEFT JOIN bca_category AS Category ON INV.CategoryID = Category.CategoryID"
 				+ " WHERE INV.CompanyID=" + ConstValue.companyId + " AND INV.IsPaymentCompleted = 0"
 				+ " AND INV.InvoiceStatus = 0" + " AND INV.InvoiceTypeID = 2" + " AND bca_clientvendor.Status = 'N'"
-				+ " AND bca_clientvendor.CompanyID ="+ ConstValue.companyId + " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)"
-				+ " FROM   bca_payment" + " WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1)"
+				+ " AND bca_clientvendor.CompanyID =" + ConstValue.companyId
+				+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
+				+ " WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1)"
 
 				+ "  OR (SELECT Sum(bca_payment.Amount) FROM bca_payment WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1) IS NULL )"
 				+ " ORDER  BY ponum DESC";
@@ -4330,8 +4356,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 							.concat("-" + MyUtility.getOrderNumberByConfigData(Integer.toString(poNo),
 									AppConstants.POType, configDto, false)));
 				} else {
-					rb.setPoNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(poNo),
-							AppConstants.POType, configDto, false));
+					rb.setPoNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(poNo), AppConstants.POType,
+							configDto, false));
 				}
 
 //=======
@@ -6836,7 +6862,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ArrayList<ClientVendor> cvList = new ArrayList<ClientVendor>();
 
 		String sql = " SELECT * FROM  bca_clientvendor WHERE CompanyID = " + ConstValue.companyId
-				+ " AND Status = 'N' AND Deleted = 0 AND Active = 1 AND CVTypeID <> 2 AND CVTypeID <> 4 AND CVCategoryID <> 46 ORDER BY LastName";
+				+ " AND Status = 'N' AND Deleted = 0 AND Active = 1 AND CVTypeID <> 2 AND CVTypeID <> 4 ORDER BY LastName";
+		//+ " AND Status = 'N' AND Deleted = 0 AND Active = 1 AND CVTypeID <> 2 AND CVTypeID <> 4 AND CVCategoryID <> 46 ORDER BY LastName";
 
 		try {
 			stmt = con.createStatement();
@@ -7073,8 +7100,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 		String sql = " Update bca_bill SET PayerID = " + vDetail.getPayerId() + " ,VendorID = " + vDetail.getVendorId()
 				+ " ,Memo = '" + vDetail.getMemo() + "'" + " ,CheckNo = " + vDetail.getCheckNo() + " ,AmountPaid = "
-				+ paidAmount + " ,Balance = " + balance + " ,CategoryID = " + vDetail.getCategoryID() + " ,PayerID = "
-				+ vDetail.getAccountId() + " WHERE BillNum = " + vDetail.getBillNo() + " AND CompanyID = "
+				+ paidAmount + " ,Balance = " + balance + " ,CategoryID = " + vDetail.getCategoryID() + " WHERE BillNum = " + vDetail.getBillNo() + " AND CompanyID = "
 				+ ConstValue.companyId;
 		try {
 			stmt = con.createStatement();
@@ -7271,6 +7297,89 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			while (rs_paidUC.next()) {
 				TblPaymentDto payment = new TblPaymentDto();
+				payment.setId(rs_paidUC.getInt("PaymentID"));
+				payment.setAmount(rs_paidUC.getDouble("Amount"));
+				totaAmount = totalAmount + rs_paidUC.getDouble("Amount");
+				payment.setTotalAmount(totaAmount);
+				payment.setPaymentTypeID(rs_paidUC.getInt("PaymentTypeID"));
+				/*
+				 * payment.setPaymentTypeName(tblPaymentLoader.getPaymentTypeName(payment.
+				 * getPaymentTypeID()));
+				 */
+				payment.setPayerID(rs_paidUC.getInt("PayerID"));
+				/* payment.setPayeeID(rs_paidUC.getInt("PayeeID")); */
+				/* payment.setAccountID(rs_paidUC.getInt("AccountID")); */
+				payment.setCvID(rs_paidUC.getInt("VendorId"));
+				/* payment.setInvoiceID(rs_paidUC.getInt("InvoiceID")); */
+				payment.setCategoryId(rs_paidUC.getInt("CategoryID"));
+				payment.setDateAdded(rs_paidUC.getDate("DateAdded"));
+				/* payment.setNeedToDeposit(rs_paidUC.getBoolean("isNeedtoDeposit")); */
+				payment.setToBePrinted(rs_paidUC.getBoolean("IsToBePrinted"));
+				payment.setCheckNumber(rs_paidUC.getString("CheckNumber"));
+				payment.setServiceId(rs_paidUC.getInt("ServiceID"));
+				payment.setMemo(rs_paidUC.getString("Memo"));
+				payment.setAmountDue(rs_paidUC.getDouble("AmountDue"));
+				payment.setBillNum(rs_paidUC.getInt("BillNum"));
+				payment.setAccountNameString(rs_paidUC.getString("AccountName"));
+				payment.setCvName(rs_paidUC.getString("CompanyName") + " (" + rs_paidUC.getString("LastName") + " "
+						+ rs_paidUC.getString("FirstName") + " )");
+
+				paidBillLists.add(payment);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Loger.log(e.toString());
+		} finally {
+			try {
+				if (rs_paidUC != null) {
+					db.close(rs_paidUC);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return paidBillLists;
+
+	}
+	
+	@Override
+	public ArrayList<TblPayment> getPaidBillListsPayment() {
+		// TODO Auto-generated method stub
+
+		Connection con = null;
+		Statement stmt = null;
+		SQLExecutor db = new SQLExecutor();
+		con = db.getConnection();
+		ResultSet rs_paidUC = null;
+		ArrayList<TblPayment> paidBillLists = new ArrayList<TblPayment>();
+		StringBuffer Sql = new StringBuffer();
+		double totaAmount = 0.00;
+
+		Sql.append("SELECT bill.ServiceID," + " bill.VendorId," + " Payment.DateAdded," + " bill.PayerID,"
+				+ " bill.Memo," + " Payment.CheckNumber," + " Payment.Amount," + " Payment.IsToBePrinted,"
+				+ " bill.BillNum," + " bill.CategoryID," + " bill.AmountDue," + " Payment.PaymentTypeID,"
+				+ " Payment.PaymentID," + " ClientV.Name AS CompanyName," + " ClientV.FirstName," + " ClientV.LastName,"
+				+ " Account.Name AS AccountName" + " FROM bca_payment AS Payment"
+				+ " INNER JOIN bca_bill AS bill ON Payment.BillNum = bill.BillNum "
+				+ " LEFT JOIN bca_clientvendor AS ClientV ON bill.VendorId = ClientV.ClientVendorID"
+				+ " LEFT JOIN bca_account AS Account ON Payment.PayerID = Account.AccountID"
+				+ " WHERE Payment.Deleted <> 1 " + " AND ClientV.Status = 'N'" + " AND bill.CompanyID = "
+				+ ConstValue.companyId);
+
+		Sql.append(" ORDER BY Payment.DateAdded  DESC");
+
+		try {
+			stmt = con.createStatement();
+			rs_paidUC = stmt.executeQuery(Sql.toString());
+
+			while (rs_paidUC.next()) {
+				TblPayment payment = new TblPayment();
 				payment.setId(rs_paidUC.getInt("PaymentID"));
 				payment.setAmount(rs_paidUC.getDouble("Amount"));
 				totaAmount = totalAmount + rs_paidUC.getDouble("Amount");

@@ -1111,10 +1111,12 @@ table.tabla-listados tbody tr td {
 	   if(amount == balance)
 		   {
 		  		 receivedAmountString =  $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
+		  		//alert(receivedAmountString);
 		   }
 	   else
 		   {
 		  		 receivedAmountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
+		  		 //alert(receivedAmountString);
 		   }
 
 	  /*  	var receivedAmount = parseInt(receivedAmountString); */

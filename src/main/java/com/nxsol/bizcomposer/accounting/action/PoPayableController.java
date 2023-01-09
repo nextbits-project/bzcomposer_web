@@ -170,20 +170,26 @@ public class PoPayableController {
 			double amount = 0.0;
 			payable.setBillNum(Integer.parseInt(billNum));
 			payable.setAmount(tblVendorDetail.getAmount());
-			payable.setCategoryId(546919728);
-			payable.setAccountCategoryId(546919728);
+			
+//			payable.setCategoryId(546919728);
+//			payable.setAccountCategoryId(546919728);
+			
+			payable.setCategoryId((int)tblVendorDetail.getCategoryID());
+			payable.setAccountCategoryId((int)tblVendorDetail.getCategoryID());
+			
 			payable.setDateAdded(c1.getTime());
 			payable.setInvoiceId(tblVendorDetail.getInvoiceId());
 			payable.setPayeeCvId(tblVendorDetail.getVendorId());
 			//payable.setInvoiceTypeID(tblVendorDetail.getInvoiceId());
 
-			payable.setPayeeID(57061);
+//			payable.setPayeeID(57061);
 			payable.setMemo(tblVendorDetail.getMemo());
 			//payable.setPaymentTypeId(tblVendorDetail.getPaymentTypeID());
 			//payable.setCheckNumber(bean.getCheckNum());
 
-			payable.setPayFromId(55574);
-
+//			payable.setPayFromId(55574);
+			payable.setPayFromId(tblVendorDetail.getPayerId());
+			payable.setPayeeID(tblVendorDetail.getPayeeId());
 			//payable.setPayeeCvServiceId((int)bean.getServiceID());
 			receivableList.insert(payable, false);
 			receivableList.updateBillByBillNumForPaid(billNum);
