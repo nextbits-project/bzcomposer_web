@@ -1449,10 +1449,11 @@ public class InvoiceInfoDao {
 			sqlString.append("cc.CardNumber ,cc.CardExpMonth,cc.CardExpYear,cc.CardCW2 ,cc.CardHolderName,cc.CardBillingAddress,cc.CardBillingZipCode,");
 			sqlString.append("ad1.Name,ad1.FirstName,ad1.LastName,ad1.Address1,ad1.Address2,ad1.City,ad1.ZipCode,ad1.Country,ad1.State,ad1.Province,ad1.AddressType,");
 			sqlString.append("cvf.UseIndividual ,cvf.AnnualInterestRate ,cvf.MinimumFinanceCharge,cvf.GracePeriod ,cvf.AssessFinanceCharge, ");
-			sqlString.append("cv.isPhoneMobileNumber, cv.isMobilePhoneNumber, cv.MiddleName,date_format(cv.DateInput,'%m-%d-%Y') As DateInput,");
+			//sqlString.append("cv.isPhoneMobileNumber, cv.isMobilePhoneNumber, cv.MiddleName,date_format(cv.DateInput,'%m-%d-%Y') As DateInput,");
+			sqlString.append("cv.MiddleName,date_format(cv.DateInput,'%m-%d-%Y') As DateInput,");
 			sqlString.append("date_format(cv.DateTerminated,'%m-%d-%Y') As DateTerminated,cv.isTerminated,cv.DBAName,cv.Active,cvf.MarkFinanceCharge ");
 
-			sqlString.append(" FROM  bca_clientvendor cv left join ( bca_creditcard cc ,bca_bsaddress ad1 ,bca_clientvendorfinancecharges cvf )");
+			sqlString.append(" FROM  bca_clientvendor cv left join ( bca_cvcreditcard cc ,bca_bsaddress ad1 ,bca_clientvendorfinancecharges cvf )");
 			sqlString.append(" on (cc.ClientVendorID= cv.ClientVendorID and ad1.ClientVendorID=cv.ClientVendorID and cvf.ClientVendorID= cv.ClientVendorID )");
 			sqlString.append(" WHERE CompanyID="+compId+" AND cv.CVTypeID IN (1, 2) AND cv.Status IN ('U', 'N') AND cv.Deleted = 0 AND cv.Active=1 ");
 			if(cvId != null){
@@ -1467,66 +1468,66 @@ public class InvoiceInfoDao {
 				if(!customerList.isEmpty()){
 					customer = new CustomerDto();
 				}
-				customer.setClientVendorID(rs.getString(1));
-				customer.setCname(rs.getString(2));
-				customer.setFirstName(rs.getString(3));
-				customer.setLastName(rs.getString(4));
-				customer.setAddress1(rs.getString(5));
-				customer.setAddress2(rs.getString(6));
-				customer.setCity(rs.getString(7));
-				customer.setState(rs.getString(8));
+				customer.setClientVendorID(rs.getString("ClientVendorID"));
+				customer.setCname(rs.getString("NAME"));
+				customer.setFirstName(rs.getString("FirstName"));
+				customer.setLastName(rs.getString("LastName"));
+				customer.setAddress1(rs.getString("Address1"));
+				customer.setAddress2(rs.getString("Address2"));
+				customer.setCity(rs.getString("City"));
+				customer.setState(rs.getString("State"));
 
-				request.setAttribute("state_gen", rs.getString(8));
+				request.setAttribute("state_gen", rs.getString("State"));
 
-				customer.setProvince(rs.getString(9));
-				customer.setCountry(rs.getString(10));
-				customer.setZipCode(rs.getString(11));
-				customer.setPhone(rs.getString(12));
-				customer.setCellPhone(rs.getString(13));
-				customer.setFax(rs.getString(14));
-				customer.setEmail(rs.getString(15));
-				customer.setHomePage(rs.getString(16));
-				customer.setTitle(rs.getString(17));
-				customer.setTexID(rs.getString(18));
-				customer.setOpeningUB(rs.getString(19));
+				customer.setProvince(rs.getString("Province"));
+				customer.setCountry(rs.getString("Country"));
+				customer.setZipCode(rs.getString("ZipCode"));
+				customer.setPhone(rs.getString("Phone"));
+				customer.setCellPhone(rs.getString("CellPhone"));
+				customer.setFax(rs.getString("Fax"));
+				customer.setEmail(rs.getString("Email"));
+				customer.setHomePage(rs.getString("HomePage"));
+				customer.setTitle(rs.getString("CustomerTitle"));
+				customer.setTexID(rs.getString("ResellerTaxID"));
+				customer.setOpeningUB(rs.getString("VendorOpenDebit"));
 
-				customer.setExtCredit(rs.getString(20));
-				customer.setMemo(rs.getString(21));
-				customer.setTaxAble(rs.getString(22));
+				customer.setExtCredit(rs.getString("VendorAllowedCredit"));
+				customer.setMemo(rs.getString("Detail"));
+				customer.setTaxAble(rs.getString("Taxable"));
 
-				customer.setIsclient(rs.getString(23)); // cvtypeid
-				customer.setType(rs.getString(24));
-				customer.setDateAdded(rs.getString(25));
+				customer.setIsclient(rs.getString("CVTypeID")); // cvtypeid
+				customer.setType(rs.getString("cvcategoryid"));
+				customer.setDateAdded(rs.getString("DateAdded"));
 
 				/* Account */
-				customer.setCardNo(rs.getString(26));
-				customer.setExpDate(rs.getString(27) + "/" + rs.getString(28));
+				customer.setCardNo(rs.getString("CardNumber"));
+				customer.setExpDate(rs.getString("CardExpMonth") + "/" + rs.getString("CardExpYear"));
 
-				customer.setCw2(rs.getString(29));
-				customer.setCardHolderName(rs.getString(30));
-				customer.setCardBillAddress(rs.getString(31));
-				customer.setCardZip(rs.getString(32));
+				customer.setCw2(rs.getString("CardCW2"));
+				customer.setCardHolderName(rs.getString("CardHolderName"));
+				customer.setCardBillAddress(rs.getString("CardBillingAddress"));
+				customer.setCardZip(rs.getString("CardBillingZipCode"));
 
 				/* Finance */
 				//customer.setFsUseIndividual(rs.getString(44).equals("1")?"true":"false");
-				customer.setFsUseIndividual(rs.getString(44));
-				customer.setAnnualIntrestRate(rs.getString(45));
-				customer.setMinFCharges(rs.getString(46));
-				customer.setGracePrd(rs.getString(47));
-				String str1 = rs.getString(48);
+				customer.setFsUseIndividual(rs.getString("UseIndividual"));
+				customer.setAnnualIntrestRate(rs.getString("AnnualInterestRate"));
+				customer.setMinFCharges(rs.getString("MinimumFinanceCharge"));
+				customer.setGracePrd(rs.getString("GracePeriod"));
+				String str1 = rs.getString("AssessFinanceCharge");
 				if (str1 == null)
 					customer.setFsAssessFinanceCharge("false");
 				else
 					customer.setFsAssessFinanceCharge(rs.getString(48).equals("1") ? "true" : "false");
-				customer.setIsPhoneMobileNumber(rs.getBoolean(49));
-				customer.setIsMobilePhoneNumber(rs.getBoolean(50));
-				customer.setMiddleName(rs.getString(51));
-				customer.setDateInput(rs.getString(52));
-				customer.setTerminatedDate(rs.getString(53));
-				customer.setTerminated(rs.getBoolean(54));
-				customer.setDbaName(rs.getString(55));
-				customer.setActive(rs.getBoolean(56));
-				customer.setFsMarkFinanceCharge(rs.getString(57));
+				//customer.setIsPhoneMobileNumber(rs.getBoolean(49));
+				//customer.setIsMobilePhoneNumber(rs.getBoolean(50));
+				customer.setMiddleName(rs.getString("MiddleName"));
+				customer.setDateInput(rs.getString("DateInput"));
+				customer.setTerminatedDate(rs.getString("DateTerminated"));
+				customer.setTerminated(rs.getBoolean("isTerminated"));
+				customer.setDbaName(rs.getString("DBAName"));
+				customer.setActive(rs.getBoolean("Active"));
+				customer.setFsMarkFinanceCharge(rs.getString("MarkFinanceCharge"));
 
 
 				String sqlString1 = "SELECT Name,FirstName,LastName,Address1,Address2,City,ZipCode,Country,State,Province,DBAName "
@@ -1581,7 +1582,7 @@ public class InvoiceInfoDao {
 
 				// ----------------------start---code---------------------------
 				List<CreditCardDto> creditCards = new ArrayList<>();
-				pstmt4 = con.prepareStatement("select c.*,t.Name AS CardTypeName from bca_creditcard AS c INNER JOIN bca_cctype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
+				pstmt4 = con.prepareStatement("select DISTINCT c.*,t.Name AS CardTypeName from bca_cvcreditcard AS c INNER JOIN bca_creditcardtype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
 				pstmt4.setString(1, cvId);
 				rs3 = pstmt4.executeQuery();
 				while (rs3.next()) {
