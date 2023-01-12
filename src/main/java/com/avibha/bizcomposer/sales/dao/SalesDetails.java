@@ -89,6 +89,7 @@ public class SalesDetails {
 
 	}
 
+	@Deprecated
 	public void AddCustomer(HttpServletRequest request, ActionForm form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -127,7 +128,9 @@ public class SalesDetails {
 		// ............................................Id generation finished
 
 		CustomerInfo customer = new CustomerInfo();
-		CustomerDto cfrm = (CustomerDto) form;
+		// CustomerDto cfrm = (CustomerDto) form;
+		CustomerDto cfrm = new CustomerDto();
+ 
 		
 		try{
 			boolean addCust = customer.insertCustomer(cvID + "", cfrm, compId, istax, isclient,
@@ -359,11 +362,13 @@ public class SalesDetails {
 		request.setAttribute("CustomerDetails", CustomerDetails);
 		return CustomerDetails;
 	}
+	
+	@Deprecated
 	public void getLabel(HttpServletRequest request,ActionForm form)  {
 		CustomerInfo customer = new CustomerInfo();
-		CustomerDto cform = (CustomerDto)form;
+		// CustomerDto cform = (CustomerDto)form;
 		int labelId = Integer.parseInt(request.getParameter("lblId"));
-		customer.getLabel(labelId,cform);
+		// customer.getLabel(labelId,cform);
 	}
 	
 	
@@ -374,8 +379,10 @@ public class SalesDetails {
 		request.setAttribute("LabelTypeList", labelType);
 	}
 
+	@Deprecated
 	public void addNewLabel(ActionForm form){
-		CustomerDto cform = (CustomerDto)form ;
+		// CustomerDto cform = (CustomerDto)form ;
+		CustomerDto cform = new CustomerDto();
 		cform.setLabelName("");
 		cform.setTopMargin("0.0");
 		cform.setLeftMargin("0.0");
@@ -385,27 +392,29 @@ public class SalesDetails {
 		cform.setLabelWidth("0.0");
 	}
 	
+	@Deprecated
 	public boolean saveLabel(HttpServletRequest request, ActionForm form) {
 		boolean result=false;
 		CustomerInfo customer = new CustomerInfo();
-		CustomerDto cfrm = (CustomerDto) form;
+		//CustomerDto cfrm = (CustomerDto) form;
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
 		if (labelID == 0) {
-			customer.saveLabel(cfrm);
+			//customer.saveLabel(cfrm);
 			result=true;
 		} else {
-			customer.updateLabel(labelID, cfrm);
+			//customer.updateLabel(labelID, cfrm);
 			result=false;
 		}
 		return result;
 	}
 	
+	@Deprecated
 	public void deleteLabel(HttpServletRequest request, ActionForm form) {
 		CustomerInfo customer = new CustomerInfo();
-		CustomerDto cfrm = (CustomerDto) form;
+		//CustomerDto cfrm = (CustomerDto) form;
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
 		Loger.log("LABEL   "+labelID);
-		customer.deleteLabel(labelID, cfrm);	
+		//customer.deleteLabel(labelID, cfrm);	
 	}
 
 	public void searchCustomer(String cvId, HttpServletRequest request,
@@ -751,12 +760,16 @@ public class SalesDetails {
 	   request.setAttribute("invStatistics", invStatistics);
 	   
    }
+   
+   @Deprecated
    public void getAccountPayableReport(HttpServletRequest request,ActionForm form)
    {
 	   HttpSession ss = request.getSession();
 	   String compId = (String)ss.getAttribute("CID");
 	   
-	   CustomerDto cform = (CustomerDto)form;
+	   //CustomerDto cform = (CustomerDto)form;
+	   
+	   CustomerDto cform = new CustomerDto();
 	   
 	   CustomerInfo info = new CustomerInfo();
 	   
@@ -1710,6 +1723,7 @@ public class SalesDetails {
 
 	}
 
+	@Deprecated
 	public void getCustLookup(String cvId, HttpServletRequest request,
 			ActionForm form) {
 
@@ -1720,7 +1734,8 @@ public class SalesDetails {
 		InvoiceInfo invoice = new InvoiceInfo();
 		ArrayList lookDetails = new ArrayList();
 
-		CustomerDto uform = (CustomerDto) form;
+		// CustomerDto uform = (CustomerDto) form;
+		CustomerDto uform = new CustomerDto();
 		cond = uform.getDispay_info();
 		Loger.log("The Show all" + uform.getDispay_info());
 		Loger.log("The Client Vendor Id is" + cvId);
@@ -1854,12 +1869,14 @@ public class SalesDetails {
 
 	}
 
+	@Deprecated
 	public void getProfitLossDetail(HttpServletRequest request,ActionForm form)
 	{
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		CustomerInfo customer = new CustomerInfo();
-		CustomerDto cForm = (CustomerDto)form;
+		// CustomerDto cForm = (CustomerDto)form;
+		CustomerDto cForm = new CustomerDto();
 		String fromDate = cForm.getFromDate();
 		String toDate = cForm.getToDate();
 		String sortBy = cForm.getSortBy();

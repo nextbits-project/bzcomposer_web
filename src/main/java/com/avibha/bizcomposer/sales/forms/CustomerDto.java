@@ -7,10 +7,7 @@
 package com.avibha.bizcomposer.sales.forms;
 
 import java.util.List;
-
-import org.apache.struts.action.ActionForm;
-
-
+ 
 public class CustomerDto{
 
 	private static final long serialVersionUID = 0;
