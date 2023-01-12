@@ -34,7 +34,7 @@ import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 /*
  * 
  */
-public class CustomerInfo {
+public class CustomerInfo{
 
 	public ArrayList customerDetails(String compId) {
 		Connection con = null ;
@@ -1183,6 +1183,7 @@ public class CustomerInfo {
 		}
 	}
 
+	@Deprecated
 	public ArrayList SearchCustomer(String compId, String cvId, ActionForm form) {
 		Connection con = null ;
 		PreparedStatement pstmt = null;
@@ -1245,7 +1246,8 @@ public class CustomerInfo {
 			rs = pstmt.executeQuery();
 			String addresstype = "";
 			if (rs.next()) {
-				CustomerDto customer = (CustomerDto) form;
+				// CustomerDto customer = (CustomerDto) form;
+				CustomerDto customer = new CustomerDto();
 				customer.setClientVendorID(rs.getString(1));
 				customer.setCname(rs.getString(2));
 				customer.setFirstName(rs.getString(3));

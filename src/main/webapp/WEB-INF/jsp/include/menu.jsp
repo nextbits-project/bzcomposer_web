@@ -179,6 +179,14 @@
 					</li>
 				</ul>
 			</li>
+			<!-- LEADS START -->
+			<li>
+				<a href="Leads?tabid=leads" title="leads" class="uppercaseText">
+                    <span><spring:message code="BzComposer.leads" /></span>
+				</a>
+			</li>
+			<!-- LEADS END -->
+			
 			<li>
 				<a href="Customer?tabid=Customer" title="Customer" class="uppercaseText">
                     <span><spring:message code="BzComposer.sales.Customer" /></span>
