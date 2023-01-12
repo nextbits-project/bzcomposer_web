@@ -1040,8 +1040,9 @@ public class PurchaseInfoDao {
 				+ "vfc.UseIndividual ,vfc.AnnualInterestRate ,vfc.MinimumFinanceCharge,vfc.GracePeriod ,vfc.AssessFinanceCharge,"
 				/* + "vfc.GracePeriod ,vfc.AssessFinanceCharge ,vfc.MarkFinanceCharge,"*/
 				+ "cv.MiddleName,date_format(cv.DateInput,'%m-%d-%Y') As DateInput, date_format(cv.DateTerminated,'%m-%d-%Y') As DateTerminated, cv.isTerminated,"
-				+ "cv.isMobilePhoneNumber,cv.DBAName "
-				+ "FROM  bca_clientvendor AS cv left join ( bca_creditcard AS cc, bca_bsaddress AS ad, bca_clientvendorfinancecharges AS vfc )"
+				//+ "cv.isMobilePhoneNumber,cv.DBAName "
+				+ "cv.DBAName "
+				+ "FROM  bca_clientvendor AS cv left join ( bca_cvcreditcard AS cc, bca_bsaddress AS ad, bca_clientvendorfinancecharges AS vfc )"
 				+ " on (cc.ClientVendorID= cv.ClientVendorID and ad.ClientVendorID = cv.ClientVendorID and vfc.ClientVendorID= cv.ClientVendorID) "
 				+ "WHERE CompanyID="+compId+" AND cv.CVTypeID IN (1, 3) AND cv.Status IN ('N','U') AND cv.Deleted='0' AND cv.Active=1 ";
 			if(cvId != null){
@@ -1110,8 +1111,8 @@ public class PurchaseInfoDao {
 				customer.setDateInput(rs.getString(50));
 				customer.setTerminatedDate(rs.getString(51));
 				customer.setTerminated(rs.getBoolean(52));
-				customer.setIsMobilePhoneNumber(rs.getBoolean(53));
-				customer.setDbaName(rs.getString(54));
+				//customer.setIsMobilePhoneNumber(rs.getBoolean(53));
+				customer.setDbaName(rs.getString(53));
 
 
 				String sqlString1 = "SELECT Name,FirstName,LastName,Address1,Address2,City,ZipCode,Country,State,Province,DBAName "
@@ -1168,7 +1169,7 @@ public class PurchaseInfoDao {
 
 				// ---start---------------------------------------------------------------------code
 				List<CreditCardDto> creditCards = new ArrayList<>();
-				pstmt4 = con.prepareStatement("select c.*,t.Name AS CardTypeName from bca_creditcard AS c INNER JOIN bca_cctype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
+				pstmt4 = con.prepareStatement("select c.*,t.Name AS CardTypeName from bca_cvcreditcard AS c INNER JOIN bca_creditcardtype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
 				pstmt4.setString(1, cvId);
 				rs3 = pstmt4.executeQuery();
 				while (rs3.next()) {
