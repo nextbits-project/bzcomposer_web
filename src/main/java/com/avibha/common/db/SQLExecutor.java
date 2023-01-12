@@ -95,9 +95,9 @@ public class SQLExecutor {
     public Connection getConnection() {
     	Connection connection =null;
         try {
-            // connection = dataSource.getConnection();
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","root","admin");
+            connection = dataSource.getConnection();
+			//Class.forName("com.mysql.cj.jdbc.Driver");
+			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","root","admin");
 		} catch (Exception ex) {
 			System.out.println("Not able to create DB connection " + ex.getMessage());
 			Loger.log(Loger.DEBUG,"Not able to create DB connection " + ex.getMessage());
