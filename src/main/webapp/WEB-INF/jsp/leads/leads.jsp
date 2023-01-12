@@ -55,44 +55,36 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 	</table>
 </div>
 </div>
-<input type="hidden" id="lSize" value='${customerList.size()}' />
+<input type="hidden" id="lSize" value='${leadList.size()}' />
 <table id="custTable" class="tabla-listados sortable" cellspacing="0" style="width: 100%; margin-top: 10px; border: 0; padding: 0;height: auto;" align="center">
     <thead>
         <tr valign="center">
             <th><spring:message code="BzComposer.Customer.ID" /></th>
             <th><spring:message code="BzComposer.customerinfo.customer" /></th>
-            <th><spring:message code="BzComposer.global.company" /></th>
-            <th><spring:message code="BzComposer.Companyinformation.Type" /></th>
             <th><spring:message code="BzComposer.global.address1" /></th>
             <th><spring:message code="BzComposer.global.address2" /></th>
             <th><spring:message code="BzComposer.global.city" /></th>
             <th><spring:message code="BzComposer.global.state" /></th>
             <th><spring:message code="BzComposer.global.zipcode" /></th>
             <th><spring:message code="BzComposer.global.country" /></th>
-            <th><spring:message code="BzComposer.orderimport.lastorderdate" /></th>
             <th><spring:message code="BzComposer.global.dateadded" /></th>
-            <th><spring:message code="Bizcomposer.active" /></th>
         </tr>
     </thead>
     <tbody id="custTableBody">
-        <c:if test="${not empty customerList}">
-            <c:forEach items="${customerList}" var="objList" varStatus="loop">
-                <tr id='${loop.index}$$' onclick="setRowId(${objList.clientVendorID}, ${loop.index}, true);" ondblclick="goToCustomerBoard(${objList.clientVendorID});">
-                    <td class="${objList.paymentUnpaid?'redColor':''}">
-                        <a href="/Customer?tabid=CustomerBoard&selectedCvID=${objList.clientVendorID}">${objList.clientVendorID}</a>
+        <c:if test="${not empty leadList}">
+            <c:forEach items="${leadList}" var="objList" varStatus="loop">
+                <tr id='${loop.index}$$' onclick="setRowId(${objList.leadId}, ${loop.index}, true);" ondblclick="goToCustomerBoard(${objList.leadId});">
+                    <td>
+                        <a href="/Leads?leadId=${objList.leadId}">${objList.leadId}</a>
                     </td>
-                    <td>${objList.firstName} ${objList.middleName} ${objList.lastName}</td>
-                    <td>${objList.companyName}</td>
-                    <td>${objList.type}</td>
+                    <td>${objList.firstName} ${objList.lastName}</td>
                     <td>${objList.address1}</td>
                     <td>${objList.address2}</td>
                     <td>${objList.city}</td>
-                    <td>${objList.stateName}</td>
+                    <td>${objList.state}</td>
                     <td>${objList.zipCode}</td>
                     <td>${objList.country}</td>
-                    <td>${objList.lastOrderDate}</td>
-                    <td>${objList.dateAdded}</td>
-                    <td>Yes</td>
+                    <td>${objList.createdAT}</td>
                 </tr>
             </c:forEach>
         </c:if>
@@ -167,7 +159,7 @@ function manageLead(cmd){
 	} else {
 		if (cmd=="EDIT") {
 			//window.location = "Customer?tabid=editCustomer&cvId="+itemID+"&itemIndex="+itemIndex;
-			window.open("Leads?tabid=editLead&cvId="+itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
+			window.open("Lead?LeadId="+itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 		}
 		else if (cmd=="DELETE") {
 			event.preventDefault();
@@ -192,12 +184,12 @@ function manageLead(cmd){
 	}
 }
 
-function goToCustomerBoard(clientVendorID){
-    window.location = "/Customer?tabid=CustomerBoard&selectedCvID="+clientVendorID;
+function editLead(leadId){
+    window.location = "/Lead?LeadId="+leadId;
 }
 function addLead(){
 	//window.location = "Customer?tabid=NewCustomer";
-	window.open("Leads?tabid=NewLead", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
+	window.open("Lead", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 }
 
 function showCustomerValidationDialog(){
