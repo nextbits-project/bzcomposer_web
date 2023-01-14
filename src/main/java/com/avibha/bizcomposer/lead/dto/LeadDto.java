@@ -40,7 +40,9 @@ public class LeadDto {
 
 	private boolean leadPublic;
 	private boolean contactToday;
-	private Date contactDate;
+	private String contactDate;
+	private String createdAT;
+	private String updatedAT;
 
 	public Long getLeadId() {
 		return leadId;
@@ -238,11 +240,11 @@ public class LeadDto {
 		this.contactToday = contactToday;
 	}
 
-	public Date getContactDate() {
+	public String getContactDate() {
 		return contactDate;
 	}
 
-	public void setContactDate(Date contactDate) {
+	public void setContactDate(String contactDate) {
 		this.contactDate = contactDate;
 	}
 
@@ -252,6 +254,22 @@ public class LeadDto {
 
 	public Long getAssignedId() {
 		return assignedId;
+	}
+
+	public void setCreatedAT(String createdAT) {
+		this.createdAT = createdAT;
+	}
+
+	public void setUpdatedAT(String updatedAT) {
+		this.updatedAT = updatedAT;
+	}
+
+	public String getCreatedAT() {
+		return createdAT;
+	}
+
+	public String getUpdatedAT() {
+		return updatedAT;
 	}
 
 }
