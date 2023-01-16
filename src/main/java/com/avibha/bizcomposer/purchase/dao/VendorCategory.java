@@ -26,7 +26,7 @@ public class VendorCategory {
 		PreparedStatement pstmt = null;
 		ArrayList<LabelValueBean> arr = new ArrayList<>();
 		try {
-			pstmt = con.prepareStatement("SELECT CVCategoryID,Name FROM bca_cvcategory where CompanyID=? and Active=? ORDER BY Name");
+			pstmt = con.prepareStatement("SELECT CVCategoryID,Name FROM bca_clientcategory where CompanyID=? and Active=? ORDER BY Name");
 			pstmt.setString(1, CompanyID);
 			pstmt.setString(2, "1");
 			rs = pstmt.executeQuery();
@@ -50,7 +50,7 @@ public class VendorCategory {
 		ResultSet rs = null;
 		PreparedStatement pstmt;
 		try {
-			pstmt = con.prepareStatement("select Name from bca_cvcategory where CVCategoryID=? ");
+			pstmt = con.prepareStatement("select Name from bca_clientcategory where CVCategoryID=? ");
 			pstmt.setString(1, CVCategoryID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
