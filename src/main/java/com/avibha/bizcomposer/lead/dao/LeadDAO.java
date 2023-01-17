@@ -14,4 +14,6 @@ public interface LeadDAO {
 
 	boolean update(LeadDto dto, String companyId);
 
+	boolean delete(Long leadId, String companyId);
+
 }

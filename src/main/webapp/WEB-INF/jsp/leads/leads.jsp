@@ -163,7 +163,7 @@ function manageLead(cmd){
 		}
 		else if (cmd=="DELETE") {
 			event.preventDefault();
-			$("#deleteCustomer").dialog({
+			$("#deleteLead").dialog({
 		    	resizable: false,
 		        height: 200,
 		        width: 500,
@@ -171,7 +171,7 @@ function manageLead(cmd){
 		        buttons: {
 		            "<spring:message code='BzComposer.global.ok'/>": function () {
 		                $(this).dialog("close");
-		                window.location = "Leads?tabid=deleteLead&cvID="+itemID;
+		                window.location = "Lead/delete?LeadId="+itemID;
 		            },
 		            <spring:message code='BzComposer.global.cancel'/>: function () {
 		                $(this).dialog("close");
@@ -213,6 +213,6 @@ function showCustomerValidationDialog(){
 <div id="showCustomerValidationDialog" style="display:none;">
 	<p><spring:message code="BzComposer.customerinfo.selectcustomerfirst"/></p>
 </div>
-<div id="deleteCustomer" style="display:none;">
-	<p><spring:message code="BzComposer.customerinfo.deleteselectedcustomer"/></p>
+<div id="deleteLead" style="display:none;">
+	<p><spring:message code="BzComposer.lead.deleteselecteddelete"/></p>
 </div>

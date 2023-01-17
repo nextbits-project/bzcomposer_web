@@ -19,6 +19,7 @@ public class LeadDto {
 	private String assigned;
 	private String city;
 	private String tags;
+	private String province;
 
 	private String position;
 	private String address1;
@@ -270,6 +271,14 @@ public class LeadDto {
 
 	public String getUpdatedAT() {
 		return updatedAT;
+	}
+	
+	public void setProvince(String province) {
+		this.province = province;
+	}
+	
+	public String getProvince() {
+		return province;
 	}
 
 }
