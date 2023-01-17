@@ -6,12 +6,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.avibha.bizcomposer.lead.dto.LeadDto;
 import com.avibha.common.db.SQLExecutor;
@@ -21,10 +24,19 @@ import com.avibha.common.log.Loger;
 public class LeadDAOImpl implements LeadDAO {
 
 	private SQLExecutor db;
+	
+	private SimpleDateFormat dateFormat;
+  
 
 	@PostConstruct
 	private void postConstruct() {
 		db = new SQLExecutor();
+		dateFormat = new SimpleDateFormat("MM-DD-YYYY");
+		java.util.Date date = new java.util.Date();
+
+	    String currentTime = dateFormat.format(date);
+	    
+	    System.out.println(currentTime);
 	}
 
 	@Override
@@ -143,12 +155,14 @@ public class LeadDAOImpl implements LeadDAO {
 		dto.setContactToday(rs.getBoolean("isContactToday"));
 
 		dto.setPosition(rs.getString("Position"));
-
+		dto.setTags(rs.getString("Tags"));
+ 
 		Date contactDate = rs.getDate("contactDate");
-		if (contactDate != null)
-			dto.setContactDate(contactDate.toString());
+		if (contactDate != null) {
+			String currentTime = dateFormat.format(contactDate);
+		    dto.setContactDate(currentTime);
+		}
 		
-
 		Date createAt = rs.getDate("createdAt");
 		if (createAt != null)
 			dto.setCreatedAT(createAt.toString());
@@ -172,8 +186,8 @@ public class LeadDAOImpl implements LeadDAO {
 			String sqlString = "insert into crm_lead(CompanyID, Status,Source,"
 					+ "City, State, Country, Title, FirstName , LastName, Address1, Address2"
 					+ ",Email,ZipCode,WebSite,LeadValue,Company,Description,"
-					+ "isPublic,isContactToday,contactDate,createdAt,updatedAt,Phone, Position) "
-					+ " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					+ "isPublic,isContactToday,contactDate,createdAt,updatedAt,Phone, Position, Tags) "
+					+ " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 			pstmt = con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, companyId);
@@ -192,18 +206,32 @@ public class LeadDAOImpl implements LeadDAO {
 			pstmt.setString(12, dto.getEmail());
 			pstmt.setString(13, dto.getZipCode());
 			pstmt.setString(14, dto.getWebsite());
-			pstmt.setLong(15, dto.getLeadValue());
+			pstmt.setLong(15, dto.getLeadValue() != null ? dto.getLeadValue() : 0);
 			pstmt.setString(16, dto.getCompany());
 			pstmt.setString(17, dto.getDescription());
 
 			pstmt.setBoolean(18, dto.isLeadPublic());
 			pstmt.setBoolean(19, dto.isContactToday());
-			pstmt.setDate(20, new Date(System.currentTimeMillis()));
+			
+			if(!ObjectUtils.isEmpty(dto.getContactDate())) {
+				try {
+					pstmt.setDate(20, new Date(dateFormat.parse(dto.getContactDate()).getTime()));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					pstmt.setDate(20, null);
+				}
+			}else {
+				pstmt.setDate(20, null);
+			}			
+			
 			pstmt.setDate(21, new Date(System.currentTimeMillis()));
 			pstmt.setDate(22, new Date(System.currentTimeMillis()));
 			pstmt.setString(23, dto.getPhone());
 			pstmt.setString(24, dto.getPosition());
-
+			pstmt.setString(25, dto.getTags());
+			
+		 
 			Loger.log(sqlString);
 
 			int num = pstmt.executeUpdate();
@@ -216,6 +244,49 @@ public class LeadDAOImpl implements LeadDAO {
 					dto.setLeadId(generatedKey);
 				}
 
+				ret = true;
+			}
+
+			// -------------------Code to save services---END-----------------------
+		} catch (SQLException ee) {
+			Loger.log(2, "SQLException in Class CustomerInfo,  method -insertCustomer " + ee.toString());
+
+		} catch (Exception ee) {
+			Loger.log(2, "SQLException in Class CustomerInfo,  method -insertCustomer " + ee.toString());
+
+		} finally {
+			try {
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return ret;
+	}
+	
+	@Override
+	public boolean delete(Long leadId, String companyId) {
+		
+		Connection con = db.getConnection();
+		PreparedStatement pstmt = null;
+		boolean ret = false;
+		try {
+
+			String sqlString = "DELETE FROM crm_lead where CompanyID=? and LeadId=?";
+
+			pstmt = con.prepareStatement(sqlString);
+			pstmt.setString(1, companyId);
+			pstmt.setLong(2, leadId);
+ 
+			Loger.log(sqlString);
+
+			int num = pstmt.executeUpdate();
+			if (num > 0) {
 				ret = true;
 			}
 
@@ -236,6 +307,7 @@ public class LeadDAOImpl implements LeadDAO {
 			}
 		}
 		return ret;
+		
 	}
 
 	@Override
@@ -247,7 +319,7 @@ public class LeadDAOImpl implements LeadDAO {
 
 			String sqlString = "update crm_lead set Status=? , Source=? , City=? , State=? , Country=? , Title=? , FirstName=?  , LastName=? "
 					+ ", Address1=? , Address2=? ,Email=?,ZipCode=?,WebSite=?,LeadValue=?,Company=?,Description=?,"
-					+ "isPublic=?,isContactToday=?,contactDate=?,updatedAt=?, Phone=? , Position=? where CompanyID=? and LeadId=?";
+					+ "isPublic=?,isContactToday=?,contactDate=?,updatedAt=?, Phone=? , Position=?, Tags=? , contactDate=? where CompanyID=? and LeadId=?";
 
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1, dto.getStatus());
@@ -265,7 +337,7 @@ public class LeadDAOImpl implements LeadDAO {
 			pstmt.setString(11, dto.getEmail());
 			pstmt.setString(12, dto.getZipCode());
 			pstmt.setString(13, dto.getWebsite());
-			pstmt.setLong(14, dto.getLeadValue());
+			pstmt.setLong(14, dto.getLeadValue() != null ? dto.getLeadValue() : 0);
 			pstmt.setString(15, dto.getCompany());
 			pstmt.setString(16, dto.getDescription());
 
@@ -275,9 +347,22 @@ public class LeadDAOImpl implements LeadDAO {
 			pstmt.setDate(20, new Date(System.currentTimeMillis()));
 			pstmt.setString(21, dto.getPhone());
 			pstmt.setString(22, dto.getPosition());
+			pstmt.setString(23, dto.getTags());
+			
+			if(!ObjectUtils.isEmpty(dto.getContactDate())) {
+				try {
+					pstmt.setDate(24, new Date(dateFormat.parse(dto.getContactDate()).getTime()));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					pstmt.setDate(24, null);
+				}
+			}else {
+				pstmt.setDate(24, null);
+			}		
 
-			pstmt.setString(23, companyId);
-			pstmt.setLong(24, dto.getLeadId());
+			pstmt.setString(25, companyId);
+			pstmt.setLong(26, dto.getLeadId());
 
 			Loger.log(sqlString);
 

@@ -10,8 +10,15 @@
 <link
 	href="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui-tab.css"
 	rel="stylesheet" media="screen" />
+<link
+	href="${pageContext.request.contextPath}/dist/css/bootstrap-tagsinput.css"
+	rel="stylesheet" type="text/css" media="screen" />
+
 <script
 	src="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui.js"></script>
+
+<script
+	src="${pageContext.request.contextPath}/dist/js/bootstrap-tagsinput.min.js"></script>
 <style>
 table.tabla-listados thead tr th {
 	font-size: 14px;
@@ -28,6 +35,10 @@ table.tabla-listados tbody tr td {
 input, textarea, select {
 	font-size: 12px !important;
 }
+
+.bootstrap-tagsinput {
+	width: 100% !important;
+}
 </style>
 <script type="text/javascript">
 	selectValidCountryMsg = "<spring:message code='BzComposer.register.selectvalidcountry'/>";
@@ -35,10 +46,34 @@ input, textarea, select {
 	selectValidZipcodeMsg = "<spring:message code='BzComposer.register.selectvalidzipcode'/>";
 	noRecordsFoundMsg = "<spring:message code='BzComposer.employee.norecordsfound'/>";
 
-	$(function() {
-		self.moveTo(100, 10);
-		$("#tabs").tabs();
+	var success = "${success}";
+
+	if (success) {
+		window.opener.location.reload();
+		window.close();
+	}
+
+	$("input").tagsinput('items')
+	
+	var contactToday = "${leadDto.contactToday}";
+	
+ 	$( document ).ready(function() {
+ 		if(contactToday && contactToday === 'true'){
+ 			$('#contactDateTr').hide();
+		}else{
+			$('#contactDateTr').show();
+		}
+		
+		$("#contactToday").change(function() {
+		    if(this.checked) {
+		    	$('#contactDateTr').hide();
+		    }else{
+		    	$('#contactDateTr').show();
+		    }
+		});
+		
 	});
+	
 </script>
 </head>
 <body>
@@ -46,8 +81,8 @@ input, textarea, select {
 	<div id="ddcolortabsline">&nbsp;</div>
 	<form:form name="leadForm" method="post" id="frmNewLead"
 		modelAttribute="leadDto">
-		<form:input path="leadId"  type="hidden"/>
- 		<div id="cos">
+		<form:input path="leadId" type="hidden" />
+		<div id="cos">
 			<div class="statusquo ok">
 				<div id="hoja">
 					<div id="blanquito">
@@ -84,7 +119,7 @@ input, textarea, select {
 											<tbody>
 												<tr>
 													<td><spring:message code="BzComposer.lead.status" /></td>
-													<td><form:select path="status">
+													<td><form:select path="status" style="width:150px;">
 															<form:option value="">
 																<spring:message code="BzComposer.ComboBox.Select" />
 															</form:option>
@@ -110,7 +145,7 @@ input, textarea, select {
 															</form:option>
 														</form:select></td>
 													<td><spring:message code="BzComposer.lead.source" /></td>
-													<td><form:select path="source">
+													<td><form:select path="source" style="width:150px;">
 															<form:option value="">
 																<spring:message code="BzComposer.ComboBox.Select" />
 															</form:option>
@@ -125,7 +160,8 @@ input, textarea, select {
 															</form:option>
 														</form:select></td>
 													<td><spring:message code="BzComposer.lead.assignedId" /></td>
-													<td><form:select path="assignedId">
+													<td><form:select path="assignedId"
+															style="width:150px;">
 															<form:option value="">
 																<spring:message code="BzComposer.ComboBox.Select" />
 															</form:option>
@@ -133,7 +169,8 @@ input, textarea, select {
 												</tr>
 												<tr>
 													<td><spring:message code="BzComposer.lead.tags" /></td>
-													<td><form:input path="tags" style="width:100px;" /></td>
+													<td><form:input path="tags" style="width:150px;"
+															data-role="tagsinput" /></td>
 													<td></td>
 													<td></td>
 													<td></td>
@@ -146,77 +183,37 @@ input, textarea, select {
 																itemLabel="label" />
 														</form:select></td>
 													<td><spring:message code="BzComposer.global.firstname" /></td>
-													<td><form:input path="firstName" style="width:100px;" /></td>
+													<td><form:input path="firstName" size="20" /></td>
 													<td><spring:message code="BzComposer.global.lastname" /></td>
-													<td><form:input path="lastName" style="width:100px;" /></td>
+													<td><form:input path="lastName" size="20" /></td>
+												</tr>
+												<tr>
+													<td><spring:message code="BzComposer.lead.position" /></td>
+													<td><form:input path="position" style="width:150px;" /></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+												<tr>
+													<td><spring:message code="BzComposer.global.company" /></td>
+													<td colspan="3"><form:input path="company"
+															style="width:90%;" /></td>
+													<td colspan="3"></td>
 												</tr>
 												<tr>
 													<td><spring:message code="BzComposer.global.address1" /></td>
-													<td><form:input path="address1" style="width:100px;" /></td>
+													<td colspan="3"><form:input path="address1"
+															style="width:90%;" /></td>
+													<td colspan="3"></td>
+												</tr>
+												<tr>
 													<td><spring:message code="BzComposer.global.address2" /></td>
-													<td><form:input path="address2" style="width:100px;" /></td>
-													<td></td>
-													<td></td>
-												</tr>
-
-												<tr>
-													<td><spring:message code="BzComposer.lead.position" /></td>
-													<td><form:input path="position" style="width:100px;" /></td>
-													<td><spring:message code="BzComposer.global.city" />
-														<span class="inputHighlighted"><spring:message
-																code="BzComposer.CompulsoryField.Validation" /></span></td>
-													<td><form:select path="city" id="cityID"
-															style="width:200px;">
-															<form:option value="0">
-																<spring:message code="BzComposer.register.selectcity" />
-															</form:option>
-															<c:forEach items="${cityList}" var="currObject">
-																<form:option value="${currObject.cityId}">${currObject.cityName}</form:option>
-															</c:forEach>
-														</form:select></td>
-													<td></td>
-													<td></td>
+													<td colspan="3"><form:input path="address2"
+															style="width:90%;" /></td>
+													<td colspan="3"></td>
 												</tr>
 												<tr>
-													<td><spring:message code="BzComposer.global.email" /></td>
-													<td><form:input path="email" style="width:100px;" /></td>
-													<td><spring:message code="BzComposer.global.state" /></td>
-													<td><form:select path="state" id="stateID"
-															onchange="loadCitiesByStateID(this.value, 1);"
-															style="width:200px;">
-															<form:option value="0">
-																<spring:message code="BzComposer.register.selectstate" />
-															</form:option>
-															<c:forEach items="${stateList}" var="currObject">
-																<form:option value="${currObject.stateId}">${currObject.state}</form:option>
-															</c:forEach>
-														</form:select></td>
-													<td></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td><spring:message code="BzComposer.lead.website" /></td>
-													<td><form:input path="website" style="width:100px;" /></td>
-													<td id="t_country"><spring:message
-															code="BzComposer.global.country" /></td>
-													<td><form:select path="country" id="countryID"
-															onchange="loadStatesByCountryID(this.value, 1);"
-															style="width:200px;">
-															<form:option value="0">
-																<spring:message code="BzComposer.register.selectcounry" />
-															</form:option>
-															<c:forEach items="${countryList}" var="currObject">
- 														        <form:option data-code="${currObject.phoneCode}" value="${currObject.countryId}">${currObject.countryName}</form:option>
-
-															</c:forEach>
-														</form:select></td>
-													<td></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td><spring:message code="BzComposer.global.phone" /></td>
-													<td><form:input path="phone" maxlength="16" onkeypress="return numbersonly(event,this.value)" onchange="validateUSAPhoneNumber(this, true);" />
-													</td>
 													<td style="color: #black !important;">
 														<div class="lblZipcodeShow float-left">
 															<spring:message code="BzComposer.global.zipcode" />
@@ -229,33 +226,102 @@ input, textarea, select {
 													<td><form:input path="zipCode"
 															onfocusout="loadAddressDetailsByZipcode(this.value, 1)"
 															onkeypress="return numbersonly(event,this.value)" /></td>
+													<td><spring:message code="BzComposer.global.city" />
+														<span class="inputHighlighted"><spring:message
+																code="BzComposer.CompulsoryField.Validation" /></span></td>
+													<td><form:select path="city" id="cityID"
+															style="width:200px;">
+															<form:option value="0">
+																<spring:message code="BzComposer.register.selectcity" />
+															</form:option>
+															<c:forEach items="${cityList}" var="currObject">
+																<form:option value="${currObject.cityId}">${currObject.cityName}</form:option>
+															</c:forEach>
+														</form:select></td>
+													<td>
+														<div class="lblStateShow">
+															<spring:message code="BzComposer.global.state" />
+														</div>
+														<div class="lblProvinceShow">
+															<spring:message code="BzComposer.global.province" />
+														</div>
+													</td>
+													<td><form:select path="state" id="stateID"
+															onchange="loadCitiesByStateID(this.value, 1);"
+															style="width:200px;">
+															<form:option value="0">
+																<spring:message code="BzComposer.register.selectstate" />
+															</form:option>
+															<c:forEach items="${stateList}" var="currObject">
+																<form:option value="${currObject.stateId}">${currObject.state}</form:option>
+															</c:forEach>
+														</form:select> <form:hidden path="province" /></td>
+													<td>&nbsp;</td>
+												</tr>
+												<tr>
+													<td id="t_country"><spring:message
+															code="BzComposer.global.country" /></td>
+													<td><form:select path="country" id="countryID"
+															onchange="loadStatesByCountryID(this.value, 1);"
+															style="width:200px;">
+															<form:option value="0">
+																<spring:message code="BzComposer.register.selectcounry" />
+															</form:option>
+															<c:forEach items="${countryList}" var="currObject">
+																<form:option data-code="${currObject.phoneCode}"
+																	value="${currObject.countryId}">${currObject.countryName}</form:option>
+
+															</c:forEach>
+														</form:select></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+												<tr>
+													<td><spring:message code="BzComposer.global.phone" /></td>
+													<td><form:input path="phone" maxlength="16"
+															onkeypress="return numbersonly(event,this.value)"
+															onchange="validateUSAPhoneNumber(this, true);" /></td>
+													<td style="color: #black !important;"></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+												<tr>
+													<td><spring:message code="BzComposer.global.email" /></td>
+													<td><form:input path="email" style="width:150px;" /></td>
+													<td><spring:message code="BzComposer.lead.website" /></td>
+													<td><form:input path="website" style="width:150px;" /></td>
 													<td></td>
 													<td></td>
 												</tr>
 												<tr>
 													<td><spring:message code="BzComposer.lead.leadvalue" /></td>
-													<td><form:input path="leadValue" maxlength="16" onkeypress="return numbersonly(event,this.value)"  />
-													 </td>
-													<td><spring:message code="BzComposer.global.company" /></td>
-													<td><form:input path="company" style="width:100px;" /></td>
+													<td><form:input path="leadValue" maxlength="16"
+															style="width:150px;"
+															onkeypress="return numbersonly(event,this.value)" /></td>
+
+													<td></td>
+													<td></td>
 													<td></td>
 													<td></td>
 												</tr>
 												<tr>
 													<td><spring:message
 															code="BzComposer.global.description" /></td>
-													<td><form:input path="description"
-															style="width:100px;" /></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td colspan="3"><form:input path="description"
+															style="width:90%;" /></td>
+													<td colspan="2"></td>
 												</tr>
-												<tr>
+												<tr id="contactDateTr" style="display:none">
 													<td><spring:message
 															code="BzComposer.lead.datecontacted" /></td>
-													<td><form:input path="contactDate"
-															style="width:100px;" /></td>
+													<td><form:input path="contactDate" readonly="true" /><img
+														src="${pageContext.request.contextPath}/images/cal.gif"
+														onclick="displayCalendar(document.leadForm.contactDate,'mm-dd-yyyy',this);"></td>
+													<td></td>
+													<td></td>
 													<td></td>
 													<td></td>
 												</tr>
@@ -264,7 +330,7 @@ input, textarea, select {
 													<td><form:checkbox path="leadPublic" /></td>
 													<td><spring:message
 															code="BzComposer.lead.chkcontacttoday" /></td>
-													<td><form:checkbox path="contactToday" /></td>
+													<td><form:checkbox id="contactToday" path="contactToday" /></td>
 													<td></td>
 													<td></td>
 												</tr>
@@ -315,7 +381,7 @@ input, textarea, select {
 </body>
 </html>
 <script>
-	window.onunload = refreshParent;
+	// window.onunload = refreshParent;
 
 	function refreshParent() {
 		window.opener.location.reload();
@@ -343,26 +409,25 @@ input, textarea, select {
 	}
 	function addLead() {
 		$("#addLeadDialog")
-		.dialog(
-				{
-					resizable : false,
-					height : 200,
-					width : 500,
-					modal : true,
-					buttons : {
-						"<spring:message code='BzComposer.global.ok'/>" : function() {
+				.dialog(
+						{
+							resizable : false,
+							height : 200,
+							width : 500,
+							modal : true,
+							buttons : {
+								"<spring:message code='BzComposer.global.ok'/>" : function() {
 
-							$(this).dialog("close");
- 							document.forms["frmNewLead"].action = "Lead?tabid=AddLead";
-							document.forms["frmNewLead"]
-									.submit();
-						},
-						"<spring:message code='BzComposer.global.cancel'/>" : function() {
-							$(this).dialog("close");
-							return false;
-						}
-					}
-				});
+									$(this).dialog("close");
+									document.forms["frmNewLead"].action = "Lead?tabid=AddLead";
+									document.forms["frmNewLead"].submit();
+								},
+								"<spring:message code='BzComposer.global.cancel'/>" : function() {
+									$(this).dialog("close");
+									return false;
+								}
+							}
+						});
 	}
 	function addLeadOld() {
 
@@ -403,7 +468,7 @@ input, textarea, select {
 										"<spring:message code='BzComposer.global.ok'/>" : function() {
 
 											$(this).dialog("close");
- 											document.forms["frmNewLead"].action = "Lead?tabid=AddLead";
+											document.forms["frmNewLead"].action = "Lead?tabid=AddLead";
 											document.forms["frmNewLead"]
 													.submit();
 										},
@@ -477,7 +542,7 @@ input, textarea, select {
 </div>
 <div id="addLeadDialog" style="display: none;">
 	<p>
-		<spring:message code="BzComposer.addnewcustomer.insertnewcustomer" />
+		<spring:message code="BzComposer.lead.savelead" />
 	</p>
 </div>
 <div id="showServiceValidationDialog" style="display: none;">

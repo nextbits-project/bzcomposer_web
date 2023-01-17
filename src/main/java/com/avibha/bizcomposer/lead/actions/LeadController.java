@@ -61,8 +61,22 @@ public class LeadController {
 		return forward;
 	}
 
+	@GetMapping("/Lead/delete")
+	public String loadLead(@RequestParam(required = true, name = "LeadId") Long leadId, HttpSession session,
+			Model model) {
+
+		String strCompanyId = (String) session.getAttribute("CID");
+		if (StringUtils.isEmpty(strCompanyId)) {
+			return "redirect:Login?tabid=loginPage";
+		}
+
+		leadDAO.delete(leadId, strCompanyId);
+
+		return "redirect:/Leads?tabid=leads";
+	}
+
 	@GetMapping("/Lead")
-	public String loadLead(@RequestParam(required = false, name ="LeadId") Long leadId, Model model,
+	public String loadLead(@RequestParam(required = false, name = "LeadId") Long leadId, Model model,
 			HttpSession session) throws Exception {
 		String forward = "";
 		// String action = request.getParameter("tabid");
@@ -77,8 +91,7 @@ public class LeadController {
 
 		// ConstValue c = new ConstValue();
 		// c.setCompanyId(Integer.parseInt(companyID));
-		
- 
+
 		if (leadId == null || leadId <= 0) {
 
 			String countryID = ConstValue.countryID;
@@ -96,8 +109,8 @@ public class LeadController {
 			forward = "/leads/addLead";
 		} else {
 			LeadDto dto = leadDAO.loadLead(leadId, strCompanyId);
-			
-			String countryID = ObjectUtils.isEmpty(dto.getCountry()) ?  ConstValue.countryID : dto.getCountry();
+
+			String countryID = ObjectUtils.isEmpty(dto.getCountry()) ? ConstValue.countryID : dto.getCountry();
 			String stateID = ObjectUtils.isEmpty(dto.getState()) ? ConstValue.stateID : dto.getState();
 
 			// country List
@@ -123,23 +136,21 @@ public class LeadController {
 			return "redirect:Login?tabid=loginPage";
 		}
 
-  
-
 		if (leadDto.getLeadId() == null || leadDto.getLeadId() <= 0) {
-			 
 
 			leadDAO.insert(leadDto, strCompanyId);
 			/// forward = "/leads/addLead";
-			forward = "redirect:/Lead";
+			model.addAttribute("success", true);
+			forward = "/leads/addLead";
 		} else {
-			
-			 
+
 			leadDAO.update(leadDto, strCompanyId);
 			/// forward = "/leads/addLead";
-			forward = "redirect:/Lead";
-			
+			model.addAttribute("success", true);
+			forward = "/leads/addLead";
+
 		}
- 
+
 		return forward;
 	}
 
