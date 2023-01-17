@@ -1168,7 +1168,7 @@ public class PurchaseInfoDao {
 				// ---start---------------------------------------------------------------------code
 				List<CreditCardDto> creditCards = new ArrayList<>();
 				pstmt4 = con.prepareStatement(
-						"select c.*,t.Name AS CardTypeName from bca_cvcreditcard AS c INNER JOIN bca_creditcardtype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
+						"select DISTINCT c.*,t.Name AS CardTypeName from bca_cvcreditcard AS c INNER JOIN bca_creditcardtype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
 				pstmt4.setString(1, cvId);
 				rs3 = pstmt4.executeQuery();
 				while (rs3.next()) {

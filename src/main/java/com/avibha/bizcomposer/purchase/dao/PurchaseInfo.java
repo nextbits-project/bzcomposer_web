@@ -800,7 +800,7 @@ public class PurchaseInfo {
 
 		try {
 
-			ps = con.prepareStatement("select CreditCardID from bca_creditcard where clientvendorid=" + cvID + " and active=1");
+			ps = con.prepareStatement("select CreditCardID from bca_cvcreditcard where clientvendorid=" + cvID + " and active=1");
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				ccID = rs.getInt(1);
@@ -826,7 +826,7 @@ public class PurchaseInfo {
 				temp = temp.substring(indx + 1);
 				year = temp;
 			}
-			String sqlString = "update  bca_creditcard set "
+			String sqlString = "update  bca_cvcreditcard set "
 					+ " CardNumber=?, CardExpMonth=?, CardExpYear=?,CardCW2= ?, CardHolderName=?"
 					+ ", CardBillingAddress=?, CardBillingZipCode=?, Active=1, DateAdded=?,CCTypeID=?"
 					+ " where CreditCardID=? and clientvendorid= ?";
@@ -842,17 +842,18 @@ public class PurchaseInfo {
 			ps.setString(7, zip);
 			ps.setDate(8, new java.sql.Date(new java.util.Date().getTime())); // set
 			// current;
-			ps.setInt(9, Integer.parseInt(cctype)); // date;
+			//ps.setInt(9, Integer.parseInt(cctype)); // date;
+			ps.setInt(9, (cctype==null || cctype.trim().equals(""))?0:Integer.parseInt(cctype));
 			ps.setInt(10, ccID);
 			ps.setInt(11, cvID);
 
 			int num = ps.executeUpdate();
 
-			Loger.log("update  bca_creditcard (no. of recs):" + num);
+			Loger.log("update  bca_cvcreditcard (no. of recs):" + num);
 
 			if (num > 0) {
 				ret = true;
-				// Loger.log("update bca_creditcard (no. of recs):"+num);
+				// Loger.log("update bca_cvcreditcard (no. of recs):"+num);
 			}
 		} catch (SQLException ee) {
 			Loger.log(2,"SQLException....PurchaseInfo.updateVendorCreditCard()"+ " " + ee.toString());
@@ -1695,7 +1696,7 @@ public class PurchaseInfo {
 				updateClientVendor("TermID", c.getTerm(), cvID);
 
 			//Update credit card details
-			//updateVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
+			updateVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 
 			// change status of old record...........
 			pstmt = con.prepareStatement("update bca_bsaddress set status='0' where clientvendorid=? and status in ('N','U')");
