@@ -1903,7 +1903,7 @@ public class InvoiceInfo {
 			sqlString.append("date_format(bca_clientvendor.DateInput,'%m-%d-%Y') As DateInput,");
 			sqlString.append("date_format(bca_clientvendor.DateTerminated,'%m-%d-%Y') As DateTerminated,bca_clientvendor.isTerminated ");
 
-			sqlString.append("from  bca_clientvendor left join ( bca_creditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
+			sqlString.append("from  bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
 			sqlString.append(" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
 			sqlString.append("bca_clientvendor.ClientVendorID and bca_clientvendorfinancecharges.ClientVendorID= bca_clientvendor.ClientVendorID )");
 			sqlString.append(" where (bca_clientvendor.Status like 'N' or bca_clientvendor.Status like 'U')");
@@ -2105,7 +2105,7 @@ public class InvoiceInfo {
 			}
 			// ---start---------------------------------------------------------------------code
 
-			pstmt4 = con.prepareStatement("select * from bca_creditcard "
+			pstmt4 = con.prepareStatement("select * from bca_cvcreditcard "
 					+ " where clientvendorid=? and active=1");
 			pstmt4.setString(1, cvId);
 			rs3 = pstmt4.executeQuery();
@@ -2235,7 +2235,7 @@ public class InvoiceInfo {
 			/*sqlString.append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge ,bca_clientvendorfinancecharges.MarkFinanceCharge ");*/		/*Commented on 26-04-2019*/
 			sqlString.append("bca_clientvendorfinancecharges.GracePeriod,bca_clientvendorfinancecharges.AssessFinanceCharge");
 			
-			sqlString.append(" from bca_clientvendor left join ( bca_creditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
+			sqlString.append(" from bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
 			sqlString.append(" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
 			sqlString.append("bca_clientvendor.ClientVendorID and bca_clientvendorfinancecharges.ClientVendorID= bca_clientvendor.ClientVendorID )");
 			sqlString.append(" where (bca_clientvendor.Status like 'N' or bca_clientvendor.Status like 'U')");
@@ -2430,7 +2430,7 @@ public class InvoiceInfo {
 				customer.setPaymentType(rs3.getString(3));
 				customer.setShipping(rs3.getString(4));
 			}
-			pstmt4 = con.prepareStatement("select * from bca_creditcard where clientvendorid=? and active=1");
+			pstmt4 = con.prepareStatement("select * from bca_cvcreditcard where clientvendorid=? and active=1");
 			pstmt4.setString(1, cvId);
 			rs3 = pstmt4.executeQuery();
 			if (rs3.next()) {

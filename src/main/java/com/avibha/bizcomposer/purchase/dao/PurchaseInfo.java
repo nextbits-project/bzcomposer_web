@@ -607,10 +607,10 @@ public class PurchaseInfo {
 
 		try {
 //			int ccID = getLastCCID() + 1;
-			//pstmtUpdate = con.prepareStatement("update bca_creditcard set Active=0 where ClientVendorID=? and Active=1");
+			//pstmtUpdate = con.prepareStatement("update bca_cvcreditcard set Active=0 where ClientVendorID=? and Active=1");
 			//pstmtUpdate.setInt(1, cvID);
 			//pstmtUpdate.executeUpdate();
-			String sqlString = "insert into bca_creditcard(CCTypeID, ClientVendorID, CardNumber, CardExpMonth, CardExpYear,"
+			String sqlString = "insert into bca_cvcreditcard(CCTypeID, ClientVendorID, CardNumber, CardExpMonth, CardExpYear,"
 					+ " CardCW2, CardHolderName, CardBillingAddress, CardBillingZipCode, Active, DEFAULTCard, DateAdded ) "
 					+ " values(?,?,?,?,?,?,?,?,?,?,?,?)";
 			java.sql.Date d = new java.sql.Date(new java.util.Date().getTime());
@@ -924,7 +924,7 @@ public class PurchaseInfo {
 
 		try {
 
-			String sqlString = "select CreditCardID from bca_creditcard order by CreditCardID desc ";
+			String sqlString = "select CreditCardID from bca_cvcreditcard order by CreditCardID desc ";
 			pstmt = con.prepareStatement(sqlString);
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
@@ -1156,9 +1156,9 @@ public class PurchaseInfo {
 			sqlString
 					.append("bca_clientvendor.CVTypeID, bca_clientvendor.cvcategoryid, date_format(bca_clientvendor.DateAdded,'%m-%d-%Y')");
 			sqlString
-					.append(",bca_creditcard.CardNumber ,bca_creditcard.CardExpMonth,bca_creditcard.CardExpYear ,");
+					.append(",bca_cvcreditcard.CardNumber ,bca_cvcreditcard.CardExpMonth,bca_cvcreditcard.CardExpYear ,");
 			sqlString
-					.append("bca_creditcard.CardCW2 ,bca_creditcard.CardHolderName,bca_creditcard.CardBillingAddress,bca_creditcard.CardBillingZipCode,");
+					.append("bca_cvcreditcard.CardCW2 ,bca_cvcreditcard.CardHolderName,bca_cvcreditcard.CardBillingAddress,bca_cvcreditcard.CardBillingZipCode,");
 			sqlString.append("bca_bsaddress.Name,bca_bsaddress.FirstName,");
 			sqlString
 					.append("bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
@@ -1170,9 +1170,9 @@ public class PurchaseInfo {
 					/*.append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge ,bca_clientvendorfinancecharges.MarkFinanceCharge ");*/
 			.append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge ");
 			sqlString
-					.append("from  bca_clientvendor left join ( bca_creditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
+					.append("from  bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
 			sqlString
-					.append(" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
+					.append(" on (bca_cvcreditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
 			sqlString
 					.append("bca_clientvendor.ClientVendorID and bca_clientvendorfinancecharges.ClientVendorID= bca_clientvendor.ClientVendorID )");
 			sqlString
@@ -1374,7 +1374,7 @@ public class PurchaseInfo {
 
 			// ---start---------------------------------------------------------------------code
 
-			pstmt4 = con.prepareStatement("select * from bca_creditcard "
+			pstmt4 = con.prepareStatement("select * from bca_cvcreditcard "
 					+ " where clientvendorid=? and active=1");
 			pstmt4.setString(1, cvId);
 			rs3 = pstmt4.executeQuery();

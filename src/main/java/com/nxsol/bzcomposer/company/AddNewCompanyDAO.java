@@ -4072,7 +4072,7 @@ public class AddNewCompanyDAO {
                     }
 
                     sSql = new StringBuffer();
-                    sSql.append("        Insert into bca_creditcard  ");
+                    sSql.append("        Insert into bca_cvcreditcard  ");
                     sSql.append(" ( ");
                     //   sSql.append("   CreditCardID, ");
                     sSql.append("   CCTypeID, ");

@@ -1714,7 +1714,7 @@ public class InvoiceInfoDao {
 			sqlString.append("date_format(bca_clientvendor.DateInput,'%m-%d-%Y') As DateInput,");
 			sqlString.append("date_format(bca_clientvendor.DateTerminated,'%m-%d-%Y') As DateTerminated,bca_clientvendor.isTerminated ");
 			
-			sqlString.append(" from bca_clientvendor left join ( bca_creditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
+			sqlString.append(" from bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
 			sqlString.append(" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
 			sqlString.append("bca_clientvendor.ClientVendorID and bca_clientvendorfinancecharges.ClientVendorID= bca_clientvendor.ClientVendorID )");
 			sqlString.append(" WHERE bca_clientvendor.Status IN ('N', 'U') and bca_clientvendor.Deleted = '0' ");
@@ -1913,7 +1913,7 @@ public class InvoiceInfoDao {
 				customer.setPaymentType(rs3.getString(3));
 				customer.setShipping(rs3.getString(4));
 			}
-			pstmt4 = con.prepareStatement("select c.*,t.Name AS CardTypeName from bca_creditcard AS c INNER JOIN bca_cctype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
+			pstmt4 = con.prepareStatement("select c.*,t.Name AS CardTypeName from bca_cvcreditcard AS c INNER JOIN bca_cctype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
 			pstmt4.setString(1, cvId);
 			rs3 = pstmt4.executeQuery();
 			List<CreditCardDto> creditCards = new ArrayList<>();
