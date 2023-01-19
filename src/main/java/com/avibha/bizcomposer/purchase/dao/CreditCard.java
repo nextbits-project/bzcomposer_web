@@ -40,7 +40,7 @@ public class CreditCard {
 			arr = null;
 
 		try {
-			String sqlString = "SELECT CCTypeID,Name FROM bca_cctype where CompanyID=? and Active=1";
+			String sqlString = "SELECT CCTypeID,Name FROM bca_creditcardtype where CompanyID=? and Active=1";
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1, CompanyID);
 			rs = pstmt.executeQuery();

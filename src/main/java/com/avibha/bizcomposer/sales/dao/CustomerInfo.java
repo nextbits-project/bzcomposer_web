@@ -1228,7 +1228,7 @@ public class CustomerInfo{
 			sqlString
 					.append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge ,bca_clientvendorfinancecharges.MarkFinanceCharge ");
 			sqlString
-					.append("from  bca_clientvendor left join ( bca_creditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
+					.append("from  bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
 			sqlString
 					.append(" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
 			sqlString
@@ -1864,7 +1864,7 @@ public class CustomerInfo{
 			pstmt.close();
 			
 			// update bca_creditcard....
-			sqlString = "UPDATE bca_creditcard SET bca_creditcard.active=0 WHERE clientvendorid=?";
+			sqlString = "UPDATE bca_cvcreditcard SET bca_creditcard.active=0 WHERE clientvendorid=?";
 					
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1,cvID);

@@ -217,7 +217,7 @@ public class PurchaseDetailsDao {
 		CustomerInfo customer = new CustomerInfo();
 		String cvId = form.getClientVendorID();	//	(String) sess.getAttribute("editedCVID");
 
-		customer.UpdateCustomer(compId, cvId);
+		//customer.UpdateCustomer(compId, cvId);
 
 		String istaxable = request.getParameter("isTaxable");
 		String isAlsoClient = request.getParameter("isAlsoClient");

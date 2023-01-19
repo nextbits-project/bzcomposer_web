@@ -1385,7 +1385,7 @@ public class EstimationInfoDao {
 			sqlString
 					.append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge ,bca_clientvendorfinancecharges.MarkFinanceCharge ");
 			sqlString
-					.append("from  bca_clientvendor left join ( bca_creditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
+					.append("from  bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
 			sqlString
 					.append(" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
 			sqlString

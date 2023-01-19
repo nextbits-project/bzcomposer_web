@@ -704,7 +704,7 @@ public class PurchaseInfoDao {
 		try {
 
 			ps = con.prepareStatement(
-					"select CreditCardID from bca_creditcard where clientvendorid=" + cvID + " and active=1");
+					"select CreditCardID from bca_cvcreditcard where clientvendorid=" + cvID + " and active=1");
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				ccID = rs.getInt(1);
@@ -730,7 +730,7 @@ public class PurchaseInfoDao {
 				temp = temp.substring(indx + 1);
 				year = temp;
 			}
-			String sqlString = "update  bca_creditcard set "
+			String sqlString = "update  bca_cvcreditcard set "
 					+ " CardNumber=?, CardExpMonth=?, CardExpYear=?,CardCW2= ?, CardHolderName=?"
 					+ ", CardBillingAddress=?, CardBillingZipCode=?, Active=1, DateAdded=?,CCTypeID=?"
 					+ " where CreditCardID=? and clientvendorid= ?";
@@ -752,11 +752,11 @@ public class PurchaseInfoDao {
 
 			int num = ps.executeUpdate();
 
-			Loger.log("update  bca_creditcard (no. of recs):" + num);
+			Loger.log("update  bca_cvcreditcard (no. of recs):" + num);
 
 			if (num > 0) {
 				ret = true;
-				// Loger.log("update bca_creditcard (no. of recs):"+num);
+				// Loger.log("update bca_cvcreditcard (no. of recs):"+num);
 			}
 		} catch (SQLException ee) {
 			Loger.log(2, "SQLException....PurchaseInfo.updateVendorCreditCard()" + " " + ee.toString());
@@ -1168,7 +1168,7 @@ public class PurchaseInfoDao {
 				// ---start---------------------------------------------------------------------code
 				List<CreditCardDto> creditCards = new ArrayList<>();
 				pstmt4 = con.prepareStatement(
-						"select c.*,t.Name AS CardTypeName from bca_cvcreditcard AS c INNER JOIN bca_creditcardtype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
+						"select DISTINCT c.*,t.Name AS CardTypeName from bca_cvcreditcard AS c INNER JOIN bca_creditcardtype AS t ON t.CCTypeID=c.CCTypeID where c.clientvendorid=? and c.active=1");
 				pstmt4.setString(1, cvId);
 				rs3 = pstmt4.executeQuery();
 				while (rs3.next()) {

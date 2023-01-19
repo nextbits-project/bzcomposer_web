@@ -1207,7 +1207,7 @@ public class CustomerInfoDao {
 			sqlString.append("cc.CardNumber ,cc.CardExpMonth,cc.CardCW2 ,cc.CardHolderName,cc.CardBillingAddress,cc.CardBillingZipCode,");
 			sqlString.append("ad1.Name,ad1.FirstName,ad1.LastName,ad1.Address1,ad1.Address2,ad1.City,ad1.ZipCode,ad1.Country,ad1.State,ad1.Province,ad1.AddressType,");
 			sqlString.append("cvf.UseIndividual ,cvf.AnnualInterestRate ,cvf.MinimumFinanceCharge,cvf.GracePeriod ,cvf.AssessFinanceCharge ,cvf.MarkFinanceCharge ");
-			sqlString.append("FROM bca_clientvendor cv left join ( bca_creditcard cc ,bca_bsaddress ad1 ,bca_clientvendorfinancecharges cvf )");
+			sqlString.append("FROM bca_clientvendor cv left join ( bca_cvcreditcard cc ,bca_bsaddress ad1 ,bca_clientvendorfinancecharges cvf )");
 			sqlString.append(" on (cc.ClientVendorID= cv.ClientVendorID and ad1.ClientVendorID= ");
 			sqlString.append("cv.ClientVendorID and cvf.ClientVendorID= cv.ClientVendorID )");
 			sqlString.append(" WHERE cv.Status IN ('N', 'U') and cv.CVTypeID IN ('1', '2') and cv.Deleted = '0' ");
@@ -1350,16 +1350,16 @@ public class CustomerInfoDao {
 		ResultSet rs = null;
 		boolean valid = false;
 		try {
-			String sqlString = "select * from bca_creditcard where DEFAULTCard=1 AND ClientVendorID="+cvID;
+			String sqlString = "select * from bca_cvcreditcard where DEFAULTCard=1 AND ClientVendorID="+cvID;
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sqlString);
 			if (rs.next()) {
 				long ccID = rs.getInt("CreditCardID");
-				sqlString = "update bca_creditcard set DEFAULTCard=0 where CreditCardID = "+ccID;
+				sqlString = "update bca_cvcreditcard set DEFAULTCard=0 where CreditCardID = "+ccID;
 				pstmt = con.prepareStatement(sqlString);
 				int count = pstmt.executeUpdate(sqlString);
 			}
-			sqlString = "update bca_creditcard set DEFAULTCard=1 where CreditCardID = "+cardID;
+			sqlString = "update bca_cvcreditcard set DEFAULTCard=1 where CreditCardID = "+cardID;
 			pstmt2 = con.prepareStatement(sqlString);
 			int count = pstmt2.executeUpdate(sqlString);
 			if(count>0){
@@ -1778,7 +1778,7 @@ public class CustomerInfoDao {
 			pstmt.close();
 			
 			// update bca_creditcard....
-			sqlString = "update bca_creditcard set bca_creditcard.active=0 where clientvendorid=?";
+			sqlString = "update bca_cvcreditcard set bca_creditcard.active=0 where clientvendorid=?";
 					
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1,cvID);
