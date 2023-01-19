@@ -60,14 +60,14 @@ table.tabla-listados tbody tr td { font-size: 12px; }
     <thead>
         <tr valign="center">
             <th><spring:message code="BzComposer.Customer.ID" /></th>
-            <th><spring:message code="BzComposer.customerinfo.customer" /></th>
-            <th><spring:message code="BzComposer.global.address1" /></th>
-            <th><spring:message code="BzComposer.global.address2" /></th>
-            <th><spring:message code="BzComposer.global.city" /></th>
-            <th><spring:message code="BzComposer.global.state" /></th>
-            <th><spring:message code="BzComposer.global.zipcode" /></th>
-            <th><spring:message code="BzComposer.global.country" /></th>
-            <th><spring:message code="BzComposer.global.dateadded" /></th>
+            <th><spring:message code="BzComposer.lead.status" /></th>
+            <th><spring:message code="BzComposer.lead.source" /></th>
+            <th><spring:message code="BzComposer.lead.tags" /></th>
+            <th><spring:message code="BzComposer.global.phone" /></th>
+            <th><spring:message code="BzComposer.global.email" /></th>
+            <th><spring:message code="BzComposer.lead.website" /></th>
+            <th><spring:message code="BzComposer.lead.datecontacted" /></th>
+            <th><spring:message code="Bizcomposer.active" /></th>
         </tr>
     </thead>
     <tbody id="custTableBody">
@@ -77,14 +77,14 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                     <td>
                         <a href="/Leads?leadId=${objList.leadId}">${objList.leadId}</a>
                     </td>
-                    <td>${objList.firstName} ${objList.lastName}</td>
-                    <td>${objList.address1}</td>
-                    <td>${objList.address2}</td>
-                    <td>${objList.city}</td>
-                    <td>${objList.state}</td>
-                    <td>${objList.zipCode}</td>
-                    <td>${objList.country}</td>
-                    <td>${objList.createdAT}</td>
+                    <td>${objList.status}</td>
+                    <td>${objList.source}</td>
+                    <td>${objList.tags}</td>
+                    <td>${objList.phone}</td>
+                    <td>${objList.email}</td>
+                    <td>${objList.website}</td>
+                    <td>${objList.contactDate}</td>
+                    <td>Yes</td>
                 </tr>
             </c:forEach>
         </c:if>
