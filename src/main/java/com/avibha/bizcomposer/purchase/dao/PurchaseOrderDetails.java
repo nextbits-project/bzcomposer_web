@@ -21,9 +21,8 @@ public class PurchaseOrderDetails {
 	 * purchase order. It sets the information such as 
 	 * order date,next purchase order no.,etc. 
 	 */
-	public void newPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
+	public void newPurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
+ 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		form.setOrderNo(purchaseInfo.getNewPONum(compId));
 		DateInfo date = new DateInfo();
@@ -75,9 +74,8 @@ public class PurchaseOrderDetails {
 	 * order if the purchase order no. not exist. It sets 
 	 * the information such asorder date,next purchase order no.,etc. 
 	 */
-	public void notExistPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		DateInfo date = new DateInfo();
+	public void notExistPurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
+ 		DateInfo date = new DateInfo();
 		int month = date.getMonth();
 		int day = date.getDay();
 		String d1 = "", d2 = "", d = "";
@@ -184,9 +182,8 @@ public class PurchaseOrderDetails {
 	 * to the database
 	 * 
 	 */
-	public void savePurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
+	public void savePurchaseOrder(HttpServletRequest request,PurchaseOrderDto form) {
+ 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		boolean exist = purchaseInfo.poNumExist(compId, form.getOrderNo());
 		String isShipUse = request.getParameter("useDropShip");
@@ -232,9 +229,8 @@ public class PurchaseOrderDetails {
 	 * purchase order no.
 	 * 
 	 */
-	public void firstPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		ArrayList list = new ArrayList();
+	public void firstPurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
+ 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		long firstPONum = purchaseInfo.getFirstPONum(compId);
@@ -256,9 +252,8 @@ public class PurchaseOrderDetails {
 	 * purchase order no.
 	 * 
 	 */
-	public void lastPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		ArrayList list = new ArrayList();
+	public void lastPurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
+ 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -281,9 +276,8 @@ public class PurchaseOrderDetails {
 	 * purchase order no.
 	 * 
 	 */
-	public void nextPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		ArrayList list = new ArrayList();
+	public void nextPurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
+ 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -310,9 +304,8 @@ public class PurchaseOrderDetails {
 	 * purchase order no.
 	 * 
 	 */
-	public void prevoiusPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		ArrayList list = new ArrayList();
+	public void prevoiusPurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
+ 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -344,10 +337,9 @@ public class PurchaseOrderDetails {
 	/*	Delete the purchase order selected by user 
 	 * 
 	 */
-	public boolean deletePurchaseOrder(HttpServletRequest request, ActionForm frm) {
+	public boolean deletePurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
 		boolean val = false;
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
+ 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
 		String compId = (String) request.getSession().getAttribute("CID");
 
@@ -407,9 +399,8 @@ public class PurchaseOrderDetails {
 	 * information.	
 	 */
 	
-	public void getPurchaseOrder(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		ArrayList list = new ArrayList();
+	public void getPurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
+ 		ArrayList list = new ArrayList();
 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -426,9 +417,8 @@ public class PurchaseOrderDetails {
 	/*		Check the required purchase order number
 	 * is exist in the database or not.
 	 */
-	public void isPoNumExist(HttpServletRequest request, ActionForm frm) {
-		PurchaseOrderDto form = (PurchaseOrderDto) frm;
-		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
+	public void isPoNumExist(HttpServletRequest request, PurchaseOrderDto form) {
+ 		PurchaseOrderInfo purchaseInfo = new PurchaseOrderInfo();
 		getInvoiceInfo(request);
 		String compId = (String) request.getSession().getAttribute("CID");
 		boolean exists  = purchaseInfo.poNumExist(compId,form.getOrderNo());

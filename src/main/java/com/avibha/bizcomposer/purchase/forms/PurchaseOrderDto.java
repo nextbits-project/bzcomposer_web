@@ -11,7 +11,7 @@ import org.apache.struts.action.ActionForm;
 
 import java.util.List;
 
-public class PurchaseOrderDto extends ActionForm {
+public class PurchaseOrderDto{
 
 	private static final long serialVersionUID = 0;
 
