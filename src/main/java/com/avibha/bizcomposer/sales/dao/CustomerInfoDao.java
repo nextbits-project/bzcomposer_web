@@ -1484,10 +1484,10 @@ public class CustomerInfoDao {
 			pstmt.setDate(35, (c.getTerminatedDate()==null || c.getTerminatedDate().trim().equals(""))?null:string2date(c.getTerminatedDate()));
 			pstmt.setBoolean(36, c.isTerminated());
 			pstmt.setString(37, c.getDbaName());
-			pstmt.setString(38, c.getTerm());
-			pstmt.setString(39, c.getRep());
+			pstmt.setInt(38, (c.getTerm()==null || c.getTerm().trim().equals(""))?0:Integer.parseInt(c.getTerm())); //c.getTerm()
+			pstmt.setString(39, (c.getRep()==null || c.getRep().trim().equals(""))?null:c.getRep()); //c.getRep()
 			pstmt.setString(40, c.getShipping());
-			pstmt.setString(41, c.getPaymentType());
+			pstmt.setString(41, (c.getPaymentType()==null || c.getPaymentType().trim().equals(""))?null:c.getPaymentType()); //c.getPaymentType()
 			pstmt.setString(42, "".equalsIgnoreCase(c.getCcType()) ? null : c.getCcType());
 			Loger.log(sqlString);
 			int num = pstmt.executeUpdate();
