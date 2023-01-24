@@ -1059,7 +1059,8 @@ public class SalesDetailsDao {
 
 		/* Billing & Shipping Address */
 		request.setAttribute("ShAddr", invoice.shipAddress(compId, null));
-		request.getSession().setAttribute("BillAddr", invoice.billAddress(compId, null));
+		request.setAttribute("BillAddr", invoice.billAddress(compId, null));
+		//request.getSession().setAttribute("BillAddr", invoice.billAddress(compId, null));
 		/* Invoice Style */
 		request.setAttribute("InvoiceStyle", invoice.getInvoiceStyle());
 		/* Via Information */
