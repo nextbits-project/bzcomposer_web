@@ -1,11 +1,34 @@
 package com.avibha.bizcomposer.File.actions;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.avibha.bizcomposer.File.dao.CompanyDetails;
 import com.avibha.bizcomposer.File.dao.CompanyInfo;
 import com.avibha.bizcomposer.File.dao.FileMenuDao;
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.lead.dao.LeadDAO;
+import com.avibha.bizcomposer.lead.dto.LeadDto;
 import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.login.forms.LoginFormDto;
 import com.avibha.bizcomposer.login.forms.MultiUserFormDto;
@@ -13,26 +36,10 @@ import com.avibha.bizcomposer.purchase.dao.PurchaseInfoDao;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
-import com.avibha.bizcomposer.sales.forms.InvoiceDto;
-import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.utility.CountryState;
-import com.avibha.common.utility.Path;
 import com.nxsol.bizcomposer.common.TblStore;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
 
 /**
  * @author sarfrazmalik
@@ -42,6 +49,9 @@ public class FileController {
 
     @Autowired
     private DataImportExportUtils importExportUtils;
+    
+    @Autowired
+    private LeadDAO leadDAO;
 
     @GetMapping("/changeLocale")
     public String changeLocale(HttpServletRequest request) throws Exception {
@@ -213,6 +223,9 @@ public class FileController {
         else if(action.equalsIgnoreCase("ImportCustomer")) {
             forward = "/file/customerImport";
         }
+        else if(action.equalsIgnoreCase("ImportLeads")) {
+            forward = "/file/leadsImport";
+        }
         else if(action.equalsIgnoreCase("ImportVendor")) {
             forward = "/file/vendorImport";
         }
@@ -231,6 +244,22 @@ public class FileController {
                 }
             }else {
                 forward = "/file/exportCustomer";
+            }
+        }
+        else if(action.equalsIgnoreCase("ExportLeads")) {
+            String type = request.getParameter("type");
+            if( type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
+                List<LeadDto> customerList = leadDAO.loadLeads(compId);
+                boolean b = importExportUtils.exportLeadsList(customerList, type, response);
+                if(b==true) {
+                    if(type.equals("csv")) {
+						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
+                    } else {
+						request.setAttribute("success", "BzComposer.exportcustomer.customerlistinxlsdownloaded");
+                    }
+                }
+            }else {
+                forward = "/file/exportLeads";
             }
         }
         else if(action.equalsIgnoreCase("ExportVendor")) {
@@ -341,6 +370,15 @@ public class FileController {
                 }
             }
             forward = "redirect:File?tabid=ImportCustomer";
+        }
+        if(action.equalsIgnoreCase("UploadLeadsFile")) {
+            if(!attachFile.isEmpty()) {
+                boolean b = importExportUtils.uploadLeadsFile(attachFile, request);
+                if (b == true) {
+                    request.getSession().setAttribute("successMessage", "success");
+                }
+            }
+            forward = "redirect:File?tabid=ImportLeads";
         }
         else if(action.equalsIgnoreCase("UploadVendorFile")) {
             if(!attachFile.isEmpty()) {

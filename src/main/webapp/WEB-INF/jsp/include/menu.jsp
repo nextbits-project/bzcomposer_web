@@ -41,6 +41,9 @@
 								<a href="#" onclick="customerImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.customer.Customer" /></span></a>
 							</li>
 							<li>
+								<a href="#" onclick="leadsImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.lead.leads" /></span></a>
+							</li>
+							<li>
 								<a href="#" onclick="vendorImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.vendor.vendors" /></span></a>
 							</li>
 							<li>
@@ -75,6 +78,9 @@
 							</li>
 							<li>
                                 <a href="#" onclick="exportCustomer()" style="cursor: pointer;"><spring:message code="BzComposer.customer.Customer" /></a>
+                            </li>
+							<li>
+                                <a href="#" onclick="exportLead()" style="cursor: pointer;"><spring:message code="BzComposer.lead.leads" /></a>
                             </li>
 							<li>
 								<a href="#" onclick="exportVendor()" style="cursor: pointer;"><spring:message code="BzComposer.vendor.vendors" /></a>
@@ -1402,6 +1408,10 @@
 	{
 		window.open("File?tabid=ImportCustomer",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
+	function leadsImport()
+	{
+		window.open("File?tabid=ImportLeads",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+	}
 	function vendorImport()
 	{
 		window.open("File?tabid=ImportVendor",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
@@ -1434,6 +1444,10 @@
 	function exportCustomer()
 	{
 		window.open("File?tabid=ExportCustomer",null,"scrollbars=no,height=300,width=600,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+	}
+	function exportLead()
+	{
+		window.open("File?tabid=ExportLeads",null,"scrollbars=no,height=300,width=600,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	function exportVendor()
 	{

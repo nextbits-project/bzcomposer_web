@@ -48,9 +48,10 @@ public class LeadDAOImpl implements LeadDAO {
 		ResultSet rs = null;
 		try {
 
-			String sqlString = "select * from crm_lead where companyId = ?";
+			String sqlString = "select * from crm_lead where companyId = ? and LeadID = ?";
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1, companyId);
+			pstmt.setLong(2, leadId);
 
 			rs = pstmt.executeQuery();
 

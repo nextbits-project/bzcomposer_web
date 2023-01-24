@@ -144,6 +144,7 @@ function setRowId(rowid, rowIndex, flag){
         }
         document.getElementById(rowIndex+'$$').classList.add('draft');
     }
+     
 }
 function hightlightROW(){
     let currROW2 = document.getElementById(itemIndex+'$$');
@@ -158,7 +159,7 @@ function manageLead(cmd){
 		return showCustomerValidationDialog();
 	} else {
 		if (cmd=="EDIT") {
-			//window.location = "Customer?tabid=editCustomer&cvId="+itemID+"&itemIndex="+itemIndex;
+ 			//window.location = "Customer?tabid=editCustomer&cvId="+itemID+"&itemIndex="+itemIndex;
 			window.open("Lead?LeadId="+itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 		}
 		else if (cmd=="DELETE") {

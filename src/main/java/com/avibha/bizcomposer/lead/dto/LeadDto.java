@@ -11,6 +11,10 @@ import java.util.Date;
 public class LeadDto {
 
 	private static final long serialVersionUID = 0;
+	
+	public static final String LEADS_COLUMNS = "Status,Source,City,Province,Position,"
+			+ "FirstName,LastName,Address1,Address2,Title,Email,State,Website,Country,"
+			+ "Phone,ZipCode,LeadValue,Company,Description,LeadPublic,ContactToday,ContactDate,Tags";
 
 	private Long leadId;
 	private Long assignedId;
