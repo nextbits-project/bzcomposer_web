@@ -109,8 +109,12 @@ public class InvoiceInfoDao {
 			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
+//			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
+//					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
+//					+ " FROM bca_shippingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
+//					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
-					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
+					+ "a.City AS CityName, ct.Name As City, a.State AS StateName, s.name AS State, a.Country AS CountryName,c.name AS Country "
 					+ " FROM bca_shippingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
 					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
 			if(cvID != null && !cvID.trim().isEmpty()){
@@ -127,8 +131,8 @@ public class InvoiceInfoDao {
 				invoiceDto.setAddress1(rs.getString(6));
 				invoiceDto.setAddress2(rs.getString(7));
 				invoiceDto.setZipcode(rs.getString("ZipCode"));
-				invoiceDto.setState(rs.getString("State"));
-				invoiceDto.setCountry(rs.getString("Country"));
+				invoiceDto.setState(rs.getString("StateName"));
+				invoiceDto.setCountry(rs.getString("CountryName"));
 				String ADDRESS_ASD22 = invoiceDto.getAddress2();
 				if(ADDRESS_ASD22 != null && ADDRESS_ASD22.trim().length()>0){
 					ADDRESS_ASD22 = "\n"+ADDRESS_ASD22;
@@ -176,8 +180,12 @@ public class InvoiceInfoDao {
 			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
+//			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
+//					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
+//					+ " FROM bca_billingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
+//					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
-					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
+					+ "a.City AS CityName,ct.Name AS City, a.State AS StateName,s.name AS State, a.Country AS CountryName,c.name AS Country "
 					+ " FROM bca_billingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
 					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
 			if(cvID != null && !cvID.trim().isEmpty()){
@@ -194,8 +202,8 @@ public class InvoiceInfoDao {
 				invoiceDto.setAddress1(rs.getString(6));
 				invoiceDto.setAddress2(rs.getString(7));
 				invoiceDto.setZipcode(rs.getString("ZipCode"));
-				invoiceDto.setState(rs.getString("State"));
-				invoiceDto.setCountry(rs.getString("Country"));
+				invoiceDto.setState(rs.getString("StateName"));
+				invoiceDto.setCountry(rs.getString("CountryName"));
 				String ADDRESS_ASD22 = invoiceDto.getAddress2();
 				if(ADDRESS_ASD22 != null && ADDRESS_ASD22.trim().length()>0){
 					ADDRESS_ASD22 = "\n"+ADDRESS_ASD22;
