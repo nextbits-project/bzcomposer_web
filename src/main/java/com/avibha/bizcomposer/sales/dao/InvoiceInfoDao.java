@@ -113,10 +113,10 @@ public class InvoiceInfoDao {
 //					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
 //					+ " FROM bca_shippingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
 //					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
-			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
-					+ "a.City AS CityName, ct.Name As City, a.State AS StateName, s.name AS State, a.Country AS CountryName,c.name AS Country "
-					+ " FROM bca_shippingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
-					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
+			String sqlString = "SELECT distinct a.BSAddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
+					+ "a.City, ct.Name As CityName, a.State, s.name AS StateName, a.Country,c.name AS CountryName "
+					+ " FROM bca_bsaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
+					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.AddressType=0";
 			if(cvID != null && !cvID.trim().isEmpty()){
 				sqlString = sqlString + " AND a.ClientVendorID="+cvID+" LIMIT 1";
 			}
@@ -184,10 +184,10 @@ public class InvoiceInfoDao {
 //					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
 //					+ " FROM bca_billingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
 //					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
-			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
-					+ "a.City AS CityName,ct.Name AS City, a.State AS StateName,s.name AS State, a.Country AS CountryName,c.name AS Country "
-					+ " FROM bca_billingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
-					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
+			String sqlString = "SELECT distinct a.BSAddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
+					+ "a.City, ct.Name As CityName, a.State, s.name AS StateName, a.Country,c.name AS CountryName "
+					+ " FROM bca_bsaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
+					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.AddressType=1";
 			if(cvID != null && !cvID.trim().isEmpty()){
 				sqlString = sqlString + " AND a.ClientVendorID="+cvID+" LIMIT 1";
 			}
@@ -3946,14 +3946,17 @@ public class InvoiceInfoDao {
 		Connection con = db.getConnection();
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
+		int addType = 1;
 		try {
-			String tblName = "bca_billingaddress";
+			String tblName = "bca_bsaddress";
 			if(addressType.equalsIgnoreCase("ship")) {
-				tblName = "bca_shippingaddress";
+				//tblName = "bca_shippingaddress";
+				addType = 0;
 			}
-			pstmt = con.prepareStatement("SELECT * FROM "+tblName+" WHERE ClientVendorID=? and AddressID=?");
+			pstmt = con.prepareStatement("SELECT * FROM "+tblName+" WHERE ClientVendorID=? and BSAddressID=? and AddressType=? ");
 			pstmt.setString(1, form.getClientVendorID());
 			pstmt.setString(2, form.getAddressID());
+			pstmt.setInt(3, addType);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				form.setCompanyName(rs.getString("Name"));
@@ -3988,29 +3991,41 @@ public class InvoiceInfoDao {
 	public boolean updateBillingAddress(InvoiceDto frm, String cvId, String addressID) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
-		ResultSet rs = null;
+//		ResultSet rs = null;
 		PreparedStatement pstmt = null, pstmt2 = null;
 		boolean status = false;
 		try {
-			String sqlString = "select Name,FirstName,LastName, Address1,Address2,City,"
-					+ "State,ZipCode,Country from bca_billingaddress where ClientVendorID ="+cvId+" and AddressID="+addressID;
-			String sqlString2 = "update bca_billingaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
-					+ "State=?,ZipCode=?,Country=? where AddressID ="+addressID;
-
+//			String sqlString = "select Name,FirstName,LastName, Address1,Address2,City,"
+//					+ "State,ZipCode,Country from bca_billingaddress where ClientVendorID ="+cvId+" and AddressID="+addressID;
+//			String sqlString2 = "update bca_billingaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
+//					+ "State=?,ZipCode=?,Country=? where AddressID ="+addressID;
+			String sqlString2 = "update bca_bsaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
+					+ "State=?,ZipCode=?,Country=? where BSAddressID ="+addressID +" AND ClientVendorID="+cvId+" AND AddressType=1";
 			pstmt2 = con.prepareStatement(sqlString2);
-			pstmt = con.prepareStatement(sqlString);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				pstmt2.setString(1, frm.getCompanyName() != null ? frm.getCompanyName():rs.getString(1));
-				pstmt2.setString(2, frm.getFirstName()!=null ? frm.getFirstName():rs.getString(2));
-				pstmt2.setString(3, frm.getLastName()!=null ? frm.getLastName():rs.getString(3));
-				pstmt2.setString(4, frm.getAddress1()!=null ? frm.getAddress1():rs.getString(4));
-				pstmt2.setString(5, frm.getAddress2()!=null ? frm.getAddress2():rs.getString(5));
-				pstmt2.setString(6, frm.getCity()!=null ? frm.getCity():rs.getString(6));
-				pstmt2.setString(7, frm.getState()!=null ? frm.getState():rs.getString(7));
-				pstmt2.setString(8, frm.getZipcode()!=null ? frm.getZipcode():rs.getString(8));
-				pstmt2.setString(9, frm.getCountry()!=null ? frm.getCountry():rs.getString(9));
-			}
+//			pstmt = con.prepareStatement(sqlString);
+//			rs = pstmt.executeQuery();
+			
+				pstmt2.setString(1, frm.getCompanyName());
+				pstmt2.setString(2, frm.getFirstName());
+				pstmt2.setString(3, frm.getLastName());
+				pstmt2.setString(4, frm.getAddress1());
+				pstmt2.setString(5, frm.getAddress2());
+				pstmt2.setString(6, frm.getCity());
+				pstmt2.setString(7, frm.getState());
+				pstmt2.setString(8, frm.getZipcode());
+				pstmt2.setString(9, frm.getCountry());
+			
+//			while (rs.next()) {
+//				pstmt2.setString(1, frm.getCompanyName() != null ? frm.getCompanyName():rs.getString(1));
+//				pstmt2.setString(2, frm.getFirstName()!=null ? frm.getFirstName():rs.getString(2));
+//				pstmt2.setString(3, frm.getLastName()!=null ? frm.getLastName():rs.getString(3));
+//				pstmt2.setString(4, frm.getAddress1()!=null ? frm.getAddress1():rs.getString(4));
+//				pstmt2.setString(5, frm.getAddress2()!=null ? frm.getAddress2():rs.getString(5));
+//				pstmt2.setString(6, frm.getCity()!=null ? frm.getCity():rs.getString(6));
+//				pstmt2.setString(7, frm.getState()!=null ? frm.getState():rs.getString(7));
+//				pstmt2.setString(8, frm.getZipcode()!=null ? frm.getZipcode():rs.getString(8));
+//				pstmt2.setString(9, frm.getCountry()!=null ? frm.getCountry():rs.getString(9));
+//			}
 			int rows = pstmt2.executeUpdate();
 			if(rows>0){
 				status = true;
@@ -4021,7 +4036,7 @@ public class InvoiceInfoDao {
 		}
 		finally {
 			try {
-				if (rs != null) { db.close(rs); }
+//				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
@@ -4035,29 +4050,41 @@ public class InvoiceInfoDao {
 	public boolean updateShippingAddress(InvoiceDto frm, String cvId, String addressID) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
-		ResultSet rs = null;
+//		ResultSet rs = null;
 		PreparedStatement pstmt = null, pstmt2 = null;
 		boolean status = false;
 		try {
-			String sqlString1 = "select Name,FirstName,LastName, Address1,Address2,City,"
-					+ "State,ZipCode,Country from bca_shippingaddress where Active=1 and AddressID="+addressID;
-			String sqlString = "update bca_shippingaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
-					+ "State=?,ZipCode=?,Country=? where AddressID ="+addressID;
+//			String sqlString1 = "select Name,FirstName,LastName, Address1,Address2,City,"
+//					+ "State,ZipCode,Country from bca_shippingaddress where Active=1 and AddressID="+addressID;
+			String sqlString = "update bca_bsaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
+					+ "State=?,ZipCode=?,Country=? where BSAddressID ="+addressID +" AND ClientVendorID="+cvId+" AND AddressType=0";
 
 			pstmt2 = con.prepareStatement(sqlString);
-			pstmt = con.prepareStatement(sqlString1);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				pstmt2.setString(1, frm.getCompanyName() != null ? frm.getCompanyName():rs.getString(1));
-				pstmt2.setString(2, frm.getFirstName()!=null ? frm.getFirstName():rs.getString(2));
-				pstmt2.setString(3, frm.getLastName()!=null ? frm.getLastName():rs.getString(3));
-				pstmt2.setString(4, frm.getAddress1()!=null ? frm.getAddress1():rs.getString(4));
-				pstmt2.setString(5, frm.getAddress2()!=null ? frm.getAddress2():rs.getString(5));
-				pstmt2.setString(6, frm.getCity()!=null ? frm.getCity():rs.getString(6));
-				pstmt2.setString(7, frm.getState()!=null ? frm.getState():rs.getString(7));
-				pstmt2.setString(8, frm.getZipcode()!=null ? frm.getZipcode():rs.getString(8));
-				pstmt2.setString(9, frm.getCountry()!=null ? frm.getCountry():rs.getString(9));
-			}
+			pstmt2.setString(1, frm.getCompanyName());
+			pstmt2.setString(2, frm.getFirstName());
+			pstmt2.setString(3, frm.getLastName());
+			pstmt2.setString(4, frm.getAddress1());
+			pstmt2.setString(5, frm.getAddress2());
+			pstmt2.setString(6, frm.getCity());
+			pstmt2.setString(7, frm.getState());
+			pstmt2.setString(8, frm.getZipcode());
+			pstmt2.setString(9, frm.getCountry());
+//			pstmt = con.prepareStatement(sqlString1);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				pstmt2.setString(1, frm.getCompanyName() != null ? frm.getCompanyName():rs.getString(1));
+//				pstmt2.setString(2, frm.getFirstName()!=null ? frm.getFirstName():rs.getString(2));
+//				pstmt2.setString(3, frm.getLastName()!=null ? frm.getLastName():rs.getString(3));
+//				pstmt2.setString(4, frm.getAddress1()!=null ? frm.getAddress1():rs.getString(4));
+//				pstmt2.setString(5, frm.getAddress2()!=null ? frm.getAddress2():rs.getString(5));
+//				pstmt2.setString(6, frm.getCity()!=null ? frm.getCity():rs.getString(6));
+//				pstmt2.setString(7, frm.getState()!=null ? frm.getState():rs.getString(7));
+//				pstmt2.setString(8, frm.getZipcode()!=null ? frm.getZipcode():rs.getString(8));
+//				pstmt2.setString(9, frm.getCountry()!=null ? frm.getCountry():rs.getString(9));
+//			}
+			
+				
+			
 			int rows = pstmt2.executeUpdate();
 			if(rows>0){
 				status = true;
@@ -4067,7 +4094,7 @@ public class InvoiceInfoDao {
 			
 		}finally {
 			try {
-				if (rs != null) { db.close(rs); }
+//				if (rs != null) { db.close(rs); }
 				if (pstmt != null) { db.close(pstmt); }
 				if (pstmt2 != null) { db.close(pstmt2); }
 				if(con != null){ db.close(con); }
