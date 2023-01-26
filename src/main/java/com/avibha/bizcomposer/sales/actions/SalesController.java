@@ -390,7 +390,8 @@ public class SalesController {
 			SalesDetailsDao sd = new SalesDetailsDao();
 			sd.setUnitPrice(companyID, itemId, p1);
 			sd.getInvoiceInfo(request);
-			forward = "/sales/invoice";
+			//forward = "/sales/invoice";
+			forward = "redirect:Invoice?tabid=Invoice";
 		}
 
 		else if (action.equalsIgnoreCase("saveItemName")) {
@@ -399,8 +400,9 @@ public class SalesController {
 			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nItemName:" + itemName);
 			SalesDetailsDao sd = new SalesDetailsDao();
 			sd.setItemName(companyID, itemId, itemName);
-			sd.getInvoiceInfo(request);
-			forward = "/sales/invoice";
+			sd.getInvoiceInfo(request);			
+			//forward = "/sales/invoice";
+			forward = "redirect:Invoice?tabid=Invoice";
 		} else if (action.equalsIgnoreCase("getBillingAddress")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getBillingAddress(invoiceDto, request);
