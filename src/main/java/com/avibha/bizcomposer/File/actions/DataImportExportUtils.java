@@ -8,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -832,17 +834,20 @@ public class DataImportExportUtils {
 		String[] fileName = file.getName().split("\\.");
 		String compId = (String) request.getSession().getAttribute("CID");
 		try {
-			OutputStream os = new FileOutputStream(file);
-			InputStream is = new BufferedInputStream(attachedFile.getInputStream());
-			int count;
-			byte buf[] = new byte[4096];
-			while ((count = is.read(buf)) > -1) {
-				os.write(buf, 0, count);
-			}
-			is.close();
-			os.close();
+			
+			Reader reader = new InputStreamReader(attachedFile.getInputStream());
+
+			// OutputStream os = new FileOutputStream(file);
+			// InputStream is = new BufferedInputStream(attachedFile.getInputStream());
+			//int count;
+			//byte buf[] = new byte[4096];
+			//while ((count = is.read(buf)) > -1) {
+			//	os.write(buf, 0, count);
+			//}
+			//is.close();
+			//os.close();
 			if (fileName[1].equals("csv")) {
-				BufferedReader bfReader = new BufferedReader(new FileReader(file));
+				BufferedReader bfReader = new BufferedReader(reader);
 				String line = "";
 				int index = 0;
 				while ((line = bfReader.readLine()) != null) {
