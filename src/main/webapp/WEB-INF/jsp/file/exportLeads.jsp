@@ -9,7 +9,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="${pageContext.request.contextPath}/styles/form.css" media="screen" rel="Stylesheet" type="text/css" />
 <script src="${pageContext.request.contextPath}/tableStyle/js/jquery.min.js"></script>
-<title><spring:message code="BzComposer.exportcustomertitle"/></title>
+<title><spring:message code="BzComposer.exportleadstitle"/></title>
 <%@include file="/include/header.jsp"%>
 </head>
 <body>
@@ -23,10 +23,10 @@
     <div style="margin: 20px 10px 0px 40px;">
 	<table>
 		<tr>
-			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportcustomer.downloadcustomerincsv'/>" onclick="downloadCustomerList('csv')"/></td>
+			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportleads.downloadleadsincsv'/>" onclick="downloadCustomerList('csv')"/></td>
 	    </tr>
 	    <tr>
-			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportcustomer.downloadcustomerinxls'/>" onclick="downloadCustomerList('xls')"/></td>
+			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportleads.downloadleadsinxls'/>" onclick="downloadCustomerList('xls')"/></td>
 		</tr>
 		<tr><td>&nbsp;</td></tr>
         <tr>

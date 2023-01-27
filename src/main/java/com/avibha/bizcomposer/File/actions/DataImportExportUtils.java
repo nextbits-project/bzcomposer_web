@@ -570,8 +570,8 @@ public class DataImportExportUtils {
 					fileWriter.append(customer.getPosition()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getFirstName()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getLastName()).append(COMMA_DELIMITER);
-					fileWriter.append(customer.getAddress1()).append(COMMA_DELIMITER);
-					fileWriter.append(customer.getAddress2()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getAddress1() != null ? customer.getAddress1().replaceAll(",", " ") : " ").append(COMMA_DELIMITER);
+					fileWriter.append(customer.getAddress2() != null ? customer.getAddress2().replaceAll(",", " ") : " ").append(COMMA_DELIMITER);
 					fileWriter.append(customer.getTitle()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getEmail()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getState()).append(COMMA_DELIMITER);
