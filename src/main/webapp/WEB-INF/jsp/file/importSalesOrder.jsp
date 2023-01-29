@@ -12,6 +12,15 @@
 <title>BzComposer - <spring:message code="BzComposer.importSalesOrder"/></title>
 <%@include file="/include/header.jsp"%>
 <script>
+
+
+
+function downloadTemplate(type){
+	
+	document.forms[0].action = "File?tabid=DownloadSalesOrderTemplate&type="+type;
+	document.forms[0].submit();
+}
+
 function CloseMe(){
     window.close();
 }
@@ -42,6 +51,8 @@ function pleaseWait(){
 	 	<tr><td colspan="3">&nbsp;</td></tr>
 	 	<tr>
 	 		<td colspan="3" align="right" style="padding-right:50px;">
+                <input type="button" class="formbutton" value="<spring:message code='BzComposer.global.downloadxlstemplate'/>" onclick="downloadTemplate('xls')"/>
+                <input type="button" class="formbutton" value="<spring:message code='BzComposer.global.downloadcsvtemplate'/>" onclick="downloadTemplate('csv')"/>
                 <input type="button" class="formbutton" onclick="CloseMe();" value="<spring:message code='BzComposer.global.close'/>" />
             </td>
 	 	</tr>

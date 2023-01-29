@@ -38,7 +38,7 @@
                                 <a href="#" onclick="confugurationImport()" style="cursor: pointer;"><spring:message code="BzComposer.Confuguration" /></a>
                             </li>
 							<li>
-								<a href="#" onclick="customerImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.customer.Customer" /></span></a>
+								<a href="#" onclick="customerImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.customer.Customers" /></span></a>
 							</li>
 							<li>
 								<a href="#" onclick="leadsImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.lead.leads" /></span></a>
@@ -77,7 +77,7 @@
 								<a href="#" onclick="exportConfiguration()" style="cursor: pointer;"><spring:message code="BzComposer.Confuguration" /></a>
 							</li>
 							<li>
-                                <a href="#" onclick="exportCustomer()" style="cursor: pointer;"><spring:message code="BzComposer.customer.Customer" /></a>
+                                <a href="#" onclick="exportCustomer()" style="cursor: pointer;"><spring:message code="BzComposer.customer.Customers" /></a>
                             </li>
 							<li>
                                 <a href="#" onclick="exportLead()" style="cursor: pointer;"><spring:message code="BzComposer.lead.leads" /></a>

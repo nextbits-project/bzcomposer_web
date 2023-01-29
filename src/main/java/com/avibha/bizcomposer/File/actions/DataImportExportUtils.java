@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.lead.dao.LeadDAO;
 import com.avibha.bizcomposer.lead.dto.LeadDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfoDao;
@@ -51,6 +53,13 @@ public class DataImportExportUtils {
 
 	@Autowired
 	private LeadDAO leadDAO;
+	
+	private Title titleDAO;
+	
+	@PostConstruct
+	private void postConstruct () {
+		titleDAO = new Title();
+	}
 
 	private final static String NEW_LINE_SEPARATOR = "\n";
 	private final static String COMMA_DELIMITER = ",";
@@ -562,7 +571,7 @@ public class DataImportExportUtils {
 				FileWriter fileWriter = null;
 				fileWriter = new FileWriter(csvFilePath);
 				fileWriter.append(LeadDto.LEADS_COLUMNS);
-
+				 
 				for (LeadDto customer : leadDtos) {
 					fileWriter.append(NEW_LINE_SEPARATOR);
 					fileWriter.append(customer.getStatus()).append(COMMA_DELIMITER);
@@ -572,8 +581,12 @@ public class DataImportExportUtils {
 					fileWriter.append(customer.getPosition()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getFirstName()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getLastName()).append(COMMA_DELIMITER);
-					fileWriter.append(customer.getAddress1() != null ? customer.getAddress1().replaceAll(",", " ") : " ").append(COMMA_DELIMITER);
-					fileWriter.append(customer.getAddress2() != null ? customer.getAddress2().replaceAll(",", " ") : " ").append(COMMA_DELIMITER);
+					fileWriter
+							.append(customer.getAddress1() != null ? customer.getAddress1().replaceAll(",", " ") : " ")
+							.append(COMMA_DELIMITER);
+					fileWriter
+							.append(customer.getAddress2() != null ? customer.getAddress2().replaceAll(",", " ") : " ")
+							.append(COMMA_DELIMITER);
 					fileWriter.append(customer.getTitle()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getEmail()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getState()).append(COMMA_DELIMITER);
@@ -609,7 +622,7 @@ public class DataImportExportUtils {
 					fileOutputStream = new FileOutputStream(excelFilePath);
 				}
 				HSSFWorkbook workbook = new HSSFWorkbook();
-				HSSFSheet sheet = workbook.createSheet("CustomerList");
+				HSSFSheet sheet = workbook.createSheet("LeadList");
 				setHSSFSheetColumnHeader(sheet, LeadDto.LEADS_COLUMNS.split(COMMA_DELIMITER));
 				HSSFRow row = null;
 				int rowIndex = 1;
@@ -651,6 +664,43 @@ public class DataImportExportUtils {
 		}
 		writeFileToResponse(response, sourcefile);
 		return b;
+	}
+
+	public boolean downloadLeadTemplate(String type, HttpServletResponse response) {
+	 List<LeadDto> leadDtos = new ArrayList<LeadDto>();
+	 
+	 LeadDto leadDto = new LeadDto();
+	 leadDtos.add(leadDto);
+	 leadDto.setStatus("CONTACTED");
+	 leadDto.setSource("FB");
+	 leadDto.setCity("42594");
+	 leadDto.setProvince("");
+	 leadDto.setPosition("");
+	 leadDto.setFirstName("Jason");
+	 leadDto.setLastName("Lee");
+	 leadDto.setAddress1("address1");
+	 leadDto.setAddress2("address12");
+	 leadDto.setTitle("466");
+
+	 leadDto.setEmail("nextbits.jason@gmail.com");
+	 leadDto.setState("3919");
+	 leadDto.setWebsite("http://www.bzcomposer.com/");
+	 leadDto.setCountry("231");
+	 leadDto.setPhone("1(111) 111-1111");
+
+	 leadDto.setZipCode("35007");
+	 leadDto.setLeadValue(100l);
+
+	 leadDto.setCompany("Company1");
+	 leadDto.setDescription("Test Description");
+	 leadDto.setLeadPublic(true);
+	 leadDto.setContactToday(true);
+	 
+	 leadDto.setContactDate("");
+	 leadDto.setTags("tags1; tags2");
+ 
+	 return exportLeadsList(leadDtos, type, response);
+ 
 	}
 
 	public boolean uploadCustomerFile(MultipartFile attachedFile, HttpServletRequest request) {
@@ -834,18 +884,18 @@ public class DataImportExportUtils {
 		String[] fileName = file.getName().split("\\.");
 		String compId = (String) request.getSession().getAttribute("CID");
 		try {
-			
+
 			Reader reader = new InputStreamReader(attachedFile.getInputStream());
 
 			// OutputStream os = new FileOutputStream(file);
 			// InputStream is = new BufferedInputStream(attachedFile.getInputStream());
-			//int count;
-			//byte buf[] = new byte[4096];
-			//while ((count = is.read(buf)) > -1) {
-			//	os.write(buf, 0, count);
-			//}
-			//is.close();
-			//os.close();
+			// int count;
+			// byte buf[] = new byte[4096];
+			// while ((count = is.read(buf)) > -1) {
+			// os.write(buf, 0, count);
+			// }
+			// is.close();
+			// os.close();
 			if (fileName[1].equals("csv")) {
 				BufferedReader bfReader = new BufferedReader(reader);
 				String line = "";
@@ -949,7 +999,7 @@ public class DataImportExportUtils {
 							else if (count2 == 15)
 								customer.setZipCode(data);
 							else if (count2 == 16)
-								customer.setLeadValue(!ObjectUtils.isEmpty(data) ? (long)Float.parseFloat(data) : 0);
+								customer.setLeadValue(!ObjectUtils.isEmpty(data) ? (long) Float.parseFloat(data) : 0);
 							else if (count2 == 17)
 								customer.setCompany(data);
 							else if (count2 == 18)
@@ -962,7 +1012,7 @@ public class DataImportExportUtils {
 							else if (count2 == 21)
 								customer.setContactDate(data);
 							else if (count2 == 22)
-								customer.setTags(!ObjectUtils.isEmpty(data) ? data.replaceAll(";",",") : null);
+								customer.setTags(!ObjectUtils.isEmpty(data) ? data.replaceAll(";", ",") : null);
 
 							count2++;
 						}
