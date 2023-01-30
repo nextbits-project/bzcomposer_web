@@ -174,6 +174,7 @@ function loadPageData(){
     }
 }
 function cancel(){
+	window.opener.location.reload();
 	window.close();
 }
 </script>

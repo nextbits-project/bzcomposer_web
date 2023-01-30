@@ -386,23 +386,41 @@ public class SalesController {
 			int itemId = Integer.parseInt(request.getParameter("itemID"));
 			// float price = Float.parseFloat(request.getParameter("price"));
 			double p1 = Double.parseDouble(request.getParameter("price"));
+			String pageType = request.getParameter("pageType");
+			if(pageType==null) {
+				pageType="";
+			}
 			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nPrice:" + p1);
 			SalesDetailsDao sd = new SalesDetailsDao();
 			sd.setUnitPrice(companyID, itemId, p1);
 			sd.getInvoiceInfo(request);
-			//forward = "/sales/invoice";
-			forward = "redirect:Invoice?tabid=Invoice";
+			// forward = "/sales/invoice";
+			if (pageType.equalsIgnoreCase("PO")) {
+				forward = "redirect:PurchaseOrder?tabid=PurchaseOrder";
+			} else {
+				forward = "redirect:Invoice?tabid=Invoice";
+			}
+			//forward = "redirect:Invoice?tabid=Invoice";
 		}
 
 		else if (action.equalsIgnoreCase("saveItemName")) {
 			int itemId = Integer.parseInt(request.getParameter("itemID"));
 			String itemName = request.getParameter("itemName");
+			String pageType = request.getParameter("pageType");
+			if(pageType==null) {
+				pageType="";
+			}
 			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nItemName:" + itemName);
 			SalesDetailsDao sd = new SalesDetailsDao();
 			sd.setItemName(companyID, itemId, itemName);
-			sd.getInvoiceInfo(request);			
-			//forward = "/sales/invoice";
-			forward = "redirect:Invoice?tabid=Invoice";
+			sd.getInvoiceInfo(request);
+			// forward = "/sales/invoice";
+			if (pageType.equalsIgnoreCase("PO")) {
+				forward = "redirect:PurchaseOrder?tabid=PurchaseOrder";
+			} else {
+				forward = "redirect:Invoice?tabid=Invoice";
+			}
+
 		} else if (action.equalsIgnoreCase("getBillingAddress")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.getBillingAddress(invoiceDto, request);
