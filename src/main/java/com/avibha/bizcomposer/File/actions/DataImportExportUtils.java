@@ -443,12 +443,12 @@ public class DataImportExportUtils {
 		String csvFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.csv";
 		String excelFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.xls";
 		File sourcefile = null;
-		FileOutputStream fileOutputStream = null;
+		// FileOutputStream fileOutputStream = null;
 		if (type.equals("csv")) {
 			try {
 				sourcefile = new File(csvFilePath);
 				checkFileExistance(sourcefile);
-				fileOutputStream = new FileOutputStream(csvFilePath);
+				//fileOutputStream = new FileOutputStream(csvFilePath);
 
 				FileWriter fileWriter = null;
 				fileWriter = new FileWriter(csvFilePath);
@@ -490,7 +490,7 @@ public class DataImportExportUtils {
 				}
 				fileWriter.flush();
 				fileWriter.close();
-				fileOutputStream.close();
+				//fileOutputStream.close();
 				b = true;
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -500,9 +500,9 @@ public class DataImportExportUtils {
 				sourcefile = new File(excelFilePath);
 				if (!sourcefile.exists()) {
 					sourcefile.createNewFile();
-					fileOutputStream = new FileOutputStream(excelFilePath);
+					//fileOutputStream = new FileOutputStream(excelFilePath);
 				} else {
-					fileOutputStream = new FileOutputStream(excelFilePath);
+					//fileOutputStream = new FileOutputStream(excelFilePath);
 				}
 				HSSFWorkbook workbook = new HSSFWorkbook();
 				HSSFSheet sheet = workbook.createSheet("CustomerList");
@@ -545,9 +545,9 @@ public class DataImportExportUtils {
 					row.createCell(31).setCellValue(parseColumnValue(customer.getFsMarkFinanceCharge(), 1));
 				}
 				b = true;
-				workbook.write(fileOutputStream);
+				//workbook.write(fileOutputStream);
 				workbook.close();
-				fileOutputStream.close();
+				//fileOutputStream.close();
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -666,42 +666,62 @@ public class DataImportExportUtils {
 		return b;
 	}
 
-	public boolean downloadLeadTemplate(String type, HttpServletResponse response) {
-	 List<LeadDto> leadDtos = new ArrayList<LeadDto>();
-	 
-	 LeadDto leadDto = new LeadDto();
-	 leadDtos.add(leadDto);
-	 leadDto.setStatus("CONTACTED");
-	 leadDto.setSource("FB");
-	 leadDto.setCity("42594");
-	 leadDto.setProvince("");
-	 leadDto.setPosition("");
-	 leadDto.setFirstName("Jason");
-	 leadDto.setLastName("Lee");
-	 leadDto.setAddress1("address1");
-	 leadDto.setAddress2("address12");
-	 leadDto.setTitle("466");
-
-	 leadDto.setEmail("nextbits.jason@gmail.com");
-	 leadDto.setState("3919");
-	 leadDto.setWebsite("http://www.bzcomposer.com/");
-	 leadDto.setCountry("231");
-	 leadDto.setPhone("1(111) 111-1111");
-
-	 leadDto.setZipCode("35007");
-	 leadDto.setLeadValue(100l);
-
-	 leadDto.setCompany("Company1");
-	 leadDto.setDescription("Test Description");
-	 leadDto.setLeadPublic(true);
-	 leadDto.setContactToday(true);
-	 
-	 leadDto.setContactDate("");
-	 leadDto.setTags("tags1; tags2");
- 
-	 return exportLeadsList(leadDtos, type, response);
+	public boolean downloadCustomerTemplate(String type, HttpServletResponse response) {
+	  ArrayList<CustomerDto> leadDtos = new ArrayList<CustomerDto>();
+	  return exportCustomerList(leadDtos, type, response);
  
 	}
+	
+	public boolean downloadVendorTemplate(String type, HttpServletResponse response) {
+		  ArrayList<VendorDto> leadDtos = new ArrayList<VendorDto>();
+		  return exportVendorList(leadDtos, type, response);
+	 
+		}
+		
+	
+	
+	public boolean downloadItemTemplate(String type, HttpServletResponse response) {
+		  ArrayList<ItemDto> leadDtos = new ArrayList<ItemDto>();
+		  return exportItemList(leadDtos, type, response);
+	}
+	
+	 
+	public boolean downloadLeadTemplate(String type, HttpServletResponse response) {
+		 List<LeadDto> leadDtos = new ArrayList<LeadDto>();
+		 
+		 LeadDto leadDto = new LeadDto();
+		 leadDtos.add(leadDto);
+		 leadDto.setStatus("CONTACTED");
+		 leadDto.setSource("FB");
+		 leadDto.setCity("42594");
+		 leadDto.setProvince("");
+		 leadDto.setPosition("");
+		 leadDto.setFirstName("Jason");
+		 leadDto.setLastName("Lee");
+		 leadDto.setAddress1("address1");
+		 leadDto.setAddress2("address12");
+		 leadDto.setTitle("466");
+
+		 leadDto.setEmail("nextbits.jason@gmail.com");
+		 leadDto.setState("3919");
+		 leadDto.setWebsite("http://www.bzcomposer.com/");
+		 leadDto.setCountry("231");
+		 leadDto.setPhone("1(111) 111-1111");
+
+		 leadDto.setZipCode("35007");
+		 leadDto.setLeadValue(100l);
+
+		 leadDto.setCompany("Company1");
+		 leadDto.setDescription("Test Description");
+		 leadDto.setLeadPublic(true);
+		 leadDto.setContactToday(true);
+		 
+		 leadDto.setContactDate("");
+		 leadDto.setTags("tags1; tags2");
+	 
+		 return exportLeadsList(leadDtos, type, response);
+	 
+		}
 
 	public boolean uploadCustomerFile(MultipartFile attachedFile, HttpServletRequest request) {
 		boolean status = false;

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import com.avibha.bizcomposer.accounting.dao.AccountingDAO;
 import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
 import com.avibha.bizcomposer.sales.forms.*;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionServlet;
@@ -739,7 +740,7 @@ public class SalesDetails {
 	   invOrderReport = info.getInvOrderReport(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
 	   request.setAttribute("invOrderReport", invOrderReport);
    }
-   public void getInventoryStatistics(HttpServletRequest request,ActionForm form)
+   public void getInventoryStatistics(HttpServletRequest request, ActionForm form)
    {
 	   HttpSession ss = request.getSession();
 	   String compId = (String)ss.getAttribute("CID");
@@ -1175,7 +1176,7 @@ public class SalesDetails {
 		purchase.getRecord(request, form, compId, purchaseNo);
 	}
 
-	public void newSalesOrder(HttpServletRequest request, ActionForm frm) { // New Sales Order
+	public void newSalesOrder(HttpServletRequest request, InvoiceDto frm) { // New Sales Order
 		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1230,7 +1231,7 @@ public class SalesDetails {
 		request.setAttribute("IsDisplay","false");
 	}
 	
-	public void newInvoice(HttpServletRequest request, ActionForm frm) {
+	public void newInvoice(HttpServletRequest request, InvoiceDto frm) {
 		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1285,7 +1286,7 @@ public class SalesDetails {
 		request.setAttribute("IsDisplay","false");
 	}
 	
-	public void dropShipInvoice(HttpServletRequest request, ActionForm frm) {
+	public void dropShipInvoice(HttpServletRequest request, InvoiceDto frm) {
 		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1338,7 +1339,7 @@ public class SalesDetails {
 	}
 
 
-	public void saveInvoice(HttpServletRequest request, ActionForm frm,String custID) {
+	public void saveInvoice(HttpServletRequest request, InvoiceDto frm,String custID) {
 		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1383,7 +1384,7 @@ public class SalesDetails {
 			}
 		}
 	}
-	public void saveOrder(HttpServletRequest request, ActionForm frm) throws SQLException {
+	public void saveOrder(HttpServletRequest request, InvoiceDto frm) throws SQLException {
 		InvoiceDto form = (InvoiceDto) frm;
 		InvoiceInfo invoice = new InvoiceInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1415,7 +1416,7 @@ public class SalesDetails {
 
 	}
 
-	public boolean deleteInvoice(HttpServletRequest request, ActionForm frm,String custID) throws SQLException {
+	public boolean deleteInvoice(HttpServletRequest request, InvoiceDto frm,String custID) throws SQLException {
 		boolean val = false;
 		// boolean exist=invoice.invoiceExist(compId,form.getOrderNo());
 		InvoiceDto form = (InvoiceDto) frm;
@@ -1444,7 +1445,7 @@ public class SalesDetails {
 		return val;
 
 	}
-	public boolean deleteSalesOrder(HttpServletRequest request, ActionForm frm) throws SQLException {
+	public boolean deleteSalesOrder(HttpServletRequest request, InvoiceDto frm) throws SQLException {
 		boolean val = false;
 		// boolean exist=invoice.invoiceExist(compId,form.getOrderNo());
 		InvoiceDto form = (InvoiceDto) frm;
@@ -1486,7 +1487,7 @@ public class SalesDetails {
 		//request.setAttribute("CustomerDetails",CustomerDetails);
 	}
 
-	public void firstInvoice(HttpServletRequest request, ActionForm frm) {
+	public void firstInvoice(HttpServletRequest request, InvoiceDto frm) {
 		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
@@ -1519,7 +1520,7 @@ public class SalesDetails {
 		}
 		
 	}
-	public void firstSalesOrder(HttpServletRequest request, ActionForm frm) {
+	public void firstSalesOrder(HttpServletRequest request, InvoiceDto frm) {
 		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
@@ -1539,7 +1540,7 @@ public class SalesDetails {
 		}
 		
 	}
-	public void lastSalesOrder(HttpServletRequest request, ActionForm frm) {
+	public void lastSalesOrder(HttpServletRequest request, InvoiceDto frm) {
 		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
@@ -1560,7 +1561,7 @@ public class SalesDetails {
 		}
 	}
 
-	public void lastInvoice(HttpServletRequest request, ActionForm frm) {
+	public void lastInvoice(HttpServletRequest request, InvoiceDto frm) {
 		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
@@ -1581,7 +1582,7 @@ public class SalesDetails {
 		}
 	}
 
-	public void nextInvoice(HttpServletRequest request, ActionForm frm) throws SQLException {
+	public void nextInvoice(HttpServletRequest request, InvoiceDto frm) throws SQLException {
 		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
@@ -1602,7 +1603,7 @@ public class SalesDetails {
 		request.setAttribute("Enable", "true");
 		form.setItemID("0");
 	}
-	public void nextSalesOrder(HttpServletRequest request, ActionForm frm) throws SQLException {
+	public void nextSalesOrder(HttpServletRequest request, InvoiceDto frm) throws SQLException {
 		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
@@ -1622,7 +1623,7 @@ public class SalesDetails {
 		request.setAttribute("Enable", "true");
 		form.setItemID("0");
 	}
-	public void prevoiusInvoice(HttpServletRequest request, ActionForm frm) throws SQLException {
+	public void prevoiusInvoice(HttpServletRequest request, InvoiceDto frm) throws SQLException {
 		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
@@ -1644,7 +1645,7 @@ public class SalesDetails {
 		request.setAttribute("Enable", "true");
 		form.setItemID("0");
 	}
-	public void prevoiusSalesOrder(HttpServletRequest request, ActionForm frm) throws SQLException {
+	public void prevoiusSalesOrder(HttpServletRequest request, InvoiceDto frm) throws SQLException {
 		InvoiceDto form = (InvoiceDto) frm;
 		ArrayList list = new ArrayList();
 		InvoiceInfo invoice = new InvoiceInfo();
@@ -1725,7 +1726,7 @@ public class SalesDetails {
 
 	@Deprecated
 	public void getCustLookup(String cvId, HttpServletRequest request,
-			ActionForm form) {
+			InvoiceDto form) {
 
 		// HttpSession sess = request.getSession();
 		// String compId = (String) sess.getAttribute("CID");
@@ -1870,7 +1871,7 @@ public class SalesDetails {
 	}
 
 	@Deprecated
-	public void getProfitLossDetail(HttpServletRequest request,ActionForm form)
+	public void getProfitLossDetail(HttpServletRequest request,InvoiceDto form)
 	{
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -1884,7 +1885,7 @@ public class SalesDetails {
 		customer.getProfitLossDetailReport(datesCombo,fromDate, toDate, sortBy, compId, request,cForm);
 		
 	}
-	public void getProfitLosByItem(HttpServletRequest request,ActionForm form)
+	public void getProfitLosByItem(HttpServletRequest request, ActionForm form)
 	{
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -1898,7 +1899,7 @@ public class SalesDetails {
 		request.setAttribute("profitLossByItem", profitLossByItem);
 	}
 	
-	public void getAccountPayableGraph(HttpServletRequest request,ActionForm form)
+	public void getAccountPayableGraph(HttpServletRequest request,InvoiceDto form)
 	{
 		HttpSession sess = request.getSession();
 		ArrayList<EsalesPOJO> graphDetail = new ArrayList<>();
@@ -1909,13 +1910,13 @@ public class SalesDetails {
 		graphDetail = acd.getAccountPayableGraph(compId,request);
 	}
 
-	public void getBudgetVsActual(HttpServletRequest request, ActionForm form) {
+	public void getBudgetVsActual(HttpServletRequest request, InvoiceDto form) {
 		int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
 		System.out.println("Current Year for budget vs actual is:"+year);
 		request.setAttribute("Year", year);
 	}
 
-	public void getBudgetOverview(HttpServletRequest request, ActionForm form) {
+	public void getBudgetOverview(HttpServletRequest request, InvoiceDto form) {
 		int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
 		System.out.println("Current Year for budget overview is:"+year);
 		String month[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};

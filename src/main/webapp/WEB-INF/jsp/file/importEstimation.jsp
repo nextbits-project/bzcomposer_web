@@ -15,8 +15,7 @@
 
 
 function downloadTemplate(type){
-	
-	document.forms[0].action = "File?tabid=DownloadEstimationTemplate&type="+type;
+	document.forms[0].action = "dataImportAction?tabid=DownloadEstimationTemplate&type="+type;
 	document.forms[0].submit();
 }
 
@@ -50,9 +49,8 @@ function pleaseWait(){
 	 	<tr><td colspan="3">&nbsp;</td></tr>
 	 	<tr>
 	 		<td colspan="3" align="right" style="padding-right:50px;">
-               <input type="button" class="formbutton" value="<spring:message code='BzComposer.global.downloadxlstemplate'/>" onclick="downloadTemplate('xls')"/>
-                <input type="button" class="formbutton" value="<spring:message code='BzComposer.global.downloadcsvtemplate'/>" onclick="downloadTemplate('csv')"/>
-                <input type="button" class="formbutton" onclick="CloseMe();" value="<spring:message code='BzComposer.global.close'/>" />
+                <input type="button" class="formbutton" value="<spring:message code='BzComposer.global.downloadjsontemplate'/>" onclick="downloadTemplate('json')"/>
+				<input type="button" class="formbutton" onclick="CloseMe();" value="<spring:message code='BzComposer.global.close'/>" />
             </td>
 	 	</tr>
 	 </table>

@@ -315,6 +315,8 @@ public class SalesDetailsDao {
 			request.getSession().setAttribute("ItemUploaded", "successfully");
 		}
 	}
+	
+ 
 	public void exportFile(HttpServletRequest request, ItemDto itemDto, String type, HttpServletResponse response)
 	{
 		String compId = (String) request.getSession().getAttribute("CID");

@@ -14,7 +14,7 @@
 <script>
 
 function downloadTemplate(type){
-	document.forms[0].action = "Item?tabid=DownloadItemTemplate&type="+type;
+	document.forms[0].action = "File?tabid=DownloadItemTemplate&type="+type;
 	document.forms[0].submit();
 }
 

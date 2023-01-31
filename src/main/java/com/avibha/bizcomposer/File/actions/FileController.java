@@ -250,7 +250,29 @@ public class FileController {
 			} else {
 				forward = "redirect:File?tabid=ImportLeads";
 			}
-		} else if (action.equalsIgnoreCase("ExportVendor")) {
+		} else if (action.equalsIgnoreCase("DownloadCustomerTemplate")) {
+			String type = request.getParameter("type");
+			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
+  				 importExportUtils.downloadCustomerTemplate(type, response);
+			} else {
+				forward = "redirect:File?tabid=ImportCustomer";
+			}
+		}else if (action.equalsIgnoreCase("DownloadVendorTemplate")) {
+			String type = request.getParameter("type");
+			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
+  				 importExportUtils.downloadVendorTemplate(type, response);
+			} else {
+				forward = "redirect:File?tabid=ImportVendor";
+			}
+			
+		 }else if (action.equalsIgnoreCase("DownloadItemTemplate")) {
+			String type = request.getParameter("type");
+			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
+  				 importExportUtils.downloadItemTemplate(type, response);
+			} else {
+				forward = "redirect:/Item?tabid=UploadItem";
+			}
+		 }else if (action.equalsIgnoreCase("ExportVendor")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
 				PurchaseInfoDao purchaseInfoDao = new PurchaseInfoDao();
