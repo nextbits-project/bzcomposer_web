@@ -650,7 +650,7 @@ function ShowShippingAddressPage(form){
 								</td>
 								<td style="font-size: 14px;">				
 									<div id="td14" style="display:block;">
-										<input type="text" size="10" style="text-align: right;" readonly="true" id="amount_id" onkeypress="return numbersOnlyFloat(event,this.value);" />
+										<input type="text" size="10" readonly="true" style="text-align: right;" id="amount_id" onkeypress="return numbersOnlyFloat(event,this.value);" />
 									</div>
 								</td>
 								<td style="font-size: 14px;">
