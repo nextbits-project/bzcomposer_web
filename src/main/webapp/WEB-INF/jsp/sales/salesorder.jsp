@@ -892,13 +892,12 @@ function ConfirmDelete() {
                 $(this).dialog("close");
                 //$('form').submit();
                 
-                var itemName = $.trim(document.getElementById('pname_id').value);
-            	
-            	var item = document.getElementById('itemID');
-            	
+                var itemName = $.trim(document.getElementById('pname_id').value);            	
+            	var item = document.getElementById('itemID');            	
             	var itemId = item.options[item.selectedIndex].value;
             	
-            	window.location.href = "SalesOrder?tabid=saveItemNameForSalesOrder&itemName="+itemName+"&itemID="+itemId;
+            	window.location.href = "Invoice?pageType=SO&tabid=saveItemName&itemName="+itemName+"&itemID="+itemId;
+            	//window.location.href = "SalesOrder?tabid=saveItemNameForSalesOrder&itemName="+itemName+"&itemID="+itemId;
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
                 $(this).dialog("close");
@@ -919,13 +918,11 @@ function saveNewUnitPrice(){
         	"<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
                 //$('form').submit();
-                var price = document.getElementById('unitPrice_id').value;
-				
-				var item = document.getElementById('itemID');
-				
+                var price = document.getElementById('unitPrice_id').value;				
+				var item = document.getElementById('itemID');				
 				var itemId = item.options[item.selectedIndex].value;
-				
-				window.location.href = "SalesOrder?tabid=saveUnitPriceForSalesOrder&price="+price+"&itemID="+itemId;
+				window.location.href = "Invoice?pageType=SO&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
+//				window.location.href = "SalesOrder?tabid=saveUnitPriceForSalesOrder&price="+price+"&itemID="+itemId;
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
                 $(this).dialog("close");

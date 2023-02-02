@@ -397,6 +397,10 @@ public class SalesController {
 			// forward = "/sales/invoice";
 			if (pageType.equalsIgnoreCase("PO")) {
 				forward = "redirect:PurchaseOrder?tabid=PurchaseOrder";
+			} else if (pageType.equalsIgnoreCase("ES")) {
+				forward = "redirect:Estimation?tabid=Estimation";
+			}else if (pageType.equalsIgnoreCase("SO")) {
+				forward = "redirect:SalesOrder?tabid=SalesOrder";
 			} else {
 				forward = "redirect:Invoice?tabid=Invoice";
 			}
@@ -417,7 +421,11 @@ public class SalesController {
 			// forward = "/sales/invoice";
 			if (pageType.equalsIgnoreCase("PO")) {
 				forward = "redirect:PurchaseOrder?tabid=PurchaseOrder";
-			} else {
+			} else if (pageType.equalsIgnoreCase("ES")) {
+				forward = "redirect:Estimation?tabid=Estimation";
+			} else if (pageType.equalsIgnoreCase("SO")) {
+				forward = "redirect:SalesOrder?tabid=SalesOrder";
+			}else {
 				forward = "redirect:Invoice?tabid=Invoice";
 			}
 
