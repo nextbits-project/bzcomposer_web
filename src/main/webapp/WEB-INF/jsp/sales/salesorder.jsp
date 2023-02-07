@@ -1,6 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page isELIgnored="false"%>
 <html>
@@ -11,639 +11,721 @@
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
 <title><spring:message code="BzComposer.salesordertitle" /></title>
 <style type="text/css">
-table.cart tbody tr td { font-size: 14px; }
-.msgstyle{ font-size:18px; color: #3D9EAC; }
-.cellboder{ border-bottom: 1px solid rgb(207, 207, 207); }
+table.cart tbody tr td {
+	font-size: 14px;
+}
+
+.msgstyle {
+	font-size: 18px;
+	color: #3D9EAC;
+}
+
+.cellboder {
+	border-bottom: 1px solid rgb(207, 207, 207);
+}
 </style>
 </head>
 <body onload="Init();">
-<!-- begin shared/header -->
-<div id="ddcolortabsline">&nbsp;</div>
-<div id="cos">   
-<div class="statusquo ok">		
-<div id="hoja">
-<div id="blanquito">
-<div id="padding">
-<form:form name="InvoiceForm" id="salesOrderForm" method="post" modelAttribute="invoiceDto">
-<input type="hidden" name="isInvoice" value="0">
-<input type="hidden" name="isSalestype" value="0">
-<input type="hidden" name="serviceName" value="">
-<form:hidden path="clientVendorID" />
-<form:errors />
-	<div>
-		<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-			<spring:message code="BzComposer.salesorder.salesordertitle" />
-		</span>
-	</div>
-	<div style="width: 855;margin-left: auto;margin-right: auto;float: right;">
-	</div>
-	<div id="fullPageDetails" style="margin-left: auto;margin-right: auto;">
-	<section>
-		<div id="table-negotiations">
-			<div id="CustomerDtailsInfo">
-                <input type="hidden" name="CustDetails" id="custSize" value='${CustDetails.size()}'>
-                <c:forEach items="${CustDetails}" var="objList" varStatus="loop">
-                    <input type="hidden" name='${loop.index}clientID' value='${objList.clientVendorID}' id='a${loop.index}clvndid' />
-                    <input type="hidden" name='${loop.index}v' value='${objList.via}' id='${loop.index}va' />
-                    <input type="hidden" name='${loop.index}pa' value='${objList.payMethod}' id='${loop.index}paym' />
-                    <input type="hidden" name='${loop.index}tm' value='${objList.term}' id='${loop.index}trm' />
-                    <input type="hidden" name='${loop.index}rp' value='${objList.rep}' id='${loop.index}rp' />
-                    <input type="hidden" name='${loop.index}tx' value='${objList.taxable}' id='a${loop.index}txable' />
-                    <input type="hidden" id='${loop.index}custBalance' value='${objList.customerHasBalance}' />
-                </c:forEach>
-			</div>
-			<div id="BillShipAddrDetails">
-                <input type="hidden" name="BLSize" id="bSize" value='${BillAddr.size()}'>
-                <c:forEach items="${BillAddr}" var="objList" varStatus="loop">
-                    <input type="hidden" value='${objList.clientVendorID}' id='${loop.index}clvid' />
-                    <input type="hidden" value='${objList.billTo}' id='${loop.index}bl' />
-                    <input type="hidden" value='${CID}' id='${loop.index}cid' />
-                    <input type="hidden" value='${objList.bsAddressID}' id='${loop.index}bsaddr' />
-                </c:forEach>
-                <input type="hidden" name="LSize" id="sSize" value='${ShAddr.size()}'>
-                <c:forEach items="${ShAddr}" var="objList" varStatus="loop">
-                    <input type="hidden" value='${objList.clientVendorID}' id='${loop.index}sh_id' />
-                    <input type="hidden" value='${objList.shipTo}' id='${loop.index}sh' />
-                    <input type="hidden" value='${objList.shAddressID}' id='${loop.index}shaddr' />
-                </c:forEach>
-			</div>
-			<div id="ItemDetails">
-				<input type="hidden" name="ItemSize" id="itemSize" value='${ItemList.size()}'>
-				<c:forEach items="${ItemList}" var="objList" varStatus="loop">
-					<input type="hidden" value='${objList.invID}' id='${loop.index}inv' />
-					<input type="hidden" value='${objList.qty}' id='${loop.index}q' />
-					<input type="hidden" value='${objList.invCode}' id='${loop.index}code' />
-					<input type="hidden" value='${objList.invDesc}' id='${loop.index}desc' />
-					<input type="hidden" value='${objList.inventoryName}' id='${loop.index}pname' />
-					<input type="hidden" value='${objList.salePrice}' id='${loop.index}price' />
-					<input type="hidden" value='${objList.weight}' id='${loop.index}wt' />
-					<input type="hidden" value='${objList.isCategory}' id='${loop.index}cat' />
-					<input type="hidden" value='${objList.itemTypeID}' id='${loop.index}itmId' />
-					<input type="hidden" value='${objList.serialNo}' id='${loop.index}serial' />
-				</c:forEach>
-			</div>
-			<table class="tabla-listados" cellspacing="0" style="margin-top: -1px;">
-				<thead>
-					<tr>
-						<th colspan="3" style="font-size:14px;">
-							<spring:message code="BzComposer.salesorder.customerinfo" />
-						</th>
-					</tr>
-				</thead>
-				<c:if test="${not empty Status}">
-				<tr>
-					<td colspan="3">
-						<span class="msgstyle">*${Status}</span>
-					</td>
-				</tr>
-				</c:if>
-				<c:if test="${not empty SaveStatus}">
-					<tr>
-						<td colspan="3">
-							<span class="msgstyle">*${SaveStatus}</span>
-							<% session.removeAttribute("SaveStatus"); %>
-						</td>
-					</tr>
-				</c:if>
-				<tr>
-					<td style="width:30%;">
-						<table>
-							<tr>
-								<td colspan="2" style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.customertitle" />
-								</td>
-								<td colspan="4" style="font-size: 14px;" align="left" width="50%">
-									<!-- Sort By -->
-									<spring:message code="BzComposer.salesorder.sortby"/>
-								</td>
-								<td>&nbsp;</td>
-								<td style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.taxablecheckbox" />
-								</td>
-								<td style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.pending" />
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-size:14px;">
-									<div id="custDiv">
-										<div id="custDiv">
-									<form:select path="custID" onchange="Assignment(this.value, this.form);" style="width: 300px;">
-										<form:option value="0">
-											<spring:message code="BzComposer.ComboBox.Select" />
-										</form:option>
-										<form:options items="${CDetails}" itemValue="value" itemLabel="label" />
-									</form:select>
-									</div>
-								</div>
-								</td>
-								<td style="font-size: 14px;">
-									<input type="checkbox" id="sortByLastName" name="sortByLastName" value="sortByLastName"/>
-								</td>
-								<td colspan="3" style="font-size:14px;" width="50%">
-									<spring:message code="BzComposer.salesorder.lastname"/>
-								</td>
-								<td>&nbsp;</td>
-								<td align="center" style="font-size:14px;">
-									<input type="checkbox" id="taxable" name="taxable" onclick="TaxaValue(this.form);" value="${invoiceDto.taxable}" ${invoiceDto.taxable?'checked':''} />
-								</td>
-								<td align="center" style="font-size:14px;">
-									<input type="checkbox" id="isPending" name="isPending" onclick="Pending_Value(this.form);toggle_visibility('pending');" value="${invoiceDto.isPending}" ${invoiceDto.isPending?'checked':''} />
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td align="center" style="font-size: 14px;width:35%;">
-						<input type="button" class="formbutton" onclick="getSalesOrderDetailsByBtnName(this.form, 'FirstSalesOrder');" style="padding: 8px 10px 8px 10px; font-size: 16px;" value='<spring:message code="BzComposer.global.first" />' />
-						<input type="button" class="formbutton" onclick="getSalesOrderDetailsByBtnName(this.form, 'LastSalesOrder');" style="padding: 8px 10px 8px 10px; font-size: 16px;" value='<spring:message code="BzComposer.global.last" />' />
-						<input type="button" class="formbutton" onclick="getSalesOrderDetailsByBtnName(this.form, 'PreviousSalesOrder');" style="padding: 8px 10px 8px 10px; font-size: 16px;" value='<spring:message code="BzComposer.global.previous" />' />
-						<input type="button" class="formbutton" onclick="getSalesOrderDetailsByBtnName(this.form, 'NextSalesOrder');" style="padding: 8px 10px 8px 10px; font-size: 16px;" value='<spring:message code="BzComposer.global.next" />' />
-						<input type="button" id="newSalesOrder" title="New Invoice" class="formbutton" onclick="NewOrder();" style="padding: 8px 10px 8px 10px; font-size: 16px;" value='<spring:message code="BzComposer.global.new" />' />
-						<br>
-					<!-- <input type="button" class="formbutton" id="CustomerBalanceBtn" onclick="paymentHistory(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value='<spring:message code="BzComposer.global.balance" />' /> -->
-						<c:if test="${not empty Enable}">
-							<input type="button" class="formbutton" title="Send Mail to..." onclick="SendMail(this.form);" style="padding: 8px 30px 8px 30px; font-size: 16px;" value='<spring:message code="BzComposer.global.sendmail" />' />
-						</c:if>
-						<c:if test="${empty Enable}">
-							<input type="button" class="formbutton" title="Send Mail to..." onclick="SendMailDisabled(this.form);" style="padding: 8px 30px 8px 30px; font-size: 16px;" value='<spring:message code="BzComposer.global.sendmail" />' />
-						</c:if>
-						<input type="button" class="formbutton" onclick="printCustomerOrder(this.form);" style="padding: 8px 30px 8px 30px; font-size: 16px;" value="<spring:message code='BzComposer.global.Print' />" />
-					</td>
-					<td align="right" style="width:35%;">
-						<table>
-							<tr>
-							    <td style="font-size:14px;">
-                                    <spring:message code="BzComposer.common.template" />
-                                </td>
-								<td style="font-size:14px;">
-									<input type="hidden" name="Ivhidden" id="InvStyle" />		
-										<spring:message code="BzComposer.salesorder.orderstyle" />
-								</td>
-								<td align="left" style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.date" />
-								</td>
-								<td align="left" style="font-size:14px;">
-									<spring:message code="BzComposer.report.reservedinventorylist.sonumber" />
-								</td>
-							</tr>
-							<tr>
-							    <td style="font-size: 14px;">
-                                    <form:select path="templateType">
-                                        <form:option value="1">Sales Order Standard</form:option>
-                                        <form:option value="2">Sales Order Charcoal</form:option>
-                                    </form:select>
-                                </td>
-								<td style="font-size:14px;">
-									<form:select path="invoiceStyle" onchange="StyleChange(this.value);">
-										<form:option value="0">
-											<spring:message code="BzComposer.ComboBox.Select" />
-										</form:option>
-										<form:options items="${InvoiceStyle}" itemValue="value" itemLabel="label" />
-									</form:select>
-								</td>
-								<td style="font-size:14px;">
-									<form:input path="orderDate" readonly="true" size="9" /><!-- &nbsp; -->
-									<img src="${pageContext.request.contextPath}/images/cal.gif"
-									onclick="displayCalendar(document.InvoiceForm.orderDate,'mm-dd-yyyy',this);">
-								</td>	
-								<td align="right" style="font-size:14px;"> 
-									<form:input path="orderNo" style="text-align: right;" id="salesorder_no" size="10" readonly="true" />
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>		
-					<td align="center">
-						<div id="pending" style="display:none;">
-							<font size="10"><spring:message code="BzComposer.salesorder.pending" /> </font>				
-						</div>
-					</td>
-				</tr>
-       			<tr align="left">
-					<td align="center" >
-						<table style="width: 100%;">
-							<tr>
-								<td id="bill_label">
-								</td>			
-							</tr>
-						</table>
-					</td>
-					<td id="ship_label">
-					</td>
-				</tr>		
-				<tr>
-					<td align="left">
-						<table>
-							<tr>
-								<td id="bill_id" style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.billto" />
-									<br/>
-									<form:textarea path="billTo" rows="6" cols="25" onclick="ShowBillingAddressPage(this.form);" style="resize: none; width: 300px;" />
-								</td>
-								<td id="td2" align="center">
-								</td>
-			 				</tr>
-						</table>				
-					</td>
-					<td>&nbsp;</td>
-					<td align="right">
-						<table>
-							<tr>
-								<td id="ship_id" style="visibility: visible;padding-left:74px;font-size:14px;">
-			    					<spring:message code="BzComposer.salesorder.shipto" />
-			    					<br/>
-			    					<form:textarea path="shipTo" rows="6" cols="25" onclick="ShowShippingAddressPage(this.form);" style="resize: none; width: 300px;" />
-			 					</td>	
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td style="font-size:14px;" colspan="3">
-						<table align="left">
-							<tr>
-								<%-- <td id="po_num_label" style="font-size:14px;">
+	<!-- begin shared/header -->
+	<div id="ddcolortabsline">&nbsp;</div>
+	<div id="cos">
+		<div class="statusquo ok">
+			<div id="hoja">
+				<div id="blanquito">
+					<div id="padding">
+						<form:form name="InvoiceForm" id="salesOrderForm" method="post"
+							modelAttribute="invoiceDto">
+							<input type="hidden" name="isInvoice" value="0">
+							<input type="hidden" name="isSalestype" value="0">
+							<input type="hidden" name="serviceName" value="">
+							<form:hidden path="clientVendorID" />
+							<form:errors />
+							<div>
+								<span
+									style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+									<spring:message code="BzComposer.salesorder.salesordertitle" />
+								</span>
+							</div>
+							<div
+								style="width: 855; margin-left: auto; margin-right: auto; float: right;">
+							</div>
+							<div id="fullPageDetails"
+								style="margin-left: auto; margin-right: auto;">
+								<section>
+									<div id="table-negotiations">
+										<div id="CustomerDtailsInfo">
+											<input type="hidden" name="CustDetails" id="custSize"
+												value='${CustDetails.size()}'>
+											<c:forEach items="${CustDetails}" var="objList"
+												varStatus="loop">
+												<input type="hidden" name='${loop.index}clientID'
+													value='${objList.clientVendorID}'
+													id='a${loop.index}clvndid' />
+												<input type="hidden" name='${loop.index}v'
+													value='${objList.via}' id='${loop.index}va' />
+												<input type="hidden" name='${loop.index}pa'
+													value='${objList.payMethod}' id='${loop.index}paym' />
+												<input type="hidden" name='${loop.index}tm'
+													value='${objList.term}' id='${loop.index}trm' />
+												<input type="hidden" name='${loop.index}rp'
+													value='${objList.rep}' id='${loop.index}rp' />
+												<input type="hidden" name='${loop.index}tx'
+													value='${objList.taxable}' id='a${loop.index}txable' />
+												<input type="hidden" id='${loop.index}custBalance'
+													value='${objList.customerHasBalance}' />
+											</c:forEach>
+										</div>
+										<div id="BillShipAddrDetails">
+											<input type="hidden" name="BLSize" id="bSize"
+												value='${BillAddr.size()}'>
+											<c:forEach items="${BillAddr}" var="objList" varStatus="loop">
+												<input type="hidden" value='${objList.clientVendorID}'
+													id='${loop.index}clvid' />
+												<input type="hidden" value='${objList.billTo}'
+													id='${loop.index}bl' />
+												<input type="hidden" value='${CID}' id='${loop.index}cid' />
+												<input type="hidden" value='${objList.bsAddressID}'
+													id='${loop.index}bsaddr' />
+											</c:forEach>
+											<input type="hidden" name="LSize" id="sSize"
+												value='${ShAddr.size()}'>
+											<c:forEach items="${ShAddr}" var="objList" varStatus="loop">
+												<input type="hidden" value='${objList.clientVendorID}'
+													id='${loop.index}sh_id' />
+												<input type="hidden" value='${objList.shipTo}'
+													id='${loop.index}sh' />
+												<input type="hidden" value='${objList.shAddressID}'
+													id='${loop.index}shaddr' />
+											</c:forEach>
+										</div>
+										<div id="ItemDetails">
+											<input type="hidden" name="ItemSize" id="itemSize"
+												value='${ItemList.size()}'>
+											<c:forEach items="${ItemList}" var="objList" varStatus="loop">
+												<input type="hidden" value='${objList.invID}'
+													id='${loop.index}inv' />
+												<input type="hidden" value='${objList.qty}'
+													id='${loop.index}q' />
+												<input type="hidden" value='${objList.invCode}'
+													id='${loop.index}code' />
+												<input type="hidden" value='${objList.invDesc}'
+													id='${loop.index}desc' />
+												<input type="hidden" value='${objList.inventoryName}'
+													id='${loop.index}pname' />
+												<input type="hidden" value='${objList.salePrice}'
+													id='${loop.index}price' />
+												<input type="hidden" value='${objList.weight}'
+													id='${loop.index}wt' />
+												<input type="hidden" value='${objList.isCategory}'
+													id='${loop.index}cat' />
+												<input type="hidden" value='${objList.itemTypeID}'
+													id='${loop.index}itmId' />
+												<input type="hidden" value='${objList.serialNo}'
+													id='${loop.index}serial' />
+											</c:forEach>
+										</div>
+										<table class="tabla-listados" cellspacing="0"
+											style="margin-top: -1px;">
+											<thead>
+												<tr>
+													<th colspan="3" style="font-size: 14px;"><spring:message
+															code="BzComposer.salesorder.customerinfo" /></th>
+												</tr>
+											</thead>
+											<c:if test="${not empty Status}">
+												<tr>
+													<td colspan="3"><span class="msgstyle">*${Status}</span>
+													</td>
+												</tr>
+											</c:if>
+											<c:if test="${not empty SaveStatus}">
+												<tr>
+													<td colspan="3"><span class="msgstyle">*${SaveStatus}</span>
+														<% session.removeAttribute("SaveStatus"); %></td>
+												</tr>
+											</c:if>
+											<tr>
+												<td style="width: 30%;">
+													<table>
+														<tr>
+															<td colspan="2" style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.customertitle" /></td>
+															<td colspan="4" style="font-size: 14px;" align="left"
+																width="50%">
+																<!-- Sort By --> <spring:message
+																	code="BzComposer.salesorder.sortby" />
+															</td>
+															<td>&nbsp;</td>
+															<td style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.taxablecheckbox" /></td>
+															<td style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.pending" /></td>
+														</tr>
+														<tr>
+															<td colspan="2" style="font-size: 14px;">
+																<div id="custDiv">
+																	<div id="custDiv">
+																		<form:select path="custID"
+																			onchange="Assignment(this.value, this.form);"
+																			style="width: 300px;">
+																			<form:option value="0">
+																				<spring:message code="BzComposer.ComboBox.Select" />
+																			</form:option>
+																			<form:options items="${CDetails}" itemValue="value"
+																				itemLabel="label" />
+																		</form:select>
+																	</div>
+																</div>
+															</td>
+															<td style="font-size: 14px;"><input type="checkbox"
+																id="sortByLastName" name="sortByLastName"
+																value="sortByLastName" /></td>
+															<td colspan="3" style="font-size: 14px;" width="50%">
+																<spring:message code="BzComposer.salesorder.lastname" />
+															</td>
+															<td>&nbsp;</td>
+															<td align="center" style="font-size: 14px;"><input
+																type="checkbox" id="taxable" name="taxable"
+																onclick="TaxaValue(this.form);"
+																value="${invoiceDto.taxable}"
+																${invoiceDto.taxable?'checked':''} /></td>
+															<td align="center" style="font-size: 14px;"><input
+																type="checkbox" id="isPending" name="isPending"
+																onclick="Pending_Value(this.form);toggle_visibility('pending');"
+																value="${invoiceDto.isPending}"
+																${invoiceDto.isPending?'checked':''} /></td>
+														</tr>
+													</table>
+												</td>
+												<td align="center" style="font-size: 14px; width: 35%;">
+													<input type="button" class="formbutton"
+													onclick="getSalesOrderDetailsByBtnName(this.form, 'FirstSalesOrder');"
+													style="padding: 8px 10px 8px 10px; font-size: 16px;"
+													value='<spring:message code="BzComposer.global.first" />' />
+													<input type="button" class="formbutton"
+													onclick="getSalesOrderDetailsByBtnName(this.form, 'LastSalesOrder');"
+													style="padding: 8px 10px 8px 10px; font-size: 16px;"
+													value='<spring:message code="BzComposer.global.last" />' />
+													<input type="button" class="formbutton"
+													onclick="getSalesOrderDetailsByBtnName(this.form, 'PreviousSalesOrder');"
+													style="padding: 8px 10px 8px 10px; font-size: 16px;"
+													value='<spring:message code="BzComposer.global.previous" />' />
+													<input type="button" class="formbutton"
+													onclick="getSalesOrderDetailsByBtnName(this.form, 'NextSalesOrder');"
+													style="padding: 8px 10px 8px 10px; font-size: 16px;"
+													value='<spring:message code="BzComposer.global.next" />' />
+													<input type="button" id="newSalesOrder" title="New Invoice"
+													class="formbutton" onclick="NewOrder();"
+													style="padding: 8px 10px 8px 10px; font-size: 16px;"
+													value='<spring:message code="BzComposer.global.new" />' />
+													<br> <!-- <input type="button" class="formbutton" id="CustomerBalanceBtn" onclick="paymentHistory(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value='<spring:message code="BzComposer.global.balance" />' /> -->
+													<c:if test="${not empty Enable}">
+														<input type="button" class="formbutton"
+															title="Send Mail to..." onclick="SendMail(this.form);"
+															style="padding: 8px 30px 8px 30px; font-size: 16px;"
+															value='<spring:message code="BzComposer.global.sendmail" />' />
+													</c:if> <c:if test="${empty Enable}">
+														<input type="button" class="formbutton"
+															title="Send Mail to..."
+															onclick="SendMailDisabled(this.form);"
+															style="padding: 8px 30px 8px 30px; font-size: 16px;"
+															value='<spring:message code="BzComposer.global.sendmail" />' />
+													</c:if> <input type="button" class="formbutton"
+													onclick="printCustomerOrder(this.form);"
+													style="padding: 8px 30px 8px 30px; font-size: 16px;"
+													value="<spring:message code='BzComposer.global.Print' />" />
+												</td>
+												<td align="right" style="width: 35%;">
+													<table>
+														<tr>
+															<td style="font-size: 14px;"><spring:message
+																	code="BzComposer.common.template" /></td>
+															<td style="font-size: 14px;"><input type="hidden"
+																name="Ivhidden" id="InvStyle" /> <spring:message
+																	code="BzComposer.salesorder.orderstyle" /></td>
+															<td align="left" style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.date" /></td>
+															<td align="left" style="font-size: 14px;"><spring:message
+																	code="BzComposer.report.reservedinventorylist.sonumber" />
+															</td>
+														</tr>
+														<tr>
+															<td style="font-size: 14px;"><form:select
+																	path="templateType">
+																	<form:option value="1">Sales Order Standard</form:option>
+																	<form:option value="2">Sales Order Charcoal</form:option>
+																</form:select></td>
+															<td style="font-size: 14px;"><form:select
+																	path="invoiceStyle" onchange="StyleChange(this.value);">
+																	<form:option value="0">
+																		<spring:message code="BzComposer.ComboBox.Select" />
+																	</form:option>
+																	<form:options items="${InvoiceStyle}" itemValue="value"
+																		itemLabel="label" />
+																</form:select></td>
+															<td style="font-size: 14px;"><form:input
+																	path="orderDate" readonly="true" size="9" />
+																<!-- &nbsp; --> <img
+																src="${pageContext.request.contextPath}/images/cal.gif"
+																onclick="displayCalendar(document.InvoiceForm.orderDate,'mm-dd-yyyy',this);">
+															</td>
+															<td align="right" style="font-size: 14px;"><form:input
+																	path="orderNo" style="text-align: right;"
+																	id="salesorder_no" size="10" readonly="true" /></td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<tr>
+												<td align="center">
+													<div id="pending" style="display: none;">
+														<font size="10"><spring:message
+																code="BzComposer.salesorder.pending" /> </font>
+													</div>
+												</td>
+											</tr>
+											<tr align="left">
+												<td align="center">
+													<table style="width: 100%;">
+														<tr>
+															<td id="bill_label"></td>
+														</tr>
+													</table>
+												</td>
+												<td id="ship_label"></td>
+											</tr>
+											<tr>
+												<td align="left">
+													<table>
+														<tr>
+															<td id="bill_id" style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.billto" /> <br /> <form:textarea
+																	path="billTo" rows="6" cols="25"
+																	onclick="ShowBillingAddressPage(this.form);"
+																	style="resize: none; width: 300px;" /></td>
+															<td id="td2" align="center"></td>
+														</tr>
+													</table>
+												</td>
+												<td>&nbsp;</td>
+												<td align="right">
+													<table>
+														<tr>
+															<td id="ship_id"
+																style="visibility: visible; padding-left: 74px; font-size: 14px;">
+																<spring:message code="BzComposer.salesorder.shipto" />
+																<br /> <form:textarea path="shipTo" rows="6" cols="25"
+																	onclick="ShowShippingAddressPage(this.form);"
+																	style="resize: none; width: 300px;" />
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<tr>
+												<td style="font-size: 14px;" colspan="3">
+													<table align="left">
+														<tr>
+															<%-- <td id="po_num_label" style="font-size:14px;">
 									<spring:message code="BzComposer.Invoice.PONum" />
-								</td>	 --%>		
-								<td id="sh_date_label" style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.shipdate" />
-								</td>
-								<td id="rep_label" style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.rep" />
-								</td>		
-								<td style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.term" />
-								</td>
-								<td style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.paymethod" />
-								</td>
-								<td id="via_label" style="font-size:14px;">
-									<spring:message code="BzComposer.salesorder.via" />
-								</td>
-							</tr>
-							<tr>
-								<%-- <td id="po_num_id" style="font-size:14px;">
+								</td>	 --%>
+															<td id="sh_date_label" style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.shipdate" /></td>
+															<td id="rep_label" style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.rep" /></td>
+															<td style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.term" /></td>
+															<td style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.paymethod" /></td>
+															<td id="via_label" style="font-size: 14px;"><spring:message
+																	code="BzComposer.salesorder.via" /></td>
+														</tr>
+														<tr>
+															<%-- <td id="po_num_id" style="font-size:14px;">
 									<form:input path="poNum" size="5" onkeydown="return numbersonly(event,this.value)" />
 								</td> --%>
-								<td id="sh_date_id" style="font-size:14px;">
-									<form:input path="shipDate" readonly="true" size="15" />
-									<img src="${pageContext.request.contextPath}/images/cal.gif"
-									onclick="displayCalendar(document.InvoiceForm.shipDate,'mm-dd-yyyy',this);">
-								</td>
-								<td id="rep_id" style="font-size:14px;">
-									<form:select path="rep" style="width:150px;">
-										<form:option value="0">
-											<spring:message code="BzComposer.ComboBox.Select" />
-										</form:option>
-										<form:options items="${Rep}" itemValue="value" itemLabel="label" />
-								<td style="font-size:14px;">
-									<form:select path="term" style="width:150px;">
-										<form:option value="0">
-											<spring:message code="BzComposer.ComboBox.Select" />
-										</form:option>
-										<form:options items="${Term}" itemValue="value" itemLabel="label" />
-									</form:select>
-								</td>
-								<td style="font-size:14px;">
-									<form:select path="payMethod" style="width:150px;">
-										<c:if test="${not empty PayMethod}">
-											<form:option value="0">
-												<spring:message code="BzComposer.ComboBox.Select" />
-											</form:option>
-											<form:options items="${PayMethod}" itemValue="value" itemLabel="label" />
-										</c:if>
-									</form:select>
-								</td>
-									</form:select>
-								</td>
-								<td id="via_id" style="font-size:14px;">
-									<form:select path="via" style="width:150px;">
-										<form:option value="0">
-											<spring:message code="BzComposer.ComboBox.Select" />
-										</form:option>
-										<form:options items="${Via}" itemValue="value" itemLabel="label" />
-									</form:select>
-								</td>
-								<td colspan="6">
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-	<%-- 	<div align="center"><font size="3"><strong> <spring:message code="BizComposer.Estimaion.Header.ItemInfo" /> </strong></font></div --%>
-	<div id="product">
-		<table class="tabla-listados" cellspacing="0">
-			<thead>
-				<tr>
-					<th colspan="12" style="font-size:14px;">
-						<spring:message code="BzComposer.salesorder.iteminfo" />
-					</th>
-				</tr>
-			</thead>
-			<tr>
-				<td id="td1" style="font-size:14px;">
-					<spring:message code="Bizcomposer.itemCode" />
-				</td>
-				<td style="font-size:14px;">
-                    <div><spring:message code="BzComposer.salesorder.itemname" /></div>
-                </td>
-				<td style="font-size:14px;">
-					<div id="td10" style="display:block;font-size:14px;">
-						<spring:message code="BzComposer.salesorder.unitprice" />
-					</div>
-					<div id="td11" style="display:none;font-size:14px;">
-						<spring:message code="BzComposer.salesorder.rateprice" />
-					</div>
-				</td>
-				<td style="font-size:14px;">
-                    <div id="td3"><spring:message code="BzComposer.salesorder.quantity" /></div>
-                    <%-- <div id="td4" ><spring:message code="BzComposer.salesorder.rate" /></div> --%>
-                </td>
-<!-- 			<td> -->
-<%-- 			<div id="td8"><spring:message code="BzComposer.Invoice.Desc" /></div></td> --%>
-				<td style="font-size:14px;">
-					<div id="td6" style="display:none;">
-						<spring:message code="BzComposer.salesorder.serialnumber" />
-					</div>
-				</td>
-				<td style="font-size:14px;">	
-					<div id="td13" style="display:block;">
-						<spring:message code="BzComposer.salesorder.amount" />
-					</div>
-				</td>
-				<td style="font-size:14px;">
-					<div id="td15" style="display:block;">
-						<spring:message code="BzComposer.salesorder.weight" />
-					</div>
-				</td>
-				<td style="font-size:14px;">	
-					<div id="td17" style="display:block;">
-						<spring:message code="BzComposer.salesorder.tax" />
-					</div>
-				</td>
-				<td colspan="4"></td>
-			</tr>
-			<tr>
-				<td id="td2" style="font-size:14px;">
-					<div id="itemDiv">
-					<form:select path="itemID" onchange="ItemChange(this.value);" id="itemID">
-						<form:option value="0">
-							<spring:message code="BzComposer.ComboBox.Select" />
-						</form:option>
-						<c:forEach items="${ItemList}" var="itmList">
-							<c:if test="${itmList.isCategory == 0}">
-								<form:option value='${itmList.invID}'>&nbsp;&nbsp;&nbsp;&nbsp;
+															<td id="sh_date_id" style="font-size: 14px;"><form:input
+																	path="shipDate" readonly="true" size="15" /> <img
+																src="${pageContext.request.contextPath}/images/cal.gif"
+																onclick="displayCalendar(document.InvoiceForm.shipDate,'mm-dd-yyyy',this);">
+															</td>
+															<td id="rep_id" style="font-size: 14px;"><form:select
+																	path="rep" style="width:150px;">
+																	<form:option value="0">
+																		<spring:message code="BzComposer.ComboBox.Select" />
+																	</form:option>
+																	<form:options items="${Rep}" itemValue="value"
+																		itemLabel="label" />
+																	<td style="font-size: 14px;"><form:select
+																			path="term" style="width:150px;">
+																			<form:option value="0">
+																				<spring:message code="BzComposer.ComboBox.Select" />
+																			</form:option>
+																			<form:options items="${Term}" itemValue="value"
+																				itemLabel="label" />
+																		</form:select></td>
+																	<td style="font-size: 14px;"><form:select
+																			path="payMethod" style="width:150px;">
+																			<c:if test="${not empty PayMethod}">
+																				<form:option value="0">
+																					<spring:message code="BzComposer.ComboBox.Select" />
+																				</form:option>
+																				<form:options items="${PayMethod}" itemValue="value"
+																					itemLabel="label" />
+																			</c:if>
+																		</form:select></td>
+																</form:select></td>
+															<td id="via_id" style="font-size: 14px;"><form:select
+																	path="via" style="width:150px;">
+																	<form:option value="0">
+																		<spring:message code="BzComposer.ComboBox.Select" />
+																	</form:option>
+																	<form:options items="${Via}" itemValue="value"
+																		itemLabel="label" />
+																</form:select></td>
+															<td colspan="6"></td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+										<%-- 	<div align="center"><font size="3"><strong> <spring:message code="BizComposer.Estimaion.Header.ItemInfo" /> </strong></font></div --%>
+										<div id="product">
+											<table class="tabla-listados" cellspacing="0">
+												<thead>
+													<tr>
+														<th colspan="12" style="font-size: 14px;"><spring:message
+																code="BzComposer.salesorder.iteminfo" /></th>
+													</tr>
+												</thead>
+												<tr>
+													<td id="td1" style="font-size: 14px;"><spring:message
+															code="Bizcomposer.itemCode" /></td>
+													<td style="font-size: 14px;">
+														<div>
+															<spring:message code="BzComposer.salesorder.itemname" />
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div id="td10" style="display: block; font-size: 14px;">
+															<spring:message code="BzComposer.salesorder.unitprice" />
+														</div>
+														<div id="td11" style="display: none; font-size: 14px;">
+															<spring:message code="BzComposer.salesorder.rateprice" />
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div id="td3">
+															<spring:message code="BzComposer.salesorder.quantity" />
+														</div> <%-- <div id="td4" ><spring:message code="BzComposer.salesorder.rate" /></div> --%>
+													</td>
+													<!-- 			<td> -->
+													<%-- 			<div id="td8"><spring:message code="BzComposer.Invoice.Desc" /></div></td> --%>
+													<td style="font-size: 14px;">
+														<div id="td6" style="display: none;">
+															<spring:message code="BzComposer.salesorder.serialnumber" />
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div id="td13" style="display: block;">
+															<spring:message code="BzComposer.salesorder.amount" />
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div id="td15" style="display: block;">
+															<spring:message code="BzComposer.salesorder.weight" />
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div id="td17" style="display: block;">
+															<spring:message code="BzComposer.salesorder.tax" />
+														</div>
+													</td>
+													<td colspan="4"></td>
+												</tr>
+												<tr>
+													<td id="td2" style="font-size: 14px;">
+														<div id="itemDiv">
+															<form:select path="itemID"
+																onchange="ItemChange(this.value);" id="itemID">
+																<form:option value="0">
+																	<spring:message code="BzComposer.ComboBox.Select" />
+																</form:option>
+																<c:forEach items="${ItemList}" var="itmList">
+																	<c:if test="${itmList.isCategory == 0}">
+																		<form:option value='${itmList.invID}'>&nbsp;&nbsp;&nbsp;&nbsp;
 									${itmList.invCode}
 								</form:option>
-							</c:if>
-							<c:if test="${itmList.isCategory == 1}">
-								<%--<form:option value='${itmList.invID}'> --%>
-						 		<form:option value='01'>
+																	</c:if>
+																	<c:if test="${itmList.isCategory == 1}">
+																		<%--<form:option value='${itmList.invID}'> --%>
+																		<form:option value='01'>
 									${itmList.invCode}
 								</form:option>
-							</c:if>
-						</c:forEach>
-					</form:select>
-					</div>
-				</td>
-				<td style="font-size:14px;width:50%;">
-                    <div>
-                        <input type="text" id="pname_id" onchange="return ConfirmDelete();" style="width:95%;"/>
-                    </div>
-                    <div id="SaveItemName" title="Update item name" style="display:none;">
-                        <p><spring:message code="BzComposer.salesorder.saveitemname"/></p>
-                    </div>
-                </td>
-				<td style="font-size:14px;">	
-					<div style="padding-top: 0px;" id="td12">
-						<!-- <input type="text" size="10"  readonly="readonly" id="unitPrice_id" onkeydown="return numbersonly(event,this.value)" onchange="saveNewUnitPrice();"/> -->
-						<input type="text" style="text-align: right;" size="10" id="unitPrice_id" onkeypress="return numbersOnlyFloat(event,this.value);" onchange="return saveNewUnitPrice();"/>
-					</div>	
-					<div id="SaveUnitPrice" style="display:none;">
-        				<p><spring:message code="BzComposer.salesorder.saveitemunitprice"/></p>
-   					</div>
-				</td>
-				<td style="font-size:14px;">
-                    <div style="padding-top: 0px;" style="display:block;" id="td5">
-                        <input id="qty_id" min="1" size="10" class="minutesInput" style="text-align: right;" onkeypress="return numbersonly(event,this.value)" />
-                    </div>
-                </td>
-<!-- 			<td><div id="td9"  > -->
-			
-<!-- 			 <textarea rows="4" cols="33" readonly="readonly" id="desc_id"></textarea> -->
-<!-- 			 </div> -->
-<!-- 			</td>		 -->
-				<td style="font-size:14px;">
-					<div id="td7">
-						<input type="hidden" size="10" id="serialNo_id" readonly="readonly" />
-					</div>
-				</td>
-				<td style="font-size:14px;">				
-					<div id="td14" style="display:block;">
-						<input type="text" style="text-align: right;" size="10" readonly="true" id="amount_id" onfocus="Multiplication();" onkeypress="return numbersOnlyFloat(event,this.value);" />
-					</div>
-				</td>
-				<td style="font-size:14px;">
-					<div id="td16" style="display:block;">
-						<input type="text" style="text-align: right;" name="itemWeight" size="10" readonly="true" id="weight_id" onkeypress="return numbersOnlyFloat(event,this.value);"/>
-					</div>
-				</td>				
-				<td style="font-size:14px;">
-					<div id="td18" style="display:block;">
-						<select id="tax_id">
-							<option value="0"><spring:message code="BzComposer.salesorder.tax.no"/></option>
-							<option value="1"><spring:message code="BzComposer.salesorder.tax.yes"/></option>
-						</select>
-					</div>
-				</td>
-				<td style="padding-right:5px;font-size:14px;">
-					<div>
-						<input type="button" class="formbutton" name="addItem" title="To add item click it" onclick="AddItem(this.form);"
-						value='<spring:message code="BzComposer.salesorder.additem"/>' style="padding: 8px 10px 8px 10px; font-size: 16px;"/>
-					</div>
-				</td>
-				<td colspan="3"></td>
-			</tr>
-		</table>
-		<table class="tabla-listados" cellspacing="0">
-			<thead>
-				<tr>
-					<th style="font-size:14px;">
-						<div id="it1">
-							<spring:message code="BzComposer.salesorder.itemid" />
-						</div>
-					</th>
-					<th style="font-size:14px;">
-                        <div id="it3">
-                            <spring:message code="BzComposer.salesorder.itemname" />
-                        </div>
-                    </th>
-					<th style="font-size:14px;">
-						<div id="it8">
-							<spring:message code="BzComposer.salesorder.serialnumber" />
-						</div>
-					</th>
-					<th style="font-size:14px;">
-						<div id="it4">
-							<spring:message code="BzComposer.salesorder.unitprice" />
-						</div>
-						<%-- <div id="it42">
+																	</c:if>
+																</c:forEach>
+															</form:select>
+														</div>
+													</td>
+													<td style="font-size: 14px; width: 50%;">
+														<div>
+															<input type="text" id="pname_id"
+																onchange="return ConfirmDelete();" style="width: 95%;" />
+														</div>
+														<div id="SaveItemName" title="Update item name"
+															style="display: none;">
+															<p>
+																<spring:message
+																	code="BzComposer.salesorder.saveitemname" />
+															</p>
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div style="padding-top: 0px;" id="td12">
+															<!-- <input type="text" size="10"  readonly="readonly" id="unitPrice_id" onkeydown="return numbersonly(event,this.value)" onchange="saveNewUnitPrice();"/> -->
+															<input type="text" style="text-align: right;" size="10"
+																id="unitPrice_id"
+																onkeypress="return numbersOnlyFloat(event,this.value);"
+																onchange="return saveNewUnitPrice();" />
+														</div>
+														<div id="SaveUnitPrice" style="display: none;">
+															<p>
+																<spring:message
+																	code="BzComposer.salesorder.saveitemunitprice" />
+															</p>
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div style="padding-top: 0px;" style="display:block;"
+															id="td5">
+															<input id="qty_id" min="1" size="10" class="minutesInput"
+																style="text-align: right;"
+																onkeypress="return numbersonly(event,this.value)" />
+														</div>
+													</td>
+													<!-- 			<td><div id="td9"  > -->
+
+													<!-- 			 <textarea rows="4" cols="33" readonly="readonly" id="desc_id"></textarea> -->
+													<!-- 			 </div> -->
+													<!-- 			</td>		 -->
+													<td style="font-size: 14px;">
+														<div id="td7">
+															<input type="hidden" size="10" id="serialNo_id"
+																readonly="readonly" />
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div id="td14" style="display: block;">
+															<input type="text" style="text-align: right;" size="10"
+																readonly="true" id="amount_id"
+																onfocus="Multiplication();"
+																onkeypress="return numbersOnlyFloat(event,this.value);" />
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div id="td16" style="display: block;">
+															<input type="text" style="text-align: right;"
+																name="itemWeight" size="10" readonly="true"
+																id="weight_id"
+																onkeypress="return numbersOnlyFloat(event,this.value);" />
+														</div>
+													</td>
+													<td style="font-size: 14px;">
+														<div id="td18" style="display: block;">
+															<select id="tax_id">
+																<option value="0"><spring:message
+																		code="BzComposer.salesorder.tax.no" /></option>
+																<option value="1"><spring:message
+																		code="BzComposer.salesorder.tax.yes" /></option>
+															</select>
+														</div>
+													</td>
+													<td style="padding-right: 5px; font-size: 14px;">
+														<div>
+															<input type="button" class="formbutton" name="addItem"
+																title="To add item click it"
+																onclick="AddItem(this.form);"
+																value='<spring:message code="BzComposer.salesorder.additem"/>'
+																style="padding: 8px 10px 8px 10px; font-size: 16px;" />
+														</div>
+													</td>
+													<td colspan="3"></td>
+												</tr>
+											</table>
+											<table class="tabla-listados" cellspacing="0">
+												<thead>
+													<tr>
+														<th style="font-size: 14px;">
+															<div id="it1">
+																<spring:message code="BzComposer.salesorder.itemid" />
+															</div>
+														</th>
+														<th style="font-size: 14px;">
+															<div id="it3">
+																<spring:message code="BzComposer.salesorder.itemname" />
+															</div>
+														</th>
+														<th style="font-size: 14px;">
+															<div id="it8">
+																<spring:message
+																	code="BzComposer.salesorder.serialnumber" />
+															</div>
+														</th>
+														<th style="font-size: 14px;">
+															<div id="it4">
+																<spring:message code="BzComposer.salesorder.unitprice" />
+															</div> <%-- <div id="it42">
 							<spring:message code="BzComposer.salesorder.rateprice" />
 						</div> --%>
-					</th>
-					<th style="font-size:14px;">
-                        <div id="it2">
-                            <spring:message code="BzComposer.salesorder.quantity" />
-                        </div>
-                        <div id="it22" style="display:none;">
-                            <spring:message code="BzComposer.salesorder.rate" />
-                        </div>
-                    </th>
-					<th style="font-size:14px;">
-						<div id="it5">
-							<spring:message code="BzComposer.salesorder.amount" />
-						</div>
-					</th>
-					<th style="font-size:14px;">
-						<div id="it6">
-							<spring:message code="BzComposer.salesorder.weight" />
-						</div>
-					</th>
-					<th style="font-size:14px;">
-						<div id="it7">
-							<spring:message code="BzComposer.salesorder.tax" />
-						</div>
-					</th>
-					<th style="font-size:14px;">
-						<spring:message code="BzComposer.salesorder.deleteoption" />
-					</th>
-					<th colspan="3">
-					</th>
-				</tr>
-			</thead>
-			<c:if test="${not empty Cart}">
-                <input type="hidden" name="hdncsize" id="CartSize" value='${Cart.size()}'>
-                <c:forEach items="${Cart}" var="cart" varStatus="loop">
-                    <tr id='${loop.index}row'>
-                        <td align="left" style="font-size:14px;">
-                            <div id='${loop.index}icode'>
-                                ${cart.invCode}
-                            </div>
-                        </td>
-                        <td style="font-size:14px;">
-                            <div id='${loop.index}desc' style="font-size:14px;">
-                                ${cart.invDesc}
-                            </div>
-                        </td>
-                        <td align="left" style="font-size:14px;">
-                            <div id='${loop.index}iserial'>
-                                ${cart.serialNo}
-                            </div>
-                        </td>
-                        <td align="left" style="font-size:14px;">
-                            <div id='${loop.index}iprice'>
-                                ${cart.uprice}
-                            </div>
-                        </td>
-                        <td align="left" style="font-size:14px;">
-                            <div id='${loop.index}qt'>
-                                ${cart.qty}
-                            </div>
-                        </td>
-                        <td align="left" style="font-size:14px;">
-                            <div id='${loop.index}amt'>
-                                ${cart.amount}
-                            </div>
-                        </td>
-                        <td align="left" style="font-size:14px;">
-                            <div id='${loop.index}wgt'>
-                                ${cart.weight}
-                            </div>
-                        </td>
-                        <td align="left" style="font-size:14px;">
-                            <div id='${loop.index}itax'>
-                                ${cart.tax}
-                            </div>
-                        </td>
-                        <td align="left" colspan="3">
-                            <img onclick="DeleteRow('${loop.index}row',this.form);" src="${pageContext.request.contextPath}/images/delete.png"
-                            title="Delete this Item" size="8"  width="12"/>
-                        </td>
-                    </tr>
-                    <input type="hidden" id='${loop.index}delt' value="0" />
-                    <input type="hidden" id='${loop.index}rowVal' value='${loop.index}row' />
-                    <input type="hidden" id='${loop.index}invCode'	value='${cart.invCode}' />
-                    <input type="hidden" id='${loop.index}qty' value='${cart.qty}' />
-                    <input type="hidden" id='${loop.index}invDesc' value='${cart.invDesc}' />
-                    <input type="hidden" id='${loop.index}pname' value='${cart.inventoryName}' />
-                    <input type="hidden" id='${loop.index}uprice' value='${cart.uprice}' />
-                    <input type="hidden" id='${loop.index}weight' value='${cart.weight}' />
-                    <input type="hidden" id='${loop.index}tax' value='${cart.tax}' />
-                    <input type="hidden" id='${loop.index}serial' value='${cart.serialNo}' />
-                    <input type="hidden" id='${loop.index}itId11' value='${cart.itemTypeID}' />
-                    <input type="hidden" id='${loop.index}invID11' value='${cart.inventoryID}' />
-                </c:forEach>
-				</c:if>
-				<c:if test="${empty Cart}">
-					<input type="hidden" name="hdncsize" id="CartSize" value="0">
-				</c:if>
-				<tr id="tr##">
-					<td align="center"></td>
-					<td align="center"></td>
-					<td align="center"></td>
-					<td align="center"></td>
-					<td align="center"></td>
-					<td align="center"></td>
-					<td align="center"></td>
-					<td align="center"></td>
-					<td align="center" colspan="4"></td>
-				</tr>
-			</table>
-	</div>
-		</div>
-		<div>
-			<input type="hidden" name="LstSize" id="tSize" value='${TaxRates.size()}'>
-			<c:forEach items="${TaxRates}" var="objList" varStatus="loop">
-				<input type="hidden" value='${objList.salesTaxID}' id='${loop.index}tx_id' />
-				<input type="hidden" value='${objList.state}' id='${loop.index}tx' />
-				<input type="hidden" value='${objList.rate}' id='${loop.index}tx_rt' />
-			</c:forEach>
-		</div>
-		<table class="tabla-listados" cellspacing="0">
-			<thead>
-				<tr>
-					<th colspan="12" style="font-size:14px;">
-						<spring:message code="BzComposer.salesorder.summary" />
-					</th>
-				</tr>
-			</thead>
-			<tr>
-			<td>
-				<table style="width: 100%;">
-					<tr>
-						<td style="padding-top: 5px;">
-							<spring:message code="BzComposer.salesorder.message" /> 
-						</td>
-						<td>
-							<form:select path="message" style="width: 100%;">
-								<form:option value="0"><spring:message code="BzComposer.ComboBox.Select" /></form:option>
-								<form:options items="${Message}" itemValue="value" itemLabel="label" />
-							</form:select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<spring:message code="BzComposer.salesorder.memo" />
-						</td>
-						<td>
-							<form:textarea path="memo" rows="3" cols="40" style="width: 100%;" />
-						</td>
-					</tr>
-				</table>
-			</td>
-				<%-- <td align="left" style="font-size:14px;" colspan="3">
+														</th>
+														<th style="font-size: 14px;">
+															<div id="it2">
+																<spring:message code="BzComposer.salesorder.quantity" />
+															</div>
+															<div id="it22" style="display: none;">
+																<spring:message code="BzComposer.salesorder.rate" />
+															</div>
+														</th>
+														<th style="font-size: 14px;">
+															<div id="it5">
+																<spring:message code="BzComposer.salesorder.amount" />
+															</div>
+														</th>
+														<th style="font-size: 14px;">
+															<div id="it6">
+																<spring:message code="BzComposer.salesorder.weight" />
+															</div>
+														</th>
+														<th style="font-size: 14px;">
+															<div id="it7">
+																<spring:message code="BzComposer.salesorder.tax" />
+															</div>
+														</th>
+														<th style="font-size: 14px;"><spring:message
+																code="BzComposer.salesorder.deleteoption" /></th>
+														<th colspan="3"></th>
+													</tr>
+												</thead>
+												<c:if test="${not empty Cart}">
+													<input type="hidden" name="hdncsize" id="CartSize"
+														value='${Cart.size()}'>
+													<c:forEach items="${Cart}" var="cart" varStatus="loop">
+														<tr id='${loop.index}row'>
+															<td align="left" style="font-size: 14px;">
+																<div id='${loop.index}icode'>${cart.invCode}</div>
+															</td>
+															<td style="font-size: 14px;">
+																<div id='${loop.index}desc' style="font-size: 14px;">
+																	${cart.invDesc}</div>
+															</td>
+															<td align="left" style="font-size: 14px;">
+																<div id='${loop.index}iserial'>${cart.serialNo}</div>
+															</td>
+															<td align="left" style="font-size: 14px;">
+																<div id='${loop.index}iprice'>${cart.uprice}</div>
+															</td>
+															<td align="left" style="font-size: 14px;">
+																<div id='${loop.index}qt'>${cart.qty}</div>
+															</td>
+															<td align="left" style="font-size: 14px;">
+																<div id='${loop.index}amt'>${cart.amount}</div>
+															</td>
+															<td align="left" style="font-size: 14px;">
+																<div id='${loop.index}wgt'>${cart.weight}</div>
+															</td>
+															<td align="left" style="font-size: 14px;">
+																<div id='${loop.index}itax'>${cart.tax}</div>
+															</td>
+															<td align="left" colspan="3"><img
+																onclick="DeleteRow('${loop.index}row',this.form);"
+																src="${pageContext.request.contextPath}/images/delete.png"
+																title="Delete this Item" size="8" width="12" /></td>
+														</tr>
+														<input type="hidden" id='${loop.index}delt' value="0" />
+														<input type="hidden" id='${loop.index}rowVal'
+															value='${loop.index}row' />
+														<input type="hidden" id='${loop.index}invCode'
+															value='${cart.invCode}' />
+														<input type="hidden" id='${loop.index}qty'
+															value='${cart.qty}' />
+														<input type="hidden" id='${loop.index}invDesc'
+															value='${cart.invDesc}' />
+														<input type="hidden" id='${loop.index}pname'
+															value='${cart.inventoryName}' />
+														<input type="hidden" id='${loop.index}uprice'
+															value='${cart.uprice}' />
+														<input type="hidden" id='${loop.index}weight'
+															value='${cart.weight}' />
+														<input type="hidden" id='${loop.index}tax'
+															value='${cart.tax}' />
+														<input type="hidden" id='${loop.index}serial'
+															value='${cart.serialNo}' />
+														<input type="hidden" id='${loop.index}itId11'
+															value='${cart.itemTypeID}' />
+														<input type="hidden" id='${loop.index}invID11'
+															value='${cart.inventoryID}' />
+													</c:forEach>
+												</c:if>
+												<c:if test="${empty Cart}">
+													<input type="hidden" name="hdncsize" id="CartSize"
+														value="0">
+												</c:if>
+												<tr id="tr##">
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center" colspan="4"></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+									<div>
+										<input type="hidden" name="LstSize" id="tSize"
+											value='${TaxRates.size()}'>
+										<c:forEach items="${TaxRates}" var="objList" varStatus="loop">
+											<input type="hidden" value='${objList.salesTaxID}'
+												id='${loop.index}tx_id' />
+											<input type="hidden" value='${objList.state}'
+												id='${loop.index}tx' />
+											<input type="hidden" value='${objList.rate}'
+												id='${loop.index}tx_rt' />
+										</c:forEach>
+									</div>
+									<table class="tabla-listados" cellspacing="0">
+										<thead>
+											<tr>
+												<th colspan="12" style="font-size: 14px;"><spring:message
+														code="BzComposer.salesorder.summary" /></th>
+											</tr>
+										</thead>
+										<tr>
+											<td>
+												<table style="width: 100%;">
+													<tr>
+														<td style="padding-top: 5px;"><spring:message
+																code="BzComposer.salesorder.message" /></td>
+														<td><form:select path="message" style="width: 100%;">
+																<form:option value="0">
+																	<spring:message code="BzComposer.ComboBox.Select" />
+																</form:option>
+																<form:options items="${Message}" itemValue="value"
+																	itemLabel="label" />
+															</form:select></td>
+													</tr>
+													<tr>
+														<td><spring:message code="BzComposer.salesorder.memo" />
+														</td>
+														<td><form:textarea path="memo" rows="3" cols="40"
+																style="width: 100%;" /></td>
+													</tr>
+												</table>
+											</td>
+											<%-- <td align="left" style="font-size:14px;" colspan="3">
 					<spring:message code="BzComposer.salesorder.message" /> 
 					<form:select path="message">
 						<form:option value="0"><spring:message code="BzComposer.ComboBox.Select" /></form:option>
@@ -653,36 +735,36 @@ table.cart tbody tr td { font-size: 14px; }
 					<spring:message code="BzComposer.salesorder.memo" />
 					&nbsp;&nbsp;&nbsp;
 					<form:textarea path="memo" rows="3" cols="47" />
-				</td> --%>			
-				<td align="right" style="font-size:14px;" colspan="3">
-					<table>
-						<tr>
-							<td align="right" style="font-size:14px;">
-								<spring:message code="BzComposer.salesorder.tax" />
-							</td>
-							<td style="font-size:14px;">
-								<form:select path="taxID" onchange="TaxValue(this.value,this.form);" id="taxID" style="width: 120px; text-align: right;">
-									<!-- <form:option value="0"><spring:message code="BzComposer.ComboBox.Select" /></form:option> -->
-									<form:options items="${TaxRates}" itemValue="salesTaxID" itemLabel="state" />
-								</form:select> 
-								<c:if test="${empty Tax}">
-									<input type="hidden" value="" />
-								</c:if>
-							</td>
-						</tr>
-						<tr>
-							<td align="right" style="font-size:14px;">
-								<spring:message code="BzComposer.salesorder.weight" />
-							</td>
-							<td align="left" style="font-size:14px;">
-								<form:input path="weight" size="13" style="width: 120px; text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td style="font-size:14px;" colspan="3">
-					<table>
-						<%-- <tr>
+				</td> --%>
+											<td align="right" style="font-size: 14px;" colspan="3">
+												<table>
+													<tr>
+														<td align="right" style="font-size: 14px;"><spring:message
+																code="BzComposer.salesorder.tax" /></td>
+														<td style="font-size: 14px;"><form:select
+																path="taxID" onchange="TaxValue(this.value,this.form);"
+																id="taxID" style="width: 120px; text-align: right;">
+																<!-- <form:option value="0"><spring:message code="BzComposer.ComboBox.Select" /></form:option> -->
+																<form:options items="${TaxRates}" itemValue="salesTaxID"
+																	itemLabel="state" />
+															</form:select> <c:if test="${empty Tax}">
+																<input type="hidden" value="" />
+															</c:if></td>
+													</tr>
+													<tr>
+														<td align="right" style="font-size: 14px;"><spring:message
+																code="BzComposer.salesorder.weight" /></td>
+														<td align="left" style="font-size: 14px;"><form:input
+																path="weight" size="13"
+																style="width: 120px; text-align: right;" readonly="true"
+																onkeypress="return numbersOnlyFloat(event,this.value);" />
+														</td>
+													</tr>
+												</table>
+											</td>
+											<td style="font-size: 14px;" colspan="3">
+												<table>
+													<%-- <tr>
 							<td align="right" style="font-size:14px;">
 								<div id="tax_field">
 									<spring:message code="BzComposer.salesorder.taxfield" />
@@ -708,121 +790,130 @@ table.cart tbody tr td { font-size: 14px; }
 								<form:input path="balance" style="text-align: right;" onclick="clearDiscountCol()" onchange="calDiscountTotal()" onkeypress="return numbersOnlyFloat(event,this.value);" />
 							</td>
 						</tr> --%>
-					</table>
-				</td>						
-				<td style="font-size:14px;" colspan="3">
-					<table align="right">			
-						<tr>
-							<td align="right" style="font-size:14px;">
-								<spring:message code="BzComposer.salesorder.subtotal" />
-							</td>
-							<td style="font-size:14px;">
-								<form:input path="subtotal" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);"/>
-							</td>
-						</tr>
-						<tr>
-							<td align="right" style="font-size:14px;">
-								<div id="tax_field">
-									<spring:message code="BzComposer.salesorder.taxfield" />
-								</div>
-							</td>
-							<td style="font-size:14px;">
-								<form:input path="tax" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right" style="font-size:14px;">
-								<spring:message code="BzComposer.salesorder.shipping" />
-							</td>
-							<td style="font-size:14px;">
-								<form:input path="shipping" onclick="clearShippingCol()" onchange="sumShippingTotal()" style="width: 167px;text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right" style="font-size:14px;">
-								<spring:message code="BzComposer.salesorder.balanceindollers" />
-							</td>
-							<td style="font-size:14px;">
-								<form:input path="balance" style="text-align: right;" onclick="clearDiscountCol()" onchange="calDiscountTotal()" onkeypress="return numbersOnlyFloat(event,this.value);" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right" style="font-size:14px;">
-								<spring:message code="BzComposer.salesorder.totalindollers" />
-							</td>
-							<td style="font-size:14px;">
-								<form:input path="total" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right" style="font-size:14px;">
-								<spring:message code="BzComposer.salesorder.adjustedtotalindollers" />
-							</td>
-							<td style="font-size:14px;">
-								<form:input path="adjustedtotal" style="text-align: right;" readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
-							</td>
-							<td style="font-size:14px;">
-								<input type="hidden" size="15" />
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-		<br>
-		<!-- <hr> -->
-			<div>
-				<input type="hidden" value="0" id="hidn" /> 
-				<input type="hidden" value="" id="code11" /> 
-				<input type="hidden" value="" id="invStyle" />
-				<input type="hidden" value="0" id="amt_id" /> 
-				<input type="hidden" value="0" id="tax_val" /> 
-				<input type="hidden" value="0" id="itmId" />
-				<input type="hidden" value="0" id="itmVal" /> 
-				<input type="hidden" value="" id="cid" /> 
-				<input type="hidden" value="0" name="wt" id="wt" />
-				<form:hidden path="companyID" value='${CID}' />
-				<form:hidden path="bsAddressID" />
-				<form:hidden path="shAddressID"/>
-			</div>
-			<div>
-				<form:hidden path="size" value="" />
-				<form:hidden path="item" value="" />
-				<form:hidden path="qty" value="" />
-				<form:hidden path="serialNo" value="" />
-				<form:hidden path="desc" value="" />
-			 	<input type="hidden" name="pname" id="pname" value="" />
-		 		<form:hidden path="unitWeight" value="" />
-		 		<form:hidden path="wgt" value="" />
-		 		<form:hidden path="uprice" value="" />
-		 		<form:hidden path="code" value="" />
-				<form:hidden path="isTaxable" value="" />
-				<form:hidden path="itemTypeID" value="" />
-				<form:hidden path="itemOrder" value="" />
-			</div>
-	<!-- end Contents -->
-	</section>
-	</div>
-	<div class="container">
-			<div class="row">
-				<div class="col-md-12" style="font-size: 16px;" align="center">
-					<!-- <input type="button" id="btnNewSalesOrder" class="formbutton" onclick="NewOrder();" title="New Sales Order" style="padding: 8px 20px 8px 20px;" value='<spring:message code="BzComposer.global.new" />' /> -->
-					<input type="button" id="btnSaveSalesOrder" class="formbutton" onclick="onSave(this.form);" title="Save Sales Order" style="padding: 8px 20px 8px 20px;" value='<spring:message code="BzComposer.global.saveUpdate" />' />
-					<!-- <input type="button" id="btnUpdateCustomer" class="formbutton" title="Update Customer information" onclick="ShowUpdate(this.form);" style="padding: 8px 20px 8px 20px;" value='<spring:message code="BzComposer.updatecustomer.updatecustomer" />' /> -->
+												</table>
+											</td>
+											<td style="font-size: 14px;" colspan="3">
+												<table align="right">
+													<tr>
+														<td align="right" style="font-size: 14px;"><spring:message
+																code="BzComposer.salesorder.subtotal" /></td>
+														<td style="font-size: 14px;"><form:input
+																path="subtotal" style="text-align: right;"
+																readonly="true"
+																onkeypress="return numbersOnlyFloat(event,this.value);" />
+														</td>
+													</tr>
+													<tr>
+														<td align="right" style="font-size: 14px;">
+															<div id="tax_field">
+																<spring:message code="BzComposer.salesorder.taxfield" />
+															</div>
+														</td>
+														<td style="font-size: 14px;"><form:input path="tax"
+																style="text-align: right;" readonly="true"
+																onkeypress="return numbersOnlyFloat(event,this.value);" />
+														</td>
+													</tr>
+													<tr>
+														<td align="right" style="font-size: 14px;"><spring:message
+																code="BzComposer.salesorder.shipping" /></td>
+														<td style="font-size: 14px;"><form:input
+																path="shipping" onclick="clearShippingCol()"
+																onchange="sumShippingTotal()"
+																style="width: 167px;text-align: right;"
+																onkeypress="return numbersOnlyFloat(event,this.value);" />
+														</td>
+													</tr>
+													<tr>
+														<td align="right" style="font-size: 14px;"><spring:message
+																code="BzComposer.salesorder.balanceindollers" /></td>
+														<td style="font-size: 14px;"><form:input
+																path="balance" style="text-align: right;"
+																onclick="clearDiscountCol()"
+																onchange="calDiscountTotal()"
+																onkeypress="return numbersOnlyFloat(event,this.value);" />
+														</td>
+													</tr>
+													<tr>
+														<td align="right" style="font-size: 14px;"><spring:message
+																code="BzComposer.salesorder.totalindollers" /></td>
+														<td style="font-size: 14px;"><form:input path="total"
+																style="text-align: right;" readonly="true"
+																onkeypress="return numbersOnlyFloat(event,this.value);" />
+														</td>
+													</tr>
+													<tr>
+														<td align="right" style="font-size: 14px;"><spring:message
+																code="BzComposer.salesorder.adjustedtotalindollers" />
+														</td>
+														<td style="font-size: 14px;"><form:input
+																path="adjustedtotal" style="text-align: right;"
+																readonly="true"
+																onkeypress="return numbersOnlyFloat(event,this.value);" />
+														</td>
+														<td style="font-size: 14px;"><input type="hidden"
+															size="15" /></td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+									<br>
+									<!-- <hr> -->
+									<div>
+										<input type="hidden" value="0" id="hidn" /> <input
+											type="hidden" value="" id="code11" /> <input type="hidden"
+											value="" id="invStyle" /> <input type="hidden" value="0"
+											id="amt_id" /> <input type="hidden" value="0" id="tax_val" />
+										<input type="hidden" value="0" id="itmId" /> <input
+											type="hidden" value="0" id="itmVal" /> <input type="hidden"
+											value="" id="cid" /> <input type="hidden" value="0"
+											name="wt" id="wt" />
+										<form:hidden path="companyID" value='${CID}' />
+										<form:hidden path="bsAddressID" />
+										<form:hidden path="shAddressID" />
+									</div>
+									<div>
+										<form:hidden path="size" value="" />
+										<form:hidden path="item" value="" />
+										<form:hidden path="qty" value="" />
+										<form:hidden path="serialNo" value="" />
+										<form:hidden path="desc" value="" />
+										<input type="hidden" name="pname" id="pname" value="" />
+										<form:hidden path="unitWeight" value="" />
+										<form:hidden path="wgt" value="" />
+										<form:hidden path="uprice" value="" />
+										<form:hidden path="code" value="" />
+										<form:hidden path="isTaxable" value="" />
+										<form:hidden path="itemTypeID" value="" />
+										<form:hidden path="itemOrder" value="" />
+									</div>
+									<!-- end Contents -->
+								</section>
+							</div>
+							<div class="container">
+								<div class="row">
+									<div class="col-md-12" style="font-size: 16px;" align="center">
+										<!-- <input type="button" id="btnNewSalesOrder" class="formbutton" onclick="NewOrder();" title="New Sales Order" style="padding: 8px 20px 8px 20px;" value='<spring:message code="BzComposer.global.new" />' /> -->
+										<input type="button" id="btnSaveSalesOrder" class="formbutton"
+											onclick="onSave(this.form);" title="Save Sales Order"
+											style="padding: 8px 20px 8px 20px;"
+											value='<spring:message code="BzComposer.global.saveUpdate" />' />
+										<!-- <input type="button" id="btnUpdateCustomer" class="formbutton" title="Update Customer information" onclick="ShowUpdate(this.form);" style="padding: 8px 20px 8px 20px;" value='<spring:message code="BzComposer.updatecustomer.updatecustomer" />' /> -->
 
+									</div>
+								</div>
+							</div>
+							<div>
+								<input type="hidden" id="tabid" name="tabid" value="" />
+							</div>
+						</form:form>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div>
-		<input type="hidden" id="tabid" name="tabid" value=""/>
 	</div>
-	</form:form>
-	</div>
-</div>
-</div>
-</div>
-</div>
-<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
+	<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </body>
 </html>
 <script type="text/javascript">
@@ -2643,21 +2734,33 @@ function getSalesOrderDetailsByBtnName(form, url){
 }
 </script>
 <!-- Dialog box used in sales order page -->
-<div id="showValidationDialog" style="display:none;">
-	<p><spring:message code="BzComposer.salesorder.namevalidation" /></p>
+<div id="showValidationDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesorder.namevalidation" />
+	</p>
 </div>
-<div id="showSelectItemDialog" style="display:none;">
-	<p><spring:message code="BzComposer.salesorder.itemvalidation"/></p>
+<div id="showSelectItemDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesorder.itemvalidation" />
+	</p>
 </div>
-<div id="showItemOrderNumberDialog" style="display:none;">
-	<p><spring:message code="BzComposer.salesorder.ordernumbernotblankorzero" /></p>
+<div id="showItemOrderNumberDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesorder.ordernumbernotblankorzero" />
+	</p>
 </div>
-<div id="deleteRowDialog" style="display:none;">
-	<p><spring:message code="BzComposer.salesorder.deleteitem" /></p>
+<div id="deleteRowDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesorder.deleteitem" />
+	</p>
 </div>
-<div id="saveSalesOrder" style="display:none;">
-	<p><spring:message code="BzComposer.salesorder.saveorupdatesalesorder" /></p>
+<div id="saveSalesOrder" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesorder.saveorupdatesalesorder" />
+	</p>
 </div>
-<div id="sendInvoiceDialog" style="display:none;">
-	<p><spring:message code="BzComposer.salesorder.createinvoice" /></p>
+<div id="sendInvoiceDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesorder.createinvoice" />
+	</p>
 </div>
