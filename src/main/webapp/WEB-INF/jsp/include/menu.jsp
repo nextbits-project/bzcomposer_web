@@ -299,6 +299,13 @@
 					</li>
 				</ul>
 			</li>
+			<!-- POS START -->
+			<li>
+				<a href="Pos?tabid=POS" title="POS" class="uppercaseText">
+                    <span><spring:message code="BzComposer.pos" /></span>
+				</a>
+			</li>
+			<!-- POS END -->
 			<li>
 				<a href="Item?tabid=Item" title="Item" class="uppercaseText">
                     <span><spring:message code="BzComposer.sales.Item" /></span>

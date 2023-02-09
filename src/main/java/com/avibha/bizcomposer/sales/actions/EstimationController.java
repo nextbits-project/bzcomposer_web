@@ -105,7 +105,8 @@ public class EstimationController {
             SalesDetails sd = new SalesDetails();
             sd.setUnitPriceEstimation(companyID,itemId,price);
             sd.getInvoiceInfo(request);
-            forward = "success1";
+//            forward = "success1";
+            forward = "redirect:Estimation?tabid=Estimation";
         }
         else if(action.equalsIgnoreCase("saveItemName")) {
             int itemId = Integer.parseInt(request.getParameter("itemID"));

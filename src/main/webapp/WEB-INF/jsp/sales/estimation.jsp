@@ -2024,7 +2024,7 @@ function saveNewUnitPrice(){
                 var price = document.getElementById('unitPrice_id').value;
 				var item = document.getElementById('itemID');
 				var itemId = item.options[item.selectedIndex].value;
-				window.location.href = "Invoice?tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
+				window.location.href = "Invoice?pageType=ES&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
                 $(this).dialog("close");
@@ -2045,10 +2045,12 @@ function saveNewItemName()
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
-                var price = document.getElementById('unitPrice_id').value;
+                //var price = document.getElementById('unitPrice_id').value;
             	var item = document.getElementById('itemID');
             	var itemId = item.options[item.selectedIndex].value;
-            	window.location = "Estimation?tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
+            	var itemName = $.trim(document.getElementById('pname_id').value);
+            	window.location.href = "Invoice?pageType=ES&tabid=saveItemName&itemName="+itemName+"&itemID="+itemId;
+//            	window.location = "Estimation?tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
             	/* $.ajax({
            			type: "POST",
            			url:"Estimation?tabid=saveUnitPrice&price="+price+"&itemID="+itemId,

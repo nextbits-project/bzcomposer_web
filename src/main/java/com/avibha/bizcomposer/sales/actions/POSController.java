@@ -45,11 +45,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class SalesController {
+public class POSController {
 
-	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
+	@RequestMapping(value = { "/Pos" }, method = {
 			RequestMethod.GET, RequestMethod.POST })
-	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
+	public String executePosController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
 			UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto, Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String IN_URI = request.getRequestURI();
@@ -61,7 +61,7 @@ public class SalesController {
 		ConfigurationInfo configInfo = new ConfigurationInfo();
 		configInfo.setCurrentRequest(request);
 
-		String forward = "sales/invoice";
+		String forward = "sales/pos";
 		if (IN_URI.endsWith(CUSTOMER_URI)) {
 			forward = "/sales/customerNew";
 			model.addAttribute("customerDto", customerDto);
@@ -770,7 +770,7 @@ public class SalesController {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.DeleteItem(request);
 			forward = "redirect:Item?tabid=Item";
-		} else if (action.equalsIgnoreCase("Invoice") || action.equalsIgnoreCase("NewInvoice")) {
+		} else if (action.equalsIgnoreCase("POS") || action.equalsIgnoreCase("NewPOS")) {
 			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sdetails.newInvoice(request, invoiceDto);
 			sdetails.getInvoiceInfo(request);
@@ -790,7 +790,7 @@ public class SalesController {
 			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(),
 					AppConstants.InvoiceType, configDto, false));
 			request.setAttribute("TaxRates", taxRates);
-			forward = "/sales/invoice";
+			forward = "/sales/pos";
 		} else if (action.equalsIgnoreCase("FirstInvoice") || action.equalsIgnoreCase("LastInvoice")
 				|| action.equalsIgnoreCase("NextInvoice") || action.equalsIgnoreCase("PreviousInvoice")) {
 			// get-Invoice-Details-By-BtnName
@@ -1662,111 +1662,111 @@ public class SalesController {
 		}
 		return forward;
 	}
-
-	@PostMapping("/ItemFileUpload")
-	public String ItemFileUpload(ItemDto itemDto, HttpServletRequest request,
-			@RequestParam("attachFile") MultipartFile attachFile) {
-		String forward = "/include/dashboard";
-		String action = request.getParameter("tabid");
-
-		System.out.println("--------------SalesController-------ItemFileUpload------tabid: " + action);
-		if (action.equalsIgnoreCase("UploadItemFile")) {
-			SalesDetailsDao sdetails = new SalesDetailsDao();
-			if (!attachFile.isEmpty()) {
-				sdetails.uploadItemFile(request, attachFile);
-			}
-			forward = "redirect:/Item?tabid=UploadItem";
-		}
-		return forward;
-	}
-
-	@ResponseBody
-	@PostMapping("/ItemAjax")
-	public Object ItemAjaxCall(ItemDto itemDto, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String action = request.getParameter("tabid");
-		String status = "Success";
-		System.out.println("------------ItemAjax-------------action: " + action);
-		if (action.equalsIgnoreCase("sortItem")) {
-			int sortById = Integer.parseInt(request.getParameter("SortBy"));
-			String cvId = request.getParameter("cvId");
-			String rowId = request.getParameter("SelectedRID");
-			SalesDetailsDao sdetails = new SalesDetailsDao();
-			ArrayList<ItemDto> itemData = sdetails.sortItemsList(request, itemDto, sortById);
-			request.setAttribute("sortById", sortById);
-			// sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
-			return itemData;
-		} else if (action.equalsIgnoreCase("loadItemByTemplate")) { // load-Item-By-Template/ID
-			SalesDetailsDao sdetails = new SalesDetailsDao();
-			return sdetails.searchItem(request, itemDto);
-		}
-		return status;
-	}
-
-	@ResponseBody
-	@PostMapping("/CustomerAjax")
-	public Object CustomerAjaxCall(CustomerDto customerDto, InvoiceDto invoiceDto, HttpServletRequest request)
-			throws Exception {
-		String action = request.getParameter("tabid");
-		String status = "Success";
-		String companyID = (String) request.getSession().getAttribute("CID");
-		SalesDetailsDao sd = new SalesDetailsDao();
-		InvoiceInfo invoiceInfo = new InvoiceInfo();
-		InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
-		System.out.println("------------CustomerAjax-------------action: " + action);
-		if (action.equalsIgnoreCase("sortInvoice")) {
-			int sortById = Integer.parseInt(request.getParameter("SortBy"));
-			String cvId = request.getParameter("cvId");
-			String rowId = request.getParameter("SelectedRID");
-			ArrayList<CustomerDto> CustomerDetails = sd.getSortedCustomer(request, customerDto, sortById);
-			sd.searchSelectedCustomer(cvId, request, customerDto);
-			sd.getAllList(request);
-			if (rowId != null)
-				customerDto.setSelectedRowID(rowId);
-			else
-				customerDto.setSelectedRowID("0");
-			if (cvId != null)
-				customerDto.setClientVendorID(cvId);
-			else
-				customerDto.setClientVendorID("0");
-			if (rowId != null) {
-				request.setAttribute("VendorFrm", customerDto.getSelectedRowID());
-			}
-			request.setAttribute("sortById", sortById);
-			// sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
-			return CustomerDetails;
-		}
-		if (action.equalsIgnoreCase("searchCustomers")) {
-			return sd.getSearchedCustomers(request);
-		} else if (action.equalsIgnoreCase("getCustomerDetails")) {
-			String cvId = request.getParameter("cvId");
-			sd.getCustomerDetails(cvId, request, customerDto);
-			ArrayList<InvoiceDto> shipAddress = invoiceInfoDao.shipAddress(companyID, cvId);
-			ArrayList<InvoiceDto> billAddress = invoiceInfoDao.billAddress(companyID, cvId);
-			TrHistoryLookUp hlookup = invoiceInfo.getCustomerPaymentDetailsForCustomerBoardPage(cvId);
-			customerDto.setLast3MonthAmt(hlookup.getLast3MonthAmt());
-			customerDto.setLast1YearAmt(hlookup.getLast1YearAmt());
-			customerDto.setTotalOverdueAmt(hlookup.getTotalOverdueAmt());
-			customerDto.setLastOrderDate(hlookup.getLastOrderDate());
-			for (InvoiceDto invoice : shipAddress) {
-				String shipTo = invoice.getShipTo() != null ? invoice.getShipTo().replace("\n", "<br/>") : "";
-				customerDto.setShipTo(shipTo);
-			}
-			for (InvoiceDto invoice : billAddress) {
-				String billTo = invoice.getBillTo() != null ? invoice.getBillTo().replace("\n", "<br/>") : "";
-				customerDto.setBillTo(billTo);
-			}
-			return customerDto;
-		} else if (action.equalsIgnoreCase("zipcode")) {
-			String zipcode = request.getParameter("zipcode");
-			CountryState cs = new CountryState();
-			return cs.getAddressDetailsByZipcode(zipcode);
-		} else if (action.equalsIgnoreCase("addPaymentMethod")) {
-			SalesDetailsDao sdetails = new SalesDetailsDao();
-			sdetails.addCustomerCreditCard(customerDto, request);
-			return "Success";
-		}
-		return status;
-	}
+//
+//	@PostMapping("/ItemFileUpload")
+//	public String ItemFileUpload(ItemDto itemDto, HttpServletRequest request,
+//			@RequestParam("attachFile") MultipartFile attachFile) {
+//		String forward = "/include/dashboard";
+//		String action = request.getParameter("tabid");
+//
+//		System.out.println("--------------SalesController-------ItemFileUpload------tabid: " + action);
+//		if (action.equalsIgnoreCase("UploadItemFile")) {
+//			SalesDetailsDao sdetails = new SalesDetailsDao();
+//			if (!attachFile.isEmpty()) {
+//				sdetails.uploadItemFile(request, attachFile);
+//			}
+//			forward = "redirect:/Item?tabid=UploadItem";
+//		}
+//		return forward;
+//	}
+//
+//	@ResponseBody
+//	@PostMapping("/ItemAjax")
+//	public Object ItemAjaxCall(ItemDto itemDto, HttpServletRequest request, HttpServletResponse response)
+//			throws Exception {
+//		String action = request.getParameter("tabid");
+//		String status = "Success";
+//		System.out.println("------------ItemAjax-------------action: " + action);
+//		if (action.equalsIgnoreCase("sortItem")) {
+//			int sortById = Integer.parseInt(request.getParameter("SortBy"));
+//			String cvId = request.getParameter("cvId");
+//			String rowId = request.getParameter("SelectedRID");
+//			SalesDetailsDao sdetails = new SalesDetailsDao();
+//			ArrayList<ItemDto> itemData = sdetails.sortItemsList(request, itemDto, sortById);
+//			request.setAttribute("sortById", sortById);
+//			// sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
+//			return itemData;
+//		} else if (action.equalsIgnoreCase("loadItemByTemplate")) { // load-Item-By-Template/ID
+//			SalesDetailsDao sdetails = new SalesDetailsDao();
+//			return sdetails.searchItem(request, itemDto);
+//		}
+//		return status;
+//	}
+//
+//	@ResponseBody
+//	@PostMapping("/CustomerAjax")
+//	public Object CustomerAjaxCall(CustomerDto customerDto, InvoiceDto invoiceDto, HttpServletRequest request)
+//			throws Exception {
+//		String action = request.getParameter("tabid");
+//		String status = "Success";
+//		String companyID = (String) request.getSession().getAttribute("CID");
+//		SalesDetailsDao sd = new SalesDetailsDao();
+//		InvoiceInfo invoiceInfo = new InvoiceInfo();
+//		InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+//		System.out.println("------------CustomerAjax-------------action: " + action);
+//		if (action.equalsIgnoreCase("sortInvoice")) {
+//			int sortById = Integer.parseInt(request.getParameter("SortBy"));
+//			String cvId = request.getParameter("cvId");
+//			String rowId = request.getParameter("SelectedRID");
+//			ArrayList<CustomerDto> CustomerDetails = sd.getSortedCustomer(request, customerDto, sortById);
+//			sd.searchSelectedCustomer(cvId, request, customerDto);
+//			sd.getAllList(request);
+//			if (rowId != null)
+//				customerDto.setSelectedRowID(rowId);
+//			else
+//				customerDto.setSelectedRowID("0");
+//			if (cvId != null)
+//				customerDto.setClientVendorID(cvId);
+//			else
+//				customerDto.setClientVendorID("0");
+//			if (rowId != null) {
+//				request.setAttribute("VendorFrm", customerDto.getSelectedRowID());
+//			}
+//			request.setAttribute("sortById", sortById);
+//			// sdetails.getSortedInvoiceInfo(request,request.getParameter("SortBy"));
+//			return CustomerDetails;
+//		}
+//		if (action.equalsIgnoreCase("searchCustomers")) {
+//			return sd.getSearchedCustomers(request);
+//		} else if (action.equalsIgnoreCase("getCustomerDetails")) {
+//			String cvId = request.getParameter("cvId");
+//			sd.getCustomerDetails(cvId, request, customerDto);
+//			ArrayList<InvoiceDto> shipAddress = invoiceInfoDao.shipAddress(companyID, cvId);
+//			ArrayList<InvoiceDto> billAddress = invoiceInfoDao.billAddress(companyID, cvId);
+//			TrHistoryLookUp hlookup = invoiceInfo.getCustomerPaymentDetailsForCustomerBoardPage(cvId);
+//			customerDto.setLast3MonthAmt(hlookup.getLast3MonthAmt());
+//			customerDto.setLast1YearAmt(hlookup.getLast1YearAmt());
+//			customerDto.setTotalOverdueAmt(hlookup.getTotalOverdueAmt());
+//			customerDto.setLastOrderDate(hlookup.getLastOrderDate());
+//			for (InvoiceDto invoice : shipAddress) {
+//				String shipTo = invoice.getShipTo() != null ? invoice.getShipTo().replace("\n", "<br/>") : "";
+//				customerDto.setShipTo(shipTo);
+//			}
+//			for (InvoiceDto invoice : billAddress) {
+//				String billTo = invoice.getBillTo() != null ? invoice.getBillTo().replace("\n", "<br/>") : "";
+//				customerDto.setBillTo(billTo);
+//			}
+//			return customerDto;
+//		} else if (action.equalsIgnoreCase("zipcode")) {
+//			String zipcode = request.getParameter("zipcode");
+//			CountryState cs = new CountryState();
+//			return cs.getAddressDetailsByZipcode(zipcode);
+//		} else if (action.equalsIgnoreCase("addPaymentMethod")) {
+//			SalesDetailsDao sdetails = new SalesDetailsDao();
+//			sdetails.addCustomerCreditCard(customerDto, request);
+//			return "Success";
+//		}
+//		return status;
+//	}
 
 }
