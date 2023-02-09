@@ -1,219 +1,2008 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
-<%@include file="/WEB-INF/jsp/include/header.jsp"%>
-<%@include file="/WEB-INF/jsp/include/menu.jsp"%>
-<title><spring:message code="BzComposer.customerinfotitle" /></title>
-<style>
-.dataTables_length{ font-size:14px; }
-.dataTables_filter{ font-size:14px; }
-.dataTables_info{ font-size:14px; }
-.dataTables_paginate{ font-size:14px; }
+<!DOCTYPE html>
+<html  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en" data-layout="twocolumn" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
 
-table.sortable thead { background-color: #eee; color: #666666; font-weight: bold; cursor: default; }
-table.tabla-listados { width: 100%; border: 1px solid rgb(207, 207, 207); margin: 0px 0px 0px 0px; }
-table.tabla-listados tbody tr.odd td { background: #e1e5e9; }
-table.tabla-listados thead tr th { font-size: 14px; }
-table.tabla-listados tbody tr td { font-size: 12px; }
-</style>
+<head>
+
+<meta charset="utf-8" />
+<title>Landing | Velzon - Admin & Dashboard Template</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta content="Premium Multipurpose Admin & Dashboard Template"
+	name="description" />
+<meta content="Themesbrand" name="author" />
+<!-- App favicon -->
+<link rel="shortcut icon"
+	href="/themes/interactive/assets/images/favicon.ico">
+
+<!--Swiper slider css-->
+<link href="/themes/interactive/assets/libs/swiper/swiper-bundle.min.css"
+	rel="stylesheet" type="text/css" />
+
+<!-- Layout config Js -->
+<script src="/themes/interactive/assets/js/layout.js"></script>
+<!-- Bootstrap Css -->
+<link href="/themes/interactive/assets/css/bootstrap.min.css"
+	rel="stylesheet" type="text/css" />
+<!-- Icons Css -->
+<link href="/themes/interactive/assets/css/icons.min.css" rel="stylesheet"
+	type="text/css" />
+<!-- App Css-->
+<link href="/themes/interactive/assets/css/app.min.css" rel="stylesheet"
+	type="text/css" />
+<!-- custom Css-->
+<link href="/themes/interactive/assets/css/custom.min.css" rel="stylesheet"
+	type="text/css" />
+
+
 </head>
-<body onload="initialize();">
-<!-- begin shared/header -->
-<div id="ddcolortabsline">&nbsp;</div>
-<div id="cos">
-<div class="statusquo ok">
-<div id="hoja">
-<div id="blanquito">
-<div id="padding">
-<!-- begin Contents -->
-<div>
-<div style="float: left;">
-	<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-		<spring:message code="BzComposer.customer.Customer" />
-		<c:if test="${not empty actionMsg}">
-            <br/> ${actionMsg}
-            <% session.removeAttribute("actionMsg"); %>
-        </c:if>
-	</span>
-</div>
-<div style="float: right;">
-	<table>
-		<tr align="right">
-			<td colspan="6">
-				<div>
-					<input type="button" class="formbutton" onclick="addLead();" style="padding:7 15px;" value="<spring:message code='BzComposer.global.new'/>" />
-					<input type="button" class="formbutton" onclick="manageLead('EDIT');" style="padding:7 15px;" value="<spring:message code='BzComposer.global.edit'/>" />
-					<input type="button" class="formbutton" onclick="manageLead('DELETE');" style="padding:7 15px;" value="<spring:message code='BzComposer.global.delete'/>" />
+
+<body data-bs-spy="scroll" data-bs-target="#navbar-example">
+
+	<!-- Begin page -->
+	<div class="layout-wrapper landing">
+		<nav class="navbar navbar-expand-lg navbar-landing fixed-top"
+			id="navbar">
+			<div class="container">
+				<a class="navbar-brand" href="index.html"> <img
+					src="/themes/interactive/assets/images/logo-dark.png"
+					class="card-logo card-logo-dark" alt="logo dark" height="17">
+					<img src="/themes/interactive/assets/images/logo-light.png"
+					class="card-logo card-logo-light" alt="logo light" height="17">
+				</a>
+				<button class="navbar-toggler py-0 fs-20 text-body" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<i class="mdi mdi-menu"></i>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mx-auto mt-2 mt-lg-0" id="navbar-example">
+						<li class="nav-item"><a
+							class="nav-link fs-15 fw-semibold active" href="#hero">Home</a></li>
+						<li class="nav-item"><a class="nav-link fs-15 fw-semibold"
+							href="#services">Services</a></li>
+						<li class="nav-item"><a class="nav-link fs-15 fw-semibold"
+							href="#features">Features</a></li>
+						<li class="nav-item"><a class="nav-link fs-15 fw-semibold"
+							href="#plans">Plans</a></li>
+						<li class="nav-item"><a class="nav-link fs-15 fw-semibold"
+							href="#reviews">Reviews</a></li>
+						<li class="nav-item"><a class="nav-link fs-15 fw-semibold"
+							href="#team">Team</a></li>
+						<li class="nav-item"><a class="nav-link fs-15 fw-semibold"
+							href="#contact">Contact</a></li>
+					</ul>
+
+					<div class="">
+						<a href="auth-signin-basic.html"
+							class="btn btn-link fw-medium text-decoration-none text-dark">Sign
+							in</a> <a href="auth-signup-basic.html" class="btn btn-primary">Sign
+							Up</a>
+					</div>
 				</div>
-			</td>
-		</tr>
-	</table>
-</div>
-</div>
-<input type="hidden" id="lSize" value='${leadList.size()}' />
-<table id="custTable" class="tabla-listados sortable" cellspacing="0" style="width: 100%; margin-top: 10px; border: 0; padding: 0;height: auto;" align="center">
-    <thead>
-        <tr valign="center">
-            <th><spring:message code="BzComposer.Customer.ID" /></th>
-            <th><spring:message code="BzComposer.lead.status" /></th>
-            <th><spring:message code="BzComposer.lead.source" /></th>
-            <th><spring:message code="BzComposer.lead.tags" /></th>
-            <th><spring:message code="BzComposer.global.phone" /></th>
-            <th><spring:message code="BzComposer.global.email" /></th>
-            <th><spring:message code="BzComposer.lead.website" /></th>
-            <th><spring:message code="BzComposer.lead.datecontacted" /></th>
-            <th><spring:message code="Bizcomposer.active" /></th>
-        </tr>
-    </thead>
-    <tbody id="custTableBody">
-        <c:if test="${not empty leadList}">
-            <c:forEach items="${leadList}" var="objList" varStatus="loop">
-                <tr id='${loop.index}$$' onclick="setRowId(${objList.leadId}, ${loop.index}, true);" ondblclick="goToCustomerBoard(${objList.leadId});">
-                    <td>
-                        <a href="/Leads?leadId=${objList.leadId}">${objList.leadId}</a>
-                    </td>
-                    <td>${objList.status}</td>
-                    <td>${objList.source}</td>
-                    <td>${objList.tags}</td>
-                    <td>${objList.phone}</td>
-                    <td>${objList.email}</td>
-                    <td>${objList.website}</td>
-                    <td>${objList.contactDate}</td>
-                    <td>Yes</td>
-                </tr>
-            </c:forEach>
-        </c:if>
-    </tbody>
-</table>
-</div>
-<div>
-	<input type="hidden" name="tabid" id="tabid" value="" />
-</div>
-</div>
-</div>
-</div>
-</div>
-<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+			</div>
+		</nav>
+		<!-- end navbar -->
+		<div class="vertical-overlay" data-bs-toggle="collapse"
+			data-bs-target="#navbarSupportedContent.show"></div>
+
+		<!-- start hero section -->
+		<section class="section pb-0 hero-section" id="hero">
+			<div class="bg-overlay bg-overlay-pattern"></div>
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8 col-sm-10">
+						<div class="text-center mt-lg-5 pt-5">
+							<h1 class="display-6 fw-bold mb-3 lh-base">
+								The better way to manage your website with <span
+									class="text-success">Velzon </span>
+							</h1>
+							<p class="lead text-muted lh-base">Velzon is a fully
+								responsive, multipurpose and premium Bootstrap 5 Admin &
+								Dashboard Template built in multiple frameworks.</p>
+
+							<div class="d-flex gap-2 justify-content-center mt-4">
+								<a href="auth-signup-basic.html" class="btn btn-primary">Get
+									Started <i class="ri-arrow-right-line align-middle ms-1"></i>
+								</a> <a href="pages-pricing.html" class="btn btn-danger">View
+									Plans <i class="ri-eye-line align-middle ms-1"></i>
+								</a>
+							</div>
+						</div>
+
+						<div class="mt-4 mt-sm-5 pt-sm-5 mb-sm-n5 demo-carousel">
+							<div class="demo-img-patten-top d-none d-sm-block">
+								<img src="/themes/interactive/assets/images/landing/img-pattern.png"
+									class="d-block img-fluid" alt="...">
+							</div>
+							<div class="demo-img-patten-bottom d-none d-sm-block">
+								<img src="/themes/interactive/assets/images/landing/img-pattern.png"
+									class="d-block img-fluid" alt="...">
+							</div>
+							<div class="carousel slide carousel-fade" data-bs-ride="carousel">
+								<div class="carousel-inner shadow-lg p-2 bg-white rounded">
+									<div class="carousel-item active" data-bs-interval="2000">
+										<img src="/themes/interactive/assets/images/demos/default.png"
+											class="d-block w-100" alt="...">
+									</div>
+									<div class="carousel-item" data-bs-interval="2000">
+										<img src="/themes/interactive/assets/images/demos/saas.png"
+											class="d-block w-100" alt="...">
+									</div>
+									<div class="carousel-item" data-bs-interval="2000">
+										<img src="/themes/interactive/assets/images/demos/material.png"
+											class="d-block w-100" alt="...">
+									</div>
+									<div class="carousel-item" data-bs-interval="2000">
+										<img src="/themes/interactive/assets/images/demos/minimal.png"
+											class="d-block w-100" alt="...">
+									</div>
+									<div class="carousel-item" data-bs-interval="2000">
+										<img src="/themes/interactive/assets/images/demos/creative.png"
+											class="d-block w-100" alt="...">
+									</div>
+									<div class="carousel-item" data-bs-interval="2000">
+										<img src="/themes/interactive/assets/images/demos/modern.png"
+											class="d-block w-100" alt="...">
+									</div>
+									<div class="carousel-item" data-bs-interval="2000">
+										<img src="/themes/interactive/assets/images/demos/interactive.png"
+											class="d-block w-100" alt="...">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+			<div class="position-absolute start-0 end-0 bottom-0 hero-shape-svg">
+				<svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+					xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
+                    <g mask="url(&quot;#SvgjsMask1003&quot;)"
+						fill="none">
+                        <path
+						d="M 0,118 C 288,98.6 1152,40.4 1440,21L1440 140L0 140z">
+                        </path>
+                    </g>
+                </svg>
+			</div>
+			<!-- end shape -->
+		</section>
+		<!-- end hero section -->
+
+		<!-- start client section -->
+		<div class="pt-5 mt-5">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+
+						<div class="text-center mt-5">
+							<h5 class="fs-20">
+								Trusted <span class="text-primary text-decoration-underline">by</span>
+								the world's best
+							</h5>
+
+							<!-- Swiper -->
+							<div
+								class="swiper trusted-client-slider mt-sm-5 mt-4 mb-sm-5 mb-4"
+								dir="ltr">
+								<div class="swiper-wrapper">
+									<div class="swiper-slide">
+										<div class="client-images">
+											<img src="/themes/interactive/assets/images/clients/amazon.svg"
+												alt="client-img" class="mx-auto img-fluid d-block">
+										</div>
+									</div>
+									<div class="swiper-slide">
+										<div class="client-images">
+											<img src="/themes/interactive/assets/images/clients/walmart.svg"
+												alt="client-img" class="mx-auto img-fluid d-block">
+										</div>
+									</div>
+									<div class="swiper-slide">
+										<div class="client-images">
+											<img src="/themes/interactive/assets/images/clients/lenovo.svg"
+												alt="client-img" class="mx-auto img-fluid d-block">
+										</div>
+									</div>
+									<div class="swiper-slide">
+										<div class="client-images">
+											<img src="/themes/interactive/assets/images/clients/paypal.svg"
+												alt="client-img" class="mx-auto img-fluid d-block">
+										</div>
+									</div>
+									<div class="swiper-slide">
+										<div class="client-images">
+											<img src="/themes/interactive/assets/images/clients/shopify.svg"
+												alt="client-img" class="mx-auto img-fluid d-block">
+										</div>
+									</div>
+									<div class="swiper-slide">
+										<div class="client-images">
+											<img src="/themes/interactive/assets/images/clients/verizon.svg"
+												alt="client-img" class="mx-auto img-fluid d-block">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</div>
+		<!-- end client section -->
+
+		<!-- start services -->
+		<section class="section" id="services">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8">
+						<div class="text-center mb-5">
+							<h1 class="mb-3 ff-secondary fw-bold lh-base">A Digital web
+								design studio creating modern & engaging online</h1>
+							<p class="text-muted">To achieve this, it would be necessary
+								to have uniform grammar, pronunciation and more common words. If
+								several languages coalesce the grammar</p>
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+
+				<div class="row g-3">
+					<div class="col-lg-4">
+						<div class="d-flex p-3">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar-sm icon-effect">
+									<div
+										class="avatar-title bg-transparent text-success rounded-circle">
+										<i class="ri-pencil-ruler-2-line fs-36"></i>
+									</div>
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="fs-18">Creative Design</h5>
+								<p class="text-muted my-3 ff-secondary">The creative design
+									includes designs that are unique, effective and memorable.</p>
+								<div>
+									<a href="#" class="fs-13 fw-semibold">Learn More <i
+										class="ri-arrow-right-s-line align-bottom"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-4">
+						<div class="d-flex p-3">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar-sm icon-effect">
+									<div
+										class="avatar-title bg-transparent text-success rounded-circle">
+										<i class="ri-palette-line fs-36"></i>
+									</div>
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="fs-18">Unlimited Colors</h5>
+								<p class="text-muted my-3 ff-secondary">The collection of
+									rules and guidelines which designers use to communicate with
+									users through appealing.</p>
+								<div>
+									<a href="#" class="fs-13 fw-semibold">Learn More <i
+										class="ri-arrow-right-s-line align-bottom"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-4">
+						<div class="d-flex p-3">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar-sm icon-effect">
+									<div
+										class="avatar-title bg-transparent text-success rounded-circle">
+										<i class="ri-lightbulb-flash-line fs-36"></i>
+									</div>
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="fs-18">Strategy Solutions</h5>
+								<p class="text-muted my-3 ff-secondary">Business development
+									firm that provides strategic planning, market research services
+									and project.</p>
+								<div>
+									<a href="#" class="fs-13 fw-semibold">Learn More <i
+										class="ri-arrow-right-s-line align-bottom"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-4">
+						<div class="d-flex p-3">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar-sm icon-effect">
+									<div
+										class="avatar-title bg-transparent text-success rounded-circle">
+										<i class="ri-customer-service-line fs-36"></i>
+									</div>
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="fs-18">Awesome Support</h5>
+								<p class="text-muted my-3 ff-secondary">Awesome Support is
+									the most versatile and feature-rich support plugin for all
+									version.</p>
+								<div>
+									<a href="#" class="fs-13 fw-semibold">Learn More <i
+										class="ri-arrow-right-s-line align-bottom"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-4">
+						<div class="d-flex p-3">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar-sm icon-effect">
+									<div
+										class="avatar-title bg-transparent text-success rounded-circle">
+										<i class="ri-stack-line fs-36"></i>
+									</div>
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="fs-18">Truly Multipurpose</h5>
+								<p class="text-muted my-3 ff-secondary">You usually get a
+									broad range of options to play with. This enables you to use a
+									single theme across multiple.</p>
+								<div>
+									<a href="#" class="fs-13 fw-semibold">Learn More <i
+										class="ri-arrow-right-s-line align-bottom"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-4">
+						<div class="d-flex p-3">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar-sm icon-effect">
+									<div
+										class="avatar-title bg-transparent text-success rounded-circle">
+										<i class="ri-settings-2-line fs-36"></i>
+									</div>
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="fs-18">Easy to customize</h5>
+								<p class="text-muted my-3 ff-secondary">Personalise your own
+									website, no matter what theme and what customization options.</p>
+								<div>
+									<a href="#" class="fs-13 fw-semibold">Learn More <i
+										class="ri-arrow-right-s-line align-bottom"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+
+					<div class="col-lg-4">
+						<div class="d-flex p-3">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar-sm icon-effect">
+									<div
+										class="avatar-title bg-transparent text-success rounded-circle">
+										<i class="ri-slideshow-line fs-36"></i>
+									</div>
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="fs-18">Responsive & Clean Design</h5>
+								<p class="text-muted my-3 ff-secondary">Responsive design is
+									a graphic user interface (GUI) design approach used to create
+									content.</p>
+								<div>
+									<a href="#" class="fs-13 fw-semibold">Learn More <i
+										class="ri-arrow-right-s-line align-bottom"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-4">
+						<div class="d-flex p-3">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar-sm icon-effect">
+									<div
+										class="avatar-title bg-transparent text-success rounded-circle">
+										<i class="ri-google-fill fs-36"></i>
+									</div>
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="fs-18">Google Font Collection</h5>
+								<p class="text-muted my-3 ff-secondary">Google Fonts is a
+									collection of 915 fonts, all available to use for free on your
+									website.</p>
+								<div>
+									<a href="#" class="fs-13 fw-semibold">Learn More <i
+										class="ri-arrow-right-s-line align-bottom"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-4">
+						<div class="d-flex p-3">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar-sm icon-effect">
+									<div
+										class="avatar-title bg-transparent text-success rounded-circle">
+										<i class="ri-briefcase-5-line fs-36"></i>
+									</div>
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="fs-18">Top Industry Specialists</h5>
+								<p class="text-muted my-3 ff-secondary">An industrial
+									specialist works with industrial operations to ensure that
+									manufacturing facilities work.</p>
+								<div>
+									<a href="#" class="fs-13 fw-semibold">Learn More <i
+										class="ri-arrow-right-s-line align-bottom"></i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end services -->
+
+		<!-- start features -->
+		<section class="section bg-light py-5" id="features">
+			<div class="container">
+				<div class="row align-items-center gy-4">
+					<div class="col-lg-6 col-sm-7 mx-auto">
+						<div>
+							<img
+								src="/themes/interactive/assets/images/landing/features/img-1.png"
+								alt="" class="img-fluid mx-auto">
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="text-muted">
+							<div class="avatar-sm icon-effect mb-4">
+								<div
+									class="avatar-title bg-transparent rounded-circle text-success h1">
+									<i class="ri-collage-line fs-36"></i>
+								</div>
+							</div>
+							<h3 class="mb-3 fs-20">Huge collection of widgets</h3>
+							<p class="mb-4 ff-secondary fs-16">Collection widgets
+								specialize in displaying many elements of the same type, such as
+								a collection of pictures from a collection of articles from a
+								news app or a collection of messages from a communication app.</p>
+
+							<div class="row pt-3">
+								<div class="col-3">
+									<div class="text-center">
+										<h4>5</h4>
+										<p>Dashboards</p>
+									</div>
+								</div>
+								<div class="col-3">
+									<div class="text-center">
+										<h4>150+</h4>
+										<p>Pages</p>
+									</div>
+								</div>
+								<div class="col-4">
+									<div class="text-center">
+										<h4>7+</h4>
+										<p>Functional Apps</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end features -->
+
+		<!-- start cta -->
+		<section class="py-5 bg-primary position-relative">
+			<div class="bg-overlay bg-overlay-pattern opacity-50"></div>
+			<div class="container">
+				<div class="row align-items-center gy-4">
+					<div class="col-sm">
+						<div>
+							<h4 class="text-white mb-0 fw-bold">Build your web App/SaaS
+								with Velzon dashboard</h4>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-sm-auto">
+						<div>
+							<a href="https://1.envato.market/velzon-admin" target="_blank"
+								class="btn bg-gradient btn-danger"><i
+								class="ri-shopping-cart-2-line align-middle me-1"></i> Buy Now</a>
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end cta -->
+
+		<!-- start features -->
+		<section class="section">
+			<div class="container">
+				<div class="row align-items-center gy-4">
+					<div class="col-lg-6 order-2 order-lg-1">
+						<div class="text-muted">
+							<h5 class="fs-12 text-uppercase text-success">Design</h5>
+							<h4 class="mb-3">Well Designed Dashboards</h4>
+							<p class="mb-4 ff-secondary">Quality Dashboards (QD) is a
+								condition-specific, actionable web-based application for quality
+								reporting and population management that is integrated into the
+								Electronic Health Record (EHR).</p>
+
+							<div class="row">
+								<div class="col-sm-5">
+									<div class="vstack gap-2">
+										<div class="d-flex align-items-center">
+											<div class="flex-shrink-0 me-2">
+												<div class="avatar-xs icon-effect">
+													<div
+														class="avatar-title bg-transparent text-success rounded-circle h2">
+														<i class="ri-check-fill"></i>
+													</div>
+												</div>
+											</div>
+											<div class="flex-grow-1">
+												<h5 class="fs-14 mb-0">Ecommerce</h5>
+											</div>
+										</div>
+										<div class="d-flex align-items-center">
+											<div class="flex-shrink-0 me-2">
+												<div class="avatar-xs icon-effect">
+													<div
+														class="avatar-title bg-transparent text-success rounded-circle h2">
+														<i class="ri-check-fill"></i>
+													</div>
+												</div>
+											</div>
+											<div class="flex-grow-1">
+												<h5 class="fs-14 mb-0">Analytics</h5>
+											</div>
+										</div>
+										<div class="d-flex align-items-center">
+											<div class="flex-shrink-0 me-2">
+												<div class="avatar-xs icon-effect">
+													<div
+														class="avatar-title bg-transparent text-success rounded-circle h2">
+														<i class="ri-check-fill"></i>
+													</div>
+												</div>
+											</div>
+											<div class="flex-grow-1">
+												<h5 class="fs-14 mb-0">CRM</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-5">
+									<div class="vstack gap-2">
+										<div class="d-flex align-items-center">
+											<div class="flex-shrink-0 me-2">
+												<div class="avatar-xs icon-effect">
+													<div
+														class="avatar-title bg-transparent text-success rounded-circle h2">
+														<i class="ri-check-fill"></i>
+													</div>
+												</div>
+											</div>
+											<div class="flex-grow-1">
+												<h5 class="fs-14 mb-0">Crypto</h5>
+											</div>
+										</div>
+										<div class="d-flex align-items-center">
+											<div class="flex-shrink-0 me-2">
+												<div class="avatar-xs icon-effect">
+													<div
+														class="avatar-title bg-transparent text-success rounded-circle h2">
+														<i class="ri-check-fill"></i>
+													</div>
+												</div>
+											</div>
+											<div class="flex-grow-1">
+												<h5 class="fs-14 mb-0">Projects</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="mt-4">
+								<a href="index.html" class="btn btn-primary">Learn More <i
+									class="ri-arrow-right-line align-middle ms-1"></i></a>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-6 col-sm-7 col-10 ms-auto order-1 order-lg-2">
+						<div>
+							<img
+								src="/themes/interactive/assets/images/landing/features/img-2.png"
+								alt="" class="img-fluid">
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+
+				<div class="row align-items-center mt-5 pt-lg-5 gy-4">
+					<div class="col-lg-6 col-sm-7 col-10 mx-auto">
+						<div>
+							<img
+								src="/themes/interactive/assets/images/landing/features/img-3.png"
+								alt="" class="img-fluid">
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="text-muted ps-lg-5">
+							<h5 class="fs-12 text-uppercase text-success">structure</h5>
+							<h4 class="mb-3">Well Documented</h4>
+							<p class="mb-4">used to describe something that is known
+								about or known to be true because there are many documents that
+								describe it, prove it, etc.</p>
+
+							<div class="vstack gap-2">
+								<div class="d-flex align-items-center">
+									<div class="flex-shrink-0 me-2">
+										<div class="avatar-xs icon-effect">
+											<div
+												class="avatar-title bg-transparent text-success rounded-circle h2">
+												<i class="ri-check-fill"></i>
+											</div>
+										</div>
+									</div>
+									<div class="flex-grow-1">
+										<p class="mb-0">Dynamic Conetnt</p>
+									</div>
+								</div>
+								<div class="d-flex align-items-center">
+									<div class="flex-shrink-0 me-2">
+										<div class="avatar-xs icon-effect">
+											<div
+												class="avatar-title bg-transparent text-success rounded-circle h2">
+												<i class="ri-check-fill"></i>
+											</div>
+										</div>
+									</div>
+									<div class="flex-grow-1">
+										<p class="mb-0">Setup plugin's information.</p>
+									</div>
+								</div>
+								<div class="d-flex align-items-center">
+									<div class="flex-shrink-0 me-2">
+										<div class="avatar-xs icon-effect">
+											<div
+												class="avatar-title bg-transparent text-success rounded-circle h2">
+												<i class="ri-check-fill"></i>
+											</div>
+										</div>
+									</div>
+									<div class="flex-grow-1">
+										<p class="mb-0">Themes customization information</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end features -->
+
+		<!-- start plan -->
+		<section class="section bg-light" id="plans">
+			<div class="bg-overlay bg-overlay-pattern"></div>
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8">
+						<div class="text-center mb-5">
+							<h3 class="mb-3 fw-bold">Choose the plan that's right for
+								you</h3>
+							<p class="text-muted mb-4">Simple pricing. No hidden fees.
+								Advanced features for you business.</p>
+
+							<div class="d-flex justify-content-center align-items-center">
+								<div>
+									<h5 class="fs-15 mb-0">Month</h5>
+								</div>
+								<div class="form-check form-switch fs-20 ms-3 "
+									onclick="check()">
+									<input class="form-check-input" type="checkbox"
+										id="plan-switch"> <label class="form-check-label"
+										for="plan-switch"></label>
+								</div>
+								<div>
+									<h5 class="fs-15 mb-0">
+										Annual <span class="badge badge-soft-success">Save 20%</span>
+									</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+
+				<div class="row gy-4">
+					<div class="col-lg-4">
+						<div class="card plan-box mb-0">
+							<div class="card-body p-4 m-2">
+								<div class="d-flex align-items-center">
+									<div class="flex-grow-1">
+										<h5 class="mb-1 fw-bold">Basic Plan</h5>
+										<p class="text-muted mb-0">For Startup</p>
+									</div>
+									<div class="avatar-sm">
+										<div class="avatar-title bg-light rounded-circle text-primary">
+											<i class="ri-book-mark-line fs-20"></i>
+										</div>
+									</div>
+								</div>
+								<div class="py-4 text-center">
+									<h1 class="month">
+										<sup><small>$</small></sup><span class="ff-secondary fw-bold">19</span>
+										<span class="fs-13 text-muted">/Month</span>
+									</h1>
+									<h1 class="annual">
+										<sup><small>$</small></sup><span class="ff-secondary fw-bold">171</span>
+										<span class="fs-13 text-muted">/Year</span>
+									</h1>
+								</div>
+
+								<div>
+									<ul class="list-unstyled text-muted vstack gap-3 ff-secondary">
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													Upto <b>3</b> Projects
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													Upto <b>299</b> Customers
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">Scalable Bandwidth</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>5</b> FTP Login
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-danger me-1">
+													<i class="ri-close-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>24/7</b> Support
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-danger me-1">
+													<i class="ri-close-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>Unlimited</b> Storage
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-danger me-1">
+													<i class="ri-close-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">Domain</div>
+											</div>
+										</li>
+									</ul>
+									<div class="mt-4">
+										<a href="javascript:void(0);"
+											class="btn btn-soft-success w-100">Get Started</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--end col-->
+					<div class="col-lg-4">
+						<div class="card plan-box mb-0 ribbon-box right">
+							<div class="card-body p-4 m-2">
+								<div class="ribbon-two ribbon-two-danger">
+									<span>Popular</span>
+								</div>
+								<div class="d-flex align-items-center">
+									<div class="flex-grow-1">
+										<h5 class="mb-1 fw-bold">Pro Business</h5>
+										<p class="text-muted mb-0">Professional plans</p>
+									</div>
+									<div class="avatar-sm">
+										<div class="avatar-title bg-light rounded-circle text-primary">
+											<i class="ri-medal-fill fs-20"></i>
+										</div>
+									</div>
+								</div>
+								<div class="py-4 text-center">
+									<h1 class="month">
+										<sup><small>$</small></sup><span class="ff-secondary fw-bold">29</span>
+										<span class="fs-13 text-muted">/Month</span>
+									</h1>
+									<h1 class="annual">
+										<sup><small>$</small></sup><span class="ff-secondary fw-bold">261</span>
+										<span class="fs-13 text-muted">/Year</span>
+									</h1>
+								</div>
+
+								<div>
+									<ul class="list-unstyled text-muted vstack gap-3 ff-secondary">
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													Upto <b>15</b> Projects
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>Unlimited</b> Customers
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">Scalable Bandwidth</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>12</b> FTP Login
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>24/7</b> Support
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-danger me-1">
+													<i class="ri-close-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>Unlimited</b> Storage
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-danger me-1">
+													<i class="ri-close-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">Domain</div>
+											</div>
+										</li>
+									</ul>
+									<div class="mt-4">
+										<a href="javascript:void(0);"
+											class="btn btn-soft-success w-100">Get Started</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--end col-->
+					<div class="col-lg-4">
+						<div class="card plan-box mb-0">
+							<div class="card-body p-4 m-2">
+								<div class="d-flex align-items-center">
+									<div class="flex-grow-1">
+										<h5 class="mb-1 fw-bold">Platinum Plan</h5>
+										<p class="text-muted mb-0">Enterprise Businesses</p>
+									</div>
+									<div class="avatar-sm">
+										<div class="avatar-title bg-light rounded-circle text-primary">
+											<i class="ri-stack-fill fs-20"></i>
+										</div>
+									</div>
+								</div>
+								<div class="py-4 text-center">
+									<h1 class="month">
+										<sup><small>$</small></sup><span class="ff-secondary fw-bold">39</span>
+										<span class="fs-13 text-muted">/Month</span>
+									</h1>
+									<h1 class="annual">
+										<sup><small>$</small></sup><span class="ff-secondary fw-bold">351</span>
+										<span class="fs-13 text-muted">/Year</span>
+									</h1>
+								</div>
+
+								<div>
+									<ul class="list-unstyled text-muted vstack gap-3 ff-secondary">
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>Unlimited</b> Projects
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>Unlimited</b> Customers
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">Scalable Bandwidth</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>Unlimited</b> FTP Login
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>24/7</b> Support
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">
+													<b>Unlimited</b> Storage
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="d-flex">
+												<div class="flex-shrink-0 text-success me-1">
+													<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+												</div>
+												<div class="flex-grow-1">Domain</div>
+											</div>
+										</li>
+									</ul>
+									<div class="mt-4">
+										<a href="javascript:void(0);"
+											class="btn btn-soft-success w-100">Get Started</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--end col-->
+				</div>
+				<!--end row-->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end plan -->
+
+		<!-- start faqs -->
+		<section class="section">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8">
+						<div class="text-center mb-5">
+							<h3 class="mb-3 fw-bold">Frequently Asked Questions</h3>
+							<p class="text-muted mb-4 ff-secondary">If you can not find
+								answer to your question in our FAQ, you can always contact us or
+								email us. We will answer you shortly!</p>
+
+							<div class="hstack gap-2 justify-content-center">
+								<button type="button"
+									class="btn btn-primary btn-label rounded-pill">
+									<i
+										class="ri-mail-line label-icon align-middle rounded-pill fs-16 me-2"></i>
+									Email Us
+								</button>
+								<button type="button"
+									class="btn btn-info btn-label rounded-pill">
+									<i
+										class="ri-twitter-line label-icon align-middle rounded-pill fs-16 me-2"></i>
+									Send Us Tweet
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+
+				<div class="row g-lg-5 g-4">
+					<div class="col-lg-6">
+						<div class="d-flex align-items-center mb-2">
+							<div class="flex-shrink-0 me-1">
+								<i class="ri-question-line fs-24 align-middle text-success me-1"></i>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="mb-0 fw-bold">General Questions</h5>
+							</div>
+						</div>
+						<div
+							class="accordion custom-accordionwithicon custom-accordion-border accordion-border-box"
+							id="genques-accordion">
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="genques-headingOne">
+									<button class="accordion-button fs-15 fw-semibold"
+										type="button" data-bs-toggle="collapse"
+										data-bs-target="#genques-collapseOne" aria-expanded="true"
+										aria-controls="genques-collapseOne">What is the
+										purpose of using themes ?</button>
+								</h2>
+								<div id="genques-collapseOne"
+									class="accordion-collapse collapse show"
+									aria-labelledby="genques-headingOne"
+									data-bs-parent="#genques-accordion">
+									<div class="accordion-body ff-secondary">A theme is a set
+										of colors, fonts, effects, and more that can be applied to
+										your entire presentation to give it a consistent, professional
+										look. You've already been using a theme, even if you didn't
+										know it: the default Office theme, which consists.</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="genques-headingTwo">
+									<button class="accordion-button fs-15 fw-semibold collapsed"
+										type="button" data-bs-toggle="collapse"
+										data-bs-target="#genques-collapseTwo" aria-expanded="false"
+										aria-controls="genques-collapseTwo">Can a theme have
+										more than one theme?</button>
+								</h2>
+								<div id="genques-collapseTwo"
+									class="accordion-collapse collapse"
+									aria-labelledby="genques-headingTwo"
+									data-bs-parent="#genques-accordion">
+									<div class="accordion-body ff-secondary">A story can have
+										as many themes as the reader can identify based on recurring
+										patterns and parallels within the story itself. In looking at
+										ways to separate themes into a hierarchy, we might find it
+										useful to follow the example of a single book.</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="genques-headingThree">
+									<button class="accordion-button fs-15 fw-semibold collapsed"
+										type="button" data-bs-toggle="collapse"
+										data-bs-target="#genques-collapseThree" aria-expanded="false"
+										aria-controls="genques-collapseThree">What are theme
+										features?</button>
+								</h2>
+								<div id="genques-collapseThree"
+									class="accordion-collapse collapse"
+									aria-labelledby="genques-headingThree"
+									data-bs-parent="#genques-accordion">
+									<div class="accordion-body ff-secondary">Theme features
+										is a set of specific functionality that may be enabled by
+										theme authors. Themes must register each individual Theme
+										Feature that the author wishes to support. Theme support
+										functions should be called in the theme's functions.</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="genques-headingFour">
+									<button class="accordion-button fs-15 fw-semibold collapsed"
+										type="button" data-bs-toggle="collapse"
+										data-bs-target="#genques-collapseFour" aria-expanded="false"
+										aria-controls="genques-collapseFour">What is simple
+										theme?</button>
+								</h2>
+								<div id="genques-collapseFour"
+									class="accordion-collapse collapse"
+									aria-labelledby="genques-headingFour"
+									data-bs-parent="#genques-accordion">
+									<div class="accordion-body ff-secondary">Simple is a free
+										WordPress theme, by Themify, built exactly what it is named
+										for: simplicity. Immediately upgrade the quality of your
+										WordPress site with the simple theme To use the built-in
+										Chrome theme editor.</div>
+								</div>
+							</div>
+						</div>
+						<!--end accordion-->
+
+					</div>
+					<!-- end col -->
+					<div class="col-lg-6">
+						<div class="d-flex align-items-center mb-2">
+							<div class="flex-shrink-0 me-1">
+								<i
+									class="ri-shield-keyhole-line fs-24 align-middle text-success me-1"></i>
+							</div>
+							<div class="flex-grow-1">
+								<h5 class="mb-0 fw-bold">Privacy &amp; Security</h5>
+							</div>
+						</div>
+
+						<div
+							class="accordion custom-accordionwithicon custom-accordion-border accordion-border-box"
+							id="privacy-accordion">
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="privacy-headingOne">
+									<button class="accordion-button fs-15 fw-semibold collapsed"
+										type="button" data-bs-toggle="collapse"
+										data-bs-target="#privacy-collapseOne" aria-expanded="false"
+										aria-controls="privacy-collapseOne">Does Word have
+										night mode?</button>
+								</h2>
+								<div id="privacy-collapseOne"
+									class="accordion-collapse collapse"
+									aria-labelledby="privacy-headingOne"
+									data-bs-parent="#privacy-accordion">
+									<div class="accordion-body ff-secondary">You can run
+										Microsoft Word in dark mode, which uses a dark color palette
+										to help reduce eye strain in low light settings. You can
+										choose to make the document white or black using the Switch
+										Modes button in the ribbon's View tab.</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="privacy-headingTwo">
+									<button class="accordion-button fs-15 fw-semibold"
+										type="button" data-bs-toggle="collapse"
+										data-bs-target="#privacy-collapseTwo" aria-expanded="true"
+										aria-controls="privacy-collapseTwo">Is theme an
+										opinion?</button>
+								</h2>
+								<div id="privacy-collapseTwo"
+									class="accordion-collapse collapse show"
+									aria-labelledby="privacy-headingTwo"
+									data-bs-parent="#privacy-accordion">
+									<div class="accordion-body ff-secondary">A theme is an
+										opinion the author expresses on the subject, for instance, the
+										author's dissatisfaction with the narrow confines of French
+										bourgeois marriage during that period theme is an idea that a
+										writer repeats.</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="privacy-headingThree">
+									<button class="accordion-button fs-15 fw-semibold collapsed"
+										type="button" data-bs-toggle="collapse"
+										data-bs-target="#privacy-collapseThree" aria-expanded="false"
+										aria-controls="privacy-collapseThree">How do you
+										develop a theme?</button>
+								</h2>
+								<div id="privacy-collapseThree"
+									class="accordion-collapse collapse"
+									aria-labelledby="privacy-headingThree"
+									data-bs-parent="#privacy-accordion">
+									<div class="accordion-body ff-secondary">A short story,
+										novella, or novel presents a narrative to its reader. Perhaps
+										that narrative involves mystery, terror, romance, comedy, or
+										all of the above. These works of fiction may also contain
+										memorable characters, vivid world-building, literary devices.
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="privacy-headingFour">
+									<button class="accordion-button fs-15 fw-semibold collapsed"
+										type="button" data-bs-toggle="collapse"
+										data-bs-target="#privacy-collapseFour" aria-expanded="false"
+										aria-controls="privacy-collapseFour">Do stories need
+										themes?</button>
+								</h2>
+								<div id="privacy-collapseFour"
+									class="accordion-collapse collapse"
+									aria-labelledby="privacy-headingFour"
+									data-bs-parent="#privacy-accordion">
+									<div class="accordion-body ff-secondary">A story can have
+										as many themes as the reader can identify based on recurring
+										patterns and parallels within the story itself. In looking at
+										ways to separate themes into a hierarchy, we might find it
+										useful to follow the example of a single book.</div>
+								</div>
+							</div>
+						</div>
+						<!--end accordion-->
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end faqs -->
+
+		<!-- start review -->
+		<section class="section bg-primary" id="reviews">
+			<div class="bg-overlay bg-overlay-pattern"></div>
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-10">
+						<div class="text-center">
+							<div>
+								<i class="ri-double-quotes-l text-success display-3"></i>
+							</div>
+							<h4 class="text-white mb-5">
+								<span class="text-white">19k</span>+ Satisfied clients
+							</h4>
+
+							<!-- Swiper -->
+							<div class="swiper client-review-swiper rounded" dir="ltr">
+								<div class="swiper-wrapper">
+									<div class="swiper-slide">
+										<div class="row justify-content-center">
+											<div class="col-10">
+												<div class="text-white-50">
+													<p class="fs-20 mb-4">" I am givng 5 stars. Theme is
+														great and everyone one stuff everything in theme. Future
+														request should not affect current state of theme. "</p>
+
+													<div>
+														<h5 class="text-white">gregoriusus</h5>
+														<p>- Skote User</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- end slide -->
+									<div class="swiper-slide">
+										<div class="row justify-content-center">
+											<div class="col-10">
+												<div class="text-white-50">
+													<p class="fs-20 mb-4">" Awesome support. Had few issues
+														while setting up because of my device, the support team
+														helped me fix them up in a day. Everything looks clean and
+														good. Highly recommended! "</p>
+
+													<div>
+														<h5 class="text-white">GeekyGreenOwl</h5>
+														<p>- Skote User</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- end slide -->
+									<div class="swiper-slide">
+										<div class="row justify-content-center">
+											<div class="col-10">
+												<div class="text-white-50">
+													<p class="fs-20 mb-4">" Amazing template, Redux store
+														and components is nicely designed. It's a great start
+														point for an admin based project. Clean Code and good
+														documentation. Template is completely in React and
+														absolutely no usage of jQuery "</p>
+
+													<div>
+														<h5 class="text-white">sreeks456</h5>
+														<p>- Veltrix User</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- end slide -->
+								</div>
+								<div class="swiper-button-next bg-white rounded-circle"></div>
+								<div class="swiper-button-prev bg-white rounded-circle"></div>
+								<div class="swiper-pagination position-relative mt-2"></div>
+							</div>
+							<!-- end slider -->
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end review -->
+
+		<!-- start counter -->
+		<section class="py-5 position-relative bg-light">
+			<div class="container">
+				<div class="row text-center gy-4">
+					<div class="col-lg-3 col-6">
+						<div>
+							<h2 class="mb-2">
+								<span class="counter-value" data-target="100">0</span>+
+							</h2>
+							<div class="text-muted">Projects Completed</div>
+						</div>
+					</div>
+					<!-- end col -->
+
+					<div class="col-lg-3 col-6">
+						<div>
+							<h2 class="mb-2">
+								<span class="counter-value" data-target="24">0</span>
+							</h2>
+							<div class="text-muted">Win Awards</div>
+						</div>
+					</div>
+					<!-- end col -->
+
+					<div class="col-lg-3 col-6">
+						<div>
+							<h2 class="mb-2">
+								<span class="counter-value" data-target="20.3">0</span>k
+							</h2>
+							<div class="text-muted">Satisfied Clients</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-3 col-6">
+						<div>
+							<h2 class="mb-2">
+								<span class="counter-value" data-target="50">0</span>
+							</h2>
+							<div class="text-muted">Employees</div>
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end counter -->
+
+		<!-- start Work Process -->
+		<section class="section">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8">
+						<div class="text-center mb-5">
+							<h3 class="mb-3 fw-bold">Our Work Process</h3>
+							<p class="text-muted mb-4 ff-secondary">In an ideal world
+								this website wouldn’t exist, a client would acknowledge the
+								importance of having web copy before the Proin vitae ipsum vel
+								ex finibus semper design starts.</p>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+
+				<div class="row text-center">
+					<div class="col-lg-4">
+						<div class="process-card mt-4">
+							<div class="process-arrow-img d-none d-lg-block">
+								<img
+									src="/themes/interactive/assets/images/landing/process-arrow-img.png"
+									alt="" class="img-fluid">
+							</div>
+							<div class="avatar-sm icon-effect mx-auto mb-4">
+								<div
+									class="avatar-title bg-transparent text-success rounded-circle h1">
+									<i class="ri-quill-pen-line"></i>
+								</div>
+							</div>
+
+							<h5>Tell us what you need</h5>
+							<p class="text-muted ff-secondary">The profession and the
+								employer and your desire to make your mark.</p>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-4">
+						<div class="process-card mt-4">
+							<div class="process-arrow-img d-none d-lg-block">
+								<img
+									src="/themes/interactive/assets/images/landing/process-arrow-img.png"
+									alt="" class="img-fluid">
+							</div>
+							<div class="avatar-sm icon-effect mx-auto mb-4">
+								<div
+									class="avatar-title bg-transparent text-success rounded-circle h1">
+									<i class="ri-user-follow-line"></i>
+								</div>
+							</div>
+
+							<h5>Get free quotes</h5>
+							<p class="text-muted ff-secondary">The most important aspect
+								of beauty was, therefore, an inherent part.</p>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-4">
+						<div class="process-card mt-4">
+							<div class="avatar-sm icon-effect mx-auto mb-4">
+								<div
+									class="avatar-title bg-transparent text-success rounded-circle h1">
+									<i class="ri-book-mark-line"></i>
+								</div>
+							</div>
+
+							<h5>Deliver high quality product</h5>
+							<p class="text-muted ff-secondary">We quickly learn to fear
+								and thus automatically avoid potentially.</p>
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end Work Process -->
+
+		<!-- start team -->
+		<section class="section bg-light" id="team">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8">
+						<div class="text-center mb-5">
+							<h3 class="mb-3 fw-bold">
+								Our <span class="text-danger">Team</span>
+							</h3>
+							<p class="text-muted mb-4 ff-secondary">To achieve this, it
+								would be necessary to have uniform grammar, pronunciation and
+								more common words. If several languages coalesce the grammar.</p>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+				<div class="row">
+					<div class="col-lg-3 col-sm-6">
+						<div class="card">
+							<div class="card-body text-center p-4">
+								<div class="avatar-xl mx-auto mb-4 position-relative">
+									<img src="/themes/interactive/assets/images/users/avatar-2.jpg"
+										alt="" class="img-fluid rounded-circle"> <a
+										href="apps-mailbox.html"
+										class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
+										<div class="avatar-title bg-transparent">
+											<i class="ri-mail-fill align-bottom"></i>
+										</div>
+									</a>
+								</div>
+								<!-- end card body -->
+								<h5 class="mb-1">
+									<a href="pages-profile.html" class="text-body">Nancy
+										Martino</a>
+								</h5>
+								<p class="text-muted mb-0 ff-secondary">Team Leader</p>
+							</div>
+						</div>
+						<!-- end card -->
+					</div>
+					<!-- end col -->
+					<div class="col-lg-3 col-sm-6">
+						<div class="card">
+							<div class="card-body text-center p-4">
+								<div class="avatar-xl mx-auto mb-4 position-relative">
+									<img src="/themes/interactive/assets/images/users/avatar-10.jpg"
+										alt="" class="img-fluid rounded-circle"> <a
+										href="apps-mailbox.html"
+										class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
+										<div class="avatar-title bg-transparent">
+											<i class="ri-mail-fill align-bottom"></i>
+										</div>
+									</a>
+								</div>
+								<!-- end card body -->
+								<h5 class="mb-1">
+									<a href="pages-profile.html" class="text-body">Henry Baird</a>
+								</h5>
+								<p class="text-muted mb-0 ff-secondary">Full Stack Developer</p>
+							</div>
+						</div>
+						<!-- end card -->
+					</div>
+					<!-- end col -->
+					<div class="col-lg-3 col-sm-6">
+						<div class="card">
+							<div class="card-body text-center p-4">
+								<div class="avatar-xl mx-auto mb-4 position-relative">
+									<img src="/themes/interactive/assets/images/users/avatar-3.jpg"
+										alt="" class="img-fluid rounded-circle"> <a
+										href="apps-mailbox.html"
+										class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
+										<div class="avatar-title bg-transparent">
+											<i class="ri-mail-fill align-bottom"></i>
+										</div>
+									</a>
+								</div>
+								<!-- end card body -->
+								<h5 class="mb-1">
+									<a href="pages-profile.html" class="text-body">Frank Hook</a>
+								</h5>
+								<p class="text-muted mb-0 ff-secondary">Project Manager</p>
+							</div>
+						</div>
+						<!-- end card -->
+					</div>
+					<!-- end col -->
+					<div class="col-lg-3 col-sm-6">
+						<div class="card">
+							<div class="card-body text-center p-4">
+								<div class="avatar-xl mx-auto mb-4 position-relative">
+									<img src="/themes/interactive/assets/images/users/avatar-8.jpg"
+										alt="" class="img-fluid rounded-circle"> <a
+										href="apps-mailbox.html"
+										class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
+										<div class="avatar-title bg-transparent">
+											<i class="ri-mail-fill align-bottom"></i>
+										</div>
+									</a>
+								</div>
+								<!-- end card body -->
+								<h5 class="mb-1">
+									<a href="pages-profile.html" class="text-body">Donald
+										Palmer</a>
+								</h5>
+								<p class="text-muted mb-0 ff-secondary">UI/UX Designer</p>
+							</div>
+						</div>
+						<!-- end card -->
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+				<div class="row">
+					<div class="col-lg-3 col-sm-6">
+						<div class="card">
+							<div class="card-body text-center p-4">
+								<div class="avatar-xl mx-auto mb-4 position-relative">
+									<img src="/themes/interactive/assets/images/users/avatar-5.jpg"
+										alt="" class="img-fluid rounded-circle"> <a
+										href="apps-mailbox.html"
+										class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
+										<div class="avatar-title bg-transparent">
+											<i class="ri-mail-fill align-bottom"></i>
+										</div>
+									</a>
+								</div>
+								<!-- end card body -->
+								<h5 class="mb-1">
+									<a href="pages-profile.html" class="text-body">Erica Kernan</a>
+								</h5>
+								<p class="text-muted mb-0 ff-secondary">Web Designer</p>
+							</div>
+						</div>
+						<!-- end card -->
+					</div>
+					<!-- end col -->
+					<div class="col-lg-3 col-sm-6">
+						<div class="card">
+							<div class="card-body text-center p-4">
+								<div class="avatar-xl mx-auto mb-4 position-relative">
+									<img src="/themes/interactive/assets/images/users/avatar-4.jpg"
+										alt="" class="img-fluid rounded-circle"> <a
+										href="apps-mailbox.html"
+										class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
+										<div class="avatar-title bg-transparent">
+											<i class="ri-mail-fill align-bottom"></i>
+										</div>
+									</a>
+								</div>
+								<!-- end card body -->
+								<h5 class="mb-1">
+									<a href="pages-profile.html" class="text-body">Alexis
+										Clarke</a>
+								</h5>
+								<p class="text-muted mb-0 ff-secondary">Backend Developer</p>
+							</div>
+						</div>
+						<!-- end card -->
+					</div>
+					<!-- end col -->
+					<div class="col-lg-3 col-sm-6">
+						<div class="card">
+							<div class="card-body text-center p-4">
+								<div class="avatar-xl mx-auto mb-4 position-relative">
+									<img src="/themes/interactive/assets/images/users/avatar-6.jpg"
+										alt="" class="img-fluid rounded-circle"> <a
+										href="apps-mailbox.html"
+										class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
+										<div class="avatar-title bg-transparent">
+											<i class="ri-mail-fill align-bottom"></i>
+										</div>
+									</a>
+								</div>
+								<!-- end card body -->
+								<h5 class="mb-1">
+									<a href="pages-profile.html" class="text-body">Marie Ward</a>
+								</h5>
+								<p class="text-muted mb-0 ff-secondary">Full Stack Developer</p>
+							</div>
+						</div>
+						<!-- end card -->
+					</div>
+					<!-- end col -->
+
+					<div class="col-lg-3 col-sm-6">
+						<div class="card">
+							<div class="card-body text-center p-4">
+								<div class="avatar-xl mx-auto mb-4 position-relative">
+									<img src="/themes/interactive/assets/images/users/avatar-7.jpg"
+										alt="" class="img-fluid rounded-circle"> <a
+										href="apps-mailbox.html"
+										class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
+										<div class="avatar-title bg-transparent">
+											<i class="ri-mail-fill align-bottom"></i>
+										</div>
+									</a>
+								</div>
+								<!-- end card body -->
+								<h5 class="mb-1">
+									<a href="pages-profile.html" class="text-body">Jack Gough</a>
+								</h5>
+								<p class="text-muted mb-0 ff-secondary">React Js Developer</p>
+							</div>
+						</div>
+						<!-- end card -->
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="text-center mt-2">
+							<a href="pages-team.html" class="btn btn-primary">View All
+								Members <i class="ri-arrow-right-line ms-1 align-bottom"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end team -->
+
+		<!-- start contact -->
+		<section class="section" id="contact">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8">
+						<div class="text-center mb-5">
+							<h3 class="mb-3 fw-bold">Get In Touch</h3>
+							<p class="text-muted mb-4 ff-secondary">We thrive when coming
+								up with innovative ideas but also understand that a smart
+								concept should be supported with faucibus sapien odio measurable
+								results.</p>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+
+				<div class="row gy-4">
+					<div class="col-lg-4">
+						<div>
+							<div class="mt-4">
+								<h5 class="fs-13 text-muted text-uppercase">Office Address
+									1:</h5>
+								<div class="ff-secondary fw-semibold">
+									4461 Cedar Street Moro, <br />AR 72368
+								</div>
+							</div>
+							<div class="mt-4">
+								<h5 class="fs-13 text-muted text-uppercase">Office Address
+									2:</h5>
+								<div class="ff-secondary fw-semibold">
+									2467 Swick Hill Street <br />New Orleans, LA
+								</div>
+							</div>
+							<div class="mt-4">
+								<h5 class="fs-13 text-muted text-uppercase">Working Hours:</h5>
+								<div class="ff-secondary fw-semibold">9:00am to 6:00pm</div>
+							</div>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-lg-8">
+						<div>
+							<form>
+								<div class="row">
+									<div class="col-lg-6">
+										<div class="mb-4">
+											<label for="name" class="form-label fs-13">Name</label> <input
+												name="name" id="name" type="text"
+												class="form-control bg-light border-light"
+												placeholder="Your name*">
+										</div>
+									</div>
+									<div class="col-lg-6">
+										<div class="mb-4">
+											<label for="email" class="form-label fs-13">Email</label> <input
+												name="email" id="email" type="email"
+												class="form-control bg-light border-light"
+												placeholder="Your email*">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="mb-4">
+											<label for="subject" class="form-label fs-13">Subject</label>
+											<input type="text" class="form-control bg-light border-light"
+												id="subject" name="subject" placeholder="Your Subject.." />
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="mb-3">
+											<label for="comments" class="form-label fs-13">Message</label>
+											<textarea name="comments" id="comments" rows="3"
+												class="form-control bg-light border-light"
+												placeholder="Your message..."></textarea>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-12 text-end">
+										<input type="submit" id="submit" name="send"
+											class="submitBnt btn btn-primary" value="Send Message">
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end contact -->
+
+		<!-- start cta -->
+		<section class="py-5 bg-primary position-relative">
+			<div class="bg-overlay bg-overlay-pattern opacity-50"></div>
+			<div class="container">
+				<div class="row align-items-center gy-4">
+					<div class="col-sm">
+						<div>
+							<h4 class="text-white mb-0 fw-bold">Build your web App/SaaS
+								with Velzon dashboard</h4>
+						</div>
+					</div>
+					<!-- end col -->
+					<div class="col-sm-auto">
+						<div>
+							<a href="https://1.envato.market/velzon-admin" target="_blank"
+								class="btn bg-gradient btn-danger"><i
+								class="ri-shopping-cart-2-line align-middle me-1"></i> Buy Now</a>
+						</div>
+					</div>
+					<!-- end col -->
+				</div>
+				<!-- end row -->
+			</div>
+			<!-- end container -->
+		</section>
+		<!-- end cta -->
+
+		<!-- Start footer -->
+		<footer class="custom-footer bg-dark py-5 position-relative">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-4 mt-4">
+						<div>
+							<div>
+								<img src="/themes/interactive/assets/images/logo-light.png"
+									alt="logo light" height="17">
+							</div>
+							<div class="mt-4 fs-13">
+								<p>Premium Multipurpose Admin & Dashboard Template</p>
+								<p class="ff-secondary">You can build any type of web
+									application like eCommerce, CRM, CMS, Project management apps,
+									Admin Panels, etc using Velzon.</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-lg-7 ms-lg-auto">
+						<div class="row">
+							<div class="col-sm-4 mt-4">
+								<h5 class="text-white mb-0">Company</h5>
+								<div class="text-muted mt-3">
+									<ul class="list-unstyled ff-secondary footer-list fs-14">
+										<li><a href="pages-profile.html">About Us</a></li>
+										<li><a href="pages-gallery.html">Gallery</a></li>
+										<li><a href="apps-projects-overview.html">Projects</a></li>
+										<li><a href="pages-timeline.html">Timeline</a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="col-sm-4 mt-4">
+								<h5 class="text-white mb-0">Apps Pages</h5>
+								<div class="text-muted mt-3">
+									<ul class="list-unstyled ff-secondary footer-list fs-14">
+										<li><a href="pages-pricing.html">Calendar</a></li>
+										<li><a href="apps-mailbox.html">Mailbox</a></li>
+										<li><a href="apps-chat.html">Chat</a></li>
+										<li><a href="apps-crm-deals.html">Deals</a></li>
+										<li><a href="apps-tasks-kanban.html">Kanban Board</a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="col-sm-4 mt-4">
+								<h5 class="text-white mb-0">Support</h5>
+								<div class="text-muted mt-3">
+									<ul class="list-unstyled ff-secondary footer-list fs-14">
+										<li><a href="pages-faqs.html">FAQ</a></li>
+										<li><a href="pages-faqs.html">Contact</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row text-center text-sm-start align-items-center mt-5">
+					<div class="col-sm-6">
+
+						<div>
+							<p class="copy-rights mb-0">
+								<script>
+									document.write(new Date().getFullYear())
+								</script>
+								© Velzon - Themesbrand
+							</p>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="text-sm-end mt-3 mt-sm-0">
+							<ul class="list-inline mb-0 footer-social-link">
+								<li class="list-inline-item"><a href="javascript: void(0);"
+									class="avatar-xs d-block">
+										<div class="avatar-title rounded-circle">
+											<i class="ri-facebook-fill"></i>
+										</div>
+								</a></li>
+								<li class="list-inline-item"><a href="javascript: void(0);"
+									class="avatar-xs d-block">
+										<div class="avatar-title rounded-circle">
+											<i class="ri-github-fill"></i>
+										</div>
+								</a></li>
+								<li class="list-inline-item"><a href="javascript: void(0);"
+									class="avatar-xs d-block">
+										<div class="avatar-title rounded-circle">
+											<i class="ri-linkedin-fill"></i>
+										</div>
+								</a></li>
+								<li class="list-inline-item"><a href="javascript: void(0);"
+									class="avatar-xs d-block">
+										<div class="avatar-title rounded-circle">
+											<i class="ri-google-fill"></i>
+										</div>
+								</a></li>
+								<li class="list-inline-item"><a href="javascript: void(0);"
+									class="avatar-xs d-block">
+										<div class="avatar-title rounded-circle">
+											<i class="ri-dribbble-line"></i>
+										</div>
+								</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<!-- end footer -->
+
+		<!--start back-to-top-->
+		<button onclick="topFunction()"
+			class="btn btn-danger btn-icon landing-back-top" id="back-to-top">
+			<i class="ri-arrow-up-line"></i>
+		</button>
+		<!--end back-to-top-->
+
+	</div>
+	<!-- end layout wrapper -->
+
+
+	<!-- JAVASCRIPT -->
+	<script
+		src="/themes/interactive/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="/themes/interactive/assets/libs/simplebar/simplebar.min.js"></script>
+	<script src="/themes/interactive/assets/libs/node-waves/waves.min.js"></script>
+	<script src="/themes/interactive/assets/libs/feather-icons/feather.min.js"></script>
+	<script
+		src="/themes/interactive/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
+	<script src="/themes/interactive/assets/js/plugins.js"></script>
+
+	<!--Swiper slider js-->
+	<script src="/themes/interactive/assets/libs/swiper/swiper-bundle.min.js"></script>
+
+	<!-- landing init -->
+	<script src="/themes/interactive/assets/js/pages/landing.init.js"></script>
 </body>
 </html>
-<script>
-let itemID = 0;
-let itemIndex = 0;
-$(document).ready(function() {
-    $('#custTable').DataTable({
-        "iDisplayLength": 20,
-        "ordering": true,
-        "order": [[0, 'desc']],
-        "fnDrawCallback": function( oSettings ) {
-            setRowId(0, 0, false);
-            hightlightROW();
-        }
-    });
-});
-
-function initialize(){
-    let lSize = document.getElementById("lSize").value;
-    if(lSize > 0){
-        document.getElementById('0$$').className = "even";
-    }
-}
-
-function setRowId(rowid, rowIndex, flag){
-    let lSize = document.getElementById("lSize").value;
-    for (i=0; i<lSize; i++) {
-        let currROW = document.getElementById(i+'$$');
-        if(currROW == null) continue;
-        if(i%2 == 1){
-            currROW.className = "odd";
-        }else{
-            currROW.className = "even";
-        }
-    }
-    if(flag){
-        itemID = rowid;
-        itemIndex = rowIndex;
-        if(rowIndex%2 == 1){ ;
-            document.getElementById(rowIndex+"$$").classList.remove('odd');
-        }
-        document.getElementById(rowIndex+'$$').classList.add('draft');
-    }
-     
-}
-function hightlightROW(){
-    let currROW2 = document.getElementById(itemIndex+'$$');
-    if(currROW2 != null){
-        currROW2.className = "draft";
-    }
-}
-
-function manageLead(cmd){
-    
-	if (itemID == 0) {
-		return showCustomerValidationDialog();
-	} else {
-		if (cmd=="EDIT") {
- 			//window.location = "Customer?tabid=editCustomer&cvId="+itemID+"&itemIndex="+itemIndex;
-			window.open("Lead?LeadId="+itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
-		}
-		else if (cmd=="DELETE") {
-			event.preventDefault();
-			$("#deleteLead").dialog({
-		    	resizable: false,
-		        height: 200,
-		        width: 500,
-		        modal: true,
-		        buttons: {
-		            "<spring:message code='BzComposer.global.ok'/>": function () {
-		                $(this).dialog("close");
-		                window.location = "Lead/delete?LeadId="+itemID;
-		            },
-		            <spring:message code='BzComposer.global.cancel'/>: function () {
-		                $(this).dialog("close");
-		                return false;
-		            }
-				}
-			});
-			return false;
-		}
-	}
-}
-
-function editLead(leadId){
-    window.location = "/Lead?LeadId="+leadId;
-}
-function addLead(){
-	//window.location = "Customer?tabid=NewCustomer";
-	window.open("Lead", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
-}
-
-function showCustomerValidationDialog(){
-	event.preventDefault();
-	$("#showCustomerValidationDialog").dialog({
-    	resizable: false,
-        height: 200,
-        width: 400,
-        modal: true,
-        buttons: {
-            "<spring:message code='BzComposer.global.ok'/>": function () {
-                $(this).dialog("close");
-            }
-        }
-    });
-    return false;
-}
-
-</script>
-<!-- Dialog box used in sales order page -->
-<div id="showCustomerValidationDialog" style="display:none;">
-	<p><spring:message code="BzComposer.customerinfo.selectcustomerfirst"/></p>
-</div>
-<div id="deleteLead" style="display:none;">
-	<p><spring:message code="BzComposer.lead.deleteselecteddelete"/></p>
-</div>

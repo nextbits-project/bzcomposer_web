@@ -38,8 +38,8 @@ public class LeadController {
 		title = new Title();
 	}
 
-	@GetMapping("/Leads")
-	public String loadLeads(@RequestParam(required = false, name = "tabid") String action, Model model,
+	@GetMapping("/Leadsold")
+	public String loadLeadsOld(@RequestParam(required = false, name = "tabid") String action, Model model,
 			HttpSession session) throws Exception {
 		String forward = "";
 		// String action = request.getParameter("tabid");
@@ -56,6 +56,30 @@ public class LeadController {
 		// c.setCompanyId(Integer.parseInt(companyID));
 		model.addAttribute("leadList", leadDAO.loadLeads(strCompanyId));
 
+		forward = "/leads/leads";
+
+		return forward;
+	}
+
+	
+	@GetMapping("/Leads")
+	public String loadLeads(@RequestParam(required = false, name = "tabid") String action, Model model,
+			HttpSession session) throws Exception {
+		String forward = "";
+		// String action = request.getParameter("tabid");
+		String strCompanyId = (String) session.getAttribute("CID");
+		if (StringUtils.isEmpty(strCompanyId)) {
+			// return "redirect:Login?tabid=loginPage";
+		}
+
+		// int companyId = Integer.parseInt(strCompanyId);
+
+		// ConstValue.companyId = companyId;
+
+		// ConstValue c = new ConstValue();
+		// c.setCompanyId(Integer.parseInt(companyID));
+		// model.addAttribute("leadList", leadDAO.loadLeads(strCompanyId));
+ 
 		forward = "/leads/leads";
 
 		return forward;
