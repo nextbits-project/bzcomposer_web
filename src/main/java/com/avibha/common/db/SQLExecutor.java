@@ -98,8 +98,8 @@ public class SQLExecutor {
 //            connection = dataSource.getConnection();
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bzc","root","123");
-			//connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bcacom_bzc_demo","bcacom_bzc_demo","!passw0rd#12!");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","root","admin");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bcacom_bzc_demo","bcacom_bzc_demo","!passw0rd#12!");
+			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","root","admin");
 		} catch (Exception ex) {
 			System.out.println("Not able to create DB connection " + ex.getMessage());
 			Loger.log(Loger.DEBUG,"Not able to create DB connection " + ex.getMessage());
