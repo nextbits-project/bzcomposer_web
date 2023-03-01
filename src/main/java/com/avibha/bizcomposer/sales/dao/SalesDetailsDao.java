@@ -124,7 +124,10 @@ public class SalesDetailsDao {
 		// VendorCategoryList List
 		VendorCategory cv = new VendorCategory();
 		request.setAttribute("VendorCategoryList",cv.getCVCategoryList(cid));
-
+		
+		//customerGroupList List
+		request.setAttribute("customerGroupList", cv.getCustomerGroupList());
+		
 		/* Item List */
 		String compId = (String) request.getSession().getAttribute("CID");
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
