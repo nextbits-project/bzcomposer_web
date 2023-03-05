@@ -72,6 +72,8 @@ public class CustomerDto{
 	private String remCredit;
 	private String memo;
 
+	private String customerGroup;
+	
 	private String term;
 	private String rep;
 	private String creditTerm;
@@ -1910,4 +1912,37 @@ public class CustomerDto{
 
 	public boolean isActive() { return active; }
 	public void setActive(boolean active) { this.active = active; }
+
+	public boolean isPhoneMobileNumber() {
+		return isPhoneMobileNumber;
+	}
+
+	public void setPhoneMobileNumber(boolean isPhoneMobileNumber) {
+		this.isPhoneMobileNumber = isPhoneMobileNumber;
+	}
+
+	public boolean isMobilePhoneNumber() {
+		return isMobilePhoneNumber;
+	}
+
+	public void setMobilePhoneNumber(boolean isMobilePhoneNumber) {
+		this.isMobilePhoneNumber = isMobilePhoneNumber;
+	}
+
+	public String getCustomerGroup() {
+		return customerGroup;
+	}
+
+	public void setCustomerGroup(String customerGroup) {
+		this.customerGroup = customerGroup;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public static String getCustomercolumns() {
+		return customerColumns;
+	}
+	
 }

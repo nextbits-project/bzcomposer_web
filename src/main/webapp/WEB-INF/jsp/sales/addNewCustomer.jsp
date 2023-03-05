@@ -265,7 +265,6 @@ $(function() {
                                 </td>
                                 <td>&nbsp;</td>
                             <tr>
-                            </tr>
 								<td>
 									<spring:message code="BzComposer.Companyinformation.Type" />
 								</td>
@@ -292,6 +291,15 @@ $(function() {
 								<td>&nbsp;</td>
 							</tr>
 							<tr>
+							<td><spring:message
+																code="BzComposer.Companyinformation.CustomerGroup" /></td>
+														<td><form:select path="customerGroup">
+																<form:option value="0">
+																	<spring:message code="BzComposer.ComboBox.Select" />
+																</form:option>
+																<form:options items="${customerGroupList}"
+																	itemValue="value" itemLabel="label" />
+															</form:select></td>
 							    <td>
                                     <spring:message code="BzComposer.global.oppeningunpaidbalance" />
                                 </td>

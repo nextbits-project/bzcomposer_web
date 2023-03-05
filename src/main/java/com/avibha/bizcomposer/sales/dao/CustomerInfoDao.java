@@ -1443,8 +1443,8 @@ public class CustomerInfoDao {
 			String sqlString = "insert into bca_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
 					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,ResellerTaxID,VendorOpenDebit,"
 					+ " VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,isPhoneMobileNumber,isMobilePhoneNumber,"
-					+ " MiddleName,DateInput,DateTerminated,isTerminated,DBAName, TermID,SalesRepID,ShipCarrierID,PaymentTypeID,CCTypeID) "
-					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					+ " MiddleName,DateInput,DateTerminated,isTerminated,DBAName, TermID,SalesRepID,ShipCarrierID,PaymentTypeID,CCTypeID, CustomerGroupID) "
+					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setInt(1, cvID);
@@ -1489,6 +1489,7 @@ public class CustomerInfoDao {
 			pstmt.setString(40, c.getShipping());
 			pstmt.setString(41, (c.getPaymentType()==null || c.getPaymentType().trim().equals(""))?null:c.getPaymentType()); //c.getPaymentType()
 			pstmt.setString(42, "".equalsIgnoreCase(c.getCcType()) ? null : c.getCcType());
+			pstmt.setString(43, c.getCustomerGroup());
 			Loger.log(sqlString);
 			int num = pstmt.executeUpdate();
 			if (num > 0) {
