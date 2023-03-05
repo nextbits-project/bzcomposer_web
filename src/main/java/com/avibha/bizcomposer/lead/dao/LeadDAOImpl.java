@@ -31,12 +31,18 @@ public class LeadDAOImpl implements LeadDAO {
 	@PostConstruct
 	private void postConstruct() {
 		db = new SQLExecutor();
-		dateFormat = new SimpleDateFormat("MM-DD-YYYY");
+		dateFormat = new SimpleDateFormat("dd MMM, YYYY");
 		java.util.Date date = new java.util.Date();
 
 	    String currentTime = dateFormat.format(date);
 	    
 	    System.out.println(currentTime);
+	}
+	
+	public static void main(String[] args) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, YYYY");
+		
+		System.out.println(dateFormat.format(new java.util.Date()));
 	}
 
 	@Override

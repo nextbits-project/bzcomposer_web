@@ -69,16 +69,10 @@ public class LeadController {
 		// String action = request.getParameter("tabid");
 		String strCompanyId = (String) session.getAttribute("CID");
 		if (StringUtils.isEmpty(strCompanyId)) {
-			// return "redirect:Login?tabid=loginPage";
+			return "redirect:Login?tabid=loginPage";
 		}
 
-		// int companyId = Integer.parseInt(strCompanyId);
-
-		// ConstValue.companyId = companyId;
-
-		// ConstValue c = new ConstValue();
-		// c.setCompanyId(Integer.parseInt(companyID));
-		// model.addAttribute("leadList", leadDAO.loadLeads(strCompanyId));
+		model.addAttribute("leadList", leadDAO.loadLeads(strCompanyId));
  
 		forward = "/leads/leads";
 
@@ -175,7 +169,7 @@ public class LeadController {
 
 		}
 
-		return forward;
+		return "redirect:Leads";
 	}
 
 }
