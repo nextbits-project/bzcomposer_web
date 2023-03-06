@@ -1418,7 +1418,101 @@ public class CustomerInfoDao {
 		}
 		return valid;
 	}
-	
+//	Insert Customer into storage_clientvendor
+	public boolean insertCustomerStorage(CustomerDto c, String compID) {
+		SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
+		PreparedStatement ps = null, pstmt = null;
+		boolean ret = false;
+		try {
+			String oBal = "0.0";
+			String exCredit = "0.0";
+			String status = "N";
+			PurchaseInfo pinfo = new PurchaseInfo();
+			int cvID = pinfo.getLastClientVendorID();
+
+			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
+				oBal = c.getOpeningUB();
+
+			if (c.getExtCredit() != null && c.getExtCredit().trim().length() > 0)
+				exCredit = c.getExtCredit();
+
+			VendorCategory vc = new VendorCategory();
+			String vcName = vc.CVCategory(c.getType());
+
+			String sqlString = "insert into storage_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
+					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,ResellerTaxID,VendorOpenDebit,"
+					+ " VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,isPhoneMobileNumber,isMobilePhoneNumber,"
+					+ " MiddleName,DateInput,DateTerminated,isTerminated,DBAName, TermID,SalesRepID,ShipCarrierID,PaymentTypeID,CCTypeID, CustomerGroupID) "
+					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+			pstmt = con.prepareStatement(sqlString);
+			pstmt.setInt(1, cvID);
+			pstmt.setString(2, c.getCname());
+			pstmt.setDate(3, (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ") : string2date(c.getDateAdded()));
+			pstmt.setString(4, c.getTitle());
+			pstmt.setString(5, c.getFirstName());
+			pstmt.setString(6, c.getLastName());
+			pstmt.setString(7, c.getAddress1());
+			pstmt.setString(8, c.getAddress2());
+			pstmt.setString(9, c.getCity());
+			pstmt.setString(10, c.getState());
+			pstmt.setString(11, c.getProvince());
+			pstmt.setString(12, c.getCountry());
+			pstmt.setString(13, c.getZipCode());
+			pstmt.setString(14, c.getPhone());
+			pstmt.setString(15, c.getCellPhone());
+			pstmt.setString(16, c.getFax());
+			pstmt.setString(17, c.getHomePage());
+			pstmt.setString(18, c.getEmail());
+			pstmt.setString(19, compID);
+			pstmt.setString(20, c.getTexID());
+			pstmt.setDouble(21, Double.parseDouble(oBal));
+			pstmt.setDouble(22, Double.parseDouble(exCredit));
+			pstmt.setString(23, c.getMemo());
+			pstmt.setString(24, c.getTaxAble());
+			pstmt.setString(25, c.getIsclient());
+			pstmt.setString(26, c.getType());
+			pstmt.setString(27, vcName);
+			pstmt.setString(28, "1");
+			pstmt.setString(29, "0");
+			pstmt.setString(30, status);
+			pstmt.setBoolean(31, c.isIsPhoneMobileNumber());
+			pstmt.setBoolean(32, c.isIsMobilePhoneNumber());
+			pstmt.setString(33, c.getMiddleName());
+			pstmt.setDate(34, (c.getDateInput()==null || c.getDateInput().trim().equals(""))?null:string2date(c.getDateInput()));
+			pstmt.setDate(35, (c.getTerminatedDate()==null || c.getTerminatedDate().trim().equals(""))?null:string2date(c.getTerminatedDate()));
+			pstmt.setBoolean(36, c.isTerminated());
+			pstmt.setString(37, c.getDbaName());
+			pstmt.setInt(38, (c.getTerm()==null || c.getTerm().trim().equals(""))?0:Integer.parseInt(c.getTerm())); //c.getTerm()
+			pstmt.setString(39, (c.getRep()==null || c.getRep().trim().equals(""))?null:c.getRep()); //c.getRep()
+			pstmt.setString(40, c.getShipping());
+			pstmt.setString(41, (c.getPaymentType()==null || c.getPaymentType().trim().equals(""))?null:c.getPaymentType()); //c.getPaymentType()
+			pstmt.setString(42, "".equalsIgnoreCase(c.getCcType()) ? null : c.getCcType());
+			pstmt.setString(43, c.getCustomerGroup());
+			Loger.log(sqlString);
+			int num = pstmt.executeUpdate();
+			if (num > 0) {
+				ret = true;
+			}
+
+			
+			// -------------------Code to save services---END-----------------------
+		} catch (SQLException ee) {
+			Loger.log(2,"SQLException in Class CustomerInfo,  method -insertCustomerStorage "+ ee.toString());
+			
+		}finally {
+			try {
+				if (ps != null) { db.close(ps); }
+				if (pstmt != null) { db.close(pstmt); }
+				if(con != null){ db.close(con); }
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return ret;
+	}
+//	Insert Customer
 	public boolean insertCustomer(CustomerDto c, String compID) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
@@ -1494,6 +1588,7 @@ public class CustomerInfoDao {
 			int num = pstmt.executeUpdate();
 			if (num > 0) {
 				ret = true;
+				insertCustomerStorage(c, compID);
 			}
 
 			pinfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
