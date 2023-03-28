@@ -57,10 +57,10 @@ public class SalesController {
 		String ITEM_URI = "/Item";
 		String INVOICE_URI = "/Invoice";
 		String SALES_ORDER_URI = "/SalesOrder";
+
 		String SALES_MANAGER_URI = "/DataManager";
 		ConfigurationInfo configInfo = new ConfigurationInfo();
 		configInfo.setCurrentRequest(request);
-
 		String forward = "sales/invoice";
 		if (IN_URI.endsWith(CUSTOMER_URI)) {
 			forward = "/sales/customerNew";
@@ -85,6 +85,8 @@ public class SalesController {
 		// String companyID="1";
 		HttpSession sess = request.getSession();
 		String companyID = (String) sess.getAttribute("CID");
+		String companyName = (String) sess.getAttribute("user");
+		ConstValue.setCompanyName(companyName);
 		String user = (String) sess.getAttribute("username"); // Added on 15-06-2019
 		String userRole = (String) sess.getAttribute("userRole");
 		System.out.println("User is:" + user);

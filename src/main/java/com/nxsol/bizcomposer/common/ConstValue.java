@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 public class ConstValue {
 
 	public static int companyId;
+	public static String companyName;
     public static String countryID = "231";
     public static String stateID = "3924";
     public static String cityID = "42798";
@@ -33,7 +34,15 @@ public class ConstValue {
 	public static void setCompanyId(int companyId) {
 		ConstValue.companyId = companyId;
 	}
-	
+
+	public static String getCompanyName() {
+		return companyName;
+	}
+
+	public static void setCompanyName(String companyName) {
+		ConstValue.companyName = companyName;
+	}
+
 	public static SimpleDateFormat getSimpleDateFormat() {
         return new SimpleDateFormat("yyyy/MM/dd");
     }

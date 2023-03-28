@@ -109,14 +109,14 @@ public class InvoiceInfoDao {
 			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
-//			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
-//					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
-//					+ " FROM bca_shippingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
-//					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
-			String sqlString = "SELECT distinct a.BSAddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
-					+ "a.City, ct.Name As CityName, a.State, s.name AS StateName, a.Country,c.name AS CountryName "
-					+ " FROM bca_bsaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
-					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.AddressType=0";
+			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
+					+ "a.City, a.State, a.Country "
+					+ " FROM bca_shippingaddress AS a "
+					+ " WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
+//			String sqlString = "SELECT distinct a.BSAddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
+//					+ "a.City, ct.Name As CityName, a.State, s.name AS StateName, a.Country,c.name AS CountryName "
+//					+ " FROM bca_bsaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
+//					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.AddressType=0";
 			if(cvID != null && !cvID.trim().isEmpty()){
 				sqlString = sqlString + " AND a.ClientVendorID="+cvID+" LIMIT 1";
 			}
@@ -131,8 +131,8 @@ public class InvoiceInfoDao {
 				invoiceDto.setAddress1(rs.getString(6));
 				invoiceDto.setAddress2(rs.getString(7));
 				invoiceDto.setZipcode(rs.getString("ZipCode"));
-				invoiceDto.setState(rs.getString("StateName"));
-				invoiceDto.setCountry(rs.getString("CountryName"));
+				invoiceDto.setState(rs.getString("State"));
+				invoiceDto.setCountry(rs.getString("Country"));
 				String ADDRESS_ASD22 = invoiceDto.getAddress2();
 				if(ADDRESS_ASD22 != null && ADDRESS_ASD22.trim().length()>0){
 					ADDRESS_ASD22 = "\n"+ADDRESS_ASD22;
@@ -142,11 +142,11 @@ public class InvoiceInfoDao {
 				String ship = invoiceDto.getFullName()
 						+ "\n" + rs.getString(3)
 						+ "\n" + rs.getString(6) + ADDRESS_ASD22
-						+ "\n" + rs.getString("CityName") +", "+ rs.getString("StateName") +" "+ rs.getString("ZipCode");
+						+ "\n" + rs.getString("City") +", "+ rs.getString("State") +" "+ rs.getString("ZipCode");
 				if(configDto.isShowUSAInBillShipAddress()) {
-					ship = ship +"\n"+ rs.getString("CountryName");
+					ship = ship +"\n"+ rs.getString("Country");
 				}else if(!invoiceDto.getCountry().equals("231")){
-					ship = ship +"\n"+ rs.getString("CountryName");
+					ship = ship +"\n"+ rs.getString("Country");
 				}
 				if (ship.equals(""))
 					invoiceDto.setShipTo("");
@@ -180,14 +180,18 @@ public class InvoiceInfoDao {
 			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
 
+			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
+					+ "a.City, a.State, a.Country "
+					+ " FROM bca_billingaddress AS a "
+					+ " WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
 //			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
 //					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
 //					+ " FROM bca_billingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
 //					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
-			String sqlString = "SELECT distinct a.BSAddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
-					+ "a.City, ct.Name As CityName, a.State, s.name AS StateName, a.Country,c.name AS CountryName "
-					+ " FROM bca_bsaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
-					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.AddressType=1";
+//			String sqlString = "SELECT distinct a.BSAddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
+//					+ "a.City, ct.Name As CityName, a.State, s.name AS StateName, a.Country,c.name AS CountryName "
+//					+ " FROM bca_bsaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
+//					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.AddressType=1";
 			if(cvID != null && !cvID.trim().isEmpty()){
 				sqlString = sqlString + " AND a.ClientVendorID="+cvID+" LIMIT 1";
 			}
@@ -202,8 +206,8 @@ public class InvoiceInfoDao {
 				invoiceDto.setAddress1(rs.getString(6));
 				invoiceDto.setAddress2(rs.getString(7));
 				invoiceDto.setZipcode(rs.getString("ZipCode"));
-				invoiceDto.setState(rs.getString("StateName"));
-				invoiceDto.setCountry(rs.getString("CountryName"));
+				invoiceDto.setState(rs.getString("State"));
+				invoiceDto.setCountry(rs.getString("Country"));
 				String ADDRESS_ASD22 = invoiceDto.getAddress2();
 				if(ADDRESS_ASD22 != null && ADDRESS_ASD22.trim().length()>0){
 					ADDRESS_ASD22 = "\n"+ADDRESS_ASD22;
@@ -213,11 +217,11 @@ public class InvoiceInfoDao {
 				String bill = invoiceDto.getFullName()
 						+ "\n" + rs.getString(3)
 						+ "\n" + rs.getString(6) + ADDRESS_ASD22
-						+ "\n" + rs.getString("CityName") +", "+ rs.getString("StateName") +" "+ rs.getString("ZipCode");
+						+ "\n" + rs.getString("City") +", "+ rs.getString("State") +" "+ rs.getString("ZipCode");
 				if(configDto.isShowUSAInBillShipAddress()) {
-					bill = bill +"\n"+ rs.getString("CountryName");
+					bill = bill +"\n"+ rs.getString("Country");
 				}else if(!invoiceDto.getCountry().equals("231")){
-					bill = bill +"\n"+ rs.getString("CountryName");
+					bill = bill +"\n"+ rs.getString("Country");
 				}
 				if (bill.equals(""))
 					invoiceDto.setBillTo("");
