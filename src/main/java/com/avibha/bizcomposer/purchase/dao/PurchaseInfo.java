@@ -27,7 +27,9 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
+import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /* 
  * 
@@ -707,6 +709,267 @@ public class PurchaseInfo {
 		return ret;
 	}
 
+	
+	/** make the address as updated, return addressId
+     *N:Default
+     *U:multiple address
+     *O:removed
+     */
+    public static int insertBillingShippingAddress(TblBSAddress2 address, int addressType, boolean defaultAddress) throws SQLException {
+        String sql_update = null;
+        String sql_insert = null;
+        if (address.getAddressName().equalsIgnoreCase("Default")) {
+            address.setAddressName("Default");
+        } else if (address.getAddressName().equals("")) {
+            address.setAddressName(address.getName() + JProjectUtil.dateFormatLong.format(new Date()));
+        }
+        if (addressType == TblBSAddress2.BILLING_ADDR_TYPE) {
+              if(address.getState()==null)
+                  address.setState("");
+            sql_update = "UPDATE bca_billingaddress SET Status = 'U' "
+                    + "WHERE AddressID = " + address.getId();
+
+            sql_insert = "INSERT INTO bca_billingaddress (AddressName,"
+                    + "ClientVendorID,Name,FirstName,LastName,Address1,"
+                    + "Address2,City,State,Province,Country,ZipCode,Status,DateAdded,Phone,CellPhone,Fax,isDefault,Active) VALUES ("
+                    + "'" + ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''") + "'" + ","
+                    + address.getCvId() + ","
+                    + "'" + ConstValue.hateNull(address.getName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getLastName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCity()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getState()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getProvince()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCountry()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''") + "'" + ","
+                    + "'" + address.getStatus() + "'" + ","
+                    + //(defaultAddress?"'N'":"'U'")+","+
+                    "'" + JProjectUtil.getDateFormater().format(new Date()) + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getPhone()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getFax()).replaceAll("'", "''") + "'" + ","
+                    + address.getIsDefault() + ","
+                    + address.getActive()
+                    + ")";
+        } else {
+            sql_update = "UPDATE bca_shippingaddress SET Status = 'U' "
+                    + "WHERE AddressID = " + address.getId();
+
+            sql_insert = "INSERT INTO bca_shippingaddress (AddressName,ClientVendorID,Name,FirstName,LastName,Address1,"
+                    + "Address2,City,State,Province,Country,ZipCode,Status,DateAdded,Phone,CellPhone,Fax,isDefault,Active) VALUES ("
+                    + "'" + ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''") + "'" + ","
+                    + address.getCvId() + ","
+                    + "'" + ConstValue.hateNull(address.getName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getLastName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCity()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getState()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getProvince()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCountry()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''") + "'" + ","
+                    + "'" + address.getStatus() + "'" + ","
+                    + //(defaultAddress?"'N'":"'U'")+","+
+                    "'" + JProjectUtil.getDateFormater().format(new Date()) + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getPhone()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getFax()).replaceAll("'", "''") + "'" + ","
+                    + address.getIsDefault() + ","
+                    + address.getActive()
+                    + ")";
+        }      
+
+        SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+        int id = -1;
+        try {
+            /* new Code */
+//            if (defaultAddress)
+//                setToUndefaultAddress(address,addressType);
+
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql_update);
+            stmt.executeUpdate(sql_insert);
+
+            innsertStorageBillingShippingAdd(address, addressType, defaultAddress);
+            if (addressType == TblBSAddress2.BILLING_ADDR_TYPE) {
+                rs = stmt.executeQuery("SELECT MAX(AddressID) AS LastID FROM bca_billingaddress");//stmt.executeQuery("SELECT @@IDENTITY AS LastID");
+            }else{
+                rs = stmt.executeQuery("SELECT MAX(AddressID) AS LastID FROM bca_shippingaddress");//stmt.executeQuery("SELECT @@IDENTITY AS LastID");
+            }
+            
+            if (rs.next()) {
+                id = rs.getInt("LastID");
+            }
+            /**
+             * This method is used for adding billing address and shipping address id
+             * in smd_cvinfo table
+             *
+             * It is usefull for merging BCA-SMC
+             * @param cv
+             * @param cvId
+             */
+
+            if (address.getIsDefault() == 1) {
+                updateClientInfo(address);
+            }
+
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+
+        return id;
+    }
+	
+	
+    public static void innsertStorageBillingShippingAdd(TblBSAddress2 address, int addressType, boolean defaultAddress) throws SQLException {
+        String sql_update = null;
+        String sql_insert = null;
+
+        if (addressType == TblBSAddress2.BILLING_ADDR_TYPE) {
+            sql_update = "UPDATE storage_billingaddress "
+                    + "SET Status = 'U' WHERE AddressID = " + address.getId();
+
+            sql_insert = "INSERT INTO storage_billingaddress (AddressName,"
+                    + "ClientVendorID,Name,FirstName,LastName,Address1,"
+                    + "Address2,City,State,Province,Country,ZipCode,Status,"
+                    + "DateAdded,Phone,CellPhone,Fax,isDefault,Active) VALUES ("
+                    + "'" + ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''") + "'" + ","
+                    + address.getCvId() + ","
+                    + "'" + ConstValue.hateNull(address.getName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getLastName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCity()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getState()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getProvince()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCountry()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''") + "'" + ","
+                    + (defaultAddress ? "'N'" : "'U'") + ","
+                    + "'" + JProjectUtil.getDateFormater().format(new Date()) + "'" + ","
+//                    + "'" + (!ConstValue.getLikeToken().equals("$") ? JProjectUtil.dateFormatLong.format(new Date()): JProjectUtil.dateTimeFormatLong.format(new Date()))+ "'" + ","
+                    + "'" + ConstValue.hateNull(address.getPhone()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getFax()).replaceAll("'", "''") + "'" + ","
+                    + address.getIsDefault() + ","
+                    + address.getActive()
+                    + ")";
+        } else {
+            sql_update = "UPDATE storage_shippingaddress "
+                    + "SET Status = 'U' WHERE AddressID = " + address.getId();
+
+            sql_insert = "INSERT INTO storage_shippingaddress (AddressName,"
+                    + "ClientVendorID,Name,FirstName,LastName,Address1,"
+                    + "Address2,City,State,Province,Country,ZipCode,Status,"
+                    + "DateAdded,Phone,CellPhone,Fax,isDefault,Active) VALUES ("
+                    + "'" + ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''") + "'" + ","
+                    + address.getCvId() + ","
+                    + "'" + ConstValue.hateNull(address.getName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getLastName()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCity()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getState()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getProvince()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCountry()).replaceAll("'", "''")+ "'" + ","
+                    + "'" + ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''")+ "'" + ","
+                    + (defaultAddress ? "'N'" : "'U'") + ","
+                            + "'" + JProjectUtil.getDateFormater().format(new Date()) + "'" + ","
+
+//                    + "'" + (!ConstValue.getLikeToken().equals("$") ? JProjectUtil.dateFormatLong.format(new Date()): JProjectUtil.dateTimeFormatLong.format(new Date())) + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getPhone()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''") + "'" + ","
+                    + "'" + ConstValue.hateNull(address.getFax()).replaceAll("'", "''") + "'" + ","
+                    + address.getIsDefault() + ","
+                    + address.getActive()
+                    + ")";
+        }
+        SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql_update);
+            stmt.executeUpdate(sql_insert);
+        } finally {
+            if(rs != null) rs.close();
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+    }
+	
+    
+    /**
+     * This method is used for adding billing address and shipping address id
+     * in smd_cvinfo table
+     *
+     * It is usefull for merging BCA-SMC
+     * @param cv
+     * @param cvId
+     */
+    public static void updateClientInfo(TblBSAddress2 address){        
+    	Statement stmt = null;
+		ResultSet rs = null;
+		SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
+        int billingAddressId = -1;
+        int shippingAddressId = -1;
+
+        String sql =   "SELECT MAX(AddressID) AS billingAddressId FROM storage_billingaddress";
+        String sql_1 = "SELECT MAX(AddressID) AS shippingAddressId FROM storage_shippingaddress";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                billingAddressId = rs.getInt("billingAddressId");
+            }
+
+            rs = stmt.executeQuery(sql_1);
+            while (rs.next()) {
+                shippingAddressId = rs.getInt("shippingAddressId");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        String sql2 = "UPDATE smd_cvinfo SET "
+                + "BillingAddressID = " + billingAddressId + " , shippingAddressId = " + shippingAddressId+" " +
+                "WHERE ClientVendorID = "+address.getCvId();
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql2);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
+    
 	/*
 	 * The method inserts the information of the vendor about finance charges.
 	 */
