@@ -19,6 +19,7 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
+import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.util.LabelValueBean;
@@ -1553,6 +1554,10 @@ public class CustomerInfoDao {
 				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 						c.getCountry(), c.getZipCode(), "0");
+				TblBSAddress2 address = new TblBSAddress2();
+				address.setAddressWithCustomerDto(c, cvID);
+				pinfo.insertBillingShippingAddress(address, 1, true);
+				pinfo.insertBillingShippingAddress(address, 0, true);
 			}
 
 			if (c.getCvTypeID() != 3) {
@@ -1675,8 +1680,6 @@ public class CustomerInfoDao {
 		try {
 			stmt = con.createStatement();
 			Loger.log("sql query=>" + sql2);
-			stmt.executeUpdate(sql2);
-
 			int num = stmt.executeUpdate(sql2);
 			if (num > 0) {
 				ret = true;
@@ -1713,7 +1716,7 @@ public class CustomerInfoDao {
 		TblAccount account = new TblAccount();
 		account.setParentID(0);
 		account.setIsCategory(false);
-		account.setName(c.getLastName() + ", " + c.getFirstName() + " - " + c.getCompanyName());
+		account.setName(c.getLastName() + ", " + c.getFirstName() + " - " + c.getCname());
 		account.setAccountTypeID(3);
 		account.setAccountCategoryID(0);
 		account.setCvID(cvId);

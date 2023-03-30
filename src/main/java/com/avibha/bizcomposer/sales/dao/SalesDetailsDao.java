@@ -59,9 +59,13 @@ public class SalesDetailsDao {
 
 		customerDto.setTaxAble( "on".equalsIgnoreCase(request.getParameter("isTaxable"))?"1":"0" );
 		customerDto.setIsclient( "on".equalsIgnoreCase(request.getParameter("isAlsoClient"))?"1":"2" );	// 1: Customer+Vendor, 2: Customer, 3: Vendor
+		customerDto.setCvTypeID( "on".equalsIgnoreCase(request.getParameter("isAlsoClient"))?1:2 );	// 1: Customer+Vendor, 2: Customer, 3: Vendor
 		customerDto.setFsUseIndividual( "on".equalsIgnoreCase(request.getParameter("UseIndividualFinanceCharges"))?"1":"0" );
 		customerDto.setFsAssessFinanceCharge( "on".equalsIgnoreCase(request.getParameter("AssessFinanceChk"))?"1":"0" );
 		customerDto.setFsMarkFinanceCharge( "on".equalsIgnoreCase(request.getParameter("FChargeInvoiceChk"))?"1":"0" );
+//		customerDto.setStateName(compId);
+//		customerDto.setCountryName(compId);
+//		customerDto.setCityName(compId);
 		try{
 			boolean addCust = customer.insertCustomer(customerDto, compId);
 			if(addCust){

@@ -715,7 +715,7 @@ public class PurchaseInfo {
      *U:multiple address
      *O:removed
      */
-    public static int insertBillingShippingAddress(TblBSAddress2 address, int addressType, boolean defaultAddress) throws SQLException {
+    public int insertBillingShippingAddress(TblBSAddress2 address, int addressType, boolean defaultAddress) throws SQLException {
         String sql_update = null;
         String sql_insert = null;
         if (address.getAddressName().equalsIgnoreCase("Default")) {
@@ -929,8 +929,8 @@ public class PurchaseInfo {
         int billingAddressId = -1;
         int shippingAddressId = -1;
 
-        String sql =   "SELECT MAX(AddressID) AS billingAddressId FROM storage_billingaddress";
-        String sql_1 = "SELECT MAX(AddressID) AS shippingAddressId FROM storage_shippingaddress";
+        String sql =   "SELECT MAX(AddressID) AS billingAddressId FROM bca_billingaddress";
+        String sql_1 = "SELECT MAX(AddressID) AS shippingAddressId FROM bca_shippingaddress";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
