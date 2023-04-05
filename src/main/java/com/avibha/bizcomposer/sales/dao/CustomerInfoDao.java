@@ -1537,7 +1537,7 @@ public class CustomerInfoDao {
 			pinfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(),
 					c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 			int bsAddID = pinfo.getLastBsAdd() + 1;
-
+			TblBSAddress2 address = new TblBSAddress2();
 			if ("0".equals(c.getSetdefaultbs())) {
 				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(),
 						c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(), c.getBsstate(),
@@ -1546,6 +1546,11 @@ public class CustomerInfoDao {
 				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(),
 						c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(), c.getShstate(),
 						c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
+				
+				address.setAddressWithCustomerDtoBilling(c, cvID);
+				pinfo.insertBillingShippingAddress(address, 1, true);
+				address.setAddressWithCustomerDtoShipping(c, cvID);
+				pinfo.insertBillingShippingAddress(address, 0, true);
 			} else {
 				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
@@ -1554,7 +1559,6 @@ public class CustomerInfoDao {
 				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 						c.getCountry(), c.getZipCode(), "0");
-				TblBSAddress2 address = new TblBSAddress2();
 				address.setAddressWithCustomerDto(c, cvID);
 				pinfo.insertBillingShippingAddress(address, 1, true);
 				pinfo.insertBillingShippingAddress(address, 0, true);

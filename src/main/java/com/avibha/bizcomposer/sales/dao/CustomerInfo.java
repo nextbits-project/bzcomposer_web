@@ -30,6 +30,7 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /*
  * 
@@ -1755,6 +1756,11 @@ public class CustomerInfo{
 			boolean addrStatus2 = pinfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(), c.getShlastName(), c.getShaddress1(),
 					c.getShaddress2(), c.getShcity(), c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 
+			TblBSAddress2 address = new TblBSAddress2();
+			address.setAddressWithCustomerDtoBilling(c, cvID);
+			pinfo.insertBillingShippingAddress(address, 1, true);
+			address.setAddressWithCustomerDtoShipping(c, cvID);
+			pinfo.insertBillingShippingAddress(address, 0, true);
 			/*Loger.log("ANU RATE___" + c.getAnnualIntrestRate());
 			Loger.log("MIN ____________ " + c.getMinFCharges());
 			Loger.log("Grace Period ____________ " + c.getGracePrd());*/

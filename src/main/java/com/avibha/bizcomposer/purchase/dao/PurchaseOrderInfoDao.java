@@ -162,10 +162,10 @@ public class PurchaseOrderInfoDao {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			con = db.getConnection();
-			String sqlString = "SELECT distinct a.BSAddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
+			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
 					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
-					+ " FROM bca_bsaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
-					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.AddressType=1";
+					+ " FROM bca_billingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
+					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N') ";
 			if(cvID != null && !cvID.trim().isEmpty()){
 				sqlString = sqlString + " AND a.ClientVendorID="+cvID+" LIMIT 1";
 			}
@@ -224,10 +224,10 @@ public class PurchaseOrderInfoDao {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 			con = db.getConnection();
-			String sqlString = "SELECT distinct a.BSAddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.City,a.ZipCode,"
+			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.City,a.ZipCode,"
 					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
-					+ " FROM bca_bsaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
-					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.AddressType=0";
+					+ " FROM bca_shippingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
+					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N') ";
 			if(cvID != null && !cvID.trim().isEmpty()){
 				sqlString = sqlString + " AND a.ClientVendorID="+cvID+" LIMIT 1";
 			}
@@ -1532,16 +1532,21 @@ public class PurchaseOrderInfoDao {
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		CountryState conState = new CountryState();
+		String address="";
 		try {
 			int addressType = (cType!=null && cType.equals("bill"))?1:0;
-			String address = "select * from bca_bsaddress where AddressType=? and BSAddressID=? and Status in ('U','N')";
+			if(addressType==0) {
+				address = "select * from bca_shippingaddress where ClientVendorID=? and Status in ('N')";
+			}else {
+				address = "select * from bca_billingaddress where ClientVendorID=? and Status in ('N')";
+			}
 			pstmt = con.prepareStatement(address);
-			pstmt.setInt(1, addressType);
-			pstmt.setString(2, vForm.getBsAddressID());
+//			pstmt.setInt(1, addressType);
+			pstmt.setString(1, vForm.getClientVendorID());
 			rs = pstmt.executeQuery();
 			if(rs.next()){
 				vForm.setClientVendorID(rs.getString("ClientVendorID"));
-				vForm.setBsAddressID(rs.getString("BSAddressID"));
+				vForm.setBsAddressID(rs.getString("AddressID"));
 				vForm.setCname(rs.getString("Name"));
 				vForm.setFirstName(rs.getString("FirstName"));
 				vForm.setLastName(rs.getString("LastName"));

@@ -15,6 +15,7 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
@@ -361,6 +362,7 @@ public class PurchaseInfoDao {
 					c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 
 			int bsAddID = pinfo.getLastBsAdd() + 1;
+			TblBSAddress2 address = new TblBSAddress2();
 			if ("0".equals(c.getSetdefaultbs())) {
 				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(),
 						c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(), c.getBsstate(),
@@ -369,6 +371,10 @@ public class PurchaseInfoDao {
 				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(),
 						c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(), c.getShstate(),
 						c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
+				address.setAddressWithVendorDtoBilling(c, cvID);
+				purchaseInfo.insertBillingShippingAddress(address, 1, true);
+				address.setAddressWithVendorDtoShipping(c, cvID);
+				purchaseInfo.insertBillingShippingAddress(address, 0, true);
 			} else {
 				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
@@ -377,6 +383,9 @@ public class PurchaseInfoDao {
 				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 						c.getCountry(), c.getZipCode(), "0");
+				address.setAddressWithVendorDto(c, cvID);
+				purchaseInfo.insertBillingShippingAddress(address, 1, true);
+				purchaseInfo.insertBillingShippingAddress(address, 0, true);
 			}
 
 			int useIndividual = "1".equals(c.getFsUseIndividual()) ? 1 : 0;
@@ -1111,8 +1120,8 @@ public class PurchaseInfoDao {
 				customer.setDbaName(rs.getString(53));
 
 				String sqlString1 = "SELECT Name,FirstName,LastName,Address1,Address2,City,ZipCode,Country,State,Province,DBAName "
-						+ " FROM bca_bsaddress WHERE ClientVendorID='" + cvId
-						+ "' and AddressType='1' and Status in ('N', 'U')";
+						+ " FROM bca_billingaddress WHERE ClientVendorID='" + cvId
+						+ "' and Status in ('N')";
 				pstmt1 = con.prepareStatement(sqlString1);
 				rs1 = pstmt1.executeQuery();
 				if (rs1.next()) {
@@ -1131,8 +1140,8 @@ public class PurchaseInfoDao {
 				}
 
 				String sqlString2 = "SELECT Name,FirstName,LastName,Address1,Address2,City,ZipCode,Country,State,Province,DBAName "
-						+ "FROM bca_bsaddress WHERE ClientVendorID='" + cvId
-						+ "' and AddressType='0' and Status in ('N', 'U')";
+						+ "FROM bca_shippingaddress WHERE ClientVendorID='" + cvId
+						+ "' and Status in ('N')";
 				pstmt3 = con.prepareStatement(sqlString2);
 				rs2 = pstmt3.executeQuery();
 				if (rs2.next()) {

@@ -139,6 +139,7 @@ public class PurchaseOrderController {
 				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				String cType = request.getParameter("CType");
 				vendorDto.setBsAddressID(request.getParameter("addressID"));
+				vendorDto.setClientVendorID(request.getParameter("custID"));
 				pdetails.getConfirmAddress(request, vendorDto, cType);
 				request.setAttribute("ConfirmType", cType);
 				request.setAttribute("addressType", cType.equalsIgnoreCase("bill")?1:0);
@@ -148,7 +149,7 @@ public class PurchaseOrderController {
 				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				String cType = request.getParameter("CType");
 				pdetails.addConfirmAddress(request, vendorDto);
-				forward = "redirect:/PurchaseOrder?tabid=AddressConfirm&CType="+cType+"&addressID="+vendorDto.getBsAddressID();
+				forward = "redirect:/PurchaseOrder?tabid=AddressConfirm&CType="+cType+"&addressID="+vendorDto.getBsAddressID()+"&custID="+vendorDto.getClientVendorID();
 			}
 			else if (action.equalsIgnoreCase("IsPoNumExist")) {
 				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
@@ -271,7 +272,7 @@ public class PurchaseOrderController {
             PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
             String cType = request.getParameter("CType");
             pdetails.addConfirmAddress(request, vendorDto);
-			forward = "redirect:/PurchaseOrder?tabid=AddressConfirm&CType="+cType+"&addressID="+vendorDto.getBsAddressID();
+			forward = "redirect:/PurchaseOrder?tabid=AddressConfirm&CType="+cType+"&addressID="+vendorDto.getBsAddressID()+"&custID="+vendorDto.getClientVendorID();
         }
 		model.addAttribute("vendorDto", vendorDto);
 		model.addAttribute("purchaseOrderDto", purchaseOrderDto);

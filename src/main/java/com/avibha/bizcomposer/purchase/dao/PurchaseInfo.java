@@ -727,7 +727,7 @@ public class PurchaseInfo {
               if(address.getState()==null)
                   address.setState("");
             sql_update = "UPDATE bca_billingaddress SET Status = 'U' "
-                    + "WHERE AddressID = " + address.getId();
+                    + "WHERE ClientVendorID = " + address.getCvId();
 
             sql_insert = "INSERT INTO bca_billingaddress (AddressName,"
                     + "ClientVendorID,Name,FirstName,LastName,Address1,"
@@ -755,7 +755,7 @@ public class PurchaseInfo {
                     + ")";
         } else {
             sql_update = "UPDATE bca_shippingaddress SET Status = 'U' "
-                    + "WHERE AddressID = " + address.getId();
+                    + "WHERE ClientVendorID = " + address.getCvId();
 
             sql_insert = "INSERT INTO bca_shippingaddress (AddressName,ClientVendorID,Name,FirstName,LastName,Address1,"
                     + "Address2,City,State,Province,Country,ZipCode,Status,DateAdded,Phone,CellPhone,Fax,isDefault,Active) VALUES ("
@@ -837,9 +837,10 @@ public class PurchaseInfo {
         String sql_insert = null;
 
         if (addressType == TblBSAddress2.BILLING_ADDR_TYPE) {
-            sql_update = "UPDATE storage_billingaddress "
-                    + "SET Status = 'U' WHERE AddressID = " + address.getId();
-
+            
+            sql_update = "UPDATE storage_billingaddress SET Status = 'U' "
+                    + "WHERE ClientVendorID = " + address.getCvId();
+            
             sql_insert = "INSERT INTO storage_billingaddress (AddressName,"
                     + "ClientVendorID,Name,FirstName,LastName,Address1,"
                     + "Address2,City,State,Province,Country,ZipCode,Status,"
@@ -866,9 +867,8 @@ public class PurchaseInfo {
                     + address.getActive()
                     + ")";
         } else {
-            sql_update = "UPDATE storage_shippingaddress "
-                    + "SET Status = 'U' WHERE AddressID = " + address.getId();
-
+            sql_update = "UPDATE storage_shippingaddress SET Status = 'U' "
+                    + "WHERE ClientVendorID = " + address.getCvId();
             sql_insert = "INSERT INTO storage_shippingaddress (AddressName,"
                     + "ClientVendorID,Name,FirstName,LastName,Address1,"
                     + "Address2,City,State,Province,Country,ZipCode,Status,"
@@ -1962,7 +1962,7 @@ public class PurchaseInfo {
 			updateVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 
 			// change status of old record...........
-			pstmt = con.prepareStatement("update bca_bsaddress set status='0' where clientvendorid=? and status in ('N','U')");
+			pstmt = con.prepareStatement("update bca_bsaddress set status='O' where clientvendorid=? and status in ('N','U')");
 			pstmt.setInt(1, cvID);
 			pstmt.executeUpdate();
 			// ......................status change finished.........
@@ -1976,7 +1976,11 @@ public class PurchaseInfo {
 
 			insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(), c.getShlastName(), c.getShaddress1(),
 					c.getShaddress2(), c.getShcity(), c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
-
+			TblBSAddress2 address = new TblBSAddress2();
+			address.setAddressWithVendorDtoBilling(c, cvID);
+			insertBillingShippingAddress(address, 1, true);
+			address.setAddressWithVendorDtoShipping(c, cvID);
+			insertBillingShippingAddress(address, 0, true);
 			insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(),
 					c.getGracePrd(), AssessFinanceChk, fInvoiceCharge);
 
