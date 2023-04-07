@@ -85,7 +85,7 @@ public class SalesDetailsDao {
 		String cid = (String) sess.getAttribute("CID");
 		String countryID = ConstValue.countryID;
 		String stateID = ConstValue.stateID;
-		String action  = request.getParameter("tabid");
+		String action  = ConstValue.hateNull(request.getParameter("tabid"));
 		if (action.equalsIgnoreCase("editCustomer")) {
 			CustomerDto customer = (CustomerDto)request.getAttribute("CustomerDetails");
 			countryID = customer.getCountry();
@@ -369,7 +369,8 @@ public class SalesDetailsDao {
 
 	public String getCustomerList(HttpServletRequest request) {
 		String compId = (String) request.getSession().getAttribute("CID");
-		String action = request.getParameter("tabid");
+		String action = ConstValue.hateNull(request.getParameter("tabid"));
+		
 		CustomerInfoDao customer = new CustomerInfoDao();
 		InvoiceInfo invoiceInfo = new InvoiceInfo();
 		ArrayList<CustomerDto> customerList = customer.customerDetails(compId);
