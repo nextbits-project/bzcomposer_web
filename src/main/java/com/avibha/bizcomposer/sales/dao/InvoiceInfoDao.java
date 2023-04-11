@@ -112,7 +112,7 @@ public class InvoiceInfoDao {
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
 					+ "a.City, ct.Name As CityName, a.State, s.name AS StateName, a.Country,c.name AS CountryName "
 					+ " FROM bca_shippingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
-					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City  WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
+					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City  WHERE a.Status IN ('N') and a.Active=1 and a.isDefault=1";
 //			String sqlString = "SELECT distinct a.BSAddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
 //					+ "a.City, ct.Name As CityName, a.State, s.name AS StateName, a.Country,c.name AS CountryName "
 //					+ " FROM bca_bsaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
@@ -183,7 +183,7 @@ public class InvoiceInfoDao {
 			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
 					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
 					+ " FROM bca_billingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "
-					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N', 'U') and a.Active=1 and a.isDefault=1";
+					+ " LEFT JOIN bca_cities AS ct ON ct.id=a.City WHERE a.Status IN ('N') and a.Active=1 and a.isDefault=1";
 //			String sqlString = "SELECT distinct a.AddressID,a.ClientVendorID,a.Name,a.FirstName,a.LastName,a.Address1,a.Address2,a.ZipCode,"
 //					+ "a.City,ct.Name As CityName, a.State,s.name AS StateName, a.Country,c.name AS CountryName "
 //					+ " FROM bca_billingaddress AS a LEFT JOIN bca_countries AS c ON c.id=a.Country LEFT JOIN bca_states AS s ON s.id=a.State "

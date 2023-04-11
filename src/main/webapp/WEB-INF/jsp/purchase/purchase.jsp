@@ -2754,7 +2754,7 @@ function ShipConfirmAddress(form){
     let custID = form.custID.value;
     let addressID = form.bsAddressID.value;
     if(custID != 0){
-        window.open("PurchaseOrder?tabid=AddressConfirm&CType=ship&addressID="+addressID, null,"scrollbars=yes,height=600,width=600,status=yes,toolbar=no,menubar=no,location=no");
+        window.open("PurchaseOrder?tabid=AddressConfirm&CType=ship&addressID="+addressID+"&custID="+custID, null,"scrollbars=yes,height=600,width=600,status=yes,toolbar=no,menubar=no,location=no");
     }
 }
 

@@ -271,12 +271,13 @@ public class PurchaseOrderDetailsDao {
 			PurchaseInfo pinfo = new PurchaseInfo();
 			int cvID = Integer.parseInt(request.getParameter("clientVendorID"));
 			address.setAddressWithVendorDto(form, cvID);
-			pinfo.insertBillingShippingAddress(address, 1, true);
+			pinfo.insertBillingShippingAddress(address, form.getAddressType(), true);
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 
-		updated = purchaseInfo.updateBillingShippingAddress(form, request);
+		//updated = purchaseInfo.updateBillingShippingAddress(form, request);
 		if (updated) {
 			request.getSession().setAttribute("actionMsg", "BzComposer.common.recordUpdated");
 		} else {
