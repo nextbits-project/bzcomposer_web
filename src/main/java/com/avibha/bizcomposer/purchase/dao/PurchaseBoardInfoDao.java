@@ -219,9 +219,9 @@ public class PurchaseBoardInfoDao {
 				totalBalance += pb.getBalance();
 
 				String sql2 = " select a.LastName,a.FirstName,a.Email, b.Address1,b.Address2,b.City,b.State,b.Country,b.ZipCode,a.Name,a.SalesRepId "
-						+ " from bca_clientvendor a, bca_bsaddress b  where a.ClientVendorID = " + pb.getCvID()
-						+ " and b.BSAddressID =" + pb.getBsAddressID()
-						+ " and a.Active = 1 and (a.Status = 'N' or a.Status = 'U') and a.Deleted = 0  and b.AddressType = 0 and (b.Status = 'N' or b.Status = 'U') ";
+						+ " from bca_clientvendor a, bca_shippingaddress b  where a.ClientVendorID = " + pb.getCvID()
+						+ " and b.ClientVendorID =" + pb.getCvID()
+						+ " and a.Active = 1 and (a.Status = 'N' or a.Status = 'U') and a.Deleted = 0 and (b.Status = 'N') ";
 
 				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
 					if (searchType.equals("1")) {

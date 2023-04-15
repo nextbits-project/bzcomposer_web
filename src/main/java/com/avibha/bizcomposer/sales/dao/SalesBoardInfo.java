@@ -173,7 +173,7 @@ public class SalesBoardInfo {
 				String sql2 = "SELECT a.LastName,a.FirstName,a.Email, b.Address1,b.Address2,b.City,b.State,b.Country,b.ZipCode,a.Name "
 						+ " FROM bca_clientvendor a, bca_billingaddress b  WHERE a.ClientVendorID = " + d.getCvID()
 						+ " and b.AddressID =" + d.getBsAddressID()
-						+ " and a.Active=1 and b.Active=1 and a.Status IN ('N', 'U') and b.Status IN ('N', 'U') and a.Deleted=0 and b.isDefault=1 ";
+						+ " and a.Active=1 and b.Active=1 and a.Status IN ('N', 'U') and b.Status IN ('N') and a.Deleted=0 and b.isDefault=1 ";
 
 				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
 					if (searchType.equals("1")) {
