@@ -300,11 +300,32 @@
 				</ul>
 			</li>
 			<!-- POS START -->
-			<li>
-				<a href="Pos?tabid=POS" title="POS" class="uppercaseText">
+<%--			<li>--%>
+<%--				<a href="Pos?tabid=POS" title="POS" class="uppercaseText">--%>
+<%--                    <span><spring:message code="BzComposer.pos" /></span>--%>
+<%--				</a>--%>
+<%--			</li>--%>
+            <li>
+                <a href="retail-pos" title="Item" class="uppercaseText">
                     <span><spring:message code="BzComposer.pos" /></span>
-				</a>
-			</li>
+                </a>
+                <ul>
+                    <li>
+                        <a href="retail-pos" title="Retail POS">
+                              <span>
+                                 <spring:message code="BzComposer.RetailPos" />
+                              </span>
+                        </a>
+                    </li>
+					<li>
+						<a href="Pos?tabid=POS" title="POS">
+                              <span>
+                                 <spring:message code="BzComposer.pos" />
+                              </span>
+						</a>
+					</li>
+                </ul>
+            </li>
 			<!-- POS END -->
 			<li>
 				<a href="Item?tabid=Item" title="Item" class="uppercaseText">
