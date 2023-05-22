@@ -39,6 +39,129 @@ import java.util.*;
  */
 public class InvoiceInfoDao {
 
+	public List<Item> getItemListByCategory(String categoryId, String compId) {
+		SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<Item> categoryList = new ArrayList<>();
+		ArrayList<Item> categoryWiseList = new ArrayList<>();
+		ArrayList<Item> tempList = new ArrayList<>();
+		try {
+			String sqlString = "SELECT InventoryID,ParentID,InventoryCode,InventoryName,InventoryDescription,Qty,Weight,SalePrice,isCategory,ItemTypeID,SerialNum "
+					+ "FROM bca_iteminventory WHERE ParentID="+categoryId+" and CompanyID="+compId+" and Active=1";
+			pstmt = con.prepareStatement(sqlString);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Item item1 = new Item();
+				item1.setInvID(rs.getInt("InventoryID"));
+				item1.setParentID(rs.getInt("ParentID"));
+				item1.setInvCode(rs.getString("InventoryCode"));
+				item1.setInventoryName(rs.getString("InventoryName"));
+				item1.setInvDesc(rs.getString("InventoryDescription"));
+				item1.setQty(rs.getInt("Qty"));
+				item1.setWeight(rs.getDouble("Weight"));
+				if(rs.getBigDecimal("SalePrice") != null) {
+					item1.setSalePrice(rs.getBigDecimal("SalePrice").setScale(2, BigDecimal.ROUND_HALF_UP));
+				}else {
+					item1.setSalePrice(rs.getBigDecimal("SalePrice"));
+				}
+
+				item1.setIsCategory(rs.getInt("isCategory"));
+				item1.setItemTypeID(rs.getInt("ItemTypeID"));
+				item1.setSerialNo(rs.getString("SerialNum"));
+
+				if(item1.getIsCategory() != 1){
+					tempList.add(item1);
+				}
+			}
+//			for(Item item1: categoryList){
+//				categoryWiseList.add(item1);
+//				for(Item item2: tempList){
+//					if(item1.getInvID() == item2.getParentID()){
+//						categoryWiseList.add(item2);
+//					}
+//				}
+//			}
+		} catch (SQLException ee) {
+			Loger.log(2," SQL Error in Class InvoiceInfo and  method -getItemList "+ ee.toString());
+		}
+		finally {
+			try {
+				if (rs != null) { db.close(rs); }
+				if (pstmt != null) { db.close(pstmt); }
+				if(con != null){ db.close(con); }
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+
+		return tempList;
+	}
+
+	public Map<String, ArrayList<Item>> getItemListAndCategories(String compId) {
+		SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<Item> categoryList = new ArrayList<>();
+		ArrayList<Item> categoryWiseList = new ArrayList<>();
+		ArrayList<Item> tempList = new ArrayList<>();
+		try {
+			String sqlString = "SELECT InventoryID,ParentID,InventoryCode,InventoryName,InventoryDescription,Qty,Weight,SalePrice,isCategory,ItemTypeID,SerialNum "
+					+ "FROM bca_iteminventory WHERE CompanyID="+compId+" and Active=1";
+			pstmt = con.prepareStatement(sqlString);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Item item1 = new Item();
+				item1.setInvID(rs.getInt("InventoryID"));
+				item1.setParentID(rs.getInt("ParentID"));
+				item1.setInvCode(rs.getString("InventoryCode"));
+				item1.setInventoryName(rs.getString("InventoryName"));
+				item1.setInvDesc(rs.getString("InventoryDescription"));
+				item1.setQty(rs.getInt("Qty"));
+				item1.setWeight(rs.getDouble("Weight"));
+				if(rs.getBigDecimal("SalePrice") != null) {
+					item1.setSalePrice(rs.getBigDecimal("SalePrice").setScale(2, BigDecimal.ROUND_HALF_UP));
+				}else {
+					item1.setSalePrice(rs.getBigDecimal("SalePrice"));
+				}
+
+				item1.setIsCategory(rs.getInt("isCategory"));
+				item1.setItemTypeID(rs.getInt("ItemTypeID"));
+				item1.setSerialNo(rs.getString("SerialNum"));
+				tempList.add(item1);
+				if(item1.getIsCategory() == 1){
+					categoryList.add(item1);
+				}
+			}
+			for(Item item1: categoryList){
+				categoryWiseList.add(item1);
+				for(Item item2: tempList){
+					if(item1.getInvID() == item2.getParentID()){
+						categoryWiseList.add(item2);
+					}
+				}
+			}
+		} catch (SQLException ee) {
+			Loger.log(2," SQL Error in Class InvoiceInfo and  method -getItemList "+ ee.toString());
+		}
+		finally {
+			try {
+				if (rs != null) { db.close(rs); }
+				if (pstmt != null) { db.close(pstmt); }
+				if(con != null){ db.close(con); }
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		Map<String, ArrayList<Item>> itemListAndCategory = new HashMap<>();
+		itemListAndCategory.put("categories", categoryList);
+		itemListAndCategory.put("itemList", categoryWiseList);
+
+		return itemListAndCategory;
+	}
+
 	public ArrayList<Item> getItemList(String compId) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
