@@ -16,9 +16,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
 
     <title>POS</title>
+    <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
 </head>
 
 <body class="d-flex flex-column h-100" data-new-gr-c-s-check-loaded="14.1107.0" data-gr-ext-installed=""
