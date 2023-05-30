@@ -31,17 +31,40 @@ public class RetailPOSAjaxController {
     public ModelAndView itemsByCategory(@PathVariable Integer categoryId, HttpServletRequest request,
                               HttpServletResponse response) {
 
-        System.out.println(categoryId);
+//        System.out.println(categoryId);
 		String companyId = request.getSession().getAttribute("CID").toString();
 //        String companyId = String.valueOf(1);
 
         // Get All items and Category Together
         InvoiceInfoDao invoice = new InvoiceInfoDao();
-        List<Item> itemList = invoice.getItemListByCategory(String.valueOf(categoryId), companyId);
-          ModelAndView mv = new ModelAndView();
+        List<Item> itemList;
+        if (categoryId == 0) {
+            Map<String, ArrayList<Item>> itemListAndCategories = invoice.getItemListAndCategories(companyId);
+            itemList = itemListAndCategories.get("itemList");
+        } else {
+            itemList = invoice.getItemListByCategory(String.valueOf(categoryId), companyId);
+        }
+
+        ModelAndView mv = new ModelAndView();
         mv.setViewName("sales/pos/items");
         request.setAttribute("itemList", itemList);
-        System.out.println(itemList.size());
+        return mv;
+    }
+
+    @GetMapping("/items/{searchValue}")
+    @ResponseBody
+    public ModelAndView itemsBySearchValue(@PathVariable String searchValue, HttpServletRequest request,
+                                        HttpServletResponse response) {
+
+        String companyId = request.getSession().getAttribute("CID").toString();
+
+        // Get All items and Category Together
+        InvoiceInfoDao invoice = new InvoiceInfoDao();
+        List<Item> itemList = invoice.getItemsBySearchValue(searchValue, companyId);
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("sales/pos/items");
+        request.setAttribute("itemList", itemList);
         return mv;
     }
 }
