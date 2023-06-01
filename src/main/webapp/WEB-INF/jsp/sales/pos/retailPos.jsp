@@ -39,9 +39,7 @@
 </nav>
 <!-- Nav End -->
 <%
-    List<CustomerDto> customerList = (ArrayList<CustomerDto>) request.getAttribute("customerList");
     List<Item> categories = (ArrayList<Item>) request.getAttribute("categories");
-//    List<Item> itemList = (ArrayList<Item>) request.getAttribute("itemList");
 %>
 
 <!-- Main Container -->
@@ -52,28 +50,15 @@
                 <div class="left-top">
                     <div class="customer-group">
                         <div class="select-user">
-                            <label for="customerId" class="form-label">Customer :</label>
-                            <select id="customerId" class="form-control">
-                                <option value="">Choose Option</option>
-                                <% for (CustomerDto customerDto : customerList) { %>
-                                <option value="<%= customerDto.getClientVendorID() %>"><%= customerDto.getCname() %>
-                                </option>
-                                <% } %>
-                            </select>
+                            <jsp:include page="customers.jsp" />
                         </div>
-                        <a type="button" class="btn btn-secondary add-user-btn" target="_blank" href="/Customer?tabid=Customer">Add Customer</a>
-                        <button type="button" class="btn btn-lg btn-refresh clear-cart" data-toggle="tooltip" data-placement="top" title="Refresh">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g clip-path="url(#clip0_80_355)">
-                                    <path d="M0.666504 13.3333V9.33333H4.6665" stroke="#E8AE00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M15.3335 2.66667V6.66667H11.3335" stroke="#E8AE00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M2.33984 5.99999C2.67795 5.04452 3.25259 4.19026 4.01015 3.51694C4.7677 2.84362 5.68348 2.37317 6.67203 2.1495C7.66058 1.92583 8.68967 1.95622 9.6633 2.23784C10.6369 2.51947 11.5233 3.04314 12.2398 3.75999L15.3332 6.66666M0.666504 9.33333L3.75984 12.24C4.47634 12.9569 5.36275 13.4805 6.33638 13.7621C7.31 14.0438 8.3391 14.0742 9.32765 13.8505C10.3162 13.6268 11.232 13.1564 11.9895 12.483C12.7471 11.8097 13.3217 10.9555 13.6598 9.99999" stroke="#E8AE00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </g>
-                                <defs>
-                                    <clipPath id="clip0_80_355">
-                                        <rect width="16" height="16" fill="white"/>
-                                    </clipPath>
-                                </defs>
+                        <a type="button" class="btn btn-secondary add-user-btn" target="_blank"
+                           href="/Customer?tabid=Customer">Add Customer</a>
+                        <button type="button" class="btn btn-lg clear-cart" data-toggle="tooltip" data-placement="top"
+                                title="Refresh">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-cart" viewBox="0 0 16 16">
+                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                             </svg>
                             Clear
                         </button>
@@ -93,28 +78,29 @@
                         <div class="summary-group">
                             <div class="summary-item">
                                 <div class="summary-title">Items Total:</div>
-                                <div class="summary-amount">$<span id="sub_total">0</span></div>
+                                <div class="summary-amount">$<span id="sub_total">0.00</span></div>
                             </div>
                             <div class="summary-item">
                                 <div class="summary-title">Tax:</div>
-                                <div class="summary-amount summary-tax"><span>(7.75%)</span> $<span id="tax_total">0.00</span>
+                                <div class="summary-amount summary-tax"><span>(7.75%)</span> $<span
+                                        id="tax_total">0.00</span>
                                 </div>
                             </div>
                             <div class="summary-item">
                                 <div class="summary-title">Discount Amount:</div>
-                                <input type="number" id="discount_amount" placeholder="0.0">
+                                <input type="number" id="discount_amount" placeholder="0.00">
                             </div>
                         </div>
                         <div class="separator"></div>
                         <div class="summary-item total-summary-item">
                             <div class="summary-title">Total</div>
-                            <div class="summary-amount">$<span id="grand_total">0</span></div>
+                            <div class="summary-amount">$<span id="grand_total">0.00</span></div>
                         </div>
                     </div>
                     <div class="payment summary-item">
                         <div class="payment-title">Payment Method</div>
                         <div class="payment-method">
-                            <div class="form-check">
+                            <div class="form-check custom-form-check">
 
                                 <label class="rad-label">
                                     <input type="radio" class="rad-input payment_method" name="payment_method"
@@ -165,11 +151,11 @@
                     <div class="received-amount d-none">
                         <div class="received">
                             <div class="title">Received Amount:</div>
-                            <input type="number" id="received_amount" placeholder="$">
+                            <input type="number" id="received_amount" placeholder="0.00">
                         </div>
                         <div class="change">
                             Change:
-                            <span>$<span id="due_amount">0</span></span>
+                            <span>$<span id="due_amount">0.00</span></span>
                         </div>
                     </div>
                 </div>
@@ -179,16 +165,23 @@
             <div class="column-right">
                 <div class="product-group" style="width: 100%;">
                     <div class="right-top">
-                        <input class="form-control mr-sm-2 search-item" type="search" placeholder="Search Product By Name/Code"
+                        <input class="form-control mr-sm-2 search-item" type="search"
+                               placeholder="Search Product By Name/Code"
                                aria-label="Search">
 
                         <!-- Added a new button -->
-                        <button type="button" class="btn btn-lg btn-refresh cate-and-item-refresh" data-toggle="tooltip" data-placement="top" title="Refresh">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <button type="button" class="btn btn-lg btn-refresh cate-and-item-refresh" data-toggle="tooltip"
+                                data-placement="top" title="Refresh">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_80_355)">
-                                    <path d="M0.666504 13.3333V9.33333H4.6665" stroke="#E8AE00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M15.3335 2.66667V6.66667H11.3335" stroke="#E8AE00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M2.33984 5.99999C2.67795 5.04452 3.25259 4.19026 4.01015 3.51694C4.7677 2.84362 5.68348 2.37317 6.67203 2.1495C7.66058 1.92583 8.68967 1.95622 9.6633 2.23784C10.6369 2.51947 11.5233 3.04314 12.2398 3.75999L15.3332 6.66666M0.666504 9.33333L3.75984 12.24C4.47634 12.9569 5.36275 13.4805 6.33638 13.7621C7.31 14.0438 8.3391 14.0742 9.32765 13.8505C10.3162 13.6268 11.232 13.1564 11.9895 12.483C12.7471 11.8097 13.3217 10.9555 13.6598 9.99999" stroke="#E8AE00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M0.666504 13.3333V9.33333H4.6665" stroke="#E8AE00" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M15.3335 2.66667V6.66667H11.3335" stroke="#E8AE00" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2.33984 5.99999C2.67795 5.04452 3.25259 4.19026 4.01015 3.51694C4.7677 2.84362 5.68348 2.37317 6.67203 2.1495C7.66058 1.92583 8.68967 1.95622 9.6633 2.23784C10.6369 2.51947 11.5233 3.04314 12.2398 3.75999L15.3332 6.66666M0.666504 9.33333L3.75984 12.24C4.47634 12.9569 5.36275 13.4805 6.33638 13.7621C7.31 14.0438 8.3391 14.0742 9.32765 13.8505C10.3162 13.6268 11.232 13.1564 11.9895 12.483C12.7471 11.8097 13.3217 10.9555 13.6598 9.99999"
+                                          stroke="#E8AE00" stroke-width="1.5" stroke-linecap="round"
+                                          stroke-linejoin="round"/>
                                 </g>
                                 <defs>
                                     <clipPath id="clip0_80_355">
@@ -201,7 +194,7 @@
                     </div>
 
                     <div class="products">
-                        <jsp:include page="items.jsp" />
+                        <jsp:include page="items.jsp"/>
                     </div>
                 </div>
 
@@ -224,7 +217,7 @@
                         for (Item category : categories) {
                     %>
 
-                    <li class="cate-item category" id="category-<%= category.getInvID() %>" >
+                    <li class="cate-item category" id="category-<%= category.getInvID() %>">
                         <a class="cate-link" href="#">
                             <jsp:include page="categoryIcons.jsp">
                                 <jsp:param name="iconName" value="<%= category.getInvCode() %>"/>
@@ -243,17 +236,18 @@
 
 <div class="footer">
     <div class="footer-btn-group">
-        <button type="button" data-bs-toggle="modal" data-bs-target="#savePrint" class="btn btn-lg btn-primary"><svg
-                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="feather feather-printer">
-            <polyline points="6 9 6 2 18 2 18 9"></polyline>
-            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-            <rect x="6" y="14" width="12" height="8"></rect>
-        </svg>Print
+        <button type="button" class="btn btn-lg btn-primary print">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-printer">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Print
         </button>
         <!-- Modal Start-->
-        <div class="modal fade" id="savePrint" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        <div class="modal fade" id="savePrint" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"
              aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content custom-modal-content">
@@ -265,7 +259,7 @@
                                   stroke-linejoin="round"></path>
                         </svg>
                         <div class="modal-title">Successful</div>
-                        <p class="modal-description">Your data was successfully saved and printed</p>
+                        <p class="modal-description">Your data was successfully saved</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">Done</button>
@@ -274,19 +268,24 @@
             </div>
         </div>
         <!-- Modal End -->
-        <button type="button" class="btn btn-lg btn-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-save">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-            <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>Save</button>
-        <a href="/retail-pos" type="button" class="btn btn-lg btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                 height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                                 stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>Clear All</a>
+        <button type="button" class="btn btn-lg btn-secondary save">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                 height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" class="feather feather-save">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Save
+        </button>
+        <a href="/retail-pos" type="button" class="btn btn-lg btn-danger">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                 height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            Clear All</a>
     </div>
 </div>
 

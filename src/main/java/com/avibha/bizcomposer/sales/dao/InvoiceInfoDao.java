@@ -10,8 +10,10 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.sales.forms.*;
-import com.avibha.common.constants.AppConstants;
+import com.avibha.bizcomposer.sales.forms.CreditCardDto;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
@@ -24,20 +26,135 @@ import com.nxsol.bizcomposer.common.EmailSenderDto;
 import org.apache.struts.util.LabelValueBean;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 /*
  * 
  */
 public class InvoiceInfoDao {
+
+	public boolean posInvoiceSave(BoxInvoice boxInvoice) {
+
+		SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
+		PreparedStatement headerStmt = null;
+		PreparedStatement insertStmt = null;
+		PreparedStatement updateStmt = null;
+
+		try {
+			// Start the transaction
+			con.setAutoCommit(false);
+
+			// Perform database operations within the transaction
+
+			// Header
+			String headerSql = "INSERT INTO bca_invoice (OrderNum, ClientVendorID, InvoiceTypeID, CompanyID, Subtotal, Tax, Balance, Total, PaidAmount, PaymentTypeID, SalesRepID, IsPaymentCompleted, DateConfirmed, DateAdded, IsInvoice, IsSalestype, TermID, AdjustedTotal)" +
+					" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			// Example: Execute the prepared statement
+			headerStmt = con.prepareStatement(headerSql);
+			headerStmt.setInt(1, boxInvoice.getOrderNo());
+			headerStmt.setInt(2, boxInvoice.getCustomerId());
+			headerStmt.setInt(3, boxInvoice.getInvoiceTypeId());
+			headerStmt.setInt(4, boxInvoice.getCompanyId());
+			headerStmt.setDouble(5, boxInvoice.getSubTotal());
+			headerStmt.setDouble(6, boxInvoice.getTaxTotal());
+			headerStmt.setDouble(7, boxInvoice.getDiscount());
+			headerStmt.setDouble(8, boxInvoice.getGrandTotal());
+			headerStmt.setDouble(9, boxInvoice.getGrandTotal());
+			headerStmt.setInt(10, boxInvoice.getPaymentMethod());
+			headerStmt.setInt(11, boxInvoice.getSalesRepId());
+			headerStmt.setInt(12, boxInvoice.getIsPaymentCompleted());
+			headerStmt.setTimestamp(13, null);
+			headerStmt.setTimestamp(14, null);
+			headerStmt.setInt(15, boxInvoice.getIsInvoice());
+			headerStmt.setInt(16, boxInvoice.getIsSalesType());
+			headerStmt.setInt(17, boxInvoice.getTermId());
+			headerStmt.setDouble(18, boxInvoice.getGrandTotal());
+			headerStmt.executeUpdate();
+
+			int invoiceId = -1;
+			ResultSet rs = headerStmt.getGeneratedKeys();
+			if (rs.next()) {
+				// Retrieve the last inserted ID
+				invoiceId = rs.getInt(1);
+			}
+
+			// Cart items
+			 for (BoxInvoiceItem item: boxInvoice.getInvoiceItems()) {
+				 String cartItem = "INSERT INTO bca_cart (InvoiceID, CompanyID, InventoryID, InventoryName, InventoryCode, Qty, UnitPrice) VALUES (?,?,?,?,?,?,?)";
+				 insertStmt = con.prepareStatement(cartItem);
+				 insertStmt.setInt(1, invoiceId);
+				 insertStmt.setInt(2, boxInvoice.getCompanyId());
+				 insertStmt.setInt(3, item.getItemId());
+				 insertStmt.setString(4, item.getItemName());
+				 insertStmt.setString(5, item.getItemCode());
+				 insertStmt.setInt(6, item.getQty());
+				 insertStmt.setDouble(7, item.getPrice());
+				 int updatedRows = insertStmt.executeUpdate();
+				 if(updatedRows>0) {
+					 updateStmt = con.prepareStatement("UPDATE bca_iteminventory SET ExpectedQty=ExpectedQty-? WHERE InventoryID=?");
+					 updateStmt.setInt(1, item.getQty());
+					 updateStmt.setInt(2, item.getItemId());
+					 updateStmt.executeUpdate();
+				 }
+			 }
+
+			// Commit the transaction
+			con.commit();
+		} catch (SQLException e) {
+			// Rollback the transaction in case of an exception
+			if (con != null) {
+				try {
+					con.rollback();
+				} catch (SQLException rollbackEx) {
+					// Handle rollback exception
+				}
+			}
+			// Handle the original exception
+			e.printStackTrace();
+		} finally {
+			// Restore auto-commit mode and close the resources
+			if (con != null) {
+				try {
+					con.setAutoCommit(true);
+				} catch (SQLException e) {
+					// Handle exception
+				}
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// Handle exception
+				}
+			}
+			if (headerStmt != null) {
+				try {
+					headerStmt.close();
+				} catch (SQLException e) {
+					// Handle exception
+				}
+			}
+			if (insertStmt != null) {
+				try {
+					insertStmt.close();
+				} catch (SQLException e) {
+					// Handle exception
+				}
+			}
+			if (updateStmt != null) {
+				try {
+					updateStmt.close();
+				} catch (SQLException e) {
+					// Handle exception
+				}
+			}
+		}
+		return false;
+	}
 
 	public List<Item> getItemListByCategory(String categoryId, String compId) {
 		SQLExecutor db = new SQLExecutor();

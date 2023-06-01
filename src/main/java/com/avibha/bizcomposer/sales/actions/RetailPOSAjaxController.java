@@ -53,8 +53,7 @@ public class RetailPOSAjaxController {
 
     @GetMapping("/items/{searchValue}")
     @ResponseBody
-    public ModelAndView itemsBySearchValue(@PathVariable String searchValue, HttpServletRequest request,
-                                        HttpServletResponse response) {
+    public ModelAndView itemsBySearchValue(@PathVariable String searchValue, HttpServletRequest request) {
 
         String companyId = request.getSession().getAttribute("CID").toString();
 
@@ -65,6 +64,22 @@ public class RetailPOSAjaxController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("sales/pos/items");
         request.setAttribute("itemList", itemList);
+        return mv;
+    }
+
+    @GetMapping("/refresh-customers")
+    @ResponseBody
+    public ModelAndView refreshCustomers(HttpServletRequest request) {
+
+        String companyId = request.getSession().getAttribute("CID").toString();
+
+        // customer list
+        CustomerInfoDao customerInfoDao = new CustomerInfoDao();
+        List<CustomerDto> customerList = customerInfoDao.customerDetails(companyId);
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("sales/pos/customers");
+        request.setAttribute("customerList", customerList);
         return mv;
     }
 }

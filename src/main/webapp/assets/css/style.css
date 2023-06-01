@@ -95,11 +95,60 @@ body{
     stroke: #000;
 }
 
+.clear-cart{
+    padding: 5px 10px;
+    background-color: #ffe7e7;
+    color: #b10000;
+    text-transform: capitalize;
+    width: max-content;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.clear-cart svg{
+    margin-right: 6px;
+}
+
+.clear-cart svg path{
+    stroke: #b10000;
+}
+
+.clear-cart:hover svg path{
+    stroke: #070707;
+}
+
+.customer-refresh{
+    padding: 8px 8px;
+    background-color: #fff7e7;
+    color: #B18500;
+    text-transform: capitalize;
+    width: max-content;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.customer-refresh svg{
+    margin-right: 0px;
+}
+
+.customer-refresh svg path{
+    stroke: #B18500;
+}
+
+.customer-refresh:hover svg path{
+    stroke: #000;
+}
+
 .footer{
     background-color: #fff;
     padding: 8px;
     width: 100%;
-    position: fixed;
+    /*position: fixed;*/
+    margin-top: auto;
     left:0;
     bottom: 0;
     border-top: 1px solid rgb(209, 213, 219);
@@ -456,6 +505,7 @@ body{
     justify-content: space-between;
     align-items: center;
     gap: 16px;
+    flex-wrap: wrap;
 }
 
 .summary-item{
@@ -463,6 +513,7 @@ body{
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .summary-item .summary-title{
@@ -539,6 +590,10 @@ body{
 .form-check-input:checked {
     background-color: #00A9C3;
     border-color: #00A9C3;
+}
+
+.custom-form-check {
+    padding-left: 0;
 }
 
 /* Using Source Code */

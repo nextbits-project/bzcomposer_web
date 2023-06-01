@@ -2,6 +2,163 @@ $(document).ready(function () {
     let loader = $(".loader");
     let base_url = "http://localhost:8080"
 
+    $(document).on('click', '.print', function () {
+        loader.removeClass("d-none");
+        let invoiceItems = [];
+        $("#savePrint").modal("show");
+
+        // let subTotal = $("#sub_total").text();
+        // let taxTotal = $("#tax_total").text();
+        // let discount = $("#discount_amount").val();
+        // let grandTotal = $("#grand_total").text();
+        // let paymentMethod = $('input[name="payment_method"]:checked').val();
+        // let customerId = $("#customerId").val();
+        //
+        // $(".cart-row.cart-item").each(function () {
+        //     let id = $(this).prop("id");
+        //     let itemId = id.replace("cart_item_", "");
+        //     let itemName = $(this).attr("cname_"+itemId);
+        //     let itemCode = $(this).attr("ccode_"+itemId);
+        //     let qty = $(this).attr("cqty_"+itemId);
+        //     let price = $(this).attr("cprice_"+itemId);
+        //     let amount = $(this).attr("crowtotal_"+itemId);
+        //     invoiceItems.push({
+        //         'itemId': itemId,
+        //         'itemName': itemName,
+        //         'itemCode': itemCode,
+        //         'qty': qty,
+        //         'price': price,
+        //         'amount': amount
+        //     })
+        // });
+        // if (invoiceItems.length < 1) {
+        //     loader.addClass("d-none");
+        //     alert("Nothing added to cart");
+        //     return false;
+        // }
+        //
+        // if(customerId === "") {
+        //     if(!confirm("You want to save without customer. Are you sure?")) {
+        //         loader.addClass("d-none");
+        //         return false;
+        //     }
+        // }
+
+        // let requestBody = {
+        //     'invoiceItems': invoiceItems,
+        //     'subTotal': isEmpty(subTotal),
+        //     'taxTotal': isEmpty(taxTotal),
+        //     'discount': isEmpty(discount),
+        //     'grandTotal': isEmpty(grandTotal),
+        //     'paymentMethod': paymentMethod,
+        //     'customerId': isEmpty(customerId)
+        // };
+
+        // data: JSON.stringify(requestBody),
+        $.ajax({
+            url: base_url + "/retail-pos-ajax-actions/print",
+            method: "GET",
+            // data: JSON.stringify(requestBody),
+            // contentType: 'application/json',
+            success: function (response) {
+                // if (response && response === true) {
+                //     $(".clear-cart").trigger("click");
+                //     $("#savePrint").modal("show");
+                // } else {
+                //     $("#savePrint").modal("hide");
+                //     alert("Not saved");
+                // }
+                loader.addClass("d-none");
+
+                // window.print();
+            },
+            error: function (xhr, status, error) {
+                console.log("Error: " + error);
+                loader.addClass("d-none");
+            }
+        });
+    });
+
+
+    $(document).on('click', '.save', function () {
+        $(this).attr("disabled", "disabled");
+        loader.removeClass("d-none");
+        let invoiceItems = [];
+
+        let subTotal = $("#sub_total").text();
+        let taxTotal = $("#tax_total").text();
+        let discount = $("#discount_amount").val();
+        let grandTotal = $("#grand_total").text();
+        let paymentMethod = $('input[name="payment_method"]:checked').val();
+        let customerId = $("#customerId").val();
+
+        $(".cart-row.cart-item").each(function () {
+            let id = $(this).prop("id");
+            let itemId = id.replace("cart_item_", "");
+            let itemName = $(this).attr("cname_"+itemId);
+            let itemCode = $(this).attr("ccode_"+itemId);
+            let qty = $(this).attr("cqty_"+itemId);
+            let price = $(this).attr("cprice_"+itemId);
+            let amount = $(this).attr("crowtotal_"+itemId);
+            invoiceItems.push({
+                'itemId': itemId,
+                'itemName': itemName,
+                'itemCode': itemCode,
+                'qty': qty,
+                'price': price,
+                'amount': amount
+            })
+        });
+        if (invoiceItems.length < 1) {
+            loader.addClass("d-none");
+            $(this).removeAttr("disabled");
+            alert("Nothing added to cart");
+            return false;
+        }
+
+        if(customerId === "") {
+            if(!confirm("You want to save without customer. Are you sure?")) {
+                loader.addClass("d-none");
+                $(this).removeAttr("disabled");
+                return false;
+            }
+        }
+
+        let requestBody = {
+            'invoiceItems': invoiceItems,
+            'subTotal': isEmpty(subTotal),
+            'taxTotal': isEmpty(taxTotal),
+            'discount': isEmpty(discount),
+            'grandTotal': isEmpty(grandTotal),
+            'paymentMethod': paymentMethod,
+            'customerId': isEmpty(customerId)
+        };
+
+        // data: JSON.stringify(requestBody),
+        $.ajax({
+            url: base_url + "/retail-pos-ajax-actions/save",
+            method: "POST",
+            data: JSON.stringify(requestBody),
+            contentType: 'application/json',
+            success: function (response) {
+                if (response && response === true) {
+                    $(".clear-cart").trigger("click");
+                    $("#savePrint").modal("show");
+                } else {
+                    $("#savePrint").modal("hide");
+                    alert("Not saved");
+                }
+                $(this).removeAttr("disabled");
+                loader.addClass("d-none");
+            },
+            error: function (xhr, status, error) {
+                console.log("Error: " + error);
+                $(this).removeAttr("disabled");
+                loader.addClass("d-none");
+            }
+        });
+    });
+
     // Load items by category
     $(document).on('click', '.category', function () {
         loader.removeClass("d-none");
@@ -287,7 +444,32 @@ $(document).ready(function () {
         return false;
     });
 
+    $(document).on('click', '.customer-refresh', function () {
+        loader.removeClass("d-none");
+        let targetArea = $(".select-user");
+        $.ajax({
+            url: base_url + "/retail-pos-ajax/refresh-customers",
+            method: "GET",
+            success: function (response) {
+                loader.addClass("d-none");
+                targetArea.html(response);
+            },
+            error: function (xhr, status, error) {
+                console.log("Error: " + error);
+                loader.addClass("d-none");
+            }
+        });
+        return false;
+    });
+
     function parseFloat(i) {
         return Number.parseFloat(i);
+    }
+
+    function isEmpty(value) {
+        if (value === "" || value === null || value === 0) {
+            return 0;
+        }
+        return value;
     }
 });
