@@ -2,10 +2,15 @@ $(document).ready(function () {
     let loader = $(".loader");
     let base_url = "http://localhost:8080"
 
+    $(document).on('click', '.btn-print', function () {
+        window.print();
+    });
+
     $(document).on('click', '.print', function () {
         loader.removeClass("d-none");
         let invoiceItems = [];
-        $("#savePrint").modal("show");
+        let modal = $("#invoicePrint");
+        modal.modal("show");
 
         // let subTotal = $("#sub_total").text();
         // let taxTotal = $("#tax_total").text();
@@ -61,13 +66,6 @@ $(document).ready(function () {
             // data: JSON.stringify(requestBody),
             // contentType: 'application/json',
             success: function (response) {
-                // if (response && response === true) {
-                //     $(".clear-cart").trigger("click");
-                //     $("#savePrint").modal("show");
-                // } else {
-                //     $("#savePrint").modal("hide");
-                //     alert("Not saved");
-                // }
                 loader.addClass("d-none");
 
                 // window.print();
@@ -143,12 +141,12 @@ $(document).ready(function () {
             success: function (response) {
                 if (response && response === true) {
                     $(".clear-cart").trigger("click");
-                    $("#savePrint").modal("show");
+                    $("#save").modal("show");
                 } else {
-                    $("#savePrint").modal("hide");
+                    $("#save").modal("hide");
                     alert("Not saved");
                 }
-                $(this).removeAttr("disabled");
+                $(".save").removeAttr("disabled");
                 loader.addClass("d-none");
             },
             error: function (xhr, status, error) {
@@ -204,10 +202,20 @@ $(document).ready(function () {
             }
         });
 
+        $("#sub_total").text(0.00);
+        $("#tax_total").text(0.00);
+        $("#discount_amount").text(0.00);
+        $("#grand_total").text(0.00);
         $("#received_amount").val('');
         $("#due_amount").text('');
         $("#customerId").val('');
-        calculate();
+
+        let paymentMethods = document.querySelectorAll('.payment_method');
+        for (let i = 0; i < paymentMethods.length; i++) {
+            paymentMethods[i].checked = false;
+        }
+        $(".received-amount").addClass('d-none');
+
         return false;
     });
 
@@ -256,7 +264,6 @@ $(document).ready(function () {
     function calculate() {
         let subTotal = 0;
         $(".cart-row.cart-item").each(function () {
-
             let id = $(this).prop("id");
             let itemId = id.replace("cart_item_", "");
             let cRowTotal = $(this).attr("crowtotal_"+itemId);

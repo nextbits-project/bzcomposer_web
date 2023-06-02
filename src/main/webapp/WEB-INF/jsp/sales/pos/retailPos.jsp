@@ -12,9 +12,8 @@
 
     <!-- Bootstrap CSS -->
     <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custtom CSS -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
-
     <title>POS</title>
     <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
@@ -246,28 +245,6 @@
             </svg>
             Print
         </button>
-        <!-- Modal Start-->
-        <div class="modal fade" id="savePrint" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"
-             aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content custom-modal-content">
-                    <div class="modal-body custom-modal-body">
-                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <rect width="48" height="48" rx="24" fill="#D1FAE5"></rect>
-                            <path d="M17 25L21 29L31 19" stroke="#059669" stroke-width="2" stroke-linecap="round"
-                                  stroke-linejoin="round"></path>
-                        </svg>
-                        <div class="modal-title">Successful</div>
-                        <p class="modal-description">Your data was successfully saved</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">Done</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal End -->
         <button type="button" class="btn btn-lg btn-secondary save">
             <svg xmlns="http://www.w3.org/2000/svg" width="24"
                  height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -286,6 +263,152 @@
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
             Clear All</a>
+    </div>
+
+    <!-- Modal Start-->
+    <div class="modal fade" id="save" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content custom-modal-content">
+                <div class="modal-body custom-modal-body">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <rect width="48" height="48" rx="24" fill="#D1FAE5"></rect>
+                        <path d="M17 25L21 29L31 19" stroke="#059669" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round"></path>
+                    </svg>
+                    <div class="modal-title">Successful</div>
+                    <p class="modal-description">Your data was successfully saved</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal End -->
+
+    <div class="modal fade" id="invoicePrint" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content custom-modal-content new-custom-modal-content">
+                <div class="modal-body custom-modal-body new-custom-modal-body">
+                    <div class="container">
+                        <div class="card">
+                            <div class="card-header">
+                                Invoice
+                                <strong>01/01/2018</strong>
+
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive-sm">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th class="center">#</th>
+
+                                            <th>Description</th>
+
+                                            <th class="right">Unit Cost</th>
+                                            <th class="center">Qty</th>
+                                            <th class="right">Total</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="center">1</td>
+
+                                            <td class="left">Extended License</td>
+
+                                            <td class="right">$999,00</td>
+                                            <td class="center">1</td>
+                                            <td class="right">$999,00</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center">2</td>
+
+                                            <td class="left">Instalation and Customization (cost per hour)</td>
+
+                                            <td class="right">$150,00</td>
+                                            <td class="center">20</td>
+                                            <td class="right">$3.000,00</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center">3</td>
+
+                                            <td class="left">1 year subcription</td>
+
+                                            <td class="right">$499,00</td>
+                                            <td class="center">1</td>
+                                            <td class="right">$499,00</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center">4</td>
+
+                                            <td class="left">1 year subcription 24/7</td>
+
+                                            <td class="right">$3.999,00</td>
+                                            <td class="center">1</td>
+                                            <td class="right">$3.999,00</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 col-sm-5">
+
+                                    </div>
+                                    <div class="col-lg-4 col-sm-5">
+
+                                    </div>
+
+                                    <div class="col-lg-4 col-sm-5 ml-auto">
+                                        <table class="table table-clear">
+                                            <tbody>
+                                            <tr>
+                                                <td class="left">
+                                                    <strong>Subtotal</strong>
+                                                </td>
+                                                <td class="right">$8.497,00</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="left">
+                                                    <strong>Discount (20%)</strong>
+                                                </td>
+                                                <td class="right">$1,699,40</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="left">
+                                                    <strong>VAT (10%)</strong>
+                                                </td>
+                                                <td class="right">$679,76</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="left">
+                                                    <strong>Total</strong>
+                                                </td>
+                                                <td class="right">
+                                                    <strong>$7.477,36</strong>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-print">Print</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -52,12 +52,13 @@ public class RetailPOSAjaxActionsController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
         String orderNo = now.format(formatter) + random;
         boxInvoice.setOrderNo(parseInt(orderNo));
+        // 3 = paid
         boxInvoice.setTermId(3);
         boxInvoice.setIsInvoice(1);
         boxInvoice.setIsPaymentCompleted(1);
         boxInvoice.setIsSalesType(1);
         boxInvoice.setCompanyId(Integer.parseInt(companyId));
-        boxInvoice.setInvoiceTypeId(7);
+        boxInvoice.setInvoiceTypeId(1);
         System.out.println("=== hits ===");
         // cart items
         List<BoxInvoiceItem> boxInvoiceItems = new ArrayList<>();
@@ -69,6 +70,7 @@ public class RetailPOSAjaxActionsController {
             boxItem.setQty(parseInt(item.getQty()));
             boxItem.setPrice(parseDouble(item.getPrice()));
             boxItem.setAmount(item.getAmount());
+            boxInvoiceItems.add(boxItem);
         });
 
         boxInvoice.setInvoiceItems(boxInvoiceItems);
@@ -76,12 +78,7 @@ public class RetailPOSAjaxActionsController {
         boxInvoice.setDateConfirmed(now);
 
         InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
-        try {
-            invoiceInfoDao.posInvoiceSave(boxInvoice);
-            return true;
-        } catch (Exception ignored) {
-            return false;
-        }
+        return invoiceInfoDao.posInvoiceSave(boxInvoice);
     }
 
     @GetMapping("/print")

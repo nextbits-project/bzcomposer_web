@@ -22,6 +22,7 @@ public class BoxInvoice {
     private int invoiceTypeId;
     private LocalDateTime dateAdded;
     private LocalDateTime dateConfirmed;
+    private int invoiceId;
 
     public BoxInvoice() {
     }
@@ -160,5 +161,13 @@ public class BoxInvoice {
 
     public void setDateConfirmed(LocalDateTime dateConfirmed) {
         this.dateConfirmed = dateConfirmed;
+    }
+
+    public int getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
     }
 }
