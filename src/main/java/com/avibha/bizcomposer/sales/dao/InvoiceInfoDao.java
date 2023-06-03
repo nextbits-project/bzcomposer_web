@@ -44,7 +44,7 @@ public class InvoiceInfoDao {
         PreparedStatement maxInvStmt = null, invHeaderInsStmt = null;
         PreparedStatement maxCartStmt = null, cartInsertStmt = null, updateStmt = null;
         ResultSet maxInvResultSet = null;
-        boolean saveStatus = false;
+
         try {
             // Getting and inserting last max invoiceId
             maxInvStmt = con.prepareStatement("select max(InvoiceID) from bca_invoice");
@@ -128,7 +128,7 @@ public class InvoiceInfoDao {
                 Loger.log(e.toString());
             }
         }
-        return saveStatus;
+        return false;
     }
 
     public List<Item> getItemListByCategory(String categoryId, String compId) {
