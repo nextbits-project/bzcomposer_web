@@ -119,7 +119,7 @@ public class SalesBoardInfo {
 				mark = "Price Grabber";
 			}
 			// sqlString += " and i.IsSalestype=1";
-			sqlString += " and i.OrderNum > 0 and i.InvoiceTypeID=1 ORDER BY i.OrderNum DESC";
+			sqlString += " and i.OrderNum > 0 and i.InvoiceTypeID=1 ORDER BY i.DateAdded DESC";
 
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sqlString);
