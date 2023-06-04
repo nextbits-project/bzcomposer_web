@@ -10,6 +10,9 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
+import com.avibha.bizcomposer.sales.dto.CartItem;
+import com.avibha.bizcomposer.sales.dto.InvoiceDetailsResponse;
+import com.avibha.bizcomposer.sales.dto.SavePrintResponse;
 import com.avibha.bizcomposer.sales.forms.CreditCardDto;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
@@ -27,23 +30,107 @@ import org.apache.struts.util.LabelValueBean;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.*;
 
 /*
  *
  */
 public class InvoiceInfoDao {
 
-    public boolean posInvoiceSave(BoxInvoice boxInvoice) {
+
+    public InvoiceDetailsResponse invoiceDetails(int invoiceId, String companyId) {
+        InvoiceDetailsResponse response = new InvoiceDetailsResponse();
+
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        PreparedStatement invStmt, cartStmt;
+        ResultSet invResultSet, cartResultSet;
+
+        String invStr = "SELECT inv.InvoiceID, inv.OrderNum, inv.ClientVendorID, inv.Subtotal, inv.Tax, inv.Balance, inv.Total, inv.PaidAmount, inv.DateConfirmed, company.Name, cus.FirstName, cus.LastName  FROM bca_invoice inv LEFT JOIN bca_clientvendor cus ON inv.ClientVendorID=cus.ClientVendorID LEFT JOIN bca_company company ON inv.CompanyID=company.CompanyID where inv.IsPaymentCompleted='1' and inv.InvoiceID='" + invoiceId + "' and inv.CompanyID='" + companyId + "' ";
+
+        try {
+            invStmt = con.prepareStatement(invStr);
+            invResultSet = invStmt.executeQuery();
+            /* Insert into invoice */
+            int invoiceID = 0;
+            if (invResultSet.next()) {
+                invoiceID = invResultSet.getInt(1);
+                response.setInvoiceId(invoiceID);
+                response.setOrderNo(invResultSet.getInt("OrderNum"));
+                response.setCustomerId(String.valueOf(invResultSet.getInt("ClientVendorID")));
+                response.setSubTotal(String.valueOf(invResultSet.getDouble("Subtotal")));
+                response.setTaxTotal(String.valueOf(invResultSet.getDouble("Tax")));
+                response.setDiscount(String.valueOf(invResultSet.getDouble("Balance")));
+                response.setGrandTotalWithTax(String.valueOf(invResultSet.getDouble("Total")));
+                response.setGrandTotal(String.valueOf(invResultSet.getDouble("PaidAmount")));
+                // datetime add here
+                LocalDateTime localDateTime = invResultSet.getTimestamp("DateConfirmed").toLocalDateTime();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                String formattedDateTime = localDateTime.format(formatter);
+                response.setDate(formattedDateTime);
+                String customerName = invResultSet.getString("LastName") == null && invResultSet.getString("FirstName") == null ? null : invResultSet.getString("LastName") + invResultSet.getString("FirstName");
+                response.setCustomerName(customerName);
+                response.setCompanyName(invResultSet.getString("Name"));
+
+            }
+
+            if (invoiceId == 0) {
+                throw new SQLException("Invoice is zero");
+            }
+
+            List<CartItem> cartItems = new ArrayList<>();
+
+            String cartStr = "SELECT cart.CartID, cart.InventoryID, cart.InventoryName, cart.InventoryCode, cart.Qty, cart.UnitPrice FROM bca_cart cart INNER JOIN bca_invoice inv ON cart.InvoiceID=inv.InvoiceID where cart.InvoiceID='" + invoiceId + "' and inv.CompanyID='" + companyId + "' order by CartID ASC";
+
+            cartStmt = con.prepareStatement(cartStr);
+            cartResultSet = cartStmt.executeQuery();
+
+            while (cartResultSet.next()) {
+                int cartId = cartResultSet.getInt(1);
+                int inventoryId = cartResultSet.getInt("InventoryID");
+                String inventoryName = cartResultSet.getString("InventoryName");
+                String inventoryCode = cartResultSet.getString("InventoryCode");
+                int qty = cartResultSet.getInt("Qty");
+                double unitPrice = cartResultSet.getDouble("UnitPrice");
+
+                // Create a new CartItem instance
+                CartItem cartItem = new CartItem();
+                cartItem.setCartId(cartId);
+                cartItem.setItemId(String.valueOf(inventoryId));
+                cartItem.setItemName(inventoryName);
+                cartItem.setItemCode(inventoryCode);
+                cartItem.setQty(String.valueOf(qty));
+                cartItem.setPrice(String.valueOf(unitPrice));
+                // amount
+                BigDecimal number = new BigDecimal(String.valueOf(qty * unitPrice));
+                BigDecimal amount = number.setScale(2, RoundingMode.HALF_UP);
+                cartItem.setAmount(String.valueOf(amount));
+
+                // Add the CartItem to the list
+                cartItems.add(cartItem);
+            }
+
+            response.setCartItems(cartItems);
+            return response;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public SavePrintResponse posInvoiceSave(BoxInvoice boxInvoice) {
+
         SQLExecutor db = new SQLExecutor();
         Connection con = db.getConnection();
         PreparedStatement maxInvStmt = null, invHeaderInsStmt = null;
-        PreparedStatement maxCartStmt = null, cartInsertStmt = null, updateStmt = null;
-        ResultSet maxInvResultSet = null;
+        PreparedStatement cartInsertStmt = null, updateStmt = null;
+        ResultSet maxInvResultSet;
 
         try {
             // Getting and inserting last max invoiceId
@@ -82,7 +169,6 @@ public class InvoiceInfoDao {
 
                 for (BoxInvoiceItem item : boxInvoice.getInvoiceItems()) {
                     String cartInsertStr = "INSERT INTO bca_cart (InvoiceID, CompanyID, InventoryID, InventoryName, InventoryCode, Qty, UnitPrice) VALUES (?,?,?,?,?,?,?)";
-                    System.out.println("invoiceId: " + boxInvoice.getInvoiceId());
                     cartInsertStmt = con.prepareStatement(cartInsertStr);
                     cartInsertStmt.setInt(1, boxInvoice.getInvoiceId());
                     cartInsertStmt.setInt(2, boxInvoice.getCompanyId());
@@ -102,7 +188,7 @@ public class InvoiceInfoDao {
 
                 }
 
-                return true;
+                return new SavePrintResponse(true, String.valueOf(invoiceID));
             }
         } catch (SQLException ee) {
             Loger.log("Exception" + ee);
@@ -128,7 +214,7 @@ public class InvoiceInfoDao {
                 Loger.log(e.toString());
             }
         }
-        return false;
+        return new SavePrintResponse(false, null);
     }
 
     public List<Item> getItemListByCategory(String categoryId, String compId) {

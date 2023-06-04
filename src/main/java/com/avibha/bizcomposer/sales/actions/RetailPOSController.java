@@ -6,9 +6,11 @@
 package com.avibha.bizcomposer.sales.actions;
 
 import com.avibha.bizcomposer.sales.dao.*;
+import com.avibha.bizcomposer.sales.dto.InvoiceDetailsResponse;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -46,6 +48,18 @@ public class RetailPOSController {
         request.setAttribute("customerList", customerList);
         request.setAttribute("categories", categories);
         request.setAttribute("itemList", itemList);
+
+        return mv;
+    }
+
+    @GetMapping("/{invoiceId}")
+    public ModelAndView invoiceDetails(@PathVariable String invoiceId, HttpServletRequest request) {
+        String companyId = request.getSession().getAttribute("CID").toString();
+        InvoiceInfoDao invoice = new InvoiceInfoDao();
+        InvoiceDetailsResponse response = invoice.invoiceDetails(Integer.parseInt(invoiceId), companyId);
+        request.setAttribute("box", response);
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("sales/pos/print");
 
         return mv;
     }

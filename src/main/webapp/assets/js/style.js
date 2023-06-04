@@ -2,82 +2,90 @@ $(document).ready(function () {
     let loader = $(".loader");
     let base_url = "http://localhost:8080"
 
-    $(document).on('click', '.btn-print', function () {
-        window.print();
-    });
-
     $(document).on('click', '.print', function () {
+        $(this).attr("disabled", "disabled");
         loader.removeClass("d-none");
         let invoiceItems = [];
-        let modal = $("#invoicePrint");
-        modal.modal("show");
 
-        // let subTotal = $("#sub_total").text();
-        // let taxTotal = $("#tax_total").text();
-        // let discount = $("#discount_amount").val();
-        // let grandTotal = $("#grand_total").text();
-        // let paymentMethod = $('input[name="payment_method"]:checked').val();
-        // let customerId = $("#customerId").val();
-        //
-        // $(".cart-row.cart-item").each(function () {
-        //     let id = $(this).prop("id");
-        //     let itemId = id.replace("cart_item_", "");
-        //     let itemName = $(this).attr("cname_"+itemId);
-        //     let itemCode = $(this).attr("ccode_"+itemId);
-        //     let qty = $(this).attr("cqty_"+itemId);
-        //     let price = $(this).attr("cprice_"+itemId);
-        //     let amount = $(this).attr("crowtotal_"+itemId);
-        //     invoiceItems.push({
-        //         'itemId': itemId,
-        //         'itemName': itemName,
-        //         'itemCode': itemCode,
-        //         'qty': qty,
-        //         'price': price,
-        //         'amount': amount
-        //     })
-        // });
-        // if (invoiceItems.length < 1) {
-        //     loader.addClass("d-none");
-        //     alert("Nothing added to cart");
-        //     return false;
-        // }
-        //
-        // if(customerId === "") {
-        //     if(!confirm("You want to save without customer. Are you sure?")) {
-        //         loader.addClass("d-none");
-        //         return false;
-        //     }
-        // }
+        let subTotal = $("#sub_total").text();
+        let taxTotal = $("#tax_total").text();
+        let discount = $("#discount_amount").val();
+        let grandTotal = $("#grand_total").text();
+        let paymentMethod = $('input[name="payment_method"]:checked').val();
+        let customerId = $("#customerId").val();
 
-        // let requestBody = {
-        //     'invoiceItems': invoiceItems,
-        //     'subTotal': isEmpty(subTotal),
-        //     'taxTotal': isEmpty(taxTotal),
-        //     'discount': isEmpty(discount),
-        //     'grandTotal': isEmpty(grandTotal),
-        //     'paymentMethod': paymentMethod,
-        //     'customerId': isEmpty(customerId)
-        // };
+        $(".cart-row.cart-item").each(function () {
+            let id = $(this).prop("id");
+            let itemId = id.replace("cart_item_", "");
+            let itemName = $(this).attr("cname_"+itemId);
+            let itemCode = $(this).attr("ccode_"+itemId);
+            let qty = $(this).attr("cqty_"+itemId);
+            let price = $(this).attr("cprice_"+itemId);
+            let amount = $(this).attr("crowtotal_"+itemId);
+            invoiceItems.push({
+                'itemId': itemId,
+                'itemName': itemName,
+                'itemCode': itemCode,
+                'qty': qty,
+                'price': price,
+                'amount': amount
+            })
+        });
+        if (invoiceItems.length < 1) {
+            loader.addClass("d-none");
+            $(this).removeAttr("disabled");
+            alert("Nothing added to cart");
+            return false;
+        }
+
+        if(customerId === "") {
+            if(!confirm("You want to save without customer. Are you sure?")) {
+                loader.addClass("d-none");
+                $(this).removeAttr("disabled");
+                return false;
+            }
+            // alert("You have to select customer");
+            // loader.addClass("d-none");
+            // $(this).removeAttr("disabled");
+            // return false;
+        }
+
+        let requestBody = {
+            'invoiceItems': invoiceItems,
+            'subTotal': isEmpty(subTotal),
+            'taxTotal': isEmpty(taxTotal),
+            'discount': isEmpty(discount),
+            'grandTotal': isEmpty(grandTotal),
+            'paymentMethod': paymentMethod,
+            'customerId': isEmpty(customerId)
+        };
 
         // data: JSON.stringify(requestBody),
         $.ajax({
-            url: base_url + "/retail-pos-ajax-actions/print",
-            method: "GET",
-            // data: JSON.stringify(requestBody),
-            // contentType: 'application/json',
+            url: base_url + "/retail-pos-ajax-actions/save",
+            method: "POST",
+            data: JSON.stringify(requestBody),
+            contentType: 'application/json',
             success: function (response) {
+                if (response && response.status === true) {
+                    $(".clear-cart").trigger("click");
+                    let url = base_url + "/retail-pos/" + parseInt(response.invoiceId);
+                    window.open(url, "_blank");
+                } else {
+                    alert("Not saved");
+                }
+                $(".print").removeAttr("disabled");
                 loader.addClass("d-none");
-
-                // window.print();
             },
             error: function (xhr, status, error) {
                 console.log("Error: " + error);
+                $(".print").removeAttr("disabled");
                 loader.addClass("d-none");
             }
         });
     });
 
-
+    // save action
     $(document).on('click', '.save', function () {
         $(this).attr("disabled", "disabled");
         loader.removeClass("d-none");
@@ -139,7 +147,7 @@ $(document).ready(function () {
             data: JSON.stringify(requestBody),
             contentType: 'application/json',
             success: function (response) {
-                if (response && response === true) {
+                if (response && response.status === true) {
                     $(".clear-cart").trigger("click");
                     $("#save").modal("show");
                 } else {
@@ -151,7 +159,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.log("Error: " + error);
-                $(this).removeAttr("disabled");
+                $(".save").removeAttr("disabled");
                 loader.addClass("d-none");
             }
         });
@@ -189,36 +197,6 @@ $(document).ready(function () {
         return false;
     });
 
-    $(document).on('click', '.cate-and-item-refresh', function () {
-        $(".category.all-cat").trigger("click");
-        $(".search-item").val("");
-        return false;
-    });
-
-    $(document).on('click', '.clear-cart', function () {
-        $(".cart-row").each(function () {
-            if(!$(this).hasClass("cart-header")) {
-                $(this).remove();
-            }
-        });
-
-        $("#sub_total").text(0.00);
-        $("#tax_total").text(0.00);
-        $("#discount_amount").text(0.00);
-        $("#grand_total").text(0.00);
-        $("#received_amount").val('');
-        $("#due_amount").text('');
-        $("#customerId").val('');
-
-        let paymentMethods = document.querySelectorAll('.payment_method');
-        for (let i = 0; i < paymentMethods.length; i++) {
-            paymentMethods[i].checked = false;
-        }
-        $(".received-amount").addClass('d-none');
-
-        return false;
-    });
-
     $(document).on('keyup', '.search-item', function () {
         let searchValue = $(this).val();
         let targetArea = $(".products");
@@ -240,6 +218,12 @@ $(document).ready(function () {
                 loader.addClass("d-none");
             }
         });
+        return false;
+    });
+
+    $(document).on('click', '.cate-and-item-refresh', function () {
+        $(".category.all-cat").trigger("click");
+        $(".search-item").val("");
         return false;
     });
 
@@ -298,27 +282,6 @@ $(document).ready(function () {
             $("#due_amount").text(due.toFixed(2));
         }
     }
-
-    $(document).on('change', '.payment_method', function () {
-        let method = $('input[name="payment_method"]:checked').val();
-        if (method === 'cash') {
-            $(".received-amount").removeClass('d-none');
-        } else {
-            $(".received-amount").addClass('d-none');
-        }
-        $("#received_amount").val('');
-        $("#due_amount").text('');
-    });
-
-    $(document).on('change', '#received_amount', function () {
-        let value = $(this).val();
-        cashOption(value)
-    });
-
-    $(document).on('change', '#discount_amount', function () {
-        calculate();
-        return false;
-    });
 
     $(document).on('click', '.item', function () {
         loader.removeClass("d-none");
@@ -451,6 +414,52 @@ $(document).ready(function () {
         return false;
     });
 
+    $(document).on('change', '.payment_method', function () {
+        let method = $('input[name="payment_method"]:checked').val();
+        if (method === 'cash') {
+            $(".received-amount").removeClass('d-none');
+        } else {
+            $(".received-amount").addClass('d-none');
+        }
+        $("#received_amount").val('');
+        $("#due_amount").text('');
+    });
+
+    $(document).on('change', '#received_amount', function () {
+        let value = $(this).val();
+        cashOption(value)
+    });
+
+    $(document).on('change', '#discount_amount', function () {
+        calculate();
+        return false;
+    });
+
+    $(document).on('click', '.clear-cart', function () {
+        $(".cart-row").each(function () {
+            if(!$(this).hasClass("cart-header")) {
+                $(this).remove();
+            }
+        });
+
+        $("#sub_total").text(0.00);
+        $("#tax_total").text(0.00);
+        $("#discount_amount").text(0.00);
+        $("#grand_total").text(0.00);
+        $("#received_amount").val('');
+        $("#due_amount").text('');
+        $("#customerId").val('');
+
+        let paymentMethods = document.querySelectorAll('.payment_method');
+        for (let i = 0; i < paymentMethods.length; i++) {
+            paymentMethods[i].checked = false;
+        }
+        $(".received-amount").addClass('d-none');
+
+        return false;
+    });
+
+    // customer refresh
     $(document).on('click', '.customer-refresh', function () {
         loader.removeClass("d-none");
         let targetArea = $(".select-user");

@@ -10,6 +10,7 @@ import com.avibha.bizcomposer.sales.dao.BoxInvoiceItem;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.dto.PosInvoiceItem;
 import com.avibha.bizcomposer.sales.dto.PosInvoiceRequest;
+import com.avibha.bizcomposer.sales.dto.SavePrintResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class RetailPOSAjaxActionsController {
 
     @PostMapping("/save")
     @ResponseBody
-    public boolean save(@RequestBody PosInvoiceRequest invoiceRequest, HttpServletRequest request) {
+    public SavePrintResponse save(@RequestBody PosInvoiceRequest invoiceRequest, HttpServletRequest request) {
 
         String companyId = request.getSession().getAttribute("CID").toString();
 
@@ -79,11 +80,6 @@ public class RetailPOSAjaxActionsController {
 
         InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
         return invoiceInfoDao.posInvoiceSave(boxInvoice);
-    }
-
-    @GetMapping("/print")
-    public String print() {
-        return "sales/pos/print";
     }
 
     private boolean isEmpty(String value) {
