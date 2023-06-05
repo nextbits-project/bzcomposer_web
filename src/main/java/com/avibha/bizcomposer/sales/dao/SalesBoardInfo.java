@@ -6,23 +6,6 @@
 
 package com.avibha.bizcomposer.sales.dao;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Formatter;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
@@ -30,7 +13,16 @@ import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
-import com.nxsol.bizcomposer.common.TblBudget;
+
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.*;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class SalesBoardInfo {
 
@@ -127,7 +119,7 @@ public class SalesBoardInfo {
 				mark = "Price Grabber";
 			}
 			// sqlString += " and i.IsSalestype=1";
-			sqlString += " and i.OrderNum > 0 and i.InvoiceTypeID=1 ORDER BY i.OrderNum DESC";
+			sqlString += " and i.OrderNum > 0 and i.InvoiceTypeID=1 ORDER BY i.DateAdded DESC";
 
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sqlString);
@@ -158,11 +150,10 @@ public class SalesBoardInfo {
 				d.setEmailed(rs.getInt("IsEmailed"));
 				d.setMarketPlaceName(mark);
 
-				// update by ferdous
-				// BigDecimal bigTotal = new BigDecimal(rs.getDouble("Total")).setScale(2,
-				// RoundingMode.HALF_UP);
-
-				d.setTotal(rs.getBigDecimal("Total").setScale(2));
+				BigDecimal number = new BigDecimal(String.valueOf(rs.getBigDecimal("Total")));
+				BigDecimal total = number.setScale(2, RoundingMode.HALF_UP);
+				d.setTotal(total);
+//				d.setTotal(rs.getBigDecimal("Total").setScale(2));
 				String rep = rs.getString("SalesRepID");
 				if (rep != null) {
 					rs4 = stmt4.executeQuery("select Name from bca_salesrep where SalesRepID =" + rep);
