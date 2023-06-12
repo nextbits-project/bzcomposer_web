@@ -144,7 +144,10 @@ public class InvoiceInfoDao {
                 String headerSql = "INSERT INTO bca_invoice (OrderNum, ClientVendorID, InvoiceTypeID, CompanyID, Subtotal, Tax, Balance, Total, PaidAmount, PaymentTypeID, SalesRepID, IsPaymentCompleted, DateConfirmed, DateAdded, IsInvoice, IsSalestype, TermID, AdjustedTotal, OrderType, InvoiceID)" +
                         " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 invHeaderInsStmt = con.prepareStatement(headerSql);
-                invHeaderInsStmt.setInt(1, boxInvoice.getOrderNo());
+                // get new sales order number
+                String orderNoStr = this.getNewSalesOrderNo(String.valueOf(boxInvoice.getCompanyId()));
+                int orderNo = Integer.parseInt(orderNoStr);
+                invHeaderInsStmt.setInt(1, orderNo);
                 invHeaderInsStmt.setInt(2, boxInvoice.getCustomerId());
                 invHeaderInsStmt.setInt(3, boxInvoice.getInvoiceTypeId());
                 invHeaderInsStmt.setInt(4, boxInvoice.getCompanyId());
