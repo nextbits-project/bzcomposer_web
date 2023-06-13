@@ -145,7 +145,7 @@ public class InvoiceInfoDao {
                         " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 invHeaderInsStmt = con.prepareStatement(headerSql);
                 // get new sales order number
-                String orderNoStr = this.getNewSalesOrderNo(String.valueOf(boxInvoice.getCompanyId()));
+                String orderNoStr = getNewOrderNo(String.valueOf(boxInvoice.getCompanyId()));
                 int orderNo = Integer.parseInt(orderNoStr);
                 invHeaderInsStmt.setInt(1, orderNo);
                 invHeaderInsStmt.setInt(2, boxInvoice.getCustomerId());
