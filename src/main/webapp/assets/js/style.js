@@ -445,7 +445,7 @@ $(document).ready(function () {
 
         $("#sub_total").text(0.00);
         $("#tax_total").text(0.00);
-        $("#discount_amount").text(0.00);
+        $("#discount_amount").val(0.00);
         $("#grand_total").text(0.00);
         $("#received_amount").val('');
         $("#due_amount").text('');

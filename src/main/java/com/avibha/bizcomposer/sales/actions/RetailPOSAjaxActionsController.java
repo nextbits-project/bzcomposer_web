@@ -12,11 +12,13 @@ import com.avibha.bizcomposer.sales.dto.PosInvoiceItem;
 import com.avibha.bizcomposer.sales.dto.PosInvoiceRequest;
 import com.avibha.bizcomposer.sales.dto.SavePrintResponse;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,13 +48,8 @@ public class RetailPOSAjaxActionsController {
         boxInvoice.setGrandTotal(grandTotal);
         boxInvoice.setPaymentMethod(1);
         boxInvoice.setCustomerId(customerId);
-        // Generate Order no
-        int min = 100, max = 999;
-        int random = min + (int)(Math.random() * ((max - min) + 1));
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-        String orderNo = now.format(formatter) + random;
-        boxInvoice.setOrderNo(parseInt(orderNo));
+
         // 3 = paid
         boxInvoice.setTermId(3);
         boxInvoice.setIsInvoice(1);
