@@ -1,7 +1,7 @@
 $(document).ready(function () {
     let loader = $(".loader");
-    // let base_url = "http://localhost:8080"
-    let base_url = "https://www.bzcomposer.com"
+     //let base_url = "http://localhost:8080"
+     let base_url = "https://www.bzcomposer.com"
 
     $(document).on('click', '.print', function () {
         $(this).attr("disabled", "disabled");

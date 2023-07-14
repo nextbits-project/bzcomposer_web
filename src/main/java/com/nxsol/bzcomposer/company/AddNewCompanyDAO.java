@@ -217,6 +217,41 @@ public class AddNewCompanyDAO {
         form.setListOfBusinessType(listPOJOs);
         return listPOJOs;
     }
+    /*BusinessType*/
+    public  ArrayList<TblBusinessType> getBusinessType()
+    {
+        SQLExecutor db = new SQLExecutor();
+        Connection con = db.getConnection();
+        Statement stmt1 = null;
+        ResultSet rs1 = null;
+        ArrayList<TblBusinessType> listPOJOs = new ArrayList<>();
+        TblBusinessType pojo = null;
+        try {
+            stmt1 = con.createStatement();
+            String sql1 = "SELECT businessname, businesstypeid FROM bca_businesstype WHERE active=1 ORDER BY businessname";
+            Loger.log(sql1);
+            rs1 = stmt1.executeQuery(sql1);
+            while (rs1.next()) {
+                pojo = new TblBusinessType();
+                pojo.setBusinessName(rs1.getString(1));
+                pojo.setBusinessTypeID(rs1.getInt(2));
+                listPOJOs.add(pojo);
+            }
+        }
+        catch (Exception e) {
+            Loger.log(e.toString());
+        }
+        finally {
+            try {
+                if (rs1 != null) db.close(rs1);
+                if (stmt1 != null) db.close(stmt1);
+                if(con != null) db.close(con);
+            } catch (Exception e) {
+                Loger.log(e.toString());
+            }
+        }
+        return listPOJOs;
+    }
     /**/
 
 
@@ -2038,13 +2073,13 @@ public class AddNewCompanyDAO {
         sSql.append(form.getsCity());
         sSql.append("',");
         sSql.append("     '");
-        sSql.append(getStateById(form.getiState()));
+        sSql.append(form.getsState());
         sSql.append("',");
         sSql.append("     '");
         sSql.append(form.getsProvince());
         sSql.append("',");
         sSql.append("     '");
-        sSql.append(getCountryById(form.getiCountry()));
+        sSql.append(form.getsCountry());
         sSql.append("',");
         sSql.append("     '");
         sSql.append(form.getsZip());
@@ -2109,6 +2144,7 @@ public class AddNewCompanyDAO {
                 lastkey =  rs1.getInt(1);
             }
             ConstValue.companyId = lastkey;
+            form.setCompanyID(lastkey);
             db.close(rs1);
             db.close(stmt1);
         }catch (Exception e) {
@@ -2263,7 +2299,7 @@ public class AddNewCompanyDAO {
         con = db.getConnection();
         TblBusinessType type1 = new TblBusinessType();
         int BusinessTypeId = form.getBusinessTypeId();
-        String BusinessTypeName = null;
+        String BusinessTypeName = "";
         String sql1= "select businessname from bca_businesstype where BusinessTypeID ="+BusinessTypeId;
         try {
             stmt2 = con.createStatement();
@@ -2294,18 +2330,6 @@ public class AddNewCompanyDAO {
             // TODO: handle exception
             Loger.log(e.toString());
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         sSql = new StringBuffer();
         sSql.append("        Insert into ");
@@ -2393,16 +2417,26 @@ public class AddNewCompanyDAO {
         sSql.append("'1',");
         //sSql.append(type.getDefaultInvoiceStyleID());
         sSql.append(InvoiceStyleID);
-        sSql.append(",");
-        sSql.append("'United States',");
-        sSql.append("195,");
-        sSql.append("'CA',");
-        sSql.append("5,");
-        sSql.append("'United States',");
-        sSql.append("195,");
-        sSql.append("'CA',");
-        sSql.append("5,");
-        sSql.append(type.getDefaultPOStyleID());
+        sSql.append(",'");
+        sSql.append(form.getCountryName());
+        sSql.append("' , '");
+        sSql.append(form.getsCountry());
+        sSql.append("' , '");
+        sSql.append(form.getStateName());
+        sSql.append("' , '");
+        sSql.append(form.getsState());
+        sSql.append("' , '");
+        sSql.append(form.getCountryName());
+        sSql.append("' , '");
+        sSql.append(form.getsCountry());
+        sSql.append("' , '");
+        sSql.append(form.getStateName());
+        sSql.append("' , '");
+        sSql.append(form.getsState());
+        sSql.append("' ,");
+        int defaultPOStyleID = (type.getDefaultPOStyleID() > 0) ? type.getDefaultPOStyleID() : -1;
+        sSql.append(defaultPOStyleID);
+//        sSql.append(type.getDefaultPOStyleID());
         sSql.append(",");
         sSql.append("7,");
         sSql.append("1,");
