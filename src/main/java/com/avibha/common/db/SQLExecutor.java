@@ -19,9 +19,9 @@ import com.avibha.common.log.Loger;
 public class SQLExecutor {
 
 	/** database connection */
-	//private Connection con = null;
+	// private Connection con = null;
 	/** connection pool */
-	//private ConnectionPool conPool = null;
+	// private ConnectionPool conPool = null;
 
 	/** Database type (for example, DatabaseType.ORACLE) */
 	private int dbType;
@@ -36,8 +36,8 @@ public class SQLExecutor {
 	private int timeoutInSec = 0; // 0 = no timeout
 
 	/**
-	 * remember the last SQL statement (so we don't re-prepare a statement if
-	 * SQL doesn't change
+	 * remember the last SQL statement (so we don't re-prepare a statement if SQL
+	 * doesn't change
 	 */
 	private String lastSQL = null;
 
@@ -46,30 +46,31 @@ public class SQLExecutor {
 
 	/** ArrayList which stores the SQL parameters (?) */
 	private ArrayList<Object> params = null;
-	
 
 	/**
 	 * Constructor uses provided connection pool
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 */
 	public SQLExecutor() {
-		
-		//this.conPool = ConnectionPool.getInstance();
-		//con = conPool.getConnection();
-		//dbType = DatabaseType.getDbType(con);
+
+		// this.conPool = ConnectionPool.getInstance();
+		// con = conPool.getConnection();
+		// dbType = DatabaseType.getDbType(con);
 		params = new ArrayList<Object>();
 	}
 
 	/**
 	 * Getter for connection
+	 * 
 	 * @return Connection
 	 */
 	/*
 	 * public Connection getConnection1() { return (con); }
 	 */
-	
-	static BasicDataSource dataSource ;
-	
+
+	static BasicDataSource dataSource;
+
 	static {
 		dataSource = new BasicDataSource();
 		try {
@@ -86,28 +87,26 @@ public class SQLExecutor {
 			dataSource.setTestOnBorrow(true);
 		} catch (Exception ex) {
 			System.out.println("***Not able to create Datasource: " + ex.getMessage());
-			Loger.log(Loger.DEBUG,"***Not able to create Datasource: " + ex.getMessage());
+			Loger.log(Loger.DEBUG, "***Not able to create Datasource: " + ex.getMessage());
 			ex.printStackTrace();
 		}
 	}
 
-
-    public Connection getConnection() {
-    	Connection connection =null;
-        try {
+	public Connection getConnection() {
+		Connection connection = null;
+		try {
 //            connection = dataSource.getConnection();
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bzc","root","123");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bzc", "root", "123");
 //			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bcacom_bzc_demo","bcacom_bzc_demo","!passw0rd#12!");
 //			 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","db","myserverkonnect");
 		} catch (Exception ex) {
 			System.out.println("Not able to create DB connection " + ex.getMessage());
-			Loger.log(Loger.DEBUG,"Not able to create DB connection " + ex.getMessage());
+			Loger.log(Loger.DEBUG, "Not able to create DB connection " + ex.getMessage());
 			ex.printStackTrace();
 		}
-        return connection;
-    }
-
+		return connection;
+	}
 
 	/**
 	 * Clears out the query parameter list
@@ -120,18 +119,20 @@ public class SQLExecutor {
 
 	/**
 	 * Adds a query parameter to the list
+	 * 
 	 * @param param parameter to add to list
 	 */
 	public void addParam(Object param) {
-		try{
+		try {
 			params.add(param);
-		}catch(NullPointerException npe){
-			Loger.log(Loger.DEBUG,"Exception While Adding Parameters");
+		} catch (NullPointerException npe) {
+			Loger.log(Loger.DEBUG, "Exception While Adding Parameters");
 		}
 	}
 
 	/**
 	 * Adds an int query parameter to the list
+	 * 
 	 * @param param parameter to add to list
 	 */
 	public void addParam(int param) {
@@ -140,6 +141,7 @@ public class SQLExecutor {
 
 	/**
 	 * Adds a long query parameter to the list
+	 * 
 	 * @param param parameter to add to list
 	 */
 	public void addParam(long param) {
@@ -148,6 +150,7 @@ public class SQLExecutor {
 
 	/**
 	 * Adds a double query parameter to the list
+	 * 
 	 * @param param parameter to add to list
 	 */
 	public void addParam(double param) {
@@ -156,6 +159,7 @@ public class SQLExecutor {
 
 	/**
 	 * Adds a boolean query parameter to the list
+	 * 
 	 * @param param parameter to add to list
 	 */
 	public void addParam(boolean param) {
@@ -164,6 +168,7 @@ public class SQLExecutor {
 
 	/**
 	 * Adds a float query parameter to the list
+	 * 
 	 * @param param parameter to add to list
 	 */
 	public void addParam(float param) {
@@ -172,6 +177,7 @@ public class SQLExecutor {
 
 	/**
 	 * Adds a short query parameter to the list
+	 * 
 	 * @param param parameter to add to list
 	 */
 	public void addParam(short param) {
@@ -180,6 +186,7 @@ public class SQLExecutor {
 
 	/**
 	 * Runs the sql and does NOT close the connection
+	 * 
 	 * @param sql command to run
 	 * @return SQLResults if it's a query, null otherwise
 	 */
@@ -247,12 +254,10 @@ public class SQLExecutor {
 				} else if (param instanceof java.sql.Time) {
 					prepStatement.setTime(i + 1, (java.sql.Time) param);
 				} else if (param instanceof java.sql.Timestamp) {
-					prepStatement.setTimestamp(i + 1,
-							(java.sql.Timestamp) param);
+					prepStatement.setTimestamp(i + 1, (java.sql.Timestamp) param);
 				} else {
 					clearParams();
-					throw ExceptionFactory.getException(dbType,
-							"Unknown parameter type: param " + i);
+					throw ExceptionFactory.getException(dbType, "Unknown parameter type: param " + i);
 				}
 			}
 		}
@@ -260,12 +265,11 @@ public class SQLExecutor {
 
 	/**
 	 * Runs the sql and does NOT close the connection. Returns a standard JDBC
-	 * ResultSet object which can be scrolled through using rs.next(). This
-	 * method is preferable to runQuery() when your ResultSet is too large to
-	 * fit into memory (a SQLResults object).
+	 * ResultSet object which can be scrolled through using rs.next(). This method
+	 * is preferable to runQuery() when your ResultSet is too large to fit into
+	 * memory (a SQLResults object).
 	 * 
-	 * @param sql
-	 *            sql command to run
+	 * @param sql sql command to run
 	 * @return ResultSet if it's a query, null otherwise
 	 */
 	/*
@@ -296,8 +300,7 @@ public class SQLExecutor {
 	/**
 	 * Runs the sql and automatically closes the connection when done
 	 * 
-	 * @param sql
-	 *            sql command to execute
+	 * @param sql sql command to execute
 	 * @return SQLResults if it's a query, null otherwise
 	 */
 	/*
@@ -308,8 +311,7 @@ public class SQLExecutor {
 	/**
 	 * Is this SQL statement a select statement (returns rows?)
 	 * 
-	 * @param sql
-	 *            String
+	 * @param sql String
 	 * @return boolean
 	 */
 	private boolean isSelectStatement(String sql) {
@@ -319,9 +321,9 @@ public class SQLExecutor {
 	}
 
 	/**
-	 * Cancels the currently running query if both the database and driver
-	 * support aborting an SQL statement. This method can be used by one thread
-	 * to cancel a statement that is being executed by another thread.
+	 * Cancels the currently running query if both the database and driver support
+	 * aborting an SQL statement. This method can be used by one thread to cancel a
+	 * statement that is being executed by another thread.
 	 */
 	public void cancelQuery() {
 		try {
@@ -362,8 +364,7 @@ public class SQLExecutor {
 	/**
 	 * Sets the auto-commit status
 	 * 
-	 * @param autoCommit
-	 *            boolean
+	 * @param autoCommit boolean
 	 */
 	/*
 	 * public void setAutoCommit(boolean autoCommit) { try {
@@ -375,8 +376,7 @@ public class SQLExecutor {
 	/**
 	 * Sets the transaction isolation level
 	 * 
-	 * @param level
-	 *            int
+	 * @param level int
 	 */
 	/*
 	 * public void setTransactionIsolation(int level) { try {
@@ -406,8 +406,7 @@ public class SQLExecutor {
 	/**
 	 * Sets the current connection readOnly status
 	 * 
-	 * @param readOnly
-	 *            boolean
+	 * @param readOnly boolean
 	 */
 	/*
 	 * public void setReadOnly(boolean readOnly) { try { con.setReadOnly(readOnly);
@@ -429,8 +428,7 @@ public class SQLExecutor {
 	/**
 	 * Setter for the maximum number of rows that a query can return
 	 * 
-	 * @param maxRow
-	 *            int
+	 * @param maxRow int
 	 */
 	public void setMaxRows(int maxRows) {
 		this.maxRows = maxRows;
@@ -446,9 +444,8 @@ public class SQLExecutor {
 	}
 
 	/**
-	 * Getter for numRecordsUpdated. Call this method to find out how many rows
-	 * were updated in the last runQuery() call that did an INSERT, UPDATE, or
-	 * DELETE.
+	 * Getter for numRecordsUpdated. Call this method to find out how many rows were
+	 * updated in the last runQuery() call that did an INSERT, UPDATE, or DELETE.
 	 * 
 	 * @return int
 	 */
@@ -468,8 +465,7 @@ public class SQLExecutor {
 	/**
 	 * Setter for timeoutInSec
 	 * 
-	 * @param timeoutInSec
-	 *            int sets the query timeout in seconds
+	 * @param timeoutInSec int sets the query timeout in seconds
 	 */
 	public void setTimeoutInSec(int timeoutInSec) {
 		this.timeoutInSec = timeoutInSec;
@@ -484,51 +480,49 @@ public class SQLExecutor {
 
 	/**
 	 * Releases this connection (sets its available status = true). It does not
-	 * close the connection. It merely makes the connection available for
-	 * re-use.
+	 * close the connection. It merely makes the connection available for re-use.
 	 * 
-	 * @param conPool
-	 *            ConnectionPool
+	 * @param conPool ConnectionPool
 	 */
 	/*
 	 * public void releaseConnection() { conPool.close(con)(con, dbType); }
 	 */
 	public void close(ResultSet c) {
-        try {
-            if (c != null) {
-                c.close();
-            }
-        } catch (SQLException e) {
-            Loger.log(e.toString());
-        }
-    }
+		try {
+			if (c != null) {
+				c.close();
+			}
+		} catch (SQLException e) {
+			Loger.log(e.toString());
+		}
+	}
 
-    public void close(Statement c) {
-        try {
-            if (c != null) {
-                c.close();
-            }
-        } catch (SQLException e) {
-            Loger.log(e.toString());
-        }
-    }
+	public void close(Statement c) {
+		try {
+			if (c != null) {
+				c.close();
+			}
+		} catch (SQLException e) {
+			Loger.log(e.toString());
+		}
+	}
 
-    public void close(Connection c) {
-        try {
-            if (c != null) {
-                c.close();
-            }
-        } catch (SQLException e) {
-            Loger.log(e.toString());
-        }
-    }
-	public int getDatatabaseType(){
+	public void close(Connection c) {
+		try {
+			if (c != null) {
+				c.close();
+			}
+		} catch (SQLException e) {
+			Loger.log(e.toString());
+		}
+	}
+
+	public int getDatatabaseType() {
 		return dbType;
 	}
 
 	/**
-	 * @author SarfrazMalik
-	 * To avoid error on execution on group by query
+	 * @author SarfrazMalik To avoid error on execution on group by query
 	 */
 	public static void dissable_ONLY_FULL_GROUP_BY() {
 		SQLExecutor db = new SQLExecutor();
@@ -543,8 +537,12 @@ public class SQLExecutor {
 			ex.printStackTrace();
 		} finally {
 			try {
-				if (pstmt != null) {  db.close(pstmt); }
-				if (con != null) { db.close(con); }
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

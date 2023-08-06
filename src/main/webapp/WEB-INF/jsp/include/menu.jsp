@@ -186,10 +186,32 @@
 				</ul>
 			</li>
 			<!-- LEADS START -->
-			<li>
+			<%-- <li>
 				<a href="Leads?tabid=leads" title="leads" class="uppercaseText">
                     <span><spring:message code="BzComposer.leads" /></span>
 				</a>
+			</li> --%>
+			<li>
+				<a href="Lead?tabid=Lead" title="Lead" class="uppercaseText">
+                    <span><spring:message code="BzComposer.sales.Lead" /></span>
+				</a>
+				<ul>
+					<li>
+						<a href="Lead?tabid=Lead" title="Lead">
+                        <span><spring:message code="BzComposer.sales.LeadList" /></span>
+						</a>
+					</li>
+					<li>
+                        <a href="Lead?tabid=LeadBoard" title="Lead Board">
+                        <span><spring:message code="BzComposer.sales.LeadBoard" /></span>
+                        </a>
+                    </li>
+					<li>
+						<a href="Lead?tabid=PrintLabels" title="Print AddressLabel">
+                        <span><spring:message code="BzComposer.customer.LeadAddressLabels" /></span>
+						</a>
+					</li>
+				</ul>
 			</li>
 			<!-- LEADS END -->
 			
