@@ -1,5 +1,8 @@
 package com.nxsol.bizcomposer.common;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblBudgetCategory {
     
 private int budgetCategoryID = -1;

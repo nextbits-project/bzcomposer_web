@@ -3,8 +3,11 @@ package com.nxsol.bizcomposer.common;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TblBalanceSheet implements Cloneable {
+import jakarta.persistence.Entity;
 
+@Entity
+public class TblBalanceSheet implements Cloneable {
+// primary key missing
 	  private long categoryId = -1;
 
 	    private long categoryTypeID = -1;

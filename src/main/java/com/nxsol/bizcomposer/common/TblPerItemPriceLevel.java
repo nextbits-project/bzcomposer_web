@@ -1,5 +1,8 @@
 package com.nxsol.bizcomposer.common;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblPerItemPriceLevel {
 	
 private int inventoryID = 0;

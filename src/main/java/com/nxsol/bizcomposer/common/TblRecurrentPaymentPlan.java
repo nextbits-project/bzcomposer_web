@@ -2,6 +2,9 @@ package com.nxsol.bizcomposer.common;
 
 import org.apache.struts.action.ActionForm;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblRecurrentPaymentPlan extends ActionForm{
 
 	private int PlanID =-1;

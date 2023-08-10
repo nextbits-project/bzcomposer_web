@@ -7,6 +7,9 @@ import org.apache.struts.action.ActionForm;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblVendorDetail extends ActionForm {
 
 	    String vName="";

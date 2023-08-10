@@ -2,12 +2,13 @@ package com.nxsol.bizcomposer.common;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 
+import jakarta.persistence.Entity;
+@Entity
 public class TblPreference {
 
 	 public int preferenceID = -1;

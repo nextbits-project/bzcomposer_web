@@ -1,5 +1,8 @@
 package com.nxsol.bizcomposer.common;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblPaymentDetail {
 
 private int id = -1;

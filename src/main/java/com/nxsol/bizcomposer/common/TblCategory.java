@@ -1,12 +1,24 @@
 package com.nxsol.bizcomposer.common;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
+
+@Entity
 public class TblCategory implements Cloneable{
-private long id = -1;
+	
+	 @Id
+	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+	 private long id = -1;
     
     private long categoryTypeID = -1;
     
     private String name = "";
     
+    @Column(name = "cateNumber")
     private String categoryNumber = "";
     
     private String parent = "";
@@ -14,17 +26,18 @@ private long id = -1;
     private String description ="";
     
     private int budgetCategoryID = -1;
-    
+    @Transient
     private int subLevel=0;
     
+    @Transient	
     private String categoryTypeName = "";
-    
+    @Transient
     private String budgetCategoryName = "";
-    
+    @Transient
     private boolean subAccountOf = false;
-    
+    @Transient
     private String accountNumber = "";
-    
+    @Transient
     private int accountID = -1;
     
     public int getAccountID() {

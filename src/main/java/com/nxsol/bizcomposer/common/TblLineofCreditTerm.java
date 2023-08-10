@@ -3,6 +3,8 @@ package com.nxsol.bizcomposer.common;
 import java.util.Calendar;
 import java.util.Date;
 
+import jakarta.persistence.Entity;
+@Entity
 public class TblLineofCreditTerm {
 
 	  //overdue?

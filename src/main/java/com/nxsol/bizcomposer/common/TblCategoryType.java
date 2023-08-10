@@ -2,13 +2,22 @@ package com.nxsol.bizcomposer.common;
 
 import org.apache.struts.action.ActionForm;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+@Entity
 public class TblCategoryType extends ActionForm {
 
-	 private long categoryTypeID = -1;
+	 private static final long serialVersionUID = 1L;
+
+	  @Id
+	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long categoryTypeID = -1; // in db int s
 	    
 	    private String categoryTypeName = "";    
 	    
-	    private int accountID = -1;
+	    private int accountID = -1;// in table companyId s
 	    
 	    public int getAccountID() {
 			return accountID;

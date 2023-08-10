@@ -5,6 +5,8 @@ import java.util.Date;
 
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 
+import jakarta.persistence.Entity;
+@Entity
 public class TblClientVendorService {
 
 	private int clientVendorID=-1;

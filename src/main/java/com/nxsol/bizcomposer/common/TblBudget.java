@@ -1,8 +1,13 @@
 package com.nxsol.bizcomposer.common;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity 
 public class TblBudget {
 	
-		int BudgetID=-1;
+		@Id
+		int budgetID = -1;
 	    private String year = "";
 	    private int companyID = -1;
 	    private int companyBudget = 0;
@@ -13,11 +18,11 @@ public class TblBudget {
 	    private int isDual = 0;
 
 	    public int getBudgetID() {
-	        return BudgetID;
+	        return budgetID;
 	    }
 
 	    public void setBudgetID(int budgetID) {
-	        this.BudgetID = budgetID;
+	        this.budgetID = budgetID;
 	    }
 
 	    public String getYear() {
@@ -60,7 +65,7 @@ public class TblBudget {
 	        if ( !(obj instanceof TblBudget) ) return false;
 	        
 	        TblBudget other = (TblBudget)obj;        
-	        if (this.BudgetID!=other.BudgetID) return false;
+	        if (this.budgetID!=other.budgetID) return false;
 	        
 	        return true;
 	        

@@ -1,5 +1,8 @@
 package com.pritesh.bizcomposer.accounting.bean;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblAccount {
 
 	 private int accountID = -1;

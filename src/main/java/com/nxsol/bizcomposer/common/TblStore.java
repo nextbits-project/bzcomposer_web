@@ -2,6 +2,8 @@ package com.nxsol.bizcomposer.common;
 
 import java.util.Date;
 
+import jakarta.persistence.Entity;
+@Entity
 public class TblStore {
 	 private int storeId = -1;
 	    private String storeName = "";

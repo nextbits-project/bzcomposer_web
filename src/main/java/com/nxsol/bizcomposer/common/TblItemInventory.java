@@ -9,6 +9,9 @@ import java.util.Map;
 import com.paypal.soap.api.BuyerPaymentMethodCodeType;
 import com.paypal.soap.api.ListingDurationCodeType;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblItemInventory {
 
 	  private int group = 0;//for sorting group

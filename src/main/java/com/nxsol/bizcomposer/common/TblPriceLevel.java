@@ -2,6 +2,9 @@ package com.nxsol.bizcomposer.common;
 
 import java.util.ArrayList;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblPriceLevel {
 
 	 private int comanyID;

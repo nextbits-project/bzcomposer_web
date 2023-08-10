@@ -1,5 +1,8 @@
 package com.nxsol.bizcomposer.common;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblBudgetDetail {
 	private long CategoryID=-1;
     private String parent = "";
