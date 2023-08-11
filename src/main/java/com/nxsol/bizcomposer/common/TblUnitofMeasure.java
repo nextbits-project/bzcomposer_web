@@ -1,10 +1,17 @@
 package com.nxsol.bizcomposer.common;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class TblUnitofMeasure {
 
+	
+	//unit category id not primary or unique . mull key autoIncrement. change in db as primary key
+	  @Id
+	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private int id = -1;
 	    
 	    private String name =  "";

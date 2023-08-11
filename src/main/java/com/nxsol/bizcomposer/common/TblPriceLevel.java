@@ -3,87 +3,94 @@ package com.nxsol.bizcomposer.common;
 import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "bca_pricelevel")
 public class TblPriceLevel {
 
-	 private int comanyID;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int priceLevelID;
 
-	    private int priceLevelID;
-	    
-	    private String  priceLevelName = null;
-	    
-	    private boolean isActive = false;
-	    
-	    private String dateAdded = null;
-	    
-	    private String PriceLevelType = null;
-	    
-	    private double fixedPercentage = 0.0;
-	    
-	    private ArrayList<TblPerItemPriceLevel> perItemPriceLevelList=null;
-	    
-	   
-	    
-	    public TblPriceLevel() {
-	    }
+	private int comanyID;
 
-	    public int getCompanyID(){
-	       
-	        return  ConstValue.companyId;
-	    }
+	private String priceLevelName;// = null;
 
-	    public  ArrayList<TblPerItemPriceLevel> getPerItemPriceLevel(){
-	        return perItemPriceLevelList;
-	    }
-	    public void setPerItemPriceLevel(ArrayList<TblPerItemPriceLevel> level){
-	        perItemPriceLevelList=level;
-	    }
-	    
-	   public String getPriceLevelName() {
-	        return priceLevelName;
-	    }
+	private boolean isActive;// = false;
 
-	    public void setPriceLevelName(String  priceLevelName) {
-	        this.priceLevelName = priceLevelName;
-	    }
-	    
-	    public boolean isActive() {
-	        return isActive;
-	    }
+	private String dateAdded;// = null;
 
-	    public void setActive(boolean isActive) {
-	        this.isActive = isActive;
-	    }
-	    
-	    public String getDateAdded() {
-	        return dateAdded;
-	    }
+	private String PriceLevelType;// = null;
 
-	    public void setDateAdded(String dateAdded) {
-	        this.dateAdded = dateAdded;
-	    }
-	    
-	   public String getPriceLevelType() {
-	        return PriceLevelType;
-	    }
+	private double fixedPercentage;// = 0.0;
 
-	    public void setPriceLevelType(String  PriceLevelType) {
-	        this.PriceLevelType = PriceLevelType;
-	    }
-	    
-	    public double getFixedPercentage() {
-	        return fixedPercentage;
-	    }
+	private ArrayList<TblPerItemPriceLevel> perItemPriceLevelList = null;
 
-	    public void setFixedPercentage(double  fixedPercentage) {
-	        this.fixedPercentage = fixedPercentage;
-	    }
-	    
-	    public void setPriceLevelID(int id){
-	        priceLevelID=id;
-	    }
-	    public int getPriceLevelID(){
-	        return priceLevelID;
-	    }
+	public TblPriceLevel() {
+	}
+
+	public int getCompanyID() {
+
+		return ConstValue.companyId;
+	}
+
+	public ArrayList<TblPerItemPriceLevel> getPerItemPriceLevel() {
+		return perItemPriceLevelList;
+	}
+
+	public void setPerItemPriceLevel(ArrayList<TblPerItemPriceLevel> level) {
+		perItemPriceLevelList = level;
+	}
+
+	public String getPriceLevelName() {
+		return priceLevelName;
+	}
+
+	public void setPriceLevelName(String priceLevelName) {
+		this.priceLevelName = priceLevelName;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public String getDateAdded() {
+		return dateAdded;
+	}
+
+	public void setDateAdded(String dateAdded) {
+		this.dateAdded = dateAdded;
+	}
+
+	public String getPriceLevelType() {
+		return PriceLevelType;
+	}
+
+	public void setPriceLevelType(String PriceLevelType) {
+		this.PriceLevelType = PriceLevelType;
+	}
+
+	public double getFixedPercentage() {
+		return fixedPercentage;
+	}
+
+	public void setFixedPercentage(double fixedPercentage) {
+		this.fixedPercentage = fixedPercentage;
+	}
+
+	public void setPriceLevelID(int id) {
+		priceLevelID = id;
+	}
+
+	public int getPriceLevelID() {
+		return priceLevelID;
+	}
 }

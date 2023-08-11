@@ -20,6 +20,7 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 import com.nxsol.bizcomposer.common.TblItemInventory;
+import com.nxsol.bzcomposer.company.repositories.TblInventoryUnitMeasureRepository;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -33,7 +34,7 @@ import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -47,6 +48,9 @@ import java.util.*;
  * 
  */
 public class ItemInfoDao {
+	
+	private TblInventoryUnitMeasureRepository tTblInventoryUnitMeasureRepository;
+
 
 	public ArrayList getDicontinuedItemList(String datesCombo, String fromDate, String toDate, String sortBy,
 			String cId, HttpServletRequest request, ItemDto form) {
@@ -2876,45 +2880,48 @@ public class ItemInfoDao {
 	}
 
 	public TblInventoryUnitMeasure readInventoryUnitMeasure(int inventoryID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = null;
-		con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
-		TblInventoryUnitMeasure row = new TblInventoryUnitMeasure();
-		try {
-			String sql = " SELECT * " + " FROM bca_inventoryunitmeasure " + " WHERE InventoryID = " + inventoryID
-					+ " AND CompanyID = " + ConstValue.companyId;
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				row.setInventoryID(rs.getInt("InventoryID"));
-				row.setUnitCategoryID(rs.getInt("UnitCategoryID"));
-				row.setSubUnitCategoryID(rs.getInt("subUnitCategoryID"));
-				row.setWeightID(rs.getInt("WeightID"));
-				row.setSizeH(rs.getInt("SizeH"));
-				row.setSizeW(rs.getInt("SizeW"));
-				row.setSizeL(rs.getInt("SizeL"));
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		return row;
+		
+		return tTblInventoryUnitMeasureRepository.findByInventoryIDAndCompanyID(inventoryID, ConstValue.companyId);
+//
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		TblInventoryUnitMeasure row = new TblInventoryUnitMeasure();
+//		try {
+//			String sql = " SELECT * " + " FROM bca_inventoryunitmeasure " + " WHERE InventoryID = " + inventoryID
+//					+ " AND CompanyID = " + ConstValue.companyId;
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				row.setInventoryID(rs.getInt("InventoryID"));
+//				row.setUnitCategoryID(rs.getInt("UnitCategoryID"));
+//				row.setSubUnitCategoryID(rs.getInt("subUnitCategoryID"));
+//				row.setWeightID(rs.getInt("WeightID"));
+//				row.setSizeH(rs.getInt("SizeH"));
+//				row.setSizeW(rs.getInt("SizeW"));
+//				row.setSizeL(rs.getInt("SizeL"));
+//			}
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return row;
 	}
 
 	public String readItemAsin(int inventory) {

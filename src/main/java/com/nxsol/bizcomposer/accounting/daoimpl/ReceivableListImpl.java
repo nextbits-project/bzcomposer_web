@@ -11,7 +11,12 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -32,8 +37,19 @@ import com.nxsol.bizcomposer.common.TblVendorDetail;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcomposer.jasper.pojo.BillingBoardReport;
 import com.nxsol.bizcomposer.jasper.pojo.BillingStatementReport;
-import com.nxsol.bizcompser.global.table.*;
-import com.pritesh.bizcomposer.accounting.bean.*;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
+import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
+import com.nxsol.bizcompser.global.table.TblTerm;
+import com.nxsol.bizcompser.global.table.TblTermLoader;
+import com.nxsol.bzcomposer.company.repositories.TblCategoryTypeRepository;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
+import com.pritesh.bizcomposer.accounting.bean.SalesBillingTable;
+import com.pritesh.bizcomposer.accounting.bean.TblAccount;
+import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
+import com.pritesh.bizcomposer.accounting.bean.TblAccountable;
+import com.pritesh.bizcomposer.accounting.bean.TblPayment;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 
 public class ReceivableListImpl implements ReceivableLIst {
 
@@ -61,6 +77,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 	TblCategoryDto category = null;
 	ConfigurationInfo configInfo = new ConfigurationInfo();
 	ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+	
+	private TblCategoryTypeRepository tblCategoryTypeRepository;
 
 	public double getTotalAmountForLabel() {
 		return totalAmount;
@@ -8716,42 +8734,44 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	@Override
 	public ArrayList<TblCategoryType> getCategoryType() {
-		// TODO Auto-generated method stub
-		Statement stmt = null;
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
-		ResultSet rs = null;
-		ArrayList<TblCategoryType> categoryType = new ArrayList<TblCategoryType>();
-		String sql = "SELECT * FROM bca_categorytype WHERE isActive = 1 ORDER BY CategoryTypeName";
-		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				TblCategoryType type = new TblCategoryType();
-				type.setCategoryTypeID(rs.getLong("CategoryTypeID"));
-				type.setCategoryTypeName(rs.getString("CategoryTypeName"));
-				categoryType.add(type);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		return categoryType;
+	
+		return tblCategoryTypeRepository.findByIsActiveOrderByCategoryTypeNameAsc(true);
+		
+//		Statement stmt = null;
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//		ResultSet rs = null;
+//		ArrayList<TblCategoryType> categoryType = new ArrayList<TblCategoryType>();
+//		String sql = "SELECT * FROM bca_categorytype WHERE isActive = 1 ORDER BY CategoryTypeName";
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				TblCategoryType type = new TblCategoryType();
+//				type.setCategoryTypeID(rs.getLong("CategoryTypeID"));
+//				type.setCategoryTypeName(rs.getString("CategoryTypeName"));
+//				categoryType.add(type);
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return categoryType;
 	}
 
 	@Override

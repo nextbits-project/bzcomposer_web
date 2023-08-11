@@ -6,12 +6,20 @@ import java.util.Date;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 @Entity
+@Table(name="bca_clientvendorservice")
 public class TblClientVendorService {
 
-	private int clientVendorID=-1;
+	// s primary key missing in both table and entity
+	  @Id
+	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int clientVendorID;//=-1;
 
-    private int parentID=-1;
+    private int parentID = -1;
 
     private long serviceID=-1;
    
@@ -25,14 +33,14 @@ public class TblClientVendorService {
 
     private int serviceTypeID = -1;
 
-    private boolean defaultService= false;
+    private boolean defaultService;//s= false;
 
     //for financial assess
-    private double overdueAmount = 0.0;
+    private double overdueAmount;// = 0.0;
 
-    private double overdueFinanceChargeAmount = 0.0;
+    private double overdueFinanceChargeAmount;// = 0.0;
     
-    private double salePrice = 0.0;
+    private double salePrice;// = 0.0;
 
     private Date lastFC;
 

@@ -1,21 +1,26 @@
 package com.nxsol.bizcomposer.common;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity 
+@Table(name = "bca_budget")
 public class TblBudget {
 	
-		@Id
-		int budgetID = -1;
+	  @Id
+	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+		int budgetID;// = -1;
 	    private String year = "";
 	    private int companyID = -1;
-	    private int companyBudget = 0;
+	    private int companyBudget;// = 0;
 	    private String Budgetname = "";
 	    private int cvId = -1;
 	    private long cvServiceId = -1;
-	    private int isDefault = 0;
-	    private int isDual = 0;
+	    private int isDefault;// = 0;
+	    private int isDual;// = 0;
 
 	    public int getBudgetID() {
 	        return budgetID;

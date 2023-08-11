@@ -1,82 +1,93 @@
 package com.nxsol.bizcomposer.common;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "bca_budgetcategory")
 public class TblBudgetCategory {
-    
-private int budgetCategoryID = -1;
 
-private int budgetCategoryNumber = -1;
+	  @Id
+	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int budgetCategoryID = -1;
 
-private String budgetCategoryName = "";
+	private int budgetCategoryNumber = -1;
 
-private java.util.Date DateAdded = new java.util.Date();
+	private String budgetCategoryName = "";
 
-private double threshold = 0.0;
+	private java.util.Date DateAdded = new java.util.Date();
 
-/** Creates a new instance of tblBudgetCategory */
-public TblBudgetCategory() {
-}
+	private double threshold ;//= 0.0;
 
-public int getBudgetCategoryID() {
-    return budgetCategoryID;
-}
+	/** Creates a new instance of tblBudgetCategory */
+	public TblBudgetCategory() {
+	}
 
-public void setBudgetCategoryID(int budgetCategoryID) {
-    this.budgetCategoryID = budgetCategoryID;
-}
+	public int getBudgetCategoryID() {
+		return budgetCategoryID;
+	}
 
-public int getBudgetCategoryNumber() {
-    return budgetCategoryNumber;
-}
+	public void setBudgetCategoryID(int budgetCategoryID) {
+		this.budgetCategoryID = budgetCategoryID;
+	}
 
-public void setBudgetCategoryNumber(int budgetCategoryNumber) {
-    this.budgetCategoryNumber = budgetCategoryNumber;
-}
+	public int getBudgetCategoryNumber() {
+		return budgetCategoryNumber;
+	}
 
-public String getBudgetCategoryName() {
-    return budgetCategoryName;
-}
+	public void setBudgetCategoryNumber(int budgetCategoryNumber) {
+		this.budgetCategoryNumber = budgetCategoryNumber;
+	}
 
-public void setBudgetCategoryName(String budgetCategoryName) {
-    this.budgetCategoryName = budgetCategoryName;
-}
+	public String getBudgetCategoryName() {
+		return budgetCategoryName;
+	}
 
-public java.util.Date getDateAdded() {
-    return DateAdded;
-}
+	public void setBudgetCategoryName(String budgetCategoryName) {
+		this.budgetCategoryName = budgetCategoryName;
+	}
 
-public void setDateAdded(java.util.Date DateAdded) {
-    this.DateAdded = DateAdded;
-}
-public String toString() { 
-    return getBudgetCategoryName();
-}
+	public java.util.Date getDateAdded() {
+		return DateAdded;
+	}
 
- public boolean equals(Object obj) {
-    //check for self-comparison
-    if ( this == obj ) return true;        
-    if ( !(obj instanceof TblBudgetCategory) ) return false;
-    
-    TblBudgetCategory other = (TblBudgetCategory)obj;        
-    if (this.budgetCategoryID!=other.budgetCategoryID) return false;
-    
-    return true;
-    
-}
+	public void setDateAdded(java.util.Date DateAdded) {
+		this.DateAdded = DateAdded;
+	}
 
-/**
- * @return the threshold
- */
-public double getThreshold() {
-    return threshold;
-}
+	public String toString() {
+		return getBudgetCategoryName();
+	}
 
-/**
- * @param threshold the threshold to set
- */
-public void setThreshold(double threshold) {
-    this.threshold = threshold;
-}
+	public boolean equals(Object obj) {
+		// check for self-comparison
+		if (this == obj)
+			return true;
+		if (!(obj instanceof TblBudgetCategory))
+			return false;
+
+		TblBudgetCategory other = (TblBudgetCategory) obj;
+		if (this.budgetCategoryID != other.budgetCategoryID)
+			return false;
+
+		return true;
+
+	}
+
+	/**
+	 * @return the threshold
+	 */
+	public double getThreshold() {
+		return threshold;
+	}
+
+	/**
+	 * @param threshold the threshold to set
+	 */
+	public void setThreshold(double threshold) {
+		this.threshold = threshold;
+	}
 }

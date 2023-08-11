@@ -1,26 +1,29 @@
 package com.nxsol.bizcomposer.common;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
-@Entity
+@Entity //bca_budgetdetails
+@Table(name="bca_budgetdetails")
 public class TblBudgetDetail {
+	// primary key budgetdetailsid missing
 	private long CategoryID=-1;
     private String parent = "";
     private int BudgetID=-1;
-    private double AnnaulTotal = 0.00;
-    private double ActulAvalue = 0.00;
-    private double oct_Amt = 0.00;
-    private double nov_Amt = 0.00;
-    private double dec_Amt = 0.00;
-    private double jan_Amt = 0.00;
-    private double feb_Amt = 0.00;
-    private double mar_Amt = 0.00;
-    private double apr_Amt = 0.00;
-    private double may_Amt = 0.00;
-    private double jun_Amt = 0.00;
-    private double jul_Amt = 0.00;
-    private double aug_Amt = 0.00;
-    private double sep_Amt = 0.00;
+    private double AnnaulTotal;// = 0.00;
+    private double ActulAvalue;// = 0.00;
+    private double oct_Amt;// = 0.00;
+    private double nov_Amt;// = 0.00;
+    private double dec_Amt;// = 0.00;
+    private double jan_Amt;// = 0.00;
+    private double feb_Amt;// = 0.00;
+    private double mar_Amt;// = 0.00;
+    private double apr_Amt;// = 0.00;
+    private double may_Amt;// = 0.00;
+    private double jun_Amt;// = 0.00;
+    private double jul_Amt;// = 0.00;
+    private double aug_Amt;// = 0.00;
+    private double sep_Amt;// = 0.00;
     private int cvId = -1;
     private long cvServiceId = -1;
     private int year = -1;

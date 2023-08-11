@@ -6,4 +6,5 @@ import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 
 public interface TblInventoryUnitMeasureRepository extends JpaRepository<TblInventoryUnitMeasure,Integer>{
 
+	TblInventoryUnitMeasure findByInventoryIDAndCompanyID(int inventoryID,int CompanyID); 
 }

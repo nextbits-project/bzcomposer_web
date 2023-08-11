@@ -8,81 +8,90 @@ import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-@Entity
+@Entity // representing bca_clientvendor
 public class TblVendorDetail extends ActionForm {
 
-	    String vName="";
-	    double vBalance=0.0;
-	    int vendorID=0;
-	    int poNum=0;
-	    java.util.Date dateAdded=null;
-	    double amount=0.0;
+	    private static final long serialVersionUID = 1L;
+	    
+	    @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    //in table name of the field is clientvendorid. it is not primary or unique key is mul key
+	    int vendorID;//=0;
+		String vName="";
+	    double vBalance;//=0.0;
+	    
+	    int poNum;//=0;
+	    java.util.Date dateAdded;//=null;
+	    double amount;//=0.0;
 	    String memo="";
-	    boolean isSelected=false;
+	    boolean isSelected;//=false;
 	    String inventoryCode="";
 	    String inventoryName="";
-	    int qty=0;
-	    double unitPrice=0.0;
-	    double total=0.0;
-	    boolean isBilled=false;
-	    int invoiceId = 0;
+	    int qty;//=0;
+	    double unitPrice;//=0.0;
+	    double total;//=0.0;
+	    boolean isBilled;//=false;
+	    int invoiceId;// = 0;
 	    String vendorAddress="";
-	    int billNo=0;
+	    int billNo;//=0;
 	    String BankAccount="";
 	    String status="";
-	    int checkNo=0;
+	    int checkNo;//=0;
 	   
 		String dueDate="";
 	    private String date = "";
-	    int payeeId = 0;
-	    private int payerId=0;
-	    private int billType=-1;
-	    private double creditUsed=0.0;
+	    int payeeId;// = 0;
+	    private int payerId;//=0;
+	    private int billType;//=-1;
+	    private double creditUsed;//=0.0;
 	    
 	    //Memorized bill
-	    private int memorizedOption=0;
+	    private int memorizedOption;//=0;
 	    private String transactionName=" ";
 	    private String howOften="";
-	    private int numRemain=0;
-	    private int dayInAdv=0;
+	    private int numRemain;//=0;
+	    private int dayInAdv;//=0;
 	    private String RecurringPeriod="";
-	    private int RecurringNumber=0;
-	    private int DaysInAdvanceToEnter=0;
+	    private int RecurringNumber;//=0;
+	    private int DaysInAdvanceToEnter;//=0;
 	    private boolean IsMemorized=true;
-	    private int RecurringOption=0;
+	    private int RecurringOption;//=0;
 	    private java.util.Date nextDate;
 	    private String nextDateString = "";
-	    private int remindOption = 0;
+	    private int remindOption;// = 0;
 	    
 	    private String expenseMemo="";
-	    private double expenseAmount=0.0;
-	    private int inventoryQty=0;
-	    private double inventoryRate=0.0;
-	    private double inventoryAmount=0.0;;
-	    private boolean isRecurrentPayment=false;
-	    private int planID=0;
-	    private int paymentId=0;
-	    private ClientVendor cv=null;
-	    private boolean deleted=false;
-	    private double amountPaid=0.0;
-	    private long categoryID=0L;
+	    private double expenseAmount;//=0.0;
+	    private int inventoryQty;//=0;
+	    private double inventoryRate;//=0.0;
+	    private double inventoryAmount;//=0.0;;
+	    private boolean isRecurrentPayment;//=false;
+	    private int planID;//=0;
+	    private int paymentId;//=0;
+	    private ClientVendor cv;//=null;
+	    private boolean deleted;//=false;
+	    private double amountPaid;//=0.0;
+	    private long categoryID;//=0L;
 		private String categoryName = "";
-	    private double balance=0.0;
-	    private double amountTopay=0.0;    
-	    private TblClientVendorService cvService=null;
+	    private double balance;//=0.0;
+	    private double amountTopay;//=0.0;    
+	    private TblClientVendorService cvService;//=null;
 	    private long serviceID=-1;
-	    private TblAccount bankAcc=null;
-	    private double payFromBalance=0.00;
-	    private double payToBalance=0.00;
-	    private long totalPaidBills = 0;
-	    private long totalUnPaidBills = 0;
-	    private double totalBillAmount = 0.00;  
-	    private int term = 0;
-	    private int expenseAccountId = 0;
-	    private int expenseClientVendorId = 0;
-	    private int billAble = 0;
-	    private int accountId = 0;
+	    private TblAccount bankAcc;//=null;
+	    private double payFromBalance;//=0.00;
+	    private double payToBalance;//=0.00;
+	    private long totalPaidBills;// = 0;
+	    private long totalUnPaidBills;// = 0;
+	    private double totalBillAmount;// = 0.00;  
+	    private int term;// = 0;
+	    private int expenseAccountId;// = 0;
+	    private int expenseClientVendorId;// = 0;
+	    private int billAble;// = 0;
+	    private int accountId;// = 0;
 	    
 	    public int getAccountId() {
 			return accountId;

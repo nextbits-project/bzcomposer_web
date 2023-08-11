@@ -1,15 +1,22 @@
 package com.nxsol.bizcomposer.common;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "bca_location")
 public class TblLocation {
 
-	 private int id = -1;
+	  @Id
+	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+	 private int id;// = -1;
 	    
 	    private String name = "";
 	    
-	    private java.util.Date dateAdded = null;
+	    private java.util.Date dateAdded;// = null;
 	    
 	    
 	    /** Creates a new instance of tblLocation */

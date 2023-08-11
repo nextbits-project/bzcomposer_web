@@ -1,10 +1,16 @@
 package com.nxsol.bizcomposer.common;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class TblInventoryUnitMeasure {
 	
+	// s primary key missing in both table and entity
+	  @Id
+	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private int inventoryID;
 	    private int UnitCategoryID;
 	    private int WeightID;
