@@ -11,6 +11,7 @@ import com.avibha.bizcomposer.employee.dao.Label;
 import com.avibha.bizcomposer.purchase.dao.PurchaseBoardDetails;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
+import com.avibha.bizcomposer.repository.ClientVendorRepository;
 import com.avibha.bizcomposer.sales.dao.*;
 import com.avibha.bizcomposer.sales.forms.*;
 import com.avibha.common.constants.AppConstants;
@@ -31,6 +32,8 @@ import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,9 +49,11 @@ import java.util.List;
 
 @Controller
 public class LeadAsCustController {
-
-	@RequestMapping(value = { "/Lead" }, method = {
-			RequestMethod.GET, RequestMethod.POST })
+	@Autowired
+	private ClientVendorRepository cvr;
+	
+	
+	@RequestMapping(value = { "/Lead" }, method = { RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
 			UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto, Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -63,6 +68,9 @@ public class LeadAsCustController {
 		ConfigurationInfo configInfo = new ConfigurationInfo();
 		configInfo.setCurrentRequest(request);
 		String forward = "sales/invoice";
+		
+//		cvr.save();
+		
 		if (IN_URI.endsWith(CUSTOMER_URI)) {
 			forward = "/sales/customerNew";
 			model.addAttribute("customerDto", customerDto);
@@ -79,7 +87,7 @@ public class LeadAsCustController {
 			model.addAttribute("invoiceDto", invoiceDto);
 		} else if (IN_URI.endsWith(SALES_MANAGER_URI)) {
 			forward = "/sales/datamanager";
-		}else if (IN_URI.endsWith(LEAD_URI)) {
+		} else if (IN_URI.endsWith(LEAD_URI)) {
 			forward = "/leads/leadList";
 			model.addAttribute("customerDto", customerDto);
 			model.addAttribute("emailSenderDto", emailSenderDto);
@@ -278,7 +286,7 @@ public class LeadAsCustController {
 			customerDto.setPeriodTo(MyUtility.getCurrentDate());
 			request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
 			forward = "/leads/leadBoard";
-			
+
 		} else if (action.equalsIgnoreCase("ContactBoard")) { // Show ContactBoard page
 			SalesDetailsDao sd = new SalesDetailsDao();
 			String firstCvID = sd.getCustomerList(request);
@@ -434,8 +442,8 @@ public class LeadAsCustController {
 			// float price = Float.parseFloat(request.getParameter("price"));
 			double p1 = Double.parseDouble(request.getParameter("price"));
 			String pageType = request.getParameter("pageType");
-			if(pageType==null) {
-				pageType="";
+			if (pageType == null) {
+				pageType = "";
 			}
 			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nPrice:" + p1);
 			SalesDetailsDao sd = new SalesDetailsDao();
@@ -446,20 +454,20 @@ public class LeadAsCustController {
 				forward = "redirect:PurchaseOrder?tabid=PurchaseOrder";
 			} else if (pageType.equalsIgnoreCase("ES")) {
 				forward = "redirect:Estimation?tabid=Estimation";
-			}else if (pageType.equalsIgnoreCase("SO")) {
+			} else if (pageType.equalsIgnoreCase("SO")) {
 				forward = "redirect:SalesOrder?tabid=SalesOrder";
 			} else {
 				forward = "redirect:Invoice?tabid=Invoice";
 			}
-			//forward = "redirect:Invoice?tabid=Invoice";
+			// forward = "redirect:Invoice?tabid=Invoice";
 		}
 
 		else if (action.equalsIgnoreCase("saveItemName")) {
 			int itemId = Integer.parseInt(request.getParameter("itemID"));
 			String itemName = request.getParameter("itemName");
 			String pageType = request.getParameter("pageType");
-			if(pageType==null) {
-				pageType="";
+			if (pageType == null) {
+				pageType = "";
 			}
 			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nItemName:" + itemName);
 			SalesDetailsDao sd = new SalesDetailsDao();
@@ -472,7 +480,7 @@ public class LeadAsCustController {
 				forward = "redirect:Estimation?tabid=Estimation";
 			} else if (pageType.equalsIgnoreCase("SO")) {
 				forward = "redirect:SalesOrder?tabid=SalesOrder";
-			}else {
+			} else {
 				forward = "redirect:Invoice?tabid=Invoice";
 			}
 
@@ -1469,8 +1477,6 @@ public class LeadAsCustController {
 		}
 		return forward;
 	}
-
-	
 
 	@ResponseBody
 	@PostMapping("/LeadAjax")

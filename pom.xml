@@ -210,15 +210,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
 			<version>[1.02b,2.1.7]</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
@@ -228,15 +225,14 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
-<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa -->
+
 
 <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api -->
-<dependency>
+
 	</dependencies>
 	
 	<build>
