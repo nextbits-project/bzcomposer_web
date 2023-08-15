@@ -21,9 +21,10 @@ public class TblItemInventory {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int inventoryID = -1;
 	private int group;// s = 0;//for sorting group
 	private boolean isSelcted;
-	private int inventoryID = -1;
+
 	private int parentID = -1;
 	private String InventoryCode = "";
 	private String ItemKeyword = "";
@@ -174,13 +175,13 @@ public class TblItemInventory {
 	// ASK Code
 	private String productName = "";
 	private int storeID = -1;
-	private String exportedInventoryID = "";
+	private String exportedInventoryID = ""; // foreign key
 	private String storeName = "";
 	private String storeTypeName = "";
 	private java.util.Date exportedDate;
 	private boolean isConsignedItem = false;
 	private double commission = 0.0;
-	private int companyID = -1;
+	private int companyID = -1; // foreign key
 	private String storeSKU = "";
 	private int isSelected_esalesUpload = 0;
 

@@ -11,7 +11,7 @@ public class TblProductChannelSetting {
 	  @Id
 	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int channelSettingID = -1;
-	private int inventoryID = -1;
+	private int inventoryID = -1; // foreign key
 	private int storeID = -1;
 	private double salesPrice;// = 0.0;
 	private String SKU = "";

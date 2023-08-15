@@ -8,9 +8,9 @@ import jakarta.persistence.Entity;
 @Entity
 public class TblBalanceSheet implements Cloneable {
 // primary key missing
-	  private long categoryId = -1;
+	  private long categoryId = -1;// foreign key
 
-	    private long categoryTypeID = -1;
+	    private long categoryTypeID = -1;//// foreign key
 
 	    private String name = "";
 
@@ -19,7 +19,7 @@ public class TblBalanceSheet implements Cloneable {
 	    Calendar cal = Calendar.getInstance();
 	    private Date date = cal.getTime();
 
-	    private int companyID=0;
+	    private int companyID; // =0; foreign key
 	    
 	    public TblBalanceSheet() {
 	        

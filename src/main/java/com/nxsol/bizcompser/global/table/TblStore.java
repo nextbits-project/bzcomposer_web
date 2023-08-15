@@ -4,102 +4,114 @@ import java.util.Date;
 
 import org.apache.struts.action.ActionForm;
 
-public class TblStore  extends ActionForm
-{
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "bca_store")
+public class TblStore extends ActionForm {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private int storeId = -1;
-    private String storeName = "";
-    private String abbreviation  = "";
-    private int storeTypeId = -1;
-    private String storeTypeName = "";
-    private String companyName = "";
-    private String firstName = "";
-    private String lastName = "";
-    private String address1 = "";
-    private String address2 = "";
-    private String city = "";
-    private String state = "";
-    private String province = "";
-    private String country = "";
-    private String zipcode = "";
-    private String email = "";
-    private String phonenumber = "";
-    private String faxnumber = "";
-    private String packingReturnPolicy = "";
-    private String logoPath = "";
-    private Date dateAdded = null;
-    /* For eBay */
-    private String eBayDeveloperID = "";
-    private String eBayApplicationID = "";
-    private String eBayCertificate = "";
-    private String eBayEpsServerURL = "";
-    private String eBayServerURL = "";
-    private String eBaySignInURL = "";
-    private String eBayToken = "";
-    /* For Amazon Merchant */
-    private String amazonAccesKey = "";
-    private String amazonSecretKey = "";
-    private String amazonMarketPlaceID = "";
-    private String amazonMerchantID = "";
-    private Date lastImportDate = null;
-    private String qbFilePath = "";
-    private String filePath = "";
-    private String orderImportTemplate = "";
-    private int active = 1;
-    private int deleted = 1;
-    private String smcLoginID = "";
-    private String smcPassword = "";
-    private String smcStoreLoginID = "";
-    private String smcStorePassword = "";
-    private boolean defaultStore = false;
-    private boolean multipleAccountSelected = false;
-    private Date fromDate = null;
-    private Date toDate = null;
-    private Date dateFrom = null;
-    private Date dateTo = null;
-    private int currentStore = -1;
-    private String importHistory = "";
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int storeId;// = -1;
+	private String storeName = "";
+	private String abbreviation = "";
+	private int storeTypeId = -1;
+	private String storeTypeName = "";
+	private String companyName = "";
+	private String firstName = "";
+	private String lastName = "";
+	private String address1 = "";
+	private String address2 = "";
+	private String city = "";
+	private String state = "";
+	private String province = "";
+	private String country = "";
+	private String zipcode = "";
+	private String email = "";
+	private String phonenumber = "";
+	private String faxnumber = "";
+	private String packingReturnPolicy = "";
+	private String logoPath = "";
+	private Date dateAdded = null;
+	/* For eBay */
+	private String eBayDeveloperID = "";
+	private String eBayApplicationID = "";
+	private String eBayCertificate = "";
+	private String eBayEpsServerURL = "";
+	private String eBayServerURL = "";
+	private String eBaySignInURL = "";
+	private String eBayToken = "";
+	/* For Amazon Merchant */
+	private String amazonAccesKey = "";
+	private String amazonSecretKey = "";
+	private String amazonMarketPlaceID = "";
+	private String amazonMerchantID = "";
+	private Date lastImportDate = null;
+	private String qbFilePath = "";
+	private String filePath = "";
+	private String orderImportTemplate = "";
+	private int active = 1;
+	private int deleted = 1;
+	private String smcLoginID = "";
+	private String smcPassword = "";
+	private String smcStoreLoginID = "";
+	private String smcStorePassword = "";
+	private boolean defaultStore = false;
+	private boolean multipleAccountSelected = false;
+	private Date fromDate = null;
+	private Date toDate = null;
+	private Date dateFrom = null;
+	private Date dateTo = null;
+	private int currentStore = -1;
+	private String importHistory = "";
 
-    /* Setting for eBay File import feature */
-    private int paymentStatusID1 = -1;
-    private int paymentStatusID2 = -1;
-    private String changeInvoiced = "Ignore";
-    private boolean useDateRange = false;
-    private String dateBasedOn = "Payment Received";
-    private int changePaymentStatusID = -1;
-    private String ruleInvoiced = "Ignore";
-    public static final int FILE_IMPORT_STORE = 0;
-    public static final int ONLINE_IMPORT_STORE = 1;
-    private int storeImportType = -1;
-    private boolean isImportFinished = false;
-    private boolean isImportStarted = false;
-    private boolean isImportAllow = false;
+	/* Setting for eBay File import feature */
+	private int paymentStatusID1 = -1;
+	private int paymentStatusID2 = -1;
+	private String changeInvoiced = "Ignore";
+	private boolean useDateRange = false;
+	private String dateBasedOn = "Payment Received";
+	private int changePaymentStatusID = -1;
+	private String ruleInvoiced = "Ignore";
+	public static final int FILE_IMPORT_STORE = 0;
+	public static final int ONLINE_IMPORT_STORE = 1;
+	private int storeImportType = -1;
+	private boolean isImportFinished = false;
+	private boolean isImportStarted = false;
+	private boolean isImportAllow = false;
 
-    /*Setting Amazon item category template header type*/
-    private String headerNameData = null;
-    private String templateFileName = null;
-    private String columnHeaderData = null;
+	/* Setting Amazon item category template header type */
+	private String headerNameData = null;
+	private String templateFileName = null;
+	private String columnHeaderData = null;
 
-    private int defaulteCategoryID = -1; /* This defaulteCategory is used to save category in which we upload the product from BCA */
+	private int defaulteCategoryID = -1; /*
+											 * This defaulteCategory is used to save category in which we upload the
+											 * product from BCA
+											 */
 
-    private int isSelected = 1;
+	private int isSelected = 1;
 
-    private int CompanyID = -1;
+	private int CompanyID = -1;// foreign key
 
-    private int totalOrders = -1;
+	private int totalOrders = -1;
 
-    //private tblProductChannelSetting channelSetting = null;
-    private String nickName = "";
-    private String dbURL = "";
-    private String magentoLoginID = "";
-    private String magentoPassword = "";
+	// private tblProductChannelSetting channelSetting = null;
+	private String nickName = "";
+	private String dbURL = "";
+	private String magentoLoginID = "";
+	private String magentoPassword = "";
 
-    /** Creates a new instance of tblStore */
-    public TblStore() {
-    }
+	/** Creates a new instance of tblStore */
+	public TblStore() {
+	}
 
 	public int getStoreId() {
 		return storeId;

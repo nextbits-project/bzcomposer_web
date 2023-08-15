@@ -2,6 +2,8 @@ package com.nxsol.bzcomposer.company.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BcaBudgetRepository extends JpaRepository<TlbBudget,Integer>{
+import com.nxsol.bizcomposer.common.TblBudget;
+
+public interface BcaBudgetRepository extends JpaRepository<TblBudget,Integer>{
 
 }

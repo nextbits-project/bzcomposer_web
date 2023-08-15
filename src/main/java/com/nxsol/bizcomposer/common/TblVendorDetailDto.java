@@ -9,7 +9,7 @@ public class TblVendorDetailDto {
 
 	    String vName="";
 	    double vBalance;//=0.0;
-	    int vendorID;//=0;
+	    int vendorID;//=0; my be primary key
 	    int poNum;//=0;
 	    Date dateAdded;//=null;
 	    double amount;//=0.0;
@@ -51,7 +51,7 @@ public class TblVendorDetailDto {
 	    private int remindOption;// = 0;
 
 	    private String expenseMemo="";
-	    private double expenseAmoun;//t=0.0;
+	    private double expenseAmount;//=0.0;
 	    private int inventoryQty;//=0;
 	    private double inventoryRate;//=0.0;
 	    private double inventoryAmount;//=0.0;;

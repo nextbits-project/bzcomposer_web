@@ -12,7 +12,7 @@ public class TblRecurrentPaymentPlan extends ActionForm{
 	private int PlanID =-1;
     private int PayeeID =-1;
     private int PaymentAccountID=-1;
-    private int PaymentTypeID=-1;
+    private int PaymentTypeID=-1; // foreign key 
     private double Amount; //=0.0;
     private boolean SamePaymentAmount=true;
     private double LastPaymentAmount;//=0.0;

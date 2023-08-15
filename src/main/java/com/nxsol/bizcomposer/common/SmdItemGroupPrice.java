@@ -7,8 +7,8 @@ import jakarta.persistence.Table;
 @Table(name = "smd_item_group_price")
 public class SmdItemGroupPrice {
 	
-	private Integer companyId;
-	private String inventoryId;
+	private Integer companyId;// foreign key
+	private String inventoryId;// foreign key
 	private Integer customerGroupId;
 	private String defaultPrice="0";
 	private  Double price;

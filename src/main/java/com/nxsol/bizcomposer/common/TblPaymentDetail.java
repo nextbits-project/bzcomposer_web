@@ -14,7 +14,7 @@ public class TblPaymentDetail {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;// = -1;
 
-	private int paymentID = -1;
+	private int paymentID = -1; // foreign key
 
 	private Long refNumber;// = 0L;// credit card or check#
 

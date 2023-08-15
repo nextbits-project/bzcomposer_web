@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 @Table(name = "smd_subproduct")
 public class SmdSubProduct {
 	
-	private int subProductId;
+	private int subProductId;// primary
 	private Integer subProductcount;
 	private Integer masterProductId;
 	public int getSubProductId() {

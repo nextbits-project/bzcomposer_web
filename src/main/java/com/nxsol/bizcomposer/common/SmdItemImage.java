@@ -14,8 +14,8 @@ public class SmdItemImage {
 	 @Id
 	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int itemImageid;
-	private String inventoryId;
-	private Integer companyId;
+	private String inventoryId; // foreign key
+	private Integer companyId;// foreign key
 	private String image;
 	private String titleImage;
 	private String isDeleted="0";

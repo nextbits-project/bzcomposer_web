@@ -10,9 +10,9 @@ import jakarta.persistence.Table;
 @Table(name = "bca_budgetcategory")
 public class TblBudgetCategory {
 
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int budgetCategoryID = -1;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int budgetCategoryID;// = -1;
 
 	private int budgetCategoryNumber = -1;
 
@@ -20,7 +20,7 @@ public class TblBudgetCategory {
 
 	private java.util.Date DateAdded = new java.util.Date();
 
-	private double threshold ;//= 0.0;
+	private double threshold;// = 0.0;
 
 	/** Creates a new instance of tblBudgetCategory */
 	public TblBudgetCategory() {

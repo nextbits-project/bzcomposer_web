@@ -16,7 +16,7 @@ public class TblPriceLevel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int priceLevelID;
 
-	private int comanyID;
+	private int companyID;// typo changed compoid to company
 
 	private String priceLevelName;// = null;
 

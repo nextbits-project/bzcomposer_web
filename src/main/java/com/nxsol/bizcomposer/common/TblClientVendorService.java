@@ -23,7 +23,7 @@ public class TblClientVendorService {
 
     private long serviceID=-1;
    
-    private long InventoryID=-1;
+    private long InventoryID=-1; // foreign key
 
     private String serviceName="";
 

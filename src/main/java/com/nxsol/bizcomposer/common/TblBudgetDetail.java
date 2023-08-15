@@ -6,10 +6,11 @@ import jakarta.persistence.Table;
 @Entity //bca_budgetdetails
 @Table(name="bca_budgetdetails")
 public class TblBudgetDetail {
-	// primary key budgetdetailsid missing
-	private long CategoryID=-1;
+	//budgetdetailsid
+	// primary key budgetdetailsid missing  
+	private long CategoryID =-1;// foreign key
     private String parent = "";
-    private int BudgetID=-1;
+    private int BudgetID =-1; // foreign key
     private double AnnaulTotal;// = 0.00;
     private double ActulAvalue;// = 0.00;
     private double oct_Amt;// = 0.00;
@@ -25,7 +26,7 @@ public class TblBudgetDetail {
     private double aug_Amt;// = 0.00;
     private double sep_Amt;// = 0.00;
     private int cvId = -1;
-    private long cvServiceId = -1;
+    private long cvServiceId = -1;// foreign key
     private int year = -1;
 
     public long getCategoryID() {
