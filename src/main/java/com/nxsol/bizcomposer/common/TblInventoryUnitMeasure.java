@@ -4,15 +4,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table( name = "bca_inventoryunitmeasure")
 public class TblInventoryUnitMeasure {
 	
 	// s primary key missing in both table and entity
 	  @Id
 	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private int inventoryID;
-	    private int UnitCategoryID;
+	    private int UnitCategoryID;// foreign key bca_unitofmeasure(UnitCategoryID)
 	    private int WeightID;
 	    private int DimensionID;
 	    private int subUnitCategoryID;

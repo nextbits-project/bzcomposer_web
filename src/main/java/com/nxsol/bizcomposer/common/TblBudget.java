@@ -1,5 +1,6 @@
 package com.nxsol.bizcomposer.common;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,12 +13,13 @@ public class TblBudget {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "BudgetID")	
 	int budgetID;// = -1;
 	private String year = "";
 	private int companyID = -1;// foreign key
 	private int companyBudget;// = 0;
 	private String Budgetname = "";
-	private int cvId = -1;
+	private int cvId = -1;// references  bca_clientvendorservice(clientVendorID)
 	private long cvServiceId = -1;// foreign key
 	private int isDefault;// = 0;
 	private int isDual;// = 0;

@@ -92,7 +92,7 @@ public class TblStore {
 
 	private int isSelected = 1;
 
-	private int CompanyID = -1;
+	private int CompanyID = -1;// may be foreign key
 
 	private int totalOrders = -1;
 

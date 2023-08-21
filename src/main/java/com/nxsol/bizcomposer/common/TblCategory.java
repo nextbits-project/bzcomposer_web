@@ -14,6 +14,7 @@ public class TblCategory implements Cloneable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "CategoryID")
 	private long id = -1;
 
 	private long categoryTypeID = -1;
@@ -27,7 +28,7 @@ public class TblCategory implements Cloneable {
 
 	private String description = "";
 
-	private int budgetCategoryID = -1;
+	private int budgetCategoryID = -1; // foreign key bca_budgetcategory(budgetCategoryID)
 	@Transient
 	private int subLevel;// =0;
 

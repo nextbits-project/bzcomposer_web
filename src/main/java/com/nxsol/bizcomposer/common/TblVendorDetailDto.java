@@ -21,16 +21,16 @@ public class TblVendorDetailDto {
 	    double unitPrice;//=0.0;
 	    double total;//=0.0;
 	    boolean isBilled;//=false;
-	    int invoiceId;// = 0;
+	    int invoiceId;// = 0; foreign ky
 	    String vendorAddress="";
-	    int billNo;//=0;
+	    int billNo;//=0; may be foreign key
 	    String BankAccount="";
 	    String status="";
 	    int checkNo;//=0;
 
 		String dueDate="";
 	    private String date = "";
-	    int payeeId;// = 0;
+	    int payeeId;// = 0; may be foreign key
 	    private int payerId;//=0;
 	    private int billType=-1;
 	    private double creditUsed;//=0.0;
@@ -56,16 +56,16 @@ public class TblVendorDetailDto {
 	    private double inventoryRate;//=0.0;
 	    private double inventoryAmount;//=0.0;;
 	    private boolean isRecurrentPayment;//=false;
-	    private int planID;//=0;
-	    private int paymentId;//=0;
+	    private int planID;//=0; may be foreign key
+	    private int paymentId;//=0; may be foreign key
 	    private ClientVendor cv;//=null;
 	    private boolean deleted;//=false;
 	    private double amountPaid;//=0.0;
-	    private long categoryID;//=0L;
+	    private long categoryID;//=0L; foreign key
 	    private double balance;//=0.0;
 	    private double amountTopay;//=0.0;
 	    private TblClientVendorService cvService;//=null;
-	    private long serviceID=-1;
+	    private long serviceID=-1; // may be foreign key
 	    private TblAccount bankAcc;//=null;
 	    private double payFromBalance;//=0.00;
 	    private double payToBalance;//=0.00;
@@ -73,10 +73,10 @@ public class TblVendorDetailDto {
 	    private long totalUnPaidBills;// = 0;
 	    private double totalBillAmount;// = 0.00;
 	    private int term;// = 0;
-	    private int expenseAccountId;// = 0;
-	    private int expenseClientVendorId;// = 0;
+	    private int expenseAccountId;// = 0; may be  foreign key
+	    private int expenseClientVendorId;// = 0;may be foreign key
 	    private int billAble;// = 0;
-	    private int accountId;// = 0;
+	    private int accountId;// = 0; may be foreign ky
 
 	    public int getAccountId() {
 			return accountId;

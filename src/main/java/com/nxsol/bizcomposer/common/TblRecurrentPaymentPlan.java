@@ -9,9 +9,9 @@ public class TblRecurrentPaymentPlan extends ActionForm{
 
 	private static final long serialVersionUID = 1L;
 	// no primary key or unique key
-	private int PlanID =-1;
-    private int PayeeID =-1;
-    private int PaymentAccountID=-1;
+	private int PlanID =-1; // my be foreign key
+    private int PayeeID =-1;  // my be foreign key
+    private int PaymentAccountID=-1;  // my be foreign key
     private int PaymentTypeID=-1; // foreign key 
     private double Amount; //=0.0;
     private boolean SamePaymentAmount=true;
@@ -27,7 +27,7 @@ public class TblRecurrentPaymentPlan extends ActionForm{
     private String planSetupDate="";
     private boolean active;//=false;
     private String memo="";    
-    private long serviceID=-1;
+    private long serviceID=-1;  // my be foreign key
     private boolean isToBePrinted;//=false;
     private double customerCurrentBalance;// = 0.00;
     private boolean rdoUntillChange;// = false;

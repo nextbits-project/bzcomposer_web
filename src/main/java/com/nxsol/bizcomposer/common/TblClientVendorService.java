@@ -10,484 +10,485 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 @Entity
-@Table(name="bca_clientvendorservice")
+@Table(name = "bca_clientvendorservice")
 public class TblClientVendorService {
 
-	// s primary key missing in both table and entity
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int clientVendorID;//=-1;
+	//  primary key missing in both table and entity
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int clientVendorID;// =-1;
 
-    private int parentID = -1;
+	private int parentID = -1;
 
-    private long serviceID=-1;
-   
-    private long InventoryID=-1; // foreign key
+	private long serviceID = -1;
 
-    private String serviceName="";
+	private long InventoryID = -1; // foreign key
 
-    private Date dateAdded;
+	private String serviceName = "";
 
-    private int invoiceStyleID=-1;
+	private Date dateAdded;
 
-    private int serviceTypeID = -1;
+	private int invoiceStyleID = -1;
 
-    private boolean defaultService;//s= false;
+	private int serviceTypeID = -1;
 
-    //for financial assess
-    private double overdueAmount;// = 0.0;
+	private boolean defaultService;// s= false;
 
-    private double overdueFinanceChargeAmount;// = 0.0;
-    
-    private double salePrice;// = 0.0;
+	// for financial assess
+	private double overdueAmount;// = 0.0;
 
-    private Date lastFC;
+	private double overdueFinanceChargeAmount;// = 0.0;
 
-    private boolean assess = false;    
+	private double salePrice;// = 0.0;
 
-    private ArrayList<Long> orderNumList;//financial charged orderNumList   
+	private Date lastFC;
 
-    private String inventoryCode="";
+	private boolean assess = false;
 
-    private String inventoryDescription="";
-    
-     private String inventoryName="";
+	private ArrayList<Long> orderNumList;// financial charged orderNumList
 
-    private String serviceType="";
+	private String inventoryCode = "";
 
-    private double serviceAmount = 0.0;
-    private String serviceUnit = "";
-    private int usage=1;
+	private String inventoryDescription = "";
 
-    private Date date;
+	private String inventoryName = "";
 
-    private int active = 0;
-    
-    private int itemTypeID=0;
-    
-    private ClientVendor cv=null;
+	private String serviceType = "";
 
-    private boolean isUseBillCycle=false;
+	private double serviceAmount = 0.0;
+	private String serviceUnit = "";
+	private int usage = 1;
 
-    private String jobCategory;
-    private int jobCategoryID=-1;
-    private boolean isRecurringServiceJob = false;
-     
-    private String billDate="";
-    private Date startDate;
-    private Date terminateDate;
-    private Date LastBillDate;
-    private String nextBillingDate;
-    private int cvTypeID = 1;
-    /**
-     * public static int ACTIVE_SERVICE = 1 is written
-     * to insert value of ActiveFlag=1 in bca_servicetype(ss).
-     */
-    public static int ACTIVE_SERVICE = 1;
+	private Date date;
 
-    public void setCv(ClientVendor cv) {
-        this.cv = cv;
-    }
+	private int active = 0;
 
-    public ClientVendor getCv() {
-        return cv;
-    }
-    
-    /** Creates a new instance of tblClientVendorService */
-    public TblClientVendorService() {
-        orderNumList = new ArrayList();
-    }
+	private int itemTypeID = 0;
 
-    public int getClientVendorID() {
-        return clientVendorID;
-    }
+	private ClientVendor cv = null;
 
-    public String getOrderNumbers() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("[");
-        for (int i=0; i<orderNumList.size(); i++) {
-            sb.append(orderNumList.get(i));
-            if (i!=orderNumList.size()-1)
-                sb.append(",");
-        }
-        sb.append("]");
-        
-        return sb.toString();
-    }    
-    
-    public void setClientVendorID(int clientVendorID) {
-        this.clientVendorID = clientVendorID;
-    }
+	private boolean isUseBillCycle = false;
 
-    public Date getDateAdded() {
-        return dateAdded;
-    }
+	private String jobCategory;
+	private int jobCategoryID = -1;
+	private boolean isRecurringServiceJob = false;
 
-    public void setDateAdded(Date dateAdded) {
-        this.dateAdded = dateAdded;
-    }
+	private String billDate = "";
+	private Date startDate;
+	private Date terminateDate;
+	private Date LastBillDate;
+	private String nextBillingDate;
+	private int cvTypeID = 1;
+	/**
+	 * public static int ACTIVE_SERVICE = 1 is written to insert value of
+	 * ActiveFlag=1 in bca_servicetype(ss).
+	 */
+	public static int ACTIVE_SERVICE = 1;
 
-    public int getInvoiceStyleID() {
-        return invoiceStyleID;
-    }
+	public void setCv(ClientVendor cv) {
+		this.cv = cv;
+	}
 
-    public void setInvoiceStyleID(int invoiceStyleID) {
-        this.invoiceStyleID = invoiceStyleID;
-    }
+	public ClientVendor getCv() {
+		return cv;
+	}
 
-    public boolean isDefaultService() {
-        return defaultService;
-    }
+	/** Creates a new instance of tblClientVendorService */
+	public TblClientVendorService() {
+		orderNumList = new ArrayList();
+	}
 
-    public void setDefaultService(boolean defaultService) {
-        this.defaultService = defaultService;
-    }
+	public int getClientVendorID() {
+		return clientVendorID;
+	}
+
+	public String getOrderNumbers() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
+		for (int i = 0; i < orderNumList.size(); i++) {
+			sb.append(orderNumList.get(i));
+			if (i != orderNumList.size() - 1)
+				sb.append(",");
+		}
+		sb.append("]");
+
+		return sb.toString();
+	}
+
+	public void setClientVendorID(int clientVendorID) {
+		this.clientVendorID = clientVendorID;
+	}
+
+	public Date getDateAdded() {
+		return dateAdded;
+	}
+
+	public void setDateAdded(Date dateAdded) {
+		this.dateAdded = dateAdded;
+	}
+
+	public int getInvoiceStyleID() {
+		return invoiceStyleID;
+	}
+
+	public void setInvoiceStyleID(int invoiceStyleID) {
+		this.invoiceStyleID = invoiceStyleID;
+	}
+
+	public boolean isDefaultService() {
+		return defaultService;
+	}
+
+	public void setDefaultService(boolean defaultService) {
+		this.defaultService = defaultService;
+	}
 //    public String toString() {
 //        return getServiceName();
 //    }
 
-   /* public String toString() {
-        ClientVendor cv = getCv();//ClientVendors.getInstance().searchClientVendor(getClientVendorID(),false);
-         New Code - Job Feature 
-        if(jobCategoryID > 0){
-            String jobName=tblJobCategoryLoader.getLoader().getObjectOfID(jobCategoryID).getJobCategory();
-            return cv.getName()+":"+jobName+":"+getServiceName();
-        }else{
-            return cv.getName()+": "+getServiceName();
-        }
-    }*/
-    
-    public long getServiceID() {
-        return serviceID;
-    }
+	/*
+	 * public String toString() { ClientVendor cv =
+	 * getCv();//ClientVendors.getInstance().searchClientVendor(getClientVendorID(),
+	 * false); New Code - Job Feature if(jobCategoryID > 0){ String
+	 * jobName=tblJobCategoryLoader.getLoader().getObjectOfID(jobCategoryID).
+	 * getJobCategory(); return cv.getName()+":"+jobName+":"+getServiceName();
+	 * }else{ return cv.getName()+": "+getServiceName(); } }
+	 */
 
-    public void setServiceID(long serviceID) {
-        this.serviceID = serviceID;
-    }
+	public long getServiceID() {
+		return serviceID;
+	}
 
-    public String getServiceName() {
-        return serviceName;
-    }
+	public void setServiceID(long serviceID) {
+		this.serviceID = serviceID;
+	}
 
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
+	public String getServiceName() {
+		return serviceName;
+	}
 
-    public double getOverdueAmount() {
-        return overdueAmount;
-    }
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
 
-    public void setOverdueAmount(double overdueAmount) {
-        this.overdueAmount = overdueAmount;
-    }
+	public double getOverdueAmount() {
+		return overdueAmount;
+	}
 
-    public double getOverdueFinanceChargeAmount() {
-        return overdueFinanceChargeAmount;
-    }
+	public void setOverdueAmount(double overdueAmount) {
+		this.overdueAmount = overdueAmount;
+	}
 
-    public void setOverdueFinanceChargeAmount(double overdueFinanceChargeAmount) {
-        this.overdueFinanceChargeAmount = overdueFinanceChargeAmount;
-    }
+	public double getOverdueFinanceChargeAmount() {
+		return overdueFinanceChargeAmount;
+	}
 
-    public Date getLastFC() {
-        return lastFC;
-    }
+	public void setOverdueFinanceChargeAmount(double overdueFinanceChargeAmount) {
+		this.overdueFinanceChargeAmount = overdueFinanceChargeAmount;
+	}
 
-    public void setLastFC(Date lastFC) {
-        this.lastFC = lastFC;
-    }
+	public Date getLastFC() {
+		return lastFC;
+	}
 
-    public boolean isAssess() {
-        return assess;
-    }
+	public void setLastFC(Date lastFC) {
+		this.lastFC = lastFC;
+	}
 
-    public void setAssess(boolean assess) {
-        this.assess = assess;
-    }
-    
-    public void addOrderNum(long orderNum) {
-        orderNumList.add(new Long(orderNum));
-    }
-    
-    
-    
-    public boolean equals(Object obj) {
-        //check for self-comparison
-        if ( this == obj ) return true;
-        
-        if ( !(obj instanceof TblClientVendorService) ) return false;
-        
-        TblClientVendorService other = (TblClientVendorService)obj;
-        
-        if (this.clientVendorID!=other.clientVendorID) return false;
-        if (this.serviceID!=other.serviceID) return false;
-        
-        return true;
-        
-    }
+	public boolean isAssess() {
+		return assess;
+	}
 
-    public String getInventoryCode() {
-        return inventoryCode;
-    }
+	public void setAssess(boolean assess) {
+		this.assess = assess;
+	}
 
-    public void setInventoryCode(String inventoryCode) {
-        this.inventoryCode = inventoryCode;
-    }
+	public void addOrderNum(long orderNum) {
+		orderNumList.add(new Long(orderNum));
+	}
 
-    public String getServiceType() {
-        return serviceType;
-    }
+	public boolean equals(Object obj) {
+		// check for self-comparison
+		if (this == obj)
+			return true;
 
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
+		if (!(obj instanceof TblClientVendorService))
+			return false;
 
-    public double getServiceAmount() {
-        return serviceAmount;
-    }
+		TblClientVendorService other = (TblClientVendorService) obj;
 
-    public void setServiceAmount(double serviceAmount) {
-        this.serviceAmount = serviceAmount;
-    }
+		if (this.clientVendorID != other.clientVendorID)
+			return false;
+		if (this.serviceID != other.serviceID)
+			return false;
 
-    public Date getDate() {
-        return date;
-    }
+		return true;
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+	}
 
-    public String getBillDate() {
-        return billDate;
-    }
+	public String getInventoryCode() {
+		return inventoryCode;
+	}
 
-    public void setBillDate(String billDate) {
-        this.billDate = billDate;
-    }
+	public void setInventoryCode(String inventoryCode) {
+		this.inventoryCode = inventoryCode;
+	}
 
-    public int getParentID() {
-        return parentID;
-    }
+	public String getServiceType() {
+		return serviceType;
+	}
 
-    public void setParentID(int parentID) {
-        this.parentID = parentID;
-    }
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
 
-    public String getInventoryDescription() {
-        return inventoryDescription;
-    }
+	public double getServiceAmount() {
+		return serviceAmount;
+	}
 
-    public void setInventoryDescription(String inventoryDescription) {
-        this.inventoryDescription = inventoryDescription;
-    }
+	public void setServiceAmount(double serviceAmount) {
+		this.serviceAmount = serviceAmount;
+	}
 
-    public double getSalePrice() {
-        return salePrice;
-    }
+	public Date getDate() {
+		return date;
+	}
 
-    public void setSalePrice(double salePrice) {
-        this.salePrice = salePrice;
-    }
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
-    public String getInventoryName() {
-        return inventoryName;
-    }
+	public String getBillDate() {
+		return billDate;
+	}
 
-    public void setInventoryName(String inventoryName) {
-        this.inventoryName = inventoryName;
-    }
+	public void setBillDate(String billDate) {
+		this.billDate = billDate;
+	}
 
-    public int getActive() {
-        return active;
-    }
+	public int getParentID() {
+		return parentID;
+	}
 
-    public void setActive(int active) {
-        this.active = active;
-    }
+	public void setParentID(int parentID) {
+		this.parentID = parentID;
+	}
 
-    public int getItemTypeID() {
-        return itemTypeID;
-    }
+	public String getInventoryDescription() {
+		return inventoryDescription;
+	}
 
-    public void setItemTypeID(int itemTypeID) {
-        this.itemTypeID = itemTypeID;
-    }
+	public void setInventoryDescription(String inventoryDescription) {
+		this.inventoryDescription = inventoryDescription;
+	}
 
-    public long getInventoryID() {
-        return InventoryID;
-    }
+	public double getSalePrice() {
+		return salePrice;
+	}
 
-    public void setInventoryID(long InventoryID) {
-        this.InventoryID = InventoryID;
-    }
+	public void setSalePrice(double salePrice) {
+		this.salePrice = salePrice;
+	}
 
-    /**
-     * @return the isUseBillCycle
-     */
-    public boolean isIsUseBillCycle() {
-        return isUseBillCycle;
-    }
+	public String getInventoryName() {
+		return inventoryName;
+	}
 
-    /**
-     * @param isUseBillCycle the isUseBillCycle to set
-     */
-    public void setIsUseBillCycle(boolean isUseBillCycle) {
-        this.isUseBillCycle = isUseBillCycle;
-    }
+	public void setInventoryName(String inventoryName) {
+		this.inventoryName = inventoryName;
+	}
 
-    /**
-     * @return the jobCategory
-     */
-    public String getJobCategory() {
-        return jobCategory;
-    }
+	public int getActive() {
+		return active;
+	}
 
-    /**
-     * @param jobCategory the jobCategory to set
-     */
-    public void setJobCategory(String jobCategory) {
-        this.jobCategory = jobCategory;
-    }
+	public void setActive(int active) {
+		this.active = active;
+	}
 
-    /**
-     * @return the jobCategoryID
-     */
-    public int getJobCategoryID() {
-        return jobCategoryID;
-    }
+	public int getItemTypeID() {
+		return itemTypeID;
+	}
 
-    /**
-     * @param jobCategoryID the jobCategoryID to set
-     */
-    public void setJobCategoryID(int jobCategoryID) {
-        this.jobCategoryID = jobCategoryID;
-    }
+	public void setItemTypeID(int itemTypeID) {
+		this.itemTypeID = itemTypeID;
+	}
 
-    /**
-     * @return the isRecurringServiceJob
-     */
-    public boolean isIsRecurringServiceJob() {
-        return isRecurringServiceJob;
-    }
+	public long getInventoryID() {
+		return InventoryID;
+	}
 
-    /**
-     * @param isRecurringServiceJob the isRecurringServiceJob to set
-     */
-    public void setIsRecurringServiceJob(boolean isRecurringServiceJob) {
-        this.isRecurringServiceJob = isRecurringServiceJob;
-    }
+	public void setInventoryID(long InventoryID) {
+		this.InventoryID = InventoryID;
+	}
 
-    /**
-     * @return the startDate
-     */
-    public Date getStartDate() {
-        return startDate;
-    }
+	/**
+	 * @return the isUseBillCycle
+	 */
+	public boolean isIsUseBillCycle() {
+		return isUseBillCycle;
+	}
 
-    /**
-     * @param startDate the startDate to set
-     */
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
+	/**
+	 * @param isUseBillCycle the isUseBillCycle to set
+	 */
+	public void setIsUseBillCycle(boolean isUseBillCycle) {
+		this.isUseBillCycle = isUseBillCycle;
+	}
 
-    /**
-     * @return the terminateDate
-     */
-    public Date getTerminateDate() {
-        return terminateDate;
-    }
+	/**
+	 * @return the jobCategory
+	 */
+	public String getJobCategory() {
+		return jobCategory;
+	}
 
-    /**
-     * @param terminateDate the terminateDate to set
-     */
-    public void setTerminateDate(Date terminateDate) {
-        this.terminateDate = terminateDate;
-    }
+	/**
+	 * @param jobCategory the jobCategory to set
+	 */
+	public void setJobCategory(String jobCategory) {
+		this.jobCategory = jobCategory;
+	}
 
-    /**
-     * @return the nextBillingDate
-     */
-    public String getNextBillingDate() {
-        return nextBillingDate;
-    }
+	/**
+	 * @return the jobCategoryID
+	 */
+	public int getJobCategoryID() {
+		return jobCategoryID;
+	}
 
-    /**
-     * @param nextBillingDate the nextBillingDate to set
-     */
-    public void setNextBillingDate(String nextBillingDate) {
-        this.nextBillingDate = nextBillingDate;
-    }
+	/**
+	 * @param jobCategoryID the jobCategoryID to set
+	 */
+	public void setJobCategoryID(int jobCategoryID) {
+		this.jobCategoryID = jobCategoryID;
+	}
 
-    /**
-     * @return the serviceUnit
-     */
-    public String getServiceUnit() {
-        return serviceUnit;
-    }
+	/**
+	 * @return the isRecurringServiceJob
+	 */
+	public boolean isIsRecurringServiceJob() {
+		return isRecurringServiceJob;
+	}
 
-    /**
-     * @param serviceUnit the serviceUnit to set
-     */
-    public void setServiceUnit(String serviceUnit) {
-        this.serviceUnit = serviceUnit;
-    }
+	/**
+	 * @param isRecurringServiceJob the isRecurringServiceJob to set
+	 */
+	public void setIsRecurringServiceJob(boolean isRecurringServiceJob) {
+		this.isRecurringServiceJob = isRecurringServiceJob;
+	}
 
-    /**
-     * @return the usage
-     */
-    public int getUsage() {
-        return usage;
-    }
+	/**
+	 * @return the startDate
+	 */
+	public Date getStartDate() {
+		return startDate;
+	}
 
-    /**
-     * @param usage the usage to set
-     */
-    public void setUsage(int usage) {
-        this.usage = usage;
-    }
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
 
-    /**
-     * @return the LastBillDate
-     */
-    public Date getLastBillDate() {
-        return LastBillDate;
-    }
+	/**
+	 * @return the terminateDate
+	 */
+	public Date getTerminateDate() {
+		return terminateDate;
+	}
 
-    /**
-     * @param LastBillDate the LastBillDate to set
-     */
-    public void setLastBillDate(Date LastBillDate) {
-        this.LastBillDate = LastBillDate;
-    }
+	/**
+	 * @param terminateDate the terminateDate to set
+	 */
+	public void setTerminateDate(Date terminateDate) {
+		this.terminateDate = terminateDate;
+	}
 
-    /**
-     * @return the cvTypeID
-     */
-    public int getCvTypeID() {
-        return cvTypeID;
-    }
+	/**
+	 * @return the nextBillingDate
+	 */
+	public String getNextBillingDate() {
+		return nextBillingDate;
+	}
 
-    /**
-     * @param cvTypeID the cvTypeID to set
-     */
-    public void setCvTypeID(int cvTypeID) {
-        this.cvTypeID = cvTypeID;
-    }
+	/**
+	 * @param nextBillingDate the nextBillingDate to set
+	 */
+	public void setNextBillingDate(String nextBillingDate) {
+		this.nextBillingDate = nextBillingDate;
+	}
 
-    /**
-     * @return the serviceTypeID
-     */
-    public int getServiceTypeID() {
-        return serviceTypeID;
-    }
+	/**
+	 * @return the serviceUnit
+	 */
+	public String getServiceUnit() {
+		return serviceUnit;
+	}
 
-    /**
-     * @param serviceTypeID the serviceTypeID to set
-     */
-    public void setServiceTypeID(int serviceTypeID) {
-        this.serviceTypeID = serviceTypeID;
-    }
+	/**
+	 * @param serviceUnit the serviceUnit to set
+	 */
+	public void setServiceUnit(String serviceUnit) {
+		this.serviceUnit = serviceUnit;
+	}
+
+	/**
+	 * @return the usage
+	 */
+	public int getUsage() {
+		return usage;
+	}
+
+	/**
+	 * @param usage the usage to set
+	 */
+	public void setUsage(int usage) {
+		this.usage = usage;
+	}
+
+	/**
+	 * @return the LastBillDate
+	 */
+	public Date getLastBillDate() {
+		return LastBillDate;
+	}
+
+	/**
+	 * @param LastBillDate the LastBillDate to set
+	 */
+	public void setLastBillDate(Date LastBillDate) {
+		this.LastBillDate = LastBillDate;
+	}
+
+	/**
+	 * @return the cvTypeID
+	 */
+	public int getCvTypeID() {
+		return cvTypeID;
+	}
+
+	/**
+	 * @param cvTypeID the cvTypeID to set
+	 */
+	public void setCvTypeID(int cvTypeID) {
+		this.cvTypeID = cvTypeID;
+	}
+
+	/**
+	 * @return the serviceTypeID
+	 */
+	public int getServiceTypeID() {
+		return serviceTypeID;
+	}
+
+	/**
+	 * @param serviceTypeID the serviceTypeID to set
+	 */
+	public void setServiceTypeID(int serviceTypeID) {
+		this.serviceTypeID = serviceTypeID;
+	}
 }

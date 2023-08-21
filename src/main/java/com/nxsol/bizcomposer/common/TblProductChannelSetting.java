@@ -4,15 +4,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table( name = "bca_productchannelsetting")
 public class TblProductChannelSetting {
 	
 	  @Id
 	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int channelSettingID = -1;
 	private int inventoryID = -1; // foreign key
-	private int storeID = -1;
+	private int storeID = -1; // may be foriegn key
 	private double salesPrice;// = 0.0;
 	private String SKU = "";
 	private String storeName="";

@@ -4,73 +4,80 @@ import java.util.Calendar;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "bca_balancesheetitem")
 public class TblBalanceSheet implements Cloneable {
-// primary key missing
-	  private long categoryId = -1;// foreign key
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int balancesheetitemID;
+	private long categoryId = -1;// foreign key
 
-	    private long categoryTypeID = -1;//// foreign key
+	private long categoryTypeID = -1;//// foreign key
 
-	    private String name = "";
+	private String name = "";
 
-	    private double amount = 0.00;
+	private double amount = 0.00;
 
-	    Calendar cal = Calendar.getInstance();
-	    private Date date = cal.getTime();
+	Calendar cal = Calendar.getInstance();
+	private Date date = cal.getTime();
 
-	    private int companyID; // =0; foreign key
-	    
-	    public TblBalanceSheet() {
-	        
-	    }
+	private int companyID; // =0; foreign key
 
-	    public long getcategoryId() {
-	        return categoryId;
-	    }
+	public TblBalanceSheet() {
 
-	    public void setcategoryId(long categoryId) {
-	        this.categoryId = categoryId;
-	    }
+	}
 
-	    public long getCategoryTypeID() {
-	        return categoryTypeID;
-	    }
+	public long getcategoryId() {
+		return categoryId;
+	}
 
-	    public void setCategoryTypeID(long categoryTypeID) {
-	        this.categoryTypeID = categoryTypeID;
-	    }
+	public void setcategoryId(long categoryId) {
+		this.categoryId = categoryId;
+	}
 
-	    public String getName() {
-	        return name;
-	    }
+	public long getCategoryTypeID() {
+		return categoryTypeID;
+	}
 
-	    public void setName(String name) {
-	        this.name = name;
-	    }
+	public void setCategoryTypeID(long categoryTypeID) {
+		this.categoryTypeID = categoryTypeID;
+	}
 
-	    public double getAmount() {
-	        return amount;
-	    }
+	public String getName() {
+		return name;
+	}
 
-	    public void setAmount(double amount) {
-	        this.amount = amount;
-	    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-	    public Date getDate() {
-	        return date;
-	    }
+	public double getAmount() {
+		return amount;
+	}
 
-	    public void setDate(Date date) {
-	        this.date = date;
-	    }
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
 
-	    public synchronized  Object clone(){
-	        try {
-	            return super.clone();
-	        } catch (CloneNotSupportedException ex) {
-	            ex.printStackTrace();
-	        }
-	       return null;
-	    }
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public synchronized Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
 }

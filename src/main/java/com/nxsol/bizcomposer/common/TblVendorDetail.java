@@ -11,8 +11,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Entity // representing bca_clientvendor
+@Entity 
+@Table(name = "bca_clientvendor") 
 public class TblVendorDetail extends ActionForm {
 
 	    private static final long serialVersionUID = 1L;
@@ -35,7 +37,7 @@ public class TblVendorDetail extends ActionForm {
 	    double unitPrice;//=0.0;
 	    double total;//=0.0;
 	    boolean isBilled;//=false;
-	    int invoiceId;// = 0;
+	    int invoiceId;// = 0; may be foreign key
 	    String vendorAddress="";
 	    int billNo;//=0;
 	    String BankAccount="";
@@ -44,8 +46,8 @@ public class TblVendorDetail extends ActionForm {
 	   
 		String dueDate="";
 	    private String date = "";
-	    int payeeId;// = 0;
-	    private int payerId;//=0;
+	    int payeeId;// = 0; may be foreign key
+	    private int payerId;//=0; may be foreign key
 	    private int billType;//=-1;
 	    private double creditUsed;//=0.0;
 	    
@@ -70,17 +72,17 @@ public class TblVendorDetail extends ActionForm {
 	    private double inventoryRate;//=0.0;
 	    private double inventoryAmount;//=0.0;;
 	    private boolean isRecurrentPayment;//=false;
-	    private int planID;//=0;
-	    private int paymentId;//=0;
+	    private int planID;//=0; may be foreign key
+	    private int paymentId;//=0; may be foreign key
 	    private ClientVendor cv;//=null;
 	    private boolean deleted;//=false;
 	    private double amountPaid;//=0.0;
-	    private long categoryID;//=0L;
+	    private long categoryID;//=0L; may be foreign key
 		private String categoryName = "";
 	    private double balance;//=0.0;
 	    private double amountTopay;//=0.0;    
 	    private TblClientVendorService cvService;//=null;
-	    private long serviceID=-1;
+	    private long serviceID=-1;// may be foreign key
 	    private TblAccount bankAcc;//=null;
 	    private double payFromBalance;//=0.00;
 	    private double payToBalance;//=0.00;
@@ -88,10 +90,10 @@ public class TblVendorDetail extends ActionForm {
 	    private long totalUnPaidBills;// = 0;
 	    private double totalBillAmount;// = 0.00;  
 	    private int term;// = 0;
-	    private int expenseAccountId;// = 0;
-	    private int expenseClientVendorId;// = 0;
+	    private int expenseAccountId;// = 0; may be foreign key
+	    private int expenseClientVendorId;// = 0; may be foreign key
 	    private int billAble;// = 0;
-	    private int accountId;// = 0;
+	    private int accountId;// = 0; may be foreign key
 	    
 	    public int getAccountId() {
 			return accountId;
