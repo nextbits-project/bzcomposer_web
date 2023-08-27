@@ -31,6 +31,7 @@ ALTER TABLE `bca_accountable`
   ADD KEY `PayFromID` (`PayFromID`),
   ADD FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`);
 
+
 --
 -- Indexes for table `bca_acctcategory`
 -- changes 4 key can be changed as primary key
@@ -581,7 +582,6 @@ ALTER TABLE `bca_invoicediscount`
 --
 -- Indexes for table `bca_invoicememorized`
 -- changes foreign key added. employeeId, employeeindexId conflict 
--- PaymentTypeID not added in primay key.
 --
 ALTER TABLE `bca_invoicememorized`
   ADD PRIMARY KEY (`InvoiceID`),
@@ -598,7 +598,7 @@ ALTER TABLE `bca_invoicememorized`
   ADD FOREIGN KEY (`MessageID`) REFERENCES `bca_message`(`MessageID`),
   ADD FOREIGN KEY (`OrderId`) REFERENCES `smc_orders`(`OrderId`),
   ADD KEY (`OrderNum`),
-  -- FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`),
+  ADD FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`),
   ADD KEY (`PONum`),
   ADD KEY (`RcvNum`),
   ADD KEY (`RefNum`),
@@ -633,7 +633,6 @@ ALTER TABLE `bca_invoiceshipdetail`
 --
 -- Indexes for table `bca_invoiceshipped`
 -- changes  added foreign key, unique key not required. InvoiceID,EstNum,OrderNum can be foreign key
--- PaymentTypeId not added in primary key
 --
 ALTER TABLE `bca_invoiceshipped`
   ADD PRIMARY KEY (`InvoiceID`),
@@ -651,7 +650,7 @@ ALTER TABLE `bca_invoiceshipped`
   ADD KEY (`MessageID`),
   ADD FOREIGN KEY (`OrderId`) REFERENCES `smc_orders`(`OrderId`),
   ADD KEY (`OrderNum`),
-  -- FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`),
+  ADD FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`),
   ADD KEY (`PONum`),
   ADD KEY (`RcvNum`),
   ADD KEY (`RefNum`),
