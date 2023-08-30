@@ -3,7 +3,7 @@
 -- Indexes for table `adjustment_reason`
 --
 ALTER TABLE `adjustment_reason`
-  ADD PRIMARY KEY (`ID`),
+--   ADD PRIMARY KEY (`ID`),
   ADD FOREIGN KEY (`companyId`) REFERENCES `bca_company`(`companyId`),
   ADD FOREIGN KEY (`inventoryid`) REFERENCES `bca_iteminventory`(`inventoryid`); 
   
@@ -11,7 +11,7 @@ ALTER TABLE `adjustment_reason`
 -- Indexes for table `bca_account`
 -- changes 2 foreign key added. AcctTypeID can be foreign key , parent Id, DepositPaymentID can be foreign key
 ALTER TABLE `bca_account`
-  ADD PRIMARY KEY (`AccountID`),
+--   ADD PRIMARY KEY (`AccountID`),
   ADD FOREIGN KEY (`CompanyId`) REFERENCES `bca_company`(`CompanyId`),
   ADD FOREIGN KEY (`clientVendorId`) REFERENCES `bca_clientvendor`(`clientVendorId`),
   ADD FOREIGN KEY (`AcctCategoryID`) REFERENCES `bca_acctcategory`(`AcctCategoryID`),
@@ -22,13 +22,13 @@ ALTER TABLE `bca_account`
 -- Indexes for table `bca_accountable`
 --  changes 3 foreign key added . The key PayableID is primary and unique not requird. PayFromID,PayerCvID can be foreign key
 ALTER TABLE `bca_accountable`
-  ADD PRIMARY KEY (`PayableID`),
+--   ADD PRIMARY KEY (`PayableID`),
   ADD FOREIGN KEY (`CategoryID`) REFERENCES `bca_category`(`CategoryID`),
   ADD FOREIGN KEY (`CompanyId`) REFERENCES `bca_company`(`CompanyId`),
   ADD FOREIGN KEY (`CreditCardID`) REFERENCES `bca_cvcreditcard`(`CreditCardID`),
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice`(`InvoiceID`),
-  ADD KEY `PayerCvID` (`PayerCvID`),
-  ADD KEY `PayFromID` (`PayFromID`),
+--   ADD KEY `PayerCvID` (`PayerCvID`),
+--   ADD KEY `PayFromID` (`PayFromID`),
   ADD FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`);
 
 
@@ -42,8 +42,8 @@ ALTER TABLE `bca_acctcategory`
 --
 -- Indexes for table `bca_accttype`
 --
-ALTER TABLE `bca_accttype`
-  ADD UNIQUE KEY `AcctTypeID` (`AcctTypeID`);
+-- ALTER TABLE `bca_accttype`
+--   ADD UNIQUE KEY `AcctTypeID` (`AcctTypeID`);
 
 --
 -- Indexes for table `bca_activestoreforproductssubmission`
@@ -55,15 +55,15 @@ ALTER TABLE `bca_activestoreforproductssubmission`
 --
 -- Indexes for table `bca_amazoncategorytemplate`
 -- changes 6 auto increment constraint added lately in line 212127. it can be in 1 place
-ALTER TABLE `bca_amazoncategorytemplate`
- ADD PRIMARY KEY (`CategoryTemplateID`);
+-- ALTER TABLE `bca_amazoncategorytemplate`
+--  ADD PRIMARY KEY (`CategoryTemplateID`);
    -- ADD KEY `CategoryTemplateID` (`CategoryTemplateID`);
 
 --
 -- Indexes for table `bca_apmemorizedgroup`
 -- changes 7  added foreign key . GroupID not required to be mul key
 ALTER TABLE `bca_apmemorizedgroup`
-  ADD PRIMARY KEY (`GroupID`),
+--   ADD PRIMARY KEY (`GroupID`),
   ADD FOREIGN KEY (`CompanyId`) REFERENCES `bca_company`(`CompanyId`);
 
  -- ADD KEY `GroupID` (`GroupID`);
@@ -72,9 +72,9 @@ ALTER TABLE `bca_apmemorizedgroup`
 -- Indexes for table `bca_apmemorizedingroup`
 -- changes 8 foreign key added 
 ALTER TABLE `bca_apmemorizedingroup`
-  ADD KEY `BillingGroupID` (`BillingGroupID`),
-  ADD FOREIGN KEY (`CompanyId`) REFERENCES `bca_company`(`CompanyId`),
-  ADD KEY `MemorizeID` (`MemorizeID`);
+--   ADD KEY `BillingGroupID` (`BillingGroupID`),
+  ADD FOREIGN KEY (`CompanyId`) REFERENCES `bca_company`(`CompanyId`);
+--   ADD KEY `MemorizeID` (`MemorizeID`);
 
 
 --
@@ -88,30 +88,30 @@ ALTER TABLE `bca_argroupbilling`
 --
 -- Indexes for table `bca_att1`
 --
-ALTER TABLE `bca_att1`
-  ADD KEY `Att1_ID` (`Att1_ID`);
+-- ALTER TABLE `bca_att1`
+--   ADD KEY `Att1_ID` (`Att1_ID`);
 
 --
 -- Indexes for table `bca_att2`
 --
-ALTER TABLE `bca_att2`
-  ADD KEY `Att2_ID` (`Att2_ID`);
+-- ALTER TABLE `bca_att2`
+--   ADD KEY `Att2_ID` (`Att2_ID`);
 
 --
 -- Indexes for table `bca_authorizemerchantaccount`
 -- changes 10 CompanyID present in 2 tables bca_authorizemerchantaccount and bca_company. So it should be clarified 
 -- for primary key index mul key not required .CompanyID can be forign key 
-ALTER TABLE `bca_authorizemerchantaccount`
-  ADD PRIMARY KEY (`CompanyID`),
+-- ALTER TABLE `bca_authorizemerchantaccount`
+--   ADD PRIMARY KEY (`CompanyID`),
   -- ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `x_tran_key` (`x_tran_key`);
+--   ADD KEY `x_tran_key` (`x_tran_key`);
 
 --
 -- Indexes for table `bca_balancesheetitem`
 -- changes 11 companyID referes to which companyID 
 ALTER TABLE `bca_balancesheetitem`
-  ADD PRIMARY KEY (`balancesheetitemID`),
-  ADD KEY `CategoryTypeID` (`CategoryTypeID`),
+--   ADD PRIMARY KEY (`balancesheetitemID`),
+--   ADD KEY `CategoryTypeID` (`CategoryTypeID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
 
 
@@ -119,30 +119,30 @@ ALTER TABLE `bca_balancesheetitem`
 -- Indexes for table `bca_bill`
 -- changes 12 foreign key added 
 ALTER TABLE `bca_bill`
-  ADD KEY `AmountPaid` (`AmountPaid`),
-  ADD KEY `BillNum` (`BillNum`),
+--   ADD KEY `AmountPaid` (`AmountPaid`),
+--   ADD KEY `BillNum` (`BillNum`),
   ADD FOREIGN KEY (`CategoryID`) REFERENCES `bca_category`(`CategoryID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
-  ADD KEY `PayerID` (`PayerID`),
+--   ADD KEY `PayerID` (`PayerID`),
   ADD FOREIGN KEY (`PaymentID`) REFERENCES `bca_payment`(`PaymentID`),
-  ADD FOREIGN KEY (`ServiceID`) REFERENCES `bca_servicetype`(`ServiceID`),
-  ADD KEY `VendorId` (`VendorId`);
+  ADD FOREIGN KEY (`ServiceID`) REFERENCES `bca_servicetype`(`ServiceID`);
+--   ADD KEY `VendorId` (`VendorId`);
 
 
 --
 -- Indexes for table `bca_billdetail`
 -- changes 13 redundant key for billdetailid not required companyid refers to what table? 13
 ALTER TABLE `bca_billdetail`
-  ADD PRIMARY KEY (`BillDetailID`),
-  ADD KEY `BillNum` (`BillNum`),
-  ADD KEY `CompanyID` (`CompanyID`),
+--   ADD PRIMARY KEY (`BillDetailID`),
+--   ADD KEY `BillNum` (`BillNum`),
+--   ADD KEY `CompanyID` (`CompanyID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
-  ADD KEY `ExpenseAcctID` (`ExpenseAcctID`),
-  ADD KEY `ExpenseClientVendorID` (`ExpenseClientVendorID`),
-  ADD KEY `InventoryCustID` (`InventoryCustID`),
-  ADD KEY `InventoryID` (`InventoryID`),
+--   ADD KEY `ExpenseAcctID` (`ExpenseAcctID`),
+--   ADD KEY `ExpenseClientVendorID` (`ExpenseClientVendorID`),
+--   ADD KEY `InventoryCustID` (`InventoryCustID`),
+--   ADD KEY `InventoryID` (`InventoryID`),
   ADD FOREIGN KEY (`InventoryID`) REFERENCES `bca_iteminventory`(`InventoryID`),
-  ADD KEY `InvoiceID` (`InvoiceID`),
+--   ADD KEY `InvoiceID` (`InvoiceID`),
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice`(`InvoiceID`);
 
 
@@ -150,9 +150,9 @@ ALTER TABLE `bca_billdetail`
 -- Indexes for table `bca_billingaddress`
 -- changes foreign key added
 ALTER TABLE `bca_billingaddress`
-  ADD PRIMARY KEY (`AddressID`),
-  ADD KEY `LastName` (`LastName`),
-  ADD KEY `ZipCode` (`ZipCode`),
+--   ADD PRIMARY KEY (`AddressID`),
+--   ADD KEY `LastName` (`LastName`),
+--   ADD KEY `ZipCode` (`ZipCode`),
   ADD FOREIGN KEY (`ClientVendorID`) REFERENCES `bca_clientvendor`(`ClientVendorID`);
 
 --
@@ -160,7 +160,7 @@ ALTER TABLE `bca_billingaddress`
 -- changes 14 unique key can be  removed, foreign key added.unique ky can be removd 
 
 ALTER TABLE `bca_billingstatements`
-  ADD PRIMARY KEY (`StatementNo`),
+--   ADD PRIMARY KEY (`StatementNo`),
   ADD UNIQUE KEY `UK_StatementNo` (`StatementNo`),
   ADD FOREIGN KEY (`ClientVendorID`) REFERENCES `bca_clientvendor` (`ClientVendorID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`),
@@ -170,7 +170,7 @@ ALTER TABLE `bca_billingstatements`
 -- Indexes for table `bca_budget`
 -- changes 15 since primary key is added key not required 
 ALTER TABLE `bca_budget`
-  ADD PRIMARY KEY (`BudgetID`),
+--   ADD PRIMARY KEY (`BudgetID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`);
 
 
@@ -178,26 +178,26 @@ ALTER TABLE `bca_budget`
 -- Indexes for table `bca_budgetcategory`
 -- changes 16 added foreign key 
 ALTER TABLE `bca_budgetcategory`
-  ADD PRIMARY KEY (`BudgetCategoryID`),
+--   ADD PRIMARY KEY (`BudgetCategoryID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`);
 
 --
 -- Indexes for table `bca_budgetdetail`
 -- changes 17 added foreign key  
 ALTER TABLE `bca_budgetdetail`
-  ADD KEY `BudgetdetailID` (`BudgetdetailID`),
-  ADD FOREIGN KEY (`BudgetID`) REFERENCES `bca_budget` (`BudgetID`),
-  ADD KEY `CategoryID` (`CategoryID`),
-  ADD KEY `cvId` (`cvId`);
+--   ADD KEY `BudgetdetailID` (`BudgetdetailID`),
+  ADD FOREIGN KEY (`BudgetID`) REFERENCES `bca_budget` (`BudgetID`);
+--   ADD KEY `CategoryID` (`CategoryID`),
+--   ADD KEY `cvId` (`cvId`);
 
 
 --
 -- Indexes for table `bca_businesscategories`, bca_category
 -- changes  18 There are 3 categoryID in the table so CategoryID can be named accordingly. It can be businessCategoriesID from --------bca_businesscategories, categoryDetailsId from bca_category_details and categoryId from bca_category, uniqus is not rquired. Foreign key added 
 ALTER TABLE `bca_businesscategories`
-  ADD PRIMARY KEY (`CategoryID`),
-  ADD FOREIGN KEY (`CategoryTypeID`) REFERENCES `bca_categorytype` (`CategoryTypeID`),
-  ADD KEY `BusinessTypeID` (`BusinessTypeID`);
+--   ADD PRIMARY KEY (`CategoryID`),
+  ADD FOREIGN KEY (`CategoryTypeID`) REFERENCES `bca_categorytype` (`CategoryTypeID`);
+--   ADD KEY `BusinessTypeID` (`BusinessTypeID`);
 
 --
 -- Indexes for table `bca_businessmodules`
@@ -209,94 +209,95 @@ ALTER TABLE `bca_businessmodules`
 --
 -- Indexes for table `bca_businesstype`
 -- changes 19 key not required, Primary key already defined clientvendorid refers supplierid  
-ALTER TABLE `bca_businesstype`
-  ADD PRIMARY KEY (`BusinessTypeID`);
+-- ALTER TABLE `bca_businesstype`
+--   ADD PRIMARY KEY (`BusinessTypeID`);
 
 --
 -- Indexes for table `bca_cart`
 --
 ALTER TABLE `bca_cart`
-  ADD PRIMARY KEY (`CartID`),
-  ADD KEY `CategoryID` (`CategoryID`),
+--   ADD PRIMARY KEY (`CartID`),
+--   ADD KEY `CategoryID` (`CategoryID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`),
-  ADD KEY `InventoryCode` (`InventoryCode`),
+--   ADD KEY `InventoryCode` (`InventoryCode`),
   ADD FOREIGN KEY (`Inventoryid`) REFERENCES `bca_iteminventory` (`inventoryid`),
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice` (`InvoiceID`),
-  ADD KEY `itempromotionid` (`itempromotionid`),
-  ADD KEY `ItemTypeID` (`ItemTypeID`),
-  ADD FOREIGN KEY (`orderid`) REFERENCES `bca_ordertemplate` (`orderid`),
-  ADD KEY `OrderItemID` (`OrderItemID`),
-  ADD KEY `shippromotionid` (`shippromotionid`),
-  ADD KEY `SupplierID` (`SupplierID`),
-  ADD KEY `SalesTaxRate` (`SalesTaxRate`);
+--   ADD KEY `itempromotionid` (`itempromotionid`),
+--   ADD KEY `ItemTypeID` (`ItemTypeID`),
+	MODIFY COLUMN `orderid` INT,
+  ADD FOREIGN KEY (`orderid`) REFERENCES `bca_ordertemplate` (`OrderID`);
+--   ADD KEY `OrderItemID` (`OrderItemID`),
+--   ADD KEY `shippromotionid` (`shippromotionid`),
+--   ADD KEY `SupplierID` (`SupplierID`),
+--   ADD KEY `SalesTaxRate` (`SalesTaxRate`);
 
 --
 -- Indexes for table `bca_cartmemorized`
 -- changes 20 added foreign key orderid is present in 2 tables. What to use here?
 ALTER TABLE `bca_cartmemorized`
-  ADD PRIMARY KEY (`CartID`),
+--   ADD PRIMARY KEY (`CartID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`),
-  ADD KEY `InventoryCode` (`InventoryCode`),
+--   ADD KEY `InventoryCode` (`InventoryCode`),
   ADD FOREIGN KEY (`Inventoryid`) REFERENCES `bca_iteminventory` (`inventoryid`),
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice` (`InvoiceID`),
-  ADD KEY `itempromotionid` (`itempromotionid`),
-  ADD KEY `ItemTypeID` (`ItemTypeID`),
-  ADD FOREIGN KEY (`OrderId`) REFERENCES `smc_orders` (`OrderId`),
-  ADD KEY `OrderItemID` (`OrderItemID`),
-  ADD KEY `shippromotionid` (`shippromotionid`);
-
+--   ADD KEY `itempromotionid` (`itempromotionid`),
+--   ADD KEY `ItemTypeID` (`ItemTypeID`),
+  ADD FOREIGN KEY (`OrderId`) REFERENCES `smc_orders` (`OrderId`);
+--   ADD KEY `OrderItemID` (`OrderItemID`),
+--   ADD KEY `shippromotionid` (`shippromotionid`);
+-- 
 
 --
 -- Indexes for table `bca_category`
 -- changes 22
 ALTER TABLE `bca_category`
-  ADD PRIMARY KEY (`CategoryID`),
-  ADD KEY `CategoryTypeID` (`CategoryTypeID`),
+--   ADD PRIMARY KEY (`CategoryID`),
+--   ADD KEY `CategoryTypeID` (`CategoryTypeID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`);
 
 --
 -- Indexes for table `bca_categorytype`
 -- changes 23
 ALTER TABLE `bca_categorytype`
-  ADD PRIMARY KEY (`CategoryTypeID`),
-  ADD KEY `CategoryTypeID` (`CategoryTypeID`),
+--   ADD PRIMARY KEY (`CategoryTypeID`),
+--   ADD KEY `CategoryTypeID` (`CategoryTypeID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`);
 
 --
 -- Indexes for table `bca_cities`
 --
-ALTER TABLE `bca_cities`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `bca_cities`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `bca_clientcategory`
 --
-ALTER TABLE `bca_clientcategory`
-  ADD KEY `CVCategoryID` (`CVCategoryID`);
+-- ALTER TABLE `bca_clientcategory`
+--   ADD KEY `CVCategoryID` (`CVCategoryID`);
 
 --
 -- Indexes for table `bca_clientvendor`
 -- changes 23 CVCategoryID rfers clientcategory
 ALTER TABLE `bca_clientvendor`
-  ADD PRIMARY KEY (`ClientVendorID`),
-  ADD KEY `BankAccountID` (`BankAccountID`),
-  ADD KEY `CategoryID` (`CategoryID`),
-  ADD KEY `CCTypeID` (`CCTypeID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `CustomerTitleID` (`CustomerTitleID`),
-  ADD KEY `CVCategoryID` (`CVCategoryID`),
-  ADD KEY `CVTypeID` (`CVTypeID`),
-  ADD KEY `LineofCreditTermID` (`LineofCreditTermID`),
-  ADD KEY `PayFromID` (`PayFromID`),
-  ADD KEY `PaymentTypeID` (`PaymentTypeID`),
-  ADD KEY `PriceLevelID` (`PriceLevelID`),
-  ADD KEY `ReferenceCustomerID` (`ReferenceCustomerID`),
-  ADD KEY `SalesRepID` (`SalesRepID`),
-  ADD KEY `ShipCarrierID` (`ShipCarrierID`),
-  ADD KEY `ResellerTaxID` (`ResellerTaxID`),
-  ADD KEY `TermID` (`TermID`),
-  ADD KEY `ZipCode` (`ZipCode`),
-  ADD KEY `ZipCodeID` (`ZipCodeID`);
+  ADD PRIMARY KEY (`ClientVendorID`);
+--   ADD KEY `BankAccountID` (`BankAccountID`),
+--   ADD KEY `CategoryID` (`CategoryID`),
+--   ADD KEY `CCTypeID` (`CCTypeID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `CustomerTitleID` (`CustomerTitleID`),
+--   ADD KEY `CVCategoryID` (`CVCategoryID`),
+--   ADD KEY `CVTypeID` (`CVTypeID`),
+--   ADD KEY `LineofCreditTermID` (`LineofCreditTermID`),
+--   ADD KEY `PayFromID` (`PayFromID`),
+--   ADD KEY `PaymentTypeID` (`PaymentTypeID`),
+--   ADD KEY `PriceLevelID` (`PriceLevelID`),
+--   ADD KEY `ReferenceCustomerID` (`ReferenceCustomerID`),
+--   ADD KEY `SalesRepID` (`SalesRepID`),
+--   ADD KEY `ShipCarrierID` (`ShipCarrierID`),
+--   ADD KEY `ResellerTaxID` (`ResellerTaxID`),
+--   ADD KEY `TermID` (`TermID`),
+--   ADD KEY `ZipCode` (`ZipCode`),
+--   ADD KEY `ZipCodeID` (`ZipCodeID`);
 
 ALTER TABLE `bca_clientvendor`
   ADD FOREIGN KEY (`CategoryID`) REFERENCES `bca_category` (`CategoryID`),
@@ -343,7 +344,7 @@ ALTER TABLE `bca_clientvendorservice`
 -- Indexes for table `bca_company`
 -- changes 26 key company id not required
 ALTER TABLE `bca_company`
-  ADD PRIMARY KEY (`CompanyID`),
+--   ADD PRIMARY KEY (`CompanyID`),
   ADD FOREIGN KEY (`BusinessTypeID`) REFERENCES `bca_businesstype` (`BusinessTypeID`),
   ADD FOREIGN KEY (`POStyleID`) REFERENCES `bca_postyle` (`POStyleID`),
   ADD FOREIGN KEY (`SalesTaxID`) REFERENCES `bca_salestax` (`SalesTaxID`),
@@ -355,7 +356,7 @@ ALTER TABLE `bca_company`
 -- Indexes for table `bca_consignmentsale`
 -- changes 27 foreign key added. OrderNum may be foreign key
 ALTER TABLE `bca_consignmentsale`
-  ADD PRIMARY KEY (`ConsignID`),
+--   ADD PRIMARY KEY (`ConsignID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`),
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice` (`InvoiceID`),
   ADD KEY (`OrderNum`),
@@ -364,73 +365,73 @@ ALTER TABLE `bca_consignmentsale`
 --
 -- Indexes for table `bca_cordinates`
 -- changes 28 key not required
-ALTER TABLE `bca_cordinates`
-  ADD PRIMARY KEY (`cordinatesID`);
+-- ALTER TABLE `bca_cordinates`
+--   ADD PRIMARY KEY (`cordinatesID`);
 
 
 --
 -- Indexes for table `bca_countries`
 --
-ALTER TABLE `bca_countries`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `bca_countries`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `bca_creditcardtype`
 --
 ALTER TABLE `bca_creditcardtype`
-  ADD KEY `CCTypeID` (`CCTypeID`),
+--   ADD KEY `CCTypeID` (`CCTypeID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`);
 
 
 --
 -- Indexes for table `bca_currency`
 --
-ALTER TABLE `bca_currency`
-  ADD UNIQUE KEY `CurrencyID` (`CurrencyID`);
+-- ALTER TABLE `bca_currency`
+--   ADD UNIQUE KEY `CurrencyID` (`CurrencyID`);
 
 --
 -- Indexes for table `bca_customdate`
 --
-ALTER TABLE `bca_customdate`
-  ADD PRIMARY KEY (`ID`);
-
+-- ALTER TABLE `bca_customdate`
+--   ADD PRIMARY KEY (`ID`);
+-- 
 --
 -- Indexes for table `bca_customer_type`
 --
-ALTER TABLE `bca_customer_type`
-  ADD PRIMARY KEY (`ID`);
+-- ALTER TABLE `bca_customer_type`
+--   ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `bca_customfile`
 --
-ALTER TABLE `bca_customfile`
-  ADD PRIMARY KEY (`ID`);
+-- ALTER TABLE `bca_customfile`
+--   ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `bca_customoptions`
 --
-ALTER TABLE `bca_customoptions`
-  ADD PRIMARY KEY (`OptionId`),
-  ADD KEY `OptionId` (`OptionId`),
-  ADD KEY `ProductId` (`ProductId`);
+-- ALTER TABLE `bca_customoptions`
+--   ADD PRIMARY KEY (`OptionId`),
+--   ADD KEY `OptionId` (`OptionId`),
+--   ADD KEY `ProductId` (`ProductId`);
 
 --
 -- Indexes for table `bca_customtext`
 --
-ALTER TABLE `bca_customtext`
-  ADD PRIMARY KEY (`ID`);
-
+-- ALTER TABLE `bca_customtext`
+--   ADD PRIMARY KEY (`ID`);
+-- 
 --
 -- Indexes for table `bca_cvcreditcard`
 --
-ALTER TABLE `bca_cvcreditcard`
-  ADD UNIQUE KEY `CreditCardID` (`CreditCardID`);
+-- ALTER TABLE `bca_cvcreditcard`
+--   ADD UNIQUE KEY `CreditCardID` (`CreditCardID`);
 
 --
 -- Indexes for table `bca_cvtype`
 --
-ALTER TABLE `bca_cvtype`
-  ADD UNIQUE KEY `CVTypeID` (`CVTypeID`);
+-- ALTER TABLE `bca_cvtype`
+--   ADD UNIQUE KEY `CVTypeID` (`CVTypeID`);
 
 --
 -- Indexes for table `bca_esalesitemcategory`
@@ -444,7 +445,7 @@ ALTER TABLE `bca_esalesitemcategory`
 -- Indexes for table `bca_exporteditemedetail`
 -- chnges 30 foreign key added
 ALTER TABLE `bca_exporteditemedetail`
-  ADD PRIMARY KEY (`ExportedProductID`),
+--   ADD PRIMARY KEY (`ExportedProductID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`),
   ADD KEY (`CrossSellParentID`),
   ADD KEY (`ExportedInventoryID`),
@@ -459,38 +460,38 @@ ALTER TABLE `bca_exporteditemedetail`
 -- Indexes for table `bca_features`
 --
 ALTER TABLE `bca_features`
-  ADD KEY `BusinessID` (`BusinessID`),
+--   ADD KEY `BusinessID` (`BusinessID`),
   ADD FOREIGN KEY (`ModuleID`) REFERENCES `bca_usermodules` (`ModuleID`);
 
 
 --
 -- Indexes for table `bca_footnote`
 --
-ALTER TABLE `bca_footnote`
-  ADD UNIQUE KEY `FootNoteID` (`FootNoteID`);
+-- ALTER TABLE `bca_footnote`
+--   ADD UNIQUE KEY `FootNoteID` (`FootNoteID`);
 
 --
 -- Indexes for table `bca_form_templates`
 -- changes foreign key added. different name FK25by5d07g10gf4mcldiy8ik9m
 ALTER TABLE `bca_form_templates`
-  ADD PRIMARY KEY (`template_type_no`),
-  ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
-  ADD KEY `FK25by5d07g10gf4mcldiy8ik9m` (`template_id_type`);
+--   ADD PRIMARY KEY (`template_type_no`),
+  ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
+--   ADD KEY `FK25by5d07g10gf4mcldiy8ik9m` (`template_id_type`);
 
 --
 -- Indexes for table `bca_form_templates_type`
 -- changes foreign key added
 ALTER TABLE `bca_form_templates_type`
-  ADD PRIMARY KEY (`template_id`),
+--   ADD PRIMARY KEY (`template_id`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
 
 --
 -- Indexes for table `bca_history`
 -- changes what is ImportedHistoryID
 ALTER TABLE `bca_history`
-  ADD PRIMARY KEY (`ImportId`),
+--   ADD PRIMARY KEY (`ImportId`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
-  ADD KEY `ImportedHistoryID` (`ImportedHistoryID`),
+--   ADD KEY `ImportedHistoryID` (`ImportedHistoryID`),
   ADD FOREIGN KEY (`StoreID`) REFERENCES `bca_store`(`StoreID`);
 
 
@@ -505,9 +506,9 @@ ALTER TABLE `bca_inventoryassembly`
 -- changes foreign key added. OrderItemID can be foreign key
 ALTER TABLE `bca_inventorycollectedfromstore`
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
-  ADD FOREIGN KEY (`OrderId`) REFERENCES smc_orders(`OrderId`),
-  ADD KEY `OrderItemID` (`OrderItemID`),
-  ADD KEY `SKU` (`SKU`);
+  ADD FOREIGN KEY (`OrderId`) REFERENCES smc_orders(`OrderId`);
+--   ADD KEY `OrderItemID` (`OrderItemID`),
+--   ADD KEY `SKU` (`SKU`);
 
 --
 -- Indexes for table `bca_inventorycrosssell`
@@ -528,45 +529,46 @@ ALTER TABLE `bca_inventorysupplierdetail`
 --
 -- Indexes for table `bca_invoice`
 -- changes foreign key added. BillingAddrID can be primary
+-- changes `bca_bsaddress`(`BSAddressID`), `bca_employee`(`EmployeeIndexID`) not a primary key
 ALTER TABLE `bca_invoice`
-  ADD PRIMARY KEY (`InvoiceID`),
-  ADD KEY `BankAccountID` (`BankAccountID`),
+--   ADD PRIMARY KEY (`InvoiceID`),
+--   ADD KEY `BankAccountID` (`BankAccountID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
   ADD FOREIGN KEY (`InvoiceTypeID`) REFERENCES `bca_invoicetype`(`InvoiceTypeID`),
-  ADD KEY `BillingAddrID` (`BillingAddrID`),
-  ADD FOREIGN KEY (`BSAddressID`) REFERENCES `bca_bsaddress`(`BSAddressID`),
+--   ADD KEY `BillingAddrID` (`BillingAddrID`),
+--   ADD FOREIGN KEY (`BSAddressID`) REFERENCES `bca_bsaddress`(`BSAddressID`),
   ADD FOREIGN KEY (`CategoryID`) REFERENCES `bca_category`(`CategoryID`),
   ADD FOREIGN KEY (`clientVendorId`) REFERENCES `bca_clientvendor`(`clientVendorId`),
-  ADD KEY `dropShipCustomerID` (`dropShipCustomerID`),
-  ADD FOREIGN KEY (`EmployeeID`) REFERENCES `bca_employee`(`EmployeeIndexID`),
-  ADD KEY `EstNum` (`EstNum`),
+--   ADD KEY `dropShipCustomerID` (`dropShipCustomerID`),
+--   ADD FOREIGN KEY (`EmployeeID`) REFERENCES `bca_employee`(`EmployeeIndexID`),
+--   ADD KEY `EstNum` (`EstNum`),
   ADD FOREIGN KEY (`GatewayID`) REFERENCES `bca_masterpaymentgateways`(`GatewayID`),
-  ADD KEY `GiftCertificateCode` (`GiftCertificateCode`),
+--   ADD KEY `GiftCertificateCode` (`GiftCertificateCode`),
   ADD FOREIGN KEY (`InvoiceStyleID`) REFERENCES `bca_invoicestyle`(`InvoiceStyleID`),
   ADD FOREIGN KEY (`MessageID`) REFERENCES `bca_message`(`MessageID`),
   ADD FOREIGN KEY (`OrderId`) REFERENCES `smc_orders`(`OrderId`),
-  ADD KEY `OrderNum` (`OrderNum`),
+--   ADD KEY `OrderNum` (`OrderNum`),
   ADD FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`),
-  ADD KEY `PONum` (`PONum`),
-  ADD KEY `RcvNum` (`RcvNum`),
-  ADD KEY `RefNum` (`RefNum`),
+--   ADD KEY `PONum` (`PONum`),
+--   ADD KEY `RcvNum` (`RcvNum`),
+--   ADD KEY `RefNum` (`RefNum`),
   ADD FOREIGN KEY (`SalesRepID`) REFERENCES `bca_salestax`(`SalesTaxID`),
   ADD FOREIGN KEY (`SalesTaxID`) REFERENCES `bca_salestax`(`SalesTaxID`),
-  ADD KEY `ServiceID` (`ServiceID`),
+--   ADD KEY `ServiceID` (`ServiceID`),
   ADD FOREIGN KEY (`ShipCarrierID`) REFERENCES `bca_shipcarrier`(`ShipCarrierID`),
-  ADD KEY `ShippingAddrID` (`ShippingAddrID`),
-  ADD KEY `SONum` (`SONum`),
+--   ADD KEY `ShippingAddrID` (`ShippingAddrID`),
+--   ADD KEY `SONum` (`SONum`),
   ADD FOREIGN KEY (`StoreID`) REFERENCES `bca_store`(`StoreID`),
-  ADD FOREIGN KEY (`TermID`) REFERENCES `bca_term`(`TermID`),
-  ADD KEY `TrackingCode` (`TrackingCode`),
-  ADD KEY `TransactionID` (`TransactionID`);
+  ADD FOREIGN KEY (`TermID`) REFERENCES `bca_term`(`TermID`);
+--   ADD KEY `TrackingCode` (`TrackingCode`),
+--   ADD KEY `TransactionID` (`TransactionID`);
 
 
 --
 -- Indexes for table `bca_invoicecredit`
 -- changes cvId can be primary
 ALTER TABLE `bca_invoicecredit`
-  ADD KEY `cvId` (`cvId`),
+--   ADD KEY `cvId` (`cvId`),
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice`(`InvoiceID`),
   ADD FOREIGN KEY (`InvoiceTypeID`) REFERENCES `bca_invoicetype`(`InvoiceTypeID`);
 
@@ -582,17 +584,18 @@ ALTER TABLE `bca_invoicediscount`
 --
 -- Indexes for table `bca_invoicememorized`
 -- changes foreign key added. employeeId, employeeindexId conflict 
+-- changes `bca_bsaddress`(`BSAddressID`), `bca_employee`(`EmployeeIndexID`) not a primary key
 --
 ALTER TABLE `bca_invoicememorized`
-  ADD PRIMARY KEY (`InvoiceID`),
+--   ADD PRIMARY KEY (`InvoiceID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
   ADD FOREIGN KEY (`InvoiceTypeID`) REFERENCES `bca_invoicetype`(`InvoiceTypeID`),
   ADD KEY (`BillingAddrID`),
-  ADD FOREIGN KEY (`BSAddressID`) REFERENCES `bca_bsaddress`(`BSAddressID`),
+--   ADD FOREIGN KEY (`BSAddressID`) REFERENCES `bca_bsaddress`(`BSAddressID`),
   ADD KEY (`CategoryID`),
   ADD FOREIGN KEY (`clientVendorId`) REFERENCES `bca_clientvendor`(`clientVendorId`),
   ADD KEY (`dropShipCustomerID`),
-  ADD FOREIGN KEY (`EmployeeID`) REFERENCES `bca_employee`(`EmployeeIndexID`),
+--   ADD FOREIGN KEY (`EmployeeID`) REFERENCES `bca_employee`(`EmployeeIndexID`),
   ADD KEY (`EstNum`),
   ADD FOREIGN KEY (`InvoiceStyleID`) REFERENCES `bca_invoicestyle`(`InvoiceStyleID`),
   ADD FOREIGN KEY (`MessageID`) REFERENCES `bca_message`(`MessageID`),
@@ -617,7 +620,7 @@ ALTER TABLE `bca_invoicememorized`
 -- Indexes for table `bca_invoicesalessummaryamt`
 -- changes 3  foreign key added
 ALTER TABLE `bca_invoicesalessummaryamt`
-  ADD PRIMARY KEY (`ID`),
+--   ADD PRIMARY KEY (`ID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice`(`InvoiceID`);
 
@@ -625,7 +628,7 @@ ALTER TABLE `bca_invoicesalessummaryamt`
 -- Indexes for table `bca_invoiceshipdetail`
 -- changes 3  added foreign keys
 ALTER TABLE `bca_invoiceshipdetail`
-  ADD PRIMARY KEY (`ShipDetailID`),
+--   ADD PRIMARY KEY (`ShipDetailID`),
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice`(`InvoiceID`),
   ADD KEY (`ShippingServiceID`);
 
@@ -635,7 +638,7 @@ ALTER TABLE `bca_invoiceshipdetail`
 -- changes  added foreign key, unique key not required. InvoiceID,EstNum,OrderNum can be foreign key
 --
 ALTER TABLE `bca_invoiceshipped`
-  ADD PRIMARY KEY (`InvoiceID`),
+--   ADD PRIMARY KEY (`InvoiceID`),
   ADD KEY (`BillingAddrID`),
   ADD KEY (`BSAddressID`),
   ADD FOREIGN KEY (`CategoryID`) REFERENCES `bca_category`(`CategoryID`),
@@ -668,20 +671,20 @@ ALTER TABLE `bca_invoiceshipped`
 --
 -- Indexes for table `bca_invoicestyle`
 --
-ALTER TABLE `bca_invoicestyle`
-  ADD UNIQUE KEY `InvoiceStyleID` (`InvoiceStyleID`);
+-- ALTER TABLE `bca_invoicestyle`
+--   ADD UNIQUE KEY `InvoiceStyleID` (`InvoiceStyleID`);
 
 --
 -- Indexes for table `bca_invoicetype`
 --
-ALTER TABLE `bca_invoicetype`
-  ADD UNIQUE KEY `InvoiceTypeID` (`InvoiceTypeID`);
+-- ALTER TABLE `bca_invoicetype`
+--   ADD UNIQUE KEY `InvoiceTypeID` (`InvoiceTypeID`);
 
 --
 -- Indexes for table `bca_invoice_activetemplates`
 -- changes key not required., since primary key present. foreign ky added
 ALTER TABLE `bca_invoice_activetemplates`
-  ADD PRIMARY KEY (`ID`),
+--   ADD PRIMARY KEY (`ID`),
   ADD FOREIGN KEY (`TemplateId`) REFERENCES `bca_invoice_template`(`TemplateId`);
 
 
@@ -707,15 +710,15 @@ ALTER TABLE `bca_invoice_layoutfieldscreensetting`
 
 --
 -- Indexes for table `bca_invoice_layoutfieldssetting`
---
-ALTER TABLE `bca_invoice_layoutfieldssetting`
-   ADD FOREIGN KEY (`TemplateId`) REFERENCES bca_invoice_template(`TemplateId`);
+-- changes bca_invoice_template(`TemplateId`) not a primary key
+-- ALTER TABLE `bca_invoice_layoutfieldssetting`
+--    ADD FOREIGN KEY (`TemplateId`) REFERENCES bca_invoice_template(`TemplateId`);
 
 --
 -- Indexes for table `bca_invoice_template`
 -- changes foreign key added
 ALTER TABLE `bca_invoice_template`
-  ADD PRIMARY KEY (`TemplateId`),
+--   ADD PRIMARY KEY (`TemplateId`),
   ADD KEY (`BaseTemplateId`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
   ADD KEY (`TemplateStyleTypeID`),
@@ -725,18 +728,16 @@ ALTER TABLE `bca_invoice_template`
 --
 -- Indexes for table `bca_invstatus`
 --
-ALTER TABLE `bca_invstatus`
-  ADD UNIQUE KEY `InvStatusID` (`InvStatusID`);
-
+-- ALTER TABLE `bca_invstatus`
+--   ADD UNIQUE KEY `InvStatusID` (`InvStatusID`);
+-- 
 --
 -- Indexes for table `bca_itemcategory`
 -- changes added foreign key. ItemTypeID can be foreign key
---
+-- changes bca_lineofcreditterm table don't have collumn named by ItemCategoryID
 ALTER TABLE `bca_itemcategory`
-  ADD FOREIGN KEY (`ItemCategoryID`) REFERENCES `bca_lineofcreditterm`(`ItemCategoryID`),
+--   ADD FOREIGN KEY (`ItemCategoryID`) REFERENCES `bca_lineofcreditterm`(`ItemCategoryID`),
   ADD KEY (`ParentItemCategoryID`);
-
-
 --
 -- Indexes for table `bca_iteminventory`
 -- changes added foreign key. ParentId can be foreign key. ItemTypeID can be foreign key
@@ -762,22 +763,22 @@ ALTER TABLE `bca_iteminventory`
 -- Indexes for table `bca_jobcategory`
 -- changes 46foreign key added. unique key not required
 ALTER TABLE `bca_jobcategory`
-  ADD PRIMARY KEY (`JobCategoryID`),
+--   ADD PRIMARY KEY (`JobCategoryID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
 
 
 --
 -- Indexes for table `bca_label`
 --
-ALTER TABLE `bca_label`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `LabelType` (`LabelType`);
+-- ALTER TABLE `bca_label`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD UNIQUE KEY `LabelType` (`LabelType`);
 
 --
 -- Indexes for table `bca_lineofcreditterm`
 -- changes 47 foreign key added
 ALTER TABLE `bca_lineofcreditterm`
-  ADD PRIMARY KEY (`CreditTermId`),
+--   ADD PRIMARY KEY (`CreditTermId`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
   ADD KEY (`CreditTermId`);
   
@@ -793,275 +794,275 @@ ALTER TABLE `bca_location`
 --
 -- Indexes for table `bca_mailtemplate`
 --
-ALTER TABLE `bca_mailtemplate`
-  ADD PRIMARY KEY (`TemplateID`),
-  ADD KEY `TemplateName` (`TemplateName`);
+-- ALTER TABLE `bca_mailtemplate`
+--   ADD PRIMARY KEY (`TemplateID`),
+--   ADD KEY `TemplateName` (`TemplateName`);
 
 
 --
 -- Indexes for table `bca_masterbalancesheetitem`
 --
-ALTER TABLE `bca_masterbalancesheetitem`
-  ADD PRIMARY KEY (`balancesheetitemID`),
-  ADD KEY `CategoryTypeID` (`CategoryTypeID`);
+-- ALTER TABLE `bca_masterbalancesheetitem`
+--   ADD PRIMARY KEY (`balancesheetitemID`),
+--   ADD KEY `CategoryTypeID` (`CategoryTypeID`);
 
 
 --
 -- Indexes for table `bca_masterclientcategory`
 --
-ALTER TABLE `bca_masterclientcategory`
-  ADD KEY `CVCategoryID` (`CVCategoryID`);
+-- ALTER TABLE `bca_masterclientcategory`
+--   ADD KEY `CVCategoryID` (`CVCategoryID`);
 
 
 --
 -- Indexes for table `bca_mastercreditcardtype`
 --
-ALTER TABLE `bca_mastercreditcardtype`
-  ADD KEY `CCTypeID` (`CCTypeID`);
+-- ALTER TABLE `bca_mastercreditcardtype`
+--   ADD KEY `CCTypeID` (`CCTypeID`);
 
 
 --
 -- Indexes for table `bca_mastercustomergroup`
 --
-ALTER TABLE `bca_mastercustomergroup`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `ID` (`ID`);
+-- ALTER TABLE `bca_mastercustomergroup`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `ID` (`ID`);
 
 
 --
 -- Indexes for table `bca_masteritemcategory`
 --
-ALTER TABLE `bca_masteritemcategory`
-  ADD KEY `ItemCategoryID` (`ItemCategoryID`),
-  ADD KEY `ParentItemCategoryID` (`ParentItemCategoryID`);
+-- ALTER TABLE `bca_masteritemcategory`
+--   ADD KEY `ItemCategoryID` (`ItemCategoryID`),
+--   ADD KEY `ParentItemCategoryID` (`ParentItemCategoryID`);
 
 
 --
 -- Indexes for table `bca_masterpaymentgateways`
 --
-ALTER TABLE `bca_masterpaymentgateways`
-  ADD PRIMARY KEY (`GatewayID`),
-  ADD KEY `GatewayID` (`GatewayID`);
+-- ALTER TABLE `bca_masterpaymentgateways`
+--   ADD PRIMARY KEY (`GatewayID`),
+--   ADD KEY `GatewayID` (`GatewayID`);
 
 
 --
 -- Indexes for table `bca_masterpaymenttype`
 --
-ALTER TABLE `bca_masterpaymenttype`
-  ADD KEY `PaymentTypeID` (`PaymentTypeID`);
+-- ALTER TABLE `bca_masterpaymenttype`
+--   ADD KEY `PaymentTypeID` (`PaymentTypeID`);
 
 
 --
 -- Indexes for table `bca_masterreceivedtype`
 --
-ALTER TABLE `bca_masterreceivedtype`
-  ADD KEY `PaymentTypeID` (`PaymentTypeID`);
+-- ALTER TABLE `bca_masterreceivedtype`
+--   ADD KEY `PaymentTypeID` (`PaymentTypeID`);
 
 
 --
 -- Indexes for table `bca_masterrmareason`
 --
-ALTER TABLE `bca_masterrmareason`
-  ADD KEY `rmaReasonID` (`rmaReasonID`);
+-- ALTER TABLE `bca_masterrmareason`
+--   ADD KEY `rmaReasonID` (`rmaReasonID`);
 
 
 --
 -- Indexes for table `bca_mastershipcarrier`
 --
-ALTER TABLE `bca_mastershipcarrier`
-  ADD KEY `ShipCarrierID` (`ShipCarrierID`);
+-- ALTER TABLE `bca_mastershipcarrier`
+--   ADD KEY `ShipCarrierID` (`ShipCarrierID`);
 
 
 --
 -- Indexes for table `bca_mastershippingcontainer`
 --
-ALTER TABLE `bca_mastershippingcontainer`
-  ADD KEY `ContainerID` (`ContainerID`);
+-- ALTER TABLE `bca_mastershippingcontainer`
+--   ADD KEY `ContainerID` (`ContainerID`);
 
 
 --
 -- Indexes for table `bca_mastershippingmailtype`
 --
-ALTER TABLE `bca_mastershippingmailtype`
-  ADD PRIMARY KEY (`MailTypeID`);
+-- ALTER TABLE `bca_mastershippingmailtype`
+--   ADD PRIMARY KEY (`MailTypeID`);
 
 
 --
 -- Indexes for table `bca_mastershippingpackagesize`
 --
-ALTER TABLE `bca_mastershippingpackagesize`
-  ADD KEY `PackageSizeID` (`PackageSizeID`);
+-- ALTER TABLE `bca_mastershippingpackagesize`
+--   ADD KEY `PackageSizeID` (`PackageSizeID`);
 
 
 --
 -- Indexes for table `bca_masterstartingmodule`
 --
-ALTER TABLE `bca_masterstartingmodule`
-  ADD PRIMARY KEY (`StartModuleID`),
-  ADD KEY `BusinessTypeID` (`BusinessTypeID`);
+-- ALTER TABLE `bca_masterstartingmodule`
+--   ADD PRIMARY KEY (`StartModuleID`),
+--   ADD KEY `BusinessTypeID` (`BusinessTypeID`);
 
 
 --
 -- Indexes for table `bca_mastervendorcategory`
 --
-ALTER TABLE `bca_mastervendorcategory`
-  ADD KEY `CVCategoryID` (`CVCategoryID`);
+-- ALTER TABLE `bca_mastervendorcategory`
+--   ADD KEY `CVCategoryID` (`CVCategoryID`);
 
 
 --
 -- Indexes for table `bca_message`
 --
-ALTER TABLE `bca_message`
-  ADD UNIQUE KEY `MessageID` (`MessageID`);
+-- ALTER TABLE `bca_message`
+--   ADD UNIQUE KEY `MessageID` (`MessageID`);
 
 
 --
 -- Indexes for table `bca_ordertemplate`
 --
-ALTER TABLE `bca_ordertemplate`
-  ADD PRIMARY KEY (`OrderID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `OrderID` (`OrderID`);
+-- ALTER TABLE `bca_ordertemplate`
+--   ADD PRIMARY KEY (`OrderID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `OrderID` (`OrderID`);
 
 
 --
 -- Indexes for table `bca_payment`
 --
-ALTER TABLE `bca_payment`
-  ADD PRIMARY KEY (`PaymentID`) USING BTREE;
+-- ALTER TABLE `bca_payment`
+--   ADD PRIMARY KEY (`PaymentID`) USING BTREE;
 
 
 --
 -- Indexes for table `bca_payment2invoice`
 --
-ALTER TABLE `bca_payment2invoice`
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `InvoiceID` (`InvoiceID`),
-  ADD KEY `PaymentID` (`PaymentID`);
+-- ALTER TABLE `bca_payment2invoice`
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `InvoiceID` (`InvoiceID`),
+--   ADD KEY `PaymentID` (`PaymentID`);
 
 
 --
 -- Indexes for table `bca_paymentdetail`
 --
-ALTER TABLE `bca_paymentdetail`
-  ADD PRIMARY KEY (`DetailID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `CreditCardID` (`CreditCardID`),
-  ADD KEY `DetailID` (`DetailID`),
-  ADD KEY `GatewayID` (`GatewayID`),
-  ADD KEY `PaymentID` (`PaymentID`);
+-- ALTER TABLE `bca_paymentdetail`
+--   ADD PRIMARY KEY (`DetailID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `CreditCardID` (`CreditCardID`),
+--   ADD KEY `DetailID` (`DetailID`),
+--   ADD KEY `GatewayID` (`GatewayID`),
+--   ADD KEY `PaymentID` (`PaymentID`);
 
 
 --
 -- Indexes for table `bca_paymenttype`
 --
-ALTER TABLE `bca_paymenttype`
-  ADD UNIQUE KEY `PaymentTypeID` (`PaymentTypeID`),
-  ADD KEY `BankAcctID` (`BankAcctID`),
-  ADD KEY `CCTypeID` (`CCTypeID`);
+-- ALTER TABLE `bca_paymenttype`
+--   ADD UNIQUE KEY `PaymentTypeID` (`PaymentTypeID`),
+--   ADD KEY `BankAcctID` (`BankAcctID`),
+--   ADD KEY `CCTypeID` (`CCTypeID`);
 
 
 --
 -- Indexes for table `bca_peritempricelevel`
 --
-ALTER TABLE `bca_peritempricelevel`
-  ADD PRIMARY KEY (`ItemPriceID`),
-  ADD KEY `InventoryID` (`InventoryID`),
-  ADD KEY `ItemPriceID` (`ItemPriceID`),
-  ADD KEY `ParentID` (`ParentID`);
+-- ALTER TABLE `bca_peritempricelevel`
+--   ADD PRIMARY KEY (`ItemPriceID`),
+--   ADD KEY `InventoryID` (`InventoryID`),
+--   ADD KEY `ItemPriceID` (`ItemPriceID`),
+--   ADD KEY `ParentID` (`ParentID`);
 
 
 --
 -- Indexes for table `bca_postyle`
 -- changes 48 can be primary key
-ALTER TABLE `bca_postyle`
-  ADD KEY `POStyleID` (`POStyleID`);
+-- ALTER TABLE `bca_postyle`
+--   ADD KEY `POStyleID` (`POStyleID`);
   
   
 --
 -- Indexes for table `bca_preference`
 --
-ALTER TABLE `bca_preference`
-  ADD KEY `BarcodeID` (`BarcodeID`),
-  ADD KEY `BillingStyleTypeID` (`BillingStyleTypeID`),
-  ADD KEY `PreferenceID` (`PreferenceID`),
-  ADD KEY `CustomerStateID` (`CustomerStateID`),
-  ADD KEY `DefaultPayableAccountID` (`DefaultPayableAccountID`),
-  ADD KEY `DefaultARCategoryID` (`DefaultARCategoryID`),
-  ADD KEY `DefaultBankTransferAccID` (`DefaultBankTransferAccID`),
-  ADD KEY `DefaultCategoryID` (`DefaultCategoryID`),
-  ADD KEY `DefaultCustomerGroupID` (`DefaultCustomerGroupID`),
-  ADD KEY `DefaultCustomerSortID` (`DefaultCustomerSortID`),
-  ADD KEY `DefaultEBayBankID` (`DefaultEBayBankID`),
-  ADD KEY `DefaultEBayOnlineBankID` (`DefaultEBayOnlineBankID`),
-  ADD KEY `DefaultPackingSlipStyleID` (`DefaultPackingSlipStyleID`),
-  ADD KEY `DefaultVendorCategoryID` (`DefaultVendorCategoryID`),
-  ADD KEY `DefaultVendorrSortID` (`DefaultVendorrSortID`),
-  ADD KEY `InvoiceStyleTypeID` (`InvoiceStyleTypeID`),
-  ADD KEY `IsRefundAllowed` (`IsRefundAllowed`),
-  ADD KEY `LineofCreditTermID` (`LineofCreditTermID`),
-  ADD KEY `PackingSlipStyleTypeID` (`PackingSlipStyleTypeID`),
-  ADD KEY `PackingSlipZipcode` (`PackingSlipZipcode`),
-  ADD KEY `POPayMethodID` (`POPayMethodID`),
-  ADD KEY `PORepID` (`PORepID`),
-  ADD KEY `POStyleID` (`POStyleID`),
-  ADD KEY `POStyleTypeID` (`POStyleTypeID`),
-  ADD KEY `POTermID` (`POTermID`),
-  ADD KEY `POViaID` (`POViaID`),
-  ADD KEY `SalesOrderStyleTypeID` (`SalesOrderStyleTypeID`),
-  ADD KEY `SalesPayMethodID` (`SalesPayMethodID`),
-  ADD KEY `VendorStateID` (`VendorStateID`);
+-- ALTER TABLE `bca_preference`
+--   ADD KEY `BarcodeID` (`BarcodeID`),
+--   ADD KEY `BillingStyleTypeID` (`BillingStyleTypeID`),
+--   ADD KEY `PreferenceID` (`PreferenceID`),
+--   ADD KEY `CustomerStateID` (`CustomerStateID`),
+--   ADD KEY `DefaultPayableAccountID` (`DefaultPayableAccountID`),
+--   ADD KEY `DefaultARCategoryID` (`DefaultARCategoryID`),
+--   ADD KEY `DefaultBankTransferAccID` (`DefaultBankTransferAccID`),
+--   ADD KEY `DefaultCategoryID` (`DefaultCategoryID`),
+--   ADD KEY `DefaultCustomerGroupID` (`DefaultCustomerGroupID`),
+--   ADD KEY `DefaultCustomerSortID` (`DefaultCustomerSortID`),
+--   ADD KEY `DefaultEBayBankID` (`DefaultEBayBankID`),
+--   ADD KEY `DefaultEBayOnlineBankID` (`DefaultEBayOnlineBankID`),
+--   ADD KEY `DefaultPackingSlipStyleID` (`DefaultPackingSlipStyleID`),
+--   ADD KEY `DefaultVendorCategoryID` (`DefaultVendorCategoryID`),
+--   ADD KEY `DefaultVendorrSortID` (`DefaultVendorrSortID`),
+--   ADD KEY `InvoiceStyleTypeID` (`InvoiceStyleTypeID`),
+--   ADD KEY `IsRefundAllowed` (`IsRefundAllowed`),
+--   ADD KEY `LineofCreditTermID` (`LineofCreditTermID`),
+--   ADD KEY `PackingSlipStyleTypeID` (`PackingSlipStyleTypeID`),
+--   ADD KEY `PackingSlipZipcode` (`PackingSlipZipcode`),
+--   ADD KEY `POPayMethodID` (`POPayMethodID`),
+--   ADD KEY `PORepID` (`PORepID`),
+--   ADD KEY `POStyleID` (`POStyleID`),
+--   ADD KEY `POStyleTypeID` (`POStyleTypeID`),
+--   ADD KEY `POTermID` (`POTermID`),
+--   ADD KEY `POViaID` (`POViaID`),
+--   ADD KEY `SalesOrderStyleTypeID` (`SalesOrderStyleTypeID`),
+--   ADD KEY `SalesPayMethodID` (`SalesPayMethodID`),
+--   ADD KEY `VendorStateID` (`VendorStateID`);
 
 
 --
 -- Indexes for table `bca_pricelevel`
 --
-ALTER TABLE `bca_pricelevel`
-  ADD PRIMARY KEY (`PriceLevelID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `PriceLevelID` (`PriceLevelID`);
+-- ALTER TABLE `bca_pricelevel`
+--   ADD PRIMARY KEY (`PriceLevelID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `PriceLevelID` (`PriceLevelID`);
 
 
 --
 -- Indexes for table `bca_productchannelsetting`
 --
-ALTER TABLE `bca_productchannelsetting`
-  ADD PRIMARY KEY (`ChannelsettingID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `InventoryID` (`InventoryID`),
-  ADD KEY `StoreID` (`StoreID`);
+-- ALTER TABLE `bca_productchannelsetting`
+--   ADD PRIMARY KEY (`ChannelsettingID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `InventoryID` (`InventoryID`),
+--   ADD KEY `StoreID` (`StoreID`);
 
 
 --
 -- Indexes for table `bca_quickbooklist`
 --
-ALTER TABLE `bca_quickbooklist`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `customerListID` (`customerListID`),
-  ADD KEY `cvID` (`cvID`),
-  ADD KEY `id` (`id`),
-  ADD KEY `inventoryListID` (`inventoryListID`),
-  ADD KEY `invID` (`invID`);
+-- ALTER TABLE `bca_quickbooklist`
+--   ADD PRIMARY KEY (`id`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `customerListID` (`customerListID`),
+--   ADD KEY `cvID` (`cvID`),
+--   ADD KEY `id` (`id`),
+--   ADD KEY `inventoryListID` (`inventoryListID`),
+--   ADD KEY `invID` (`invID`);
 
 
 --
 -- Indexes for table `bca_realtimeshippingservice`
 --
-ALTER TABLE `bca_realtimeshippingservice`
-  ADD PRIMARY KEY (`ShippingServiceID`),
-  ADD KEY `ShippingServiceID` (`ShippingServiceID`);
+-- ALTER TABLE `bca_realtimeshippingservice`
+--   ADD PRIMARY KEY (`ShippingServiceID`),
+--   ADD KEY `ShippingServiceID` (`ShippingServiceID`);
 
 
 --
 -- Indexes for table `bca_recentbills`
 --
-ALTER TABLE `bca_recentbills`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `ClientVendorID` (`ClientVendorID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `ID` (`ID`),
-  ADD KEY `ServiceID` (`ServiceID`);
+-- ALTER TABLE `bca_recentbills`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `ClientVendorID` (`ClientVendorID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `ID` (`ID`),
+--   ADD KEY `ServiceID` (`ServiceID`);
   
   
 
@@ -1073,7 +1074,7 @@ ALTER TABLE `bca_recentbills`
 -- PlanID, PaymentTypeID not a primary key
 --
 ALTER TABLE `bca_recurrentpayment`
-  ADD PRIMARY KEY (`PaymentID`),
+--   ADD PRIMARY KEY (`PaymentID`),
   ADD KEY (`RefPaymentID`),
   ADD KEY (`TransactionID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
@@ -1091,13 +1092,14 @@ ALTER TABLE `bca_recurrentpayment`
 -- 5 Foreign key added
 -- Confusion about PayeeId, PaymentAccountID
 -- PlanID, PaymentTypeID not a primary key
+-- change `bca_recurrentpaymentplan`(`PlanID`) not a primary key
 --
 ALTER TABLE `bca_recurrentpaymentplan`
   ADD KEY (`NumberOfPayments`),
   ADD FOREIGN KEY (`PayeeID`) REFERENCES `bca_account`(`AccountID`),
   ADD FOREIGN KEY (`PaymentAccountID`) REFERENCES `bca_account`(`AccountID`),
   ADD FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`),
-  ADD FOREIGN KEY (`PlanID`) REFERENCES `bca_recurrentpaymentplan`(`PlanID`),
+--   ADD FOREIGN KEY (`PlanID`) REFERENCES `bca_recurrentpaymentplan`(`PlanID`),
   ADD FOREIGN KEY (`ServiceID`) REFERENCES `bca_servicetype`(`ServiceID`);
 
 
@@ -1106,15 +1108,18 @@ ALTER TABLE `bca_recurrentpaymentplan`
 -- 7 Foreign key added
 -- Confusion about OrderNum 
 -- ClientVendorID, PaymentTypeID, InvoiceTypeID, OrderPaymentTypeID, SalesRepID not a primary key
+-- change `bca_paymenttype`(`PaymentTypeID`) not a primary key
+-- PaymentTypeID type changed to int
 --
 ALTER TABLE `bca_refundlist`
-  ADD PRIMARY KEY (`RefundID`),
-  ADD UNIQUE KEY `RefundID` (`RefundID`),
-  ADD KEY `OrderNum` (`OrderNum`),
+--   ADD PRIMARY KEY (`RefundID`),
+--   ADD UNIQUE KEY `RefundID` (`RefundID`),
+--   ADD KEY `OrderNum` (`OrderNum`),
   ADD FOREIGN KEY (`ClientVendorID`) REFERENCES `bca_clientvendor`(`ClientVendorID`), 
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`), 
   ADD FOREIGN KEY (`InvoiceTypeID`) REFERENCES `bca_invoicetype`(`InvoiceTypeID`), 
   ADD FOREIGN KEY (`PaymentID`) REFERENCES `bca_payment`(`PaymentID`), 
+	 MODIFY COLUMN `PaymentTypeID` INT,
   ADD FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`),
   ADD FOREIGN KEY (`OrderPaymentTypeID`) REFERENCES `bca_paymenttype`(`PaymentTypeID`),
   ADD FOREIGN KEY (`SalesRepID`) REFERENCES `bca_salesrep`(`SalesRepID`);
@@ -1125,8 +1130,8 @@ ALTER TABLE `bca_refundlist`
 -- 1 Foreign key added
 --
 ALTER TABLE `bca_refundreason`
-  ADD PRIMARY KEY (`ReasonID`),
-  ADD UNIQUE KEY `ReasonID` (`ReasonID`),
+--   ADD PRIMARY KEY (`ReasonID`),
+--   ADD UNIQUE KEY `ReasonID` (`ReasonID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 --
@@ -1134,7 +1139,7 @@ ALTER TABLE `bca_refundreason`
 -- 1 Foreign key added
 --
 ALTER TABLE `bca_reportproperty`
-  ADD KEY `ReportType` (`ReportType`),
+--   ADD KEY `ReportType` (`ReportType`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1145,10 +1150,10 @@ ALTER TABLE `bca_reportproperty`
 -- parentReasonID not a primary key
 --
 ALTER TABLE `bca_rmaitem`
-  ADD PRIMARY KEY (`RmaUniqueID`),
-  ADD KEY `RmaNo` (`RmaNo`),
-  ADD KEY `RmaItemID` (`RmaItemID`),
-  ADD KEY `RmaUniqueID` (`RmaUniqueID`),
+--   ADD PRIMARY KEY (`RmaUniqueID`),
+--   ADD KEY `RmaNo` (`RmaNo`),
+--   ADD KEY `RmaItemID` (`RmaItemID`),
+--   ADD KEY `RmaUniqueID` (`RmaUniqueID`),
   ADD FOREIGN KEY (`CartID`) REFERENCES bca_cart(`CartID`),
   ADD FOREIGN KEY (`parentReasonID`) REFERENCES bca_masterrmareason (`rmaReasonID`);
 
@@ -1159,8 +1164,8 @@ ALTER TABLE `bca_rmaitem`
 -- ClientVendorID not a primary key
 --
 ALTER TABLE `bca_rmamaster`
-  ADD PRIMARY KEY (`RmaID`),
-  ADD UNIQUE KEY `RmaID` (`RmaID`),
+--   ADD PRIMARY KEY (`RmaID`),
+--   ADD UNIQUE KEY `RmaID` (`RmaID`),
   ADD FOREIGN KEY (`ClientVendorID`) REFERENCES bca_clientvendor(`ClientVendorID`), 
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`), 
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES bca_invoice(`InvoiceID`);
@@ -1182,7 +1187,7 @@ ALTER TABLE `bca_rmareason`
 -- 1 Foreign key added
 --
 ALTER TABLE `bca_rule`
-  ADD PRIMARY KEY (`RuleName`),
+--   ADD PRIMARY KEY (`RuleName`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1200,7 +1205,7 @@ ALTER TABLE `bca_ruleconditions`
 -- Faceing problem to find SONum
 --
 ALTER TABLE `bca_salesorder`
-  ADD KEY `SONum` (`SONum`),
+--   ADD KEY `SONum` (`SONum`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`), 
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES bca_invoice(`InvoiceID`);
 
@@ -1208,18 +1213,20 @@ ALTER TABLE `bca_salesorder`
 --
 -- Indexes for table `bca_salesrep`
 --
-ALTER TABLE `bca_salesrep`
-  ADD UNIQUE KEY `SalesRepID` (`SalesRepID`);
+-- ALTER TABLE `bca_salesrep`
+--   ADD UNIQUE KEY `SalesRepID` (`SalesRepID`);
 
 
 --
 -- Indexes for table `bca_salessummary`
 -- 1 Foreign key added
+-- CompanyID type changed to int
 --
 ALTER TABLE `bca_salessummary`
-  ADD PRIMARY KEY (`SalesID`),
-  ADD KEY `SalesID` (`SalesID`),
-  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
+--   ADD PRIMARY KEY (`SalesID`),
+--   ADD KEY `SalesID` (`SalesID`),
+ MODIFY COLUMN `CompanyID` INT,
+  ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
 
 
 --
@@ -1227,8 +1234,8 @@ ALTER TABLE `bca_salessummary`
 -- 1 Foreign key added
 --
 ALTER TABLE `bca_salessummarydetail`
-  ADD PRIMARY KEY (`Id`),
-  ADD KEY `Id` (`Id`),
+--   ADD PRIMARY KEY (`Id`),
+--   ADD KEY `Id` (`Id`),
   ADD FOREIGN KEY (`SalesID`) REFERENCES bca_salessummary(`SalesID`);
 
 
@@ -1237,7 +1244,7 @@ ALTER TABLE `bca_salessummarydetail`
 -- 1 Foreign key added
 --
 ALTER TABLE `bca_salestax`
-  ADD UNIQUE KEY `SalesTaxID` (`SalesTaxID`),
+--   ADD UNIQUE KEY `SalesTaxID` (`SalesTaxID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1246,7 +1253,7 @@ ALTER TABLE `bca_salestax`
 -- 2 Foreign key added
 --
 ALTER TABLE `bca_scheduletimes`
-  ADD KEY `ScheduleTime` (`ScheduleTime`),
+--   ADD KEY `ScheduleTime` (`ScheduleTime`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`StoreID`) REFERENCES bca_store(`StoreID`);
 
@@ -1257,8 +1264,8 @@ ALTER TABLE `bca_scheduletimes`
 -- InventoryID, InvoiceStyleID not a primary key
 --
 ALTER TABLE `bca_servicetype`
-  ADD PRIMARY KEY (`ServiceID`),
-  ADD KEY `ServiceID` (`ServiceID`),
+--   ADD PRIMARY KEY (`ServiceID`),
+--   ADD KEY `ServiceID` (`ServiceID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`InventoryID`) REFERENCES bca_iteminventory(`InventoryID`),
   ADD FOREIGN KEY (`InvoiceStyleID`) REFERENCES bca_invoicestyle(`InvoiceStyleID`);
@@ -1279,8 +1286,8 @@ ALTER TABLE `bca_settings`
 -- Confusion about ParentID
 --
 ALTER TABLE `bca_shipcarrier`
-  ADD UNIQUE KEY `ShipCarrierID` (`ShipCarrierID`),
-  ADD KEY `ParentID` (`ParentID`),
+--   ADD UNIQUE KEY `ShipCarrierID` (`ShipCarrierID`),
+--   ADD KEY `ParentID` (`ParentID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1290,10 +1297,10 @@ ALTER TABLE `bca_shipcarrier`
 -- ClientVendorID, ZipCode not a primary key
 --
 ALTER TABLE `bca_shippingaddress`
-  ADD PRIMARY KEY (`AddressID`),
-  ADD KEY `LastName` (`LastName`),
-  ADD FOREIGN KEY (`ClientVendorID`) REFERENCES bca_clientvendor(`ClientVendorID`),
-  ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
+--   ADD PRIMARY KEY (`AddressID`),
+--   ADD KEY `LastName` (`LastName`),
+  ADD FOREIGN KEY (`ClientVendorID`) REFERENCES bca_clientvendor(`ClientVendorID`);
+--   ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
 
 
 --
@@ -1302,9 +1309,9 @@ ALTER TABLE `bca_shippingaddress`
 -- ShipCarrierID not a primary key
 --
 ALTER TABLE `bca_shippingrate`
-  ADD PRIMARY KEY (`ShippingRateID`),
-  ADD UNIQUE KEY `ShippingRateID` (`ShippingRateID`),
-  ADD KEY `Weight` (`Weight`),
+--   ADD PRIMARY KEY (`ShippingRateID`),
+--   ADD UNIQUE KEY `ShippingRateID` (`ShippingRateID`),
+--   ADD KEY `Weight` (`Weight`),
   ADD FOREIGN KEY (`ShipCarrierID`) REFERENCES bca_shipcarrier(`ShipCarrierID`);
 
 
@@ -1314,8 +1321,8 @@ ALTER TABLE `bca_shippingrate`
 -- ContainerID, PackageSizeID, ShipCarrierID not a primary key
 --
 ALTER TABLE `bca_shippingservice`
-  ADD PRIMARY KEY (`ShippingServiceID`),
-  ADD KEY `ShippingServiceID` (`ShippingServiceID`),
+--   ADD PRIMARY KEY (`ShippingServiceID`),
+--   ADD KEY `ShippingServiceID` (`ShippingServiceID`),
   ADD FOREIGN KEY (`ContainerID`) REFERENCES bca_mastershippingcontainer(`ContainerID`),
   ADD FOREIGN KEY (`MailTypeID`) REFERENCES bca_mastershippingmailtype(`MailTypeID`),
   ADD FOREIGN KEY (`PackageSizeID`) REFERENCES bca_mastershippingpackagesize(`PackageSizeID`),
@@ -1325,8 +1332,8 @@ ALTER TABLE `bca_shippingservice`
 --
 -- Indexes for table `bca_states`
 --
-ALTER TABLE `bca_states`
-  ADD PRIMARY KEY (`id`) USING BTREE;
+-- ALTER TABLE `bca_states`
+--   ADD PRIMARY KEY (`id`) USING BTREE;
 
 
 --
@@ -1334,33 +1341,35 @@ ALTER TABLE `bca_states`
 -- 3 Foreign key added
 -- Confusion about amazonMarketPlaceID, amazonMerchantID, eBaychangePaymentStatusID, defaultCategoryID, eBayDeveloperID, smcLoginID
 -- bca_storetype, Zipcode not a primary key
+-- change city_state_zip(`ZIP_CODE`) not a primary key
 -- 
 ALTER TABLE `bca_store`
-  ADD PRIMARY KEY (`StoreID`),
-  ADD KEY `amazonAccesKey` (`amazonAccesKey`),
-  ADD KEY `amazonMarketPlaceID` (`amazonMarketPlaceID`),
-  ADD KEY `amazonMerchantID` (`amazonMerchantID`),
-  ADD KEY `amazonSecretKey` (`amazonSecretKey`),
-  ADD KEY `eBaychangePaymentStatusID` (`eBaychangePaymentStatusID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `defaultCategoryID` (`defaultCategoryID`),
-  ADD KEY `eBayApplicationID` (`eBayApplicationID`),
-  ADD KEY `eBayDeveloperID` (`eBayDeveloperID`),
-  ADD KEY `smcLoginID` (`smcLoginID`),
+--   ADD PRIMARY KEY (`StoreID`),
+--   ADD KEY `amazonAccesKey` (`amazonAccesKey`),
+--   ADD KEY `amazonMarketPlaceID` (`amazonMarketPlaceID`),
+--   ADD KEY `amazonMerchantID` (`amazonMerchantID`),
+--   ADD KEY `amazonSecretKey` (`amazonSecretKey`),
+--   ADD KEY `eBaychangePaymentStatusID` (`eBaychangePaymentStatusID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `defaultCategoryID` (`defaultCategoryID`),
+--   ADD KEY `eBayApplicationID` (`eBayApplicationID`),
+--   ADD KEY `eBayDeveloperID` (`eBayDeveloperID`),
+--   ADD KEY `smcLoginID` (`smcLoginID`),
   ADD FOREIGN KEY (`StoreTypeID`) REFERENCES bca_storetype(`StoreTypeID`),
-  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
-  ADD FOREIGN KEY (`Zipcode`) REFERENCES city_state_zip(`ZIP_CODE`);
+  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
+--   ADD FOREIGN KEY (`Zipcode`) REFERENCES city_state_zip(`ZIP_CODE`);
 
 
 --
 -- Indexes for table `bca_storetype`
 -- 1 Foreign key added
 -- zipcode not a primary key
+-- change city_state_zip(`ZIP_CODE`) not a primary key
 --
-ALTER TABLE `bca_storetype`
-  ADD KEY `DefaultStoreID` (`DefaultStoreID`),
-  ADD KEY `StoreTypeID` (`StoreTypeID`),
-  ADD FOREIGN KEY (`Zipcode`) REFERENCES city_state_zip(`ZIP_CODE`);
+-- ALTER TABLE `bca_storetype`
+--   ADD KEY `DefaultStoreID` (`DefaultStoreID`),
+--   ADD KEY `StoreTypeID` (`StoreTypeID`),
+--   ADD FOREIGN KEY (`Zipcode`) REFERENCES city_state_zip(`ZIP_CODE`);
 
 
 --
@@ -1369,46 +1378,46 @@ ALTER TABLE `bca_storetype`
 -- Confusion about baseTemplateId, templateId, templateStyleTypeId, templateTypeId
 --
 ALTER TABLE `bca_template_config`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `baseTemplateId` (`baseTemplateId`),
-  ADD KEY `id` (`id`),
-  ADD KEY `templateId` (`templateId`),
-  ADD KEY `templateStyleTypeId` (`templateStyleTypeId`),
-  ADD KEY `templateTypeId` (`templateTypeId`),
+--   ADD PRIMARY KEY (`id`),
+--   ADD KEY `baseTemplateId` (`baseTemplateId`),
+--   ADD KEY `id` (`id`),
+--   ADD KEY `templateId` (`templateId`),
+--   ADD KEY `templateStyleTypeId` (`templateStyleTypeId`),
+--   ADD KEY `templateTypeId` (`templateTypeId`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
 --
 -- Indexes for table `bca_term`
 --
-ALTER TABLE `bca_term`
-  ADD UNIQUE KEY `TermID` (`TermID`);
+-- ALTER TABLE `bca_term`
+--   ADD UNIQUE KEY `TermID` (`TermID`);
 
 
 --
 -- Indexes for table `bca_title`
 --
-ALTER TABLE `bca_title`
-  ADD PRIMARY KEY (`TitleID`),
-  ADD KEY `TitleID` (`TitleID`);
+-- ALTER TABLE `bca_title`
+--   ADD PRIMARY KEY (`TitleID`),
+--   ADD KEY `TitleID` (`TitleID`);
 
 
 --
 -- Indexes for table `bca_unitofmeasure`
 --
-ALTER TABLE `bca_unitofmeasure`
-  ADD KEY `UnitCategoryID` (`UnitCategoryID`);
+-- ALTER TABLE `bca_unitofmeasure`
+--   ADD KEY `UnitCategoryID` (`UnitCategoryID`);
 
 
 --
 -- Indexes for table `bca_user`
 -- Confusion about LoginID, TaxID
 --
-ALTER TABLE `bca_user`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `ID` (`ID`),
-  ADD KEY `LoginID` (`LoginID`),
-  ADD KEY `TaxID` (`TaxID`);
+-- ALTER TABLE `bca_user`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `ID` (`ID`),
+--   ADD KEY `LoginID` (`LoginID`),
+--   ADD KEY `TaxID` (`TaxID`);
 
 
 --
@@ -1417,8 +1426,8 @@ ALTER TABLE `bca_user`
 -- confusion on DataId
 --
 ALTER TABLE `bca_useractivity`
-  ADD KEY `DataID` (`DataID`),
-  ADD KEY `UserActivityID` (`UserActivityID`),
+--   ADD KEY `DataID` (`DataID`),
+--   ADD KEY `UserActivityID` (`UserActivityID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`StoreID`) REFERENCES bca_store(`StoreID`),
   ADD FOREIGN KEY (`UserID`) REFERENCES bca_user(`ID`);
@@ -1431,7 +1440,7 @@ ALTER TABLE `bca_useractivity`
 -- ShipCarrierID Not primary key 
 --
 ALTER TABLE `bca_userdefineshipcarrier`
-  ADD KEY `ParentID` (`ParentID`),
+--   ADD KEY `ParentID` (`ParentID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`ShipCarrierID`) REFERENCES bca_shipcarrier(`ShipCarrierID`);
 
@@ -1441,8 +1450,8 @@ ALTER TABLE `bca_userdefineshipcarrier`
 -- 1 foreign key added
 --
 ALTER TABLE `bca_usergroup`
-  ADD PRIMARY KEY (`GroupID`),
-  ADD KEY `GroupID` (`GroupID`),
+--   ADD PRIMARY KEY (`GroupID`),
+--   ADD KEY `GroupID` (`GroupID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1451,8 +1460,8 @@ ALTER TABLE `bca_usergroup`
 -- 3 Foreign key added
 --
 ALTER TABLE `bca_usermapping`
-  ADD PRIMARY KEY (`MappingID`),
-  ADD UNIQUE KEY `MappingID` (`MappingID`),
+--   ADD PRIMARY KEY (`MappingID`),
+--   ADD UNIQUE KEY `MappingID` (`MappingID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`UserGroupID`) REFERENCES bca_usergroup(`GroupID`),
   ADD FOREIGN KEY (`UserID`) REFERENCES bca_user(`ID`);
@@ -1462,10 +1471,10 @@ ALTER TABLE `bca_usermapping`
 -- Indexes for table `bca_usermodules`
 -- Confusion on ParentId
 --
-ALTER TABLE `bca_usermodules`
-  ADD PRIMARY KEY (`ModuleID`),
-  ADD UNIQUE KEY `ModuleID` (`ModuleID`),
-  ADD KEY `ParentID` (`ParentID`);
+-- ALTER TABLE `bca_usermodules`
+--   ADD PRIMARY KEY (`ModuleID`),
+--   ADD UNIQUE KEY `ModuleID` (`ModuleID`),
+--   ADD KEY `ParentID` (`ParentID`);
 
 
 --
@@ -1482,8 +1491,8 @@ ALTER TABLE `bca_vendorcategory`
 -- 1 Foreign key added
 --
 ALTER TABLE `bcp_deductionlist`
-  ADD PRIMARY KEY (`DeductionListID`),
-  ADD KEY `DeductionListID` (`DeductionListID`),
+--   ADD PRIMARY KEY (`DeductionListID`),
+--   ADD KEY `DeductionListID` (`DeductionListID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1492,17 +1501,18 @@ ALTER TABLE `bcp_deductionlist`
 -- 6 Foreig key added
 -- Confusion on EmployeeID, EmployeeTitleID
 -- ZipCode not a primary key
+-- change city_state_zip(`ZIP_CODE`) not a primary key
 -- 
 ALTER TABLE `bcp_employee`
-  ADD UNIQUE KEY `EmployeeIndexID` (`EmployeeIndexID`),
-  ADD KEY `EmployeeID` (`EmployeeID`),
-  ADD KEY `EmployeeTitleID` (`EmployeeTitleID`),
+--   ADD UNIQUE KEY `EmployeeIndexID` (`EmployeeIndexID`),
+--   ADD KEY `EmployeeID` (`EmployeeID`),
+--   ADD KEY `EmployeeTitleID` (`EmployeeTitleID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`EmployeeTypeID`) REFERENCES bcp_employeetype(`EmployeeTypeID`),
   ADD FOREIGN KEY (`FilingStatusID`) REFERENCES bcp_filingstatus(`FilingStatusID`),
   ADD FOREIGN KEY (`JobTitleID`) REFERENCES bcp_jobtitle(`JobTitleID`),
-  ADD FOREIGN KEY (`PayrollPeriodID`) REFERENCES bcp_payrollperiod(`PayrollPeriodID`),
-  ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
+  ADD FOREIGN KEY (`PayrollPeriodID`) REFERENCES bcp_payrollperiod(`PayrollPeriodID`);
+--   ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
    
 
 
@@ -1511,32 +1521,32 @@ ALTER TABLE `bcp_employee`
 -- 1 Foreign key added
 --
 ALTER TABLE `bcp_employeetype`
-  ADD PRIMARY KEY (`EmployeeTypeID`),
+--   ADD PRIMARY KEY (`EmployeeTypeID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
 --
 -- Indexes for table `bcp_fedperallowance`
 --
-ALTER TABLE `bcp_fedperallowance`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `ID` (`ID`),
-  ADD KEY `NumTerm` (`NumTerm`);
+-- ALTER TABLE `bcp_fedperallowance`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `ID` (`ID`),
+--   ADD KEY `NumTerm` (`NumTerm`);
 
 
 --
 -- Indexes for table `bcp_fedpermethod`
 --
-ALTER TABLE `bcp_fedpermethod`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `NumTerm` (`NumTerm`);
+-- ALTER TABLE `bcp_fedpermethod`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `NumTerm` (`NumTerm`);
 
 
 --
 -- Indexes for table `bcp_fedrate`
 --
-ALTER TABLE `bcp_fedrate`
-  ADD PRIMARY KEY (`ID`);
+-- ALTER TABLE `bcp_fedrate`
+--   ADD PRIMARY KEY (`ID`);
 
 
 --
@@ -1544,11 +1554,12 @@ ALTER TABLE `bcp_fedrate`
 -- 2 Foreign key added 
 -- Confusion on FilingStateTaxID
 -- FilingStateID not a primary key
+-- change bcp_filingstate(`FilingStateID`) not a primary key
 --
 ALTER TABLE `bcp_filingstate`
-  ADD KEY `FilingStateTaxID` (`FilingStateTaxID`),
-  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
-  ADD FOREIGN KEY (`FilingStateID`) REFERENCES bcp_filingstate(`FilingStateID`);
+--   ADD KEY `FilingStateTaxID` (`FilingStateTaxID`),
+  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
+--   ADD FOREIGN KEY (`FilingStateID`) REFERENCES bcp_filingstate(`FilingStateID`);
 
 
 --
@@ -1556,7 +1567,7 @@ ALTER TABLE `bcp_filingstate`
 -- 2 foreign key added
 --
 ALTER TABLE `bcp_filingstatus`
-  ADD PRIMARY KEY (`FilingStatusID`),
+--   ADD PRIMARY KEY (`FilingStatusID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1565,23 +1576,23 @@ ALTER TABLE `bcp_filingstatus`
 -- 4 Foreign key added
 -- Confusion on DeductionID, EmployeeID
 ALTER TABLE `bcp_income`
-  ADD PRIMARY KEY (`IncomeID`),
-  ADD KEY `DeductionID` (`DeductionID`),
-  ADD KEY `EmployeeID` (`EmployeeID`),
-  ADD KEY `IncomeID` (`IncomeID`),
+--   ADD PRIMARY KEY (`IncomeID`),
+--   ADD KEY `DeductionID` (`DeductionID`),
+--   ADD KEY `EmployeeID` (`EmployeeID`),
+--   ADD KEY `IncomeID` (`IncomeID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`EmployeeTypeID`) REFERENCES bcp_employeetype(`EmployeeTypeID`),
-  ADD FOREIGN KEY (`IncomeListID`) REFERENCES bcp_income(`IncomeListID`),
+  ADD FOREIGN KEY (`IncomeListID`) REFERENCES bcp_incomelist(`IncomeListID`),
   ADD FOREIGN KEY (`PayrollPeriodID`) REFERENCES bcp_payrollperiod(`PayrollPeriodID`);
 
 
 --
 -- Indexes for table `bcp_incomelist`
 --
-ALTER TABLE `bcp_incomelist`
-  ADD PRIMARY KEY (`IncomeListID`),
-  ADD KEY `IncomeList` (`IncomeList`),
-  ADD KEY `IncomeListID` (`IncomeListID`);
+-- ALTER TABLE `bcp_incomelist`
+--   ADD PRIMARY KEY (`IncomeListID`),
+--   ADD KEY `IncomeList` (`IncomeList`),
+--   ADD KEY `IncomeListID` (`IncomeListID`);
   
 
 --
@@ -1589,8 +1600,8 @@ ALTER TABLE `bcp_incomelist`
 -- 1 Foreign key added
 --
 ALTER TABLE `bcp_jobcode`
-  ADD PRIMARY KEY (`JobID`),
-  ADD KEY `JobID` (`JobID`),
+--   ADD PRIMARY KEY (`JobID`),
+--   ADD KEY `JobID` (`JobID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1599,8 +1610,8 @@ ALTER TABLE `bcp_jobcode`
 -- 1 Foreign key added
 --
 ALTER TABLE `bcp_jobtitle`
-  ADD PRIMARY KEY (`JobTitleID`),
-  ADD KEY `JobTitleID` (`JobTitleID`),
+--   ADD PRIMARY KEY (`JobTitleID`),
+--   ADD KEY `JobTitleID` (`JobTitleID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1610,8 +1621,8 @@ ALTER TABLE `bcp_jobtitle`
 -- Confusion on EmployeeID
 --
 ALTER TABLE `bcp_payroll`
-  ADD PRIMARY KEY (`PayrollDate`,`EmployeeID`),
-  ADD KEY `EmployeeID` (`EmployeeID`),
+--   ADD PRIMARY KEY (`PayrollDate`,`EmployeeID`),
+--   ADD KEY `EmployeeID` (`EmployeeID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1620,77 +1631,77 @@ ALTER TABLE `bcp_payroll`
 -- 1 Foreign key added
 --
 ALTER TABLE `bcp_payrollperiod`
-  ADD PRIMARY KEY (`PayrollPeriodID`),
+--   ADD PRIMARY KEY (`PayrollPeriodID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
 --
 -- Indexes for table `bcp_stestdedtable`
 --
-ALTER TABLE `bcp_stestdedtable`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `NumAllow` (`NumAllow`),
-  ADD KEY `NumTerm` (`NumTerm`);
+-- ALTER TABLE `bcp_stestdedtable`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `NumAllow` (`NumAllow`),
+--   ADD KEY `NumTerm` (`NumTerm`);
 
 
 --
 -- Indexes for table `bcp_stexempdedtable`
 --
-ALTER TABLE `bcp_stexempdedtable`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `NumAllow` (`NumAllow`),
-  ADD KEY `NumTerm` (`NumTerm`);
+-- ALTER TABLE `bcp_stexempdedtable`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `NumAllow` (`NumAllow`),
+--   ADD KEY `NumTerm` (`NumTerm`);
 
 
 --
 -- Indexes for table `bcp_stlowincomeexemptable`
 --
-ALTER TABLE `bcp_stlowincomeexemptable`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `NumTerm` (`NumTerm`);
+-- ALTER TABLE `bcp_stlowincomeexemptable`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `NumTerm` (`NumTerm`);
 
 
 --
 -- Indexes for table `bcp_ststandarddedtable`
 --
-ALTER TABLE `bcp_ststandarddedtable`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `NumTerm` (`NumTerm`);
+-- ALTER TABLE `bcp_ststandarddedtable`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `NumTerm` (`NumTerm`);
 
 
 --
 -- Indexes for table `bcp_sttaxrate`
 --
-ALTER TABLE `bcp_sttaxrate`
-  ADD PRIMARY KEY (`ID`);
+-- ALTER TABLE `bcp_sttaxrate`
+--   ADD PRIMARY KEY (`ID`);
 
 
 --
 -- Indexes for table `bcp_stwithholding`
 --
-ALTER TABLE `bcp_stwithholding`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `NumTerm` (`NumTerm`);
+-- ALTER TABLE `bcp_stwithholding`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `NumTerm` (`NumTerm`);
 
 
 --
 -- Indexes for table `bcp_tax_company`
 --
-ALTER TABLE `bcp_tax_company`
-  ADD PRIMARY KEY (`CompanyID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `DeductionID` (`DeductionID`);
+-- ALTER TABLE `bcp_tax_company`
+--   ADD PRIMARY KEY (`CompanyID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `DeductionID` (`DeductionID`);
 
 
 --
 -- Indexes for table `bcp_tax_fica_sdi`
 -- Confusion on FID
 --
-ALTER TABLE `bcp_tax_fica_sdi`
-  ADD PRIMARY KEY (`CompanyID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD KEY `FID` (`FID`),
-  ADD KEY `FITYear` (`FITYear`);
+-- ALTER TABLE `bcp_tax_fica_sdi`
+--   ADD PRIMARY KEY (`CompanyID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+--   ADD KEY `FID` (`FID`),
+--   ADD KEY `FITYear` (`FITYear`);
 
 
 --
@@ -1699,8 +1710,8 @@ ALTER TABLE `bcp_tax_fica_sdi`
 -- Confusion on EmployeeID
 --
 ALTER TABLE `bcp_timesheet_time`
-  ADD KEY `Day` (`Day`),
-  ADD KEY `EmployeeID` (`EmployeeID`),
+--   ADD KEY `Day` (`Day`),
+--   ADD KEY `EmployeeID` (`EmployeeID`),
   ADD FOREIGN KEY (`CompanyId`) REFERENCES bca_company(`CompanyId`),
   ADD FOREIGN KEY (`JobID`) REFERENCES bcp_jobcode(`JobID`);
 
@@ -1710,9 +1721,9 @@ ALTER TABLE `bcp_timesheet_time`
 -- 1 Foreign key added
 --
 ALTER TABLE `bizcal_appoint`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `CompanyID` (`CompanyID`),
-  ADD FOREIGN KEY `CompanyId` REFERENCES bca_company(`CompanyId`);
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `CompanyID` (`CompanyID`),
+  ADD FOREIGN KEY (`CompanyId`) REFERENCES bca_company(`CompanyId`);
 
 
 --
@@ -1720,7 +1731,7 @@ ALTER TABLE `bizcal_appoint`
 -- 1 Foreign key added
 --
 ALTER TABLE `bizcal_reminder`
-  ADD PRIMARY KEY (`ID`),
+--   ADD PRIMARY KEY (`ID`),
   ADD FOREIGN KEY (`CompanyId`) REFERENCES bca_company(`CompanyId`);
 
 
@@ -1732,25 +1743,25 @@ ALTER TABLE `bizcal_reminder`
 -- InventoryID not a primary key
 --
 ALTER TABLE `bt_sales`
-  ADD PRIMARY KEY (`SaleID`),
-  ADD KEY `BillingAddressID` (`BillingAddressID`),
-  ADD KEY `BuyerID` (`BuyerID`),
-  ADD KEY `CCID` (`CCID`),
-  ADD KEY `ConsignModelID` (`ConsignModelID`),
-  ADD KEY `ConsignorID` (`ConsignorID`),
-  ADD KEY `DateLastModified` (`DateLastModified`),
-  ADD KEY `DBToken` (`DBToken`),
-  ADD KEY `DisputeID` (`DisputeID`),
-  ADD KEY `eBayID` (`eBayID`),
-  ADD KEY `EmailTemplateID` (`EmailTemplateID`),
-  ADD KEY `IsArchive` (`IsArchive`),
-  ADD KEY `ListingID` (`ListingID`),
-  ADD KEY `OrgTemplateID` (`OrgTemplateID`),
-  ADD KEY `ShippingAddressID` (`ShippingAddressID`),
-  ADD KEY `SiteID` (`SiteID`),
-  ADD KEY `StatusID` (`StatusID`),
-  ADD KEY `TrackingNum` (`TrackingNum`),
-  ADD KEY `TransactionID` (`TransactionID`),
+--   ADD PRIMARY KEY (`SaleID`),
+--   ADD KEY `BillingAddressID` (`BillingAddressID`),
+--   ADD KEY `BuyerID` (`BuyerID`),
+--   ADD KEY `CCID` (`CCID`),
+--   ADD KEY `ConsignModelID` (`ConsignModelID`),
+--   ADD KEY `ConsignorID` (`ConsignorID`),
+--   ADD KEY `DateLastModified` (`DateLastModified`),
+--   ADD KEY `DBToken` (`DBToken`),
+--   ADD KEY `DisputeID` (`DisputeID`),
+--   ADD KEY `eBayID` (`eBayID`),
+--   ADD KEY `EmailTemplateID` (`EmailTemplateID`),
+--   ADD KEY `IsArchive` (`IsArchive`),
+--   ADD KEY `ListingID` (`ListingID`),
+--   ADD KEY `OrgTemplateID` (`OrgTemplateID`),
+--   ADD KEY `ShippingAddressID` (`ShippingAddressID`),
+--   ADD KEY `SiteID` (`SiteID`),
+--   ADD KEY `StatusID` (`StatusID`),
+--   ADD KEY `TrackingNum` (`TrackingNum`),
+--   ADD KEY `TransactionID` (`TransactionID`),
   ADD FOREIGN KEY (`InventoryID`) REFERENCES bca_iteminventory(`InventoryID`),
   ADD FOREIGN KEY (`OrderID`) REFERENCES smc_orders(`OrderID`);
   
@@ -1758,16 +1769,16 @@ ALTER TABLE `bt_sales`
 --
 -- Indexes for table `countries`
 --
-ALTER TABLE `countries`
-  ADD PRIMARY KEY (`CountryID`),
-  ADD KEY `CountryCode` (`CountryCode`);
+-- ALTER TABLE `countries`
+--   ADD PRIMARY KEY (`CountryID`),
+--   ADD KEY `CountryCode` (`CountryCode`);
 
 
 --
 -- Indexes for table `country`
 --
-ALTER TABLE `country`
-  ADD PRIMARY KEY (`CountryID`);
+-- ALTER TABLE `country`
+--   ADD PRIMARY KEY (`CountryID`);
 
 
 --
@@ -1775,8 +1786,8 @@ ALTER TABLE `country`
 -- 1 Foreign key added
 --
 ALTER TABLE `crm_lead`
-  ADD PRIMARY KEY (`LeadID`),
-  ADD UNIQUE KEY `LeadID` (`LeadID`),
+--   ADD PRIMARY KEY (`LeadID`),
+--   ADD UNIQUE KEY `LeadID` (`LeadID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1784,10 +1795,11 @@ ALTER TABLE `crm_lead`
 -- Indexes for table `fedexshipinvoice`
 -- 1 Foreign key added
 -- ZipCode not a primary key
+-- change city_state_zip(`ZIP_CODE`) not a primary key
 --
-ALTER TABLE `fedexshipinvoice`
-  ADD PRIMARY KEY (`ID`),
-  ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
+-- ALTER TABLE `fedexshipinvoice`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
 
 
 --
@@ -1795,11 +1807,12 @@ ALTER TABLE `fedexshipinvoice`
 -- 1 Foreign key added
 -- Confusion on GroupCode
 -- ZipCode not a primary key
+-- change city_state_zip(`ZIP_CODE`) not a primary key
 --
-ALTER TABLE `galaxyshipinvoice`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `GroupCode` (`GroupCode`),
-  ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
+-- ALTER TABLE `galaxyshipinvoice`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `GroupCode` (`GroupCode`),
+--   ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
 
 
 --
@@ -1807,28 +1820,29 @@ ALTER TABLE `galaxyshipinvoice`
 -- 1 Foreign key added
 -- Confusion on GroupCode, TransactionID
 -- ZipCode not a primary key
+-- change city_state_zip(`ZIP_CODE`) not a primary key
 --
-ALTER TABLE `galaxyshippostback`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `GroupCode` (`GroupCode`),
-  ADD KEY `TransactionID` (`TransactionID`),
-  ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
+-- ALTER TABLE `galaxyshippostback`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD KEY `GroupCode` (`GroupCode`),
+--   ADD KEY `TransactionID` (`TransactionID`),
+--   ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
 
 
 --
 -- Indexes for table `item_category_details`
 --
-ALTER TABLE `item_category_details`
-  ADD PRIMARY KEY (`CategoryID`),
-  ADD UNIQUE KEY `CategoryName_UNIQUE` (`CategoryName`);
+-- ALTER TABLE `item_category_details`
+--   ADD PRIMARY KEY (`CategoryID`),
+--   ADD UNIQUE KEY `CategoryName_UNIQUE` (`CategoryName`);
 
 
 --
 -- Indexes for table `item_details`
 --
-ALTER TABLE `item_details`
-  ADD PRIMARY KEY (`ID`);
-
+-- ALTER TABLE `item_details`
+--   ADD PRIMARY KEY (`ID`);
+-- 
 
 --
 -- Indexes for table `smc_orders`
@@ -1836,11 +1850,11 @@ ALTER TABLE `item_details`
 -- Confusion on CustomerID, CustomerID, DealerID, OrderID, PayPal_txn_id
 --
 ALTER TABLE `smc_orders`
-  ADD PRIMARY KEY (`OrderID`),
-  ADD KEY `CustomerID` (`CustomerID`),
-  ADD KEY `DealerID` (`DealerID`),
-  ADD KEY `OrderID` (`OrderID`),
-  ADD KEY `PayPal_txn_id` (`PayPal_txn_id`),
+--   ADD PRIMARY KEY (`OrderID`),
+--   ADD KEY `CustomerID` (`CustomerID`),
+--   ADD KEY `DealerID` (`DealerID`),
+--   ADD KEY `OrderID` (`OrderID`),
+--   ADD KEY `PayPal_txn_id` (`PayPal_txn_id`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 	
 	
@@ -1850,18 +1864,20 @@ ALTER TABLE `smc_orders`
 -- Confision on MshopMerchantID
 --
 ALTER TABLE `smd_admin`
-  ADD PRIMARY KEY (`AdminID`),
-  ADD KEY `AdminID` (`AdminID`),
-  ADD KEY `MshopMerchantID` (`MshopMerchantID`),
+--   ADD PRIMARY KEY (`AdminID`),
+--   ADD KEY `AdminID` (`AdminID`),
+--   ADD KEY `MshopMerchantID` (`MshopMerchantID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
 --
 -- Indexes for table `smd_bsaddress`
 -- 1 Foreign key added
+-- change InvoiceID type changed to int
 --
 ALTER TABLE `smd_bsaddress`
-  ADD PRIMARY KEY (`BsaID`),
+--   ADD PRIMARY KEY (`BsaID`),
+	MODIFY COLUMN  InvoiceID int,
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES bca_invoice(`InvoiceID`);
 
 
@@ -1870,7 +1886,7 @@ ALTER TABLE `smd_bsaddress`
 -- 1 Foreign key added
 --
 ALTER TABLE `smd_category`
-  ADD KEY `smdCategoryID` (`smdCategoryID`),
+--   ADD KEY `smdCategoryID` (`smdCategoryID`),
   ADD FOREIGN KEY (`StoreID`) REFERENCES bca_store(`StoreID`);
   
 
@@ -1881,20 +1897,20 @@ ALTER TABLE `smd_category`
 -- ClientVendorID not a primary key
 --
 ALTER TABLE `smd_cvinfo`
-  ADD KEY `BillingAddressID` (`BillingAddressID`),
-  ADD KEY `CustomerGroupID` (`CustomerGroupID`),
-  ADD KEY `FID` (`FID`),
-  ADD KEY `ResellerTaxID` (`ResellerTaxID`),
-  ADD KEY `ShippingAddressID` (`ShippingAddressID`),
+--   ADD KEY `BillingAddressID` (`BillingAddressID`),
+--   ADD KEY `CustomerGroupID` (`CustomerGroupID`),
+--   ADD KEY `FID` (`FID`),
+--   ADD KEY `ResellerTaxID` (`ResellerTaxID`),
+--   ADD KEY `ShippingAddressID` (`ShippingAddressID`),
   ADD FOREIGN KEY (`ClientVendorID`) REFERENCES bca_clientvendor(`ClientVendorID`);
 
 
 --
 -- Indexes for table `smd_ebaycategory`
 --
-ALTER TABLE `smd_ebaycategory`
-  ADD KEY `eBayCategoryID` (`eBayCategoryID`),
-  ADD KEY `smdCategoryID` (`smdCategoryID`);
+-- ALTER TABLE `smd_ebaycategory`
+--   ADD KEY `eBayCategoryID` (`eBayCategoryID`),
+--   ADD KEY `smdCategoryID` (`smdCategoryID`);
 
 
 --
@@ -1902,8 +1918,8 @@ ALTER TABLE `smd_ebaycategory`
 -- 1 Foreign key added
 --
 ALTER TABLE `smd_gatewaydetails`
-  ADD PRIMARY KEY (`GatewayID`),
-  ADD KEY `GatewayID` (`GatewayID`),
+--   ADD PRIMARY KEY (`GatewayID`),
+--   ADD KEY `GatewayID` (`GatewayID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -1912,7 +1928,7 @@ ALTER TABLE `smd_gatewaydetails`
 -- 1 Foreign key added
 --
 ALTER TABLE `smd_giftcertificate`
-  ADD PRIMARY KEY (`gcID`),
+--   ADD PRIMARY KEY (`gcID`),
    ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 --
@@ -1930,24 +1946,26 @@ ALTER TABLE `smd_giftcertificateused`
 -- 2 Foreign key added
 -- Confusion on CustomerGroupID
 -- InventoryID not a primary key
+-- bca_iteminventory(`InventoryID`) not a primary key
 --
 ALTER TABLE `smd_itemgroupprice`
-  ADD KEY `CustomerGroupID` (`CustomerGroupID`),
-  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
-  ADD FOREIGN KEY (`InventoryID`) REFERENCES bca_iteminventory(`InventoryID`);
-
+--   ADD KEY `CustomerGroupID` (`CustomerGroupID`),
+  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
+--   ADD FOREIGN KEY (`InventoryID`) REFERENCES bca_iteminventory(`InventoryID`);
+-- 
 
 --
 -- Indexes for table `smd_itemimage`
 -- 2 Foreign key added
 -- InventoryID not a primary key
+-- bca_iteminventory(`InventoryID`) not a primary key
 --
 ALTER TABLE `smd_itemimage`
-  ADD PRIMARY KEY (`ItemImageId`),
-  ADD KEY `ItemImageId` (`ItemImageId`),
-  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
-  ADD FOREIGN KEY (`InventoryID`) REFERENCES bca_iteminventory(`InventoryID`);
-
+--   ADD PRIMARY KEY (`ItemImageId`),
+--   ADD KEY `ItemImageId` (`ItemImageId`),
+  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
+--   ADD FOREIGN KEY (`InventoryID`) REFERENCES bca_iteminventory(`InventoryID`);
+-- 
 
 --
 -- Indexes for table `smd_iteminventoryinfo`
@@ -1956,12 +1974,12 @@ ALTER TABLE `smd_itemimage`
 -- InventoryID not a primary key
 --
 ALTER TABLE `smd_iteminventoryinfo`
-  ADD KEY `amazon_FeedSubmissionId` (`amazon_FeedSubmissionId`),
-  ADD KEY `DiscountGroupID` (`DiscountGroupID`),
-  ADD KEY `eBayItemCode` (`eBayItemCode`),
-  ADD KEY `GiftWrappingID` (`GiftWrappingID`),
-  ADD KEY `ItemClassID` (`ItemClassID`),
-  ADD KEY `MenuID` (`MenuID`),
+--   ADD KEY `amazon_FeedSubmissionId` (`amazon_FeedSubmissionId`),
+--   ADD KEY `DiscountGroupID` (`DiscountGroupID`),
+--   ADD KEY `eBayItemCode` (`eBayItemCode`),
+--   ADD KEY `GiftWrappingID` (`GiftWrappingID`),
+--   ADD KEY `ItemClassID` (`ItemClassID`),
+--   ADD KEY `MenuID` (`MenuID`),
   ADD FOREIGN KEY (`InventoryID`) REFERENCES bca_iteminventory(`InventoryID`),
   ADD FOREIGN KEY (`ItemImageID`) REFERENCES smd_itemimage(`ItemImageID`);
 
@@ -1969,9 +1987,9 @@ ALTER TABLE `smd_iteminventoryinfo`
 --
 -- Indexes for table `smd_refcountry`
 --
-ALTER TABLE `smd_refcountry`
-  ADD PRIMARY KEY (`CountryID`),
-  ADD KEY `CountryCode` (`CountryCode`);
+-- ALTER TABLE `smd_refcountry`
+--   ADD PRIMARY KEY (`CountryID`),
+--   ADD KEY `CountryCode` (`CountryCode`);
 
 
 --
@@ -1988,7 +2006,7 @@ ALTER TABLE `smd_shipdetails`
 -- Confusion on smdCategoryID
 --
 ALTER TABLE `smd_storeebaycategory`
-  ADD KEY `smdCategoryID` (`smdCategoryID`),
+--   ADD KEY `smdCategoryID` (`smdCategoryID`),
   ADD FOREIGN KEY (`StoreID`) REFERENCES bca_store(`StoreID`);
 
 
@@ -1996,29 +2014,30 @@ ALTER TABLE `smd_storeebaycategory`
 -- Indexes for table `smd_subproduct`
 -- Confusion on MasterProductID
 --
-ALTER TABLE `smd_subproduct`
-  ADD PRIMARY KEY (`SubProductID`),
-  ADD KEY `MasterProductID` (`MasterProductID`),
-  ADD KEY `SubProductID` (`SubProductID`);
+-- ALTER TABLE `smd_subproduct`
+--   ADD PRIMARY KEY (`SubProductID`),
+--   ADD KEY `MasterProductID` (`MasterProductID`),
+--   ADD KEY `SubProductID` (`SubProductID`);
 
 
 --
 -- Indexes for table `state`
 --
-ALTER TABLE `state`
-  ADD PRIMARY KEY (`StateID`);
-
+-- ALTER TABLE `state`
+--   ADD PRIMARY KEY (`StateID`);
+-- 
 
 --
 -- Indexes for table `storage_billingaddress`
 -- 2 Foreign key added
 -- ClientVendorID, ZipCode not a primary key
+-- city_state_zip(`ZIP_CODE`) not a primary key
 --
 ALTER TABLE `storage_billingaddress`
-  ADD PRIMARY KEY (`AddressID`),
-  ADD KEY `LastName` (`LastName`),
-  ADD FOREIGN KEY (`ClientVendorID`) REFERENCES bca_clientvendor(`ClientVendorID`), 
-  ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
+--   ADD PRIMARY KEY (`AddressID`),
+--   ADD KEY `LastName` (`LastName`),
+  ADD FOREIGN KEY (`ClientVendorID`) REFERENCES bca_clientvendor(`ClientVendorID`);
+--   ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
 
 
 --
@@ -2026,20 +2045,21 @@ ALTER TABLE `storage_billingaddress`
 -- 4 Foreign key added
 -- confusion on InventoryCode, itempromotionid, ItemTypeID, orderid, OrderItemID, shippromotionid, SupplierID
 -- InventoryID not a primary key
---
+-- 
 ALTER TABLE `storage_cart`
-  ADD PRIMARY KEY (`CartID`),
-  ADD KEY `InventoryCode` (`InventoryCode`),
-  ADD KEY `itempromotionid` (`itempromotionid`),
-  ADD KEY `ItemTypeID` (`ItemTypeID`),
-  ADD KEY `OrderItemID` (`OrderItemID`),
-  ADD KEY `shippromotionid` (`shippromotionid`),
-  ADD KEY `SupplierID` (`SupplierID`),
-  ADD KEY `SalesTaxRate` (`SalesTaxRate`),
+--   ADD PRIMARY KEY (`CartID`),
+--   ADD KEY `InventoryCode` (`InventoryCode`),
+--   ADD KEY `itempromotionid` (`itempromotionid`),
+--   ADD KEY `ItemTypeID` (`ItemTypeID`),
+--   ADD KEY `OrderItemID` (`OrderItemID`),
+--   ADD KEY `shippromotionid` (`shippromotionid`),
+--   ADD KEY `SupplierID` (`SupplierID`),
+--   ADD KEY `SalesTaxRate` (`SalesTaxRate`),
   ADD FOREIGN KEY (`CategoryID`) REFERENCES bca_category(`CategoryID`), 
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`InventoryID`) REFERENCES bca_iteminventory(`InventoryID`),
   ADD FOREIGN KEY (`InvoiceID`) REFERENCES bca_invoice(`InvoiceID`),
+	MODIFY COLUMN orderid int,
   ADD FOREIGN KEY (`orderid`) REFERENCES bca_ordertemplate(`orderID`);
   
 
@@ -2049,14 +2069,16 @@ ALTER TABLE `storage_cart`
 -- Confusion on BankAccountID, LineofCreditTermID, PayFromID, ReferenceCustomerID, ResellerTaxID, ZipCodeID
 -- CCTypeID, CVTypeID, PaymentTypeID, PriceLevelID, SalesRepID not a primary key. 
 -- ClientVendorID, CVCategoryID, CVTypeID, PaymentTypeID, SalesRepID, ShipCarrierID, TermID, ZipCode not a primary key
+-- change column missing InvoiceID
+-- `city_state_zip` (`ZIP_CODE`) not a primary key
 --
 ALTER TABLE `storage_clientvendor`
-  ADD KEY `BankAccountID` (`BankAccountID`),
-  ADD KEY `CustomerTitleID` (`CustomerTitleID`),
-  ADD KEY `LineofCreditTermID` (`LineofCreditTermID`),
-  ADD KEY `PayFromID` (`PayFromID`),
-  ADD KEY `ReferenceCustomerID` (`ReferenceCustomerID`),
-  ADD KEY `ResellerTaxID` (`ResellerTaxID`),
+--   ADD KEY `BankAccountID` (`BankAccountID`),
+--   ADD KEY `CustomerTitleID` (`CustomerTitleID`),
+--   ADD KEY `LineofCreditTermID` (`LineofCreditTermID`),
+--   ADD KEY `PayFromID` (`PayFromID`),
+--   ADD KEY `ReferenceCustomerID` (`ReferenceCustomerID`),
+--   ADD KEY `ResellerTaxID` (`ResellerTaxID`),
   ADD FOREIGN KEY (`CCTypeID`) REFERENCES `bca_creditcardtype` (`CCTypeID`),
   ADD FOREIGN KEY (`CategoryID`) REFERENCES `bca_category` (`CategoryID`), 
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`),
@@ -2067,9 +2089,9 @@ ALTER TABLE `storage_clientvendor`
   ADD FOREIGN KEY (`PriceLevelID`) REFERENCES `bca_pricelevel` (`PriceLevelID`), 
   ADD FOREIGN KEY (`SalesRepID`) REFERENCES `bca_salesrep` (`SalesRepID`), 
   ADD FOREIGN KEY (`ShipCarrierID`) REFERENCES `bca_shipcarrier` (`ShipCarrierID`),
-  ADD FOREIGN KEY (`TermID`) REFERENCES `bca_term` (`TermID`),
-  ADD FOREIGN KEY (`ZipCode`) REFERENCES `city_state_zip` (`ZIP_CODE`),
-  ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice` (`InvoiceID`);
+  ADD FOREIGN KEY (`TermID`) REFERENCES `bca_term` (`TermID`);
+--   ADD FOREIGN KEY (`ZipCode`) REFERENCES `city_state_zip` (`ZIP_CODE`);
+--   ADD FOREIGN KEY (`InvoiceID`) REFERENCES `bca_invoice` (`InvoiceID`);
 	
 
 --
@@ -2078,23 +2100,24 @@ ALTER TABLE `storage_clientvendor`
 -- Confusion on BankAccountID, BillingAddrID, BSAddressID, dropShipCustomerID, EmployeeID, GiftCertificateCode
 -- PONum, RcvNum, ShippingAddrID, SONum, TrackingCode, TransactionID 
 -- InvoiceTypeID, ClientVendorID, InvoiceStyleID, MessageID, PaymentTypeID, SalesRepID, SalesTaxID, ShipCarrierID, TermID  not a primary key
+-- change orderid type to int
 --
 ALTER TABLE `storage_invoice`
-  ADD PRIMARY KEY (`InvoiceID`),
-  ADD KEY `BankAccountID` (`BankAccountID`),
-  ADD KEY `BillingAddrID` (`BillingAddrID`),
-  ADD KEY `BSAddressID` (`BSAddressID`),
-  ADD KEY `dropShipCustomerID` (`dropShipCustomerID`),
-  ADD KEY `EmployeeID` (`EmployeeID`),
-  ADD KEY `EstNum` (`EstNum`),
-  ADD KEY `GiftCertificateCode` (`GiftCertificateCode`),
-  ADD KEY `PONum` (`PONum`),
-  ADD KEY `RcvNum` (`RcvNum`),
-  ADD KEY `RefNum` (`RefNum`),
-  ADD KEY `ShippingAddrID` (`ShippingAddrID`),
-  ADD KEY `SONum` (`SONum`),
-  ADD KEY `TrackingCode` (`TrackingCode`),
-  ADD KEY `TransactionID` (`TransactionID`),
+--   ADD PRIMARY KEY (`InvoiceID`),
+--   ADD KEY `BankAccountID` (`BankAccountID`),
+--   ADD KEY `BillingAddrID` (`BillingAddrID`),
+--   ADD KEY `BSAddressID` (`BSAddressID`),
+--   ADD KEY `dropShipCustomerID` (`dropShipCustomerID`),
+--   ADD KEY `EmployeeID` (`EmployeeID`),
+--   ADD KEY `EstNum` (`EstNum`),
+--   ADD KEY `GiftCertificateCode` (`GiftCertificateCode`),
+--   ADD KEY `PONum` (`PONum`),
+--   ADD KEY `RcvNum` (`RcvNum`),
+--   ADD KEY `RefNum` (`RefNum`),
+--   ADD KEY `ShippingAddrID` (`ShippingAddrID`),
+--   ADD KEY `SONum` (`SONum`),
+--   ADD KEY `TrackingCode` (`TrackingCode`),
+--   ADD KEY `TransactionID` (`TransactionID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`),
   ADD FOREIGN KEY (`InvoiceTypeID`) REFERENCES `bca_invoicetype` (`InvoiceTypeID`),
   ADD FOREIGN KEY (`CategoryID`) REFERENCES `bca_category` (`CategoryID`), 
@@ -2102,6 +2125,7 @@ ALTER TABLE `storage_invoice`
   ADD FOREIGN KEY (`GatewayID`) REFERENCES `bca_masterpaymentgateways` (`GatewayID`), 
   ADD FOREIGN KEY (`InvoiceStyleID`) REFERENCES `bca_invoicestyle` (`InvoiceStyleID`),
   ADD FOREIGN KEY (`MessageID`) REFERENCES `bca_message` (`MessageID`),
+	MODIFY COLUMN orderid int,
   ADD FOREIGN KEY (`orderid`) REFERENCES `bca_ordertemplate` (`orderID`), -- Check if the column name and table name are correct
   ADD FOREIGN KEY (`PaymentTypeID`) REFERENCES `bca_paymenttype` (`PaymentTypeID`), 
   ADD FOREIGN KEY (`SalesRepID`) REFERENCES `bca_salesrep` (`SalesRepID`), 
@@ -2116,20 +2140,21 @@ ALTER TABLE `storage_invoice`
 --
 -- Indexes for table `storage_payment`
 --
-ALTER TABLE `storage_payment`
-  ADD PRIMARY KEY (`PaymentID`);
+-- ALTER TABLE `storage_payment`
+--   ADD PRIMARY KEY (`PaymentID`);
 
 
 --
 -- Indexes for table `storage_shippingaddress`
 -- 2 Foreign key added
 -- ClientVendorID, ZipCode not a primary key
+-- city_state_zip(`ZIP_CODE`) not a primary key
 --
 ALTER TABLE `storage_shippingaddress`
-  ADD PRIMARY KEY (`AddressID`),
-  ADD KEY `LastName` (`LastName`),
-  ADD FOREIGN KEY (`ClientVendorID`) REFERENCES bca_clientvendor(`ClientVendorID`), 
-  ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
+--   ADD PRIMARY KEY (`AddressID`),
+--   ADD KEY `LastName` (`LastName`),
+  ADD FOREIGN KEY (`ClientVendorID`) REFERENCES bca_clientvendor(`ClientVendorID`);
+--   ADD FOREIGN KEY (`ZipCode`) REFERENCES city_state_zip(`ZIP_CODE`);
 
 
 --
@@ -2139,7 +2164,7 @@ ALTER TABLE `storage_shippingaddress`
 -- UserActivityID is not a primary key
 --
 ALTER TABLE `storage_useractivity`
-  ADD KEY `DataID` (`DataID`),
+--   ADD KEY `DataID` (`DataID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`UserID`) REFERENCES bca_user(`ID`),
   ADD FOREIGN KEY (`UserActivityID`) REFERENCES bca_useractivity(`UserActivityID`);
@@ -2149,28 +2174,29 @@ ALTER TABLE `storage_useractivity`
 -- Indexes for table `upsmailinnovation`
 -- 1 Foreign key added
 -- ZipCode not a primary key
+-- city_state_zip(`ZIP_CODE`) not a primary key
 --
-ALTER TABLE `upsmailinnovation`
-  ADD PRIMARY KEY (`ID`),
-  ADD FOREIGN KEY (`Zipcode`) REFERENCES city_state_zip(`ZIP_CODE`);
+-- ALTER TABLE `upsmailinnovation`
+--   ADD PRIMARY KEY (`ID`),
+--   ADD FOREIGN KEY (`Zipcode`) REFERENCES city_state_zip(`ZIP_CODE`);
 
 
 --
 -- Indexes for table `worldshipinvoice`
 --
-ALTER TABLE `worldshipinvoice`
-  ADD KEY `sfZipCode` (`sfZipCode`),
-  ADD KEY `stZipCode` (`stZipCode`);
+-- ALTER TABLE `worldshipinvoice`
+--   ADD KEY `sfZipCode` (`sfZipCode`),
+--   ADD KEY `stZipCode` (`stZipCode`);
 
 
 --
 -- Indexes for table `worldshippostdata`
 --
-ALTER TABLE `worldshippostdata`
-  ADD KEY `sfZipCode` (`sfZipCode`),
-  ADD KEY `siIsVOID` (`siIsVOID`),
-  ADD KEY `siShipmentID` (`siShipmentID`),
-  ADD KEY `stZipCode` (`stZipCode`);
+-- ALTER TABLE `worldshippostdata`
+--   ADD KEY `sfZipCode` (`sfZipCode`),
+--   ADD KEY `siIsVOID` (`siIsVOID`),
+--   ADD KEY `siShipmentID` (`siShipmentID`),
+--   ADD KEY `stZipCode` (`stZipCode`);
 
 
 --
@@ -2617,7 +2643,7 @@ ALTER TABLE `bca_ordertemplate`
 
 -- changes 1 foreign key added
 ALTER TABLE `bca_ordertemplate`
-ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_compnay(`CompanyID`);
+ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
 --
@@ -2649,11 +2675,13 @@ ALTER TABLE `bca_paymentdetail`
 
 -- CHANGES 4 FOREIGN KEY ADDDED
 -- confusion PayPal_txn_id
+-- change GatewayID type changed to int
 --
 ALTER TABLE `bca_paymentdetail`
   ADD FOREIGN KEY (`PaymentID`) REFERENCES `bca_payment` (`PaymentID`),
   ADD FOREIGN KEY (`CreditCardID`) REFERENCES `bca_cvcreditcard` (`CreditCardID`),
   ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company` (`CompanyID`),
+	MODIFY COLUMN GatewayID int,
   ADD FOREIGN KEY (`GatewayID`) REFERENCES `bca_masterpaymentgateways` (`GatewayID`);
 
 	
@@ -2669,7 +2697,7 @@ ALTER TABLE `bca_paymenttype`
   -- CONFUSION
   -- BankAcctID,CCTypeID
 ALTER TABLE `bca_paymenttype`
-  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompnayID`),
+  ADD FOREIGN KEY (`CompanyID`) REFERENCES bca_company(`CompanyID`),
   ADD FOREIGN KEY (`CCTypeID`) REFERENCES bca_creditcardtype(`CCTypeID`);
 	
 
@@ -2803,7 +2831,7 @@ ADD  FOREIGN KEY (`PaymentTypeID`) REFERENCES bca_paymenttype(`PaymentTypeID`),
 ADD  FOREIGN KEY(`SalesRepID`) REFERENCES bca_salesrep(`SalesRepID`),
 ADD  FOREIGN KEY(`PaymentID`) REFERENCES bca_payment(`PaymentID`),
 ADD  FOREIGN KEY(`ClientVendorID`) REFERENCES bca_clientvendor(`ClientVendorID`),
-ADD  FOREIGN KEY (`InvoiceTypeID`) REFERENCES bca_invoicetype(`InvoiceTypeID`);
+ADD  FOREIGN KEY (`InvoiceTypeID`) REFERENCES bca_invoicetype(`InvoiceTypeID`),
 ADD  FOREIGN KEY(`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
@@ -2859,7 +2887,7 @@ ALTER TABLE `bca_rmareason`
 -- changes foreign key added 22
 -- -- confused with CompanyID 
 ALTER TABLE `bca_rmareason`
-ADD  FOREIGN KEY(`CompanyID`) REFERENCES YOUR_TABLE(`CompanyID`);
+ADD  FOREIGN KEY(`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
 --
@@ -2872,7 +2900,7 @@ ALTER TABLE `bca_salesrep`
 -- changes foreign key added 21
 -- -- confused with CompanyID 
 ALTER TABLE `bca_salesrep`
-ADD  FOREIGN KEY(`bca_salesrep`) REFERENCES bca_company(`CompanyID`);
+ADD  FOREIGN KEY(`CompanyID`) REFERENCES bca_company(`CompanyID`);
 
 
 --
@@ -3113,9 +3141,9 @@ ALTER TABLE `bca_usermapping`
 -- changes 2 foreign key added
 -- confusion UserGroupID
 --
-ALTER TABLE `bca_usermapping`
-	ADD FOREIGN KEY(`CompanyID`) REFERENCES bca_company(`CompanyID`),
-	ADD FOREIGN KEY (`UserID`) REFERENCES bca_user(`ID`);
+-- ALTER TABLE `bca_usermapping`
+-- 	ADD FOREIGN KEY(`CompanyID`) REFERENCES bca_company(`CompanyID`),
+-- 	ADD FOREIGN KEY (`UserID`) REFERENCES bca_user(`ID`);
 
 
 --
@@ -3162,10 +3190,6 @@ ALTER TABLE `bcp_employeetype`
   MODIFY `EmployeeTypeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=385;
 	
 	
--- changes 1 foreign key added
-ALTER TABLE `bcp_employeetype`
-	ADD FOREIGN KEY(`CompnayID`) REFERENCES bca_company(`CompanyID`);
-
 
 --
 -- AUTO_INCREMENT for table `bcp_fedpermethod`
@@ -3378,6 +3402,7 @@ ALTER TABLE `smd_gatewaydetails`
 -- ADD CONSTRAINT smd_gd_company_id FOREIGN KEY (`companyId`) REFERENCES smd_shipdetails(`companyId`);
 --
 -- AUTO_INCREMENT for table `smd_itemimage`
+-- smd_iteminventoryinfo (`InventoryId`) not a primary key
 --
 ALTER TABLE `smd_itemimage`
   MODIFY `ItemImageId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1449;
@@ -3385,8 +3410,8 @@ ALTER TABLE `smd_itemimage`
 
 -- changes added foreign key -7
 -- bca_company
-ALTER TABLE `smd_itemimage`
-	ADD FOREIGN KEY (`InventoryId`) REFERENCES smd_iteminventoryinfo(`InventoryId`);
+-- ALTER TABLE `smd_itemimage`
+-- 	ADD FOREIGN KEY (`InventoryId`) REFERENCES smd_iteminventoryinfo (`InventoryId`);
 
 
 --
@@ -3440,10 +3465,11 @@ ALTER TABLE `storage_invoice`
 
 -- Changes Added foreign key  -4 
 -- bcp_employee
+-- bca_bsaddress(`BSAddressID`) not a primary key
 ALTER TABLE `storage_invoice`
 	ADD FOREIGN KEY (`EmployeeID`) REFERENCES bcp_employee(`EmployeeIndexID`),
 	ADD FOREIGN KEY (`ClientVendorID`) REFERENCES storage_clientvendor (`ClientVendorID`),
-	ADD FOREIGN KEY (`BSAddressID`) REFERENCES bca_bsaddress(`BSAddressID`),
+-- 	ADD FOREIGN KEY (`BSAddressID`) REFERENCES bca_bsaddress(`BSAddressID`),
 	ADD FOREIGN KEY (`InvoiceTypeID`) REFERENCES bca_invoicetype(`InvoiceTypeID`),
 	ADD FOREIGN KEY (`InvoiceStyleID`) REFERENCES bca_invoicestyle(`InvoiceStyleID`),
 	ADD FOREIGN KEY (`SalesRepID`) REFERENCES bca_salesrep(`SalesRepID`);
