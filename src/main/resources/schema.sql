@@ -15,7 +15,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---Sabareesan
+-- Sabareesan
 -- Table structure for table `adjustment_reason`
 --
 
@@ -1433,7 +1433,9 @@ CREATE TABLE `bca_form_templates` (
   `template_type_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`template_type_no`),
   KEY `FK25by5d07g10gf4mcldiy8ik9m` (`template_id_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1448,7 +1450,10 @@ CREATE TABLE `bca_form_templates_type` (
   `companyId` int NOT NULL,
   `template_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`template_id`)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+>>>>>>> 872a8ac1b0c26da16436afe83e85ed02a57fd51e
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2203,8 +2208,7 @@ CREATE TABLE `bca_itemcategory` (
 
 --
 -- Table structure for table `bca_iteminventory`
---
-Hasan
+-- Hasan
 DROP TABLE IF EXISTS `bca_iteminventory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -5160,34 +5164,6 @@ CREATE TABLE `item_details` (
   `DateAdded` datetime NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `sabari`
---
-
-DROP TABLE IF EXISTS `sabari`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sabari` (
-  `id` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `sabari2`
---
-
-DROP TABLE IF EXISTS `sabari2`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sabari2` (
-  `id` int NOT NULL,
-  `id2` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_sabari` (`id2`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
