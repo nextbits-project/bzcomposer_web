@@ -36,7 +36,7 @@ CREATE TABLE `adjustment_reason` (
   PRIMARY KEY (`ID`),
   KEY `companyId` (`companyId`),
   KEY `inventoryid` (`inventoryid`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,7 +106,7 @@ CREATE TABLE `bca_accountable` (
   KEY `PayerCvID` (`PayerCvID`),
   KEY `PayFromID` (`PayFromID`),
   KEY `PaymentTypeID` (`PaymentTypeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=194 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=194 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +120,7 @@ CREATE TABLE `bca_acctcategory` (
   `AcctCategoryID` int NOT NULL AUTO_INCREMENT,
   `Name` varchar(50) NOT NULL,
   KEY `AcctCategoryID` (`AcctCategoryID`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,7 +137,7 @@ CREATE TABLE `bca_accttype` (
   `RootAcctTypeID` int DEFAULT '0',
   `DateAdded` datetime DEFAULT NULL,
   UNIQUE KEY `AcctTypeID` (`AcctTypeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,7 +155,7 @@ CREATE TABLE `bca_activestoreforproductssubmission` (
   `Active` int DEFAULT NULL,
   KEY `storeID` (`storeID`),
   KEY `storeTypeID` (`storeTypeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +173,7 @@ CREATE TABLE `bca_amazoncategorytemplate` (
   `ColumnHeaderData` longtext,
   PRIMARY KEY (`CategoryTemplateID`),
   KEY `CategoryTemplateID` (`CategoryTemplateID`)
-) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +192,7 @@ CREATE TABLE `bca_apmemorizedgroup` (
   PRIMARY KEY (`GroupID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `GroupID` (`GroupID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -210,7 +210,7 @@ CREATE TABLE `bca_apmemorizedingroup` (
   KEY `BillingGroupID` (`BillingGroupID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `MemorizeID` (`MemorizeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -230,7 +230,7 @@ CREATE TABLE `bca_argroupbilling` (
   KEY `ClientVendorID` (`ClientVendorID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `InvoiceID` (`InvoiceID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,7 +245,7 @@ CREATE TABLE `bca_att1` (
   `Att1_Name` varchar(50) DEFAULT NULL,
   `Att1_Nickname` varchar(50) DEFAULT NULL,
   KEY `Att1_ID` (`Att1_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -260,7 +260,7 @@ CREATE TABLE `bca_att2` (
   `Att2_Name` varchar(50) DEFAULT NULL,
   `Att2_Nickname` varchar(50) DEFAULT NULL,
   KEY `Att2_ID` (`Att2_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -278,7 +278,7 @@ CREATE TABLE `bca_authorizemerchantaccount` (
   PRIMARY KEY (`CompanyID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `x_tran_key` (`x_tran_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,7 +295,7 @@ CREATE TABLE `bca_backup` (
   `hours` int DEFAULT NULL,
   `minutes` int DEFAULT NULL,
   `Description` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -317,7 +317,7 @@ CREATE TABLE `bca_balancesheetitem` (
   KEY `balancesheetitemID` (`balancesheetitemID`),
   KEY `CategoryTypeID` (`CategoryTypeID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=733 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=733 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -361,7 +361,7 @@ CREATE TABLE `bca_bill` (
   KEY `PaymentID` (`PaymentID`),
   KEY `ServiceID` (`ServiceID`),
   KEY `VendorId` (`VendorId`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -396,7 +396,7 @@ CREATE TABLE `bca_billdetail` (
   KEY `InventoryCustID` (`InventoryCustID`),
   KEY `InventoryID` (`InventoryID`),
   KEY `InvoiceID` (`InvoiceID`)
-) ENGINE=MyISAM AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -433,7 +433,7 @@ CREATE TABLE `bca_billingaddress` (
   KEY `ClientVendorID` (`ClientVendorID`),
   KEY `LastName` (`LastName`),
   KEY `ZipCode` (`ZipCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=1766 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1766 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -460,7 +460,7 @@ CREATE TABLE `bca_billingstatements` (
   KEY `ClientVendorID` (`ClientVendorID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `InvoiceID` (`InvoiceID`)
-) ENGINE=MyISAM AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -508,7 +508,7 @@ CREATE TABLE `bca_budget` (
   PRIMARY KEY (`BudgetID`),
   KEY `BudgetID` (`BudgetID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -529,7 +529,7 @@ CREATE TABLE `bca_budgetcategory` (
   PRIMARY KEY (`BudgetCategoryID`),
   KEY `BudgetCategoryID` (`BudgetCategoryID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -564,7 +564,7 @@ CREATE TABLE `bca_budgetdetail` (
   KEY `BudgetID` (`BudgetID`),
   KEY `CategoryID` (`CategoryID`),
   KEY `cvId` (`cvId`)
-) ENGINE=MyISAM AUTO_INCREMENT=1167 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1167 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -588,7 +588,7 @@ CREATE TABLE `bca_businesscategories` (
   UNIQUE KEY `CategoryID` (`CategoryID`),
   KEY `CategoryTypeID` (`CategoryTypeID`),
   KEY `BusinessTypeID` (`BusinessTypeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2140049317 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2140049317 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -605,7 +605,7 @@ CREATE TABLE `bca_businessmodules` (
   `CompanyID` int DEFAULT '0',
   KEY `CompanyID` (`CompanyID`),
   KEY `ModuleID` (`ModuleID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -624,7 +624,7 @@ CREATE TABLE `bca_businesstype` (
   `Active` int DEFAULT '0',
   PRIMARY KEY (`BusinessTypeID`),
   KEY `BusinessTypeID` (`BusinessTypeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -683,7 +683,7 @@ CREATE TABLE `bca_cart` (
   KEY `shippromotionid` (`shippromotionid`),
   KEY `SupplierID` (`SupplierID`),
   KEY `SalesTaxRate` (`SalesTaxRate`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -729,7 +729,7 @@ CREATE TABLE `bca_cartmemorized` (
   KEY `orderid` (`orderid`),
   KEY `OrderItemID` (`OrderItemID`),
   KEY `shippromotionid` (`shippromotionid`)
-) ENGINE=MyISAM AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -753,7 +753,7 @@ CREATE TABLE `bca_category` (
   UNIQUE KEY `CategoryID` (`CategoryID`),
   KEY `CategoryTypeID` (`CategoryTypeID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2146773192 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2146773192 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -771,7 +771,7 @@ CREATE TABLE `bca_categorytype` (
   PRIMARY KEY (`CategoryTypeID`),
   KEY `CategoryTypeID` (`CategoryTypeID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2147483648 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2147483648 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -802,7 +802,7 @@ CREATE TABLE `bca_clientcategory` (
   `Name` varchar(50) DEFAULT '0',
   `Active` int DEFAULT '1',
   KEY `CVCategoryID` (`CVCategoryID`)
-) ENGINE=MyISAM AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -892,7 +892,7 @@ CREATE TABLE `bca_clientvendor` (
   KEY `TermID` (`TermID`),
   KEY `ZipCode` (`ZipCode`),
   KEY `ZipCodeID` (`ZipCodeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -912,7 +912,7 @@ CREATE TABLE `bca_clientvendorcontacthistory` (
   `ContactBy` varchar(50) DEFAULT NULL,
   KEY `ClientVendorID` (`ClientVendorID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -931,7 +931,7 @@ CREATE TABLE `bca_clientvendorfinancecharges` (
   `AssessFinanceCharge` tinyint(1) DEFAULT '0',
   `MarkFinanceCharge` tinyint(1) DEFAULT '0',
   UNIQUE KEY `ClientVendorID` (`ClientVendorID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -952,7 +952,7 @@ CREATE TABLE `bca_clientvendorjob` (
   `isRecurringServiceJob` int DEFAULT '0',
   KEY `CompanyID` (`CompanyID`),
   KEY `ClientVendorID` (`ClientVendorID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -983,7 +983,7 @@ CREATE TABLE `bca_clientvendorservice` (
   KEY `ClientVendorID` (`ClientVendorID`),
   KEY `ServiceID` (`ServiceID`),
   KEY `ServiceTypeID` (`ServiceTypeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1080,7 +1080,7 @@ CREATE TABLE `bca_company` (
   KEY `POStyleID` (`POStyleID`),
   KEY `SalesTaxID` (`SalesTaxID`),
   KEY `Zipcode` (`Zipcode`)
-) ENGINE=MyISAM AUTO_INCREMENT=130 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1106,7 +1106,7 @@ CREATE TABLE `bca_consignmentsale` (
   KEY `InvoiceID` (`InvoiceID`),
   KEY `OrderNum` (`OrderNum`),
   KEY `SupplierID` (`SupplierID`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1128,7 +1128,7 @@ CREATE TABLE `bca_cordinates` (
   `UseSalesOrder` int DEFAULT '0',
   PRIMARY KEY (`cordinatesID`),
   KEY `cordinatesID` (`cordinatesID`)
-) ENGINE=MyISAM AUTO_INCREMENT=209 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=209 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1163,7 +1163,7 @@ CREATE TABLE `bca_creditcardtype` (
   `TypeCategory` int DEFAULT NULL,
   KEY `CCTypeID` (`CCTypeID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1179,7 +1179,7 @@ CREATE TABLE `bca_currency` (
   `Name` varchar(50) DEFAULT '0',
   `Active` int DEFAULT '1',
   UNIQUE KEY `CurrencyID` (`CurrencyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1195,7 +1195,7 @@ CREATE TABLE `bca_customdate` (
   `PriceType` varchar(255) DEFAULT NULL,
   `SKU` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1211,7 +1211,7 @@ CREATE TABLE `bca_customer_type` (
   `CompanyID` int NOT NULL,
   `Deleted` tinyint NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1230,7 +1230,7 @@ CREATE TABLE `bca_customfile` (
   `MaxImageWidth` int DEFAULT NULL,
   `MaxImageheight` int DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1250,7 +1250,7 @@ CREATE TABLE `bca_customoptions` (
   PRIMARY KEY (`OptionId`),
   KEY `OptionId` (`OptionId`),
   KEY `ProductId` (`ProductId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1285,7 +1285,7 @@ CREATE TABLE `bca_customtext` (
   `SKU` varchar(255) DEFAULT NULL,
   `MaxCharacter` int DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1316,7 +1316,7 @@ CREATE TABLE `bca_cvcreditcard` (
   `DateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Deleted` int DEFAULT '0',
   UNIQUE KEY `CreditCardID` (`CreditCardID`)
-) ENGINE=MyISAM AUTO_INCREMENT=281 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1330,7 +1330,7 @@ CREATE TABLE `bca_cvtype` (
   `CVTypeID` int NOT NULL AUTO_INCREMENT,
   `Name` varchar(50) DEFAULT '0',
   UNIQUE KEY `CVTypeID` (`CVTypeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1348,7 +1348,7 @@ CREATE TABLE `bca_esalesitemcategory` (
   KEY `CategoryID` (`CategoryID`),
   KEY `StoreID` (`StoreID`),
   KEY `StoreTypeID` (`StoreTypeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1380,7 +1380,7 @@ CREATE TABLE `bca_exporteditemedetail` (
   KEY `InventoryID` (`InventoryID`),
   KEY `ProductCode` (`ProductCode`),
   KEY `StoreID` (`StoreID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1397,7 +1397,7 @@ CREATE TABLE `bca_features` (
   `ModuleID` int DEFAULT '0',
   KEY `BusinessID` (`BusinessID`),
   KEY `ModuleID` (`ModuleID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1414,7 +1414,7 @@ CREATE TABLE `bca_footnote` (
   `Description` longtext,
   `Active` int DEFAULT '1',
   UNIQUE KEY `FootNoteID` (`FootNoteID`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1433,7 +1433,7 @@ CREATE TABLE `bca_form_templates` (
   `template_type_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`template_type_no`),
   KEY `FK25by5d07g10gf4mcldiy8ik9m` (`template_id_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1448,7 +1448,7 @@ CREATE TABLE `bca_form_templates_type` (
   `companyId` int NOT NULL,
   `template_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`template_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1471,7 +1471,7 @@ CREATE TABLE `bca_history` (
   KEY `CompanyID` (`CompanyID`),
   KEY `ImportedHistoryID` (`ImportedHistoryID`),
   KEY `StoreID` (`StoreID`)
-) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1489,7 +1489,7 @@ CREATE TABLE `bca_inventoryassembly` (
   `Total` double DEFAULT NULL,
   `ReservedQty` int DEFAULT NULL,
   KEY `InventoryID` (`InventoryID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1512,7 +1512,7 @@ CREATE TABLE `bca_inventorycollectedfromstore` (
   KEY `OrderID` (`OrderID`),
   KEY `OrderItemID` (`OrderItemID`),
   KEY `SKU` (`SKU`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1526,7 +1526,7 @@ CREATE TABLE `bca_inventorycrosssell` (
   `CrossSellID` int DEFAULT NULL,
   `InventoryID` int DEFAULT NULL,
   KEY `InventoryID` (`InventoryID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1554,7 +1554,7 @@ CREATE TABLE `bca_inventorysupplierdetail` (
   KEY `SupplierBarCode` (`SupplierBarCode`),
   KEY `ID` (`ID`),
   KEY `InventoryID` (`InventoryID`)
-) ENGINE=MyISAM AUTO_INCREMENT=859 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=859 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1573,7 +1573,7 @@ CREATE TABLE `bca_inventoryunitmeasure` (
   `SizeW` int DEFAULT '0',
   `SizeL` int DEFAULT '0',
   `CompanyID` int DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1692,7 +1692,7 @@ CREATE TABLE `bca_invoice` (
   KEY `TermID` (`TermID`),
   KEY `TrackingCode` (`TrackingCode`),
   KEY `TransactionID` (`TransactionID`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1713,7 +1713,7 @@ CREATE TABLE `bca_invoice_activetemplates` (
   `Nonprofit` int DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `TemplateID` (`TemplateID`)
-) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1740,7 +1740,7 @@ CREATE TABLE `bca_invoice_layoutcolumnsscreensetting` (
   `Option` tinyint(1) DEFAULT '0',
   `COLOR/Q'TY(ORDER)` tinyint(1) DEFAULT '0',
   KEY `TemplateId` (`TemplateId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1757,7 +1757,7 @@ CREATE TABLE `bca_invoice_layoutcolumnssetting` (
   `printStatus` tinyint unsigned DEFAULT '0',
   `Templateorder` int DEFAULT '0',
   KEY `TemplateId` (`TemplateId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1797,7 +1797,7 @@ CREATE TABLE `bca_invoice_layoutfieldscreensetting` (
   `Discount` int DEFAULT NULL,
   `GiftAmount` int DEFAULT NULL,
   KEY `TemplateId` (`TemplateId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1818,7 +1818,7 @@ CREATE TABLE `bca_invoice_layoutfieldssetting` (
   `Height` double DEFAULT '0',
   `printStatus` int DEFAULT '0',
   KEY `TemplateId` (`TemplateId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1851,7 +1851,7 @@ CREATE TABLE `bca_invoice_template` (
   KEY `TemplateId` (`TemplateId`),
   KEY `TemplateStyleTypeID` (`TemplateStyleTypeID`),
   KEY `TemplateTypeId` (`TemplateTypeId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1874,7 +1874,7 @@ CREATE TABLE `bca_invoicecredit` (
   KEY `cvId` (`cvId`),
   KEY `InvoiceID` (`InvoiceID`),
   KEY `InvoiceTypeID` (`InvoiceTypeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1892,7 +1892,7 @@ CREATE TABLE `bca_invoicediscount` (
   `DateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `CategoryID` (`CategoryID`),
   KEY `InvoiceID` (`InvoiceID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1980,7 +1980,7 @@ CREATE TABLE `bca_invoicememorized` (
   KEY `ShippingAddrID` (`ShippingAddrID`),
   KEY `StoreID` (`StoreID`),
   KEY `TermID` (`TermID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2001,7 +2001,7 @@ CREATE TABLE `bca_invoicesalessummaryamt` (
   PRIMARY KEY (`ID`),
   KEY `companyID` (`companyID`),
   KEY `InvoiceID` (`InvoiceID`)
-) ENGINE=MyISAM AUTO_INCREMENT=769 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=769 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2031,7 +2031,7 @@ CREATE TABLE `bca_invoiceshipdetail` (
   KEY `InvoiceID` (`InvoiceID`),
   KEY `ShipDetailID` (`ShipDetailID`),
   KEY `ShippingServiceID` (`ShippingServiceID`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2132,7 +2132,7 @@ CREATE TABLE `bca_invoiceshipped` (
   KEY `TermID` (`TermID`),
   KEY `TrackingCode` (`TrackingCode`),
   KEY `TransactionID` (`TransactionID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2147,7 +2147,7 @@ CREATE TABLE `bca_invoicestyle` (
   `Name` varchar(50) DEFAULT '0',
   `Active` int DEFAULT '1',
   UNIQUE KEY `InvoiceStyleID` (`InvoiceStyleID`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2165,7 +2165,7 @@ CREATE TABLE `bca_invoicetype` (
   `Receivable` tinyint(1) DEFAULT NULL,
   `Active` int DEFAULT '1',
   UNIQUE KEY `InvoiceTypeID` (`InvoiceTypeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2181,7 +2181,7 @@ CREATE TABLE `bca_invstatus` (
   `Name` varchar(50) DEFAULT '0',
   `Active` int DEFAULT '1',
   UNIQUE KEY `InvStatusID` (`InvStatusID`)
-) ENGINE=MyISAM AUTO_INCREMENT=171 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=171 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2198,7 +2198,7 @@ CREATE TABLE `bca_itemcategory` (
   `ParentItemCategoryID` int DEFAULT '0',
   KEY `ItemCategoryID` (`ItemCategoryID`),
   KEY `ParentItemCategoryID` (`ParentItemCategoryID`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2294,7 +2294,7 @@ CREATE TABLE `bca_iteminventory` (
   KEY `SMCInventoryID` (`SMCInventoryID`),
   KEY `StoreTypeID` (`StoreTypeID`),
   KEY `taxCode` (`taxCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=6885 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6885 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2314,7 +2314,7 @@ CREATE TABLE `bca_jobcategory` (
   PRIMARY KEY (`JobCategoryID`),
   UNIQUE KEY `JobCategoryID` (`JobCategoryID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2335,7 +2335,7 @@ CREATE TABLE `bca_label` (
   `Spacing_Vert` double DEFAULT '0',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `LabelType` (`LabelType`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2355,7 +2355,7 @@ CREATE TABLE `bca_lineofcreditterm` (
   PRIMARY KEY (`CreditTermId`),
   KEY `CompanyID` (`CompanyID`),
   KEY `CreditTermId` (`CreditTermId`)
-) ENGINE=MyISAM AUTO_INCREMENT=358 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=358 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2373,7 +2373,7 @@ CREATE TABLE `bca_location` (
   `DateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `LocationID` (`LocationID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=415 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=415 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2391,7 +2391,7 @@ CREATE TABLE `bca_mailtemplate` (
   `Active` int DEFAULT '0',
   PRIMARY KEY (`TemplateID`),
   KEY `TemplateName` (`TemplateName`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2408,7 +2408,7 @@ CREATE TABLE `bca_masterbalancesheetitem` (
   `Amount` double DEFAULT NULL,
   PRIMARY KEY (`balancesheetitemID`),
   KEY `CategoryTypeID` (`CategoryTypeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2422,7 +2422,7 @@ CREATE TABLE `bca_masterclientcategory` (
   `CVCategoryID` int DEFAULT '0',
   `Name` varchar(50) DEFAULT NULL,
   KEY `CVCategoryID` (`CVCategoryID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2436,7 +2436,7 @@ CREATE TABLE `bca_mastercreditcardtype` (
   `CCTypeID` int DEFAULT '0',
   `Name` varchar(50) DEFAULT NULL,
   KEY `CCTypeID` (`CCTypeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2453,7 +2453,7 @@ CREATE TABLE `bca_mastercustomergroup` (
   `Active` int DEFAULT '1',
   PRIMARY KEY (`ID`),
   KEY `ID` (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2470,7 +2470,7 @@ CREATE TABLE `bca_masteritemcategory` (
   `ParentItemCategoryID` int DEFAULT '0',
   KEY `ItemCategoryID` (`ItemCategoryID`),
   KEY `ParentItemCategoryID` (`ParentItemCategoryID`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2485,7 +2485,7 @@ CREATE TABLE `bca_masterpaymentgateways` (
   `GatewayType` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`GatewayID`),
   KEY `GatewayID` (`GatewayID`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2500,7 +2500,7 @@ CREATE TABLE `bca_masterpaymenttype` (
   `Name` varchar(50) DEFAULT NULL,
   `Type` varchar(50) DEFAULT NULL,
   KEY `PaymentTypeID` (`PaymentTypeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2515,7 +2515,7 @@ CREATE TABLE `bca_masterreceivedtype` (
   `Name` varchar(50) DEFAULT NULL,
   `Type` varchar(50) DEFAULT NULL,
   KEY `PaymentTypeID` (`PaymentTypeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2530,7 +2530,7 @@ CREATE TABLE `bca_masterrmareason` (
   `Name` varchar(50) DEFAULT NULL,
   `Active` int DEFAULT '0',
   KEY `rmaReasonID` (`rmaReasonID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2544,7 +2544,7 @@ CREATE TABLE `bca_mastershipcarrier` (
   `ShipCarrierID` int DEFAULT '0',
   `Name` varchar(50) DEFAULT NULL,
   KEY `ShipCarrierID` (`ShipCarrierID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2559,7 +2559,7 @@ CREATE TABLE `bca_mastershippingcontainer` (
   `Name` varchar(50) DEFAULT NULL,
   `Active` int DEFAULT '1',
   KEY `ContainerID` (`ContainerID`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2574,7 +2574,7 @@ CREATE TABLE `bca_mastershippingmailtype` (
   `Name` varchar(50) DEFAULT NULL,
   `Active` int DEFAULT '1',
   PRIMARY KEY (`MailTypeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2589,7 +2589,7 @@ CREATE TABLE `bca_mastershippingpackagesize` (
   `Name` varchar(50) DEFAULT NULL,
   `Active` int DEFAULT '1',
   KEY `PackageSizeID` (`PackageSizeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2605,7 +2605,7 @@ CREATE TABLE `bca_masterstartingmodule` (
   `ModuleName` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`StartModuleID`),
   KEY `BusinessTypeID` (`BusinessTypeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2619,7 +2619,7 @@ CREATE TABLE `bca_mastervendorcategory` (
   `CVCategoryID` int DEFAULT '0',
   `Name` varchar(50) DEFAULT NULL,
   KEY `CVCategoryID` (`CVCategoryID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2635,7 +2635,7 @@ CREATE TABLE `bca_message` (
   `Name` varchar(255) DEFAULT '0',
   `Active` int DEFAULT '1',
   UNIQUE KEY `MessageID` (`MessageID`)
-) ENGINE=MyISAM AUTO_INCREMENT=262 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2650,7 +2650,7 @@ CREATE TABLE `bca_multiprintpriority` (
   `Active` int DEFAULT '0',
   `IseSales` int DEFAULT '0',
   `Priority` int DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2670,7 +2670,7 @@ CREATE TABLE `bca_ordertemplate` (
   PRIMARY KEY (`OrderID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `OrderID` (`OrderID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2725,7 +2725,7 @@ CREATE TABLE `bca_payment2invoice` (
   KEY `CompanyID` (`CompanyID`),
   KEY `InvoiceID` (`InvoiceID`),
   KEY `PaymentID` (`PaymentID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2751,7 +2751,7 @@ CREATE TABLE `bca_paymentdetail` (
   KEY `DetailID` (`DetailID`),
   KEY `GatewayID` (`GatewayID`),
   KEY `PaymentID` (`PaymentID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2773,7 +2773,7 @@ CREATE TABLE `bca_paymenttype` (
   UNIQUE KEY `PaymentTypeID` (`PaymentTypeID`),
   KEY `BankAcctID` (`BankAcctID`),
   KEY `CCTypeID` (`CCTypeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2001 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2001 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2793,7 +2793,7 @@ CREATE TABLE `bca_peritempricelevel` (
   KEY `InventoryID` (`InventoryID`),
   KEY `ItemPriceID` (`ItemPriceID`),
   KEY `ParentID` (`ParentID`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2808,7 +2808,7 @@ CREATE TABLE `bca_postyle` (
   `Name` varchar(50) DEFAULT '0',
   `Active` int DEFAULT '1',
   KEY `POStyleID` (`POStyleID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3133,7 +3133,7 @@ CREATE TABLE `bca_preference` (
   KEY `SalesOrderStyleTypeID` (`SalesOrderStyleTypeID`),
   KEY `SalesPayMethodID` (`SalesPayMethodID`),
   KEY `VendorStateID` (`VendorStateID`)
-) ENGINE=MyISAM AUTO_INCREMENT=167 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=167 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3154,7 +3154,7 @@ CREATE TABLE `bca_pricelevel` (
   PRIMARY KEY (`PriceLevelID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `PriceLevelID` (`PriceLevelID`)
-) ENGINE=MyISAM AUTO_INCREMENT=469 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=469 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3167,7 +3167,7 @@ DROP TABLE IF EXISTS `bca_printstyle`;
 CREATE TABLE `bca_printstyle` (
   `StyleTypeID` int DEFAULT NULL,
   `Name` varchar(50) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3190,7 +3190,7 @@ CREATE TABLE `bca_productchannelsetting` (
   KEY `CompanyID` (`CompanyID`),
   KEY `InventoryID` (`InventoryID`),
   KEY `StoreID` (`StoreID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3214,7 +3214,7 @@ CREATE TABLE `bca_quickbooklist` (
   KEY `id` (`id`),
   KEY `inventoryListID` (`inventoryListID`),
   KEY `invID` (`invID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3232,7 +3232,7 @@ CREATE TABLE `bca_realtimeshippingservice` (
   `Active` int DEFAULT '0',
   PRIMARY KEY (`ShippingServiceID`),
   KEY `ShippingServiceID` (`ShippingServiceID`)
-) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3252,7 +3252,7 @@ CREATE TABLE `bca_receicedtype` (
   `BankAcctID` int DEFAULT '0',
   `TypeCategory` int DEFAULT NULL,
   `IsDefault` tinyint(1) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3276,7 +3276,7 @@ CREATE TABLE `bca_recentbills` (
   KEY `CompanyID` (`CompanyID`),
   KEY `ID` (`ID`),
   KEY `ServiceID` (`ServiceID`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3314,7 +3314,7 @@ CREATE TABLE `bca_recurrentpayment` (
   KEY `RefPaymentID` (`RefPaymentID`),
   KEY `ServiceID` (`ServiceID`),
   KEY `TransactionID` (`TransactionID`)
-) ENGINE=MyISAM AUTO_INCREMENT=1019 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1019 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3349,7 +3349,7 @@ CREATE TABLE `bca_recurrentpaymentplan` (
   KEY `PaymentTypeID` (`PaymentTypeID`),
   KEY `PlanID` (`PlanID`),
   KEY `ServiceID` (`ServiceID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3384,7 +3384,7 @@ CREATE TABLE `bca_refundlist` (
   KEY `PaymentID` (`PaymentID`),
   KEY `PaymentTypeID` (`PaymentTypeID`),
   KEY `SalesRepID` (`SalesRepID`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3403,7 +3403,7 @@ CREATE TABLE `bca_refundreason` (
   PRIMARY KEY (`ReasonID`),
   UNIQUE KEY `ReasonID` (`ReasonID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3438,7 +3438,7 @@ CREATE TABLE `bca_reportproperty` (
   `CompanyID` int DEFAULT '0',
   KEY `CompanyID` (`CompanyID`),
   KEY `ReportType` (`ReportType`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3474,7 +3474,7 @@ CREATE TABLE `bca_rmaitem` (
   KEY `parentReasonID` (`parentReasonID`),
   KEY `RmaItemID` (`RmaItemID`),
   KEY `RmaUniqueID` (`RmaUniqueID`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3503,7 +3503,7 @@ CREATE TABLE `bca_rmamaster` (
   KEY `ClientVendorID` (`ClientVendorID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `InvoiceID` (`InvoiceID`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3522,7 +3522,7 @@ CREATE TABLE `bca_rmareason` (
   KEY `CompanyID` (`CompanyID`),
   KEY `parentReasonID` (`parentReasonID`),
   KEY `ReasonID` (`ReasonID`)
-) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3541,7 +3541,7 @@ CREATE TABLE `bca_rule` (
   `ChangeTo` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`RuleName`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3558,7 +3558,7 @@ CREATE TABLE `bca_ruleconditions` (
   `OperatorValue` varchar(25) DEFAULT NULL,
   `CompanyID` int DEFAULT '0',
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3575,7 +3575,7 @@ CREATE TABLE `bca_salesorder` (
   KEY `CompanyID` (`CompanyID`),
   KEY `SONum` (`SONum`),
   KEY `InvoiceId` (`InvoiceId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3591,7 +3591,7 @@ CREATE TABLE `bca_salesrep` (
   `Name` varchar(50) DEFAULT '0',
   `Active` int DEFAULT '1',
   UNIQUE KEY `SalesRepID` (`SalesRepID`)
-) ENGINE=MyISAM AUTO_INCREMENT=170 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=170 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3610,7 +3610,7 @@ CREATE TABLE `bca_salessummary` (
   PRIMARY KEY (`SalesID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `SalesID` (`SalesID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3628,7 +3628,7 @@ CREATE TABLE `bca_salessummarydetail` (
   PRIMARY KEY (`Id`),
   KEY `Id` (`Id`),
   KEY `SalesID` (`SalesID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3646,7 +3646,7 @@ CREATE TABLE `bca_salestax` (
   `Active` int DEFAULT '1',
   UNIQUE KEY `SalesTaxID` (`SalesTaxID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=175 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=175 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3667,7 +3667,7 @@ CREATE TABLE `bca_scheduletimes` (
   KEY `CompanyID` (`CompanyID`),
   KEY `ScheduleTime` (`ScheduleTime`),
   KEY `StoreID` (`StoreID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3691,7 +3691,7 @@ CREATE TABLE `bca_servicetype` (
   KEY `ServiceID` (`ServiceID`),
   KEY `InventoryID` (`InventoryID`),
   KEY `InvoiceStyleID` (`InvoiceStyleID`)
-) ENGINE=MyISAM AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3726,7 +3726,7 @@ CREATE TABLE `bca_settings` (
   `ReportPrintableCopies` int DEFAULT '0',
   `PurchasePrintableCopies` int DEFAULT '0',
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3745,7 +3745,7 @@ CREATE TABLE `bca_shipcarrier` (
   UNIQUE KEY `ShipCarrierID` (`ShipCarrierID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `ParentID` (`ParentID`)
-) ENGINE=MyISAM AUTO_INCREMENT=899 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=899 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3782,7 +3782,7 @@ CREATE TABLE `bca_shippingaddress` (
   KEY `ClientVendorID` (`ClientVendorID`),
   KEY `LastName` (`LastName`),
   KEY `ZipCode` (`ZipCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=1585 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1585 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3801,7 +3801,7 @@ CREATE TABLE `bca_shippingrate` (
   UNIQUE KEY `ShippingRateID` (`ShippingRateID`),
   KEY `ShipCarrierID` (`ShipCarrierID`),
   KEY `Weight` (`Weight`)
-) ENGINE=MyISAM AUTO_INCREMENT=2185 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2185 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3824,7 +3824,7 @@ CREATE TABLE `bca_shippingservice` (
   KEY `PackageSizeID` (`PackageSizeID`),
   KEY `ShipCarrierID` (`ShipCarrierID`),
   KEY `ShippingServiceID` (`ShippingServiceID`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3925,7 +3925,7 @@ CREATE TABLE `bca_store` (
   KEY `smcLoginID` (`smcLoginID`),
   KEY `StoreID` (`StoreID`),
   KEY `Zipcode` (`Zipcode`)
-) ENGINE=MyISAM AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3958,7 +3958,7 @@ CREATE TABLE `bca_storetype` (
   KEY `DefaultStoreID` (`DefaultStoreID`),
   KEY `StoreTypeID` (`StoreTypeID`),
   KEY `Zipcode` (`Zipcode`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3985,7 +3985,7 @@ CREATE TABLE `bca_template_config` (
   KEY `templateId` (`templateId`),
   KEY `templateStyleTypeId` (`templateStyleTypeId`),
   KEY `templateTypeId` (`templateTypeId`)
-) ENGINE=MyISAM AUTO_INCREMENT=306 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=306 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4002,7 +4002,7 @@ CREATE TABLE `bca_term` (
   `Active` int DEFAULT '1',
   `Days` int DEFAULT '0',
   UNIQUE KEY `TermID` (`TermID`)
-) ENGINE=MyISAM AUTO_INCREMENT=413 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=413 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4019,7 +4019,7 @@ CREATE TABLE `bca_title` (
   `Active` int DEFAULT '1',
   PRIMARY KEY (`TitleID`),
   KEY `TitleID` (`TitleID`)
-) ENGINE=MyISAM AUTO_INCREMENT=483 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=483 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4037,7 +4037,7 @@ CREATE TABLE `bca_unitofmeasure` (
   `UseName` varchar(50) DEFAULT NULL,
   `Active` int DEFAULT '0',
   KEY `UnitCategoryID` (`UnitCategoryID`)
-) ENGINE=MyISAM AUTO_INCREMENT=1273 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1273 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4082,7 +4082,7 @@ CREATE TABLE `bca_user` (
   KEY `ID` (`ID`),
   KEY `LoginID` (`LoginID`),
   KEY `TaxID` (`TaxID`)
-) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4110,7 +4110,7 @@ CREATE TABLE `bca_useractivity` (
   KEY `StoreID` (`StoreID`),
   KEY `UserActivityID` (`UserActivityID`),
   KEY `UserID` (`UserID`)
-) ENGINE=MyISAM AUTO_INCREMENT=17462 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=17462 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4129,7 +4129,7 @@ CREATE TABLE `bca_userdefineshipcarrier` (
   KEY `CompanyID` (`CompanyID`),
   KEY `ParentID` (`ParentID`),
   KEY `ShipCarrierID` (`ShipCarrierID`)
-) ENGINE=MyISAM AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4151,7 +4151,7 @@ CREATE TABLE `bca_usergroup` (
   PRIMARY KEY (`GroupID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `GroupID` (`GroupID`)
-) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4174,7 +4174,7 @@ CREATE TABLE `bca_usermapping` (
   KEY `CompanyID` (`CompanyID`),
   KEY `UserGroupID` (`UserGroupID`),
   KEY `UserID` (`UserID`)
-) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4191,7 +4191,7 @@ CREATE TABLE `bca_usermodules` (
   PRIMARY KEY (`ModuleID`),
   UNIQUE KEY `ModuleID` (`ModuleID`),
   KEY `ParentID` (`ParentID`)
-) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4207,7 +4207,7 @@ CREATE TABLE `bca_vendorcategory` (
   `Name` varchar(50) DEFAULT '0',
   `Active` int DEFAULT '1',
   KEY `CVCategoryID` (`CVCategoryID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4230,7 +4230,7 @@ CREATE TABLE `bcp_deductionlist` (
   PRIMARY KEY (`DeductionListID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `DeductionListID` (`DeductionListID`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4286,7 +4286,7 @@ CREATE TABLE `bcp_employee` (
   KEY `JobTitleID` (`JobTitleID`),
   KEY `PayrollPeriodID` (`PayrollPeriodID`),
   KEY `ZipCode` (`ZipCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4303,7 +4303,7 @@ CREATE TABLE `bcp_employeetype` (
   `Active` int DEFAULT '1',
   PRIMARY KEY (`EmployeeTypeID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=385 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=385 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4322,7 +4322,7 @@ CREATE TABLE `bcp_fedperallowance` (
   PRIMARY KEY (`ID`),
   KEY `ID` (`ID`),
   KEY `NumTerm` (`NumTerm`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4343,7 +4343,7 @@ CREATE TABLE `bcp_fedpermethod` (
   `EYear` double DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `NumTerm` (`NumTerm`)
-) ENGINE=MyISAM AUTO_INCREMENT=209 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=209 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4363,7 +4363,7 @@ CREATE TABLE `bcp_fedrate` (
   `MaxCrRate` float DEFAULT '0',
   `EYear` int DEFAULT '0',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 -- Kundan
@@ -4398,7 +4398,7 @@ CREATE TABLE `bcp_filingstate` (
   KEY `CompanyID` (`CompanyID`),
   KEY `FilingStateID` (`FilingStateID`),
   KEY `FilingStateTaxID` (`FilingStateTaxID`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4416,7 +4416,7 @@ CREATE TABLE `bcp_filingstatus` (
   PRIMARY KEY (`FilingStatusID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `FilingStatusID` (`FilingStatusID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4444,7 +4444,7 @@ CREATE TABLE `bcp_income` (
   KEY `IncomeID` (`IncomeID`),
   KEY `IncomeListID` (`IncomeListID`),
   KEY `PayrollPeriodID` (`PayrollPeriodID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4462,7 +4462,7 @@ CREATE TABLE `bcp_incomelist` (
   PRIMARY KEY (`IncomeListID`),
   KEY `IncomeList` (`IncomeList`),
   KEY `IncomeListID` (`IncomeListID`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4481,7 +4481,7 @@ CREATE TABLE `bcp_jobcode` (
   PRIMARY KEY (`JobID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `JobID` (`JobID`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4499,7 +4499,7 @@ CREATE TABLE `bcp_jobtitle` (
   PRIMARY KEY (`JobTitleID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `JobTitleID` (`JobTitleID`)
-) ENGINE=MyISAM AUTO_INCREMENT=390 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=390 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4531,7 +4531,7 @@ CREATE TABLE `bcp_payroll` (
   PRIMARY KEY (`PayrollDate`,`EmployeeID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `EmployeeID` (`EmployeeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4548,7 +4548,7 @@ CREATE TABLE `bcp_payrollperiod` (
   `Active` int DEFAULT '1',
   PRIMARY KEY (`PayrollPeriodID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4568,7 +4568,7 @@ CREATE TABLE `bcp_stestdedtable` (
   PRIMARY KEY (`ID`),
   KEY `NumAllow` (`NumAllow`),
   KEY `NumTerm` (`NumTerm`)
-) ENGINE=MyISAM AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4588,7 +4588,7 @@ CREATE TABLE `bcp_stexempdedtable` (
   PRIMARY KEY (`ID`),
   KEY `NumAllow` (`NumAllow`),
   KEY `NumTerm` (`NumTerm`)
-) ENGINE=MyISAM AUTO_INCREMENT=115 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4607,7 +4607,7 @@ CREATE TABLE `bcp_stlowincomeexemptable` (
   `EYear` double DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `NumTerm` (`NumTerm`)
-) ENGINE=MyISAM AUTO_INCREMENT=205 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=205 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4626,7 +4626,7 @@ CREATE TABLE `bcp_ststandarddedtable` (
   `EYear` int DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `NumTerm` (`NumTerm`)
-) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4640,7 +4640,7 @@ CREATE TABLE `bcp_sttaxagency` (
   `StateName` varchar(50) DEFAULT NULL,
   `Address` longtext,
   `WebSite` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4661,7 +4661,7 @@ CREATE TABLE `bcp_sttaxrate` (
   `StateName` varchar(50) DEFAULT NULL,
   `EYear` int DEFAULT '0',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4683,7 +4683,7 @@ CREATE TABLE `bcp_stwithholding` (
   `EYear` double DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `NumTerm` (`NumTerm`)
-) ENGINE=MyISAM AUTO_INCREMENT=410 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=410 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4725,7 +4725,7 @@ CREATE TABLE `bcp_tax_company` (
   PRIMARY KEY (`CompanyID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `DeductionID` (`DeductionID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4759,7 +4759,7 @@ CREATE TABLE `bcp_tax_fica_sdi` (
   KEY `CompanyID` (`CompanyID`),
   KEY `FID` (`FID`),
   KEY `FITYear` (`FITYear`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4782,7 +4782,7 @@ CREATE TABLE `bcp_timesheet_time` (
   KEY `Day` (`Day`),
   KEY `EmployeeID` (`EmployeeID`),
   KEY `JobID` (`JobID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4806,7 +4806,7 @@ CREATE TABLE `bizcal_appoint` (
   `m_y` int DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4825,7 +4825,7 @@ CREATE TABLE `bizcal_reminder` (
   `CompanyID` int DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4924,7 +4924,7 @@ CREATE TABLE `bt_sales` (
   KEY `StatusID` (`StatusID`),
   KEY `TrackingNum` (`TrackingNum`),
   KEY `TransactionID` (`TransactionID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4955,7 +4955,7 @@ CREATE TABLE `countries` (
   `CountryCode` varchar(2) DEFAULT NULL,
   PRIMARY KEY (`CountryID`),
   KEY `CountryCode` (`CountryCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=225 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=225 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5012,7 +5012,7 @@ CREATE TABLE `crm_lead` (
   PRIMARY KEY (`LeadID`),
   UNIQUE KEY `LeadID` (`LeadID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5045,7 +5045,7 @@ CREATE TABLE `fedexshipinvoice` (
   `Phone` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `ZipCode` (`ZipCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=185 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5081,7 +5081,7 @@ CREATE TABLE `galaxyshipinvoice` (
   PRIMARY KEY (`ID`),
   KEY `GroupCode` (`GroupCode`),
   KEY `ZipCode` (`ZipCode`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5119,7 +5119,7 @@ CREATE TABLE `galaxyshippostback` (
   KEY `GroupCode` (`GroupCode`),
   KEY `TransactionID` (`TransactionID`),
   KEY `ZipCode` (`ZipCode`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5140,7 +5140,7 @@ CREATE TABLE `item_category_details` (
   `DateAdded` datetime NOT NULL,
   PRIMARY KEY (`CategoryID`),
   UNIQUE KEY `CategoryName_UNIQUE` (`CategoryName`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5159,7 +5159,7 @@ CREATE TABLE `item_details` (
   `Deleted` tinyint(1) DEFAULT '0',
   `DateAdded` datetime NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5240,7 +5240,7 @@ CREATE TABLE `smc_orders` (
   KEY `DealerID` (`DealerID`),
   KEY `OrderID` (`OrderID`),
   KEY `PayPal_txn_id` (`PayPal_txn_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5266,7 +5266,7 @@ CREATE TABLE `smd_admin` (
   KEY `AdminID` (`AdminID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `MshopMerchantID` (`MshopMerchantID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5303,7 +5303,7 @@ CREATE TABLE `smd_bsaddress` (
   `IsSame` varchar(1) DEFAULT '0',
   PRIMARY KEY (`BsaID`),
   KEY `InvoiceID` (`InvoiceID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5322,7 +5322,7 @@ CREATE TABLE `smd_category` (
   `isDefault` int DEFAULT NULL,
   KEY `smdCategoryID` (`smdCategoryID`),
   KEY `StoreID` (`StoreID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5361,7 +5361,7 @@ CREATE TABLE `smd_cvinfo` (
   KEY `FID` (`FID`),
   KEY `ResellerTaxID` (`ResellerTaxID`),
   KEY `ShippingAddressID` (`ShippingAddressID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5379,7 +5379,7 @@ CREATE TABLE `smd_ebaycategory` (
   `isleaf` int DEFAULT NULL,
   KEY `eBayCategoryID` (`eBayCategoryID`),
   KEY `smdCategoryID` (`smdCategoryID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5408,7 +5408,7 @@ CREATE TABLE `smd_gatewaydetails` (
   PRIMARY KEY (`GatewayID`),
   KEY `CompanyID` (`CompanyID`),
   KEY `GatewayID` (`GatewayID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2114 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2114 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5431,7 +5431,7 @@ CREATE TABLE `smd_giftcertificate` (
   `gcNote` longtext,
   PRIMARY KEY (`gcID`),
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5453,7 +5453,7 @@ CREATE TABLE `smd_giftcertificateused` (
   KEY `CompanyID` (`CompanyID`),
   KEY `gcID` (`gcID`),
   KEY `InvoiceID` (`InvoiceID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5472,7 +5472,7 @@ CREATE TABLE `smd_itemgroupprice` (
   KEY `CompanyID` (`CompanyID`),
   KEY `CustomerGroupID` (`CustomerGroupID`),
   KEY `InventoryID` (`InventoryID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5493,7 +5493,7 @@ CREATE TABLE `smd_itemimage` (
   KEY `CompanyId` (`CompanyId`),
   KEY `InventoryId` (`InventoryId`),
   KEY `ItemImageId` (`ItemImageId`)
-) ENGINE=MyISAM AUTO_INCREMENT=1449 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1449 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5554,7 +5554,7 @@ CREATE TABLE `smd_iteminventoryinfo` (
   KEY `ItemClassID` (`ItemClassID`),
   KEY `ItemImageID` (`ItemImageID`),
   KEY `MenuID` (`MenuID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5570,7 +5570,7 @@ CREATE TABLE `smd_refcountry` (
   `CountryID` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`CountryID`),
   KEY `CountryCode` (`CountryCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=239 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=239 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5583,7 +5583,7 @@ DROP TABLE IF EXISTS `smd_refstate`;
 CREATE TABLE `smd_refstate` (
   `StateCode` varchar(255) DEFAULT '0',
   `State` varchar(255) DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5603,7 +5603,7 @@ CREATE TABLE `smd_shipdetails` (
   `Field5` varchar(200) DEFAULT NULL,
   `active` varchar(1) DEFAULT NULL,
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5623,7 +5623,7 @@ CREATE TABLE `smd_shippdetails` (
   `Field5` varchar(200) DEFAULT NULL,
   `active` varchar(1) DEFAULT NULL,
   KEY `CompanyID` (`CompanyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5643,7 +5643,7 @@ CREATE TABLE `smd_storeebaycategory` (
   `isDefault` int DEFAULT NULL,
   KEY `smdCategoryID` (`smdCategoryID`),
   KEY `StoreID` (`StoreID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5660,7 +5660,7 @@ CREATE TABLE `smd_subproduct` (
   PRIMARY KEY (`SubProductID`),
   KEY `MasterProductID` (`MasterProductID`),
   KEY `SubProductID` (`SubProductID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5710,7 +5710,7 @@ CREATE TABLE `storage_billingaddress` (
   KEY `ClientVendorID` (`ClientVendorID`),
   KEY `LastName` (`LastName`),
   KEY `ZipCode` (`ZipCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=1744 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1744 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5767,7 +5767,7 @@ CREATE TABLE `storage_cart` (
   KEY `shippromotionid` (`shippromotionid`),
   KEY `SupplierID` (`SupplierID`),
   KEY `SalesTaxRate` (`SalesTaxRate`)
-) ENGINE=MyISAM AUTO_INCREMENT=50146 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=50146 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5857,7 +5857,7 @@ CREATE TABLE `storage_clientvendor` (
   KEY `TermID` (`TermID`),
   KEY `ZipCode` (`ZipCode`),
   KEY `ZipCodeID` (`ZipCodeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5971,7 +5971,7 @@ CREATE TABLE `storage_invoice` (
   KEY `TermID` (`TermID`),
   KEY `TrackingCode` (`TrackingCode`),
   KEY `TransactionID` (`TransactionID`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6043,7 +6043,7 @@ CREATE TABLE `storage_shippingaddress` (
   KEY `ClientVendorID` (`ClientVendorID`),
   KEY `LastName` (`LastName`),
   KEY `ZipCode` (`ZipCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=1564 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1564 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6069,7 +6069,7 @@ CREATE TABLE `storage_useractivity` (
   KEY `DataID` (`DataID`),
   KEY `UserActivityID` (`UserActivityID`),
   KEY `UserID` (`UserID`)
-) ENGINE=MyISAM AUTO_INCREMENT=17460 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=17460 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6102,7 +6102,7 @@ CREATE TABLE `upsmailinnovation` (
   `Phone` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `ZipCode` (`ZipCode`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6172,7 +6172,7 @@ CREATE TABLE `worldshipinvoice` (
   `pkgWeight` varchar(50) DEFAULT NULL,
   KEY `sfZipCode` (`sfZipCode`),
   KEY `stZipCode` (`stZipCode`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6267,7 +6267,7 @@ CREATE TABLE `worldshippostdata` (
   KEY `siIsVOID` (`siIsVOID`),
   KEY `siShipmentID` (`siShipmentID`),
   KEY `stZipCode` (`stZipCode`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
