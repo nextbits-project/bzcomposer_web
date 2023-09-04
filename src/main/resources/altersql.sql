@@ -3512,6 +3512,76 @@ ALTER TABLE `storage_useractivity`
 ADD FOREIGN KEY (`UserID`) REFERENCES bca_user (`ID`);
 
 
+-- Final alter SQLs
+
+ALTER TABLE `bca_clientvendorjob`
+ADD FOREIGN KEY (`ClientVendorID`) REFERENCES `bca_clientvendor`(`ClientVendorID`);
+
+ALTER TABLE `bca_cvcreditcard`
+ADD FOREIGN KEY (`ClientVendorID`) REFERENCES `bca_clientvendor`(`ClientVendorID`);
+
+ALTER TABLE `bca_customer_type`
+	ADD KEY `ID` (`ID`),
+	ADD KEY `CompanyID` (`CompanyID`),
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
+
+ALTER TABLE `bca_currency`
+	ADD KEY `CompanyID` (`CompanyID`),
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);	
+
+ALTER TABLE `bca_footnote`
+	ADD KEY `CompanyID` (`CompanyID`),
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
+
+ALTER TABLE `bca_clientcategory`
+	ADD KEY `CompanyID` (`CompanyID`),
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
+	
+ALTER TABLE `bca_vendorcategory`
+	ADD KEY `CompanyID` (`CompanyID`),
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);	
+
+ALTER TABLE `bca_invstatus`
+	ADD KEY `CompanyID` (`CompanyID`),
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
+	
+ALTER TABLE `bcp_tax_company`
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);	
+	
+	
+
+ALTER TABLE `bca_inventoryunitmeasure`
+	ADD KEY `CompanyID` (`CompanyID`),
+	ADD KEY `InventoryID` (`InventoryID`),
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
+	ADD FOREIGN KEY (`InventoryID`) REFERENCES `bca_iteminventory`(`InventoryID`);	
+
+ALTER TABLE `bca_receicedtype`
+	ADD KEY `CompanyID` (`CompanyID`),
+	ADD KEY `PaymentTypeID` (`PaymentTypeID`),
+	ADD KEY `CCTypeID` (`CCTypeID`),
+	ADD KEY `BankAcctID` (`BankAcctID`),
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`);
+
+ALTER TABLE `bca_states`
+	ADD KEY `country_id` (`country_id`),
+	ADD FOREIGN KEY (`country_id`) REFERENCES `bca_countries`(`id`);
+
+ALTER TABLE `bca_cities`
+	ADD KEY `state_id` (`state_id`),
+	ADD FOREIGN KEY (`state_id`) REFERENCES `bca_states`(`id`);
+
+ALTER TABLE `bca_preference`
+	ADD FOREIGN KEY (`CompanyID`) REFERENCES `bca_company`(`CompanyID`),
+	ADD FOREIGN KEY (`CustomerCountryID`) REFERENCES `bca_countries`(`id`),
+	ADD FOREIGN KEY (`CustomerStateID`) REFERENCES `bca_states`(`id`),
+	ADD FOREIGN KEY (`InvoiceStyleID`) REFERENCES `bca_invoicestyle`(`InvoiceStyleID`),
+	ADD FOREIGN KEY (`VendorCountryID`) REFERENCES `bca_countries`(`id`),
+	ADD FOREIGN KEY (`VendorStateID`) REFERENCES `bca_states`(`id`),
+	ADD FOREIGN KEY (`POStyleID`) REFERENCES `bca_postyle`(`POStyleID`),
+	ADD FOREIGN KEY (`EmployeeCountryID`) REFERENCES `bca_countries`(`id`),
+	ADD FOREIGN KEY (`EmployeeStateID`) REFERENCES `bca_states`(`id`),
+	ADD FOREIGN KEY (`SalesTaxID`) REFERENCES `bca_salestax`(`SalesTaxID`);	
 --
 -- AUTO_INCREMENT for table `upsmailinnovation`
 --
