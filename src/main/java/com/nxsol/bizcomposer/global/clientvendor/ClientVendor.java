@@ -113,17 +113,17 @@ public class ClientVendor {
 
 	// priority is determined when the customer/vendor should be stored/backed up
 	private int priority = PRIORITY_BACKUP;
-	private ClientVendorHasService hasServices = null;
+	//private ClientVendorHasService hasServices = null;
 
 //    private ClientVendorHasService hasServices = null;
 
-	public ClientVendorHasService getHasServices() {
-		return hasServices;
-	}
-
-	public void setHasServices(ClientVendorHasService hasServices) {
-		this.hasServices = hasServices;
-	}
+//	public ClientVendorHasService getHasServices() {
+//		return hasServices;
+//	}
+//
+//	public void setHasServices(ClientVendorHasService hasServices) {
+//		this.hasServices = hasServices;
+//	}
 
 	// not in database, for finalcial charge
 	private double overdueAmount = 0.0;

@@ -80,7 +80,7 @@ $(function() {
 												<tbody>
 												<tr>
 												    <td>
-                                                        <spring:message code="BzComposer.global.customerid" />
+                                                        <spring:message code="BzComposer.global.vendorid" />
                                                     </td>
                                                     <td>
                                                         <form:input path="clientVendorID" readonly="true" />
@@ -408,6 +408,7 @@ $(function() {
                                                             <tr>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.company" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td colspan="2">
                                                                     <form:input type="text" path="bscname" style="width:90%;" />
@@ -424,12 +425,14 @@ $(function() {
                                                             <tr>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.firstname" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td>
                                                                     <form:input type="text" path="bsfirstName" />
                                                                 </td>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.lastname" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td>
                                                                     <form:input type="text" path="bslastName" />
@@ -439,6 +442,7 @@ $(function() {
                                                             <tr>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.address1" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td colspan="2">
                                                                     <form:input type="text" path="bsaddress1" style="width:90%;" />
@@ -457,13 +461,16 @@ $(function() {
                                                             <tr>
                                                                 <td>
                                                                     <div class="lblZipcodeShow"><spring:message code="BzComposer.global.zipcode" /></div>
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                     <div class="lblPostalcodeShow"><spring:message code="BzComposer.global.postalcodes" /></div>
+                                                                    
                                                                 </td>
                                                                 <td>
                                                                     <form:input path="bszipCode" onfocusout="loadAddressDetailsByZipcode(this.value, 2)" onkeypress="return numbersonly(event,this.value)" />
                                                                 </td>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.city" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td>
                                                                     <form:select path="bscity" id="cityID2" style="width:200px;">
@@ -527,6 +534,7 @@ $(function() {
                                                             <tr>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.company" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td colspan="2">
                                                                     <form:input type="text" path="shcname" style="width:90%;" />
@@ -543,12 +551,14 @@ $(function() {
                                                             <tr>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.firstname" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td>
                                                                     <form:input type="text" path="shfirstName" />
                                                                 </td>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.lastname" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td>
                                                                     <form:input type="text" path="shlastName" />
@@ -558,6 +568,7 @@ $(function() {
                                                             <tr>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.address1" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td colspan="2">
                                                                     <form:input type="text" path="shaddress1" style="width:90%;" />
@@ -576,6 +587,7 @@ $(function() {
                                                             <tr>
                                                                 <td>
                                                                     <div class="lblZipcodeShow"><spring:message code="BzComposer.global.zipcode" /></div>
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                     <div class="lblPostalcodeShow"><spring:message code="BzComposer.global.postalcodes" /></div>
                                                                 </td>
                                                                 <td>
@@ -583,6 +595,7 @@ $(function() {
                                                                 </td>
                                                                 <td>
                                                                     <spring:message code="BzComposer.global.city" />
+                                                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                                                 </td>
                                                                 <td>
                                                                     <form:select path="shcity" id="cityID3" style="width:200px;">

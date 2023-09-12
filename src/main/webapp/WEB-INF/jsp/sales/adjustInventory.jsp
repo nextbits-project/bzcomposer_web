@@ -48,18 +48,23 @@ table.tabla-listados tbody tr:nth-child(even) { background-color: #dddddd; }
     <div style="float:left;">
 	<span style="font-size:1.2em;font-weight:normal;color:#838383;margin:30px 0px 15px 0px;border-bottom:1px dotted #333;padding:0 0 .3em 0;">
 		<spring:message code="BzComposer.adjustinventory.adjustinventorytitle"/>
+		
+		
 	</span>
-	<table>
+	
+	<%-- <table>
 		<tr>
 			<td><spring:message code="BzComposer.searchbuttontext" />:</td>
 			<td><input type="text" id="myInput"></td>
 			<td colspan="4">&nbsp;</td>
 		</tr>
-	</table>
+	</table> --%>
 	</div>
-	<div style="float:right;"><br/>
-        <table style="font-size: 14px;">
+	<div style="float:right;"><!-- <br/> -->
+        <table style="font-size: 14px; margin-bottom:5px">
+       
             <tr>
+            
                 <!--<td><a class="formbutton" onclick="callEdit();" style="padding:5 20px;"><spring:message code='BzComposer.global.edit'/></a></td>-->
                 <td><a class="formbutton" onclick="ApplyInventory();" style="padding:5 20px;"><spring:message code='BzComposer.global.save'/></a></td>
               <!--   <td><a class="formbutton" onclick="resetInventoryPage();" style="padding:5 20px;"><spring:message code='BzComposer.global.new'/></a></td>-->
@@ -67,7 +72,13 @@ table.tabla-listados tbody tr:nth-child(even) { background-color: #dddddd; }
                     <a class="formbutton" onclick="printInventoryList('SavingCheckLists');" style="padding:5 20px;display:none;" id="InvPrintingCheckListBtn"><spring:message code='BzComposer.global.SavingCheckLists'/></a>
                 </td>
             </tr>
+             <tr>
+            <td><spring:message code="BzComposer.searchbuttontext" />:</td>
+			<td><input type="text" id="myInput" style="margin-top:10px"></td>
+			<!-- <td colspan="8">&nbsp;</td> -->
+			</tr>
         </table>
+       
     </div>
 </div>
 <br/>
@@ -102,10 +113,10 @@ table.tabla-listados tbody tr:nth-child(even) { background-color: #dddddd; }
                                 <c:if test="${objList1.itemType == '1'}">
                                     <td>${objList1.itemName}</td>
                                     <td>${objList1.location}</td>
-                                    <td>${objList1.reorderPoint}</td>
-                                    <td><input id='${loop.index}expectedQty' value="${objList1.expectedQty}" onchange="addRowIndex(${loop.index})" onkeypress="return numbersonly(event, this.value)" style="width:100px;" /></td>
-                                    <td><input id='${loop.index}countedQty' value="${objList1.qty}" onchange="addRowIndex(${loop.index})" onkeypress="return numbersonly(event, this.value)" style="width:100px;" /></td>
-                                    <td align="center">${objList1.qty - objList1.expectedQty}</td>
+                                    <td style="text-align: right;">${objList1.reorderPoint}</td>
+                                    <td><input id='${loop.index}expectedQty' value="${objList1.expectedQty}" onchange="addRowIndex(${loop.index})" onkeypress="return numbersonly(event, this.value)" style="width:100px;text-align: right;" /></td>
+                                    <td> <input id='${loop.index}countedQty' value="${objList1.qty}" onchange="addRowIndex(${loop.index})" onkeypress="return numbersonly(event, this.value)" style="width:100px;text-align: right;" /></td>
+                                    <td style="text-align: right;">${objList1.qty - objList1.expectedQty}</td>
                                     <td>${objList1.dateReceived}</td>
                                     <td><input id="${loop.index}memo" style="width:300px;" value="${objList1.memo}" onchange="addRowIndex(${loop.index})" /></td>
                                 </c:if>

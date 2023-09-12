@@ -6,6 +6,7 @@
 
 package com.avibha.bizcomposer.sales.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -3994,9 +3995,13 @@ public class InvoiceInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				hlookup.setLast3MonthAmt(Double.parseDouble(truncate(rs.getString("Amt3Month")))/2);
-				hlookup.setLast1YearAmt(Double.parseDouble(truncate(rs.getString("Amt1Year")))/2);
-				hlookup.setTotalOverdueAmt(Double.parseDouble(truncate(rs.getString("TotalOverdueAmt")))/2);
+//				hlookup.setLast3MonthAmt(Double.parseDouble(truncate(rs.getString("Amt3Month")))/2);
+//				hlookup.setLast1YearAmt(Double.parseDouble(truncate(rs.getString("Amt1Year")))/2);
+//				hlookup.setTotalOverdueAmt(Double.parseDouble(truncate(rs.getString("TotalOverdueAmt")))/2);
+				hlookup.setLast3MonthAmt(Double.parseDouble(truncate(rs.getString("Amt3Month"))));
+				hlookup.setLast1YearAmt(Double.parseDouble(truncate(rs.getString("Amt1Year"))));
+				hlookup.setTotalOverdueAmt(Double.parseDouble(truncate(rs.getString("TotalOverdueAmt"))));
+				
 				hlookup.setLastOrderDate(rs.getString("LastOrderDate"));
 			}
 		} catch (Exception ex) {
@@ -4020,7 +4025,9 @@ public class InvoiceInfo {
 		PreparedStatement pstmt = null;
 		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<TrHistoryLookUp> objList = new ArrayList<>();
-		double finalTotal = 0, finalBalance = 0;
+		BigDecimal finalTotal = new BigDecimal("0"), finalBalance = new BigDecimal("0");
+		
+		
 		String cvIdCase = "";
 		if(!cvId.isEmpty()){
 			cvIdCase = "i.ClientVendorID ="+cvId+" AND";
@@ -4052,9 +4059,10 @@ public class InvoiceInfo {
 				hlookup.setName(rs.getString(8));
 				hlookup.setClientVendorID(rs.getString(9));
 				objList.add(hlookup);
-
-				finalTotal += Double.parseDouble(hlookup.getTotal());
-				finalBalance += Double.parseDouble(hlookup.getBalance());
+				BigDecimal total=new BigDecimal(hlookup.getTotal());
+				finalTotal=total.add(finalTotal);
+				BigDecimal balance=new BigDecimal(hlookup.getBalance());
+				finalBalance =balance.add(finalBalance);
 			}
 			request.setAttribute("FinalTotal", finalTotal);
 			request.setAttribute("FinalBalance", finalBalance);
