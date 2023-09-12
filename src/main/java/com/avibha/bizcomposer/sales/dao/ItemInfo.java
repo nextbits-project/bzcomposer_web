@@ -29,38 +29,50 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
-
-import com.avibha.bizcomposer.sales.forms.ItemDto;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.struts.action.ActionServlet;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
 
-import com.avibha.bizcomposer.accounting.dao.Invoice;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
+import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
-import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.nxsol.bizcomposer.common.SmdItemGroupPrice;
+import com.nxsol.bizcomposer.common.SmdItemImage;
+import com.nxsol.bizcomposer.common.SmdSubProduct;
 import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 import com.nxsol.bizcomposer.common.TblItemInventory;
-import com.nxsol.bizcomposer.common.TblStore;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
+import com.nxsol.bzcomposer.company.repositories.SmdItemGroupPriceRepository;
+import com.nxsol.bzcomposer.company.repositories.SmdItemImageRepository;
+import com.nxsol.bzcomposer.company.repositories.SmdSubProductRepository;
+import com.nxsol.bzcomposer.company.repositories.TblInventoryUnitMeasureRepository;
+import com.nxsol.bzcomposer.company.repositories.TblItemInventoryRepository;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /*
  * 
  */
 public class ItemInfo {
+	
+	private TblInventoryUnitMeasureRepository tTblInventoryUnitMeasureRepository;
+	
+	private TblItemInventoryRepository tTblItemInventoryRepository;
+	
+	private SmdSubProductRepository smdSubProductRepository;
+	private SmdItemGroupPriceRepository smdItemGroupPriceRepository;
+	private SmdItemImageRepository smdItemImageRepository;
+
 
 	public ArrayList getDicontinuedItemList(String datesCombo, String fromDate, String toDate, String sortBy,
 			String cId, HttpServletRequest request, ItemDto form) {
@@ -2585,34 +2597,48 @@ public class ItemInfo {
 
 		                 stmt = con.createStatement();
 		                 stmt.executeUpdate(sql_5);
-
-		                 String sql_6 = "INSERT INTO smd_itemgroupprice (CompanyID,"
-		                         + "InventoryID,"
-		                         + "CustomerGroupID,DefaultPrice,Price) " + "values (" + ConstValue.companyId + "," + //CompanyID
-		                         "'" + String.valueOf(inventoryID) + "'," + //InventoryID
-		                         0 + "," +//CustomerGroupID
-		                         "'N'" + "," + //DefaultPrice
-		                         "" + inventory.getSalePrice() + ")"; //Price
-		                 stmt.close();
-		                 stmt = con.createStatement();
-		                 stmt.executeUpdate(sql_6);
+		                 SmdItemGroupPrice smdItemGroupPrice = new SmdItemGroupPrice();
 		                 
+		                 smdItemGroupPrice.setCompanyId(ConstValue.companyId);
+		                 smdItemGroupPrice.setInventoryId(String.valueOf(inventoryID));
+		                 smdItemGroupPrice.setCustomerGroupId(0);
+		                 smdItemGroupPrice.setDefaultPrice("N");
+		                 smdItemGroupPrice.setPrice(inventory.getSalePrice());
+		                 smdItemGroupPriceRepository.save(smdItemGroupPrice);
+		                 
+//		                 String sql_6 = "INSERT INTO smd_itemgroupprice (CompanyID,"
+//		                         + "InventoryID,"
+//		                         + "CustomerGroupID,DefaultPrice,Price) " + "values (" + ConstValue.companyId + "," + //CompanyID
+//		                         "'" + String.valueOf(inventoryID) + "'," + //InventoryID
+//		                         0 + "," +//CustomerGroupID
+//		                         "'N'" + "," + //DefaultPrice
+//		                         "" + inventory.getSalePrice() + ")"; //Price
+//		                 stmt.close();
+//		                 stmt = con.createStatement();
+//		                 stmt.executeUpdate(sql_6);
+		              
 		                 String sql_7 = "SELECT InventoryId FROM  bca_iteminventory "
 		                         + "WHERE InventoryId = " + parentID + " " + ""
 		                         + "AND isCategory = 0 AND CompanyID = " + ConstValue.companyId;
 		                 stmt.close();
 		                 stmt = con.createStatement();
 		                 rs = stmt.executeQuery(sql_7);
+		                 SmdSubProduct smdSubProduct;
 		                 while (rs.next()) {
-		                     String sql_8 = "INSERT INTO  smd_subproduct(MasterProductID,"
-		                             + "SubProductID) " + "values (" + parentID + "," + inventoryID + ")";
-		                     try {
-		                         stmt = con.createStatement();
-		                         stmt.executeUpdate(sql_8);
-		                         stmt.close();
-		                     } catch (Exception ex) {
-		                         ex.printStackTrace();
-		                     }
+		                	 	 smdSubProduct = new  SmdSubProduct();
+				                 smdSubProduct.setMasterProductId(parentID);;
+				                 smdSubProduct.setSubProductId(inventoryID);
+				               
+				                 smdSubProductRepository.save(smdSubProduct);
+//		                     String sql_8 = "INSERT INTO  smd_subproduct(MasterProductID,"
+//		                             + "SubProductID) " + "values (" + parentID + "," + inventoryID + ")";
+//		                     try {
+//		                         stmt = con.createStatement();
+//		                         stmt.executeUpdate(sql_8);
+//		                         stmt.close();
+//		                     } catch (Exception ex) {
+//		                         ex.printStackTrace();
+//		                     }
 		                 }
 		                 saveItemImage(inventory);
                  }
@@ -2640,41 +2666,53 @@ public class ItemInfo {
 
 	public void saveItemImage(TblItemInventory inventory)
 	{
-		SQLExecutor db= new SQLExecutor();
-		Connection con=null;
-    	con=db.getConnection();
-		Statement stmt = null;
-		  try{
-			  String sql = "INSERT INTO smd_itemimage (InventoryId,"
-		                + "CompanyId,Image,TitleImage) "
-		                + "VALUES ('" + String.valueOf(inventory.getInventoryID()) + "',"
-		                + ConstValue.companyId+ ",'"
-		                + inventory.getThumbnailURL() + "','Y')";
-
-		        String sql1 = "INSERT INTO smd_itemimage (InventoryId,"
-		                + "CompanyId,Image,TitleImage) "
-		                + "VALUES ('" + String.valueOf(inventory.getInventoryID()) + "',"
-		                + ConstValue.companyId + ",'" + inventory.getImageURL() + "','N')";
-			  stmt = con.createStatement();
-			  stmt.executeUpdate(sql);
-	          stmt.executeUpdate(sql1);
-              stmt.close();
-
-		  }catch (Exception e) {
-			// TODO: handle exception
-			  Loger.log(e.toString());
-		}finally {
-			try {
-				if (stmt != null) {
-					db.close(stmt);
-					}
-					if(con != null){
-					db.close(con);
-					}
-				} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		SmdItemImage smdItemImage = new SmdItemImage();
+		
+		smdItemImage.setInventoryId(String.valueOf(inventory.getInventoryID()));
+		smdItemImage.setCompanyId(ConstValue.companyId);
+		smdItemImage.setImage(inventory.getThumbnailURL());
+		smdItemImage.setTitleImage("Y");
+		
+		smdItemImageRepository.save(smdItemImage);
+		
+		smdItemImage.setTitleImage("N");
+		smdItemImageRepository.save(smdItemImage);
+		
+//		SQLExecutor db= new SQLExecutor();
+//		Connection con=null;
+//    	con=db.getConnection();
+//		Statement stmt = null;
+//		  try{
+//			  String sql = "INSERT INTO smd_itemimage (InventoryId,"
+//		                + "CompanyId,Image,TitleImage) "
+//		                + "VALUES ('" + String.valueOf(inventory.getInventoryID()) + "',"
+//		                + ConstValue.companyId+ ",'"
+//		                + inventory.getThumbnailURL() + "','Y')";
+//
+//		        String sql1 = "INSERT INTO smd_itemimage (InventoryId,"
+//		                + "CompanyId,Image,TitleImage) "
+//		                + "VALUES ('" + String.valueOf(inventory.getInventoryID()) + "',"
+//		                + ConstValue.companyId + ",'" + inventory.getImageURL() + "','N')";
+//			  stmt = con.createStatement();
+//			  stmt.executeUpdate(sql);
+//	          stmt.executeUpdate(sql1);
+//              stmt.close();
+//
+//		  }catch (Exception e) {
+//			// TODO: handle exception
+//			  Loger.log(e.toString());
+//		}finally {
+//			try {
+//				if (stmt != null) {
+//					db.close(stmt);
+//					}
+//					if(con != null){
+//					db.close(con);
+//					}
+//				} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 	}
 	public int getInventoryIDofUnclassifiedCatagery() {
 		SQLExecutor db = new SQLExecutor();
@@ -2769,6 +2807,7 @@ public class ItemInfo {
 	}
 	public boolean exportItem(HttpServletRequest request,String type)
 	{
+//		tblItemInventoryRepository.findByActiveAndCompanyIdAndParentIdOrderByInventoryCodeDesc();
 		SQLExecutor db = new SQLExecutor();
 		Connection con=null;
     	con=db.getConnection();
@@ -3695,49 +3734,51 @@ public class ItemInfo {
 	}
 	public TblInventoryUnitMeasure readInventoryUnitMeasure(int inventoryID)
 	{
-		SQLExecutor db= new SQLExecutor();
-		Connection con=null;
-    	con=db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
-		TblInventoryUnitMeasure row = new TblInventoryUnitMeasure();
-		  try{
-			  String sql =
-		                " SELECT * " +
-		                " FROM bca_inventoryunitmeasure " +
-		                " WHERE InventoryID = " +inventoryID+
-		                " AND CompanyID = " + ConstValue.companyId ;
-			  stmt = con.createStatement();
-			  rs = stmt.executeQuery(sql);
-			  while(rs.next())
-			  {
-				  	row.setInventoryID(rs.getInt("InventoryID"));
-	                row.setUnitCategoryID(rs.getInt("UnitCategoryID"));
-	                row.setSubUnitCategoryID(rs.getInt("subUnitCategoryID"));
-	                row.setWeightID(rs.getInt("WeightID"));
-	                row.setSizeH(rs.getInt("SizeH"));
-	                row.setSizeW(rs.getInt("SizeW"));
-	                row.setSizeL(rs.getInt("SizeL"));
-			  }
-		  }catch (Exception e) {
-			// TODO: handle exception
-			  Loger.log(e.toString());
-		}finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-					}
-				if (stmt != null) {
-					db.close(stmt);
-					}
-					if(con != null){
-					db.close(con);
-					}
-				} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		  return row;
+		return tTblInventoryUnitMeasureRepository.findByInventoryIDAndCompanyID(inventoryID, ConstValue.companyId);
+		
+//		SQLExecutor db= new SQLExecutor();
+//		Connection con=null;
+//    	con=db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		TblInventoryUnitMeasure row = new TblInventoryUnitMeasure();
+//		  try{
+//			  String sql =
+//		                " SELECT * " +
+//		                " FROM bca_inventoryunitmeasure " +
+//		                " WHERE InventoryID = " +inventoryID+
+//		                " AND CompanyID = " + ConstValue.companyId ;
+//			  stmt = con.createStatement();
+//			  rs = stmt.executeQuery(sql);
+//			  while(rs.next())
+//			  {
+//				  	row.setInventoryID(rs.getInt("InventoryID"));
+//	                row.setUnitCategoryID(rs.getInt("UnitCategoryID"));
+//	                row.setSubUnitCategoryID(rs.getInt("subUnitCategoryID"));
+//	                row.setWeightID(rs.getInt("WeightID"));
+//	                row.setSizeH(rs.getInt("SizeH"));
+//	                row.setSizeW(rs.getInt("SizeW"));
+//	                row.setSizeL(rs.getInt("SizeL"));
+//			  }
+//		  }catch (Exception e) {
+//			// TODO: handle exception
+//			  Loger.log(e.toString());
+//		}finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//					}
+//				if (stmt != null) {
+//					db.close(stmt);
+//					}
+//					if(con != null){
+//					db.close(con);
+//					}
+//				} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		  return row;
 	}
 	public String readItemAsin(int inventory)
 	{

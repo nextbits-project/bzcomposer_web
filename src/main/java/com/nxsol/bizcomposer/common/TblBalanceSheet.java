@@ -3,71 +3,81 @@ package com.nxsol.bizcomposer.common;
 import java.util.Calendar;
 import java.util.Date;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "bca_balancesheetitem")
 public class TblBalanceSheet implements Cloneable {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int balancesheetitemID;
+	private long categoryId = -1;// foreign key
 
-	  private long categoryId = -1;
+	private long categoryTypeID = -1;//// foreign key
 
-	    private long categoryTypeID = -1;
+	private String name = "";
 
-	    private String name = "";
+	private double amount = 0.00;
 
-	    private double amount = 0.00;
+	Calendar cal = Calendar.getInstance();
+	private Date date = cal.getTime();
 
-	    Calendar cal = Calendar.getInstance();
-	    private Date date = cal.getTime();
+	private int companyID; // =0; foreign key
 
-	    private int companyID=0;
-	    
-	    public TblBalanceSheet() {
-	        
-	    }
+	public TblBalanceSheet() {
 
-	    public long getcategoryId() {
-	        return categoryId;
-	    }
+	}
 
-	    public void setcategoryId(long categoryId) {
-	        this.categoryId = categoryId;
-	    }
+	public long getcategoryId() {
+		return categoryId;
+	}
 
-	    public long getCategoryTypeID() {
-	        return categoryTypeID;
-	    }
+	public void setcategoryId(long categoryId) {
+		this.categoryId = categoryId;
+	}
 
-	    public void setCategoryTypeID(long categoryTypeID) {
-	        this.categoryTypeID = categoryTypeID;
-	    }
+	public long getCategoryTypeID() {
+		return categoryTypeID;
+	}
 
-	    public String getName() {
-	        return name;
-	    }
+	public void setCategoryTypeID(long categoryTypeID) {
+		this.categoryTypeID = categoryTypeID;
+	}
 
-	    public void setName(String name) {
-	        this.name = name;
-	    }
+	public String getName() {
+		return name;
+	}
 
-	    public double getAmount() {
-	        return amount;
-	    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-	    public void setAmount(double amount) {
-	        this.amount = amount;
-	    }
+	public double getAmount() {
+		return amount;
+	}
 
-	    public Date getDate() {
-	        return date;
-	    }
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
 
-	    public void setDate(Date date) {
-	        this.date = date;
-	    }
+	public Date getDate() {
+		return date;
+	}
 
-	    public synchronized  Object clone(){
-	        try {
-	            return super.clone();
-	        } catch (CloneNotSupportedException ex) {
-	            ex.printStackTrace();
-	        }
-	       return null;
-	    }
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public synchronized Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
 }

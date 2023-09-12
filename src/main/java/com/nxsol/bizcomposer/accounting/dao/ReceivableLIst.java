@@ -1,6 +1,5 @@
 package com.nxsol.bizcomposer.accounting.dao;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -16,7 +15,13 @@ import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcomposer.jasper.pojo.BillingBoardReport;
 import com.nxsol.bizcomposer.jasper.pojo.BillingStatementReport;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
-import com.pritesh.bizcomposer.accounting.bean.*;
+import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
+import com.pritesh.bizcomposer.accounting.bean.SalesBillingTable;
+import com.pritesh.bizcomposer.accounting.bean.TblAccount;
+import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
+import com.pritesh.bizcomposer.accounting.bean.TblPayment;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
+import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 
 public interface ReceivableLIst {
 

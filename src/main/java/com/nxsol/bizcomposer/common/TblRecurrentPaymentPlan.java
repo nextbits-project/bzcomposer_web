@@ -2,15 +2,20 @@ package com.nxsol.bizcomposer.common;
 
 import org.apache.struts.action.ActionForm;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblRecurrentPaymentPlan extends ActionForm{
 
-	private int PlanID =-1;
-    private int PayeeID =-1;
-    private int PaymentAccountID=-1;
-    private int PaymentTypeID=-1;
-    private double Amount=0.0;
+	private static final long serialVersionUID = 1L;
+	// no primary key or unique key
+	private int PlanID =-1; // my be foreign key
+    private int PayeeID =-1;  // my be foreign key
+    private int PaymentAccountID=-1;  // my be foreign key
+    private int PaymentTypeID=-1; // foreign key 
+    private double Amount; //=0.0;
     private boolean SamePaymentAmount=true;
-    private double LastPaymentAmount=0.0;
+    private double LastPaymentAmount;//=0.0;
     private String FirstPaymentDate="";
     private String Frequency="";
     private int days=-1;
@@ -20,13 +25,13 @@ public class TblRecurrentPaymentPlan extends ActionForm{
     private String NextPaymentDate="";
     private String Status="";    
     private String planSetupDate="";
-    private boolean active=false;
+    private boolean active;//=false;
     private String memo="";    
-    private long serviceID=-1;
-    private boolean isToBePrinted=false;
-    private double customerCurrentBalance = 0.00;
-    private boolean rdoUntillChange = false;
-    private boolean rdUntilTotalOf = false;
+    private long serviceID=-1;  // my be foreign key
+    private boolean isToBePrinted;//=false;
+    private double customerCurrentBalance;// = 0.00;
+    private boolean rdoUntillChange;// = false;
+    private boolean rdUntilTotalOf;// = false;
     
 	public boolean isRdUntilTotalOf() {
 		return rdUntilTotalOf;

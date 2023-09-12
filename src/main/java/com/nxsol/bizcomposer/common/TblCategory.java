@@ -1,33 +1,49 @@
 package com.nxsol.bizcomposer.common;
 
-public class TblCategory implements Cloneable{
-private long id = -1;
-    
-    private long categoryTypeID = -1;
-    
-    private String name = "";
-    
-    private String categoryNumber = "";
-    
-    private String parent = "";
-    
-    private String description ="";
-    
-    private int budgetCategoryID = -1;
-    
-    private int subLevel=0;
-    
-    private String categoryTypeName = "";
-    
-    private String budgetCategoryName = "";
-    
-    private boolean subAccountOf = false;
-    
-    private String accountNumber = "";
-    
-    private int accountID = -1;
-    
-    public int getAccountID() {
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
+@Entity // bca_category also bca_businesscategories
+@Table(name = "bca_category")
+public class TblCategory implements Cloneable {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "CategoryID")
+	private long id = -1;
+
+	private long categoryTypeID = -1;
+
+	private String name = "";
+
+	@Column(name = "cateNumber")
+	private String categoryNumber = "";
+
+	private String parent = "";
+
+	private String description = "";
+
+	private int budgetCategoryID = -1; // foreign key bca_budgetcategory(budgetCategoryID)
+	@Transient
+	private int subLevel;// =0;
+
+	@Transient
+	private String categoryTypeName = "";
+	@Transient
+	private String budgetCategoryName = "";
+	@Transient
+	private boolean subAccountOf;// = false;
+	@Transient
+	private String accountNumber = "";
+	@Transient
+	private int accountID = -1;
+
+	public int getAccountID() {
 		return accountID;
 	}
 
@@ -68,83 +84,83 @@ private long id = -1;
 	}
 
 	/** Creates a new instance of tblCategory */
-    public TblCategory() {
-    }
+	public TblCategory() {
+	}
 
-    public long getId() {
-        return id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public long getCategoryTypeID() {
-        return categoryTypeID;
-    }
+	public long getCategoryTypeID() {
+		return categoryTypeID;
+	}
 
-    public void setCategoryTypeID(long categoryTypeID) {
-        this.categoryTypeID = categoryTypeID;
-    }
+	public void setCategoryTypeID(long categoryTypeID) {
+		this.categoryTypeID = categoryTypeID;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getCategoryNumber() {
-        return categoryNumber;
-    }
+	public String getCategoryNumber() {
+		return categoryNumber;
+	}
 
-    public void setCategoryNumber(String categoryNumber) {
-        this.categoryNumber = categoryNumber;
-    }
+	public void setCategoryNumber(String categoryNumber) {
+		this.categoryNumber = categoryNumber;
+	}
 
-    public String getParent() {
-        return parent;
-    }
+	public String getParent() {
+		return parent;
+	}
 
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public int getBudgetCategoryID() {
-        return budgetCategoryID;
-    }
+	public int getBudgetCategoryID() {
+		return budgetCategoryID;
+	}
 
-    public void setBudgetCategoryID(int budgetCategoryID) {
-        this.budgetCategoryID = budgetCategoryID;
-    }
+	public void setBudgetCategoryID(int budgetCategoryID) {
+		this.budgetCategoryID = budgetCategoryID;
+	}
 
-    public int getSubLevel() {
-        return subLevel;
-    }
+	public int getSubLevel() {
+		return subLevel;
+	}
 
-    public void setSubLevel(int subLevel) {
-        this.subLevel = subLevel;
-    }
+	public void setSubLevel(int subLevel) {
+		this.subLevel = subLevel;
+	}
 
-    public String toString() {
-        return  getCategoryNumber().trim()+ " "+getName().trim();
-    }
+	public String toString() {
+		return getCategoryNumber().trim() + " " + getName().trim();
+	}
 
-    public synchronized Object clone(){
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException ex) {
-            ex.printStackTrace();
-        }
-       return null;
-    }
+	public synchronized Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
 }

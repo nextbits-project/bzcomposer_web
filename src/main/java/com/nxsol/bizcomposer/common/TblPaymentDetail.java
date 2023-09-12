@@ -1,98 +1,108 @@
 package com.nxsol.bizcomposer.common;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "bca_paymentdetail")
 public class TblPaymentDetail {
 
-private int id = -1;
-    
-    private int paymentID = -1;
-    
-    private Long refNumber = 0L;//credit card or check#
-    
-    private String memo ="";
-    
-    private int creditCardId = -1;    
-    
-    private String paypal_txn_id = "";
-    
-    private int gatewayTypeID=-1;
-            
-    private java.util.Date dateAdded = null;
-    
-    /**
-     * Creates a new instance of tblPaymentDetail
-     */
-    public TblPaymentDetail() {
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;// = -1;
 
-    public int getId() {
-        return id;
-    }
+	private int paymentID = -1; // foreign key
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	private Long refNumber;// = 0L;// credit card or check#
 
-    public int getPaymentID() {
-        return paymentID;
-    }
+	private String memo = "";
 
-    public void setPaymentID(int paymentID) {
-        this.paymentID = paymentID;
-    }
+	private int creditCardId = -1;
 
-    public Long getRef() {
-        return getRefNumber();
-    }
+	private String paypal_txn_id = "";
 
-    public void setRef(Long ref) {
-        this.setRefNumber(ref);
-    }
-    
-    public java.util.Date getDateAdded() {
-        return dateAdded;
-    }
+	private int gatewayTypeID = -1;
 
-    public void setDateAdded(java.util.Date dateAdded) {
-        this.dateAdded = dateAdded;
-    }
+	private java.util.Date dateAdded;// = null;
 
-    public Long getRefNumber() {
-        return refNumber;
-    }
+	/**
+	 * Creates a new instance of tblPaymentDetail
+	 */
+	public TblPaymentDetail() {
+	}
 
-    public void setRefNumber(Long refNumber) {
-        this.refNumber = refNumber;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public String getMemo() {
-        return memo;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
+	public int getPaymentID() {
+		return paymentID;
+	}
 
-    public int getCreditCardId() {
-        return creditCardId;
-    }
+	public void setPaymentID(int paymentID) {
+		this.paymentID = paymentID;
+	}
 
-    public void setCreditCardId(int creditCardId) {
-        this.creditCardId = creditCardId;
-    }
+	public Long getRef() {
+		return getRefNumber();
+	}
 
-    public int getGatewayTypeID() {
-        return gatewayTypeID;
-    }
+	public void setRef(Long ref) {
+		this.setRefNumber(ref);
+	}
 
-    public void setGatewayTypeID(int gatewayTypeID) {
-        this.gatewayTypeID = gatewayTypeID;
-    }
+	public java.util.Date getDateAdded() {
+		return dateAdded;
+	}
 
-    public String getPaypal_txn_id() {
-        return paypal_txn_id;
-    }
+	public void setDateAdded(java.util.Date dateAdded) {
+		this.dateAdded = dateAdded;
+	}
 
-    public void setPaypal_txn_id(String paypal_txn_id) {
-        this.paypal_txn_id = paypal_txn_id;
-    }
+	public Long getRefNumber() {
+		return refNumber;
+	}
+
+	public void setRefNumber(Long refNumber) {
+		this.refNumber = refNumber;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public int getCreditCardId() {
+		return creditCardId;
+	}
+
+	public void setCreditCardId(int creditCardId) {
+		this.creditCardId = creditCardId;
+	}
+
+	public int getGatewayTypeID() {
+		return gatewayTypeID;
+	}
+
+	public void setGatewayTypeID(int gatewayTypeID) {
+		this.gatewayTypeID = gatewayTypeID;
+	}
+
+	public String getPaypal_txn_id() {
+		return paypal_txn_id;
+	}
+
+	public void setPaypal_txn_id(String paypal_txn_id) {
+		this.paypal_txn_id = paypal_txn_id;
+	}
 }

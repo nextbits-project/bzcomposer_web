@@ -5,16 +5,16 @@ import java.util.Date;
 public class BillingStatement {
 
 	public boolean select = false;
-    public int statementNo = -1;
+    public int statementNo = -1; // primary key
     public Date statementDate = null;
     public int cvID = -1;
-    public int invoiceID = -1;
+    public int invoiceID = -1;// foreign key
     public double amount = 0.0;
     public int type = 0;
     public double overdueAmount = 0.0;
     public double overDueServiceCharge = 0.0;
     public String statementFor = "";
-    public String customerName = "";
+    public String customerName = "";// may be promoted as foreign key using customer id 
     
     public double paidAmount = 0.0;
     public Date paidDate = null;

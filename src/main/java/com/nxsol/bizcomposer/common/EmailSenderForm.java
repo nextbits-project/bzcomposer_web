@@ -1,8 +1,5 @@
 package com.nxsol.bizcomposer.common;
 
-import java.io.File;
-import java.io.Serializable;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.upload.FormFile;
 public class EmailSenderForm extends ActionForm {

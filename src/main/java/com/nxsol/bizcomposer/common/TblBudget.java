@@ -1,112 +1,129 @@
 package com.nxsol.bizcomposer.common;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "bca_budget")
 public class TblBudget {
-	
-		int BudgetID=-1;
-	    private String year = "";
-	    private int companyID = -1;
-	    private int companyBudget = 0;
-	    private String Budgetname = "";
-	    private int cvId = -1;
-	    private long cvServiceId = -1;
-	    private int isDefault = 0;
-	    private int isDual = 0;
 
-	    public int getBudgetID() {
-	        return BudgetID;
-	    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "BudgetID")	
+	int budgetID;// = -1;
+	private String year = "";
+	private int companyID = -1;// foreign key
+	private int companyBudget;// = 0;
+	private String Budgetname = "";
+	private int cvId = -1;// references  bca_clientvendorservice(clientVendorID)
+	private long cvServiceId = -1;// foreign key
+	private int isDefault;// = 0;
+	private int isDual;// = 0;
 
-	    public void setBudgetID(int budgetID) {
-	        this.BudgetID = budgetID;
-	    }
+	public int getBudgetID() {
+		return budgetID;
+	}
 
-	    public String getYear() {
-	        return year;
-	    }
+	public void setBudgetID(int budgetID) {
+		this.budgetID = budgetID;
+	}
 
-	    public void setYear(String year) {
-	        this.year = year;
-	    }
+	public String getYear() {
+		return year;
+	}
 
-	    public int getCompanyID() {
-	        return companyID;
-	    }
+	public void setYear(String year) {
+		this.year = year;
+	}
 
-	    public void setCompanyID(int companyID) {
-	        this.companyID = companyID;
-	    }
+	public int getCompanyID() {
+		return companyID;
+	}
 
-	    public int getCompanyBudget() {
-	        return companyBudget;
-	    }
+	public void setCompanyID(int companyID) {
+		this.companyID = companyID;
+	}
 
-	    public void setCompanyBudget(int companyBudget) {
-	        this.companyBudget = companyBudget;
-	    }
+	public int getCompanyBudget() {
+		return companyBudget;
+	}
 
-	    public String getBudgetname() {
-	        return Budgetname;
-	    }
+	public void setCompanyBudget(int companyBudget) {
+		this.companyBudget = companyBudget;
+	}
 
-	    public void setBudgetname(String Budgetname) {
-	        this.Budgetname = Budgetname;
-	    }
-	    
-	    public String toString() { return getBudgetname();}
-	    
-	    public boolean equals(Object obj) {
-	        //check for self-comparison
-	        if ( this == obj ) return true;        
-	        if ( !(obj instanceof TblBudget) ) return false;
-	        
-	        TblBudget other = (TblBudget)obj;        
-	        if (this.BudgetID!=other.BudgetID) return false;
-	        
-	        return true;
-	        
-	    }
+	public String getBudgetname() {
+		return Budgetname;
+	}
 
-	    public int getCvId() {
-	        return cvId;
-	    }
+	public void setBudgetname(String Budgetname) {
+		this.Budgetname = Budgetname;
+	}
 
-	    public void setCvId(int cvId) {
-	        this.cvId = cvId;
-	    }
+	public String toString() {
+		return getBudgetname();
+	}
 
-	    public long getCvServiceId() {
-	        return cvServiceId;
-	    }
+	public boolean equals(Object obj) {
+		// check for self-comparison
+		if (this == obj)
+			return true;
+		if (!(obj instanceof TblBudget))
+			return false;
 
-	    public void setCvServiceId(long cvServiceId) {
-	        this.cvServiceId = cvServiceId;
-	    }
+		TblBudget other = (TblBudget) obj;
+		if (this.budgetID != other.budgetID)
+			return false;
 
-	    /**
-	     * @return the isDefault
-	     */
-	    public int getIsDefault() {
-	        return isDefault;
-	    }
+		return true;
 
-	    /**
-	     * @param isDefault the isDefault to set
-	     */
-	    public void setIsDefault(int isDefault) {
-	        this.isDefault = isDefault;
-	    }
+	}
 
-	    /**
-	     * @return the isDual
-	     */
-	    public int getIsDual() {
-	        return isDual;
-	    }
+	public int getCvId() {
+		return cvId;
+	}
 
-	    /**
-	     * @param isDual the isDual to set
-	     */
-	    public void setIsDual(int isDual) {
-	        this.isDual = isDual;
-	    }
+	public void setCvId(int cvId) {
+		this.cvId = cvId;
+	}
+
+	public long getCvServiceId() {
+		return cvServiceId;
+	}
+
+	public void setCvServiceId(long cvServiceId) {
+		this.cvServiceId = cvServiceId;
+	}
+
+	/**
+	 * @return the isDefault
+	 */
+	public int getIsDefault() {
+		return isDefault;
+	}
+
+	/**
+	 * @param isDefault the isDefault to set
+	 */
+	public void setIsDefault(int isDefault) {
+		this.isDefault = isDefault;
+	}
+
+	/**
+	 * @return the isDual
+	 */
+	public int getIsDual() {
+		return isDual;
+	}
+
+	/**
+	 * @param isDual the isDual to set
+	 */
+	public void setIsDual(int isDual) {
+		this.isDual = isDual;
+	}
 }

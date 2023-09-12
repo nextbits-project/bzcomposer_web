@@ -1,9 +1,10 @@
 package com.pritesh.bizcomposer.accounting.bean;
 
-import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
-import org.apache.struts.action.ActionForm;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class TblPaymentDto {
 
 	private int id = -1;

@@ -2,9 +2,9 @@ package com.pritesh.bizcomposer.accounting.bean;
 
 import java.util.Date;
 
-import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import org.apache.struts.action.ActionForm;
 
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblTerm;
 
 public class ReceivableListBean extends ActionForm {
