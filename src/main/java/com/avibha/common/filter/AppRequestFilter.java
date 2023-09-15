@@ -57,4 +57,12 @@ public class AppRequestFilter extends OncePerRequestFilter {
 		ConfigurationInfo configInfo = new ConfigurationInfo();
 		configInfo.setCurrentRequest(request);
 	}
+
+//	@Override
+//	protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request,
+//			jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain)
+//			throws jakarta.servlet.ServletException, IOException {
+//		// TODO Auto-generated method stub
+//		
+//	}
  }

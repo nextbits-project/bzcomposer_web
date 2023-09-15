@@ -15,6 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,6 +29,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -46,32 +49,38 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
-import com.nxsol.bizcomposer.common.SmdItemGroupPrice;
-import com.nxsol.bizcomposer.common.SmdItemImage;
-import com.nxsol.bizcomposer.common.SmdSubProduct;
 import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 import com.nxsol.bizcomposer.common.TblItemInventory;
-import com.nxsol.bzcomposer.company.repositories.SmdItemGroupPriceRepository;
-import com.nxsol.bzcomposer.company.repositories.SmdItemImageRepository;
-import com.nxsol.bzcomposer.company.repositories.SmdSubProductRepository;
-import com.nxsol.bzcomposer.company.repositories.TblInventoryUnitMeasureRepository;
-import com.nxsol.bzcomposer.company.repositories.TblItemInventoryRepository;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.SmdItemgroupprice;
+import com.nxsol.bzcomposer.company.domain.SmdItemimage;
+import com.nxsol.bzcomposer.company.domain.SmdSubproduct;
+import com.nxsol.bzcomposer.company.repos.SmdItemgrouppriceRepository;
+import com.nxsol.bzcomposer.company.repos.SmdItemimageRepository;
+import com.nxsol.bzcomposer.company.repos.SmdSubproductRepository;
+//import com.nxsol.bzcomposer.company.repositories.SmdItemGroupPriceRepository;
+//import com.nxsol.bzcomposer.company.repositories.SmdItemImageRepository;
+//import com.nxsol.bzcomposer.company.repositories.SmdSubProductRepository;
+//import com.nxsol.bzcomposer.company.repositories.TblInventoryUnitMeasureRepository;
+//import com.nxsol.bzcomposer.company.repositories.TblItemInventoryRepository;
+import com.nxsol.bzcomposer.company.specs.service.AdjustmentReasonSpecs;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /*
  * 
  */
 public class ItemInfo {
 	
-	private TblInventoryUnitMeasureRepository tTblInventoryUnitMeasureRepository;
+//	private InventoryUnitMeasureRepository tTblInventoryUnitMeasureRepository;
+//	
+//	private ItemInventoryRepository tTblItemInventoryRepository;
 	
-	private TblItemInventoryRepository tTblItemInventoryRepository;
+//	private AdjustmentReasonRepository adjustmentReasonRepository; 
+	private AdjustmentReasonSpecs adjustmentReasonSpecs;
 	
-	private SmdSubProductRepository smdSubProductRepository;
-	private SmdItemGroupPriceRepository smdItemGroupPriceRepository;
-	private SmdItemImageRepository smdItemImageRepository;
+	private SmdSubproductRepository smdSubProductRepository;
+	private SmdItemgrouppriceRepository smdItemGroupPriceRepository;
+	private SmdItemimageRepository smdItemImageRepository;
 
 
 	public ArrayList getDicontinuedItemList(String datesCombo, String fromDate, String toDate, String sortBy,
@@ -287,6 +296,7 @@ public class ItemInfo {
 			}
 		}
 
+//		adjustmentReasonSpecs.getResponse(10,2,,) ;
 		try {
 
 			con = db.getConnection();
@@ -2597,13 +2607,13 @@ public class ItemInfo {
 
 		                 stmt = con.createStatement();
 		                 stmt.executeUpdate(sql_5);
-		                 SmdItemGroupPrice smdItemGroupPrice = new SmdItemGroupPrice();
-		                 
-		                 smdItemGroupPrice.setCompanyId(ConstValue.companyId);
+		                 SmdItemgroupprice smdItemGroupPrice = new SmdItemgroupprice();
+		                 BcaCompany bcaCompany  = new BcaCompany();
+		                 bcaCompany.setCompanyId( ConstValue.companyId);
 		                 smdItemGroupPrice.setInventoryId(String.valueOf(inventoryID));
 		                 smdItemGroupPrice.setCustomerGroupId(0);
-		                 smdItemGroupPrice.setDefaultPrice("N");
-		                 smdItemGroupPrice.setPrice(inventory.getSalePrice());
+		                 smdItemGroupPrice.setDefaultPrice(false);// jpa error "N"
+		                 smdItemGroupPrice.setPrice(BigDecimal.valueOf( inventory.getSalePrice()));
 		                 smdItemGroupPriceRepository.save(smdItemGroupPrice);
 		                 
 //		                 String sql_6 = "INSERT INTO smd_itemgroupprice (CompanyID,"
@@ -2623,9 +2633,9 @@ public class ItemInfo {
 		                 stmt.close();
 		                 stmt = con.createStatement();
 		                 rs = stmt.executeQuery(sql_7);
-		                 SmdSubProduct smdSubProduct;
+		                 SmdSubproduct smdSubProduct;
 		                 while (rs.next()) {
-		                	 	 smdSubProduct = new  SmdSubProduct();
+		                	 	 smdSubProduct = new  SmdSubproduct();
 				                 smdSubProduct.setMasterProductId(parentID);;
 				                 smdSubProduct.setSubProductId(inventoryID);
 				               
@@ -2666,16 +2676,19 @@ public class ItemInfo {
 
 	public void saveItemImage(TblItemInventory inventory)
 	{
-		SmdItemImage smdItemImage = new SmdItemImage();
+		SmdItemimage smdItemImage = new SmdItemimage();
 		
 		smdItemImage.setInventoryId(String.valueOf(inventory.getInventoryID()));
-		smdItemImage.setCompanyId(ConstValue.companyId);
+		
+		BcaCompany bcaCompany = new BcaCompany();
+		bcaCompany.setCompanyId(ConstValue.companyId);
+		smdItemImage.setCompany(bcaCompany);
 		smdItemImage.setImage(inventory.getThumbnailURL());
-		smdItemImage.setTitleImage("Y");
+		smdItemImage.setTitleImage(true); //  JPA error  "Y"
 		
 		smdItemImageRepository.save(smdItemImage);
 		
-		smdItemImage.setTitleImage("N");
+		smdItemImage.setTitleImage(false); //  JPA error "N"
 		smdItemImageRepository.save(smdItemImage);
 		
 //		SQLExecutor db= new SQLExecutor();
@@ -3734,8 +3747,9 @@ public class ItemInfo {
 	}
 	public TblInventoryUnitMeasure readInventoryUnitMeasure(int inventoryID)
 	{
-		return tTblInventoryUnitMeasureRepository.findByInventoryIDAndCompanyID(inventoryID, ConstValue.companyId);
+		//return tTblInventoryUnitMeasureRepository.findByInventoryIDAndCompanyID(inventoryID, ConstValue.companyId); jpa error
 		
+		return null;
 //		SQLExecutor db= new SQLExecutor();
 //		Connection con=null;
 //    	con=db.getConnection();

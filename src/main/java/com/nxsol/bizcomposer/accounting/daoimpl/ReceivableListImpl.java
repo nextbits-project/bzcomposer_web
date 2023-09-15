@@ -41,7 +41,6 @@ import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import com.nxsol.bizcompser.global.table.TblTerm;
 import com.nxsol.bizcompser.global.table.TblTermLoader;
-import com.nxsol.bzcomposer.company.repositories.TblCategoryTypeRepository;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.SalesBillingTable;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
@@ -78,7 +77,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	ConfigurationInfo configInfo = new ConfigurationInfo();
 	ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 	
-	private TblCategoryTypeRepository tblCategoryTypeRepository;
+//	private TblCategoryTypeRepository tblCategoryTypeRepository;
 
 	public double getTotalAmountForLabel() {
 		return totalAmount;
@@ -8734,8 +8733,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	@Override
 	public ArrayList<TblCategoryType> getCategoryType() {
-	
-		return tblCategoryTypeRepository.findByIsActiveOrderByCategoryTypeNameAsc(true);
+	return null;
+//		return tblCategoryTypeRepository.findByIsActiveOrderByCategoryTypeNameAsc(true);
 		
 //		Statement stmt = null;
 //		Connection con = null;

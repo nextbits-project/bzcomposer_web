@@ -20,7 +20,7 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 import com.nxsol.bizcomposer.common.TblItemInventory;
-import com.nxsol.bzcomposer.company.repositories.TblInventoryUnitMeasureRepository;
+
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -34,7 +34,7 @@ import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -49,7 +49,7 @@ import java.util.*;
  */
 public class ItemInfoDao {
 	
-	private TblInventoryUnitMeasureRepository tTblInventoryUnitMeasureRepository;
+//	private TblInventoryUnitMeasureRepository tTblInventoryUnitMeasureRepository;
 
 
 	public ArrayList getDicontinuedItemList(String datesCombo, String fromDate, String toDate, String sortBy,
@@ -2880,8 +2880,8 @@ public class ItemInfoDao {
 	}
 
 	public TblInventoryUnitMeasure readInventoryUnitMeasure(int inventoryID) {
-		
-		return tTblInventoryUnitMeasureRepository.findByInventoryIDAndCompanyID(inventoryID, ConstValue.companyId);
+		return null;
+//		return tTblInventoryUnitMeasureRepository.findByInventoryIDAndCompanyID(inventoryID, ConstValue.companyId); JPA error
 //
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = null;
@@ -2904,7 +2904,7 @@ public class ItemInfoDao {
 //				row.setSizeL(rs.getInt("SizeL"));
 //			}
 //		} catch (Exception e) {
-//			// TODO: handle exception
+
 //			Loger.log(e.toString());
 //		} finally {
 //			try {

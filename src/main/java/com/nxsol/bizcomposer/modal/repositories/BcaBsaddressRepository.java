@@ -1,8 +1,0 @@
-package com.nxsol.bizcomposer.modal.repositories;
-
-import com.nxsol.bizcomposer.modal.entities.BcaBsaddress;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-
-public interface BcaBsaddressRepository extends JpaRepository<BcaBsaddress, Integer> {
-}

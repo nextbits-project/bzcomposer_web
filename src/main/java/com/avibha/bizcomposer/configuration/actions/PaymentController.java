@@ -1,23 +1,24 @@
 package com.avibha.bizcomposer.configuration.actions;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.Iterator;
 
-import net.authorize.api.contract.v1.ANetApiResponse;
-import net.authorize.api.contract.v1.CreateTransactionResponse;
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
-import com.paypal.api.payments.RelatedResources;
-import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.PayPalRESTException;
 
-import java.util.Iterator;
+import net.authorize.api.contract.v1.ANetApiResponse;
+//import net.minidev.json.JSONObject;
 
 @Controller
 public class PaymentController {
@@ -69,7 +70,7 @@ public class PaymentController {
     @GetMapping("/paypal-payment-success")
     public String success(@RequestParam String paymentId, @RequestParam String PayerID, Model model) {
         System.out.println("--------------payment-success-------------");
-        JSONObject jsonResponse = new JSONObject();
+        JSONObject jsonResponse = new JSONObject(); 
         int paymentStatus = 0;
         try {
             Payment createdPayment = paypalUtils.executePaymentByPaymentIdAndPayerID(paymentId, PayerID);

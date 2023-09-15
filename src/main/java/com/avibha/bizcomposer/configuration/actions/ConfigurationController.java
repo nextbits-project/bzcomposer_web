@@ -1,5 +1,27 @@
 package com.avibha.bizcomposer.configuration.actions;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.avibha.bizcomposer.File.dao.CompanyInfo;
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationDetails;
@@ -16,30 +38,12 @@ import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.common.utility.CountryState;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.nxsol.bizcomposer.accounting.action.CategoryManagerController;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
-import org.apache.struts.action.*;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * @author sarfrazmalik
@@ -48,7 +52,7 @@ import java.util.List;
 public class ConfigurationController {
 
     private String pageActiveTab = "pageActiveTab";
-
+    ArrayList<MailTemplateDto> mailTemplateDtos;
     @RequestMapping(value = {"/Configuration"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(ConfigurationDto configDto, CompanyInfoDto companyInfoDto, HttpServletRequest request, Model model) throws IOException, ServletException {
         String forward = "/configuration/configuration";
@@ -653,9 +657,17 @@ public class ConfigurationController {
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
-            int hour = Integer.parseInt(newObj.getJSONObject("ScheduleDateDto").getString("hours"));
-            int min = Integer.parseInt(newObj.getJSONObject("ScheduleDateDto").getString("minutes"));
-            String period = newObj.getJSONObject("ScheduleDateDto").getString("period");
+            int hour = 0;
+            int min = 0;
+            String period = null;
+            
+            try {
+           hour = Integer.parseInt(newObj.getJSONObject("ScheduleDateDto").getString("hours"));
+           min = Integer.parseInt(newObj.getJSONObject("ScheduleDateDto").getString("minutes"));
+             period = newObj.getJSONObject("ScheduleDateDto").getString("period");
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
             Calendar c1 = Calendar.getInstance();
             c1.set(Calendar.HOUR, hour);
             c1.set(Calendar.MINUTE, min);
@@ -1277,13 +1289,19 @@ public class ConfigurationController {
             dao.getMasterReason(configDto);
             int templateId = Integer.parseInt(request.getParameter("templateId"));
             System.out.println("Selected Template ID:" + templateId);
-            ArrayList<MailTemplateDto> mailTemplateDtos = dao.getEmailActiveTemplates(templateId);
+           mailTemplateDtos = dao.getEmailActiveTemplates(templateId);
 
             JSONObject json=new JSONObject();
-            json.put("TemplateID", mailTemplateDtos.get(0).getTemplateID());
+            try {
+				json.put("TemplateID", mailTemplateDtos.get(0).getTemplateID());
+			
             json.put("TemplateName", mailTemplateDtos.get(0).getTemplateName());
             json.put("Content", mailTemplateDtos.get(0).getContent());
             json.put("Subject", mailTemplateDtos.get(0).getSubject());
+            } catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
             status = json.toString();
         }
         else if (action.equalsIgnoreCase("getShippingServiceById")) {
@@ -1292,10 +1310,17 @@ public class ConfigurationController {
             System.out.println("Selected ShippingServiceId ID:" + ShippingServiceId);
             ConfigurationDto configurationDto = dao.getSelectedUSPSShippingService(ShippingServiceId);
 
-            JSONObject json=new JSONObject();
+            JSONObject json = new JSONObject();
+            try {
+				json.put("TemplateID", mailTemplateDtos.get(0).getTemplateID());
+			
             json.put("ShippingServiceId", configurationDto.getRealTimeShippingServiceId());
             json.put("uspsServiceName", configurationDto.getRealTimeShippingService());
             json.put("uspsServicePrice", configurationDto.getRealTimeShippingPrice());
+            } catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
             status = json.toString();
         }
         else if (action.equalsIgnoreCase("addNewEmailTemplate")) {
