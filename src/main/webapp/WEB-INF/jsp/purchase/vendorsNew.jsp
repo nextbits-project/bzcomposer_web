@@ -78,12 +78,12 @@ table.tabla-listados tbody tr td { font-size: 12px; }
         <tbody id="custTableBody">
             <c:if test="${not empty VendorList}">
                 <c:forEach items="${VendorList}" var="objList" varStatus="loop">
-                    <tr id='${loop.index}$$' onclick="setRowId(${objList.clientVendorID}, ${loop.index}, true);">
+                    <tr id='${loop.index}$$' onclick="setRowId(${objList.clientVendorID}, ${loop.index}, true);" ondblclick="goToEdit(${objList.clientVendorID})">
                         <td>${objList.clientVendorID}</td>
                         <td>${objList.firstName} ${objList.middleName} ${objList.lastName}</td>
                         <td>${objList.cname}</td>
                         <td>${objList.type}</td>
-                        <td>${objList.address1}</td>
+                        <td style="min-width: 250px;">${objList.address1}</td>
                         <td>${objList.address2}</td>
                         <td>${objList.city}</td>
                         <td>${objList.stateName}</td>
@@ -214,6 +214,11 @@ function showSelectVendorDialog(){
         }
     });
     return false;
+}
+
+function goToEdit(clientVendorID){
+	window.open("Vendor?tabid=editVendor&cvId="+itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
+	
 }
 </script>
 <!-- dialog space -->

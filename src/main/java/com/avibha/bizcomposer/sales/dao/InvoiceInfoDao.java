@@ -510,11 +510,11 @@ public class InvoiceInfoDao {
                         + "\n" + rs.getString(3)
                         + "\n" + rs.getString(6) + ADDRESS_ASD22
                         + "\n" + rs.getString("CityName") + ", " + rs.getString("StateName") + " " + rs.getString("ZipCode");
-                if (configDto.isShowUSAInBillShipAddress()) {
-                    ship = ship + "\n" + rs.getString("CountryName");
-                } else if (!invoiceDto.getCountry().equals("231")) {
-                    ship = ship + "\n" + rs.getString("CountryName");
-                }
+//                if (configDto.isShowUSAInBillShipAddress()) {
+//                    ship = ship + "\n" + rs.getString("CountryName");
+//                } else if (!invoiceDto.getCountry().equals("231")) {
+//                    ship = ship + "\n" + rs.getString("CountryName");
+//                }
                 if (ship.equals(""))
                     invoiceDto.setShipTo("");
                 else {
@@ -591,11 +591,11 @@ public class InvoiceInfoDao {
                         + "\n" + rs.getString(3)
                         + "\n" + rs.getString(6) + ADDRESS_ASD22
                         + "\n" + rs.getString("CityName") + ", " + rs.getString("StateName") + " " + rs.getString("ZipCode");
-                if (configDto.isShowUSAInBillShipAddress()) {
-                    bill = bill + "\n" + rs.getString("CountryName");
-                } else if (!invoiceDto.getCountry().equals("231")) {
-                    bill = bill + "\n" + rs.getString("CountryName");
-                }
+//                if (configDto.isShowUSAInBillShipAddress()) {
+//                    bill = bill + "\n" + rs.getString("CountryName");
+//                } else if (!invoiceDto.getCountry().equals("231")) {
+//                    bill = bill + "\n" + rs.getString("CountryName");
+//                }
                 if (bill.equals(""))
                     invoiceDto.setBillTo("");
                 else {

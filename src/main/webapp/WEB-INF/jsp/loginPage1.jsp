@@ -16,6 +16,25 @@
 <style>
 .msg-error { text-align: center; color: red; font-weight: 500; }
 td { padding: 10px; }
+.show-password {
+    position: absolute;
+    top: 50%;
+    right: 120px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+.password-container{
+position:relative;
+}
+@media (max-width: 1200px) {
+           .show-password {
+    position: absolute;
+    top: 50%;
+    right: 35px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+}
 </style>
 <%
     Cookie[] cookies = request.getCookies();
@@ -164,9 +183,13 @@ td { padding: 10px; }
         				</tr>
         				<tr>
                             <td>&nbsp;&nbsp;&nbsp; <spring:message code="MultiUserForm.password" /></td>
-                            <td>
-                                <input type="password" class="form-control" name="password" style="width:300px;" value="${pass}" required />
+                            <td class="password-container">
+                                <input type="password" id="password" class="form-control" name="password" style="width:300px;" value="${pass}" required />
+                           		<span class="show-password" onclick="togglePasswordVisibility()">
+            					<i class="fa fa-eye" id="eye-icon"></i>
+        						</span>
                             </td>
+                            
                             <td></td>
                         </tr>
                         <tr>
@@ -291,6 +314,21 @@ function rememberMeChanged(){
         document.LoginForm.rememberMe.value = "off";;
     }
 }
+function togglePasswordVisibility() {
+    const passwordField = document.getElementById('password');
+    const eyeIcon = document.getElementById('eye-icon');
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+
 </script>
 </body>
 </html>

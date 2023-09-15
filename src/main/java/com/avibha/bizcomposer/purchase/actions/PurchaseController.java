@@ -78,7 +78,7 @@ public class PurchaseController {
 			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);
-
+			
 			vendorDto.setAnnualIntrestRate(configDto.getAnnualInterestRate()+"");
 			vendorDto.setMinFCharges(configDto.getMinCharge()+"");
 			vendorDto.setGracePrd(configDto.getGracePeriod()+"");
@@ -122,6 +122,7 @@ public class PurchaseController {
 		else if (action.equalsIgnoreCase("PurchaseOrder")) { // for purchase order
 			forward = "success_purOrder";
 		}
+		request.setAttribute("zippcode", 90004);
 		request.setAttribute("vendorDto", vendorDto);
 		return forward;
 	}

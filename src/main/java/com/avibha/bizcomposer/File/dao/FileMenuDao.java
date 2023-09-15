@@ -868,7 +868,7 @@ public class FileMenuDao {
                 cv.setRemainingCreditAmount(rs.getDouble("RemainingCredit"));
                 cv.setLineOfCreditTermID(rs.getInt("LineofCreditTermID"));
                 //person has service.
-                cv.setHasServices(new ClientVendorHasService(cv));
+               // cv.setHasServices(new ClientVendorHasService(cv));
                 cv.setBankAccountID(rs.getInt("BankAccountID"));
 
                 rs_1 = stmt_1.executeQuery(SqL);

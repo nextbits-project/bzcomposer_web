@@ -15,7 +15,7 @@
 </c:if>
 <title><spring:message code="BzComposer.customerinfotitle" /></title>
 <style>
-.redColor{color: red;}
+/* .redColor{color: red;} */
 .dataTables_filter{font-size: 14px;}
 .dataTables_info{font-size: 14px;}
 .dataTables_paginate{font-size: 14px;}
@@ -37,6 +37,7 @@ var oT = null;
 var r = null;
 function c(r) 
 {
+	console.log("c");
 	if (___) {
     	var t = (___5) ? "Microsoft.XMLHTTP" : "Msxml2.XMLHTTP";
     	try {
@@ -54,6 +55,7 @@ function c(r)
   	return o;
 }
 function oGET(oo, url) {
+	console.log("00"+oo);
 	try {
     	oo.open("GET", url, true);	
     	oo.send(null);
@@ -63,17 +65,20 @@ function oGET(oo, url) {
 }
 
 function writeSelectTH(){
+	console.log("writeSelectTH");
 	if (oT.readyState != 4 || oT.status != 200) {
 		return;
    	}
    	document.getElementById("t_history").innerHTML = o.responseText ;
 }
 function refreshTransationNow(radio_val,custid,dfrom,dto){
-	oT = c(writeSelectTH);
+	console.log("refreshTransationNow");
+	 oT = c(writeSelectTH); 
 	oGET(oT,'${pageContext.request.contextPath}/sales/addTransactionHistory.jsp?custId=' + custid+'&cond='+radio_val+'&pfrom='+dfrom+'&pto='+dto)
 }
 
 $(document).ready(function() {
+	console.log("inside default function");
 $('#custTable').DataTable({
     "iDisplayLength": 20,
     "ordering": true,
@@ -177,8 +182,8 @@ table.tabla-listados tbody tr td {
                                     <tr id='${loop.index}$$' onclick="setCutomerDataById(${objList.clientVendorID}, ${loop.index})">
                                         <td colspan="2" style="font-size:12px;" class="${objList.paymentUnpaid?'redColor':''}">
                                             ${objList.clientVendorID} : ${objList.cname}
-                                            <%-- <input type="hidden" id="fName" value="${objList.firstName}"/>
-                                            <input type="hidden" id="lName" value="${objList.lastName}"/> --%>
+                                            <input type="hidden" id="fName" value="${objList.firstName}"/>
+                                            <input type="hidden" id="lName" value="${objList.lastName}"/>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -282,6 +287,10 @@ table.tabla-listados tbody tr td {
 								        </td>
 								        <td style="width: 30%;">
 								            <table cellspacing="0" class="tabla-listados">
+								            <tr>
+                                                    <td><strong><spring:message code="BzComposer.common.totalOverdueAmount" />:</strong></td>
+                                                    <td id="totalOverdueAmt"></td>
+                                                </tr>
                                                 <tr>
                                                     <td style="width: 60%;"><strong><spring:message code="BzComposer.sales.SalesAmount" /></strong></td>
                                                     <td style="width: 40%;"></td>
@@ -294,10 +303,7 @@ table.tabla-listados tbody tr td {
                                                     <td><strong><spring:message code="BzComposer.common.last1YearAmount" />:</strong></td>
                                                     <td id="last1YearAmt"></td>
                                                 </tr>
-                                                <tr>
-                                                    <td><strong><spring:message code="BzComposer.common.totalOverdueAmount" />:</strong></td>
-                                                    <td id="totalOverdueAmt"></td>
-                                                </tr>
+                                                
                                                 <tr>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
@@ -397,7 +403,7 @@ table.tabla-listados tbody tr td {
 let clientVendorID = 0;
 function initialize()
 {
-	
+	console.log("initialize");
 	document.getElementById("dispay_info1").checked = true;
 	let selectedCvID = document.getElementById("selectedCvID").value;
 	let selectedCvIndex = document.getElementById("selectedCvIndex"+selectedCvID).value;
@@ -405,6 +411,7 @@ function initialize()
 }
 
 function lookUpHistory(){
+	console.log("lookUpHistory");
     let radio_val = $('input[name="dispay_info"]:checked').val();
     var dfrom = document.CustomerForm.periodFrom.value;
     var dto = document.CustomerForm.periodTo.value;
@@ -414,14 +421,18 @@ function writeSelectTH(){
    if (oT.readyState != 4 || oT.status != 200) {
      return;
    }
+   console.log("history items "+o.responseText);
    document.getElementById("t_history").innerHTML = o.responseText ;
 }
 function refreshTransationNow(radio_val, custid, dfrom, dto){
+	 console.log("refreshTransationNow1");
        oT = c(writeSelectTH);
+       console.log("oT "+oT);
        oGET(oT,'Customer?tabid=addTransactionHistory&custId=' + custid+'&cond='+radio_val+'&pfrom='+dfrom+'&pto='+dto)
 }
 
 function setCutomerDataById(vendorID, rowId){
+	console.log("setCutomerDataById");
     clientVendorID = vendorID;
     $.ajax({
         type: "POST",
@@ -467,6 +478,7 @@ function setCutomerDataById(vendorID, rowId){
 
 function manageCustomer(cmd)
 {
+	console.log("manageCustomer");
 	if (clientVendorID == 0){
 		return showCustomerValidationDialog();
 	} else {
@@ -493,6 +505,7 @@ function manageCustomer(cmd)
 }
 
 function showCustomerValidationDialog(){
+	console.log("showCustomerValidationDialog");
 	event.preventDefault();
 	$("#showCustomerValidationDialog").dialog({
     	resizable: false,

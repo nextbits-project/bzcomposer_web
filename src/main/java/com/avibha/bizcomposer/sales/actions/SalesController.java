@@ -59,7 +59,7 @@ public class SalesController {
 		String SALES_ORDER_URI = "/SalesOrder";
 
 		String SALES_MANAGER_URI = "/DataManager";
-		
+
 		ConfigurationInfo configInfo = new ConfigurationInfo();
 		configInfo.setCurrentRequest(request);
 		String forward = "sales/invoice";
@@ -231,11 +231,11 @@ public class SalesController {
 			sd.getAllList(request);
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
-			customerDto.setPeriodFrom(MyUtility.getDateBeforeGivenMonths(configDto.getDisplayPeriod()));
+			customerDto.setPeriodFrom(MyUtility.getDateBeforeGivenMonths(12));
 			customerDto.setPeriodTo(MyUtility.getCurrentDate());
 			request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
 			forward = "/sales/customerBoard";
-		}  else if (action.equalsIgnoreCase("ContactBoard")) { // Show ContactBoard page
+		} else if (action.equalsIgnoreCase("ContactBoard")) { // Show ContactBoard page
 			SalesDetailsDao sd = new SalesDetailsDao();
 			String firstCvID = sd.getCustomerList(request);
 			sd.getAllList(request);
@@ -390,8 +390,8 @@ public class SalesController {
 			// float price = Float.parseFloat(request.getParameter("price"));
 			double p1 = Double.parseDouble(request.getParameter("price"));
 			String pageType = request.getParameter("pageType");
-			if(pageType==null) {
-				pageType="";
+			if (pageType == null) {
+				pageType = "";
 			}
 			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nPrice:" + p1);
 			SalesDetailsDao sd = new SalesDetailsDao();
@@ -402,20 +402,20 @@ public class SalesController {
 				forward = "redirect:PurchaseOrder?tabid=PurchaseOrder";
 			} else if (pageType.equalsIgnoreCase("ES")) {
 				forward = "redirect:Estimation?tabid=Estimation";
-			}else if (pageType.equalsIgnoreCase("SO")) {
+			} else if (pageType.equalsIgnoreCase("SO")) {
 				forward = "redirect:SalesOrder?tabid=SalesOrder";
 			} else {
 				forward = "redirect:Invoice?tabid=Invoice";
 			}
-			//forward = "redirect:Invoice?tabid=Invoice";
+			// forward = "redirect:Invoice?tabid=Invoice";
 		}
 
 		else if (action.equalsIgnoreCase("saveItemName")) {
 			int itemId = Integer.parseInt(request.getParameter("itemID"));
 			String itemName = request.getParameter("itemName");
 			String pageType = request.getParameter("pageType");
-			if(pageType==null) {
-				pageType="";
+			if (pageType == null) {
+				pageType = "";
 			}
 			System.out.println("method:saveUnitPrice\nitemId:" + itemId + "\nItemName:" + itemName);
 			SalesDetailsDao sd = new SalesDetailsDao();
@@ -428,7 +428,7 @@ public class SalesController {
 				forward = "redirect:Estimation?tabid=Estimation";
 			} else if (pageType.equalsIgnoreCase("SO")) {
 				forward = "redirect:SalesOrder?tabid=SalesOrder";
-			}else {
+			} else {
 				forward = "redirect:Invoice?tabid=Invoice";
 			}
 
@@ -582,7 +582,8 @@ public class SalesController {
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);
-
+			//to set deafult zipcode 
+			request.setAttribute("zipcode", "90004");
 			customerDto.setCountry(configDto.getCustDefaultCountryID() + "");
 			customerDto.setState(configDto.getSelectedStateId() + "");
 			customerDto.setTaxAble(configDto.getCustTaxable());
@@ -1752,10 +1753,15 @@ public class SalesController {
 			customerDto.setTotalOverdueAmt(hlookup.getTotalOverdueAmt());
 			customerDto.setLastOrderDate(hlookup.getLastOrderDate());
 			for (InvoiceDto invoice : shipAddress) {
+				System.out.println("_________________________________________________");
+				System.out.println(invoice.getShipTo());
 				String shipTo = invoice.getShipTo() != null ? invoice.getShipTo().replace("\n", "<br/>") : "";
 				customerDto.setShipTo(shipTo);
+				System.out.println("_________________________________________________");
+
 			}
 			for (InvoiceDto invoice : billAddress) {
+
 				String billTo = invoice.getBillTo() != null ? invoice.getBillTo().replace("\n", "<br/>") : "";
 				customerDto.setBillTo(billTo);
 			}

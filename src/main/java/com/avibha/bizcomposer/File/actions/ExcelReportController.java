@@ -73,14 +73,24 @@ public class ExcelReportController {
         cell8.setCellValue("Memo");
         cell8.setCellStyle(style);
         short index = 1;
+        
         for (ItemDto item: itemList) {
             HSSFRow row = sheet.createRow(index);
+            int countedQty=0;
+            try {
+            countedQty=Integer.parseInt(item.getQty());
+            }catch(NumberFormatException e) {
+            	System.out.println("NumberFormatException");
+            	e.getStackTrace();
+            }catch(Exception e) {
+            	e.getStackTrace();
+            }
             row.createCell(0).setCellValue(item.getCategoryName());
             row.createCell(1).setCellValue(item.getItemCode());
             row.createCell(2).setCellValue(item.getItemName());
             row.createCell(3).setCellValue(item.getLocation());
             row.createCell(4).setCellValue(item.getReorderPoint());
-            row.createCell(5).setCellValue(item.getQty());
+            row.createCell(5).setCellValue(countedQty);
             row.createCell(6).setCellValue(isWholeData?item.getExpectedQty():"");
             row.createCell(7).setCellValue(isWholeData?item.getMemo():"");
             index++;

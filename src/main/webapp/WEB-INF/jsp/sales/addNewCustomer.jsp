@@ -162,7 +162,7 @@ $(function() {
                                     <span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
                                 </td>
                                 <td>
-                                    <form:input path="zipCode" onfocusout="loadAddressDetailsByZipcode(this.value, 1)" onkeypress="return numbersonly(event,this.value)" />
+                                    <form:input path="zipCode" onfocusout="loadAddressDetailsByZipcode(this.value, 1)" onkeypress="return numbersonly(event,this.value)" value="${zipcode }" />
                                 </td>
                                 <td>
                                     <spring:message code="BzComposer.global.city"/>
@@ -1509,7 +1509,7 @@ function NewCustomer(){
 	document.CustomerForm.bsaddress1.value="";
 	document.CustomerForm.bsaddress2.value="";
 	document.CustomerForm.bscity.value="0";
-	document.CustomerForm.bszipCode.value="";
+	//document.CustomerForm.bszipCode.value="";
 	document.CustomerForm.bsprovince.value="";
 	document.CustomerForm.bscountry.value="0";
 //shipping addresses
@@ -1519,7 +1519,7 @@ function NewCustomer(){
 	document.CustomerForm.shaddress1.value= "";
 	document.CustomerForm.shaddress2.value= "";
 	document.CustomerForm.shcity.value= "0";
-	document.CustomerForm.shzipCode.value = "";
+	//document.CustomerForm.shzipCode.value = "";
 	document.CustomerForm.shprovince.value="";
 	document.CustomerForm.shcountry.value= "0";
 //genaral Tab
@@ -1529,7 +1529,7 @@ function NewCustomer(){
 	document.CustomerForm.address2.value="";
 	document.CustomerForm.city.value="0";
 	//document.CustomerForm.stateName.value="";
-	document.CustomerForm.zipCode.value="";
+//	document.CustomerForm.zipCode.value="";
 	document.CustomerForm.phone.value="";
 	document.CustomerForm.cellPhone.value="";
 	document.CustomerForm.fax.value="";
@@ -1744,6 +1744,9 @@ function showServiceValidationDialog(){
     });
     return false;
 }
+$(document).ready(function(){
+	loadAddressDetailsByZipcode("${zipcode}", 1)
+} );
 </script>
 <!-- Dialog box used in this page -->
 <div id="enterEmailValidationDialog" style="display:none;">

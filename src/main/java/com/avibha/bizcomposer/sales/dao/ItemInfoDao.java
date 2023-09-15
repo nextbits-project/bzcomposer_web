@@ -1377,7 +1377,11 @@ public class ItemInfoDao {
 				item.setItemType(rs.getString("itemtypeid"));
 				item.setDateAdded(rs.getString("DateAdded"));
 				item.setDateReceived(rs.getString("DateReceived"));
+				if(Integer.parseInt(rs.getString("ExpectedQty"))<0) {
+					item.setExpectedQty("0");
+				}else {
 				item.setExpectedQty(rs.getString("ExpectedQty"));
+				}
 				item.setMemo(rs.getString("Memo"));
 				item.setCategoryName(rs.getString("Category"));
 				item.setReorderPoint(rs.getInt("ReorderPoint"));
