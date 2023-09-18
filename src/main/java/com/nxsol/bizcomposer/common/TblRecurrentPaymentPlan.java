@@ -2,7 +2,7 @@ package com.nxsol.bizcomposer.common;
 
 import org.apache.struts.action.ActionForm;
 
-import jakarta.persistence.Entity;
+import javax.persistence.Entity;
 
 @Entity
 public class TblRecurrentPaymentPlan extends ActionForm{

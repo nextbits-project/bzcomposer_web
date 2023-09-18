@@ -1,13 +1,13 @@
 package com.nxsol.bzcomposer.company.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
 
 
@@ -115,8 +115,7 @@ public class BcaInvoicememorized {
     @Column
     private Integer storeTypeId;
 
-    @Column(length = 50)
-    private String shipCarrier;
+
 
     @Column
     private Boolean isPrinted;
@@ -447,22 +446,14 @@ public class BcaInvoicememorized {
         this.storeTypeId = storeTypeId;
     }
 
-    public String getShipCarrier() {
-        return shipCarrier;
-    }
-
-    public void setShipCarrier(final String shipCarrier) {
-        this.shipCarrier = shipCarrier;
-    }
-
-    public Boolean getIsPrinted() {
+     public Boolean getIsPrinted() {
         return isPrinted;
     }
 
     public void setIsPrinted(final Boolean isPrinted) {
         this.isPrinted = isPrinted;
     }
-
+    
     public Boolean getIsEmailed() {
         return isEmailed;
     }
@@ -519,9 +510,7 @@ public class BcaInvoicememorized {
         this.company = company;
     }
 
-    public BcaShipcarrier getShipCarrier() {
-        return shipCarrier;
-    }
+ 
 
     public void setShipCarrier(final BcaShipcarrier shipCarrier) {
         this.shipCarrier = shipCarrier;

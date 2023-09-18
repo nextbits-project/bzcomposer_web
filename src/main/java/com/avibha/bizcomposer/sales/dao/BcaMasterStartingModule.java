@@ -1,6 +1,6 @@
 package com.avibha.bizcomposer.sales.dao;
 
-import jakarta.persistence.Entity;
+import javax.persistence.Entity;
 import lombok.Data;
 
 @Entity

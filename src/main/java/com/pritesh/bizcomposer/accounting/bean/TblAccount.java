@@ -1,6 +1,6 @@
 package com.pritesh.bizcomposer.accounting.bean;
 
-import jakarta.persistence.Entity;
+import javax.persistence.Entity;
 
 @Entity
 public class TblAccount {

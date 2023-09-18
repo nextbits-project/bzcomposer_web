@@ -44,7 +44,7 @@ import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.log.Loger;
 
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 
 /**
  * @author sarfrazmalik

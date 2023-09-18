@@ -1,7 +1,7 @@
 package com.nxsol.bizcomposer.common;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "smd_item_group_price")

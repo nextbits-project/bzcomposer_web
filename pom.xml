@@ -22,8 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<spring.version>2.3.3.RELEASE </spring.version> <!-- 3.1.2 --> 
 			<struts.version>1.2.8</struts.version>
 	</properties>
@@ -231,10 +231,17 @@
 			<artifactId>jstl</artifactId>
 		</dependency> -->
 <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-<dependency>
+<!--<dependency>
     <groupId>org.projectlombok</groupId>
     <artifactId>lombok</artifactId>
      <scope>provided</scope>
+</dependency>-->
+<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.24</version>
+    <scope>provided</scope>
 </dependency>
 <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
 <dependency>
@@ -242,8 +249,8 @@
     <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
 	</dependencies>
-	<build>
-		<finalName>ROOT</finalName>
+	<build><!-- ROOT -->
+		<finalName>POS</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>

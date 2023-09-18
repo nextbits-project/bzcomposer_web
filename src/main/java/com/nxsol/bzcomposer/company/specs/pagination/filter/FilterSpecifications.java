@@ -9,10 +9,10 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.nxsol.bzcomposer.company.specs.pagination.SearchFilters;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 public class FilterSpecifications<T> implements Specification<T> {
 
@@ -133,5 +133,6 @@ public class FilterSpecifications<T> implements Specification<T> {
 	private LocalDateTime stringToLocalDateTime(String dateString) {
 		return LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME);
 	}
+
 
 }

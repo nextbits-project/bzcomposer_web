@@ -2,7 +2,7 @@ package com.pritesh.bizcomposer.accounting.bean;
 
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
 
-import jakarta.persistence.Entity;
+import javax.persistence.Entity;
 
 @Entity
 public class TblPaymentDto {

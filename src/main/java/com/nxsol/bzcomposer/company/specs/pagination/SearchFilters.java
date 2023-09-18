@@ -34,11 +34,7 @@ public class SearchFilters {
 
     private List<FilterCondition> filterAndConditions;
     private List<FilterCondition> filterOrConditions;
-	public SearchFilters(List<FilterCondition> filterAndConditions, List<FilterCondition> filterOrConditions) {
-		super();
-		this.filterAndConditions = filterAndConditions;
-		this.filterOrConditions = filterOrConditions;
-	}
+
 	public List<FilterCondition> getFilterAndConditions() {
 		return filterAndConditions;
 	}

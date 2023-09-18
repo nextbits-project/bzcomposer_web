@@ -38,13 +38,13 @@ public class FilterCondition {
     private String field;
     private FilterOperation operator;
     private Object value;
-    
-	public FilterCondition(String field, FilterOperation operator, Object value) {
-		super();
-		this.field = field;
-		this.operator = operator;
-		this.value = value;
-	}
+//    
+//	public FilterCondition(String field, FilterOperation operator, Object value) {
+//		super();
+//		this.field = field;
+//		this.operator = operator;
+//		this.value = value;
+//	}
 	public String getField() {
 		return field;
 	}
