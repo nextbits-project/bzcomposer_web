@@ -19,8 +19,8 @@ import javax.persistence.Table;
 @Table(name = "bca_iteminventory")
 public class TblItemInventory {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int inventoryID = -1;
 	private int group;// s = 0;//for sorting group
 	private boolean isSelcted;

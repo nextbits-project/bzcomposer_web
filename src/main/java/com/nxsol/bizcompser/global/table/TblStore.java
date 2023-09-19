@@ -10,15 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_store")
+//@Entity
+//@Table(name = "bca_store")
 public class TblStore extends ActionForm {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * 
 	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int storeId;// = -1;
 	private String storeName = "";
 	private String abbreviation = "";

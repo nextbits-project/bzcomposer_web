@@ -8,8 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_categorytype")
+//@Entity
+//@Table(name = "bca_categorytype")
 public class TblCategoryType extends ActionForm {
 
 	private static final long serialVersionUID = 1L;

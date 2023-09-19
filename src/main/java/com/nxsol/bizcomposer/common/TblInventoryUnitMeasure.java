@@ -5,14 +5,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-@Entity
-@Table( name = "bca_inventoryunitmeasure")
+//
+//@Entity
+//@Table( name = "bca_inventoryunitmeasure")
 public class TblInventoryUnitMeasure {
 	
 	// s primary key missing in both table and entity
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+//	  @Id
+//	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private int inventoryID;
 	    private int UnitCategoryID;// foreign key bca_unitofmeasure(UnitCategoryID)
 	    private int WeightID;

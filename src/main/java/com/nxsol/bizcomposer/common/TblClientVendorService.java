@@ -11,13 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_clientvendorservice")
+//@Entity
+//@Table(name = "bca_clientvendorservice")
 public class TblClientVendorService {
 
 	//  primary key missing in both table and entity
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int clientVendorID;// =-1;
 
 	private int parentID = -1;

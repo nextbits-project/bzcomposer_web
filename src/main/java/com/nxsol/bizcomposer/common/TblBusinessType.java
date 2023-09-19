@@ -5,11 +5,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+//@Entity
 public class TblBusinessType {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int businessTypeID;// = -1; s
 	private String businessName = "";
 	private int defaultInvoiceStyleID = 1;

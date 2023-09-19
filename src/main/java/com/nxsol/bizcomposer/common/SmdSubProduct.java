@@ -1,17 +1,17 @@
 package com.nxsol.bizcomposer.common;
-
+// JPA Remove
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "smd_subproduct")
+//@Entity
+//@Table(name = "smd_subproduct")
 public class SmdSubProduct {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int subProductId;// primary
 	private Integer subProductcount;
 	private Integer masterProductId;

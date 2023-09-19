@@ -9,11 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_balancesheetitem")
+//@Entity
+//@Table(name = "bca_balancesheetitem")
 public class TblBalanceSheet implements Cloneable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int balancesheetitemID;
 	private long categoryId = -1;// foreign key
 

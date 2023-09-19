@@ -74,7 +74,10 @@ public class SQLExecutor {
 	static {
 		dataSource = new BasicDataSource();
 		try {
+	       
 			InitialContext ic = new InitialContext();
+			 System.setProperty(InitialContext.INITIAL_CONTEXT_FACTORY,
+	                  "org.apache.naming.java.javaURLContextFactory");
 			dataSource = new BasicDataSource();
 			dataSource.setDriverClassName((String) ic.lookup("java:comp/env/DriverClass"));
 			dataSource.setUrl((String) ic.lookup("java:comp/env/URL"));

@@ -12,11 +12,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+//@Entity
 public class TblPreference {
-
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+//
+//	  @Id
+//	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	public int preferenceID;// = -1;
 	public boolean isEsalesEnabled;// = false;
 	public boolean isAddEnabled;// = false;

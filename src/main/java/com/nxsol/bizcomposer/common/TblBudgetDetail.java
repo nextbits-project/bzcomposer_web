@@ -6,13 +6,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_budgetdetails")
+//@Entity
+//@Table(name = "bca_budgetdetails")
 public class TblBudgetDetail {
 	// budgetdetailsid
 	// primary key budgetdetailsid missing
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int budgetDetailID;
 	private long CategoryID = -1;// foreign key bca_category(CategoryID)
 	private String parent = "";

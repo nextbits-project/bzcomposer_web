@@ -8,17 +8,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-@Entity
-@Table(name = "bca_lineofcreditterm")
+//
+//@Entity
+//@Table(name = "bca_lineofcreditterm")
 public class TblLineofCreditTerm {
 
 	// overdue?
 	private boolean overDue;// = false;
 
 	// term ID
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int creditTermId;// = -1;
 
 	// days

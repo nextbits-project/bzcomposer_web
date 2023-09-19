@@ -1,5 +1,5 @@
 package com.nxsol.bizcomposer.common;
-
+//  JPA removed
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,19 +8,19 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-@Entity // bca_category also bca_businesscategories
-@Table(name = "bca_businesscategories")
+//@Entity // bca_category also bca_businesscategories
+//@Table(name = "bca_businesscategories")
 public class BusinessCategories {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id = -1;
 
 	private long categoryTypeID = -1; // may be foreign key
 
 	private String name = "";
 
-	@Column(name = "cateNumber")
+//	@Column(name = "cateNumber")
 	private String categoryNumber = "";
 
 	private String parent = "";
@@ -32,15 +32,15 @@ public class BusinessCategories {
 	@Transient
 	private int subLevel;// =0;
 
-	@Transient
+//	@Transient
 	private String categoryTypeName = "";// may be removed 
-	@Transient
+//	@Transient
 	private String budgetCategoryName = "";// may be removed
-	@Transient
+//	@Transient
 	private boolean subAccountOf;// = false;
-	@Transient
+//	@Transient
 	private String accountNumber = "";// oreign key
-	@Transient
+//	@Transient
 	private int accountID = -1;// foreign key
 
 	public int getAccountID() {

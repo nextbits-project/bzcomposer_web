@@ -1,18 +1,18 @@
 package com.nxsol.bizcomposer.common;
-
+// JPA removed
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "smd_smditemimage")
+//@Entity
+//@Table(name = "smd_smditemimage")
 public class SmdItemImage {
 	
 
-	 @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+//	 @Id
+//	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int itemImageid;
 	private String inventoryId; // foreign key
 	private Integer companyId;// foreign key

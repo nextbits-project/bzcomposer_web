@@ -6,12 +6,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_peritempricelevel")
+//@Entity
+//@Table(name = "bca_peritempricelevel")
 public class TblPerItemPriceLevel {
 
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+//	  @Id
+//	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int inventoryID;// = 0;
 
 	private String inventoryCode;// = null;

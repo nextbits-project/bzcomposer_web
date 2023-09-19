@@ -6,12 +6,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table( name = "bca_productchannelsetting")
+//@Entity
+//@Table( name = "bca_productchannelsetting")
 public class TblProductChannelSetting {
 	
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+//	  @Id
+//	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int channelSettingID = -1;
 	private int inventoryID = -1; // foreign key
 	private int storeID = -1; // may be foriegn key

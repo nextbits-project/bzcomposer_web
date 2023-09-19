@@ -1,10 +1,11 @@
 package com.nxsol.bizcomposer.common;
-
+//  JPA removed
 import java.util.Date;
 
 public class BillingStatement {
 
 	public boolean select = false;
+	
     public int statementNo = -1; // primary key
     public Date statementDate = null;
     public int cvID = -1;

@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-@Entity // bca_category also bca_businesscategories
-@Table(name = "bca_category")
+//@Entity // bca_category also bca_businesscategories
+//@Table(name = "bca_category")
 public class TblCategory implements Cloneable {
 
 	@Id

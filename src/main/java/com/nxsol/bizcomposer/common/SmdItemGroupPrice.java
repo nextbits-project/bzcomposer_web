@@ -1,12 +1,14 @@
 package com.nxsol.bizcomposer.common;
-
+// jpa change old entity
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "smd_item_group_price")
+//@Entity
+//@Table(name = "smd_item_group_price")
 public class SmdItemGroupPrice {
-	
+//	@Id
+	private Integer id;
 	private Integer companyId;// foreign key
 	private String inventoryId;// foreign key
 	private Integer customerGroupId;

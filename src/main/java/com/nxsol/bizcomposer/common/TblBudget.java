@@ -7,8 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_budget")
+//@Entity
+//@Table(name = "bca_budget")
 public class TblBudget {
 
 	@Id

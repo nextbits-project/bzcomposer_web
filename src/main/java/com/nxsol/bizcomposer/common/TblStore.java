@@ -7,11 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+//@Entity
 public class TblStore {
 	
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+//	  @Id
+//	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int storeId;// = -1;
 	private String storeName = "";
 	private String abbreviation = "";

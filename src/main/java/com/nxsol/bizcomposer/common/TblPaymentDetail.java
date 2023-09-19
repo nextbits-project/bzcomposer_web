@@ -6,12 +6,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_paymentdetail")
+//@Entity
+//@Table(name = "bca_paymentdetail")
 public class TblPaymentDetail {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;// = -1;
 
 	private int paymentID = -1; // foreign key

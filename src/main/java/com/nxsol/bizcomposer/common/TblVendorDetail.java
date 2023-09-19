@@ -13,14 +13,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity 
-@Table(name = "bca_clientvendor") 
+//@Entity 
+//@Table(name = "bca_clientvendor") 
 public class TblVendorDetail extends ActionForm {
 
 	    private static final long serialVersionUID = 1L;
 	    
-	    @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//	    @Id
+//	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    //in table name of the field is clientvendorid. it is not primary or unique key is mul key
 	    int vendorID;//=0;
 		String vName="";

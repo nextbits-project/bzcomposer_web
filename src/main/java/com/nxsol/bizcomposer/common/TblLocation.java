@@ -6,12 +6,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_location")
+//@Entity
+//@Table(name = "bca_location")
 public class TblLocation {
 
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
+//	  @Id
+//	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private int id;// = -1;
 	    
 	    private String name = "";

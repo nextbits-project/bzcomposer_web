@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bzc.web</groupId>
 	<artifactId>bzc-web</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>BZC Web Project Maven Webapp</name>
 	<url>http://www.bzcomposer.com</url>
-	
+	      
 		<parent>
 		<!-- lookup parent from repository -->
 		<groupId>org.springframework.boot</groupId>
@@ -252,13 +252,20 @@
 	<build><!-- ROOT -->
 		<finalName>POS</finalName>
 		<plugins>
-			<plugin>
+			 <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <mainClass>com.Application</mainClass>
+            </configuration>                   
+        </plugin>				
+			<!--<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-					<!--<configuration> &lt;!&ndash; Exclude JCL and LOG4J since all logging 
+					<configuration> &lt;!&ndash; Exclude JCL and LOG4J since all logging 
 					should go through SLF4J. Note that we're excluding log4j-<version>.jar but 
 					keeping log4j-over-slf4j-<version>.jar &ndash;&gt; <packagingIncludes> WEB-INF/lib/*.jar 
-					</packagingIncludes> </configuration> -->
-			</plugin>
+					</packagingIncludes> </configuration> 
+			</plugin>-->
 		</plugins>
 	</build>
 </project>
