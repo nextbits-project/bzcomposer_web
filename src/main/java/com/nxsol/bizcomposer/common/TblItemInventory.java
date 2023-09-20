@@ -15,8 +15,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "bca_iteminventory")
+//@Entity
+//@Table(name = "bca_iteminventory")
 public class TblItemInventory {
 
 //	@Id

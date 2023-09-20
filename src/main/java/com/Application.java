@@ -4,6 +4,8 @@ import java.util.Locale;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -64,6 +66,51 @@ public class Application extends SpringBootServletInitializer implements WebMvcC
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(localeChangeInterceptor());
+	}
+	
+//	@Bean
+//    public TomcatServletWebServerFactory containerFactory() {
+//        return new TomcatServletWebServerFactory() {
+//            protected void customizeConnector(Connector connector) {
+//                int maxSize = 50000000;
+//                super.customizeConnector(connector);
+//                connector.setMaxPostSize(maxSize);
+//                connector.setMaxSavePostSize(maxSize);
+//                if (connector.getProtocolHandler() instanceof AbstractHttp11Protocol) {
+//
+//                    ((AbstractHttp11Protocol <?>) connector.getProtocolHandler()).setMaxSwallowSize(maxSize);
+//                    logger.info("Set MaxSwallowSize "+ maxSize);
+//                }
+//            }
+//        };
+//
+//    }
+	
+	@Bean
+	public TomcatServletWebServerFactory tomcatFactory() {
+	    return new TomcatServletWebServerFactory() {
+	       /* @Override
+	        protected TomcatWebServer getTomcatWebServer(org.apache.catalina.startup.Tomcat tomcat) {
+	            tomcat.enableNaming(); 
+	            return super.getTomcatWebServer(tomcat);
+	        }
+
+	        @Override 
+	        protected void postProcessContext(Context context) {
+
+	            // context
+	            ContextResource resource = new ContextResource();
+	            resource.setName("jdbc/myJndiResource");
+	            resource.setType(DataSource.class.getName());
+	            resource.setProperty("driverClassName", "org.postgresql.Driver");
+
+	            resource.setProperty("url", "jdbc:postgresql://hostname:port/dbname");
+	            resource.setProperty("username", "username");
+	            resource.setProperty("password", "password");
+	            context.getNamingResources()
+	                   .addResource(resource);            
+	        }*/
+	    };
 	}
 
 }

@@ -4,7 +4,7 @@ import com.nxsol.bizcompser.global.table.TblCategoryDto;
 
 import javax.persistence.Entity;
 
-@Entity
+//@Entity
 public class TblPaymentDto {
 
 	private int id = -1;

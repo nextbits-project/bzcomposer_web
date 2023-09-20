@@ -100,7 +100,7 @@ public class SQLExecutor {
 		try {
 //            connection = dataSource.getConnection();
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bzc", "root", "123");
+//			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bzc", "root", "123");
 //			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bcacom_bzc_demo","bcacom_bzc_demo","!passw0rd#12!");
 //			 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","db","myserverkonnect");
 		} catch (Exception ex) {

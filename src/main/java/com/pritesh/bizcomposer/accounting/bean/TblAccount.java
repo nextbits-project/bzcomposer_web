@@ -2,7 +2,7 @@ package com.pritesh.bizcomposer.accounting.bean;
 
 import javax.persistence.Entity;
 
-@Entity
+//@Entity
 public class TblAccount {
 
 	 private int accountID = -1;

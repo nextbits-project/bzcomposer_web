@@ -28,6 +28,12 @@
 			<struts.version>1.2.8</struts.version>
 	</properties>
 
+<repositories>
+   <repository>
+       <id>lib_id</id>
+       <url>file://${project.basedir}/src/main/webapp/WEB-INF/lib</url>
+   </repository>
+</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -90,17 +96,17 @@
 		<dependency>
 			<groupId>com.paypal.sdk</groupId>
 			<artifactId>paypal-base</artifactId>
-			<scope>system</scope>
+<!--			<scope>runtime</scope>-->
 			<version>1.0</version>
-			<systemPath>${pom.basedir}/src/main/webapp/WEB-INF/lib/paypal_stubs.jar</systemPath>
+<!--		 <systemPath>${pom.basedir}/src/main/webapp/WEB-INF/lib/paypal_stubs.jar</systemPath>-->
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.paypal.sdk/paypal-core -->
 		<dependency>
 			<groupId>com.paypal.sdk</groupId>
 			<artifactId>core</artifactId>
-			<scope>system</scope>
+<!--	 		<scope>runtime</scope> -->
 			<version>1.0</version>
-			<systemPath>${pom.basedir}/src/main/webapp/WEB-INF/lib/paypal_base.jar</systemPath>
+<!--			<systemPath>${pom.basedir}/src/main/webapp/WEB-INF/lib/paypal_base.jar</systemPath> -->
 		</dependency>
 		<dependency>
 			<groupId>com.paypal.sdk</groupId>
@@ -148,12 +154,12 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
-		<dependency>
+	<!--	<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>5.0.1</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-dbcp -->
+		 https://mvn-->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
@@ -197,12 +203,21 @@
 			<artifactId>json</artifactId>
 			<version>20180813</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+<!--<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <version>2.0.204</version>  
+    <scope>runtime</scope>
+</dependency>-->
+
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.30</version>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
