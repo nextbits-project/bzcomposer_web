@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
+// Jpa cctypeId changed from int to string
 
 @Entity
 public class BcaCvcreditcard {
@@ -28,7 +29,7 @@ public class BcaCvcreditcard {
     private Boolean defaultCard;
 
     @Column
-    private Integer cctypeId;
+    private String cctypeId;
 
     @Column(length = 50)
     private String cardNumber;
@@ -106,11 +107,11 @@ public class BcaCvcreditcard {
         this.defaultCard = defaultCard;
     }
 
-    public Integer getCctypeId() {
+    public String getCctypeId() {
         return cctypeId;
     }
 
-    public void setCctypeId(final Integer cctypeId) {
+    public void setCctypeId(final String cctypeId) {
         this.cctypeId = cctypeId;
     }
 

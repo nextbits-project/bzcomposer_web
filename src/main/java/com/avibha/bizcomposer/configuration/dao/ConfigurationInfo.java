@@ -1,20 +1,30 @@
 package com.avibha.bizcomposer.configuration.dao;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
-import org.apache.struts.util.LabelValueBean;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaFootnoteResult2;
+import com.nxsol.bzcomposer.company.domain.nonmanaged.FootNoteQueryResult;
+import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
 
 public class ConfigurationInfo {
 
@@ -135,35 +145,45 @@ public class ConfigurationInfo {
 
         return invStyleList;
     }
+    
+    @Autowired
+    private BcaFootnoteRepository bcaFootnoteRepository;
 
     /* Footnote List with id & name */
     public ArrayList footnoteList(String compId) {
-        Connection con = null ;
+//        Connection con = null ;
         ArrayList<LabelValueBean> footnoteList = new ArrayList<LabelValueBean>();
-        SQLExecutor executor = new SQLExecutor();
-        PreparedStatement pstmtFootnote = null;
-        ResultSet rsFootnote = null;
-        if (executor == null)
-            return null;
-        con = executor.getConnection();
-        if (con == null)
-            return null;
-        try {
-            String footnoteQuery = "select FootNoteID,Name,Description from bca_footnote where CompanyID=? and Active=1 order by Name";
-            pstmtFootnote = con.prepareStatement(footnoteQuery);
-            pstmtFootnote.setString(1, compId);
-            rsFootnote = pstmtFootnote.executeQuery();
-            while (rsFootnote.next()) {
-                footnoteList.add(new LabelValueBean(rsFootnote.getString("Name"), rsFootnote.getString("FootNoteID")));
+//        SQLExecutor executor = new SQLExecutor();
+//        PreparedStatement pstmtFootnote = null;
+//        ResultSet rsFootnote = null;
+//        if (executor == null)
+//            return null;
+//        con = executor.getConnection();
+//        if (con == null)
+//            return null;
+//        try {
+//            String footnoteQuery = "select FootNoteID,Name,Description from bca_footnote where CompanyID=? and Active=1 order by Name"; // JPA Check logical error description not required
+//            pstmtFootnote = con.prepareStatement(footnoteQuery);
+        
+        
+//            pstmtFootnote.setString(1, compId);
+            List<FootNoteQueryResult> footNoteQueryResults = bcaFootnoteRepository.findByCompanyIdAndactive(compId,1);
+//            rsFootnote = pstmtFootnote.executeQuery();
+//            while (rsFootnote.next()) {
+//                footnoteList.add(new LabelValueBean(rsFootnote.getString("Name"), rsFootnote.getString("FootNoteID")));
+//            }
+            for ( FootNoteQueryResult footNoteQueryResult: footNoteQueryResults )
+            {
+            	 footnoteList.add(new LabelValueBean(footNoteQueryResult.getName(), footNoteQueryResult.getFootNoteID()));
             }
-            pstmtFootnote.close();
-            rsFootnote.close();
-        } catch (SQLException ex) {
-            Loger.log("Exception in the class ConfigurationInfo and in method "
-                    + "footnoteList " + ex.toString());
-        } finally {
-            executor.close(con);
-        }
+//            pstmtFootnote.close();
+//            rsFootnote.close();
+//        } catch (SQLException ex) {
+//            Loger.log("Exception in the class ConfigurationInfo and in method "
+//                    + "footnoteList " + ex.toString());
+//        } finally {
+//            executor.close(con);
+//        }
 
         return footnoteList;
     }
@@ -983,79 +1003,90 @@ public class ConfigurationInfo {
         }
 
     }
-
+  
     /*	Invoke(get) the footnote id,name & description.
      * So it is useful for the manupulation such as
      * update,save new footnote & delete footnote.
      */
     public void footnoteDetails(HttpServletRequest request) {
-        Connection con = null ;
-        SQLExecutor executor = new SQLExecutor();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
+//        Connection con = null ;
+//        SQLExecutor executor = new SQLExecutor();
+//        PreparedStatement pstmt = null;
+//        ResultSet rs = null;
         ArrayList<ConfigurationDto> list = new ArrayList<ConfigurationDto>();
-        if (executor == null)
-            return;
-        con = executor.getConnection();
-        if (con == null)
-            return;
-
-        try {
+//        if (executor == null)
+//            return;
+//        con = executor.getConnection();
+//        if (con == null)
+//            return;
+//
+//        try {
             String compId = (String) request.getSession().getAttribute("CID");
-            String footnoteDetail = "select FootNoteID,Name,Description from bca_footnote where Active=1 "
-                    + "and CompanyID=? order by Name";
-            pstmt = con.prepareStatement(footnoteDetail);
-            pstmt.setString(1, compId);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                ConfigurationDto cForm = new ConfigurationDto();
-                cForm.setFootnote(rs.getInt("FootNoteID"));
-                cForm.setFootnoteName(rs.getString("Name"));
-                cForm.setDesc(rs.getString("Description"));
-                list.add(cForm);
+//            String footnoteDetail = "select FootNoteID,Name,Description from bca_footnote where Active=1 "
+//                    + "and CompanyID=? order by Name";
+//            pstmt = con.prepareStatement(footnoteDetail);
+//            pstmt.setString(1, compId);
+//            rs = pstmt.executeQuery();
+            List<BcaFootnoteResult2> bcaFootnoteResult2s = bcaFootnoteRepository.findByActiveCompanyIdOrderByName(1,compId);
+//            while (rs.next()) {
+//                ConfigurationDto cForm = new ConfigurationDto();
+//                cForm.setFootnote(rs.getInt("FootNoteID"));
+//                cForm.setFootnoteName(rs.getString("Name"));
+//                cForm.setDesc(rs.getString("Description"));
+//                list.add(cForm);
+//            }
+            for( BcaFootnoteResult2 bcaFootnoteResult2 : bcaFootnoteResult2s)
+            {
+            	   ConfigurationDto cForm = new ConfigurationDto();
+                   cForm.setFootnote(bcaFootnoteResult2.getFootNoteID());
+                   cForm.setFootnoteName(bcaFootnoteResult2.getName());
+                   cForm.setDesc(bcaFootnoteResult2.getDescription());
+                   list.add(cForm);
+                   
             }
             request.setAttribute("FoootNoteDetails", list);
-        } catch (SQLException ex) {
-            Loger.log("Exception in the class ConfigurationInfo and in method "
-                    + "footnoteDetails " + ex.toString());
-        } finally {
-            executor.close(con);
-        }
+//        } catch (SQLException ex) {
+//            Loger.log("Exception in the class ConfigurationInfo and in method "
+//                    + "footnoteDetails " + ex.toString());
+//        } finally {
+//            executor.close(con);
+//        }
     }
 
     /*  The method deletes the footnote that selected by user
      * It delete the footnote by footnote id.
      */
     public boolean deleteFootnote(ConfigurationDto cForm, String compId) {
-        Connection con = null ;
-        SQLExecutor executor = new SQLExecutor();
-        PreparedStatement pstmt = null;
+//        Connection con = null ;
+//        SQLExecutor executor = new SQLExecutor();
+//        PreparedStatement pstmt = null;
 
         boolean isRecordDeleted = false;
-        if (executor == null)
-            return isRecordDeleted;
-        con = executor.getConnection();
-        if (con == null)
-            return isRecordDeleted;
+//        if (executor == null)
+//            return isRecordDeleted;
+//        con = executor.getConnection();
+//        if (con == null)
+//            return isRecordDeleted;
 
-        try {
+//        try {
             String deleteQuery = "update bca_footnote set Active=0 where FootNoteID=? and CompanyID=?";
-            pstmt = con.prepareStatement(deleteQuery);
-            pstmt.setInt(1, cForm.getFootnote());
-            pstmt.setString(2, compId);
-            int deleted = pstmt.executeUpdate();
-            if (deleted > 0) {
+//            pstmt = con.prepareStatement(deleteQuery);
+//            pstmt.setInt(1, cForm.getFootnote());
+//            pstmt.setString(2, compId);
+//            int deleted = pstmt.executeUpdate();
+            int deleted =  bcaFootnoteRepository.updateByFootNotIdAndCompanyId(cForm.getFootnote(),compId);
+            if (deleted > 0) { 
                 isRecordDeleted = true;
             }
-            pstmt.close();
+//            pstmt.close();
 
-        } catch (SQLException ex) {
-            Loger.log("Exception in the class ConfigurationInfo and in method "
-                    + "deleteFootnote " + ex.toString());
-
-        } finally {
-            executor.close(con);
-        }
+//        } catch (SQLException ex) {
+//            Loger.log("Exception in the class ConfigurationInfo and in method "
+//                    + "deleteFootnote " + ex.toString());
+//
+//        } finally {
+//            executor.close(con);
+//        }
         return isRecordDeleted;
     }
 
@@ -1064,36 +1095,43 @@ public class ConfigurationInfo {
      * the database & generate id for it.
      */
     public boolean saveFootnote(ConfigurationDto cForm, long compId,
-                                String footnotName) {
-        Connection con = null ;
-        SQLExecutor executor = new SQLExecutor();
-        PreparedStatement pstmt = null;
+//                                String footnotName) {
+//        Connection con = null ;
+//        SQLExecutor executor = new SQLExecutor();
+//        PreparedStatement pstmt = null;
 
         boolean isSaved = false;
-        if (executor == null)
-            return isSaved;
-        con = executor.getConnection();
-        if (con == null)
-            return isSaved;
-
-        try {
-            String insertQuery = "insert into bca_footnote(CompanyID,Name,Description,Active) values(?,?,?,?)";
-            pstmt = con.prepareStatement(insertQuery);
-            pstmt.setLong(1, compId);
-            pstmt.setString(2, footnotName);
-            pstmt.setString(3, cForm.getDesc());
-            pstmt.setInt(4, 1);
-            int inserted = pstmt.executeUpdate();
+//        if (executor == null)
+//            return isSaved;
+//        con = executor.getConnection();
+//        if (con == null)
+//            return isSaved;
+//
+//        try {
+//            String insertQuery = "insert into bca_footnote(CompanyID,Name,Description,Active) values(?,?,?,?)";
+//            pstmt = con.prepareStatement(insertQuery);
+//            pstmt.setLong(1, compId);
+//            pstmt.setString(2, footnotName);
+//            pstmt.setString(3, cForm.getDesc());
+//            pstmt.setInt(4, 1);
+//            int inserted = pstmt.executeUpdate();
+            BcaFootnote bcaFootnote = new BcaFootnote();
+            BcaCompany bcaCompany =  new BcaCompany();
+            bcaCompany.setCompanyId(compId);
+            bcaFootnote.setCompany(bcaCompany);
+            bcaFootnote.setName(footnotName);
+            bcaFootnote.setDescription( cForm.getDesc());
+            bcaFootnote.setActive(1);
             if (inserted > 0) {
                 isSaved = true;
             }
 
-        } catch (SQLException ex) {
-            Loger.log("Exception in the class ConfigurationInfo and in method "
-                    + "saveFootnote " + ex.toString());
-        } finally {
-            executor.close(con);
-        }
+//        } catch (SQLException ex) {
+//            Loger.log("Exception in the class ConfigurationInfo and in method "
+//                    + "saveFootnote " + ex.toString());
+//        } finally {
+//            executor.close(con);
+//        }
         return isSaved;
     }
 

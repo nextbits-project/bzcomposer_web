@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
 
 
-@Entity
+@Entity // no jdbc references found
 public class BcaExporteditemedetail {
 
     @Id

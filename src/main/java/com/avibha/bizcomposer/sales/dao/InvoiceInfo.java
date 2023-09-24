@@ -15,20 +15,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.avibha.bizcomposer.sales.forms.*;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.util.LabelValueBean;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
+import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
+import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 
 /*
  * 
@@ -1853,6 +1857,8 @@ public class InvoiceInfo {
 			}
 		}
 	}
+	private BcaCvcreditcardRepository  bcaCvcreditcardRepository;
+
 	
 	public void SearchCustomer(String compId, String cvId, HttpServletRequest request) {
 
@@ -2110,6 +2116,8 @@ public class InvoiceInfo {
 					+ " where clientvendorid=? and active=1");
 			pstmt4.setString(1, cvId);
 			rs3 = pstmt4.executeQuery();
+			List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByClientVendorIdAndActive(cvId,1);
+
 			if (rs3.next()) {
 				customer.setCcType(rs3.getString("CCTypeID"));
 				customer.setCardNo(rs3.getString("CardNumber"));

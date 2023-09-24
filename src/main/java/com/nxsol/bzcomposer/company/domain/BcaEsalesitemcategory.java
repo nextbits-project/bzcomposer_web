@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 
-@Entity
+@Entity // no jdbc references
 public class BcaEsalesitemcategory {
 
     @Id

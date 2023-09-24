@@ -5,6 +5,23 @@
  */
 package com.avibha.bizcomposer.sales.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
@@ -18,19 +35,11 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
+import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.util.LabelValueBean;
-
-import javax.servlet.http.HttpServletRequest;
-import java.sql.*;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
 /*
  * 
@@ -424,40 +433,48 @@ public class CustomerInfoDao {
 		return balance;
 	}
 
+	@Autowired
+	private BcaCvtypeRepository bcaCvtypeRepository;
+	
 	public int getCustomerTypeId(String customerType) {
 		int cvTypeId = 0;
-		Statement stmt = null;
-		ResultSet rst = null;
-		SQLExecutor db = new SQLExecutor();
-		Connection con = null;
-		con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rst = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		con = db.getConnection();
 
-		try {
-			String strSql = "SELECT CVTypeID from bca_cvtype " + "WHERE name='" + customerType + "'";
-			stmt = con.createStatement();
-			rst = stmt.executeQuery(strSql);
-			if (rst.next()) {
-				cvTypeId = rst.getInt("CVTypeID");
+//		try {
+//			String strSql = "SELECT CVTypeID from bca_cvtype " + "WHERE name='" + customerType + "'";
+//			stmt = con.createStatement();
+//			rst = stmt.executeQuery(strSql);
+			List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
+//			if (rst.next()) {
+//				cvTypeId = rst.getInt("CVTypeID");
+//			}
+			
+			if ( CVTypeIDs.size() > 0  ) {
+				cvTypeId = CVTypeIDs.get(0);
 			}
 
-		} catch (Exception e) {
-
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rst != null) {
-					db.close(rst);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+//		} catch (Exception e) {
+//
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rst != null) {
+//					db.close(rst);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return cvTypeId;
 	}
 
@@ -1258,51 +1275,63 @@ public class CustomerInfoDao {
 		}
 		return objList;
 	}
-
+private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 	public boolean makeCustomerCardDefault(String cvID, String cardID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		PreparedStatement pstmt = null, pstmt2 = null;
-		ResultSet rs = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		PreparedStatement pstmt = null, pstmt2 = null;
+//		ResultSet rs = null;
 		boolean valid = false;
-		try {
-			String sqlString = "select * from bca_cvcreditcard where DEFAULTCard=1 AND ClientVendorID=" + cvID;
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sqlString);
-			if (rs.next()) {
-				long ccID = rs.getInt("CreditCardID");
-				sqlString = "update bca_cvcreditcard set DEFAULTCard=0 where CreditCardID = " + ccID;
-				pstmt = con.prepareStatement(sqlString);
-				int count = pstmt.executeUpdate(sqlString);
+//		try {
+//			String sqlString = "select * from bca_cvcreditcard where DEFAULTCard=1 AND ClientVendorID=" + cvID;
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sqlString);
+			List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByDefaultCardAndClientVendorId(1,cvID); 
+//			if (rs.next()) {
+//				long ccID = rs.getInt("CreditCardID");
+//				sqlString = "update bca_cvcreditcard set DEFAULTCard=0 where CreditCardID = " + ccID;
+//				pstmt = con.prepareStatement(sqlString);
+//				int count = pstmt.executeUpdate(sqlString);
+//			}
+			for(BcaCvcreditcard bcaCvcreditcard : bcaCvcreditcards)
+			{
+				long ccID = bcaCvcreditcard.getCreditCardId();
+//				sqlString = "update bca_cvcreditcard set DEFAULTCard=0 where CreditCardID = " + ccID;
+//				pstmt = con.prepareStatement(sqlString);
+				
+//				int count = pstmt.executeUpdate(sqlString);
+				int count = bcaCvcreditcardRepository.updateByCreditCardId(0,ccID);
 			}
-			sqlString = "update bca_cvcreditcard set DEFAULTCard=1 where CreditCardID = " + cardID;
-			pstmt2 = con.prepareStatement(sqlString);
-			int count = pstmt2.executeUpdate(sqlString);
+//			sqlString = "update bca_cvcreditcard set DEFAULTCard=1 where CreditCardID = " + cardID;
+//			pstmt2 = con.prepareStatement(sqlString);
+//			int count = pstmt2.executeUpdate(sqlString);
+			int count = bcaCvcreditcardRepository.updateByCreditCardId(1,Long.valueOf(cardID));// JPA Check
 			if (count > 0) {
 				valid = true;
 			}
-		} catch (SQLException ee) {
-			Loger.log(2, " SQL Error in Class CustomerInfo and  method -makeCustomerCardDefault " + ee.toString());
-
-		} finally {
-			try {
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (pstmt2 != null) {
-					db.close(pstmt2);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+			
+//		} catch (SQLException ee) {
+//			Loger.log(2, " SQL Error in Class CustomerInfo and  method -makeCustomerCardDefault " + ee.toString());
+//
+//		} finally {
+//			try {
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (pstmt2 != null) {
+//					db.close(pstmt2);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return valid;
 	}
 
@@ -2041,12 +2070,13 @@ public class CustomerInfoDao {
 			pstmt.close();
 
 			// update bca_creditcard....
-			sqlString = "update bca_cvcreditcard set bca_creditcard.active=0 where clientvendorid=?";
-
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, cvID);
-			pstmt.executeUpdate();
-			pstmt.close();
+//			sqlString = "update bca_cvcreditcard set bca_creditcard.active=0 where clientvendorid=?";
+//
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, cvID);
+//			pstmt.executeUpdate();
+//			pstmt.close();
+			bcaCvcreditcardRepository.updateByActiveAndClientVendorId(Integer.valueOf(cvID)); // JPA Check
 
 			// set flag to indicate success & return value...
 			ret = true;

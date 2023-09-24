@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 
-@Entity
+@Entity bca_footnote
 public class BcaFootnote {
 
     @Id

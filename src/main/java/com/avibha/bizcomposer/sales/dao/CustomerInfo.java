@@ -15,10 +15,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionForm;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
@@ -32,6 +34,8 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /*
@@ -411,41 +415,50 @@ public class CustomerInfo {
 		}
 		return balance;
 	}
+	
+	@Autowired
+	private BcaCvtypeRepository bcaCvtypeRepository;
 
 	public int getCustomerTypeId(String customerType) {
 		int cvTypeId = 0;
-		Statement stmt = null;
-		ResultSet rst = null;
-		SQLExecutor db = new SQLExecutor();
-		Connection con = null;
-		con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rst = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		con = db.getConnection();
 
-		try {
-			String strSql = "SELECT CVTypeID from bca_cvtype " + "WHERE name='" + customerType + "'";
-			stmt = con.createStatement();
-			rst = stmt.executeQuery(strSql);
-			if (rst.next()) {
-				cvTypeId = rst.getInt("CVTypeID");
+//		try {
+//			String strSql = "SELECT CVTypeID from bca_cvtype " + "WHERE name='" + customerType + "'";
+//			stmt = con.createStatement();
+//			rst = stmt.executeQuery(strSql);
+			List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
+			
+//			if (rst.next()) {
+//				cvTypeId = rst.getInt("CVTypeID");
+//			}
+
+			if ( CVTypeIDs.size() > 0  ) {
+				cvTypeId = CVTypeIDs.get(0);
 			}
-
-		} catch (Exception e) {
-
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rst != null) {
-					db.close(rst);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+//
+//		} catch (Exception e) {
+//
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rst != null) {
+//					db.close(rst);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return cvTypeId;
 	}
 
@@ -1725,6 +1738,8 @@ public class CustomerInfo {
 	 * Function to delete the particular Customer Do not actualy DELETE the record;
 	 * just UPDATE the value of deleted attribute to 1
 	 */
+	
+	BcaCvcreditcardRepository bcaCvcreditcardRepository;
 	public boolean deleteCustomer(String cvID, String compId) {
 		boolean ret = false;
 		Connection con = null;
@@ -1771,12 +1786,13 @@ public class CustomerInfo {
 			pstmt.close();
 
 			// update bca_creditcard....
-			sqlString = "UPDATE bca_cvcreditcard SET active=0 WHERE clientvendorid=?";
-
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, cvID);
-			pstmt.executeUpdate();
-			pstmt.close();
+//			sqlString = "UPDATE bca_cvcreditcard SET active=0 WHERE clientvendorid=?";
+//
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, cvID);
+//			pstmt.executeUpdate();
+//			pstmt.close();
+			bcaCvcreditcardRepository.updateByActiveAndClientVendorId(cvID);
 			// set flag to indicate success & return value...
 			ret = true;
 		} catch (Exception e) {

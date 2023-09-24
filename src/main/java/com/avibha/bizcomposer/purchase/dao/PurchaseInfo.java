@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,9 @@ import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
+import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
+import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /* 
@@ -570,20 +574,21 @@ public class PurchaseInfo {
 	 * related to credit card
 	 */
 
+	private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 	public boolean insertVendorCreditCard(int cvID, String cardType, String ccNo, String expDate, String cw2, String cHoldername, String bsAddress, String zip) {
 		boolean ret = false;
-		Connection con = null ;
-		PreparedStatement pstmt = null;
-		PreparedStatement pstmtUpdate = null;
+//		Connection con = null ;
+//		PreparedStatement pstmt = null;
+//		PreparedStatement pstmtUpdate = null;
 		String month = "0";
 		String year = "0";
-		SQLExecutor db = new SQLExecutor();
+//		SQLExecutor db = new SQLExecutor();
 
-		if (db == null)
-			return ret;
+//		if (db == null)
+//			return ret;
 		con = db.getConnection();
-		if (con == null)
-			return ret;
+//		if (con == null)
+//			return ret;
 		Loger.log("The expDate is ___________________" + expDate);
 
 		if (cardType == null)
@@ -608,50 +613,73 @@ public class PurchaseInfo {
 		}
 
 		try {
-//			int ccID = getLastCCID() + 1;
+
+
+
+			//			int ccID = getLastCCID() + 1;
 			//pstmtUpdate = con.prepareStatement("update bca_cvcreditcard set Active=0 where ClientVendorID=? and Active=1");
 			//pstmtUpdate.setInt(1, cvID);
 			//pstmtUpdate.executeUpdate();
-			String sqlString = "insert into bca_cvcreditcard(CCTypeID, ClientVendorID, CardNumber, CardExpMonth, CardExpYear,"
-					+ " CardCW2, CardHolderName, CardBillingAddress, CardBillingZipCode, Active, DEFAULTCard, DateAdded ) "
-					+ " values(?,?,?,?,?,?,?,?,?,?,?,?)";
-			java.sql.Date d = new java.sql.Date(new java.util.Date().getTime());
-
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, cardType);
-			//pstmt.setInt(2, ccID);
-			pstmt.setInt(2, cvID);
-			pstmt.setString(3, ccNo);
-			pstmt.setString(4, month);
-			pstmt.setString(5, year);
-			pstmt.setString(6, cw2);
-			pstmt.setString(7, cHoldername);
-			pstmt.setString(8, bsAddress);
-			pstmt.setString(9, zip);
-			pstmt.setString(10, "1");
-			pstmt.setInt(11, 0);
-			pstmt.setDate(12, d);
-
+			
+//			String sqlString = "insert into bca_cvcreditcard(CCTypeID, ClientVendorID, CardNumber, CardExpMonth, CardExpYear,"
+//					+ " CardCW2, CardHolderName, CardBillingAddress, CardBillingZipCode, Active, DEFAULTCard, DateAdded ) "
+//					+ " values(?,?,?,?,?,?,?,?,?,?,?,?)";
+//		JPA check 	java.sql.Date d = new java.sql.Date(new java.util.Date().getTime());
+			BcaCvcreditcard bcaCvcreditcard = new BcaCvcreditcard();
+			bcaCvcreditcard.setCctypeId(cardType);
+			 BcaClientvendor   bcaClientvendor = new BcaClientvendor();
+			bcaClientvendor.setClientVendorId(cvID);
+			bcaCvcreditcard.setClientVendor(bcaClientvendor);
+			bcaCvcreditcard.setCardNumber(ccNo);
+			bcaCvcreditcard.setCardExpMonth(month);
+			bcaCvcreditcard.setCardExpYear(year);
+			bcaCvcreditcard.setCardCw2(cw2);
+			bcaCvcreditcard.setCardHolderName(cHoldername);
+			bcaCvcreditcard.setCardBillingAddress(bsAddress);
+			bcaCvcreditcard.setCardBillingZipCode(zip);
+			bcaCvcreditcard.setActive(1);
+			bcaCvcreditcard.setDefaultCard(false);			
+			bcaCvcreditcard.setDateAdded(OffsetDateTime.now());
+			
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, cardType);
+//				//pstmt.setInt(2, ccID);
+//			pstmt.setInt(2, cvID);
+//			pstmt.setString(3, ccNo);
+//			pstmt.setString(4, month);
+//			pstmt.setString(5, year);
+//			pstmt.setString(6, cw2);
+//			pstmt.setString(7, cHoldername);
+//			pstmt.setString(8, bsAddress);
+//			pstmt.setString(9, zip);
+//			pstmt.setString(10, "1");
+//			pstmt.setInt(11, 0);
+//			pstmt.setDate(12, d);
+			String sqlString = "bcaCvcreditcardRepository.save(bcaCvcreditcard)"; // JPA Check
 			Loger.log("CrediCard Query-------------->" + sqlString);
-
-			int num = pstmt.executeUpdate();
-			if (num > 0) {
+			BcaCvcreditcard bcaCvcreditcardSaved = bcaCvcreditcardRepository.save(bcaCvcreditcard);
+			if(bcaCvcreditcardSaved != null)
+//			int num = pstmt.executeUpdate();
+//			if (num > 0)
+			{
 				ret = true;
-				Loger.log("num:" + num);
+				Loger.log("num:" + 1); //JPA Check
 			}
-		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class Employee and  method -insertEmployee "+" " + ee.toString());
+//		} catch (SQLException ee) {
+		} catch (Exception ee) {
+//			Loger.log(2," SQL Error in Class Employee and  method -insertEmployee "+" " + ee.toString());
+			Loger.log(2," JPA Error in Class Employee and  method -insertEmployee "+" " + ee.toString());
 			
 		}
-		finally {
-			try {
-				if (pstmtUpdate != null) { db.close(pstmtUpdate); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+//		finally {
+//			try {
+//				if (pstmtUpdate != null) { db.close(pstmtUpdate); }
+//				if (pstmt != null) { db.close(pstmt); }
+//				if(con != null){ db.close(con); }
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return ret;
 	}
 
@@ -1047,31 +1075,35 @@ public class PurchaseInfo {
 	public boolean updateVendorCreditCard(int cvID, String cctype, String ccNo,
 			String expDate, String cw2, String cHoldername, String bsAddress,
 			String zip) {
+		
+		
 		boolean ret = false;
-		Connection con = null ;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null ;
+//		PreparedStatement ps = null;
+//		ResultSet rs = null;
+//		SQLExecutor db = new SQLExecutor();
 
 		int ccID = 0;
-
-		if (db == null)
-			return ret;
-		con = db.getConnection();
-		if (con == null)
-			return ret;
+		
+//		if (db == null)
+//			return ret;
+//		con = db.getConnection();
+//		if (con == null)
+//			return ret;
 
 		try {
-
-			ps = con.prepareStatement("select CreditCardID from bca_cvcreditcard where clientvendorid=" + cvID + " and active=1");
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				ccID = rs.getInt(1);
+			List<Integer> ccIDs = bcaCvcreditcardRepository.findByClientVndoridAndActive(cvID);
+//			ps = con.prepareStatement("select CreditCardID from bca_cvcreditcard where clientvendorid=" + cvID + " and active=1");
+//			rs = ps.executeQuery();
+//			if (rs.next()) {
+			if(ccIDs.size() > 0) {
+//				ccID = rs.getInt(1);
+				ccID = ccIDs.get(0);
 			} else {
 				ccID = getLastCCID() + 1;
 			}
-			rs.close();
-			ps.close();
+//			rs.close();
+//			ps.close();
 
 			String month = "";
 			String year = "";
@@ -1089,54 +1121,59 @@ public class PurchaseInfo {
 				temp = temp.substring(indx + 1);
 				year = temp;
 			}
-			String sqlString = "update  bca_cvcreditcard set "
-					+ " CardNumber=?, CardExpMonth=?, CardExpYear=?,CardCW2= ?, CardHolderName=?"
-					+ ", CardBillingAddress=?, CardBillingZipCode=?, Active=1, DateAdded=?,CCTypeID=?"
-					+ " where CreditCardID=? and clientvendorid= ?";
+			
+					
+//			String sqlString = "update  bca_cvcreditcard set "
+//					+ " CardNumber=?, CardExpMonth=?, CardExpYear=?,CardCW2= ?, CardHolderName=?"
+//					+ ", CardBillingAddress=?, CardBillingZipCode=?, Active=1, DateAdded=?,CCTypeID=?"
+//					+ " where CreditCardID=? and clientvendorid= ?";
 
 			Loger.log("Update CrediCard Query-------------->" + sqlString);
-			ps = con.prepareStatement(sqlString);
-			ps.setString(1, ccNo);
-			ps.setString(2, month);
-			ps.setString(3, year);
-			ps.setString(4, cw2);
-			ps.setString(5, cHoldername);
-			ps.setString(6, bsAddress);
-			ps.setString(7, zip);
-			ps.setDate(8, new java.sql.Date(new java.util.Date().getTime())); // set
-			// current;
-			//ps.setInt(9, Integer.parseInt(cctype)); // date;
-			ps.setInt(9, (cctype==null || cctype.trim().equals(""))?0:Integer.parseInt(cctype));
-			ps.setInt(10, ccID);
-			ps.setInt(11, cvID);
+//			ps = con.prepareStatement(sqlString);
+//			ps.setString(1, ccNo);
+//			ps.setString(2, month);
+//			ps.setString(3, year);
+//			ps.setString(4, cw2);
+//			ps.setString(5, cHoldername);
+//			ps.setString(6, bsAddress);
+//			ps.setString(7, zip);
+//			ps.setDate(8, new java.sql.Date(new java.util.Date().getTime())); // set
+//			// current;
+//			//ps.setInt(9, Integer.parseInt(cctype)); // date;
+//			ps.setInt(9, (cctype==null || cctype.trim().equals(""))?0:Integer.parseInt(cctype));
+//			ps.setInt(10, ccID);
+//			ps.setInt(11, cvID);
 
-			int num = ps.executeUpdate();
+//			int num = ps.executeUpdate();
+			int num = bcaCvcreditcardRepository.updateByCreditCardIdAndClientVendorId(ccNo,month,year,cw2,cHoldername,bsAddress,zip,OffsetDateTime.now(),
+					(cctype==null || cctype.trim().equals("")) ? 0 : Integer.parseInt(cctype),ccID,cvID);
 
 			Loger.log("update  bca_cvcreditcard (no. of recs):" + num);
 
 			if (num > 0) {
-				ret = true;
+//				ret = true;
+				return true;
 				// Loger.log("update bca_cvcreditcard (no. of recs):"+num);
 			}
 		} catch (SQLException ee) {
 			Loger.log(2,"SQLException....PurchaseInfo.updateVendorCreditCard()"+ " " + ee.toString());
 		}
-		finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-					}
-				if (ps != null) {
-					db.close(ps);
-					}
-					if(con != null){
-					db.close(con);
-					}
-				} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		return ret;
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//					}
+//				if (ps != null) {
+//					db.close(ps);
+//					}
+//					if(con != null){
+//					db.close(con);
+//					}
+//				} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+		return false;
 	}
 
 	/*
@@ -1178,43 +1215,46 @@ public class PurchaseInfo {
 	 * 
 	 */
 	public int getLastCCID() {
-		Connection con = null ;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null ;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
 		int ID = 0;
-		ResultSet rs = null;
-		con = db.getConnection();
+//		ResultSet rs = null;
+//		con = db.getConnection();
 
-		try {
+//		try {
 
 			String sqlString = "select CreditCardID from bca_cvcreditcard order by CreditCardID desc ";
-			pstmt = con.prepareStatement(sqlString);
+//			pstmt = con.prepareStatement(sqlString);
 			Loger.log(sqlString);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				ID = rs.getInt(1);
+//			rs = pstmt.executeQuery();
+			List<Integer> creditCardIDs = bcaCvcreditcardRepository.findByOrderByCreditCardId();
+//			if (rs.next()) {
+				if( creditCardIDs.size() > 0 ) {
+//				ID = rs.getInt(1);
+					ID = creditCardIDs.get(0);
 
 			}
-		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class VendorInfo and  method -getLastCCID "
-							+ " " + ee.toString());
-		}
-		finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-					}
-				if (pstmt != null) {
-					db.close(pstmt);
-					}
-					if(con != null){
-					db.close(con);
-					}
-				} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+//		} catch (SQLException ee) {
+//			Loger.log(2,
+//					" SQL Error in Class VendorInfo and  method -getLastCCID "
+//							+ " " + ee.toString());
+//		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//					}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//					}
+//					if(con != null){
+//					db.close(con);
+//					}
+//				} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return ID;
 	}
 
@@ -1637,23 +1677,39 @@ public class PurchaseInfo {
 
 			// ---start---------------------------------------------------------------------code
 
-			pstmt4 = con.prepareStatement("select * from bca_cvcreditcard "
-					+ " where clientvendorid=? and active=1");
-			pstmt4.setString(1, cvId);
-			rs3 = pstmt4.executeQuery();
-			if (rs3.next()) {
-				customer.setCcType(rs3.getString("CCTypeID"));
-				customer.setCardNo(rs3.getString("CardNumber"));
-				customer.setExpDate(rs3.getString("CardExpMonth") + "/"
-						+ rs3.getString("CardExpYear"));
-				customer.setCw2(rs3.getString("CardCW2"));
-				customer.setCardHolderName(rs3.getString("CardHolderName"));
-				customer
-						.setCardBillAddress(rs3.getString("CardBillingAddress"));
-				customer.setCardZip(rs3.getString("CardBillingZipCode"));
+//			pstmt4 = con.prepareStatement("select * from bca_cvcreditcard "
+//					+ " where clientvendorid=? and active=1");
+//			pstmt4.setString(1, cvId);
+//			rs3 = pstmt4.executeQuery();
+			List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByClientVendorIdAndActive(cvId);
+//			if (rs3.next()) {
+//				customer.setCcType(rs3.getString("CCTypeID"));
+//				customer.setCardNo(rs3.getString("CardNumber"));
+//				customer.setExpDate(rs3.getString("CardExpMonth") + "/"
+//						+ rs3.getString("CardExpYear"));
+//				customer.setCw2(rs3.getString("CardCW2"));
+//				customer.setCardHolderName(rs3.getString("CardHolderName"));
+//				customer
+//						.setCardBillAddress(rs3.getString("CardBillingAddress"));
+//				customer.setCardZip(rs3.getString("CardBillingZipCode"));
+//			}
+			for(BcaCvcreditcard bcaCvcreditcard : bcaCvcreditcards)
+			{
+			
+					customer.setCcType(bcaCvcreditcard.getCctypeId());
+					customer.setCardNo(bcaCvcreditcard.getCardNumber());
+					customer.setExpDate(bcaCvcreditcard.getCardExpMonth() + "/"
+							+ bcaCvcreditcard.getCardExpYear());
+					customer.setCw2(bcaCvcreditcard.getCardCw2());
+					customer.setCardHolderName(bcaCvcreditcard.getCardHolderName());
+					customer
+							.setCardBillAddress(bcaCvcreditcard.getCardBillingAddress());
+					customer.setCardZip(bcaCvcreditcard.getCardBillingZipCode());
+			
 			}
-			pstmt4.close();
-			rs3.close();
+//			pstmt4.close();
+//			rs3.close();
+		
 			// ---end---------------------------------------------------------------------code
 
 			

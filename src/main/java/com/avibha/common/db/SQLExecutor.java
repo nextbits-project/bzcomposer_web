@@ -78,11 +78,23 @@ public class SQLExecutor {
 			InitialContext ic = new InitialContext();
 			 System.setProperty(InitialContext.INITIAL_CONTEXT_FACTORY,
 	                  "org.apache.naming.java.javaURLContextFactory");
-			dataSource = new BasicDataSource();
+		/*	dataSource = new BasicDataSource();
 			dataSource.setDriverClassName((String) ic.lookup("java:comp/env/DriverClass"));
 			dataSource.setUrl((String) ic.lookup("java:comp/env/URL"));
 			dataSource.setUsername((String) ic.lookup("java:comp/env/UID"));
 			dataSource.setPassword((String) ic.lookup("java:comp/env/password"));
+			dataSource.setMaxIdle(10);
+			dataSource.setMaxTotal(100);
+			dataSource.setInitialSize(5);
+			dataSource.setValidationQuery("select 1");
+			dataSource.setTestOnBorrow(true);
+			*/
+			
+			dataSource = new BasicDataSource();
+			dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+			dataSource.setUrl("jdbc:mysql://localhost:33060/namemaxx_bzc");
+			dataSource.setUsername("root");
+			dataSource.setPassword("saba");
 			dataSource.setMaxIdle(10);
 			dataSource.setMaxTotal(100);
 			dataSource.setInitialSize(5);
