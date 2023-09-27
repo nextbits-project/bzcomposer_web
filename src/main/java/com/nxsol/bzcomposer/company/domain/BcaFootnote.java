@@ -10,13 +10,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 
-@Entity bca_footnote
+@Entity
 public class BcaFootnote {
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer footNoteId;
+    private Integer footNoteId; 
 
     @Column(length = 50)
     private String name;

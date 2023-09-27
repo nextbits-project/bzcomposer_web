@@ -1,21 +1,43 @@
 package com.avibha.bizcomposer.accounting.dao;
 
-import com.avibha.bizcomposer.accounting.forms.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.avibha.bizcomposer.accounting.forms.AccountPayDto;
+import com.avibha.bizcomposer.accounting.forms.AccountRecDto;
+import com.avibha.bizcomposer.accounting.forms.BillingDto;
+import com.avibha.bizcomposer.accounting.forms.CategoryListDto;
+import com.avibha.bizcomposer.accounting.forms.CategoryListForm;
+import com.avibha.bizcomposer.accounting.forms.EditCategoryForm;
+import com.avibha.bizcomposer.accounting.forms.EnterBillDto;
+import com.avibha.bizcomposer.accounting.forms.InvoiceDetailDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.JProjectUtil;
-
-import javax.servlet.http.HttpServletRequest;
-import java.sql.*;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaInvoiceTermClientVendorResult;
+import com.nxsol.bzcomposer.company.domain.nonmanaged.InvoiceClientVendorResult;
+import com.nxsol.bzcomposer.company.repos.BcaAccountRepository;
+import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 
 public class Account {
 
     String vName;
+    
+    @Autowired
+    private BcaInvoiceRepository bcaInvoiceRepository;
     /*
      * This method is used to display vendor names from database
      */
@@ -391,60 +413,81 @@ public class Account {
     /*This method is used to
      * display invoices in Account Receivable
      */
+    
+ 
     public ArrayList findinvoices(String compId)
     {
         Loger.log("Company id in findinvoices is "+compId);
-        ResultSet rs=null;
-        SQLExecutor db=new SQLExecutor();
-        PreparedStatement pstmt=null;
-        Connection con=db.getConnection();
-        ArrayList<InvoiceDetailDto> invoiceList=new ArrayList<InvoiceDetailDto>();
-
-        try
-        {
-            String sqlString="Select a.InvoiceID,a.OrderNum,a.DateAdded,a.TermID,a.Total,a.Balance,b.Firstname,b.LastName,a.clientvendorId from bca_invoice as a, bca_clientvendor as b where a.ClientVendorId=b.ClientVendorId and b.Status in ('U','N') and b.Active=1 and a.invoicestatus in (0,2) and a.invoicetypeID in (1,7) and b.deleted=0 and a.CompanyID=?";
-            pstmt=con.prepareStatement(sqlString);
-            pstmt.setString(1,compId);
-            rs=pstmt.executeQuery();
-            while(rs.next())
-            {
-                InvoiceDetailDto invoice=new InvoiceDetailDto();
-                invoice.setInvoiceId(rs.getString("InvoiceID"));
-                invoice.setClientVendorId(rs.getString("ClientVendorID"));
-                invoice.setOrderno(rs.getString("OrderNum"));
-                invoice.setDate(rs.getString("DateAdded"));
-                invoice.setTerm(rs.getString("TermID"));
-                invoice.setTotal(rs.getString("Total"));
-                invoice.setBalance(rs.getString("Balance"));
-                String custName=rs.getString("LastName");
-                custName=custName+" "+rs.getString("FirstName");
-                //Loger.log("Name is "+custName);
-                invoice.setCustomer(custName);
-                invoiceList.add(invoice);
-
-            }
-        }
-        catch(Exception e)
-        {
-            Loger.log("Error in find invoices"+e.toString());
-        }
-        finally {
-            try {
-                if (rs != null) {
-                    db.close(rs);
-                }
-                if (pstmt != null) {
-                    db.close(pstmt);
-                }
-                if(con != null){
-                    db.close(con);
-                }
-            } catch (Exception e) {
-                Loger.log(e.toString());
-            }
-        }
-        return invoiceList;
+//        ResultSet rs=null;
+//        SQLExecutor db=new SQLExecutor();
+//        PreparedStatement pstmt=null;
+//        Connection con=db.getConnection();
+//        ArrayList<InvoiceDetailDto> invoiceList = new ArrayList<InvoiceDetailDto>();  
+       return  bcaInvoiceRepository.findByCompanyIdFromInvoiceClientvendor2(compId);  
+//        try
+//        {
+//            String sqlString="Select a.InvoiceID,a.OrderNum,a.DateAdded,a.TermID,a.Total,a.Balance,b.Firstname,b.LastName,a.clientvendorId from bca_invoice as a, bca_clientvendor as b where a.ClientVendorId=b.ClientVendorId and b.Status in ('U','N') and b.Active=1 and a.invoicestatus in (0,2) and a.invoicetypeID in (1,7) and b.deleted=0 and a.CompanyID=?";
+//            pstmt=con.prepareStatement(sqlString);
+//            pstmt.setString(1,compId);
+//            rs=pstmt.executeQuery();
+        
+//            while(rs.next())
+//            {
+//                InvoiceDetailDto invoice=new InvoiceDetailDto();
+//                invoice.setInvoiceId(rs.getString("InvoiceID"));
+//                invoice.setClientVendorId(rs.getString("ClientVendorID"));
+//                invoice.setOrderno(rs.getString("OrderNum"));
+//                invoice.setDate(rs.getString("DateAdded"));
+//                invoice.setTerm(rs.getString("TermID"));
+//                invoice.setTotal(rs.getString("Total"));
+//                invoice.setBalance(rs.getString("Balance"));
+//                String custName=rs.getString("LastName");
+//                custName=custName+" "+rs.getString("FirstName");
+//                //Loger.log("Name is "+custName);
+//                invoice.setCustomer(custName);
+//                invoiceList.add(invoice);
+//
+//            }
+            
+//            for(InvoiceClientVendorResult invoiceClientVendorResult:  invoiceClientVendorResults)
+//            {
+//            	InvoiceDetailDto invoice = new InvoiceDetailDto();
+//                invoice.setInvoiceId(invoiceClientVendorResult.getInvoiceId());
+//                invoice.setClientVendorId(invoiceClientVendorResult.getClientVendorId());
+//                invoice.setOrderno(invoiceClientVendorResult.getOrderNum());
+//                invoice.setDate(invoiceClientVendorResult.getDateAdded().toString()); // JPA Check convert to string using date time formatter
+//                invoice.setTerm(invoiceClientVendorResult.getTermID());
+//                invoice.setTotal(invoiceClientVendorResult.getTotal());
+//                invoice.setBalance(invoiceClientVendorResult.getBalance());
+//                String custName = invoiceClientVendorResult.getLastName();
+//                custName = custName + " " + invoiceClientVendorResult.getFirstname();
+//                //Loger.log("Name is "+custName);
+//                invoice.setCustomer(custName);
+//                invoiceList.add(invoice);
+//            }
+//        }
+//        catch(Exception e)
+//        {
+//            Loger.log("Error in find invoices"+e.toString());
+//        }
+//        finally {
+//            try {
+//                if (rs != null) {
+//                    db.close(rs);
+//                }
+//                if (pstmt != null) {
+//                    db.close(pstmt);
+//                }
+//                if(con != null){
+//                    db.close(con);
+//                }
+//            } catch (Exception e) {
+//                Loger.log(e.toString());
+//            }
+//        }
+//        return invoiceList;
     }
+   
 
     /*   This method is used
      *   to display the billing address information
@@ -453,57 +496,77 @@ public class Account {
     public ArrayList billAddInfo(String clientvendorId)
     {
         Loger.log("Client vendor id in method is "+clientvendorId);
-        ResultSet rs = null;
-        PreparedStatement pstmt = null;
-        SQLExecutor db=new SQLExecutor();
-        Connection con=db.getConnection();
+//        ResultSet rs = null;
+//        PreparedStatement pstmt = null;
+//        SQLExecutor db=new SQLExecutor();
+//        Connection con=db.getConnection();
         ArrayList<BillingDto> billList=new ArrayList<BillingDto>();
 
-        try
-        {
-            String sqlString="SELECT a.ordernum,b.termId,b.Name,c.clientvendorId,c.Name,c.dateAdded,c.Address1,c.Address2,c.city,c.state,c.zipcode " +
-                    "FROM Bca_invoice as a,bca_term as b,BCA_ClientVendor as c  WHERE c.CompanyID = 1 AND c.Status IN ('U', 'N' ) " +
-                    " AND c.CVTypeID IN (1,2)  AND (c.Deleted = 0 OR c.Active = 1)  AND a.clientvendorId=c.clientvendorId  AND b.termId=c.termId AND a.clientvendorId=?";
-            pstmt=con.prepareStatement(sqlString);
-            pstmt.setString(1,clientvendorId);
-            rs=pstmt.executeQuery();
-
-            while(rs.next())
+        
+       
+        
+//        try
+//        {
+//            String sqlString="SELECT a.ordernum,b.termId,b.Name,c.clientvendorId,c.Name,c.dateAdded,c.Address1,c.Address2,c.city,c.state,c.zipcode " +
+//                    "FROM Bca_invoice as a,bca_term as b,BCA_ClientVendor as c  WHERE c.CompanyID = 1 AND c.Status IN ('U', 'N' ) " +
+//                    " AND c.CVTypeID IN (1,2)  AND (c.Deleted = 0 OR c.Active = 1)  AND a.clientvendorId=c.clientvendorId  AND b.termId=c.termId AND a.clientvendorId=?";
+//            pstmt=con.prepareStatement(sqlString);
+          
+//            pstmt.setString(1,clientvendorId);
+//            rs=pstmt.executeQuery();
+            List<BcaInvoiceTermClientVendorResult>  bcaInvoiceTermClientVendorResults =   bcaInvoiceRepository.findByCompaniIdStatusCvTypeIdDeletedClienetVendorIdTermId(clientvendorId);
+//            while(rs.next())
+//            {
+//                BillingDto bf=new BillingDto();
+//                bf.setRef(rs.getString(1));
+//                bf.setTerm(rs.getString(3));
+//                bf.setCustomer(rs.getString(5));
+//                bf.setDuedate(rs.getString(6));
+//                bf.setAdd1(rs.getString(7));
+//                bf.setAdd2(rs.getString(8));
+//                bf.setCity(rs.getString(9));
+//                bf.setState(rs.getString(10));
+//                bf.setZipcode(rs.getString(11));
+//                billList.add(bf);
+//                Loger.log("Inside billAddInfo");
+//            }
+            
+            for(BcaInvoiceTermClientVendorResult bcaInvoiceTermClientVendorResult: bcaInvoiceTermClientVendorResults)  // JPA Check fields 2 and 4 were not used
             {
-                BillingDto bf=new BillingDto();
-                bf.setRef(rs.getString(1));
-                bf.setTerm(rs.getString(3));
-                bf.setCustomer(rs.getString(5));
-                bf.setDuedate(rs.getString(6));
-                bf.setAdd1(rs.getString(7));
-                bf.setAdd2(rs.getString(8));
-                bf.setCity(rs.getString(9));
-                bf.setState(rs.getString(10));
-                bf.setZipcode(rs.getString(11));
+                BillingDto bf = new BillingDto();
+                bf.setRef(bcaInvoiceTermClientVendorResult.getOrdernum());
+                bf.setTerm(bcaInvoiceTermClientVendorResult.getTermName());
+                bf.setCustomer(bcaInvoiceTermClientVendorResult.getClientvendorId());
+                bf.setDuedate(bcaInvoiceTermClientVendorResult.getDateAdded());
+                bf.setAdd1(bcaInvoiceTermClientVendorResult.getAddress1());
+                bf.setAdd2(bcaInvoiceTermClientVendorResult.getAddress2());
+                bf.setCity(bcaInvoiceTermClientVendorResult.getCity());
+                bf.setState(bcaInvoiceTermClientVendorResult.getState());
+                bf.setZipcode(bcaInvoiceTermClientVendorResult.getZipcode());
                 billList.add(bf);
                 Loger.log("Inside billAddInfo");
             }
             Loger.log("Size of serviceList in method is "+billList.size());
-        }
-        catch(Exception e)
-        {
-            Loger.log("Error in billAddInfo "+e);
-        }
-        finally {
-            try {
-                if (rs != null) {
-                    db.close(rs);
-                }
-                if (pstmt != null) {
-                    db.close(pstmt);
-                }
-                if(con != null){
-                    db.close(con);
-                }
-            } catch (Exception e) {
-                Loger.log(e.toString());
-            }
-        }
+//        }
+//        catch(Exception e)
+//        {
+//            Loger.log("Error in billAddInfo "+e);
+//        }
+//        finally {
+//            try {
+//                if (rs != null) {
+//                    db.close(rs);
+//                }
+//                if (pstmt != null) {
+//                    db.close(pstmt);
+//                }
+//                if(con != null){
+//                    db.close(con);
+//                }
+//            } catch (Exception e) {
+//                Loger.log(e.toString());
+//            }
+//        }
         return billList;
     }
 
@@ -514,55 +577,74 @@ public class Account {
      */
     public ArrayList AllbillAddInfo()
     {
-        ResultSet rs = null;
-        PreparedStatement pstmt = null;
-        SQLExecutor db=new SQLExecutor();
-        Connection con=db.getConnection();
+//        ResultSet rs = null;
+//        PreparedStatement pstmt = null;
+//        SQLExecutor db=new SQLExecutor();
+//        Connection con=db.getConnection();
         ArrayList<BillingDto> billList=new ArrayList<BillingDto>();
 
-        try
-        {
-            String sqlString="SELECT a.ordernum,a.balance,b.termId,b.Name,c.clientvendorId,c.Name,c.dateAdded,c.Address1,c.Address2,c.city,c.state,c.zipcode FROM Bca_invoice as a,bca_term as b,BCA_ClientVendor as c  WHERE c.CompanyID = 1 AND c.Status IN ('U', 'N' )  AND c.CVTypeID IN (1,2)  AND (c.Deleted = 0 OR c.Active = 1)  AND a.ClientVendorID =c.clientvendorId and b.termId=c.termId";
-            pstmt=con.prepareStatement(sqlString);
-            rs=pstmt.executeQuery();
+//        try
+//        {
+            String sqlString="SELECT a.ordernum,a.balance, b.termId,b.Name,c.clientvendorId,c.Name,c.dateAdded,c.Address1,c.Address2,c.city,c.state,c.zipcode FROM Bca_invoice as a,bca_term as b,BCA_ClientVendor as c  WHERE c.CompanyID = 1 AND c.Status IN ('U', 'N' )  AND c.CVTypeID IN (1,2)  AND (c.Deleted = 0 OR c.Active = 1)  AND a.ClientVendorID =c.clientvendorId and b.termId=c.termId";
+//            pstmt=con.prepareStatement(sqlString);
+//            rs=pstmt.executeQuery();
+    //  c.CompanyID = 1 AND c.Status IN ('U', 'N' )  AND c.CVTypeID IN (1,2)  AND (c.Deleted = 0 OR c.Active = 1)  AND a.ClientVendorID =c.clientvendorId and b.termId=c.termId";        
+            List<BcaInvoiceTermClientVendorResult> bcaInvoiceTermClientVendorResults = bcaInvoiceRepository.findByCompanyIdCvTypeIdDeletedActive();
             Loger.log("Inside billAddInfo");
-            while(rs.next())
+//            while(rs.next())
+//            {
+//                BillingDto bf=new BillingDto();
+//                bf.setRef(rs.getString(1));
+//                bf.setAmt(rs.getString(2));
+//                bf.setTerm(rs.getString(4));
+//                bf.setCustomer(rs.getString(6));
+//                bf.setDuedate(rs.getString(7));
+//                bf.setAdd1(rs.getString(8));
+//                bf.setAdd2(rs.getString(9));
+//                bf.setCity(rs.getString(10));
+//                bf.setState(rs.getString(11));
+//                bf.setZipcode(rs.getString(12));
+//                billList.add(bf);
+//
+//            }
+            
+            for(BcaInvoiceTermClientVendorResult bcaInvoiceTermClientVendorResult: bcaInvoiceTermClientVendorResults)  // JPA Check fields 2 and 4 were not used
             {
-                BillingDto bf=new BillingDto();
-                bf.setRef(rs.getString(1));
-                bf.setAmt(rs.getString(2));
-                bf.setTerm(rs.getString(4));
-                bf.setCustomer(rs.getString(6));
-                bf.setDuedate(rs.getString(7));
-                bf.setAdd1(rs.getString(8));
-                bf.setAdd2(rs.getString(9));
-                bf.setCity(rs.getString(10));
-                bf.setState(rs.getString(11));
-                bf.setZipcode(rs.getString(12));
+                BillingDto bf = new BillingDto();
+                bf.setRef(bcaInvoiceTermClientVendorResult.getOrdernum());
+                bf.setTerm(bcaInvoiceTermClientVendorResult.getBalance());
+                bf.setCustomer(bcaInvoiceTermClientVendorResult.getTermName());
+                bf.setCustomer(bcaInvoiceTermClientVendorResult.getClientvendorName());
+                bf.setDuedate(bcaInvoiceTermClientVendorResult.getDateAdded());
+                bf.setAdd1(bcaInvoiceTermClientVendorResult.getAddress1());
+                bf.setAdd2(bcaInvoiceTermClientVendorResult.getAddress2());
+                bf.setCity(bcaInvoiceTermClientVendorResult.getCity());
+                bf.setState(bcaInvoiceTermClientVendorResult.getState());
+                bf.setZipcode(bcaInvoiceTermClientVendorResult.getZipcode());
                 billList.add(bf);
-
+               
             }
-            Loger.log("Size of billList in method is "+billList.size());
-        }
-        catch(Exception e)
-        {
-            Loger.log("Error in billAddInfo "+e);
-        }
-        finally {
-            try {
-                if (rs != null) {
-                    db.close(rs);
-                }
-                if (pstmt != null) {
-                    db.close(pstmt);
-                }
-                if(con != null){
-                    db.close(con);
-                }
-            } catch (Exception e) {
-                Loger.log(e.toString());
-            }
-        }
+            Loger.log("Size of billList in method is " + billList.size());
+//        }
+//        catch(Exception e)
+//        {
+//            Loger.log("Error in billAddInfo "+e);
+//        }
+//        finally {
+//            try {
+//                if (rs != null) {
+//                    db.close(rs);
+//                }
+//                if (pstmt != null) {
+//                    db.close(pstmt);
+//                }
+//                if(con != null){
+//                    db.close(con);
+//                }
+//            } catch (Exception e) {
+//                Loger.log(e.toString());
+//            }
+//        }
         return billList;
     }
 
@@ -571,53 +653,53 @@ public class Account {
      */
     public ArrayList findinvoices1(String orderno)
     {
-        ResultSet rs=null;
-        SQLExecutor db=new SQLExecutor();
-        PreparedStatement pstmt=null;
-        Connection con=db.getConnection();
-        ArrayList<InvoiceDetailDto> invoiceList=new ArrayList<InvoiceDetailDto>();
-
-        try
-        {
-            String sqlString="Select a.InvoiceID,a.DateAdded,a.TermID,a.Total,a.Balance,b.Firstname,b.LastName,a.clientvendorId from bca_invoice as a, bca_clientvendor as b where a.ClientVendorId=b.ClientVendorId and b.Status in ('U','N') and b.Active=1 and a.invoicestatus in (0,2) and a.invoicetypeID in (1,7) and b.deleted=0 and a.OrderNum=?";
-            pstmt=con.prepareStatement(sqlString);
-            pstmt.setString(1,orderno);
-            rs=pstmt.executeQuery();
-            if(rs.next())
-            {
-                InvoiceDetailDto invoice=new InvoiceDetailDto();
-                invoice.setInvoiceId(rs.getString("InvoiceID"));
-                invoice.setOrderno(orderno);
-                invoice.setDate(rs.getString("DateAdded"));
-                invoice.setTotal(rs.getString("Total"));
-                invoice.setBalance(rs.getString("Balance"));
-                String custName=rs.getString("LastName");
-                custName=custName+" "+rs.getString("FirstName");
-                invoice.setCustomer(custName);
-                invoiceList.add(invoice);
-
-            }
-        }
-        catch(Exception e)
-        {
-            Loger.log("Error in find invoices"+e.toString());
-        }
-        finally {
-            try {
-                if (rs != null) {
-                    db.close(rs);
-                }
-                if (pstmt != null) {
-                    db.close(pstmt);
-                }
-                if(con != null){
-                    db.close(con);
-                }
-            } catch (Exception e) {
-                Loger.log(e.toString());
-            }
-        }
-        return invoiceList;
+//        ResultSet rs=null;
+//        SQLExecutor db=new SQLExecutor();
+//        PreparedStatement pstmt=null;
+//        Connection con=db.getConnection();
+//        ArrayList<InvoiceDetailDto> invoiceList=new ArrayList<InvoiceDetailDto>();
+    	return bcaInvoiceRepository.findFromInvoiceClientVendor(orderno); // JPA Check required to verify parameter name 
+//        try
+//        {
+//            String sqlString="Select a.InvoiceID,a.DateAdded,a.TermID,a.Total,a.Balance,b.Firstname,b.LastName,a.clientvendorId from bca_invoice as a, bca_clientvendor as b where a.ClientVendorId=b.ClientVendorId and b.Status in ('U','N') and b.Active=1 and a.invoicestatus in (0,2) and a.invoicetypeID in (1,7) and b.deleted=0 and a.OrderNum=?";
+//            pstmt=con.prepareStatement(sqlString);
+//            pstmt.setString(1,orderno);
+//            rs=pstmt.executeQuery();
+//            if(rs.next())
+//            {
+//                InvoiceDetailDto invoice=new InvoiceDetailDto();
+//                invoice.setInvoiceId(rs.getString("InvoiceID"));
+//                invoice.setOrderno(orderno);
+//                invoice.setDate(rs.getString("DateAdded"));
+//                invoice.setTotal(rs.getString("Total"));
+//                invoice.setBalance(rs.getString("Balance"));
+//                String custName=rs.getString("LastName");
+//                custName=custName+" "+rs.getString("FirstName");
+//                invoice.setCustomer(custName);
+//                invoiceList.add(invoice);
+//
+//            }
+//        }
+//        catch(Exception e)
+//        {
+//            Loger.log("Error in find invoices"+e.toString());
+//        }
+//        finally {
+//            try {
+//                if (rs != null) {
+//                    db.close(rs);
+//                }
+//                if (pstmt != null) {
+//                    db.close(pstmt);
+//                }
+//                if(con != null){
+//                    db.close(con);
+//                }
+//            } catch (Exception e) {
+//                Loger.log(e.toString());
+//            }
+//        }
+//        return invoiceList;
     }
 
     /*This method is used to
@@ -626,6 +708,7 @@ public class Account {
      */
     public static InvoiceDetailDto getInvoiceInfo(String orderno)
     {
+    	return bcaInvoiceRepository.find
         ResultSet rs=null;
         SQLExecutor db=new SQLExecutor();
         PreparedStatement pstmt=null;

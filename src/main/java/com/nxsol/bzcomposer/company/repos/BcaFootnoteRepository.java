@@ -11,7 +11,7 @@ import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaFootnoteResult2;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.FootNoteQueryResult;
 
 
-public interface BcaFootnoteRepository extends JpaRepository<BcaFootnote, Integer> {
+public interface BcaFootnoteRepository extends JpaRepository<BcaFootnote, Long> {
 
 	@Query(value = "select FootNoteID,Name,Description from bca_footnote where CompanyID=? and Active=1 order by Name", nativeQuery = true)
 	List<FootNoteQueryResult> findByCompanyIdAndactive(String compId, int i);
@@ -22,4 +22,8 @@ public interface BcaFootnoteRepository extends JpaRepository<BcaFootnote, Intege
 	@Modifying
 	@Query(value =  "update bca_footnote set Active = 0 where FootNoteID = ? and CompanyID = ?", nativeQuery = true)
 	int updateByFootNotIdAndCompanyId(int footnote, String compId);
+	
+	@Modifying
+	@Query(value =  "update bca_footnote set Description=?,Active=? where FootNoteID=? and CompanyID=?",nativeQuery = true)
+	int updateByFootNotIdAndCompanyId(String description, int active, int footNoteID, long compId);
 }

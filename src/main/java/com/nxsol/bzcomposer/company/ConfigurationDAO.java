@@ -1,28 +1,36 @@
 package com.nxsol.bzcomposer.company;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
 import com.avibha.bizcomposer.configuration.forms.ScheduleDateDto;
 import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
-import com.avibha.bizcomposer.employee.forms.StateTaxOtherDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
-import org.apache.struts.util.LabelValueBean;
-import org.springframework.util.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
+import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
 
 public class ConfigurationDAO {
 
@@ -1105,59 +1113,89 @@ public class ConfigurationDAO {
 		return result;
 	}
 
+	@Autowired
+	private BcaUsergroupRepository bcaUsergroupRepository;
+		
 	public void getUserGroupDetails(String groupId, ConfigurationDto configDto) {
-		String sql = "SELECT * FROM bca_usergroup where GroupID  = " + groupId;
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				configDto.setSelectedGroupId(rs.getInt("GroupID"));
-				configDto.setGroupName(rs.getString("UserGroupName"));
-				configDto.setGroupPermissions(rs.getString("AccessPermissions"));
-				configDto.setDescription(rs.getString("Description"));
-				int active = Integer.parseInt(rs.getString("Active"));
-				if (active == 1) {
-					configDto.setStatus("Active");
-				} else {
-					configDto.setStatus("InActive");
-				}
-			}
-		} catch (SQLException e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+//		String sql = "SELECT * FROM bca_usergroup where GroupID  = " + groupId;
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+		
+		List<BcaUsergroup> bcaUsergroups = bcaUsergroupRepository.findById(Integer.parseInt(groupId); // JPA Check groupId is primary key or not. If groupId is primary , add new primary key 
+//			while (rs.next()) {
+//				configDto.setSelectedGroupId(rs.getInt("GroupID"));
+//				configDto.setGroupName(rs.getString("UserGroupName"));
+//				configDto.setGroupPermissions(rs.getString("AccessPermissions"));
+//				configDto.setDescription(rs.getString("Description"));
+//				int active = Integer.parseInt(rs.getString("Active"));
+//				if (active == 1) {
+//					configDto.setStatus("Active");
+//				} else {
+//					configDto.setStatus("InActive");
+//				}
+//			}
+			
+			for(BcaUsergroup bcaUsergroup :bcaUsergroups)
+			{
+
+				configDto.setSelectedGroupId(bcaUsergroup.getGroupId());
+
+				configDto.setGroupName(bcaUsergroup.getUserGroupName());
+
+				configDto.setGroupPermissions(bcaUsergroup.getAccessPermissions());
+
+				configDto.setDescription(bcaUsergroup.getDescription());
+
+				if (bcaUsergroup.getActive()) {
+
+				configDto.setStatus("Active");
+
+				} else 
+
+				configDto.setStatus("InActive");
+
+			
+
+//				}
+//			
+
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 	}
 
 	public ArrayList<ConfigurationDto> getUserGroup(String cId, HttpServletRequest request, ConfigurationDto form) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub bca_usergroup
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 		String sql = "SELECT * FROM bca_usergroup where Deleted=0 AND UserGroupName <> 'Admin' AND CompanyID  = " + cId;
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
 				pojo = new ConfigurationDto();

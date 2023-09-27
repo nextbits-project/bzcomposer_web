@@ -22,6 +22,8 @@ import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaFootnote;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaFootnoteResult2;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.FootNoteQueryResult;
 import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
@@ -1095,7 +1097,7 @@ public class ConfigurationInfo {
      * the database & generate id for it.
      */
     public boolean saveFootnote(ConfigurationDto cForm, long compId,
-//                                String footnotName) {
+                                String footnotName) {
 //        Connection con = null ;
 //        SQLExecutor executor = new SQLExecutor();
 //        PreparedStatement pstmt = null;
@@ -1115,6 +1117,7 @@ public class ConfigurationInfo {
 //            pstmt.setString(3, cForm.getDesc());
 //            pstmt.setInt(4, 1);
 //            int inserted = pstmt.executeUpdate();
+        		
             BcaFootnote bcaFootnote = new BcaFootnote();
             BcaCompany bcaCompany =  new BcaCompany();
             bcaCompany.setCompanyId(compId);
@@ -1122,7 +1125,9 @@ public class ConfigurationInfo {
             bcaFootnote.setName(footnotName);
             bcaFootnote.setDescription( cForm.getDesc());
             bcaFootnote.setActive(1);
-            if (inserted > 0) {
+            bcaFootnote = bcaFootnoteRepository.save(bcaFootnote);
+           
+            if ( bcaFootnote != null ) { // JPA Check exception handling if insertion failed
                 isSaved = true;
             }
 
@@ -1141,37 +1146,39 @@ public class ConfigurationInfo {
      *
      */
     public boolean updateFootnote(ConfigurationDto cForm, long compId) {
-        Connection con = null ;
-        SQLExecutor executor = new SQLExecutor();
-        PreparedStatement pstmt = null;
+    	  return  bcaFootnoteRepository.updateByFootNotIdAndCompanyId( cForm.getDesc(),1,cForm.getFootnote(), compId) > 0;
+//        Connection con = null ;
+//        SQLExecutor executor = new SQLExecutor();
+//        PreparedStatement pstmt = null;
 
-        boolean isUpdated = false;
-        if (executor == null)
-            return isUpdated;
-        con = executor.getConnection();
-        if (con == null)
-            return isUpdated;
+//        boolean isUpdated = false;
+//        if (executor == null)
+//            return isUpdated;
+//        con = executor.getConnection();
+//        if (con == null)
+//            return isUpdated;
 
-        try {
-            String updateQuery = "update bca_footnote set Description=?,Active=? where FootNoteID=? and CompanyID=?";
-            pstmt = con.prepareStatement(updateQuery);
-            pstmt.setString(1, cForm.getDesc());
-            pstmt.setInt(2, 1);
-            pstmt.setInt(3, cForm.getFootnote());
-            pstmt.setLong(4, compId);
+//        try {
+//            String updateQuery = "update bca_footnote set Description=?,Active=? where FootNoteID=? and CompanyID=?";
+//            pstmt = con.prepareStatement(updateQuery);
+//            pstmt.setString(1, cForm.getDesc());
+//            pstmt.setInt(2, 1);
+//            pstmt.setInt(3, cForm.getFootnote());
+//            pstmt.setLong(4, compId);
+        	
+//            int updated = pstmt.executeUpdate();
+        	 
+//            if (updated > 0) {
+//                isUpdated = true;
+//            }
 
-            int updated = pstmt.executeUpdate();
-            if (updated > 0) {
-                isUpdated = true;
-            }
-
-        } catch (SQLException ex) {
-            Loger.log("Exception in the class ConfigurationInfo and in method "
-                    + "updateFootnote " + ex.toString());
-        } finally {
-            executor.close(con);
-        }
-        return isUpdated;
+//        } catch (SQLException ex) {
+//            Loger.log("Exception in the class ConfigurationInfo and in method "
+//                    + "updateFootnote " + ex.toString());
+//        } finally {
+//            executor.close(con);
+//        }
+//        return isUpdated;
     }
 
     /*

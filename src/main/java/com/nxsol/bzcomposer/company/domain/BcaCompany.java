@@ -19,7 +19,7 @@ public class BcaCompany {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer companyId;
+    private Long companyId; // JPA Check type changed from integer to long because of java type long used in the Configurationinfo.java
 
     @Column
     private String name;
@@ -594,11 +594,11 @@ public class BcaCompany {
     @OneToMany(mappedBy = "company")
     private Set<StorageUseractivity> companyStorageUseractivitys;
 
-    public Integer getCompanyId() {
+    public Long getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(final Integer companyId) {
+    public void setCompanyId(final Long companyId) {
         this.companyId = companyId;
     }
 

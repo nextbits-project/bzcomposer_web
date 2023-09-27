@@ -6,3 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BcaUsergroupRepository extends JpaRepository<BcaUsergroup, Integer> {
 }
+bca_invoice
