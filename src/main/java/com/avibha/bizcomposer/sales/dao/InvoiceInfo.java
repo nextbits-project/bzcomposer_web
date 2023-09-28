@@ -2116,7 +2116,7 @@ public class InvoiceInfo {
 					+ " where clientvendorid=? and active=1");
 			pstmt4.setString(1, cvId);
 			rs3 = pstmt4.executeQuery();
-			List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByClientVendorIdAndActive(cvId,1);
+			List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByClientVendorIdAndActive(cvId);
 
 			if (rs3.next()) {
 				customer.setCcType(rs3.getString("CCTypeID"));

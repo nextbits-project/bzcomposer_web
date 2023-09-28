@@ -708,7 +708,7 @@ public class Account {
      */
     public static InvoiceDetailDto getInvoiceInfo(String orderno)
     {
-    	return bcaInvoiceRepository.find
+    	//return bcaInvoiceRepository.find
         ResultSet rs=null;
         SQLExecutor db=new SQLExecutor();
         PreparedStatement pstmt=null;

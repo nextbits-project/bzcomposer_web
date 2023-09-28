@@ -2609,7 +2609,7 @@ public class ItemInfo {
 		                 stmt.executeUpdate(sql_5);
 		                 SmdItemgroupprice smdItemGroupPrice = new SmdItemgroupprice();
 		                 BcaCompany bcaCompany  = new BcaCompany();
-		                 bcaCompany.setCompanyId( ConstValue.companyId);
+		                 bcaCompany.setCompanyId( Long.valueOf(ConstValue.companyId));
 		                 smdItemGroupPrice.setInventoryId(String.valueOf(inventoryID));
 		                 smdItemGroupPrice.setCustomerGroupId(0);
 		                 smdItemGroupPrice.setDefaultPrice(false);// jpa error "N"
@@ -2681,7 +2681,7 @@ public class ItemInfo {
 		smdItemImage.setInventoryId(String.valueOf(inventory.getInventoryID()));
 		
 		BcaCompany bcaCompany = new BcaCompany();
-		bcaCompany.setCompanyId(ConstValue.companyId);
+		bcaCompany.setCompanyId(Long.valueOf(ConstValue.companyId));
 		smdItemImage.setCompany(bcaCompany);
 		smdItemImage.setImage(inventory.getThumbnailURL());
 		smdItemImage.setTitleImage(true); //  JPA error  "Y"

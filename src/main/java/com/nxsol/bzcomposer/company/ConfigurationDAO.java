@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -1126,8 +1127,10 @@ public class ConfigurationDAO {
 //			con = db.getConnection();
 //			stmt = con.createStatement();
 //			rs = stmt.executeQuery(sql);
+		Integer groupIds = Integer.parseInt(groupId);
+		List<Integer> groupIdList = Collections.singletonList(groupIds);
 		
-		List<BcaUsergroup> bcaUsergroups = bcaUsergroupRepository.findById(Integer.parseInt(groupId); // JPA Check groupId is primary key or not. If groupId is primary , add new primary key 
+		List<BcaUsergroup> bcaUsergroups = bcaUsergroupRepository.findAllById(groupIdList); // JPA Check groupId is primary key or not. If groupId is primary , add new primary key 
 //			while (rs.next()) {
 //				configDto.setSelectedGroupId(rs.getInt("GroupID"));
 //				configDto.setGroupName(rs.getString("UserGroupName"));
@@ -1161,8 +1164,7 @@ public class ConfigurationDAO {
 				configDto.setStatus("InActive");
 
 			
-
-//				}
+			}
 //			
 
 //		} catch (SQLException e) {
@@ -1188,14 +1190,14 @@ public class ConfigurationDAO {
 		// TODO Auto-generated method stub bca_usergroup
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 		String sql = "SELECT * FROM bca_usergroup where Deleted=0 AND UserGroupName <> 'Admin' AND CompanyID  = " + cId;
-//		Connection con = null;
-//		SQLExecutor db = new SQLExecutor();
-//		Statement stmt = null;
-//		ResultSet rs = null;
-//		try {
-//			con = db.getConnection();
-//			stmt = con.createStatement();
-//			rs = stmt.executeQuery(sql);
+		Connection con = null;
+		SQLExecutor db = new SQLExecutor();
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			con = db.getConnection();
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
 				pojo = new ConfigurationDto();

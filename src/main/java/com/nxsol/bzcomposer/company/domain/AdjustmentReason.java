@@ -8,10 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import java.time.OffsetDateTime;
 
 
 @Entity
+@Table(name= "adjustment_reason")
 public class AdjustmentReason {
 
     @Id

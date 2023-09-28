@@ -586,7 +586,7 @@ public class PurchaseInfo {
 
 //		if (db == null)
 //			return ret;
-		con = db.getConnection();
+//		con = db.getConnection();
 //		if (con == null)
 //			return ret;
 		Loger.log("The expDate is ___________________" + expDate);
@@ -1128,7 +1128,7 @@ public class PurchaseInfo {
 //					+ ", CardBillingAddress=?, CardBillingZipCode=?, Active=1, DateAdded=?,CCTypeID=?"
 //					+ " where CreditCardID=? and clientvendorid= ?";
 
-			Loger.log("Update CrediCard Query-------------->" + sqlString);
+//			Loger.log("Update CrediCard Query-------------->" + sqlString);
 //			ps = con.prepareStatement(sqlString);
 //			ps.setString(1, ccNo);
 //			ps.setString(2, month);
@@ -1155,7 +1155,7 @@ public class PurchaseInfo {
 				return true;
 				// Loger.log("update bca_cvcreditcard (no. of recs):"+num);
 			}
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2,"SQLException....PurchaseInfo.updateVendorCreditCard()"+ " " + ee.toString());
 		}
 //		finally {

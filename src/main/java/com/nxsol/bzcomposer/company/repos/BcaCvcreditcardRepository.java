@@ -6,10 +6,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
 
-
+@Repository
 public interface BcaCvcreditcardRepository extends JpaRepository<BcaCvcreditcard, Integer> {
 
 	@Query(value = "select CreditCardID from bca_cvcreditcard where clientvendorid= cvID and active=1", nativeQuery = true)

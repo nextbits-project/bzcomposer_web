@@ -9,16 +9,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import java.time.OffsetDateTime;
 import java.util.Set;
 
 // Jpa cctypeId changed from int to string
 
 @Entity
+@Table(name ="bca_cvcreditcard")
 public class BcaCvcreditcard {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="CreditCardID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer creditCardId;
 
@@ -77,7 +80,7 @@ public class BcaCvcreditcard {
     private Set<BcaAccountable> creditCardBcaAccountables;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @OneToMany(mappedBy = "creditCard")

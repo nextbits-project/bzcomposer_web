@@ -1792,7 +1792,7 @@ public class CustomerInfo {
 //			pstmt.setString(1, cvID);
 //			pstmt.executeUpdate();
 //			pstmt.close();
-			bcaCvcreditcardRepository.updateByActiveAndClientVendorId(cvID);
+			bcaCvcreditcardRepository.updateByActiveAndClientVendorId(Integer.parseInt(cvID));
 			// set flag to indicate success & return value...
 			ret = true;
 		} catch (Exception e) {

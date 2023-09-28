@@ -9,15 +9,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import java.time.OffsetDateTime;
 import java.util.Set;
 
 
 @Entity
+@Table(name ="bca_clientvendor")
 public class BcaClientvendor {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ClientVendorID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer clientVendorId;
 

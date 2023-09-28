@@ -28,6 +28,8 @@ import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
+import com.nxsol.bzcomposer.company.domain.BcaLead;
+import com.nxsol.bzcomposer.company.repos.BcaLeadRepository;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
@@ -52,6 +54,17 @@ public class LeadAsCustController {
 	@Autowired
 	private ClientVendorRepository cvr;
 	
+	@Autowired
+	private static BcaLeadRepository leadRepo;
+	
+	public static void main(String[] args) {
+		BcaLead bcaLead =new BcaLead();
+		bcaLead.setPosition("Software");
+		
+		
+		leadRepo.save(bcaLead);
+		
+	}
 	
 	@RequestMapping(value = { "/Lead" }, method = { RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
