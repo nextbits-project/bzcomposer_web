@@ -5,10 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.nxsol.bzcomposer.company.domain.BcaCvtype;
 
-
+@Repository
 public interface BcaCvtypeRepository extends JpaRepository<BcaCvtype, Integer> {
 
 	@Query( value = "SELECT CVTypeID from bca_cvtype WHERE name = :customerType")

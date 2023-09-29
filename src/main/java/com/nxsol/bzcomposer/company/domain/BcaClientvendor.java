@@ -24,10 +24,10 @@ public class BcaClientvendor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer clientVendorId;
 
-    @Column
+    @Column(name="Name")
     private String name;
 
-    @Column(length = 45)
+    @Column(name="DBAName", length = 45)
     private String dbaname;
 
     @Column(columnDefinition = "longtext")
