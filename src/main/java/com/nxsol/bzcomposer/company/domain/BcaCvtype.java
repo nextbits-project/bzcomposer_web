@@ -10,45 +10,43 @@ import javax.persistence.Table;
 
 import java.util.Set;
 
-
 @Entity
-@Table(name="bca_cvtype")
+@Table(name = "bca_cvtype")
 public class BcaCvtype {
 
-    @Id
-    @Column(name="CVTypeID",nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer cvtypeId;
+	@Id
+	@Column(name = "CVTypeID", nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer cvtypeId;
 
-    @Column(name="Name",length = 50)
-    private String name;
+	@Column(name = "Name", length = 50)
+	private String name;
 
-    @OneToMany(mappedBy = "cvtype")
-    private Set<StorageClientvendor> cvtypeStorageClientvendors;
+	@OneToMany(mappedBy = "cvtype")
+	private Set<StorageClientvendor> cvtypeStorageClientvendors;
 
-    public Integer getCvtypeId() {
-        return cvtypeId;
-    }
+	public Integer getCvtypeId() {
+		return cvtypeId;
+	}
 
-    public void setCvtypeId(final Integer cvtypeId) {
-        this.cvtypeId = cvtypeId;
-    }
+	public void setCvtypeId(final Integer cvtypeId) {
+		this.cvtypeId = cvtypeId;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(final String name) {
-        this.name = name;
-    }
+	public void setName(final String name) {
+		this.name = name;
+	}
 
-    public Set<StorageClientvendor> getCvtypeStorageClientvendors() {
-        return cvtypeStorageClientvendors;
-    }
+	public Set<StorageClientvendor> getCvtypeStorageClientvendors() {
+		return cvtypeStorageClientvendors;
+	}
 
-    public void setCvtypeStorageClientvendors(
-            final Set<StorageClientvendor> cvtypeStorageClientvendors) {
-        this.cvtypeStorageClientvendors = cvtypeStorageClientvendors;
-    }
+	public void setCvtypeStorageClientvendors(final Set<StorageClientvendor> cvtypeStorageClientvendors) {
+		this.cvtypeStorageClientvendors = cvtypeStorageClientvendors;
+	}
 
 }

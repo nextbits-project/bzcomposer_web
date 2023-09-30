@@ -5,12 +5,13 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.nxsol.bzcomposer.company.domain.BcaFootnote;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaFootnoteResult2;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.FootNoteQueryResult;
 
-
+@Repository
 public interface BcaFootnoteRepository extends JpaRepository<BcaFootnote, Long> {
 
 	@Query(value = "select FootNoteID,Name,Description from bca_footnote where CompanyID=? and Active=1 order by Name", nativeQuery = true)

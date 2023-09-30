@@ -200,7 +200,7 @@ public class BcaClientvendor {
     private BcaCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)

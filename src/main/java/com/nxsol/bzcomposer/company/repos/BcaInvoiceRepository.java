@@ -5,13 +5,14 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.avibha.bizcomposer.accounting.forms.InvoiceDetailDto;
 import com.nxsol.bzcomposer.company.domain.BcaInvoice;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaInvoiceTermClientVendorResult;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.InvoiceClientVendorResult;
 
-
+@Repository
 public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer> {
 
 	

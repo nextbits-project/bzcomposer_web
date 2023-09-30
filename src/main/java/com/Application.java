@@ -5,6 +5,7 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -24,6 +25,7 @@ import com.nxsol.bzcomposer.company.domain.BcaLead;
 import com.nxsol.bzcomposer.company.repos.BcaLeadRepository;
 
 @SpringBootApplication
+@EntityScan(basePackages = "com.nxsol.bzcomposer.company.domain")
 public class Application extends SpringBootServletInitializer implements WebMvcConfigurer {
 
 
