@@ -8,43 +8,46 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import java.time.OffsetDateTime;
 
 
 @Entity
+@Table(name="bca_paymentdetail")
 public class BcaPaymentdetail {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="DetailID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer detailId;
 
-    @Column(length = 50)
+    @Column(name="RefNumber", length = 50)
     private String refNumber;
 
-    @Column
+    @Column(name="Memo")
     private String memo;
 
-    @Column(nullable = false)
+    @Column(name="DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
-    @Column(length = 50)
+    @Column(name="PayPal_txn_id", length = 50)
     private String payPalTxnId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
+    @JoinColumn(name = "PaymentID")
     private BcaPayment payment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "credit_card_id")
+    @JoinColumn(name = "CreditCardID")
     private BcaCvcreditcard creditCard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gateway_id")
+    @JoinColumn(name = "GatewayID")
     private BcaMasterpaymentgateways gateway;
 
     public Integer getDetailId() {

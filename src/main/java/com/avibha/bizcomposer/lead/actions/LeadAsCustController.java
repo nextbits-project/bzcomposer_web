@@ -29,6 +29,8 @@ import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import com.nxsol.bzcomposer.company.domain.BcaLead;
+import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
+import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadRepository;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
@@ -51,20 +53,21 @@ import java.util.List;
 
 @Controller
 public class LeadAsCustController {
-	@Autowired
-	private ClientVendorRepository cvr;
+//	@Autowired
+//	private ClientVendorRepository cvr;
 	
 	@Autowired
-	private static BcaLeadRepository leadRepo;
+	private static BcaLeadCategoryRepository leadCatRepo;
 	
-	public static void main(String[] args) {
-		BcaLead bcaLead =new BcaLead();
-		bcaLead.setPosition("Software");
-		
-		
-		leadRepo.save(bcaLead);
-		
-	}
+//	public static void main(String[] args) {
+//		BcaLeadCategory bcaLeadCat =new BcaLeadCategory();
+//		bcaLeadCat.setName("Software");
+//		bcaLeadCat.setDescription("Software");
+//		
+//		
+//		leadCatRepo.save(bcaLeadCat);
+//		
+//	}
 	
 	@RequestMapping(value = { "/Lead" }, method = { RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,

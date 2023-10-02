@@ -39,7 +39,7 @@ public interface BcaCvcreditcardRepository extends JpaRepository<BcaCvcreditcard
 	@Query(value = "update bca_cvcreditcard set DEFAULTCard = :defaultCard where CreditCardID = :ccID", nativeQuery = true)
 	int updateByCreditCardId(int defaultCard, long ccID);
 
-	List<BcaCvcreditcard> findByClientVendorId(int cliendVendor);
+	List<BcaCvcreditcard> findByClientVendorId(int cliendVendorId);
 
 //	@Query(value = "update bca_cvcreditcard set Active=0 where ClientVendorID=? and Active=1",nativeQuery=true)
 //	List<BcaCvcreditcard> updateByClientVendorIdActive(int cliendVendorId);

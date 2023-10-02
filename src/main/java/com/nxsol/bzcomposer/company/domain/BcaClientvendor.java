@@ -30,157 +30,157 @@ public class BcaClientvendor {
     @Column(name="DBAName", length = 45)
     private String dbaname;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name="Detail", columnDefinition = "longtext")
     private String detail;
 
-    @Column(length = 50)
+    @Column(name="CustomerTitle", length = 50)
     private String customerTitle;
 
-    @Column
+    @Column(name="CustomerTitleID")
     private Integer customerTitleId;
 
-    @Column(length = 50)
+    @Column(name="FirstName", length = 50)
     private String firstName;
 
-    @Column(length = 50)
+    @Column(name="LastName", length = 50)
     private String lastName;
 
-    @Column(length = 50)
+    @Column(name="BillName", length = 50)
     private String billName;
 
-    @Column
+    @Column(name="Address1")
     private String address1;
 
-    @Column
+    @Column(name="Address2")
     private String address2;
 
-    @Column
+    @Column(name="City")
     private String city;
 
-    @Column(length = 50)
+    @Column(name="State", length = 50)
     private String state;
 
-    @Column(length = 50)
+    @Column(name="Province", length = 50)
     private String province;
 
-    @Column(length = 50)
+    @Column(name="Country", length = 50)
     private String country;
 
-    @Column(length = 50)
+    @Column(name="ZipCode", length = 50)
     private String zipCode;
 
-    @Column(length = 20)
+    @Column(name="ZipCodeID", length = 20)
     private String zipCodeId;
 
-    @Column(length = 50)
+    @Column(name="Phone", length = 50)
     private String phone;
 
-    @Column(length = 50)
+    @Column(name="CellPhone", length = 50)
     private String cellPhone;
 
-    @Column(length = 50)
+    @Column(name="Fax", length = 50)
     private String fax;
 
-    @Column(length = 50)
+    @Column(name="Email", length = 50)
     private String email;
 
-    @Column(length = 50)
+    @Column(name="HomePage", length = 50)
     private String homePage;
 
-    @Column(length = 50)
+    @Column(name="ResellerTaxID", length = 50)
     private String resellerTaxId;
 
-    @Column
+    @Column(name="Taxable")
     private Long taxable;
 
-    @Column
+    @Column(name="CVTypeID")
     private Integer cvtypeId;
 
-    @Column
+    @Column(name="CVCategoryID")
     private Integer cvcategoryId;
 
-    @Column(length = 50)
+    @Column(name="CVCategoryName", length = 50)
     private String cvcategoryName;
 
-    @Column
+    @Column(name="CCTypeID")
     private Integer cctypeId;
 
-    @Column
+    @Column(name="CustomerOpenDebit")
     private Double customerOpenDebit;
 
-    @Column
+    @Column(name="CustomerCreditLine")
     private Double customerCreditLine;
 
-    @Column
+    @Column(name="VendorOpenDebit")
     private Double vendorOpenDebit;
 
-    @Column
+    @Column(name="VendorAllowedCredit")
     private Double vendorAllowedCredit;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
-    @Column(length = 10)
+    @Column(name="Status", length = 10)
     private String status;
 
-    @Column
+    @Column(name="Deleted")
     private Integer deleted;
 
-    @Column
+    @Column(name="DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name="Priority")
     private Integer priority;
 
-    @Column
+    @Column(name="ItemPriceLevel")
     private Integer itemPriceLevel;
 
-    @Column
+    @Column(name="PayFromID")
     private Integer payFromId;
 
-    @Column
+    @Column(name="PriceLevelID")
     private Integer priceLevelId;
 
-    @Column
+    @Column(name="UseSpecialMessage")
     private Boolean useSpecialMessage;
 
-    @Column
+    @Column(name="Message")
     private String message;
 
-    @Column
+    @Column(name="CustomerGroupID")
     private Integer customerGroupId;
 
-    @Column
+    @Column(name="Form1099")
     private Integer form1099;
 
-    @Column
+    @Column(name="ReferenceCustomerID")
     private Integer referenceCustomerId;
 
-    @Column
+    @Column(name="RemainingCredit")
     private Double remainingCredit;
 
-    @Column
+    @Column(name="LineofCreditTermID")
     private Integer lineofCreditTermId;
 
-    @Column
+    @Column(name="BankAccountID")
     private Integer bankAccountId;
 
-    @Column(length = 45)
+    @Column(name="MiddleName", length = 45)
     private String middleName;
 
-    @Column
+    @Column(name="DateInput")
     private OffsetDateTime dateInput;
 
-    @Column
+    @Column(name="DateTerminated")
     private OffsetDateTime dateTerminated;
 
-    @Column
+    @Column(name="isTerminated")
     private Boolean isTerminated;
 
-    @Column
+    @Column(name="isMobilePhoneNumber")
     private Boolean isMobilePhoneNumber;
 
-    @Column
+    @Column(name="isPhoneMobileNumber")
     private Boolean isPhoneMobileNumber;
 
     @OneToMany(mappedBy = "clientVendor")
@@ -196,7 +196,7 @@ public class BcaClientvendor {
     private Set<BcaBillingstatements> clientVendorBcaBillingstatementss;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "CategoryID")
     private BcaCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -204,19 +204,19 @@ public class BcaClientvendor {
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_type_id")
+    @JoinColumn(name = "PaymentTypeID")
     private BcaPaymenttype paymentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sales_rep_id")
+    @JoinColumn(name = "SalesRepID")
     private BcaSalestax salesRep;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ship_carrier_id")
+    @JoinColumn(name = "ShipCarrierID")
     private BcaShipcarrier shipCarrier;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "term_id")
+    @JoinColumn(name = "TermID")
     private BcaTerm term;
 
     @OneToMany(mappedBy = "clientVendor")

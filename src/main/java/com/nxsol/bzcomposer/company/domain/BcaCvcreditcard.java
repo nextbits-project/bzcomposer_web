@@ -25,55 +25,55 @@ public class BcaCvcreditcard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer creditCardId;
 
-    @Column(length = 20)
+    @Column(name="Nickname", length = 20)
     private String nickname;
 
-    @Column
+    @Column(name="DefaultCard")
     private Boolean defaultCard;
 
-    @Column
+    @Column(name="CCTypeID")
     private String cctypeId;
 
-    @Column(length = 50)
+    @Column(name="CardNumber", length = 50)
     private String cardNumber;
 
-    @Column(length = 50)
+    @Column(name="CardExpMonth", length = 50)
     private String cardExpMonth;
 
-    @Column(length = 50)
+    @Column(name="CardExpYear", length = 50)
     private String cardExpYear;
 
-    @Column(length = 50)
+    @Column(name="CardCW2", length = 50)
     private String cardCw2;
 
-    @Column(length = 50)
+    @Column(name="CardHolderName", length = 50)
     private String cardHolderName;
 
-    @Column
+    @Column(name="CardBillingAddress")
     private String cardBillingAddress;
 
-    @Column(length = 50)
+    @Column(name="City", length = 50)
     private String city;
 
-    @Column(length = 50)
+    @Column(name="State", length = 50)
     private String state;
 
-    @Column(length = 50)
+    @Column(name="Province", length = 50)
     private String province;
 
-    @Column(length = 50)
+    @Column(name="Country", length = 50)
     private String country;
 
-    @Column(length = 50)
+    @Column(name="CardBillingZipCode", length = 50)
     private String cardBillingZipCode;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
-    @Column(nullable = false)
+    @Column(name="DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name="Deleted")
     private Integer deleted;
 
     @OneToMany(mappedBy = "creditCard")

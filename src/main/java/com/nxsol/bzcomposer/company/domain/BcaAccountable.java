@@ -9,76 +9,79 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
 
 @Entity
+@Table(name="bca_accountable")
 public class BcaAccountable {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name ="PayableID",nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer payableId;
 
-    @Column
+    @Column(name="PayeeCvID")
     private Integer payeeCvId;
 
-    @Column
+    @Column(name="PayeeCvServiceID")
     private Integer payeeCvServiceId;
 
-    @Column
+    @Column(name="PayerCvID")
     private Integer payerCvId;
 
-    @Column
+    @Column(name="PayerCvServiceID")
     private Integer payerCvServiceId;
 
-    @Column
+    @Column(name="DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name="Amount", precision = 23, scale = 4)
     private BigDecimal amount;
 
-    @Column(length = 50)
+    @Column(name="Memo", length = 50)
     private String memo;
 
-    @Column(length = 100)
+    @Column(name="Ref", length = 100)
     private String ref;
 
-    @Column
+    @Column(name="PayFromID")
     private Integer payFromId;
 
-    @Column
+    @Column(name="PaymentCompleted")
     private Boolean paymentCompleted;
 
-    @Column
+    @Column(name="Deleted")
     private Boolean deleted;
 
-    @Column
+    @Column(name="IsPayable")
     private Boolean isPayable;
 
-    @Column(length = 50)
+    @Column(name="CheckNumber", length = 50)
     private String checkNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "CategoryID")
     private BcaCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "credit_card_id")
+    @JoinColumn(name = "CreditCardID")
     private BcaCvcreditcard creditCard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_type_id")
+    @JoinColumn(name = "PaymentTypeID")
     private BcaPaymenttype paymentType;
 
     @OneToMany(mappedBy = "payable")

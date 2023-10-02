@@ -12,6 +12,6 @@ import com.nxsol.bzcomposer.company.domain.BcaCvtype;
 @Repository
 public interface BcaCvtypeRepository extends JpaRepository<BcaCvtype, Integer> {
 
-	@Query( value = "SELECT CVTypeID from bca_cvtype WHERE name = :customerType")
-	List<Integer> findByName(@Param("customerType") String customerType);
+	@Query( value = "SELECT cvType.CVTypeID FROM bca_cvtype cvType WHERE cvType.name = :name")
+	List<Integer> findByName(@Param("name") String name);
 }
