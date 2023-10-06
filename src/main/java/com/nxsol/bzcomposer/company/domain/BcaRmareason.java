@@ -6,28 +6,29 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_rmareason")
 public class BcaRmareason {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name="rmaReason", nullable = false, updatable = false, length = 50)
     private String rmaReason;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_reason_id")
+    @JoinColumn(name = "parentReasonID")
     private BcaMasterrmareason parentReason;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reason_id", nullable = false)
+    @JoinColumn(name = "ReasonID", nullable = false)
     private BcaRefundreason reason;
 
     public String getRmaReason() {

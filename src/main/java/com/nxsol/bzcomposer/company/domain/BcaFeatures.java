@@ -6,23 +6,24 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity   
+@Table(name= "bca_features")
 public class BcaFeatures {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name= "FeatureName", nullable = false, updatable = false, length = 50)
     private String featureName;
 
-    @Column
+    @Column(name= "BusinessID")
     private Integer businessId;
 
-    @Column(length = 50)
+    @Column(name= "BusinessName", length = 50)
     private String businessName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modulee_id")
+    @JoinColumn(name = "ModuleID")
     private BcaUsermodules modulee;
 
     public String getFeatureName() {

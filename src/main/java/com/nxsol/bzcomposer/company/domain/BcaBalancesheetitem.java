@@ -9,33 +9,34 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_balancesheetitem")
 public class BcaBalancesheetitem {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "balancesheetitemID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer balancesheetitemId;
 
-    @Column
+    @Column(name = "CategoryID")
     private Integer categoryId;
 
-    @Column
+    @Column(name = "CategoryTypeID")
     private Integer categoryTypeId;
 
-    @Column
+    @Column(name = "Name")
     private String name;
 
-    @Column
+    @Column(name = "Amount")
     private Integer amount;
 
-    @Column
+    @Column(name = "DateAdded")
     private OffsetDateTime dateAdded;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getBalancesheetitemId() {

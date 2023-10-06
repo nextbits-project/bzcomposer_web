@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
@@ -33,13 +34,21 @@ public interface BcaCvcreditcardRepository extends JpaRepository<BcaCvcreditcard
 	@Query(value = "UPDATE bca_cvcreditcard SET active=0 WHERE clientvendorid=?", nativeQuery = true)
 	void updateByActiveAndClientVendorId(int cvID);
 
-	List<BcaCvcreditcard> findByDefaultCardAndClientVendorId(int i, String cvID);
+//	List<BcaCvcreditcard> findByDefaultCardAndClientVendorId(int i, Integer clientVendorId);
 
+	@Query("SELECT c FROM BcaCvcreditcard c WHERE c.defaultCard = :defaultCard AND c.clientVendor.clientVendorId = :clientVendorId")
+	List<BcaCvcreditcard> findByDefaultCardAndClientVendorId(@Param("defaultCard") int defaultCard, @Param("clientVendorId") Integer clientVendorId);
+
+	
 	@Modifying
 	@Query(value = "update bca_cvcreditcard set DEFAULTCard = :defaultCard where CreditCardID = :ccID", nativeQuery = true)
 	int updateByCreditCardId(int defaultCard, long ccID);
 
-	List<BcaCvcreditcard> findByClientVendorId(int cliendVendorId);
+//	List<BcaCvcreditcard> findByClientVendorId(Integer cliendVendorId);
+	
+	@Query("SELECT c FROM BcaCvcreditcard c WHERE c.clientVendor.clientVendorId = :clientVendorId")
+	List<BcaCvcreditcard> findByClientVendorId(@Param("clientVendorId") Integer clientVendorId);
+
 
 //	@Query(value = "update bca_cvcreditcard set Active=0 where ClientVendorID=? and Active=1",nativeQuery=true)
 //	List<BcaCvcreditcard> updateByClientVendorIdActive(int cliendVendorId);

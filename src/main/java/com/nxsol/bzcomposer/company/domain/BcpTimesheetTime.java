@@ -9,37 +9,38 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_timesheet_time")
 public class BcpTimesheetTime {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "EmployeeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer employeeId;
 
-    @Column(nullable = false)
+    @Column(name= "Day", nullable = false)
     private OffsetDateTime day;
 
-    @Column
+    @Column(name= "TimeOut")
     private OffsetDateTime timeOut;
 
-    @Column
+    @Column(name= "TimeIn")
     private OffsetDateTime timeIn;
 
-    @Column(length = 50)
+    @Column(name= "JobLocation", length = 50)
     private String jobLocation;
 
-    @Column
+    @Column(name= "Payrolled")
     private Boolean payrolled;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id")
+    @JoinColumn(name = "JobID")
     private BcpJobcode job;
 
     public Integer getEmployeeId() {

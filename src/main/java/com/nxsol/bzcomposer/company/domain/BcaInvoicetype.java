@@ -7,29 +7,30 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_invoicetype")
 public class BcaInvoicetype {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "InvoiceTypeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer invoiceTypeId;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name= "QtyReduction")
     private Double qtyReduction;
 
-    @Column
+    @Column(name= "Payable")
     private Boolean payable;
 
-    @Column
+    @Column(name= "Receivable")
     private Boolean receivable;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     @OneToMany(mappedBy = "invoiceType")

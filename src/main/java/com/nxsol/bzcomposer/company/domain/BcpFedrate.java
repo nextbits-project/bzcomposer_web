@@ -5,35 +5,36 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_fedrate")
 public class BcpFedrate {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "RateSS")
     private Double rateSs;
 
-    @Column
+    @Column(name= "RateMed")
     private Double rateMed;
 
-    @Column
+    @Column(name= "LimitSS")
     private Double limitSs;
 
-    @Column
+    @Column(name= "RateFuta")
     private Double rateFuta;
 
-    @Column
+    @Column(name= "LimitFuta")
     private Double limitFuta;
 
-    @Column
+    @Column(name= "MaxCrRate")
     private Double maxCrRate;
 
-    @Column
+    @Column(name= "EYear")
     private Integer eyear;
 
     public Integer getId() {

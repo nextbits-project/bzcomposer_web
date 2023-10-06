@@ -19,30 +19,30 @@ import java.util.Set;
 public class BcaUsergroup {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "GroupID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer groupId;
 
-    @Column(length = 50)
+    @Column(name= "UserGroupName", length = 50)
     private String userGroupName;
 
-    @Column
+    @Column(name= "Level")
     private Integer level;
 
-    @Column(name = "\"description\"", length = 50)
+    @Column(name = "Description", length = 50)
     private String description;
 
-    @Column
+    @Column(name= "Active")
     private Boolean active;
 
-    @Column
+    @Column(name= "Deleted")
     private Boolean deleted;
 
-    @Column(length = 50)
+    @Column(name= "AccessPermissions", length = 50)
     private String accessPermissions;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "userGroup")

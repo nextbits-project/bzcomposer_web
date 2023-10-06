@@ -9,214 +9,215 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bt_sales")
 public class BtSales {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "SaleID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer saleId;
 
-    @Column
+    @Column(name= "ConsignmentSale")
     private Boolean consignmentSale;
 
-    @Column
+    @Column(name= "BuyerID")
     private Integer buyerId;
 
-    @Column
+    @Column(name= "SalePrice")
     private Double salePrice;
 
-    @Column
+    @Column(name= "QtySold")
     private Integer qtySold;
 
-    @Column
+    @Column(name= "SalesTax")
     private Double salesTax;
 
-    @Column(length = 20)
+    @Column(name= "SourceOfSale", length = 20)
     private String sourceOfSale;
 
-    @Column(length = 25)
+    @Column(name= "TypeOfPayment", length = 25)
     private String typeOfPayment;
 
-    @Column
+    @Column(name= "ShippingCost")
     private Double shippingCost;
 
-    @Column
+    @Column(name= "InsuranceCost")
     private Double insuranceCost;
 
-    @Column
+    @Column(name= "CommissionIn")
     private Double commissionIn;
 
-    @Column
+    @Column(name= "ListingFee")
     private Double listingFee;
 
-    @Column
+    @Column(name= "DateOfSale")
     private OffsetDateTime dateOfSale;
 
-    @Column
+    @Column(name= "FeedbackLeft")
     private Boolean feedbackLeft;
 
-    @Column
+    @Column(name= "Invoiced")
     private Boolean invoiced;
 
-    @Column
+    @Column(name= "DatePaymentReceived")
     private OffsetDateTime datePaymentReceived;
 
-    @Column
+    @Column(name= "DatePaymentCleared")
     private OffsetDateTime datePaymentCleared;
 
-    @Column
+    @Column(name= "DateItemShipped")
     private OffsetDateTime dateItemShipped;
 
-    @Column
+    @Column(name= "DateSaleClosed")
     private OffsetDateTime dateSaleClosed;
 
-    @Column
+    @Column(name= "ShippingCharged")
     private Double shippingCharged;
 
-    @Column
+    @Column(name= "TrackingNum")
     private String trackingNum;
 
-    @Column
+    @Column(name= "DatePaymentRequestSent")
     private OffsetDateTime datePaymentRequestSent;
 
-    @Column
+    @Column(name= "DateSecondPaymentRequestSent")
     private OffsetDateTime dateSecondPaymentRequestSent;
 
-    @Column
+    @Column(name= "DateFinalPaymentRequestSent")
     private OffsetDateTime dateFinalPaymentRequestSent;
 
-    @Column
+    @Column(name= "DateFVFRequested")
     private OffsetDateTime dateFvfrequested;
 
-    @Column
+    @Column(name= "StatusID")
     private Integer statusId;
 
-    @Column
+    @Column(name= "DateFinalNotificationSent")
     private OffsetDateTime dateFinalNotificationSent;
 
-    @Column
+    @Column(name= "DateItemClosed")
     private OffsetDateTime dateItemClosed;
 
-    @Column(length = 15)
+    @Column(name= "TransactionID", length = 15)
     private String transactionId;
 
-    @Column
+    @Column(name= "FeedbackReceived")
     private Integer feedbackReceived;
 
-    @Column
+    @Column(name= "ItemCost")
     private Double itemCost;
 
-    @Column
+    @Column(name= "HandlingFee")
     private Double handlingFee;
 
-    @Column
+    @Column(name= "AdjustmentCost")
     private Double adjustmentCost;
 
-    @Column(length = 30)
+    @Column(name= "AdjustmentCostReason", length = 30)
     private String adjustmentCostReason;
 
-    @Column
+    @Column(name= "AdjustmentFee")
     private Double adjustmentFee;
 
-    @Column(length = 30)
+    @Column(name= "AdjustmentReason", length = 30)
     private String adjustmentReason;
 
-    @Column
+    @Column(name= "BillingAddressID")
     private Integer billingAddressId;
 
-    @Column
+    @Column(name= "BuyerSelectedShipping")
     private Boolean buyerSelectedShipping;
 
-    @Column
+    @Column(name= "CCID")
     private Integer ccid;
 
-    @Column
+    @Column(name= "ConsignModelID")
     private Integer consignModelId;
 
-    @Column
+    @Column(name= "ConsignorID")
     private Integer consignorId;
 
-    @Column
+    @Column(name= "ConsignorPaid")
     private Boolean consignorPaid;
 
-    @Column
+    @Column(name= "Custom1")
     private String custom1;
 
-    @Column
+    @Column(name= "Custom2")
     private String custom2;
 
-    @Column
+    @Column(name= "DateLastModified")
     private OffsetDateTime dateLastModified;
 
-    @Column
+    @Column(name= "DateStatusChanged")
     private OffsetDateTime dateStatusChanged;
 
-    @Column(length = 25)
+    @Column(name= "DisputeID", length = 25)
     private String disputeId;
 
-    @Column(length = 30)
+    @Column(name= "eBayID", length = 30)
     private String eBayId;
 
-    @Column
+    @Column(name= "EmailTemplateID")
     private Integer emailTemplateId;
 
-    @Column
+    @Column(name= "FVF")
     private Double fvf;
 
-    @Column
+    @Column(name= "InsuranceWanted")
     private Boolean insuranceWanted;
 
-    @Column
+    @Column(name= "IsArchive")
     private Boolean isArchive;
 
-    @Column
+    @Column(name= "ListingID")
     private Integer listingId;
 
-    @Column
+    @Column(name= "ListingType")
     private Integer listingType;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "Notes", columnDefinition = "longtext")
     private String notes;
 
-    @Column
+    @Column(name= "OrgTemplateID")
     private Integer orgTemplateId;
 
-    @Column
+    @Column(name= "PayPalFees")
     private Double payPalFees;
 
-    @Column
+    @Column(name= "ShippingAddressID")
     private Integer shippingAddressId;
 
-    @Column
+    @Column(name= "ShippingCo")
     private String shippingCo;
 
-    @Column
+    @Column(name= "SiteID")
     private Integer siteId;
 
-    @Column(length = 100)
+    @Column(name= "Title", length = 100)
     private String title;
 
-    @Column(length = 32)
+    @Column(name= "DBToken", length = 32)
     private String dbtoken;
 
-    @Column
+    @Column(name= "NotUpdate")
     private Boolean notUpdate;
 
-    @Column
+    @Column(name= "InsuranceValue")
     private Double insuranceValue;
 
-    @Column
+    @Column(name= "CheckOutCompleted")
     private Boolean checkOutCompleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "OrderID")
     private SmcOrders order;
 
     public Integer getSaleId() {

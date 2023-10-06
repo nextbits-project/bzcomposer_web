@@ -8,30 +8,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_inventoryassembly")
 public class BcaInventoryassembly {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "KitID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer kitId;
 
-    @Column
+    @Column(name= "Qty")
     private Integer qty;
 
-    @Column
+    @Column(name= "Cost")
     private Double cost;
 
-    @Column
+    @Column(name= "Total")
     private Double total;
 
-    @Column
+    @Column(name= "ReservedQty")
     private Integer reservedQty;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     public Integer getKitId() {

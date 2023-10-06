@@ -18,37 +18,37 @@ import java.time.OffsetDateTime;
 public class AdjustmentReason {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name = "inventoryCode", length = 255)
     private String inventoryCode;
 
-    @Column
+    @Column(name = "oldQty")
     private Integer oldQty;
 
-    @Column
+    @Column(name = "newQty")
     private Integer newQty;
 
-    @Column
+    @Column(name = "gap")
     private Integer gap;
 
-    @Column
+    @Column(name = "reason", length = 255)
     private String reason;
 
-    @Column
+    @Column(name = "memo", length = 255)
     private String memo;
 
-    @Column
+    @Column(name = "datePerformed")
     private OffsetDateTime datePerformed;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "companyId")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventoryid_id")
+    @JoinColumn(name = "inventoryid")
     private BcaIteminventory inventoryid;
 
     public Integer getId() {

@@ -5,20 +5,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_att2")
 public class BcaAtt2 {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "Att2_ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer att2Id;
 
-    @Column(length = 50)
+    @Column(name = "Att2_Name", length = 50)
     private String att2Name;
 
-    @Column(length = 50)
+    @Column(name = "Att2_Nickname", length = 50)
     private String att2Nickname;
 
     public Integer getAtt2Id() {

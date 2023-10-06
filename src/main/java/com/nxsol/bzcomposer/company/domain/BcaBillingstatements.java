@@ -9,47 +9,48 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_billingstatements")
 public class BcaBillingstatements {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "StatementNo", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer statementNo;
 
-    @Column
+    @Column(name = "StatementDate")
     private OffsetDateTime statementDate;
 
-    @Column
+    @Column(name = "CartAmount")
     private Double cartAmount;
 
-    @Column
+    @Column(name = "OverdueAmount")
     private Double overdueAmount;
 
-    @Column
+    @Column(name = "OverDueServiceCharge")
     private Double overDueServiceCharge;
 
-    @Column
+    @Column(name = "Amount")
     private Double amount;
 
-    @Column
+    @Column(name = "IsCombined")
     private Integer isCombined;
 
-    @Column
+    @Column(name = "Type")
     private Integer type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     public Integer getStatementNo() {

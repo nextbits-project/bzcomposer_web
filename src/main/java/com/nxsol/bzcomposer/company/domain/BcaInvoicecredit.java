@@ -10,9 +10,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_invoicecredit")
 public class BcaInvoicecredit {
 
     @Id
@@ -20,33 +21,33 @@ public class BcaInvoicecredit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "Credit", precision = 23, scale = 4)
     private BigDecimal credit;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "Total_Credit", precision = 23, scale = 4)
     private BigDecimal totalCredit;
 
-    @Column
+    @Column(name= "Memo")
     private String memo;
 
-    @Column(nullable = false)
+    @Column(name= "DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "cvId")
     private Integer cvId;
 
-    @Column
+    @Column(name= "Remaining_CreditAmt")
     private Double remainingCreditAmt;
 
-    @Column
+    @Column(name= "Deleted")
     private Integer deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_type_id")
+    @JoinColumn(name = "InvoiceTypeID")
     private BcaInvoicetype invoiceType;
 
     public Long getId() {

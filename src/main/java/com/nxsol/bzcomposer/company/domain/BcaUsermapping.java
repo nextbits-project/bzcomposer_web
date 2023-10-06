@@ -8,35 +8,36 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_usermapping")
 public class BcaUsermapping {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "MappingID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer mappingId;
 
-    @Column(name = "\"role\"", length = 50)
+    @Column(name = "Role", length = 50)
     private String role;
 
-    @Column
+    @Column(name= "Active")
     private Boolean active;
 
-    @Column
+    @Column(name= "Deleted")
     private Boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_group_id")
+    @JoinColumn(name = "UserGroupID")
     private BcaUsergroup userGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "UserID")
     private BcaUser user;
 
     public Integer getMappingId() {

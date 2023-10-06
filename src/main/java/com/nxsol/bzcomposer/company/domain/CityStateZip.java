@@ -5,23 +5,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "city_state_zip")
 public class CityStateZip {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ZIP_CODE", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer zipCode;
 
-    @Column(length = 50)
+    @Column(name= "CITY_NAME", length = 50)
     private String cityName;
 
-    @Column(length = 50)
+    @Column(name= "STATE_NAME", length = 50)
     private String stateName;
 
-    @Column(length = 12)
+    @Column(name= "STATE_CODE", length = 12)
     private String stateCode;
 
     public Integer getZipCode() {

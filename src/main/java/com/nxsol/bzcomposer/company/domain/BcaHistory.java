@@ -9,37 +9,38 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_history")
 public class BcaHistory {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ImportId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer importId;
 
-    @Column
+    @Column(name= "OrderDate")
     private OffsetDateTime orderDate;
 
-    @Column
+    @Column(name= "TotalOrders")
     private Integer totalOrders;
 
-    @Column
+    @Column(name= "ImportedHistoryID")
     private Integer importedHistoryId;
 
-    @Column
+    @Column(name= "Schedulehours")
     private Integer schedulehours;
 
-    @Column
+    @Column(name= "Schedulemin")
     private Integer schedulemin;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "StoreID")
     private BcaStore store;
 
     public Integer getImportId() {

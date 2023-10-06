@@ -11,185 +11,186 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_store")
 public class BcaStore {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "StoreID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer storeId;
 
-    @Column(length = 50)
+    @Column(name = "StoreName", length = 50)
     private String storeName;
 
-    @Column
+    @Column(name="Abbreviation")
     private String abbreviation;
 
-    @Column(length = 50)
+    @Column(name = "StoreTypeName", length = 50)
     private String storeTypeName;
 
-    @Column(length = 50)
+    @Column(name = "CompanyName", length = 50)
     private String companyName;
 
-    @Column(length = 50)
+    @Column(name = "FirstName", length = 50)
     private String firstName;
 
-    @Column(length = 50)
+    @Column(name = "LastName", length = 50)
     private String lastName;
 
-    @Column
+    @Column(name="Address1")
     private String address1;
 
-    @Column(length = 150)
+    @Column(name="Address2", length = 150)
     private String address2;
 
-    @Column(length = 50)
+    @Column(name = "City", length = 50)
     private String city;
 
-    @Column(length = 20)
+    @Column(name = "State", length = 20)
     private String state;
 
-    @Column(length = 50)
+    @Column(name = "Province", length = 50)
     private String province;
 
-    @Column(length = 50)
+    @Column(name = "Country", length = 50)
     private String country;
 
-    @Column(length = 20)
+    @Column(name = "Zipcode", length = 20)
     private String zipcode;
 
-    @Column(length = 50)
+    @Column(name = "PhoneNumber", length = 50)
     private String phoneNumber;
 
-    @Column(length = 50)
+    @Column(name = "FaxNumber", length = 50)
     private String faxNumber;
 
-    @Column(length = 100)
+    @Column(name = "Email", length = 100)
     private String email;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name = "PackingReturnPolicy", columnDefinition = "longtext")
     private String packingReturnPolicy;
 
-    @Column
+    @Column(name="LogoPath")
     private String logoPath;
 
-    @Column
+    @Column(name="DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column(length = 50)
+    @Column(name = "eBayDeveloperID", length = 50)
     private String eBayDeveloperId;
 
-    @Column(length = 50)
+    @Column(name = "eBayApplicationID", length = 50)
     private String eBayApplicationId;
 
-    @Column(length = 50)
+    @Column(name = "eBayCertificate", length = 50)
     private String eBayCertificate;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name = "eBayToken", columnDefinition = "longtext")
     private String eBayToken;
 
-    @Column(length = 50)
+    @Column(name = "eBayEPSServerUrl", length = 50)
     private String eBayEpsserverUrl;
 
-    @Column(length = 50)
+    @Column(name = "eBayAPIServerUrl", length = 50)
     private String eBayApiserverUrl;
 
-    @Column(length = 50)
+    @Column(name = "eBaySignInUrl", length = 50)
     private String eBaySignInUrl;
 
-    @Column
+    @Column(name="LastOrderImportDate")
     private OffsetDateTime lastOrderImportDate;
 
-    @Column(length = 50)
+    @Column(name = "amazonAccesKey", length = 50)
     private String amazonAccesKey;
 
-    @Column(length = 50)
+    @Column(name = "amazonSecretKey", length = 50)
     private String amazonSecretKey;
 
-    @Column(length = 50)
+    @Column(name = "amazonMarketPlaceID", length = 50)
     private String amazonMarketPlaceId;
 
-    @Column(length = 50)
+    @Column(name = "amazonMerchantID", length = 50)
     private String amazonMerchantId;
 
-    @Column(length = 200)
+    @Column(name = "quickBookFilePath", length = 200)
     private String quickBookFilePath;
 
-    @Column
+    @Column(name="orderImportTemplate")
     private String orderImportTemplate;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
-    @Column
+    @Column(name="Deleted")
     private Integer deleted;
 
-    @Column(length = 50)
+    @Column(name = "smcLoginID", length = 50)
     private String smcLoginId;
 
-    @Column(length = 50)
+    @Column(name = "smcPassword", length = 50)
     private String smcPassword;
 
-    @Column
+    @Column(name="filepath")
     private String filepath;
 
-    @Column
+    @Column(name="IsDefault")
     private Integer isDefault;
 
-    @Column
+    @Column(name="currentStore")
     private Integer currentStore;
 
-    @Column
+    @Column(name="isMultipleAccountSelected")
     private Integer isMultipleAccountSelected;
 
-    @Column
+    @Column(name="FromDate")
     private OffsetDateTime fromDate;
 
-    @Column
+    @Column(name="ToDate")
     private OffsetDateTime toDate;
 
-    @Column
+    @Column(name="eBaypaymentStatusID1")
     private Integer eBaypaymentStatusId1;
 
-    @Column
+    @Column(name="eBaypaymentStatusID2")
     private Integer eBaypaymentStatusId2;
 
-    @Column(length = 50)
+    @Column(name = "eBaychangeInvoiced", length = 50)
     private String eBaychangeInvoiced;
 
-    @Column
+    @Column(name="eBayuseDateRange")
     private Integer eBayuseDateRange;
 
-    @Column(length = 50)
+    @Column(name = "eBaydateBasedOn", length = 50)
     private String eBaydateBasedOn;
 
-    @Column
+    @Column(name="eBaychangePaymentStatusID")
     private Integer eBaychangePaymentStatusId;
 
-    @Column(length = 50)
+    @Column(name = "eBayruleInvoiced", length = 50)
     private String eBayruleInvoiced;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name = "ImportHistory", columnDefinition = "longtext")
     private String importHistory;
 
-    @Column
+    @Column(name="isSelected")
     private Boolean isSelected;
 
-    @Column
+    @Column(name="defaultCategoryID")
     private Integer defaultCategoryId;
 
-    @Column
+    @Column(name="NickName")
     private String nickName;
 
-    @Column
+    @Column(name="dbURL")
     private String dbUrl;
 
-    @Column
+    @Column(name="magentoLoginID")
     private String magentoLoginId;
 
-    @Column
+    @Column(name="magentoPassword")
     private String magentoPassword;
 
     @OneToMany(mappedBy = "store")
@@ -220,11 +221,11 @@ public class BcaStore {
     private Set<BcaScheduletimes> storeBcaScheduletimess;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_type_id")
+    @JoinColumn(name = "StoreTypeID")
     private BcaStoretype storeType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "store")

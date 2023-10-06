@@ -8,57 +8,58 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_invoiceshipdetail")
 public class BcaInvoiceshipdetail {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ShipDetailID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer shipDetailId;
 
-    @Column
+    @Column(name= "ShippingServiceID")
     private Integer shippingServiceId;
 
-    @Column
+    @Column(name= "BillToAddressID")
     private Integer billToAddressId;
 
-    @Column
+    @Column(name= "COD")
     private Integer cod;
 
-    @Column
+    @Column(name= "AddShipping")
     private Boolean addShipping;
 
-    @Column
+    @Column(name= "HandlingCharge")
     private Double handlingCharge;
 
-    @Column
+    @Column(name= "StealthPostage")
     private Boolean stealthPostage;
 
-    @Column
+    @Column(name= "BallonRate")
     private Boolean ballonRate;
 
-    @Column(length = 50)
+    @Column(name= "Email", length = 50)
     private String email;
 
-    @Column
+    @Column(name= "Phone")
     private Integer phone;
 
-    @Column(name = "\"description\"", length = 50)
+    @Column(name = "Description", length = 50)
     private String description;
 
-    @Column(length = 50)
+    @Column(name= "vValue", length = 50)
     private String vValue;
 
-    @Column(length = 50)
+    @Column(name= "ReturnAddress", length = 50)
     private String returnAddress;
 
-    @Column
+    @Column(name= "IsRealTimeShipping")
     private Integer isRealTimeShipping;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     public Integer getShipDetailId() {

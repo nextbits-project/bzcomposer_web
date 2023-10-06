@@ -6,59 +6,60 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_bsaddress")
 public class BcaBsaddress {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "BSAddressID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bsaddressId;
 
-    @Column(nullable = false)
+    @Column(name = "ClientVendorID", nullable = false)
     private Integer clientVendorId;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "Name", nullable = false, length = 50)
     private String name;
 
-    @Column(length = 45)
+    @Column(name = "DBAName", length = 45)
     private String dbaname;
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "FirstName", nullable = false, length = 20)
     private String firstName;
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "LastName", nullable = false, length = 20)
     private String lastName;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "Address1", nullable = false, length = 100)
     private String address1;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "Address2", nullable = false, length = 100)
     private String address2;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "City", nullable = false, length = 50)
     private String city;
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "ZipCode", nullable = false, length = 20)
     private String zipCode;
 
-    @Column(nullable = false, length = 30)
+    @Column(name = "Country", nullable = false, length = 30)
     private String country;
 
-    @Column(nullable = false, length = 30)
+    @Column(name = "State", nullable = false, length = 30)
     private String state;
 
-    @Column(nullable = false, length = 30)
+    @Column(name = "Province", nullable = false, length = 30)
     private String province;
 
-    @Column(nullable = false, length = 25)
+    @Column(name = "AddressType", nullable = false, length = 25)
     private String addressType;
 
-    @Column(nullable = false)
+    @Column(name = "DateAdded", nullable = false)
     private LocalDate dateAdded;
 
-    @Column(nullable = false, length = 10)
+    @Column(name = "Status", nullable = false, length = 10)
     private String status;
 
     public Integer getBsaddressId() {

@@ -9,33 +9,34 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_budgetcategory")
 public class BcaBudgetcategory {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "BudgetCategoryID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer budgetCategoryId;
 
-    @Column(length = 50)
+    @Column(name = "BudgetCategoryName", length = 50)
     private String budgetCategoryName;
 
-    @Column
+    @Column(name = "BudgetCategoryNumber")
     private Integer budgetCategoryNumber;
 
-    @Column
+    @Column(name = "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name = "isActive")
     private Boolean isActive;
 
-    @Column
+    @Column(name = "Threshold")
     private Double threshold;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getBudgetCategoryId() {

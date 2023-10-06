@@ -10,26 +10,27 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_servicetype")
 public class BcaServicetype {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ServiceID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer serviceId;
 
-    @Column(length = 50)
+    @Column(name="ServiceName", length = 50)
     private String serviceName;
 
-    @Column(length = 50)
+    @Column(name="ServiceBillingDate", length = 50)
     private String serviceBillingDate;
 
-    @Column
+    @Column(name="isUseBillCycle")
     private Integer isUseBillCycle;
 
-    @Column
+    @Column(name="ActiveFlag")
     private Integer activeFlag;
 
     @OneToMany(mappedBy = "service")
@@ -45,15 +46,15 @@ public class BcaServicetype {
     private Set<BcaRecurrentpaymentplan> serviceBcaRecurrentpaymentplans;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_style_id")
+    @JoinColumn(name = "InvoiceStyleID")
     private BcaInvoicestyle invoiceStyle;
 
     @OneToMany(mappedBy = "service")

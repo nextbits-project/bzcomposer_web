@@ -7,20 +7,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_mastershippingpackagesize")
 public class BcaMastershippingpackagesize {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "PackageSizeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer packageSizeId;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     @OneToMany(mappedBy = "packageSize")

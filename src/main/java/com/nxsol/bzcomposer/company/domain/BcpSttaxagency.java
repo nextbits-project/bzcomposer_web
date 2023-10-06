@@ -3,19 +3,21 @@ package com.nxsol.bzcomposer.company.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_sttaxagency")
 public class BcpSttaxagency {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name= "StateName", nullable = false, updatable = false, length = 50)
     private String stateName;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "Address", columnDefinition = "longtext")
     private String address;
 
-    @Column
+    @Column(name= "WebSite")
     private String webSite;
 
     public String getStateName() {

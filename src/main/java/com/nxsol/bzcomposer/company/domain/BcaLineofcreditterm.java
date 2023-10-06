@@ -8,30 +8,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_lineofcreditterm")
 public class BcaLineofcreditterm {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "CreditTermId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer creditTermId;
 
-    @Column
+    @Column(name= "Name")
     private String name;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column
+    @Column(name= "Days")
     private Integer days;
 
-    @Column
+    @Column(name= "isDefault")
     private Integer isDefault;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getCreditTermId() {

@@ -9,33 +9,34 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "item_details")
 public class ItemDetails {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 45)
+    @Column(name= "Name", nullable = false, length = 45)
     private String name;
 
-    @Column(name = "\"description\"", length = 500)
+    @Column(name = "Description", length = 500)
     private String description;
 
-    @Column
+    @Column(name= "Active")
     private Boolean active;
 
-    @Column
+    @Column(name= "Deleted")
     private Boolean deleted;
 
-    @Column(nullable = false)
+    @Column(name= "DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "CategoryID", nullable = false)
     private ItemCategoryDetails category;
 
     public Long getId() {

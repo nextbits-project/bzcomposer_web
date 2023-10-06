@@ -8,68 +8,69 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_storetype")
 public class BcaStoretype {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="StoreTypeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer storeTypeId;
 
-    @Column(length = 50)
+    @Column(name="StoreTypeName", length = 50)
     private String storeTypeName;
 
-    @Column
+    @Column(name="CompanyName")
     private String companyName;
 
-    @Column(length = 50)
+    @Column(name="FirstName", length = 50)
     private String firstName;
 
-    @Column(length = 50)
+    @Column(name="LastName", length = 50)
     private String lastName;
 
-    @Column
+    @Column(name="Address1")
     private String address1;
 
-    @Column
+    @Column(name="Address2")
     private String address2;
 
-    @Column
+    @Column(name="City")
     private String city;
 
-    @Column(length = 50)
+    @Column(name="State", length = 50)
     private String state;
 
-    @Column(length = 50)
+    @Column(name="Province", length = 50)
     private String province;
 
-    @Column(length = 50)
+    @Column(name="Country", length = 50)
     private String country;
 
-    @Column(length = 50)
+    @Column(name="Zipcode", length = 50)
     private String zipcode;
 
-    @Column(length = 50)
+    @Column(name="Email", length = 50)
     private String email;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name="PackingReturnPolicy", columnDefinition = "longtext")
     private String packingReturnPolicy;
 
-    @Column
+    @Column(name="DefaultStoreID")
     private Integer defaultStoreId;
 
-    @Column
+    @Column(name="UseDefaultAddress")
     private Boolean useDefaultAddress;
 
-    @Column
+    @Column(name="LogoPath")
     private String logoPath;
 
-    @Column(nullable = false)
+    @Column(name="LastUpdated", nullable = false)
     private OffsetDateTime lastUpdated;
 
-    @Column
+    @Column(name="isProductSubmission")
     private Integer isProductSubmission;
 
     @OneToMany(mappedBy = "storeType")

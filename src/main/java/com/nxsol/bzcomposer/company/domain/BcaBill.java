@@ -9,90 +9,91 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_bill")
 public class BcaBill {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "BillNum", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer billNum;
 
-    @Column
+    @Column(name = "VendorId")
     private Integer vendorId;
 
-    @Column
+    @Column(name = "PayerID")
     private Integer payerId;
 
-    @Column
+    @Column(name = "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name = "DueDate")
     private OffsetDateTime dueDate;
 
-    @Column
+    @Column(name = "AmountDue")
     private Double amountDue;
 
-    @Column(length = 150)
+    @Column(name = "Memo", length = 150)
     private String memo;
 
-    @Column
+    @Column(name = "Status")
     private Integer status;
 
-    @Column
+    @Column(name = "IsSchedule")
     private Boolean isSchedule;
 
-    @Column
+    @Column(name = "CheckNo")
     private Integer checkNo;
 
-    @Column
+    @Column(name = "BillType")
     private Integer billType;
 
-    @Column(length = 50)
+    @Column(name = "TransactionName", length = 50)
     private String transactionName;
 
-    @Column
+    @Column(name = "RemindOption")
     private Integer remindOption;
 
-    @Column(length = 50)
+    @Column(name = "RecurringPeriod", length = 50)
     private String recurringPeriod;
 
-    @Column
+    @Column(name = "RecurringNumber")
     private Integer recurringNumber;
 
-    @Column
+    @Column(name = "DaysInAdvanceToEnter")
     private Integer daysInAdvanceToEnter;
 
-    @Column
+    @Column(name = "IsMemorized")
     private Boolean isMemorized;
 
-    @Column
+    @Column(name = "CreditUsed")
     private Double creditUsed;
 
-    @Column
+    @Column(name = "AmountPaid")
     private Double amountPaid;
 
-    @Column
+    @Column(name = "Balance")                  
     private Double balance;
 
-    @Column
+    @Column(name = "NextDate") 
     private OffsetDateTime nextDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "CategoryID")
     private BcaCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
+    @JoinColumn(name = "PaymentID")
     private BcaPayment payment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
+    @JoinColumn(name = "ServiceID")
     private BcaServicetype service;
 
     public Integer getBillNum() {

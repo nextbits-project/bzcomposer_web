@@ -7,23 +7,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_incomelist")
 public class BcpIncomelist {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "IncomeListID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer incomeListId;
 
-    @Column(nullable = false, length = 128)
+    @Column(name= "IncomeList", nullable = false, length = 128)
     private String incomeList;
 
-    @Column(nullable = false)
+    @Column(name= "Company", nullable = false)
     private Integer company;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     @OneToMany(mappedBy = "incomeList")

@@ -5,83 +5,84 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_bsaddress")
 public class SmdBsaddress {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "BsaID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bsaId;
 
-    @Column
+    @Column(name= "InvoiceID")
     private Integer invoiceId;
 
-    @Column(length = 30)
+    @Column(name = "Receiver", length = 30)
     private String receiver;
 
-    @Column(length = 15)
+    @Column(name = "ShippingAddrType", length = 15)
     private String shippingAddrType;
 
-    @Column(length = 80)
+    @Column(name = "ShippingCompanyName", length = 80)
     private String shippingCompanyName;
 
-    @Column(length = 100)
+    @Column(name = "ShippingAddr", length = 100)
     private String shippingAddr;
 
-    @Column(length = 100)
+    @Column(name = "ShippingAddr2", length = 100)
     private String shippingAddr2;
 
-    @Column(length = 50)
+    @Column(name = "ShippingCity", length = 50)
     private String shippingCity;
 
-    @Column(length = 50)
+    @Column(name = "ShippingState", length = 50)
     private String shippingState;
 
-    @Column(length = 20)
+    @Column(name = "ShippingZip", length = 20)
     private String shippingZip;
 
-    @Column(length = 40)
+    @Column(name = "ShippingCountry", length = 40)
     private String shippingCountry;
 
-    @Column(length = 20)
+    @Column(name = "ShippingPhone", length = 20)
     private String shippingPhone;
 
-    @Column(length = 30)
+    @Column(name = "ShippingEmail", length = 30)
     private String shippingEmail;
 
-    @Column(length = 15)
+    @Column(name = "BillingAddressType", length = 15)
     private String billingAddressType;
 
-    @Column(length = 80)
+    @Column(name = "BillingCompanyName", length = 80)
     private String billingCompanyName;
 
-    @Column(length = 100)
+    @Column(name = "BillingAddr", length = 100)
     private String billingAddr;
 
-    @Column(length = 100)
+    @Column(name = "BillingAddr2", length = 100)
     private String billingAddr2;
 
-    @Column(length = 50)
+    @Column(name = "BillingCity", length = 50)
     private String billingCity;
 
-    @Column(length = 50)
+    @Column(name = "BillingState", length = 50)
     private String billingState;
 
-    @Column(length = 20)
+    @Column(name = "BillingZip", length = 20)
     private String billingZip;
 
-    @Column(length = 40)
+    @Column(name = "BillingCountry", length = 40)
     private String billingCountry;
 
-    @Column(length = 20)
+    @Column(name = "BillingPhone", length = 20)
     private String billingPhone;
 
-    @Column(length = 30)
+    @Column(name = "BillingEmail", length = 30)
     private String billingEmail;
 
-    @Column
+    @Column(name= "IsSame")
     private Boolean isSame;
 
     public Integer getBsaId() {

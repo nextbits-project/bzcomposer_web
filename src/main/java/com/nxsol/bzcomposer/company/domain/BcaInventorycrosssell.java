@@ -8,18 +8,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_inventorycrosssell")
 public class BcaInventorycrosssell {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "CrossSellID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer crossSellId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     public Integer getCrossSellId() {

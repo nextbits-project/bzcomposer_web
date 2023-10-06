@@ -7,44 +7,45 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_admin")
 public class SmdAdmin {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 40)
+    @Column(name= "AdminID", nullable = false, updatable = false, length = 40)
     private String adminId;
 
-    @Column(length = 20)
+    @Column(name= "Password", length = 20)
     private String password;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column(length = 50)
+    @Column(name= "Email", length = 50)
     private String email;
 
-    @Column(length = 7)
+    @Column(name= "Authority", length = 7)
     private String authority;
 
-    @Column
+    @Column(name= "Input_Date")
     private OffsetDateTime inputDate;
 
-    @Column(length = 10)
+    @Column(name= "webSite", length = 10)
     private String webSite;
 
-    @Column
+    @Column(name= "SiteType")
     private Integer siteType;
 
-    @Column
+    @Column(name= "MshopMerchantID")
     private Integer mshopMerchantId;
 
-    @Column
+    @Column(name= "siteinventory")
     private Integer siteinventory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public String getAdminId() {

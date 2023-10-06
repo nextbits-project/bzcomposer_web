@@ -8,17 +8,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_cities")
 public class BcaCities {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 30)
+    @Column(name= "name", nullable = false, length = 30)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)

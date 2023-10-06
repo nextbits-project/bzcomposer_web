@@ -8,26 +8,27 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "bca_accttype")
 public class BcaAccttype {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "AcctTypeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer acctTypeId;
 
-    @Column(length = 50)
+    @Column(name = "Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name= " ParentAcctTypeID")
     private Integer parentAcctTypeId;
 
-    @Column
+    @Column(name = "RootAcctTypeID")
     private Integer rootAcctTypeId;
 
-    @Column
+    @Column(name = "DateAdded")
     private OffsetDateTime dateAdded;
 
     @OneToMany(mappedBy = "acctType")

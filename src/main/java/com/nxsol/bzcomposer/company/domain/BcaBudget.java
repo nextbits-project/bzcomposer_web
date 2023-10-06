@@ -10,33 +10,34 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_budget")
 public class BcaBudget {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "BudgetID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer budgetId;
 
-    @Column
+    @Column(name = "EYear")
     private Integer eyear;
 
-    @Column
+    @Column(name = "CompanyBudget")
     private Integer companyBudget;
 
-    @Column(length = 50)
+    @Column(name = "BudgetName", length = 50)
     private String budgetName;
 
-    @Column
+    @Column(name = "Active")
     private Integer active;
 
-    @Column
+    @Column(name = "isDefault")
     private Integer isDefault;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "budget")

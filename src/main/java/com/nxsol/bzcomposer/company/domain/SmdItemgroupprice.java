@@ -7,26 +7,27 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_itemgroupprice")
 public class SmdItemgroupprice {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 20)
+    @Column(name= "InventoryID", nullable = false, updatable = false, length = 20)
     private String inventoryId;
 
-    @Column
+    @Column(name= "CustomerGroupID")
     private Integer customerGroupId;
 
-    @Column
+    @Column(name= "DefaultPrice")
     private Boolean defaultPrice;
 
-    @Column(precision = 18, scale = 0)
+    @Column(name= "Price", precision = 18, scale = 0)
     private BigDecimal price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public String getInventoryId() {

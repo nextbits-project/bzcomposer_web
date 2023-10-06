@@ -10,35 +10,36 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_category")
 public class BcaCategory {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "CategoryID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer categoryId;
 
-    @Column
+    @Column(name= "CategoryTypeID")
     private Integer categoryTypeId;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column(length = 100)
+    @Column(name= "CateNumber", length = 100)
     private String cateNumber;
 
-    @Column(length = 50)
+    @Column(name= "Parent", length = 50)
     private String parent;
 
-    @Column(name = "\"description\"")
+    @Column(name = "Description")
     private String description;
 
-    @Column
+    @Column(name= "BudgetCategoryID")
     private Integer budgetCategoryId;
 
-    @Column
+    @Column(name= "isActive")
     private Boolean isActive;
 
     @OneToMany(mappedBy = "category")
@@ -48,7 +49,7 @@ public class BcaCategory {
     private Set<BcaBill> categoryBcaBills;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "category")

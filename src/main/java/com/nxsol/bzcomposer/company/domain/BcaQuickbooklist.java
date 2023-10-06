@@ -8,30 +8,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_quickbooklist")
 public class BcaQuickbooklist {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 50)
+    @Column(name="customerListID", length = 50)
     private String customerListId;
 
-    @Column
+    @Column(name="cvID")
     private Integer cvId;
 
-    @Column(length = 50)
+    @Column(name="inventoryListID", length = 50)
     private String inventoryListId;
 
-    @Column
+    @Column(name="invID")
     private Integer invId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getId() {

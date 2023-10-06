@@ -10,20 +10,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_salesrep")
 public class BcaSalesrep {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="SalesRepID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer salesRepId;
 
-    @Column(length = 50)
+    @Column(name="Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
     @OneToMany(mappedBy = "salesRep")
@@ -33,7 +34,7 @@ public class BcaSalesrep {
     private Set<BcaRefundlist> salesRepBcaRefundlists;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "salesRep")

@@ -8,72 +8,73 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_budgetdetail")
 public class BcaBudgetdetail {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "BudgetdetailID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer budgetdetailId;
 
-    @Column(nullable = false)
+    @Column(name= "CategoryID", nullable = false)
     private Integer categoryId;
 
-    @Column
+    @Column(name= "cvId")
     private Integer cvId;
 
-    @Column
+    @Column(name= "cvServiceId")
     private Integer cvServiceId;
 
-    @Column
+    @Column(name= "EYear")
     private Integer eyear;
 
-    @Column
+    @Column(name= "oct_amt")
     private Double octAmt;
 
-    @Column
+    @Column(name= "nov_amt")
     private Double novAmt;
 
-    @Column
+    @Column(name= "dec_amt")
     private Double decAmt;
 
-    @Column
+    @Column(name= "jan_amt")
     private Double janAmt;
 
-    @Column
+    @Column(name= "feb_amt")
     private Double febAmt;
 
-    @Column
+    @Column(name= "mar_amt")
     private Double marAmt;
 
-    @Column
+    @Column(name= "apr_amt")
     private Double aprAmt;
 
-    @Column
+    @Column(name= "may_amt")
     private Double mayAmt;
 
-    @Column
+    @Column(name= "jun_amt")
     private Double junAmt;
 
-    @Column
+    @Column(name= "jul_amt")
     private Double julAmt;
 
-    @Column
+    @Column(name= "aug_amt")
     private Double augAmt;
 
-    @Column
+    @Column(name= "sep_amt")
     private Double sepAmt;
 
-    @Column
+    @Column(name= "annual_amt")
     private Double annualAmt;
 
-    @Column
+    @Column(name= "actual_amt")
     private Double actualAmt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "budget_id")
+    @JoinColumn(name = "BudgetID")
     private BcaBudget budget;
 
     public Integer getBudgetdetailId() {

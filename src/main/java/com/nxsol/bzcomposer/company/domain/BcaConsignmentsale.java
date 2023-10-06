@@ -8,43 +8,44 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_consignmentsale")
 public class BcaConsignmentsale {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "ConsignID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer consignId;
 
-    @Column
+    @Column(name= "SupplierID")
     private Integer supplierId;
 
-    @Column
+    @Column(name= "UnitPrice")
     private Double unitPrice;
 
-    @Column
+    @Column(name= "OrderNum")
     private Integer orderNum;
 
-    @Column
+    @Column(name= "PaidAmount")
     private Double paidAmount;
 
-    @Column
+    @Column(name= "RemainingBalance")
     private Double remainingBalance;
 
-    @Column
+    @Column(name= "IsPaymentCompleted")
     private Boolean isPaymentCompleted;
 
-    @Column
+    @Column(name= "IsConsignedPaymentCompleted")
     private Boolean isConsignedPaymentCompleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     public Integer getConsignId() {

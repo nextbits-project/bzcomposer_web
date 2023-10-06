@@ -9,53 +9,54 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity // no jdbc references found
+@Table(name= "bca_exporteditemedetail")
 public class BcaExporteditemedetail {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ExportedProductID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer exportedProductId;
 
-    @Column(length = 50)
+    @Column(name= "ProductCode", length = 50)
     private String productCode;
 
-    @Column(length = 50)
+    @Column(name= "ListingDuration", length = 50)
     private String listingDuration;
 
-    @Column(length = 50)
+    @Column(name= "PaymentMethod", length = 50)
     private String paymentMethod;
 
-    @Column
+    @Column(name= "ShippingFee")
     private Integer shippingFee;
 
-    @Column(length = 50)
+    @Column(name= "ExportedInventoryID", length = 50)
     private String exportedInventoryId;
 
-    @Column
+    @Column(name= "ExportedDate")
     private OffsetDateTime exportedDate;
 
-    @Column
+    @Column(name= "ExportedType")
     private Integer exportedType;
 
-    @Column
+    @Column(name= "CrossSellParentID")
     private Integer crossSellParentId;
 
-    @Column
+    @Column(name= "ProductName")
     private String productName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "StoreID")
     private BcaStore store;
 
     public Integer getExportedProductId() {

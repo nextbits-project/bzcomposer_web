@@ -9,95 +9,96 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "storage_cart")
 public class StorageCart {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "CartID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cartId;
 
-    @Column(length = 50)
+    @Column(name= "InventoryCode", length = 50)
     private String inventoryCode;
 
-    @Column
+    @Column(name= "InventoryName")
     private String inventoryName;
 
-    @Column
+    @Column(name= "Qty")
     private Integer qty;
 
-    @Column
+    @Column(name= "UnitWeight")
     private Double unitWeight;
 
-    @Column
+    @Column(name= "Weight")
     private Double weight;
 
-    @Column
+    @Column(name= "UnitPrice")
     private Double unitPrice;
 
-    @Column
+    @Column(name= "Taxable")
     private Integer taxable;
 
-    @Column(nullable = false)
+    @Column(name= "DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "ItemTypeID")
     private Integer itemTypeId;
 
-    @Column
+    @Column(name= "Itemtax")
     private Double itemtax;
 
-    @Column(length = 50)
+    @Column(name= "OrderItemID", length = 50)
     private String orderItemId;
 
-    @Column
+    @Column(name= "shippingprice")
     private Double shippingprice;
 
-    @Column
+    @Column(name= "shippingtax")
     private Double shippingtax;
 
-    @Column(length = 50)
+    @Column(name= "itempromotiondiscount", length = 50)
     private String itempromotiondiscount;
 
-    @Column(length = 50)
+    @Column(name= "itempromotionid", length = 50)
     private String itempromotionid;
 
-    @Column(length = 50)
+    @Column(name= "shippromotiondiscount", length = 50)
     private String shippromotiondiscount;
 
-    @Column(length = 50)
+    @Column(name= "shippromotionid", length = 50)
     private String shippromotionid;
 
-    @Column(length = 50)
+    @Column(name= "ItemSubTotal", length = 50)
     private String itemSubTotal;
 
-    @Column
+    @Column(name= "ItemOrder")
     private Integer itemOrder;
 
-    @Column
+    @Column(name= "BalanceQty")
     private Integer balanceQty;
 
-    @Column(length = 50)
+    @Column(name= "Unit", length = 50)
     private String unit;
 
-    @Column
+    @Column(name= "SalesTaxRate")
     private Double salesTaxRate;
 
-    @Column(length = 20)
+    @Column(name= "PORef", length = 20)
     private String poref;
 
-    @Column(length = 50)
+    @Column(name= "SORef", length = 50)
     private String soref;
 
-    @Column
+    @Column(name= "IsUsedSalesItem")
     private Integer isUsedSalesItem;
 
-    @Column(length = 50)
+    @Column(name= "SupplierID", length = 50)
     private String supplierId;
 
-    @Column
+    @Column(name= "CustomSku")
     private String customSku;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -105,19 +106,19 @@ public class StorageCart {
     private BcaCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderid_id")
+    @JoinColumn(name = "orderid")
     private BcaOrdertemplate orderid;
 
     public Integer getCartId() {

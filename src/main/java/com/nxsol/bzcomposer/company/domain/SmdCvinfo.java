@@ -6,77 +6,78 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_cvinfo")
 public class SmdCvinfo {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 100)
+    @Column(name= "Company", nullable = false, updatable = false, length = 100)
     private String company;
 
-    @Column(length = 20)
+    @Column(name= "Password", length = 20)
     private String password;
 
-    @Column(length = 16)
+    @Column(name= "PasswordHint", length = 16)
     private String passwordHint;
 
-    @Column(length = 16)
+    @Column(name= "PasswordAnswer", length = 16)
     private String passwordAnswer;
 
-    @Column
+    @Column(name= "Newsletter")
     private Boolean newsletter;
 
-    @Column(length = 10)
+    @Column(name= "Subscribe", length = 10)
     private String subscribe;
 
-    @Column
+    @Column(name= "IsChecked")
     private Boolean isChecked;
 
-    @Column(length = 15)
+    @Column(name= "Status", length = 15)
     private String status;
 
-    @Column(length = 50)
+    @Column(name= "HomePage", length = 50)
     private String homePage;
 
-    @Column(length = 30)
+    @Column(name= "ResellerTaxID", length = 30)
     private String resellerTaxId;
 
-    @Column(length = 5)
+    @Column(name= "Taxable", length = 5)
     private String taxable;
 
-    @Column(length = 20)
+    @Column(name= "FID", length = 20)
     private String fid;
 
-    @Column
+    @Column(name= "CustomerGroupID")
     private Integer customerGroupId;
 
-    @Column
+    @Column(name= "BillingAddressID")
     private Integer billingAddressId;
 
-    @Column
+    @Column(name= "ShippingAddressID")
     private Integer shippingAddressId;
 
-    @Column
+    @Column(name= "AllowMultipleAddress")
     private Boolean allowMultipleAddress;
 
-    @Column(length = 50)
+    @Column(name= "WWW", length = 50)
     private String www;
 
-    @Column
+    @Column(name= "SourceInfo")
     private Integer sourceInfo;
 
-    @Column(length = 50)
+    @Column(name= "BusinessType", length = 50)
     private String businessType;
 
-    @Column(length = 50)
+    @Column(name= "userPhoto", length = 50)
     private String userPhoto;
 
-    @Column
+    @Column(name= "isPhotoPrivate")
     private Integer isPhotoPrivate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     public String getCompany() {

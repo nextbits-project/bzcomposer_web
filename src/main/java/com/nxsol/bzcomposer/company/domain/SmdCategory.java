@@ -8,30 +8,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_category")
 public class SmdCategory {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "eBayCategoryID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer eBayCategoryId;
 
-    @Column
+    @Column(name= "smdcategoryName")
     private String smdcategoryName;
 
-    @Column
+    @Column(name= "smdCategoryID")
     private Integer smdCategoryId;
 
-    @Column
+    @Column(name= "level")
     private Integer level;
 
-    @Column
+    @Column(name= "isDefault")
     private Integer isDefault;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "StoreID")
     private BcaStore store;
 
     public Integer getEBayCategoryId() {

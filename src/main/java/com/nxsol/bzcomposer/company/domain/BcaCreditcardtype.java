@@ -10,30 +10,31 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_creditcardtype")
 public class BcaCreditcardtype {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "CCTypeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cctypeId;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name= "CVV2")
     private Integer cvv2;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column
+    @Column(name= "TypeCategory")
     private Integer typeCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false)
+    @JoinColumn(name = "CompanyID", nullable = false)
     private BcaCompany company;
 
     @OneToMany(mappedBy = "cctype")

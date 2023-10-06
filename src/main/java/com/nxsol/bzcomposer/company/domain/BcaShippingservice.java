@@ -8,33 +8,34 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_shippingservice")
 public class BcaShippingservice {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ShippingServiceID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer shippingServiceId;
 
-    @Column
+    @Column(name="HandlingFee")
     private Double handlingFee;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "container_id")
+    @JoinColumn(name = "ContainerID")
     private BcaMastershippingcontainer container;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mail_type_id")
+    @JoinColumn(name = "MailTypeID")
     private BcaMastershippingmailtype mailType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "package_size_id")
+    @JoinColumn(name = "PackageSizeID")
     private BcaMastershippingpackagesize packageSize;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ship_carrier_id")
+    @JoinColumn(name = "ShipCarrierID")
     private BcaShipcarrier shipCarrier;
 
     public Integer getShippingServiceId() {

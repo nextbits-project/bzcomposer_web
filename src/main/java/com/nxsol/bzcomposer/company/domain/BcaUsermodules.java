@@ -7,20 +7,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_usermapping")
 public class BcaUsermodules {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ModuleID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer moduleId;
 
-    @Column(length = 50)
+    @Column(name= "ModuleName", length = 50)
     private String moduleName;
 
-    @Column
+    @Column(name= "ParentID")
     private Integer parentId;
 
     @OneToMany(mappedBy = "modulee")

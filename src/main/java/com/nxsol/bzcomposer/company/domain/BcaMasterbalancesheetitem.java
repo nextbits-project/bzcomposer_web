@@ -5,23 +5,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_masterbalancesheetitem")
 public class BcaMasterbalancesheetitem {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "balancesheetitemID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer balancesheetitemId;
 
-    @Column
+    @Column(name= "CategoryTypeID")
     private Integer categoryTypeId;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name= "Amount")
     private Double amount;
 
     public Integer getBalancesheetitemId() {

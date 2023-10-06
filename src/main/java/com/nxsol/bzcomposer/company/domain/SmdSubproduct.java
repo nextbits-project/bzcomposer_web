@@ -5,20 +5,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_subproduct")
 public class SmdSubproduct {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "SubProductID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer subProductId;
 
-    @Column
+    @Column(name= "MasterProductID")
     private Integer masterProductId;
 
-    @Column
+    @Column(name= "SubProductCount")
     private Integer subProductCount;
 
     public Integer getSubProductId() {

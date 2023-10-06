@@ -5,26 +5,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_amazoncategorytemplate")
 public class BcaAmazoncategorytemplate {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "CategoryTemplateID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer categoryTemplateId;
 
-    @Column(length = 50)
+    @Column(name = "Type", length = 50)
     private String type;
 
-    @Column(length = 50)
+    @Column(name = "TemplateFileName", length = 50)
     private String templateFileName;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name = "Data", columnDefinition = "longtext")
     private String data;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name = "ColumnHeaderData", columnDefinition = "longtext")
     private String columnHeaderData;
 
     public Integer getCategoryTemplateId() {

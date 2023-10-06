@@ -5,38 +5,39 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_cordinates")
 public class BcaCordinates {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "cordinatesID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cordinatesId;
 
-    @Column
+    @Column(name= "LeftCordinate")
     private Integer leftCordinate;
 
-    @Column
+    @Column(name= "RightCordinate")
     private Integer rightCordinate;
 
-    @Column
+    @Column(name= "UpCordiante")
     private Integer upCordiante;
 
-    @Column
+    @Column(name= "DownCordainte")
     private Integer downCordainte;
 
-    @Column(length = 50)
+    @Column(name= "MenuName", length = 50)
     private String menuName;
 
-    @Column
+    @Column(name= "ResolutionHeight")
     private Integer resolutionHeight;
 
-    @Column
+    @Column(name= "ResolutionWidth")
     private Integer resolutionWidth;
 
-    @Column
+    @Column(name= "UseSalesOrder")
     private Integer useSalesOrder;
 
     public Integer getCordinatesId() {

@@ -9,27 +9,28 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_location")
 public class BcaLocation {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "LocationID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer locationId;
 
-    @Column(nullable = false, length = 50)
+    @Column(name= "Name", nullable = false, length = 50)
     private String name;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column(nullable = false)
+    @Column(name= "DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public BcaLocation(String description, int compId, int i) {

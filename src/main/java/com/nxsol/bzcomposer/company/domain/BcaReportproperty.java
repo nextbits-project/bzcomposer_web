@@ -7,77 +7,78 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_reportproperty")
 public class BcaReportproperty {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name="ReportType", nullable = false, updatable = false, length = 50)
     private String reportType;
 
-    @Column(length = 50)
+    @Column(name="ReportDateType", length = 50)
     private String reportDateType;
 
-    @Column
+    @Column(name="ReportFrom")
     private OffsetDateTime reportFrom;
 
-    @Column
+    @Column(name="ReportTo")
     private OffsetDateTime reportTo;
 
-    @Column
+    @Column(name="ShowCompanyName")
     private Boolean showCompanyName;
 
-    @Column(length = 70)
+    @Column(name="CompanyName", length = 70)
     private String companyName;
 
-    @Column
+    @Column(name="ShowReportTitle")
     private Boolean showReportTitle;
 
-    @Column(length = 50)
+    @Column(name="ReportTitle", length = 50)
     private String reportTitle;
 
-    @Column
+    @Column(name="ShowDatePrepared")
     private Boolean showDatePrepared;
 
-    @Column
+    @Column(name="ShowTimePrepared")
     private Boolean showTimePrepared;
 
-    @Column
+    @Column(name="PrintHeadAll")
     private Boolean printHeadAll;
 
-    @Column(length = 50)
+    @Column(name="ColumnFont", length = 50)
     private String columnFont;
 
-    @Column(length = 50)
+    @Column(name="RowFont", length = 50)
     private String rowFont;
 
-    @Column(length = 50)
+    @Column(name="ReportTotalFont", length = 50)
     private String reportTotalFont;
 
-    @Column(length = 50)
+    @Column(name="ReportDataFont", length = 50)
     private String reportDataFont;
 
-    @Column(length = 50)
+    @Column(name="CompanyNameFont", length = 50)
     private String companyNameFont;
 
-    @Column(length = 50)
+    @Column(name="ReportTitleFont", length = 50)
     private String reportTitleFont;
 
-    @Column(length = 50)
+    @Column(name="DateFont", length = 50)
     private String dateFont;
 
-    @Column(length = 50)
+    @Column(name="PageNumberFont", length = 50)
     private String pageNumberFont;
 
-    @Column(length = 50)
+    @Column(name="TimeFont", length = 50)
     private String timeFont;
 
-    @Column
+    @Column(name="NegativeRed")
     private Boolean negativeRed;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public String getReportType() {

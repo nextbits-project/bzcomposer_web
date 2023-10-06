@@ -10,27 +10,28 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_refundreason")
 public class BcaRefundreason {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ReasonID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer reasonId;
 
-    @Column(length = 50)
+    @Column(name="RefundReason", length = 50)
     private String refundReason;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
-    @Column
+    @Column(name="IsDefaultReason")
     private Boolean isDefaultReason;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "reason")

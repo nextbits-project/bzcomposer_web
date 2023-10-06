@@ -8,39 +8,40 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_businesscategories")
 public class BcaBusinesscategories {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "CategoryID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer categoryId;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column(length = 100)
+    @Column(name= "CateNumber", length = 100)
     private String cateNumber;
 
-    @Column(length = 50)
+    @Column(name= "Parent", length = 50)
     private String parent;
 
-    @Column(name = "\"description\"")
+    @Column(name = "Description")
     private String description;
 
-    @Column
+    @Column(name = "BudgetCategoryID")
     private Integer budgetCategoryId;
 
-    @Column
+    @Column(name = "isActive")
     private Boolean isActive;
 
-    @Column
+    @Column(name = "BusinessTypeID")
     private Integer businessTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_type_id")
+    @JoinColumn(name = "CategoryTypeID")
     private BcaCategorytype categoryType;
 
     public Integer getCategoryId() {

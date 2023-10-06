@@ -6,27 +6,28 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_userdefineshipcarrier")
 public class BcaUserdefineshipcarrier {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name="Name", nullable = false, updatable = false, length = 50)
     private String name;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
-    @Column
+    @Column(name="ParentID")
     private Integer parentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ship_carrier_id", nullable = false)
+    @JoinColumn(name = "ShipCarrierID", nullable = false)
     private BcaShipcarrier shipCarrier;
 
     public String getName() {

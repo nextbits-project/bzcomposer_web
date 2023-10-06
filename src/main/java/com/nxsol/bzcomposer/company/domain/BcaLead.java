@@ -11,64 +11,65 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_label")
 public class BcaLead {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "LeadID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer leadId;
 
-    @Column
+    @Column(name= "AgentID")
     private Integer agentId;
 
-    @Column
+    @Column(name= "Status")
     private String status;
 
-    @Column
+    @Column(name= "Position")
     private String position;
 
-    @Column
+    @Column(name= "WebSite")
     private String webSite;
 
-    @Column
+    @Column(name= "LeadValue")
     private Double leadValue;
 
-    @Column
+    @Column(name= "isPublic")
     private Integer isPublic;
 
-    @Column
+    @Column(name= "isContactToday")
     private Integer isContactToday;
 
-    @Column
+    @Column(name= "contactDate")
     private OffsetDateTime contactDate;
 
-    @Column
+    @Column(name= "isAllowFollowUp")
     private Integer isAllowFollowUp;
 
-    @Column
+    @Column(name= "OfficePhone")
     private String officePhone;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lead_source_id")
+    @JoinColumn(name = "LeadSourceID")
     private BcaLeadSource leadSource;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lead_category_id")
+    @JoinColumn(name = "LeadCategoryID")
     private BcaLeadCategory leadCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sales_rep_id")
+    @JoinColumn(name = "SalesRepID")
     private BcaSalesrep salesRep;
 
     @OneToMany(mappedBy = "lead")

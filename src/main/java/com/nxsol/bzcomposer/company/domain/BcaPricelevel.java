@@ -11,33 +11,34 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_pricelevel")
 public class BcaPricelevel {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="PriceLevelID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer priceLevelId;
 
-    @Column(length = 50)
+    @Column(name="Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name="IsActive")
     private Boolean isActive;
 
-    @Column
+    @Column(name="DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column(length = 50)
+    @Column(name="PriceLevelType", length = 50)
     private String priceLevelType;
 
-    @Column
+    @Column(name="FixedPercentage")
     private Double fixedPercentage;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID") 
     private BcaCompany company;
 
     @OneToMany(mappedBy = "priceLevel")

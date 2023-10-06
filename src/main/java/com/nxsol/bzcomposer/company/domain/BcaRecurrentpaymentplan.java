@@ -10,72 +10,73 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_recurrentpaymentplan")
 public class BcaRecurrentpaymentplan {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="PlanID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer planId;
 
-    @Column
+    @Column(name="Amount")
     private Double amount;
 
-    @Column
+    @Column(name="SamePaymentAmount")
     private Boolean samePaymentAmount;
 
-    @Column
+    @Column(name="LastPaymentAmount")
     private Double lastPaymentAmount;
 
-    @Column(length = 50)
+    @Column(name="FirstPaymentDate", length = 50)
     private String firstPaymentDate;
 
-    @Column(length = 50)
+    @Column(name="Frequency", length = 50)
     private String frequency;
 
-    @Column
+    @Column(name="Days")
     private Integer days;
 
-    @Column
+    @Column(name="RecurrentOption")
     private Integer recurrentOption;
 
-    @Column
+    @Column(name="NumberOfPayments")
     private Integer numberOfPayments;
 
-    @Column(length = 50)
+    @Column(name="Status", length = 50)
     private String status;
 
-    @Column(length = 50)
+    @Column(name="LastPaymentDate", length = 50)
     private String lastPaymentDate;
 
-    @Column(length = 50)
+    @Column(name="PlanSetupDate", length = 50)
     private String planSetupDate;
 
-    @Column
+    @Column(name="Active")
     private Boolean active;
 
-    @Column(length = 50)
+    @Column(name="Memo", length = 50)
     private String memo;
 
     @OneToMany(mappedBy = "plan")
     private Set<BcaRecurrentpayment> planBcaRecurrentpayments;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payee_id")
+    @JoinColumn(name = "PayeeID")
     private BcaAccount payee;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_account_id")
+    @JoinColumn(name = "PaymentAccountID")
     private BcaAccount paymentAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_type_id")
+    @JoinColumn(name = "PaymentTypeID")
     private BcaPaymenttype paymentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
+    @JoinColumn(name = "ServiceID")
     private BcaServicetype service;
 
     public Integer getPlanId() {

@@ -9,38 +9,39 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_recentbills")
 public class BcaRecentbills {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name="RecentBillID")
     private Integer recentBillId;
 
-    @Column
+    @Column(name="DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name="LastBilldate")
     private OffsetDateTime lastBilldate;
 
-    @Column
+    @Column(name="Type")
     private Integer type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
+    @JoinColumn(name = "ServiceID")
     private BcaServicetype service;
 
     public Integer getId() {

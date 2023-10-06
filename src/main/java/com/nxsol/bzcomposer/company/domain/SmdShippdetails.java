@@ -5,35 +5,36 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_shippdetails")
 public class SmdShippdetails {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "CompanyID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer companyId;
 
-    @Column(length = 50)
+    @Column(name= "shippType", length = 50)
     private String shippType;
 
-    @Column(length = 200)
+    @Column(name= "Field1", length = 200)
     private String field1;
 
-    @Column(length = 200)
+    @Column(name= "Field2", length = 200)
     private String field2;
 
-    @Column(length = 200)
+    @Column(name= "Field3", length = 200)
     private String field3;
 
-    @Column(length = 200)
+    @Column(name= "Field4", length = 200)
     private String field4;
 
-    @Column(length = 200)
+    @Column(name= "Field5", length = 200)
     private String field5;
 
-    @Column
+    @Column(name= "active")
     private Boolean active;
 
     public Integer getCompanyId() {

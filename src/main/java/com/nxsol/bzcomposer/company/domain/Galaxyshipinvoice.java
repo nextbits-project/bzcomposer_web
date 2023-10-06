@@ -5,77 +5,78 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "galaxyshipinvoice")
 public class Galaxyshipinvoice {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "OrderNumber")
     private Integer orderNumber;
 
-    @Column(length = 50)
+    @Column(name= "MailClass", length = 50)
     private String mailClass;
 
-    @Column(length = 50)
+    @Column(name= "TrackingType", length = 50)
     private String trackingType;
 
-    @Column(length = 50)
+    @Column(name= "GroupCode", length = 50)
     private String groupCode;
 
-    @Column
+    @Column(name= "Value")
     private Integer value;
 
-    @Column(name = "\"description\"", length = 50)
+    @Column(name = "Description", length = 50)
     private String description;
 
-    @Column(length = 50)
+    @Column(name= "Lenght", length = 50)
     private String lenght;
 
-    @Column(length = 50)
+    @Column(name= "Width", length = 50)
     private String width;
 
-    @Column(length = 50)
+    @Column(name= "Height", length = 50)
     private String height;
 
-    @Column(length = 50)
+    @Column(name= "Weight", length = 50)
     private String weight;
 
-    @Column(length = 50)
+    @Column(name= "FirstName", length = 50)
     private String firstName;
 
-    @Column(length = 50)
+    @Column(name= "LastName", length = 50)
     private String lastName;
 
-    @Column(length = 50)
+    @Column(name= "Company", length = 50)
     private String company;
 
-    @Column(length = 50)
+    @Column(name= "Address1", length = 50)
     private String address1;
 
-    @Column(length = 50)
+    @Column(name= "Address2", length = 50)
     private String address2;
 
-    @Column(length = 50)
+    @Column(name= "City", length = 50)
     private String city;
 
-    @Column(length = 50)
+    @Column(name= "State", length = 50)
     private String state;
 
-    @Column(length = 50)
+    @Column(name= "ZipCode", length = 50)
     private String zipCode;
 
-    @Column(length = 50)
+    @Column(name= "Country", length = 50)
     private String country;
 
-    @Column(length = 50)
+    @Column(name= "Email", length = 50)
     private String email;
 
-    @Column(length = 50)
+    @Column(name= "Phone", length = 50)
     private String phone;
 
     public Integer getId() {

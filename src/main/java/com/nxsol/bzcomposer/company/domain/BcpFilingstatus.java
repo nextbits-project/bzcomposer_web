@@ -10,20 +10,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_filingstatus")
 public class BcpFilingstatus {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "FilingStatusID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer filingStatusId;
 
-    @Column(length = 50)
+    @Column(name= "FilingStatus", length = 50)
     private String filingStatus;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
 
@@ -31,7 +32,7 @@ public class BcpFilingstatus {
     private Set<BcpEmployee> filingStatusBcpEmployees;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getFilingStatusId() {

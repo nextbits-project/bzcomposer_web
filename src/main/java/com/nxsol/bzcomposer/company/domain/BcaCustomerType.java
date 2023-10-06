@@ -8,24 +8,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_customer_type")
 public class BcaCustomerType {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 45)
+    @Column(name= "Name", nullable = false, length = 45)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name= "Deleted", nullable = false)
     private Integer deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false)
+    @JoinColumn(name = "CompanyID", nullable = false)
     private BcaCompany company;
 
     public Integer getId() {

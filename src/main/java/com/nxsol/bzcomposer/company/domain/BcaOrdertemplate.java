@@ -10,33 +10,34 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_ordertemplate")
 public class BcaOrdertemplate {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "OrderID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
-    @Column
+    @Column(name= "TemplatePath")
     private String templatePath;
 
-    @Column
+    @Column(name= "TemplateName")
     private String templateName;
 
-    @Column
+    @Column(name= "ActiveData")
     private Integer activeData;
 
-    @Column
+    @Column(name= "DefaultValue")
     private Boolean defaultValue;
 
     @OneToMany(mappedBy = "orderid")
     private Set<BcaCart> orderidBcaCarts;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "orderid")

@@ -10,861 +10,860 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_preference")
 public class BcaPreference {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="PreferenceID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer preferenceId;
 
-    @Column(length = 50)
+    @Column(name="CurrencyText", length = 50)
     private String currencyText;
 
-    @Column
+    @Column(name="CurrencyID")
     private Integer currencyId;
 
-    @Column(length = 50)
+    @Column(name="Weight", length = 50)
     private String weight;
 
-    @Column
+    @Column(name="WeightID")
     private Integer weightId;
 
-    @Column(length = 50)
+    @Column(name="LabelSize", length = 50)
     private String labelSize;
 
-    @Column
+    @Column(name="LabelSizeID")
     private Integer labelSizeId;
 
-    @Column(length = 50)
+    @Column(name="BackupPeriod", length = 50)
     private String backupPeriod;
 
-    @Column
+    @Column(name="BackupPeriodID")
     private Integer backupPeriodId;
 
-    @Column(length = 50)
+    @Column(name="BackupPlace", length = 50)
     private String backupPlace;
 
-    @Column(length = 50)
+    @Column(name="AdminUsername", length = 50)
     private String adminUsername;
 
-    @Column(length = 50)
+    @Column(name="AdminPassword", length = 50)
     private String adminPassword;
 
-    @Column
+    @Column(name="Multimode")
     private Integer multimode;
 
 
-    @Column(length = 50)
+    @Column(name="CustomerProvience", length = 50)
     private String customerProvience;
 
-    @Column
+    @Column(name="CustomerTaxable")
     private Integer customerTaxable;
 
-    @Column
+    @Column(name="CustomerUsecompanyname")
     private Integer customerUsecompanyname;
 
-    @Column
+    @Column(name="StartingInvoiceNumber")
     private Integer startingInvoiceNumber;
 
-    @Column
+    @Column(name="InvoiceFootnoteID")
     private Integer invoiceFootnoteId;
 
-    @Column
+    @Column(name="UseProductWeight")
     private Integer useProductWeight;
 
-    @Column
+    @Column(name="UseShippingTable")
     private Integer useShippingTable;
 
-    @Column
+    @Column(name="SaleShowCountry")
     private Boolean saleShowCountry;
 
-    @Column
+    @Column(name="SaleShowTelephone")
     private Boolean saleShowTelephone;
 
-    @Column(length = 50)
+    @Column(name="VendorProvience", length = 50)
     private String vendorProvience;
 
-    @Column
+    @Column(name="VendorUseCompanyname")
     private Integer vendorUseCompanyname;
 
-    @Column(length = 50)
+    @Column(name="StartingPONumber", length = 50)
     private String startingPonumber;
 
-    @Column
+    @Column(name="POFootnoteID")
     private Integer pofootnoteId;
 
-    @Column
+    @Column(name="POShowCountry")
     private Boolean poshowCountry;
 
-    @Column
+    @Column(name="POShowTelephone")
     private Boolean poshowTelephone;
 
-    @Column(length = 50)
+    @Column(name="StartingRINumber", length = 50)
     private String startingRinumber;
 
-    @Column
+    @Column(name="ProductTaxable")
     private Integer productTaxable;
 
-    @Column
+    @Column(name="EmployeeIDtoUse")
     private Integer employeeIdtoUse;
 
-
-
-    @Column
+    @Column(name="SalesTaxRate")
     private Double salesTaxRate;
 
-    @Column
+    @Column(name="HowOftenSalestax")
     private Integer howOftenSalestax;
 
-    @Column(length = 20)
+    @Column(name="SalesTaxCode", length = 20)
     private String salesTaxCode;
 
-    @Column
+    @Column(name="ShowReminder")
     private Integer showReminder;
 
-    @Column
+    @Column(name="InvoiceMemo")
     private Integer invoiceMemo;
 
-    @Column
+    @Column(name="InvoiceMemoDays")
     private Integer invoiceMemoDays;
 
-    @Column
+    @Column(name="OverdueInvoice")
     private Integer overdueInvoice;
 
-    @Column
+    @Column(name="OverdueinvoiceDays")
     private Integer overdueinvoiceDays;
 
-    @Column
+    @Column(name="InventoryOrder")
     private Integer inventoryOrder;
 
-    @Column
+    @Column(name="InventoryOrderDays")
     private Integer inventoryOrderDays;
 
-    @Column
+    @Column(name="BillstoPay")
     private Integer billstoPay;
 
-    @Column
+    @Column(name="BillstoPayDays")
     private Integer billstoPayDays;
 
-    @Column
+    @Column(name="EstimationMemo")
     private Integer estimationMemo;
 
-    @Column
+    @Column(name="EstimationMemoDays")
     private Integer estimationMemoDays;
 
-    @Column
+    @Column(name="POMemo")
     private Integer pomemo;
 
-    @Column
+    @Column(name="POMemoDays")
     private Integer pomemoDays;
 
-    @Column
+    @Column(name="ServiceBillsMemo")
     private Integer serviceBillsMemo;
 
-    @Column
+    @Column(name="ServiceBillsMemoDays")
     private Integer serviceBillsMemoDays;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
-    @Column(nullable = false)
+    @Column(name="DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name="CompanyLogoPath")
     private String companyLogoPath;
 
-    @Column
+    @Column(name="Charge_interest")
     private Double chargeInterest;
 
-    @Column
+    @Column(name="Charge_minimum")
     private Double chargeMinimum;
 
-    @Column
+    @Column(name="Charge_grace")
     private Double chargeGrace;
 
-    @Column
+    @Column(name="Charge_reassess")
     private Boolean chargeReassess;
 
-    @Column
+    @Column(name="Charge_name_display")
     private Integer chargeNameDisplay;
 
-    @Column
+    @Column(name="Charge_MarkFinance")
     private Boolean chargeMarkFinance;
 
-    @Column
+    @Column(name="PrintByOrder")
     private Boolean printByOrder;
 
-    @Column
+    @Column(name="PrintInvoiceFrom")
     private Integer printInvoiceFrom;
 
-    @Column
+    @Column(name="PrintInvoiceTo")
     private Integer printInvoiceTo;
 
-    @Column
+    @Column(name="PrintDateFrom")
     private OffsetDateTime printDateFrom;
 
-    @Column
+    @Column(name="PrintDateTo")
     private OffsetDateTime printDateTo;
 
-    @Column
+    @Column(name="PrintTimeFrom")
     private OffsetDateTime printTimeFrom;
 
-    @Column
+    @Column(name="PrintTimeTo")
     private OffsetDateTime printTimeTo;
 
-    @Column
+    @Column(name="PageSort_ShippingMethod")
     private Boolean pageSortShippingMethod;
 
-    @Column
+    @Column(name="PageSort_ItemTitle")
     private Boolean pageSortItemTitle;
 
-    @Column
+    @Column(name="PageSort_Destination")
     private Boolean pageSortDestination;
 
-    @Column
+    @Column(name="PageSort_SpecialHanding")
     private Boolean pageSortSpecialHanding;
 
-    @Column
+    @Column(name="PageSort_Location")
     private Boolean pageSortLocation;
 
-    @Column
+    @Column(name="SkipPrinted")
     private Boolean skipPrinted;
 
-    @Column
+    @Column(name="MarkPrinted")
     private Boolean markPrinted;
 
-    @Column
+    @Column(name="InvoicesToPrint")
     private Integer invoicesToPrint;
 
-    @Column
+    @Column(name="PackingSlipsToPrint")
     private Integer packingSlipsToPrint;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name="PackingReturnPolicy", columnDefinition = "longtext")
     private String packingReturnPolicy;
 
-    @Column
+    @Column(name="PrintPaperType")
     private Integer printPaperType;
 
-    @Column
+    @Column(name="PrintCoupon")
     private Boolean printCoupon;
 
-    @Column
+    @Column(name="PrintGiftMessage")
     private Boolean printGiftMessage;
 
-    @Column
+    @Column(name="CouponLocation")
     private String couponLocation;
 
-    @Column
+    @Column(name="BarcodeID")
     private Integer barcodeId;
 
-    @Column(length = 80)
+    @Column(name="Mailserver", length = 80)
     private String mailserver;
 
-    @Column(length = 50)
+    @Column(name="Mail_username", length = 50)
     private String mailUsername;
 
-    @Column(length = 20)
+    @Column(name="Mail_password", length = 20)
     private String mailPassword;
 
-    @Column
+    @Column(name="Mail_Auth")
     private Boolean mailAuth;
 
-    @Column(length = 50)
+    @Column(name="Mail_senderEmail", length = 50)
     private String mailSenderEmail;
 
-    @Column
+    @Column(name="AR_Term")
     private Integer arTerm;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name="AR_Latefee", precision = 23, scale = 4)
     private BigDecimal arLatefee;
 
-    @Column
+    @Column(name="PrintFormNo_Billing")
     private Integer printFormNoBilling;
 
-    @Column
+    @Column(name="PrintFormNo_Invoice")
     private Integer printFormNoInvoice;
 
-    @Column
+    @Column(name="Performance")
     private String performance;
 
-    @Column
+    @Column(name="TimeSheetSet")
     private Integer timeSheetSet;
 
-    @Column
+    @Column(name="ShippingFeeMethod")
     private Integer shippingFeeMethod;
 
-    @Column
+    @Column(name="SalesViaID")
     private Integer salesViaId;
 
-    @Column
+    @Column(name="SalesTermID")
     private Integer salesTermId;
 
-    @Column
+    @Column(name="SalesRepID")
     private Integer salesRepId;
 
-    @Column
+    @Column(name="SalesPayMethodID")
     private Integer salesPayMethodId;
 
-    @Column(length = 50)
+    @Column(name="SalesPOPrefix", length = 50)
     private String salesPoprefix;
 
-    @Column
+    @Column(name="IsEsalesEnabled")
     private Boolean isEsalesEnabled;
 
-    @Column
+    @Column(name="EsalesAmazonMerchant")
     private Boolean esalesAmazonMerchant;
 
-    @Column
+    @Column(name="EsalesAmazonMerchantOnline")
     private Boolean esalesAmazonMerchantOnline;
 
-    @Column
+    @Column(name="EsalesAmazonMarket")
     private Boolean esalesAmazonMarket;
 
-    @Column
+    @Column(name="EsaleseBay")
     private Boolean esaleseBay;
 
-    @Column
+    @Column(name="EsaleseBayBlackthorne")
     private Boolean esaleseBayBlackthorne;
 
-    @Column
+    @Column(name="EsalesHalfdotcom")
     private Boolean esalesHalfdotcom;
 
-    @Column
+    @Column(name="EsalesMagento")
     private Boolean esalesMagento;
 
-    @Column
+    @Column(name="EsalesSmc")
     private Boolean esalesSmc;
 
-    @Column
+    @Column(name="DefaultAmazonSellerBankID")
     private Integer defaultAmazonSellerBankId;
 
-    @Column
+    @Column(name="DefaultAmazonSellerOnlineBankID")
     private Integer defaultAmazonSellerOnlineBankId;
 
-    @Column
+    @Column(name="DefaultAmazonMarketBankID")
     private Integer defaultAmazonMarketBankId;
 
-    @Column
+    @Column(name="DefaultHalfdotComBankID")
     private Integer defaultHalfdotComBankId;
 
-    @Column
+    @Column(name="DefaultEBayBankID")
     private Integer defaultEbayBankId;
 
-    @Column
+    @Column(name="DefaultEBayOnlineBankID")
     private Integer defaultEbayOnlineBankId;
 
-    @Column
+    @Column(name="DefaultSMCBankID")
     private Integer defaultSmcbankId;
 
-    @Column
+    @Column(name="POViaID")
     private Integer poviaId;
 
-    @Column
+    @Column(name="POTermID")
     private Integer potermId;
 
-    @Column
+    @Column(name="PORepID")
     private Integer porepId;
 
-    @Column
+    @Column(name="POPayMethodID")
     private Integer popayMethodId;
 
-    @Column
+    @Column(name="DefaultPayableAccountID")
     private Integer defaultPayableAccountId;
 
-    @Column
+    @Column(name="AutoPaymentDuration")
     private Integer autoPaymentDuration;
 
-    @Column
+    @Column(name="DefaultCategoryID")
     private Integer defaultCategoryId;
 
-    @Column
+    @Column(name="DefaultVendorCategoryID")
     private Integer defaultVendorCategoryId;
 
-    @Column
+    @Column(name="DefaultRMARepairmentCharge")
     private Double defaultRmarepairmentCharge;
 
-    @Column
+    @Column(name="DefaultRMACheckingBankID")
     private Integer defaultRmacheckingBankId;
 
-    @Column
+    @Column(name="DefaultBankTransferAccID")
     private Integer defaultBankTransferAccId;
 
-    @Column
+    @Column(name="DefaultARCategoryID")
     private Integer defaultArcategoryId;
 
-    @Column
+    @Column(name="DefaultReimbusrementSetting")
     private Integer defaultReimbusrementSetting;
 
-    @Column
+    @Column(name="IsRatePriceChangeble")
     private Boolean isRatePriceChangeble;
 
-    @Column
+    @Column(name="IsSalePrefix")
     private Boolean isSalePrefix;
 
-    @Column
+    @Column(name="IsPurchasePrefix")
     private Boolean isPurchasePrefix;
 
-    @Column(length = 50)
+    @Column(name="shippadjustmentvalue", length = 50)
     private String shippadjustmentvalue;
 
-    @Column(length = 50)
+    @Column(name="shippadjustmentunit", length = 50)
     private String shippadjustmentunit;
 
-    @Column
+    @Column(name="DefaultCustomerSortID")
     private Integer defaultCustomerSortId;
 
-    @Column
+    @Column(name="DefaultVendorrSortID")
     private Integer defaultVendorrSortId;
 
-    @Column
+    @Column(name="ExtraCharge")
     private Boolean extraCharge;
 
-    @Column
+    @Column(name="ChargeAmount")
     private Integer chargeAmount;
 
-    @Column
+    @Column(name="OrderAmount")
     private Integer orderAmount;
 
-    @Column
+    @Column(name="DropShipCharge")
     private Integer dropShipCharge;
 
-    @Column
+    @Column(name="ShowDropShipItems")
     private Boolean showDropShipItems;
 
-    @Column(length = 50)
+    @Column(name="FilterOption", length = 50)
     private String filterOption;
 
-    @Column
+    @Column(name="DefaultCustomerGroupID")
     private Integer defaultCustomerGroupId;
 
-    @Column
+    @Column(name="IsRefundAllowed")
     private Boolean isRefundAllowed;
 
-    @Column
+    @Column(name="CopyAddress")
     private Boolean copyAddress;
 
-    @Column
+    @Column(name="GlobalShipSetup")
     private Boolean globalShipSetup;
 
-    @Column
+    @Column(name="WorldShipSetup")
     private Boolean worldShipSetup;
 
-    @Column
+    @Column(name="FedExSetup")
     private Boolean fedExSetup;
 
-    @Column
+    @Column(name="MISetup")
     private Boolean misetup;
 
-    @Column
+    @Column(name="DefaultMSAccountingBankID")
     private Integer defaultMsaccountingBankId;
 
-    @Column
+    @Column(name="InvoiceSaveLocation")
     private String invoiceSaveLocation;
 
-    @Column
+    @Column(name="PrinteSalesInvoiceFrom")
     private Integer printeSalesInvoiceFrom;
 
-    @Column
+    @Column(name="PrinteSalesInvoiceTo")
     private Integer printeSalesInvoiceTo;
 
-    @Column
+    @Column(name="eSalesPrintDateFrom")
     private OffsetDateTime eSalesPrintDateFrom;
 
-    @Column
+    @Column(name="eSalesPrintDateTo")
     private OffsetDateTime eSalesPrintDateTo;
 
-    @Column
+    @Column(name="eSalesPrintTimeFrom")
     private OffsetDateTime eSalesPrintTimeFrom;
 
-    @Column
+    @Column(name="eSalesPrintTimeTo")
     private OffsetDateTime eSalesPrintTimeTo;
 
-    @Column
+    @Column(name="eSalesInvoicesToPrint")
     private Integer eSalesInvoicesToPrint;
 
-    @Column
+    @Column(name="eSalesPackingSlipsToPrint")
     private Integer eSalesPackingSlipsToPrint;
 
-    @Column
+    @Column(name="eSalesPrintPaperType")
     private Integer eSalesPrintPaperType;
 
-    @Column
+    @Column(name="eSalesPrintByOrder")
     private Integer eSalesPrintByOrder;
 
-    @Column
+    @Column(name="eSalesSkipPrinted")
     private Integer eSalesSkipPrinted;
 
-    @Column
+    @Column(name="eSalesPrintMarketName")
     private Integer eSalesPrintMarketName;
 
-    @Column
+    @Column(name="eSalesPageSort_Store")
     private Integer eSalesPageSortStore;
 
-    @Column
+    @Column(name="eSalesPageSort_ShippingMethod")
     private Integer eSalesPageSortShippingMethod;
 
-    @Column
+    @Column(name="eSalesPageSort_ItemTitle")
     private Integer eSalesPageSortItemTitle;
 
-    @Column
+    @Column(name="eSalesPageSort_Destination")
     private Integer eSalesPageSortDestination;
 
-    @Column
+    @Column(name="eSalesPageSort_SpecialHanding")
     private Integer eSalesPageSortSpecialHanding;
 
-    @Column
+    @Column(name="eSalesPageSort_Location")
     private Integer eSalesPageSortLocation;
 
-    @Column
+    @Column(name="eSalesPrintCoupon")
     private Integer eSalesPrintCoupon;
 
-    @Column
+    @Column(name="eSalesPrintGiftMessage")
     private Integer eSalesPrintGiftMessage;
 
-    @Column
+    @Column(name="eSalesCouponLocation")
     private String eSalesCouponLocation;
 
-    @Column
+    @Column(name="PrintBills")
     private Integer printBills;
 
-    @Column
+    @Column(name="MailToCustomer")
     private Integer mailToCustomer;
 
-    @Column
+    @Column(name="EmployeeInChargeID")
     private Integer employeeInChargeId;
 
-    @Column
+    @Column(name="UseCurrentDate")
     private Integer useCurrentDate;
 
-    @Column
+    @Column(name="ImportDays")
     private Integer importDays;
 
-    @Column
+    @Column(name="AllowMutipleTimeImport")
     private Integer allowMutipleTimeImport;
 
-    @Column
+    @Column(name="PrintTestPage")
     private Integer printTestPage;
 
-    @Column
+    @Column(name="eSalesPrintTestPage")
     private Integer eSalesPrintTestPage;
 
-    @Column
+    @Column(name="StartingBillNumber")
     private Integer startingBillNumber;
 
-    @Column
+    @Column(name="showBillingStatStyle")
     private Integer showBillingStatStyle;
 
-    @Column
+    @Column(name="showReorderPointList")
     private Integer showReorderPointList;
 
-    @Column
+    @Column(name="ShowReorderPointWarring")
     private Integer showReorderPointWarring;
 
-    @Column
+    @Column(name="MailOrderConfirm")
     private Integer mailOrderConfirm;
 
-    @Column
+    @Column(name="BudgetStartMonth")
     private Integer budgetStartMonth;
 
-    @Column
+    @Column(name="BudgetEndMonth")
     private Integer budgetEndMonth;
 
-    @Column
+    @Column(name="RecentActivityCount")
     private Integer recentActivityCount;
 
-    @Column
+    @Column(name="isGalaxyShip")
     private Boolean isGalaxyShip;
 
-    @Column
+    @Column(name="isMailInnovation")
     private Boolean isMailInnovation;
 
-    @Column
+    @Column(name="DefaultPackingSlipStyleID")
     private Integer defaultPackingSlipStyleId;
 
-    @Column
+    @Column(name="isUPSWorldShip")
     private Boolean isUpsworldShip;
 
-    @Column
+    @Column(name="showCombinedBilling")
     private Integer showCombinedBilling;
 
-    @Column
+    @Column(name="showSalesOrder")
     private Integer showSalesOrder;
 
-    @Column
+    @Column(name="PrintSalesFrom")
     private Integer printSalesFrom;
 
-    @Column
+    @Column(name="PrintSalesTo")
     private Integer printSalesTo;
 
-    @Column
+    @Column(name="LineofCreditTermID")
     private Integer lineofCreditTermId;
 
-    @Column
+    @Column(name="Memobill")
     private Integer memobill;
 
-    @Column
+    @Column(name="MemobillDays")
     private Integer memobillDays;
 
-    @Column
+    @Column(name="InvoiceStyleTypeID")
     private Integer invoiceStyleTypeId;
 
-    @Column
+    @Column(name="SalesOrderStyleTypeID")
     private Integer salesOrderStyleTypeId;
 
-    @Column
+    @Column(name="EstimationStyleTypeID")
     private Integer estimationStyleTypeId;
 
-    @Column
+    @Column(name="POStyleTypeID")
     private Integer postyleTypeId;
 
-    @Column
+    @Column(name="BillingStyleTypeID")
     private Integer billingStyleTypeId;
 
-    @Column
+    @Column(name="PackingSlipStyleTypeID")
     private Integer packingSlipStyleTypeId;
 
-    @Column
+    @Column(name="dateFrom")
     private OffsetDateTime dateFrom;
 
-    @Column
+    @Column(name="dateTo")
     private OffsetDateTime dateTo;
 
-    @Column
+    @Column(name="defaultModule")
     private Integer defaultModule;
 
-    @Column
+    @Column(name="eBayListingDays")
     private String eBayListingDays;
 
-    @Column
+    @Column(name="eBayPaymentMethod")
     private String eBayPaymentMethod;
 
-    @Column
+    @Column(name="eBayShippingFees")
     private Double eBayShippingFees;
 
-    @Column
+    @Column(name="isIgnoreQOH")
     private Integer isIgnoreQoh;
 
-    @Column
+    @Column(name="StartingEstimationNumber")
     private Integer startingEstimationNumber;
 
-    @Column
+    @Column(name="EstimationStyleID")
     private Integer estimationStyleId;
 
-    @Column
+    @Column(name="SOStyleID")
     private Integer sostyleId;
 
-    @Column
+    @Column(name="ReservedQuantity")
     private Integer reservedQuantity;
 
-    @Column
+    @Column(name="SalesOrderQty")
     private Integer salesOrderQty;
 
-    @Column
+    @Column(name="BuildRefNo")
     private Integer buildRefNo;
 
-    @Column
+    @Column(name="AmazonSellerTextFilepath")
     private String amazonSellerTextFilepath;
 
-    @Column
+    @Column(name="AmazonMarchantTextFilepath")
     private String amazonMarchantTextFilepath;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name="ShippingDBIPAddress", columnDefinition = "longtext")
     private String shippingDbipaddress;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name="ShippingDBName", columnDefinition = "longtext")
     private String shippingDbname;
 
-    @Column
+    @Column(name="PackingSlipCompanyName")
     private String packingSlipCompanyName;
 
-    @Column
+    @Column(name="IsPackingSlipNameEnable")
     private Integer isPackingSlipNameEnable;
 
-    @Column
+    @Column(name="PackingSlipAddress")
     private String packingSlipAddress;
 
-    @Column
+    @Column(name="PackingSlipCity")
     private String packingSlipCity;
 
-    @Column(length = 50)
+    @Column(name="PackingSlipState", length = 50)
     private String packingSlipState;
 
-    @Column(length = 50)
+    @Column(name="PackingSlipProvince", length = 50)
     private String packingSlipProvince;
 
-    @Column(length = 50)
+    @Column(name="PackingSlipCountry", length = 50)
     private String packingSlipCountry;
 
-    @Column(length = 50)
+    @Column(name="PackingSlipZipcode", length = 50)
     private String packingSlipZipcode;
 
-    @Column
+    @Column(name="iseSalesItemUploadSchedule")
     private Integer iseSalesItemUploadSchedule;
 
-    @Column
+    @Column(name="isAddAsin")
     private Integer isAddAsin;
 
-    @Column
+    @Column(name="poboard")
     private Integer poboard;
 
-    @Column
+    @Column(name="itemsReceivedBoard")
     private Integer itemsReceivedBoard;
 
-    @Column
+    @Column(name="itemsShippedBoard")
     private Integer itemsShippedBoard;
 
-    @Column
+    @Column(name="SalesOrderBoard")
     private Integer salesOrderBoard;
 
-    @Column
+    @Column(name="StartingSalesOrderNumber")
     private Integer startingSalesOrderNumber;
 
-    @Column
+    @Column(name="ProductCategoryID")
     private Integer productCategoryId;
 
-    @Column
+    @Column(name="LocationID")
     private Integer locationId;
 
-    @Column
+    @Column(name="ReOrderPoint")
     private Integer reOrderPoint;
 
-    @Column
+    @Column(name="VendorBusinessTypeID")
     private Integer vendorBusinessTypeId;
 
-    @Column
+    @Column(name="VendorInvoiceStyleId")
     private Integer vendorInvoiceStyleId;
 
-    @Column
+    @Column(name="defaultARCategoryIDforac")
     private Integer defaultArcategoryIdforac;
 
-    @Column
+    @Column(name="defaultARCategoryIDforpo")
     private Integer defaultArcategoryIdforpo;
 
-    @Column
+    @Column(name="defaultARCategoryIDforbp")
     private Integer defaultArcategoryIdforbp;
 
-    @Column
+    @Column(name="defaultdepositoforac")
     private Integer defaultdepositoforac;
 
-    @Column
+    @Column(name="defaultdepositoforpo")
     private Integer defaultdepositoforpo;
 
-    @Column
+    @Column(name="defaultdepositoforbp")
     private Integer defaultdepositoforbp;
 
-    @Column
+    @Column(name="defaultReceivedforac")
     private Integer defaultReceivedforac;
 
-    @Column
+    @Column(name="defaultReceivedforpo")
     private Integer defaultReceivedforpo;
 
-    @Column
+    @Column(name="defaultReceivedforbp")
     private Integer defaultReceivedforbp;
 
-    @Column
+    @Column(name="CVCategoryID")
     private Integer cvcategoryId;
 
-    @Column(length = 3000)
+    @Column(name="Packing_slip_terms", length = 3000)
     private String packingSlipTerms;
 
-    @Column(length = 3000)
+    @Column(name="invoice_terms", length = 3000)
     private String invoiceTerms;
 
-    @Column
+    @Column(name="ShowUSAInBillShipAddress")
     private Boolean showUsainBillShipAddress;
 
-    @Column
+    @Column(name="DisplayPeriod")
     private Integer displayPeriod;
 
-    @Column
+    @Column(name="InventoryDefaultCategory")
     private Integer inventoryDefaultCategory;
 
-    @Column
+    @Column(name="CustomerType")
     private Integer customerType;
 
-    @Column
+    @Column(name="PriceLevelCustomer")
     private Integer priceLevelCustomer;
 
-    @Column
+    @Column(name="PriceLevelDealer")
     private Integer priceLevelDealer;
 
-    @Column
+    @Column(name="PriceLevelGeneral")
     private Integer priceLevelGeneral;
 
-    @Column
+    @Column(name="PriceLevelPriority")
     private Integer priceLevelPriority;
 
-    @Column
+    @Column(name="InvoiceTemplateType")
     private Integer invoiceTemplateType;
 
-    @Column
+    @Column(name="EstimationTemplateType")
     private Integer estimationTemplateType;
 
-    @Column
+    @Column(name="SalesOrderTemplateType")
     private Integer salesOrderTemplateType;
 
-    @Column
+    @Column(name="PurchaseOrderTemplateType")
     private Integer purchaseOrderTemplateType;
 
-    @Column
+    @Column(name="PackingSlipTemplateType")
     private Integer packingSlipTemplateType;
 
-    @Column
+    @Column(name="ChargeSalestax")
     private Integer chargeSalestax;
 
-    @Column
+    @Column(name="SalesTaxRate2")
     private Double salesTaxRate2;
 
-    @Column
+    @Column(name="isBackOrderNeeded")
     private Boolean isBackOrderNeeded;
 
-    @Column
+    @Column(name="isRecurringServiceBill")
     private Boolean isRecurringServiceBill;
 
-    @Column
+    @Column(name="serviceBillName")
     private String serviceBillName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sales_tax_id")
+    @JoinColumn(name = "SalesTaxID")
     private BcaSalestax salesTax;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_country_id")
+    @JoinColumn(name = "CustomerCountryID")
     private BcaCountries customerCountry;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_state_id")
+    @JoinColumn(name = "CustomerStateID")
     private BcaStates customerState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_style_id")
+    @JoinColumn(name = "InvoiceStyleID")
     private BcaInvoicestyle invoiceStyle;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendor_country_id")
+    @JoinColumn(name = "VendorCountryID")
     private BcaCountries vendorCountry;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendor_state_id")
+    @JoinColumn(name = "VendorStateID")
     private BcaStates vendorState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postyle_id")
+    @JoinColumn(name = "POStyleID")
     private BcaPostyle postyle;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_country_id")
+    @JoinColumn(name = "EmployeeCountryID")
     private BcaCountries employeeCountry;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_state_id")
+    @JoinColumn(name = "EmployeeStateID")
     private BcaStates employeeState;
 
     public Integer getPreferenceId() {

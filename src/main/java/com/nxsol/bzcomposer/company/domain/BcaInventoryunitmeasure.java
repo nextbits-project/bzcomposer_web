@@ -8,37 +8,38 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_inventoryunitmeasure")
 public class BcaInventoryunitmeasure {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "UnitCategoryID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer unitCategoryId;
 
-    @Column
+    @Column(name= "WeightID")
     private Integer weightId;
 
-    @Column
+    @Column(name= "subUnitCategoryID")
     private Integer subUnitCategoryId;
 
-    @Column
+    @Column(name= "SizeH")
     private Integer sizeH;
 
-    @Column
+    @Column(name= "SizeW")
     private Integer sizeW;
 
-    @Column
+    @Column(name= "SizeL")
     private Integer sizeL;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     public Integer getUnitCategoryId() {

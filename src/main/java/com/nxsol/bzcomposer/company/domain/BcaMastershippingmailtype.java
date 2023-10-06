@@ -7,20 +7,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_mastershippingmailtype")
 public class BcaMastershippingmailtype {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "MailTypeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer mailTypeId;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     @OneToMany(mappedBy = "mailType")

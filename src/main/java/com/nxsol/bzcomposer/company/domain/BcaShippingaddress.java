@@ -9,78 +9,79 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_shippingaddress")
 public class BcaShippingaddress {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="AddressID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer addressId;
 
-    @Column(nullable = false, length = 50)
+    @Column(name="AddressName", nullable = false, length = 50)
     private String addressName;
 
-    @Column(nullable = false, length = 50)
+    @Column(name="Name", nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = false, length = 50)
+    @Column(name="FirstName", nullable = false, length = 50)
     private String firstName;
 
-    @Column(nullable = false, length = 50)
+    @Column(name="LastName", nullable = false, length = 50)
     private String lastName;
 
-    @Column(nullable = false, length = 75)
+    @Column(name="Address1", nullable = false, length = 75)
     private String address1;
 
-    @Column(nullable = false, length = 75)
+    @Column(name="Address2", nullable = false, length = 75)
     private String address2;
 
-    @Column(nullable = false, length = 50)
+    @Column(name="City", nullable = false, length = 50)
     private String city;
 
-    @Column(nullable = false, length = 50)
+    @Column(name="State", nullable = false, length = 50)
     private String state;
 
-    @Column(length = 50)
+    @Column(name="Province", length = 50)
     private String province;
 
-    @Column(nullable = false, length = 50)
+    @Column(name="Country", nullable = false, length = 50)
     private String country;
 
-    @Column(length = 50)
+    @Column(name="ZipCode", length = 50)
     private String zipCode;
 
-    @Column(length = 10)
+    @Column(name="Status", length = 10)
     private String status;
 
-    @Column(nullable = false)
+    @Column(name="DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
-    @Column(nullable = false, length = 20)
+    @Column(name="Phone", nullable = false, length = 20)
     private String phone;
 
-    @Column(length = 20)
+    @Column(name="CellPhone", length = 20)
     private String cellPhone;
 
-    @Column(length = 20)
+    @Column(name="Fax", length = 20)
     private String fax;
 
-    @Column(nullable = false)
+    @Column(name="isDefault", nullable = false)
     private Integer isDefault;
 
-    @Column(nullable = false)
+    @Column(name="Active", nullable = false)
     private Integer active;
 
-    @Column(length = 45)
+    @Column(name="DBAName", length = 45)
     private String dbaname;
 
-    @Column(nullable = false, length = 25)
+    @Column(name="AddressType", nullable = false, length = 25)
     private String addressType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id", nullable = false)
+    @JoinColumn(name = "ClientVendorID", nullable = false)
     private BcaClientvendor clientVendor;
 
     public Integer getAddressId() {

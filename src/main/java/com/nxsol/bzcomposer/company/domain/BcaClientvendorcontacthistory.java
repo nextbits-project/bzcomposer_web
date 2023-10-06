@@ -9,9 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_clientvendorcontacthistory")
 public class BcaClientvendorcontacthistory {
 
     @Id
@@ -19,27 +20,27 @@ public class BcaClientvendorcontacthistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "CallDate")
     private OffsetDateTime callDate;
 
-    @Column
+    @Column(name = "Comment")
     private String comment;
 
-    @Column
+    @Column(name = "MailDate")
     private OffsetDateTime mailDate;
 
-    @Column(length = 50)
+    @Column(name = "MailContent", length = 50)
     private String mailContent;
 
-    @Column(length = 50)
+    @Column(name = "ContactBy", length = 50)
     private String contactBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Long getId() {

@@ -12,126 +12,127 @@ import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_employee")
 public class BcpEmployee {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "EmployeeIndexID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer employeeIndexId;
 
-    @Column
+    @Column(name= "EmployeeID")
     private Integer employeeId;
 
-    @Column(length = 50)
+    @Column(name= "FirstName", length = 50)
     private String firstName;
 
-    @Column(length = 50)
+    @Column(name= "LastName", length = 50)
     private String lastName;
 
-    @Column(length = 50)
+    @Column(name= "NickName", length = 50)
     private String nickName;
 
-    @Column(length = 50)
+    @Column(name= "SSN", length = 50)
     private String ssn;
 
-    @Column
+    @Column(name= "Address1")
     private String address1;
 
-    @Column
+    @Column(name= "Address2")
     private String address2;
 
-    @Column
+    @Column(name= "City")
     private String city;
 
-    @Column(length = 50)
+    @Column(name= "State", length = 50)
     private String state;
 
-    @Column(length = 50)
+    @Column(name= "Province", length = 50)
     private String province;
 
-    @Column(length = 50)
+    @Column(name= "Country", length = 50)
     private String country;
 
-    @Column(length = 50)
+    @Column(name= "ZipCode", length = 50)
     private String zipCode;
 
-    @Column(length = 50)
+    @Column(name= "Phone", length = 50)
     private String phone;
 
-    @Column(length = 50)
+    @Column(name= "CellPhone", length = 50)
     private String cellPhone;
 
-    @Column(length = 50)
+    @Column(name= "Email", length = 50)
     private String email;
 
-    @Column
+    @Column(name= "EmployeeTitleID")
     private Integer employeeTitleId;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name = "Amount", precision = 23, scale = 4)
     private BigDecimal amount;
 
-    @Column
+    @Column(name= "Allowance")
     private Integer allowance;
 
-    @Column(length = 50)
+    @Column(name= "TaxState", length = 50)
     private String taxState;
 
-    @Column
+    @Column(name= "DateofBirth")
     private OffsetDateTime dateofBirth;
 
-    @Column
+    @Column(name= "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "DateStarted")
     private OffsetDateTime dateStarted;
 
-    @Column
+    @Column(name= "DateTerminated")
     private OffsetDateTime dateTerminated;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "Detail", columnDefinition = "longtext")
     private String detail;
 
-    @Column(length = 5)
+    @Column(name= "Status", length = 5)
     private String status;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column
+    @Column(name= "Hourly")
     private Boolean hourly;
 
-    @Column
+    @Column(name= "Daily")
     private Boolean daily;
 
-    @Column
+    @Column(name= "Salary")
     private Boolean salary;
 
-    @Column
+    @Column(name= "UseJobCode")
     private Boolean useJobCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_type_id")
+    @JoinColumn(name = "EmployeeTypeID")
     private BcpEmployeetype employeeType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "filing_status_id")
+    @JoinColumn(name = "FilingStatusID")
     private BcpFilingstatus filingStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_title_id")
+    @JoinColumn(name = "JobTitleID")
     private BcpJobtitle jobTitle;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payroll_period_id")
+    @JoinColumn(name = "PayrollPeriodID")
     private BcpPayrollperiod payrollPeriod;
 
     @OneToMany(mappedBy = "employee")

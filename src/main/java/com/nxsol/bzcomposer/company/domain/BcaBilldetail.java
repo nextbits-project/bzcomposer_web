@@ -8,59 +8,60 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_billdetail")
 public class BcaBilldetail {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "BillDetailID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer billDetailId;
 
-    @Column
+    @Column(name = "BillNum")
     private Integer billNum;
 
-    @Column
+    @Column(name = "ExpenseAcctID")
     private Integer expenseAcctId;
 
-    @Column
+    @Column(name = "ExpenseAmount")
     private Double expenseAmount;
 
-    @Column(length = 50)
+    @Column(name = "ExpenseMemo", length = 50)
     private String expenseMemo;
 
-    @Column
+    @Column(name = "ExpenseClientVendorID")
     private Integer expenseClientVendorId;
 
-    @Column
+    @Column(name = "Billable")
     private Boolean billable;
 
-    @Column
+    @Column(name = "InventoryCustID")
     private Integer inventoryCustId;
 
-    @Column
+    @Column(name = "InventoryCost")
     private Double inventoryCost;
 
-    @Column
+    @Column(name = "InventoryQty")
     private Integer inventoryQty;
 
-    @Column
+    @Column(name = "DetailType")
     private Integer detailType;
 
-    @Column
+    @Column(name = "Status")
     private Boolean status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     public Integer getBillDetailId() {

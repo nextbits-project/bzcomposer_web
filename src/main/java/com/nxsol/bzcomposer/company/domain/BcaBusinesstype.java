@@ -7,29 +7,30 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_businesstype")
 public class BcaBusinesstype {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "BusinessTypeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer businessTypeId;
 
-    @Column(length = 50)
+    @Column(name= "BusinessName", length = 50)
     private String businessName;
 
-    @Column
+    @Column(name= "DefaultInvoiceStyleID")
     private Integer defaultInvoiceStyleId;
 
-    @Column
+    @Column(name= "DefaultEstimationStyleID")
     private Integer defaultEstimationStyleId;
 
-    @Column
+    @Column(name= "DefaultPOStyleID")
     private Integer defaultPostyleId;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     @OneToMany(mappedBy = "businessType")

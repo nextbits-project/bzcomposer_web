@@ -7,68 +7,69 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_tax_fica_sdi")
 public class BcpTaxFicaSdi {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "CompanyID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer companyId;
 
-    @Column(length = 50)
+    @Column(name= "FID", length = 50)
     private String fid;
 
-    @Column(length = 50)
+    @Column(name= "FiscalMonth", length = 50)
     private String fiscalMonth;
 
-    @Column
+    @Column(name= "UseFICA")
     private Boolean useFica;
 
-    @Column
+    @Column(name= "FICARate")
     private Double ficarate;
 
-    @Column
+    @Column(name= "UseSocialTax")
     private Boolean useSocialTax;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "SocialTaxRate", precision = 23, scale = 4)
     private BigDecimal socialTaxRate;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "SocialTaxLimit", precision = 23, scale = 4)
     private BigDecimal socialTaxLimit;
 
-    @Column
+    @Column(name= "UseMedicareTax")
     private Boolean useMedicareTax;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "MedicareTaxRate", precision = 23, scale = 4)
     private BigDecimal medicareTaxRate;
 
-    @Column
+    @Column(name= "UseFIT")
     private Boolean useFit;
 
-    @Column
+    @Column(name= "FITYear")
     private Integer fityear;
 
-    @Column
+    @Column(name= "FITRate")
     private Double fitrate;
 
-    @Column
+    @Column(name= "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column
+    @Column(name= "FUTARate")
     private Double futarate;
 
-    @Column
+    @Column(name= "selectedFIT")
     private Boolean selectedFit;
 
-    @Column
+    @Column(name= "auto")
     private Boolean auto;
 
-    @Column
+    @Column(name= "autoFIT")
     private Boolean autoFit;
 
     public Integer getCompanyId() {

@@ -5,23 +5,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_masteritemcategory")
 public class BcaMasteritemcategory {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ItemCategoryID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer itemCategoryId;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column(length = 50)
+    @Column(name= "Detail", length = 50)
     private String detail;
 
-    @Column
+    @Column(name= "ParentItemCategoryID")
     private Integer parentItemCategoryId;
 
     public Integer getItemCategoryId() {

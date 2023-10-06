@@ -11,236 +11,237 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_company")
 public class BcaCompany {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "CompanyID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyId; // JPA Check type changed from integer to long because of java type long used in the Configurationinfo.java
 
-    @Column
+    @Column(name= "Name")
     private String name;
 
-    @Column
+    @Column(name= "NickName")
     private String nickName;
 
-    @Column(length = 50)
+    @Column(name= "FirstName", length = 50)
     private String firstName;
 
-    @Column(length = 50)
+    @Column(name= "LastName", length = 50)
     private String lastName;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "Detail", columnDefinition = "longtext")
     private String detail;
 
-    @Column
+    @Column(name= "Address1")
     private String address1;
 
-    @Column
+    @Column(name= "Address2")
     private String address2;
 
-    @Column
+    @Column(name= "City")
     private String city;
 
-    @Column(length = 50)
+    @Column(name= "State", length = 50)
     private String state;
 
-    @Column(length = 50)
+    @Column(name= "Province", length = 50)
     private String province;
 
-    @Column(length = 50)
+    @Column(name= "Country", length = 50)
     private String country;
 
-    @Column(length = 50)
+    @Column(name= "Zipcode", length = 50)
     private String zipcode;
 
-    @Column(length = 20)
+    @Column(name= "Phone1", length = 20)
     private String phone1;
 
-    @Column(length = 20)
+    @Column(name= "Phone2", length = 20)
     private String phone2;
 
-    @Column(length = 20)
+    @Column(name= "Fax1", length = 20)
     private String fax1;
 
-    @Column(length = 20)
+    @Column(name= "Fax2", length = 20)
     private String fax2;
 
-    @Column(length = 50)
+    @Column(name= "Email", length = 50)
     private String email;
 
-    @Column(length = 100)
+    @Column(name= "HomePage", length = 100)
     private String homePage;
 
-    @Column(length = 50)
+    @Column(name= "FID", length = 50)
     private String fid;
 
-    @Column(length = 50)
+    @Column(name= "SID", length = 50)
     private String sid;
 
-    @Column(length = 50)
+    @Column(name= "Currency", length = 50)
     private String currency;
 
-    @Column(length = 50)
+    @Column(name= "Weight", length = 50)
     private String weight;
 
-    @Column(length = 50)
+    @Column(name= "LabelSize", length = 50)
     private String labelSize;
 
-    @Column(length = 50)
+    @Column(name= "BackupPeriod", length = 50)
     private String backupPeriod;
 
-    @Column(length = 50)
+    @Column(name= "BackupPlace", length = 50)
     private String backupPlace;
 
-    @Column(length = 50)
+    @Column(name= "AdminUsername", length = 50)
     private String adminUsername;
 
-    @Column(length = 50)
+    @Column(name= "AdminPassword", length = 50)
     private String adminPassword;
 
-    @Column
+    @Column(name= "Multimode")
     private Integer multimode;
 
-    @Column(length = 50)
+    @Column(name= "CustomerCountry", length = 50)
     private String customerCountry;
 
-    @Column
+    @Column(name= "CustomerTaxable")
     private Integer customerTaxable;
 
-    @Column
+    @Column(name= "CustomerUsecompanyname")
     private Integer customerUsecompanyname;
 
-    @Column
+    @Column(name= "StartingInvoiceNumber")
     private Integer startingInvoiceNumber;
 
-    @Column
+    @Column(name= "InvoiceStyleID")
     private Integer invoiceStyleId;
 
-    @Column
+    @Column(name= "InvoiceFootnoteID")
     private Integer invoiceFootnoteId;
 
-    @Column
+    @Column(name= "UseProductWeight")
     private Integer useProductWeight;
 
-    @Column
+    @Column(name= "UseShippingTable")
     private Integer useShippingTable;
 
-    @Column
+    @Column(name= "InvoiceUseCountry")
     private Integer invoiceUseCountry;
 
-    @Column
+    @Column(name= "VendorCountry")
     private Integer vendorCountry;
 
-    @Column
+    @Column(name= "VendorUseCompanyname")
     private Integer vendorUseCompanyname;
 
-    @Column
+    @Column(name= "StartingPONumber")
     private Integer startingPonumber;
 
-    @Column
+    @Column(name= "POFootnoteID")
     private Integer pofootnoteId;
 
-    @Column
+    @Column(name= "POUsecountry")
     private Integer pousecountry;
 
-    @Column
+    @Column(name= "StartingRINumber")
     private Integer startingRinumber;
 
-    @Column
+    @Column(name= "ProductTaxable")
     private Integer productTaxable;
 
-    @Column(length = 50)
+    @Column(name= "EmployeeState", length = 50)
     private String employeeState;
 
-    @Column(length = 50)
+    @Column(name= "EmployeeCountry", length = 50)
     private String employeeCountry;
 
-    @Column
+    @Column(name= "ChargeSalestax")
     private Integer chargeSalestax;
 
-    @Column
+    @Column(name= "HowOftenSalestax")
     private Integer howOftenSalestax;
 
-    @Column
+    @Column(name= "ShowReminder")
     private Integer showReminder;
 
-    @Column
+    @Column(name= "InvoiceMemo")
     private Integer invoiceMemo;
 
-    @Column
+    @Column(name= "InvoiceMemoDays")
     private Integer invoiceMemoDays;
 
-    @Column
+    @Column(name= "OverdueInvoice")
     private Integer overdueInvoice;
 
-    @Column
+    @Column(name= "OverdueinvoiceDays")
     private Integer overdueinvoiceDays;
 
-    @Column
+    @Column(name= "InventoryOrder")
     private Integer inventoryOrder;
 
-    @Column
+    @Column(name= "InventoryOrderDays")
     private Integer inventoryOrderDays;
 
-    @Column
+    @Column(name= "BillstoPay")
     private Integer billstoPay;
 
-    @Column
+    @Column(name= "BillstoPayDays")
     private Integer billstoPayDays;
 
-    @Column(nullable = false)
+    @Column(name= "Active", nullable = false)
     private Integer active;
 
-    @Column
+    @Column(name= "StartDate")
     private OffsetDateTime startDate;
 
-    @Column
+    @Column(name= "EndDate")
     private OffsetDateTime endDate;
 
-    @Column
+    @Column(name= "isNodata")
     private Boolean isNodata;
 
-    @Column
+    @Column(name= "isCreated")
     private Integer isCreated;
 
-    @Column
+    @Column(name= "Paypal_Username")
     private String paypalUsername;
 
-    @Column
+    @Column(name= "Paypal_Password")
     private String paypalPassword;
 
-    @Column
+    @Column(name= "Paypal_Signature")
     private String paypalSignature;
 
-    @Column
+    @Column(name= "Paypal_Environment")
     private String paypalEnvironment;
 
-    @Column
+    @Column(name= "IsUse_Paypal_For_eBay_Import")
     private Integer isUsePaypalForEBayImport;
 
-    @Column
+    @Column(name= "FederalTaxID")
     private Integer federalTaxId;
 
-    @Column(length = 45)
+    @Column(name= "FiscalMonth", length = 45)
     private String fiscalMonth;
 
-    @Column(length = 100)
+    @Column(name= "MembershipLevel", length = 100)
     private String membershipLevel;
 
-    @Column(length = 100)
+    @Column(name= "Password", length = 100)
     private String password;
 
-    @Column(length = 45)
+    @Column(name= "TaxID", length = 45)
     private String taxId;
 
-    @Column
+    @Column(name= "SameAsPhoneNumber")
     private Boolean sameAsPhoneNumber;
 
-    @Column(length = 45)
+    @Column(name= "JobPosition", length = 45)
     private String jobPosition;
 
     @OneToMany(mappedBy = "company")
@@ -310,15 +311,15 @@ public class BcaCompany {
     private Set<BcaClientvendorservice> companyBcaClientvendorservices;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "business_type_id")
+    @JoinColumn(name = "BusinessTypeID")
     private BcaBusinesstype businessType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postyle_id")
+    @JoinColumn(name = "POStyleID")
     private BcaPostyle postyle;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sales_tax_id")
+    @JoinColumn(name = "SalesTaxID")
     private BcaSalestax salesTax;
 
     @OneToMany(mappedBy = "company")

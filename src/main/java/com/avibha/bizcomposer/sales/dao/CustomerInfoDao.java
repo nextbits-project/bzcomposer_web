@@ -1287,7 +1287,7 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 //			String sqlString = "select * from bca_cvcreditcard where DEFAULTCard=1 AND ClientVendorID=" + cvID;
 //			stmt = con.createStatement();
 //			rs = stmt.executeQuery(sqlString);
-			List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByDefaultCardAndClientVendorId(1,cvID); 
+			List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByDefaultCardAndClientVendorId(1,Integer.parseInt(cvID)); 
 //			if (rs.next()) {
 //				long ccID = rs.getInt("CreditCardID");
 //				sqlString = "update bca_cvcreditcard set DEFAULTCard=0 where CreditCardID = " + ccID;

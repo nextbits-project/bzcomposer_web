@@ -3,250 +3,251 @@ package com.nxsol.bzcomposer.company.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "worldshippostdata")
 public class Worldshippostdata {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 10)
+    @Column(name= "siIsVOID", nullable = false, updatable = false, length = 10)
     private String siIsVoid;
 
-    @Column(length = 50)
+    @Column(name= "siServiceType", length = 50)
     private String siServiceType;
 
-    @Column(length = 50)
+    @Column(name= "siShipmentID", length = 50)
     private String siShipmentId;
 
-    @Column
+    @Column(name= "siIsHundredWeight")
     private Boolean siIsHundredWeight;
 
-    @Column
+    @Column(name= "siIsExtendedArea")
     private Boolean siIsExtendedArea;
 
-    @Column(length = 50)
+    @Column(name= "siBillableWeight", length = 50)
     private String siBillableWeight;
 
-    @Column(length = 50)
+    @Column(name= "siBillingOption", length = 50)
     private String siBillingOption;
 
-    @Column(length = 35)
+    @Column(name= "siShipmentReference1", length = 35)
     private String siShipmentReference1;
 
-    @Column(length = 35)
+    @Column(name= "siShipmentReference2", length = 35)
     private String siShipmentReference2;
 
-    @Column
+    @Column(name= "siInsuredValueOption")
     private Boolean siInsuredValueOption;
 
-    @Column(length = 50)
+    @Column(name= "siInsuredValueCharge", length = 50)
     private String siInsuredValueCharge;
 
-    @Column(length = 50)
+    @Column(name= "siInsuredValueAmount", length = 50)
     private String siInsuredValueAmount;
 
-    @Column
+    @Column(name = "siCallTagOption")
     private Boolean siCallTagOption;
 
-    @Column(length = 12)
+    @Column(name= "siCallTagReferenceNumber", length = 12)
     private String siCallTagReferenceNumber;
 
-    @Column(length = 50)
+    @Column(name= "siCallTagCharge", length = 50)
     private String siCallTagCharge;
 
-    @Column
+    @Column(name= "siSaturdayDeliveryOption")
     private Boolean siSaturdayDeliveryOption;
 
-    @Column(length = 50)
+    @Column(name= "siSaturdayDeliveryCharge", length = 50)
     private String siSaturdayDeliveryCharge;
 
-    @Column
+    @Column(name= "siSaturdayPickupOption")
     private Boolean siSaturdayPickupOption;
 
-    @Column(length = 50)
+    @Column(name= "siSaturdayPickupCharge", length = 50)
     private String siSaturdayPickupCharge;
 
-    @Column
+    @Column(name= "siShipmentNotification1Option")
     private Boolean siShipmentNotification1Option;
 
-    @Column(length = 50)
+    @Column(name= "siShipmentNotification1Charge", length = 50)
     private String siShipmentNotification1Charge;
 
-    @Column
+    @Column(name= "siShipmentNotification2Option")
     private Boolean siShipmentNotification2Option;
 
-    @Column(length = 50)
+    @Column(name= "siShipmentNotification2Charge", length = 50)
     private String siShipmentNotification2Charge;
 
-    @Column(length = 50)
+    @Column(name= "siDescriptionOfGoods", length = 50)
     private String siDescriptionOfGoods;
 
-    @Column(length = 50)
+    @Column(name= "siTotalShipmentCharge", length = 50)
     private String siTotalShipmentCharge;
 
-    @Column(length = 50)
+    @Column(name= "siTotalShipperCharge", length = 50)
     private String siTotalShipperCharge;
 
-    @Column(length = 50)
+    @Column(name= "siTotalReceiverCharge", length = 50)
     private String siTotalReceiverCharge;
 
-    @Column(length = 50)
+    @Column(name= "siNumberOfPackages", length = 50)
     private String siNumberOfPackages;
 
-    @Column(length = 35)
+    @Column(name= "stAttention", length = 35)
     private String stAttention;
 
-    @Column(length = 35)
+    @Column(name= "stCompanyName", length = 35)
     private String stCompanyName;
 
-    @Column(length = 35)
+    @Column(name= "stDepartment", length = 35)
     private String stDepartment;
 
-    @Column(length = 35)
+    @Column(name= "stRoomFloor", length = 35)
     private String stRoomFloor;
 
-    @Column(length = 35)
+    @Column(name= "stStreetAddress", length = 35)
     private String stStreetAddress;
 
-    @Column(length = 30)
+    @Column(name= "stCity", length = 30)
     private String stCity;
 
-    @Column(length = 5)
+    @Column(name= "stState", length = 5)
     private String stState;
 
-    @Column(length = 9)
+    @Column(name= "stZipCode", length = 9)
     private String stZipCode;
 
-    @Column(length = 10)
+    @Column(name= "stReceiverAccountNumber", length = 10)
     private String stReceiverAccountNumber;
 
-    @Column(length = 15)
+    @Column(name= "stTelephone", length = 15)
     private String stTelephone;
 
-    @Column(length = 15)
+    @Column(name= "stFAX", length = 15)
     private String stFax;
 
-    @Column(length = 50)
+    @Column(name= "stCountry", length = 50)
     private String stCountry;
 
-    @Column
+    @Column(name= "stResidential")
     private Boolean stResidential;
 
-    @Column(length = 35)
+    @Column(name= "sfAttention", length = 35)
     private String sfAttention;
 
-    @Column(length = 35)
+    @Column(name= "sfCompanyName", length = 35)
     private String sfCompanyName;
 
-    @Column(length = 35)
+    @Column(name= "sfDepartment", length = 35)
     private String sfDepartment;
 
-    @Column(length = 35)
+    @Column(name= "sfRoomFloor", length = 35)
     private String sfRoomFloor;
 
-    @Column(length = 35)
+    @Column(name= "sfStreetAddress", length = 35)
     private String sfStreetAddress;
 
-    @Column(length = 30)
+    @Column(name= "sfCity", length = 30)
     private String sfCity;
 
-    @Column(length = 5)
+    @Column(name= "sfState", length = 5)
     private String sfState;
 
-    @Column(length = 9)
+    @Column(name= "sfZipCode", length = 9)
     private String sfZipCode;
 
-    @Column(length = 15)
+    @Column(name= "sfTelephone", length = 15)
     private String sfTelephone;
 
-    @Column(length = 15)
+    @Column(name= "sfFAX", length = 15)
     private String sfFax;
 
-    @Column(length = 50)
+    @Column(name= "sfCountry", length = 50)
     private String sfCountry;
 
-    @Column(length = 30)
+    @Column(name= "pkgTrackingNumber", length = 30)
     private String pkgTrackingNumber;
 
-    @Column
+    @Column(name= "pkgIsOversize")
     private Boolean pkgIsOversize;
 
-    @Column(length = 35)
+    @Column(name= "pkgPackageReference1", length = 35)
     private String pkgPackageReference1;
 
-    @Column(length = 35)
+    @Column(name= "pkgPackageReference2", length = 35)
     private String pkgPackageReference2;
 
-    @Column(length = 35)
+    @Column(name= "pkgPackageReference3", length = 35)
     private String pkgPackageReference3;
 
-    @Column(length = 35)
+    @Column(name= "pkgPackageReference4", length = 35)
     private String pkgPackageReference4;
 
-    @Column(length = 35)
+    @Column(name= "pkgPackageReference5", length = 35)
     private String pkgPackageReference5;
 
-    @Column
+    @Column(name= "pkgAdditionalHandlingOption")
     private Boolean pkgAdditionalHandlingOption;
 
-    @Column(length = 50)
+    @Column(name= "pkgAdditionalHandlingCharge", length = 50)
     private String pkgAdditionalHandlingCharge;
 
-    @Column
+    @Column(name= "pkgShipmentNotification1Option")
     private Boolean pkgShipmentNotification1Option;
 
-    @Column(length = 50)
+    @Column(name= "pkgShipmentNotification1Charge", length = 50)
     private String pkgShipmentNotification1Charge;
 
-    @Column
+    @Column(name= "pkgShipmentNotification2Option")
     private Boolean pkgShipmentNotification2Option;
 
-    @Column(length = 50)
+    @Column(name= "pkgShipmentNotification2Charge", length = 50)
     private String pkgShipmentNotification2Charge;
 
-    @Column
+    @Column(name= "pkgHazardousMaterialsOption")
     private Boolean pkgHazardousMaterialsOption;
 
-    @Column(length = 50)
+    @Column(name= "pkgHazardousMaterialsCharge", length = 50)
     private String pkgHazardousMaterialsCharge;
 
-    @Column
+    @Column(name= "pkgCODOption")
     private Boolean pkgCodoption;
 
-    @Column(length = 11)
+    @Column(name= "pkgCODControlNumber", length = 11)
     private String pkgCodcontrolNumber;
 
-    @Column(length = 50)
+    @Column(name= "pkgCODCharge", length = 50)
     private String pkgCodcharge;
 
-    @Column(length = 50)
+    @Column(name= "pkgCODAmount", length = 50)
     private String pkgCodamount;
 
-    @Column
+    @Column(name= "pkgDeliveryConfirmationOption")
     private Boolean pkgDeliveryConfirmationOption;
 
-    @Column(length = 50)
+    @Column(name= "pkgDeliveryConfirmationCharge", length = 50)
     private String pkgDeliveryConfirmationCharge;
 
-    @Column
+    @Column(name= "pkgVerbalConfirmationOption")
     private Boolean pkgVerbalConfirmationOption;
 
-    @Column(length = 50)
+    @Column(name= "pkgVerbalConfirmationCharge", length = 50)
     private String pkgVerbalConfirmationCharge;
 
-    @Column
+    @Column(name= "pkgInsuredValueOption")
     private Boolean pkgInsuredValueOption;
 
-    @Column(length = 50)
+    @Column(name= "pkgInsuredValueCharge", length = 50)
     private String pkgInsuredValueCharge;
 
-    @Column(length = 50)
+    @Column(name= "pkgInsuredValueAmount", length = 50)
     private String pkgInsuredValueAmount;
 
-    @Column(length = 50)
+    @Column(name= "pkgPackageType", length = 50)
     private String pkgPackageType;
 
-    @Column(length = 50)
+    @Column(name= "pkgWeight", length = 50)
     private String pkgWeight;
 
     public String getSiIsVoid() {

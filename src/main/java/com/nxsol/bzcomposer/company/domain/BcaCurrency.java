@@ -8,24 +8,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_currency")
 public class BcaCurrency {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "CurrencyID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer currencyId;
 
-    @Column(length = 50)
+    @Column(name = "Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getCurrencyId() {

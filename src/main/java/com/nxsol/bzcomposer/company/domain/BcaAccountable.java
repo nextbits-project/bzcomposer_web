@@ -17,51 +17,51 @@ import java.util.Set;
 
 
 @Entity
-@Table(name="bca_accountable")
+@Table(name = "bca_accountable")
 public class BcaAccountable {
 
     @Id
-    @Column(name ="PayableID",nullable = false, updatable = false)
+    @Column(name = "PayableID",nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer payableId;
 
-    @Column(name="PayeeCvID")
+    @Column(name = "PayeeCvID")
     private Integer payeeCvId;
 
-    @Column(name="PayeeCvServiceID")
+    @Column(name = "PayeeCvServiceID")
     private Integer payeeCvServiceId;
 
-    @Column(name="PayerCvID")
+    @Column(name = "PayerCvID")
     private Integer payerCvId;
 
-    @Column(name="PayerCvServiceID")
+    @Column(name = "PayerCvServiceID")
     private Integer payerCvServiceId;
 
-    @Column(name="DateAdded")
+    @Column(name = "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column(name="Amount", precision = 23, scale = 4)
+    @Column(name = "Amount", precision = 23, scale = 4)
     private BigDecimal amount;
 
-    @Column(name="Memo", length = 50)
+    @Column(name = "Memo", length = 50)
     private String memo;
 
-    @Column(name="Ref", length = 100)
+    @Column(name = "Ref", length = 100)
     private String ref;
 
-    @Column(name="PayFromID")
+    @Column(name = "PayFromID")
     private Integer payFromId;
 
-    @Column(name="PaymentCompleted")
+    @Column(name = "PaymentCompleted")
     private Boolean paymentCompleted;
 
-    @Column(name="Deleted")
+    @Column(name = "Deleted")
     private Boolean deleted;
 
-    @Column(name="IsPayable")
+    @Column(name = "IsPayable")
     private Boolean isPayable;
 
-    @Column(name="CheckNumber", length = 50)
+    @Column(name = "CheckNumber", length = 50)
     private String checkNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)

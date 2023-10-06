@@ -11,54 +11,55 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_useractivity")
 public class BcaUseractivity {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="UserActivityID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userActivityId;
 
-    @Column
+    @Column(name="dateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column(length = 50)
+    @Column(name="InTime", length = 50)
     private String inTime;
 
-    @Column(length = 50)
+    @Column(name="OutTime", length = 50)
     private String outTime;
 
-    @Column(length = 100)
+    @Column(name="Module", length = 100)
     private String modulee;
 
-    @Column
+    @Column(name="Activity")
     private String activity;
 
-    @Column
+    @Column(name="DataID")
     private Integer dataId;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name = "DataDescription", columnDefinition = "longtext")
     private String dataDescription;
 
-    @Column
+    @Column(name="DataAmount")
     private Double dataAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "StoreID")
     private BcaStore store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "UserID")
     private BcaUser user;
 
-    @OneToMany(mappedBy = "userActivity")
-    private Set<StorageUseractivity> userActivityStorageUseractivitys;
+//    @OneToMany(mappedBy = "userActivity")
+//    private Set<StorageUseractivity> userActivityStorageUseractivitys;
 
     public Integer getUserActivityId() {
         return userActivityId;
@@ -156,13 +157,13 @@ public class BcaUseractivity {
         this.user = user;
     }
 
-    public Set<StorageUseractivity> getUserActivityStorageUseractivitys() {
-        return userActivityStorageUseractivitys;
-    }
-
-    public void setUserActivityStorageUseractivitys(
-            final Set<StorageUseractivity> userActivityStorageUseractivitys) {
-        this.userActivityStorageUseractivitys = userActivityStorageUseractivitys;
-    }
+//    public Set<StorageUseractivity> getUserActivityStorageUseractivitys() {
+//        return userActivityStorageUseractivitys;
+//    }
+//
+//    public void setUserActivityStorageUseractivitys(
+//            final Set<StorageUseractivity> userActivityStorageUseractivitys) {
+//        this.userActivityStorageUseractivitys = userActivityStorageUseractivitys;
+//    }
 
 }

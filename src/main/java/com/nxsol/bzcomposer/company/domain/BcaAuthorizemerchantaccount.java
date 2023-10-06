@@ -5,23 +5,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_authorizemerchantaccount")
 public class BcaAuthorizemerchantaccount {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "CompanyID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer companyId;
 
-    @Column(length = 20)
+    @Column(name = "x_login", length = 20)
     private String xLogin;
 
-    @Column(length = 16)
+    @Column(name = "x_tran_key", length = 16)
     private String xTranKey;
 
-    @Column
+    @Column(name = "x_test_request")
     private Boolean xTestRequest;
 
     public Integer getCompanyId() {

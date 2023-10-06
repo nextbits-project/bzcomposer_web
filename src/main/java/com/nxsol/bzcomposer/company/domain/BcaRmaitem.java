@@ -8,71 +8,72 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_rmaitem")
 public class BcaRmaitem {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="RmaUniqueID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rmaUniqueId;
 
-    @Column
+    @Column(name="RmaNo")
     private Integer rmaNo;
 
-    @Column(length = 50)
+    @Column(name="InvName", length = 50)
     private String invName;
 
-    @Column
+    @Column(name="UnitPrice")
     private Double unitPrice;
 
-    @Column
+    @Column(name="RmaItemQty")
     private Integer rmaItemQty;
 
-    @Column
+    @Column(name="Total")
     private Double total;
 
-    @Column(length = 50)
+    @Column(name="Reason", length = 50)
     private String reason;
 
-    @Column(length = 50)
+    @Column(name="Action", length = 50)
     private String action;
 
-    @Column
+    @Column(name="SubstituteInvoiceOrderNumber")
     private Integer substituteInvoiceOrderNumber;
 
-    @Column
+    @Column(name="IsPaymentCompleted")
     private Boolean isPaymentCompleted;
 
-    @Column
+    @Column(name="PaidAmount")
     private Double paidAmount;
 
-    @Column
+    @Column(name="Balance")
     private Double balance;
 
-    @Column
+    @Column(name="RmaItemID")
     private Integer rmaItemId;
 
-    @Column
+    @Column(name="isAdjusted")
     private Boolean isAdjusted;
 
-    @Column
+    @Column(name="TotalAdjustedQty")
     private Integer totalAdjustedQty;
 
-    @Column
+    @Column(name="isDeleted")
     private Integer isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
+    @JoinColumn(name = "CartID")
     private BcaCart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_reason_id")
+    @JoinColumn(name = "parentReasonID")
     private BcaMasterrmareason parentReason;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id", nullable = false)
+    @JoinColumn(name = "InventoryID", nullable = false)
     private BcaIteminventory inventory;
 
     public Integer getRmaUniqueId() {

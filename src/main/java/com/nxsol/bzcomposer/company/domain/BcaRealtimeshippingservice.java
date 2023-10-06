@@ -5,26 +5,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_realtimeshippingservice")
 public class BcaRealtimeshippingservice {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ShippingServiceID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer shippingServiceId;
 
-    @Column
+    @Column(name="ShippingType")
     private Integer shippingType;
 
-    @Column(length = 50)
+    @Column(name="ShippingService", length = 50)
     private String shippingService;
 
-    @Column
+    @Column(name="Price")
     private Double price;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
     public Integer getShippingServiceId() {

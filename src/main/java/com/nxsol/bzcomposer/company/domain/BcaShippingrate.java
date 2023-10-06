@@ -9,24 +9,25 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_shippingrate")
 public class BcaShippingrate {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ShippingRateID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer shippingRateId;
 
-    @Column(nullable = false)
+    @Column(name="Weight", nullable = false)
     private Double weight;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name="Price", precision = 23, scale = 4)
     private BigDecimal price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ship_carrier_id", nullable = false)
+    @JoinColumn(name = "ShipCarrierID", nullable = false)
     private BcaShipcarrier shipCarrier;
 
     public Integer getShippingRateId() {

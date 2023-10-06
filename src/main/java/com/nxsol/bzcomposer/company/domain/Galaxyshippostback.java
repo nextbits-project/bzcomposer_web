@@ -6,80 +6,81 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "galaxyshippostback")
 public class Galaxyshippostback {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "OrderNumber")
     private Integer orderNumber;
 
-    @Column(length = 50)
+    @Column(name= "MailClass", length = 50)
     private String mailClass;
 
-    @Column
+    @Column(name= "PostageAmount")
     private Integer postageAmount;
 
-    @Column
+    @Column(name= "TrackingNumber")
     private Integer trackingNumber;
 
-    @Column(length = 50)
+    @Column(name= "PostMarkDate", length = 50)
     private String postMarkDate;
 
-    @Column
+    @Column(name= "TransactionDate")
     private OffsetDateTime transactionDate;
 
-    @Column(length = 50)
+    @Column(name= "TransactionID", length = 50)
     private String transactionId;
 
-    @Column(length = 50)
+    @Column(name= "GroupCode", length = 50)
     private String groupCode;
 
-    @Column(length = 50)
+    @Column(name= "InsuredValue", length = 50)
     private String insuredValue;
 
-    @Column(length = 50)
+    @Column(name= "InsuranceFee", length = 50)
     private String insuranceFee;
 
-    @Column(length = 50)
+    @Column(name= "Status", length = 50)
     private String status;
 
-    @Column(length = 50)
+    @Column(name= "FillXMLSource", length = 50)
     private String fillXmlsource;
 
-    @Column(length = 50)
+    @Column(name= "Lenght", length = 50)
     private String lenght;
 
-    @Column(length = 50)
+    @Column(name= "Width", length = 50)
     private String width;
 
-    @Column(length = 50)
+    @Column(name= "Height", length = 50)
     private String height;
 
-    @Column(length = 50)
+    @Column(name= "Weight", length = 50)
     private String weight;
 
-    @Column(length = 50)
+    @Column(name= "Address1", length = 50)
     private String address1;
 
-    @Column(length = 50)
+    @Column(name= "Address2", length = 50)
     private String address2;
 
-    @Column(length = 50)
+    @Column(name= "City", length = 50)
     private String city;
 
-    @Column(length = 50)
+    @Column(name= "State", length = 50)
     private String state;
 
-    @Column(length = 50)
+    @Column(name= "ZipCode", length = 50)
     private String zipCode;
 
-    @Column(length = 50)
+    @Column(name= "Country", length = 50)
     private String country;
 
     public Integer getId() {

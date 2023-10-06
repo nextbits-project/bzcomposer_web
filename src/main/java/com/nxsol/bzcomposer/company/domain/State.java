@@ -5,20 +5,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "state")
 public class State {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "StateID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer stateId;
 
-    @Column(nullable = false, length = 50)
+    @Column(name= "StateName", nullable = false, length = 50)
     private String stateName;
 
-    @Column(nullable = false)
+    @Column(name= "CountryID", nullable = false)
     private Integer countryId;
 
     public Integer getStateId() {

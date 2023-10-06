@@ -5,32 +5,33 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_customselect")
 public class BcaCustomselect {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "SUBTITLE")
     private String subtitle;
 
-    @Column
+    @Column(name= "SKU")
     private String sku;
 
-    @Column
+    @Column(name= "PRICETYPE")
     private String pricetype;
 
-    @Column
+    @Column(name= "SORTORDER")
     private Integer sortorder;
 
-    @Column
+    @Column(name= "QTY")
     private Integer qty;
 
-    @Column
+    @Column(name= "PRICE")
     private Integer price;
 
     public Integer getId() {

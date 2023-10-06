@@ -8,21 +8,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_form_templates_type")
 public class BcaFormTemplatesType {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "template_id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer templateId;
 
-    @Column
+    @Column(name= "template_name")
     private String templateName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false)
+    @JoinColumn(name = "companyId", nullable = false)
     private BcaCompany company;
 
     public Integer getTemplateId() {

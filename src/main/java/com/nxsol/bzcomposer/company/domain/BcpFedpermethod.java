@@ -5,35 +5,36 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_fedpermethod")
 public class BcpFedpermethod {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "IsMarried")
     private Double isMarried;
 
-    @Column
+    @Column(name= "NumTerm")
     private Double numTerm;
 
-    @Column
+    @Column(name= "AmtCov1")
     private Double amtCov1;
 
-    @Column
+    @Column(name= "AmtCov2")
     private Double amtCov2;
 
-    @Column
+    @Column(name= "RateTax")
     private Double rateTax;
 
-    @Column
+    @Column(name= "PlusTax")
     private Double plusTax;
 
-    @Column
+    @Column(name= "EYear")
     private Double eyear;
 
     public Integer getId() {

@@ -7,17 +7,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_masterpaymentgateways")
 public class BcaMasterpaymentgateways {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "GatewayID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer gatewayId;
 
-    @Column(length = 50)
+    @Column(name= "GatewayType", length = 50)
     private String gatewayType;
 
     @OneToMany(mappedBy = "gateway")

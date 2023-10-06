@@ -8,57 +8,58 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_gatewaydetails")
 public class SmdGatewaydetails {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "GatewayID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer gatewayId;
 
-    @Column(length = 50)
+    @Column(name= "GatewayType", length = 50)
     private String gatewayType;
 
-    @Column(length = 50)
+    @Column(name= "Field1", length = 50)
     private String field1;
 
-    @Column(length = 150)
+    @Column(name= "Field2", length = 150)
     private String field2;
 
-    @Column(length = 50)
+    @Column(name= "Field3", length = 50)
     private String field3;
 
-    @Column(length = 75)
+    @Column(name= "Field4", length = 75)
     private String field4;
 
-    @Column(length = 50)
+    @Column(name= "Field5", length = 50)
     private String field5;
 
-    @Column(length = 50)
+    @Column(name= "Field6", length = 50)
     private String field6;
 
-    @Column(length = 50)
+    @Column(name= "Field7", length = 50)
     private String field7;
 
-    @Column(length = 50)
+    @Column(name= "Field8", length = 50)
     private String field8;
 
-    @Column(length = 50)
+    @Column(name= "Field9", length = 50)
     private String field9;
 
-    @Column(length = 50)
+    @Column(name= "Field10", length = 50)
     private String field10;
 
-    @Column
+    @Column(name= "isDefault")
     private Boolean isDefault;
 
-    @Column
+    @Column(name= "TestEnv")
     private Boolean testEnv;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getGatewayId() {

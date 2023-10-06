@@ -10,56 +10,57 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_invoice_template")
 public class BcaInvoiceTemplate {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "TemplateId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer templateId;
 
-    @Column
+    @Column(name= "BaseTemplateId")
     private Integer baseTemplateId;
 
-    @Column(length = 50)
+    @Column(name= "TemplateName", length = 50)
     private String templateName;
 
-    @Column(length = 50)
+    @Column(name= "Type", length = 50)
     private String type;
 
-    @Column
+    @Column(name= "IsSpecifiedPrintSetting")
     private Boolean isSpecifiedPrintSetting;
 
-    @Column(length = 50)
+    @Column(name= "Orientation", length = 50)
     private String orientation;
 
-    @Column(length = 50)
+    @Column(name= "NoOfCopies", length = 50)
     private String noOfCopies;
 
-    @Column(length = 50)
+    @Column(name= "PageWidth", length = 50)
     private String pageWidth;
 
-    @Column(length = 50)
+    @Column(name= "PageHeight", length = 50)
     private String pageHeight;
 
-    @Column
+    @Column(name= "PrintPageNumber")
     private Boolean printPageNumber;
 
-    @Column
+    @Column(name= "PrintStatus")
     private Boolean printStatus;
 
-    @Column
+    @Column(name= "IsPrintCompanyLogo")
     private Boolean isPrintCompanyLogo;
 
-    @Column
+    @Column(name= "TemplateTypeId")
     private Integer templateTypeId;
 
-    @Column
+    @Column(name= "TemplateStyleTypeID")
     private Integer templateStyleTypeId;
 
-    @Column
+    @Column(name= "Templatelogo")
     private String templatelogo;
 
     @OneToMany(mappedBy = "template")
@@ -75,7 +76,7 @@ public class BcaInvoiceTemplate {
     private Set<BcaInvoiceLayoutfieldscreensetting> templateBcaInvoiceLayoutfieldscreensettings;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "template")

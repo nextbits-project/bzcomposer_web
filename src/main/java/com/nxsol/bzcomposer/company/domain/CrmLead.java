@@ -9,93 +9,94 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "crm_lead")
 public class CrmLead {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "LeadID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer leadId;
 
-    @Column(length = 10)
+    @Column(name= "Status", length = 10)
     private String status;
 
-    @Column(length = 10)
+    @Column(name= "Source", length = 10)
     private String source;
 
-    @Column
+    @Column(name = "AssignedId")
     private Integer assignedId;
 
-    @Column(length = 1000)
+    @Column(name= "Tags", length = 1000)
     private String tags;
 
-    @Column(length = 50)
+    @Column(name= "City", length = 50)
     private String city;
 
-    @Column(length = 50)
+    @Column(name= "State", length = 50)
     private String state;
 
-    @Column(length = 50)
+    @Column(name= "Province", length = 50)
     private String province;
 
-    @Column(length = 50)
+    @Column(name= "Country", length = 50)
     private String country;
 
-    @Column(length = 50)
+    @Column(name= "Title", length = 50)
     private String title;
 
-    @Column(length = 50)
+    @Column(name= "Position", length = 50)
     private String position;
 
-    @Column(length = 50)
+    @Column(name= "FirstName", length = 50)
     private String firstName;
 
-    @Column(length = 50)
+    @Column(name= "LastName", length = 50)
     private String lastName;
 
-    @Column(length = 75)
+    @Column(name= "Address1", length = 75)
     private String address1;
 
-    @Column(length = 75)
+    @Column(name= "Address2", length = 75)
     private String address2;
 
-    @Column(length = 75)
+    @Column(name= "Phone", length = 75)
     private String phone;
 
-    @Column(length = 50)
+    @Column(name= "Email", length = 50)
     private String email;
 
-    @Column(length = 50)
+    @Column(name= "ZipCode", length = 50)
     private String zipCode;
 
-    @Column
+    @Column(name = "WebSite")
     private String webSite;
 
-    @Column
+    @Column(name = "LeadValue")
     private Integer leadValue;
 
-    @Column(name = "\"description\"")
+    @Column(name = "Description")
     private String description;
 
-    @Column
+    @Column(name = "isPublic")
     private Boolean isPublic;
 
-    @Column
+    @Column(name = "isContactToday")
     private Boolean isContactToday;
 
-    @Column
+    @Column(name = "contactDate")
     private OffsetDateTime contactDate;
 
-    @Column
+    @Column(name = "createdAt")
     private OffsetDateTime createdAt;
 
-    @Column
+    @Column(name = "updatedAt")
     private OffsetDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getLeadId() {

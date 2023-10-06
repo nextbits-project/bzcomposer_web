@@ -9,39 +9,40 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_deductionlist")
 public class BcpDeductionlist {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "DeductionListID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer deductionListId;
 
-    @Column(length = 50)
+    @Column(name= "DeductionList", length = 50)
     private String deductionList;
 
-    @Column
+    @Column(name= "DeductionAmount")
     private Integer deductionAmount;
 
-    @Column
+    @Column(name= "DeductionRate")
     private Integer deductionRate;
 
-    @Column
+    @Column(name= "UseRate")
     private Boolean useRate;
 
-    @Column
+    @Column(name= "IsTaxExempt")
     private Boolean isTaxExempt;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column(nullable = false)
+    @Column(name= "DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getDeductionListId() {

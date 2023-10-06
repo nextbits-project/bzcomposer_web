@@ -6,29 +6,30 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_backup")
 public class BcaBackup {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "CompanyID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer companyId;
 
-    @Column
+    @Column(name = "StartDate")
     private OffsetDateTime startDate;
 
-    @Column
+    @Column(name = "day")
     private Integer day;
 
-    @Column
+    @Column(name = "hours")
     private Integer hours;
 
-    @Column
+    @Column(name = "minutes")
     private Integer minutes;
 
-    @Column(name = "\"description\"")
+    @Column(name = "description")
     private String description;
 
     public Integer getCompanyId() {

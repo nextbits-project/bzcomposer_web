@@ -11,27 +11,28 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_jobcode")
 public class BcpJobcode {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "JobID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer jobId;
 
-    @Column(length = 50)
+    @Column(name= "Name", length = 50)
     private String name;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "Cost", precision = 23, scale = 4)
     private BigDecimal cost;
 
-    @Column(name = "\"description\"", length = 60)
+    @Column(name = "Description", length = 60)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "job")

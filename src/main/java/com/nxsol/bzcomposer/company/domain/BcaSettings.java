@@ -6,80 +6,81 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_settings")
 public class BcaSettings {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name="DefaultPrinter", nullable = false, updatable = false, length = 50)
     private String defaultPrinter;
 
-    @Column(length = 50)
+    @Column(name="InvoicePrinter", length = 50)
     private String invoicePrinter;
 
-    @Column(length = 50)
+    @Column(name="LabelPrinter", length = 50)
     private String labelPrinter;
 
-    @Column(length = 50)
+    @Column(name="eSalesPrinter", length = 50)
     private String eSalesPrinter;
 
-    @Column(length = 50)
+    @Column(name="CheckPrinter", length = 50)
     private String checkPrinter;
 
-    @Column(length = 50)
+    @Column(name="SalesSlipPrinter", length = 50)
     private String salesSlipPrinter;
 
-    @Column(length = 50)
+    @Column(name="ReportPrinter", length = 50)
     private String reportPrinter;
 
-    @Column(length = 50)
+    @Column(name="PurchasePrinter", length = 50)
     private String purchasePrinter;
 
-    @Column
+    @Column(name="isInvoiceMultiCopyPrintable")
     private Boolean isInvoiceMultiCopyPrintable;
 
-    @Column
+    @Column(name="isLabelMultiCopyPrintable")
     private Boolean isLabelMultiCopyPrintable;
 
-    @Column
+    @Column(name="isESalesMultiCopyPrintable")
     private Boolean isEsalesMultiCopyPrintable;
 
-    @Column
+    @Column(name="isCheckMultiCopyPrintable")
     private Boolean isCheckMultiCopyPrintable;
 
-    @Column
+    @Column(name="isSalesSlipMultiCopyPrintable")
     private Boolean isSalesSlipMultiCopyPrintable;
 
-    @Column
+    @Column(name="isReportMultiCopyPrintable")
     private Boolean isReportMultiCopyPrintable;
 
-    @Column
+    @Column(name="isPurchaseMultiCopyPrintable")
     private Boolean isPurchaseMultiCopyPrintable;
 
-    @Column
+    @Column(name="InvoicePrintableCopies")
     private Integer invoicePrintableCopies;
 
-    @Column
+    @Column(name="LabelPrintableCopies")
     private Integer labelPrintableCopies;
 
-    @Column
+    @Column(name="ESalesPrintableCopies")
     private Integer esalesPrintableCopies;
 
-    @Column
+    @Column(name="CheckPrintableCopies")
     private Integer checkPrintableCopies;
 
-    @Column
+    @Column(name="SalesSlipPrintableCopies")
     private Integer salesSlipPrintableCopies;
 
-    @Column
+    @Column(name="ReportPrintableCopies")
     private Integer reportPrintableCopies;
 
-    @Column
+    @Column(name="PurchasePrintableCopies")
     private Integer purchasePrintableCopies;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public String getDefaultPrinter() {

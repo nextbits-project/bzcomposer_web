@@ -8,28 +8,29 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "bca_activestoreforproductssubmission")
 public class BcaActivestoreforproductssubmission {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "CompanyID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer companyId;
 
-    @Column
+    @Column(name = "StoreName")
     private String storeName;
 
     @Column
     private Integer active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "storeID")
     private BcaStore store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_type_id")
+    @JoinColumn(name = "storeTypeID")
     private BcaStoretype storeType;
 
     public Integer getCompanyId() {

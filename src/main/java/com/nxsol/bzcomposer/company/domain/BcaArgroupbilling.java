@@ -9,32 +9,33 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_apmemorizebca_argroupbillingdingroup")
 public class BcaArgroupbilling {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "BillingNumber", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer billingNumber;
 
-    @Column
+    @Column(name = "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name = "IsBillingPrinted")
     private Boolean isBillingPrinted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     public Integer getBillingNumber() {

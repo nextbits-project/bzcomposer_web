@@ -6,26 +6,27 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_ruleconditions")
 public class BcaRuleconditions {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name="RuleName", nullable = false, updatable = false, length = 50)
     private String ruleName;
 
-    @Column(length = 25)
+    @Column(name="ConditionField", length = 25)
     private String conditionField;
 
-    @Column(length = 25)
+    @Column(name="OperatorName", length = 25)
     private String operatorName;
 
-    @Column(length = 25)
+    @Column(name="OperatorValue", length = 25)
     private String operatorValue;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public String getRuleName() {

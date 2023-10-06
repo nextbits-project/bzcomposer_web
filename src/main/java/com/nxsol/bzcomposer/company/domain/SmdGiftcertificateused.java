@@ -8,37 +8,38 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_giftcertificateused")
 public class SmdGiftcertificateused {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 20)
+    @Column(name= "gcuID", nullable = false, updatable = false, length = 20)
     private String gcuId;
 
-    @Column
+    @Column(name= "gcuIsMailed")
     private Integer gcuIsMailed;
 
-    @Column
+    @Column(name= "gcuAddDate")
     private OffsetDateTime gcuAddDate;
 
-    @Column
+    @Column(name= "gcuUseDate")
     private OffsetDateTime gcuUseDate;
 
-    @Column(precision = 18, scale = 0)
+    @Column(name= "gcuBalence", precision = 18, scale = 0)
     private BigDecimal gcuBalence;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gc_id")
+    @JoinColumn(name = "gcID")
     private SmdGiftcertificate gc;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     public String getGcuId() {

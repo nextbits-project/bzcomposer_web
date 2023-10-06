@@ -9,104 +9,107 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import java.time.OffsetDateTime;
 import java.util.Set;
 
 
 @Entity
+@Table(name="bca_user")
 public class BcaUser {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 50)
+    @Column(name="LoginID", length = 50)
     private String loginId;
 
-    @Column(length = 50)
+    @Column(name="Password", length = 50)
     private String password;
 
-    @Column
+    @Column(name="Confirm_Password")
     private String confirmPassword;
 
-    @Column
+    @Column(name="Email_Address")
     private String emailAddress;
 
-    @Column
+    @Column(name="Company_Name")
     private String companyName;
 
-    @Column
+    @Column(name="Legal_Name")
     private String legalName;
 
-    @Column
+    @Column(name="TaxID")
     private String taxId;
 
-    @Column
+    @Column(name="Address1")
     private String address1;
 
-    @Column
+    @Column(name="Address2")
     private String address2;
 
-    @Column
+    @Column(name="City")
     private String city;
 
-    @Column
+    @Column(name="State")
     private String state;
 
-    @Column
+    @Column(name="Zip")
     private String zip;
 
-    @Column
+    @Column(name="Country")
     private String country;
 
-    @Column
+    @Column(name="Phone")
     private String phone;
 
-    @Column
+    @Column(name="Fax")
     private String fax;
 
-    @Column
+    @Column(name="Website")
     private String website;
 
-    @Column
+    @Column(name="Province")
     private String province;
 
-    @Column
+    @Column(name="Firstname")
     private String firstname;
 
-    @Column
+    @Column(name="Lastname")
     private String lastname;
 
-    @Column
+    @Column(name="PasswordHint")
     private String passwordHint;
 
-    @Column
+    @Column(name="PasswordAns")
     private String passwordAns;
 
-    @Column
+    @Column(name="WebAddress")
     private String webAddress;
 
-    @Column
+    @Column(name="Active")
     private Boolean active;
 
-    @Column(length = 45)
+    @Column(name="membershipLevel", length = 45)
     private String membershipLevel;
 
-    @Column(length = 45)
+    @Column(name="jobPosition", length = 45)
     private String jobPosition;
 
-    @Column
+    @Column(name="DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name="DateExpiry")
     private OffsetDateTime dateExpiry;
 
-    @Column
+    @Column(name="Deleted")
     private Boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "user")

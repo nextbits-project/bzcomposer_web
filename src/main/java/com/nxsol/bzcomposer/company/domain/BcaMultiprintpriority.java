@@ -3,22 +3,23 @@ package com.nxsol.bzcomposer.company.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_multiprintpriority")
 public class BcaMultiprintpriority {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name= "SortBy", nullable = false, updatable = false, length = 50)
     private String sortBy;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column
+    @Column(name= "IseSales")
     private Integer iseSales;
 
-    @Column
+    @Column(name= "Priority")
     private Integer priority;
 
     public String getSortBy() {

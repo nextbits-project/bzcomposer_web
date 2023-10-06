@@ -9,96 +9,97 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_tax_company")
 public class BcpTaxCompany {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "DeductionID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer deductionId;
 
-    @Column
+    @Column(name= "Daily")
     private Boolean daily;
 
-    @Column
+    @Column(name= "Weekly")
     private Boolean weekly;
 
-    @Column
+    @Column(name= "BiWeekly")
     private Boolean biWeekly;
 
-    @Column
+    @Column(name= "SemiMonthly")
     private Boolean semiMonthly;
 
-    @Column
+    @Column(name= "Monthly")
     private Boolean monthly;
 
-    @Column
+    @Column(name= "Quarterly")
     private Boolean quarterly;
 
-    @Column
+    @Column(name= "SemiAnnually")
     private Boolean semiAnnually;
 
-    @Column
+    @Column(name= "Annually")
     private Boolean annually;
 
-    @Column
+    @Column(name= "UsePayrollDayWeek")
     private Boolean usePayrollDayWeek;
 
-    @Column
+    @Column(name= "PayrollDayWeek")
     private Integer payrollDayWeek;
 
-    @Column
+    @Column(name= "UsePayrollDayMonth")
     private Boolean usePayrollDayMonth;
 
-    @Column
+    @Column(name= "PayrollDayMonth")
     private Integer payrollDayMonth;
 
-    @Column
+    @Column(name= "UseOvertimeDailyHour")
     private Boolean useOvertimeDailyHour;
 
-    @Column
+    @Column(name= "OvertimeDailyHour")
     private Integer overtimeDailyHour;
 
-    @Column
+    @Column(name= "UseOvertimeWeeklyHour")
     private Boolean useOvertimeWeeklyHour;
 
-    @Column
+    @Column(name= "OvertimeWeeklyHour")
     private Integer overtimeWeeklyHour;
 
-    @Column
+    @Column(name= "OvertimeRate")
     private Integer overtimeRate;
 
-    @Column
+    @Column(name= "UseSaturdayRate")
     private Boolean useSaturdayRate;
 
-    @Column
+    @Column(name= "SaturdayRate")
     private Integer saturdayRate;
 
-    @Column
+    @Column(name= "UseSundayRate")
     private Boolean useSundayRate;
 
-    @Column
+    @Column(name= "SundayRate")
     private Integer sundayRate;
 
-    @Column
+    @Column(name= "UseHolidayRate")
     private Boolean useHolidayRate;
 
-    @Column
+    @Column(name= "HolidayRate")
     private Integer holidayRate;
 
-    @Column
+    @Column(name= "StartingDate")
     private OffsetDateTime startingDate;
 
-    @Column
+    @Column(name= "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false)
+    @JoinColumn(name = "CompanyID", nullable = false)
     private BcaCompany company;
 
     public Integer getDeductionId() {

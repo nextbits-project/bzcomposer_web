@@ -9,60 +9,61 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_refundlist")
 public class BcaRefundlist {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "RefundID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer refundId;
 
-    @Column
+    @Column(name="OrderNum")
     private Integer orderNum;
 
-    @Column
+    @Column(name="Amount")
     private Double amount;
 
-    @Column
+    @Column(name="DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name="Status")
     private Integer status;
 
-    @Column
+    @Column(name="RefundReasonID")
     private Integer refundReasonId;
 
-    @Column
+    @Column(name="InvoiceStatus")
     private Integer invoiceStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_type_id")
+    @JoinColumn(name = "InvoiceTypeID")
     private BcaInvoicetype invoiceType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
+    @JoinColumn(name = "PaymentID")
     private BcaPayment payment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_type_id")
+    @JoinColumn(name = "PaymentTypeID")
     private BcaPaymenttype paymentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_payment_type_id")
+    @JoinColumn(name = "OrderPaymentTypeID")
     private BcaPaymenttype orderPaymentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sales_rep_id")
+    @JoinColumn(name = "SalesRepID")
     private BcaSalesrep salesRep;
 
     public Integer getRefundId() {

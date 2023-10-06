@@ -9,80 +9,81 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_recurrentpayment")
 public class BcaRecurrentpayment {
 
-    @Id
-    @Column(nullable = false, updatable = false)
+	@Id
+    @Column(name= "PaymentID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer paymentId;
 
-    @Column
+    @Column(name="Amount")
     private Double amount;
 
-    @Column
+    @Column(name="IsToBePrinted")
     private Boolean isToBePrinted;
 
-    @Column(length = 50)
+    @Column(name="CheckNumber", length = 50)
     private String checkNumber;
 
-    @Column
+    @Column(name="Deleted")
     private Boolean deleted;
 
-    @Column(length = 50)
+    @Column(name="TransactionID", length = 50)
     private String transactionId;
 
-    @Column
+    @Column(name="PaymentDate")
     private OffsetDateTime paymentDate;
 
-    @Column
+    @Column(name="IsPaymentCompleted")
     private Boolean isPaymentCompleted;
 
-    @Column(length = 50)
+    @Column(name="Status", length = 50)
     private String status;
 
-    @Column(length = 50)
+    @Column(name="Memo", length = 50)
     private String memo;
 
-    @Column
+    @Column(name="RefPaymentID")
     private Integer refPaymentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id", nullable = false)
-    private BcaPayment payment;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "PaymentID", nullable = false)
+//    private BcaPayment payment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payee_id")
+    @JoinColumn(name = "PayeeID")
     private BcaAccount payee;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payer_id")
+    @JoinColumn(name = "PayerID")
     private BcaAccount payer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_type_id")
+    @JoinColumn(name = "PaymentTypeID")
     private BcaPaymenttype paymentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "plan_id")
+    @JoinColumn(name = "PlanID")
     private BcaRecurrentpaymentplan plan;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
+    @JoinColumn(name = "ServiceID")
     private BcaServicetype service;
 
-    public Long getId() {
-        return id;
+    public Integer getPaymentId() {
+        return paymentId;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public void setPaymentId(final Integer paymentId) {
+        this.paymentId = paymentId;
     }
 
     public Double getAmount() {
@@ -173,13 +174,13 @@ public class BcaRecurrentpayment {
         this.company = company;
     }
 
-    public BcaPayment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(final BcaPayment payment) {
-        this.payment = payment;
-    }
+//    public BcaPayment getPayment() {
+//        return payment;
+//    }
+//
+//    public void setPayment(final BcaPayment payment) {
+//        this.payment = payment;
+//    }
 
     public BcaAccount getPayee() {
         return payee;

@@ -6,23 +6,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_payment2invoice")
 public class BcaPayment2invoice {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "PaymentID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer paymentId;
 
-    @Column
+    @Column(name= "InvoiceID")
     private Integer invoiceId;
 
-    @Column
+    @Column(name= "CompanyID")
     private Integer companyId;
 
-    @Column
+    @Column(name= "DateAdded")
     private OffsetDateTime dateAdded;
 
     public Integer getPaymentId() {

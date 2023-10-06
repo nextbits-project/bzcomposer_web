@@ -10,20 +10,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_states")
 public class BcaStates {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 30)
+    @Column(name="name", nullable = false, length = 30)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name="StateCode", nullable = false)
     private String stateCode;
 
     @OneToMany(mappedBy = "state")

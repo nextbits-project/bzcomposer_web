@@ -12,215 +12,216 @@ import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_iteminventory")
 public class BcaIteminventory {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "InventoryID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer inventoryId;
 
-    @Column
+    @Column(name= "ParentID")
     private Integer parentId;
 
-    @Column(length = 50)
+    @Column(name= "InventoryCode", length = 50)
     private String inventoryCode;
 
-    @Column(length = 50)
+    @Column(name= "SerialNum", length = 50)
     private String serialNum;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "InventoryName", columnDefinition = "longtext")
     private String inventoryName;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "InventoryDescription", columnDefinition = "longtext")
     private String inventoryDescription;
 
-    @Column
+    @Column(name= "Qty")
     private Integer qty;
 
-    @Column
+    @Column(name= "AvailableQty")
     private Integer availableQty;
 
-    @Column
+    @Column(name= "Weight")
     private Double weight;
 
-    @Column
+    @Column(name= "PurchasePrice")
     private Double purchasePrice;
 
-    @Column
+    @Column(name= "SalePrice")
     private Double salePrice;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "DealerPrice", precision = 23, scale = 4)
     private BigDecimal dealerPrice;
 
-    @Column
+    @Column(name= "Taxable")
     private Integer taxable;
 
-    @Column
+    @Column(name= "isCategory")
     private Boolean isCategory;
 
-    @Column(length = 50)
+    @Column(name= "Location", length = 50)
     private String location;
 
-    @Column
+    @Column(name= "PictureURL")
     private String pictureUrl;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column
+    @Column(name= "DateConfirmed")
     private OffsetDateTime dateConfirmed;
 
-    @Column
+    @Column(name= "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "ItemTypeID")
     private Integer itemTypeId;
 
-    @Column(length = 50)
+    @Column(name= "RefNum", length = 50)
     private String refNum;
 
-    @Column(length = 50)
+    @Column(name= "InventoryBarCode", length = 50)
     private String inventoryBarCode;
 
-    @Column
+    @Column(name= "Att1_ID")
     private Integer att1Id;
 
-    @Column
+    @Column(name= "Att2_ID")
     private Integer att2Id;
 
-    @Column(length = 50)
+    @Column(name= "SKU", length = 50)
     private String sku;
 
-    @Column
+    @Column(name= "SizeH")
     private Double sizeH;
 
-    @Column
+    @Column(name= "SizeW")
     private Double sizeW;
 
-    @Column
+    @Column(name= "SizeL")
     private Double sizeL;
 
-    @Column
+    @Column(name= "IsNewItemCode")
     private Boolean isNewItemCode;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "Message", columnDefinition = "longtext")
     private String message;
 
-    @Column(length = 50)
+    @Column(name= "SpecialHanding", length = 50)
     private String specialHanding;
 
-    @Column
+    @Column(name= "ReorderPoint")
     private Integer reorderPoint;
 
-    @Column
+    @Column(name= "isDropShip")
     private Boolean isDropShip;
 
-    @Column
+    @Column(name= "isDiscontinued")
     private Boolean isDiscontinued;
 
-    @Column(length = 250)
+    @Column(name= "OrderUnit", length = 250)
     private String orderUnit;
 
-    @Column(length = 50)
+    @Column(name= "ReorderMessage", length = 50)
     private String reorderMessage;
 
-    @Column(length = 50)
+    @Column(name= "SMCInventoryID", length = 50)
     private String smcinventoryId;
 
-    @Column(length = 50)
+    @Column(name= "EBayInventoryID", length = 50)
     private String ebayInventoryId;
 
-    @Column(length = 50)
+    @Column(name= "ServiceUnit", length = 50)
     private String serviceUnit;
 
-    @Column
+    @Column(name= "SalesTaxRate")
     private Double salesTaxRate;
 
-    @Column
+    @Column(name= "AmazonQty")
     private Integer amazonQty;
 
-    @Column(length = 50)
+    @Column(name= "taxCode", length = 50)
     private String taxCode;
 
-    @Column
+    @Column(name= "InvoiceInNum")
     private Integer invoiceInNum;
 
-    @Column
+    @Column(name= "POInNum")
     private Integer poinNum;
 
-    @Column
+    @Column(name= "AssemblyCost")
     private Double assemblyCost;
 
-    @Column
+    @Column(name= "isIgnoreQOH")
     private Integer isIgnoreQoh;
 
-    @Column
+    @Column(name= "isSynchWitheBay")
     private Integer isSynchWitheBay;
 
-    @Column
+    @Column(name= "isSynchWithSMC")
     private Integer isSynchWithSmc;
 
-    @Column
+    @Column(name= "isSynchWithAmazone")
     private Integer isSynchWithAmazone;
 
-    @Column
+    @Column(name= "isConsignedItem")
     private Boolean isConsignedItem;
 
-    @Column
+    @Column(name= "COLOR")
     private String color;
 
-    @Column
+    @Column(name= "itemSubCategory")
     private Integer itemSubCategory;
 
-    @Column
+    @Column(name= "isItemTaxable")
     private Boolean isItemTaxable;
 
-    @Column
+    @Column(name= "isDiscounted")
     private Boolean isDiscounted;
 
-    @Column
+    @Column(name= "isPrimarySupplier")
     private Boolean isPrimarySupplier;
 
-    @Column
+    @Column(name= "productSKU")
     private String productSku;
 
-    @Column
+    @Column(name= "supplierSKU")
     private String supplierSku;
 
-    @Column
+    @Column(name= "minOrderUnit")
     private Integer minOrderUnit;
 
-    @Column
+    @Column(name= "weightUnit")
     private Integer weightUnit;
 
-    @Column(length = 5000)
+    @Column(name= "textAreaContent", length = 5000)
     private String textAreaContent;
 
-    @Column
+    @Column(name= "supplierIDs")
     private String supplierIds;
 
-    @Column
+    @Column(name= "actualWeight")
     private Double actualWeight;
 
-    @Column
+    @Column(name= "accountId")
     private Integer accountId;
 
-    @Column
+    @Column(name= "measurementId")
     private Integer measurementId;
 
-    @Column
+    @Column(name= "subMeasurementId")
     private Integer subMeasurementId;
 
-    @Column
+    @Column(name= "DateReceived")
     private OffsetDateTime dateReceived;
 
-    @Column(length = 250)
+    @Column(name= "Memo", length = 250)
     private String memo;
 
-    @Column
+    @Column(name= "ExpectedQty")
     private Integer expectedQty;
 
     @OneToMany(mappedBy = "inventoryid")
@@ -251,15 +252,15 @@ public class BcaIteminventory {
     private Set<BcaInventoryunitmeasure> inventoryBcaInventoryunitmeasures;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "CategoryID")
     private BcaCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_type_id")
+    @JoinColumn(name = "StoreTypeID")
     private BcaStoretype storeType;
 
     @OneToMany(mappedBy = "inventory")

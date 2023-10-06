@@ -9,45 +9,46 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bizcal_appoint")
 public class BizcalAppoint {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "m_alarm")
     private Integer mAlarm;
 
-    @Column
+    @Column(name= "m_color_rgb")
     private Integer mColorRgb;
 
-    @Column
+    @Column(name= "m_length")
     private Integer mLength;
 
-    @Column(length = 100)
+    @Column(name= "m_text", length = 100)
     private String mText;
 
-    @Column
+    @Column(name= "m_date")
     private OffsetDateTime mDate;
 
-    @Column
+    @Column(name= "m_w")
     private Integer mW;
 
-    @Column
+    @Column(name= "m_h")
     private Integer mH;
 
-    @Column
+    @Column(name= "m_x")
     private Integer mX;
 
-    @Column
+    @Column(name= "m_y")
     private Integer mY;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getId() {

@@ -8,9 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_clientvendorfinancecharges")
 public class BcaClientvendorfinancecharges {
 
     @Id
@@ -18,26 +19,26 @@ public class BcaClientvendorfinancecharges {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name= "UseIndividual")
     private Boolean useIndividual;
 
-    @Column
+    @Column(name= "AnnualInterestRate")
     private Double annualInterestRate;
 
-    @Column
+    @Column(name= "MinimumFinanceCharge")
     private Double minimumFinanceCharge;
 
-    @Column
+    @Column(name= "GracePeriod")
     private Integer gracePeriod;
 
-    @Column
+    @Column(name= "AssessFinanceCharge")
     private Boolean assessFinanceCharge;
 
-    @Column
+    @Column(name= "MarkFinanceCharge")
     private Boolean markFinanceCharge;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     public Long getId() {

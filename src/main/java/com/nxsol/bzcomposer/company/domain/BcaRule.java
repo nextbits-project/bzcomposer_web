@@ -7,29 +7,30 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_rule")
 public class BcaRule {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name="RuleName", nullable = false, updatable = false, length = 50)
     private String ruleName;
 
-    @Column
+    @Column(name="DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name="Priority")
     private Integer priority;
 
-    @Column(length = 50)
+    @Column(name="ChangeField", length = 50)
     private String changeField;
 
-    @Column(length = 50)
+    @Column(name="ChangeTo", length = 50)
     private String changeTo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public String getRuleName() {

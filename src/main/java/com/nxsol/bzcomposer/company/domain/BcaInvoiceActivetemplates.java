@@ -8,36 +8,37 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_invoice_activetemplates")
 public class BcaInvoiceActivetemplates {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "Retail")
     private Integer retail;
 
-    @Column
+    @Column(name= "Wholesale")
     private Integer wholesale;
 
-    @Column
+    @Column(name= "Contractor")
     private Integer contractor;
 
-    @Column
+    @Column(name= "eSales")
     private Integer eSales;
 
-    @Column
+    @Column(name= "Service")
     private Integer service;
 
-    @Column
+    @Column(name= "Nonprofit")
     private Integer nonprofit;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "template_id")
+    @JoinColumn(name = "TemplateID")
     private BcaInvoiceTemplate template;
 
     public Integer getId() {

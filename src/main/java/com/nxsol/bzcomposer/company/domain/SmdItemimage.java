@@ -10,30 +10,31 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_itemgroupprice")
 public class SmdItemimage {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ItemImageId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer itemImageId;
 
-    @Column(length = 50)
+    @Column(name= "InventoryId", length = 50)
     private String inventoryId;
 
-    @Column(length = 100)
+    @Column(name= "Image", length = 100)
     private String image;
 
-    @Column
+    @Column(name= "TitleImage")
     private Boolean titleImage;
 
-    @Column
+    @Column(name= "IsDeleted")
     private Boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyId")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "itemImage")

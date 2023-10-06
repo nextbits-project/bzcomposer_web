@@ -12,72 +12,73 @@ import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= " bca_account")
 public class BcaAccount {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "AccountID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accountId;
 
-    @Column
+    @Column(name = "ParentID")
     private Integer parentId;
 
-    @Column
+    @Column(name = "isCategory")
     private Boolean isCategory;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "Name", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "\"description\"", length = 50)
+    @Column(name = "Description", length = 50)
     private String description;
 
-    @Column
+    @Column(name = "DepositPaymentID")
     private Integer depositPaymentId;
 
-    @Column
+    @Column(name = "CustomerStartingBalance")
     private Double customerStartingBalance;
 
-    @Column
+    @Column(name = "CustomerCurrentBalance")
     private Double customerCurrentBalance;
 
-    @Column
+    @Column(name = "VendorStartingBalance")
     private Double vendorStartingBalance;
 
-    @Column
+    @Column(name = "VendorCurrentBalance")
     private Double vendorCurrentBalance;
 
-    @Column(nullable = false)
+    @Column(name = "Active", nullable = false)
     private Integer active;
 
-    @Column(nullable = false)
+    @Column(name = "DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name = "FirstCheck")
     private Integer firstCheck;
 
-    @Column
+    @Column(name = "LastCheck")
     private Integer lastCheck;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal mainaccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acct_category_id")
+    @JoinColumn(name = "AcctCategoryID")
     private BcaAcctcategory acctCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acct_type_id")
+    @JoinColumn(name = "AcctTypeID")
     private BcaAccttype acctType;
 
     @OneToMany(mappedBy = "account")

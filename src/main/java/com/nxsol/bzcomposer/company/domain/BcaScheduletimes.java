@@ -9,34 +9,35 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_scheduletimes")
 public class BcaScheduletimes {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ScheduleTime", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer scheduleTime;
 
-    @Column(nullable = false)
+    @Column(name="ScheduleDate", nullable = false)
     private OffsetDateTime scheduleDate;
 
-    @Column
+    @Column(name="CategeoryType")
     private Integer categeoryType;
 
-    @Column
+    @Column(name="ScheduleMinute")
     private Integer scheduleMinute;
 
-    @Column
+    @Column(name="isCompleted")
     private Integer isCompleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "StoreID")
     private BcaStore store;
 
     public Integer getScheduleTime() {

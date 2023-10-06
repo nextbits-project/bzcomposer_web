@@ -8,30 +8,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_form_templates")
 public class BcaFormTemplates {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "template_type_no", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer templateTypeNo;
 
-    @Column
+    @Column(name= "imagePath")
     private String imagePath;
 
-    @Column(nullable = false)
+    @Column(name = "isSelected", nullable = false)
     private Boolean isSelected;
 
-    @Column
+    @Column(name= "template_id_type")
     private Integer templateIdType;
 
-    @Column
+    @Column(name= "template_type_name")
     private String templateTypeName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false)
+    @JoinColumn(name = "companyId", nullable = false)
     private BcaCompany company;
 
     public Integer getTemplateTypeNo() {

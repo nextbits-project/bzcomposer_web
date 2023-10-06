@@ -9,24 +9,25 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_salessummarydetail")
 public class BcaSalessummarydetail {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "Id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name = "Amount", precision = 23, scale = 4)
     private BigDecimal amount;
 
-    @Column(name = "\"description\"", length = 100)
+    @Column(name = "Description", length = 100)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sales_id")
+    @JoinColumn(name = "SalesID")
     private BcaSalessummary sales;
 
     public Integer getId() {

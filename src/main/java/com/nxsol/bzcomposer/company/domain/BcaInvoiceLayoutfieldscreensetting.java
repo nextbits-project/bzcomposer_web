@@ -8,9 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_invoice_layoutfieldscreensetting")
 public class BcaInvoiceLayoutfieldscreensetting {
 
     @Id
@@ -18,89 +19,89 @@ public class BcaInvoiceLayoutfieldscreensetting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name= "InvoiceTitle")
     private Boolean invoiceTitle;
 
-    @Column
+    @Column(name= "InvoiceDate")
     private Boolean invoiceDate;
 
-    @Column
+    @Column(name= "InvoiceNumber")
     private Boolean invoiceNumber;
 
-    @Column
+    @Column(name= "BillTo")
     private Boolean billTo;
 
-    @Column
+    @Column(name= "ShipTo")
     private Boolean shipTo;
 
-    @Column
+    @Column(name= "PoNo")
     private Boolean poNo;
 
-    @Column
+    @Column(name= "Terms")
     private Boolean terms;
 
-    @Column
+    @Column(name= "Rep")
     private Boolean rep;
 
-    @Column
+    @Column(name= "ShipDate")
     private Boolean shipDate;
 
-    @Column
+    @Column(name= "ShipVia")
     private Boolean shipVia;
 
-    @Column
+    @Column(name= "PayMethod")
     private Boolean payMethod;
 
-    @Column
+    @Column(name= "Message")
     private Boolean message;
 
-    @Column
+    @Column(name= "SubTotal")
     private Boolean subTotal;
 
-    @Column
+    @Column(name= "SalesTax")
     private Boolean salesTax;
 
-    @Column
+    @Column(name= "Total")
     private Boolean total;
 
-    @Column
+    @Column(name= "PaidBalance")
     private Boolean paidBalance;
 
-    @Column
+    @Column(name= "Weight")
     private Boolean weight;
 
-    @Column
+    @Column(name= "AdjustedTotal")
     private Boolean adjustedTotal;
 
-    @Column
+    @Column(name= "LongTextMessage")
     private Boolean longTextMessage;
 
-    @Column
+    @Column(name= "Balance")
     private Boolean balance;
 
-    @Column
+    @Column(name= "DueDate")
     private Boolean dueDate;
 
-    @Column
+    @Column(name= "TotalItems")
     private Boolean totalItems;
 
-    @Column
+    @Column(name= "Barcode1")
     private Boolean barcode1;
 
-    @Column
+    @Column(name= "Barcode2")
     private Boolean barcode2;
 
-    @Column
+    @Column(name= "Credit")
     private Integer credit;
 
-    @Column
+    @Column(name= "Discount")
     private Integer discount;
 
-    @Column
+    @Column(name= "GiftAmount")
     private Integer giftAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "template_id")
+    @JoinColumn(name = "TemplateId")
     private BcaInvoiceTemplate template;
 
     public Long getId() {

@@ -8,138 +8,139 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_iteminventoryinfo")
 public class SmdIteminventoryinfo {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name= "MenuID", nullable = false, updatable = false, length = 50)
     private String menuId;
 
-    @Column(length = 200)
+    @Column(name= "Manufacturer", length = 200)
     private String manufacturer;
 
-    @Column(length = 50)
+    @Column(name= "SupplierName", length = 50)
     private String supplierName;
 
-    @Column(precision = 18, scale = 0)
+    @Column(name= "DiscountPrice", precision = 18, scale = 0)
     private BigDecimal discountPrice;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "ShortDescription", columnDefinition = "longtext")
     private String shortDescription;
 
-    @Column
+    @Column(name= "Priority")
     private Integer priority;
 
-    @Column
+    @Column(name= "DisplayBeginDepth")
     private Integer displayBeginDepth;
 
-    @Column(name = "\"show\"", length = 50)
+    @Column(name = "Show", length = 50)
     private String show;
 
-    @Column
+    @Column(name= "Flag1")
     private Boolean flag1;
 
-    @Column
+    @Column(name= "Flag2")
     private Boolean flag2;
 
-    @Column
+    @Column(name= "Flag3")
     private Boolean flag3;
 
-    @Column
+    @Column(name= "Flag4")
     private Boolean flag4;
 
-    @Column
+    @Column(name= "isHtmDescription")
     private Boolean isHtmDescription;
 
-    @Column
+    @Column(name= "IsGiftCertificate")
     private Boolean isGiftCertificate;
 
-    @Column
+    @Column(name= "IsExpire")
     private Boolean isExpire;
 
-    @Column
+    @Column(name= "ExpireDate")
     private OffsetDateTime expireDate;
 
-    @Column
+    @Column(name= "ExpireDays")
     private Integer expireDays;
 
-    @Column
+    @Column(name= "Item_rank")
     private Integer itemRank;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "Item_Review", columnDefinition = "longtext")
     private String itemReview;
 
-    @Column
+    @Column(name= "ItemClassID")
     private Integer itemClassId;
 
-    @Column
+    @Column(name= "DiscountGroupID")
     private Integer discountGroupId;
 
-    @Column(length = 2)
+    @Column(name= "IsDeleted", length = 2)
     private String isDeleted;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "Keywords", columnDefinition = "longtext")
     private String keywords;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "LongDescription", columnDefinition = "longtext")
     private String longDescription;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "MetatagTitle", columnDefinition = "longtext")
     private String metatagTitle;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "MetatagDesc", columnDefinition = "longtext")
     private String metatagDesc;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "MetatagKeyword", columnDefinition = "longtext")
     private String metatagKeyword;
 
-    @Column
+    @Column(name= "ReorderLevel")
     private Integer reorderLevel;
 
-    @Column
+    @Column(name= "MaxQty")
     private Integer maxQty;
 
-    @Column
+    @Column(name= "GiftWrappingID")
     private Integer giftWrappingId;
 
-    @Column
+    @Column(name= "ItemUploadable")
     private Boolean itemUploadable;
 
-    @Column(precision = 18, scale = 0)
+    @Column(name= "StorePrice", precision = 18, scale = 0)
     private BigDecimal storePrice;
 
-    @Column
+    @Column(name= "Special_List")
     private Boolean specialList;
 
-    @Column(length = 4)
+    @Column(name= "weightUnit", length = 4)
     private String weightUnit;
 
-    @Column(length = 4)
+    @Column(name= "heightUnit", length = 4)
     private String heightUnit;
 
-    @Column(length = 30)
+    @Column(name= "eBayItemCode", length = 30)
     private String eBayItemCode;
 
-    @Column(length = 15)
+    @Column(name= "categoryOneeBay", length = 15)
     private String categoryOneeBay;
 
-    @Column(length = 15)
+    @Column(name= "itemListingDays", length = 15)
     private String itemListingDays;
 
-    @Column
+    @Column(name= "itemShippigCost")
     private Double itemShippigCost;
 
-    @Column(length = 20)
+    @Column(name= "amazon_FeedSubmissionId", length = 20)
     private String amazonFeedSubmissionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryId")
     private BcaIteminventory inventory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_image_id")
+    @JoinColumn(name = "ItemImageID")
     private SmdItemimage itemImage;
 
     public String getMenuId() {

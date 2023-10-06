@@ -5,29 +5,30 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_stlowincomeexemptable")
 public class BcpStlowincomeexemptable {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "NumTerm")
     private Double numTerm;
 
-    @Column
+    @Column(name= "IsMarried")
     private Double isMarried;
 
-    @Column
+    @Column(name= "Amt")
     private Double amt;
 
-    @Column(length = 50)
+    @Column(name= "StateName", length = 50)
     private String stateName;
 
-    @Column
+    @Column(name= "EYear")
     private Double eyear;
 
     public Integer getId() {

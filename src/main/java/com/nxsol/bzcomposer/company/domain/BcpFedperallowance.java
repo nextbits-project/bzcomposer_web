@@ -5,26 +5,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_fedperallowance")
 public class BcpFedperallowance {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "NumTerm")
     private Integer numTerm;
 
-    @Column
+    @Column(name= "OneAllow")
     private Double oneAllow;
 
-    @Column
+    @Column(name= "EYear")
     private Integer eyear;
 
-    @Column(length = 50)
+    @Column(name= "PayrollPeriod", length = 50)
     private String payrollPeriod;
 
     public Integer getId() {

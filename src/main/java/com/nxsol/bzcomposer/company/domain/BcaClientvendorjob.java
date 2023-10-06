@@ -9,37 +9,38 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_clientvendorjob")
 public class BcaClientvendorjob {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "JobCategoryID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer jobCategoryId;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column
+    @Column(name= "dateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "startDate")
     private OffsetDateTime startDate;
 
-    @Column
+    @Column(name= "terminateDate")
     private OffsetDateTime terminateDate;
 
-    @Column
+    @Column(name= "isRecurringServiceJob")
     private Integer isRecurringServiceJob;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     public Integer getJobCategoryId() {

@@ -5,35 +5,36 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_label")
 public class BcaLabel {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true, length = 50)
+    @Column(name= "LabelType", unique = true, length = 50)
     private String labelType;
 
-    @Column
+    @Column(name= "Mar_Top")
     private Double marTop;
 
-    @Column
+    @Column(name= "Mar_Left")
     private Double marLeft;
 
-    @Column
+    @Column(name= "Size_Width")
     private Double sizeWidth;
 
-    @Column
+    @Column(name= "Size_Height")
     private Double sizeHeight;
 
-    @Column
+    @Column(name= "Spacing_Hor")
     private Double spacingHor;
 
-    @Column
+    @Column(name= "Spacing_Vert")
     private Double spacingVert;
 
     public Integer getId() {

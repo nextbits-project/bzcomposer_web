@@ -5,38 +5,41 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name= "bcp_sttaxrate")
 public class BcpSttaxrate {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "RateSdi")
     private Double rateSdi;
 
-    @Column
+    @Column(name= "LimitSdi")
     private Double limitSdi;
 
-    @Column(length = 50)
+    @Column(name= "OtherName", length = 50)
     private String otherName;
 
-    @Column
+    @Column(name= "OtherRate")
     private Double otherRate;
 
-    @Column
+    @Column(name= "RateSui")
     private Double rateSui;
 
-    @Column
+    @Column(name= "OverRate")
     private Double overRate;
 
-    @Column(length = 50)
+    @Column(name= "StateName", length = 50)
     private String stateName;
 
-    @Column
+    @Column(name= "EYear")
     private Integer eyear;
 
     public Integer getId() {

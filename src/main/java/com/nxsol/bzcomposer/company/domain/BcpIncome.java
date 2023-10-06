@@ -9,43 +9,44 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_income")
 public class BcpIncome {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "IncomeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer incomeId;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "IncomeAmount", precision = 23, scale = 4)
     private BigDecimal incomeAmount;
 
-    @Column
+    @Column(name= "DeductionID")
     private Integer deductionId;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_type_id")
+    @JoinColumn(name = "EmployeeTypeID")
     private BcpEmployeetype employeeType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "income_list_id")
+    @JoinColumn(name = "IncomeListID")
     private BcpIncomelist incomeList;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payroll_period_id")
+    @JoinColumn(name = "PayrollPeriodID")
     private BcpPayrollperiod payrollPeriod;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "EmployeeID")
     private BcpEmployee employee;
 
     public Integer getIncomeId() {

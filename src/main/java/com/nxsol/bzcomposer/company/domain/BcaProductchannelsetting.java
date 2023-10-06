@@ -8,38 +8,39 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_productchannelsetting")
 public class BcaProductchannelsetting {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ChannelsettingID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer channelsettingId;
 
-    @Column
+    @Column(name="StoreName")
     private String storeName;
 
-    @Column
+    @Column(name="SalesPrice")
     private Double salesPrice;
 
-    @Column
+    @Column(name="ProductSKU")
     private String productSku;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "StoreID")
     private BcaStore store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getChannelsettingId() {

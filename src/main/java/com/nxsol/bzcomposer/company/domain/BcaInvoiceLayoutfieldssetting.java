@@ -5,9 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_invoice_layoutfieldssetting")
 public class BcaInvoiceLayoutfieldssetting {
 
     @Id
@@ -15,31 +16,31 @@ public class BcaInvoiceLayoutfieldssetting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name= "TemplateId")
     private Double templateId;
 
-    @Column(length = 50)
+    @Column(name= "FieldText", length = 50)
     private String fieldText;
 
-    @Column(length = 50)
+    @Column(name= "FieldTitle", length = 50)
     private String fieldTitle;
 
-    @Column
+    @Column(name= "IsFilled")
     private Boolean isFilled;
 
-    @Column
+    @Column(name= "XCoordinate")
     private Double xcoordinate;
 
-    @Column
+    @Column(name= "YCoordinate")
     private Double ycoordinate;
 
-    @Column
+    @Column(name= "Width")
     private Double width;
 
-    @Column
+    @Column(name= "Height")
     private Double height;
 
-    @Column
+    @Column(name= "printStatus")
     private Integer printStatus;
 
     public Long getId() {

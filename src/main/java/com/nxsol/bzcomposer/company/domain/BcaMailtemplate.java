@@ -5,26 +5,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_mailtemplate")
 public class BcaMailtemplate {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "TemplateID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer templateId;
 
-    @Column
+    @Column(name= "TemplateName")
     private String templateName;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "TemplateContent", columnDefinition = "longtext")
     private String templateContent;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "Subject", columnDefinition = "longtext")
     private String subject;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     public Integer getTemplateId() {

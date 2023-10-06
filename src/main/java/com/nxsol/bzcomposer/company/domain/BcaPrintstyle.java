@@ -5,17 +5,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_printstyle")
 public class BcaPrintstyle {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="StyleTypeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer styleTypeId;
 
-    @Column(length = 50)
+    @Column(name="Name", length = 50)
     private String name;
 
     public Integer getStyleTypeId() {

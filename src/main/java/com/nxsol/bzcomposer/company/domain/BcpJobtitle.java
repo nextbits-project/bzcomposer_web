@@ -10,27 +10,28 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_jobtitle")
 public class BcpJobtitle {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "JobTitleID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer jobTitleId;
 
-    @Column(length = 50)
+    @Column(name= "JobTitle", length = 50)
     private String jobTitle;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
     @OneToMany(mappedBy = "jobTitle")
     private Set<BcpEmployee> jobTitleBcpEmployees;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getJobTitleId() {

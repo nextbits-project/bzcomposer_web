@@ -5,29 +5,30 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity 
+@Table(name= "bca_customoptions")
 public class BcaCustomoptions {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "OptionId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer optionId;
 
-    @Column
+    @Column(name= "ProductId")
     private String productId;
 
-    @Column
+    @Column(name= "Title")
     private String title;
 
-    @Column
+    @Column(name= "InputType")
     private String inputType;
 
-    @Column
+    @Column(name= "IsRequired")
     private String isRequired;
 
-    @Column
+    @Column(name= "SortOrder")
     private Integer sortOrder;
 
     public Integer getOptionId() {

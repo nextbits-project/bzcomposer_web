@@ -9,13 +9,21 @@ package com.avibha.common.db;
 import java.sql.*;
 import java.util.ArrayList;
 import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.stereotype.Service;
+
 import com.avibha.common.log.Loger;
 
 /**
  * @author avibha
  * 
  */
+@Service
 public class SQLExecutor {
 
 	/** database connection */
@@ -60,6 +68,11 @@ public class SQLExecutor {
 		params = new ArrayList<Object>();
 	}
 
+	@Autowired
+	public SQLExecutor(DataSource dataSource) {
+		this.dataSourceH = dataSource;
+	}
+
 	/**
 	 * Getter for connection
 	 * 
@@ -74,22 +87,19 @@ public class SQLExecutor {
 	static {
 		dataSource = new BasicDataSource();
 		try {
-	       
+
 			InitialContext ic = new InitialContext();
-			 System.setProperty(InitialContext.INITIAL_CONTEXT_FACTORY,
-	                  "org.apache.naming.java.javaURLContextFactory");
-		/*	dataSource = new BasicDataSource();
-			dataSource.setDriverClassName((String) ic.lookup("java:comp/env/DriverClass"));
-			dataSource.setUrl((String) ic.lookup("java:comp/env/URL"));
-			dataSource.setUsername((String) ic.lookup("java:comp/env/UID"));
-			dataSource.setPassword((String) ic.lookup("java:comp/env/password"));
-			dataSource.setMaxIdle(10);
-			dataSource.setMaxTotal(100);
-			dataSource.setInitialSize(5);
-			dataSource.setValidationQuery("select 1");
-			dataSource.setTestOnBorrow(true);
-			*/
-			
+			System.setProperty(InitialContext.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
+			/*
+			 * dataSource = new BasicDataSource(); dataSource.setDriverClassName((String)
+			 * ic.lookup("java:comp/env/DriverClass")); dataSource.setUrl((String)
+			 * ic.lookup("java:comp/env/URL")); dataSource.setUsername((String)
+			 * ic.lookup("java:comp/env/UID")); dataSource.setPassword((String)
+			 * ic.lookup("java:comp/env/password")); dataSource.setMaxIdle(10);
+			 * dataSource.setMaxTotal(100); dataSource.setInitialSize(5);
+			 * dataSource.setValidationQuery("select 1"); dataSource.setTestOnBorrow(true);
+			 */
+
 			dataSource = new BasicDataSource();
 			dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 			dataSource.setUrl("jdbc:mysql://localhost:33060/namemaxx_bzc");
@@ -107,12 +117,61 @@ public class SQLExecutor {
 		}
 	}
 
-	public Connection getConnection() {
-		Connection connection = null;
+	
+//	public DataSource geDataSource() {
+//	    DriverManagerDataSource dataSourceH = new DriverManagerDataSource();
+//	    dataSourceH.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//	    dataSourceH.setUrl("jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+//	    dataSourceH.setUsername("root");
+//	    dataSourceH.setPassword("123");
+//	    return dataSourceH;
+//	}
+	
+	@Autowired
+	private DataSource dataSourceH;
+
+	public Connection getConnectionHibernate() {
 		try {
-//            connection = dataSource.getConnection();
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "123");
+//			dataSourceH= this.geDataSource();
+			return dataSourceH.getConnection();
+		} catch (SQLException ex) {
+			Loger.log(Loger.DEBUG, "Not able to create DB connection from Hibernate DataSource " + ex.getMessage());
+			return null;
+		}
+	}
+//	@Autowired
+//	private DataSource dataSourceHibernate;
+//
+//	public Connection getConnectionHibernate() {
+//		Connection con = null;
+//		try {
+//			if(dataSourceHibernate == null) {
+//			    throw new IllegalStateException("DataSource is null. It might not be initialized or injected properly.");
+//			}
+//			
+//			con = dataSourceHibernate.getConnection();
+//			// Your logic here
+//		} catch (SQLException ex) {
+//			System.out.println("Not able to create DB connection from Hibernate DataSource " + ex.getMessage());
+//			Loger.log(Loger.DEBUG, "Not able to create DB connection from Hibernate DataSource " + ex.getMessage());
+//			ex.printStackTrace();
+//		}
+//		return con;
+//	}
+
+	public Connection getConnection() {
+
+		Connection connection = null;
+
+		try {
+			// getting connection from Hibernate DataSource
+			connection = getConnectionHibernate();
+
+			// getting connection manually
+//			Class.forName("com.mysql.cj.jdbc.Driver");
+//			connection = DriverManager.getConnection(
+//					"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+//					"root", "123");
 //			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bcacom_bzc_demo","bcacom_bzc_demo","!passw0rd#12!");
 //			 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","db","myserverkonnect");
 		} catch (Exception ex) {

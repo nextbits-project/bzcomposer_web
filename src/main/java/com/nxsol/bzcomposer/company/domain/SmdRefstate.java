@@ -3,16 +3,17 @@ package com.nxsol.bzcomposer.company.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_refstate")
 public class SmdRefstate {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "StateCode", nullable = false, updatable = false)
     private String stateCode;
 
-    @Column
+    @Column(name= "State")
     private String state;
 
     public String getStateCode() {

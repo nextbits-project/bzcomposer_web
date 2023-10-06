@@ -10,23 +10,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_term")
 public class BcaTerm {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="TermID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer termId;
 
-    @Column(length = 50)
+    @Column(name="Name", length = 50)
     private String name;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
-    @Column
+    @Column(name="Days")
     private Integer days;
 
     @OneToMany(mappedBy = "term")
@@ -42,7 +43,7 @@ public class BcaTerm {
     private Set<BcaInvoiceshipped> termBcaInvoiceshippeds;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "term")

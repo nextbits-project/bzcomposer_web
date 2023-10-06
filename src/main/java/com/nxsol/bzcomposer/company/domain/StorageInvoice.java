@@ -9,245 +9,246 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "storage_invoice")
 public class StorageInvoice {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "InvoiceID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer invoiceId;
 
-    @Column
+    @Column(name= "OrderNum")
     private Integer orderNum;
 
-    @Column
+    @Column(name= "PONum")
     private Integer ponum;
 
-    @Column
+    @Column(name= "SONum")
     private Integer sonum;
 
-    @Column
+    @Column(name= "RcvNum")
     private Integer rcvNum;
 
-    @Column
+    @Column(name= "EstNum")
     private Integer estNum;
 
-    @Column(length = 35)
+    @Column(name= "RefNum", length = 35)
     private String refNum;
 
-    @Column
+    @Column(name= "Memo")
     private String memo;
 
-    @Column
+    @Column(name= "BillingAddrID")
     private Integer billingAddrId;
 
-    @Column
+    @Column(name= "ShippingAddrID")
     private Integer shippingAddrId;
 
-    @Column
+    @Column(name= "BSAddressID")
     private Integer bsaddressId;
 
-    @Column
+    @Column(name= "Weight")
     private Double weight;
 
-    @Column
+    @Column(name= "SubTotal")
     private Double subTotal;
 
-    @Column
+    @Column(name= "Tax")
     private Double tax;
 
-    @Column
+    @Column(name= "SH")
     private Double sh;
 
-    @Column
+    @Column(name= "Total")
     private Double total;
 
-    @Column
+    @Column(name= "AdjustedTotal")
     private Double adjustedTotal;
 
-    @Column
+    @Column(name= "PaidAmount")
     private Double paidAmount;
 
-    @Column
+    @Column(name= "Balance")
     private Double balance;
 
-    @Column
+    @Column(name= "Taxable")
     private Integer taxable;
 
-    @Column
+    @Column(name= "Shipped")
     private Integer shipped;
 
-    @Column
+    @Column(name= "IsReceived")
     private Boolean isReceived;
 
-    @Column
+    @Column(name= "IsPaymentCompleted")
     private Boolean isPaymentCompleted;
 
-    @Column
+    @Column(name= "FromPO")
     private Boolean fromPo;
 
-    @Column
+    @Column(name= "DateConfirmed")
     private OffsetDateTime dateConfirmed;
 
-    @Column
+    @Column(name= "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "invoiceStatus")
     private Integer invoiceStatus;
 
-    @Column(length = 50)
+    @Column(name= "shipservicelevel", length = 50)
     private String shipservicelevel;
 
-    @Column(length = 200)
+    @Column(name= "ShippingNote1", length = 200)
     private String shippingNote1;
 
-    @Column(length = 50)
+    @Column(name= "ShippingNote2", length = 50)
     private String shippingNote2;
 
-    @Column
+    @Column(name= "StoreTypeID")
     private Integer storeTypeId;
 
-    @Column(length = 50)
+    @Column(name= "ShipCarrier", length = 50)
     private String shipCarrier;
 
-    @Column
+    @Column(name= "IsPrinted")
     private Boolean isPrinted;
 
-    @Column
+    @Column(name= "IsEmailed")
     private Boolean isEmailed;
 
-    @Column
+    @Column(name= "AmazonGiftWrapType")
     private String amazonGiftWrapType;
 
-    @Column
+    @Column(name= "AmazonGiftMessageText")
     private String amazonGiftMessageText;
 
-    @Column(length = 50)
+    @Column(name= "TransactionID", length = 50)
     private String transactionId;
 
-    @Column
+    @Column(name = "TransactionType")
     private Integer transactionType;
 
-    @Column(length = 50)
+    @Column(name= "TrackingCode", length = 50)
     private String trackingCode;
 
-    @Column(length = 50)
+    @Column(name= "ShippingMethod", length = 50)
     private String shippingMethod;
 
-    @Column(length = 200)
+    @Column(name= "ShippingLabel", length = 200)
     private String shippingLabel;
 
-    @Column(length = 50)
+    @Column(name= "LabelPrinted", length = 50)
     private String labelPrinted;
 
-    @Column
+    @Column(name= "dropShipCustomerID")
     private Integer dropShipCustomerId;
 
-    @Column
+    @Column(name= "JobCategoryID")
     private Integer jobCategoryId;
 
-    @Column
+    @Column(name= "BillID")
     private Integer billId;
 
-    @Column
+    @Column(name= "isBillReceived")
     private Boolean isBillReceived;
 
-    @Column
+    @Column(name= "UpfrontAmount")
     private Double upfrontAmount;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "Note", columnDefinition = "longtext")
     private String note;
 
-    @Column
+    @Column(name= "BillDate")
     private String billDate;
 
-    @Column
+    @Column(name= "GiftAmount")
     private Double giftAmount;
 
-    @Column(length = 20)
+    @Column(name= "GiftCertificateCode", length = 20)
     private String giftCertificateCode;
 
-    @Column
+    @Column(name= "TotalCommission")
     private Double totalCommission;
 
-    @Column
+    @Column(name= "BankAccountID")
     private Integer bankAccountId;
 
-    @Column
+    @Column(name= "NoOfBoxes")
     private Integer noOfBoxes;
 
-    @Column
+    @Column(name= "ShipNumber")
     private String shipNumber;
 
-    @Column
+    @Column(name= "DateReceived")
     private OffsetDateTime dateReceived;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sales_tax_id")
+    @JoinColumn(name = "SalesTaxID")
     private BcaSalestax salesTax;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
+    @JoinColumn(name = "ServiceID")
     private BcaServicetype service;
 
  
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "StoreID")
     private BcaStore store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "term_id")
+    @JoinColumn(name = "TermID")
     private BcaTerm term;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "EmployeeID")
     private BcpEmployee employee;
 
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_type_id")
+    @JoinColumn(name = "InvoiceTypeID")
     private BcaInvoicetype invoiceType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sales_rep_id")
+    @JoinColumn(name = "SalesRepID")
     private BcaSalesrep salesRep;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "CategoryID")
     private BcaCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gateway_id")
+    @JoinColumn(name = "GatewayID")
     private BcaMasterpaymentgateways gateway;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_style_id")
+    @JoinColumn(name = "InvoiceStyleID")
     private BcaInvoicestyle invoiceStyle;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "message_id")
+    @JoinColumn(name = "MessageID")
     private BcaMessage message;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderid_id")
+    @JoinColumn(name = "orderid")
     private BcaOrdertemplate orderid;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_type_id")
+    @JoinColumn(name = "PaymentTypeID")
     private BcaPaymenttype paymentType;
 
     public Integer getInvoiceId() {

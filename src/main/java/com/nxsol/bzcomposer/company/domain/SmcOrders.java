@@ -9,115 +9,116 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.OffsetDateTime;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smc_orders")
 public class SmcOrders {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 50)
+    @Column(name= "OrderID", nullable = false, updatable = false, length = 50)
     private String orderId;
 
-    @Column(length = 50)
+    @Column(name= "PayPal_txn_id", length = 50)
     private String payPalTxnId;
 
-    @Column
+    @Column(name= "CustomerID")
     private Integer customerId;
 
-    @Column(length = 50)
+    @Column(name= "ShippingEmail", length = 50)
     private String shippingEmail;
 
-    @Column
+    @Column(name= "OrderDate")
     private OffsetDateTime orderDate;
 
-    @Column
+    @Column(name= "Discount")
     private Double discount;
 
-    @Column
+    @Column(name= "Total")
     private Double total;
 
-    @Column
+    @Column(name= "Tax")
     private Double tax;
 
-    @Column
+    @Column(name= "ShippingFee")
     private Double shippingFee;
 
-    @Column(length = 50)
+    @Column(name= "ShippingName", length = 50)
     private String shippingName;
 
-    @Column(length = 50)
+    @Column(name= "ShippingMethod", length = 50)
     private String shippingMethod;
 
-    @Column(length = 50)
+    @Column(name= "Receiver", length = 50)
     private String receiver;
 
-    @Column(length = 100)
+    @Column(name= "ShippingAddr", length = 100)
     private String shippingAddr;
 
-    @Column(length = 50)
+    @Column(name= "ShippingCity", length = 50)
     private String shippingCity;
 
-    @Column(length = 50)
+    @Column(name= "ShippingState", length = 50)
     private String shippingState;
 
-    @Column(length = 50)
+    @Column(name= "ShippingZip", length = 50)
     private String shippingZip;
 
-    @Column(length = 50)
+    @Column(name= "ShippingCountry", length = 50)
     private String shippingCountry;
 
-    @Column(length = 50)
+    @Column(name= "ShippingPhone", length = 50)
     private String shippingPhone;
 
-    @Column(length = 50)
+    @Column(name= "PaymentMethod", length = 50)
     private String paymentMethod;
 
-    @Column(length = 50)
+    @Column(name= "CardName", length = 50)
     private String cardName;
 
-    @Column(length = 50)
+    @Column(name= "CardNo", length = 50)
     private String cardNo;
 
-    @Column(length = 50)
+    @Column(name= "CardExpire", length = 50)
     private String cardExpire;
 
-    @Column(length = 50)
+    @Column(name= "CardHolder", length = 50)
     private String cardHolder;
 
-    @Column(length = 50)
+    @Column(name= "CVV2", length = 50)
     private String cvv2;
 
-    @Column(length = 100)
+    @Column(name= "BillingAddr", length = 100)
     private String billingAddr;
 
-    @Column(length = 50)
+    @Column(name= "BillingCity", length = 50)
     private String billingCity;
 
-    @Column(length = 50)
+    @Column(name= "BillingState", length = 50)
     private String billingState;
 
-    @Column(length = 50)
+    @Column(name= "BillingZip", length = 50)
     private String billingZip;
 
-    @Column(length = 50)
+    @Column(name = "BillingCountry", length = 50)
     private String billingCountry;
 
-    @Column(length = 50)
+    @Column(name= "BillingPhone", length = 50)
     private String billingPhone;
 
-    @Column(length = 50)
+    @Column(name= "BillingEmail", length = 50)
     private String billingEmail;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "SMCNote", columnDefinition = "longtext")
     private String smcnote;
 
-    @Column(length = 50)
+    @Column(name= "isChecked", length = 50)
     private String isChecked;
 
-    @Column(length = 50)
+    @Column(name= "Status", length = 50)
     private String status;
 
-    @Column
+    @Column(name= "DealerID")
     private Integer dealerId;
 
     @OneToMany(mappedBy = "orderid")
@@ -139,7 +140,7 @@ public class SmcOrders {
     private Set<BtSales> orderBtSaless;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public String getOrderId() {

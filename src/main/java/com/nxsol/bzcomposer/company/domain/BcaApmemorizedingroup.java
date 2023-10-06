@@ -9,24 +9,25 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_apmemorizedingroup")
 public class BcaApmemorizedingroup {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "MemorizeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer memorizeId;
 
-    @Column(nullable = false)
+    @Column(name = "BillingGroupID", nullable = false)
     private Integer billingGroupId;
 
-    @Column
+    @Column(name = "DateAdded")
     private OffsetDateTime dateAdded;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getMemorizeId() {

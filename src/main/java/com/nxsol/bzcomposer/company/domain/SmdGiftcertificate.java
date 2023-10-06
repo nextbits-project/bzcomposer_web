@@ -8,41 +8,42 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_giftcertificate")
 public class SmdGiftcertificate {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 10)
+    @Column(name= "gcID" ,nullable = false, updatable = false, length = 10)
     private String gcId;
 
-    @Column(length = 50)
+    @Column(name= "gcName" ,length = 50)
     private String gcName;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "gcDetails" ,columnDefinition = "longtext")
     private String gcDetails;
 
-    @Column
+    @Column(name= "gcPrice")
     private Double gcPrice;
 
-    @Column
+    @Column(name= "gcRedeemValue")
     private Double gcRedeemValue;
 
-    @Column
+    @Column(name= "gcUseDays")
     private Integer gcUseDays;
 
-    @Column
+    @Column(name= "gcIsDeleted")
     private Integer gcIsDeleted;
 
-    @Column(length = 150)
+    @Column(name= "gcImage", length = 150)
     private String gcImage;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "gcNote", columnDefinition = "longtext")
     private String gcNote;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "gc")

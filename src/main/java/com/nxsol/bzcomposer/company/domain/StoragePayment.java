@@ -9,88 +9,89 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "storage_payment")
 public class StoragePayment {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "PaymentID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer paymentId;
 
-    @Column
+    @Column(name= "Amount")
     private Double amount;
 
-    @Column
+    @Column(name= "PayerID")
     private Integer payerId;
 
-    @Column
+    @Column(name= "PayeeID")
     private Integer payeeId;
 
-    @Column
+    @Column(name= "AccountID")
     private Integer accountId;
 
-    @Column
+    @Column(name= "InvoiceID")
     private Integer invoiceId;
 
-    @Column
+    @Column(name= "CategoryID")
     private Integer categoryId;
 
-    @Column
+    @Column(name= "CompanyID")
     private Integer companyId;
 
-    @Column
+    @Column(name= "PayFromBalance")
     private Double payFromBalance;
 
-    @Column
+    @Column(name= "PayToBalance")
     private Double payToBalance;
 
-    @Column(nullable = false)
+    @Column(name= "DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "IsToBePrinted")
     private Boolean isToBePrinted;
 
-    @Column
+    @Column(name= "isNeedtoDeposit")
     private Boolean isNeedtoDeposit;
 
-    @Column(length = 50)
+    @Column(name= "CheckNumber", length = 50)
     private String checkNumber;
 
-    @Column
+    @Column(name= "Deleted")
     private Boolean deleted;
 
-    @Column
+    @Column(name= "PayableID")
     private Integer payableId;
 
-    @Column
+    @Column(name= "RmaNo")
     private Integer rmaNo;
 
-    @Column
+    @Column(name= "RmaItemID")
     private Integer rmaItemId;
 
-    @Column(length = 50)
+    @Column(name= "TransactionID", length = 50)
     private String transactionId;
 
-    @Column
+    @Column(name= "BillNum")
     private Integer billNum;
 
-    @Column
+    @Column(name= "Priority")
     private Integer priority;
 
-    @Column
+    @Column(name= "TransactionType")
     private Integer transactionType;
 
-    @Column
+    @Column(name= "AccountCategoryID")
     private Integer accountCategoryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_type_id")
+    @JoinColumn(name = "PaymentTypeID")
     private BcaPaymenttype paymentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private StorageClientvendor clientVendor;
 
     public Integer getPaymentId() {

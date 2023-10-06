@@ -10,66 +10,67 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_payroll")
 public class BcpPayroll {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "PayrollDate", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long payrollDate;
 
-    @Column(nullable = false)
+    @Column(name= "EmployeeID", nullable = false)
     private Integer employeeId;
 
-    @Column
+    @Column(name= "WorkFrom")
     private OffsetDateTime workFrom;
 
-    @Column
+    @Column(name= "WorkTo")
     private OffsetDateTime workTo;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "NetAmount", precision = 23, scale = 4)
     private BigDecimal netAmount;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "GrossAmount", precision = 23, scale = 4)
     private BigDecimal grossAmount;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "FT_SST", precision = 23, scale = 4)
     private BigDecimal ftSst;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "FT_Medicare", precision = 23, scale = 4)
     private BigDecimal ftMedicare;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "FT_FIT", precision = 23, scale = 4)
     private BigDecimal ftFit;
 
-    @Column(length = 2)
+    @Column(name= "StateFiled", length = 2)
     private String stateFiled;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "ST_SIT", precision = 23, scale = 4)
     private BigDecimal stSit;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "ST_Other1", precision = 23, scale = 4)
     private BigDecimal stOther1;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "ST_Other2", precision = 23, scale = 4)
     private BigDecimal stOther2;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "CompanyTaxAmount", precision = 23, scale = 4)
     private BigDecimal companyTaxAmount;
 
-    @Column(columnDefinition = "longtext")
+    @Column(name= "CompanyTaxDetail", columnDefinition = "longtext")
     private String companyTaxDetail;
 
-    @Column
+    @Column(name= "CheckPrinted")
     private Boolean checkPrinted;
 
-    @Column
+    @Column(name= "CheckPrintedDate")
     private OffsetDateTime checkPrintedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Long getPayrollDate() {

@@ -8,36 +8,37 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_inventorycollectedfromstore")
 public class BcaInventorycollectedfromstore {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 30)
+    @Column(name= "ASIN", nullable = false, updatable = false, length = 30)
     private String asin;
 
-    @Column(length = 50)
+    @Column(name= "OrderItemID", length = 50)
     private String orderItemId;
 
-    @Column(length = 50)
+    @Column(name= "SKU", length = 50)
     private String sku;
 
-    @Column
+    @Column(name= "ProductName")
     private String productName;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "SalePrice", precision = 23, scale = 4)
     private BigDecimal salePrice;
 
-    @Column(nullable = false)
+    @Column(name= "DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "OrderID")
     private SmcOrders order;
 
     public String getAsin() {

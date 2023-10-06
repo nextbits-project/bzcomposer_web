@@ -8,40 +8,41 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_template_config")
 public class BcaTemplateConfig {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name="baseTemplateId")
     private Integer baseTemplateId;
 
-    @Column
+    @Column(name="templateName")
     private String templateName;
 
-    @Column
+    @Column(name="templateTypeId")
     private Integer templateTypeId;
 
-    @Column
+    @Column(name="templateStyleTypeId")
     private Integer templateStyleTypeId;
 
-    @Column
+    @Column(name="status")
     private Integer status;
 
-    @Column
+    @Column(name="templateCatagory")
     private Integer templateCatagory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "companyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "template_id")
+    @JoinColumn(name = "templateId")
     private BcaInvoiceTemplate template;
 
     public Integer getId() {

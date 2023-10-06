@@ -8,9 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_invoice_layoutcolumnsscreensetting")
 public class BcaInvoiceLayoutcolumnsscreensetting {
 
     @Id
@@ -18,50 +19,50 @@ public class BcaInvoiceLayoutcolumnsscreensetting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name= "Tax")
     private Boolean tax;
 
-    @Column
+    @Column(name= "Item")
     private Boolean item;
 
-    @Column(name = "\"description\"")
+    @Column(name = "Description")
     private Boolean description;
 
-    @Column
+    @Column(name= "Quantity")
     private Boolean quantity;
 
-    @Column
+    @Column(name= "Rate")
     private Boolean rate;
 
-    @Column
+    @Column(name= "Amount")
     private Boolean amount;
 
-    @Column
+    @Column(name= "RatePrice")
     private Boolean ratePrice;
 
-    @Column
+    @Column(name= "UnitPrice")
     private Boolean unitPrice;
 
-    @Column
+    @Column(name= "SerialNo")
     private Boolean serialNo;
 
-    @Column
+    @Column(name= "Weight")
     private Boolean weight;
 
-    @Column
+    @Column(name= "Unit")
     private Boolean unit;
 
-    @Column
+    @Column(name= "Consignor")
     private Boolean consignor;
 
-    @Column(name = "\"option\"")
+    @Column(name = "Option")
     private Boolean option;
 
-    @Column
+    @Column(name= "COLOR/Q'TY(ORDER)")
     private Boolean colorQTyOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "template_id")
+    @JoinColumn(name = "TemplateId")
     private BcaInvoiceTemplate template;
 
     public Long getId() {

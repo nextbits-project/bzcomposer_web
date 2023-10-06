@@ -8,27 +8,28 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_peritempricelevel")
 public class BcaPeritempricelevel {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ItemPriceID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer itemPriceId;
 
-    @Column(length = 50)
+    @Column(name="InventoryCode", length = 50)
     private String inventoryCode;
 
-    @Column
+    @Column(name="CustomPricePercent")
     private Double customPricePercent;
 
-    @Column
+    @Column(name="ParentID")
     private Integer parentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     public Integer getItemPriceId() {

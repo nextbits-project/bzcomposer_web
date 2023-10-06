@@ -10,23 +10,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_shipcarrier")
 public class BcaShipcarrier {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="ShipCarrierID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer shipCarrierId;
 
-    @Column
+    @Column(name="Name")
     private String name;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
-    @Column
+    @Column(name="ParentID")
     private Integer parentId;
 
     @OneToMany(mappedBy = "shipCarrier")
@@ -42,7 +43,7 @@ public class BcaShipcarrier {
     private Set<BcaInvoiceshipped> shipCarrierBcaInvoiceshippeds;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @OneToMany(mappedBy = "shipCarrier")

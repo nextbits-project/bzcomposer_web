@@ -8,30 +8,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bizcal_reminder")
 public class BizcalReminder {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 100)
+    @Column(name= "BillingType", length = 100)
     private String billingType;
 
-    @Column
+    @Column(name= "PaymentDueDay")
     private Integer paymentDueDay;
 
-    @Column
+    @Column(name= "IsNotify")
     private Boolean isNotify;
 
-    @Column
+    @Column(name= "NotifyDays")
     private Integer notifyDays;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getId() {

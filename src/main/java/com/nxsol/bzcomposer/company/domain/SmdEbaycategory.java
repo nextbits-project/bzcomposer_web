@@ -5,26 +5,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "smd_cvinfo")
 public class SmdEbaycategory {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "eBayCategoryID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer eBayCategoryId;
 
-    @Column
+    @Column(name= "smdcategoryName")
     private String smdcategoryName;
 
-    @Column
+    @Column(name= "smdCategoryID")
     private Integer smdCategoryId;
 
-    @Column
+    @Column(name= "level")
     private Integer level;
 
-    @Column
+    @Column(name= "isleaf")
     private Integer isleaf;
 
     public Integer getEBayCategoryId() {

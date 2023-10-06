@@ -8,39 +8,40 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_receicedtype")
 public class BcaReceicedtype {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="PaymentTypeID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer paymentTypeId;
 
-    @Column(length = 50)
+    @Column(name="Name", length = 50)
     private String name;
 
-    @Column(length = 50)
+    @Column(name="Type", length = 50)
     private String type;
 
-    @Column
+    @Column(name="CCTypeID")
     private Integer cctypeId;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
-    @Column
+    @Column(name="BankAcctID")
     private Integer bankAcctId;
 
-    @Column
+    @Column(name="TypeCategory")
     private Integer typeCategory;
 
-    @Column
+    @Column(name="IsDefault")
     private Boolean isDefault;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getPaymentTypeId() {

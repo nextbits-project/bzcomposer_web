@@ -5,32 +5,33 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 
 @Entity 
+@Table(name= "bca_customfile")
 public class BcaCustomfile {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name= "Price")
     private Integer price;
 
-    @Column
+    @Column(name= "PriceType")
     private String priceType;
 
-    @Column
+    @Column(name= "SKU")
     private String sku;
 
-    @Column
+    @Column(name= "AllowedFileEx")
     private String allowedFileEx;
 
-    @Column
+    @Column(name= "MaxImageWidth")
     private Integer maxImageWidth;
 
-    @Column
+    @Column(name= "MaxImageheight")
     private Integer maxImageheight;
 
     public Integer getId() {

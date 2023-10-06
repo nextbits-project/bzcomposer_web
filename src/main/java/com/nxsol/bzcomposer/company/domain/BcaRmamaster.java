@@ -9,54 +9,55 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name="bca_rmamaster")
 public class BcaRmamaster {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name="RmaID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rmaId;
 
-    @Column
+    @Column(name="RmaNo")
     private Integer rmaNo;
 
-    @Column
+    @Column(name="OrderNo")
     private Integer orderNo;
 
-    @Column
+    @Column(name="RmaQty")
     private Integer rmaQty;
 
-    @Column
+    @Column(name="DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column(length = 50)
+    @Column(name="Status", length = 50)
     private String status;
 
-    @Column(length = 150)
+    @Column(name="Memo", length = 150)
     private String memo;
 
-    @Column
+    @Column(name="RefRMANo")
     private Integer refRmano;
 
-    @Column
+    @Column(name="Active")
     private Integer active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_vendor_id")
+    @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
+    @JoinColumn(name = "InvoiceID")
     private BcaInvoice invoice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_type_id")
+    @JoinColumn(name = "InvoiceTypeID")
     private BcaInvoicetype invoiceType;
 
     public Integer getRmaId() {

@@ -9,52 +9,53 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bca_inventorysupplierdetail")
 public class BcaInventorysupplierdetail {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "ID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 50)
+    @Column(name= "SupplierID", length = 50)
     private String supplierId;
 
-    @Column
+    @Column(name= "SupplierPurchasePrice")
     private Double supplierPurchasePrice;
 
-    @Column
+    @Column(name= "DateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column
+    @Column(name= "SupplierOrderUnit")
     private Integer supplierOrderUnit;
 
-    @Column(length = 50)
+    @Column(name= "SupplierBarCode", length = 50)
     private String supplierBarCode;
 
-    @Column(length = 50)
+    @Column(name= "SupplierSKU", length = 50)
     private String supplierSku;
 
-    @Column
+    @Column(name= "OrderQty")
     private Integer orderQty;
 
-    @Column
+    @Column(name= "SupplierNumber")
     private Integer supplierNumber;
 
-    @Column
+    @Column(name= "Deleted")
     private Integer deleted;
 
-    @Column
+    @Column(name= "SupplierCommission")
     private Double supplierCommission;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventory_id")
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
     public Integer getId() {

@@ -9,51 +9,52 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "storage_useractivity")
 public class StorageUseractivity {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "UserActivityID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name= "dateAdded")
     private OffsetDateTime dateAdded;
 
-    @Column(length = 50)
+    @Column(name= "InTime", length = 50)
     private String inTime;
 
-    @Column(length = 50)
+    @Column(name= "OutTime", length = 50)
     private String outTime;
 
-    @Column(length = 100)
+    @Column(name= "Module", length = 100)
     private String modulee;
 
-    @Column
+    @Column(name= "Activity")
     private String activity;
 
-    @Column
+    @Column(name= "DataID")
     private Integer dataId;
 
-    @Column(length = 100)
+    @Column(name= "DataDescription", length = 100)
     private String dataDescription;
 
-    @Column
+    @Column(name= "DataAmount")
     private Double dataAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "UserID")
     private BcaUser user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_activity_id", nullable = false)
-    private BcaUseractivity userActivity;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "UserActivityID", nullable = false)
+//    private BcaUseractivity userActivity;
 
     public Long getId() {
         return id;
@@ -143,12 +144,12 @@ public class StorageUseractivity {
         this.user = user;
     }
 
-    public BcaUseractivity getUserActivity() {
-        return userActivity;
-    }
-
-    public void setUserActivity(final BcaUseractivity userActivity) {
-        this.userActivity = userActivity;
-    }
+//    public BcaUseractivity getUserActivity() {
+//        return userActivity;
+//    }
+//
+//    public void setUserActivity(final BcaUseractivity userActivity) {
+//        this.userActivity = userActivity;
+//    }
 
 }

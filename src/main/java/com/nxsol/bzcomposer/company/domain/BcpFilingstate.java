@@ -9,75 +9,76 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "bcp_filingstate")
 public class BcpFilingstate {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name= "FilingStateID", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer filingStateId;
 
-    @Column(length = 50)
+    @Column(name= "FilingState", length = 50)
     private String filingState;
 
-    @Column(length = 50)
+    @Column(name= "FilingStateTaxID", length = 50)
     private String filingStateTaxId;
 
-    @Column
+    @Column(name= "UseSIT")
     private Boolean useSit;
 
-    @Column
+    @Column(name= "SITTaxYear")
     private Integer sittaxYear;
 
-    @Column
+    @Column(name= "SITRate")
     private Double sitrate;
 
-    @Column
+    @Column(name= "UseOtherStateTaxName1")
     private Boolean useOtherStateTaxName1;
 
-    @Column(length = 50)
+    @Column(name= "OtherStateTaxName1", length = 50)
     private String otherStateTaxName1;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "OtherStateTaxRate1", precision = 23, scale = 4)
     private BigDecimal otherStateTaxRate1;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "OtherStateTaxLimit1", precision = 23, scale = 4)
     private BigDecimal otherStateTaxLimit1;
 
-    @Column
+    @Column(name= "UseOtherStateTaxName2")
     private Boolean useOtherStateTaxName2;
 
-    @Column(length = 50)
+    @Column(name= "OtherStateTaxName2", length = 50)
     private String otherStateTaxName2;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "OtherStateTaxLimit2", precision = 23, scale = 4)
     private BigDecimal otherStateTaxLimit2;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "OtherStateTaxRate2", precision = 23, scale = 4)
     private BigDecimal otherStateTaxRate2;
 
-    @Column
+    @Column(name= "UseOtherStateTaxName3")
     private Boolean useOtherStateTaxName3;
 
-    @Column(length = 50)
+    @Column(name= "OtherStateTaxName3", length = 50)
     private String otherStateTaxName3;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "OtherStateTaxLimit3", precision = 23, scale = 4)
     private BigDecimal otherStateTaxLimit3;
 
-    @Column(precision = 23, scale = 4)
+    @Column(name= "OtherStateTaxRate3", precision = 23, scale = 4)
     private BigDecimal otherStateTaxRate3;
 
-    @Column
+    @Column(name= "Active")
     private Integer active;
 
-    @Column
+    @Column(name= "SetAsDefault")
     private Boolean setAsDefault;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
     public Integer getFilingStateId() {
