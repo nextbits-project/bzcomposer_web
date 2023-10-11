@@ -27,10 +27,16 @@ import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,15 +44,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class SalesController {
-
+	
 	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
 			RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,

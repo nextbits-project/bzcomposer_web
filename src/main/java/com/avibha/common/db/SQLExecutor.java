@@ -117,47 +117,28 @@ public class SQLExecutor {
 		}
 	}
 
-	
-//	public DataSource geDataSource() {
-//	    DriverManagerDataSource dataSourceH = new DriverManagerDataSource();
-//	    dataSourceH.setDriverClassName("com.mysql.cj.jdbc.Driver");
-//	    dataSourceH.setUrl("jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
-//	    dataSourceH.setUsername("root");
-//	    dataSourceH.setPassword("123");
-//	    return dataSourceH;
-//	}
-	
+	public DataSource geDataSource() {
+		DriverManagerDataSource dataSourceH = new DriverManagerDataSource();
+		dataSourceH.setDriverClassName("com.mysql.cj.jdbc.Driver");
+		dataSourceH.setUrl(
+				"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+		dataSourceH.setUsername("root");
+		dataSourceH.setPassword("123");
+		return dataSourceH;
+	}
+
 	@Autowired
 	private DataSource dataSourceH;
 
 	public Connection getConnectionHibernate() {
 		try {
-//			dataSourceH= this.geDataSource();
+			dataSourceH = this.geDataSource();
 			return dataSourceH.getConnection();
 		} catch (SQLException ex) {
 			Loger.log(Loger.DEBUG, "Not able to create DB connection from Hibernate DataSource " + ex.getMessage());
 			return null;
 		}
 	}
-//	@Autowired
-//	private DataSource dataSourceHibernate;
-//
-//	public Connection getConnectionHibernate() {
-//		Connection con = null;
-//		try {
-//			if(dataSourceHibernate == null) {
-//			    throw new IllegalStateException("DataSource is null. It might not be initialized or injected properly.");
-//			}
-//			
-//			con = dataSourceHibernate.getConnection();
-//			// Your logic here
-//		} catch (SQLException ex) {
-//			System.out.println("Not able to create DB connection from Hibernate DataSource " + ex.getMessage());
-//			Loger.log(Loger.DEBUG, "Not able to create DB connection from Hibernate DataSource " + ex.getMessage());
-//			ex.printStackTrace();
-//		}
-//		return con;
-//	}
 
 	public Connection getConnection() {
 
@@ -165,13 +146,13 @@ public class SQLExecutor {
 
 		try {
 			// getting connection from Hibernate DataSource
-			connection = getConnectionHibernate();
+//			connection = getConnectionHibernate();
 
 			// getting connection manually
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//			connection = DriverManager.getConnection(
-//					"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
-//					"root", "123");
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+					"root", "123");
 //			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bcacom_bzc_demo","bcacom_bzc_demo","!passw0rd#12!");
 //			 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","db","myserverkonnect");
 		} catch (Exception ex) {

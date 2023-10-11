@@ -9,13 +9,10 @@ import javax.persistence.Table;
 
 import com.nxsol.bizcomposer.common.ClientVendorHasService;
 
-@Entity
-@Table(name = "bca_clientvendor")
+
 public class ClientVendor {
+
 	
-	@Id
-	@Column(name = "ClientVendorID")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int cvID = -1;
 
 	private String Name = "";

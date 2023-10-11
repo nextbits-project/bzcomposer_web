@@ -21,10 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
+import com.avibha.bizcomposer.repository.ClientVendorRepository;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
@@ -35,19 +37,28 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
+import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
+import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
+import com.nxsol.bzcomposer.company.repos.CityStateZipRepository;
+import com.nxsol.bzcomposer.company.repos.CountryRepository;
+import com.nxsol.bzcomposer.company.repos.StateRepository;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /*
  * 
  */
-public class CustomerInfoDao {
 
-	// Getting customerList
-	public ArrayList customerDetails(String compId) {
+public class CustomerInfoDao {
+	
+	public ArrayList<CustomerDto> customerDetails(String compId) {
+
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();

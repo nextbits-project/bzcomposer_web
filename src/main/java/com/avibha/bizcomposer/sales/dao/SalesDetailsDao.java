@@ -26,6 +26,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,7 @@ import javax.servlet.http.HttpSession;
 import java.sql.*;
 import java.util.*;
 
+
 public class SalesDetailsDao {
 
 	public void getdataManager(HttpServletRequest request) {
@@ -41,15 +44,15 @@ public class SalesDetailsDao {
 		String compId = (String) sess.getAttribute("CID");
 		SalesInfo sales = new SalesInfo();
 		request.setAttribute("customerTitle", sales.getCustomerTitle(compId)); // to get customer title
-		request.setAttribute("SalesRep", sales.getSalesRep(compId));		// to get sales rep
-		request.setAttribute("salesTerms", sales.getTerms(compId));		// to get customer title
-		request.setAttribute("SalesCatType", sales.getCatType(compId)); 		// to get customer title
-		request.setAttribute("SalesLocation", sales.getLocation(compId)); 	// to get customer title
+		request.setAttribute("SalesRep", sales.getSalesRep(compId)); // to get sales rep
+		request.setAttribute("salesTerms", sales.getTerms(compId)); // to get customer title
+		request.setAttribute("SalesCatType", sales.getCatType(compId)); // to get customer title
+		request.setAttribute("SalesLocation", sales.getLocation(compId)); // to get customer title
 		request.setAttribute("SalesPaymentMethod", sales.getPaymentType(compId)); // to get getPaymentType
 		request.setAttribute("SalesReceivedType", sales.getReceivedType(compId)); // to get customer title
-		request.setAttribute("SalesMessage", sales.getMessage(compId)); 		// to get customer title
+		request.setAttribute("SalesMessage", sales.getMessage(compId)); // to get customer title
 		request.setAttribute("CreditCardType", sales.getCreditCard(compId)); // to get customer title
-		request.setAttribute("SalesTax", sales.getTax(compId));		// to get customer title
+		request.setAttribute("SalesTax", sales.getTax(compId)); // to get customer title
 		request.setAttribute("Via", sales.getVia(compId));
 	}
 
@@ -57,23 +60,33 @@ public class SalesDetailsDao {
 		String compId = (String) request.getSession().getAttribute("CID");
 		CustomerInfoDao customer = new CustomerInfoDao();
 
-		customerDto.setTaxAble( "on".equalsIgnoreCase(request.getParameter("isTaxable"))?"1":"0" );
-		customerDto.setIsclient( "on".equalsIgnoreCase(request.getParameter("isAlsoClient"))?"1":"2" );	// 1: Customer+Vendor, 2: Customer, 3: Vendor
-		customerDto.setCvTypeID( "on".equalsIgnoreCase(request.getParameter("isAlsoClient"))?1:2 );	// 1: Customer+Vendor, 2: Customer, 3: Vendor
-		customerDto.setFsUseIndividual( "on".equalsIgnoreCase(request.getParameter("UseIndividualFinanceCharges"))?"1":"0" );
-		customerDto.setFsAssessFinanceCharge( "on".equalsIgnoreCase(request.getParameter("AssessFinanceChk"))?"1":"0" );
-		customerDto.setFsMarkFinanceCharge( "on".equalsIgnoreCase(request.getParameter("FChargeInvoiceChk"))?"1":"0" );
+		customerDto.setTaxAble("on".equalsIgnoreCase(request.getParameter("isTaxable")) ? "1" : "0");
+		customerDto.setIsclient("on".equalsIgnoreCase(request.getParameter("isAlsoClient")) ? "1" : "2"); // 1:
+																											// Customer+Vendor,
+																											// 2:
+																											// Customer,
+																											// 3: Vendor
+		customerDto.setCvTypeID("on".equalsIgnoreCase(request.getParameter("isAlsoClient")) ? 1 : 2); // 1:
+																										// Customer+Vendor,
+																										// 2: Customer,
+																										// 3: Vendor
+		customerDto.setFsUseIndividual(
+				"on".equalsIgnoreCase(request.getParameter("UseIndividualFinanceCharges")) ? "1" : "0");
+		customerDto
+				.setFsAssessFinanceCharge("on".equalsIgnoreCase(request.getParameter("AssessFinanceChk")) ? "1" : "0");
+		customerDto
+				.setFsMarkFinanceCharge("on".equalsIgnoreCase(request.getParameter("FChargeInvoiceChk")) ? "1" : "0");
 //		customerDto.setStateName(compId);
 //		customerDto.setCountryName(compId);
 //		customerDto.setCityName(compId);
-		try{
+		try {
 			boolean addCust = customer.insertCustomer(customerDto, compId);
-			if(addCust){
-				request.setAttribute("SaveStatus",new ActionMessage("Customer Information is Successfully Added!"));
+			if (addCust) {
+				request.setAttribute("SaveStatus", new ActionMessage("Customer Information is Successfully Added!"));
 				request.getSession().setAttribute("actionMsg", "Customer Information is Successfully Added!");
 			}
-		}catch (Exception e) {
-			request.setAttribute("SaveStatus",new ActionMessage("Customer Information is Not Insert !."));
+		} catch (Exception e) {
+			request.setAttribute("SaveStatus", new ActionMessage("Customer Information is Not Insert !."));
 			request.getSession().setAttribute("actionMsg", "Customer Information is Not Insert!");
 			Loger.log(e.toString());
 		}
@@ -85,9 +98,9 @@ public class SalesDetailsDao {
 		String cid = (String) sess.getAttribute("CID");
 		String countryID = ConstValue.countryID;
 		String stateID = ConstValue.stateID;
-		String action  = ConstValue.hateNull(request.getParameter("tabid"));
+		String action = ConstValue.hateNull(request.getParameter("tabid"));
 		if (action.equalsIgnoreCase("editCustomer")) {
-			CustomerDto customer = (CustomerDto)request.getAttribute("CustomerDetails");
+			CustomerDto customer = (CustomerDto) request.getAttribute("CustomerDetails");
 			countryID = customer.getCountry();
 			stateID = customer.getState();
 			request.setAttribute("stateList2", cs.getStateList(customer.getBscountry()));
@@ -127,11 +140,11 @@ public class SalesDetailsDao {
 
 		// VendorCategoryList List
 		VendorCategory cv = new VendorCategory();
-		request.setAttribute("VendorCategoryList",cv.getCVCategoryList(cid));
-		
-		//customerGroupList List
+		request.setAttribute("VendorCategoryList", cv.getCVCategoryList(cid));
+
+		// customerGroupList List
 		request.setAttribute("customerGroupList", cv.getCustomerGroupList());
-		
+
 		/* Item List */
 		String compId = (String) request.getSession().getAttribute("CID");
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
@@ -143,9 +156,7 @@ public class SalesDetailsDao {
 		customer.getServices(request, cid);
 	}
 
-
-	public void addSupplierDetails(HttpServletRequest request) 
-	{
+	public void addSupplierDetails(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String cid = (String) sess.getAttribute("CID");
 		// Title List
@@ -155,8 +166,8 @@ public class SalesDetailsDao {
 		// country List
 		CountryState cs = new CountryState();
 		request.setAttribute("cList", cs.getCountry());
-		
-		//state List
+
+		// state List
 		CountryState cs1 = new CountryState();
 		request.setAttribute("sList", cs1.getStates(cid));
 
@@ -179,23 +190,22 @@ public class SalesDetailsDao {
 		// CreditCard List
 		CreditCard cc = new CreditCard();
 		request.setAttribute("CreditCardList", cc.getCCTypeList(cid));
-		
-		//CreditTerm List
+
+		// CreditTerm List
 		request.setAttribute("CreditTermList", cc.getCreditTermList(cid));
-		
+
 		ItemInfoDao item = new ItemInfoDao();
 		ArrayList accountList = new ArrayList();
 		accountList = item.fillAccountList(cid);
 		sess.setAttribute("AccountList", accountList);
 
 	}
-	
-	public ArrayList addServices(String companyID) 
-	{
+
+	public ArrayList addServices(String companyID) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		// boolean ret = false;
-		Connection con = null ;
-		PreparedStatement pstmt=null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		if (db == null)
@@ -211,14 +221,12 @@ public class SalesDetailsDao {
 			pstmt.setString(1, companyID);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new LabelValueBean(rs
-						.getString("ServiceName"), rs.getString("ServiceID")));
+				arr.add(new LabelValueBean(rs.getString("ServiceName"), rs.getString("ServiceID")));
 			}
 			pstmt.close();
 			rs.close();
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class SalesDetail and  method -addServices "
-					+ " " + ee.toString());
+			Loger.log(2, "Error in  Class SalesDetail and  method -addServices " + " " + ee.toString());
 		} finally {
 			db.close(con);
 
@@ -233,53 +241,61 @@ public class SalesDetailsDao {
 		Statement stmt = null;
 		try {
 			stmt = con.createStatement();
-			if(configDto.getCustTitleID() > 0) {
+			if (configDto.getCustTitleID() > 0) {
 				stmt.addBatch("UPDATE bca_title SET IsDefault=0 WHERE IsDefault=1");
 				stmt.addBatch("UPDATE bca_title SET IsDefault=1 WHERE TitleID=" + configDto.getCustTitleID());
 			}
-			if(configDto.getShippingViaID() > 0) {
+			if (configDto.getShippingViaID() > 0) {
 				stmt.addBatch("UPDATE bca_shipcarrier SET IsDefault=0 WHERE IsDefault=1");
-				stmt.addBatch("UPDATE bca_shipcarrier SET IsDefault=1 WHERE ShipCarrierID=" + configDto.getShippingViaID());
+				stmt.addBatch(
+						"UPDATE bca_shipcarrier SET IsDefault=1 WHERE ShipCarrierID=" + configDto.getShippingViaID());
 			}
-			if(configDto.getSalesRepId() > 0) {
+			if (configDto.getSalesRepId() > 0) {
 				stmt.addBatch("UPDATE bca_salesrep SET IsDefault=0 WHERE IsDefault=1");
 				stmt.addBatch("UPDATE bca_salesrep SET IsDefault=1 WHERE SalesRepID=" + configDto.getSalesRepId());
 			}
-			if(configDto.getSelectedTermId() > 0) {
+			if (configDto.getSelectedTermId() > 0) {
 				stmt.addBatch("UPDATE bca_term SET IsDefault=0 WHERE IsDefault=1");
 				stmt.addBatch("UPDATE bca_term SET IsDefault=1 WHERE TermID=" + configDto.getSelectedTermId());
 			}
-			if(configDto.getBusinessTypeId() > 0) {
+			if (configDto.getBusinessTypeId() > 0) {
 				stmt.addBatch("UPDATE bca_cvcategory SET IsDefault=0 WHERE IsDefault=1");
-				stmt.addBatch("UPDATE bca_cvcategory SET IsDefault=1 WHERE CVCategoryID=" + configDto.getBusinessTypeId());
+				stmt.addBatch(
+						"UPDATE bca_cvcategory SET IsDefault=1 WHERE CVCategoryID=" + configDto.getBusinessTypeId());
 			}
-			if(configDto.getPaymentTypeId() > 0) {
+			if (configDto.getPaymentTypeId() > 0) {
 				stmt.addBatch("UPDATE bca_paymenttype SET IsDefault=0 WHERE IsDefault=1");
-				stmt.addBatch("UPDATE bca_paymenttype SET IsDefault=1 WHERE PaymentTypeID=" + configDto.getPaymentTypeId());
+				stmt.addBatch(
+						"UPDATE bca_paymenttype SET IsDefault=1 WHERE PaymentTypeID=" + configDto.getPaymentTypeId());
 			}
-			if(configDto.getReceivedTypeId() > 0) {
+			if (configDto.getReceivedTypeId() > 0) {
 				stmt.addBatch("UPDATE bca_receicedtype SET IsDefault=0 WHERE IsDefault=1");
-				stmt.addBatch("UPDATE bca_receicedtype SET IsDefault=1 WHERE PaymentTypeID=" + configDto.getReceivedTypeId());
+				stmt.addBatch(
+						"UPDATE bca_receicedtype SET IsDefault=1 WHERE PaymentTypeID=" + configDto.getReceivedTypeId());
 			}
-			if(configDto.getCreditCardTypeId() > 0) {
+			if (configDto.getCreditCardTypeId() > 0) {
 				stmt.addBatch("UPDATE bca_cctype SET IsDefault=0 WHERE IsDefault=1");
 				stmt.addBatch("UPDATE bca_cctype SET IsDefault=1 WHERE CCTypeID=" + configDto.getCreditCardTypeId());
 			}
-			if(configDto.getMessageId() > 0) {
+			if (configDto.getMessageId() > 0) {
 				stmt.addBatch("UPDATE bca_message SET IsDefault=0 WHERE IsDefault=1");
 				stmt.addBatch("UPDATE bca_message SET IsDefault=1 WHERE MessageID=" + configDto.getMessageId());
 			}
-			if(configDto.getLocationID() > 0) {
+			if (configDto.getLocationID() > 0) {
 				stmt.addBatch("UPDATE bca_location SET IsDefault=0 WHERE IsDefault=1");
 				stmt.addBatch("UPDATE bca_location SET IsDefault=1 WHERE LocationID=" + configDto.getLocationID());
 			}
 			stmt.executeBatch();
 		} catch (SQLException ee) {
 			Loger.log(2, "Error in  Class DataManager_SaveDefaultValues: " + ee.toString());
-			
+
 		} finally {
-			if (stmt != null) { db.close(stmt); }
-			if(con != null){ db.close(con); }
+			if (stmt != null) {
+				db.close(stmt);
+			}
+			if (con != null) {
+				db.close(con);
+			}
 		}
 	}
 
@@ -295,12 +311,13 @@ public class SalesDetailsDao {
 		if (request.getParameter("taxRateVal") != null) {
 			taxRateVal = request.getParameter("taxRateVal");
 		}
-		if(sNewvalID != null && !sNewvalID.trim().isEmpty()){
+		if (sNewvalID != null && !sNewvalID.trim().isEmpty()) {
 			getdataManagerUpdate(request);
-		}else {
+		} else {
 			sales.insertSalesData(sNewvalID, sTitleval, sOldval, sNewval, taxRateVal, compId);
 		}
 	}
+
 	public void getdataManagerUpdate(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -315,41 +332,41 @@ public class SalesDetailsDao {
 		}
 		sales.updateSalesData(sNewvalID, sTitleval, sOldval, sNewval, taxRateVal, compId);
 	}
+
 	public void uploadItemFile(HttpServletRequest request, MultipartFile attachFile) {
 		DataImportExportUtils importExportUtils = new DataImportExportUtils();
 		boolean b = importExportUtils.uploadItemFile(attachFile, request);
-		if(b==true) {
+		if (b == true) {
 			request.getSession().setAttribute("ItemUploaded", "successfully");
 		}
 	}
-	
- 
-	public void exportFile(HttpServletRequest request, ItemDto itemDto, String type, HttpServletResponse response)
-	{
+
+	public void exportFile(HttpServletRequest request, ItemDto itemDto, String type, HttpServletResponse response) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		ItemInfoDao itemInfoDao = new ItemInfoDao();
-		if(type != null && (type.equals("xls") || type.equals("csv"))) {
+		if (type != null && (type.equals("xls") || type.equals("csv"))) {
 			DataImportExportUtils importExportUtils = new DataImportExportUtils();
 			ArrayList<ItemDto> itemList = itemInfoDao.SearchItem(compId, null, itemDto, request);
 			Collections.sort(itemList, Comparator.comparing(ItemDto::getParentID));
-			for(ItemDto item1: itemList){
-				for(ItemDto item2: itemList){
-					if(item1.getParentID().equals(item2.getInventoryId())){
+			for (ItemDto item1 : itemList) {
+				for (ItemDto item2 : itemList) {
+					if (item1.getParentID().equals(item2.getInventoryId())) {
 						item1.setCategoryName(item2.getItemCode());
 						break;
 					}
 				}
 			}
 			boolean b = importExportUtils.exportItemList(itemList, type, response);
-			if(b == true) {
-				if(type.equals("xls")) {
+			if (b == true) {
+				if (type.equals("xls")) {
 					request.setAttribute("success", "BzComposer.exportitem.itemlistinxlsdownloaded");
 				} else {
 					request.setAttribute("success", "BzComposer.exportitem.itemlistincsvdownloaded");
 				}
 			}
-		}	
+		}
 	}
+
 	public void getdataManagerDelete(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -367,20 +384,20 @@ public class SalesDetailsDao {
 		return status;
 	}
 
+
 	public String getCustomerList(HttpServletRequest request) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		String action = ConstValue.hateNull(request.getParameter("tabid"));
-		
 		CustomerInfoDao customer = new CustomerInfoDao();
 		InvoiceInfo invoiceInfo = new InvoiceInfo();
 		ArrayList<CustomerDto> customerList = customer.customerDetails(compId);
 		if (action.equalsIgnoreCase("Customer") || action.equalsIgnoreCase("ContactBoard")) {
 			List<TrHistoryLookUp> hlookupList = invoiceInfo.searchHistory(request, "ShowAll", "", null, null);
-			for (CustomerDto cust: customerList){
+			for (CustomerDto cust : customerList) {
 				double balance = 0.0;
 				long invoiceID = 0;
-				for (TrHistoryLookUp hlookup: hlookupList){
-					if(cust.getClientVendorID().equals(hlookup.getClientVendorID())) {
+				for (TrHistoryLookUp hlookup : hlookupList) {
+					if (cust.getClientVendorID().equals(hlookup.getClientVendorID())) {
 						balance = balance + Double.parseDouble(hlookup.getBalance());
 						if (invoiceID == 0 || invoiceID < Integer.parseInt(hlookup.getInvoiceId())) {
 							cust.setLastOrderDate(hlookup.getDateAdded());
@@ -394,12 +411,12 @@ public class SalesDetailsDao {
 		request.setAttribute("CustomerDetails", customerList);
 		request.setAttribute("customerList", customerList);
 		String firstCvID = null;
-		if(!customerList.isEmpty()){
+		if (!customerList.isEmpty()) {
 			firstCvID = customerList.get(0).getClientVendorID();
 		}
 		return firstCvID;
 	}
-	
+
 	public ArrayList<CustomerDto> getCustomerSortByFirstName(HttpServletRequest request, CustomerDto frm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -417,21 +434,21 @@ public class SalesDetailsDao {
 		request.setAttribute("CustomerDetails", CustomerDetails);
 		return CustomerDetails;
 	}
-	public void getLabel(HttpServletRequest request, CustomerDto cform)  {
+
+	public void getLabel(HttpServletRequest request, CustomerDto cform) {
 		CustomerInfoDao customer = new CustomerInfoDao();
 		int labelId = Integer.parseInt(request.getParameter("lblId"));
-		customer.getLabel(labelId,cform);
+		customer.getLabel(labelId, cform);
 	}
-	
-	
-	public void getLabelType(HttpServletRequest request)  {
+
+	public void getLabelType(HttpServletRequest request) {
 		CustomerInfoDao customer = new CustomerInfoDao();
 		ArrayList labelType = new ArrayList();
 		labelType = customer.labelTypeDetails();
 		request.setAttribute("LabelTypeList", labelType);
 	}
 
-	public void addNewLabel(CustomerDto cform){
+	public void addNewLabel(CustomerDto cform) {
 		cform.setLabelName("");
 		cform.setTopMargin("0.0");
 		cform.setLeftMargin("0.0");
@@ -440,26 +457,26 @@ public class SalesDetailsDao {
 		cform.setLabelHeight("0.0");
 		cform.setLabelWidth("0.0");
 	}
-	
+
 	public boolean saveLabel(HttpServletRequest request, CustomerDto cfrm) {
-		boolean result=false;
+		boolean result = false;
 		CustomerInfoDao customer = new CustomerInfoDao();
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
 		if (labelID == 0) {
 			customer.saveLabel(cfrm);
-			result=true;
+			result = true;
 		} else {
 			customer.updateLabel(labelID, cfrm);
-			result=false;
+			result = false;
 		}
 		return result;
 	}
-	
+
 	public void deleteLabel(HttpServletRequest request, CustomerDto cfrm) {
 		CustomerInfoDao customer = new CustomerInfoDao();
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
-		Loger.log("LABEL   "+labelID);
-		customer.deleteLabel(labelID, cfrm);	
+		Loger.log("LABEL   " + labelID);
+		customer.deleteLabel(labelID, cfrm);
 	}
 
 	public void searchCustomer(String cvId, HttpServletRequest request, CustomerDto form) {
@@ -473,15 +490,15 @@ public class SalesDetailsDao {
 		request.setAttribute("CustomerDetails", CustomerDetails);
 	}
 
-	//search selected customer base on cvid
+	// search selected customer base on cvid
 	public void searchSelectedCustomer(String cvId, HttpServletRequest request, CustomerDto form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
-		//Loger.log("The Client vendor is from sales detail is " + cvId);
+		// Loger.log("The Client vendor is from sales detail is " + cvId);
 		invoice.SearchselectedCustomer(compId, cvId, request);
 		invoice.getServices(request, compId, cvId);
-	//	request.setAttribute("CustomerDetails", CustomerDetails);
+		// request.setAttribute("CustomerDetails", CustomerDetails);
 	}
 
 	public void UpdateCustomer(HttpServletRequest request, CustomerDto cfrm) {
@@ -495,7 +512,7 @@ public class SalesDetailsDao {
 		String isAlsoClient = request.getParameter("isAlsoClient");
 		String UseIndividualFinanceCharges = request.getParameter("UseIndividualFinanceCharges");
 		String AssessFinanceChk = request.getParameter("AssessFinanceChk");
-		
+
 		int istax = 0;
 		int isclient = 2; // 1: Customer+Vendor, 2: Customer, 3: Vendor
 		int indCharge = 0;
@@ -506,32 +523,34 @@ public class SalesDetailsDao {
 		if ("on".equalsIgnoreCase(isAlsoClient))
 			isclient = 1;
 
-		if("on".equalsIgnoreCase(UseIndividualFinanceCharges))
+		if ("on".equalsIgnoreCase(UseIndividualFinanceCharges))
 			indCharge = 1;
 
-		if("on".equalsIgnoreCase(AssessFinanceChk))
+		if ("on".equalsIgnoreCase(AssessFinanceChk))
 			aFCharge = 1;
 
 		cfrm.setAnnualIntrestRate(request.getParameter("AnualRate"));
 		cfrm.setMinFCharges(request.getParameter("MinFinance"));
 		cfrm.setGracePrd(request.getParameter("GracePeriod"));
-		boolean updateCust = customer.updateInsertCustomer(cvId, cfrm, compId, istax, isclient, indCharge, aFCharge,"U");
-		if(updateCust){
-			request.setAttribute("SaveStatus","Customer updated successfully!");
+		boolean updateCust = customer.updateInsertCustomer(cvId, cfrm, compId, istax, isclient, indCharge, aFCharge,
+				"U");
+		if (updateCust) {
+			request.setAttribute("SaveStatus", "Customer updated successfully!");
 			sess.setAttribute("actionMsg", "Customer information updated successfully!");
-		}else{
+		} else {
 			sess.setAttribute("actionMsg", "Customer information not updated successfully!");
 		}
-		if(cfrm.getDispay_info()!=null && cfrm.getDispay_info().equals("ShowAll")){
-			request.setAttribute("RadioVal","1");
-		}
-		else {
+		if (cfrm.getDispay_info() != null && cfrm.getDispay_info().equals("ShowAll")) {
+			request.setAttribute("RadioVal", "1");
+		} else {
 			request.setAttribute("RadioVal", "2");
 		}
-		if(request.getParameter("Flag").equals("1")){
-			request.setAttribute("ClientID",cvId);
-			/*request.setAttribute("FromDate",cfrm.getPeriodFrom());
-			request.setAttribute("ToDate",cfrm.getPeriodTo());*/
+		if (request.getParameter("Flag").equals("1")) {
+			request.setAttribute("ClientID", cvId);
+			/*
+			 * request.setAttribute("FromDate",cfrm.getPeriodFrom());
+			 * request.setAttribute("ToDate",cfrm.getPeriodTo());
+			 */
 		}
 	}
 
@@ -583,7 +602,7 @@ public class SalesDetailsDao {
 		}
 		if (FChargeInvoiceChk == null) {
 			fICharge = 0;
-		} else if (("off").equalsIgnoreCase(FChargeInvoiceChk)){
+		} else if (("off").equalsIgnoreCase(FChargeInvoiceChk)) {
 			fICharge = 1;
 		}
 		// UpdateInvoiceForm cfrm= new UpdateInvoiceForm();
@@ -591,20 +610,19 @@ public class SalesDetailsDao {
 		getCustomerDetails(cvId, request, uform);
 	}
 
-	public  ArrayList<ItemDto> sortItemsList(HttpServletRequest request, ItemDto form,int sortById) {
+	public ArrayList<ItemDto> sortItemsList(HttpServletRequest request, ItemDto form, int sortById) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfoDao item = new ItemInfoDao();
 		ArrayList ItemDetails = new ArrayList();
-		if(sortById==1) {
-			ItemDetails = item.sortItemList(compId,"inventoryName");
-		}
-		else if(sortById==2) {
-			ItemDetails = item.sortItemList(compId,"InventoryCode");
+		if (sortById == 1) {
+			ItemDetails = item.sortItemList(compId, "inventoryName");
+		} else if (sortById == 2) {
+			ItemDetails = item.sortItemList(compId, "InventoryCode");
 		}
 		sess.setAttribute("ItemDetails", ItemDetails);
 		Loger.log("list Size:" + ItemDetails.size());
-		return  ItemDetails;
+		return ItemDetails;
 	}
 
 	public void getItemDetails(HttpServletRequest request) {
@@ -641,7 +659,7 @@ public class SalesDetailsDao {
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
-		String sortBy = itemForm.getSortBy();	
+		String sortBy = itemForm.getSortBy();
 		ItemDetails = item.getDicontinuedItemList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
 		sess.setAttribute("ItemDetails", ItemDetails);
 		Loger.log("list Size:" + ItemDetails.size());
@@ -666,12 +684,12 @@ public class SalesDetailsDao {
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfoDao item = new ItemInfoDao();
 		String invId = request.getParameter("InvId");
-		//String itemIndex = request.getParameter("itemIndex");
+		// String itemIndex = request.getParameter("itemIndex");
 		ArrayList<ItemDto> ItemDetails = item.SearchItem(compId, invId, itemDto, request);
-		itemDto = ItemDetails.isEmpty()?itemDto:ItemDetails.get(0);
+		itemDto = ItemDetails.isEmpty() ? itemDto : ItemDetails.get(0);
 		sess.setAttribute("ItemDetails1", ItemDetails);
 		request.setAttribute("itemDto", itemDto);
-		//request.setAttribute("itemIndex", itemIndex);
+		// request.setAttribute("itemIndex", itemIndex);
 		Loger.log("list Size:" + ItemDetails.size());
 		return itemDto;
 	}
@@ -682,17 +700,17 @@ public class SalesDetailsDao {
 		ItemInfoDao item = new ItemInfoDao();
 		String invId = request.getParameter("InvId");
 		boolean isChildExists = item.isChildItemExists(invId);
-		if(isChildExists) {
+		if (isChildExists) {
 			sess.setAttribute("actionMsg", "Selected item has child items!");
-		}else{
+		} else {
 			boolean isDeleted = item.deleteItem(compId, invId);
-			if(isDeleted) {
+			if (isDeleted) {
 				sess.setAttribute("actionMsg", "Selected item has deleted successfully!");
 			}
 		}
 	}
-	public void getDamagedInvenotyList(HttpServletRequest request, ItemDto itemForm)
-	{
+
+	public void getDamagedInvenotyList(HttpServletRequest request, ItemDto itemForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfoDao item = new ItemInfoDao();
@@ -704,11 +722,10 @@ public class SalesDetailsDao {
 		ArrayList damagesItemList = new ArrayList();
 		damagesItemList = item.getDamagedInvList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
 		request.setAttribute("damagesItemList", damagesItemList);
-		
+
 	}
-	
-	public void getMissingInventoryList(HttpServletRequest request, ItemDto itemForm)
-	{
+
+	public void getMissingInventoryList(HttpServletRequest request, ItemDto itemForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfoDao item = new ItemInfoDao();
@@ -718,120 +735,121 @@ public class SalesDetailsDao {
 		String toDate = itemForm.getToDate();
 		String sortBy = itemForm.getSortBy();
 		ArrayList missingInventoryList = new ArrayList();
-		missingInventoryList = item.getMissingInventoryList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
+		missingInventoryList = item.getMissingInventoryList(datesCombo, fromDate, toDate, sortBy, compId, request,
+				itemForm);
 		request.setAttribute("missingInventoryList", missingInventoryList);
-		
+
 	}
-	
-	public void getReturnInventoryList(HttpServletRequest request, ItemDto itemForm)
-	{
+
+	public void getReturnInventoryList(HttpServletRequest request, ItemDto itemForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfoDao item = new ItemInfoDao();
 		ArrayList ItemDetails = new ArrayList();
-		
+
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
 		String sortBy = itemForm.getSortBy();
-		
+
 		ArrayList returnInventoryList = new ArrayList();
-		returnInventoryList = item.getReturnInventoryList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
+		returnInventoryList = item.getReturnInventoryList(datesCombo, fromDate, toDate, sortBy, compId, request,
+				itemForm);
 		request.setAttribute("returnInventoryList", returnInventoryList);
-		
+
 	}
-	
-   public void getInventoryValuationSummary(HttpServletRequest request, ItemDto form1)
-   {
-	   HttpSession ss = request.getSession();
-	   String compId = (String)ss.getAttribute("CID");
-	   ItemInfoDao info = new ItemInfoDao();
-	   
-	   String orderDate1 = form1.getOrderDate1();
-	   String orderDate2 = form1.getOrderDate2();
-	   
-	  	String datesCombo = form1.getDatesCombo();
+
+	public void getInventoryValuationSummary(HttpServletRequest request, ItemDto form1) {
+		HttpSession ss = request.getSession();
+		String compId = (String) ss.getAttribute("CID");
+		ItemInfoDao info = new ItemInfoDao();
+
+		String orderDate1 = form1.getOrderDate1();
+		String orderDate2 = form1.getOrderDate2();
+
+		String datesCombo = form1.getDatesCombo();
 		String fromDate = form1.getFromDate();
 		String toDate = form1.getToDate();
 		String sortBy = form1.getSortBy();
-	   
-	   ArrayList invValSummaryList = new ArrayList();
-	   invValSummaryList = info.getInventoryValSummary(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
-	   request.setAttribute("invValSummaryList", invValSummaryList);
-   }
-   public void getInventoryValuationDetail(HttpServletRequest request, ItemDto form1)
-   {
-	   HttpSession ss = request.getSession();
-	   String compId = (String)ss.getAttribute("CID");
-	   ItemInfoDao info = new ItemInfoDao();
 
-	   String orderDate1 = form1.getOrderDate1();
-	   String orderDate2 = form1.getOrderDate2();
-	   
-	   String datesCombo = form1.getDatesCombo();
+		ArrayList invValSummaryList = new ArrayList();
+		invValSummaryList = info.getInventoryValSummary(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
+		request.setAttribute("invValSummaryList", invValSummaryList);
+	}
+
+	public void getInventoryValuationDetail(HttpServletRequest request, ItemDto form1) {
+		HttpSession ss = request.getSession();
+		String compId = (String) ss.getAttribute("CID");
+		ItemInfoDao info = new ItemInfoDao();
+
+		String orderDate1 = form1.getOrderDate1();
+		String orderDate2 = form1.getOrderDate2();
+
+		String datesCombo = form1.getDatesCombo();
 		String fromDate = form1.getFromDate();
 		String toDate = form1.getToDate();
 		String sortBy = form1.getSortBy();
-	   
-	   ArrayList getInvValDetail = new ArrayList<>();
-	   getInvValDetail = info.getInvValDetail(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
-	   request.setAttribute("getInvValDetail", getInvValDetail);
-   }
-   public void getInventoryOrderReport(HttpServletRequest request, ItemDto form1)
-   {
-	   HttpSession ss = request.getSession();
-	   String compId = (String)ss.getAttribute("CID");
-	   ItemInfoDao info = new ItemInfoDao();
 
-	   String sortByDay = form1.getSortByDay();
-	   String orderDate1 = form1.getOrderDate1();
-	   String orderDate2 = form1.getOrderDate2();
-	   
-	   String datesCombo = form1.getDatesCombo();
+		ArrayList getInvValDetail = new ArrayList<>();
+		getInvValDetail = info.getInvValDetail(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
+		request.setAttribute("getInvValDetail", getInvValDetail);
+	}
+
+	public void getInventoryOrderReport(HttpServletRequest request, ItemDto form1) {
+		HttpSession ss = request.getSession();
+		String compId = (String) ss.getAttribute("CID");
+		ItemInfoDao info = new ItemInfoDao();
+
+		String sortByDay = form1.getSortByDay();
+		String orderDate1 = form1.getOrderDate1();
+		String orderDate2 = form1.getOrderDate2();
+
+		String datesCombo = form1.getDatesCombo();
 		String fromDate = form1.getFromDate();
 		String toDate = form1.getToDate();
 		String sortBy = form1.getSortBy();
-	   
-	   ArrayList invOrderReport = new ArrayList<>();
-	   invOrderReport = info.getInvOrderReport(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
-	   request.setAttribute("invOrderReport", invOrderReport);
-   }
-   public void getInventoryStatistics(HttpServletRequest request, ItemDto form1)
-   {
-	   HttpSession ss = request.getSession();
-	   String compId = (String)ss.getAttribute("CID");
-	   ItemInfoDao info = new ItemInfoDao();
 
-	   String sortByDay = form1.getSortByDay();
-	   String orderDate1 = form1.getOrderDate1();
-	   String orderDate2 = form1.getOrderDate2();
-	   
-	   String datesCombo = form1.getDatesCombo();
-	 		String fromDate = form1.getFromDate();
-	 		String toDate = form1.getToDate();
-	 		String sortBy = form1.getSortBy();
-	   
-	   ArrayList invStatistics = new ArrayList<>();
-	   invStatistics = info.getInvStatisticReport(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
-	   request.setAttribute("invStatistics", invStatistics);
-	   
-   }
-   public void getAccountPayableReport(HttpServletRequest request, CustomerDto cform)
-   {
-	   HttpSession ss = request.getSession();
-	   String compId = (String)ss.getAttribute("CID");
-	   CustomerInfoDao info = new CustomerInfoDao();
-	   String sortByDay = cform.getSortBy();
-	   String orderDate1 = cform.getFromDate();
-	   String orderDate2 = cform.getToDate();
-	   String datesCombo = cform.getDatesCombo();
+		ArrayList invOrderReport = new ArrayList<>();
+		invOrderReport = info.getInvOrderReport(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
+		request.setAttribute("invOrderReport", invOrderReport);
+	}
+
+	public void getInventoryStatistics(HttpServletRequest request, ItemDto form1) {
+		HttpSession ss = request.getSession();
+		String compId = (String) ss.getAttribute("CID");
+		ItemInfoDao info = new ItemInfoDao();
+
+		String sortByDay = form1.getSortByDay();
+		String orderDate1 = form1.getOrderDate1();
+		String orderDate2 = form1.getOrderDate2();
+
+		String datesCombo = form1.getDatesCombo();
+		String fromDate = form1.getFromDate();
+		String toDate = form1.getToDate();
+		String sortBy = form1.getSortBy();
+
+		ArrayList invStatistics = new ArrayList<>();
+		invStatistics = info.getInvStatisticReport(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
+		request.setAttribute("invStatistics", invStatistics);
+
+	}
+
+	public void getAccountPayableReport(HttpServletRequest request, CustomerDto cform) {
+		HttpSession ss = request.getSession();
+		String compId = (String) ss.getAttribute("CID");
+		CustomerInfoDao info = new CustomerInfoDao();
+		String sortByDay = cform.getSortBy();
+		String orderDate1 = cform.getFromDate();
+		String orderDate2 = cform.getToDate();
+		String datesCombo = cform.getDatesCombo();
 		String fromDate = cform.getFromDate();
 		String toDate = cform.getToDate();
 		String sortBy = cform.getSortBy();
 
-	   ArrayList<CustomerDto> cList = info.getAccountPayableReport(compId,request,datesCombo, fromDate, toDate, sortBy, cform);
-	   request.setAttribute("acPayList", cList);
-   }
+		ArrayList<CustomerDto> cList = info.getAccountPayableReport(compId, request, datesCombo, fromDate, toDate,
+				sortBy, cform);
+		request.setAttribute("acPayList", cList);
+	}
 
 	public void UpdateItem(HttpServletRequest request, ItemDto itemFrm) {
 		HttpSession sess = request.getSession();
@@ -839,19 +857,19 @@ public class SalesDetailsDao {
 		ItemInfoDao item = new ItemInfoDao();
 		item.fillCombo(compId);
 		String invId = request.getParameter("InvId");
-		if(invId != null && !invId.isEmpty()){
+		if (invId != null && !invId.isEmpty()) {
 			itemFrm.setInventoryId(invId);
 		}
 		Loger.log("The Item Code is" + itemFrm.getItemCode());
 		Loger.log("The Itemsale price is" + itemFrm.getSalePrice());
-		Loger.log("ISCATEGORY____________________________________"+itemFrm.getIscategory());
-		
-		boolean status = item.updateItem(compId, itemFrm );
-		if(status){
+		Loger.log("ISCATEGORY____________________________________" + itemFrm.getIscategory());
+
+		boolean status = item.updateItem(compId, itemFrm);
+		if (status) {
 			request.setAttribute("SaveStatus", "Item updated successfully");
 			request.getSession().setAttribute("SaveStatus", "Item updated successfully");
 		}
-		Loger.log("ITEM Type-----+"+itemFrm.getItemType());
+		Loger.log("ITEM Type-----+" + itemFrm.getItemType());
 	}
 
 	public void AddItem(HttpServletRequest request, ItemDto itemFrm) {
@@ -859,7 +877,7 @@ public class SalesDetailsDao {
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfoDao item = new ItemInfoDao();
 		String itemType = request.getParameter("ItemType");
-		if(itemType == null){
+		if (itemType == null) {
 			itemType = itemFrm.getItemType();
 		}
 		if (itemType.equals("1")) {
@@ -867,21 +885,17 @@ public class SalesDetailsDao {
 			itemFrm.setInvTitle(itemFrm.getInvTitleDis());
 			itemFrm.setItemCodeDis("");
 			itemFrm.setInvTitleDis("");
-		}
-		else
-		if (itemType.equals("2")) {
+		} else if (itemType.equals("2")) {
 			itemFrm.setItemCode(itemFrm.getItemCodeDis());
 			itemFrm.setInvTitle(itemFrm.getInvTitleDis());
 			itemFrm.setItemCodeDis("");
 			itemFrm.setInvTitleDis("");
-		}
-		else if (itemType.equals("3")) {
+		} else if (itemType.equals("3")) {
 			itemFrm.setItemCode(itemFrm.getItemCodeSub());
 			itemFrm.setItemName(itemFrm.getItemNameSub());
 			itemFrm.setItemCodeSub("");
 			itemFrm.setItemNameSub("");
-		}
-		else if (itemType.equals("4")) {
+		} else if (itemType.equals("4")) {
 			itemFrm.setItemCode(itemFrm.getItemCodeSer());
 			itemFrm.setItemName(itemFrm.getItemNameSer());
 			itemFrm.setTectcmd(itemFrm.getTectcmdSer());
@@ -892,27 +906,27 @@ public class SalesDetailsDao {
 			itemFrm.setItemNameSer("");
 			itemFrm.setTectcmdSer(0);
 			itemFrm.setInvTitleSer("");
-			Loger.log("CAT_______________________________________"+request.getParameter("iscat"));
+			Loger.log("CAT_______________________________________" + request.getParameter("iscat"));
 			itemFrm.setIscategory(request.getParameter("iscat"));
 		}
-		String str="";
-		if(itemFrm.getPhotoName()!=null){
-			if(itemFrm.getPhotoName().getFileName()==null || itemFrm.getPhotoName().getFileName().equals("")) {
+		String str = "";
+		if (itemFrm.getPhotoName() != null) {
+			if (itemFrm.getPhotoName().getFileName() == null || itemFrm.getPhotoName().getFileName().equals("")) {
 				str = "";
-			}else{
+			} else {
 				Loger.log("FILE______________________________DJDJD__");
 				ItemInfo itmInfo = new ItemInfo();
 				itmInfo.uploadImage(itemFrm, request);
-				str=itemFrm.getPhotoName().getFileName();
+				str = itemFrm.getPhotoName().getFileName();
 				Loger.log("FILE UPLOADED******");
 			}
 		}
 		try {
-			boolean status = item.insertItem(compId, str, itemFrm);	//Insert new Item
+			boolean status = item.insertItem(compId, str, itemFrm); // Insert new Item
 			itemFrm.setItemCode("");
 			itemFrm.setTectcmd(0);
 			itemFrm.setDiscountAmt("");
-			if(status){
+			if (status) {
 				request.setAttribute("SaveStatus", "Item saved successfully");
 				request.getSession().setAttribute("SaveStatus", "Item saved successfully");
 			}
@@ -941,8 +955,7 @@ public class SalesDetailsDao {
 				else
 					oldInventory[i][1] = itemForm.getQty();
 				if (request.getParameter("newValue" + invId).trim().length() > 0) {
-					oldInventory[i][2] = request.getParameter("newValue"
-							+ invId);
+					oldInventory[i][2] = request.getParameter("newValue" + invId);
 				} else {
 					oldInventory[i][2] = itemForm.getSalePrice();
 				}
@@ -980,9 +993,9 @@ public class SalesDetailsDao {
 
 	public void UpdateInventory(HttpServletRequest request) {
 		ItemInfoDao item = new ItemInfoDao();
-		//if(request.getParameter("createReportFlag").equalsIgnoreCase("true")){
-			//item.AddAdjustInventory(request);
-		//}
+		// if(request.getParameter("createReportFlag").equalsIgnoreCase("true")){
+		// item.AddAdjustInventory(request);
+		// }
 		item.UpdateInventory(request);
 	}
 
@@ -997,62 +1010,83 @@ public class SalesDetailsDao {
 		request.setAttribute("stateList", cs.getStateList(form.getCountry()));
 		request.setAttribute("cityList", cs.getCityList(form.getState()));
 	}
+
 	public void updateBillingAddress(InvoiceDto invoiceDto, HttpServletRequest request) {
 		String cvId = request.getParameter("customerID");
 		String addressID = request.getParameter("billAddressId");
-		if(addressID != null) {
+		if (addressID != null) {
 			String strArray[] = request.getParameter("billingAddress").split(",");
-			if (strArray.length == 1 || null != strArray[0]) invoiceDto.setFullName(strArray[0]);
-			if (strArray.length == 2 || null != strArray[1]) invoiceDto.setCompanyName(strArray[1]);
-			if (strArray.length == 3 || null != strArray[2]) invoiceDto.setAddress1(strArray[2]);
-			if (strArray.length == 4 || null != strArray[3]) invoiceDto.setAddress2(strArray[3]);
-			if (strArray.length == 5 || null != strArray[4]) invoiceDto.setCity(strArray[4]);
-			if (strArray.length == 6 || null != strArray[5]) invoiceDto.setZipcode(strArray[5]);
-			if (strArray.length == 7 && null != strArray[6]) invoiceDto.setState(strArray[6]);
-			if (strArray.length == 8 && null != strArray[7]) invoiceDto.setCountry(strArray[7]);
+			if (strArray.length == 1 || null != strArray[0])
+				invoiceDto.setFullName(strArray[0]);
+			if (strArray.length == 2 || null != strArray[1])
+				invoiceDto.setCompanyName(strArray[1]);
+			if (strArray.length == 3 || null != strArray[2])
+				invoiceDto.setAddress1(strArray[2]);
+			if (strArray.length == 4 || null != strArray[3])
+				invoiceDto.setAddress2(strArray[3]);
+			if (strArray.length == 5 || null != strArray[4])
+				invoiceDto.setCity(strArray[4]);
+			if (strArray.length == 6 || null != strArray[5])
+				invoiceDto.setZipcode(strArray[5]);
+			if (strArray.length == 7 && null != strArray[6])
+				invoiceDto.setState(strArray[6]);
+			if (strArray.length == 8 && null != strArray[7])
+				invoiceDto.setCountry(strArray[7]);
 			String strName[] = strArray[0].split(" ");
-			if (null != strName[0]) invoiceDto.setFirstName(strName[0]);
-			if (null != strName[1]) invoiceDto.setLastName(strName[1]);
-		}else{
+			if (null != strName[0])
+				invoiceDto.setFirstName(strName[0]);
+			if (null != strName[1])
+				invoiceDto.setLastName(strName[1]);
+		} else {
 			cvId = invoiceDto.getClientVendorID();
 			addressID = invoiceDto.getAddressID();
 		}
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		boolean status = invoice.updateBillingAddress(invoiceDto, cvId, addressID);
-		if(status) {
+		if (status) {
 			request.getSession().setAttribute("actionMsg", "BzComposer.common.recordUpdated");
-		}else{
+		} else {
 			request.getSession().setAttribute("actionMsg", "BzComposer.common.recordNotUpdated");
 		}
 	}
-	
+
 	public void updateShippingAddress(InvoiceDto invoiceDto, HttpServletRequest request) {
 		String cvId = request.getParameter("customerID");
 		String addressID = request.getParameter("shipAddressId");
-		if(addressID != null) {
+		if (addressID != null) {
 			String address = request.getParameter("shippingAddress");
 			String strArray[] = address.split(",");
 
-			if (strArray.length == 1 || null != strArray[0]) invoiceDto.setFullName(strArray[0]);
-			if (strArray.length == 2 || null != strArray[1]) invoiceDto.setCompanyName(strArray[1]);
-			if (strArray.length == 3 || null != strArray[2]) invoiceDto.setAddress1(strArray[2]);
-			if (strArray.length == 4 || null != strArray[3]) invoiceDto.setAddress2(strArray[3]);
-			if (strArray.length == 5 || null != strArray[4]) invoiceDto.setCity(strArray[4]);
-			if (strArray.length == 6 || null != strArray[5]) invoiceDto.setZipcode(strArray[5]);
-			if (strArray.length == 7 && null != strArray[6]) invoiceDto.setState(strArray[6]);
-			if (strArray.length == 8 && null != strArray[7]) invoiceDto.setCountry(strArray[7]);
+			if (strArray.length == 1 || null != strArray[0])
+				invoiceDto.setFullName(strArray[0]);
+			if (strArray.length == 2 || null != strArray[1])
+				invoiceDto.setCompanyName(strArray[1]);
+			if (strArray.length == 3 || null != strArray[2])
+				invoiceDto.setAddress1(strArray[2]);
+			if (strArray.length == 4 || null != strArray[3])
+				invoiceDto.setAddress2(strArray[3]);
+			if (strArray.length == 5 || null != strArray[4])
+				invoiceDto.setCity(strArray[4]);
+			if (strArray.length == 6 || null != strArray[5])
+				invoiceDto.setZipcode(strArray[5]);
+			if (strArray.length == 7 && null != strArray[6])
+				invoiceDto.setState(strArray[6]);
+			if (strArray.length == 8 && null != strArray[7])
+				invoiceDto.setCountry(strArray[7]);
 			String strName[] = strArray[0].split(" ");
-			if (null != strName[0]) invoiceDto.setFirstName(strName[0]);
-			if (null != strName[1]) invoiceDto.setLastName(strName[1]);
-		}else{
+			if (null != strName[0])
+				invoiceDto.setFirstName(strName[0]);
+			if (null != strName[1])
+				invoiceDto.setLastName(strName[1]);
+		} else {
 			cvId = invoiceDto.getClientVendorID();
 			addressID = invoiceDto.getAddressID();
 		}
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		boolean status = invoice.updateShippingAddress(invoiceDto, cvId, addressID);
-		if(status) {
+		if (status) {
 			request.getSession().setAttribute("actionMsg", "BzComposer.common.recordUpdated");
-		}else{
+		} else {
 			request.getSession().setAttribute("actionMsg", "BzComposer.common.recordNotUpdated");
 		}
 	}
@@ -1062,7 +1096,7 @@ public class SalesDetailsDao {
 		String compId = (String) request.getSession().getAttribute("CID");
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		ItemInfoDao item = new ItemInfoDao();
-		ArrayList ClientDetails = invoice.customerDetails(compId, request);	//Get-Customer-List
+		ArrayList ClientDetails = invoice.customerDetails(compId, request); // Get-Customer-List
 		request.setAttribute("CDetails", ClientDetails);
 
 		String companyName = (String) request.getSession().getAttribute("user");
@@ -1070,7 +1104,8 @@ public class SalesDetailsDao {
 		/* Billing & Shipping Address */
 		request.setAttribute("ShAddr", invoice.shipAddress(compId, null));
 		request.setAttribute("BillAddr", invoice.billAddress(compId, null));
-		//request.getSession().setAttribute("BillAddr", invoice.billAddress(compId, null));
+		// request.getSession().setAttribute("BillAddr", invoice.billAddress(compId,
+		// null));
 		/* Invoice Style */
 		request.setAttribute("InvoiceStyle", invoice.getInvoiceStyle());
 		/* Via Information */
@@ -1094,24 +1129,23 @@ public class SalesDetailsDao {
 		ArrayList itemList = invoice.getItemList(compId);
 		request.setAttribute("ItemList", itemList);
 
-
 		ArrayList itemDetails = item.getItemList(compId);
 		request.setAttribute("ItemDetails", itemList);
 	}
-	
+
 	public void getSortedInvoiceInfo(HttpServletRequest request, String sort) throws SQLException {
 		String compId = (String) request.getSession().getAttribute("CID");
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		ArrayList ClientDetails = new ArrayList();
-		if(sort.equals("Name")) {
+		if (sort.equals("Name")) {
 			ClientDetails = invoice.customerDetails(compId, request);
-			System.out.println("Calling sortByName method and getting data:"+ClientDetails.toString());
+			System.out.println("Calling sortByName method and getting data:" + ClientDetails.toString());
 		} else {
-			ClientDetails = invoice.sortedcustomerDetails(compId, request,sort);
-			System.out.println("Calling sortByLastName method and getting data:"+ClientDetails.toString());
+			ClientDetails = invoice.sortedcustomerDetails(compId, request, sort);
+			System.out.println("Calling sortByLastName method and getting data:" + ClientDetails.toString());
 		}
 		request.setAttribute("CDetails", ClientDetails);
-		
+
 		String companyName = (String) request.getSession().getAttribute("user");
 		ArrayList shAddr = invoice.shipAddress(compId, null);
 		request.setAttribute("ShAddr", shAddr);
@@ -1170,25 +1204,25 @@ public class SalesDetailsDao {
 		sess.setAttribute("itemCategory", item.fillItemCategory(compId));
 		sess.setAttribute("itemSubCategory", item.fillItemSubCategory(compId));
 		sess.setAttribute("AccountList", item.fillAccountList(compId));
-		
+
 		sess.setAttribute("weightList", item.fillWeight(compId));
-		sess.setAttribute("storeList", item.filleStoreList(compId,itemForm));
+		sess.setAttribute("storeList", item.filleStoreList(compId, itemForm));
 		sess.setAttribute("eSalesChannelList", item.filleSalesChannel(itemForm));
 		sess.setAttribute("measurementList", item.getMeasurementList(compId));
 		sess.setAttribute("unitMeasurementList", item.getUnitMeasurementList(compId));
-		
-		ArrayList priceLevelList = item.setPriceLevel(compId,itemForm);
+
+		ArrayList priceLevelList = item.setPriceLevel(compId, itemForm);
 		sess.setAttribute("priceLevelList", priceLevelList);
 		sess.setAttribute("priceLevelSize", priceLevelList.size());
-		
-		ArrayList eBayProductList = item.eBayProductList(compId,itemForm);
+
+		ArrayList eBayProductList = item.eBayProductList(compId, itemForm);
 		sess.setAttribute("eBayProductList", eBayProductList);
 		sess.setAttribute("eBayProductListSize", eBayProductList.size());
-		
+
 		sess.setAttribute("locationList", item.getExistingLocation(compId, request, itemForm));
 		sess.setAttribute("itemStoreList", item.getStoreList(compId));
 		sess.setAttribute("productList", item.getActiveProductList(compId));
-	    request.setAttribute("vendorList", item.getVendorDetails(compId, request));
+		request.setAttribute("vendorList", item.getVendorDetails(compId, request));
 	}
 
 	public void getInitialize(String ordNo, HttpServletRequest request, InvoiceDto form) {
@@ -1207,8 +1241,8 @@ public class SalesDetailsDao {
 	public void getInitializeEstimation(String estNo, HttpServletRequest request, EstimationDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		long estimationNo = Long.parseLong(estNo);
-		EstimationInfoDao estimation= new EstimationInfoDao();
- 		estimation.getRecord(request, form, compId, estimationNo);
+		EstimationInfoDao estimation = new EstimationInfoDao();
+		estimation.getRecord(request, form, compId, estimationNo);
 	}
 
 	public void getInitializePurchase(String poNo, HttpServletRequest request, PurchaseOrderDto form) {
@@ -1222,6 +1256,7 @@ public class SalesDetailsDao {
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		return invoice.getCustomerInvoiceOrderNums(custID, compId);
 	}
+
 	public InvoiceDto getRecordForInvoice(String compId, String orderNum, InvoiceDto form, HttpServletRequest request) {
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		return invoice.getRecordForInvoice(compId, orderNum, form, request);
@@ -1231,7 +1266,9 @@ public class SalesDetailsDao {
 		EstimationInfoDao estimation = new EstimationInfoDao();
 		return estimation.getCustomerEstimationNums(custID, compId);
 	}
-	public EstimationDto getRecordForEstimation(String compId, String orderNum, EstimationDto form, HttpServletRequest request) {
+
+	public EstimationDto getRecordForEstimation(String compId, String orderNum, EstimationDto form,
+			HttpServletRequest request) {
 		EstimationInfoDao estimation = new EstimationInfoDao();
 		return estimation.getRecordForEstimation(compId, orderNum, form, request);
 	}
@@ -1240,7 +1277,9 @@ public class SalesDetailsDao {
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		return invoice.getCustomerSalesOrderNums(custID, compId);
 	}
-	public InvoiceDto getRecordForSalesOrder(String compId, String orderNum, InvoiceDto form, HttpServletRequest request) {
+
+	public InvoiceDto getRecordForSalesOrder(String compId, String orderNum, InvoiceDto form,
+			HttpServletRequest request) {
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		return invoice.getRecordForSalesOrder(compId, orderNum, form, request);
 	}
@@ -1249,7 +1288,9 @@ public class SalesDetailsDao {
 		PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
 		return poInfoDao.getCustomerPONums(custID, compId);
 	}
-	public PurchaseOrderDto getRecordForPO(String compId, String orderNum, PurchaseOrderDto form, HttpServletRequest request) {
+
+	public PurchaseOrderDto getRecordForPO(String compId, String orderNum, PurchaseOrderDto form,
+			HttpServletRequest request) {
 		PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
 		return poInfoDao.getRecordForPO(compId, orderNum, form, request);
 	}
@@ -1262,23 +1303,21 @@ public class SalesDetailsDao {
 		DateInfo date = new DateInfo();
 		int month = date.getMonth();
 		int day = date.getDay();
-		
-		String da = "",  d= "", m = "";
-		if(month >=1 && month <= 9){
+
+		String da = "", d = "", m = "";
+		if (month >= 1 && month <= 9) {
 			m = "0" + month;
-		}
-		else
-			m = ""+month;
-		if(day>=1 && day <= 9){
+		} else
+			m = "" + month;
+		if (day >= 1 && day <= 9) {
 			d = "0" + day;
-		}
-		else
-			d = ""+day;
-		da = m +"-"+ d + "-"+(date.getYear()) ;
+		} else
+			d = "" + day;
+		da = m + "-" + d + "-" + (date.getYear());
 
 		form.setOrderDate(da);
-	
-	//	form.setPoNum("0");
+
+		// form.setPoNum("0");
 		form.setCustID("0");
 		form.setInvoiceStyle("1");
 		form.setVia("0");
@@ -1305,9 +1344,9 @@ public class SalesDetailsDao {
 		form.setShipDate(da);
 		form.setTax(0.0);
 		form.setItemID("0");
-		request.setAttribute("IsDisplay","false");
+		request.setAttribute("IsDisplay", "false");
 	}
-	
+
 	public void newInvoice(HttpServletRequest request, InvoiceDto form) {
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1316,22 +1355,20 @@ public class SalesDetailsDao {
 		DateInfo date = new DateInfo();
 		int month = date.getMonth();
 		int day = date.getDay();
-		
-		String da = "",  d= "", m = "";
-		if(month >=1 && month <= 9){
+
+		String da = "", d = "", m = "";
+		if (month >= 1 && month <= 9) {
 			m = "0" + month;
-		}
-		else
-			m = ""+month;
-		if(day>=1 && day <= 9){
+		} else
+			m = "" + month;
+		if (day >= 1 && day <= 9) {
 			d = "0" + day;
-		}
-		else
-			d = ""+day;
-		da = m +"-"+ d + "-"+(date.getYear()) ;
+		} else
+			d = "" + day;
+		da = m + "-" + d + "-" + (date.getYear());
 
 		form.setOrderDate(da);
-	//	form.setPoNum("0");
+		// form.setPoNum("0");
 		form.setCustID("0");
 		form.setInvoiceStyle(invoice.getDefaultInvoiceStyleNo(compId));
 		form.setVia("0");
@@ -1358,9 +1395,9 @@ public class SalesDetailsDao {
 		form.setShipDate(da);
 		form.setTax(0.0);
 		form.setItemID("0");
-		request.setAttribute("IsDisplay","false");
+		request.setAttribute("IsDisplay", "false");
 	}
-	
+
 	public void dropShipInvoice(HttpServletRequest request, InvoiceDto form, ConfigurationDto configDto) {
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1380,9 +1417,9 @@ public class SalesDetailsDao {
 		else
 			d2 = "-" + day;
 
-		d1 = d + d2 + "-"+(date.getYear()) ;
+		d1 = d + d2 + "-" + (date.getYear());
 
-		form.setPoNum((String)request.getParameter("DShipValue"));
+		form.setPoNum((String) request.getParameter("DShipValue"));
 		form.setOrderDate(d1);
 		form.setCustID("0");
 		form.setInvoiceStyle("0");
@@ -1416,48 +1453,53 @@ public class SalesDetailsDao {
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		int orderNo = Integer.parseInt(invoice.getNewOrderNo(compId));
 		boolean updateStatus = invoice.makeSelectedOrderAsInvoice(invoiceID, orderNo);
-		if(updateStatus) {
+		if (updateStatus) {
 			request.getSession().setAttribute("SaveStatus", "Selected record has become Invoice successfully.");
-		}else {
+		} else {
 			request.getSession().setAttribute("SaveStatus", "Selected record has not become Invoice successfully.");
 		}
 	}
+
 	public void saveInvoice(HttpServletRequest request, InvoiceDto form, String custID) {
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
-		System.out.println("CustomerId is:"+custID);
-		if(form.getOrderNo().contains("-")){
+		System.out.println("CustomerId is:" + custID);
+		if (form.getOrderNo().contains("-")) {
 			String orderNo = form.getOrderNo();
-			form.setOrderNo(orderNo.substring(orderNo.indexOf("-")+1));
+			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
 		}
 		boolean exist = invoice.invoiceExist(compId, form.getOrderNo());
-		//int invoiceTypeId = 1; //INVOICE TYPE ID "INVOICE"
+		// int invoiceTypeId = 1; //INVOICE TYPE ID "INVOICE"
 		if (exist == true) {
 			int invoiceID = invoice.getInvoiceNo(compId, form.getOrderNo());
 			boolean updateStatus = invoice.Update(compId, form, invoiceID, custID);
-			request.getSession().setAttribute("SaveStatus", updateStatus?"Invoice is updated successfully.":"Invoice is not updated successfully.");
+			request.getSession().setAttribute("SaveStatus",
+					updateStatus ? "Invoice is updated successfully." : "Invoice is not updated successfully.");
 		} else {
 			boolean saveStatus = invoice.Save(compId, form, custID);
-			request.getSession().setAttribute("SaveStatus",saveStatus?"Invoice is saved successfully.":"Invoice is not saved successfully.");
+			request.getSession().setAttribute("SaveStatus",
+					saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
 		}
 	}
 
 	public void saveOrder(HttpServletRequest request, InvoiceDto form) throws SQLException {
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
-		if(form.getOrderNo().contains("-")){
+		if (form.getOrderNo().contains("-")) {
 			String orderNo = form.getOrderNo();
-			form.setOrderNo(orderNo.substring(orderNo.indexOf("-")+1));
+			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
 		}
 		boolean exist = invoice.SalesOrderExist(compId, form.getOrderNo());
 		int salesOrderType = 7;
 		if (exist == true) {
 			int invoiceID = invoice.getSalesInvoiceNo(compId, form.getOrderNo());
-			boolean saveStatus = invoice.SalesUpdate(compId, form, salesOrderType,invoiceID);
-			request.getSession().setAttribute("SaveStatus", saveStatus?"Sales Order is updated successfully.":"Sales Order is not updated successfully.");
+			boolean saveStatus = invoice.SalesUpdate(compId, form, salesOrderType, invoiceID);
+			request.getSession().setAttribute("SaveStatus",
+					saveStatus ? "Sales Order is updated successfully." : "Sales Order is not updated successfully.");
 		} else {
 			boolean saveStatus = invoice.SaveSalesOrder(compId, form, salesOrderType);
-			request.getSession().setAttribute("SaveStatus", saveStatus?"Sales Order is saved successfully.":"Sales Order is not saved successfully.");
+			request.getSession().setAttribute("SaveStatus",
+					saveStatus ? "Sales Order is saved successfully." : "Sales Order is not saved successfully.");
 		}
 	}
 
@@ -1483,6 +1525,7 @@ public class SalesDetailsDao {
 		return val;
 
 	}
+
 	public boolean deleteSalesOrder(HttpServletRequest request, InvoiceDto form) throws SQLException {
 		boolean val = false;
 		// boolean exist=invoice.invoiceExist(compId,form.getOrderNo());
@@ -1499,7 +1542,7 @@ public class SalesDetailsDao {
 				Loger.log(e.toString());
 			}
 		} else {
-			request.setAttribute("SaveStatus","Sales Order is not yet saved.");
+			request.setAttribute("SaveStatus", "Sales Order is not yet saved.");
 			val = false;
 		}
 		return val;
@@ -1518,14 +1561,15 @@ public class SalesDetailsDao {
 		request.setAttribute("selectedStateId", stateId);
 
 		invoice.getServices(request, compId, cvId);
-		//String itemIndex = request.getParameter("itemIndex");
-		//request.setAttribute("itemIndex", itemIndex);
+		// String itemIndex = request.getParameter("itemIndex");
+		// request.setAttribute("itemIndex", itemIndex);
 	}
 
 	public void addCustomerCreditCard(CustomerDto c, HttpServletRequest request) {
 		PurchaseInfo pinfo = new PurchaseInfo();
 		int cvID = Integer.parseInt(c.getCustId());
-		pinfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
+		pinfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(),
+				c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 	}
 
 	public InvoiceDto getInvoiceDetailsByBtnName(HttpServletRequest request, InvoiceDto invoiceDto) {
@@ -1533,7 +1577,7 @@ public class SalesDetailsDao {
 		String compId = (String) request.getSession().getAttribute("CID");
 		Long orderNo = invoice.getInvoiceOrderNumberByBtnName(compId, request);
 		ArrayList<InvoiceDto> list = invoice.getRecord(request, invoiceDto, compId, orderNo);
-		if(!list.isEmpty()) {
+		if (!list.isEmpty()) {
 			invoiceDto = list.get(0);
 			request.setAttribute("Enable", "true");
 			request.setAttribute("Status", "");
@@ -1543,13 +1587,14 @@ public class SalesDetailsDao {
 		return invoiceDto;
 	}
 
-	public InvoiceDto getSalesOrderDetailsByBtnName(HttpServletRequest request, InvoiceDto invoiceDto) throws SQLException {
+	public InvoiceDto getSalesOrderDetailsByBtnName(HttpServletRequest request, InvoiceDto invoiceDto)
+			throws SQLException {
 		InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		Long orderNo = invoiceInfoDao.getSalesOrderNumberByBtnName(compId, request);
 		invoiceDto.setTabid("IBLU");
 		ArrayList<InvoiceDto> list = invoiceInfoDao.getRecord(request, invoiceDto, compId, orderNo);
-		if(!list.isEmpty()) {
+		if (!list.isEmpty()) {
 			invoiceDto = list.get(0);
 			request.setAttribute("Enable", "true");
 			request.setAttribute("Status", "");
@@ -1585,6 +1630,7 @@ public class SalesDetailsDao {
 			msg = "Error occurred during sending email";
 		request.setAttribute("Result", msg);
 	}
+
 	public void sendEmailOnCustomerBoard(HttpServletRequest request, EmailSenderDto form) {
 		MailSend mailSend = new MailSend();
 		boolean isSend = mailSend.sendMail(form.getTo(), form.getSubject(), form.getMessage(), form.getFrom());
@@ -1608,9 +1654,8 @@ public class SalesDetailsDao {
 		String periodTo = uform.getPeriodTo();
 		Loger.log("The From Date is________ " + uform.getPeriodFrom());
 		Loger.log("The To date is*******______________ " + uform.getPeriodTo());
-		Loger.log("****************cond  "+cond);
-		lookDetails = invoice.searchHistory(request, cond, cvId, periodFrom,
-				periodTo);
+		Loger.log("****************cond  " + cond);
+		lookDetails = invoice.searchHistory(request, cond, cvId, periodFrom, periodTo);
 		request.setAttribute("LookupDetails", lookDetails);
 
 	}
@@ -1639,7 +1684,7 @@ public class SalesDetailsDao {
 	}
 
 	public void newEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
-		EstimationInfoDao estimation= new EstimationInfoDao();
+		EstimationInfoDao estimation = new EstimationInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		String estNum = estimation.getNewEstimationNo(compId);
 		estimationDto.setPoNum("0");
@@ -1648,22 +1693,20 @@ public class SalesDetailsDao {
 		DateInfo date = new DateInfo();
 		int month = date.getMonth();
 		int day = date.getDay();
-		
-		String da = "",  d= "", m = "";
-		if(month >=1 && month <= 9){
+
+		String da = "", d = "", m = "";
+		if (month >= 1 && month <= 9) {
 			m = "0" + month;
-		}
-		else
-			m = ""+month;
-		if(day>=1 && day <= 9){
+		} else
+			m = "" + month;
+		if (day >= 1 && day <= 9) {
 			d = "0" + day;
-		}
-		else
-			d = ""+day;
-		da = m +"-"+ d + "-"+(date.getYear()) ;
+		} else
+			d = "" + day;
+		da = m + "-" + d + "-" + (date.getYear());
 
 		estimationDto.setOrderDate(da);
-	
+
 		estimationDto.setCustID("0");
 		estimationDto.setInvoiceStyle("1");
 		estimationDto.setVia("0");
@@ -1673,7 +1716,6 @@ public class SalesDetailsDao {
 		estimationDto.setItemID("0");
 		estimationDto.setMessage("0");
 		estimationDto.setTaxID("0");
-		
 
 		estimationDto.setWeight(0.0);
 		estimationDto.setAdjustedtotal(0.0);
@@ -1691,7 +1733,7 @@ public class SalesDetailsDao {
 		estimationDto.setTax(0.0);
 		estimationDto.setItemID("0");
 		getInvoiceInfo(request);
-		Loger.log("COMPID ==>"+compId);
+		Loger.log("COMPID ==>" + compId);
 	}
 
 	public void saveEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
@@ -1703,20 +1745,16 @@ public class SalesDetailsDao {
 			try {
 				invoice.Update(compId, estimationDto);
 				newEstimation(request, estimationDto);
-				request.setAttribute("SaveStatus",
-						"Estimation is successfully updated.");
+				request.setAttribute("SaveStatus", "Estimation is successfully updated.");
 			} catch (Exception e) {
 				Loger.log(e.toString());
-				request
-						.setAttribute("SaveStatus",
-								"Estimation is not updated.");
+				request.setAttribute("SaveStatus", "Estimation is not updated.");
 			}
 		} else {
 			try {
 				invoice.Save(compId, estimationDto);
 				newEstimation(request, estimationDto);
-				request.setAttribute("SaveStatus",
-						"Estimation is successfully saved.");
+				request.setAttribute("SaveStatus", "Estimation is successfully saved.");
 			} catch (Exception e) {
 				Loger.log(e.toString());
 				request.setAttribute("SaveStatus", "Estimation is not saved.");
@@ -1725,12 +1763,13 @@ public class SalesDetailsDao {
 
 	}
 
-	public EstimationDto getEstimationDetailsByBtnName(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
+	public EstimationDto getEstimationDetailsByBtnName(HttpServletRequest request, EstimationDto estimationDto)
+			throws SQLException {
 		EstimationInfo estInfo = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		Long estNo = estInfo.getEstimationNumberByBtnName(compId, request);
 		ArrayList<EstimationDto> list = estInfo.getRecord(request, estimationDto, compId, estNo);
-		if(!list.isEmpty()) {
+		if (!list.isEmpty()) {
 			estimationDto = list.get(0);
 			request.setAttribute("Enable", "true");
 			request.setAttribute("Status", "");
@@ -1752,15 +1791,13 @@ public class SalesDetailsDao {
 			try {
 				invoice.Delete(compId, estNo);
 				newEstimation(request, estimationDto);
-				request.setAttribute("SaveStatus",
-						"Estimation is successfully deleted.");
+				request.setAttribute("SaveStatus", "Estimation is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		} else {
-			request.setAttribute("SaveStatus",
-					"This invoice is not yet saved.");
+			request.setAttribute("SaveStatus", "This invoice is not yet saved.");
 			val = false;
 			newEstimation(request, estimationDto);
 
@@ -1769,8 +1806,7 @@ public class SalesDetailsDao {
 
 	}
 
-	public void getProfitLossDetail(HttpServletRequest request, CustomerDto cForm)
-	{
+	public void getProfitLossDetail(HttpServletRequest request, CustomerDto cForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		CustomerInfoDao customer = new CustomerInfoDao();
@@ -1778,11 +1814,11 @@ public class SalesDetailsDao {
 		String toDate = cForm.getToDate();
 		String sortBy = cForm.getSortBy();
 		String datesCombo = cForm.getDatesCombo();
-		customer.getProfitLossDetailReport(datesCombo,fromDate, toDate, sortBy, compId, request,cForm);
-		
+		customer.getProfitLossDetailReport(datesCombo, fromDate, toDate, sortBy, compId, request, cForm);
+
 	}
-	public void getProfitLosByItem(HttpServletRequest request, ItemDto iForm)
-	{
+
+	public void getProfitLosByItem(HttpServletRequest request, ItemDto iForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		ItemInfoDao itemInfo = new ItemInfoDao();
@@ -1790,52 +1826,48 @@ public class SalesDetailsDao {
 		String toDate = iForm.getToDate();
 		String sortBy = iForm.getSortBy();
 		String datesCombo = iForm.getDatesCombo();
-		ArrayList<ItemDto> profitLossByItem = itemInfo.getProfitLossReportByItem(datesCombo, fromDate, toDate, sortBy, compId, request, iForm);
+		ArrayList<ItemDto> profitLossByItem = itemInfo.getProfitLossReportByItem(datesCombo, fromDate, toDate, sortBy,
+				compId, request, iForm);
 		request.setAttribute("profitLossByItem", profitLossByItem);
 	}
-	
-	public void getAccountPayableGraph(HttpServletRequest request)
-	{
+
+	public void getAccountPayableGraph(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		ArrayList<EsalesPOJO> graphDetail = new ArrayList<>();
 		String compId = (String) sess.getAttribute("CID");
-		//AccountForm aForm = (AccountForm)form;
+		// AccountForm aForm = (AccountForm)form;
 		AccountingDAO acd = new AccountingDAO();
-		
-		graphDetail = acd.getAccountPayableGraph(compId,request);
+
+		graphDetail = acd.getAccountPayableGraph(compId, request);
 	}
 
 	public void getBudgetVsActual(HttpServletRequest request) {
 		int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
-		System.out.println("Current Year for budget vs actual is:"+year);
+		System.out.println("Current Year for budget vs actual is:" + year);
 		request.setAttribute("Year", year);
 	}
 
 	public void getBudgetOverview(HttpServletRequest request) {
 		int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
-		System.out.println("Current Year for budget overview is:"+year);
-		String month[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-		for(int i=0;i<month.length;i++)
-		{
-			System.out.println("Budget Year:"+month[i]+year);
+		System.out.println("Current Year for budget overview is:" + year);
+		String month[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+		for (int i = 0; i < month.length; i++) {
+			System.out.println("Budget Year:" + month[i] + year);
 		}
 		request.setAttribute("Year", year);
 	}
 
-	public ArrayList<CustomerDto> getSortedCustomer(HttpServletRequest request, CustomerDto frm, int sortById)
-	{
+	public ArrayList<CustomerDto> getSortedCustomer(HttpServletRequest request, CustomerDto frm, int sortById) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		CustomerInfoDao customer = new CustomerInfoDao();
 		ArrayList<CustomerDto> CustomerDetails = new ArrayList<>();
-		if(sortById==1) {
-			CustomerDetails = customer.customerDetailsSort(compId,"Name");
-		}
-		else if(sortById==2) {
-			CustomerDetails = customer.customerDetailsSort(compId,"FirstName");
-		}
-		else if(sortById == 3) {
-			CustomerDetails = customer.customerDetailsSort(compId,"LastName");
+		if (sortById == 1) {
+			CustomerDetails = customer.customerDetailsSort(compId, "Name");
+		} else if (sortById == 2) {
+			CustomerDetails = customer.customerDetailsSort(compId, "FirstName");
+		} else if (sortById == 3) {
+			CustomerDetails = customer.customerDetailsSort(compId, "LastName");
 		}
 		request.setAttribute("CustomerDetails", CustomerDetails);
 		return CustomerDetails;
@@ -1850,41 +1882,40 @@ public class SalesDetailsDao {
 		return CustomerDetails;
 	}
 
-	public void setUnitPrice(String companyID, int itemId, double price) 
-	{
+	public void setUnitPrice(String companyID, int itemId, double price) {
 		CustomerInfoDao customer = new CustomerInfoDao();
-		customer.setNewUnitPrice(companyID,itemId,price);
+		customer.setNewUnitPrice(companyID, itemId, price);
 	}
 
 	public void setItemName(String companyID, int itemId, String itemName) {
 		CustomerInfoDao customer = new CustomerInfoDao();
-		customer.setNewitemName(companyID,itemId,itemName);
+		customer.setNewitemName(companyID, itemId, itemName);
 	}
 
 	public void setUnitPriceEstimation(String companyID, int itemId, double price) {
 		CustomerInfoDao customer = new CustomerInfoDao();
-		customer.setUnitPriceEstimation(companyID,itemId,price);
+		customer.setUnitPriceEstimation(companyID, itemId, price);
 	}
-	
+
 	public void setItemNameEstimation(String companyID, int itemId, String itemName) {
 		CustomerInfoDao customer = new CustomerInfoDao();
-		customer.setNewitemNameEstimation(companyID,itemId,itemName);
+		customer.setNewitemNameEstimation(companyID, itemId, itemName);
 	}
-	
+
 	public void getSortedEstimationInfo(HttpServletRequest request, String sort) throws SQLException {
 		String compId = (String) request.getSession().getAttribute("CID");
 		InvoiceInfoDao invoice = new InvoiceInfoDao();
-		ItemInfo item =new ItemInfo();
+		ItemInfo item = new ItemInfo();
 		ArrayList ClientDetails = new ArrayList();
-		if(sort.equals("Name")) {
+		if (sort.equals("Name")) {
 			ClientDetails = invoice.customerDetails(compId, request);
-			System.out.println("Calling sortByName method and getting data:"+ClientDetails.toString());
+			System.out.println("Calling sortByName method and getting data:" + ClientDetails.toString());
 		} else {
-			ClientDetails = invoice.sortedcustomerDetails(compId, request,sort);
-			System.out.println("Calling sortByLastName method and getting data:"+ClientDetails.toString());
+			ClientDetails = invoice.sortedcustomerDetails(compId, request, sort);
+			System.out.println("Calling sortByLastName method and getting data:" + ClientDetails.toString());
 		}
 		request.setAttribute("CDetails", ClientDetails);
-		
+
 		String companyName = (String) request.getSession().getAttribute("user");
 		ArrayList shAddr = invoice.shipAddress(compId, null);
 		request.setAttribute("ShAddr", shAddr);
@@ -1931,14 +1962,14 @@ public class SalesDetailsDao {
 		ArrayList itemList = new ArrayList();
 		itemList = invoice.getItemList(compId);
 		request.setAttribute("ItemList", itemList);
-		
+
 	}
 
-	private boolean isInvoiceCustomerIdExists(String custID, HttpServletRequest request){
+	private boolean isInvoiceCustomerIdExists(String custID, HttpServletRequest request) {
 		boolean isFound = false;
-		List<LabelValueBean> customerList = (List<LabelValueBean>)request.getAttribute("CDetails");
-		for(LabelValueBean item: customerList){
-			if(custID.equals(item.getValue())){
+		List<LabelValueBean> customerList = (List<LabelValueBean>) request.getAttribute("CDetails");
+		for (LabelValueBean item : customerList) {
+			if (custID.equals(item.getValue())) {
 				isFound = true;
 				break;
 			}
