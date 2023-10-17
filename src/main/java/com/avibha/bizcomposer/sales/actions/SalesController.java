@@ -31,6 +31,7 @@ import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
+import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
@@ -54,7 +55,9 @@ import java.util.Optional;
 
 @Controller
 public class SalesController {
-	
+	@Autowired
+	BcaClientvendorService clientVendorService;
+
 	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
 			RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
@@ -205,15 +208,19 @@ public class SalesController {
 				forward = "/sales/invoice";
 			}
 		} else if (action.equalsIgnoreCase("Customer")) { // Show CustomerList page
+//jpa starts
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
-			SalesDetailsDao sd = new SalesDetailsDao();
-			String firstCvID = sd.getCustomerList(request);
+			String firstCvID = clientVendorService.getCustomerList(request);
+			
+			
+//			SalesDetailsDao sd = new SalesDetailsDao();
+//			String firstCvID = sd.getCustomerList(request);
 			if (cvId == null) {
 				cvId = firstCvID;
 			}
-			sd.searchSelectedCustomer(cvId, request, customerDto);
-			sd.getAllList(request);
+			clientVendorService.searchSelectedCustomer(cvId, request, customerDto);
+			clientVendorService.getAllList(request);
 
 			if (rowId != null) {
 				customerDto.setSelectedRowID(rowId);
@@ -233,6 +240,37 @@ public class SalesController {
 			} else {
 				forward = "/sales/invoice";
 			}
+//jpa ends
+			
+			
+//			String cvId = request.getParameter("cvId");
+//			String rowId = request.getParameter("SelectedRID");
+//			SalesDetailsDao sd = new SalesDetailsDao();
+//			String firstCvID = sd.getCustomerList(request);
+//			if (cvId == null) {
+//				cvId = firstCvID;
+//			}
+//			sd.searchSelectedCustomer(cvId, request, customerDto);
+//			sd.getAllList(request);
+//
+//			if (rowId != null) {
+//				customerDto.setSelectedRowID(rowId);
+//			} else {
+//				customerDto.setSelectedRowID("0");
+//			}
+//			if (cvId != null) {
+//				customerDto.setClientVendorID(cvId);
+//			} else {
+//				customerDto.setClientVendorID("0");
+//			}
+//			if (rowId != null) {
+//				request.setAttribute("VendorFrm", customerDto.getSelectedRowID());
+//			}
+//			if (IN_URI.endsWith(CUSTOMER_URI)) {
+//				forward = "/sales/customerNew";
+//			} else {
+//				forward = "/sales/invoice";
+//			}
 		} else if (action.equalsIgnoreCase("CustomerBoard")) { // Show CustomerBoard page
 			SalesDetailsDao sd = new SalesDetailsDao();
 			String firstCvID = sd.getCustomerList(request);
@@ -590,7 +628,7 @@ public class SalesController {
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);
-			//to set deafult zipcode 
+			// to set deafult zipcode
 			request.setAttribute("zipcode", "90004");
 			customerDto.setCountry(configDto.getCustDefaultCountryID() + "");
 			customerDto.setState(configDto.getSelectedStateId() + "");
