@@ -85,52 +85,45 @@ public class BcaClientvendorService {
 	private CustomerDto transformToDto(Object[] clientVendors) {
 		CustomerDto cusDto = new CustomerDto();
 
-		// Assuming clientVendors[0] is clientVendorId, clientVendors[1] is name, etc.
+		// clientVendors[0] is clientVendorId, clientVendors[1] is name, etc.
 		cusDto.setClientVendorID(clientVendors[0].toString());
 		cusDto.setCompanyName(clientVendors[1].toString());
-		cusDto.setDbaName(clientVendors[2].toString());
-		cusDto.setTitle(clientVendors[3].toString());
-		cusDto.setFirstName(clientVendors[4].toString());
-		cusDto.setLastName(clientVendors[5].toString());
-		cusDto.setAddress1(clientVendors[6].toString());
-		cusDto.setAddress2(clientVendors[7].toString());
-		cusDto.setCity(clientVendors[8].toString());
-		cusDto.setStateName(clientVendors[9].toString());
-		cusDto.setZipCode(clientVendors[10].toString());
-		cusDto.setCountry(clientVendors[11].toString());
-		cusDto.setEmail(clientVendors[12].toString());
-		cusDto.setPhone(clientVendors[13].toString());
-		cusDto.setCellPhone(clientVendors[14].toString());
-		cusDto.setFax(clientVendors[15].toString());
-		cusDto.setDateAdded(clientVendors[16].toString());
+		cusDto.setTitle(clientVendors[2].toString());
+		cusDto.setFirstName(clientVendors[3].toString());
+		cusDto.setLastName(clientVendors[4].toString());
+		cusDto.setAddress1(clientVendors[5].toString());
+		cusDto.setAddress2(clientVendors[6].toString());
+
+		cusDto.setEmail(clientVendors[10].toString());
+		cusDto.setPhone(clientVendors[11].toString());
+		cusDto.setCellPhone(clientVendors[12].toString());
+		cusDto.setFax(clientVendors[13].toString());
+		cusDto.setDateAdded(clientVendors[14].toString());
+
+		cusDto.setPaymentUnpaid(Boolean.valueOf(clientVendors[15] != null ? clientVendors[15].toString() : ""));
+		cusDto.setType(clientVendors[16].toString());
+
+		cusDto.setZipCode(clientVendors[17].toString());
+		cusDto.setCity(clientVendors[18].toString());
+		cusDto.setStateName(clientVendors[19].toString());
+		cusDto.setCountry(clientVendors[20].toString());
+
+		cusDto.setDbaName(clientVendors[21].toString());
+		cusDto.setLastOrderDate(clientVendors[22] != null ? clientVendors[22].toString() : "");
+
 		cusDto.setActive(true);
 
-//		@Query("SELECT DISTINCT c.clientVendorId, c.name, c.dbaname, c.CustomerTitle, c.FirstName, c.LastName, c.Address1, c.Address2, c.City, c.State, c.ZipCode, c.Country, " + // other fields
-//				" c.Email, c.Phone, c.CellPhone, c.Fax, date_format(c.dateAdded,'%m-%d-%Y') as DateAdded, c.cvcategoryName FROM BcaClientvendor c " +
-//				"WHERE c.company = :compId AND " +
-//				"c.cvtypeId IN (1, 2) AND c.status IN ('U', 'N') AND c.deleted = 0 AND c.active = 1 " +
-//				"ORDER BY c.name")
-
-		return cusDto;
-	}
-//    public List<CustomerDto> customerDetails(String compId) {
-//
-//        String jpql = "SELECT distinct c.ClientVendorID,c.Name,c.CustomerTitle,c.FirstName,c.LastName,c.Address1,c.Address2,c.City,c.State,c.ZipCode,c.Country,"
+//		@Query(nativeQuery = true, value = "SELECT distinct c.ClientVendorID,c.Name,c.CustomerTitle,c.FirstName,c.LastName,c.Address1,c.Address2,c.City,c.State,c.Country,"
 //				+ "c.Email,c.Phone,c.CellPhone,c.Fax,date_format(c.DateAdded,'%m-%d-%Y') as DateAdded,i.IsPaymentCompleted,c.CVCategoryName,"
-//				+ "ct.Name AS CityName, st.Name AS StateName, cn.Name AS CountryName, c.DBAName "
+//				+ "c.ZipCode, ct.Name AS CityName, st.Name AS StateName, cn.Name AS CountryName, c.DBAName "
 //				+ "FROM bca_clientvendor AS c LEFT JOIN bca_countries as cn ON cn.ID=c.Country LEFT JOIN bca_states as st ON st.ID=c.State LEFT JOIN bca_cities as ct ON ct.ID=c.City "
 //				+ "LEFT JOIN bca_invoice as i ON i.ClientVendorID=c.ClientVendorID AND NOT (i.invoiceStatus=1) AND i.IsPaymentCompleted = 0 AND i.InvoiceTypeID IN (1,13,17) "
 //				+ "WHERE c.CompanyID = :compId "
-//				+ " AND CVTypeID IN (1, 2) AND c.Status IN ('U', 'N') AND c.Deleted = 0 AND c.Active=1 ORDER BY c.Name";
-//        
-//        Query query = em.createQuery(jpql);
-//        query.setParameter("compId", compId);
-//        List<CustomerDto> results = query.getResultList();
-//        
-//        return results;
-//    }
+//				+ " AND CVTypeID IN (1, 2) AND c.Status IN ('U', 'N') AND c.Deleted = 0 AND c.Active=1 ORDER BY c.Name")
 
-//	clientVendorRepo.findByCompanyId(Long.parseLong(compId));
+		return cusDto;
+	}
+
 	public ArrayList<CustomerDto> customerDetailsOld(String compId) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -255,7 +248,7 @@ public class BcaClientvendorService {
 		// Loger.log("The Client vendor is from sales detail is " + cvId);
 		invoice.SearchselectedCustomer(compId, cvId, request);
 		invoice.getServices(request, compId, cvId);
-		// request.setAttribute("CustomerDetails", CustomerDetails);
+//		 request.setAttribute("CustomerDetails", CustomerDetails);
 	}
 
 	public void getAllList(HttpServletRequest request) {

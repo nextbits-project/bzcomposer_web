@@ -1762,7 +1762,7 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 		account.setIsCategory(false);
 		account.setName(c.getLastName() + ", " + c.getFirstName() + " - " + c.getCname());
 		account.setAccountTypeID(3);
-		account.setAccountCategoryID(0);
+		account.setAccountCategoryID(2);
 		account.setCvID(cvId);
 		account.setDepositPaymentID(0);
 		// 1:both 2: customer 3 :vendor

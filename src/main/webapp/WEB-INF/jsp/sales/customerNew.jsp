@@ -130,7 +130,7 @@ table.tabla-listados tbody tr td {
 											<td class="${objList.paymentUnpaid?'redColor':''}"><a
 												href="/Customer?tabid=CustomerBoard&selectedCvID=${objList.clientVendorID}">${objList.clientVendorID}</a>
 											</td>
-											<td>${objList.firstName}${objList.middleName}
+											<td>${objList.title} ${objList.firstName}${objList.middleName}
 												${objList.lastName}</td>
 											<td>${objList.companyName}</td>
 											<td>${objList.type}</td>

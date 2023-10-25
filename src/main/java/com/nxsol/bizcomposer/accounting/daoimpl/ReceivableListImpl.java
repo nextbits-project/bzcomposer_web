@@ -9878,10 +9878,10 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 			db = new SQLExecutor();
 			con = db.getConnection();
-			String sql = "INSERT INTO bca_billingstatements(StatementDate,ClientVendorID,InvoiceID,IsCombined,Type,Amount,OverdueAmount,OverDueServiceCharge) VALUES("
+			String sql = "INSERT INTO bca_billingstatements(StatementDate,ClientVendorID,InvoiceID,IsCombined,Type,Amount,OverdueAmount,OverDueServiceCharge, CompanyID) VALUES("
 					+ "'" + JProjectUtil.getDateFormaterCommon().format(new Date()) + "'" + "," + invoice.getCvID()
 					+ "," + invoice.getInvoiceID() + "," + 11 + "," + 0 + ","
-					+ new DecimalFormat("#0.00").format(invoice.getTotal() + 103.9) + "," + 103.9 + "," + 0 + ")";
+					+ new DecimalFormat("#0.00").format(invoice.getTotal() + 103.9) + "," + 103.9 + "," + 0 + "," + invoice.getCompanyID() +")";
 
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);

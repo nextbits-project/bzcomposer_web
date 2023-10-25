@@ -1558,9 +1558,11 @@ public class InvoiceInfoDao {
             pstmt1.setDouble(15, form.getAdjustedtotal());
             pstmt1.setString(16, form.getVia());
             pstmt1.setString(17, form.getRep());
-            pstmt1.setString(18, form.getMessage());
+//            pstmt1.setString(18, form.getMessage());
+            pstmt1.setString(18, "0".equals(form.getMessage()) ? null : form.getMessage());
             pstmt1.setString(19, form.getTerm());
-            pstmt1.setString(20, form.getPayMethod());
+//            pstmt1.setString(20, form.getPayMethod());
+            pstmt1.setString(20, "0".equals(form.getPayMethod()) ? null : form.getPayMethod());
             pstmt1.setString(21, form.getTaxID());
 
             String tax = form.getTaxable();
