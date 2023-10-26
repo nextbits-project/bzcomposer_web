@@ -1,5 +1,8 @@
 package com.nxsol.bzcomposer.company.domain;
 
+import java.time.OffsetDateTime;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,27 +12,27 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.time.OffsetDateTime;
-import java.util.Set;
 import javax.persistence.Table;
 
+
 @Entity
-@Table(name= "item_category_details")
+@Table(name="item_category_details")
 public class ItemCategoryDetails {
 
     @Id
-    @Column(name= "CategoryID", nullable = false, updatable = false)
+    @Column(name="CategoryID",nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
-    @Column(name= "ParentID", nullable = false, length = 45)
+    @Column(name="ParentID",nullable = false, length = 45)
     private String parentId;
 
-    @Column(name= "CategoryName", nullable = false, unique = true, length = 45)
+    @Column(name="CategoryName",nullable = false, unique = true, length = 45)
     private String categoryName;
 
     @Column(name = "Description", length = 500)
     private String description;
+
 
     @Column(name= "Active")
     private Boolean active;
@@ -45,78 +48,80 @@ public class ItemCategoryDetails {
     private BcaCompany company;
 
     @OneToMany(mappedBy = "category")
-    private Set<ItemDetails> categoryItemDetailss;
+    private Set<ItemDetails> categoryItemDetails;
 
-    public Long getCategoryId() {
-        return categoryId;
-    }
+	public Long getCategoryId() {
+		return categoryId;
+	}
 
-    public void setCategoryId(final Long categoryId) {
-        this.categoryId = categoryId;
-    }
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
 
-    public String getParentId() {
-        return parentId;
-    }
+	public String getParentId() {
+		return parentId;
+	}
 
-    public void setParentId(final String parentId) {
-        this.parentId = parentId;
-    }
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
 
-    public String getCategoryName() {
-        return categoryName;
-    }
+	public String getCategoryName() {
+		return categoryName;
+	}
 
-    public void setCategoryName(final String categoryName) {
-        this.categoryName = categoryName;
-    }
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(final String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Boolean getActive() {
-        return active;
-    }
+	public Boolean getActive() {
+		return active;
+	}
 
-    public void setActive(final Boolean active) {
-        this.active = active;
-    }
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 
-    public Boolean getDeleted() {
-        return deleted;
-    }
+	public Boolean getDeleted() {
+		return deleted;
+	}
 
-    public void setDeleted(final Boolean deleted) {
-        this.deleted = deleted;
-    }
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 
-    public OffsetDateTime getDateAdded() {
-        return dateAdded;
-    }
+	public OffsetDateTime getDateAdded() {
+		return dateAdded;
+	}
 
-    public void setDateAdded(final OffsetDateTime dateAdded) {
-        this.dateAdded = dateAdded;
-    }
+	public void setDateAdded(OffsetDateTime dateAdded) {
+		this.dateAdded = dateAdded;
+	}
 
-    public BcaCompany getCompany() {
-        return company;
-    }
+	public BcaCompany getCompany() {
+		return company;
+	}
 
-    public void setCompany(final BcaCompany company) {
-        this.company = company;
-    }
+	public void setCompany(BcaCompany company) {
+		this.company = company;
+	}
 
-    public Set<ItemDetails> getCategoryItemDetailss() {
-        return categoryItemDetailss;
-    }
+	public Set<ItemDetails> getCategoryItemDetails() {
+		return categoryItemDetails;
+	}
 
-    public void setCategoryItemDetailss(final Set<ItemDetails> categoryItemDetailss) {
-        this.categoryItemDetailss = categoryItemDetailss;
-    }
+	public void setCategoryItemDetails(Set<ItemDetails> categoryItemDetails) {
+		this.categoryItemDetails = categoryItemDetails;
+	}
+
+   
 
 }

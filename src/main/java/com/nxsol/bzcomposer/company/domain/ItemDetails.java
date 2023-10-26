@@ -1,5 +1,7 @@
 package com.nxsol.bzcomposer.company.domain;
 
+import java.time.OffsetDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,19 +10,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.time.OffsetDateTime;
 import javax.persistence.Table;
 
+
 @Entity
-@Table(name= "item_details")
+@Table(name="item_details")
 public class ItemDetails {
 
     @Id
-    @Column(name= "ID", nullable = false, updatable = false)
+    @Column(name="ID",nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name= "Name", nullable = false, length = 45)
+    @Column(name="Name",nullable = false, length = 45)
     private String name;
 
     @Column(name = "Description", length = 500)

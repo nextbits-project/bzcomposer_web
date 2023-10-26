@@ -185,7 +185,7 @@ input:checked + .slider:before {
                 <button class="btn btn-info" style="font-size: 14px;" id="EditItemBtn">
                     <spring:message code="BzComposer.global.edit"/>
                 </button>
-                <button class="btn btn-info" style="font-size: 14px;" onclick="return deleteCategory()">
+                <button class="btn btn-info" style="font-size: 14px;" onclick="return deleteCategory()" id="DeleteItemBtn">
                     <spring:message code="BzComposer.global.delete"/>
                 </button>
             </div>
@@ -336,6 +336,7 @@ $(document).ready(function () {
 
 	 $("#AddEditCategoryDlg").hide();
 	 $("#AddEditItemDlg").hide();
+	
      $( "#AddCategoryBtn").on("click", function(){
          $( "#AddEditCategoryDlg").dialog({
             modal: true,
@@ -410,6 +411,67 @@ $(document).ready(function () {
             $("#itemIDs").val(itemIDs);
          }
      });
+     $( "#DeleteItemBtn").on("click", function(){
+         if($("#ItemListTbl tr.highlight").length==0){
+            return selectitemdialog();
+            return false;
+         }
+         event.preventDefault();
+         $("#deletedialogbox").dialog({
+        	 	title:'Delete Item',
+        	    resizable: false,
+        	    height: 200,
+        	    width: 500,
+        	    modal: true,
+        	    buttons: {
+        	        "<spring:message code='BzComposer.global.ok' />": function () {
+        	            // Add the following line to set the value of #itemID
+        	            $("#itemID").val(ItemListTblCells[0].innerText);
+        	            $(this).dialog("close");
+    						console.log("value:"+$("#itemID").val());
+        	            // Redirect to the new URL
+        	            if(itemIDs===''){
+        	            	 var redirectURL = "ItemCategoryManager?tabid=DeleteItemDetails&itemId=" + $("#itemID").val();
+             	            window.location = redirectURL;
+        	            }else{
+        	            	var redirectURL = "ItemCategoryManager?tabid=DeleteItemDetails&itemId=" + itemIDs;
+            	            window.location = redirectURL;
+        	            }
+        	            
+        	        },
+        	        "<spring:message code='BzComposer.global.cancel' />": function () {
+        	            $(this).dialog("close");
+        	            return false;
+        	        }
+        	    }
+        	});
+         let ItemListTblCells = $("#ItemListTbl tr.highlight")[0].cells;
+         $("#itemID").val(ItemListTblCells[0].innerText);
+         $("#itemCategoryID").val(ItemListTblCells[1].innerText);
+         $("#itemDescription").val(ItemListTblCells[2].innerText);
+         $("#itemName").val(ItemListTblCells[5].innerText);
+         $("#itemActive").val(ItemListTblCells[7].innerText=='true'?1:0);
+         $("#itemDescriptionROW").show();
+
+         let itemIDs = '';
+         let itemNames = '';
+         var inputs = document.querySelectorAll('.itemListChk');
+         for (var i = 0; i < inputs.length; i++) {
+             let curCheckbox = inputs[i];
+             if(curCheckbox.checked){
+                 itemIDs = itemIDs + curCheckbox.value + ',';
+                 itemNames = itemNames + curCheckbox.parentElement.parentElement.cells[5].innerText + ',';
+             }
+         }
+         itemIDs = itemIDs.substring(0, itemIDs.length-1);
+         itemNames = itemNames.substring(0, itemNames.length-1);
+         if(itemIDs.split(',').length>1){
+            $("#itemDescriptionROW").hide();
+            $("#itemName").val(itemNames);
+            $("#itemIDs").val(itemIDs);
+         }
+     });
+     
 });
 
 function init(){
@@ -514,6 +576,7 @@ function selectitemdialog(){
     return false;
 }
 
+
 </script>
 </body>
 <!-- Dialog box used in this page -->
@@ -528,4 +591,9 @@ function selectitemdialog(){
 </div>
 <div id="deletedialogbox" style="display:none;">
 	<p><spring:message code='BzComposer.categorymanager.wanttodelete'/></p>
+</div>
+<div id="deleteCustomer" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.customerinfo.deleteselecteditem" />
+	</p>
 </div>

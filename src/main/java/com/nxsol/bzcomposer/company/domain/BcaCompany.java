@@ -1,5 +1,8 @@
 package com.nxsol.bzcomposer.company.domain;
 
+import java.time.OffsetDateTime;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,239 +12,238 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.time.OffsetDateTime;
-import java.util.Set;
 import javax.persistence.Table;
 
+
 @Entity
-@Table(name= "bca_company")
+@Table(name="bca_company")
 public class BcaCompany {
 
     @Id
-    @Column(name= "CompanyID", nullable = false, updatable = false)
+    @Column(name="CompanyID",nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyId; // JPA Check type changed from integer to long because of java type long used in the Configurationinfo.java
 
-    @Column(name= "Name")
+    @Column(name="Name")
     private String name;
 
-    @Column(name= "NickName")
+    @Column(name="NickName")
     private String nickName;
 
-    @Column(name= "FirstName", length = 50)
+    @Column(name="FirstName",length = 50)
     private String firstName;
 
-    @Column(name= "LastName", length = 50)
+    @Column(name="LastName",length = 50)
     private String lastName;
 
-    @Column(name= "Detail", columnDefinition = "longtext")
+    @Column(name="Detail",columnDefinition = "longtext")
     private String detail;
 
-    @Column(name= "Address1")
+    @Column(name="Address1")
     private String address1;
 
-    @Column(name= "Address2")
+    @Column(name="Address2")
     private String address2;
 
-    @Column(name= "City")
+    @Column(name="City")
     private String city;
 
-    @Column(name= "State", length = 50)
+    @Column(name="State",length = 50)
     private String state;
 
-    @Column(name= "Province", length = 50)
+    @Column(name="Province",length = 50)
     private String province;
 
-    @Column(name= "Country", length = 50)
+    @Column(name="Country",length = 50)
     private String country;
 
-    @Column(name= "Zipcode", length = 50)
+    @Column(name="Zipcode",length = 50)
     private String zipcode;
 
-    @Column(name= "Phone1", length = 20)
+    @Column(name="Phone1",length = 20)
     private String phone1;
 
-    @Column(name= "Phone2", length = 20)
+    @Column(name="Phone2",length = 20)
     private String phone2;
 
-    @Column(name= "Fax1", length = 20)
+    @Column(name="fax1",length = 20)
     private String fax1;
 
-    @Column(name= "Fax2", length = 20)
+    @Column(name="Fax2",length = 20)
     private String fax2;
 
-    @Column(name= "Email", length = 50)
+    @Column(name="Email",length = 50)
     private String email;
 
-    @Column(name= "HomePage", length = 100)
+    @Column(name="HomePage",length = 100)
     private String homePage;
 
-    @Column(name= "FID", length = 50)
+    @Column(name="FID",length = 50)
     private String fid;
 
-    @Column(name= "SID", length = 50)
+    @Column(name="SID",length = 50)
     private String sid;
 
-    @Column(name= "Currency", length = 50)
+    @Column(name="Currency",length = 50)
     private String currency;
 
-    @Column(name= "Weight", length = 50)
+    @Column(name="Weight",length = 50)
     private String weight;
 
-    @Column(name= "LabelSize", length = 50)
+    @Column(name="LabelSize",length = 50)
     private String labelSize;
 
-    @Column(name= "BackupPeriod", length = 50)
+    @Column(name="BackupPeriod",length = 50)
     private String backupPeriod;
 
-    @Column(name= "BackupPlace", length = 50)
+    @Column(name="BackupPlace",length = 50)
     private String backupPlace;
 
-    @Column(name= "AdminUsername", length = 50)
+    @Column(name="AdminUsername",length = 50)
     private String adminUsername;
 
-    @Column(name= "AdminPassword", length = 50)
+    @Column(name="AdminPassword",length = 50)
     private String adminPassword;
 
-    @Column(name= "Multimode")
+    @Column(name="Multimode")
     private Integer multimode;
 
-    @Column(name= "CustomerCountry", length = 50)
+    @Column(name="CustomerCountry",length = 50)
     private String customerCountry;
 
-    @Column(name= "CustomerTaxable")
+    @Column(name="CustomerTaxable")
     private Integer customerTaxable;
 
-    @Column(name= "CustomerUsecompanyname")
+    @Column(name="CustomerUsecompanyname")
     private Integer customerUsecompanyname;
 
-    @Column(name= "StartingInvoiceNumber")
+    @Column(name="StartingInvoiceNumber")
     private Integer startingInvoiceNumber;
 
-    @Column(name= "InvoiceStyleID")
+    @Column(name="InvoiceStyleID")
     private Integer invoiceStyleId;
 
-    @Column(name= "InvoiceFootnoteID")
+    @Column(name="InvoiceFootNoteID")
     private Integer invoiceFootnoteId;
 
-    @Column(name= "UseProductWeight")
+    @Column(name="UseProductWeight")
     private Integer useProductWeight;
 
-    @Column(name= "UseShippingTable")
+    @Column(name="UseShippingTable")
     private Integer useShippingTable;
 
-    @Column(name= "InvoiceUseCountry")
+    @Column(name="InvoiceUseCountry")
     private Integer invoiceUseCountry;
 
-    @Column(name= "VendorCountry")
+    @Column(name="VendorCountry")
     private Integer vendorCountry;
 
-    @Column(name= "VendorUseCompanyname")
+    @Column(name="VendorUseCompanyname")
     private Integer vendorUseCompanyname;
 
-    @Column(name= "StartingPONumber")
+    @Column(name="StartingPONumber")
     private Integer startingPonumber;
 
-    @Column(name= "POFootnoteID")
+    @Column(name="POFootnoteID")
     private Integer pofootnoteId;
 
-    @Column(name= "POUsecountry")
+    @Column(name="POUsecountry")
     private Integer pousecountry;
 
-    @Column(name= "StartingRINumber")
+    @Column(name="StartingRINumber")
     private Integer startingRinumber;
 
-    @Column(name= "ProductTaxable")
+    @Column(name="ProductTaxable")
     private Integer productTaxable;
 
-    @Column(name= "EmployeeState", length = 50)
+    @Column(name="EmployeeState",length = 50)
     private String employeeState;
 
-    @Column(name= "EmployeeCountry", length = 50)
+    @Column(name="EmployeeCountry",length = 50)
     private String employeeCountry;
 
-    @Column(name= "ChargeSalestax")
+    @Column(name="ChargeSalestax")
     private Integer chargeSalestax;
 
-    @Column(name= "HowOftenSalestax")
+    @Column(name="HowOftenSalesTax")
     private Integer howOftenSalestax;
 
-    @Column(name= "ShowReminder")
+    @Column(name="ShowReminder")
     private Integer showReminder;
 
-    @Column(name= "InvoiceMemo")
+    @Column(name="InvoiceMemo")
     private Integer invoiceMemo;
 
-    @Column(name= "InvoiceMemoDays")
+    @Column(name="InvoiceMemoDays")
     private Integer invoiceMemoDays;
 
-    @Column(name= "OverdueInvoice")
+    @Column(name="OverdueInvoice")
     private Integer overdueInvoice;
 
-    @Column(name= "OverdueinvoiceDays")
+    @Column(name="OverdueInvoiceDays")
     private Integer overdueinvoiceDays;
 
-    @Column(name= "InventoryOrder")
+    @Column(name="InventoryOrder")
     private Integer inventoryOrder;
 
-    @Column(name= "InventoryOrderDays")
+    @Column(name="InventoryOrderDays")
     private Integer inventoryOrderDays;
 
-    @Column(name= "BillstoPay")
+    @Column(name="BillstoPay")
     private Integer billstoPay;
 
-    @Column(name= "BillstoPayDays")
+    @Column(name="BillstoPayDays")
     private Integer billstoPayDays;
 
-    @Column(name= "Active", nullable = false)
+    @Column(name="Active",nullable = false)
     private Integer active;
 
-    @Column(name= "StartDate")
+    @Column(name="StartDate")
     private OffsetDateTime startDate;
 
-    @Column(name= "EndDate")
+    @Column(name="EndDate")
     private OffsetDateTime endDate;
 
-    @Column(name= "isNodata")
+    @Column(name="isNodata")
     private Boolean isNodata;
 
-    @Column(name= "isCreated")
+    @Column(name="isCreated")
     private Integer isCreated;
 
-    @Column(name= "Paypal_Username")
+    @Column(name="Paypal_Username")
     private String paypalUsername;
 
-    @Column(name= "Paypal_Password")
+    @Column(name="Paypal_Password")
     private String paypalPassword;
 
-    @Column(name= "Paypal_Signature")
+    @Column(name="Paypal_Signature")
     private String paypalSignature;
 
-    @Column(name= "Paypal_Environment")
+    @Column(name="Paypal_Environment")
     private String paypalEnvironment;
 
-    @Column(name= "IsUse_Paypal_For_eBay_Import")
+    @Column(name="IsUse_Paypal_For_eBay_Import")
     private Integer isUsePaypalForEBayImport;
 
-    @Column(name= "FederalTaxID")
+    @Column(name="FederalTaxID")
     private Integer federalTaxId;
 
-    @Column(name= "FiscalMonth", length = 45)
+    @Column(name="FiscalMonth",length = 45)
     private String fiscalMonth;
 
-    @Column(name= "MembershipLevel", length = 100)
+    @Column(name="MembershipLevel",length = 100)
     private String membershipLevel;
 
-    @Column(name= "Password", length = 100)
+    @Column(name="Password",length = 100)
     private String password;
 
-    @Column(name= "TaxID", length = 45)
+    @Column(name="TaxID",length = 45)
     private String taxId;
 
-    @Column(name= "SameAsPhoneNumber")
+    @Column(name="SameAsPhoneNumber")
     private Boolean sameAsPhoneNumber;
 
-    @Column(name= "JobPosition", length = 45)
+    @Column(name="JobPosition",length = 45)
     private String jobPosition;
 
     @OneToMany(mappedBy = "company")
