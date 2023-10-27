@@ -776,10 +776,12 @@ public class PurchaseOrderInfoDao {
 				pstmt1.setDouble(12, form.getTotal());
 				pstmt1.setString(13, form.getVia());
 				pstmt1.setInt(14, -1);
-				pstmt1.setString(15, form.getMessage());
+//				pstmt1.setString(15, form.getMessage());
+				pstmt1.setString(15, "0".equals(form.getMessage()) ? null : form.getMessage());
 				pstmt1.setString(16, form.getTerm());
-				pstmt1.setString(17, form.getPayMethod());
-				pstmt1.setInt(18, -1);
+//				pstmt1.setString(17, form.getPayMethod());
+				pstmt1.setString(17, "0".equals(form.getPayMethod()) ? null : form.getPayMethod());
+				pstmt1.setString(18, form.getTaxID());
 		
 				String tax = form.getTaxable();
 				if (tax!=null && tax.equals("on")) {

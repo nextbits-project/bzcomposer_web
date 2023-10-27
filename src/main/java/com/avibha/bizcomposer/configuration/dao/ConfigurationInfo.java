@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
@@ -28,6 +29,7 @@ import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaFootnoteResult2;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.FootNoteQueryResult;
 import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
 
+@Service
 public class ConfigurationInfo {
 
     private static HttpServletRequest request;

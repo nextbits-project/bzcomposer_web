@@ -2,8 +2,11 @@ package com.avibha.bizcomposer.configuration.dao;
 
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.common.utility.CountryState;
+import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConfigurationDetails {
 
+	@Autowired
+    private ConfigurationInfo configInfoA;
     //  Invoke all the configuration related information (i.e:- invenroty,sales,purchase,etc).
     public void getConfigurationInfo(HttpServletRequest request, ConfigurationDto configDto){
         ConfigurationInfo configInfo = new ConfigurationInfo();
@@ -31,7 +36,7 @@ public class ConfigurationDetails {
         request.setAttribute("InvStyle",configInfo.invoiceStyleList());
 
         /* For Footnote List */
-        request.setAttribute("Footnote",configInfo.footnoteList(compId));
+        request.setAttribute("Footnote",configInfoA.footnoteList(compId));
 
         /* For Job Code List */
         request.setAttribute("JobCodeDetail",configInfo.jobCodeList(compId));

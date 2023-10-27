@@ -669,9 +669,11 @@ public class EstimationInfo {
 				pstmt1.setDouble(15, estimationDto.getAdjustedtotal());
 				pstmt1.setString(16, estimationDto.getVia());
 				pstmt1.setInt(17, Integer.parseInt(estimationDto.getRep()));
-				pstmt1.setInt(18, Integer.parseInt(estimationDto.getMessage()));
+//				pstmt1.setInt(18, Integer.parseInt(estimationDto.getMessage()));
+				pstmt1.setString(18, "0".equals(estimationDto.getMessage()) ? null : estimationDto.getMessage());
 				pstmt1.setInt(19, Integer.parseInt(estimationDto.getTerm()));
-				pstmt1.setInt(20, Integer.parseInt(estimationDto.getPayMethod()));
+//				pstmt1.setInt(20, Integer.parseInt(estimationDto.getPayMethod()));
+				pstmt1.setString(20, "0".equals(estimationDto.getPayMethod()) ? null : estimationDto.getPayMethod());
 				pstmt1.setString(21, estimationDto.getTaxID());
 				String rr = updateStr.toString();
 				String tax = estimationDto.getTaxable();
