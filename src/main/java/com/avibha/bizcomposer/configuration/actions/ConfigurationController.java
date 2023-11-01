@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +52,8 @@ import com.nxsol.bzcomposer.company.ConfigurationDAO;
 @Controller
 public class ConfigurationController {
 
+	@Autowired
+	ConfigurationDetails configDetailsA;
     private String pageActiveTab = "pageActiveTab";
     ArrayList<MailTemplateDto> mailTemplateDtos;
     @RequestMapping(value = {"/Configuration"}, method = {RequestMethod.GET, RequestMethod.POST})
@@ -78,8 +81,8 @@ public class ConfigurationController {
             ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
-            ConfigurationDetails configDetails = new ConfigurationDetails();
-            configDetails.getConfigurationInfo(request, configDto);
+            //ConfigurationDetails configDetails = new ConfigurationDetails();
+            configDetailsA.getConfigurationInfo(request, configDto);
 
             ReceivableLIst rl = new ReceivableListImpl();
             request.setAttribute("PaymentTypeForCombo", rl.getPaymentType());
@@ -512,9 +515,9 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("config10")) {
             //System.out.println("Inside config10 condition");
             ConfigurationDAO dao = new ConfigurationDAO();
-            ConfigurationDetails cDetails = new ConfigurationDetails();
+            //ConfigurationDetails cDetails = new ConfigurationDetails();
             VendorCategory vendorCategory = new VendorCategory();
-            cDetails.getConfigurationInfo(request, configDto);
+            configDetailsA.getConfigurationInfo(request, configDto);
 
             //request.setAttribute("sortId", configDto.getSortBy());
             request.setAttribute("CategoryID", configDto.getDefaultCategoryId());
@@ -561,8 +564,8 @@ public class ConfigurationController {
             forward = "/configuration/employee";
         }
         else if (action.equalsIgnoreCase("config28")) {
-            ConfigurationDetails configDetails = new ConfigurationDetails();
-            configDetails.getConfigurationInfo(request, configDto);
+            //ConfigurationDetails configDetails = new ConfigurationDetails();
+            configDetailsA.getConfigurationInfo(request, configDto);
 
             SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManager(request);

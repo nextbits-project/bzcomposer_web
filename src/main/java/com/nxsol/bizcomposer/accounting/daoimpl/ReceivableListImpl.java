@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
@@ -53,6 +54,7 @@ import com.pritesh.bizcomposer.accounting.bean.TblAccountable;
 import com.pritesh.bizcomposer.accounting.bean.TblPayment;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+
 
 public class ReceivableListImpl implements ReceivableLIst {
 
@@ -1375,43 +1377,43 @@ public class ReceivableListImpl implements ReceivableLIst {
 	static private BcaCvtypeRepository bcaCvtypeRepository; // JPA Check Static reposiroty 
 	public static int getCustomerTypeId(String customerType) {
 		int cvTypeId = 0;
-//		Connection con;
-//		Statement stmt = null;
-//		SQLExecutor db = new SQLExecutor();
-//		ResultSet rs = null;
-//		con = db.getConnection();
-//		String sql = "SELECT CVTypeID from bca_cvtype " + " WHERE name='" + customerType + "'";
+		Connection con;
+		Statement stmt = null;
+		SQLExecutor db = new SQLExecutor();
+		ResultSet rs = null;
+		con = db.getConnection();
+		String sql = "SELECT CVTypeID from bca_cvtype " + " WHERE name='" + customerType + "'";
 
-//		try {
-//
-//			stmt = con.createStatement();
-//			rs = stmt.executeQuery(sql);
-//
-		List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
-//			while (rs.next()) {
-//				cvTypeId = rs.getInt("CVTypeID");
-//			}
-		if ( CVTypeIDs.size() > 0  ) {
-			cvTypeId = CVTypeIDs.get(0);
-		}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			Loger.log(e.toString());
-//		} finally {
-//			try {
-//				if (rs != null) {
-//					db.close(rs);
-//				}
-//				if (stmt != null) {
-//					db.close(stmt);
-//				}
-//				if (con != null) {
-//					db.close(con);
-//				}
-//			} catch (Exception e) {
-//				Loger.log(e.toString());
-//			}
+		try {
+
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+
+//		List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
+			while (rs.next()) {
+				cvTypeId = rs.getInt("CVTypeID");
+			}
+//		if ( CVTypeIDs.size() > 0  ) {
+//			cvTypeId = CVTypeIDs.get(0);
 //		}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Loger.log(e.toString());
+		} finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
 		return cvTypeId;
 	}
 
