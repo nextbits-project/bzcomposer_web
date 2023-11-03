@@ -11,6 +11,8 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,6 +47,14 @@ import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import com.nxsol.bizcompser.global.table.TblTerm;
 import com.nxsol.bizcompser.global.table.TblTermLoader;
+import com.nxsol.bzcomposer.company.domain.BcaAccount;
+import com.nxsol.bzcomposer.company.domain.BcaAcctcategory;
+import com.nxsol.bzcomposer.company.domain.BcaCategory;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.repos.BcaAccountRepository;
+import com.nxsol.bzcomposer.company.repos.BcaAcctcategoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCategoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.SalesBillingTable;
@@ -56,6 +66,7 @@ import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 
 
+@Service
 public class ReceivableListImpl implements ReceivableLIst {
 
 	public static int pID = 0;
@@ -82,8 +93,16 @@ public class ReceivableListImpl implements ReceivableLIst {
 	TblCategoryDto category = null;
 	ConfigurationInfo configInfo = new ConfigurationInfo();
 	ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
-	
+
 //	private TblCategoryTypeRepository tblCategoryTypeRepository;
+	@Autowired
+	private BcaAcctcategoryRepository acctcategoryRepository;
+	@Autowired
+	private BcaCategoryRepository bcaCategoryRepository;
+	@Autowired
+	private BcaCompanyRepository bcaCompanyRepository;
+	@Autowired
+	private BcaAccountRepository bcaAccountRepository;
 
 	public double getTotalAmountForLabel() {
 		return totalAmount;
@@ -1374,7 +1393,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 	}
 
 	@Autowired
-	static private BcaCvtypeRepository bcaCvtypeRepository; // JPA Check Static reposiroty 
+	static private BcaCvtypeRepository bcaCvtypeRepository; // JPA Check Static reposiroty
+
 	public static int getCustomerTypeId(String customerType) {
 		int cvTypeId = 0;
 		Connection con;
@@ -5233,47 +5253,163 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return sql;
 	}
 
+//	@Override
+//	public ArrayList<TblAccountCategory> getAccountCategoriesList() {
+//		Connection con;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//		ResultSet rs = null;
+//		ArrayList<TblAccountCategory> categories = new ArrayList<>();
+//		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Account Category");
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM bca_acctcategory");
+//			while (rs.next()) {
+//				TblAccountCategory category = new TblAccountCategory();
+//				category.setAccountCategoryID(rs.getInt("AcctCategoryID"));
+//				category.setName(rs.getString("Name"));
+//				/*
+//				 * if (categoryname.equals("eSales")) {
+//				 * //category.setName("Paid Imported Order"); }
+//				 */
+//				categories.add(category);
+//			}
+//			
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return categories;
+//	}
 	@Override
 	public ArrayList<TblAccountCategory> getAccountCategoriesList() {
-		Connection con;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
-		ResultSet rs = null;
+
 		ArrayList<TblAccountCategory> categories = new ArrayList<>();
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Account Category");
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_acctcategory");
-			while (rs.next()) {
+			List<BcaAcctcategory> acctcategory = acctcategoryRepository.findAll();
+			for (BcaAcctcategory bca_acc_cat : acctcategory) {
 				TblAccountCategory category = new TblAccountCategory();
-				category.setAccountCategoryID(rs.getInt("AcctCategoryID"));
-				category.setName(rs.getString("Name"));
-				/*
-				 * if (categoryname.equals("eSales")) {
-				 * //category.setName("Paid Imported Order"); }
-				 */
+				category.setAccountCategoryID(bca_acc_cat.getAcctCategoryId());
+				category.setName(bca_acc_cat.getName());
 				categories.add(category);
 			}
-		} catch (SQLException e) {
+
+		} catch (Exception e) {
+			System.out.println(e);
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 		return categories;
 	}
+
+//	 @Override
+//	public void loadBankAccounts() {
+//		// TODO Auto-generated method stub
+//
+//		bankAccounts.clear();
+//		bankAccounts.add(new TblAccount());
+//
+//		bankAccountsInFundTransfer.clear();
+//		bankAccountsInFundTransfer.add(new TblAccount());
+//
+//		bankAccountswithCategory.clear();
+//		bankAccountswithCategory.add(new TblAccount());
+//
+//		String sql2 = null;
+//		String sql23 = null;
+//
+//		Connection con;
+//		Statement stmt = null, stmt1 = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//		ResultSet rs = null, rs1 = null;
+//
+//		sql2 = "SELECT * " + " FROM bca_account " + " WHERE AcctTypeID = 2 " + " AND Active = 1 " + " AND CompanyID = "
+//				+ ConstValue.companyId + " ORDER BY AcctCategoryID,Name ASC ";
+//
+//		sql23 = "SELECT * " + " FROM bca_account " + " WHERE AcctTypeID IN (2,-1) " + " AND Active = 1 "
+//				+ " AND CompanyID = " + ConstValue.companyId + " ORDER BY AcctCategoryID,Name ASC ";
+//
+//		try {
+//			stmt = con.createStatement();
+//			stmt1 = con.createStatement();
+//
+//			rs = stmt.executeQuery(sql2);
+//			rs1 = stmt1.executeQuery(sql23);
+//			while (rs.next()) {
+//				TblAccount account = new TblAccount();
+//				account.setAccountID(rs.getInt("AccountID"));
+//				account.setParentID(rs.getInt("ParentID"));
+//				account.setName(rs.getString("Name"));
+//				account.setAccountTypeID(rs.getInt("AcctTypeID"));
+//				account.setAccountCategoryID(rs.getInt("AcctCategoryID"));
+//				account.setCustomerStartingBalance(rs.getDouble("CustomerStartingBalance"));
+//				account.setCustomerCurrentBalance(rs.getDouble("CustomerCurrentBalance"));
+//				account.setFirstCheckNo(rs.getInt("FirstCheck"));
+//				account.setIsCategory(rs.getBoolean("isCategory"));
+//				account.setDepositPaymentID(rs.getInt("DepositPaymentID"));
+//				account.setDateAdded(new Date(rs.getTimestamp("DateAdded").getTime()));
+//				account.setDescription(rs.getString("Description"));
+//				account.setLastCheckNo(rs.getInt("LastCheck"));
+//				account.setIsitmainaccount(rs.getInt("MAINACCOUNT"));
+//				// bankAccounts.add(account);
+//				if (account.getAccountCategoryID() != 7) {
+//					bankAccounts.add(account);
+//				}
+//				bankAccountsInFundTransfer.add(account);
+//			}
+//			while (rs1.next()) {
+//				TblAccount account = new TblAccount();
+//				account.setAccountID(rs1.getInt("AccountID"));
+//				account.setParentID(rs1.getInt("ParentID"));
+//				account.setName(rs1.getString("Name"));
+//				account.setAccountTypeID(rs1.getInt("AcctTypeID"));
+//				account.setAccountCategoryID(rs1.getInt("AcctCategoryID"));
+//				account.setIsCategory(rs1.getBoolean("isCategory"));
+//				account.setDateAdded(new Date(rs1.getTimestamp("DateAdded").getTime()));
+//				account.setDescription(rs1.getString("Description"));
+//				account.setCustomerStartingBalance(rs1.getDouble("CustomerStartingBalance"));
+//				account.setCustomerCurrentBalance(rs1.getDouble("CustomerCurrentBalance"));
+//				account.setDepositPaymentID(rs1.getInt("DepositPaymentID"));
+//				bankAccountswithCategory.add(account);
+//				if (account.isIsCategory()) {
+//					bankAccountsInFundTransfer.add(account);
+//				}
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//
+//	}
 
 	@Override
 	public void loadBankAccounts() {
@@ -5288,85 +5424,70 @@ public class ReceivableListImpl implements ReceivableLIst {
 		bankAccountswithCategory.clear();
 		bankAccountswithCategory.add(new TblAccount());
 
-		String sql2 = null;
-		String sql23 = null;
-
-		Connection con;
-		Statement stmt = null, stmt1 = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
-		ResultSet rs = null, rs1 = null;
-
-		sql2 = "SELECT * " + " FROM bca_account " + " WHERE AcctTypeID = 2 " + " AND Active = 1 " + " AND CompanyID = "
-				+ ConstValue.companyId + " ORDER BY AcctCategoryID,Name ASC ";
-
-		sql23 = "SELECT * " + " FROM bca_account " + " WHERE AcctTypeID IN (2,-1) " + " AND Active = 1 "
-				+ " AND CompanyID = " + ConstValue.companyId + " ORDER BY AcctCategoryID,Name ASC ";
-
 		try {
-			stmt = con.createStatement();
-			stmt1 = con.createStatement();
 
-			rs = stmt.executeQuery(sql2);
-			rs1 = stmt1.executeQuery(sql23);
-
-			while (rs.next()) {
+			Long companyId = new Long(ConstValue.companyId);
+			BcaCompany bcaCompany = bcaCompanyRepository.findByCompanyId(companyId);
+			List<BcaAccount> bcaAccounts1 = bcaAccountRepository
+					.findBcaAccountByAcctTypeAndActiveAndCompanyID(bcaCompany);
+			List<BcaAccount> bcaAccounts2 = bcaAccountRepository
+					.getBcaAccountByAcctTypeAndActiveAndCompanyID(bcaCompany);
+			for (BcaAccount bcaAccount : bcaAccounts1) {
 				TblAccount account = new TblAccount();
-				account.setAccountID(rs.getInt("AccountID"));
-				account.setParentID(rs.getInt("ParentID"));
-				account.setName(rs.getString("Name"));
-				account.setAccountTypeID(rs.getInt("AcctTypeID"));
-				account.setAccountCategoryID(rs.getInt("AcctCategoryID"));
-				account.setCustomerStartingBalance(rs.getDouble("CustomerStartingBalance"));
-				account.setCustomerCurrentBalance(rs.getDouble("CustomerCurrentBalance"));
-				account.setFirstCheckNo(rs.getInt("FirstCheck"));
-				account.setIsCategory(rs.getBoolean("isCategory"));
-				account.setDepositPaymentID(rs.getInt("DepositPaymentID"));
-				account.setDateAdded(new Date(rs.getTimestamp("DateAdded").getTime()));
-				account.setDescription(rs.getString("Description"));
-				account.setLastCheckNo(rs.getInt("LastCheck"));
-				account.setIsitmainaccount(rs.getInt("MAINACCOUNT"));
-				// bankAccounts.add(account);
+				account.setAccountID(bcaAccount.getAccountId());
+				account.setParentID(bcaAccount.getParentId());
+				account.setName(bcaAccount.getName());
+				account.setAccountTypeID(bcaAccount.getAcctType().getAcctTypeId());
+				account.setAccountCategoryID(bcaAccount.getAcctCategory().getAcctCategoryId());
+				account.setCustomerStartingBalance(bcaAccount.getCustomerStartingBalance());
+				account.setCustomerCurrentBalance(bcaAccount.getCustomerCurrentBalance());
+				account.setFirstCheckNo(bcaAccount.getFirstCheck());
+				account.setIsCategory(bcaAccount.getIsCategory());
+				account.setDepositPaymentID(bcaAccount.getDepositPaymentId());
+				OffsetDateTime dateAdded = bcaAccount.getDateAdded();
+				Timestamp valueOf = Timestamp.valueOf(dateAdded.atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+				account.setDateAdded(new Date(valueOf.getTime()));
+				account.setDescription(bcaAccount.getDescription());
+				if (bcaAccount.getLastCheck() != null) {
+					account.setLastCheckNo(bcaAccount.getLastCheck());
+				}
+				if (bcaAccount.getMainaccount() != null) {
+
+					account.setIsitmainaccount(bcaAccount.getMainaccount().intValue());
+				}
+
 				if (account.getAccountCategoryID() != 7) {
 					bankAccounts.add(account);
 				}
 				bankAccountsInFundTransfer.add(account);
+
 			}
-			while (rs1.next()) {
+			for (BcaAccount bcaAccount : bcaAccounts2) {
 				TblAccount account = new TblAccount();
-				account.setAccountID(rs1.getInt("AccountID"));
-				account.setParentID(rs1.getInt("ParentID"));
-				account.setName(rs1.getString("Name"));
-				account.setAccountTypeID(rs1.getInt("AcctTypeID"));
-				account.setAccountCategoryID(rs1.getInt("AcctCategoryID"));
-				account.setIsCategory(rs1.getBoolean("isCategory"));
-				account.setDateAdded(new Date(rs1.getTimestamp("DateAdded").getTime()));
-				account.setDescription(rs1.getString("Description"));
-				account.setCustomerStartingBalance(rs1.getDouble("CustomerStartingBalance"));
-				account.setCustomerCurrentBalance(rs1.getDouble("CustomerCurrentBalance"));
-				account.setDepositPaymentID(rs1.getInt("DepositPaymentID"));
+				account.setAccountID(bcaAccount.getAccountId());
+				account.setParentID(bcaAccount.getParentId());
+				account.setName(bcaAccount.getName());
+				account.setAccountTypeID(bcaAccount.getAcctType().getAcctTypeId());
+				account.setAccountCategoryID(bcaAccount.getAcctCategory().getAcctCategoryId());
+				account.setIsCategory(bcaAccount.getIsCategory());
+				OffsetDateTime dateAdded = bcaAccount.getDateAdded();
+				Timestamp valueOf = Timestamp.valueOf(dateAdded.atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+				account.setDateAdded(new Date(valueOf.getTime()));
+				account.setDescription(bcaAccount.getDescription());
+				account.setCustomerStartingBalance(bcaAccount.getCustomerStartingBalance());
+				account.setCustomerCurrentBalance(bcaAccount.getCustomerCurrentBalance());
+				account.setDepositPaymentID(bcaAccount.getDepositPaymentId());
+
 				bankAccountswithCategory.add(account);
 				if (account.isIsCategory()) {
 					bankAccountsInFundTransfer.add(account);
 				}
 			}
-		} catch (SQLException e) {
+
+		} catch (Exception e) {
+			System.out.println(e);
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 
 	}
@@ -6892,7 +7013,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 		String sql = " SELECT * FROM  bca_clientvendor WHERE CompanyID = " + ConstValue.companyId
 				+ " AND Status = 'N' AND Deleted = 0 AND Active = 1 AND CVTypeID <> 2 AND CVTypeID <> 4 ORDER BY LastName";
-		//+ " AND Status = 'N' AND Deleted = 0 AND Active = 1 AND CVTypeID <> 2 AND CVTypeID <> 4 AND CVCategoryID <> 46 ORDER BY LastName";
+		// + " AND Status = 'N' AND Deleted = 0 AND Active = 1 AND CVTypeID <> 2 AND
+		// CVTypeID <> 4 AND CVCategoryID <> 46 ORDER BY LastName";
 
 		try {
 			stmt = con.createStatement();
@@ -7129,8 +7251,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 		String sql = " Update bca_bill SET PayerID = " + vDetail.getPayerId() + " ,VendorID = " + vDetail.getVendorId()
 				+ " ,Memo = '" + vDetail.getMemo() + "'" + " ,CheckNo = " + vDetail.getCheckNo() + " ,AmountPaid = "
-				+ paidAmount + " ,Balance = " + balance + " ,CategoryID = " + vDetail.getCategoryID() + " WHERE BillNum = " + vDetail.getBillNo() + " AND CompanyID = "
-				+ ConstValue.companyId;
+				+ paidAmount + " ,Balance = " + balance + " ,CategoryID = " + vDetail.getCategoryID()
+				+ " WHERE BillNum = " + vDetail.getBillNo() + " AND CompanyID = " + ConstValue.companyId;
 		try {
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);
@@ -7376,7 +7498,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return paidBillLists;
 
 	}
-	
+
 	@Override
 	public ArrayList<TblPayment> getPaidBillListsPayment() {
 		// TODO Auto-generated method stub
@@ -8585,92 +8707,130 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return tblCategory;
 	}
 
+//	@Override
+//	public ArrayList<TblCategoryDto> getListOfCategoryForCategoryManager() {
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//
+//		ArrayList<TblCategoryDto> vRoot = new ArrayList<>();
+//		ArrayList<TblCategoryDto> vSub = new ArrayList<>();
+//		ArrayList<TblCategoryDto> cList = new ArrayList<>();
+//
+//		String sql1 = " SELECT a.*,b.CategoryTypeName FROM bca_category a, bca_categorytype b WHERE a.categorytypeid = b.categorytypeid "
+//				+ " AND a.isActive=1 AND a.companyid=" + ConstValue.companyId + " ORDER BY a.CateNumber";
+//
+////		String sql2 = " SELECT * FROM   bca_category a, bca_categorytype b WHERE  a.categorytypeid = b.categorytypeid "
+////				+ " AND a.companyid =" + ConstValue.companyId + " AND a.isactive = 1 AND NOT ( parent='root' )"
+////				+ " ORDER  BY a.CateNumber";
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				TblCategoryDto r = new TblCategoryDto();
+//				r.setId(rs.getInt("CategoryID"));
+//				r.setCategoryTypeID(rs.getLong("CategoryTypeID"));
+//				r.setParent(rs.getString("Parent"));
+//				r.setCategoryTypeName(rs.getString("CategoryTypeName"));
+//				r.setDescription(rs.getString("Description"));
+//				r.setName(rs.getString("Name"));
+//				r.setCategoryNumber(rs.getString("CateNumber"));
+//				r.setBudgetCategoryID(rs.getInt("BudgetCategoryID"));
+//				TblBudgetCategory budget = getObjectOfID(rs.getInt("BudgetCategoryID"));
+//				r.setBudgetCategoryName(budget.getBudgetCategoryName());
+//				r.setActive(rs.getBoolean("isActive"));
+//				r.setSubLevel(1);
+//				vRoot.add(r);
+//			}
+////			rs = stmt.executeQuery(sql2);
+////			while(rs.next()) {
+////				TblCategoryDto r1 = new TblCategory();
+////				r1.setId(rs.getInt("CategoryID"));
+////				r1.setCategoryTypeID(rs.getLong("CategoryTypeID"));
+////				r1.setParent(rs.getString("Parent"));
+////				r1.setCategoryTypeName(rs.getString("CategoryTypeName"));
+////				r1.setDescription(rs.getString("Description"));
+////				r1.setName(rs.getString("Name"));
+////				r1.setCategoryNumber(rs.getString("CateNumber"));
+////				r1.setBudgetCategoryID(rs.getInt("BudgetCategoryID"));
+////				TblBudgetCategory budget = getObjectOfID(rs.getInt("BudgetCategoryID"));
+////				r1.setBudgetCategoryName(budget.getBudgetCategoryName());
+////				vSub.add(r1);
+////			}
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+////	   	int i = 0;
+////		while (i < vRoot.size()) {
+////			int j = 0;
+////			String id_root = Long.toString(vRoot.get(i).getId());
+////			while (j < vSub.size()) {
+////				String id_sub = vSub.get(j).getParent();
+////				if (id_root.equals(id_sub)) {
+////					int subLevel = vRoot.get(i).getSubLevel();
+////					vSub.get(j).setSubLevel(subLevel + 1);
+////					vRoot.add(i + 1, vSub.get(j));
+////					vSub.remove(j);
+////				} else {
+////					j++;
+////				}
+////			}
+////			i++;
+////		}
+////		cList = sort(vRoot);
+//		return vRoot;
+//	}
 	@Override
 	public ArrayList<TblCategoryDto> getListOfCategoryForCategoryManager() {
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
 
 		ArrayList<TblCategoryDto> vRoot = new ArrayList<>();
-		ArrayList<TblCategoryDto> vSub = new ArrayList<>();
-		ArrayList<TblCategoryDto> cList = new ArrayList<>();
+//		ArrayList<TblCategoryDto> vSub = new ArrayList<>();
+//		ArrayList<TblCategoryDto> cList = new ArrayList<>();
 
-		String sql1 = " SELECT a.*,b.CategoryTypeName FROM bca_category a, bca_categorytype b WHERE a.categorytypeid = b.categorytypeid "
-				+ " AND a.isActive=1 AND a.companyid=" + ConstValue.companyId + " ORDER BY a.CateNumber";
-
-//		String sql2 = " SELECT * FROM   bca_category a, bca_categorytype b WHERE  a.categorytypeid = b.categorytypeid "
-//				+ " AND a.companyid =" + ConstValue.companyId + " AND a.isactive = 1 AND NOT ( parent='root' )"
-//				+ " ORDER  BY a.CateNumber";
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				TblCategoryDto r = new TblCategoryDto();
-				r.setId(rs.getInt("CategoryID"));
-				r.setCategoryTypeID(rs.getLong("CategoryTypeID"));
-				r.setParent(rs.getString("Parent"));
-				r.setCategoryTypeName(rs.getString("CategoryTypeName"));
-				r.setDescription(rs.getString("Description"));
-				r.setName(rs.getString("Name"));
-				r.setCategoryNumber(rs.getString("CateNumber"));
-				r.setBudgetCategoryID(rs.getInt("BudgetCategoryID"));
-				TblBudgetCategory budget = getObjectOfID(rs.getInt("BudgetCategoryID"));
-				r.setBudgetCategoryName(budget.getBudgetCategoryName());
-				r.setActive(rs.getBoolean("isActive"));
-				r.setSubLevel(1);
-				vRoot.add(r);
+//			int companyId=ConstValue.companyId;
+			Long companyId = new Long(ConstValue.companyId);
+			BcaCompany bcaCompany = bcaCompanyRepository.findByCompanyId(companyId);
+			List<Object[]> findCategory = bcaCategoryRepository.findCategory(bcaCompany);
+			for (Object[] listOfCategory : findCategory) {
+				BcaCategory bcaCategory = (BcaCategory) listOfCategory[0];
+				String categoryTypeName = (String) listOfCategory[1];
+				TblCategoryDto tblCategoryDto = new TblCategoryDto();
+				tblCategoryDto.setId(bcaCategory.getCategoryId());
+				tblCategoryDto.setCategoryTypeID(bcaCategory.getCategoryTypeId());
+				tblCategoryDto.setParent(bcaCategory.getParent());
+				tblCategoryDto.setCategoryTypeName(categoryTypeName);
+				tblCategoryDto.setDescription(bcaCategory.getDescription());
+				tblCategoryDto.setName(bcaCategory.getName());
+				tblCategoryDto.setCategoryNumber(bcaCategory.getCateNumber());
+				tblCategoryDto.setBudgetCategoryID(bcaCategory.getBudgetCategoryId());
+				TblBudgetCategory budget = getObjectOfID(bcaCategory.getBudgetCategoryId());
+				tblCategoryDto.setBudgetCategoryName(budget.getBudgetCategoryName());
+				tblCategoryDto.setActive(bcaCategory.getIsActive());
+				tblCategoryDto.setSubLevel(1);
+				vRoot.add(tblCategoryDto);
+
 			}
-//			rs = stmt.executeQuery(sql2);
-//			while(rs.next()) {
-//				TblCategoryDto r1 = new TblCategory();
-//				r1.setId(rs.getInt("CategoryID"));
-//				r1.setCategoryTypeID(rs.getLong("CategoryTypeID"));
-//				r1.setParent(rs.getString("Parent"));
-//				r1.setCategoryTypeName(rs.getString("CategoryTypeName"));
-//				r1.setDescription(rs.getString("Description"));
-//				r1.setName(rs.getString("Name"));
-//				r1.setCategoryNumber(rs.getString("CateNumber"));
-//				r1.setBudgetCategoryID(rs.getInt("BudgetCategoryID"));
-//				TblBudgetCategory budget = getObjectOfID(rs.getInt("BudgetCategoryID"));
-//				r1.setBudgetCategoryName(budget.getBudgetCategoryName());
-//				vSub.add(r1);
-//			}
-		} catch (SQLException e) {
+
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
-//	   	int i = 0;
-//		while (i < vRoot.size()) {
-//			int j = 0;
-//			String id_root = Long.toString(vRoot.get(i).getId());
-//			while (j < vSub.size()) {
-//				String id_sub = vSub.get(j).getParent();
-//				if (id_root.equals(id_sub)) {
-//					int subLevel = vRoot.get(i).getSubLevel();
-//					vSub.get(j).setSubLevel(subLevel + 1);
-//					vRoot.add(i + 1, vSub.get(j));
-//					vSub.remove(j);
-//				} else {
-//					j++;
-//				}
-//			}
-//			i++;
-//		}
-//		cList = sort(vRoot);
+
 		return vRoot;
 	}
 
@@ -8745,9 +8905,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	@Override
 	public ArrayList<TblCategoryType> getCategoryType() {
-	return null;
+		return null;
 //		return tblCategoryTypeRepository.findByIsActiveOrderByCategoryTypeNameAsc(true);
-		
+
 //		Statement stmt = null;
 //		Connection con = null;
 //		SQLExecutor db = new SQLExecutor();
@@ -9506,48 +9666,75 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 
+//	@Override
+//	public ArrayList<TblCategoryDto> getCategoryForAsset() {
+//		// TODO Auto-generated method stub
+//		Statement stmt = null;
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//		ResultSet rs = null;
+//		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
+//
+//		String sql = " SELECT * FROM bca_category" + " WHERE CategoryTypeID = -450722500" + " AND Parent = 'root' "
+//				+ " AND CompanyID = " + ConstValue.companyId + " AND CategoryID NOT IN (2146772369,2146772370)";
+//
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//
+//			while (rs.next()) {
+//				TblCategoryDto category = new TblCategoryDto();
+//				category.setCategoryNumber(rs.getString("Name"));
+//				category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
+//				category.setId(rs.getLong("CategoryID"));
+//
+//				categoryList.add(category);
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return categoryList;
+//	}
+
 	@Override
 	public ArrayList<TblCategoryDto> getCategoryForAsset() {
-		// TODO Auto-generated method stub
-		Statement stmt = null;
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
-		ResultSet rs = null;
+
 		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
 
-		String sql = " SELECT * FROM bca_category" + " WHERE CategoryTypeID = -450722500" + " AND Parent = 'root' "
-				+ " AND CompanyID = " + ConstValue.companyId + " AND CategoryID NOT IN (2146772369,2146772370)";
+		Long companyId = new Long(ConstValue.companyId);
+		BcaCompany bcaCompany = bcaCompanyRepository.findByCompanyId(companyId);
 
+		List<BcaCategory> bcaCategories = bcaCategoryRepository.getByCategoryTypeIdAndParentIdAndCompanyId(bcaCompany);
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
 
-			while (rs.next()) {
+			for (BcaCategory bcaCategory : bcaCategories) {
 				TblCategoryDto category = new TblCategoryDto();
-				category.setCategoryNumber(rs.getString("Name"));
-				category.setCategoryTypeID(rs.getLong("CategoryTypeID"));
-				category.setId(rs.getLong("CategoryID"));
+				category.setCategoryNumber(bcaCategory.getName());
+				category.setCategoryTypeID(bcaCategory.getCategoryTypeId());
+				category.setId(bcaCategory.getCategoryId());
 
 				categoryList.add(category);
 			}
-		} catch (SQLException e) {
+
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 		return categoryList;
 	}
@@ -9883,7 +10070,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 			String sql = "INSERT INTO bca_billingstatements(StatementDate,ClientVendorID,InvoiceID,IsCombined,Type,Amount,OverdueAmount,OverDueServiceCharge, CompanyID) VALUES("
 					+ "'" + JProjectUtil.getDateFormaterCommon().format(new Date()) + "'" + "," + invoice.getCvID()
 					+ "," + invoice.getInvoiceID() + "," + 11 + "," + 0 + ","
-					+ new DecimalFormat("#0.00").format(invoice.getTotal() + 103.9) + "," + 103.9 + "," + 0 + "," + invoice.getCompanyID() +")";
+					+ new DecimalFormat("#0.00").format(invoice.getTotal() + 103.9) + "," + 103.9 + "," + 0 + ","
+					+ invoice.getCompanyID() + ")";
 
 			stmt = con.createStatement();
 			stmt.executeUpdate(sql);

@@ -13,6 +13,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,9 @@ import java.util.Date;
 
 @Controller
 public class ReconsilationController {
+	
+	@Autowired
+	private ReceivableLIst rl;
 
 	@GetMapping("/Reconsilation")
 	public String reconsilation(TblPaymentDto tblPaymentDto, HttpServletRequest request) throws Exception {
@@ -40,7 +44,7 @@ public class ReconsilationController {
 		int defaultAccountId = 56933;
 		ArrayList<TblCategoryDto> initCategory = null;
 		ArrayList<TblCategoryDto> initCharge = null;
-		ReceivableLIst rl = new ReceivableListImpl();
+		//ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<TblCategoryType> categoryType = rl.getCategoryType();
 		ArrayList<TblCategoryDto> subCategoryChrgeListForAsset = null;
 		if(action.equals("reconsilation")) {
