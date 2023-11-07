@@ -4,10 +4,15 @@ import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
 import com.avibha.common.log.Loger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 
+@Service
 public class SalesBoardDetails {
 
+	
     public ArrayList getSalesBoardDetails(HttpServletRequest request, SalesBoardDto salesBoardDto) {
         String compId = (String) request.getSession().getAttribute("CID");
         String invoiceReportType = request.getParameter("ilist"); //report Type

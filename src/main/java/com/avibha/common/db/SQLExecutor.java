@@ -153,7 +153,7 @@ public class SQLExecutor {
 			connection = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
 					"root", "123");
-//			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bcacom_bzc_demo","bcacom_bzc_demo","!passw0rd#12!");
+//			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bcacom_bzc_new","bcacom_bzc_demo","!passw0rd#12!");
 //			 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","db","myserverkonnect");
 		} catch (Exception ex) {
 			System.out.println("Not able to create DB connection " + ex.getMessage());

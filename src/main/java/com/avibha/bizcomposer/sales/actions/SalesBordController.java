@@ -8,6 +8,9 @@ package com.avibha.bizcomposer.sales.actions;
 import com.avibha.bizcomposer.sales.dao.SalesBoardDetails;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
+import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,8 @@ import java.io.IOException;
 
 @Controller
 public class SalesBordController{
+	@Autowired
+	SalesBoardDetails sd;
 
 	@RequestMapping(value = {"/SalesBord"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String SalesBord(SalesBoardDto salesBoardDto, HttpServletRequest request, Model model) throws IOException, ServletException {
@@ -28,7 +33,7 @@ public class SalesBordController{
 		model.addAttribute("emailSenderDto", new EmailSenderDto());
 
 		if (action.equalsIgnoreCase("ShowList")) { // For Fname and lname listing
-			SalesBoardDetails sd = new SalesBoardDetails();
+//			SalesBoardDetails sd = new SalesBoardDetails();
 			sd.getSalesBoardDetails(request, salesBoardDto);
 			forward = "/sales/invoiceboard";
 		}

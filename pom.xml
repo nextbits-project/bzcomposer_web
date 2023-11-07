@@ -289,7 +289,7 @@
 	</dependencies>
 	<build>
 		<!-- ROOT -->
-		<finalName>BZComposer</finalName>
+		<finalName>ROOT</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
