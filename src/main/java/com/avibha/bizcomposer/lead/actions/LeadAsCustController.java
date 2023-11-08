@@ -69,7 +69,7 @@ public class LeadAsCustController {
 //		
 //	}
 	
-	@RequestMapping(value = { "/Lead" }, method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = { "/LeadStop" }, method = { RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
 			UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto, Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {

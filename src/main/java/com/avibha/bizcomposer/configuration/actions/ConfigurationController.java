@@ -53,9 +53,11 @@ import com.nxsol.bzcomposer.company.ConfigurationDAO;
 public class ConfigurationController {
 
 	@Autowired
-	ConfigurationDetails configDetailsA;
+	private ConfigurationDetails configDetails;
     private String pageActiveTab = "pageActiveTab";
     ArrayList<MailTemplateDto> mailTemplateDtos;
+    
+    
     @RequestMapping(value = {"/Configuration"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(ConfigurationDto configDto, CompanyInfoDto companyInfoDto, HttpServletRequest request, Model model) throws IOException, ServletException {
         String forward = "/configuration/configuration";
@@ -82,7 +84,7 @@ public class ConfigurationController {
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             //ConfigurationDetails configDetails = new ConfigurationDetails();
-            configDetailsA.getConfigurationInfo(request, configDto);
+            configDetails.getConfigurationInfo(request, configDto);
 
             ReceivableLIst rl = new ReceivableListImpl();
             request.setAttribute("PaymentTypeForCombo", rl.getPaymentType());
@@ -517,7 +519,7 @@ public class ConfigurationController {
             ConfigurationDAO dao = new ConfigurationDAO();
             //ConfigurationDetails cDetails = new ConfigurationDetails();
             VendorCategory vendorCategory = new VendorCategory();
-            configDetailsA.getConfigurationInfo(request, configDto);
+            configDetails.getConfigurationInfo(request, configDto);
 
             //request.setAttribute("sortId", configDto.getSortBy());
             request.setAttribute("CategoryID", configDto.getDefaultCategoryId());
@@ -565,7 +567,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config28")) {
             //ConfigurationDetails configDetails = new ConfigurationDetails();
-            configDetailsA.getConfigurationInfo(request, configDto);
+        	configDetails.getConfigurationInfo(request, configDto);
 
             SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManager(request);
