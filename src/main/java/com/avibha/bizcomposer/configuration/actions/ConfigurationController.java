@@ -54,6 +54,14 @@ public class ConfigurationController {
 
 	@Autowired
 	private ConfigurationDetails configDetails;
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
+	
+	@Autowired
+	private ConfigurationDAO dao;
+	
+	
     private String pageActiveTab = "pageActiveTab";
     ArrayList<MailTemplateDto> mailTemplateDtos;
     
@@ -80,7 +88,7 @@ public class ConfigurationController {
         if (action.equalsIgnoreCase("config")) {
 			 /*ConfigurationDetailsDao cDetails = new ConfigurationDetailsDao();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             //ConfigurationDetails configDetails = new ConfigurationDetails();
@@ -167,7 +175,7 @@ public class ConfigurationController {
             forward = "success2";
         }
         else if (action.equalsIgnoreCase("addNewGroup")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+//            ConfigurationDAO dao = new ConfigurationDAO();
 //            dao.getAccessPermissions(companyID,request,configDto);
 //            dao.getUserGroup(companyID, request, configDto);
             if (request.getParameter("selectedGroupId") != null) {
