@@ -19,6 +19,9 @@ public class ConfigurationDetails {
 	@Autowired
 	private ConfigurationInfo configInfo;
 
+	@Autowired
+	private CountryState conState;
+
 	// Invoke all the configuration related information (i.e:-
 	// invenroty,sales,purchase,etc).
 	public void getConfigurationInfo(HttpServletRequest request, ConfigurationDto configDto) {
@@ -31,7 +34,7 @@ public class ConfigurationDetails {
 		request.setAttribute("UserGroup", configInfo.userGroupInfo(compId));
 
 		/* For country list */
-		CountryState conState = new CountryState();
+		// CountryState conState = new CountryState();
 		request.setAttribute("CountryList", conState.getCountry());
 
 		/* For invoice style List */

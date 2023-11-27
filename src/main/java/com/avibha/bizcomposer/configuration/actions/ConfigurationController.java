@@ -332,7 +332,7 @@ public class ConfigurationController {
             dao.getPaymentTypeGeneralAccount(companyID, request, configDto);
             dao.getBillingTemplate(companyID, request, configDto);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+           // ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             // Added on 04-05-2020
@@ -416,7 +416,7 @@ public class ConfigurationController {
             request.setAttribute("pbValue", pbValue);
             request.setAttribute("mcValue", mailValue);
             request.setAttribute("showCmbValue", showCmbValue);
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
             forward = "success14";
             System.out.println("goes to billing page......................");
@@ -443,7 +443,7 @@ public class ConfigurationController {
             dao.getRefundReason(companyID, request, configDto);
             dao.getJobCategory(companyID, request, configDto);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+           // ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             dao.getMasterReason(configDto);
@@ -492,7 +492,7 @@ public class ConfigurationController {
             System.out.println("goes to estimation page......................");
         }
         else if (action.equalsIgnoreCase("config8")) {
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             String reorder = configDto.getShowReorderPointList();
@@ -511,7 +511,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config9")) {
             ConfigurationDAO dao = new ConfigurationDAO();
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             dao.getInvoiceStyle(companyID, request, configDto);
@@ -618,7 +618,7 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("config13")) {
             //System.out.println("Inside config13 condition");
             //ConfigurationDetailsDao configDetails = new ConfigurationDetailsDao();
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             String showReminderStatus = configDto.getShowReminder().equals("1") ? "on" : "off";
             request.setAttribute("showReminderStatus", showReminderStatus);
 
@@ -725,7 +725,7 @@ public class ConfigurationController {
             int accountID = configDto.getSelectedAccountId();
             request.setAttribute("accountId", accountID);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             dao.getMasterReason(configDto);
@@ -823,7 +823,7 @@ public class ConfigurationController {
             //System.out.println("Inside config27 condition");
 			 /*ConfigurationDetailsDao cDetails = new ConfigurationDetailsDao();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             String isSalesOrderBoard = configDto.getSalesOrderBoard();
