@@ -51,7 +51,7 @@ public class SalesDetails {
 
 	public void getdataManager(HttpServletRequest request, ActionForm form) {
 		HttpSession sess = request.getSession();
-		Long compId = (Long) sess.getAttribute("CID");
+		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
 
 		ArrayList customerTitle = new ArrayList(); // to get customer title
 		customerTitle = sales.getCustomerTitle(compId);

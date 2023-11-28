@@ -25,6 +25,8 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.nxsol.bzcomposer.company.domain.BcaCctype;
 import com.nxsol.bzcomposer.company.domain.BcaCvcategory;
+import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
+import com.nxsol.bzcomposer.company.domain.BcaLeadSource;
 import com.nxsol.bzcomposer.company.domain.BcaLocation;
 import com.nxsol.bzcomposer.company.domain.BcaMessage;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
@@ -36,6 +38,8 @@ import com.nxsol.bzcomposer.company.domain.BcaTerm;
 import com.nxsol.bzcomposer.company.domain.BcaTitle;
 import com.nxsol.bzcomposer.company.repos.BcaCctypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcategoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLeadSourceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLocationRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMessageRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
@@ -678,6 +682,41 @@ public class SalesInfo {
 //		return objList;
 //	}
 
+    @Autowired
+    private BcaLeadSourceRepository leadSourceRepository;
+
+    public ArrayList<SalesForm> getLeadSource(Long compId) {
+        List<BcaLeadSource> leadSoruces = leadSourceRepository.findByCompany_CompanyIdAndActive(compId, true);
+        ArrayList<SalesForm> objList = new ArrayList<>();
+
+        for (BcaLeadSource leadSoruce : leadSoruces) {
+            SalesForm salesForm = new SalesForm();
+            salesForm.setLeadSourceId(leadSoruce.getLeadSourceId().toString());
+            salesForm.setLeadSourceName(leadSoruce.getName());
+            salesForm.setDefaultItem(leadSoruce.getIsDefault() != null ? leadSoruce.getIsDefault() : false);
+            objList.add(salesForm);
+        }
+
+        return objList;
+    }
+    
+    @Autowired
+    private BcaLeadCategoryRepository leadCategoryRepository;
+
+    public ArrayList<SalesForm> getLeadCategory(Long compId) {
+        List<BcaLeadCategory> leadCats = leadCategoryRepository.findByCompany_CompanyIdAndActive(compId, true);
+        ArrayList<SalesForm> objList = new ArrayList<>();
+
+        for (BcaLeadCategory leadCat : leadCats) {
+            SalesForm salesForm = new SalesForm();
+            salesForm.setLeadCatID(leadCat.getLeadCategoryId().toString());
+            salesForm.setLeadCatName(leadCat.getName());
+            salesForm.setDefaultItem(leadCat.getIsDefault() != null ? leadCat.getIsDefault() : false);
+            objList.add(salesForm);
+        }
+
+        return objList;
+    }
 	public boolean insertSalesData(String sNewID, String title, String oldVal, String newVal, String taxRateVal,
 			String compId) {
 		SQLExecutor db = new SQLExecutor();

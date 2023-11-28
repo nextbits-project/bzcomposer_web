@@ -12,9 +12,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 public class SalesForm extends ActionForm {
-	
+
 	private static final long serialVersionUID = 0;
-	
+
 	private String billTo;
 
 	private String titleID;
@@ -60,9 +60,51 @@ public class SalesForm extends ActionForm {
 	private String salesRate;
 	private boolean defaultItem;
 
+	private String leadSourceId;
+
+	private String leadSourceName;
+
+	private String leadCatID;
+
+	private String leadCatName;
+
+	
+	public String getLeadSourceId() {
+		return leadSourceId;
+	}
+
+	public void setLeadSourceId(String leadSourceId) {
+		this.leadSourceId = leadSourceId;
+	}
+
+	public String getLeadSourceName() {
+		return leadSourceName;
+	}
+
+	public void setLeadSourceName(String leadSourceName) {
+		this.leadSourceName = leadSourceName;
+	}
+
+	public String getLeadCatID() {
+		return leadCatID;
+	}
+
+	public void setLeadCatID(String leadCatID) {
+		this.leadCatID = leadCatID;
+	}
+
+	public String getLeadCatName() {
+		return leadCatName;
+	}
+
+	public void setLeadCatName(String leadCatName) {
+		this.leadCatName = leadCatName;
+	}
+
 	public String getBillTo() {
 		return billTo;
 	}
+
 	public void setBillTo(String billTo) {
 		this.billTo = billTo;
 	}
@@ -70,6 +112,7 @@ public class SalesForm extends ActionForm {
 	public String getCcTypeID() {
 		return ccTypeID;
 	}
+
 	public void setCcTypeID(String ccTypeID) {
 		this.ccTypeID = ccTypeID;
 	}
@@ -77,6 +120,7 @@ public class SalesForm extends ActionForm {
 	public String getCcTypeName() {
 		return ccTypeName;
 	}
+
 	public void setCcTypeName(String ccTypeName) {
 		this.ccTypeName = ccTypeName;
 	}
@@ -84,6 +128,7 @@ public class SalesForm extends ActionForm {
 	public String getCvCategoryID() {
 		return cvCategoryID;
 	}
+
 	public void setCvCategoryID(String cvCategoryID) {
 		this.cvCategoryID = cvCategoryID;
 	}
@@ -91,6 +136,7 @@ public class SalesForm extends ActionForm {
 	public String getCvCategoryName() {
 		return cvCategoryName;
 	}
+
 	public void setCvCategoryName(String cvCategoryName) {
 		this.cvCategoryName = cvCategoryName;
 	}
@@ -98,6 +144,7 @@ public class SalesForm extends ActionForm {
 	public String getLocationId() {
 		return locationId;
 	}
+
 	public void setLocationId(String locationId) {
 		this.locationId = locationId;
 	}
@@ -105,6 +152,7 @@ public class SalesForm extends ActionForm {
 	public String getLocationName() {
 		return locationName;
 	}
+
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
 	}
@@ -112,6 +160,7 @@ public class SalesForm extends ActionForm {
 	public String getMessageID() {
 		return messageID;
 	}
+
 	public void setMessageID(String messageID) {
 		this.messageID = messageID;
 	}
@@ -119,6 +168,7 @@ public class SalesForm extends ActionForm {
 	public String getMessageName() {
 		return messageName;
 	}
+
 	public void setMessageName(String messageName) {
 		this.messageName = messageName;
 	}
@@ -126,6 +176,7 @@ public class SalesForm extends ActionForm {
 	public String getPaymentTypeId() {
 		return paymentTypeId;
 	}
+
 	public void setPaymentTypeId(String paymentTypeId) {
 		this.paymentTypeId = paymentTypeId;
 	}
@@ -133,6 +184,7 @@ public class SalesForm extends ActionForm {
 	public String getPaymentTypeName() {
 		return paymentTypeName;
 	}
+
 	public void setPaymentTypeName(String paymentTypeName) {
 		this.paymentTypeName = paymentTypeName;
 	}
@@ -140,6 +192,7 @@ public class SalesForm extends ActionForm {
 	public String getSalesRate() {
 		return salesRate;
 	}
+
 	public void setSalesRate(String salesRate) {
 		this.salesRate = salesRate;
 	}
@@ -147,6 +200,7 @@ public class SalesForm extends ActionForm {
 	public String getSalesRepID() {
 		return salesRepID;
 	}
+
 	public void setSalesRepID(String salesRepID) {
 		this.salesRepID = salesRepID;
 	}
@@ -154,6 +208,7 @@ public class SalesForm extends ActionForm {
 	public String getSalesRepName() {
 		return salesRepName;
 	}
+
 	public void setSalesRepName(String salesRepName) {
 		this.salesRepName = salesRepName;
 	}
@@ -161,6 +216,7 @@ public class SalesForm extends ActionForm {
 	public String getSalesTaxID() {
 		return salesTaxID;
 	}
+
 	public void setSalesTaxID(String salesTaxID) {
 		this.salesTaxID = salesTaxID;
 	}
@@ -168,6 +224,7 @@ public class SalesForm extends ActionForm {
 	public String getShipCarrierID() {
 		return shipCarrierID;
 	}
+
 	public void setShipCarrierID(String shipCarrierID) {
 		this.shipCarrierID = shipCarrierID;
 	}
@@ -175,6 +232,7 @@ public class SalesForm extends ActionForm {
 	public String getShipCarrierName() {
 		return shipCarrierName;
 	}
+
 	public void setShipCarrierName(String shipCarrierName) {
 		this.shipCarrierName = shipCarrierName;
 	}
@@ -182,6 +240,7 @@ public class SalesForm extends ActionForm {
 	public String getState() {
 		return state;
 	}
+
 	public void setState(String state) {
 		this.state = state;
 	}
@@ -189,6 +248,7 @@ public class SalesForm extends ActionForm {
 	public String getTermId() {
 		return termId;
 	}
+
 	public void setTermId(String termId) {
 		this.termId = termId;
 	}
@@ -196,6 +256,7 @@ public class SalesForm extends ActionForm {
 	public String getTermName() {
 		return termName;
 	}
+
 	public void setTermName(String termName) {
 		this.termName = termName;
 	}
@@ -203,17 +264,26 @@ public class SalesForm extends ActionForm {
 	public String getTitle() {
 		return title;
 	}
-	public void setTitle(String title) { this.title = title; }
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	public String getTitleID() {
 		return titleID;
 	}
+
 	public void setTitleID(String titleID) {
 		this.titleID = titleID;
 	}
 
-	public boolean isDefaultItem() { return defaultItem; }
-	public void setDefaultItem(boolean defaultItem) { this.defaultItem = defaultItem; }
+	public boolean isDefaultItem() {
+		return defaultItem;
+	}
+
+	public void setDefaultItem(boolean defaultItem) {
+		this.defaultItem = defaultItem;
+	}
 
 	public void reset(ActionMapping mapping, HttpServletRequest request) {
 		super.reset(mapping, request);

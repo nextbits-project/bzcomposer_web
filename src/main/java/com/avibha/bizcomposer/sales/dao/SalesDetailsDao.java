@@ -57,6 +57,8 @@ public class SalesDetailsDao {
 		request.setAttribute("CreditCardType", sales.getCreditCard(compId)); // to get customer title
 		request.setAttribute("SalesTax", sales.getTax(compId)); // to get customer title
 		request.setAttribute("Via", sales.getVia(compId));
+		request.setAttribute("LeadSource", sales.getLeadSource(compId));//LEAD SOURCE
+		request.setAttribute("LeadCategory", sales.getLeadCategory(compId));//LEAD CATEGORY
 	}
 
 	public void AddCustomer(HttpServletRequest request, CustomerDto customerDto) {

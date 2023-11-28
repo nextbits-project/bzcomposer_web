@@ -34,6 +34,12 @@ public class BcaLeadSource {
     @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
+    @Column(name="Active")
+    private Boolean active;
+    
+    @Column(name="IsDefault")
+    private Boolean isDefault;
+    
     public Integer getLeadSourceId() {
         return leadSourceId;
     }
@@ -73,5 +79,21 @@ public class BcaLeadSource {
     public void setCompany(final BcaCompany company) {
         this.company = company;
     }
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
 }

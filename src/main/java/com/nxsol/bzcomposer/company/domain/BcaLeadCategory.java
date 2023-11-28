@@ -33,6 +33,13 @@ public class BcaLeadCategory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CompanyID")
     private BcaCompany company;
+    
+    @Column(name="Active")
+    private Boolean active;
+    
+    @Column(name="IsDefault")
+    private Boolean isDefault;
+    
 
     public Integer getLeadCategoryId() {
         return leadCategoryId;
@@ -73,5 +80,21 @@ public class BcaLeadCategory {
     public void setCompany(final BcaCompany company) {
         this.company = company;
     }
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
 }

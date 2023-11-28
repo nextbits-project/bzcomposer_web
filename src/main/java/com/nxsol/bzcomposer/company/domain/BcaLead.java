@@ -74,8 +74,20 @@ public class BcaLead {
 
     @OneToMany(mappedBy = "lead")
     private Set<BcaLeadProducts> leadBcaLeadProductss;
+    
+    @Column(name="Active")
+    private Boolean active;
 
-    public Integer getLeadId() {
+    
+    public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public Integer getLeadId() {
         return leadId;
     }
 
