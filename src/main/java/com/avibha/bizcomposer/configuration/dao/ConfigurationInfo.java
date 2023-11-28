@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +30,8 @@ import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaFootnote;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
 import com.nxsol.bzcomposer.company.domain.BcaLabel;
+
+import com.nxsol.bzcomposer.company.domain.BcaPreference;
 import com.nxsol.bzcomposer.company.domain.BcaSalestax;
 import com.nxsol.bzcomposer.company.domain.BcaServicetype;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
@@ -38,6 +41,8 @@ import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLabelRepository;
+
+import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
 import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
@@ -70,6 +75,15 @@ public class ConfigurationInfo {
 	private static HttpServletRequest request;
 	
 
+	@Autowired
+	private BcaLabelRepository bcaLabelRepo;
+
+	@Autowired
+	private BcaUsergroupRepository bcaUserGroupRepo;
+
+	@Autowired
+	private BcaInvoicestyleRepository bcaInvoiceStyleRepo;
+
 	public void setCurrentRequest(HttpServletRequest req) {
 		request = req;
 	}
@@ -88,68 +102,60 @@ public class ConfigurationInfo {
 	}
 
 	/* Label List with id & name */
-	public ArrayList labelInfo() {
+
+//	public ArrayList labelInfo() {
 //		Connection con = null;
-		ArrayList<LabelValueBean> labelList = new ArrayList<LabelValueBean>();
-		SQLExecutor executor = new SQLExecutor();
+//		ArrayList<LabelValueBean> labelList = new ArrayList<LabelValueBean>();
+//		SQLExecutor executor = new SQLExecutor();
 //		PreparedStatement pstmtLabel = null;
 //		ResultSet rsLabel = null;
-		if (executor == null)
-			return null;
+//		if (executor == null)
+//			return null;
 //		con = executor.getConnection();
 //		if (con == null)
 //			return null;
-		try {
+//		try {
 //			String labelQuery = "select ID,LabelType from bca_label";
-			List<BcaLabel> bcaLabels=bcaLabelRepository.findAll();
 //			pstmtLabel = con.prepareStatement(labelQuery);
 //			rsLabel = pstmtLabel.executeQuery();
-			for(BcaLabel bcaLabel: bcaLabels) {
-				labelList.add(new LabelValueBean(bcaLabel.getLabelType(), bcaLabel.getId().toString()));
-				
-			}
+
 //			while (rsLabel.next()) {
 //				labelList.add(new LabelValueBean(rsLabel.getString("LabelType"), rsLabel.getString("ID")));
 //			}
 //			pstmtLabel.close();
 //			rsLabel.close();
-		} catch (Exception ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "labelInfo " + ex.toString());
-		} 
-//		finally {
+
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "labelInfo " + ex.toString());
+//		} finally {
 //			executor.close(con);
 //		}
+//
+//		return labelList;
+//	}
+	public List<LabelValueBean> labelInfo() {
+		List<BcaLabel> labels = bcaLabelRepo.findAll();
 
-		return labelList;
+
+		return labels.stream().map(label -> new LabelValueBean(label.getLabelType(), label.getId().toString()))
+				.collect(Collectors.toList());
 	}
 
-	/* User griup information with id & name */
-	public ArrayList userGroupInfo(String compId) {
+
+	/* User group information with id & name */
+//	public ArrayList userGroupInfo(String compId) {
 //		Connection con = null;
-		ArrayList<ConfigurationDto> labelList = new ArrayList<ConfigurationDto>();
-		SQLExecutor executor = new SQLExecutor();
+//		ArrayList<ConfigurationDto> labelList = new ArrayList<ConfigurationDto>();
+//		SQLExecutor executor = new SQLExecutor();
 //		PreparedStatement pstmtGroup = null;
 //		ResultSet rsGroup = null;
-		if (executor == null)
-			return null;
+//		if (executor == null)
+//			return null;
 //		con = executor.getConnection();
 //		if (con == null)
 //			return null;
-		try {
+//		try {
 //			String groupQuery = "select GroupID,UserGroupName from bca_usergroup where CompanyID=? and Active=1 ";
-			Optional<BcaCompany> bcaCompany=bcaCompanyRepository.findById(Long.parseLong(compId));
-			BcaCompany company=null;
-			if(bcaCompany.isPresent()) {
-				company=bcaCompany.get();
-			}
-			List<BcaUsergroup>bcaUsergroups=bcaUsergroupRepository.findByCompanyAndActive(company, true);
-			for(BcaUsergroup rsGroup:bcaUsergroups) {
-				ConfigurationDto cForm = new ConfigurationDto();
-				cForm.setGroupID(rsGroup.getGroupId());
-				cForm.setGroupNm(rsGroup.getUserGroupName());
-				labelList.add(cForm);
-			}
-			
 //			pstmtGroup = con.prepareStatement(groupQuery);
 //			pstmtGroup.setString(1, compId);
 //			rsGroup = pstmtGroup.executeQuery();
@@ -161,20 +167,40 @@ public class ConfigurationInfo {
 //			}
 //			pstmtGroup.close();
 //			rsGroup.close();
-		} catch (DataAccessException  ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "userGroupInfo " + ex.toString());
-		}
 
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "userGroupInfo " + ex.toString());
+//		}
+//
 //		finally {
 //			executor.close(con);
 //		}
-		return labelList;
+//		return labelList;
+//	}
+	public List<ConfigurationDto> userGroupInfo(String compId) {
+		List<BcaUsergroup> groups = bcaUserGroupRepo.findByCompany_CompanyIdAndActive(Long.valueOf(compId), true);
+
+		return groups.stream().map(group -> {
+			ConfigurationDto cForm = new ConfigurationDto();
+			cForm.setGroupID(group.getGroupId());
+			cForm.setGroupNm(group.getUserGroupName());
+			return cForm;
+		}).collect(Collectors.toList());
 	}
 
 	/* Invoice Style List with id & name */
-	public ArrayList invoiceStyleList() {
+	public List<LabelValueBean> invoiceStyleList() {
+		List<BcaInvoicestyle> invoiceStyles = bcaInvoiceStyleRepo.findByActive(1);
+
+
+		return invoiceStyles.stream()
+				.map(style -> new LabelValueBean(style.getName(), style.getInvoiceStyleId().toString()))
+				.collect(Collectors.toList());
+	}
+
+//	public ArrayList invoiceStyleList() {
 //		Connection con = null;
-		ArrayList<LabelValueBean> invStyleList = new ArrayList<LabelValueBean>();
+//		ArrayList<LabelValueBean> invStyleList = new ArrayList<LabelValueBean>();
 //		SQLExecutor executor = new SQLExecutor();
 //		PreparedStatement pstmtLabel = null;
 //		ResultSet rsLabel = null;
@@ -183,7 +209,7 @@ public class ConfigurationInfo {
 //		con = executor.getConnection();
 //		if (con == null)
 //			return null;
-		try {
+//		try {
 //			String labelQuery = "select InvoiceStyleID,Name from bca_invoicestyle where Active=1";
 //			pstmtLabel = con.prepareStatement(labelQuery);
 //			rsLabel = pstmtLabel.executeQuery();
@@ -192,68 +218,68 @@ public class ConfigurationInfo {
 //			}
 //			pstmtLabel.close();
 //			rsLabel.close();
-			
-			List<BcaInvoicestyle> bcaInvoicestyles=bcaInvoicestyleRepository.findByActive(1);
-			for(BcaInvoicestyle bcaInvoicestyle :bcaInvoicestyles) {
-				invStyleList.add(new LabelValueBean(bcaInvoicestyle.getName(), bcaInvoicestyle.getInvoiceStyleId().toString()));
-				
-			}
-			
-		} catch (DataAccessException  ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "invoiceStyleList " + ex.toString());
-		} 
-//		finally {
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "invoiceStyleList " + ex.toString());
+//		} finally {
 //			executor.close(con);
 //		}
-
-		return invStyleList;
-	}
+//
+//		return invStyleList;
+//	}
 
 	@Autowired
 	private BcaFootnoteRepository bcaFootnoteRepository;
 
 	/* Footnote List with id & name */
-	public ArrayList footnoteList(String compId) {
-		Connection con = null;
-		ArrayList<LabelValueBean> footnoteList = new ArrayList<LabelValueBean>();
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmtFootnote = null;
-		ResultSet rsFootnote = null;
-		if (executor == null)
-			return null;
-		con = executor.getConnection();
-		if (con == null)
-			return null;
-		try {
-			String footnoteQuery = "select FootNoteID,Name,Description from bca_footnote where CompanyID=? and Active=1 order by Name"; // JPA
-																																		// Check
-																																		// logical
-																																		// error
-																																		// description
-																																		// not
-																																		// required
-			pstmtFootnote = con.prepareStatement(footnoteQuery);
+	public List<LabelValueBean> footnoteList(String compId) {
+		List<BcaFootnote> footnotes = bcaFootnoteRepository
+				.findByCompany_CompanyIdAndActiveOrderByName(Long.valueOf(compId), 1);
 
-			pstmtFootnote.setString(1, compId);
-//          List<FootNoteQueryResult> footNoteQueryResults = bcaFootnoteRepository.findByCompanyIdAndactive(compId,1);
-			rsFootnote = pstmtFootnote.executeQuery();
-			while (rsFootnote.next()) {
-				footnoteList.add(new LabelValueBean(rsFootnote.getString("Name"), rsFootnote.getString("FootNoteID")));
-			}
-//          for ( FootNoteQueryResult footNoteQueryResult: footNoteQueryResults )
-//          {
-//          	 footnoteList.add(new LabelValueBean(footNoteQueryResult.getName(), footNoteQueryResult.getFootNoteID()));
-//          }
-			pstmtFootnote.close();
-			rsFootnote.close();
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "footnoteList " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-
-		return footnoteList;
+		return footnotes.stream()
+				.map(footnote -> new LabelValueBean(footnote.getName(), footnote.getFootNoteId().toString()))
+				.collect(Collectors.toList());
 	}
+//	public ArrayList footnoteList(String compId) {
+//		Connection con = null;
+//		ArrayList<LabelValueBean> footnoteList = new ArrayList<LabelValueBean>();
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmtFootnote = null;
+//		ResultSet rsFootnote = null;
+//		if (executor == null)
+//			return null;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return null;
+//		try {
+//			String footnoteQuery = "select FootNoteID,Name,Description from bca_footnote where CompanyID=? and Active=1 order by Name"; // JPA
+//																																		// Check
+//																																		// logical
+//																																		// error
+//																																		// description
+//																																		// not
+//																																		// required
+//			pstmtFootnote = con.prepareStatement(footnoteQuery);
+//
+//			pstmtFootnote.setString(1, compId);
+////          List<FootNoteQueryResult> footNoteQueryResults = bcaFootnoteRepository.findByCompanyIdAndactive(compId,1);
+//			rsFootnote = pstmtFootnote.executeQuery();
+//			while (rsFootnote.next()) {
+//				footnoteList.add(new LabelValueBean(rsFootnote.getString("Name"), rsFootnote.getString("FootNoteID")));
+//			}
+////          for ( FootNoteQueryResult footNoteQueryResult: footNoteQueryResults )
+////          {
+////          	 footnoteList.add(new LabelValueBean(footNoteQueryResult.getName(), footNoteQueryResult.getFootNoteID()));
+////          }
+//			pstmtFootnote.close();
+//			rsFootnote.close();
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "footnoteList " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//
+//		return footnoteList;
+//	}
 
 //    public ArrayList footnoteList(String compId) {
 ////        Connection con = null ;
@@ -293,10 +319,27 @@ public class ConfigurationInfo {
 //        return footnoteList;
 //    }
 
+
+	@Autowired
+	private BcpJobcodeRepository jobCodeRepository;
+
+
 	/* Job code List with id,name,cost & description */
-	public ArrayList jobCodeList(String compId) {
+	public List<ConfigurationDto> jobCodeList(String compId) {
+		List<BcpJobcode> jobCodes = jobCodeRepository.findByCompany_CompanyIdOrderByName(Long.valueOf(compId));
+
+		return jobCodes.stream().map(jobCode -> {
+			ConfigurationDto configForm = new ConfigurationDto();
+			configForm.setJobCodeID(jobCode.getJobId());
+			configForm.setJob(jobCode.getName());
+			configForm.setCost(jobCode.getCost().doubleValue());
+			configForm.setDescription(jobCode.getDescription());
+			return configForm;
+		}).collect(Collectors.toList());
+	}
+//	public ArrayList jobCodeList(String compId) {
 //		Connection con = null;
-		ArrayList<ConfigurationDto> jobCodeList = new ArrayList<ConfigurationDto>();
+//		ArrayList<ConfigurationDto> jobCodeList = new ArrayList<ConfigurationDto>();
 //		SQLExecutor executor = new SQLExecutor();
 //		PreparedStatement pstmtJobCode = null;
 //		ResultSet rsJobCode = null;
@@ -305,7 +348,7 @@ public class ConfigurationInfo {
 //		con = executor.getConnection();
 //		if (con == null)
 //			return null;
-		try {
+//		try {
 //			String jobCodeQuery = "select JobID,Name,Cost,Description from bcp_jobcode where CompanyID=?"
 //					+ "order by Name";
 //			pstmtJobCode = con.prepareStatement(jobCodeQuery);
@@ -321,36 +364,30 @@ public class ConfigurationInfo {
 //			}
 //			pstmtJobCode.close();
 //			rsJobCode.close();
-			
-			Optional<BcaCompany>optional=bcaCompanyRepository.findById(Long.parseLong(compId));
-			BcaCompany company=null;
-			if(optional.isPresent()) {
-				company=optional.get();
-			}
-			List<BcpJobcode>bcpJobcodes=bcpJobcodeRepository.findByCompanyOrderByName(company);
-			for(BcpJobcode rsJobCode:bcpJobcodes) {
-				ConfigurationDto configForm = new ConfigurationDto();
-				configForm.setJobCodeID(rsJobCode.getJobId());
-				configForm.setJob(rsJobCode.getName());
-				configForm.setCost(rsJobCode.getCost().doubleValue());
-				configForm.setDescription(rsJobCode.getDescription());
-				jobCodeList.add(configForm);
-			}
-			
-		} catch (DataAccessException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "jobCodeList " + ex.toString());
-		} 
-//		finally {
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "jobCodeList " + ex.toString());
+//		} finally {
 //			executor.close(con);
 //		}
-
-		return jobCodeList;
-	}
+//
+//		return jobCodeList;
+//	}
 
 	/* Sales Tax List with id & name */
-	public ArrayList salesTaxList(String compId) {
+
+	@Autowired
+	private BcaSalestaxRepository salesTaxRepository;
+
+
+	public List<LabelValueBean> salesTaxList(String compId) {
+		List<BcaSalestax> salesTaxes = salesTaxRepository.findByCompany_CompanyIdAndActive(Long.valueOf(compId), 1);
+
+		return salesTaxes.stream().map(tax -> new LabelValueBean(tax.getState(), tax.getSalesTaxId().toString()))
+				.collect(Collectors.toList());
+	}
+//	public ArrayList salesTaxList(String compId) {
 //		Connection con = null;
-		ArrayList<LabelValueBean> taxList = new ArrayList<LabelValueBean>();
+//		ArrayList<LabelValueBean> taxList = new ArrayList<LabelValueBean>();
 //		SQLExecutor executor = new SQLExecutor();
 //		PreparedStatement pstmtTax = null;
 //		ResultSet rsTax = null;
@@ -359,7 +396,7 @@ public class ConfigurationInfo {
 //		con = executor.getConnection();
 //		if (con == null)
 //			return null;
-		try {
+//		try {
 //			String footnoteQuery = "select SalesTaxID,State from bca_salestax where Active=1 and CompanyID=?";
 //			pstmtTax = con.prepareStatement(footnoteQuery);
 //			pstmtTax.setString(1, compId);
@@ -369,33 +406,49 @@ public class ConfigurationInfo {
 //			}
 //			pstmtTax.close();
 //			rsTax.close();
-			
-			Optional<BcaCompany>optional=bcaCompanyRepository.findById(Long.parseLong(compId));
-			BcaCompany company=null;
-			if(optional.isPresent()) {
-				company=optional.get();
-			}
-			List<BcaSalestax> bcaSalestaxs=bcaSalestaxRepository.findByActiveAndCompany(1, company);
-			for(BcaSalestax bcaSalestax:bcaSalestaxs) {
-				taxList.add(new LabelValueBean(bcaSalestax.getState(), bcaSalestax.getSalesTaxId().toString()));
-					
-			}
-		
-		} catch (DataAccessException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "salesTaxList " + ex.toString());
-		} 
-//		finally {
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "salesTaxList " + ex.toString());
+//		} finally {
 //			executor.close(con);
 //		}
-
-		return taxList;
-	}
+//
+//		return taxList;
+//	}
 
 	/* Service Type List with id,name,invoicestyle id */
-	public ArrayList serviceTypeList(HttpServletRequest request) {
-		String serviceList = "";
+
+	@Autowired
+	private BcaServicetypeRepository serviceTypeRepository;
+	@Autowired
+	private BcaInvoicestyleRepository invoiceStyleRepository;
+
+	public List<ConfigurationDto> serviceTypeList(HttpServletRequest request) {
+		List<BcaServicetype> serviceTypes = serviceTypeRepository.findAllByOrderByServiceName();
+		StringBuilder serviceListBuilder = new StringBuilder();
+
+		List<ConfigurationDto> serviceTypeList = serviceTypes.stream().map(serviceType -> {
+			ConfigurationDto configForm = new ConfigurationDto();
+			configForm.setServiceID(serviceType.getServiceId());
+			configForm.setServiceName(serviceType.getServiceName());
+			configForm.setInvStyleID(serviceType.getInvoiceStyle().getInvoiceStyleId());
+
+
+			BcaInvoicestyle invoiceStyle = invoiceStyleRepository
+					.findByInvoiceStyleIdAndActive(serviceType.getInvoiceStyle().getInvoiceStyleId(), 1);
+			configForm.setInvName(invoiceStyle != null ? invoiceStyle.getName() : "");
+
+			serviceListBuilder.append(configForm.getServiceID()).append("/*/").append(configForm.getServiceName())
+					.append("/*/");
+			return configForm;
+		}).collect(Collectors.toList());
+
+		request.setAttribute("ServList", serviceListBuilder.toString());
+		return serviceTypeList;
+	}
+//	public ArrayList serviceTypeList(HttpServletRequest request) {
+//		String serviceList = "";
 //		Connection con = null;
-		ArrayList<ConfigurationDto> serviceTypeList = new ArrayList<ConfigurationDto>();
+//		ArrayList<ConfigurationDto> serviceTypeList = new ArrayList<ConfigurationDto>();
 //		SQLExecutor executor = new SQLExecutor();
 //		PreparedStatement pstmtServiceType = null;
 //		PreparedStatement pstmtInvStyle = null;
@@ -406,7 +459,7 @@ public class ConfigurationInfo {
 //		con = executor.getConnection();
 //		if (con == null)
 //			return null;
-		try {
+//		try {
 //			String serviceTypeQuery = "select * from bca_servicetype order by ServiceName";
 //			pstmtServiceType = con.prepareStatement(serviceTypeQuery);
 //			rsServiceType = pstmtServiceType.executeQuery();
@@ -430,37 +483,17 @@ public class ConfigurationInfo {
 //				serviceTypeList.add(configForm);
 //				serviceList += configForm.getServiceID() + "/*/" + configForm.getServiceName() + "/*/";
 //			}
-			
-		List<BcaServicetype>bcaServicetypes=bcaServicetypeRepository.findAllByOrderByServiceName();
-			for(BcaServicetype bcaServicetype:bcaServicetypes)
-			{
-				ConfigurationDto configForm = new ConfigurationDto();
-				configForm.setServiceID(bcaServicetype.getServiceId());
-				configForm.setServiceName(bcaServicetype.getServiceName());
-				configForm.setInvStyleID(bcaServicetype.getInvoiceStyle().getInvoiceStyleId());
-				BcaInvoicestyle invoicestyle=bcaInvoicestyleRepository.findByActiveAndInvoiceStyleId(1,configForm.getInvStyleID() );
-				if(null!=invoicestyle) {
-					configForm.setInvName(invoicestyle.getName());
-				}else {
-					configForm.setInvName("");
-				}
-				serviceTypeList.add(configForm);
-				serviceList += configForm.getServiceID() + "/*/" + configForm.getServiceName() + "/*/";
-			
-			}
-			
-			request.setAttribute("ServList", serviceList);
+//			request.setAttribute("ServList", serviceList);
 //			pstmtServiceType.close();
 //			rsServiceType.close();
-		} catch (DataAccessException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "jobCodeList " + ex.toString());
-		}
-//		finally {
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "jobCodeList " + ex.toString());
+//		} finally {
 //			executor.close(con);
 //		}
-
-		return serviceTypeList;
-	}
+//
+//		return serviceTypeList;
+//	}
 
 	public ConfigurationDto getDefaultCongurationData(String companyID) {
 		SQLExecutor executor = new SQLExecutor();
@@ -533,7 +566,228 @@ public class ConfigurationInfo {
 	 * Invoke all the records required for configuration i.e:- information related
 	 * to networking,sales & customer,etc.
 	 */
+	@Autowired
+	private BcaPreferenceRepository bcaPreferenceRepository;
+
 	public void getCongurationRecord(String companyID, ConfigurationDto cForm, HttpServletRequest request) {
+		BcaPreference preference = bcaPreferenceRepository.findByCompany_CompanyId(Long.valueOf(companyID));
+		if (preference != null) {
+			// Map fields from preference to cForm
+			// Example: cForm.setCurrencyID(preference.getCurrencyID());
+			String logoPath = preference.getCompanyLogoPath();
+			cForm.setFileName(logoPath);
+			request.setAttribute("Image", logoPath);
+			Loger.log("Image =>" + logoPath);
+
+			// Continue mapping other fields
+			/* General */
+			cForm.setCurrencyID(preference.getCurrencyId());
+			cForm.setWeightID(preference.getWeightId());
+			cForm.setDefaultLabelID(preference.getLabelSizeId());
+			cForm.setModuleID(preference.getDefaultModule());
+			cForm.setFilterOption(preference.getFilterOption());
+
+			/* Estimation */
+			cForm.setStartEstimationNum(preference.getStartingEstimationNumber().toString());
+			cForm.setStartSalesOrderNum(preference.getStartingSalesOrderNumber().toString());
+
+			/* Billing */
+			cForm.setStartingBillNumber(preference.getStartingBillNumber());
+			cForm.setPrintBills(preference.getPrintBills().equals(1) ? "on" : "off");
+			cForm.setMailToCustomer(preference.getMailToCustomer().equals(1) ? "on" : "off");
+			cForm.setShowCombinedBilling(preference.getShowCombinedBilling().equals(1) ? "on" : "off");
+			cForm.setShowBillingStatStyle(preference.getShowBillingStatStyle());
+
+			/* RMA */
+			cForm.setSelectedAccountId(preference.getDefaultRmacheckingBankId());
+
+			/* Account&Payment */
+			// cForm.setSelectedCategoryId(rs.getInt("defaultARCategoryID"));
+			cForm.setDefaultPaymentMethodId(preference.getDefaultBankTransferAccId());
+			cForm.setDefaultDepositToId(preference.getDefaultBankTransferAccId());
+			cForm.setDefaultCategoryId(preference.getDefaultArcategoryId());
+			cForm.setDefaultDepositToId(preference.getDefaultBankTransferAccId());
+			cForm.setArCategory(
+					preference.getDefaultArcategoryIdforac() != null ? preference.getDefaultArcategoryIdforac() : -1);
+			cForm.setPoCategory(
+					preference.getDefaultArcategoryIdforpo() != null ? preference.getDefaultArcategoryIdforpo() : -1);
+			cForm.setBpCategory(preference.getDefaultArcategoryIdforbp() != null ? preference.getDefaultArcategoryIdforbp() : -1);
+			cForm.setArDepositTo(preference.getDefaultdepositoforac() != null ? preference.getDefaultdepositoforac() : -1);
+			cForm.setPoDepositTo(preference.getDefaultdepositoforpo() != null ? preference.getDefaultdepositoforpo() : -1);
+			cForm.setBpDepositTo(preference.getDefaultdepositoforbp() != null ? preference.getDefaultdepositoforbp() : -1);
+			cForm.setArReceivedType(preference.getDefaultReceivedforac() != null ? preference.getDefaultReceivedforac() : -1);
+			cForm.setPoReceivedType(preference.getDefaultReceivedforpo() != null ? preference.getDefaultReceivedforpo() : -1);
+			cForm.setBpReceivedType(preference.getDefaultReceivedforbp() != null ? preference.getDefaultReceivedforbp() : -1);
+			cForm.setScheduleDays(preference.getAutoPaymentDuration());
+			cForm.setReimbursementSettings(preference.getDefaultReimbusrementSetting());
+			/* Inventory Setting */
+			cForm.setShowReorderPointList(preference.getShowReorderPointList().equals(1) ? "on" : "off");
+			cForm.setShowReorderPointWarning(preference.getShowReorderPointWarring().equals(1) ? "on" : "off");
+			cForm.setReservedQuantity(preference.getReservedQuantity().equals(1) ? "on" : "off");
+			cForm.setSalesOrderQty(preference.getSalesOrderQty().equals(1) ? "on" : "off");
+
+			/* Networking & Security */
+			cForm.setPassword(preference.getAdminPassword());
+			cForm.setMultiUserConnection(preference.getMultimode());
+
+			/* Sales & Customer */
+			cForm.setSortBy(preference.getDefaultCustomerSortId());
+			cForm.setCustomerGroup(preference.getDefaultCustomerGroupId());
+			cForm.setCustDefaultCountryID(preference.getCustomerCountry().getId());
+			cForm.setCustTaxable(preference.getCustomerTaxable().equals(1) ? "on" : "off");
+			cForm.setIsSalesOrder(preference.getShowSalesOrder().equals(1) ? "on" : "off");
+			cForm.setCustomerProvince(preference.getCustomerProvience());
+			cForm.setCustomerShippingId((preference.getSalesViaId()));
+
+			cForm.setStartInvoiceNum(preference.getStartingInvoiceNumber().toString());
+			cForm.setAddressSettings(preference.getCopyAddress().equals(1) ? "on" : "off");
+			cForm.setSelectedStateId(preference.getCustomerState().getId());
+			cForm.setSelectedShippingId(preference.getShippingFeeMethod());
+			cForm.setSelectedSalesRepId(preference.getSalesRepId());
+			cForm.setSelectedPaymentId(preference.getSalesPayMethodId());
+
+			cForm.setPackingSlipTemplateId(preference.getDefaultPackingSlipStyleId());
+			cForm.setPoNumPrefix(preference.getSalesPoprefix());
+			// added by tulsi
+			cForm.setInvStyleID(preference.getInvoiceStyle().getInvoiceStyleId());
+			cForm.setSelectedMessageId(preference.getInvoiceFootnoteId());
+			cForm.setSaleShowCountry(preference.getSaleShowCountry() ? "on" : "off");
+			cForm.setRatePriceChangable(preference.getIsRatePriceChangeble() ? "on" : "off");
+			cForm.setSaleShowTelephone(preference.getSaleShowTelephone() ? "on" : "off");
+			cForm.setIsSalePrefix(preference.getIsSalePrefix() ? "on" : "off");
+			cForm.setExtraChargeApplicable(preference.getExtraCharge() ? "on" : "off");
+			cForm.setChargeAmount(preference.getChargeAmount());
+			cForm.setOrderAmount(preference.getOrderAmount());
+			cForm.setHowOftenSalestax(preference.getHowOftenSalestax());
+			cForm.setDropShipCharge(preference.getDropShipCharge());
+			cForm.setSalesTaxCode(preference.getSalesTaxCode());
+			cForm.setSaleTaxRate(preference.getSalesTaxRate());
+			cForm.setIsShowDropShipItems(preference.getShowDropShipItems() ? 1 : 0);
+			cForm.setIsRefundAllowed("1".equals(preference.getIsRefundAllowed().toString()) ? "on" : "off");
+			/* Purchase & Vendor */
+			/*
+			 * cForm.setVendorDefaultCountryID(preference.getInt("VendorCountryID"));
+			 * cForm.setStartPONum(preference.getLong("StartingPONumber"));
+			 * cForm.setPoStyleID(preference.getInt("POStyleID"));
+			 * cForm.setVendorDefaultFootnoteID(preference.getInt("POFootnoteID"));
+			 * cForm.setInvStyleID(preference.getInt("InvoiceStyleID"));
+			 * cForm.setDefaultFootnoteID(preference.getInt("InvoiceFootnoteID"));
+			 * cForm.setVendorDefaultFootnoteID(preference.getInt("InvoiceFootnoteID"));
+			 * cForm.setIsProductWeight(preference.getString("UseProductWeight").equals("1")
+			 * ? "true" : "false");
+			 * cForm.setIsCompanyName(preference.getString("UseShippingTable").equals("1") ?
+			 * "true" : "false");
+			 */
+
+			cForm.setSortBy(preference.getDefaultVendorrSortId());
+			cForm.setSelectedCountryId1(preference.getVendorCountry().getId());
+			cForm.setSelectedStateId1(preference.getVendorState().getId());
+			cForm.setVendorProvience(preference.getVendorProvience());
+			cForm.setStartPONum(preference.getStartingPonumber());
+			cForm.setVendorDefaultFootnoteID(preference.getPofootnoteId());
+			cForm.setShipCarrierId(preference.getPoviaId());
+			cForm.setSelectedTermId(preference.getPotermId());
+			cForm.setSelectedSalesRepId(preference.getPorepId());
+			cForm.setSelectedPaymentId(preference.getPopayMethodId());
+			cForm.setSelectedActiveEmployeeId(preference.getEmployeeInChargeId());
+			cForm.setPoShowCountry(preference.getPoshowCountry() ? "on" : "off");
+			cForm.setPoShowTelephone(preference.getPoshowTelephone() ? "on" : "off");
+			cForm.setIsPurchasePrefix(preference.getIsPurchasePrefix() ? "on" : "off");
+
+			/* Inventory */
+			cForm.setStartRINum(Long.valueOf(preference.getStartingRinumber()));
+			cForm.setProductTaxable(preference.getProductTaxable().equals(1) ? "on" : "off");
+
+			/* Employee */
+			cForm.setEmpStateID(preference.getEmployeeState().getId());
+			request.setAttribute("EmpState", String.valueOf(cForm.getEmpStateID()));
+
+			cForm.setEmpCountryID(preference.getEmployeeCountry().getId());
+			cForm.setTimeSheet(preference.getTimeSheetSet());
+
+			/* Tax */
+			cForm.setChargeSalesTax(preference.getChargeSalestax().equals(1) ? "true" : "false");
+			cForm.setHowOftenSalesTax(preference.getHowOftenSalestax());
+			cForm.setSalesTaxID(preference.getSalesTax().getSalesTaxId());
+
+			/* Reminders */
+			cForm.setShowReminder(preference.getShowReminder().equals(1) ? "on" : "off");
+			cForm.setInvoiceMemo(preference.getInvoiceMemo());
+			cForm.setInvoiceMemoDays(preference.getInvoiceMemoDays());
+			cForm.setOverdueInvoice(preference.getOverdueInvoice());
+			cForm.setOverdueInvoiceDays(preference.getOverdueinvoiceDays());
+			cForm.setInventoryOrder(preference.getInventoryOrder());
+			cForm.setInventoryOrderDays(preference.getInventoryOrderDays());
+			cForm.setBillsToPay(preference.getBillstoPay());
+			cForm.setBillsToPayDays(preference.getBillstoPayDays());
+			cForm.setMemorizeEstimation(preference.getEstimationMemo());
+			cForm.setMemorizeEstimationDays(preference.getEstimationMemoDays());
+			cForm.setMemorizeBill(preference.getMemobill());
+			cForm.setMemorizeBillDays(preference.getMemobillDays());
+			cForm.setMemorizePurchaseOrder(preference.getPomemo());
+			cForm.setMemorizePurchaseOrderDays(preference.getPomemoDays());
+			cForm.setServiceBilling(preference.getServiceBillsMemo());
+			cForm.setServiceBillingDays(preference.getServiceBillsMemoDays());
+
+			/* Finance Charge */
+			cForm.setAnnualInterestRate(preference.getChargeInterest());
+			cForm.setMinCharge(preference.getChargeMinimum());
+			cForm.setGracePeriod(preference.getChargeGrace().intValue());
+			cForm.setAssessFinanceCharge(preference.getChargeReassess() ? "on" : "off");
+			cForm.setMarkFinanceCharge(preference.getChargeMarkFinance() ? "on" : "off");
+			cForm.setStartMonth(preference.getBudgetStartMonth());
+			cForm.setEndMonth(preference.getBudgetEndMonth());
+
+			/* Performance */
+			long perform = Long.valueOf(preference.getPerformance());
+			if (perform != 2000 && perform != 5000 && perform != 10000) {
+				cForm.setPerformance(1);
+				cForm.setUserDefinePerform(perform);
+			} else {
+				cForm.setPerformance((int) perform);
+				cForm.setUserDefinePerform(20000);
+			}
+
+			/* SMTP setup */
+			cForm.setSenderEmail(preference.getMailSenderEmail());
+			cForm.setMailServer(preference.getMailserver());
+			cForm.setMailUserName(preference.getMailUsername());
+			cForm.setMailPassword(preference.getMailPassword());
+			cForm.setMailAuth(preference.getMailAuth() ? "true" : "false");
+
+			/* Dashboard */
+			cForm.setPoboard(preference.getPoboard().equals(1) ? "on" : "off");
+			cForm.setItemReceivedBoard(preference.getItemsReceivedBoard().equals(1) ? "on" : "off");
+			cForm.setItemShippedBoard(preference.getItemsShippedBoard().equals(1) ? "on" : "off");
+			cForm.setSalesOrderBoard(preference.getSalesOrderBoard().equals(1) ? "on" : "off");
+			cForm.setProductCategoryID(preference.getProductCategoryId());
+			cForm.setLocationID(preference.getLocationId());
+			cForm.setReorderPoint(preference.getReOrderPoint());
+			cForm.setVendorBusinessTypeID(preference.getVendorBusinessTypeId());
+			cForm.setVendorInvoiceStyleId(preference.getVendorInvoiceStyleId());
+			cForm.setCustomerType(preference.getCustomerType());
+			cForm.setPriceLevelPriority(preference.getPriceLevelPriority());
+			cForm.setPriceLevelDealer(preference.getPriceLevelDealer());
+			cForm.setPriceLevelCustomer(preference.getPriceLevelCustomer());
+			cForm.setPriceLevelGeneral(preference.getPriceLevelGeneral());
+			cForm.setShowUSAInBillShipAddress(preference.getShowUsainBillShipAddress());
+			cForm.setInvoiceTemplateType(preference.getInvoiceTemplateType());
+			cForm.setEstTemplateType(preference.getEstimationTemplateType());
+			cForm.setSoTemplateType(preference.getSalesOrderTemplateType());
+			cForm.setPoTemplateType(preference.getPurchaseOrderTemplateType());
+			cForm.setPsTemplateType(preference.getPackingSlipTemplateType());
+			cForm.setDisplayPeriod(preference.getDisplayPeriod());
+			cForm.setEstimationStyleID(preference.getEstimationStyleId());
+			cForm.setSoStyleID(preference.getSostyleId());
+			cForm.setSaleTaxRate2(preference.getSalesTaxRate2());
+			cForm.setBackOrderNeeded(preference.getIsBackOrderNeeded() ? "on" : "off");
+			cForm.setRecurringServiceBill(preference.getIsRecurringServiceBill() ? "on" : "off");
+			cForm.setServiceBillName(preference.getServiceBillName());
+
+		}
+	}
+
+	public void getCongurationRecordOld(String companyID, ConfigurationDto cForm, HttpServletRequest request) {
 		SQLExecutor executor = new SQLExecutor();
 		Connection con = executor.getConnection();
 		PreparedStatement pstmt = null;

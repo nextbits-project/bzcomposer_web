@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
@@ -33,6 +34,7 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
 import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
 
+@Service
 public class ConfigurationDAO {
 
 	ConfigurationDto pojo = null;

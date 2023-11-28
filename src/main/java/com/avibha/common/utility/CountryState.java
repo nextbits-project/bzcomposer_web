@@ -2,16 +2,23 @@ package com.avibha.common.utility;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.City;
 import com.avibha.common.Country;
 import com.avibha.common.State;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.nxsol.bzcomposer.company.domain.BcaCountries;
+import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
 
+@Service
 public class CountryState {
 
 	private String id = null;
@@ -20,6 +27,7 @@ public class CountryState {
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -27,38 +35,61 @@ public class CountryState {
 	public String getName() {
 		return name;
 	}
-	public void setName(String name)
-	{
+
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	public ArrayList getCountry() {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
+	@Autowired
+	private BcaCountriesRepository countryRepository;
+
+	public ArrayList<LabelValueBean> getCountry() {
+		List<BcaCountries> countries = countryRepository.findAllByOrderByName();
 		ArrayList<LabelValueBean> cList = new ArrayList<>();
-		try {
-			PreparedStatement pstmt = con.prepareStatement("select * from country ORDER BY CountryName");
-			rs = pstmt.executeQuery();
-			LabelValueBean defaultCountry = null;
-			while (rs.next()) {
-				if(defaultCountry == null && rs.getString("CountryName").equalsIgnoreCase("United States")){
-					defaultCountry = new LabelValueBean(rs.getString("CountryName"), rs.getString("CountryID"));
-				}else{
-					cList.add(new LabelValueBean(rs.getString("CountryName"), rs.getString("CountryID")));
-				}
+
+		LabelValueBean defaultCountry = countries.stream()
+				.filter(country -> "United States".equalsIgnoreCase(country.getName())).findFirst()
+				.map(country -> new LabelValueBean(country.getName(), country.getId().toString())).orElse(null);
+
+		countries.forEach(country -> {
+			if (!"United States".equalsIgnoreCase(country.getName())) {
+				cList.add(new LabelValueBean(country.getName(), country.getId().toString()));
 			}
-			if(defaultCountry != null){
-				cList.add(0, defaultCountry);
-			}
-		} catch (SQLException ee) {
-			Loger.log("Error in CountryState class and method:getCountry:  " + ee);
-		} finally {
-			db.close(con);
+		});
+
+		if (defaultCountry != null) {
+			cList.add(0, defaultCountry);
 		}
+
 		return cList;
 	}
-	
+//	public ArrayList getCountry() {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		ArrayList<LabelValueBean> cList = new ArrayList<>();
+//		try {
+//			PreparedStatement pstmt = con.prepareStatement("select * from country ORDER BY CountryName");
+//			rs = pstmt.executeQuery();
+//			LabelValueBean defaultCountry = null;
+//			while (rs.next()) {
+//				if(defaultCountry == null && rs.getString("CountryName").equalsIgnoreCase("United States")){
+//					defaultCountry = new LabelValueBean(rs.getString("CountryName"), rs.getString("CountryID"));
+//				}else{
+//					cList.add(new LabelValueBean(rs.getString("CountryName"), rs.getString("CountryID")));
+//				}
+//			}
+//			if(defaultCountry != null){
+//				cList.add(0, defaultCountry);
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log("Error in CountryState class and method:getCountry:  " + ee);
+//		} finally {
+//			db.close(con);
+//		}
+//		return cList;
+//	}
+
 	public ArrayList getStates(String cid) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
@@ -104,14 +135,15 @@ public class CountryState {
 		}
 		return sList;
 	}
-	
+
 	public ArrayList getStatesNew(String cid) {
 		ArrayList<CompanyInfoDto> sList = new ArrayList<CompanyInfoDto>();
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null;
 		try {
-			PreparedStatement pstmt = con.prepareStatement("select ZIP_CODE,STATE_NAME,CITY_NAME from city_state_zip where ZIP_CODE=?");
+			PreparedStatement pstmt = con
+					.prepareStatement("select ZIP_CODE,STATE_NAME,CITY_NAME from city_state_zip where ZIP_CODE=?");
 			pstmt.setString(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -127,7 +159,6 @@ public class CountryState {
 		}
 		return sList;
 	}
-	
 
 	public String[] getCityState(String cid) {
 		String city = "", state = "";
@@ -135,7 +166,8 @@ public class CountryState {
 		Connection con = db.getConnection();
 		ResultSet rs = null;
 		try {
-			PreparedStatement pstmt = con.prepareStatement("select ZIP_CODE,STATE_NAME,CITY_NAME from city_state_zip where ZIP_CODE=?");
+			PreparedStatement pstmt = con
+					.prepareStatement("select ZIP_CODE,STATE_NAME,CITY_NAME from city_state_zip where ZIP_CODE=?");
 			pstmt.setString(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -147,10 +179,10 @@ public class CountryState {
 		} finally {
 			db.close(con);
 		}
-		String[] values = {city, state};
+		String[] values = { city, state };
 		return values;
 	}
-	
+
 	public ArrayList getCountryNew() {
 		ArrayList<CompanyInfoDto> cList = new ArrayList<CompanyInfoDto>();
 		SQLExecutor db = new SQLExecutor();
@@ -192,7 +224,7 @@ public class CountryState {
 		}
 		return sId;
 	}
-	
+
 	public String getStatesName(String sid) {
 		String sname = "";
 		SQLExecutor db = new SQLExecutor();
@@ -203,10 +235,9 @@ public class CountryState {
 			pstmt.setString(1, sid);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				if(rs.getString(1).equals("California")) {
+				if (rs.getString(1).equals("California")) {
 					sname = "CA";
-				}
-				else {
+				} else {
 					sname = rs.getString(1);
 				}
 			}
@@ -238,7 +269,6 @@ public class CountryState {
 		return cname;
 	}
 
-
 //	=================================== BCA_RECORDS ====================================
 	public ArrayList<Country> getCountryList() {
 		Statement stmt = null;
@@ -256,14 +286,19 @@ public class CountryState {
 				form.setPhoneCode(rs.getString("phonecode"));
 				countryList.add(form);
 			}
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (stmt != null) { db.close(stmt); }
-				if(c != null){ db.close(c); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (c != null) {
+					db.close(c);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -279,21 +314,26 @@ public class CountryState {
 		ArrayList<State> stateList = new ArrayList<>();
 		try {
 			stmt = c.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_states where country_id="+country_id);
+			rs = stmt.executeQuery("SELECT * FROM bca_states where country_id=" + country_id);
 			while (rs.next()) {
 				State form = new State();
 				form.setStateId(rs.getInt("id"));
 				form.setState(rs.getString("name"));
 				stateList.add(form);
 			}
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (stmt != null) { db.close(stmt); }
-				if(c != null){ db.close(c); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (c != null) {
+					db.close(c);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -309,21 +349,26 @@ public class CountryState {
 		ArrayList<City> cityList = new ArrayList<>();
 		try {
 			stmt = c.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_cities where state_id="+state_id);
+			rs = stmt.executeQuery("SELECT * FROM bca_cities where state_id=" + state_id);
 			while (rs.next()) {
 				City form = new City();
 				form.setCityId(rs.getInt("id"));
 				form.setCityName(rs.getString("name"));
 				cityList.add(form);
 			}
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (stmt != null) { db.close(stmt); }
-				if(c != null){ db.close(c); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (c != null) {
+					db.close(c);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}

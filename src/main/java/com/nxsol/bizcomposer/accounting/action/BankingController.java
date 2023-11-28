@@ -11,6 +11,7 @@ import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
+import com.nxsol.bzcomposer.company.repos.BcaAcctcategoryRepository;
 import com.pritesh.bizcomposer.accounting.bean.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ import java.util.Date;
 @Controller
 public class BankingController {
 	
-	
+
 	@Autowired
 	private ReceivableLIst rl;
 
@@ -217,7 +218,7 @@ public class BankingController {
 		HttpSession sess=request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-//	ReceivableLIst rl = new ReceivableListImpl();
+
 		ArrayList<TblPaymentDto> payment = null;
 		ArrayList<TblPaymentType> simpleTypes = rl.getOnlySimplePaymentTypes();
 		ArrayList<ClientVendor> cvList = rl.getAllClientVendorList();

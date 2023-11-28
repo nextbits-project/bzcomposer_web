@@ -43,7 +43,7 @@ public class SalesBoard {
 	private int bsAddressID;
 
 	private String cvName;
-	
+
 	private String companyName;
 
 	private String firstName;
@@ -77,228 +77,194 @@ public class SalesBoard {
 	private boolean printed;
 
 	private boolean isUpdated;
-	
+
 	private int isInvoice;
-	
+
 	private int emailed;
 
 	private BigDecimal total;
-	
+
 	private String rep;
-	
+
 	private String inventoryCode;
-	
+
 	private int inventoryQty;
-	
-    private double salesTotal;
-    
-    private double adjTotal;
-    
-    private double refTotal;
 
-    private int soldQty;
-    
-    private double soldAmount;
-    
-    private int refundQty;
-    
-    private double refundAmt;
-    
-    private boolean isCategory;
-    
-    private int inventoryId;
+	private double salesTotal;
 
-    private String inventoryName;
-    
-    private double amount;
-    
-    private int qtyTotal;
-    
-    private double amtTotal;
-    
-    private double balTotal;
-    private boolean isPaymentCompleted;
+	private double adjTotal;
+
+	private double refTotal;
+
+	private int soldQty;
+
+	private double soldAmount;
+
+	private int refundQty;
+
+	private double refundAmt;
+
+	private boolean isCategory;
+
+	private int inventoryId;
+
+	private String inventoryName;
+
+	private double amount;
+
+	private int qtyTotal;
+
+	private double amtTotal;
+
+	private double balTotal;
+	private boolean isPaymentCompleted;
+
 	public int getQtyTotal() {
 		return qtyTotal;
 	}
-
 
 	public void setQtyTotal(int qtyTotal) {
 		this.qtyTotal = qtyTotal;
 	}
 
-
 	public double getAmtTotal() {
 		return amtTotal;
 	}
-
 
 	public void setAmtTotal(double amtTotal) {
 		this.amtTotal = amtTotal;
 	}
 
-
 	public double getBalTotal() {
 		return balTotal;
 	}
-
 
 	public void setBalTotal(double balTotal) {
 		this.balTotal = balTotal;
 	}
 
-
 	public double getAmount() {
 		return amount;
 	}
-
 
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 
-
 	public String getInventoryName() {
 		return inventoryName;
 	}
-
 
 	public void setInventoryName(String inventoryName) {
 		this.inventoryName = inventoryName;
 	}
 
-
 	public int getInventoryId() {
 		return inventoryId;
 	}
-
 
 	public void setInventoryId(int inventoryId) {
 		this.inventoryId = inventoryId;
 	}
 
-
 	public boolean isCategory() {
 		return isCategory;
 	}
-
 
 	public void setCategory(boolean isCategory) {
 		this.isCategory = isCategory;
 	}
 
-
 	public int getSoldQty() {
 		return soldQty;
 	}
-
 
 	public void setSoldQty(int soldQty) {
 		this.soldQty = soldQty;
 	}
 
-
 	public double getSoldAmount() {
 		return soldAmount;
 	}
-
 
 	public void setSoldAmount(double soldAmount) {
 		this.soldAmount = soldAmount;
 	}
 
-
 	public int getRefundQty() {
 		return refundQty;
 	}
-
 
 	public void setRefundQty(int refundQty) {
 		this.refundQty = refundQty;
 	}
 
-
 	public double getRefundAmt() {
 		return refundAmt;
 	}
-
 
 	public void setRefundAmt(double refundAmt) {
 		this.refundAmt = refundAmt;
 	}
 
-
 	public String getCompanyName() {
 		return companyName;
 	}
-
 
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
 	}
 
-    
 	public double getSalesTotal() {
 		return salesTotal;
 	}
-
 
 	public void setSalesTotal(double salesTotal) {
 		this.salesTotal = salesTotal;
 	}
 
-
 	public double getAdjTotal() {
 		return adjTotal;
 	}
-
 
 	public void setAdjTotal(double adjTotal) {
 		this.adjTotal = adjTotal;
 	}
 
-
 	public double getRefTotal() {
 		return refTotal;
 	}
-
 
 	public void setRefTotal(double refTotal) {
 		this.refTotal = refTotal;
 	}
 
-
 	public String getInventoryCode() {
 		return inventoryCode;
 	}
-
 
 	public void setInventoryCode(String inventoryCode) {
 		this.inventoryCode = inventoryCode;
 	}
 
-
 	public int getInventoryQty() {
 		return inventoryQty;
 	}
-
 
 	public void setInventoryQty(int inventoryQty) {
 		this.inventoryQty = inventoryQty;
 	}
 
-
 	public int getEmailed() {
 		return emailed;
 	}
-	
 
 	public void setEmailed(int emailed) {
 		this.emailed = emailed;
 	}
 
 	private int IsSalestype;
-	
+
 	public int getIsSalestype() {
 		return IsSalestype;
 	}
@@ -306,6 +272,7 @@ public class SalesBoard {
 	public void setIsSalestype(int isSalestype) {
 		IsSalestype = isSalestype;
 	}
+
 	/**
 	 * @return Returns the address1.
 	 */
@@ -314,8 +281,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param address1
-	 *            The address1 to set.
+	 * @param address1 The address1 to set.
 	 */
 	public void setAddress1(String address1) {
 		this.address1 = address1;
@@ -329,8 +295,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param address2
-	 *            The address2 to set.
+	 * @param address2 The address2 to set.
 	 */
 	public void setAddress2(String address2) {
 		this.address2 = address2;
@@ -344,8 +309,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param balance
-	 *            The balance to set.
+	 * @param balance The balance to set.
 	 */
 	public void setBalance(double balance) {
 		this.balance = balance;
@@ -359,8 +323,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param bsAddressID
-	 *            The bsAddressID to set.
+	 * @param bsAddressID The bsAddressID to set.
 	 */
 	public void setBsAddressID(int bsAddressID) {
 		this.bsAddressID = bsAddressID;
@@ -374,8 +337,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param categoryID
-	 *            The categoryID to set.
+	 * @param categoryID The categoryID to set.
 	 */
 	public void setCategoryID(long categoryID) {
 		this.categoryID = categoryID;
@@ -389,8 +351,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param categoryName
-	 *            The categoryName to set.
+	 * @param categoryName The categoryName to set.
 	 */
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
@@ -404,8 +365,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param city
-	 *            The city to set.
+	 * @param city The city to set.
 	 */
 	public void setCity(String city) {
 		this.city = city;
@@ -419,8 +379,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param count_kind_items
-	 *            The count_kind_items to set.
+	 * @param count_kind_items The count_kind_items to set.
 	 */
 	public void setCount_kind_items(int count_kind_items) {
 		this.count_kind_items = count_kind_items;
@@ -434,8 +393,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param country
-	 *            The country to set.
+	 * @param country The country to set.
 	 */
 	public void setCountry(String country) {
 		this.country = country;
@@ -449,8 +407,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param cvID
-	 *            The cvID to set.
+	 * @param cvID The cvID to set.
 	 */
 	public void setCvID(int cvID) {
 		this.cvID = cvID;
@@ -464,8 +421,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param cvName
-	 *            The cvName to set.
+	 * @param cvName The cvName to set.
 	 */
 	public void setCvName(String cvName) {
 		this.cvName = cvName;
@@ -479,8 +435,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param dateAdded
-	 *            The dateAdded to set.
+	 * @param dateAdded The dateAdded to set.
 	 */
 	public void setDateAdded(String dateAdded) {
 		this.dateAdded = dateAdded;
@@ -494,8 +449,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param email
-	 *            The email to set.
+	 * @param email The email to set.
 	 */
 	public void setEmail(String email) {
 		this.email = email;
@@ -509,8 +463,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param est_no
-	 *            The est_no to set.
+	 * @param est_no The est_no to set.
 	 */
 	public void setEst_no(long est_no) {
 		this.est_no = est_no;
@@ -524,8 +477,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param firstName
-	 *            The firstName to set.
+	 * @param firstName The firstName to set.
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
@@ -539,8 +491,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param invoice_no
-	 *            The invoice_no to set.
+	 * @param invoice_no The invoice_no to set.
 	 */
 	public void setInvoice_no(long invoice_no) {
 		this.invoice_no = invoice_no;
@@ -554,8 +505,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param invoiceID
-	 *            The invoiceID to set.
+	 * @param invoiceID The invoiceID to set.
 	 */
 	public void setInvoiceID(int invoiceID) {
 		this.invoiceID = invoiceID;
@@ -569,8 +519,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param isUpdated
-	 *            The isUpdated to set.
+	 * @param isUpdated The isUpdated to set.
 	 */
 	public void setUpdated(boolean isUpdated) {
 		this.isUpdated = isUpdated;
@@ -584,8 +533,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param itemName
-	 *            The itemName to set.
+	 * @param itemName The itemName to set.
 	 */
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
@@ -599,8 +547,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param lastName
-	 *            The lastName to set.
+	 * @param lastName The lastName to set.
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
@@ -614,8 +561,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param marketPlaceName
-	 *            The marketPlaceName to set.
+	 * @param marketPlaceName The marketPlaceName to set.
 	 */
 	public void setMarketPlaceName(String marketPlaceName) {
 		this.marketPlaceName = marketPlaceName;
@@ -624,6 +570,7 @@ public class SalesBoard {
 	public int getOrderid() {
 		return orderid;
 	}
+
 	public void setOrderid(int orderid) {
 		this.orderid = orderid;
 	}
@@ -631,7 +578,10 @@ public class SalesBoard {
 	public long getOrderNum() {
 		return orderNum;
 	}
-	public void setOrderNum(long orderNum) { this.orderNum = orderNum; }
+
+	public void setOrderNum(long orderNum) {
+		this.orderNum = orderNum;
+	}
 
 	/**
 	 * @return Returns the po_no.
@@ -641,8 +591,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param po_no
-	 *            The po_no to set.
+	 * @param po_no The po_no to set.
 	 */
 	public void setPo_no(long po_no) {
 		this.po_no = po_no;
@@ -656,8 +605,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param printed
-	 *            The printed to set.
+	 * @param printed The printed to set.
 	 */
 	public void setPrinted(boolean printed) {
 		this.printed = printed;
@@ -671,8 +619,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param province
-	 *            The province to set.
+	 * @param province The province to set.
 	 */
 	public void setProvince(String province) {
 		this.province = province;
@@ -686,8 +633,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param rcv_no
-	 *            The rcv_no to set.
+	 * @param rcv_no The rcv_no to set.
 	 */
 	public void setRcv_no(long rcv_no) {
 		this.rcv_no = rcv_no;
@@ -701,8 +647,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param saleDate
-	 *            The saleDate to set.
+	 * @param saleDate The saleDate to set.
 	 */
 	public void setSaleDate(String saleDate) {
 		this.saleDate = saleDate;
@@ -716,8 +661,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param shipped
-	 *            The shipped to set.
+	 * @param shipped The shipped to set.
 	 */
 	public void setShipped(int shipped) {
 		this.shipped = shipped;
@@ -731,8 +675,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param shown_no
-	 *            The shown_no to set.
+	 * @param shown_no The shown_no to set.
 	 */
 	public void setShown_no(long shown_no) {
 		this.shown_no = shown_no;
@@ -746,8 +689,7 @@ public class SalesBoard {
 	}
 
 	/**
-	 * @param state
-	 *            The state to set.
+	 * @param state The state to set.
 	 */
 	public void setState(String state) {
 		this.state = state;
@@ -756,6 +698,7 @@ public class SalesBoard {
 	public String getTransactionID() {
 		return transactionID;
 	}
+
 	public void setTransactionID(String transactionID) {
 		this.transactionID = transactionID;
 	}
@@ -763,6 +706,7 @@ public class SalesBoard {
 	public String getZipCode() {
 		return zipCode;
 	}
+
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
@@ -770,6 +714,7 @@ public class SalesBoard {
 	public int getIsInvoice() {
 		return isInvoice;
 	}
+
 	public void setIsInvoice(int isInvoice) {
 		this.isInvoice = isInvoice;
 	}
@@ -777,6 +722,7 @@ public class SalesBoard {
 	public long getSo_no() {
 		return so_no;
 	}
+
 	public void setSo_no(long so_no) {
 		this.so_no = so_no;
 	}
@@ -784,6 +730,7 @@ public class SalesBoard {
 	public BigDecimal getTotal() {
 		return total.setScale(2);
 	}
+
 	public void setTotal(BigDecimal total) {
 		this.total = total;
 	}
@@ -791,20 +738,30 @@ public class SalesBoard {
 	public String getRep() {
 		return rep;
 	}
+
 	public void setRep(String rep) {
 		this.rep = rep;
 	}
 
-	public String getOrderNumStr() { return orderNumStr; }
-	public void setOrderNumStr(String orderNumStr) { this.orderNumStr = orderNumStr; }
+	public String getOrderNumStr() {
+		return orderNumStr;
+	}
 
-	public String getSoNumStr() { return soNumStr; }
-	public void setSoNumStr(String soNumStr) { this.soNumStr = soNumStr; }
+	public void setOrderNumStr(String orderNumStr) {
+		this.orderNumStr = orderNumStr;
+	}
+
+	public String getSoNumStr() {
+		return soNumStr;
+	}
+
+	public void setSoNumStr(String soNumStr) {
+		this.soNumStr = soNumStr;
+	}
 
 	public boolean isPaymentCompleted() {
 		return isPaymentCompleted;
 	}
-
 
 	public void setPaymentCompleted(boolean isPaymentCompleted) {
 		this.isPaymentCompleted = isPaymentCompleted;

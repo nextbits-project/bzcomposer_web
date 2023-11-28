@@ -134,7 +134,7 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			+ "    term.Days,INV.BillingAddrID,INV.ShippingAddrID,INV.TotalCommission,INV.BankAccountID FROM bca_invoice AS INV "
 			+ "LEFT JOIN bca_term AS term ON INV.TermID = term.TermID WHERE (((InvoiceTypeID) IN (2)   AND INV.termid <> 3 ) "
 			+ "        OR INV.InvoiceTypeID = 11 ) AND INV.AdjustedTotal > 0 AND INV.IsPaymentCompleted = 0 AND INV.invoiceStatus = 0 "
-			+ "    AND INV.CompanyID = :company AND INV.PONum = :poNum AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount) FROM "
+			+ "    AND INV.CompanyID = :companyId AND INV.PONum = :poNum AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount) FROM "
 			+ "   bca_payment   WHERE  bca_payment.InvoiceID = INV.InvoiceID   AND bca_payment.Deleted != 1  ) "
 			+ "        OR ( SELECT Sum(bca_payment.Amount)FROM bca_payment WHERE bca_payment.InvoiceID = INV.InvoiceID "
 			+ "        AND bca_payment.Deleted != 1 ) IS NULL ) ORDER BY ordernum DESC", nativeQuery = true)
@@ -148,7 +148,7 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			+ "    term.Days,INV.BillingAddrID,INV.ShippingAddrID,INV.TotalCommission,INV.BankAccountID FROM bca_invoice AS INV "
 			+ "LEFT JOIN bca_term AS term ON INV.TermID = term.TermID WHERE (((InvoiceTypeID) IN (1,12)   AND INV.termid <> 3 ) "
 			+ "        OR INV.InvoiceTypeID = 18 ) AND INV.AdjustedTotal > 0 AND INV.IsPaymentCompleted = 0 AND INV.invoiceStatus = 0 "
-			+ "    AND INV.CompanyID = :company AND INV.ordernum= = :orderNum AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount) FROM "
+			+ "    AND INV.CompanyID = :companyId AND INV.ordernum= = :orderNum AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount) FROM "
 			+ "   bca_payment   WHERE  bca_payment.InvoiceID = INV.InvoiceID   AND bca_payment.Deleted != 1  ) "
 			+ "        OR ( SELECT Sum(bca_payment.Amount)FROM bca_payment WHERE bca_payment.InvoiceID = INV.InvoiceID "
 			+ "        AND bca_payment.Deleted != 1 ) IS NULL ) ORDER BY ordernum DESC", nativeQuery = true)

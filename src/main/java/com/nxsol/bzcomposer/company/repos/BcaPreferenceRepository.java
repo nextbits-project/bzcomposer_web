@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BcaPreferenceRepository extends JpaRepository<BcaPreference, Integer> {
+	BcaPreference findByCompany_CompanyId(Long companyId);
 }

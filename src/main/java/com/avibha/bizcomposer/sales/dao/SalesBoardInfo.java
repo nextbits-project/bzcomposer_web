@@ -15,6 +15,9 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.*;
@@ -24,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+@Service
 public class SalesBoardInfo {
 
 	public ArrayList SalesRecordSearch(String compId, String invoiceReportType, SalesBoardDto salesBoardDto) {

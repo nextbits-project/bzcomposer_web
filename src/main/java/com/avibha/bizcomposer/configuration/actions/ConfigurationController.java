@@ -53,9 +53,19 @@ import com.nxsol.bzcomposer.company.ConfigurationDAO;
 public class ConfigurationController {
 
 	@Autowired
-	ConfigurationDetails configDetailsA;
+	private ConfigurationDetails configDetails;
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
+	
+	@Autowired
+	private ConfigurationDAO dao;
+	
+	
     private String pageActiveTab = "pageActiveTab";
     ArrayList<MailTemplateDto> mailTemplateDtos;
+    
+    
     @RequestMapping(value = {"/Configuration"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(ConfigurationDto configDto, CompanyInfoDto companyInfoDto, HttpServletRequest request, Model model) throws IOException, ServletException {
         String forward = "/configuration/configuration";
@@ -78,11 +88,11 @@ public class ConfigurationController {
         if (action.equalsIgnoreCase("config")) {
 			 /*ConfigurationDetailsDao cDetails = new ConfigurationDetailsDao();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             //ConfigurationDetails configDetails = new ConfigurationDetails();
-            configDetailsA.getConfigurationInfo(request, configDto);
+            configDetails.getConfigurationInfo(request, configDto);
 
             ReceivableLIst rl = new ReceivableListImpl();
             request.setAttribute("PaymentTypeForCombo", rl.getPaymentType());
@@ -165,7 +175,7 @@ public class ConfigurationController {
             forward = "success2";
         }
         else if (action.equalsIgnoreCase("addNewGroup")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+//            ConfigurationDAO dao = new ConfigurationDAO();
 //            dao.getAccessPermissions(companyID,request,configDto);
 //            dao.getUserGroup(companyID, request, configDto);
             if (request.getParameter("selectedGroupId") != null) {
@@ -322,7 +332,7 @@ public class ConfigurationController {
             dao.getPaymentTypeGeneralAccount(companyID, request, configDto);
             dao.getBillingTemplate(companyID, request, configDto);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+           // ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             // Added on 04-05-2020
@@ -406,7 +416,7 @@ public class ConfigurationController {
             request.setAttribute("pbValue", pbValue);
             request.setAttribute("mcValue", mailValue);
             request.setAttribute("showCmbValue", showCmbValue);
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
             forward = "success14";
             System.out.println("goes to billing page......................");
@@ -433,7 +443,7 @@ public class ConfigurationController {
             dao.getRefundReason(companyID, request, configDto);
             dao.getJobCategory(companyID, request, configDto);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+           // ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             dao.getMasterReason(configDto);
@@ -482,7 +492,7 @@ public class ConfigurationController {
             System.out.println("goes to estimation page......................");
         }
         else if (action.equalsIgnoreCase("config8")) {
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             String reorder = configDto.getShowReorderPointList();
@@ -501,7 +511,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config9")) {
             ConfigurationDAO dao = new ConfigurationDAO();
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             dao.getInvoiceStyle(companyID, request, configDto);
@@ -517,7 +527,7 @@ public class ConfigurationController {
             ConfigurationDAO dao = new ConfigurationDAO();
             //ConfigurationDetails cDetails = new ConfigurationDetails();
             VendorCategory vendorCategory = new VendorCategory();
-            configDetailsA.getConfigurationInfo(request, configDto);
+            configDetails.getConfigurationInfo(request, configDto);
 
             //request.setAttribute("sortId", configDto.getSortBy());
             request.setAttribute("CategoryID", configDto.getDefaultCategoryId());
@@ -565,7 +575,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config28")) {
             //ConfigurationDetails configDetails = new ConfigurationDetails();
-            configDetailsA.getConfigurationInfo(request, configDto);
+        	configDetails.getConfigurationInfo(request, configDto);
 
             SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManager(request);
@@ -608,7 +618,7 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("config13")) {
             //System.out.println("Inside config13 condition");
             //ConfigurationDetailsDao configDetails = new ConfigurationDetailsDao();
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             String showReminderStatus = configDto.getShowReminder().equals("1") ? "on" : "off";
             request.setAttribute("showReminderStatus", showReminderStatus);
 
@@ -715,7 +725,7 @@ public class ConfigurationController {
             int accountID = configDto.getSelectedAccountId();
             request.setAttribute("accountId", accountID);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             dao.getMasterReason(configDto);
@@ -813,7 +823,7 @@ public class ConfigurationController {
             //System.out.println("Inside config27 condition");
 			 /*ConfigurationDetailsDao cDetails = new ConfigurationDetailsDao();
 			 cDetails.getConfigurationInfo(request, configDto);*/
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
             String isSalesOrderBoard = configDto.getSalesOrderBoard();

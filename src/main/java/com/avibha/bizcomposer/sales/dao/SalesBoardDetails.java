@@ -4,16 +4,24 @@ import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
 import com.avibha.common.log.Loger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 
+@Service
 public class SalesBoardDetails {
 
+	@Autowired
+	SalesBoardInfo SaleInfo;
+	
     public ArrayList getSalesBoardDetails(HttpServletRequest request, SalesBoardDto salesBoardDto) {
         String compId = (String) request.getSession().getAttribute("CID");
         String invoiceReportType = request.getParameter("ilist"); //report Type
         invoiceReportType =(invoiceReportType == null) ?"":invoiceReportType;
 
-        SalesBoardInfo SaleInfo = new SalesBoardInfo();
+//        SalesBoardInfo SaleInfo = new SalesBoardInfo();
         ArrayList saleDetails = SaleInfo.SalesRecordSearch(compId, invoiceReportType, salesBoardDto);
         request.setAttribute("SalesBoardDetails", saleDetails);
         request.setAttribute("Market", salesBoardDto.getFilterMarket());
