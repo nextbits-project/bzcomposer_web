@@ -930,8 +930,8 @@ function pleaseWaitDialog(){
                                             <td>
                                                 <form:select path="countryId" id="countryID" onchange="loadStatesByCountryID(this.value, 1);" style="width:350px;">
                                                     <form:option value="0"><spring:message code="BzComposer.ComboBox.Select" /></form:option>
-                                                    <c:forEach items="${countryList}" var="curObject">
-                                                        <form:option value="${curObject.countryId}">${curObject.countryName}</form:option>
+                                                    <c:forEach items="${CountryList}" var="curObject">
+                                                        <form:option value="${curObject.value}">${curObject.label}</form:option>
                                                     </c:forEach>
                                                 </form:select>
                                             </td>

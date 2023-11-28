@@ -26,6 +26,9 @@ public class BcaSalesrep {
 
     @Column(name="Active")
     private Integer active;
+    
+    @Column(name="IsDefault")
+    private Boolean isDefault;
 
     @OneToMany(mappedBy = "salesRep")
     private Set<BcaLead> salesRepBcaLeads;
@@ -118,5 +121,14 @@ public class BcaSalesrep {
     public void setSalesRepStorageInvoices(final Set<StorageInvoice> salesRepStorageInvoices) {
         this.salesRepStorageInvoices = salesRepStorageInvoices;
     }
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
+    
 
 }

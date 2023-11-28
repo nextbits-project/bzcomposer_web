@@ -61,6 +61,8 @@ public class ConfigurationController {
 	@Autowired
 	private ConfigurationDAO dao;
 	
+	@Autowired
+	private SalesDetailsDao sd;
 	
     private String pageActiveTab = "pageActiveTab";
     ArrayList<MailTemplateDto> mailTemplateDtos;
@@ -577,7 +579,7 @@ public class ConfigurationController {
             //ConfigurationDetails configDetails = new ConfigurationDetails();
         	configDetails.getConfigurationInfo(request, configDto);
 
-            SalesDetailsDao sd = new SalesDetailsDao();
+            //SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManager(request);
             setConfigActiveTab(session, "dataManagerTab");
             System.out.println("goes to datamanager page......................");

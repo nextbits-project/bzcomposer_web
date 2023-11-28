@@ -13,133 +13,142 @@ import java.util.Set;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="bca_term")
+@Table(name = "bca_term")
 public class BcaTerm {
 
-    @Id
-    @Column(name="TermID", nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer termId;
+	@Id
+	@Column(name = "TermID", nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer termId;
 
-    @Column(name="Name", length = 50)
-    private String name;
+	@Column(name = "Name", length = 50)
+	private String name;
 
-    @Column(name="Active")
-    private Integer active;
+	@Column(name = "Active")
+	private Integer active;
 
-    @Column(name="Days")
-    private Integer days;
+	@Column(name = "Days")
+	private Integer days;
 
-    @OneToMany(mappedBy = "term")
-    private Set<BcaClientvendor> termBcaClientvendors;
+	@Column(name = "IsDefault")
+	private Boolean isDefault;
 
-    @OneToMany(mappedBy = "term")
-    private Set<BcaInvoice> termBcaInvoices;
+	@OneToMany(mappedBy = "term")
+	private Set<BcaClientvendor> termBcaClientvendors;
 
-    @OneToMany(mappedBy = "term")
-    private Set<BcaInvoicememorized> termBcaInvoicememorizeds;
+	@OneToMany(mappedBy = "term")
+	private Set<BcaInvoice> termBcaInvoices;
 
-    @OneToMany(mappedBy = "term")
-    private Set<BcaInvoiceshipped> termBcaInvoiceshippeds;
+	@OneToMany(mappedBy = "term")
+	private Set<BcaInvoicememorized> termBcaInvoicememorizeds;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CompanyID")
-    private BcaCompany company;
+	@OneToMany(mappedBy = "term")
+	private Set<BcaInvoiceshipped> termBcaInvoiceshippeds;
 
-    @OneToMany(mappedBy = "term")
-    private Set<StorageClientvendor> termStorageClientvendors;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CompanyID")
+	private BcaCompany company;
 
-    @OneToMany(mappedBy = "term")
-    private Set<StorageInvoice> termStorageInvoices;
+	@OneToMany(mappedBy = "term")
+	private Set<StorageClientvendor> termStorageClientvendors;
 
-    public Integer getTermId() {
-        return termId;
-    }
+	@OneToMany(mappedBy = "term")
+	private Set<StorageInvoice> termStorageInvoices;
 
-    public void setTermId(final Integer termId) {
-        this.termId = termId;
-    }
+	public Integer getTermId() {
+		return termId;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setTermId(final Integer termId) {
+		this.termId = termId;
+	}
 
-    public void setName(final String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public Integer getActive() {
-        return active;
-    }
+	public void setName(final String name) {
+		this.name = name;
+	}
 
-    public void setActive(final Integer active) {
-        this.active = active;
-    }
+	public Integer getActive() {
+		return active;
+	}
 
-    public Integer getDays() {
-        return days;
-    }
+	public void setActive(final Integer active) {
+		this.active = active;
+	}
 
-    public void setDays(final Integer days) {
-        this.days = days;
-    }
+	public Integer getDays() {
+		return days;
+	}
 
-    public Set<BcaClientvendor> getTermBcaClientvendors() {
-        return termBcaClientvendors;
-    }
+	public void setDays(final Integer days) {
+		this.days = days;
+	}
 
-    public void setTermBcaClientvendors(final Set<BcaClientvendor> termBcaClientvendors) {
-        this.termBcaClientvendors = termBcaClientvendors;
-    }
+	public Set<BcaClientvendor> getTermBcaClientvendors() {
+		return termBcaClientvendors;
+	}
 
-    public Set<BcaInvoice> getTermBcaInvoices() {
-        return termBcaInvoices;
-    }
+	public void setTermBcaClientvendors(final Set<BcaClientvendor> termBcaClientvendors) {
+		this.termBcaClientvendors = termBcaClientvendors;
+	}
 
-    public void setTermBcaInvoices(final Set<BcaInvoice> termBcaInvoices) {
-        this.termBcaInvoices = termBcaInvoices;
-    }
+	public Set<BcaInvoice> getTermBcaInvoices() {
+		return termBcaInvoices;
+	}
 
-    public Set<BcaInvoicememorized> getTermBcaInvoicememorizeds() {
-        return termBcaInvoicememorizeds;
-    }
+	public void setTermBcaInvoices(final Set<BcaInvoice> termBcaInvoices) {
+		this.termBcaInvoices = termBcaInvoices;
+	}
 
-    public void setTermBcaInvoicememorizeds(
-            final Set<BcaInvoicememorized> termBcaInvoicememorizeds) {
-        this.termBcaInvoicememorizeds = termBcaInvoicememorizeds;
-    }
+	public Set<BcaInvoicememorized> getTermBcaInvoicememorizeds() {
+		return termBcaInvoicememorizeds;
+	}
 
-    public Set<BcaInvoiceshipped> getTermBcaInvoiceshippeds() {
-        return termBcaInvoiceshippeds;
-    }
+	public void setTermBcaInvoicememorizeds(final Set<BcaInvoicememorized> termBcaInvoicememorizeds) {
+		this.termBcaInvoicememorizeds = termBcaInvoicememorizeds;
+	}
 
-    public void setTermBcaInvoiceshippeds(final Set<BcaInvoiceshipped> termBcaInvoiceshippeds) {
-        this.termBcaInvoiceshippeds = termBcaInvoiceshippeds;
-    }
+	public Set<BcaInvoiceshipped> getTermBcaInvoiceshippeds() {
+		return termBcaInvoiceshippeds;
+	}
 
-    public BcaCompany getCompany() {
-        return company;
-    }
+	public void setTermBcaInvoiceshippeds(final Set<BcaInvoiceshipped> termBcaInvoiceshippeds) {
+		this.termBcaInvoiceshippeds = termBcaInvoiceshippeds;
+	}
 
-    public void setCompany(final BcaCompany company) {
-        this.company = company;
-    }
+	public BcaCompany getCompany() {
+		return company;
+	}
 
-    public Set<StorageClientvendor> getTermStorageClientvendors() {
-        return termStorageClientvendors;
-    }
+	public void setCompany(final BcaCompany company) {
+		this.company = company;
+	}
 
-    public void setTermStorageClientvendors(
-            final Set<StorageClientvendor> termStorageClientvendors) {
-        this.termStorageClientvendors = termStorageClientvendors;
-    }
+	public Set<StorageClientvendor> getTermStorageClientvendors() {
+		return termStorageClientvendors;
+	}
 
-    public Set<StorageInvoice> getTermStorageInvoices() {
-        return termStorageInvoices;
-    }
+	public void setTermStorageClientvendors(final Set<StorageClientvendor> termStorageClientvendors) {
+		this.termStorageClientvendors = termStorageClientvendors;
+	}
 
-    public void setTermStorageInvoices(final Set<StorageInvoice> termStorageInvoices) {
-        this.termStorageInvoices = termStorageInvoices;
-    }
+	public Set<StorageInvoice> getTermStorageInvoices() {
+		return termStorageInvoices;
+	}
+
+	public void setTermStorageInvoices(final Set<StorageInvoice> termStorageInvoices) {
+		this.termStorageInvoices = termStorageInvoices;
+	}
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
 }

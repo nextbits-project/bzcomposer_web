@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="bca_receicedtype")
-public class BcaReceicedtype {
+public class BcaReceivedtype {
 
     @Id
     @Column(name="PaymentTypeID", nullable = false, updatable = false)

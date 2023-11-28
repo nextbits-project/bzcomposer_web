@@ -24,6 +24,9 @@ public class BcaTitle {
 
     @Column(name="Active")
     private Integer active;
+    
+    @Column(name="IsDefault")
+    private Boolean isDefault;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CompanyID")
@@ -60,5 +63,14 @@ public class BcaTitle {
     public void setCompany(final BcaCompany company) {
         this.company = company;
     }
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
+    
 
 }

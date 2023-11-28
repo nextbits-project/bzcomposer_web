@@ -2,9 +2,12 @@ package com.nxsol.bzcomposer.company.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
 import javax.persistence.Table;
@@ -18,14 +21,22 @@ public class BcaMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer messageId;
 
-    @Column(name= "CompanyID")
-    private Integer companyId;
+//    @Column(name= "CompanyID")
+//    private Integer companyId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CompanyID")
+    private BcaCompany company;
+    
+    
     @Column(name= "Name")
     private String name;
 
     @Column(name= "Active")
     private Integer active;
+    
+    @Column(name = "IsDefault")
+    private Boolean isDefault;
 
     @OneToMany(mappedBy = "message")
     private Set<BcaInvoice> messageBcaInvoices;
@@ -44,15 +55,15 @@ public class BcaMessage {
         this.messageId = messageId;
     }
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
+    public BcaCompany getCompany() {
+		return company;
+	}
 
-    public void setCompanyId(final Integer companyId) {
-        this.companyId = companyId;
-    }
+	public void setCompany(BcaCompany company) {
+		this.company = company;
+	}
 
-    public String getName() {
+	public String getName() {
         return name;
     }
 
@@ -92,5 +103,13 @@ public class BcaMessage {
     public void setMessageStorageInvoices(final Set<StorageInvoice> messageStorageInvoices) {
         this.messageStorageInvoices = messageStorageInvoices;
     }
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
 }

@@ -26,6 +26,9 @@ public class BcaLocation {
     @Column(name= "Active")
     private Integer active;
 
+    @Column(name = "IsDefault")
+	private Boolean isDefault;
+    
     @Column(name= "DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
@@ -33,6 +36,10 @@ public class BcaLocation {
     @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
+    public BcaLocation() {
+		// TODO Auto-generated constructor stub
+	}
+    
     public BcaLocation(String description, int compId, int i) {
 		// TODO Auto-generated constructor stub
 	}
@@ -76,5 +83,13 @@ public class BcaLocation {
     public void setCompany(final BcaCompany company) {
         this.company = company;
     }
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
 }

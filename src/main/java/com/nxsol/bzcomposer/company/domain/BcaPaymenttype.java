@@ -29,6 +29,9 @@ public class BcaPaymenttype {
 
     @Column(name="Active")
     private Integer active;
+    
+    @Column(name = "IsDefault")
+    private Boolean isDefault;
 
     @Column(name="BankAcctID")
     private Integer bankAcctId;
@@ -260,5 +263,13 @@ public class BcaPaymenttype {
             final Set<StoragePayment> paymentTypeStoragePayments) {
         this.paymentTypeStoragePayments = paymentTypeStoragePayments;
     }
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
 }

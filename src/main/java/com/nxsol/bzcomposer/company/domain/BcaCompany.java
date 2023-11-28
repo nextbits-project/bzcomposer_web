@@ -427,7 +427,7 @@ public class BcaCompany {
     private Set<BcaQuickbooklist> companyBcaQuickbooklists;
 
     @OneToMany(mappedBy = "company")
-    private Set<BcaReceicedtype> companyBcaReceicedtypes;
+    private Set<BcaReceivedtype> companyBcaReceicedtypes;
 
     @OneToMany(mappedBy = "company")
     private Set<BcaRecentbills> companyBcaRecentbillss;
@@ -492,6 +492,15 @@ public class BcaCompany {
     @OneToMany(mappedBy = "company")
     private Set<BcaTitle> companyBcaTitles;
 
+    @OneToMany(mappedBy = "company")
+    private Set<BcaCvcategory> companyBcaCvcategory;
+    
+    @OneToMany(mappedBy = "company")
+    private Set<BcaCctype> companyBcaCctype;
+    
+    @OneToMany(mappedBy = "company")
+    private Set<BcaMessage> companyBcaMessage;
+    
     @OneToMany(mappedBy = "company")
     private Set<BcaUnitofmeasure> companyBcaUnitofmeasures;
 
@@ -1693,11 +1702,11 @@ public class BcaCompany {
         this.companyBcaQuickbooklists = companyBcaQuickbooklists;
     }
 
-    public Set<BcaReceicedtype> getCompanyBcaReceicedtypes() {
+    public Set<BcaReceivedtype> getCompanyBcaReceicedtypes() {
         return companyBcaReceicedtypes;
     }
 
-    public void setCompanyBcaReceicedtypes(final Set<BcaReceicedtype> companyBcaReceicedtypes) {
+    public void setCompanyBcaReceicedtypes(final Set<BcaReceivedtype> companyBcaReceicedtypes) {
         this.companyBcaReceicedtypes = companyBcaReceicedtypes;
     }
 
@@ -2161,5 +2170,31 @@ public class BcaCompany {
             final Set<StorageUseractivity> companyStorageUseractivitys) {
         this.companyStorageUseractivitys = companyStorageUseractivitys;
     }
+
+	public Set<BcaCvcategory> getCompanyBcaCvcategory() {
+		return companyBcaCvcategory;
+	}
+
+	public void setCompanyBcaCvcategory(Set<BcaCvcategory> companyBcaCvcategory) {
+		this.companyBcaCvcategory = companyBcaCvcategory;
+	}
+
+	public Set<BcaCctype> getCompanyBcaCctype() {
+		return companyBcaCctype;
+	}
+
+	public void setCompanyBcaCctype(Set<BcaCctype> companyBcaCctype) {
+		this.companyBcaCctype = companyBcaCctype;
+	}
+
+	public Set<BcaMessage> getCompanyBcaMessage() {
+		return companyBcaMessage;
+	}
+
+	public void setCompanyBcaMessage(Set<BcaMessage> companyBcaMessage) {
+		this.companyBcaMessage = companyBcaMessage;
+	}
+
+	
 
 }

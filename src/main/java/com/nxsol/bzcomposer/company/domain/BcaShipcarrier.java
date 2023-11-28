@@ -27,6 +27,9 @@ public class BcaShipcarrier {
     @Column(name="Active")
     private Integer active;
 
+    @Column(name = "IsDefault")
+    private Boolean isDefault;
+    
     @Column(name="ParentID")
     private Integer parentId;
 
@@ -180,5 +183,13 @@ public class BcaShipcarrier {
             final Set<StorageInvoice> shipCarrierStorageInvoices) {
         this.shipCarrierStorageInvoices = shipCarrierStorageInvoices;
     }
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
 }

@@ -466,6 +466,36 @@
                                                         </tr>
                                                     </table>
                                                 </td>
+                                                <!-- lead section starts -->
+                                                <td>
+                                                    <table width="130" height="180"
+                                                           class="table-notifications">
+                                                        <tr>
+                                                            <th style="font-size: 14px;"><spring:message code="BzComposer.datamanager.location" /></th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="font-size: 12px;">
+                                                                <select name="leadSourceID" size="10" style="width: 120px" id="6$$"
+                                                                    onchange="callClick(this.id,'<spring:message code="BzComposer.datamanager.location" />');"
+                                                                    onclick="callClick(this.id,'<spring:message code="BzComposer.datamanager.location" />');">
+                                                                <c:if test="${not empty SalesLocation}">
+                                                                    <c:forEach items="${SalesLocation}" var="curObject" varStatus="loop">
+                                                                        <option value='${curObject.locationId}' ${curObject.defaultItem==true?'selected':''}>${curObject.locationName}</option>
+                                                                    </c:forEach>
+                                                                </c:if>
+                                                            </select></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <TD align="center" style="font-size: 14px;">
+                                                                <input type="button" class="formbutton" name="s_location"
+                                                                    onclick="buttonClick('6$$','<spring:message code="BzComposer.datamanager.location" />');"
+                                                                    value='<spring:message code="BzComposer.datamanager.location" />'>
+                                                            </TD>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                
+                                                <!-- lead section ends -->
                                                 <td colspan="4" align="center"  style="background-color: rgb(247, 247, 247);">
                                                     <table class="table-notifications">
                                                         <tr>

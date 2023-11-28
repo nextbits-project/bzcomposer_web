@@ -36,13 +36,16 @@ import javax.servlet.http.HttpSession;
 import java.sql.*;
 import java.util.*;
 
-
+@Service
 public class SalesDetailsDao {
+
+	@Autowired
+	private SalesInfo sales;
 
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
+		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
+		// SalesInfo sales = new SalesInfo();
 		request.setAttribute("customerTitle", sales.getCustomerTitle(compId)); // to get customer title
 		request.setAttribute("SalesRep", sales.getSalesRep(compId)); // to get sales rep
 		request.setAttribute("salesTerms", sales.getTerms(compId)); // to get customer title
@@ -383,7 +386,6 @@ public class SalesDetailsDao {
 		boolean status = customer.makeCustomerCardDefault(cvId, cardID);
 		return status;
 	}
-
 
 	public String getCustomerList(HttpServletRequest request) {
 		String compId = (String) request.getSession().getAttribute("CID");

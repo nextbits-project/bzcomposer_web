@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface BcaTitleRepository extends JpaRepository<BcaTitle, Integer> {
 	
 //	List<BcaTitle> findByCompanyId(Integer companyID);
+	List<BcaTitle> findByCompany_CompanyIdAndActive(Long companyId, Integer active);
 }
