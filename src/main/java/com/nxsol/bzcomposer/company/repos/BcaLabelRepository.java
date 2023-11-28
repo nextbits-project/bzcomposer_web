@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BcaLabelRepository extends JpaRepository<BcaLabel, Integer> {
+	
 }

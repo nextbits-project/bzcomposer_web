@@ -70,6 +70,11 @@ public class AccountingController{
 
 	@Autowired
     ConfigurationDetails configDetails;
+	
+	@Autowired
+	private ReceivableLIst rl;
+	@Autowired
+	private TblCategoryDtoLoader category;
 
 	@RequestMapping(value ="/AccountReceiveble", method = {RequestMethod.GET, RequestMethod.POST})
 	//@GetMapping("/AccountReceiveble")
@@ -78,8 +83,8 @@ public class AccountingController{
 		HttpSession sess=request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");		
-		ReceivableLIst rl = new ReceivableListImpl();
-		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
+		//ReceivableLIst rl = new ReceivableListImpl();
+//		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
 		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getAllClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
@@ -162,14 +167,14 @@ public class AccountingController{
 		HttpSession sess = request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-		ReceivableLIst rl = new ReceivableListImpl();
+//		ReceivableLIst rl = new ReceivableListImpl();
 		/*Path p = new Path();
 		p.setPathvalue(request.getContextPath());
 		request.getSession().setAttribute("path", p);*/
 		/*ArrayList<ReceivableListDto> ReceivableList = rl.getReceivableList(ConstValue.companyId);*/
 		/*ArrayList<ReceivableListDto> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
 		ArrayList<ReceivableListDto> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);*/
-		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
+//		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
 		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();

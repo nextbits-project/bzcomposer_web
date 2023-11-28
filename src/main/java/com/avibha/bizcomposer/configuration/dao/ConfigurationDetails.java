@@ -17,10 +17,11 @@ import org.springframework.stereotype.Service;
 public class ConfigurationDetails {
 
 	@Autowired
-    private ConfigurationInfo configInfoA;
+    private ConfigurationInfo configInfo;
+	
     //  Invoke all the configuration related information (i.e:- invenroty,sales,purchase,etc).
     public void getConfigurationInfo(HttpServletRequest request, ConfigurationDto configDto){
-        ConfigurationInfo configInfo = new ConfigurationInfo();
+//        ConfigurationInfo configInfo = new ConfigurationInfo();
         String compId = (String)request.getSession().getAttribute("CID");
         /* For the label list */
         request.setAttribute("Labels",configInfo.labelInfo());
@@ -36,7 +37,7 @@ public class ConfigurationDetails {
         request.setAttribute("InvStyle",configInfo.invoiceStyleList());
 
         /* For Footnote List */
-        request.setAttribute("Footnote",configInfoA.footnoteList(compId));
+        request.setAttribute("Footnote",configInfo.footnoteList(compId));
 
         /* For Job Code List */
         request.setAttribute("JobCodeDetail",configInfo.jobCodeList(compId));

@@ -112,7 +112,7 @@ public class ReconsilationController {
 		int defaultAccountId = 56933;
 		ArrayList<TblCategoryDto> initCategory = null;
 		ArrayList<TblCategoryDto> initCharge = null;
-		ReceivableLIst rl = new ReceivableListImpl();
+//		ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<TblCategoryType> categoryType = rl.getCategoryType();
 		ArrayList<TblCategoryDto> subCategoryChrgeListForAsset = null;
 		Gson gson=new Gson();

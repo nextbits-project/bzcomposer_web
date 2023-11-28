@@ -10,12 +10,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,14 +27,48 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaFootnote;
+import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
+import com.nxsol.bzcomposer.company.domain.BcaLabel;
+import com.nxsol.bzcomposer.company.domain.BcaSalestax;
+import com.nxsol.bzcomposer.company.domain.BcaServicetype;
+import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
+import com.nxsol.bzcomposer.company.domain.BcpJobcode;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaFootnoteResult2;
-import com.nxsol.bzcomposer.company.domain.nonmanaged.FootNoteQueryResult;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
+import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLabelRepository;
+import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
+import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
+import com.nxsol.bzcomposer.company.repos.BcpJobcodeRepository;
 
 @Service
 public class ConfigurationInfo {
 
+	@Autowired
+	private BcaLabelRepository bcaLabelRepository;
+	
+	@Autowired
+	private BcaUsergroupRepository bcaUsergroupRepository;
+	
+	@Autowired
+	private BcaCompanyRepository bcaCompanyRepository;
+	
+	@Autowired
+	private BcaInvoicestyleRepository bcaInvoicestyleRepository;
+	
+	@Autowired
+	private BcpJobcodeRepository bcpJobcodeRepository; 
+	
+	@Autowired
+	private BcaSalestaxRepository bcaSalestaxRepository;
+	
+	@Autowired
+	private BcaServicetypeRepository bcaServicetypeRepository; 
+	
 	private static HttpServletRequest request;
+	
 
 	public void setCurrentRequest(HttpServletRequest req) {
 		request = req;
@@ -53,95 +89,122 @@ public class ConfigurationInfo {
 
 	/* Label List with id & name */
 	public ArrayList labelInfo() {
-		Connection con = null;
+//		Connection con = null;
 		ArrayList<LabelValueBean> labelList = new ArrayList<LabelValueBean>();
 		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmtLabel = null;
-		ResultSet rsLabel = null;
+//		PreparedStatement pstmtLabel = null;
+//		ResultSet rsLabel = null;
 		if (executor == null)
 			return null;
-		con = executor.getConnection();
-		if (con == null)
-			return null;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return null;
 		try {
-			String labelQuery = "select ID,LabelType from bca_label";
-			pstmtLabel = con.prepareStatement(labelQuery);
-			rsLabel = pstmtLabel.executeQuery();
-			while (rsLabel.next()) {
-				labelList.add(new LabelValueBean(rsLabel.getString("LabelType"), rsLabel.getString("ID")));
+//			String labelQuery = "select ID,LabelType from bca_label";
+			List<BcaLabel> bcaLabels=bcaLabelRepository.findAll();
+//			pstmtLabel = con.prepareStatement(labelQuery);
+//			rsLabel = pstmtLabel.executeQuery();
+			for(BcaLabel bcaLabel: bcaLabels) {
+				labelList.add(new LabelValueBean(bcaLabel.getLabelType(), bcaLabel.getId().toString()));
+				
 			}
-			pstmtLabel.close();
-			rsLabel.close();
-		} catch (SQLException ex) {
+//			while (rsLabel.next()) {
+//				labelList.add(new LabelValueBean(rsLabel.getString("LabelType"), rsLabel.getString("ID")));
+//			}
+//			pstmtLabel.close();
+//			rsLabel.close();
+		} catch (Exception ex) {
 			Loger.log("Exception in the class ConfigurationInfo and in method " + "labelInfo " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
+		} 
+//		finally {
+//			executor.close(con);
+//		}
 
 		return labelList;
 	}
 
 	/* User griup information with id & name */
 	public ArrayList userGroupInfo(String compId) {
-		Connection con = null;
+//		Connection con = null;
 		ArrayList<ConfigurationDto> labelList = new ArrayList<ConfigurationDto>();
 		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmtGroup = null;
-		ResultSet rsGroup = null;
+//		PreparedStatement pstmtGroup = null;
+//		ResultSet rsGroup = null;
 		if (executor == null)
 			return null;
-		con = executor.getConnection();
-		if (con == null)
-			return null;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return null;
 		try {
-			String groupQuery = "select GroupID,UserGroupName from bca_usergroup where CompanyID=? and Active=1 ";
-			pstmtGroup = con.prepareStatement(groupQuery);
-			pstmtGroup.setString(1, compId);
-			rsGroup = pstmtGroup.executeQuery();
-			while (rsGroup.next()) {
+//			String groupQuery = "select GroupID,UserGroupName from bca_usergroup where CompanyID=? and Active=1 ";
+			Optional<BcaCompany> bcaCompany=bcaCompanyRepository.findById(Long.parseLong(compId));
+			BcaCompany company=null;
+			if(bcaCompany.isPresent()) {
+				company=bcaCompany.get();
+			}
+			List<BcaUsergroup>bcaUsergroups=bcaUsergroupRepository.findByCompanyAndActive(company, true);
+			for(BcaUsergroup rsGroup:bcaUsergroups) {
 				ConfigurationDto cForm = new ConfigurationDto();
-				cForm.setGroupID(rsGroup.getInt("GroupID"));
-				cForm.setGroupNm(rsGroup.getString("UserGroupName"));
+				cForm.setGroupID(rsGroup.getGroupId());
+				cForm.setGroupNm(rsGroup.getUserGroupName());
 				labelList.add(cForm);
 			}
-			pstmtGroup.close();
-			rsGroup.close();
-		} catch (SQLException ex) {
+			
+//			pstmtGroup = con.prepareStatement(groupQuery);
+//			pstmtGroup.setString(1, compId);
+//			rsGroup = pstmtGroup.executeQuery();
+//			while (rsGroup.next()) {
+//				ConfigurationDto cForm = new ConfigurationDto();
+//				cForm.setGroupID(rsGroup.getInt("GroupID"));
+//				cForm.setGroupNm(rsGroup.getString("UserGroupName"));
+//				labelList.add(cForm);
+//			}
+//			pstmtGroup.close();
+//			rsGroup.close();
+		} catch (DataAccessException  ex) {
 			Loger.log("Exception in the class ConfigurationInfo and in method " + "userGroupInfo " + ex.toString());
 		}
 
-		finally {
-			executor.close(con);
-		}
+//		finally {
+//			executor.close(con);
+//		}
 		return labelList;
 	}
 
 	/* Invoice Style List with id & name */
 	public ArrayList invoiceStyleList() {
-		Connection con = null;
+//		Connection con = null;
 		ArrayList<LabelValueBean> invStyleList = new ArrayList<LabelValueBean>();
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmtLabel = null;
-		ResultSet rsLabel = null;
-		if (executor == null)
-			return null;
-		con = executor.getConnection();
-		if (con == null)
-			return null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmtLabel = null;
+//		ResultSet rsLabel = null;
+//		if (executor == null)
+//			return null;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return null;
 		try {
-			String labelQuery = "select InvoiceStyleID,Name from bca_invoicestyle where Active=1";
-			pstmtLabel = con.prepareStatement(labelQuery);
-			rsLabel = pstmtLabel.executeQuery();
-			while (rsLabel.next()) {
-				invStyleList.add(new LabelValueBean(rsLabel.getString("Name"), rsLabel.getString("InvoiceStyleID")));
+//			String labelQuery = "select InvoiceStyleID,Name from bca_invoicestyle where Active=1";
+//			pstmtLabel = con.prepareStatement(labelQuery);
+//			rsLabel = pstmtLabel.executeQuery();
+//			while (rsLabel.next()) {
+//				invStyleList.add(new LabelValueBean(rsLabel.getString("Name"), rsLabel.getString("InvoiceStyleID")));
+//			}
+//			pstmtLabel.close();
+//			rsLabel.close();
+			
+			List<BcaInvoicestyle> bcaInvoicestyles=bcaInvoicestyleRepository.findByActive(1);
+			for(BcaInvoicestyle bcaInvoicestyle :bcaInvoicestyles) {
+				invStyleList.add(new LabelValueBean(bcaInvoicestyle.getName(), bcaInvoicestyle.getInvoiceStyleId().toString()));
+				
 			}
-			pstmtLabel.close();
-			rsLabel.close();
-		} catch (SQLException ex) {
+			
+		} catch (DataAccessException  ex) {
 			Loger.log("Exception in the class ConfigurationInfo and in method " + "invoiceStyleList " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
+		} 
+//		finally {
+//			executor.close(con);
+//		}
 
 		return invStyleList;
 	}
@@ -232,68 +295,98 @@ public class ConfigurationInfo {
 
 	/* Job code List with id,name,cost & description */
 	public ArrayList jobCodeList(String compId) {
-		Connection con = null;
+//		Connection con = null;
 		ArrayList<ConfigurationDto> jobCodeList = new ArrayList<ConfigurationDto>();
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmtJobCode = null;
-		ResultSet rsJobCode = null;
-		if (executor == null)
-			return null;
-		con = executor.getConnection();
-		if (con == null)
-			return null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmtJobCode = null;
+//		ResultSet rsJobCode = null;
+//		if (executor == null)
+//			return null;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return null;
 		try {
-			String jobCodeQuery = "select JobID,Name,Cost,Description from bcp_jobcode where CompanyID=?"
-					+ "order by Name";
-			pstmtJobCode = con.prepareStatement(jobCodeQuery);
-			pstmtJobCode.setString(1, compId);
-			rsJobCode = pstmtJobCode.executeQuery();
-			while (rsJobCode.next()) {
+//			String jobCodeQuery = "select JobID,Name,Cost,Description from bcp_jobcode where CompanyID=?"
+//					+ "order by Name";
+//			pstmtJobCode = con.prepareStatement(jobCodeQuery);
+//			pstmtJobCode.setString(1, compId);
+//			rsJobCode = pstmtJobCode.executeQuery();
+//			while (rsJobCode.next()) {
+//				ConfigurationDto configForm = new ConfigurationDto();
+//				configForm.setJobCodeID(rsJobCode.getInt("JobID"));
+//				configForm.setJob(rsJobCode.getString("Name"));
+//				configForm.setCost(rsJobCode.getDouble("Cost"));
+//				configForm.setDescription(rsJobCode.getString("Description"));
+//				jobCodeList.add(configForm);
+//			}
+//			pstmtJobCode.close();
+//			rsJobCode.close();
+			
+			Optional<BcaCompany>optional=bcaCompanyRepository.findById(Long.parseLong(compId));
+			BcaCompany company=null;
+			if(optional.isPresent()) {
+				company=optional.get();
+			}
+			List<BcpJobcode>bcpJobcodes=bcpJobcodeRepository.findByCompanyOrderByName(company);
+			for(BcpJobcode rsJobCode:bcpJobcodes) {
 				ConfigurationDto configForm = new ConfigurationDto();
-				configForm.setJobCodeID(rsJobCode.getInt("JobID"));
-				configForm.setJob(rsJobCode.getString("Name"));
-				configForm.setCost(rsJobCode.getDouble("Cost"));
-				configForm.setDescription(rsJobCode.getString("Description"));
+				configForm.setJobCodeID(rsJobCode.getJobId());
+				configForm.setJob(rsJobCode.getName());
+				configForm.setCost(rsJobCode.getCost().doubleValue());
+				configForm.setDescription(rsJobCode.getDescription());
 				jobCodeList.add(configForm);
 			}
-			pstmtJobCode.close();
-			rsJobCode.close();
-		} catch (SQLException ex) {
+			
+		} catch (DataAccessException ex) {
 			Loger.log("Exception in the class ConfigurationInfo and in method " + "jobCodeList " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
+		} 
+//		finally {
+//			executor.close(con);
+//		}
 
 		return jobCodeList;
 	}
 
 	/* Sales Tax List with id & name */
 	public ArrayList salesTaxList(String compId) {
-		Connection con = null;
+//		Connection con = null;
 		ArrayList<LabelValueBean> taxList = new ArrayList<LabelValueBean>();
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmtTax = null;
-		ResultSet rsTax = null;
-		if (executor == null)
-			return null;
-		con = executor.getConnection();
-		if (con == null)
-			return null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmtTax = null;
+//		ResultSet rsTax = null;
+//		if (executor == null)
+//			return null;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return null;
 		try {
-			String footnoteQuery = "select SalesTaxID,State from bca_salestax where Active=1 and CompanyID=?";
-			pstmtTax = con.prepareStatement(footnoteQuery);
-			pstmtTax.setString(1, compId);
-			rsTax = pstmtTax.executeQuery();
-			while (rsTax.next()) {
-				taxList.add(new LabelValueBean(rsTax.getString("State"), rsTax.getString("SalesTaxID")));
+//			String footnoteQuery = "select SalesTaxID,State from bca_salestax where Active=1 and CompanyID=?";
+//			pstmtTax = con.prepareStatement(footnoteQuery);
+//			pstmtTax.setString(1, compId);
+//			rsTax = pstmtTax.executeQuery();
+//			while (rsTax.next()) {
+//				taxList.add(new LabelValueBean(rsTax.getString("State"), rsTax.getString("SalesTaxID")));
+//			}
+//			pstmtTax.close();
+//			rsTax.close();
+			
+			Optional<BcaCompany>optional=bcaCompanyRepository.findById(Long.parseLong(compId));
+			BcaCompany company=null;
+			if(optional.isPresent()) {
+				company=optional.get();
 			}
-			pstmtTax.close();
-			rsTax.close();
-		} catch (SQLException ex) {
+			List<BcaSalestax> bcaSalestaxs=bcaSalestaxRepository.findByActiveAndCompany(1, company);
+			for(BcaSalestax bcaSalestax:bcaSalestaxs) {
+				taxList.add(new LabelValueBean(bcaSalestax.getState(), bcaSalestax.getSalesTaxId().toString()));
+					
+			}
+		
+		} catch (DataAccessException ex) {
 			Loger.log("Exception in the class ConfigurationInfo and in method " + "salesTaxList " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
+		} 
+//		finally {
+//			executor.close(con);
+//		}
 
 		return taxList;
 	}
@@ -301,50 +394,70 @@ public class ConfigurationInfo {
 	/* Service Type List with id,name,invoicestyle id */
 	public ArrayList serviceTypeList(HttpServletRequest request) {
 		String serviceList = "";
-		Connection con = null;
+//		Connection con = null;
 		ArrayList<ConfigurationDto> serviceTypeList = new ArrayList<ConfigurationDto>();
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmtServiceType = null;
-		PreparedStatement pstmtInvStyle = null;
-		ResultSet rsServiceType = null;
-		ResultSet rsInvStyle = null;
-		if (executor == null)
-			return null;
-		con = executor.getConnection();
-		if (con == null)
-			return null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmtServiceType = null;
+//		PreparedStatement pstmtInvStyle = null;
+//		ResultSet rsServiceType = null;
+//		ResultSet rsInvStyle = null;
+//		if (executor == null)
+//			return null;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return null;
 		try {
-			String serviceTypeQuery = "select * from bca_servicetype order by ServiceName";
-			pstmtServiceType = con.prepareStatement(serviceTypeQuery);
-			rsServiceType = pstmtServiceType.executeQuery();
-			String invStyleQuery = "select Name from bca_invoicestyle where InvoiceStyleID=? and Active=1";
-			while (rsServiceType.next()) {
+//			String serviceTypeQuery = "select * from bca_servicetype order by ServiceName";
+//			pstmtServiceType = con.prepareStatement(serviceTypeQuery);
+//			rsServiceType = pstmtServiceType.executeQuery();
+//			String invStyleQuery = "select Name from bca_invoicestyle where InvoiceStyleID=? and Active=1";
+//			while (rsServiceType.next()) {
+//				ConfigurationDto configForm = new ConfigurationDto();
+//				configForm.setServiceID(rsServiceType.getInt("ServiceID"));
+//				configForm.setServiceName(rsServiceType.getString("ServiceName"));
+//				configForm.setInvStyleID(rsServiceType.getInt("InvoiceStyleID"));
+//
+//				pstmtInvStyle = con.prepareStatement(invStyleQuery);
+//				pstmtInvStyle.setInt(1, configForm.getInvStyleID());
+//				rsInvStyle = pstmtInvStyle.executeQuery();
+//				if (rsInvStyle.next()) {
+//					configForm.setInvName(rsInvStyle.getString("Name"));
+//
+//				} else
+//					configForm.setInvName("");
+//				pstmtInvStyle.close();
+//				rsInvStyle.close();
+//				serviceTypeList.add(configForm);
+//				serviceList += configForm.getServiceID() + "/*/" + configForm.getServiceName() + "/*/";
+//			}
+			
+		List<BcaServicetype>bcaServicetypes=bcaServicetypeRepository.findAllByOrderByServiceName();
+			for(BcaServicetype bcaServicetype:bcaServicetypes)
+			{
 				ConfigurationDto configForm = new ConfigurationDto();
-				configForm.setServiceID(rsServiceType.getInt("ServiceID"));
-				configForm.setServiceName(rsServiceType.getString("ServiceName"));
-				configForm.setInvStyleID(rsServiceType.getInt("InvoiceStyleID"));
-
-				pstmtInvStyle = con.prepareStatement(invStyleQuery);
-				pstmtInvStyle.setInt(1, configForm.getInvStyleID());
-				rsInvStyle = pstmtInvStyle.executeQuery();
-				if (rsInvStyle.next()) {
-					configForm.setInvName(rsInvStyle.getString("Name"));
-
-				} else
+				configForm.setServiceID(bcaServicetype.getServiceId());
+				configForm.setServiceName(bcaServicetype.getServiceName());
+				configForm.setInvStyleID(bcaServicetype.getInvoiceStyle().getInvoiceStyleId());
+				BcaInvoicestyle invoicestyle=bcaInvoicestyleRepository.findByActiveAndInvoiceStyleId(1,configForm.getInvStyleID() );
+				if(null!=invoicestyle) {
+					configForm.setInvName(invoicestyle.getName());
+				}else {
 					configForm.setInvName("");
-				pstmtInvStyle.close();
-				rsInvStyle.close();
+				}
 				serviceTypeList.add(configForm);
 				serviceList += configForm.getServiceID() + "/*/" + configForm.getServiceName() + "/*/";
+			
 			}
+			
 			request.setAttribute("ServList", serviceList);
-			pstmtServiceType.close();
-			rsServiceType.close();
-		} catch (SQLException ex) {
+//			pstmtServiceType.close();
+//			rsServiceType.close();
+		} catch (DataAccessException ex) {
 			Loger.log("Exception in the class ConfigurationInfo and in method " + "jobCodeList " + ex.toString());
-		} finally {
-			executor.close(con);
 		}
+//		finally {
+//			executor.close(con);
+//		}
 
 		return serviceTypeList;
 	}
