@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 public class ConfigurationDetails {
 
 	@Autowired
+
+
 	private ConfigurationInfo configInfo;
+
 
 	@Autowired
 	private CountryState conState;
@@ -33,9 +36,11 @@ public class ConfigurationDetails {
 		/* For the user group list */
 		request.setAttribute("UserGroup", configInfo.userGroupInfo(compId));
 
+
 		/* For country list */
 		// CountryState conState = new CountryState();
 		request.setAttribute("CountryList", conState.getCountry());
+
 
 		/* For invoice style List */
 		request.setAttribute("InvStyle", configInfo.invoiceStyleList());

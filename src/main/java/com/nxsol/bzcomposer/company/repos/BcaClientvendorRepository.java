@@ -1,5 +1,6 @@
 package com.nxsol.bzcomposer.company.repos;
 
+import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 
@@ -19,7 +20,7 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 //			" c.cvtypeId IN (1, 2) AND c.status IN ('U', 'N') AND c.deleted = 0 AND c.active = 1 " +
 //			" ORDER BY c.name")
 //	List<Object[]> fetchClientVendorDetails(@Param("compId") BcaCompany compId);
-	
+
 	@Query(nativeQuery = true, value = "SELECT distinct c.ClientVendorID,c.Name,ti.Title,c.FirstName,c.LastName,c.Address1,c.Address2,c.City,c.State,c.Country,"
 			+ "c.Email,c.Phone,c.CellPhone,c.Fax,date_format(c.DateAdded,'%m-%d-%Y') as DateAdded,i.IsPaymentCompleted,c.CVCategoryName,"
 			+ "c.ZipCode,ct.Name AS CityName, st.Name AS StateName, cn.Name AS CountryName, c.DBAName, date_format(i.DateAdded,'%m-%d-%Y') as iDateAdded "
@@ -29,9 +30,32 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 			+ " AND CVTypeID IN (1, 2) AND c.Status IN ('U', 'N') AND c.Deleted = 0 AND c.Active=1 ORDER BY c.Name")
 	List<Object[]> fetchClientVendorDetails(@Param("compId") BcaCompany compId);
 
+	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.company= :compId AND bcv.status IN ('U','N') AND bcv.active =1")
+	List<BcaClientvendor> findListOfClientVendorDetails(@Param("compId") BcaCompany compId);
+
+	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.company= :compId AND bcv.status IN ('U','N') AND bcv.active IN (0,1) ORDER BY bcv.lastName")
+	List<BcaClientvendor> findAllClientVendorForCombo(@Param("compId") BcaCompany compId);
+
+	List<BcaClientvendor> findByCompanyAndStatusAndDeletedAndActiveAndCvtypeIdNotInOrderByLastName(BcaCompany company,
+			String status, Integer deleted, Integer active, List<Integer> cvTypeIds);
+
+	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.deleted = 0 AND bcv.company = :company AND"
+			+ " bcv.customerOpenDebit > 0 AND bcv.status = 'N' AND bcv.cvtypeId IN (2,1) ORDER BY bcv.dateAdded DESC")
+	List<BcaClientvendor> findInvoiceForUnpaidOpeningbal(BcaCompany company);
+
+	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.company = :company AND bcv.status IN ('U', 'N')"
+			+ " AND bcv.active IN (0,1) AND bcv.cvtypeId = 2 ORDER BY bcv.lastName")
+	List<BcaClientvendor> findClientVendorForCombo(@Param("company") BcaCompany company);
+
+	List<BcaClientvendor> findByCompanyAndStatusInAndClientVendorId(BcaCompany company, List<String> statusList,
+			Integer clientVendorId);
+
+	@Query(nativeQuery = true, value = "select Name, FirstName, LastName, ClientVendorID from bca_clientvendor where companyID = :companyId "
+			+ "and Status in ('U', 'N') and (Deleted = 0 or Active = 1) and CVTypeID in ( :param1 , :param2, :param3 ) order by name")
+	List<Object[]> findAllClientVendorList(@Param("companyId") Long companyId, @Param("param1") Integer param1,
+			@Param("param2") Integer param2, @Param("param3") Integer param3);
 
 	
+
+
 }
-
-
-

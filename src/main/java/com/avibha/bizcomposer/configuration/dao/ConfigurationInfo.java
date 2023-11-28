@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,16 +30,18 @@ import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaFootnote;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
 import com.nxsol.bzcomposer.company.domain.BcaLabel;
+
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
 import com.nxsol.bzcomposer.company.domain.BcaSalestax;
 import com.nxsol.bzcomposer.company.domain.BcaServicetype;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
 import com.nxsol.bzcomposer.company.domain.BcpJobcode;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaFootnoteResult2;
-import com.nxsol.bzcomposer.company.domain.nonmanaged.FootNoteQueryResult;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLabelRepository;
+
 import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
 import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
@@ -47,7 +51,29 @@ import com.nxsol.bzcomposer.company.repos.BcpJobcodeRepository;
 @Service
 public class ConfigurationInfo {
 
+	@Autowired
+	private BcaLabelRepository bcaLabelRepository;
+	
+	@Autowired
+	private BcaUsergroupRepository bcaUsergroupRepository;
+	
+	@Autowired
+	private BcaCompanyRepository bcaCompanyRepository;
+	
+	@Autowired
+	private BcaInvoicestyleRepository bcaInvoicestyleRepository;
+	
+	@Autowired
+	private BcpJobcodeRepository bcpJobcodeRepository; 
+	
+	@Autowired
+	private BcaSalestaxRepository bcaSalestaxRepository;
+	
+	@Autowired
+	private BcaServicetypeRepository bcaServicetypeRepository; 
+	
 	private static HttpServletRequest request;
+	
 
 	@Autowired
 	private BcaLabelRepository bcaLabelRepo;
@@ -76,6 +102,7 @@ public class ConfigurationInfo {
 	}
 
 	/* Label List with id & name */
+
 //	public ArrayList labelInfo() {
 //		Connection con = null;
 //		ArrayList<LabelValueBean> labelList = new ArrayList<LabelValueBean>();
@@ -91,11 +118,13 @@ public class ConfigurationInfo {
 //			String labelQuery = "select ID,LabelType from bca_label";
 //			pstmtLabel = con.prepareStatement(labelQuery);
 //			rsLabel = pstmtLabel.executeQuery();
+
 //			while (rsLabel.next()) {
 //				labelList.add(new LabelValueBean(rsLabel.getString("LabelType"), rsLabel.getString("ID")));
 //			}
 //			pstmtLabel.close();
 //			rsLabel.close();
+
 //		} catch (SQLException ex) {
 //			Loger.log("Exception in the class ConfigurationInfo and in method " + "labelInfo " + ex.toString());
 //		} finally {
@@ -107,9 +136,11 @@ public class ConfigurationInfo {
 	public List<LabelValueBean> labelInfo() {
 		List<BcaLabel> labels = bcaLabelRepo.findAll();
 
+
 		return labels.stream().map(label -> new LabelValueBean(label.getLabelType(), label.getId().toString()))
 				.collect(Collectors.toList());
 	}
+
 
 	/* User group information with id & name */
 //	public ArrayList userGroupInfo(String compId) {
@@ -136,6 +167,7 @@ public class ConfigurationInfo {
 //			}
 //			pstmtGroup.close();
 //			rsGroup.close();
+
 //		} catch (SQLException ex) {
 //			Loger.log("Exception in the class ConfigurationInfo and in method " + "userGroupInfo " + ex.toString());
 //		}
@@ -159,6 +191,7 @@ public class ConfigurationInfo {
 	/* Invoice Style List with id & name */
 	public List<LabelValueBean> invoiceStyleList() {
 		List<BcaInvoicestyle> invoiceStyles = bcaInvoiceStyleRepo.findByActive(1);
+
 
 		return invoiceStyles.stream()
 				.map(style -> new LabelValueBean(style.getName(), style.getInvoiceStyleId().toString()))
@@ -286,8 +319,10 @@ public class ConfigurationInfo {
 //        return footnoteList;
 //    }
 
+
 	@Autowired
 	private BcpJobcodeRepository jobCodeRepository;
+
 
 	/* Job code List with id,name,cost & description */
 	public List<ConfigurationDto> jobCodeList(String compId) {
@@ -339,8 +374,10 @@ public class ConfigurationInfo {
 //	}
 
 	/* Sales Tax List with id & name */
+
 	@Autowired
 	private BcaSalestaxRepository salesTaxRepository;
+
 
 	public List<LabelValueBean> salesTaxList(String compId) {
 		List<BcaSalestax> salesTaxes = salesTaxRepository.findByCompany_CompanyIdAndActive(Long.valueOf(compId), 1);
@@ -379,6 +416,7 @@ public class ConfigurationInfo {
 //	}
 
 	/* Service Type List with id,name,invoicestyle id */
+
 	@Autowired
 	private BcaServicetypeRepository serviceTypeRepository;
 	@Autowired
@@ -393,6 +431,7 @@ public class ConfigurationInfo {
 			configForm.setServiceID(serviceType.getServiceId());
 			configForm.setServiceName(serviceType.getServiceName());
 			configForm.setInvStyleID(serviceType.getInvoiceStyle().getInvoiceStyleId());
+
 
 			BcaInvoicestyle invoiceStyle = invoiceStyleRepository
 					.findByInvoiceStyleIdAndActive(serviceType.getInvoiceStyle().getInvoiceStyleId(), 1);

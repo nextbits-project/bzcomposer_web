@@ -13,6 +13,7 @@ import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import com.pritesh.bizcomposer.accounting.bean.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,12 @@ import java.util.Scanner;
 
 @Controller
 public class PoPayableController {
+	
+	@Autowired
+	TblCategoryDtoLoader category;
+	@Autowired
+	ReceivableLIst rl;
+	
 	@GetMapping("/PoPayable")
 	public ModelAndView poPayable(RMADto rmaDto, ReceivableListDto receivableListDto, HttpServletRequest request,
 								  HttpServletResponse response) throws Exception {
@@ -35,9 +42,9 @@ public class PoPayableController {
 		HttpSession sess=request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-		ReceivableLIst rl = new ReceivableListImpl();
-		
-		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
+//		ReceivableLIst rl = new ReceivableListImpl();
+//		
+//		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
 		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<TblPaymentType> paymentTypeForPOcombo = rl.getPaymentTypeForPoPayable();
 		ArrayList<TblAccount> accountForCombo =rl.getAccount();

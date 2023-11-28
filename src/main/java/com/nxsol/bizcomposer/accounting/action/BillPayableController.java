@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,10 @@ import java.util.Date;
 
 @Controller
 public class BillPayableController {
+
+	@Autowired
+	private ReceivableLIst rl;
+
 	@RequestMapping(value = "/BillPayable", method = { RequestMethod.GET, RequestMethod.POST })
 	// @GetMapping("/BillPayable")
 	public ModelAndView billPayable(TblVendorDetailDto tblVendorDetailDto, HttpServletRequest request,
@@ -44,7 +49,7 @@ public class BillPayableController {
 		Date payBillsDate = new Date();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-		ReceivableLIst rl = new ReceivableListImpl();
+//		ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<ClientVendor> cvForCombo = rl.getCvForBill();
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
@@ -88,7 +93,7 @@ public class BillPayableController {
 		Date payBillsDate = new Date();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-		ReceivableLIst rl = new ReceivableListImpl();
+//		ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<ClientVendor> cvForCombo = rl.getCvForBill();
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();

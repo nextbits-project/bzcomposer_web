@@ -13,6 +13,8 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +38,9 @@ import java.util.Date;
 
 @Controller
 public class BillingBoardController {
+	
+	@Autowired
+	private ReceivableLIst rl ;
 
 	@GetMapping("/BillingBoard")
 	public String billingBoard(HttpServletRequest request) throws Exception {
@@ -44,7 +49,7 @@ public class BillingBoardController {
 		HttpSession sess = request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-		ReceivableLIst rl = new ReceivableListImpl();
+//	ReceivableLIst rl = new ReceivableListImpl();
 		Date from = null;
 		Date to = null;
 		String columnName = " OrderNum ";
@@ -79,7 +84,7 @@ public class BillingBoardController {
 		HttpSession sess = request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-		ReceivableLIst rl = new ReceivableListImpl();
+//		ReceivableLIst rl = new ReceivableListImpl();
 		Date from = null;
 		Date to = null;
 		String columnName = " OrderNum ";

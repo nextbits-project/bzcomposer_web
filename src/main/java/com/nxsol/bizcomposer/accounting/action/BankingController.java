@@ -28,9 +28,9 @@ import java.util.Date;
 @Controller
 public class BankingController {
 	
+
 	@Autowired
-	private ReceivableListImpl rl;
-	
+	private ReceivableLIst rl;
 
 	@GetMapping("/Banking")
 	public String bankingAction(TblPaymentDto paymentDto, HttpServletRequest request) throws Exception {
@@ -218,7 +218,7 @@ public class BankingController {
 		HttpSession sess=request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-//		ReceivableLIst rl = new ReceivableListImpl();
+
 		ArrayList<TblPaymentDto> payment = null;
 		ArrayList<TblPaymentType> simpleTypes = rl.getOnlySimplePaymentTypes();
 		ArrayList<ClientVendor> cvList = rl.getAllClientVendorList();
