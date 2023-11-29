@@ -11,10 +11,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,7 @@ import com.avibha.bizcomposer.sales.forms.SalesForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.nxsol.bzcomposer.company.domain.BcaCctype;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaCvcategory;
 import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
 import com.nxsol.bzcomposer.company.domain.BcaLeadSource;
@@ -37,6 +42,7 @@ import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
 import com.nxsol.bzcomposer.company.domain.BcaTerm;
 import com.nxsol.bzcomposer.company.domain.BcaTitle;
 import com.nxsol.bzcomposer.company.repos.BcaCctypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadSourceRepository;
@@ -57,6 +63,9 @@ import com.nxsol.bzcomposer.company.repos.BcaTitleRepository;
 public class SalesInfo {
 
 	@Autowired
+	private BcaCompanyRepository companyRepository;
+
+	@Autowired
 	private BcaTitleRepository titleRepository;
 
 	public ArrayList<SalesForm> getCustomerTitle(Long compId) {
@@ -67,7 +76,7 @@ public class SalesInfo {
 			SalesForm sales = new SalesForm();
 			sales.setTitleID(title.getTitleId().toString());
 			sales.setTitle(title.getTitle());
-		    sales.setDefaultItem(title.getIsDefault() != null ? title.getIsDefault() : false);
+			sales.setDefaultItem(title.getIsDefault() != null ? title.getIsDefault() : false);
 			objList.add(sales);
 		}
 
@@ -109,23 +118,23 @@ public class SalesInfo {
 //	}
 
 	@Autowired
-    private BcaSalesrepRepository salesRepRepository;
+	private BcaSalesrepRepository salesRepRepository;
 
-    public ArrayList<SalesForm> getSalesRep(Long compId) {
-        List<BcaSalesrep> salesReps = salesRepRepository.findByCompany_CompanyIdAndActive(compId, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getSalesRep(Long compId) {
+		List<BcaSalesrep> salesReps = salesRepRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaSalesrep salesRep : salesReps) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setSalesRepID(salesRep.getSalesRepId().toString());
-            salesForm.setSalesRepName(salesRep.getName());
-            salesForm.setDefaultItem(salesRep.getIsDefault() != null ? salesRep.getIsDefault() : false);
-            objList.add(salesForm);
-        }
+		for (BcaSalesrep salesRep : salesReps) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setSalesRepID(salesRep.getSalesRepId().toString());
+			salesForm.setSalesRepName(salesRep.getName());
+			salesForm.setDefaultItem(salesRep.getIsDefault() != null ? salesRep.getIsDefault() : false);
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
-    
+		return objList;
+	}
+
 //	public ArrayList getSalesRep(String compId) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -166,23 +175,23 @@ public class SalesInfo {
 //		return objList;
 //	}
 
-    @Autowired
-    private BcaCvcategoryRepository cvcategoryRepository;
+	@Autowired
+	private BcaCvcategoryRepository cvcategoryRepository;
 
-    public ArrayList<SalesForm> getCatType(Long compId) {
-        List<BcaCvcategory> cvcategories = cvcategoryRepository.findByCompany_CompanyIdAndActive(compId, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getCatType(Long compId) {
+		List<BcaCvcategory> cvcategories = cvcategoryRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaCvcategory cvcategory : cvcategories) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setCvCategoryID(cvcategory.getcVCategoryID().toString());
-            salesForm.setCvCategoryName(cvcategory.getName());
-            salesForm.setDefaultItem(cvcategory.getIsDefault() != null ? cvcategory.getIsDefault() : false);
-            objList.add(salesForm);
-        }
+		for (BcaCvcategory cvcategory : cvcategories) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setCvCategoryID(cvcategory.getcVCategoryID().toString());
+			salesForm.setCvCategoryName(cvcategory.getName());
+			salesForm.setDefaultItem(cvcategory.getIsDefault() != null ? cvcategory.getIsDefault() : false);
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
+		return objList;
+	}
 //	public ArrayList getCatType(String compId) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -222,23 +231,23 @@ public class SalesInfo {
 //		return objList;
 //	}
 
-    @Autowired
-    private BcaTermRepository termRepository;
+	@Autowired
+	private BcaTermRepository termRepository;
 
-    public ArrayList<SalesForm> getTerms(Long compId) {
-        List<BcaTerm> terms = termRepository.findByCompany_CompanyIdAndActive(compId, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getTerms(Long compId) {
+		List<BcaTerm> terms = termRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaTerm term : terms) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setTermId(term.getTermId().toString());
-            salesForm.setTermName(term.getName());
-            salesForm.setDefaultItem(term.getIsDefault() != null ? term.getIsDefault() : false);
-            objList.add(salesForm);
-        }
+		for (BcaTerm term : terms) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setTermId(term.getTermId().toString());
+			salesForm.setTermName(term.getName());
+			salesForm.setDefaultItem(term.getIsDefault() != null ? term.getIsDefault() : false);
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
+		return objList;
+	}
 //	public ArrayList getTerms(String compId) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -279,24 +288,24 @@ public class SalesInfo {
 //		return objList;
 //	}
 
-    @Autowired
-    private BcaLocationRepository locationRepository;
+	@Autowired
+	private BcaLocationRepository locationRepository;
 
-    public ArrayList<SalesForm> getLocation(Long compId) {
-        List<BcaLocation> locations = locationRepository.findByCompany_CompanyIdAndActive(compId, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getLocation(Long compId) {
+		List<BcaLocation> locations = locationRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaLocation location : locations) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setLocationId(location.getLocationId().toString());
-            salesForm.setLocationName(location.getName());
-            salesForm.setDefaultItem(location.getIsDefault() != null ? location.getIsDefault() : false);
-            objList.add(salesForm);
-        }
+		for (BcaLocation location : locations) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setLocationId(location.getLocationId().toString());
+			salesForm.setLocationName(location.getName());
+			salesForm.setDefaultItem(location.getIsDefault() != null ? location.getIsDefault() : false);
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
-    
+		return objList;
+	}
+
 //	public ArrayList getLocation(String compId) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -337,24 +346,25 @@ public class SalesInfo {
 //		return objList;
 //	}
 
-    @Autowired
-    private BcaPaymenttypeRepository paymentTypeRepository;
+	@Autowired
+	private BcaPaymenttypeRepository paymentTypeRepository;
 
-    public ArrayList<SalesForm> getPaymentType(Long compId) {
-        List<BcaPaymenttype> paymentTypes = paymentTypeRepository.findByCompany_CompanyIdAndActiveAndTypeCategory(compId, 1, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getPaymentType(Long compId) {
+		List<BcaPaymenttype> paymentTypes = paymentTypeRepository
+				.findByCompany_CompanyIdAndActiveAndTypeCategory(compId, 1, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaPaymenttype paymentType : paymentTypes) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setPaymentTypeId(paymentType.getPaymentTypeId().toString());
-            salesForm.setPaymentTypeName(paymentType.getName());
-            salesForm.setDefaultItem(paymentType.getIsDefault() != null ? paymentType.getIsDefault() : false);
-            objList.add(salesForm);
-        }
+		for (BcaPaymenttype paymentType : paymentTypes) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setPaymentTypeId(paymentType.getPaymentTypeId().toString());
+			salesForm.setPaymentTypeName(paymentType.getName());
+			salesForm.setDefaultItem(paymentType.getIsDefault() != null ? paymentType.getIsDefault() : false);
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
-    
+		return objList;
+	}
+
 //	public ArrayList getPaymentType(String compId) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -394,23 +404,24 @@ public class SalesInfo {
 //		return objList;
 //	}
 
-    @Autowired
-    private BcaReceivedtypeRepository receivedTypeRepository;
+	@Autowired
+	private BcaReceivedtypeRepository receivedTypeRepository;
 
-    public ArrayList<SalesForm> getReceivedType(Long compId) {
-        List<BcaReceivedtype> receivedTypes = receivedTypeRepository.findByCompany_CompanyIdAndActiveAndTypeCategory(compId, 1, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getReceivedType(Long compId) {
+		List<BcaReceivedtype> receivedTypes = receivedTypeRepository
+				.findByCompany_CompanyIdAndActiveAndTypeCategory(compId, 1, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaReceivedtype receivedType : receivedTypes) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setPaymentTypeId(receivedType.getPaymentTypeId().toString());
-            salesForm.setPaymentTypeName(receivedType.getName());
-            salesForm.setDefaultItem(receivedType.getIsDefault() != null ? receivedType.getIsDefault() : false);
-            objList.add(salesForm);
-        }
+		for (BcaReceivedtype receivedType : receivedTypes) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setPaymentTypeId(receivedType.getPaymentTypeId().toString());
+			salesForm.setPaymentTypeName(receivedType.getName());
+			salesForm.setDefaultItem(receivedType.getIsDefault() != null ? receivedType.getIsDefault() : false);
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
+		return objList;
+	}
 //	public ArrayList getReceivedType(String compId) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -450,24 +461,24 @@ public class SalesInfo {
 //		return objList;
 //	}
 
-    @Autowired
-    private BcaCctypeRepository cctypeRepository;
+	@Autowired
+	private BcaCctypeRepository cctypeRepository;
 
-    public ArrayList<SalesForm> getCreditCard(Long compId) {
-        List<BcaCctype> ccTypes = cctypeRepository.findByCompany_CompanyIdAndActive(compId, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getCreditCard(Long compId) {
+		List<BcaCctype> ccTypes = cctypeRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaCctype ccType : ccTypes) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setCcTypeID(ccType.getcCTypeID().toString());
-            salesForm.setCcTypeName(ccType.getName());
-            salesForm.setDefaultItem(ccType.getIsDefault() != null ? ccType.getIsDefault() : false);
-            objList.add(salesForm);
-        }
+		for (BcaCctype ccType : ccTypes) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setCcTypeID(ccType.getcCTypeID().toString());
+			salesForm.setCcTypeName(ccType.getName());
+			salesForm.setDefaultItem(ccType.getIsDefault() != null ? ccType.getIsDefault() : false);
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
-    
+		return objList;
+	}
+
 //	public ArrayList getCreditCard(String compId) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -509,23 +520,23 @@ public class SalesInfo {
 //	}
 
 	@Autowired
-    private BcaMessageRepository messageRepository;
+	private BcaMessageRepository messageRepository;
 
-    public ArrayList<SalesForm> getMessage(Long compId) {
-        List<BcaMessage> messages = messageRepository.findByCompany_CompanyIdAndActive(compId, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getMessage(Long compId) {
+		List<BcaMessage> messages = messageRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaMessage message : messages) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setMessageID(message.getMessageId().toString());
-            salesForm.setMessageName(message.getName());
-            salesForm.setDefaultItem(message.getIsDefault() != null ? message.getIsDefault() : false);
-            objList.add(salesForm);
-        }
+		for (BcaMessage message : messages) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setMessageID(message.getMessageId().toString());
+			salesForm.setMessageName(message.getName());
+			salesForm.setDefaultItem(message.getIsDefault() != null ? message.getIsDefault() : false);
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
-    
+		return objList;
+	}
+
 //	public ArrayList getMessage(String compId) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -566,24 +577,24 @@ public class SalesInfo {
 //		return objList;
 //	}
 
-    @Autowired
-    private BcaSalestaxRepository salesTaxRepository;
+	@Autowired
+	private BcaSalestaxRepository salesTaxRepository;
 
-    public ArrayList<SalesForm> getTax(Long compId) {
-        List<BcaSalestax> salesTaxes = salesTaxRepository.findByCompany_CompanyIdAndActive(compId, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getTax(Long compId) {
+		List<BcaSalestax> salesTaxes = salesTaxRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaSalestax salesTax : salesTaxes) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setSalesTaxID(salesTax.getSalesTaxId().toString());
-            salesForm.setState(salesTax.getState());
-            salesForm.setSalesRate(salesTax.getRate().toString());
-            objList.add(salesForm);
-        }
+		for (BcaSalestax salesTax : salesTaxes) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setSalesTaxID(salesTax.getSalesTaxId().toString());
+			salesForm.setState(salesTax.getState());
+			salesForm.setSalesRate(salesTax.getRate().toString());
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
-    
+		return objList;
+	}
+
 //	public ArrayList getTax(String compId) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -625,23 +636,23 @@ public class SalesInfo {
 //		return objList;
 //	}
 
-    @Autowired
-    private BcaShipcarrierRepository shipCarrierRepository;
+	@Autowired
+	private BcaShipcarrierRepository shipCarrierRepository;
 
-    public ArrayList<SalesForm> getVia(Long compId) {
-        List<BcaShipcarrier> shipCarriers = shipCarrierRepository.findByCompany_CompanyIdAndActive(compId, 1);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getVia(Long compId) {
+		List<BcaShipcarrier> shipCarriers = shipCarrierRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaShipcarrier shipCarrier : shipCarriers) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setShipCarrierID(shipCarrier.getShipCarrierId().toString());
-            salesForm.setShipCarrierName(shipCarrier.getName());
-            salesForm.setDefaultItem(shipCarrier.getIsDefault() != null ? shipCarrier.getIsDefault() : false);
-            objList.add(salesForm);
-        }
+		for (BcaShipcarrier shipCarrier : shipCarriers) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setShipCarrierID(shipCarrier.getShipCarrierId().toString());
+			salesForm.setShipCarrierName(shipCarrier.getName());
+			salesForm.setDefaultItem(shipCarrier.getIsDefault() != null ? shipCarrier.getIsDefault() : false);
+			objList.add(salesForm);
+		}
 
-        return objList;
-    }
+		return objList;
+	}
 //	public ArrayList getVia(String compId) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -682,303 +693,609 @@ public class SalesInfo {
 //		return objList;
 //	}
 
-    @Autowired
-    private BcaLeadSourceRepository leadSourceRepository;
+	@Autowired
+	private BcaLeadSourceRepository leadSourceRepository;
 
-    public ArrayList<SalesForm> getLeadSource(Long compId) {
-        List<BcaLeadSource> leadSoruces = leadSourceRepository.findByCompany_CompanyIdAndActive(compId, true);
-        ArrayList<SalesForm> objList = new ArrayList<>();
+	public ArrayList<SalesForm> getLeadSource(Long compId) {
+		List<BcaLeadSource> leadSoruces = leadSourceRepository.findByCompany_CompanyIdAndActive(compId, true);
+		ArrayList<SalesForm> objList = new ArrayList<>();
 
-        for (BcaLeadSource leadSoruce : leadSoruces) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setLeadSourceId(leadSoruce.getLeadSourceId().toString());
-            salesForm.setLeadSourceName(leadSoruce.getName());
-            salesForm.setDefaultItem(leadSoruce.getIsDefault() != null ? leadSoruce.getIsDefault() : false);
-            objList.add(salesForm);
-        }
-
-        return objList;
-    }
-    
-    @Autowired
-    private BcaLeadCategoryRepository leadCategoryRepository;
-
-    public ArrayList<SalesForm> getLeadCategory(Long compId) {
-        List<BcaLeadCategory> leadCats = leadCategoryRepository.findByCompany_CompanyIdAndActive(compId, true);
-        ArrayList<SalesForm> objList = new ArrayList<>();
-
-        for (BcaLeadCategory leadCat : leadCats) {
-            SalesForm salesForm = new SalesForm();
-            salesForm.setLeadCatID(leadCat.getLeadCategoryId().toString());
-            salesForm.setLeadCatName(leadCat.getName());
-            salesForm.setDefaultItem(leadCat.getIsDefault() != null ? leadCat.getIsDefault() : false);
-            objList.add(salesForm);
-        }
-
-        return objList;
-    }
-	public boolean insertSalesData(String sNewID, String title, String oldVal, String newVal, String taxRateVal,
-			String compId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null, pstmt1, pstmt2, pstmt3, pstmt4, pstmt5, pstmt6, pstmt7, pstmt8, pstmt9, pstmt10,
-				pstmt11 = null;
-		ResultSet rs = null;
-		boolean valid = false;
-		try {
-			Statement stmt = con.createStatement();
-			String sqlString = "";
-			String iD = "";
-			if ("TAX".equalsIgnoreCase(title)) {
-				pstmt = con.prepareStatement("select max(SalesTaxID)+1 from bca_salestax");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-				String newValtaxRateVal = newVal + " " + taxRateVal;
-//				sqlString="INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`) " +
-//						"values('" + iD + "','" + compId + "',\"" + newValtaxRateVal + "\",'" + taxRateVal + "',1,1)";
-				pstmt1 = con.prepareStatement(
-						"INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`)"
-								+ "values(?,?,?,?,?,?)");
-				pstmt1.setString(1, iD);
-				pstmt1.setString(2, compId);
-				pstmt1.setString(3, newValtaxRateVal);
-				pstmt1.setString(4, taxRateVal);
-				pstmt1.setInt(5, 1);
-				pstmt1.setInt(6, 1);
-				pstmt1.executeUpdate();
-				pstmt1.close();
-
-			} else if ("CUSTOMER TITLE".equalsIgnoreCase(title)) {
-				Loger.log("CUSTOMER TITLE");
-				pstmt = con.prepareStatement("select max(TitleID)+1 from bca_title");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					// iD = rs.getString(1);
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_title(TitleID, Title, CompanyID, Active)  values('" + iD + "',\""
-//						+ newVal + "\",'" + compId + "',1)";
-
-				pstmt2 = con
-						.prepareStatement("insert into bca_title(TitleID, Title, CompanyID, Active) values(?,?,?,?)");
-				pstmt2.setString(1, iD);
-				pstmt2.setString(2, newVal);
-				pstmt2.setString(3, compId);
-				pstmt2.setInt(4, 1);
-				pstmt2.executeUpdate();
-				pstmt2.close();
-
-			} else if ("REP".equalsIgnoreCase(title)) {
-				pstmt = con.prepareStatement("select max(SalesRepID)+1 from bca_salesrep");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-					// iD = rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_salesrep values('" + iD
-//						+ "','" + compId + "',\"" + newVal + "\",1,0)";
-				pstmt3 = con.prepareStatement("insert into bca_salesrep values(?,?,?,?,?)");
-				pstmt3.setString(1, iD);
-				pstmt3.setString(2, compId);
-				pstmt3.setString(3, newVal);
-				pstmt3.setInt(4, 1);
-				pstmt3.setInt(5, 0);
-				pstmt3.executeUpdate();
-				pstmt3.close();
-
-			} else if ("TERMS".equalsIgnoreCase(title)) {
-				pstmt = con.prepareStatement("select max(TermID)+1 from bca_term");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-					// iD = rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_term values('" + iD + "','"
-//						+ compId + "',\"" + newVal + "\",1,0)";
-				pstmt4 = con.prepareStatement("insert into bca_term values(?,?,?,?,?)");
-				pstmt4.setString(1, iD);
-				pstmt4.setString(2, compId);
-				pstmt4.setString(3, newVal);
-				pstmt4.setInt(4, 1);
-				pstmt4.setInt(5, 0);
-				pstmt4.executeUpdate();
-				pstmt4.close();
-			} else if ("MESSAGE".equalsIgnoreCase(title)) {
-				pstmt = con.prepareStatement("select max(MessageID)+1 from bca_message");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-					// iD = rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_message values('" + iD + "','"
-//						+ compId + "',\"" + newVal + "\",1,0)";
-				pstmt5 = con.prepareStatement("insert into bca_message values(?,?,?,?,?)");
-				pstmt5.setString(1, iD);
-				pstmt5.setString(2, compId);
-				pstmt5.setString(3, newVal);
-				pstmt5.setInt(4, 1);
-				pstmt5.setInt(5, 0);
-				pstmt5.executeUpdate();
-				pstmt5.close();
-			} else if ("BUSINESS TYPE".equalsIgnoreCase(title)) {
-
-				pstmt = con.prepareStatement("select max(CVCategoryID)+1 from bca_cvcategory");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-					// iD = rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_cvcategory values('" + iD
-//						+ "','" + compId + "',\"" + newVal + "\",1,0)";
-				pstmt6 = con.prepareStatement("insert into bca_cvcategory values(?,?,?,?,?)");
-				pstmt6.setString(1, iD);
-				pstmt6.setString(2, compId);
-				pstmt6.setString(3, newVal);
-				pstmt6.setInt(4, 1);
-				pstmt6.setInt(5, 0);
-				pstmt6.executeUpdate();
-				pstmt6.close();
-			} else if ("LOCATION".equalsIgnoreCase(title)) {
-				pstmt = con.prepareStatement("select max(LocationID)+1 from bca_location");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-					// iD = rs.getString(1);
-
-				}
-
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_location(LocationID,Name,CompanyID,Active) values('"
-//						+ iD + "',\"" + newVal + "\",'" + compId + "',1)";
-				pstmt7 = con
-						.prepareStatement("insert into bca_location(LocationID,Name,CompanyID,Active) values(?,?,?,?)");
-				pstmt7.setString(1, iD);
-				pstmt7.setString(2, newVal);
-				pstmt7.setString(3, compId);
-				pstmt7.setInt(4, 1);
-				pstmt7.executeUpdate();
-				pstmt7.close();
-
-			} else if ("PAYMENT TYPE".equalsIgnoreCase(title)) {
-				pstmt = con.prepareStatement("select max(PaymentTypeID)+1 from bca_paymenttype");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_paymenttype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values('"
-//						+ iD + "','" + compId + "',\"" + newVal + "\",1,1)";
-				pstmt8 = con.prepareStatement(
-						"insert into bca_paymenttype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values(?,?,?,?,?)");
-				pstmt8.setString(1, iD);
-				pstmt8.setString(2, compId);
-				pstmt8.setString(3, newVal);
-				pstmt8.setInt(4, 1);
-				pstmt8.setInt(5, 1);
-				pstmt8.executeUpdate();
-				pstmt8.close();
-			} else if ("RECEIVED TYPE".equalsIgnoreCase(title)) {
-				pstmt = con.prepareStatement("select max(PaymentTypeID)+1 from bca_receicedtype");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_receicedtype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values('"
-//						+ iD + "','" + compId + "',\"" + newVal + "\",1,1)";
-				pstmt9 = con.prepareStatement(
-						"insert into bca_receicedtype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values(?,?,?,?,?)");
-				pstmt9.setString(1, iD);
-				pstmt9.setString(2, compId);
-				pstmt9.setString(3, newVal);
-				pstmt9.setInt(4, 1);
-				pstmt9.setInt(5, 1);
-				pstmt9.executeUpdate();
-				pstmt9.close();
-
-			} else if ("CREDIT CARD".equalsIgnoreCase(title)) {
-				pstmt = con.prepareStatement("select max(CCTypeID)+1 from bca_cctype");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					// iD = rs.getString(1);
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_cctype values('" + iD + "','"
-//						+ compId + "',\"" + newVal + "\",1,0)";
-				pstmt10 = con.prepareStatement("insert into bca_cctype values(?,?,?,?,?)");
-				pstmt10.setString(1, iD);
-				pstmt10.setString(2, compId);
-				pstmt10.setString(3, newVal);
-				pstmt10.setInt(4, 1);
-				pstmt10.setInt(5, 0);
-				pstmt10.executeUpdate();
-				pstmt10.close();
-			} else if ("SHIPPING VIA".equalsIgnoreCase(title)) {
-				pstmt = con.prepareStatement("select max(ShipCarrierID)+1 from bca_shipcarrier");
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-					// iD = rs.getString(1);
-					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
-				}
-				pstmt.close();
-				rs.close();
-//				sqlString = "insert into bca_shipcarrier  (ShipCarrierID, CompanyID,Name,Active) values('" + iD+ "','" + compId + "',\"" + newVal + "\",1)";
-				pstmt11 = con.prepareStatement(
-						"insert into bca_shipcarrier (ShipCarrierID, CompanyID,Name,Active) values(?,?,?,?)");
-				pstmt11.setString(1, iD);
-				pstmt11.setString(2, compId);
-				pstmt11.setString(3, newVal);
-				pstmt11.setInt(4, 1);
-				pstmt11.executeUpdate();
-				pstmt11.close();
-			}
-
-			Loger.log(sqlString);
-
-			int count = stmt.executeUpdate(sqlString);
-			if (count > 0)
-				valid = true;
-
-		} catch (SQLException ee) {
-
-			Loger.log(2, "Error in updateSalesData() " + ee);
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+		for (BcaLeadSource leadSoruce : leadSoruces) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setLeadSourceId(leadSoruce.getLeadSourceId().toString());
+			salesForm.setLeadSourceName(leadSoruce.getName());
+			salesForm.setDefaultItem(leadSoruce.getIsDefault() != null ? leadSoruce.getIsDefault() : false);
+			objList.add(salesForm);
 		}
-		return valid;
 
+		return objList;
 	}
+
+	@Autowired
+	private BcaLeadCategoryRepository leadCategoryRepository;
+
+	public ArrayList<SalesForm> getLeadCategory(Long compId) {
+		List<BcaLeadCategory> leadCats = leadCategoryRepository.findByCompany_CompanyIdAndActive(compId, true);
+		ArrayList<SalesForm> objList = new ArrayList<>();
+
+		for (BcaLeadCategory leadCat : leadCats) {
+			SalesForm salesForm = new SalesForm();
+			salesForm.setLeadCatID(leadCat.getLeadCategoryId().toString());
+			salesForm.setLeadCatName(leadCat.getName());
+			salesForm.setDefaultItem(leadCat.getIsDefault() != null ? leadCat.getIsDefault() : false);
+			objList.add(salesForm);
+		}
+
+		return objList;
+	}
+
+	@Transactional
+	public boolean insertCustomerTitle(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaTitle title = new BcaTitle();
+			title.setTitle(newVal);
+			title.setCompany(company);
+			title.setActive(1); // 1 means active
+
+			titleRepository.save(title);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertSalesTax(String newVal, String taxRateVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaSalestax salesTax = new BcaSalestax();
+			// Assuming 'newValtaxRateVal' is a combination of 'newVal' and 'taxRateVal'
+			String newValtaxRateVal = newVal + " " + taxRateVal;
+
+			salesTax.setCompany(company);
+			salesTax.setState(newValtaxRateVal);
+			salesTax.setRate(Double.valueOf(taxRateVal));
+			salesTax.setActive(1); // Active status set to 1
+
+			salesTaxRepository.save(salesTax);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertSalesRep(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaSalesrep salesRep = new BcaSalesrep();
+			salesRep.setName(newVal);
+			salesRep.setCompany(company);
+			salesRep.setActive(1); // Assuming 1 means active
+			salesRep.setIsDefault(false); // Set this to the appropriate value
+
+			salesRepRepository.save(salesRep);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertTerm(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaTerm term = new BcaTerm();
+			term.setName(newVal);
+			term.setCompany(company);
+			term.setActive(1);
+
+			termRepository.save(term);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertMessage(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaMessage message = new BcaMessage();
+			message.setName(newVal);
+			message.setCompany(company);
+			message.setActive(1); // Assuming 1 means active
+
+			messageRepository.save(message);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertCvCategory(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaCvcategory cvCategory = new BcaCvcategory();
+			cvCategory.setName(newVal);
+			cvCategory.setCompany(company);
+			cvCategory.setActive(1); // Assuming 1 means active
+
+			cvcategoryRepository.save(cvCategory);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertLocation(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+			BcaLocation location = new BcaLocation();
+			location.setName(newVal);
+			location.setCompany(company);
+			location.setActive(1);
+			// Set the current date and time with system default offset
+			OffsetDateTime currentDateTime = OffsetDateTime.now(ZoneOffset.UTC);
+			location.setDateAdded(currentDateTime);
+
+			locationRepository.save(location);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertPaymentType(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaPaymenttype paymentType = new BcaPaymenttype();
+			paymentType.setName(newVal);
+			paymentType.setCompany(company);
+			paymentType.setActive(1); // Assuming 1 means active
+
+			paymentTypeRepository.save(paymentType);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertReceicedtype(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaReceivedtype receivedType = new BcaReceivedtype();
+			receivedType.setName(newVal);
+			receivedType.setCompany(company);
+			receivedType.setActive(1); // Assuming 1 means active
+			receivedType.setTypeCategory(1);
+
+			receivedTypeRepository.save(receivedType);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertCCtype(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaCctype ccType = new BcaCctype();
+			ccType.setName(newVal);
+			ccType.setCompany(company);
+			ccType.setActive(1); // Assuming 1 means active
+			ccType.setIsDefault(false);
+
+			cctypeRepository.save(ccType);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertShipCarrier(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaShipcarrier shipCarrier = new BcaShipcarrier();
+			shipCarrier.setName(newVal);
+			shipCarrier.setCompany(company);
+			shipCarrier.setActive(1); // Assuming 1 means active
+			shipCarrier.setIsDefault(false);
+
+			shipCarrierRepository.save(shipCarrier);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertLeadSource(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaLeadSource leadSource = new BcaLeadSource();
+			leadSource.setName(newVal);
+			leadSource.setCompany(company);
+			leadSource.setActive(true);
+			leadSource.setIsDefault(false);
+
+			leadSourceRepository.save(leadSource);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean insertLeadCategory(String newVal, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaLeadCategory leadCategory = new BcaLeadCategory();
+			leadCategory.setName(newVal);
+			leadCategory.setCompany(company);
+			leadCategory.setActive(true);
+			leadCategory.setIsDefault(false);
+
+			leadCategoryRepository.save(leadCategory);
+			return true;
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean insertSalesData(String sNewID, String title, String oldVal, String newVal, String taxRateVal,
+			Long compId) {
+		boolean valid = false;
+		if ("TAX".equalsIgnoreCase(title)) {
+			valid = insertSalesTax(newVal, taxRateVal, compId);
+		} else if ("CUSTOMER TITLE".equalsIgnoreCase(title)) {
+			Loger.log("CUSTOMER TITLE");
+			valid = insertCustomerTitle(newVal, compId);
+		} else if ("REP".equalsIgnoreCase(title)) {
+			valid = insertSalesRep(newVal, compId);
+		} else if ("TERMS".equalsIgnoreCase(title)) {
+			valid = insertTerm(newVal, compId);
+		} else if ("MESSAGE".equalsIgnoreCase(title)) {
+			valid = insertMessage(newVal, compId);
+		} else if ("BUSINESS TYPE".equalsIgnoreCase(title)) {
+			valid = insertCvCategory(newVal, compId);
+		} else if ("LOCATION".equalsIgnoreCase(title)) {
+			valid = insertLocation(newVal, compId);
+		} else if ("PAYMENT TYPE".equalsIgnoreCase(title)) {
+			valid = insertPaymentType(newVal, compId);
+		} else if ("RECEIVED TYPE".equalsIgnoreCase(title)) {
+			valid = insertReceicedtype(newVal, compId);
+		} else if ("CREDIT CARD".equalsIgnoreCase(title)) {
+			valid = insertCCtype(newVal, compId);
+		} else if ("SHIPPING VIA".equalsIgnoreCase(title)) {
+			valid = insertShipCarrier(newVal, compId);
+		} else if ("LEAD SOURCE".equalsIgnoreCase(title)) {
+			valid = insertLeadSource(newVal, compId);
+		} else if ("LEAD CATEGORY".equalsIgnoreCase(title)) {
+			valid = insertLeadCategory(newVal, compId);
+		}
+
+		return valid;
+	}
+//	public boolean insertSalesData(String sNewID, String title, String oldVal, String newVal, String taxRateVal,
+//			String compId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null, pstmt1, pstmt2, pstmt3, pstmt4, pstmt5, pstmt6, pstmt7, pstmt8, pstmt9, pstmt10,
+//				pstmt11 = null;
+//		ResultSet rs = null;
+//		boolean valid = false;
+//		try {
+//			Statement stmt = con.createStatement();
+//			String sqlString = "";
+//			String iD = "";
+//			if ("TAX".equalsIgnoreCase(title)) {
+//				pstmt = con.prepareStatement("select max(SalesTaxID)+1 from bca_salestax");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+//				String newValtaxRateVal = newVal + " " + taxRateVal;
+////				sqlString="INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`) " +
+////						"values('" + iD + "','" + compId + "',\"" + newValtaxRateVal + "\",'" + taxRateVal + "',1,1)";
+//				pstmt1 = con.prepareStatement(
+//						"INSERT INTO `bca_salestax`(`SalesTaxID`, `CompanyID`, `State`, `Rate`, `Active`, `Suffix`)"
+//								+ "values(?,?,?,?,?,?)");
+//				pstmt1.setString(1, iD);
+//				pstmt1.setString(2, compId);
+//				pstmt1.setString(3, newValtaxRateVal);
+//				pstmt1.setString(4, taxRateVal);
+//				pstmt1.setInt(5, 1);
+//				pstmt1.setInt(6, 1);
+//				pstmt1.executeUpdate();
+//				pstmt1.close();
+//
+//			} else if ("CUSTOMER TITLE".equalsIgnoreCase(title)) {
+//				Loger.log("CUSTOMER TITLE");
+//				pstmt = con.prepareStatement("select max(TitleID)+1 from bca_title");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					// iD = rs.getString(1);
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_title(TitleID, Title, CompanyID, Active)  values('" + iD + "',\""
+////						+ newVal + "\",'" + compId + "',1)";
+//
+//				pstmt2 = con
+//						.prepareStatement("insert into bca_title(TitleID, Title, CompanyID, Active) values(?,?,?,?)");
+//				pstmt2.setString(1, iD);
+//				pstmt2.setString(2, newVal);
+//				pstmt2.setString(3, compId);
+//				pstmt2.setInt(4, 1);
+//				pstmt2.executeUpdate();
+//				pstmt2.close();
+//
+//			} else if ("REP".equalsIgnoreCase(title)) {
+//				pstmt = con.prepareStatement("select max(SalesRepID)+1 from bca_salesrep");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//					// iD = rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_salesrep values('" + iD
+////						+ "','" + compId + "',\"" + newVal + "\",1,0)";
+//				pstmt3 = con.prepareStatement("insert into bca_salesrep values(?,?,?,?,?)");
+//				pstmt3.setString(1, iD);
+//				pstmt3.setString(2, compId);
+//				pstmt3.setString(3, newVal);
+//				pstmt3.setInt(4, 1);
+//				pstmt3.setInt(5, 0);
+//				pstmt3.executeUpdate();
+//				pstmt3.close();
+//
+//			} else if ("TERMS".equalsIgnoreCase(title)) {
+//				pstmt = con.prepareStatement("select max(TermID)+1 from bca_term");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//					// iD = rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_term values('" + iD + "','"
+////						+ compId + "',\"" + newVal + "\",1,0)";
+//				pstmt4 = con.prepareStatement("insert into bca_term values(?,?,?,?,?)");
+//				pstmt4.setString(1, iD);
+//				pstmt4.setString(2, compId);
+//				pstmt4.setString(3, newVal);
+//				pstmt4.setInt(4, 1);
+//				pstmt4.setInt(5, 0);
+//				pstmt4.executeUpdate();
+//				pstmt4.close();
+//			} else if ("MESSAGE".equalsIgnoreCase(title)) {
+//				pstmt = con.prepareStatement("select max(MessageID)+1 from bca_message");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//					// iD = rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_message values('" + iD + "','"
+////						+ compId + "',\"" + newVal + "\",1,0)";
+//				pstmt5 = con.prepareStatement("insert into bca_message values(?,?,?,?,?)");
+//				pstmt5.setString(1, iD);
+//				pstmt5.setString(2, compId);
+//				pstmt5.setString(3, newVal);
+//				pstmt5.setInt(4, 1);
+//				pstmt5.setInt(5, 0);
+//				pstmt5.executeUpdate();
+//				pstmt5.close();
+//			} else if ("BUSINESS TYPE".equalsIgnoreCase(title)) {
+//
+//				pstmt = con.prepareStatement("select max(CVCategoryID)+1 from bca_cvcategory");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//					// iD = rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_cvcategory values('" + iD
+////						+ "','" + compId + "',\"" + newVal + "\",1,0)";
+//				pstmt6 = con.prepareStatement("insert into bca_cvcategory values(?,?,?,?,?)");
+//				pstmt6.setString(1, iD);
+//				pstmt6.setString(2, compId);
+//				pstmt6.setString(3, newVal);
+//				pstmt6.setInt(4, 1);
+//				pstmt6.setInt(5, 0);
+//				pstmt6.executeUpdate();
+//				pstmt6.close();
+//			} else if ("LOCATION".equalsIgnoreCase(title)) {
+//				pstmt = con.prepareStatement("select max(LocationID)+1 from bca_location");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//					// iD = rs.getString(1);
+//
+//				}
+//
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_location(LocationID,Name,CompanyID,Active) values('"
+////						+ iD + "',\"" + newVal + "\",'" + compId + "',1)";
+//				pstmt7 = con
+//						.prepareStatement("insert into bca_location(LocationID,Name,CompanyID,Active) values(?,?,?,?)");
+//				pstmt7.setString(1, iD);
+//				pstmt7.setString(2, newVal);
+//				pstmt7.setString(3, compId);
+//				pstmt7.setInt(4, 1);
+//				pstmt7.executeUpdate();
+//				pstmt7.close();
+//
+//			} else if ("PAYMENT TYPE".equalsIgnoreCase(title)) {
+//				pstmt = con.prepareStatement("select max(PaymentTypeID)+1 from bca_paymenttype");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_paymenttype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values('"
+////						+ iD + "','" + compId + "',\"" + newVal + "\",1,1)";
+//				pstmt8 = con.prepareStatement(
+//						"insert into bca_paymenttype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values(?,?,?,?,?)");
+//				pstmt8.setString(1, iD);
+//				pstmt8.setString(2, compId);
+//				pstmt8.setString(3, newVal);
+//				pstmt8.setInt(4, 1);
+//				pstmt8.setInt(5, 1);
+//				pstmt8.executeUpdate();
+//				pstmt8.close();
+//			} else if ("RECEIVED TYPE".equalsIgnoreCase(title)) {
+//				pstmt = con.prepareStatement("select max(PaymentTypeID)+1 from bca_receicedtype");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_receicedtype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values('"
+////						+ iD + "','" + compId + "',\"" + newVal + "\",1,1)";
+//				pstmt9 = con.prepareStatement(
+//						"insert into bca_receicedtype(PaymentTypeID,CompanyID,Name,Active,TypeCategory) values(?,?,?,?,?)");
+//				pstmt9.setString(1, iD);
+//				pstmt9.setString(2, compId);
+//				pstmt9.setString(3, newVal);
+//				pstmt9.setInt(4, 1);
+//				pstmt9.setInt(5, 1);
+//				pstmt9.executeUpdate();
+//				pstmt9.close();
+//
+//			} else if ("CREDIT CARD".equalsIgnoreCase(title)) {
+//				pstmt = con.prepareStatement("select max(CCTypeID)+1 from bca_cctype");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					// iD = rs.getString(1);
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_cctype values('" + iD + "','"
+////						+ compId + "',\"" + newVal + "\",1,0)";
+//				pstmt10 = con.prepareStatement("insert into bca_cctype values(?,?,?,?,?)");
+//				pstmt10.setString(1, iD);
+//				pstmt10.setString(2, compId);
+//				pstmt10.setString(3, newVal);
+//				pstmt10.setInt(4, 1);
+//				pstmt10.setInt(5, 0);
+//				pstmt10.executeUpdate();
+//				pstmt10.close();
+//			} else if ("SHIPPING VIA".equalsIgnoreCase(title)) {
+//				pstmt = con.prepareStatement("select max(ShipCarrierID)+1 from bca_shipcarrier");
+//				rs = pstmt.executeQuery();
+//				if (rs.next()) {
+//					// iD = rs.getString(1);
+//					iD = (rs.getString(1) == null) ? "0" : rs.getString(1);
+//				}
+//				pstmt.close();
+//				rs.close();
+////				sqlString = "insert into bca_shipcarrier  (ShipCarrierID, CompanyID,Name,Active) values('" + iD+ "','" + compId + "',\"" + newVal + "\",1)";
+//				pstmt11 = con.prepareStatement(
+//						"insert into bca_shipcarrier (ShipCarrierID, CompanyID,Name,Active) values(?,?,?,?)");
+//				pstmt11.setString(1, iD);
+//				pstmt11.setString(2, compId);
+//				pstmt11.setString(3, newVal);
+//				pstmt11.setInt(4, 1);
+//				pstmt11.executeUpdate();
+//				pstmt11.close();
+//			}
+//
+//			Loger.log(sqlString);
+//
+//			int count = stmt.executeUpdate(sqlString);
+//			if (count > 0)
+//				valid = true;
+//
+//		} catch (SQLException ee) {
+//
+//			Loger.log(2, "Error in updateSalesData() " + ee);
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return valid;
+//
+//	}
 
 	public boolean updateSalesData(String sNewID, String title, String oldVal, String newVal, String taxRateVal,
 			String compId) {
@@ -1000,6 +1317,12 @@ public class SalesInfo {
 						+ " and CompanyID like '" + compId + "'	and Active like '1'";
 			else if ("SHIPPING VIA".equalsIgnoreCase(title))
 				sqlString = "update bca_shipcarrier set Name=\"" + newVal + "\" where ShipCarrierID=" + sNewvalID
+						+ " and CompanyID like '" + compId + "'	and Active like '1'";
+			else if ("LEAD SOURCE".equalsIgnoreCase(title))
+				sqlString = "update bca_lead_source set Name=\"" + newVal + "\" where LeadSourceID=" + sNewvalID
+						+ " and CompanyID like '" + compId + "'	and Active like '1'";
+			else if ("LEAD CATEGORY".equalsIgnoreCase(title))
+				sqlString = "update bca_lead_category set Name=\"" + newVal + "\" where LeadCategoryID=" + sNewvalID
 						+ " and CompanyID like '" + compId + "'	and Active like '1'";
 			else if ("REP".equalsIgnoreCase(title))
 				sqlString = "update  bca_salesrep set Name=\"" + newVal + "\" where SalesRepID=" + sNewvalID
@@ -1082,6 +1405,15 @@ public class SalesInfo {
 				// Added By Tulsi
 				sqlString = "update bca_shipcarrier set Active = '0' where Name=\"" + sNewvalID
 						+ "\" and CompanyID like '" + compId + "'	and Active like '1'";
+
+			else if ("LEAD SOURCE".equalsIgnoreCase(title))
+				sqlString = "update bca_lead_source set Active = '0' where Name=\"" + sNewvalID
+						+ "\" and CompanyID like '" + compId + "'	and Active like '1'";
+
+			else if ("LEAD CATEGORY".equalsIgnoreCase(title))
+				sqlString = "update bca_lead_category set Active = '0' where Name=\"" + sNewvalID
+						+ "\" and CompanyID like '" + compId + "'	and Active like '1'";
+
 			else if ("REP".equalsIgnoreCase(title))
 				/*
 				 * sqlString = "update  bca_salesrep set Active = '0' where SalesRepID=\"" +

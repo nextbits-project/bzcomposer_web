@@ -306,8 +306,9 @@ public class SalesDetailsDao {
 
 	public void getdataManagerSave(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
-		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
+//		String compId = (String) sess.getAttribute("CID");
+		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
+//		SalesInfo sales = new SalesInfo();
 		String sTitleval = request.getParameter("sTitleval");
 		String sOldval = request.getParameter("sOldval");
 		String sNewval = request.getParameter("sNewval");
@@ -326,7 +327,7 @@ public class SalesDetailsDao {
 	public void getdataManagerUpdate(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
+		//SalesInfo sales = new SalesInfo();
 		String sTitleval = request.getParameter("sTitleval");
 		String sOldval = request.getParameter("sOldval");
 		String sNewval = request.getParameter("sNewval");
@@ -375,7 +376,7 @@ public class SalesDetailsDao {
 	public void getdataManagerDelete(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		SalesInfo sales = new SalesInfo();
+		//SalesInfo sales = new SalesInfo();
 		String sTitleval = request.getParameter("sTitleval");
 		String sNewvalID = request.getParameter("sNewvalID");
 		Loger.log("IDSS" + sNewvalID);

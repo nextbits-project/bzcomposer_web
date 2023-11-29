@@ -586,7 +586,7 @@ public class ConfigurationController {
             forward = "configuration/datamanager";
         }
         else if (action.equalsIgnoreCase("DM_Save")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
+            //SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManagerSave(request);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
@@ -596,12 +596,12 @@ public class ConfigurationController {
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
         else if (action.equalsIgnoreCase("DM_Update")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
+            //SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManagerUpdate(request);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
         else if (action.equalsIgnoreCase("DM_Delete")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
+            //SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManagerDelete(request);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
