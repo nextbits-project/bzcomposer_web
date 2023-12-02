@@ -1,5 +1,6 @@
 package com.nxsol.bzcomposer.company;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,13 +8,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +35,37 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaMailtemplate;
+import com.nxsol.bzcomposer.company.domain.BcaMastershippingcontainer;
+import com.nxsol.bzcomposer.company.domain.BcaMastershippingmailtype;
+import com.nxsol.bzcomposer.company.domain.BcaMastershippingpackagesize;
+import com.nxsol.bzcomposer.company.domain.BcaPreference;
+import com.nxsol.bzcomposer.company.domain.BcaRealtimeshippingservice;
+import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
+import com.nxsol.bzcomposer.company.domain.BcaShippingrate;
+import com.nxsol.bzcomposer.company.domain.BcaShippingservice;
+import com.nxsol.bzcomposer.company.domain.BcaStore;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
+import com.nxsol.bzcomposer.company.domain.BcpTaxCompany;
+import com.nxsol.bzcomposer.company.domain.SmdEbaycategory;
+import com.nxsol.bzcomposer.company.domain.SmdShipdetails;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMailtemplateRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMastershippingcontainerRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMastershippingmailtypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMastershippingpackagesizeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRealtimeshippingserviceRepository;
+import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
+import com.nxsol.bzcomposer.company.repos.BcaShippingrateRepository;
+import com.nxsol.bzcomposer.company.repos.BcaShippingserviceRepository;
+import com.nxsol.bzcomposer.company.repos.BcaStoreRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
+import com.nxsol.bzcomposer.company.repos.BcpFedperallowanceRepository;
+import com.nxsol.bzcomposer.company.repos.BcpTaxCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.SmdEbaycategoryRepository;
+import com.nxsol.bzcomposer.company.repos.SmdShipdetailsRepository;
 
 @Service
 public class ConfigurationDAO {
@@ -1118,7 +1151,7 @@ public class ConfigurationDAO {
 
 	@Autowired
 	private BcaUsergroupRepository bcaUsergroupRepository;
-		
+
 	public void getUserGroupDetails(String groupId, ConfigurationDto configDto) {
 //		String sql = "SELECT * FROM bca_usergroup where GroupID  = " + groupId;
 //		Connection con = null;
@@ -1131,8 +1164,11 @@ public class ConfigurationDAO {
 //			rs = stmt.executeQuery(sql);
 		Integer groupIds = Integer.parseInt(groupId);
 		List<Integer> groupIdList = Collections.singletonList(groupIds);
-		
-		List<BcaUsergroup> bcaUsergroups = bcaUsergroupRepository.findAllById(groupIdList); // JPA Check groupId is primary key or not. If groupId is primary , add new primary key 
+
+		List<BcaUsergroup> bcaUsergroups = bcaUsergroupRepository.findAllById(groupIdList); // JPA Check groupId is
+																							// primary key or not. If
+																							// groupId is primary , add
+																							// new primary key
 //			while (rs.next()) {
 //				configDto.setSelectedGroupId(rs.getInt("GroupID"));
 //				configDto.setGroupName(rs.getString("UserGroupName"));
@@ -1145,28 +1181,26 @@ public class ConfigurationDAO {
 //					configDto.setStatus("InActive");
 //				}
 //			}
-			
-			for(BcaUsergroup bcaUsergroup :bcaUsergroups)
-			{
 
-				configDto.setSelectedGroupId(bcaUsergroup.getGroupId());
+		for (BcaUsergroup bcaUsergroup : bcaUsergroups) {
 
-				configDto.setGroupName(bcaUsergroup.getUserGroupName());
+			configDto.setSelectedGroupId(bcaUsergroup.getGroupId());
 
-				configDto.setGroupPermissions(bcaUsergroup.getAccessPermissions());
+			configDto.setGroupName(bcaUsergroup.getUserGroupName());
 
-				configDto.setDescription(bcaUsergroup.getDescription());
+			configDto.setGroupPermissions(bcaUsergroup.getAccessPermissions());
 
-				if (bcaUsergroup.getActive()) {
+			configDto.setDescription(bcaUsergroup.getDescription());
+
+			if (bcaUsergroup.getActive()) {
 
 				configDto.setStatus("Active");
 
-				} else 
+			} else
 
 				configDto.setStatus("InActive");
 
-			
-			}
+		}
 //			
 
 //		} catch (SQLException e) {
@@ -2178,1253 +2212,2046 @@ public class ConfigurationDAO {
 		return listPOJOs;
 	}
 
+	@Autowired
+	private BcaMailtemplateRepository mailTemplateRepository;
+
 	public ArrayList<MailTemplateDto> getEmailActiveTemplates(int templateId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
 		ArrayList<MailTemplateDto> listPOJOs = new ArrayList<>();
+
 		try {
-			String sql;
+			List<BcaMailtemplate> templates;
 			if (templateId != 0) {
-				sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1 and TemplateID="
-						+ templateId;
+				templates = new ArrayList<>();
+				templates.add(mailTemplateRepository.findByTemplateIdAndActive(templateId, 1));
 			} else {
-				sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1";
+				templates = mailTemplateRepository.findByActive(1);
 			}
 
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				MailTemplateDto pojo = new MailTemplateDto();
-				pojo.setTemplateID(rs.getInt("TemplateID"));
-				pojo.setTemplateName(rs.getString("TemplateName"));
-				pojo.setSubject(rs.getString("Subject"));
-				pojo.setContent(rs.getString("TemplateContent"));
-				listPOJOs.add(pojo);
+			for (BcaMailtemplate template : templates) {
+				if (template != null) {
+					MailTemplateDto pojo = new MailTemplateDto();
+					pojo.setTemplateID(template.getTemplateId());
+					pojo.setTemplateName(template.getTemplateName());
+					pojo.setSubject(template.getSubject());
+					pojo.setContent(template.getTemplateContent());
+					listPOJOs.add(pojo);
+				}
 			}
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
 		}
 		return listPOJOs;
 	}
 
+//	public ArrayList<MailTemplateDto> getEmailActiveTemplates(int templateId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<MailTemplateDto> listPOJOs = new ArrayList<>();
+//		try {
+//			String sql;
+//			if (templateId != 0) {
+//				sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1 and TemplateID="
+//						+ templateId;
+//			} else {
+//				sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1";
+//			}
+//
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				MailTemplateDto pojo = new MailTemplateDto();
+//				pojo.setTemplateID(rs.getInt("TemplateID"));
+//				pojo.setTemplateName(rs.getString("TemplateName"));
+//				pojo.setSubject(rs.getString("Subject"));
+//				pojo.setContent(rs.getString("TemplateContent"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return listPOJOs;
+//	}
+
+	@Transactional
 	public void addNewTemplates(String templateName, String subject, String content) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
 		try {
-			String sql = "INSERT INTO bca_mailtemplate(TemplateName, Subject, TemplateContent, Active) Values(?,?,?,?)";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, templateName);
-			pstmt.setString(2, subject);
-			pstmt.setString(3, content);
-			pstmt.setInt(4, 1);
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+			BcaMailtemplate newTemplate = new BcaMailtemplate();
+			newTemplate.setTemplateName(templateName);
+			newTemplate.setSubject(subject);
+			newTemplate.setTemplateContent(content);
+			newTemplate.setActive(1); // Active status
 
+			mailTemplateRepository.save(newTemplate);
+			// rowAdded logic can be handled here if needed
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log error and handle exception
+			e.printStackTrace();
 		}
 	}
+//	public void addNewTemplates(String templateName, String subject, String content) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		try {
+//			String sql = "INSERT INTO bca_mailtemplate(TemplateName, Subject, TemplateContent, Active) Values(?,?,?,?)";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setString(1, templateName);
+//			pstmt.setString(2, subject);
+//			pstmt.setString(3, content);
+//			pstmt.setInt(4, 1);
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 
-	public void updateSelectedTemplate(String selectedTemplateId, String templateName, String subject, String content) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowUpdated = false;
+	@Transactional
+	public boolean updateSelectedTemplate(String selectedTemplateId, String templateName, String subject,
+			String content) {
 		try {
-			String sql = "update bca_mailtemplate SET TemplateName = ?, Subject = ?, TemplateContent = ? where TemplateID = ?";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, templateName);
-			pstmt.setString(2, subject);
-			pstmt.setString(3, content);
-			pstmt.setString(4, selectedTemplateId);
-			rowUpdated = pstmt.executeUpdate() > 0 ? true : false;
+			Optional<BcaMailtemplate> optTemplate = mailTemplateRepository
+					.findById(Integer.valueOf(selectedTemplateId));
+			if (optTemplate.isPresent()) {
+				BcaMailtemplate template = optTemplate.get();
+				template.setTemplateName(templateName);
+				template.setSubject(subject);
+				template.setTemplateContent(content);
 
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+				mailTemplateRepository.save(template);
+				return true; // Row updated successfully
+			} else {
+				// Template not found, handle accordingly
+				return false;
 			}
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false; // Update failed
 		}
 	}
+//	public void updateSelectedTemplate(String selectedTemplateId, String templateName, String subject, String content) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowUpdated = false;
+//		try {
+//			String sql = "update bca_mailtemplate SET TemplateName = ?, Subject = ?, TemplateContent = ? where TemplateID = ?";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setString(1, templateName);
+//			pstmt.setString(2, subject);
+//			pstmt.setString(3, content);
+//			pstmt.setString(4, selectedTemplateId);
+//			rowUpdated = pstmt.executeUpdate() > 0 ? true : false;
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 
-	public void deleteUserTemplate(String selectedTemplateId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowDeleted = false;
+	@Transactional
+	public boolean deleteUserTemplate(String selectedTemplateId) {
 		try {
-			String sql = "update bca_mailtemplate SET Active = ? where TemplateID = ?";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, 0);
-			pstmt.setString(2, selectedTemplateId);
-			rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+			Optional<BcaMailtemplate> optTemplate = mailTemplateRepository
+					.findById(Integer.valueOf(selectedTemplateId));
+			if (optTemplate.isPresent()) {
+				BcaMailtemplate template = optTemplate.get();
+				template.setActive(0); // Deactivate the template
 
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+				mailTemplateRepository.save(template);
+				return true; // Row updated (deactivated) successfully
+			} else {
+				// Template not found, handle accordingly
+				return false;
 			}
+		} catch (Exception e) {
+			// Log error and handle exception
+			e.printStackTrace();
+			return false; // Operation failed
 		}
 	}
+//	public void deleteUserTemplate(String selectedTemplateId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowDeleted = false;
+//		try {
+//			String sql = "update bca_mailtemplate SET Active = ? where TemplateID = ?";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setInt(1, 0);
+//			pstmt.setString(2, selectedTemplateId);
+//			rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 
 	public ArrayList<ConfigurationDto> getActiveTemplates(int templateId, HttpServletRequest request,
 			ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			String sql = "";
+			List<BcaMailtemplate> templates;
 			if (templateId == 1) {
-				sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1";
+				templates = mailTemplateRepository.findByActive(1);
 			} else {
-				sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1 and TemplateID="
-						+ templateId;
+				templates = new ArrayList<>();
+				BcaMailtemplate template = mailTemplateRepository.findByTemplateIdAndActive(templateId, 1);
+				if (template != null) {
+					templates.add(template);
+				}
 			}
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setTemplateId(rs.getInt("TemplateID"));
-				pojo.setTemplateName(rs.getString("TemplateName"));
-				pojo.setTemplateSubject(rs.getString("Subject"));
-				pojo.setTemplateContent(rs.getString("TemplateContent"));
+
+			for (BcaMailtemplate template : templates) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setTemplateId(template.getTemplateId());
+				pojo.setTemplateName(template.getTemplateName());
+				pojo.setTemplateSubject(template.getSubject());
+				pojo.setTemplateContent(template.getTemplateContent());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
 		}
 		form.setListOfExistingTemplates(listPOJOs);
 		return listPOJOs;
 	}
+//	public ArrayList<ConfigurationDto> getActiveTemplates(int templateId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			String sql = "";
+//			if (templateId == 1) {
+//				sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1";
+//			} else {
+//				sql = "SELECT TemplateID,TemplateName,TemplateContent,Subject,Active FROM bca_mailtemplate WHERE Active=1 and TemplateID="
+//						+ templateId;
+//			}
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setTemplateId(rs.getInt("TemplateID"));
+//				pojo.setTemplateName(rs.getString("TemplateName"));
+//				pojo.setTemplateSubject(rs.getString("Subject"));
+//				pojo.setTemplateContent(rs.getString("TemplateContent"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingTemplates(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaMastershippingmailtypeRepository mastershippingmailtypeRepository;
 
 	public ArrayList<ConfigurationDto> getActiveMailType(HttpServletRequest request, ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_mastershippingmailtype WHERE Active = 1");
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				// pojo.setSelectedMailTypeId(rs.getInt("MailTypeID"));
-				pojo.setMailTypeId(rs.getInt("MailTypeID"));
-				pojo.setMailType(rs.getString("Name"));
-				if (rs.getInt("Active") == 1) {
-					pojo.setActive(1);
-				} else {
-					pojo.setActive(0);
-				}
+			List<BcaMastershippingmailtype> mailTypes = mastershippingmailtypeRepository.findByActive(1);
+
+			for (BcaMastershippingmailtype mailType : mailTypes) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setMailTypeId(mailType.getMailTypeId());
+				pojo.setMailType(mailType.getName());
+				pojo.setActive(mailType.getActive());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
 		form.setListOfExistingMailType(listPOJOs);
 		return listPOJOs;
 	}
 
+//	public ArrayList<ConfigurationDto> getActiveMailType(HttpServletRequest request, ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM bca_mastershippingmailtype WHERE Active = 1");
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				// pojo.setSelectedMailTypeId(rs.getInt("MailTypeID"));
+//				pojo.setMailTypeId(rs.getInt("MailTypeID"));
+//				pojo.setMailType(rs.getString("Name"));
+//				if (rs.getInt("Active") == 1) {
+//					pojo.setActive(1);
+//				} else {
+//					pojo.setActive(0);
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingMailType(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaMastershippingpackagesizeRepository mastershippingpackagesizeRepository;
+
 	public ArrayList<ConfigurationDto> getActivePackageSize(HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT * FROM bca_mastershippingpackagesize WHERE Active = 1";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				// pojo.setSelectedPackageSizeId(rs.getInt("PackageSizeID"));
-				pojo.setPackageSizeId(rs.getInt("PackageSizeID"));
-				pojo.setPackageSize(rs.getString("Name"));
-				if (rs.getInt("Active") == 1) {
-					pojo.setPackageSizeActive(1);
-				} else {
-					pojo.setPackageSizeActive(0);
-				}
+			List<BcaMastershippingpackagesize> packageSizes = mastershippingpackagesizeRepository.findByActive(1);
+
+			for (BcaMastershippingpackagesize packageSize : packageSizes) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setPackageSizeId(packageSize.getPackageSizeId());
+				pojo.setPackageSize(packageSize.getName());
+				pojo.setPackageSizeActive(packageSize.getActive());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
 		form.setListOfExistingPackageSize(listPOJOs);
 		return listPOJOs;
 	}
+//	public ArrayList<ConfigurationDto> getActivePackageSize(HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT * FROM bca_mastershippingpackagesize WHERE Active = 1";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				// pojo.setSelectedPackageSizeId(rs.getInt("PackageSizeID"));
+//				pojo.setPackageSizeId(rs.getInt("PackageSizeID"));
+//				pojo.setPackageSize(rs.getString("Name"));
+//				if (rs.getInt("Active") == 1) {
+//					pojo.setPackageSizeActive(1);
+//				} else {
+//					pojo.setPackageSizeActive(0);
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingPackageSize(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaMastershippingcontainerRepository mastershippingcontainerRepository;
 
 	public ArrayList<ConfigurationDto> getActiveContainer(HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT * FROM bca_mastershippingcontainer WHERE Active = 1";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				// pojo.setSelectedContainerId(rs.getInt("ContainerID"));
-				pojo.setContainerId(rs.getInt("ContainerID"));
-				pojo.setContainer(rs.getString("Name"));
-				if (rs.getInt("Active") == 1) {
-					pojo.setContainerActive(1);
-				} else {
-					pojo.setContainerActive(0);
-				}
+			List<BcaMastershippingcontainer> containers = mastershippingcontainerRepository.findByActive(1);
+
+			for (BcaMastershippingcontainer container : containers) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setContainerId(container.getContainerId());
+				pojo.setContainer(container.getName());
+				pojo.setContainerActive(container.getActive());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
 		form.setListOfExistingContainer(listPOJOs);
 		return listPOJOs;
 	}
 
+//	public ArrayList<ConfigurationDto> getActiveContainer(HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT * FROM bca_mastershippingcontainer WHERE Active = 1";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				// pojo.setSelectedContainerId(rs.getInt("ContainerID"));
+//				pojo.setContainerId(rs.getInt("ContainerID"));
+//				pojo.setContainer(rs.getString("Name"));
+//				if (rs.getInt("Active") == 1) {
+//					pojo.setContainerActive(1);
+//				} else {
+//					pojo.setContainerActive(0);
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingContainer(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaRealtimeshippingserviceRepository realtimeshippingserviceRepository;
+
 	public ConfigurationDto getSelectedUSPSShippingService(int shippingServiceId) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
 		ConfigurationDto configurationDto = new ConfigurationDto();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT ShippingServiceID,ShippingType,ShippingService,Price,Active "
-					+ "FROM bca_realtimeshippingservice " + " WHERE ShippingServiceID = " + shippingServiceId
-					+ " AND Active = 1 ";
-			rs = stmt.executeQuery(sql);
-			if (rs.next()) {
-				configurationDto.setRealTimeShippingServiceId(rs.getInt("ShippingServiceID"));
-				configurationDto.setRealTimeShippingService(rs.getString("ShippingService"));
-				configurationDto.setRealTimeShippingPrice(rs.getDouble("Price"));
-				if (rs.getInt("Active") == 1) {
-					configurationDto.setRealTimeShippingActive(1);
-				} else {
-					configurationDto.setRealTimeShippingActive(0);
-				}
+			Optional<BcaRealtimeshippingservice> optService = realtimeshippingserviceRepository
+					.findByShippingServiceIdAndActive(shippingServiceId, 1);
+
+			if (optService.isPresent()) {
+				BcaRealtimeshippingservice service = optService.get();
+				configurationDto.setRealTimeShippingServiceId(service.getShippingServiceId());
+				configurationDto.setRealTimeShippingService(service.getShippingService());
+				configurationDto.setRealTimeShippingPrice(service.getPrice());
+				configurationDto.setRealTimeShippingActive(service.getActive());
 			}
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
+
 		return configurationDto;
 	}
 
+//	public ConfigurationDto getSelectedUSPSShippingService(int shippingServiceId) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ConfigurationDto configurationDto = new ConfigurationDto();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT ShippingServiceID,ShippingType,ShippingService,Price,Active "
+//					+ "FROM bca_realtimeshippingservice " + " WHERE ShippingServiceID = " + shippingServiceId
+//					+ " AND Active = 1 ";
+//			rs = stmt.executeQuery(sql);
+//			if (rs.next()) {
+//				configurationDto.setRealTimeShippingServiceId(rs.getInt("ShippingServiceID"));
+//				configurationDto.setRealTimeShippingService(rs.getString("ShippingService"));
+//				configurationDto.setRealTimeShippingPrice(rs.getDouble("Price"));
+//				if (rs.getInt("Active") == 1) {
+//					configurationDto.setRealTimeShippingActive(1);
+//				} else {
+//					configurationDto.setRealTimeShippingActive(0);
+//				}
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return configurationDto;
+//	}
+
 	public ArrayList<ConfigurationDto> getActiveRealTimeShippingServices(int shippingType, HttpServletRequest request,
 			ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT ShippingServiceID,ShippingType,ShippingService,Price,Active "
-					+ " FROM bca_realtimeshippingservice " + " WHERE ShippingType= " + shippingType
-					+ " AND Active = 1 ";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				// pojo.setSelectedRealTimeShippingServiceId(rs.getInt("ShippingServiceID"));
-				pojo.setRealTimeShippingServiceId(rs.getInt("ShippingServiceID"));
-				pojo.setRealTimeShippingService(rs.getString("ShippingService"));
-				pojo.setRealTimeShippingPrice(rs.getDouble("Price"));
-				if (rs.getInt("Active") == 1) {
-					pojo.setRealTimeShippingActive(1);
-				} else {
-					pojo.setRealTimeShippingActive(0);
-				}
+			List<BcaRealtimeshippingservice> services = realtimeshippingserviceRepository
+					.findByShippingTypeAndActive(shippingType, 1);
+
+			for (BcaRealtimeshippingservice service : services) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setRealTimeShippingServiceId(service.getShippingServiceId());
+				pojo.setRealTimeShippingService(service.getShippingService());
+				pojo.setRealTimeShippingPrice(service.getPrice());
+				pojo.setRealTimeShippingActive(service.getActive());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
-		if (shippingType == 1) {
+
+		switch (shippingType) {
+		case 1:
 			form.setListOfExistingRealTimeShippingServices(listPOJOs);
-		} else if (shippingType == 2) {
+			break;
+		case 2:
 			form.setListOfExistingRealTimeShippingServices1(listPOJOs);
-		} else if (shippingType == 3) {
+			break;
+		case 3:
 			form.setListOfExistingRealTimeShippingServices2(listPOJOs);
+			break;
+		// Add more cases if needed
 		}
+
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getActiveUserdefinedShippingType(String companyId, HttpServletRequest request,
+//	public ArrayList<ConfigurationDto> getActiveRealTimeShippingServices(int shippingType, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT ShippingServiceID,ShippingType,ShippingService,Price,Active "
+//					+ " FROM bca_realtimeshippingservice " + " WHERE ShippingType= " + shippingType
+//					+ " AND Active = 1 ";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				// pojo.setSelectedRealTimeShippingServiceId(rs.getInt("ShippingServiceID"));
+//				pojo.setRealTimeShippingServiceId(rs.getInt("ShippingServiceID"));
+//				pojo.setRealTimeShippingService(rs.getString("ShippingService"));
+//				pojo.setRealTimeShippingPrice(rs.getDouble("Price"));
+//				if (rs.getInt("Active") == 1) {
+//					pojo.setRealTimeShippingActive(1);
+//				} else {
+//					pojo.setRealTimeShippingActive(0);
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		if (shippingType == 1) {
+//			form.setListOfExistingRealTimeShippingServices(listPOJOs);
+//		} else if (shippingType == 2) {
+//			form.setListOfExistingRealTimeShippingServices1(listPOJOs);
+//		} else if (shippingType == 3) {
+//			form.setListOfExistingRealTimeShippingServices2(listPOJOs);
+//		}
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaShipcarrierRepository shipcarrierRepository;
+
+	public ArrayList<ConfigurationDto> getActiveUserdefinedShippingType(Long companyId, HttpServletRequest request,
 			ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
-		ResultSet rs1 = null;
-		Statement stmt1 = null;
-		ConfigurationDto pojo1 = null;
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT ShipCarrierID,Name FROM bca_shipcarrier WHERE Name ='User Defined' AND CompanyID=" + companyId
-					+ " AND Active=1 AND ParentID= 0 ORDER BY ShipCarrierID";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				int shipId = rs.getInt("ShipCarrierID");
-				stmt1 = con.createStatement();
-				sql = "SELECT ShipCarrierID,Name FROM bca_shipcarrier WHERE CompanyID =" + companyId + " AND ParentID ="
-						+ shipId + " AND Active =1 ORDER BY Name";
-			}
-			rs1 = stmt1.executeQuery(sql);
-			while (rs1.next()) {
-				pojo1 = new ConfigurationDto();
-				pojo1.setSelectedUserDefinedShippingTypeId(rs1.getInt("ShipCarrierID"));
-				pojo1.setUserDefinedShippingTypeId(rs1.getInt("ShipCarrierID"));
-				pojo1.setUserDefinedShipping(rs1.getString("Name"));
-				pojo1.setUserDefinedShppingActive(1);
-				listPOJOs.add(pojo1);
+			// Fetch the parent carriers first
+			List<BcaShipcarrier> parentCarriers = shipcarrierRepository
+					.findByCompany_CompanyIdAndActiveAndParentId(companyId, 1, 0);
+			for (BcaShipcarrier parentCarrier : parentCarriers) {
+				// For each parent, fetch the active child carriers
+				List<BcaShipcarrier> childCarriers = shipcarrierRepository
+						.findByCompany_CompanyIdAndParentIdAndActive(companyId, parentCarrier.getShipCarrierId(), 1);
+				for (BcaShipcarrier childCarrier : childCarriers) {
+					ConfigurationDto pojo = new ConfigurationDto();
+					pojo.setSelectedUserDefinedShippingTypeId(childCarrier.getShipCarrierId());
+					pojo.setUserDefinedShippingTypeId(childCarrier.getShipCarrierId());
+					pojo.setUserDefinedShipping(childCarrier.getName());
+					pojo.setUserDefinedShppingActive(childCarrier.getActive());
+					listPOJOs.add(pojo);
+				}
 			}
 			form.setListOfExistingUserDefiedShippingType(listPOJOs);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
 		return listPOJOs;
 	}
 
+//	public ArrayList<ConfigurationDto> getActiveUserdefinedShippingType(String companyId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		ResultSet rs1 = null;
+//		Statement stmt1 = null;
+//		ConfigurationDto pojo1 = null;
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT ShipCarrierID,Name FROM bca_shipcarrier WHERE Name ='User Defined' AND CompanyID=" + companyId
+//					+ " AND Active=1 AND ParentID= 0 ORDER BY ShipCarrierID";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				int shipId = rs.getInt("ShipCarrierID");
+//				stmt1 = con.createStatement();
+//				sql = "SELECT ShipCarrierID,Name FROM bca_shipcarrier WHERE CompanyID =" + companyId + " AND ParentID ="
+//						+ shipId + " AND Active =1 ORDER BY Name";
+//			}
+//			rs1 = stmt1.executeQuery(sql);
+//			while (rs1.next()) {
+//				pojo1 = new ConfigurationDto();
+//				pojo1.setSelectedUserDefinedShippingTypeId(rs1.getInt("ShipCarrierID"));
+//				pojo1.setUserDefinedShippingTypeId(rs1.getInt("ShipCarrierID"));
+//				pojo1.setUserDefinedShipping(rs1.getString("Name"));
+//				pojo1.setUserDefinedShppingActive(1);
+//				listPOJOs.add(pojo1);
+//			}
+//			form.setListOfExistingUserDefiedShippingType(listPOJOs);
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaShippingrateRepository shippingrateRepository;
+
 	public ArrayList<ConfigurationDto> getUserDefinedShippingWeightAndPrice(int shipId, HttpServletRequest request,
 			ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("select * from bca_shippingrate where ShipCarrierID =" + shipId);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setUserDefinedShippingId(rs.getInt("ShippingRateID"));
-				pojo.setSelectedUserDefinedShippingTypeId(rs.getInt("ShipCarrierID"));
-				pojo.setUserDefinedShippingTypeId(rs.getInt("ShipCarrierID"));
-				pojo.setUserDefinedShippingWeight(rs.getInt("Weight"));
-				pojo.setUserDefinedShippingPrice(rs.getDouble("Price"));
+			List<BcaShippingrate> shippingRates = shippingrateRepository.findByShipCarrierId(shipId);
+
+			for (BcaShippingrate shippingRate : shippingRates) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setUserDefinedShippingId(shippingRate.getShippingRateId());
+				pojo.setSelectedUserDefinedShippingTypeId(shippingRate.getShipCarrier().getShipCarrierId());
+				pojo.setUserDefinedShippingTypeId(shippingRate.getShipCarrier().getShipCarrierId());
+				pojo.setUserDefinedShippingWeight(shippingRate.getWeight());
+				pojo.setUserDefinedShippingPrice(shippingRate.getPrice().doubleValue());
 				listPOJOs.add(pojo);
 			}
 			form.setListOfExistingUserDefiedShippingWeightAndPrice(listPOJOs);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
 		return listPOJOs;
 	}
+//	public ArrayList<ConfigurationDto> getUserDefinedShippingWeightAndPrice(int shipId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery("select * from bca_shippingrate where ShipCarrierID =" + shipId);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setUserDefinedShippingId(rs.getInt("ShippingRateID"));
+//				pojo.setSelectedUserDefinedShippingTypeId(rs.getInt("ShipCarrierID"));
+//				pojo.setUserDefinedShippingTypeId(rs.getInt("ShipCarrierID"));
+//				pojo.setUserDefinedShippingWeight(rs.getInt("Weight"));
+//				pojo.setUserDefinedShippingPrice(rs.getDouble("Price"));
+//				listPOJOs.add(pojo);
+//			}
+//			form.setListOfExistingUserDefiedShippingWeightAndPrice(listPOJOs);
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return listPOJOs;
+//	}
 
+//    @Autowired
+//    BcaShipcarrierRepository shipcarrierRepository;
+
+	@Transactional
 	public boolean addUserDefinedShippingWeightAndPrice(ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
 		try {
-			pstmt = con.prepareStatement("INSERT INTO bca_shippingrate(ShipCarrierID, Weight, Price) Values(?,?,?)");
-			pstmt.setInt(1, form.getUserDefinedShippingTypeId());
-			pstmt.setDouble(2, form.getUserDefinedShippingWeight());
-			pstmt.setDouble(3, form.getUserDefinedShippingPrice());
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+			Optional<BcaShipcarrier> shipCarrie = shipcarrierRepository.findById(form.getUserDefinedShippingTypeId());
+
+			BcaShippingrate shippingRate = new BcaShippingrate();
+			shippingRate.setShipCarrier(shipCarrie.get());
+			shippingRate.setWeight(form.getUserDefinedShippingWeight());
+			shippingRate.setPrice(BigDecimal.valueOf(form.getUserDefinedShippingPrice())); // Convert double to
+																							// BigDecimal if needed
+
+			shippingrateRepository.save(shippingRate);
+			return true; // Row added successfully
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
+			return false; // Operation failed
 		}
-		return rowAdded;
 	}
+//	public boolean addUserDefinedShippingWeightAndPrice(ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		try {
+//			pstmt = con.prepareStatement("INSERT INTO bca_shippingrate(ShipCarrierID, Weight, Price) Values(?,?,?)");
+//			pstmt.setInt(1, form.getUserDefinedShippingTypeId());
+//			pstmt.setDouble(2, form.getUserDefinedShippingWeight());
+//			pstmt.setDouble(3, form.getUserDefinedShippingPrice());
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
 	//////////////////////////////////////////////////////
 
+	@Transactional
 	public boolean addUpsServiceNameandPrice(ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
 		try {
-			pstmt = con.prepareStatement(
-					"INSERT INTO bca_realtimeshippingservice(ShippingType,ShippingService, Price, Active) Values(?,?,?,?)");
-			pstmt.setInt(1, form.getRealTimeShippingServiceId());
-			pstmt.setString(2, form.getRealTimeShippingService());
-			pstmt.setDouble(3, form.getRealTimeShippingPrice());
-			pstmt.setInt(4, 1);
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+			BcaRealtimeshippingservice service = new BcaRealtimeshippingservice();
+			service.setShippingType(form.getRealTimeShippingServiceId()); // Assuming this is shippingType, not ID
+			service.setShippingService(form.getRealTimeShippingService());
+			service.setPrice(form.getRealTimeShippingPrice());
+			service.setActive(1); // Active is set to 1 as per your SQL query
+
+			realtimeshippingserviceRepository.save(service);
+			return true; // Row added successfully
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
+			return false; // Operation failed
 		}
-		return rowAdded;
 	}
+
+//	public boolean addUpsServiceNameandPrice(ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		try {
+//			pstmt = con.prepareStatement(
+//					"INSERT INTO bca_realtimeshippingservice(ShippingType,ShippingService, Price, Active) Values(?,?,?,?)");
+//			pstmt.setInt(1, form.getRealTimeShippingServiceId());
+//			pstmt.setString(2, form.getRealTimeShippingService());
+//			pstmt.setDouble(3, form.getRealTimeShippingPrice());
+//			pstmt.setInt(4, 1);
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
 
 	//////////////////
+	@Autowired
+	private BcaShippingserviceRepository shippingserviceRepository;
+
+	@Transactional
 	public boolean addValueAddedService(ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
 		try {
-			pstmt = con.prepareStatement(
-					"INSERT INTO bca_shippingservice(ContainerID, MailTypeID, PackageSizeID, HandlingFee) Values(?,?,?,?)");
-			pstmt.setInt(1, form.getContainerId());
-			pstmt.setInt(2, form.getMailTypeId());
-			pstmt.setInt(3, form.getPackageSizeId());
-			pstmt.setInt(4, form.getSpecialHandlingfee1());
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+			Optional<BcaShipcarrier> shipCarrierOpt = shipcarrierRepository.findById(form.getShipCarrierId());
+			Optional<BcaMastershippingcontainer> shipContainerOpt = mastershippingcontainerRepository
+					.findById(form.getContainerId());
+			Optional<BcaMastershippingmailtype> mailTypeOpt = mastershippingmailtypeRepository
+					.findById(form.getMailTypeId());
+			Optional<BcaMastershippingpackagesize> packageSizeOpt = mastershippingpackagesizeRepository
+					.findById(form.getPackageSizeId());
+
+			if (!shipCarrierOpt.isPresent() || !shipContainerOpt.isPresent() || !mailTypeOpt.isPresent()
+					|| !packageSizeOpt.isPresent()) {
+				return false; // One or more entities not found
 			}
+
+			BcaShippingservice service = new BcaShippingservice();
+			service.setShipCarrier(shipCarrierOpt.get());
+			service.setContainer(shipContainerOpt.get());
+			service.setMailType(mailTypeOpt.get());
+			service.setPackageSize(packageSizeOpt.get());
+			service.setHandlingFee((double) form.getSpecialHandlingfee1());
+
+			shippingserviceRepository.save(service);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
-		return rowAdded;
+	}
+//	public boolean addValueAddedService(ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		try {
+//			pstmt = con.prepareStatement(
+//					"INSERT INTO bca_shippingservice(ContainerID, MailTypeID, PackageSizeID, HandlingFee) Values(?,?,?,?)");
+//			pstmt.setInt(1, form.getContainerId());
+//			pstmt.setInt(2, form.getMailTypeId());
+//			pstmt.setInt(3, form.getPackageSizeId());
+//			pstmt.setInt(4, form.getSpecialHandlingfee1());
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
+
+	@Transactional
+	public boolean updateUserDefinedShippingWeightAndPrice(ConfigurationDto form) {
+		Optional<BcaShippingrate> shippingRateOpt = shippingrateRepository.findById(form.getUserDefinedShippingId());
+		if (shippingRateOpt.isPresent()) {
+			BcaShippingrate shippingRate = shippingRateOpt.get();
+			shippingRate.setWeight(form.getUserDefinedShippingWeight());
+			shippingRate.setPrice(BigDecimal.valueOf(form.getUserDefinedShippingPrice()));
+			shippingrateRepository.save(shippingRate);
+			return true;
+		} else {
+			return false; // ShippingRateID not found
+		}
 	}
 
-	public boolean updateUserDefinedShippingWeightAndPrice(ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
-		try {
-			pstmt = con.prepareStatement("UPDATE bca_shippingrate SET Weight=?, Price=? WHERE ShippingRateID=?");
-			pstmt.setDouble(1, form.getUserDefinedShippingWeight());
-			pstmt.setDouble(2, form.getUserDefinedShippingPrice());
-			pstmt.setInt(3, form.getUserDefinedShippingId());
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		return rowAdded;
-	}
+//	public boolean updateUserDefinedShippingWeightAndPrice(ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		try {
+//			pstmt = con.prepareStatement("UPDATE bca_shippingrate SET Weight=?, Price=? WHERE ShippingRateID=?");
+//			pstmt.setDouble(1, form.getUserDefinedShippingWeight());
+//			pstmt.setDouble(2, form.getUserDefinedShippingPrice());
+//			pstmt.setInt(3, form.getUserDefinedShippingId());
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
 
 	///////////////////
+	@Transactional
 	public boolean editUpsServiceNameandPrice(ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
-		try {
-			pstmt = con.prepareStatement(
-					"UPDATE bca_realtimeshippingservice SET ShippingService=?, Price=?, Active =? WHERE ShippingServiceID=?");
-			/* pstmt.setInt(1, form.getRealTimeShippingServiceId()); */
-			pstmt.setString(1, form.getRealTimeShippingService());
-			pstmt.setDouble(2, form.getRealTimeShippingPrice());
-			pstmt.setInt(3, 1);
-			pstmt.setInt(4, form.getRealTimeShippingServiceId());
+		Optional<BcaRealtimeshippingservice> serviceOpt = realtimeshippingserviceRepository
+				.findById(form.getRealTimeShippingServiceId());
+		if (serviceOpt.isPresent()) {
+			BcaRealtimeshippingservice service = serviceOpt.get();
+			service.setShippingService(form.getRealTimeShippingService());
+			service.setPrice(form.getRealTimeShippingPrice());
+			service.setActive(1); // Assuming Active is always set to 1
 
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			realtimeshippingserviceRepository.save(service);
+			return true; // Row updated successfully
+		} else {
+			return false; // ShippingServiceID not found
 		}
-		return rowAdded;
 	}
+//	public boolean editUpsServiceNameandPrice(ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		try {
+//			pstmt = con.prepareStatement(
+//					"UPDATE bca_realtimeshippingservice SET ShippingService=?, Price=?, Active =? WHERE ShippingServiceID=?");
+//			/* pstmt.setInt(1, form.getRealTimeShippingServiceId()); */
+//			pstmt.setString(1, form.getRealTimeShippingService());
+//			pstmt.setDouble(2, form.getRealTimeShippingPrice());
+//			pstmt.setInt(3, 1);
+//			pstmt.setInt(4, form.getRealTimeShippingServiceId());
+//
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
 
 	/////////////////
+	/**
+	 * Deletes a real-time shipping service by its ID.
+	 * 
+	 * This method first checks if a shipping service with the given ID exists. If
+	 * it exists, the method proceeds to delete the service from the database. The
+	 * operation is transactional, ensuring data integrity.
+	 * 
+	 * @param udShippingRateID The ID of the shipping service to be deleted.
+	 * @return true if the shipping service was successfully deleted, false
+	 *         otherwise.
+	 */
+	@Transactional
 	public boolean deleteeditUpsServiceNameandPrice(int udShippingRateID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
 		try {
-			pstmt = con.prepareStatement(
-					"DELETE FROM bca_realtimeshippingservice WHERE ShippingServiceID=" + udShippingRateID);
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+			Optional<BcaRealtimeshippingservice> serviceOpt = realtimeshippingserviceRepository
+					.findById(udShippingRateID);
+			if (serviceOpt.isPresent()) {
+				realtimeshippingserviceRepository.deleteById(udShippingRateID);
+				return true; // Successfully deleted
+			} else {
+				return false; // ID not found
 			}
+		} catch (Exception e) {
+			// Log and handle exception
+			e.printStackTrace();
+			return false; // Operation failed
 		}
-		return rowAdded;
 	}
+//	public boolean deleteeditUpsServiceNameandPrice(int udShippingRateID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		try {
+//			pstmt = con.prepareStatement(
+//					"DELETE FROM bca_realtimeshippingservice WHERE ShippingServiceID=" + udShippingRateID);
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
 	////////////
 
+	/**
+	 * Deletes a user-defined shipping rate by its ID.
+	 *
+	 * @param udShippingRateID The ID of the shipping rate to be deleted.
+	 * @return true if the shipping rate was successfully deleted, false otherwise.
+	 */
+	@Transactional
 	public boolean deleteUserDefinedShippingWeightAndPrice(int udShippingRateID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
 		try {
-			pstmt = con.prepareStatement("DELETE FROM bca_shippingrate WHERE ShippingRateID=" + udShippingRateID);
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+			if (shippingrateRepository.existsById(udShippingRateID)) {
+				shippingrateRepository.deleteById(udShippingRateID);
+				return true; // Successfully deleted
+			} else {
+				return false; // ShippingRateID not found
 			}
+		} catch (Exception e) {
+			// Log and handle exception
+			e.printStackTrace();
+			return false; // Operation failed
 		}
-		return rowAdded;
 	}
+//	public boolean deleteUserDefinedShippingWeightAndPrice(int udShippingRateID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		try {
+//			pstmt = con.prepareStatement("DELETE FROM bca_shippingrate WHERE ShippingRateID=" + udShippingRateID);
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
 
+	/**
+	 * Updates printing template preferences for a given company.
+	 * 
+	 * @param companyID The ID of the company whose preferences are being updated.
+	 * @param form      The data transfer object containing updated preference
+	 *                  values.
+	 * @return true if the update was successful, false otherwise.
+	 */
+	@Autowired
+	private BcaPreferenceRepository preferenceRepository;
+
+	@Transactional
 	public boolean setPrintingTemplates(String companyID, ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
 		try {
-			String sql = "UPDATE bca_preference SET InvoiceTemplateType=?, EstimationTemplateType=?, SalesOrderTemplateType=?, "
-					+ "PurchaseOrderTemplateType=?, PackingSlipTemplateType=? WHERE CompanyID=?";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, form.getInvoiceTemplateType());
-			pstmt.setInt(2, form.getEstTemplateType());
-			pstmt.setInt(3, form.getSoTemplateType());
-			pstmt.setInt(4, form.getPoTemplateType());
-			pstmt.setInt(5, form.getPsTemplateType());
-			pstmt.setString(6, companyID);
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+			Optional<BcaPreference> preferenceOpt = preferenceRepository.findById(Integer.valueOf(companyID));
+			if (preferenceOpt.isPresent()) {
+				BcaPreference preference = preferenceOpt.get();
+				preference.setInvoiceTemplateType(form.getInvoiceTemplateType());
+				preference.setEstimationTemplateType(form.getEstTemplateType());
+				preference.setSalesOrderTemplateType(form.getSoTemplateType());
+				preference.setPurchaseOrderTemplateType(form.getPoTemplateType());
+				preference.setPackingSlipTemplateType(form.getPsTemplateType());
+
+				preferenceRepository.save(preference);
+				return true;
+			} else {
+				return false; // Company ID not found
 			}
+		} catch (Exception e) {
+			// Log and handle the exception
+			e.printStackTrace();
+			return false;
 		}
-		return rowAdded;
 	}
 
-	public ArrayList<ConfigurationDto> getUPSUserDetails(String companyId, HttpServletRequest request,
-			ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public boolean setPrintingTemplates(String companyID, ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		try {
+//			String sql = "UPDATE bca_preference SET InvoiceTemplateType=?, EstimationTemplateType=?, SalesOrderTemplateType=?, "
+//					+ "PurchaseOrderTemplateType=?, PackingSlipTemplateType=? WHERE CompanyID=?";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setInt(1, form.getInvoiceTemplateType());
+//			pstmt.setInt(2, form.getEstTemplateType());
+//			pstmt.setInt(3, form.getSoTemplateType());
+//			pstmt.setInt(4, form.getPoTemplateType());
+//			pstmt.setInt(5, form.getPsTemplateType());
+//			pstmt.setString(6, companyID);
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
+	@Autowired
+	private SmdShipdetailsRepository smdShipdetailsRepository;
+
+	public ArrayList<ConfigurationDto> getUPSUserDetails(Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(
-					"select * from smd_shipdetails where CompanyID =" + companyId + " and shippType = 'UPS'");
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setUpsUserId(rs.getString("Field1"));
-				pojo.setUpsPassword(rs.getString("Field2"));
-				pojo.setAccesskey(rs.getString("Field3"));
-				pojo.setUpsAccountNo(rs.getString("Field4"));
-				int active = Integer.parseInt(rs.getString("active"));
-				if (active == 1) {
-					System.out.println("UPS is active");
-					pojo.setIsUPSActive(1);
-				} else {
-					System.out.println("UPS is not active");
-					pojo.setIsUPSActive(0);
-				}
+			List<SmdShipdetails> shipDetails = smdShipdetailsRepository.findByCompany_CompanyIdAndShippType(companyId,
+					"UPS");
+
+			for (SmdShipdetails detail : shipDetails) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setUpsUserId(detail.getField1());
+				pojo.setUpsPassword(detail.getField2());
+				pojo.setAccesskey(detail.getField3());
+				pojo.setUpsAccountNo(detail.getField4());
+				pojo.setIsUPSActive(detail.getActive() ? 1 : 0);
+
 				listPOJOs.add(pojo);
 			}
 			form.setListOfExistingUpsUSers(listPOJOs);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getUSPSUserDetails(String companyId, HttpServletRequest request,
-			ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public ArrayList<ConfigurationDto> getUPSUserDetails(String companyId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(
+//					"select * from smd_shipdetails where CompanyID =" + companyId + " and shippType = 'UPS'");
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setUpsUserId(rs.getString("Field1"));
+//				pojo.setUpsPassword(rs.getString("Field2"));
+//				pojo.setAccesskey(rs.getString("Field3"));
+//				pojo.setUpsAccountNo(rs.getString("Field4"));
+//				int active = Integer.parseInt(rs.getString("active"));
+//				if (active == 1) {
+//					System.out.println("UPS is active");
+//					pojo.setIsUPSActive(1);
+//				} else {
+//					System.out.println("UPS is not active");
+//					pojo.setIsUPSActive(0);
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//			form.setListOfExistingUpsUSers(listPOJOs);
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return listPOJOs;
+//	}
+
+	public ArrayList<ConfigurationDto> getUSPSUserDetails(Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "select * from smd_shipdetails where CompanyID =" + companyId + " and shippType = 'USPS'";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setUspsUserId(rs.getString("Field1"));
-				int active = Integer.parseInt(rs.getString("active"));
-				/*
-				 * pojo.setUpsPassword(rs.getString("Field2"));
-				 * pojo.setAccesskey(rs.getString("Field3"));
-				 * pojo.setUpsAccountNo(rs.getString("Field4"));
-				 */
-				if (active == 1) {
-					System.out.println("USPS is active");
-					pojo.setIsUSPSActive(1);
-				} else {
-					System.out.println("USPS is not active");
-					pojo.setIsUSPSActive(0);
-				}
+			List<SmdShipdetails> shipDetails = smdShipdetailsRepository.findByCompany_CompanyIdAndShippType(companyId,
+					"USPS");
+
+			for (SmdShipdetails detail : shipDetails) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setUspsUserId(detail.getField1());
+				// Set other fields as necessary
+				pojo.setIsUSPSActive(detail.getActive() ? 1 : 0); // Assuming getActive() returns a boolean
+
 				listPOJOs.add(pojo);
 			}
+			form.setListOfExistingUspsUSers(listPOJOs);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
-		form.setListOfExistingUspsUSers(listPOJOs);
 		return listPOJOs;
 	}
 
-	public void addShippingTypeValue(HttpServletRequest request, String shippingtype, String companyID) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		PreparedStatement ps;
-		con = db.getConnection();
-		int ParentID = 29;
-		try {
-			String sql = "insert into bca_shipcarrier(Name, CompanyID, ParentID) values ('" + shippingtype + "',"
-					+ companyID + "," + ParentID + ")";
-			ps = con.prepareStatement(sql);
-			Loger.log(sql);
-			ps.execute();
+//	public ArrayList<ConfigurationDto> getUSPSUserDetails(String companyId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "select * from smd_shipdetails where CompanyID =" + companyId + " and shippType = 'USPS'";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setUspsUserId(rs.getString("Field1"));
+//				int active = Integer.parseInt(rs.getString("active"));
+//				/*
+//				 * pojo.setUpsPassword(rs.getString("Field2"));
+//				 * pojo.setAccesskey(rs.getString("Field3"));
+//				 * pojo.setUpsAccountNo(rs.getString("Field4"));
+//				 */
+//				if (active == 1) {
+//					System.out.println("USPS is active");
+//					pojo.setIsUSPSActive(1);
+//				} else {
+//					System.out.println("USPS is not active");
+//					pojo.setIsUSPSActive(0);
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingUspsUSers(listPOJOs);
+//		return listPOJOs;
+//	}
 
+	@Autowired
+	BcaCompanyRepository companyRepository;
+
+	@Transactional
+	public void addShippingTypeValue(String shippingtype, Long companyID) {
+		try {
+			Optional<BcaCompany> bcaCom = companyRepository.findById(companyID);
+
+			BcaShipcarrier shipcarrier = new BcaShipcarrier();
+			shipcarrier.setName(shippingtype);
+			shipcarrier.setCompany(bcaCom.get());
+			shipcarrier.setParentId(29); // Assuming 29 is a constant value for ParentID
+
+			shipcarrierRepository.save(shipcarrier);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-			// TODO: handle exception
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
 	}
 
-	public void editShippingTypeValue(HttpServletRequest request, String oldVal, String companyID, String oldId) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		boolean valid = false;
-		con = db.getConnection();
+//	public void addShippingTypeValue(HttpServletRequest request, String shippingtype, String companyID) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		PreparedStatement ps;
+//		con = db.getConnection();
+//		int ParentID = 29;
+//		try {
+//			String sql = "insert into bca_shipcarrier(Name, CompanyID, ParentID) values ('" + shippingtype + "',"
+//					+ companyID + "," + ParentID + ")";
+//			ps = con.prepareStatement(sql);
+//			Loger.log(sql);
+//			ps.execute();
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//			// TODO: handle exception
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
+
+	@Transactional
+	public boolean editShippingTypeValue(String oldVal, Long companyID, String oldId) {
 		try {
-			String sql = "update bca_shipcarrier set Name='" + oldVal + "' where ShipCarrierID = " + oldId;
-			pstmt = con.prepareStatement(sql);
-			Loger.log(sql);
-			int count = pstmt.executeUpdate();
-			if (count > 0)
-				valid = true;
-		} catch (Exception e) {
-			Loger.log(e.toString());
-			// TODO: handle exception
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+			Optional<BcaShipcarrier> shipcarrierOpt = shipcarrierRepository.findById(Integer.valueOf(oldId));
+			if (shipcarrierOpt.isPresent()) {
+				BcaShipcarrier shipcarrier = shipcarrierOpt.get();
+				shipcarrier.setName(oldVal);
+				// Assuming companyId is not changing. If it changes, add
+				// shipcarrier.setCompanyId(companyID);
+
+				shipcarrierRepository.save(shipcarrier);
+				return true; // Update successful
+			} else {
+				return false; // ShipCarrierID not found
 			}
+		} catch (Exception e) {
+			// Log and handle the exception
+			e.printStackTrace();
+			return false; // Operation failed
 		}
 	}
 
-	public void deleteShippingTypeValue(HttpServletRequest request, String companyID, String oldId) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		boolean valid = false;
-		con = db.getConnection();
+//	public void editShippingTypeValue(HttpServletRequest request, String oldVal, String companyID, String oldId) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		boolean valid = false;
+//		con = db.getConnection();
+//		try {
+//			String sql = "update bca_shipcarrier set Name='" + oldVal + "' where ShipCarrierID = " + oldId;
+//			pstmt = con.prepareStatement(sql);
+//			Loger.log(sql);
+//			int count = pstmt.executeUpdate();
+//			if (count > 0)
+//				valid = true;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//			// TODO: handle exception
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
+
+	@Transactional
+	public boolean deleteShippingTypeValue(String companyID, String oldId) {
 		try {
-			String sql = "update bca_shipcarrier set Active=0 where ShipCarrierID = " + oldId;
-			pstmt = con.prepareStatement(sql);
-			Loger.log(sql);
-			int count = pstmt.executeUpdate();
-			if (count > 0)
-				valid = true;
-		} catch (Exception e) {
-			Loger.log(e.toString());
-			// TODO: handle exception
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+			Optional<BcaShipcarrier> shipcarrierOpt = shipcarrierRepository.findById(Integer.valueOf(oldId));
+			if (shipcarrierOpt.isPresent()) {
+				BcaShipcarrier shipcarrier = shipcarrierOpt.get();
+				shipcarrier.setActive(0); // Assuming you have a field 'active' in your entity
+
+				shipcarrierRepository.save(shipcarrier);
+				return true; // Soft delete successful
+			} else {
+				return false; // ShipCarrierID not found
 			}
+		} catch (Exception e) {
+			// Log and handle the exception
+			e.printStackTrace();
+			return false; // Operation failed
 		}
 	}
 
-	public ArrayList<ConfigurationDto> getFedExUserDetails(String companyId, HttpServletRequest request,
-			ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public void deleteShippingTypeValue(HttpServletRequest request, String companyID, String oldId) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		boolean valid = false;
+//		con = db.getConnection();
+//		try {
+//			String sql = "update bca_shipcarrier set Active=0 where ShipCarrierID = " + oldId;
+//			pstmt = con.prepareStatement(sql);
+//			Loger.log(sql);
+//			int count = pstmt.executeUpdate();
+//			if (count > 0)
+//				valid = true;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//			// TODO: handle exception
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
+
+	public ArrayList<ConfigurationDto> getFedExUserDetails(String companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "select * from smd_shipdetails where CompanyID =" + companyId + " and shippType = 'FEDEX'";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setFedexAccountNumber(rs.getString("Field1"));
-				pojo.setFedexMeterNumber(rs.getString("Field2"));
-				pojo.setFedexPassword(rs.getString("Field3"));
-				pojo.setFedexTestKey(rs.getString("Field4"));
-				int active = Integer.parseInt(rs.getString("active"));
-				if (active == 1) {
-					System.out.println("fedex is active");
-					pojo.setIsFeDexActive(1);
-				} else {
-					System.out.println("fedex is not active");
-					pojo.setIsFeDexActive(0);
-				}
+			List<SmdShipdetails> shipDetails = smdShipdetailsRepository
+					.findByCompany_CompanyIdAndShippType(Long.valueOf(companyId), "FEDEX");
+
+			for (SmdShipdetails detail : shipDetails) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setFedexAccountNumber(detail.getField1());
+				pojo.setFedexMeterNumber(detail.getField2());
+				// Set other fields as necessary
+				pojo.setIsFeDexActive(detail.getActive() ? 1 : 0); // Assuming getActive() returns a boolean
+
 				listPOJOs.add(pojo);
 			}
+			form.setListOfExistingFedexUSers(listPOJOs);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
-		form.setListOfExistingFedexUSers(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> geteSalesStore(HttpServletRequest request, ConfigurationDto form,
-			String companyId) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public ArrayList<ConfigurationDto> getFedExUserDetails(String companyId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "select * from smd_shipdetails where CompanyID =" + companyId + " and shippType = 'FEDEX'";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setFedexAccountNumber(rs.getString("Field1"));
+//				pojo.setFedexMeterNumber(rs.getString("Field2"));
+//				pojo.setFedexPassword(rs.getString("Field3"));
+//				pojo.setFedexTestKey(rs.getString("Field4"));
+//				int active = Integer.parseInt(rs.getString("active"));
+//				if (active == 1) {
+//					System.out.println("fedex is active");
+//					pojo.setIsFeDexActive(1);
+//				} else {
+//					System.out.println("fedex is not active");
+//					pojo.setIsFeDexActive(0);
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingFedexUSers(listPOJOs);
+//		return listPOJOs;
+//	}
+	@Autowired
+	private BcaStoreRepository storeRepository;
+
+	public ArrayList<ConfigurationDto> geteSalesStore(ConfigurationDto form, Long companyId) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT * FROM bca_store WHERE CompanyID = " + companyId + " AND Active = 1 AND Deleted = 1";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedStoreId(rs.getInt("StoreID"));
-				pojo.setStoreId(rs.getInt("StoreID"));
-				pojo.setStoreName(rs.getString("StoreName"));
-				pojo.setStoreTypeId(rs.getInt("StoreTypeID"));
-				pojo.setStoreTypeName(rs.getString("StoreTypeName"));
-				pojo.setAbbreviation(rs.getString("Abbreviation"));
+			List<BcaStore> stores = storeRepository.findByCompany_CompanyIdAndActiveAndDeleted(companyId, 1, 1);
+
+			for (BcaStore store : stores) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedStoreId(store.getStoreId());
+				pojo.setStoreName(store.getStoreName());
+				// Set other fields as necessary
+
 				listPOJOs.add(pojo);
 			}
+			form.setListOfExistingStores(listPOJOs);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
-		form.setListOfExistingStores(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> geteActiveStore(HttpServletRequest request, ConfigurationDto form,
-			String companyId) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public ArrayList<ConfigurationDto> geteSalesStore(HttpServletRequest request, ConfigurationDto form,
+//			String companyId) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT * FROM bca_store WHERE CompanyID = " + companyId + " AND Active = 1 AND Deleted = 1";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedStoreId(rs.getInt("StoreID"));
+//				pojo.setStoreId(rs.getInt("StoreID"));
+//				pojo.setStoreName(rs.getString("StoreName"));
+//				pojo.setStoreTypeId(rs.getInt("StoreTypeID"));
+//				pojo.setStoreTypeName(rs.getString("StoreTypeName"));
+//				pojo.setAbbreviation(rs.getString("Abbreviation"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingStores(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	public ArrayList<ConfigurationDto> geteActiveStore(ConfigurationDto form, Long companyId) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT * FROM  bca_store WHERE CompanyID = " + companyId
-					+ " AND StoreTypeId IN (3,9) AND Active = 1 AND Deleted = 1";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedStoreTypeId(rs.getInt("StoreTypeID"));
-				pojo.setStoreId(rs.getInt("StoreID"));
-				pojo.setStoreName(rs.getString("StoreName"));
-				pojo.setStoreTypeId(rs.getInt("StoreTypeID"));
-				pojo.setStoreTypeName(rs.getString("StoreTypeName"));
+			List<Integer> storeTypeIds = Arrays.asList(3, 9); // Store Type IDs
+			List<BcaStore> stores = storeRepository
+					.findByCompany_CompanyIdAndStoreTypeIdInAndActiveAndDeleted(companyId, storeTypeIds, 1, 1);
+
+			for (BcaStore store : stores) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedStoreTypeId(store.getStoreType().getStoreTypeId());
+				pojo.setStoreId(store.getStoreId());
+				pojo.setStoreName(store.getStoreName());
+				pojo.setStoreTypeId(store.getStoreType().getStoreTypeId());
+				// Set other fields as necessary
+
 				listPOJOs.add(pojo);
 			}
+			form.setListOfExistingActiveStores(listPOJOs);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
-		form.setListOfExistingActiveStores(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> geteBayCategories(HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public ArrayList<ConfigurationDto> geteActiveStore(HttpServletRequest request, ConfigurationDto form,
+//			String companyId) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT * FROM  bca_store WHERE CompanyID = " + companyId
+//					+ " AND StoreTypeId IN (3,9) AND Active = 1 AND Deleted = 1";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedStoreTypeId(rs.getInt("StoreTypeID"));
+//				pojo.setStoreId(rs.getInt("StoreID"));
+//				pojo.setStoreName(rs.getString("StoreName"));
+//				pojo.setStoreTypeId(rs.getInt("StoreTypeID"));
+//				pojo.setStoreTypeName(rs.getString("StoreTypeName"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingActiveStores(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private SmdEbaycategoryRepository ebayCategoryRepository;
+
+	public ArrayList<ConfigurationDto> geteBayCategories(ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT * FROM smd_ebaycategory";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedeBayCategoryId(rs.getInt("eBayCategoryID"));
-				pojo.seteBayCategoryId(rs.getInt("eBayCategoryID"));
-				pojo.setIsLeaf(rs.getInt("isleaf"));
-				int level = rs.getInt("level");
-				/*
-				 * if(level == 1) {
-				 * pojo.seteBayCategoryName("  "+rs.getString("smdcategoryName")); } else
-				 * if(level == 2) {
-				 * pojo.seteBayCategoryName("   "+rs.getString("smdcategoryName")); } else
-				 * if(level == 3) {
-				 * pojo.seteBayCategoryName("    "+rs.getString("smdcategoryName")); } else {
-				 */
-				pojo.seteBayCategoryName(rs.getString("smdcategoryName"));
-				// }
+			List<SmdEbaycategory> ebayCategories = ebayCategoryRepository.findAll();
+
+			for (SmdEbaycategory category : ebayCategories) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedeBayCategoryId(category.getEBayCategoryId());
+				pojo.setIsLeaf(category.getIsleaf());
+				pojo.seteBayCategoryName(category.getSmdcategoryName());
+				// Additional logic for category name based on level can be added here
+
 				listPOJOs.add(pojo);
 			}
+			form.setListOfExistingeBayCategories(listPOJOs);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
-		form.setListOfExistingeBayCategories(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getAvailableTaxYear(HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public ArrayList<ConfigurationDto> geteBayCategories(HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT * FROM smd_ebaycategory";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedeBayCategoryId(rs.getInt("eBayCategoryID"));
+//				pojo.seteBayCategoryId(rs.getInt("eBayCategoryID"));
+//				pojo.setIsLeaf(rs.getInt("isleaf"));
+//				int level = rs.getInt("level");
+//				/*
+//				 * if(level == 1) {
+//				 * pojo.seteBayCategoryName("  "+rs.getString("smdcategoryName")); } else
+//				 * if(level == 2) {
+//				 * pojo.seteBayCategoryName("   "+rs.getString("smdcategoryName")); } else
+//				 * if(level == 3) {
+//				 * pojo.seteBayCategoryName("    "+rs.getString("smdcategoryName")); } else {
+//				 */
+//				pojo.seteBayCategoryName(rs.getString("smdcategoryName"));
+//				// }
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingeBayCategories(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcpFedperallowanceRepository fedperallowanceRepository;
+
+	public ArrayList<ConfigurationDto> getAvailableTaxYear(ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT DISTINCT(EYear) as TaxYear FROM bcp_fedperallowance GROUP BY EYear ORDER BY EYear DESC";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedTaxYear(rs.getInt("TaxYear"));
-				pojo.setAvailableTaxYear(rs.getInt("TaxYear"));
+			List<Integer> taxYears = fedperallowanceRepository.findDistinctEYear();
+
+			for (Integer year : taxYears) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedTaxYear(year);
+				pojo.setAvailableTaxYear(year);
 				listPOJOs.add(pojo);
 			}
+			form.setListOfExistingTaxYear(listPOJOs);
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Log and handle exception
+			e.printStackTrace();
 		}
-		form.setListOfExistingTaxYear(listPOJOs);
 		return listPOJOs;
 	}
+
+//	public ArrayList<ConfigurationDto> getAvailableTaxYear(HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT DISTINCT(EYear) as TaxYear FROM bcp_fedperallowance GROUP BY EYear ORDER BY EYear DESC";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedTaxYear(rs.getInt("TaxYear"));
+//				pojo.setAvailableTaxYear(rs.getInt("TaxYear"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingTaxYear(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcpTaxCompanyRepository taxCompanyRepository;
 
 	public List<CompanyTaxOptionDto> loadCompanyTaxOption(String compId) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		CompanyTaxOptionDto compTax = null;
-		ResultSet rs = null;
-		con = db.getConnection();
 		List<CompanyTaxOptionDto> dtos = new ArrayList<>();
 
 		try {
-			String sqlString = "select "
-					+ "Daily,Weekly,SemiMonthly,Monthly,Quarterly,SemiAnnually,Annually,UsePayrollDayWeek,"
-					+ "PayrollDayWeek,UsePayrollDayMonth,PayrollDayMonth,UseOvertimeDailyHour,OvertimeDailyHour,"
-					+ "UseOvertimeWeeklyHour,OvertimeWeeklyHour,OvertimeRate,UseSaturdayRate,SaturdayRate,UseSundayRate,"
-					+ "SundayRate,UseHolidayRate,HolidayRate,BiWeekly, OptionId, StartingDate, DateAdded"
-					+ " from bcp_tax_company where CompanyID =? and Active not like '0' ";
+			List<BcpTaxCompany> taxCompanies = taxCompanyRepository
+					.findByCompany_CompanyIdAndActive(Long.valueOf(compId), 1);
 
-			Loger.log(sqlString);
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, compId);
-			rs = pstmt.executeQuery();
+			for (BcpTaxCompany taxCompany : taxCompanies) {
+				CompanyTaxOptionDto compTax = new CompanyTaxOptionDto();
+				// Set all fields from taxCompany to compTax
+				// Use a mapper or manual mapping
+				// compTax.setDaily(taxCompany.getDaily());
+				// ... other fields
 
-			while (rs.next()) {
-				compTax = new CompanyTaxOptionDto();
-				compTax.setDaily(rs.getString(1));
-				compTax.setWeekly(rs.getString(2));
-				compTax.setSemiMonthly(rs.getString(3));
-				compTax.setMonthly(rs.getString(4));
-				compTax.setQuarterly(rs.getString(5));
-				compTax.setSemiAnnually(rs.getString(6));
-				compTax.setAnnually(rs.getString(7));
-				compTax.setDayOfWeekVal(rs.getString(8));
-				compTax.setDayOfWeek(rs.getString(9));
-				compTax.setDayOfMonthVal(rs.getString(10));
-				compTax.setDayOfMonth(rs.getString(11));
-				compTax.setDailyOverVal(rs.getString(12));
-				compTax.setDailyOver(rs.getString(13));
-				compTax.setWeeklyOverVal(rs.getString(14));
-				compTax.setWeeklyOver(rs.getString(15));
-				compTax.setOvertimeRate(rs.getString(16));
-				compTax.setWendSt(rs.getString(17));
-				compTax.setWendStRate(rs.getString(18));
-				compTax.setWendSn(rs.getString(19));
-				compTax.setWendSnRate(rs.getString(20));
-				compTax.setHoliday(rs.getString(21));
-				compTax.setHolidayRate(rs.getString(22));
-				compTax.setBiweekly(rs.getString(23));
-				compTax.setOptionId(rs.getInt(24));
+				compTax.setDaily(taxCompany.getDaily().toString());
+				compTax.setWeekly(taxCompany.getWeekly().toString());
+				compTax.setSemiMonthly(taxCompany.getSemiMonthly().toString());
+				compTax.setMonthly(taxCompany.getMonthly().toString());
+				compTax.setQuarterly(taxCompany.getQuarterly().toString());
+				compTax.setSemiAnnually(taxCompany.getSemiAnnually().toString());
+				compTax.setAnnually(taxCompany.getAnnually().toString());
+				compTax.setDayOfWeekVal(taxCompany.getUsePayrollDayWeek().toString());
+				compTax.setDayOfWeek(taxCompany.getPayrollDayWeek().toString());
+				compTax.setDayOfMonthVal(taxCompany.getUsePayrollDayMonth().toString());
+				compTax.setDayOfMonth(taxCompany.getPayrollDayMonth().toString());
+				compTax.setDailyOverVal(taxCompany.getUseOvertimeDailyHour().toString());
+				compTax.setDailyOver(taxCompany.getOvertimeDailyHour().toString());
+				compTax.setWeeklyOverVal(taxCompany.getUseOvertimeWeeklyHour().toString());
+				compTax.setWeeklyOver(taxCompany.getOvertimeWeeklyHour().toString());
+				compTax.setOvertimeRate(taxCompany.getOvertimeRate().toString());
+				compTax.setWendSt(taxCompany.getUseSaturdayRate().toString());
+				compTax.setWendStRate(taxCompany.getSaturdayRate().toString());
+				compTax.setWendSn(taxCompany.getUseSundayRate().toString());
+				compTax.setWendSnRate(taxCompany.getSundayRate().toString());
+				compTax.setHoliday(taxCompany.getUseHolidayRate().toString());
+				compTax.setHolidayRate(taxCompany.getHolidayRate().toString());
+				compTax.setBiweekly(taxCompany.getBiWeekly().toString());
+				compTax.setOptionId(taxCompany.getOptionId());
 
-				Date date = rs.getDate(25);
+				Date date = taxCompany.getStartingDate();
 				if (date != null) {
 					compTax.setStartingDate(formatterMMDDYYYY.format(date));
 				}
-				date = rs.getDate(26);
+				date = taxCompany.getDateAdded();
 				if (date != null) {
 					compTax.setCreatedAt(formatterMMDDYYYY.format(date));
 				}
-
 				dtos.add(compTax);
 			}
-
-		} catch (SQLException ee) {
-			Loger.log(2, " SQL Error in Class TaxInfo and  method -getCompanyTax " + " " + ee.toString());
-		} finally {
-			try {
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+		} catch (Exception e) {
+			// Log and handle exception
+			e.printStackTrace();
 		}
 		return dtos;
 	}
+//	public List<CompanyTaxOptionDto> loadCompanyTaxOption(String compId) {
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		CompanyTaxOptionDto compTax = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		List<CompanyTaxOptionDto> dtos = new ArrayList<>();
+//
+//		try {
+//			String sqlString = "select "
+//					+ "Daily,Weekly,SemiMonthly,Monthly,Quarterly,SemiAnnually,Annually,UsePayrollDayWeek,"
+//					+ "PayrollDayWeek,UsePayrollDayMonth,PayrollDayMonth,UseOvertimeDailyHour,OvertimeDailyHour,"
+//					+ "UseOvertimeWeeklyHour,OvertimeWeeklyHour,OvertimeRate,UseSaturdayRate,SaturdayRate,UseSundayRate,"
+//					+ "SundayRate,UseHolidayRate,HolidayRate,BiWeekly, OptionId, StartingDate, DateAdded"
+//					+ " from bcp_tax_company where CompanyID =? and Active not like '0' ";
+//
+//			Loger.log(sqlString);
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, compId);
+//			rs = pstmt.executeQuery();
+//
+//			while (rs.next()) {
+//				compTax = new CompanyTaxOptionDto();
+//				compTax.setDaily(rs.getString(1));
+//				compTax.setWeekly(rs.getString(2));
+//				compTax.setSemiMonthly(rs.getString(3));
+//				compTax.setMonthly(rs.getString(4));
+//				compTax.setQuarterly(rs.getString(5));
+//				compTax.setSemiAnnually(rs.getString(6));
+//				compTax.setAnnually(rs.getString(7));
+//				compTax.setDayOfWeekVal(rs.getString(8));
+//				compTax.setDayOfWeek(rs.getString(9));
+//				compTax.setDayOfMonthVal(rs.getString(10));
+//				compTax.setDayOfMonth(rs.getString(11));
+//				compTax.setDailyOverVal(rs.getString(12));
+//				compTax.setDailyOver(rs.getString(13));
+//				compTax.setWeeklyOverVal(rs.getString(14));
+//				compTax.setWeeklyOver(rs.getString(15));
+//				compTax.setOvertimeRate(rs.getString(16));
+//				compTax.setWendSt(rs.getString(17));
+//				compTax.setWendStRate(rs.getString(18));
+//				compTax.setWendSn(rs.getString(19));
+//				compTax.setWendSnRate(rs.getString(20));
+//				compTax.setHoliday(rs.getString(21));
+//				compTax.setHolidayRate(rs.getString(22));
+//				compTax.setBiweekly(rs.getString(23));
+//				compTax.setOptionId(rs.getInt(24));
+//
+//				Date date = rs.getDate(25);
+//				if (date != null) {
+//					compTax.setStartingDate(formatterMMDDYYYY.format(date));
+//				}
+//				date = rs.getDate(26);
+//				if (date != null) {
+//					compTax.setCreatedAt(formatterMMDDYYYY.format(date));
+//				}
+//
+//				dtos.add(compTax);
+//			}
+//
+//		} catch (SQLException ee) {
+//			Loger.log(2, " SQL Error in Class TaxInfo and  method -getCompanyTax " + " " + ee.toString());
+//		} finally {
+//			try {
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return dtos;
+//	}
 
 	public StateIncomeTaxDto loadSID(String compId, Long stateId) {
 		Connection con = null;
@@ -3499,41 +4326,54 @@ public class ConfigurationDAO {
 		return dto;
 	}
 
-	public void loadCompanyTaxProperties(String companyID, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		try {
-			stmt = con.createStatement();
-			String sql = "select FiscalMonth,  FederalTaxId, SalesTaxId from bca_company where CompanyID =" + companyID;
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				form.setFiscalMonth(rs.getString("FiscalMonth"));
-				form.setFederalTaxID(rs.getInt("FederalTaxId"));
-				form.setSalesTaxID(rs.getInt("SalesTaxId"));
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+	public void loadCompanyTaxProperties(Long companyID, ConfigurationDto form) {
+		Optional<BcaCompany> companyOptional = companyRepository.findById(companyID);
+		if (companyOptional.isPresent()) {
+			BcaCompany company = companyOptional.get();
+
+			form.setFiscalMonth(company.getFiscalMonth());
+			form.setFederalTaxID(company.getFederalTaxId());
+			form.setSalesTaxID(company.getSalesTax().getSalesTaxId());
 		}
 	}
 
+//	public void loadCompanyTaxProperties(String companyID, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			String sql = "select FiscalMonth,  FederalTaxId, SalesTaxId from bca_company where CompanyID =" + companyID;
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				form.setFiscalMonth(rs.getString("FiscalMonth"));
+//				form.setFederalTaxID(rs.getInt("FederalTaxId"));
+//				form.setSalesTaxID(rs.getInt("SalesTaxId"));
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
+
+	
+	//start from here;
 	public void saveFIDCompanyTaxInfo(String companyID, ConfigurationDto configForm) {
 		Connection con = null;
 		SQLExecutor db = new SQLExecutor();

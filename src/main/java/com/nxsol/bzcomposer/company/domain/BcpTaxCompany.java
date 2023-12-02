@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.OffsetDateTime;
+import java.util.Date;
+
 import javax.persistence.Table;
 
 @Entity
@@ -90,19 +92,31 @@ public class BcpTaxCompany {
     private Integer holidayRate;
 
     @Column(name= "StartingDate")
-    private OffsetDateTime startingDate;
+    private Date  startingDate;
 
     @Column(name= "DateAdded")
-    private OffsetDateTime dateAdded;
+    private Date dateAdded;
 
     @Column(name= "Active")
     private Integer active;
+
+    @Column(name= "OptionId")
+    private Integer optionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CompanyID", nullable = false)
     private BcaCompany company;
 
-    public Integer getDeductionId() {
+    
+    public Integer getOptionId() {
+		return optionId;
+	}
+
+	public void setOptionId(Integer optionId) {
+		this.optionId = optionId;
+	}
+
+	public Integer getDeductionId() {
         return deductionId;
     }
 
@@ -294,23 +308,23 @@ public class BcpTaxCompany {
         this.holidayRate = holidayRate;
     }
 
-    public OffsetDateTime getStartingDate() {
-        return startingDate;
-    }
+    public Date getStartingDate() {
+		return startingDate;
+	}
 
-    public void setStartingDate(final OffsetDateTime startingDate) {
-        this.startingDate = startingDate;
-    }
+	public void setStartingDate(Date startingDate) {
+		this.startingDate = startingDate;
+	}
 
-    public OffsetDateTime getDateAdded() {
-        return dateAdded;
-    }
+	public Date getDateAdded() {
+		return dateAdded;
+	}
 
-    public void setDateAdded(final OffsetDateTime dateAdded) {
-        this.dateAdded = dateAdded;
-    }
+	public void setDateAdded(Date dateAdded) {
+		this.dateAdded = dateAdded;
+	}
 
-    public Integer getActive() {
+	public Integer getActive() {
         return active;
     }
 

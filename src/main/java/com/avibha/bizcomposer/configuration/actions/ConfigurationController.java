@@ -64,6 +64,9 @@ public class ConfigurationController {
 	@Autowired
 	private SalesDetailsDao sd;
 	
+	@Autowired
+	private	ReceivableLIst rl;
+	
     private String pageActiveTab = "pageActiveTab";
     ArrayList<MailTemplateDto> mailTemplateDtos;
     
@@ -77,6 +80,7 @@ public class ConfigurationController {
         HttpSession session = request.getSession();
         //line added from this
         String companyID = (String) session.getAttribute("CID");
+        Long companyIDL = Long.valueOf(companyID);
         String emailAddress = (String) session.getAttribute("Email_Address");
         ConstValue c = new ConstValue();
         c.setCompanyId(Integer.parseInt(companyID));
@@ -96,10 +100,10 @@ public class ConfigurationController {
             //ConfigurationDetails configDetails = new ConfigurationDetails();
             configDetails.getConfigurationInfo(request, configDto);
 
-            ReceivableLIst rl = new ReceivableListImpl();
+            //ReceivableLIst rl = new ReceivableListImpl();
             request.setAttribute("PaymentTypeForCombo", rl.getPaymentType());
 
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getDetails(companyID, request, configDto);
             dao.getModulesName(configDto);
             dao.getWeight(companyID, configDto);
@@ -143,7 +147,7 @@ public class ConfigurationController {
             forward = "/configuration/generalUpdated";
         }
         else if (action.equalsIgnoreCase("configModule")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getInvoiceStyle(companyID, request, configDto);
             dao.getInvoiceStyle1(companyID, request, configDto);
             dao.getModules(companyID, request, configDto);
@@ -157,7 +161,7 @@ public class ConfigurationController {
             configDetails.getConfigurationInfo(request, configDto);
             request.getSession().setAttribute("CID", companyID);
 
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getCountry(companyID, request, configDto);
             dao.getShipping(companyID, request, configDto);
             dao.getTerm(companyID, request, configDto);
@@ -187,19 +191,19 @@ public class ConfigurationController {
             forward = "/configuration/newGroup";
         }
         else if (action.equalsIgnoreCase("deleteGroup")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.deleteUserGroupDetails(request.getParameter("selectedGroupId"));
             forward = "redirect:Configuration?tabid=config&tab=tr2";
         }
         else if (action.equalsIgnoreCase("deleteUser")) {
             String selectedUserId = request.getParameter("selectedUserId");
             String userGroupId = request.getParameter("userGroupId");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             boolean check = dao.deleteSelectedUser(selectedUserId, userGroupId, companyID);
             forward = "redirect:Configuration?tabid=config&tab=tr2";
         }
         else if (action.equalsIgnoreCase("saveJobTitle")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             String jobTitle = request.getParameter("jobTitle");
             //System.out.println("Entered JobTitle:"+jobTitle);
             String op = request.getParameter("operation");
@@ -237,7 +241,7 @@ public class ConfigurationController {
             configDetails.getConfigurationInfo(request, configDto);
             request.getSession().setAttribute("CID", companyID);
 
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getActiveTemplates(1, request, configDto);
             //dao.getActiveTemplates(request, configDto);
 
@@ -245,30 +249,31 @@ public class ConfigurationController {
             dao.getActivePackageSize(request, configDto);
             dao.getActiveContainer(request, configDto);
 
-            dao.getUPSUserDetails(companyID, request, configDto);
-            dao.getUSPSUserDetails(companyID, request, configDto);
-            dao.getFedExUserDetails(companyID, request, configDto);
+            dao.getUPSUserDetails(companyIDL, configDto);
+            dao.getUSPSUserDetails(companyIDL, configDto);
+            dao.getFedExUserDetails(companyID, configDto);
 
             //dao.getUserDefinedShippingRateAndPrice(request, configDto);
             //System.out.println("goes to div2 page......................");
             forward = "success3";
         }
         else if (action.equalsIgnoreCase("config30")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             int sId = Integer.parseInt(request.getParameter("shippingCarrierId"));
+            
             dao.getActiveMailType(request, configDto);
             dao.getActivePackageSize(request, configDto);
             dao.getActiveContainer(request, configDto);
             dao.getActiveRealTimeShippingServices(0, request, configDto);
             dao.getActiveRealTimeShippingServices(1, request, configDto);
             dao.getActiveRealTimeShippingServices(2, request, configDto);
-            dao.getActiveUserdefinedShippingType(companyID, request, configDto);
+            dao.getActiveUserdefinedShippingType(companyIDL, request, configDto);
 
             dao.getUserDefinedShippingWeightAndPrice(sId, request, configDto);
             forward = "success3";
         }
         else if (action.equalsIgnoreCase("con")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getMasterReason(configDto);
             int templateId = Integer.parseInt(request.getParameter("templateId"));
             System.out.println("Selected Template ID:" + templateId);
@@ -282,16 +287,16 @@ public class ConfigurationController {
             configDetails.getConfigurationInfo(request, configDto);
             request.getSession().setAttribute("CID", companyID);
             //System.out.println("selected companyId is:"+companyID);
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             //Set<configurationForm> s = dao.getPaymentGateways(companyID,request,configDto);
             dao.getPaymentGateways(companyID, request, configDto);
             ArrayList<ConfigurationDto> s = dao.getAllCreditCards(0, request, configDto, companyID);
             dao.getAllCreditCardsType(0, request, configDto, companyID);
             dao.getAllPayemntTypeId(request, configDto, companyID);
-            dao.geteSalesStore(request, configDto, companyID);
+            dao.geteSalesStore(configDto, companyIDL);
             dao.getStoreTypes(request, configDto);
 
-            dao.geteBayCategories(request, configDto);
+            dao.geteBayCategories(configDto);
 			/* ArrayList <configurationForm> s1 = new ArrayList<>();
 			 System.out.println("List Size:"+s.size());
 			 s1.add(s.get(2));*/
@@ -312,7 +317,7 @@ public class ConfigurationController {
             configDetails.getConfigurationInfo(request, configDto);
             request.getSession().setAttribute("CID", companyID);
             //System.out.println("selected companyId is:"+companyID);
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             //Set<configurationForm> s = dao.getPaymentGateways(companyID,request,configDto);
             ArrayList<ConfigurationDto> s = dao.getPaymentGateways(companyID, request, configDto);
             //ArrayList <configurationForm> s1 = new ArrayList<>();
@@ -327,7 +332,7 @@ public class ConfigurationController {
              /*ConfigurationInfoNEW configInfo = new ConfigurationInfoNEW();
 			 configInfo.getCongurationRecord(companyID,configDto,request);*/
 
-            ConfigurationDAO dao = new ConfigurationDAO();
+           // ConfigurationDAO dao = new ConfigurationDAO();
             dao.getCategory(companyID, request, configDto);
             dao.getAccount(companyID, request, configDto);
             dao.getPaymentType(companyID, request, configDto);
@@ -375,13 +380,13 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("ChangeAdministratorPassword")) {
             String modalNewPassword = request.getParameter("modalNewPassword");
             System.out.println("modalNewPassword" + modalNewPassword);
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getAdministratorDetails(companyID, emailAddress, modalNewPassword);
             forward = "redirect:Configuration?tabid=config&tab=tr2";
         }
         else if (action.equalsIgnoreCase("config04")) {
             //System.out.println("Inside config04 condition");
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getAdministratorDetails(companyID, configDto, emailAddress);
             String UserName = configDto.getEmailAddress();
             String Password = configDto.getPassword();
@@ -390,7 +395,7 @@ public class ConfigurationController {
 
             String role = (String) session.getAttribute("Role");
             request.setAttribute("Role", role);
-            ConfigurationDAO dao = new ConfigurationDAO();
+           // ConfigurationDAO dao = new ConfigurationDAO();
             String membershipLevel = dao.getmembershipLevel(companyID, request);
             request.setAttribute("membershipLevel", membershipLevel);
             int usercount = dao.getNumberOfUser(companyID, request, configDto);
@@ -407,7 +412,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config05")) {
             //System.out.println("Inside config05 condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             //ConfigurationInfoNEW configInfo = new ConfigurationInfoNEW();
             dao.getBillingTemplate(companyID, request, configDto);
             int billtemplateId = configDto.getShowBillingStatStyle();
@@ -426,7 +431,7 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("config6")) {
             //System.out.println("Inside config6 condition");
             //ConfigurationInfoNEW configInfo = new ConfigurationInfoNEW();
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getPackingSlipTemplate(companyID, request, configDto);
             dao.getCountry(companyID, request, configDto);
             dao.getShipping(companyID, request, configDto);
@@ -512,7 +517,7 @@ public class ConfigurationController {
             System.out.println("goes to inventory Setting page......................");
         }
         else if (action.equalsIgnoreCase("config9")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.getCongurationRecord(companyID, configDto, request);
 
@@ -526,7 +531,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config10")) {
             //System.out.println("Inside config10 condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             //ConfigurationDetails cDetails = new ConfigurationDetails();
             VendorCategory vendorCategory = new VendorCategory();
             configDetails.getConfigurationInfo(request, configDto);
@@ -567,7 +572,7 @@ public class ConfigurationController {
             ConfigurationDetails configDetails = new ConfigurationDetails();
             configDetails.getConfigurationInfo(request, configDto);
 
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getCountry(companyID, request, configDto);
             dao.getStates("2", configDto);
             dao.getJobTitle(request, configDto, companyID);
@@ -586,7 +591,7 @@ public class ConfigurationController {
             forward = "configuration/datamanager";
         }
         else if (action.equalsIgnoreCase("DM_Save")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
+            //SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManagerSave(request);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
@@ -596,20 +601,20 @@ public class ConfigurationController {
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
         else if (action.equalsIgnoreCase("DM_Update")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
+            //SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManagerUpdate(request);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
         else if (action.equalsIgnoreCase("DM_Delete")) { // save of DataManager tab
-            SalesDetailsDao sd = new SalesDetailsDao();
+            //SalesDetailsDao sd = new SalesDetailsDao();
             sd.getdataManagerDelete(request);
             forward = "redirect:/Configuration?tabid=config28&tab=tr28";
         }
         else if (action.equalsIgnoreCase("config12")) {
             //System.out.println("Inside config12 condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
-            dao.getAvailableTaxYear(request, configDto);
-            dao.loadCompanyTaxProperties(companyID, configDto);
+            //ConfigurationDAO dao = new ConfigurationDAO();
+            dao.getAvailableTaxYear(configDto);
+            dao.loadCompanyTaxProperties(companyIDL, configDto);
             int year = Calendar.getInstance().get(Calendar.YEAR);
             dao.loadTaxProperties(companyID, year, configDto);
             configDto.setCompanyTaxOptionDtos(dao.loadCompanyTaxOption(companyID));
@@ -631,7 +636,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config14")) {
             //System.out.println("Inside config14 condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getActiveTemplates(1, request, configDto);
 
             forward = "success33";
@@ -639,8 +644,8 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config15")) {
             //System.out.println("Inside config15 condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
-            ArrayList<ConfigurationDto> udShipTypes = dao.getActiveUserdefinedShippingType(companyID, request, configDto);
+            //ConfigurationDAO dao = new ConfigurationDAO();
+            ArrayList<ConfigurationDto> udShipTypes = dao.getActiveUserdefinedShippingType(companyIDL, request, configDto);
             dao.getActiveRealTimeShippingServices(1, request, configDto);
             dao.getActiveRealTimeShippingServices(2, request, configDto);
             dao.getActiveRealTimeShippingServices(3, request, configDto);
@@ -651,9 +656,9 @@ public class ConfigurationController {
             dao.getActiveMailType(request, configDto);
             dao.getActivePackageSize(request, configDto);
             dao.getActiveContainer(request, configDto);
-            dao.getUPSUserDetails(companyID, request, configDto);
-            dao.getUSPSUserDetails(companyID, request, configDto);
-            dao.getFedExUserDetails(companyID, request, configDto);
+            dao.getUPSUserDetails(companyIDL, configDto);
+            dao.getUSPSUserDetails(companyIDL, configDto);
+            dao.getFedExUserDetails(companyID, configDto);
             if(!udShipTypes.isEmpty()) {
                 int sId = udShipTypes.get(0).getUserDefinedShippingTypeId();
                 dao.getUserDefinedShippingWeightAndPrice(sId, request, configDto);
@@ -664,7 +669,7 @@ public class ConfigurationController {
         }
 
         else if (action.equalsIgnoreCase("AddTimes")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+           // ConfigurationDAO dao = new ConfigurationDAO();
             ScheduleDateDto scheduleDateDto = new ScheduleDateDto();
             JSONObject newObj = new JSONObject();
             try {
@@ -696,13 +701,13 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("deleteTimes")) {
             String scheduleTimeId = request.getParameter("scheduleTimeId");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.deleteTimes(Integer.parseInt(scheduleTimeId));
         }
         else if (action.equalsIgnoreCase("addshippingtype")) {
             String Newval = request.getParameter("shippingtype");
-            ConfigurationDAO dao = new ConfigurationDAO();
-            dao.addShippingTypeValue(request, Newval, companyID);
+            //ConfigurationDAO dao = new ConfigurationDAO();
+            dao.addShippingTypeValue(Newval, companyIDL);
             //forward="success34";
             System.out.println("goes to shipping page......................");
             forward = "redirect:Configuration?tabid=config15&&tab=tr15";
@@ -711,19 +716,19 @@ public class ConfigurationController {
         else if (action.equalsIgnoreCase("editshippingtype")) {
             String oldVal = request.getParameter("oldshippingtype");
             String oldId = request.getParameter("oldId");
-            ConfigurationDAO dao = new ConfigurationDAO();
-            dao.editShippingTypeValue(request, oldVal, companyID, oldId);
+            //ConfigurationDAO dao = new ConfigurationDAO();
+            dao.editShippingTypeValue(oldVal, companyIDL, oldId);
             forward = "redirect:Configuration?tabid=config15&&tab=tr15";
         }
         else if (action.equalsIgnoreCase("deleteshippingtype")) {
             String oldId = request.getParameter("oldId");
-            ConfigurationDAO dao = new ConfigurationDAO();
-            dao.deleteShippingTypeValue(request, companyID, oldId);
+            //ConfigurationDAO dao = new ConfigurationDAO();
+            dao.deleteShippingTypeValue(companyID, oldId);
             forward = "redirect:Configuration?tabid=config15&&tab=tr15";
         }
         else if (action.equalsIgnoreCase("config16")) {
             //System.out.println("Inside config16 condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             int accountID = configDto.getSelectedAccountId();
             request.setAttribute("accountId", accountID);
 
@@ -738,12 +743,12 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config17")) {
             //System.out.println("Inside config17 condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getStoreTypes(request, configDto);
             //int storeTypeID = Integer.parseInt(request.getParameter("selectedStoreTypeId"));
             dao.getStores(5, request, configDto);
             //configDto.setSelectedStoreTypeId(storeTypeID);
-            dao.geteActiveStore(request, configDto, companyID);
+            dao.geteActiveStore(configDto, companyIDL);
 
             forward = "success41";
             System.out.println("goes to eSales page......................");
@@ -753,7 +758,7 @@ public class ConfigurationController {
 
             request.getSession().setAttribute("CID", companyID);
             //System.out.println("selected companyId is:"+companyID);
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             //Set<configurationForm> s = dao.getPaymentGateways(companyID,request,configDto);
             dao.getPaymentGateways(companyID, request, configDto);
             ArrayList<ConfigurationDto> s = dao.getAllCreditCards(0, request, configDto, companyID);
@@ -776,7 +781,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("config21")) {
             //System.out.println("Inside config21 condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             ArrayList<ConfigurationDto> s = dao.getPaymentGateways(companyID, request, configDto);
             //System.out.println("List Size:"+s.size());
 
@@ -788,7 +793,7 @@ public class ConfigurationController {
             //System.out.println("Inside config22 condition");
             request.getSession().setAttribute("CID", companyID);
             //System.out.println("selected companyId is:"+companyID);
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getExistingPrinter(companyID, request, configDto);
 
             System.out.println("goes to printer Setup page......................");
@@ -853,7 +858,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("showStore")) {
             System.out.println("Inside showStore condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             //dao.initStoreTypesModel(true);
             //ConfigurationDao dao = new ConfigurationDao();
             dao.getStores(5, request, configDto);
@@ -865,7 +870,7 @@ public class ConfigurationController {
         }
         else if (action.equalsIgnoreCase("showStore1")) {
             //System.out.println("Inside showStore condition");
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             //dao.initStoreTypesModel(true);
             //ConfigurationDao dao = new ConfigurationDao();
 
@@ -1236,17 +1241,17 @@ public class ConfigurationController {
             forward = "success_setPreference";
         }
         else if (action.equalsIgnoreCase("addEmployeeJobCode")) {
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.addJobCodeTimesheet(request);
             forward = "redirect:Configuration?tabid=config11&&tab=tr11";
         }
         else if (action.equalsIgnoreCase("editEmployeeJobCode")) {
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.editJobCodeTimesheet(request);
             forward = "redirect:Configuration?tabid=config11&&tab=tr11";
         }
         else if (action.equalsIgnoreCase("deleteEmployeeJobCode")) {
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+            //ConfigurationInfo configInfo = new ConfigurationInfo();
             configInfo.removeJobCodeTimesheet(request);
             forward = "redirect:Configuration?tabid=config11&&tab=tr11";
         }
@@ -1300,7 +1305,7 @@ public class ConfigurationController {
             status = errorCode;
         }
         else if (action.equalsIgnoreCase("con")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getMasterReason(configDto);
             int templateId = Integer.parseInt(request.getParameter("templateId"));
             System.out.println("Selected Template ID:" + templateId);
@@ -1320,7 +1325,7 @@ public class ConfigurationController {
             status = json.toString();
         }
         else if (action.equalsIgnoreCase("getShippingServiceById")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             int ShippingServiceId = Integer.parseInt(request.getParameter("ShippingServiceId"));
             System.out.println("Selected ShippingServiceId ID:" + ShippingServiceId);
             ConfigurationDto configurationDto = dao.getSelectedUSPSShippingService(ShippingServiceId);
@@ -1339,7 +1344,7 @@ public class ConfigurationController {
             status = json.toString();
         }
         else if (action.equalsIgnoreCase("addNewEmailTemplate")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             String templateName = request.getParameter("templateName");
             String subject = request.getParameter("subject");
             String content = request.getParameter("content");
@@ -1351,7 +1356,7 @@ public class ConfigurationController {
             }
         }
         else if (action.equalsIgnoreCase("deleteEmailTemplate")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             String selectedTemplateId = request.getParameter("selectedTemplateId");
             dao.deleteUserTemplate(selectedTemplateId);
         }
@@ -1424,7 +1429,7 @@ public class ConfigurationController {
             }
         }
         else if (action.equalsIgnoreCase("addNewUser")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             LoginDAO loginDAO = new LoginDAOImpl();
             int compId = Integer.parseInt(companyID);
             boolean emailExists = loginDAO.checkUserEmailExists(request.getParameter("userName"), compId);
@@ -1438,7 +1443,7 @@ public class ConfigurationController {
             }
         }
         else if (action.equalsIgnoreCase("updateUser")){
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             String selectedUserId = request.getParameter("selectedUserId");
             String userEmail = request.getParameter("userEmail");
             String password1 = request.getParameter("userpassword");
@@ -1447,7 +1452,7 @@ public class ConfigurationController {
             System.out.println("Success");
         }
         else if (action.equalsIgnoreCase("saveGroup")) {
-            ConfigurationDAO dao = new ConfigurationDAO();
+            //ConfigurationDAO dao = new ConfigurationDAO();
             boolean result = dao.saveUserGroupDetails(companyID, configDto);
             if (!result) {
                 status = "ERROR";
@@ -1465,7 +1470,7 @@ public class ConfigurationController {
         String action = request.getParameter("tabid");
         System.out.println("-------ConfigurationAjaxTest-------tabid: "+ action);
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         if (action.equalsIgnoreCase("getUserDefinedShippingWeightAndPrice")) {
             int sId = Integer.parseInt(request.getParameter("shippingCarrierId"));
             return dao.getUserDefinedShippingWeightAndPrice(sId, request, configDto);
@@ -1535,7 +1540,7 @@ public class ConfigurationController {
     public ConfigurationDto loadFederalTaxByYear(@PathVariable("year") String year, HttpServletRequest request) {
         ConfigurationDto configDto = new ConfigurationDto();
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         dao.loadTaxProperties(companyID, Integer.parseInt(year), configDto);
         return configDto;
     }
@@ -1544,7 +1549,7 @@ public class ConfigurationController {
     @PostMapping( path = "/Configuration/FederalTax/companyTaxInfo")
     public String saveFIDCompanyTaxInfo(ConfigurationDto configDto, HttpServletRequest request) {
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         dao.saveFIDCompanyTaxInfo(companyID, configDto);
         return "";
     }
@@ -1554,7 +1559,7 @@ public class ConfigurationController {
     @PostMapping( path = "/Configuration/FederalTax/companyTaxOption/deduction")
     public List<DeductionListDto> saveFIDCompanyTaxOption(DeductionListDto configDto, HttpServletRequest request) {
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         return dao.saveFIDCompanyTaxOptionDeduction(companyID, configDto);
     }
 
@@ -1562,7 +1567,7 @@ public class ConfigurationController {
     @PostMapping( path = "/Configuration/FederalTax/companyTaxOption/deduction/delete")
     public List<DeductionListDto> deleteFIDCompanyTaxOptionDeduction(DeductionListDto configDto, HttpServletRequest request) {
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         return dao.deleteFIDCompanyTaxOptionDeduction(companyID, configDto);
     }
 
@@ -1570,7 +1575,7 @@ public class ConfigurationController {
     @PostMapping( path = "/Configuration/FederalTax/companyTaxOption/option")
     public List<CompanyTaxOptionDto> saveFIDCompanyTaxOption(CompanyTaxOptionDto companyTaxOptionDto, HttpServletRequest request) {
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         return dao.saveFIDCompanyTaxOption(companyID, companyTaxOptionDto);
     }
 
@@ -1578,7 +1583,7 @@ public class ConfigurationController {
     @PostMapping( path = "/Configuration/FederalTax/companyTaxOption/option/delete")
     public List<CompanyTaxOptionDto> deleteFIDCompanyTaxOption(CompanyTaxOptionDto configDto, HttpServletRequest request) {
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         return dao.deleteFIDCompanyTaxOption(companyID, configDto);
     }
 
@@ -1588,14 +1593,14 @@ public class ConfigurationController {
     @PostMapping( path = "/Configuration/StateTax")
     public StateIncomeTaxDto saveSIDOther(StateIncomeTaxDto dto, HttpServletRequest request) {
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         return dao.saveSID(companyID, dto);
     }
 
     @ResponseBody
     @GetMapping(value = {"/Configuration/StateTax/{stateId}"})
     public StateIncomeTaxDto  loadStateTaxOtherByYear(@PathVariable("stateId") Long stateId, HttpServletRequest request) {
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         String companyID = (String) request.getSession().getAttribute("CID");
         return dao.loadSID(companyID, stateId);
     }
@@ -1604,7 +1609,7 @@ public class ConfigurationController {
     @PostMapping( path = "/Configuration/StateTax/setAsDefault")
     public StateIncomeTaxDto saveSIDStateSetAsDefault(StateIncomeTaxDto dto, HttpServletRequest request) {
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         return dao.saveSIDStateSetAsDefault(companyID, dto);
     }
 
@@ -1612,7 +1617,7 @@ public class ConfigurationController {
     @PostMapping( path = "/Configuration/StateTax/setActive")
     public StateIncomeTaxDto saveSIDSetActive(StateIncomeTaxDto dto, HttpServletRequest request) {
         String companyID = (String) request.getSession().getAttribute("CID");
-        ConfigurationDAO dao = new ConfigurationDAO();
+        //ConfigurationDAO dao = new ConfigurationDAO();
         return dao.saveSIDStateSetActive(companyID, dto);
     }
 
