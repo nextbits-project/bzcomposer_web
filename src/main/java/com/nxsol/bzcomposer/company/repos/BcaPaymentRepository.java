@@ -34,16 +34,25 @@ public interface BcaPaymentRepository extends JpaRepository<BcaPayment, Integer>
 	List<Object[]> findListOfBcaPayment(@Param("accountId") int accountId, @Param("companyId") BcaCompany companyId,
 			@Param("fromDate") OffsetDateTime fromDate, @Param("toDatee") OffsetDateTime toDatee);
 
-	@Query("SELECT bill.service, bill.vendorId, payment.dateAdded, bill.payerId, bill.memo, payment.checkNumber, payment.amount, payment.isToBePrinted, "
-			+ "bill.billNum, bill.category,bill.amountDue, payment.paymentType,"
-			+ "payment.paymentId, cv.name as CompanyName, cv.firstName, cv.lastName,"
-			+ "account.name as AccountName FROM BcaPayment as payment "
-			+ "INNER JOIN BcaBill as bill ON payment.billNum = bill.billNum "
-			+ "LEFT JOIN BcaClientvendor as cv ON bill.vendorId = cv.clientVendorId "
-			+ "LEFT JOIN BcaAccount as account ON payment.payerId = account.accountId "
-			+ "WHERE payment.deleted <> 1 AND cv.status = 'N' AND bill.company = :companyId "
-			+ "ORDER BY payment.dateAdded DESC")
-	List<Object[]> findPaidBillListsPayment(@Param("companyId") BcaCompany companyId);
+//	@Query("SELECT bill.service, bill.vendorId, payment.dateAdded, bill.payerId, bill.memo, payment.checkNumber, payment.amount, payment.isToBePrinted, "
+//			+ "bill.billNum, bill.category,bill.amountDue, payment.paymentType,"
+//			+ "payment.paymentId, cv.name as CompanyName, cv.firstName, cv.lastName,"
+//			+ "account.name as AccountName FROM BcaPayment as payment "
+//			+ "INNER JOIN ̥ as bill ON payment.billNum = bill.billNum "
+//			+ "LEFT JOIN BcaClientvendor as cv ON bill.vendorId = cv.clientVendorId "
+//			+ "LEFT JOIN BcaAccount as account ON payment.payerId = account.accountId "
+//			+ "WHERE payment.deleted <> 1 AND cv.status = 'N' AND bill.company = :companyId "
+//			+ "ORDER BY payment.dateAdded DESC")
+	@Query(value="select bill.service.serviceId, bill.vendorId, payment.dateAdded,bill.payerId,"
+			+ " bill.memo ,payment.checkNumber , payment.amount , payment.isToBePrinted ,"
+			+ " bill.billNum , bill.category.categoryId ,bill.amountDue , payment.paymentType.paymentTypeId ,"
+			+ "payment.paymentId , cv.name as companyName , cv.firstName , cv.lastName ,"
+			+ " account.name as accountName from BcaPayment payment inner join "
+			+ " BcaBill bill on payment.billNum = bill.billNum left join BcaClientvendor as cv "
+			+ " on bill.vendorId = cv.clientVendorId left join BcaAccount  account on payment.payerId = account.accountId where payment.deleted <> 1"
+			+ " and cv.status = 'N' and bill.company.companyId = :companyId order by payment.dateAdded desc")
+	List<Object[]> findPaidBillListsPayment(@Param("companyId") Long companyId);
+	
 
 	List<BcaPayment> findByCompany(BcaCompany compId);
 

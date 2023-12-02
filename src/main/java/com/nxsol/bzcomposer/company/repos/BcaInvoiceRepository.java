@@ -126,31 +126,54 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			+ "ORDER BY INV.PONum DESC ")
 	List<Object[]> findPoPayableList(@Param("companyId") int companyId);
 
-	@Query(value = "SELECT INV.InvoiceID,INV.OrderNum,INV.PONum,INV.SubTotal, INV.Tax, INV.EmployeeID,INV.RefNum,INV.Memo,INV.ShipCarrierID, "
-			+ "    INV.ShippingMethod, INV.SH, INV.ClientVendorID, INV.InvoiceTypeID, INV.Total, INV.AdjustedTotal, INV.PaidAmount, "
-			+ "    (SELECT Sum(bca_payment.Amount) AS AB FROM bca_payment WHERE bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted != 1 "
-			+ "    ) AS PaidAmount12, INV.Balance,INV.IsReceived,INV.TermID,INV.IsPaymentCompleted,INV.DateConfirmed,INV.DateAdded,INV.invoiceStatus, "
-			+ "    INV.PaymentTypeID,INV.CategoryID,INV.ServiceID,INV.SalesTaxID,INV.SalesRepID,INV.Taxable,INV.Shipped,INV.JobCategoryID, "
-			+ "    term.Days,INV.BillingAddrID,INV.ShippingAddrID,INV.TotalCommission,INV.BankAccountID FROM bca_invoice AS INV "
-			+ "LEFT JOIN bca_term AS term ON INV.TermID = term.TermID WHERE (((InvoiceTypeID) IN (2)   AND INV.termid <> 3 ) "
-			+ "        OR INV.InvoiceTypeID = 11 ) AND INV.AdjustedTotal > 0 AND INV.IsPaymentCompleted = 0 AND INV.invoiceStatus = 0 "
-			+ "    AND INV.CompanyID = :companyId AND INV.PONum = :poNum AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount) FROM "
-			+ "   bca_payment   WHERE  bca_payment.InvoiceID = INV.InvoiceID   AND bca_payment.Deleted != 1  ) "
-			+ "        OR ( SELECT Sum(bca_payment.Amount)FROM bca_payment WHERE bca_payment.InvoiceID = INV.InvoiceID "
-			+ "        AND bca_payment.Deleted != 1 ) IS NULL ) ORDER BY ordernum DESC", nativeQuery = true)
-	List<Object[]> findInvoiceByPONum(@Param("companyId") int companyId, @Param("poNum") int poNum);
+	@Query(value = " select i.invoiceId, i.orderNum, i.ponum , i.subTotal , i.tax, i.employeeId ,i.refNum, "
+			+ "i.memo ,i.shipCarrier.shipCarrierId, i.shippingMethod,i.sh , i.clientVendor.clientVendorId,"
+			+ " i.invoiceType.invoiceTypeId, i.total, i.adjustedTotal ,i.paidAmount , "
+			+ "(select sum(bp.amount) as ab from BcaPayment bp  where bp.invoice.invoiceId = i.invoiceId"
+			+ " and bp.deleted !=1 ) as PaidAmount12,i.balance, i.isReceived, i.term.termId, i.isPaymentCompleted ,"
+			+ " i.dateConfirmed , i.dateAdded , i.invoiceStatus, i.paymentType.paymentTypeId,i.category.categoryId ,"
+			+ " i.serviceId, i.salesTax.salesTaxId, i.salesRepId , i.taxable, i.shipped , i.jobCategoryId,t.days ,"
+			+ "i.billingAddrId , i.shippingAddrId,i.totalCommission , i.bankAccountId "
+			+ "from BcaInvoice i left join BcaTerm t on i.term.termId =t.termId where "
+			+ "((( i.invoiceType.invoiceTypeId) in (2 ) and i.term.termId<>3) or i.invoiceType.invoiceTypeId =11 ) "
+			+ "and i.adjustedTotal > 0 and i.isPaymentCompleted =0 and i.invoiceStatus = 0 and i.company.companyId = :companyId "
+			+ " and i.ponum= :ponum "
+			+ "and (i.adjustedTotal>(select sum(bp.amount) from BcaPayment bp where  bp.invoice.invoiceId=i.invoiceId "
+			+ "and bp.deleted !=1 ) or (select sum(bp.amount) from BcaPayment bp where bp.invoice.invoiceId = i.invoiceId "
+			+ "and bp.deleted !=1 ) is null) order by orderNum desc")
+	List<Object[]> findInvoiceByPONum(@Param("companyId") int companyId, @Param("ponum") int poNum);
 
-	@Query(value = "SELECT INV.InvoiceID,INV.OrderNum,INV.PONum,INV.SubTotal, INV.Tax, INV.EmployeeID,INV.RefNum,INV.Memo,INV.ShipCarrierID, "
-			+ "    INV.ShippingMethod, INV.SH, INV.ClientVendorID, INV.InvoiceTypeID, INV.Total, INV.AdjustedTotal, INV.PaidAmount, "
-			+ "    (SELECT Sum(bca_payment.Amount) AS AB FROM bca_payment WHERE bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted != 1 "
-			+ "    ) AS PaidAmount12, INV.Balance,INV.IsReceived,INV.TermID,INV.IsPaymentCompleted,INV.DateConfirmed,INV.DateAdded,INV.invoiceStatus, "
-			+ "    INV.PaymentTypeID,INV.CategoryID,INV.ServiceID,INV.SalesTaxID,INV.SalesRepID,INV.Taxable,INV.Shipped,INV.JobCategoryID, "
-			+ "    term.Days,INV.BillingAddrID,INV.ShippingAddrID,INV.TotalCommission,INV.BankAccountID FROM bca_invoice AS INV "
-			+ "LEFT JOIN bca_term AS term ON INV.TermID = term.TermID WHERE (((InvoiceTypeID) IN (1,12)   AND INV.termid <> 3 ) "
-			+ "        OR INV.InvoiceTypeID = 18 ) AND INV.AdjustedTotal > 0 AND INV.IsPaymentCompleted = 0 AND INV.invoiceStatus = 0 "
-			+ "    AND INV.CompanyID = :companyId AND INV.ordernum= = :orderNum AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount) FROM "
-			+ "   bca_payment   WHERE  bca_payment.InvoiceID = INV.InvoiceID   AND bca_payment.Deleted != 1  ) "
-			+ "        OR ( SELECT Sum(bca_payment.Amount)FROM bca_payment WHERE bca_payment.InvoiceID = INV.InvoiceID "
-			+ "        AND bca_payment.Deleted != 1 ) IS NULL ) ORDER BY ordernum DESC", nativeQuery = true)
+	@Query(value = " select i.invoiceId, i.orderNum, i.ponum , i.subTotal , i.tax, i.employeeId ,i.refNum, "
+			+ "i.memo ,i.shipCarrier.shipCarrierId, i.shippingMethod,i.sh , i.clientVendor.clientVendorId,"
+			+ " i.invoiceType.invoiceTypeId, i.total, i.adjustedTotal ,i.paidAmount , "
+			+ "(select sum(bp.amount) as ab from BcaPayment bp  where bp.invoice.invoiceId = i.invoiceId"
+			+ " and bp.deleted !=1 ) as PaidAmount12,i.balance, i.isReceived, i.term.termId, i.isPaymentCompleted ,"
+			+ " i.dateConfirmed , i.dateAdded , i.invoiceStatus, i.paymentType.paymentTypeId,i.category.categoryId ,"
+			+ " i.serviceId, i.salesTax.salesTaxId, i.salesRepId , i.taxable, i.shipped , i.jobCategoryId,t.days ,"
+			+ "i.billingAddrId , i.shippingAddrId,i.totalCommission , i.bankAccountId "
+			+ "from BcaInvoice i left join BcaTerm t on i.term.termId =t.termId where "
+			+ "((( i.invoiceType.invoiceTypeId) in (1,12 ) and i.term.termId<>3) or i.invoiceType.invoiceTypeId =18 ) "
+			+ "and i.adjustedTotal > 0 and i.isPaymentCompleted =0 and i.invoiceStatus = 0 and i.company.companyId = :companyId "
+			+ " and i.orderNum= :orderNum "
+			+ "and (i.adjustedTotal>(select sum(bp.amount) from BcaPayment bp where  bp.invoice.invoiceId=i.invoiceId "
+			+ "and bp.deleted !=1 ) or (select sum(bp.amount) from BcaPayment bp where bp.invoice.invoiceId = i.invoiceId "
+			+ "and bp.deleted !=1 ) is null) order by orderNum desc")
 	List<Object[]> findInvoiceByOrderNum(@Param("companyId") int companyId, @Param("orderNum") int orderNum);
+
+	@Query(value = " select i.invoiceId, i.orderNum, i.ponum , i.subTotal , i.tax, i.employeeId ,i.refNum, "
+			+ "i.memo ,i.shipCarrier.shipCarrierId, i.shippingMethod,i.sh , i.clientVendor.clientVendorId,"
+			+ " i.invoiceType.invoiceTypeId, i.total, i.adjustedTotal ,i.paidAmount , "
+			+ "(select sum(bp.amount) as ab from BcaPayment bp  where bp.invoice.invoiceId = i.invoiceId"
+			+ " and bp.deleted !=1 ) as PaidAmount12,i.balance, i.isReceived, i.term.termId, i.isPaymentCompleted ,"
+			+ " i.dateConfirmed , i.dateAdded , i.invoiceStatus, i.paymentType.paymentTypeId,i.category.categoryId ,"
+			+ " i.serviceId, i.salesTax.salesTaxId, i.salesRepId , i.taxable, i.shipped , i.jobCategoryId,t.days ,"
+			+ "i.billingAddrId , i.shippingAddrId,i.totalCommission , i.bankAccountId "
+			+ "from BcaInvoice i left join BcaTerm t on i.term.termId =t.termId where "
+			+ "((( i.invoiceType.invoiceTypeId) in (1,12 ) and i.term.termId<>3) or i.invoiceType.invoiceTypeId =11 ) "
+			+ "and i.adjustedTotal > 0 and i.isPaymentCompleted =0 and i.invoiceStatus = 0 and i.company.companyId = :companyId "
+			+ "and (i.adjustedTotal>(select sum(bp.amount) from BcaPayment bp where  bp.invoice.invoiceId=i.invoiceId "
+			+ "and bp.deleted !=1 ) or (select sum(bp.amount) from BcaPayment bp where bp.invoice.invoiceId = i.invoiceId "
+			+ "and bp.deleted !=1 ) is null) order by orderNum desc")
+	List<Object[]> findRecievableList(@Param("companyId") Long companyId);
+
 }

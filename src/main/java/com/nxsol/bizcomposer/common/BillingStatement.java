@@ -20,8 +20,11 @@ public class BillingStatement {
     public double paidAmount = 0.0;
     public Date paidDate = null;
     public double balance = 0.0;
-
-    
+    public int orderNum;
+    public String firstName;
+    public String lastName;
+    public String copmanyName;
+    public Date dateAdded;
 	public String getCustomerName() {
 		return customerName;
 	}
@@ -105,6 +108,36 @@ public class BillingStatement {
 	}
 	public void setBalance(double balance) {
 		this.balance = balance;
+	}
+	public int getOrderNum() {
+		return orderNum;
+	}
+	public void setOrderNum(int orderNum) {
+		this.orderNum = orderNum;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getCopmanyName() {
+		return copmanyName;
+	}
+	public void setCopmanyName(String copmanyName) {
+		this.copmanyName = copmanyName;
+	}
+	public Date getDateAdded() {
+		return dateAdded;
+	}
+	public void setDateAdded(Date dateAdded) {
+		this.dateAdded = dateAdded;
 	}
 	
 	
