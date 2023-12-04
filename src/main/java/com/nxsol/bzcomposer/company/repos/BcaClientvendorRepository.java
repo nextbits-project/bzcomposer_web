@@ -1,9 +1,5 @@
 package com.nxsol.bzcomposer.company.repos;
 
-import com.nxsol.bizcomposer.common.ConstValue;
-import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
-import com.nxsol.bzcomposer.company.domain.BcaCompany;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,15 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.nxsol.bizcomposer.common.ConstValue;
+import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.pritesh.bizcomposer.accounting.bean.ClientvendorDto;
+
 @Repository
 public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor, Integer> {
-
-//	@Query("SELECT DISTINCT c.clientVendorId, c.name, c.dbaname, c.customerTitle, c.firstName, c.lastName, c.address1, c.address2, c.city, c.state, c.zipCode, c.country, " + // other fields
-//			" c.email, c.phone, c.cellPhone, c.fax, date_format(c.dateAdded,'%m-%d-%Y') as DateAdded, c.cvcategoryName FROM BcaClientvendor c " +
-//			" WHERE c.company = :compId AND " +
-//			" c.cvtypeId IN (1, 2) AND c.status IN ('U', 'N') AND c.deleted = 0 AND c.active = 1 " +
-//			" ORDER BY c.name")
-//	List<Object[]> fetchClientVendorDetails(@Param("compId") BcaCompany compId);
 
 	@Query(nativeQuery = true, value = "SELECT distinct c.ClientVendorID,c.Name,ti.Title,c.FirstName,c.LastName,c.Address1,c.Address2,c.City,c.State,c.Country,"
 			+ "c.Email,c.Phone,c.CellPhone,c.Fax,date_format(c.DateAdded,'%m-%d-%Y') as DateAdded,i.IsPaymentCompleted,c.CVCategoryName,"
@@ -33,15 +28,15 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.company= :compId AND bcv.status IN ('U','N') AND bcv.active =1")
 	List<BcaClientvendor> findListOfClientVendorDetails(@Param("compId") BcaCompany compId);
 
-	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.company= :compId AND bcv.status IN ('U','N') AND bcv.active IN (0,1) ORDER BY bcv.lastName")
-	List<BcaClientvendor> findAllClientVendorForCombo(@Param("compId") BcaCompany compId);
+	@Query("SELECT bcv FROM BcaClientvendor bcv left join bcv.company c WHERE c.companyId= :compId AND bcv.status IN ('U','N') AND bcv.active IN (0,1) ORDER BY bcv.lastName")
+	List<BcaClientvendor> findAllClientVendorForCombo(@Param("compId") Long compId);
 
 	List<BcaClientvendor> findByCompanyAndStatusAndDeletedAndActiveAndCvtypeIdNotInOrderByLastName(BcaCompany company,
 			String status, Integer deleted, Integer active, List<Integer> cvTypeIds);
 
-	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.deleted = 0 AND bcv.company = :company AND"
+	@Query("SELECT bcv FROM BcaClientvendor bcv left join bcv.company c WHERE bcv.deleted = 0 AND c.companyId = :companyId AND"
 			+ " bcv.customerOpenDebit > 0 AND bcv.status = 'N' AND bcv.cvtypeId IN (2,1) ORDER BY bcv.dateAdded DESC")
-	List<BcaClientvendor> findInvoiceForUnpaidOpeningbal(BcaCompany company);
+	List<BcaClientvendor> findInvoiceForUnpaidOpeningbal(@Param("companyId") Integer companyId);
 
 	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.company = :company AND bcv.status IN ('U', 'N')"
 			+ " AND bcv.active IN (0,1) AND bcv.cvtypeId = 2 ORDER BY bcv.lastName")
@@ -55,7 +50,21 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 	List<Object[]> findAllClientVendorList(@Param("companyId") Long companyId, @Param("param1") Integer param1,
 			@Param("param2") Integer param2, @Param("param3") Integer param3);
 
+	@Query(value = "select a.remainingCredit,a.customerCreditLine, a.name, "
+			+ "a.firstName, a.lastName, a.dateAdded, b.dateAdded, "
+			+ "a.clientVendorId, ca.categoryId,iv.invoiceId,b.credit,b.totalCredit,t.termId,b.memo "
+			+ " from BcaClientvendor a left join a.term t left join a.company c left join a.category ca inner join BcaInvoicecredit  b left join b.invoiceType it left join b.invoice iv on b.cvId = a.clientVendorId "
+			+ " where a.deleted = 0 and b.deleted =0 and b.credit > 0 and it.invoiceTypeId not in( "
+			+ " :invoiceTypeId ) and c.companyId = :companyId and a.status = 'N' and  a.cvtypeId in ( "
+			+ " :cvtypeId ) order by b.dateAdded desc")
+	List<Object[]> findUnpaidCreditAmount(@Param("companyId") int companyId, @Param("cvtype") List<Integer> cvTypeId,
+			@Param("invoiceTypeId") List<Integer> invoiceTypeId);
+
 	
-
-
+	@Query("select a.firstName, a.lastName,a.name , a.clientVendorId , b.amountDue , b.dueDate, b.billNum , b.creditUsed ,b.amountPaid ,"
+			+ " b.balance , b.payerId , acc.name as accountName from BcaClientvendor a left join BcaBill as b on "
+			+ "a.clientVendorId = b.vendorId left join BcaAccount as acc on b.payerId = acc.accountId where a.company.companyId = :companyId "
+			+ " and( a.deleted = 0 or a.active = 1 ) and a.status in ('U', 'N') and a.cvtypeId in (1,3) and b.billType = 0 and "
+			+ " b.status in (0,2) and b.dueDate <=  :dueDate order by b.dueDate ")	
+	List<Object[]> findPayBillsLists(@Param("companyId")Long companyId,@Param("dueDate")String dueDate); 
 }

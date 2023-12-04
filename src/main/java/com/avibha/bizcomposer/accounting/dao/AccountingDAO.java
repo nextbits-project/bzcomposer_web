@@ -9,6 +9,11 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.nxsol.bzcomposer.company.domain.BcaAccount;
+import com.nxsol.bzcomposer.company.domain.BcaBalancesheetitem;
+import com.nxsol.bzcomposer.company.repos.BcaAccountRepository;
+import com.nxsol.bzcomposer.company.repos.BcaBalancesheetitemRepository;
+
 import org.apache.struts.util.LabelValueBean;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -19,6 +24,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -29,6 +35,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 public class AccountingDAO {
@@ -40,68 +47,98 @@ public class AccountingDAO {
 	 * 
 	 * @return ArrayList
 	 */
+	@Autowired
+	private static BcaAccountRepository accountRepository;
+
 	public static ArrayList getAccountList() {
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
 		String str[] = { "CHECKING", "SAVINGS", "CREDIT CARD", "CASH", "CREDIT LINE" };
 		ArrayList<Object> accountList = new ArrayList<Object>();
-		ResultSet rs = null, rs1 = null;
-		con = db.getConnection();
+//		ResultSet rs = null, rs1 = null;
+//		con = db.getConnection();
 		for (int k = 0; k < 5; k++) {
 			ArrayList<Object> objList = new ArrayList<Object>();
 			objList.add(str[k]);
 			try {
 
-				String sqlString = "select distinct accountId,Name,isCategory from bca_account where acctCategoryId=? and parentId=0 and active=1 order by Name asc";
-				pstmt = con.prepareStatement(sqlString);
-				pstmt.setInt(1, k + 1);
-				Loger.log(sqlString);
-				rs = pstmt.executeQuery();
-
-				while (rs.next()) {
+//				String sqlString = "select distinct accountId,Name,isCategory from bca_account where acctCategoryId=? and parentId=0 and active=1 order by Name asc";
+				List<BcaAccount> bca_account = accountRepository.findAccountByAcctCategoryId(k + 1);
+				for (BcaAccount account : bca_account) {
 					AccountDto aForm = new AccountDto();
-					aForm.setAccountId(rs.getString(1));
-					aForm.setAccountName(rs.getString(2));
-					aForm.setIsCategory(rs.getString(3));
-					String sqlString1 = "select accountId,Name from bca_account where parentId=? and active=1 order by Name asc";
-					pstmt = con.prepareStatement(sqlString1);
-					pstmt.setString(1, aForm.getAccountId());
-
-					rs1 = pstmt.executeQuery();
+					aForm.setAccountId(account.getAccountId().toString());
+					aForm.setAccountName(account.getName());
+					aForm.setIsCategory(account.getIsCategory().toString());
+//					String sqlString1 = "select accountId,Name from bca_account where parentId=? and active=1 order by Name asc";
+					List<BcaAccount> bca = accountRepository.findAccountByParentId(account.getAccountId());
 					ArrayList<AccountDto> subList = new ArrayList<AccountDto>();
 
 					subList.add(aForm);
-
-					while (rs1.next()) {
+					for(BcaAccount account2:bca) {
 						AccountDto aForm1 = new AccountDto();
-						aForm1.setAccountId(rs1.getString(1));
-						aForm1.setAccountName(rs1.getString(2));
+						aForm1.setAccountId(account2.getAccountId().toString());
+						aForm1.setAccountName(account2.getName());
 						subList.add(aForm1);
 					}
+
+//					while (rs1.next()) {
+//						AccountDto aForm1 = new AccountDto();
+//						aForm1.setAccountId(rs1.getString(1));
+//						aForm1.setAccountName(rs1.getString(2));
+//						subList.add(aForm1);
+//					}
 					objList.add(subList);
 				}
+//				pstmt = con.prepareStatement(sqlString);
+//				pstmt.setInt(1, k + 1);
+//				Loger.log(sqlString);
+//				rs = pstmt.executeQuery();
 
-			} catch (SQLException ee) {
+//				while (rs.next()) {
+//					AccountDto aForm = new AccountDto();
+//					aForm.setAccountId(rs.getString(1));
+//					aForm.setAccountName(rs.getString(2));
+//					aForm.setIsCategory(rs.getString(3));
+//					String sqlString1 = "select accountId,Name from bca_account where parentId=? and active=1 order by Name asc";
+//					pstmt = con.prepareStatement(sqlString1);
+//					pstmt.setString(1, aForm.getAccountId());
+//
+//					rs1 = pstmt.executeQuery();
+//					ArrayList<AccountDto> subList = new ArrayList<AccountDto>();
+//
+//					subList.add(aForm);
+//
+//					while (rs1.next()) {
+//						AccountDto aForm1 = new AccountDto();
+//						aForm1.setAccountId(rs1.getString(1));
+//						aForm1.setAccountName(rs1.getString(2));
+//						subList.add(aForm1);
+//					}
+//					objList.add(subList);
+//				}
+
+			} catch (Exception ee) {
 				Loger.log(2, "SQL Error in Class AccountingDAO and  method getAccountList" + " " + ee.toString());
 
-			} finally {
-				try {
-					if (rs != null) {
-						db.close(rs);
-					}
-					if (pstmt != null) {
-						db.close(pstmt);
-					}
-					if (con != null) {
-						db.close(con);
-					}
-				} catch (Exception e) {
-					Loger.log(e.toString());
-					Loger.log(2, "SQL Error in Class AccountingDAO and  method getAccountList" + " " + e.toString());
-				}
 			}
+//			finally {
+//				try {
+//					if (rs != null) {
+//						db.close(rs);
+//					}
+//					if (pstmt != null) {
+//						db.close(pstmt);
+//					}
+//					if (con != null) {
+//						db.close(con);
+//					}
+//				} catch (Exception e) {
+//					Loger.log(e.toString());
+//					Loger.log(2, "SQL Error in Class AccountingDAO and  method getAccountList" + " " + e.toString());
+//				}
+//			}
 			accountList.add(objList);
 		}
 		return accountList;
@@ -2490,13 +2527,16 @@ public class AccountingDAO {
 		return objList;
 	}
 
+	@Autowired
+	private static BcaBalancesheetitemRepository balancesheetitemRepository;
+
 	public static ArrayList getBalanceSheetReport(String datesCombo, String fromDate, String toDate, String sortBy,
 			String cId, HttpServletRequest request, AccountDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt1 = null, stmt2 = null, stmt3 = null, stmt4 = null, stmt5 = null, stmt6 = null;
-		ResultSet rs1 = null, rs2 = null, rs3 = null, rs4 = null, rs5 = null, rs6 = null;
-		con = db.getConnection();
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt1 = null, stmt2 = null, stmt3 = null, stmt4 = null, stmt5 = null, stmt6 = null;
+//		ResultSet rs1 = null, rs2 = null, rs3 = null, rs4 = null, rs5 = null, rs6 = null;
+//		con = db.getConnection();
 		String dateBetween = "", sql1 = "";
 		DateInfo dInfo = new DateInfo();
 		CustomerInfo cInfo = new CustomerInfo();
@@ -2537,41 +2577,61 @@ public class AccountingDAO {
 		}
 
 		try {
-			stmt1 = con.createStatement();
-			stmt2 = con.createStatement();
-			stmt3 = con.createStatement();
-			stmt4 = con.createStatement();
-			stmt5 = con.createStatement();
-			stmt6 = con.createStatement();
+//			stmt1 = con.createStatement();
+//			stmt2 = con.createStatement();
+//			stmt3 = con.createStatement();
+//			stmt4 = con.createStatement();
+//			stmt5 = con.createStatement();
+//			stmt6 = con.createStatement();
 
-			sql1 = "select * from bca_account  where CompanyID = '" + cId + "'" + " AND AcctCategoryID in(1,2)";
-			rs1 = stmt1.executeQuery(sql1);
-			while (rs1.next()) {
+//			sql1 = "select * from bca_account  where CompanyID = '" + cId + "'" + " AND AcctCategoryID in(1,2)";
+			List<BcaAccount> accounts = accountRepository.findAccountByIdAndAcctCategoryId(Long.parseLong(cId));
+			for (BcaAccount account : accounts) {
 				AccountDto a = new AccountDto();
-				a.setAccountName(rs1.getString("Name"));
-				a.setAmount(new DecimalFormat("#0.0").format(rs1.getDouble("CustomerCurrentBalance")));
-				totalSaving += rs1.getDouble("CustomerCurrentBalance");
+				a.setAccountName(account.getName());
+				a.setAmount(new DecimalFormat("#0.0").format(account.getCustomerCurrentBalance()));
+				totalSaving += account.getCustomerCurrentBalance();
 				objList.add(a);
 			}
-			String sql2 = "SELECT adjustedtotal " + "FROM   bca_invoice AS inv, " + "       bca_term "
-					+ "WHERE  inv.companyid = '" + cId + "'" + "       AND inv.termid = bca_term.termid "
-					+ "       AND adjustedtotal > 0 " + "       AND ispaymentcompleted = 0 "
-					+ "       AND invoicetypeid IN ( 1, 12, 13, 17, 19 ) " + "       AND invoicestatus IN ( 0, 5, 3 )";
-			rs2 = stmt2.executeQuery(sql2);
-			while (rs2.next()) {
+//			rs1 = stmt1.executeQuery(sql1);
+//			while (rs1.next()) {
+//				AccountDto a = new AccountDto();
+//				a.setAccountName(rs1.getString("Name"));
+//				a.setAmount(new DecimalFormat("#0.0").format(rs1.getDouble("CustomerCurrentBalance")));
+//				totalSaving += rs1.getDouble("CustomerCurrentBalance");
+//				objList.add(a);
+//			}
+//			String sql2 = "SELECT adjustedtotal " + "FROM   bca_invoice AS inv, " + "       bca_term "
+//					+ "WHERE  inv.companyid = '" + cId + "'" + "       AND inv.termid = bca_term.termid "
+//					+ "       AND adjustedtotal > 0 " + "       AND ispaymentcompleted = 0 "
+//					+ "       AND invoicetypeid IN ( 1, 12, 13, 17, 19 ) " + "       AND invoicestatus IN ( 0, 5, 3 )";
+
+			List<Double> adjustTotalList = accountRepository.findAdjustedTotal(Long.parseLong(cId));
+			for (Double value : adjustTotalList) {
 				AccountDto f = new AccountDto();
 				/* objList.add(f); */
-				totalAccountReceivable += rs2.getDouble("AdjustedTotal");
+				totalAccountReceivable += value;
 			}
+//			rs2 = stmt2.executeQuery(sql2);
+//			while (rs2.next()) {
+//				AccountDto f = new AccountDto();
+//				/* objList.add(f); */
+//				totalAccountReceivable += rs2.getDouble("AdjustedTotal");
+//			}
 
 			totalCurrentAssets = totalSaving + totalAccountReceivable;
 
 			String sql3 = "Select sum(salePrice*Qty) as tot FROM  bca_iteminventory as inv,bca_company as comp  where inv.CompanyID = '"
 					+ cId + "'";
-			rs3 = stmt3.executeQuery(sql3);
-			while (rs3.next()) {
-				totalInventoryAssets += rs3.getDouble("tot");
+			List<Double> sum = accountRepository.findSum(Long.parseLong(cId));
+			for (Double value : sum) {
+				totalInventoryAssets += value;
 			}
+//			rs3 = stmt3.executeQuery(sql3);
+//			while (rs3.next()) {
+//				totalInventoryAssets += rs3.getDouble("tot");
+//			}
+
 			AccountDto account = getAccount(56934, cId);
 			if (account != null) {
 				totalOtherAssets = 0.00;
@@ -2579,18 +2639,33 @@ public class AccountingDAO {
 			toa = totalInventoryAssets + totalOtherAssets;
 			totalAssets = totalCurrentAssets + toa;
 
-			String sql4 = "select * from bca_balancesheetitem  where CompanyID = '" + cId + "'"
-					+ " AND categoryTypeID = 2147483647";
-			rs4 = stmt4.executeQuery(sql4);
-			while (rs4.next()) {
-				liability += rs4.getDouble("Amount");
+//			String sql4 = "select * from bca_balancesheetitem  where CompanyID = '" + cId + "'"
+//					+ " AND categoryTypeID = 2147483647";
+
+			List<BcaBalancesheetitem> balanceSheet = balancesheetitemRepository
+					.findByCompany_CompanyIdAndCategoryTypeId(Long.parseLong(cId), 2147483647);
+
+			for (BcaBalancesheetitem bci : balanceSheet) {
+
+				liability += bci.getAmount();
 			}
-			String sql5 = "select * from bca_balancesheetitem  where CompanyID = '" + cId + "'"
-					+ " AND categoryTypeID = 1342567345 ";
-			rs5 = stmt5.executeQuery(sql5);
-			while (rs5.next()) {
-				equity += rs5.getDouble("Amount");
+//			rs4 = stmt4.executeQuery(sql4);
+//			while (rs4.next()) {
+//				liability += rs4.getDouble("Amount");
+//			}
+//			String sql5 = "select * from bca_balancesheetitem  where CompanyID = '" + cId + "'"
+//					+ " AND categoryTypeID = 1342567345 ";
+			List<BcaBalancesheetitem> pbalanceSheet = balancesheetitemRepository
+					.findByCompany_CompanyIdAndCategoryTypeId(Long.parseLong(cId), 2147483647);
+
+			for (BcaBalancesheetitem bci : pbalanceSheet) {
+
+				liability += bci.getAmount();
 			}
+//			rs5 = stmt5.executeQuery(sql5);
+//			while (rs5.next()) {
+//				equity += rs5.getDouble("Amount");
+//			}
 			total = liability + equity;
 			double amt = total - totalAssets;
 			if (amt < 0) {
@@ -2628,54 +2703,55 @@ public class AccountingDAO {
 		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		} finally {
-
-			try {
-
-				if (stmt1 != null) {
-					db.close(stmt1);
-				}
-				if (rs1 != null) {
-					db.close(rs1);
-				}
-				if (stmt2 != null) {
-					db.close(stmt2);
-				}
-				if (rs2 != null) {
-					db.close(rs2);
-				}
-				if (stmt3 != null) {
-					db.close(stmt3);
-				}
-				if (rs3 != null) {
-					db.close(rs3);
-				}
-				if (stmt4 != null) {
-					db.close(stmt4);
-				}
-				if (rs4 != null) {
-					db.close(rs4);
-				}
-				if (stmt5 != null) {
-					db.close(stmt5);
-				}
-				if (rs5 != null) {
-					db.close(rs5);
-				}
-				if (stmt6 != null) {
-					db.close(stmt6);
-				}
-				if (rs6 != null) {
-					db.close(rs6);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				// TODO: handle exception
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//
+//			try {
+//
+//				if (stmt1 != null) {
+//					db.close(stmt1);
+//				}
+//				if (rs1 != null) {
+//					db.close(rs1);
+//				}
+//				if (stmt2 != null) {
+//					db.close(stmt2);
+//				}
+//				if (rs2 != null) {
+//					db.close(rs2);
+//				}
+//				if (stmt3 != null) {
+//					db.close(stmt3);
+//				}
+//				if (rs3 != null) {
+//					db.close(rs3);
+//				}
+//				if (stmt4 != null) {
+//					db.close(stmt4);
+//				}
+//				if (rs4 != null) {
+//					db.close(rs4);
+//				}
+//				if (stmt5 != null) {
+//					db.close(stmt5);
+//				}
+//				if (rs5 != null) {
+//					db.close(rs5);
+//				}
+//				if (stmt6 != null) {
+//					db.close(stmt6);
+//				}
+//				if (rs6 != null) {
+//					db.close(rs6);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				// TODO: handle exception
+//				Loger.log(e.toString());
+//			}
+//		}
 		return objList;
 	}
 

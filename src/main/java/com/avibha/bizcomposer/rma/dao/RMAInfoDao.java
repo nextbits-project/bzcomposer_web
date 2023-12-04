@@ -17,9 +17,12 @@ import com.avibha.common.utility.MyUtility;
 import java.sql.*;
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Service;
+
 /*
  * 
  */
+@Service
 public class RMAInfoDao {
 
 	public ArrayList getUserName(String compId ) {

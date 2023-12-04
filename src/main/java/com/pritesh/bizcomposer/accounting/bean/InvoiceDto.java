@@ -1,11 +1,13 @@
 package com.pritesh.bizcomposer.accounting.bean;
 
-import java.sql.Timestamp;
+
+import java.time.OffsetDateTime;
 
 import lombok.Data;
+
 @Data
 public class InvoiceDto {
-	private Integer invoiceID;
+	private Integer invoiceID;	
 	private Integer orderNum;
 	private Integer PONum;
 	private Double subTotal;
@@ -26,8 +28,8 @@ public class InvoiceDto {
 	private Boolean isReceived;
 	private Integer termID;
 	private Boolean isPaymentCompleted;
-	private Timestamp dateConfirmed;
-	private Timestamp dateAdded;
+	private OffsetDateTime dateConfirmed;
+	private OffsetDateTime dateAdded;
 	private Integer invoiceStatus;
 	private Integer paymentTypeID;
 	private Integer categoryID;
@@ -42,5 +44,5 @@ public class InvoiceDto {
 	private Integer shippingAddrID;
 	private Double totalCommission;
 	private Integer bankAccountID;
-
+	
 }
