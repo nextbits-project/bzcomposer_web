@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BcaShippingrateRepository extends JpaRepository<BcaShippingrate, Integer> {
-	List<BcaShippingrate> findByShipCarrierId(int shipCarrierId);
+    List<BcaShippingrate> findByShipCarrier_ShipCarrierId(int shipCarrierId);
+
 }

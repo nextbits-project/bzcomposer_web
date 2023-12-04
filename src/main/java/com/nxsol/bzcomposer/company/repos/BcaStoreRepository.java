@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface BcaStoreRepository extends JpaRepository<BcaStore, Integer> {
     List<BcaStore> findByCompany_CompanyIdAndActiveAndDeleted(Long companyId, int active, int deleted);
     
-    List<BcaStore> findByCompany_CompanyIdAndStoreTypeIdInAndActiveAndDeleted(Long companyId, List<Integer> storeTypeIds, int active, int deleted);
+    List<BcaStore> findByCompany_CompanyIdAndStoreType_StoreTypeIdInAndActiveAndDeleted(Long companyId, List<Integer> storeTypeIds, int active, int deleted);
 
 
 }

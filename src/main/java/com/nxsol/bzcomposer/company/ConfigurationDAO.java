@@ -36,6 +36,7 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaFeatures;
 import com.nxsol.bzcomposer.company.domain.BcaMailtemplate;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingcontainer;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingmailtype;
@@ -47,10 +48,12 @@ import com.nxsol.bzcomposer.company.domain.BcaShippingrate;
 import com.nxsol.bzcomposer.company.domain.BcaShippingservice;
 import com.nxsol.bzcomposer.company.domain.BcaStore;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
+import com.nxsol.bzcomposer.company.domain.BcpFedperallowance;
 import com.nxsol.bzcomposer.company.domain.BcpTaxCompany;
 import com.nxsol.bzcomposer.company.domain.SmdEbaycategory;
 import com.nxsol.bzcomposer.company.domain.SmdShipdetails;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaFeaturesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMailtemplateRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingcontainerRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingmailtypeRepository;
@@ -73,47 +76,70 @@ public class ConfigurationDAO {
 	ConfigurationDto pojo = null;
 	SimpleDateFormat formatterMMDDYYYY = new SimpleDateFormat("yyyy-MM-dd");
 
+	@Autowired
+	private BcaFeaturesRepository featureRepository;
+
 	public ArrayList<ConfigurationDto> getModules(String cId, HttpServletRequest request, ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
+		List<BcaFeatures> features = featureRepository.findByBusinessId(1); // Assuming BusinessID is a Long
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_features WHERE BusinessID=" + 1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setFeatureName(rs.getString(1));
-				pojo.setSelectedModules(rs.getInt("ModuleID"));
-				pojo.setSelectedModuleId(rs.getInt(4));
-				if (!(pojo.getFeatureName().equals("Daily Sales Summary")
-						|| pojo.getFeatureName().equals("Daily Item Summary"))) {
-					listPOJOs.add(pojo);
-				}
-				pojo = null;
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+
+		for (BcaFeatures feature : features) {
+			if (!("Daily Sales Summary".equals(feature.getFeatureName())
+					|| "Daily Item Summary".equals(feature.getFeatureName()))) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setFeatureName(feature.getFeatureName());
+				pojo.setSelectedModules(feature.getModulee().getModuleId());
+				pojo.setSelectedModuleId(feature.getModulee().getModuleId()); // Adjust according to your entity fields
+				listPOJOs.add(pojo);
 			}
 		}
+
 		form.setListOfExistingModules(listPOJOs);
 		request.setAttribute("companyname", form.getCompanyName());
 		return listPOJOs;
 	}
+
+//	public ArrayList<ConfigurationDto> getModules(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM bca_features WHERE BusinessID=" + 1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setFeatureName(rs.getString(1));
+//				pojo.setSelectedModules(rs.getInt("ModuleID"));
+//				pojo.setSelectedModuleId(rs.getInt(4));
+//				if (!(pojo.getFeatureName().equals("Daily Sales Summary")
+//						|| pojo.getFeatureName().equals("Daily Item Summary"))) {
+//					listPOJOs.add(pojo);
+//				}
+//				pojo = null;
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingModules(listPOJOs);
+//		request.setAttribute("companyname", form.getCompanyName());
+//		return listPOJOs;
+//	}
 
 	public ArrayList<ConfigurationDto> getSelectedModules(String cId, HttpServletRequest request,
 			ConfigurationDto form) {
@@ -2971,7 +2997,7 @@ public class ConfigurationDAO {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 
 		try {
-			List<BcaShippingrate> shippingRates = shippingrateRepository.findByShipCarrierId(shipId);
+			List<BcaShippingrate> shippingRates = shippingrateRepository.findByShipCarrier_ShipCarrierId(shipId);
 
 			for (BcaShippingrate shippingRate : shippingRates) {
 				ConfigurationDto pojo = new ConfigurationDto();
@@ -3842,6 +3868,8 @@ public class ConfigurationDAO {
 //		form.setListOfExistingFedexUSers(listPOJOs);
 //		return listPOJOs;
 //	}
+	
+	
 	@Autowired
 	private BcaStoreRepository storeRepository;
 
@@ -3917,7 +3945,7 @@ public class ConfigurationDAO {
 		try {
 			List<Integer> storeTypeIds = Arrays.asList(3, 9); // Store Type IDs
 			List<BcaStore> stores = storeRepository
-					.findByCompany_CompanyIdAndStoreTypeIdInAndActiveAndDeleted(companyId, storeTypeIds, 1, 1);
+					.findByCompany_CompanyIdAndStoreType_StoreTypeIdInAndActiveAndDeleted(companyId, storeTypeIds, 1, 1);
 
 			for (BcaStore store : stores) {
 				ConfigurationDto pojo = new ConfigurationDto();
@@ -4058,67 +4086,67 @@ public class ConfigurationDAO {
 //		return listPOJOs;
 //	}
 
-	@Autowired
-	private BcpFedperallowanceRepository fedperallowanceRepository;
-
-	public ArrayList<ConfigurationDto> getAvailableTaxYear(ConfigurationDto form) {
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-
-		try {
-			List<Integer> taxYears = fedperallowanceRepository.findDistinctEYear();
-
-			for (Integer year : taxYears) {
-				ConfigurationDto pojo = new ConfigurationDto();
-				pojo.setSelectedTaxYear(year);
-				pojo.setAvailableTaxYear(year);
-				listPOJOs.add(pojo);
-			}
-			form.setListOfExistingTaxYear(listPOJOs);
-		} catch (Exception e) {
-			// Log and handle exception
-			e.printStackTrace();
-		}
-		return listPOJOs;
-	}
-
-//	public ArrayList<ConfigurationDto> getAvailableTaxYear(HttpServletRequest request, ConfigurationDto form) {
-//		Connection con = null;
-//		SQLExecutor db = new SQLExecutor();
-//		Statement stmt = null;
-//		ResultSet rs = null;
-//		con = db.getConnection();
+//	@Autowired
+//	private BcpFedperallowanceRepository fedperallowanceRepository;
+//
+//	public ArrayList<ConfigurationDto> getAvailableTaxYear(ConfigurationDto form) {
 //		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-//		String sql = "";
+//
 //		try {
-//			stmt = con.createStatement();
-//			sql = "SELECT DISTINCT(EYear) as TaxYear FROM bcp_fedperallowance GROUP BY EYear ORDER BY EYear DESC";
-//			rs = stmt.executeQuery(sql);
-//			while (rs.next()) {
-//				pojo = new ConfigurationDto();
-//				pojo.setSelectedTaxYear(rs.getInt("TaxYear"));
-//				pojo.setAvailableTaxYear(rs.getInt("TaxYear"));
+//			List<BcpFedperallowance> taxYears = fedperallowanceRepository.findDistinctEYear();
+//
+//			for (BcpFedperallowance year : taxYears) {
+//				ConfigurationDto pojo = new ConfigurationDto();
+//				pojo.setSelectedTaxYear(year.getEyear());
+//				pojo.setAvailableTaxYear(year.getEyear());
 //				listPOJOs.add(pojo);
 //			}
+//			form.setListOfExistingTaxYear(listPOJOs);
 //		} catch (Exception e) {
-//			Loger.log(e.toString());
-//		} finally {
-//			try {
-//				if (rs != null) {
-//					db.close(rs);
-//				}
-//				if (stmt != null) {
-//					db.close(stmt);
-//				}
-//				if (con != null) {
-//					db.close(con);
-//				}
-//			} catch (Exception e) {
-//				Loger.log(e.toString());
-//			}
+//			// Log and handle exception
+//			e.printStackTrace();
 //		}
-//		form.setListOfExistingTaxYear(listPOJOs);
 //		return listPOJOs;
 //	}
+
+	public ArrayList<ConfigurationDto> getAvailableTaxYear(ConfigurationDto form) {
+		Connection con = null;
+		SQLExecutor db = new SQLExecutor();
+		Statement stmt = null;
+		ResultSet rs = null;
+		con = db.getConnection();
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+		String sql = "";
+		try {
+			stmt = con.createStatement();
+			sql = "SELECT DISTINCT(EYear) as TaxYear FROM bcp_fedperallowance GROUP BY EYear ORDER BY EYear DESC";
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				pojo = new ConfigurationDto();
+				pojo.setSelectedTaxYear(rs.getInt("TaxYear"));
+				pojo.setAvailableTaxYear(rs.getInt("TaxYear"));
+				listPOJOs.add(pojo);
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+		} finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		form.setListOfExistingTaxYear(listPOJOs);
+		return listPOJOs;
+	}
 
 	@Autowired
 	private BcpTaxCompanyRepository taxCompanyRepository;
@@ -4372,8 +4400,7 @@ public class ConfigurationDAO {
 //		}
 //	}
 
-	
-	//start from here;
+	// start from here;
 	public void saveFIDCompanyTaxInfo(String companyID, ConfigurationDto configForm) {
 		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
