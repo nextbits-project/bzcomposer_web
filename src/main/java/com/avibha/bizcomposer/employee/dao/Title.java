@@ -11,45 +11,62 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.nxsol.bzcomposer.company.domain.BcaTitle;
+import com.nxsol.bzcomposer.company.repos.BcaTitleRepository;
 
 /*
  * 
  */
+@Service
 public class Title {
 	/*
 	 * 
 	 */
+	@Autowired
+	private BcaTitleRepository bcaTitleRepository;
+
 	public ArrayList getTitleList(String CompanyID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null;
 		ArrayList<LabelValueBean> arr = new ArrayList<>();
 		try {
-			pstmt = con.prepareStatement("select TitleID,Title from bca_title where CompanyID=? and Active=? order by TitleID Desc");
-			pstmt.setString(1, CompanyID);
-			pstmt.setString(2, "1");
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				arr.add(new LabelValueBean(rs.getString("Title"), rs.getString("TitleID")));
+
+			List<BcaTitle> listOfTitle = bcaTitleRepository.findByCompany_CompanyIdAndActive(Long.parseLong(CompanyID),
+					1);
+			for (BcaTitle bcaTitle : listOfTitle) {
+				arr.add(new LabelValueBean(bcaTitle.getTitle(), bcaTitle.getTitleId().toString()));
 			}
-		} catch (SQLException ee) {
+
+//			pstmt = con.prepareStatement("select TitleID,Title from bca_title where CompanyID=? and Active=? order by TitleID Desc");
+//			pstmt.setString(1, CompanyID);
+//			pstmt.setString(2, "1");
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				arr.add(new LabelValueBean(rs.getString("Title"), rs.getString("TitleID")));
+//			}
+		} catch (Exception ee) {
 			Loger.log(2, "Error in  Class Title and  method -getTitleList " + ee.toString());
-			
-		}finally {
-			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+
 		}
+//		finally {
+//			try {
+//				if (rs != null) { db.close(rs); }
+//				if (pstmt != null) { db.close(pstmt); }
+//				if(con != null){ db.close(con); }
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return arr;
 	}
 
@@ -58,7 +75,7 @@ public class Title {
 	 */
 	public String getTitle(String TitleID) {
 		String Title = null;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -76,20 +93,19 @@ public class Title {
 			if (rs.next())
 				Title = rs.getString(1);
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class Title and  method -getTitle " + " "
-					+ ee.toString());
-		}finally {
+			Loger.log(2, "Error in  Class Title and  method -getTitle " + " " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}

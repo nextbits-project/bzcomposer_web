@@ -2971,7 +2971,7 @@ public class ConfigurationDAO {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 
 		try {
-			List<BcaShippingrate> shippingRates = shippingrateRepository.findByShipCarrierId(shipId);
+			List<BcaShippingrate> shippingRates = shippingrateRepository.findByShipCarrier_ShipCarrierId(shipId);
 
 			for (BcaShippingrate shippingRate : shippingRates) {
 				ConfigurationDto pojo = new ConfigurationDto();
@@ -3917,7 +3917,7 @@ public class ConfigurationDAO {
 		try {
 			List<Integer> storeTypeIds = Arrays.asList(3, 9); // Store Type IDs
 			List<BcaStore> stores = storeRepository
-					.findByCompany_CompanyIdAndStoreTypeIdInAndActiveAndDeleted(companyId, storeTypeIds, 1, 1);
+					.findByCompany_CompanyIdAndStoreType_StoreTypeIdInAndActiveAndDeleted(companyId, storeTypeIds, 1, 1);
 
 			for (BcaStore store : stores) {
 				ConfigurationDto pojo = new ConfigurationDto();

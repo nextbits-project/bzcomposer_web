@@ -7,8 +7,11 @@
 package com.avibha.bizcomposer.sales.forms;
 
 import java.util.List;
- 
-public class CustomerDto{
+
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class CustomerDto {
 
 	private static final long serialVersionUID = 0;
 	public static final String customerColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
@@ -73,7 +76,7 @@ public class CustomerDto{
 	private String memo;
 
 	private String customerGroup;
-	
+
 	private String term;
 	private String rep;
 	private String creditTerm;
@@ -167,8 +170,8 @@ public class CustomerDto{
 	private String fsMarkFinanceCharge;
 
 	private String taxAble;
-	
-	private String purchaseVendor;		//Added on 31-07-2019
+
+	private String purchaseVendor; // Added on 31-07-2019
 	private String status;
 	private String isclient;
 	private String dispay_info;
@@ -198,7 +201,7 @@ public class CustomerDto{
 	private int poNum;
 	private int cvTypeID;
 	private String number;
-	
+
 	private String datesCombo;
 	private boolean paymentUnpaid;
 	private double last3MonthAmt;
@@ -207,7 +210,46 @@ public class CustomerDto{
 	private String lastOrderDate;
 	private boolean active;
 
-	public String getCustId() { return custId; }
+	public CustomerDto(int clientVendorId, String name, String customerTitle, String firstName, String lastName,
+			String address1, String address2, String city, String state, String zipCode, String country, String email,
+			String phone, String cellPhone, String fax, String dateAdded, boolean isPaymentCompleted,
+			String cvcategoryName, String cityName, String stateName, String countryName, String dbaname) {
+
+		this.clientVendorID = clientVendorId + "";
+
+		this.companyName = name;
+		this.title = customerTitle;
+		this.cname = name + "(" + firstName + " " + lastName + ")";
+		this.address1 = address1;
+		this.address2 = address2;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.zipCode = zipCode;
+		this.city = cityName != null ? cityName : city;
+		this.stateName = stateName != null ? stateName : state;
+		String country_name = countryName != null ? countryName : country;
+		if (countryName != null && countryName.contains("United States")) {
+			countryName = "USA";
+		}
+		this.country = country_name;
+
+		this.email = email;
+		this.phone = phone;
+		this.cellPhone = cellPhone;
+		this.fax = fax;
+		this.dateAdded = dateAdded;
+		this.fullName = firstName + " " + lastName;
+
+		this.billTo = firstName + lastName;
+		this.paymentUnpaid = isPaymentCompleted;
+		this.type = cvcategoryName;
+		this.dbaName = dbaname;
+		
+	}
+
+	public String getCustId() {
+		return custId;
+	}
 
 	public void setCustId(String custId) {
 		this.custId = custId;
@@ -220,6 +262,7 @@ public class CustomerDto{
 	public void setSelectedRowID(String selectedRowID) {
 		this.selectedRowID = selectedRowID;
 	}
+
 	public String getCreditTerm() {
 		return creditTerm;
 	}
@@ -367,6 +410,7 @@ public class CustomerDto{
 	public String getAddress1() {
 		return address1;
 	}
+
 	public void setAddress1(String address1) {
 		this.address1 = address1;
 	}
@@ -374,11 +418,15 @@ public class CustomerDto{
 	public String getAddress2() {
 		return address2;
 	}
+
 	public void setAddress2(String address2) {
 		this.address2 = address2;
 	}
 
-	public String getAnnualIntrestRate() { return annualIntrestRate; }
+	public String getAnnualIntrestRate() {
+		return annualIntrestRate;
+	}
+
 	public void setAnnualIntrestRate(String annualIntrestRate) {
 		this.annualIntrestRate = annualIntrestRate;
 	}
@@ -386,6 +434,7 @@ public class CustomerDto{
 	public String getBsaddress1() {
 		return bsaddress1;
 	}
+
 	public void setBsaddress1(String bsaddress1) {
 		this.bsaddress1 = bsaddress1;
 	}
@@ -393,6 +442,7 @@ public class CustomerDto{
 	public String getBsaddress2() {
 		return bsaddress2;
 	}
+
 	public void setBsaddress2(String bsaddress2) {
 		this.bsaddress2 = bsaddress2;
 	}
@@ -405,8 +455,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bscity
-	 *            the bscity to set
+	 * @param bscity the bscity to set
 	 */
 	public void setBscity(String bscity) {
 		this.bscity = bscity;
@@ -420,8 +469,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bscname
-	 *            the bscname to set
+	 * @param bscname the bscname to set
 	 */
 	public void setBscname(String bscname) {
 		this.bscname = bscname;
@@ -435,8 +483,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bscntCode
-	 *            the bscntCode to set
+	 * @param bscntCode the bscntCode to set
 	 */
 	public void setBscntCode(String bscntCode) {
 		this.bscntCode = bscntCode;
@@ -450,8 +497,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bscountry
-	 *            the bscountry to set
+	 * @param bscountry the bscountry to set
 	 */
 	public void setBscountry(String bscountry) {
 		this.bscountry = bscountry;
@@ -465,8 +511,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bsfirstName
-	 *            the bsfirstName to set
+	 * @param bsfirstName the bsfirstName to set
 	 */
 	public void setBsfirstName(String bsfirstName) {
 		this.bsfirstName = bsfirstName;
@@ -480,8 +525,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bslastName
-	 *            the bslastName to set
+	 * @param bslastName the bslastName to set
 	 */
 	public void setBslastName(String bslastName) {
 		this.bslastName = bslastName;
@@ -495,8 +539,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bsphone
-	 *            the bsphone to set
+	 * @param bsphone the bsphone to set
 	 */
 	public void setBsphone(String bsphone) {
 		this.bsphone = bsphone;
@@ -510,8 +553,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bsprovince
-	 *            the bsprovince to set
+	 * @param bsprovince the bsprovince to set
 	 */
 	public void setBsprovince(String bsprovince) {
 		this.bsprovince = bsprovince;
@@ -525,8 +567,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bsstate
-	 *            the bsstate to set
+	 * @param bsstate the bsstate to set
 	 */
 	public void setBsstate(String bsstate) {
 		this.bsstate = bsstate;
@@ -540,8 +581,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bszipCode
-	 *            the bszipCode to set
+	 * @param bszipCode the bszipCode to set
 	 */
 	public void setBszipCode(String bszipCode) {
 		this.bszipCode = bszipCode;
@@ -550,6 +590,7 @@ public class CustomerDto{
 	public String getCcType() {
 		return ccType;
 	}
+
 	public void setCcType(String ccType) {
 		this.ccType = ccType;
 	}
@@ -557,6 +598,7 @@ public class CustomerDto{
 	public String getCardNo() {
 		return cardNo;
 	}
+
 	public void setCardNo(String cardNo) {
 		this.cardNo = cardNo;
 	}
@@ -564,16 +606,23 @@ public class CustomerDto{
 	public String getExpDate() {
 		return expDate;
 	}
+
 	public void setExpDate(String expDate) {
 		this.expDate = expDate;
 	}
 
-	public String getCw2() { return cw2; }
-	public void setCw2(String cw2) { this.cw2 = cw2; }
+	public String getCw2() {
+		return cw2;
+	}
+
+	public void setCw2(String cw2) {
+		this.cw2 = cw2;
+	}
 
 	public String getCardHolderName() {
 		return cardHolderName;
 	}
+
 	public void setCardHolderName(String cardHolderName) {
 		this.cardHolderName = cardHolderName;
 	}
@@ -581,6 +630,7 @@ public class CustomerDto{
 	public String getCardBillAddress() {
 		return cardBillAddress;
 	}
+
 	public void setCardBillAddress(String cardBillAddress) {
 		this.cardBillAddress = cardBillAddress;
 	}
@@ -588,15 +638,26 @@ public class CustomerDto{
 	public String getCardZip() {
 		return cardZip;
 	}
+
 	public void setCardZip(String cardZip) {
 		this.cardZip = cardZip;
 	}
 
-	public List<CreditCardDto> getCustomerCards() { return customerCards; }
-	public void setCustomerCards(List<CreditCardDto> customerCards) { this.customerCards = customerCards; }
+	public List<CreditCardDto> getCustomerCards() {
+		return customerCards;
+	}
 
-	public List<UpdateInvoiceDto> getCustomerServices() {return customerServices;}
-	public void setCustomerServices(List<UpdateInvoiceDto> customerServices) {this.customerServices = customerServices;}
+	public void setCustomerCards(List<CreditCardDto> customerCards) {
+		this.customerCards = customerCards;
+	}
+
+	public List<UpdateInvoiceDto> getCustomerServices() {
+		return customerServices;
+	}
+
+	public void setCustomerServices(List<UpdateInvoiceDto> customerServices) {
+		this.customerServices = customerServices;
+	}
 
 	/**
 	 * @return the cellPhone
@@ -606,18 +667,27 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param cellPhone
-	 *            the cellPhone to set
+	 * @param cellPhone the cellPhone to set
 	 */
 	public void setCellPhone(String cellPhone) {
 		this.cellPhone = cellPhone;
 	}
 
-	public String getCity() { return city; }
-	public void setCity(String city) { this.city = city; }
+	public String getCity() {
+		return city;
+	}
 
-	public String getCityID() { return cityID; }
-	public void setCityID(String cityID) { this.cityID = cityID; }
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCityID() {
+		return cityID;
+	}
+
+	public void setCityID(String cityID) {
+		this.cityID = cityID;
+	}
 
 	/**
 	 * @return the clientVendorID
@@ -625,6 +695,7 @@ public class CustomerDto{
 	public String getClientVendorID() {
 		return clientVendorID;
 	}
+
 	public void setClientVendorID(String clientVendorID) {
 		this.clientVendorID = clientVendorID;
 	}
@@ -632,22 +703,39 @@ public class CustomerDto{
 	public String getCname() {
 		return cname;
 	}
+
 	public void setCname(String cname) {
 		this.cname = cname;
 	}
 
-	public String getDbaName() { return dbaName; }
-	public void setDbaName(String dbaName) { this.dbaName = dbaName; }
+	public String getDbaName() {
+		return dbaName;
+	}
 
-	public String getBsdbaName() { return bsdbaName; }
-	public void setBsdbaName(String bsdbaName) { this.bsdbaName = bsdbaName; }
+	public void setDbaName(String dbaName) {
+		this.dbaName = dbaName;
+	}
 
-	public String getShdbaName() { return shdbaName; }
-	public void setShdbaName(String shdbaName) { this.shdbaName = shdbaName; }
+	public String getBsdbaName() {
+		return bsdbaName;
+	}
+
+	public void setBsdbaName(String bsdbaName) {
+		this.bsdbaName = bsdbaName;
+	}
+
+	public String getShdbaName() {
+		return shdbaName;
+	}
+
+	public void setShdbaName(String shdbaName) {
+		this.shdbaName = shdbaName;
+	}
 
 	public String getCntCode() {
 		return cntCode;
 	}
+
 	public void setCntCode(String cntCode) {
 		this.cntCode = cntCode;
 	}
@@ -655,6 +743,7 @@ public class CustomerDto{
 	public String getCountry() {
 		return country;
 	}
+
 	public void setCountry(String country) {
 		this.country = country;
 	}
@@ -667,8 +756,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param dateAdded
-	 *            the dateAdded to set
+	 * @param dateAdded the dateAdded to set
 	 */
 	public void setDateAdded(String dateAdded) {
 		this.dateAdded = dateAdded;
@@ -682,8 +770,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param dispay_info
-	 *            the dispay_info to set
+	 * @param dispay_info the dispay_info to set
 	 */
 	public void setDispay_info(String dispay_info) {
 		this.dispay_info = dispay_info;
@@ -697,8 +784,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param email
-	 *            the email to set
+	 * @param email the email to set
 	 */
 	public void setEmail(String email) {
 		this.email = email;
@@ -708,13 +794,12 @@ public class CustomerDto{
 	 * @return the extCredit
 	 */
 	public String getExtCredit() {
-	
+
 		return extCredit;
 	}
 
 	/**
-	 * @param extCredit
-	 *            the extCredit to set
+	 * @param extCredit the extCredit to set
 	 */
 	public void setExtCredit(String extCredit) {
 		this.extCredit = extCredit;
@@ -728,8 +813,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param fax
-	 *            the fax to set
+	 * @param fax the fax to set
 	 */
 	public void setFax(String fax) {
 		this.fax = fax;
@@ -743,8 +827,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param firstName
-	 *            the firstName to set
+	 * @param firstName the firstName to set
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
@@ -766,8 +849,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param fsAssessFinanceCharge
-	 *            the fsAssessFinanceCharge to set
+	 * @param fsAssessFinanceCharge the fsAssessFinanceCharge to set
 	 */
 	public void setFsAssessFinanceCharge(String fsAssessFinanceCharge) {
 		this.fsAssessFinanceCharge = fsAssessFinanceCharge;
@@ -781,8 +863,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param fsCardNo
-	 *            the fsCardNo to set
+	 * @param fsCardNo the fsCardNo to set
 	 */
 	public void setFsCardNo(String fsCardNo) {
 		this.fsCardNo = fsCardNo;
@@ -796,8 +877,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param fsMarkFinanceCharge
-	 *            the fsMarkFinanceCharge to set
+	 * @param fsMarkFinanceCharge the fsMarkFinanceCharge to set
 	 */
 	public void setFsMarkFinanceCharge(String fsMarkFinanceCharge) {
 		this.fsMarkFinanceCharge = fsMarkFinanceCharge;
@@ -811,8 +891,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param fsUseIndividual
-	 *            the fsUseIndividual to set
+	 * @param fsUseIndividual the fsUseIndividual to set
 	 */
 	public void setFsUseIndividual(String fsUseIndividual) {
 		this.fsUseIndividual = fsUseIndividual;
@@ -826,8 +905,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param gracePrd
-	 *            the gracePrd to set
+	 * @param gracePrd the gracePrd to set
 	 */
 	public void setGracePrd(String gracePrd) {
 		this.gracePrd = gracePrd;
@@ -841,8 +919,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param homePage
-	 *            the homePage to set
+	 * @param homePage the homePage to set
 	 */
 	public void setHomePage(String homePage) {
 		this.homePage = homePage;
@@ -856,8 +933,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param isclient
-	 *            the isclient to set
+	 * @param isclient the isclient to set
 	 */
 	public void setIsclient(String isclient) {
 		this.isclient = isclient;
@@ -871,8 +947,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param itemID
-	 *            the itemID to set
+	 * @param itemID the itemID to set
 	 */
 	public void setItemID(String itemID) {
 		this.itemID = itemID;
@@ -886,8 +961,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param lastName
-	 *            the lastName to set
+	 * @param lastName the lastName to set
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
@@ -901,8 +975,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param memo
-	 *            the memo to set
+	 * @param memo the memo to set
 	 */
 	public void setMemo(String memo) {
 		this.memo = memo;
@@ -916,8 +989,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param minFCharges
-	 *            the minFCharges to set
+	 * @param minFCharges the minFCharges to set
 	 */
 	public void setMinFCharges(String minFCharges) {
 		this.minFCharges = minFCharges;
@@ -931,8 +1003,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param monthlyBilling
-	 *            the monthlyBilling to set
+	 * @param monthlyBilling the monthlyBilling to set
 	 */
 	public void setMonthlyBilling(int monthlyBilling) {
 		this.monthlyBilling = monthlyBilling;
@@ -946,8 +1017,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param openingUB
-	 *            the openingUB to set
+	 * @param openingUB the openingUB to set
 	 */
 	public void setOpeningUB(String openingUB) {
 		this.openingUB = openingUB;
@@ -961,8 +1031,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param paymentType
-	 *            the paymentType to set
+	 * @param paymentType the paymentType to set
 	 */
 	public void setPaymentType(String paymentType) {
 		this.paymentType = paymentType;
@@ -976,8 +1045,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param periodFrom
-	 *            the periodFrom to set
+	 * @param periodFrom the periodFrom to set
 	 */
 	public void setPeriodFrom(String periodFrom) {
 		this.periodFrom = periodFrom;
@@ -991,8 +1059,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param periodTo
-	 *            the periodTo to set
+	 * @param periodTo the periodTo to set
 	 */
 	public void setPeriodTo(String periodTo) {
 		this.periodTo = periodTo;
@@ -1006,14 +1073,15 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param phone
-	 *            the phone to set
+	 * @param phone the phone to set
 	 */
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
-	public boolean isIsPhoneMobileNumber() { return isPhoneMobileNumber; }
+	public boolean isIsPhoneMobileNumber() {
+		return isPhoneMobileNumber;
+	}
 
 	public void setIsPhoneMobileNumber(boolean phoneMobileNumber) {
 		isPhoneMobileNumber = phoneMobileNumber;
@@ -1059,8 +1127,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param province
-	 *            the province to set
+	 * @param province the province to set
 	 */
 	public void setProvince(String province) {
 		this.province = province;
@@ -1074,8 +1141,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param rep
-	 *            the rep to set
+	 * @param rep the rep to set
 	 */
 	public void setRep(String rep) {
 		this.rep = rep;
@@ -1089,8 +1155,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shaddress1
-	 *            the shaddress1 to set
+	 * @param shaddress1 the shaddress1 to set
 	 */
 	public void setShaddress1(String shaddress1) {
 		this.shaddress1 = shaddress1;
@@ -1104,8 +1169,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shaddress2
-	 *            the shaddress2 to set
+	 * @param shaddress2 the shaddress2 to set
 	 */
 	public void setShaddress2(String shaddress2) {
 		this.shaddress2 = shaddress2;
@@ -1119,8 +1183,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shcity
-	 *            the shcity to set
+	 * @param shcity the shcity to set
 	 */
 	public void setShcity(String shcity) {
 		this.shcity = shcity;
@@ -1134,8 +1197,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shcname
-	 *            the shcname to set
+	 * @param shcname the shcname to set
 	 */
 	public void setShcname(String shcname) {
 		this.shcname = shcname;
@@ -1149,8 +1211,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shcntCode
-	 *            the shcntCode to set
+	 * @param shcntCode the shcntCode to set
 	 */
 	public void setShcntCode(String shcntCode) {
 		this.shcntCode = shcntCode;
@@ -1164,8 +1225,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shcountry
-	 *            the shcountry to set
+	 * @param shcountry the shcountry to set
 	 */
 	public void setShcountry(String shcountry) {
 		this.shcountry = shcountry;
@@ -1179,8 +1239,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shfirstName
-	 *            the shfirstName to set
+	 * @param shfirstName the shfirstName to set
 	 */
 	public void setShfirstName(String shfirstName) {
 		this.shfirstName = shfirstName;
@@ -1194,8 +1253,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shipping
-	 *            the shipping to set
+	 * @param shipping the shipping to set
 	 */
 	public void setShipping(String shipping) {
 		this.shipping = shipping;
@@ -1209,8 +1267,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shlastName
-	 *            the shlastName to set
+	 * @param shlastName the shlastName to set
 	 */
 	public void setShlastName(String shlastName) {
 		this.shlastName = shlastName;
@@ -1224,8 +1281,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shphone
-	 *            the shphone to set
+	 * @param shphone the shphone to set
 	 */
 	public void setShphone(String shphone) {
 		this.shphone = shphone;
@@ -1239,8 +1295,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shprovince
-	 *            the shprovince to set
+	 * @param shprovince the shprovince to set
 	 */
 	public void setShprovince(String shprovince) {
 		this.shprovince = shprovince;
@@ -1254,8 +1309,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shstate
-	 *            the shstate to set
+	 * @param shstate the shstate to set
 	 */
 	public void setShstate(String shstate) {
 		this.shstate = shstate;
@@ -1269,8 +1323,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shzipCode
-	 *            the shzipCode to set
+	 * @param shzipCode the shzipCode to set
 	 */
 	public void setShzipCode(String shzipCode) {
 		this.shzipCode = shzipCode;
@@ -1284,8 +1337,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param state
-	 *            the state to set
+	 * @param state the state to set
 	 */
 	public void setState(String state) {
 		this.state = state;
@@ -1299,8 +1351,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param taxAble
-	 *            the taxAble to set
+	 * @param taxAble the taxAble to set
 	 */
 	public void setTaxAble(String taxAble) {
 		this.taxAble = taxAble;
@@ -1314,8 +1365,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param term
-	 *            the term to set
+	 * @param term the term to set
 	 */
 	public void setTerm(String term) {
 		this.term = term;
@@ -1329,8 +1379,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param texID
-	 *            the texID to set
+	 * @param texID the texID to set
 	 */
 	public void setTexID(String texID) {
 		this.texID = texID;
@@ -1344,8 +1393,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param title
-	 *            the title to set
+	 * @param title the title to set
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -1359,8 +1407,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param type
-	 *            the type to set
+	 * @param type the type to set
 	 */
 	public void setType(String type) {
 		this.type = type;
@@ -1374,8 +1421,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param zipCode
-	 *            the zipCode to set
+	 * @param zipCode the zipCode to set
 	 */
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
@@ -1389,8 +1435,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param billTo
-	 *            the billTo to set
+	 * @param billTo the billTo to set
 	 */
 	public void setBillTo(String billTo) {
 		this.billTo = billTo;
@@ -1404,8 +1449,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param bsAddressID
-	 *            the bsAddressID to set
+	 * @param bsAddressID the bsAddressID to set
 	 */
 	public void setBsAddressID(String bsAddressID) {
 		this.bsAddressID = bsAddressID;
@@ -1427,8 +1471,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param companyID
-	 *            the companyID to set
+	 * @param companyID the companyID to set
 	 */
 	public void setCompanyID(int companyID) {
 		this.companyID = companyID;
@@ -1442,8 +1485,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param fullName
-	 *            the fullName to set
+	 * @param fullName the fullName to set
 	 */
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
@@ -1457,8 +1499,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param horizon
-	 *            the horizon to set
+	 * @param horizon the horizon to set
 	 */
 	public void setHorizon(String horizon) {
 		this.horizon = horizon;
@@ -1472,8 +1513,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param invoiceStyle
-	 *            the invoiceStyle to set
+	 * @param invoiceStyle the invoiceStyle to set
 	 */
 	public void setInvoiceStyle(String invoiceStyle) {
 		this.invoiceStyle = invoiceStyle;
@@ -1487,8 +1527,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param invoiceStyleId
-	 *            the invoiceStyleId to set
+	 * @param invoiceStyleId the invoiceStyleId to set
 	 */
 	public void setInvoiceStyleId(int invoiceStyleId) {
 		this.invoiceStyleId = invoiceStyleId;
@@ -1502,8 +1541,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param labelHeight
-	 *            the labelHeight to set
+	 * @param labelHeight the labelHeight to set
 	 */
 	public void setLabelHeight(String labelHeight) {
 		this.labelHeight = labelHeight;
@@ -1517,14 +1555,12 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param labelName
-	 *            the labelName to set
+	 * @param labelName the labelName to set
 	 */
 	public void setLabelName(String labelName) {
 		this.labelName = labelName;
 	}
 
-	
 	/**
 	 * @return the labelWidth
 	 */
@@ -1533,8 +1569,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param labelWidth
-	 *            the labelWidth to set
+	 * @param labelWidth the labelWidth to set
 	 */
 	public void setLabelWidth(String labelWidth) {
 		this.labelWidth = labelWidth;
@@ -1548,8 +1583,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param leftMargin
-	 *            the leftMargin to set
+	 * @param leftMargin the leftMargin to set
 	 */
 	public void setLeftMargin(String leftMargin) {
 		this.leftMargin = leftMargin;
@@ -1563,8 +1597,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param rvName
-	 *            the rvName to set
+	 * @param rvName the rvName to set
 	 */
 	public void setRvName(String rvName) {
 		this.rvName = rvName;
@@ -1578,8 +1611,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param serviceBalance
-	 *            the serviceBalance to set
+	 * @param serviceBalance the serviceBalance to set
 	 */
 	public void setServiceBalance(double serviceBalance) {
 		this.serviceBalance = serviceBalance;
@@ -1593,8 +1625,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param serviceID
-	 *            the serviceID to set
+	 * @param serviceID the serviceID to set
 	 */
 	public void setServiceID(int serviceID) {
 		this.serviceID = serviceID;
@@ -1608,8 +1639,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param serviceIdNo
-	 *            the serviceIdNo to set
+	 * @param serviceIdNo the serviceIdNo to set
 	 */
 	public void setServiceIdNo(int serviceIdNo) {
 		this.serviceIdNo = serviceIdNo;
@@ -1623,8 +1653,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param serviceName
-	 *            the serviceName to set
+	 * @param serviceName the serviceName to set
 	 */
 	public void setServiceName(String serviceName) {
 		this.serviceName = serviceName;
@@ -1638,8 +1667,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param shipTo
-	 *            the shipTo to set
+	 * @param shipTo the shipTo to set
 	 */
 	public void setShipTo(String shipTo) {
 		this.shipTo = shipTo;
@@ -1653,8 +1681,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param stateName
-	 *            the stateName to set
+	 * @param stateName the stateName to set
 	 */
 	public void setStateName(String stateName) {
 		this.stateName = stateName;
@@ -1668,8 +1695,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param table_bal
-	 *            the table_bal to set
+	 * @param table_bal the table_bal to set
 	 */
 	public void setTable_bal(String table_bal) {
 		this.table_bal = table_bal;
@@ -1683,8 +1709,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param table_DbDefSer
-	 *            the table_DbDefSer to set
+	 * @param table_DbDefSer the table_DbDefSer to set
 	 */
 	public void setTable_DbDefSer(String table_DbDefSer) {
 		this.table_DbDefSer = table_DbDefSer;
@@ -1698,8 +1723,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param table_defaultVal
-	 *            the table_defaultVal to set
+	 * @param table_defaultVal the table_defaultVal to set
 	 */
 	public void setTable_defaultVal(String table_defaultVal) {
 		this.table_defaultVal = table_defaultVal;
@@ -1713,8 +1737,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param table_invId
-	 *            the table_invId to set
+	 * @param table_invId the table_invId to set
 	 */
 	public void setTable_invId(String table_invId) {
 		this.table_invId = table_invId;
@@ -1728,8 +1751,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param table_serID
-	 *            the table_serID to set
+	 * @param table_serID the table_serID to set
 	 */
 	public void setTable_serID(String table_serID) {
 		this.table_serID = table_serID;
@@ -1743,8 +1765,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param table_serviceName
-	 *            the table_serviceName to set
+	 * @param table_serviceName the table_serviceName to set
 	 */
 	public void setTable_serviceName(String table_serviceName) {
 		this.table_serviceName = table_serviceName;
@@ -1758,8 +1779,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param table_size
-	 *            the table_size to set
+	 * @param table_size the table_size to set
 	 */
 	public void setTable_size(int table_size) {
 		this.table_size = table_size;
@@ -1773,8 +1793,7 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param topMargin
-	 *            the topMargin to set
+	 * @param topMargin the topMargin to set
 	 */
 	public void setTopMargin(String topMargin) {
 		this.topMargin = topMargin;
@@ -1788,95 +1807,45 @@ public class CustomerDto{
 	}
 
 	/**
-	 * @param vertical
-	 *            the vertical to set
+	 * @param vertical the vertical to set
 	 */
 	public void setVertical(String vertical) {
 		this.vertical = vertical;
 	}
 
-	/*public void reset(ActionMapping mapping, HttpServletRequest request) {
-		super.reset(mapping, request);
-
-		clientVendorID = null;
-		cname = null;
-		lastName = null;
-		firstName = null;
-		email = null;
-		address1 = null;
-		address2 = null;
-		city = null;
-		state = null;
-		zipCode = null;
-		phone = null;
-		cellPhone = null;
-		fax = null;
-		dateAdded = null;
-		title = null;
-		province = null;
-		country = null;
-		homePage = null;
-		type = null;
-		texID = null;
-		openingUB = null;
-		extCredit = null;
-		memo = null;
-		term = null;
-		rep = null;
-		paymentType = null;
-		shipping = null;
-		ccType = null;
-		cardNo = null;
-		expDate = null;
-		cw2 = null;
-		cardHolderName = null;
-		cardBillAddress = null;
-		cardZip = null;
-
-		annualIntrestRate = null;
-		minFCharges = null;
-		gracePrd = null;
-		fsCardNo = null;
-
-		bscname = null;
-		bscntCode = null;
-		bsfirstName = null;
-		bslastName = null;
-		bsaddress1 = null;
-		bsaddress2 = null;
-		bscity = null;
-		bsstate = null;
-		bszipCode = null;
-		bsphone = null;
-		bsprovince = null;
-		bscountry = null;
-
-		shcname = null;
-		shcntCode = null;
-		shfirstName = null;
-		shlastName = null;
-		shaddress1 = null;
-		shaddress2 = null;
-		shcity = null;
-		shstate = null;
-		shzipCode = null;
-		shphone = null;
-		shprovince = null;
-		shcountry = null;
-
-		fsUseIndividual = null;
-		fsAssessFinanceCharge = null;
-		fsMarkFinanceCharge = null;
-		taxAble = null;
-		isclient = null;
-		setDispay_info("ShowAll");
-		setPeriodFrom("");
-		setPeriodTo("");
-	}*/
+	/*
+	 * public void reset(ActionMapping mapping, HttpServletRequest request) {
+	 * super.reset(mapping, request);
+	 * 
+	 * clientVendorID = null; cname = null; lastName = null; firstName = null; email
+	 * = null; address1 = null; address2 = null; city = null; state = null; zipCode
+	 * = null; phone = null; cellPhone = null; fax = null; dateAdded = null; title =
+	 * null; province = null; country = null; homePage = null; type = null; texID =
+	 * null; openingUB = null; extCredit = null; memo = null; term = null; rep =
+	 * null; paymentType = null; shipping = null; ccType = null; cardNo = null;
+	 * expDate = null; cw2 = null; cardHolderName = null; cardBillAddress = null;
+	 * cardZip = null;
+	 * 
+	 * annualIntrestRate = null; minFCharges = null; gracePrd = null; fsCardNo =
+	 * null;
+	 * 
+	 * bscname = null; bscntCode = null; bsfirstName = null; bslastName = null;
+	 * bsaddress1 = null; bsaddress2 = null; bscity = null; bsstate = null;
+	 * bszipCode = null; bsphone = null; bsprovince = null; bscountry = null;
+	 * 
+	 * shcname = null; shcntCode = null; shfirstName = null; shlastName = null;
+	 * shaddress1 = null; shaddress2 = null; shcity = null; shstate = null;
+	 * shzipCode = null; shphone = null; shprovince = null; shcountry = null;
+	 * 
+	 * fsUseIndividual = null; fsAssessFinanceCharge = null; fsMarkFinanceCharge =
+	 * null; taxAble = null; isclient = null; setDispay_info("ShowAll");
+	 * setPeriodFrom(""); setPeriodTo(""); }
+	 */
 
 	public int getDefaultService() {
 		return defaultService;
 	}
+
 	public void setDefaultService(int defaultService) {
 		this.defaultService = defaultService;
 	}
@@ -1884,6 +1853,7 @@ public class CustomerDto{
 	public int getLabelType() {
 		return labelType;
 	}
+
 	public void setLabelType(int labelType) {
 		this.labelType = labelType;
 	}
@@ -1891,27 +1861,58 @@ public class CustomerDto{
 	public String getSetdefaultbs() {
 		return setdefaultbs;
 	}
+
 	public void setSetdefaultbs(String setdefaultbs) {
 		this.setdefaultbs = setdefaultbs;
 	}
 
-	public boolean isPaymentUnpaid() { return paymentUnpaid; }
-	public void setPaymentUnpaid(boolean paymentUnpaid) { this.paymentUnpaid = paymentUnpaid; }
+	public boolean isPaymentUnpaid() {
+		return paymentUnpaid;
+	}
 
-	public double getLast3MonthAmt() { return last3MonthAmt; }
-	public void setLast3MonthAmt(double last3MonthAmt) { this.last3MonthAmt = last3MonthAmt; }
+	public void setPaymentUnpaid(boolean paymentUnpaid) {
+		this.paymentUnpaid = paymentUnpaid;
+	}
 
-	public double getLast1YearAmt() { return last1YearAmt; }
-	public void setLast1YearAmt(double last1YearAmt) { this.last1YearAmt = last1YearAmt; }
+	public double getLast3MonthAmt() {
+		return last3MonthAmt;
+	}
 
-	public double getTotalOverdueAmt() { return totalOverdueAmt; }
-	public void setTotalOverdueAmt(double totalOverdueAmt) { this.totalOverdueAmt = totalOverdueAmt; }
+	public void setLast3MonthAmt(double last3MonthAmt) {
+		this.last3MonthAmt = last3MonthAmt;
+	}
 
-	public String getLastOrderDate() { return lastOrderDate; }
-	public void setLastOrderDate(String lastOrderDate) { this.lastOrderDate = lastOrderDate; }
+	public double getLast1YearAmt() {
+		return last1YearAmt;
+	}
 
-	public boolean isActive() { return active; }
-	public void setActive(boolean active) { this.active = active; }
+	public void setLast1YearAmt(double last1YearAmt) {
+		this.last1YearAmt = last1YearAmt;
+	}
+
+	public double getTotalOverdueAmt() {
+		return totalOverdueAmt;
+	}
+
+	public void setTotalOverdueAmt(double totalOverdueAmt) {
+		this.totalOverdueAmt = totalOverdueAmt;
+	}
+
+	public String getLastOrderDate() {
+		return lastOrderDate;
+	}
+
+	public void setLastOrderDate(String lastOrderDate) {
+		this.lastOrderDate = lastOrderDate;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	public boolean isPhoneMobileNumber() {
 		return isPhoneMobileNumber;
@@ -1944,5 +1945,5 @@ public class CustomerDto{
 	public static String getCustomercolumns() {
 		return customerColumns;
 	}
-	
+
 }

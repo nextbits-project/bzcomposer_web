@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BcpFedperallowanceRepository extends JpaRepository<BcpFedperallowance, Integer> {
-	@Query("SELECT DISTINCT b.eYear FROM BcpFedperallowance b ORDER BY b.eYear DESC")
+	@Query("SELECT DISTINCT b.eyear FROM BcpFedperallowance b ORDER BY b.eyear DESC")
 	List<Integer> findDistinctEYear();
 }
