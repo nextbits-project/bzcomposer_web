@@ -2,7 +2,9 @@ package com.nxsol.bzcomposer.company.repos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +20,6 @@ import com.nxsol.bzcomposer.company.domain.BcaInvoice;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicetype;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaInvoiceTermClientVendorResult;
-import com.pritesh.bizcomposer.accounting.bean.PoPayableDto;
 
 @Repository
 public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer> {
@@ -175,5 +176,17 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			+ "and bp.deleted !=1 ) or (select sum(bp.amount) from BcaPayment bp where bp.invoice.invoiceId = i.invoiceId "
 			+ "and bp.deleted !=1 ) is null) order by orderNum desc")
 	List<Object[]> findRecievableList(@Param("companyId") Long companyId);
-
+	
+	
+//	String sqlString = "select i.InvoiceID, i.OrderNum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total, i.Balance, i.Shipped, i.IsEmailed, it.Name,i.ClientVendorID "
+//			+" FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+//			+" WHERE "+cvIdCase+" i.InvoiceTypeID IN(1,7,10) ";
+	@Query(value="select i 	from BcaInvoice i inner join BcaInvoicetype it on i.invoiceType.invoiceTypeId = it.invoiceTypeId")
+	List<BcaInvoice> findInvoiceBySearchHistory();
+	
+	
+	
+	@Query(value="select bi.orderNum from BcaInvoice bi left join bi.company c where c.companyId= :companyId and bi.invoiceStatus in :invoiceStatus order by orderNume desc   ")
+	List<Integer> findOrderNumByCompanyIdAndInvoiceStatus(@Param("companyId") Long companyId , @Param("invoiceStatus") List<Integer> invoiceStatus);
+    
 }

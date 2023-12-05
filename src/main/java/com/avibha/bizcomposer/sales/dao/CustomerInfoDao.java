@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
@@ -26,7 +29,6 @@ import org.springframework.stereotype.Service;
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.repository.ClientVendorRepository;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
@@ -37,109 +39,136 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
-import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
-import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
-import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
-import com.nxsol.bzcomposer.company.repos.CityStateZipRepository;
-import com.nxsol.bzcomposer.company.repos.CountryRepository;
-import com.nxsol.bzcomposer.company.repos.StateRepository;
+import com.nxsol.bzcomposer.company.utils.JpaHelper;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /*
  * 
  */
-
+@Service
 public class CustomerInfoDao {
+	
+//	@PersistenceContext
+//	private EntityManager entityManager;
+	
+	@Autowired
+	private BcaClientvendorRepository bcaClientvendorRepository;
 	
 	public ArrayList<CustomerDto> customerDetails(String compId) {
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
 		ArrayList<CustomerDto> objList = new ArrayList<>();
-		ResultSet rs = null;
-		CountryState cs = new CountryState();
+//		ResultSet rs = null;
+//		CountryState cs = new CountryState();
 		Title title = new Title();
 		try {
-			con = db.getConnection();
+//			con = db.getConnection();
+			@SuppressWarnings("unchecked")
 			ArrayList<LabelValueBean> titleList = title.getTitleList(compId);
 
-			String sqlString = "SELECT distinct c.ClientVendorID,c.Name,c.CustomerTitle,c.FirstName,c.LastName,c.Address1,c.Address2,c.City,c.State,c.ZipCode,c.Country,"
-					+ "c.Email,c.Phone,c.CellPhone,c.Fax,date_format(c.DateAdded,'%m-%d-%Y') as DateAdded,i.IsPaymentCompleted,c.CVCategoryName,"
-					+ "ct.Name AS CityName, st.Name AS StateName, cn.Name AS CountryName, c.DBAName "
-					+ "FROM bca_clientvendor AS c LEFT JOIN bca_countries as cn ON cn.ID=c.Country LEFT JOIN bca_states as st ON st.ID=c.State LEFT JOIN bca_cities as ct ON ct.ID=c.City "
-					+ "LEFT JOIN bca_invoice as i ON i.ClientVendorID=c.ClientVendorID AND NOT (i.invoiceStatus=1) AND i.IsPaymentCompleted = 0 AND i.InvoiceTypeID IN (1,13,17) "
-					+ "WHERE c.CompanyID = " + compId
-					+ " AND CVTypeID IN (1, 2) AND c.Status IN ('U', 'N') AND c.Deleted = 0 AND c.Active=1 ORDER BY c.Name";
-			pstmt = con.prepareStatement(sqlString);
-			// Loger.log(sqlString);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				CustomerDto customer = new CustomerDto();
-				customer.setClientVendorID(rs.getString("ClientVendorID"));
-				customer.setCompanyName(rs.getString("Name"));
-				customer.setCname(
-						rs.getString("Name") + "(" + rs.getString("FirstName") + " " + rs.getString("LastName") + ")");
-				customer.setTitle(rs.getString("CustomerTitle"));
-				customer.setFirstName(rs.getString("FirstName"));
-				customer.setLastName(rs.getString("LastName"));
-				customer.setAddress1(rs.getString("Address1"));
-				customer.setAddress2(rs.getString("Address2"));
-				customer.setZipCode(rs.getString("ZipCode"));
-				customer.setCity(rs.getString("CityName") != null ? rs.getString("CityName") : rs.getString("City"));
-				customer.setStateName(
-						rs.getString("StateName") != null ? rs.getString("StateName") : rs.getString("State"));
-				String countryName = rs.getString("CountryName") != null ? rs.getString("CountryName")
-						: rs.getString("Country");
-				if (countryName != null && countryName.contains("United States")) {
-					countryName = "USA";
-				}
-				customer.setCountry(countryName);
-				customer.setEmail(rs.getString("Email"));
-				customer.setPhone(rs.getString("Phone"));
-				customer.setCellPhone(rs.getString("CellPhone"));
-				customer.setFax(rs.getString("Fax"));
-				customer.setDateAdded(rs.getString("DateAdded"));
-
-				customer.setFullName(rs.getString("FirstName") + " " + rs.getString("LastName"));
-				customer.setBillTo(rs.getString("FirstName") + rs.getString("LastName"));
-				boolean paymentUnpaid = (rs.getString("IsPaymentCompleted") != null
-						&& rs.getString("IsPaymentCompleted").equals("0")) ? true : false;
-				customer.setPaymentUnpaid(paymentUnpaid);
-				customer.setType(rs.getString("CVCategoryName"));
-				customer.setDbaName(rs.getString("DBAName"));
+//			String sqlString = "SELECT distinct c.ClientVendorID,c.Name,c.CustomerTitle,c.FirstName,c.LastName,c.Address1,c.Address2,c.City,c.State,c.ZipCode,c.Country,"
+//					+ "c.Email,c.Phone,c.CellPhone,c.Fax,date_format(c.DateAdded,'%m-%d-%Y') as DateAdded,i.IsPaymentCompleted,c.CVCategoryName,"
+//					+ "ct.Name AS CityName, st.Name AS StateName, cn.Name AS CountryName, c.DBAName "
+//					+ "FROM bca_clientvendor AS c LEFT JOIN bca_countries as cn ON cn.ID=c.Country LEFT JOIN bca_states as st ON st.ID=c.State LEFT JOIN bca_cities as ct ON ct.ID=c.City "
+//					+ "LEFT JOIN bca_invoice as i ON i.ClientVendorID=c.ClientVendorID AND NOT (i.invoiceStatus=1) AND i.IsPaymentCompleted = 0 AND i.InvoiceTypeID IN (1,13,17) "
+//					+ "WHERE c.CompanyID = " + compId
+//					+ " AND CVTypeID IN (1, 2) AND c.Status IN ('U', 'N') AND c.Deleted = 0 AND c.Active=1 ORDER BY c.Name";
+			
+			
+//			String query = " select distinct c.clientVendorId , c.name ,c.customerTitle, c.firstName , c.lastName , c.address1, c.address2, c.city, c.state , c.zipCode , c.country , "
+//					+ "c.email , c.phone , c.cellPhone , c.fax ,date_format(c.dateAdded , '%m-%d-%Y') as dateAdded , i.isPaymentCompleted , c.cvcategoryName, ct.name as cityName , st.name as stateName , cn.name as countryName "
+//					+ ", c.DBAName  from BcaClientvendor as c left join BcaCountries as cn on cn.Id =c.country left join BcaStates as st on st.Id =c.state left join BcaCities as ct on ct.Id = c.city"
+//					+ " left join BcaInvoice as i on i.clientVendor.clientVendorId = c.clientVendorId and not (i.invoiceStatus =1) and i.isPaymentCompleted = 0 and i.invoiceType.invoiceTypeId in (1,13,17) "
+//					+ " where c.company.companyId =  :companyId and c.cvtypeId in (1,2) and c.status in ('U' , 'N' ) and c.deleted = 0 and c.active =1 order by c.name ";
+//			
+//			TypedQuery<?> typedQuery = (TypedQuery<?>) this.entityManager.createQuery(query);
+//			JpaHelper.addParameter(typedQuery, query, "companyId", new Long(compId));
+//			List<?> list=typedQuery.getResultList();
+//			int size =list.size();
+//			
+			
+			List<CustomerDto> listOfCustomer = bcaClientvendorRepository.findCustomerInfo(new Long(compId));
+			for(CustomerDto  customer:listOfCustomer) {
 				for (LabelValueBean lvBean : titleList) {
 					if (lvBean.getValue().equalsIgnoreCase(customer.getTitle())) {
 						customer.setTitle(lvBean.getLabel());
 						break;
 					}
-				}
+				}	
 				objList.add(customer);
 			}
-		} catch (SQLException ee) {
+			
+//			pstmt = con.prepareStatement(sqlString);
+			// Loger.log(sqlString);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				CustomerDto customer = new CustomerDto();
+//				customer.setClientVendorID(rs.getString("ClientVendorID"));
+//				customer.setCompanyName(rs.getString("Name"));
+//				customer.setCname(
+//						rs.getString("Name") + "(" + rs.getString("FirstName") + " " + rs.getString("LastName") + ")");
+//				customer.setTitle(rs.getString("CustomerTitle"));
+//				customer.setFirstName(rs.getString("FirstName"));
+//				customer.setLastName(rs.getString("LastName"));
+//				customer.setAddress1(rs.getString("Address1"));
+//				customer.setAddress2(rs.getString("Address2"));
+//				customer.setZipCode(rs.getString("ZipCode"));
+//				customer.setCity(rs.getString("CityName") != null ? rs.getString("CityName") : rs.getString("City"));
+//				customer.setStateName(
+//						rs.getString("StateName") != null ? rs.getString("StateName") : rs.getString("State"));
+//				String countryName = rs.getString("CountryName") != null ? rs.getString("CountryName")
+//						: rs.getString("Country");
+//				if (countryName != null && countryName.contains("United States")) {
+//					countryName = "USA";
+//				}
+//				customer.setCountry(countryName);
+//				customer.setEmail(rs.getString("Email"));
+//				customer.setPhone(rs.getString("Phone"));
+//				customer.setCellPhone(rs.getString("CellPhone"));
+//				customer.setFax(rs.getString("Fax"));
+//				customer.setDateAdded(rs.getString("DateAdded"));
+//
+//				customer.setFullName(rs.getString("FirstName") + " " + rs.getString("LastName"));
+//				customer.setBillTo(rs.getString("FirstName") + rs.getString("LastName"));
+//				boolean paymentUnpaid = (rs.getString("IsPaymentCompleted") != null
+//						&& rs.getString("IsPaymentCompleted").equals("0")) ? true : false;
+//				customer.setPaymentUnpaid(paymentUnpaid);
+//				customer.setType(rs.getString("CVCategoryName"));
+//				customer.setDbaName(rs.getString("DBAName"));
+//				for (LabelValueBean lvBean : titleList) {
+//					if (lvBean.getValue().equalsIgnoreCase(customer.getTitle())) {
+//						customer.setTitle(lvBean.getLabel());
+//						break;
+//					}
+//				}
+//				objList.add(customer);
+//			}
+		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class CustomerInfo and  method -customerDetails " + " " + ee.toString());
 
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return objList;
 	}
 

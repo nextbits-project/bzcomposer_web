@@ -64,8 +64,8 @@ public class ConfigurationController {
 	@Autowired
 	private SalesDetailsDao sd;
 	
-	@Autowired
-	private	ReceivableLIst rl;
+//	@Autowired
+//	private	ReceivableLIst rl;
 	
     private String pageActiveTab = "pageActiveTab";
     ArrayList<MailTemplateDto> mailTemplateDtos;
@@ -100,7 +100,7 @@ public class ConfigurationController {
             //ConfigurationDetails configDetails = new ConfigurationDetails();
             configDetails.getConfigurationInfo(request, configDto);
 
-            //ReceivableLIst rl = new ReceivableListImpl();
+            ReceivableLIst rl = new ReceivableListImpl();
             request.setAttribute("PaymentTypeForCombo", rl.getPaymentType());
 
             //ConfigurationDAO dao = new ConfigurationDAO();

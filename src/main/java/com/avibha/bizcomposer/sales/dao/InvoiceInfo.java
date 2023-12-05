@@ -13,14 +13,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
@@ -32,45 +38,47 @@ import com.avibha.common.mail.MailSend;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
+import com.nxsol.bzcomposer.company.domain.BcaInvoice;
 import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 
 /*
  * 
  */
+@Service
 public class InvoiceInfo {
+	@Autowired
+	private EntityManager entityManager;
 
 	public ArrayList getItemList(String compId) {
-		Connection con = null ;
-		PreparedStatement pstmt=null;
-		PreparedStatement pstmt1=null;
-		PreparedStatement pstmt2=null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt1 = null;
+		PreparedStatement pstmt2 = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<Item> list = new ArrayList<Item>();
 		ResultSet rs = null;
 		ResultSet rs1 = null;
 		ResultSet rs2 = null;
 		con = db.getConnection();
-		//String invcode = "";
+		// String invcode = "";
 		int cid = Integer.parseInt(compId);
 		try {
 
 			String sqlString = "select InventoryID,InventoryCode,InventoryDescription,Qty,Weight,SalePrice,isCategory,ItemTypeID,InventoryName,SerialNum "
-					+ "from bca_iteminventory "
-					+ "where CompanyID="+cid
-					+ " and Active=1 "/*
-										 * + "and ParentID=0 "
-										 */;
+					+ "from bca_iteminventory " + "where CompanyID=" + cid + " and Active=1 "/*
+																								 * + "and ParentID=0 "
+																								 */;
 
 			pstmt = con.prepareStatement(sqlString);
-			//pstmt.setInt(1, cid);
+			// pstmt.setInt(1, cid);
 
 			rs = pstmt.executeQuery();
 			int invID;
 			while (rs.next()) {
 				Item item1 = new Item();
 				invID = rs.getInt(1);
-			//	invcode = rs.getString(2);
-				
+				// invcode = rs.getString(2);
+
 				item1.setInvID(rs.getInt(1));
 				item1.setInvCode(rs.getString(2));
 				item1.setInvDesc(rs.getString(3));
@@ -85,10 +93,7 @@ public class InvoiceInfo {
 				list.add(item1);
 
 				String sqlString1 = "select InventoryID,InventoryCode,InventoryDescription,Qty,Weight,SalePrice,isCategory,InventoryName,SerialNum "
-						+ "from bca_iteminventory "
-						+ "where ParentID=? "
-						+ "and ItemTypeID=1 "
-						+ "and Active=1";
+						+ "from bca_iteminventory " + "where ParentID=? " + "and ItemTypeID=1 " + "and Active=1";
 
 				pstmt1 = con.prepareStatement(sqlString1);
 				pstmt1.setInt(1, invID);
@@ -110,16 +115,14 @@ public class InvoiceInfo {
 					list.add(item2);
 
 					String str = "select InventoryID,InventoryCode,InventoryDescription,Qty,Weight,SalePrice,isCategory,InventoryName,SerialNum "
-							+ "from bca_iteminventory "
-							+ "where ParentID=? "
-							+ "and Active=1";
+							+ "from bca_iteminventory " + "where ParentID=? " + "and Active=1";
 					pstmt2 = con.prepareStatement(str);
 					pstmt2.setInt(1, ivcode);
 					rs2 = pstmt2.executeQuery();
 					while (rs2.next()) {
 						Item item3 = new Item();
 						item3.setInvID(rs2.getInt(1));
-						item3.setInvCode(rs2.getString(2));						
+						item3.setInvCode(rs2.getString(2));
 						item3.setInvDesc(rs2.getString(3));
 						item3.setQty(rs2.getInt(4));
 						item3.setWeight(rs2.getDouble(5));
@@ -133,33 +136,33 @@ public class InvoiceInfo {
 
 			}
 		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class InvoiceInfo and  method -getItemList "+ ee.toString());
+			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -getItemList " + ee.toString());
 		}
 
 		finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
+				}
 				if (rs2 != null) {
 					db.close(rs2);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -175,52 +178,53 @@ public class InvoiceInfo {
 		con = db.getConnection();
 		CountryState conState = new CountryState();
 		try {
-			/*String sqlString = "select distinct BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
-					+ "City,State,ZipCode,Country from bca_bsaddress  "
-					+ "where  (Status like 'N' or Status like 'U') and AddressType =0";*/
+			/*
+			 * String sqlString =
+			 * "select distinct BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
+			 * + "City,State,ZipCode,Country from bca_bsaddress  " +
+			 * "where  (Status like 'N' or Status like 'U') and AddressType =0";
+			 */
 			String sqlString = "select distinct AddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
 					+ "City,State,ZipCode,Country from bca_shippingaddress  "
 					+ "where  (Status like 'N' or Status like 'U') and Active=1 and isDefault=1";
-			
+
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
 				InvoiceDto customer = new InvoiceDto();
-				//customer.setBsAddressID(rs.getString(1));
-				customer.setShAddressID(rs.getString(1));		//Added on 09-09-2019
+				// customer.setBsAddressID(rs.getString(1));
+				customer.setShAddressID(rs.getString(1)); // Added on 09-09-2019
 				customer.setClientVendorID(rs.getString(2));
 				customer.setFullName(rs.getString(4) + "  " + rs.getString(5));
-				String constate= "";
-				if(rs.getString(9).equals("6"))
-				{
+				String constate = "";
+				if (rs.getString(9).equals("6")) {
 					constate = "CA";
 				}
-				
+
 				// customer.setRvName(rs.getString(5)+" , "+rs.getString(4));
-				/* commented on 15-06-2019 
-				 * String ship = rs.getString(3) + "\n" + customer.getFullName()
-						+ "\n" + rs.getString(6) + "\n" + rs.getString(7)
-						+ "" + rs.getString(8) + ", "
-						+ conState.getStatesName(rs.getString(9).equals("6")?"6":rs.getString(9)) + " "
-						+ rs.getString(10) + "\n"
-						+ conState.getCountryName(rs.getString(11));*/
-				/*String ship = customer.getFullName()
-						+"\n"+rs.getString(3)
-				+ "\n" + rs.getString(6) + "\n" + rs.getString(7)
-				+ rs.getString(8) + " "
-				+ conState.getStatesName(rs.getString(9).equals("6")?"6":rs.getString(9)) + " "
-				+ rs.getString(10) + "\n"
-				+ conState.getCountryName(rs.getString(11));*/
-				
-				String ship = customer.getFullName()
-				+"\n"+rs.getString(3)
-				+ "\n" + rs.getString(6) 
-				+ "\n" + rs.getString(7)
-				+""+ rs.getString(8) +" "+ rs.getString(9)+" "+ rs.getString(10);/* " "  */   
-				//+ conState.getStatesName(rs.getString(9).equals("California")?"CA":rs.getString(9))		//Commented on 13-09-2019 
-				//+ "\n" + rs.getString(10);
-				//+ "\n" + conState.getCountryName(rs.getString(11));		//Commented on 13-09-2019
+				/*
+				 * commented on 15-06-2019 String ship = rs.getString(3) + "\n" +
+				 * customer.getFullName() + "\n" + rs.getString(6) + "\n" + rs.getString(7) + ""
+				 * + rs.getString(8) + ", " +
+				 * conState.getStatesName(rs.getString(9).equals("6")?"6":rs.getString(9)) + " "
+				 * + rs.getString(10) + "\n" + conState.getCountryName(rs.getString(11));
+				 */
+				/*
+				 * String ship = customer.getFullName() +"\n"+rs.getString(3) + "\n" +
+				 * rs.getString(6) + "\n" + rs.getString(7) + rs.getString(8) + " " +
+				 * conState.getStatesName(rs.getString(9).equals("6")?"6":rs.getString(9)) + " "
+				 * + rs.getString(10) + "\n" + conState.getCountryName(rs.getString(11));
+				 */
+
+				String ship = customer.getFullName() + "\n" + rs.getString(3) + "\n" + rs.getString(6) + "\n"
+						+ rs.getString(7) + "" + rs.getString(8) + " " + rs.getString(9) + " "
+						+ rs.getString(10);/* " " */
+				// +
+				// conState.getStatesName(rs.getString(9).equals("California")?"CA":rs.getString(9))
+				// //Commented on 13-09-2019
+				// + "\n" + rs.getString(10);
+				// + "\n" + conState.getCountryName(rs.getString(11)); //Commented on 13-09-2019
 				if (ship.equals(""))
 					customer.setShipTo("");
 				else {
@@ -229,19 +233,19 @@ public class InvoiceInfo {
 				objList.add(customer);
 			}
 		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class InvoiceInfo and  method -shipAddress "+ee.toString());
-		}finally {
+			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -shipAddress " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -258,13 +262,16 @@ public class InvoiceInfo {
 		CountryState conState = new CountryState();
 		// boolean flag = false;
 		try {
-			/*String sqlString = "select distinct BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
-					+ "City,State,ZipCode,Country from bca_bsaddress  "
-					+ "where  (Status like 'N' or Status like 'U') and AddressType =1";*/
+			/*
+			 * String sqlString =
+			 * "select distinct BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
+			 * + "City,State,ZipCode,Country from bca_bsaddress  " +
+			 * "where  (Status like 'N' or Status like 'U') and AddressType =1";
+			 */
 			String sqlString = "select distinct AddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
 					+ "City,State,ZipCode,Country from bca_billingaddress  "
 					+ "where  (Status like 'N' or Status like 'U') and Active = 1 and isDefault=1";
-			
+
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -273,46 +280,50 @@ public class InvoiceInfo {
 				customer.setBsAddressID(rs.getString(1));
 				customer.setClientVendorID(rs.getString(2));
 				customer.setFullName(rs.getString(4) + " " + rs.getString(5));
-				/* commented on 15-06-2019
-				 * String bill = rs.getString(3) + "\n" + customer.getFullName()
-						+"\n"+companyName
-						+ "\n" + rs.getString(6) + "\n" + rs.getString(7)
-						 + rs.getString(8) + " "     // edited by jay 5-11-2018
-						+ conState.getStatesName(rs.getString(9).equals("California")?"CA":rs.getString(9)) + " " + rs.getString(10) + "\n" + conState.getCountryName(rs.getString(11));*/
-				String bill = customer.getFullName()
-				+"\n"+rs.getString(3)
-				+ "\n" + rs.getString(6) 
-				+ "\n" + rs.getString(7)
-				+""+ rs.getString(8) +" "+ rs.getString(9)+" "+ rs.getString(10); /*" "     */
-				//+ conState.getStatesName(rs.getString(9).equals("California")?"CA":rs.getString(9)) 	//Commented on 13-09-2019
-				//+ "\n" + rs.getString(10); 
-				//+ "\n" + conState.getCountryName(rs.getString(11));// edited by jay 5-11-2018 //Commented on 13-09-2019
+				/*
+				 * commented on 15-06-2019 String bill = rs.getString(3) + "\n" +
+				 * customer.getFullName() +"\n"+companyName + "\n" + rs.getString(6) + "\n" +
+				 * rs.getString(7) + rs.getString(8) + " " // edited by jay 5-11-2018 +
+				 * conState.getStatesName(rs.getString(9).equals("California")?"CA":rs.getString
+				 * (9)) + " " + rs.getString(10) + "\n" +
+				 * conState.getCountryName(rs.getString(11));
+				 */
+				String bill = customer.getFullName() + "\n" + rs.getString(3) + "\n" + rs.getString(6) + "\n"
+						+ rs.getString(7) + "" + rs.getString(8) + " " + rs.getString(9) + " "
+						+ rs.getString(10); /* " " */
+				// +
+				// conState.getStatesName(rs.getString(9).equals("California")?"CA":rs.getString(9))
+				// //Commented on 13-09-2019
+				// + "\n" + rs.getString(10);
+				// + "\n" + conState.getCountryName(rs.getString(11));// edited by jay 5-11-2018
+				// //Commented on 13-09-2019
 				customer.setBillTo(bill);
-				
+
 				customer.setAddress1(rs.getString(6));
 				customer.setAddress2(rs.getString(7));
 				customer.setZipcode(rs.getString(10));
-				//customer.setCustomerstate(rs.getString(9).equals("California")?"CA":rs.getString(9));		//Commented on 13-09-2019
-				//customer.setCountry(conState.getCountryName(rs.getString(11)));							//Commented on 13-09-2019
-				//Loger.log("BILLAddre" + bill);
+				// customer.setCustomerstate(rs.getString(9).equals("California")?"CA":rs.getString(9));
+				// //Commented on 13-09-2019
+				// customer.setCountry(conState.getCountryName(rs.getString(11))); //Commented
+				// on 13-09-2019
+				// Loger.log("BILLAddre" + bill);
 				objList.add(customer);
 
 			}
 		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class TaxInfo and  method -billAddress " + ee.toString());
-		}
-		finally {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -billAddress " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -329,17 +340,17 @@ public class InvoiceInfo {
 		con = db.getConnection();
 		String cvId = "";
 		try {
-			/*String sqlString = "select distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name from bca_clientvendor"
-					+ " where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
-					+ " and ( Deleted = '0') and CompanyID=? and Active=1 order by Name";*/
+			/*
+			 * String sqlString =
+			 * "select distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name from bca_clientvendor"
+			 * +
+			 * " where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
+			 * + " and ( Deleted = '0') and CompanyID=? and Active=1 order by Name";
+			 */
 			String sqlString = "SELECT distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name "
-					+ "FROM bca_clientvendor "
-					+ "WHERE CompanyID = ? "
-					+ "AND Status IN ('U', 'N' ) "
-					+ "AND Deleted = 0 "
-					+ "AND Active = 1 "
-					+ "ORDER BY Name";
-			
+					+ "FROM bca_clientvendor " + "WHERE CompanyID = ? " + "AND Status IN ('U', 'N' ) "
+					+ "AND Deleted = 0 " + "AND Active = 1 " + "ORDER BY Name";
+
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1, compId);
 
@@ -348,7 +359,8 @@ public class InvoiceInfo {
 			while (rs.next()) {
 				cvId = rs.getString(1);
 				InvoiceDto invForm = new InvoiceDto();
-				objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ "," + rs.getString(2)+")", cvId));
+				objList.add(new org.apache.struts.util.LabelValueBean(
+						rs.getString("Name") + "(" + rs.getString(3) + "," + rs.getString(2) + ")", cvId));
 				invForm.setClientVendorID(cvId);
 				invForm.setFirstName(rs.getString(2));
 				invForm.setLastName(rs.getString(3));
@@ -358,30 +370,31 @@ public class InvoiceInfo {
 				invForm.setRep(rs.getString("SalesRepID"));
 				invForm.setTaxable(rs.getString("Taxable"));
 				details.add(invForm);
-				/*Loger.log("BEAN___________________________"
-						+ invForm.getTaxable());*/
+				/*
+				 * Loger.log("BEAN___________________________" + invForm.getTaxable());
+				 */
 			}
 			request.setAttribute("CustDetails", details);
 		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class InvoiceInfo and  method -customerDetails "+ ee.toString());
-		}finally {
+			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -customerDetails " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
-	
+
 	public ArrayList sortedcustomerDetails(String compId, HttpServletRequest request, String sort) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -392,22 +405,23 @@ public class InvoiceInfo {
 		con = db.getConnection();
 		String cvId = "";
 		try {
-			/*String sqlString = "select distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name from bca_clientvendor"
-					+ " where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
-					+ " and ( Deleted = '0') and CompanyID=? and Active=1 order by "+sort;*/
-			
+			/*
+			 * String sqlString =
+			 * "select distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name from bca_clientvendor"
+			 * +
+			 * " where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
+			 * + " and ( Deleted = '0') and CompanyID=? and Active=1 order by "+sort;
+			 */
+
 			String sqlString = "SELECT distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name "
-					+ "FROM bca_clientvendor "
-					+ "WHERE CompanyID = ? "
-					+ "AND Status IN ('U', 'N' ) "
-					+ "AND Deleted = 0 "
-					+ "AND Active = 1 "
-					+ "ORDER BY "+sort;
-			/*String sqlString1 = "SELECT distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name "
-					+ "FROM bca_clientvendor "
-					+ "WHERE CompanyID = ? AND Status IN ('U', 'N' ) "
-					+ "AND Deleted = 0 AND Active IN (0, 1) "
-					+ "ORDER BY "+sort;*/
+					+ "FROM bca_clientvendor " + "WHERE CompanyID = ? " + "AND Status IN ('U', 'N' ) "
+					+ "AND Deleted = 0 " + "AND Active = 1 " + "ORDER BY " + sort;
+			/*
+			 * String sqlString1 =
+			 * "SELECT distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name "
+			 * + "FROM bca_clientvendor " + "WHERE CompanyID = ? AND Status IN ('U', 'N' ) "
+			 * + "AND Deleted = 0 AND Active IN (0, 1) " + "ORDER BY "+sort;
+			 */
 
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1, compId);
@@ -417,7 +431,8 @@ public class InvoiceInfo {
 			while (rs.next()) {
 				cvId = rs.getString(1);
 				InvoiceDto invForm = new InvoiceDto();
-				objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ "," + rs.getString(2)+")", cvId));
+				objList.add(new org.apache.struts.util.LabelValueBean(
+						rs.getString("Name") + "(" + rs.getString(3) + "," + rs.getString(2) + ")", cvId));
 				invForm.setClientVendorID(cvId);
 				invForm.setFirstName(rs.getString(2));
 				invForm.setLastName(rs.getString(3));
@@ -427,26 +442,25 @@ public class InvoiceInfo {
 				invForm.setRep(rs.getString("SalesRepID"));
 				invForm.setTaxable(rs.getString("Taxable"));
 				details.add(invForm);
-				/*Loger.log("BEAN___________________________"
-						+ invForm.getTaxable());*/
+				/*
+				 * Loger.log("BEAN___________________________" + invForm.getTaxable());
+				 */
 			}
 			request.setAttribute("CustDetails", details);
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class TaxInfo and  method -getFederalTax "
-							+ " " + ee.toString());
-		}finally {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -455,7 +469,7 @@ public class InvoiceInfo {
 
 	public ArrayList getInvoiceStyle() {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -471,23 +485,23 @@ public class InvoiceInfo {
 			pstmt = con.prepareStatement(sqlString);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
-						.getString("Name"), rs.getString("InvoiceStyleID")));
+				arr.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"),
+						rs.getString("InvoiceStyleID")));
 			}
 		} catch (SQLException ee) {
-			Loger.log(2,"Error in  Class InvoiceInfo and  method -getInvoiceStyle " + ee.toString());
-		}finally {
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getInvoiceStyle " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -497,8 +511,8 @@ public class InvoiceInfo {
 
 	public ArrayList getRep(String compId) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
-		Connection con = null ;
-		PreparedStatement pstmt=null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		if (db == null)
@@ -514,23 +528,22 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
-						.getString("Name"), rs.getString("SalesRepID")));
+				arr.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"), rs.getString("SalesRepID")));
 			}
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getRep "+ ee.toString());
-		}finally {
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getRep " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -540,8 +553,8 @@ public class InvoiceInfo {
 
 	public ArrayList getVia(String compId) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
-		Connection con = null ;
-		PreparedStatement pstmt=null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		if (db == null)
@@ -557,23 +570,22 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
-						.getString("Name"), rs.getString("ShipCarrierID")));
+				arr.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"), rs.getString("ShipCarrierID")));
 			}
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getVia "+ ee.toString());
-		}finally {
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getVia " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -584,8 +596,8 @@ public class InvoiceInfo {
 
 	public ArrayList getTerm(String compId) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
-		Connection con = null ;
-		PreparedStatement pstmt=null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		if (db == null)
@@ -601,23 +613,22 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
-						.getString("Name"), rs.getString("TermID")));
+				arr.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"), rs.getString("TermID")));
 			}
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTerm "+ ee.toString());
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTerm " + ee.toString());
 		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -627,8 +638,8 @@ public class InvoiceInfo {
 
 	public ArrayList getPayMethod(String compId) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
-		Connection con = null ;
-		PreparedStatement pstmt=null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		if (db == null)
@@ -639,34 +650,35 @@ public class InvoiceInfo {
 			arr = null;
 
 		try {
-			/*String sqlString = "select PaymentTypeID,Name from bca_paymenttype where Active=1 and CompanyID=? order by Name";*/
+			/*
+			 * String sqlString =
+			 * "select PaymentTypeID,Name from bca_paymenttype where Active=1 and CompanyID=? order by Name"
+			 * ;
+			 */
 			String sqlString = "SELECT PaymentTypeID,Name,Type,CCTypeID,Active,BankAcctID,TypeCategory "
-					+ "FROM bca_paymenttype "
-					+ "WHERE CompanyID = ? AND Active =1 "
-					+ "AND TypeCategory = 1 ORDER BY PaymentTypeID";		/*This query changed on 26-09-2019*/
+					+ "FROM bca_paymenttype " + "WHERE CompanyID = ? AND Active =1 "
+					+ "AND TypeCategory = 1 ORDER BY PaymentTypeID"; /* This query changed on 26-09-2019 */
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
-						.getString("Name"), rs.getString("PaymentTypeID")));
-				
+				arr.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"), rs.getString("PaymentTypeID")));
+
 			}
 		} catch (SQLException ee) {
-			Loger.log(2,
-					"Error in  Class InvoiceInfo and  method -getPayMethod "+ ee.toString());
-		}finally {
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getPayMethod " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -676,8 +688,8 @@ public class InvoiceInfo {
 
 	public ArrayList getMessage(String compId) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
-		Connection con = null ;
-		PreparedStatement pstmt=null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		if (db == null)
@@ -693,23 +705,22 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cid);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
-						.getString("Name"), rs.getString("MessageID")));
+				arr.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name"), rs.getString("MessageID")));
 			}
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getMessage "+ ee.toString());
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getMessage " + ee.toString());
 		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -719,8 +730,8 @@ public class InvoiceInfo {
 
 	public ArrayList getTaxes(String compId) {
 		ArrayList<InvoiceDto> arr = new ArrayList<InvoiceDto>();
-		Connection con = null ;
-		PreparedStatement pstmt=null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		if (db == null)
@@ -743,19 +754,19 @@ public class InvoiceInfo {
 				arr.add(invoice);
 			}
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes "+ ee.toString());
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + ee.toString());
 		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -766,7 +777,7 @@ public class InvoiceInfo {
 	public String getNewOrderNo(String compId) {
 		int orderNo = 0;
 		String no = "";
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -778,7 +789,8 @@ public class InvoiceInfo {
 			return null;
 
 		try {
-		//	String sqlString = "select OrderNum from bca_invoice  where CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID IN (1,7,9)  order by OrderNum desc";
+			// String sqlString = "select OrderNum from bca_invoice where CompanyID = ? and
+			// invoiceStatus in (0,2) and InvoiceTypeID IN (1,7,9) order by OrderNum desc";
 			String sqlString = "select OrderNum from bca_invoice  where CompanyID = ? and invoiceStatus in (0,2) order by OrderNum desc";
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setInt(1, cid);
@@ -788,41 +800,41 @@ public class InvoiceInfo {
 			}
 			pstmt.close();
 			rs.close();
-			if(orderNo == 0){
+			if (orderNo == 0) {
 				String defaultOrderNo = "select StartingInvoiceNumber from bca_preference where CompanyID=? and Active=?";
 				pstmt = con.prepareStatement(defaultOrderNo);
-				pstmt.setString(1,compId);
-				pstmt.setInt(2,1);
+				pstmt.setString(1, compId);
+				pstmt.setInt(2, 1);
 				rs = pstmt.executeQuery();
-				if(rs.next()){
-					orderNo = rs.getInt("StartingInvoiceNumber")+1;
+				if (rs.next()) {
+					orderNo = rs.getInt("StartingInvoiceNumber") + 1;
 				}
 			}
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes "
-					+ " " + ee.toString());
-		}finally {
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + " " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		no = String.valueOf(orderNo = orderNo + 1);
 		return no;
 	}
+
 	public String getNewSalesOrderNo(String compId) {
 		int orderNo = 0;
 		String no = "";
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -843,41 +855,41 @@ public class InvoiceInfo {
 			}
 			pstmt.close();
 			rs.close();
-			if(orderNo == 0){
+			if (orderNo == 0) {
 				String defaultOrderNo = "select StartingInvoiceNumber from bca_preference where CompanyID=? and Active=?";
 				pstmt = con.prepareStatement(defaultOrderNo);
-				pstmt.setString(1,compId);
-				pstmt.setInt(2,1);
+				pstmt.setString(1, compId);
+				pstmt.setInt(2, 1);
 				rs = pstmt.executeQuery();
-				if(rs.next()){
+				if (rs.next()) {
 					orderNo = rs.getInt("StartingInvoiceNumber");
 				}
 			}
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes "
-					+ " " + ee.toString());
-		}finally {
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + " " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		no = String.valueOf(orderNo = orderNo + 1);
 		return no;
 	}
+
 	public String getDefaultInvoiceStyleNo(String compId) {
 		int invStyle = 0;
 		String no = "";
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -897,20 +909,19 @@ public class InvoiceInfo {
 				invStyle = rs.getInt(1);
 			}
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getDefaultInvoiceStyleNo "
-					+ " " + ee.toString());
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getDefaultInvoiceStyleNo " + " " + ee.toString());
 		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -918,9 +929,8 @@ public class InvoiceInfo {
 		return no;
 	}
 
-
 	final public boolean invoiceExist(String compId, String orderNo) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -933,8 +943,10 @@ public class InvoiceInfo {
 
 		boolean exist = false;
 
-		//String sql = "select OrderNum from bca_invoice where OrderNum = ? and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (1,7)";
-		//String sql = "select OrderNum from bca_invoice where OrderNum = ? and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (1)";
+		// String sql = "select OrderNum from bca_invoice where OrderNum = ? and
+		// CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (1,7)";
+		// String sql = "select OrderNum from bca_invoice where OrderNum = ? and
+		// CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (1)";
 		String sql = "select OrderNum from bca_invoice where OrderNum = ? and CompanyID = ? and invoiceStatus in (0,2)";
 		try {
 			pstmt = con.prepareStatement(sql);
@@ -944,27 +956,27 @@ public class InvoiceInfo {
 			if (rs.next())
 				exist = true;
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes "
-					+ " " + ee.toString());
-		}finally {
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + " " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return exist;
 	}
+
 	final public boolean SalesOrderExist(String compId, String orderNo) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -986,27 +998,27 @@ public class InvoiceInfo {
 			if (rs.next())
 				exist = true;
 		} catch (SQLException ee) {
-			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes "
-					+ " " + ee.toString());
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + " " + ee.toString());
 		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return exist;
 	}
-	public int Save(String compId, InvoiceDto form,String custId) {
-		Connection con = null ;
+
+	public int Save(String compId, InvoiceDto form, String custId) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1025,36 +1037,37 @@ public class InvoiceInfo {
 				pstmt2.setInt(1, invoiceID);
 				pstmt2.executeUpdate();
 				pstmt2.close();
-				Update(compId,form,invoiceID,custId);
+				Update(compId, form, invoiceID, custId);
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
 
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (pstmt2 != null) {
 					db.close(pstmt2);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return invoiceID;
 	}
+
 	public void SaveSalesOrder(String compId, InvoiceDto form, int salesOrderType) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
-		
+
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		int invoiceID = 0;
@@ -1075,33 +1088,34 @@ public class InvoiceInfo {
 				pstmt2.setInt(1, invoiceID);
 				pstmt2.executeUpdate();
 				pstmt2.close();
-				SalesUpdate(compId,form,salesOrderType,invoiceID);
-				
+				SalesUpdate(compId, form, salesOrderType, invoiceID);
+
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
 
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (pstmt2 != null) {
 					db.close(pstmt2);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 	}
+
 	public void AddItem(int invoiceID, int cid, InvoiceDto form) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1137,35 +1151,35 @@ public class InvoiceInfo {
 				int in1 = invID.indexOf(";");
 				String temp1 = invID.substring(0, in1);
 				inventoryID[i] = Integer.parseInt(temp1);
-	
+
 				int in2 = invCode.indexOf(";");
 				code[i] = invCode.substring(0, in2);
-	
+
 				int in3 = invQty.indexOf(";");
 				String temp2 = invQty.substring(0, in3);
-				
+
 				if (("").equals(temp2))
 					qty[i] = Integer.parseInt("0");
 				else
 					qty[i] = Integer.parseInt(temp2);
-	
+
 				int in4 = invName.indexOf(";");
 				name[i] = invName.substring(0, in4);
-	
+
 				int in5 = invuweight.indexOf(";");
 				String temp3 = invuweight.substring(0, in5);
 				if (("").equals(temp3))
 					uweight[i] = java.lang.Double.parseDouble("0.0");
 				else
 					uweight[i] = java.lang.Double.parseDouble(temp3);
-	
+
 				int in6 = invIsTaxable.indexOf(";");
 				String temp4 = invIsTaxable.substring(0, in6);
 				if (("").equals(temp4))
 					taxable[i] = Integer.parseInt("0");
 				else {
 					taxable[i] = Integer.parseInt(temp4);
-				
+
 				}
 				int in7 = invItemID.indexOf(";");
 				String temp5 = invItemID.substring(0, in7);
@@ -1173,19 +1187,18 @@ public class InvoiceInfo {
 					itmTypeID[i] = Integer.parseInt("0");
 				else
 					itmTypeID[i] = Integer.parseInt(temp5);
-	
+
 				int in8 = invItemOrder.indexOf(";");
 				String temp6 = invItemOrder.substring(0, in8);
 				itmOrder[i] = Integer.parseInt(temp6);
-	
+
 				int in9 = invuprice.indexOf(";");
 				String temp9 = invuprice.substring(0, in9);
 				if (("").equals(temp9))
 					uprice[i] = java.lang.Double.parseDouble("0.0");
 				else
 					uprice[i] = java.lang.Double.parseDouble(truncate(temp9));
-				
-			
+
 				invID = invID.substring(in1 + 1);
 				invCode = invCode.substring(in2 + 1);
 				invQty = invQty.substring(in3 + 1);
@@ -1196,7 +1209,7 @@ public class InvoiceInfo {
 				invItemOrder = invItemOrder.substring(in8 + 1);
 				invuprice = invuprice.substring(in9 + 1);
 				String invStr = "select max(CartID) from bca_cart";
-			
+
 				pstmt2 = con.prepareStatement(invStr);
 				rs = pstmt2.executeQuery();
 				/* Insert into invoice */
@@ -1204,14 +1217,11 @@ public class InvoiceInfo {
 					cartID = rs.getInt(1) + 1;
 
 					String insertItem = "insert into bca_cart (InventoryID,InvoiceID,CompanyID,InventoryCode,InventoryName,Qty, UnitWeight,Weight,UnitPrice,Taxable,ItemTypeID,ItemOrder,CartID)  values ( ?,?,?,\""
-							+ code[i]
-							+ "\",\""
-							+ name[i]
-							+ "\",?,?,?,?,?,?,?,? )";
+							+ code[i] + "\",\"" + name[i] + "\",?,?,?,?,?,?,?,? )";
 					pstmt = con.prepareStatement(insertItem);
 
 					pstmt.setInt(1, inventoryID[i]);
-		
+
 					pstmt.setInt(2, invoiceID);
 
 					pstmt.setInt(3, cid);
@@ -1235,34 +1245,32 @@ public class InvoiceInfo {
 				} else
 					return;
 			}
-		} 
-		catch (SQLException ee) {
-				Loger.log("Exception" + ee.toString());
-				
-			} 
-		finally {
+		} catch (SQLException ee) {
+			Loger.log("Exception" + ee.toString());
+
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (pstmt2 != null) {
 					db.close(pstmt2);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
-		
 
 	}
-	public void SalesUpdate(String compId, InvoiceDto form, int salesOrderType,int invoiceID) {
-		Connection con = null ;
+
+	public void SalesUpdate(String compId, InvoiceDto form, int salesOrderType, int invoiceID) {
+		Connection con = null;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1275,7 +1283,6 @@ public class InvoiceInfo {
 		if (con == null)
 			return;
 
-		
 		try {
 			String updateStr = "update bca_invoice set  SONum =?,RefNum =?,"
 					+ "ClientVendorID =? ,BSAddressID =? ,InvoiceStyleID =? ,InvoiceTypeID =? ,"
@@ -1285,7 +1292,7 @@ public class InvoiceInfo {
 					+ "ShippingAddrID = ? ,DateConfirmed = ?  ,DateAdded =? ,invoiceStatus = ? ,EstNum=0 ,OrderType = 7 , "
 					+ "IsPaymentCompleted=? , ServiceID=? , PONum=?,IsInvoice=?,IsSalestype=?,isPending=?  where InvoiceID =? ";
 			pstmt1 = con.prepareStatement(updateStr);
-			
+
 			pstmt1.setString(1, form.getOrderNo());
 			pstmt1.setString(2, form.getPoNum());
 
@@ -1309,63 +1316,59 @@ public class InvoiceInfo {
 			pstmt1.setString(19, form.getTerm());
 			pstmt1.setString(20, form.getPayMethod());
 			pstmt1.setString(21, form.getTaxID());
-			
+
 			String tax = form.getTaxable();
-			
+
 			if (tax.equals("on")) {
 				pstmt1.setInt(22, 1);
-			
+
 			} else {
 				pstmt1.setInt(22, 0);
-			
+
 			}
-			
+
 			String shipped = form.getItemShipped();
-			
+
 			if (shipped.equals("on")) {
 				pstmt1.setInt(23, 1);
-			
+
 			} else {
 				pstmt1.setInt(23, 0);
 			}
 
-			pstmt1.setString(24,form.getMemo());
+			pstmt1.setString(24, form.getMemo());
 			//
 			pstmt1.setInt(25, -1);
 			pstmt1.setInt(26, -1);
 
-			pstmt1.setDate(27, (form.getShipDate().equals("")) ? cinfo
-					.string2date("now()") : cinfo.string2date(form
-					.getShipDate()));
-			pstmt1.setDate(28, (form.getOrderDate().equals("")) ? cinfo
-					.string2date("now()") : cinfo.string2date(form
-					.getOrderDate()));
-			
+			pstmt1.setDate(27, (form.getShipDate().equals("")) ? cinfo.string2date("now()")
+					: cinfo.string2date(form.getShipDate()));
+			pstmt1.setDate(28, (form.getOrderDate().equals("")) ? cinfo.string2date("now()")
+					: cinfo.string2date(form.getOrderDate()));
+
 			pstmt1.setInt(29, 0);
-			
-			String paid=form.getPaid();
-			if(paid==null){
-				pstmt1.setInt(30,0);
-			}
-			else if (paid.equals("on")) {
+
+			String paid = form.getPaid();
+			if (paid == null) {
+				pstmt1.setInt(30, 0);
+			} else if (paid.equals("on")) {
 				pstmt1.setInt(30, 1);
 			} else {
 				pstmt1.setInt(30, 0);
 			}
-			
-			if(form.getServiceName().equals("")){
-				pstmt1.setInt(31,0);
+
+			if (form.getServiceName().equals("")) {
+				pstmt1.setInt(31, 0);
+			} else {
+				pstmt1.setInt(31, getServiceID(form.getServiceName()));
 			}
-			else{
-				pstmt1.setInt(31,getServiceID(form.getServiceName()));
-			}
-			pstmt1.setInt(32,0);
-			pstmt1.setString(33,form.getIsInvoice());
-			pstmt1.setString(34,form.getIsSalestype());
-			pstmt1.setInt(35, form.getIsPending().equals("on")?1:0); //is Pending in sales Order
+			pstmt1.setInt(32, 0);
+			pstmt1.setString(33, form.getIsInvoice());
+			pstmt1.setString(34, form.getIsSalestype());
+			pstmt1.setInt(35, form.getIsPending().equals("on") ? 1 : 0); // is Pending in sales Order
 			pstmt1.setInt(36, invoiceID);
 			int rows = pstmt1.executeUpdate();
-			if(rows>0){
+			if (rows > 0) {
 
 				/* Delete Item from Cart */
 
@@ -1374,33 +1377,33 @@ public class InvoiceInfo {
 				pstmt3.setInt(1, invoiceID);
 				pstmt3.setInt(2, cid);
 				pstmt3.executeUpdate();
-			
+
 				/* Add Item to Cart */
 				AddItem(invoiceID, cid, form);
-				
+
 			}
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
 
-		}finally {
+		} finally {
 			try {
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
+				}
 				if (pstmt3 != null) {
 					db.close(pstmt3);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 	}
 
-	public void Update(String compId, InvoiceDto form,int invoiceID,String custID) {
-		Connection con = null ;
+	public void Update(String compId, InvoiceDto form, int invoiceID, String custID) {
+		Connection con = null;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1413,7 +1416,6 @@ public class InvoiceInfo {
 		if (con == null)
 			return;
 
-		
 		try {
 			String updateStr = "update bca_invoice set  OrderNum =?,RefNum =?,"
 					+ "ClientVendorID =? ,BSAddressID =? ,InvoiceStyleID =? ,InvoiceTypeID =? ,"
@@ -1423,16 +1425,16 @@ public class InvoiceInfo {
 					+ "ShippingAddrID = ? ,DateConfirmed = ?  ,DateAdded =? ,invoiceStatus = ? ,EstNum=0 ,OrderType = 7 , "
 					+ "IsPaymentCompleted=? , ServiceID=? ,IsInvoice=?,IsSalestype=?,isPending=? where InvoiceID =? ";
 			pstmt1 = con.prepareStatement(updateStr);
-			
+
 			pstmt1.setString(1, form.getOrderNo());
 			pstmt1.setString(2, form.getPoNum());
-			/*pstmt1.setString(2, "");*/
+			/* pstmt1.setString(2, ""); */
 			pstmt1.setString(3, custID);
 			pstmt1.setString(4, form.getBsAddressID());
 			pstmt1.setString(5, form.getInvoiceStyle());
-			/*pstmt1.setString(6, form.getInvoiceType());*/
+			/* pstmt1.setString(6, form.getInvoiceType()); */
 			pstmt1.setString(6, "1");
-			pstmt1.setString(7,compId);
+			pstmt1.setString(7, compId);
 			pstmt1.setDouble(8, form.getWeight());
 			pstmt1.setDouble(9, form.getSubtotal());
 			pstmt1.setDouble(10, form.getTax());
@@ -1448,70 +1450,63 @@ public class InvoiceInfo {
 			pstmt1.setString(19, form.getTerm());
 			pstmt1.setString(20, form.getPayMethod());
 			pstmt1.setString(21, form.getTaxID());
-			
+
 			String tax = form.getTaxable();
-			
+
 			if (tax.equals("on")) {
 				pstmt1.setInt(22, 1);
-			
+
 			} else {
 				pstmt1.setInt(22, 0);
 			}
-			
+
 			String shipped = form.getItemShipped();
-			
+
 			if (shipped.equals("on")) {
 				pstmt1.setInt(23, 1);
-			
+
 			} else {
 				pstmt1.setInt(23, 0);
 			}
 
-			pstmt1.setString(24,form.getMemo());
+			pstmt1.setString(24, form.getMemo());
 			//
 			pstmt1.setInt(25, -1);
 			pstmt1.setString(26, form.getShAddressID());
 
-			pstmt1.setDate(27, (form.getShipDate().equals("")) ? cinfo
-					.string2date("now()") : cinfo.string2date(form
-					.getShipDate()));
-			pstmt1.setDate(28, (form.getOrderDate().equals("")) ? cinfo
-					.string2date("now()") : cinfo.string2date(form
-					.getOrderDate()));
-			
+			pstmt1.setDate(27, (form.getShipDate().equals("")) ? cinfo.string2date("now()")
+					: cinfo.string2date(form.getShipDate()));
+			pstmt1.setDate(28, (form.getOrderDate().equals("")) ? cinfo.string2date("now()")
+					: cinfo.string2date(form.getOrderDate()));
+
 			pstmt1.setInt(29, 0);
-			
-			String paid=form.getPaid();
-			if(paid==null){
-				pstmt1.setInt(30,0);
-			}
-			else if (paid.equals("on")) {
+
+			String paid = form.getPaid();
+			if (paid == null) {
+				pstmt1.setInt(30, 0);
+			} else if (paid.equals("on")) {
 				pstmt1.setInt(30, 1);
 			} else {
 				pstmt1.setInt(30, 0);
 			}
-			/*if(form.getServiceName().equals("0") || form.getServiceName().equals("")){
-				pstmt1.setInt(31,0);
-			}
-			else{
-				pstmt1.setInt(31,getServiceID(form.getServiceName()));
-			}*/
-			if(form.getServiceID() == 0)
-			{
+			/*
+			 * if(form.getServiceName().equals("0") || form.getServiceName().equals("")){
+			 * pstmt1.setInt(31,0); } else{
+			 * pstmt1.setInt(31,getServiceID(form.getServiceName())); }
+			 */
+			if (form.getServiceID() == 0) {
 				pstmt1.setInt(31, 0);
-			}
-			else
-			{
+			} else {
 				pstmt1.setInt(31, form.getServiceID());
 			}
-		
-			pstmt1.setString(32,"1");
-			pstmt1.setString(33,"1");
-			pstmt1.setInt(34,form.getIsPending().equals("on")? 1:0);//pending 
-			pstmt1.setInt(35,invoiceID); //set pending value order 
-			
+
+			pstmt1.setString(32, "1");
+			pstmt1.setString(33, "1");
+			pstmt1.setInt(34, form.getIsPending().equals("on") ? 1 : 0);// pending
+			pstmt1.setInt(35, invoiceID); // set pending value order
+
 			int rows = pstmt1.executeUpdate();
-			if(rows>0){
+			if (rows > 0) {
 
 				/* Delete Item from Cart */
 
@@ -1520,28 +1515,27 @@ public class InvoiceInfo {
 				pstmt3.setInt(1, invoiceID);
 				pstmt3.setInt(2, cid);
 				pstmt3.executeUpdate();
-			
+
 				/* Add Item to Cart */
 				AddItem(invoiceID, cid, form);
-				
+
 			}
 		} catch (SQLException ee) {
-			
-			Loger.log("Exception" + ee.toString());
-			
 
-		}finally {
+			Loger.log("Exception" + ee.toString());
+
+		} finally {
 			try {
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
+				}
 				if (pstmt3 != null) {
 					db.close(pstmt3);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -1549,7 +1543,7 @@ public class InvoiceInfo {
 
 	public int getInvoiceNo(String compId, String no) {
 		int invoiceID = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -1560,10 +1554,13 @@ public class InvoiceInfo {
 		if (con == null)
 			return 0;
 		try {
-			/*String sql = " select InvoiceID from bca_invoice where OrderNum =?"
-					+ " and CompanyID = ? and invoiceStatus IN (0,2) and InvoiceTypeID IN (1,7,9) ";*/
+			/*
+			 * String sql = " select InvoiceID from bca_invoice where OrderNum =?" +
+			 * " and CompanyID = ? and invoiceStatus IN (0,2) and InvoiceTypeID IN (1,7,9) "
+			 * ;
+			 */
 			String sql = " select InvoiceID from bca_invoice where OrderNum =?"
-					+ " and CompanyID = ? and invoiceStatus IN (0,2)";			/*Changed on 21-02-2019*/
+					+ " and CompanyID = ? and invoiceStatus IN (0,2)"; /* Changed on 21-02-2019 */
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, no);
 			pstmt.setInt(2, cid);
@@ -1574,27 +1571,28 @@ public class InvoiceInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			
-		}finally {
+
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return invoiceID;
 	}
-	public int getSalesInvoiceNo(String compId, String no) { //sales order
+
+	public int getSalesInvoiceNo(String compId, String no) { // sales order
 		int invoiceID = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -1617,26 +1615,27 @@ public class InvoiceInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			
-		}finally {
+
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return invoiceID;
 	}
+
 	public void Delete(String compId, String orderNo) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		if (db == null)
@@ -1645,63 +1644,63 @@ public class InvoiceInfo {
 		if (con == null)
 			return;
 		try {
-			pstmt = con
-					.prepareStatement("update bca_invoice set  invoiceStatus=? where OrderNum =? and CompanyID=?");
+			pstmt = con.prepareStatement("update bca_invoice set  invoiceStatus=? where OrderNum =? and CompanyID=?");
 			pstmt.setInt(1, 1);
 			pstmt.setString(2, orderNo);
 			pstmt.setString(3, compId);
 			pstmt.executeUpdate();
-			
+
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			
-		}finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-					}
-					if(con != null){
-					db.close(con);
-					}
-				} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-	}
-	public void DeleteOrder(String compId, String orderNo) {
-		Connection con = null ;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		if (db == null)
-			return;
-		con = db.getConnection();
-		if (con == null)
-			return;
-		try {
-			pstmt = con
-					.prepareStatement("update bca_invoice set  invoiceStatus=? where SONum =? and CompanyID=?");
-			pstmt.setInt(1, 1);
-			pstmt.setString(2, orderNo);
-			pstmt.setString(3, compId);
-			pstmt.executeUpdate();
-		} catch (SQLException ee) {
-			Loger.log("Exception" + ee.toString());
-			
+
 		} finally {
 			try {
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 	}
+
+	public void DeleteOrder(String compId, String orderNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		SQLExecutor db = new SQLExecutor();
+		if (db == null)
+			return;
+		con = db.getConnection();
+		if (con == null)
+			return;
+		try {
+			pstmt = con.prepareStatement("update bca_invoice set  invoiceStatus=? where SONum =? and CompanyID=?");
+			pstmt.setInt(1, 1);
+			pstmt.setString(2, orderNo);
+			pstmt.setString(3, compId);
+			pstmt.executeUpdate();
+		} catch (SQLException ee) {
+			Loger.log("Exception" + ee.toString());
+
+		} finally {
+			try {
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+	}
+
 	public void getBillShipAddr(int custID, UpdateInvoiceDto form) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
 		PreparedStatement pstmt3 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -1732,15 +1731,13 @@ public class InvoiceInfo {
 				form.setBsprovince(rs.getString("Province"));
 				;
 
-				pstmt2 = con
-						.prepareStatement("select CountryID from country where CountryName=?");
+				pstmt2 = con.prepareStatement("select CountryID from country where CountryName=?");
 				pstmt2.setString(1, id);
 				rs2 = pstmt2.executeQuery();
 				if (rs2.next()) {
 					form.setBscountry(rs2.getString("CountryID"));
 
-					pstmt3 = con
-							.prepareStatement("select StateID from state where StateName=? and CountryID=?");
+					pstmt3 = con.prepareStatement("select StateID from state where StateName=? and CountryID=?");
 					pstmt3.setString(1, stid);
 					pstmt3.setString(2, id);
 					rs3 = pstmt3.executeQuery();
@@ -1771,46 +1768,45 @@ public class InvoiceInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			
-		}finally {
+
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
+				}
 				if (rs2 != null) {
 					db.close(rs2);
-					}
+				}
 				if (pstmt2 != null) {
 					db.close(pstmt2);
-					}
+				}
 				if (rs3 != null) {
 					db.close(rs3);
-					}
+				}
 				if (pstmt3 != null) {
 					db.close(pstmt3);
-					}
-				
-					if(con != null){
+				}
+
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 	}
 
-	public void getCountry(HttpServletRequest request, String country,
-			UpdateInvoiceDto form) {
-		Connection con = null ;
+	public void getCountry(HttpServletRequest request, String country, UpdateInvoiceDto form) {
+		Connection con = null;
 		PreparedStatement pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs1 = null;
@@ -1823,9 +1819,7 @@ public class InvoiceInfo {
 		try {
 			String str1 = form.getCountry();
 			Loger.log("CC" + str1);
-			pstmt1 = con
-					.prepareStatement("select CountryID from country where CountryName='"
-							+ str1 + "'");
+			pstmt1 = con.prepareStatement("select CountryID from country where CountryName='" + str1 + "'");
 			rs1 = pstmt1.executeQuery();
 			Loger.log("###");
 
@@ -1840,29 +1834,29 @@ public class InvoiceInfo {
 
 		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
-			
-		}finally {
+
+		} finally {
 			try {
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 	}
-	private BcaCvcreditcardRepository  bcaCvcreditcardRepository;
 
-	
+	private BcaCvcreditcardRepository bcaCvcreditcardRepository;
+
 	public void SearchCustomer(String compId, String cvId, HttpServletRequest request) {
 
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt2 = null;
@@ -1871,7 +1865,7 @@ public class InvoiceInfo {
 		PreparedStatement pstmt12 = null;
 		PreparedStatement pstmt13 = null;
 		SQLExecutor db = new SQLExecutor();
-		
+
 		ArrayList<UpdateInvoiceDto> serviceinfo = new ArrayList<UpdateInvoiceDto>();
 		ResultSet rs = null;
 		ResultSet rs3 = null;
@@ -1895,29 +1889,47 @@ public class InvoiceInfo {
 			sqlString.append(" bca_clientvendor.State, bca_clientvendor.Province, bca_clientvendor.Country,");
 			sqlString.append(" bca_clientvendor.ZipCode, bca_clientvendor.Phone, bca_clientvendor.CellPhone,");
 			sqlString.append("bca_clientvendor.Fax, bca_clientvendor.Email,bca_clientvendor.HomePage,");
-			sqlString.append("bca_clientvendor.CustomerTitle,bca_clientvendor.ResellerTaxID,bca_clientvendor.VendorOpenDebit,");
+			sqlString.append(
+					"bca_clientvendor.CustomerTitle,bca_clientvendor.ResellerTaxID,bca_clientvendor.VendorOpenDebit,");
 			sqlString.append("bca_clientvendor.VendorAllowedCredit,bca_clientvendor.Detail,bca_clientvendor.Taxable,");
-			sqlString.append("bca_clientvendor.CVTypeID, bca_clientvendor.cvcategoryid, date_format(bca_clientvendor.DateAdded,'%m-%d-%Y') As DateAdded");
+			sqlString.append(
+					"bca_clientvendor.CVTypeID, bca_clientvendor.cvcategoryid, date_format(bca_clientvendor.DateAdded,'%m-%d-%Y') As DateAdded");
 			sqlString.append(",bca_creditcard.CardNumber ,bca_creditcard.CardExpMonth,bca_creditcard.CardExpYear ,");
-			sqlString.append("bca_creditcard.CardCW2 ,bca_creditcard.CardHolderName,bca_creditcard.CardBillingAddress,bca_creditcard.CardBillingZipCode,");
+			sqlString.append(
+					"bca_creditcard.CardCW2 ,bca_creditcard.CardHolderName,bca_creditcard.CardBillingAddress,bca_creditcard.CardBillingZipCode,");
 			sqlString.append("bca_bsaddress.Name,bca_bsaddress.FirstName,");
-			sqlString.append("bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
+			sqlString.append(
+					"bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
 			sqlString.append("bca_bsaddress.State,bca_bsaddress.Province,bca_bsaddress.AddressType,");
-			sqlString.append("bca_clientvendorfinancecharges.UseIndividual ,bca_clientvendorfinancecharges.AnnualInterestRate ,bca_clientvendorfinancecharges.MinimumFinanceCharge ,");
-					/*.append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge ,bca_clientvendorfinancecharges.MarkFinanceCharge ");*/
-			sqlString.append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge, ");
-			sqlString.append("bca_clientvendor.isPhoneMobileNumber, bca_clientvendor.isMobilePhoneNumber, bca_clientvendor.MiddleName,");
+			sqlString.append(
+					"bca_clientvendorfinancecharges.UseIndividual ,bca_clientvendorfinancecharges.AnnualInterestRate ,bca_clientvendorfinancecharges.MinimumFinanceCharge ,");
+			/*
+			 * .append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge ,bca_clientvendorfinancecharges.MarkFinanceCharge "
+			 * );
+			 */
+			sqlString.append(
+					"bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge, ");
+			sqlString.append(
+					"bca_clientvendor.isPhoneMobileNumber, bca_clientvendor.isMobilePhoneNumber, bca_clientvendor.MiddleName,");
 			sqlString.append("date_format(bca_clientvendor.DateInput,'%m-%d-%Y') As DateInput,");
-			sqlString.append("date_format(bca_clientvendor.DateTerminated,'%m-%d-%Y') As DateTerminated,bca_clientvendor.isTerminated ");
+			sqlString.append(
+					"date_format(bca_clientvendor.DateTerminated,'%m-%d-%Y') As DateTerminated,bca_clientvendor.isTerminated ");
 
-			sqlString.append("from  bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
-			sqlString.append(" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
-			sqlString.append("bca_clientvendor.ClientVendorID and bca_clientvendorfinancecharges.ClientVendorID= bca_clientvendor.ClientVendorID )");
+			sqlString.append(
+					"from  bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
+			sqlString.append(
+					" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
+			sqlString.append(
+					"bca_clientvendor.ClientVendorID and bca_clientvendorfinancecharges.ClientVendorID= bca_clientvendor.ClientVendorID )");
 			sqlString.append(" where (bca_clientvendor.Status like 'N' or bca_clientvendor.Status like 'U')");
-			/*sqlString
-					.append("and (bca_clientvendor.CVTypeID = '1' or bca_clientvendor.CVTypeID = '2')");*/			//Commented on 19-09-2019
-			sqlString.append("and ( bca_clientvendor.Deleted = '0') and CompanyID='1' and bca_clientvendor.ClientVendorID ='"
-					+ cvId + "' group by ( bca_clientvendor.ClientVendorID )");
+			/*
+			 * sqlString
+			 * .append("and (bca_clientvendor.CVTypeID = '1' or bca_clientvendor.CVTypeID = '2')"
+			 * );
+			 */ // Commented on 19-09-2019
+			sqlString.append(
+					"and ( bca_clientvendor.Deleted = '0') and CompanyID='1' and bca_clientvendor.ClientVendorID ='"
+							+ cvId + "' group by ( bca_clientvendor.ClientVendorID )");
 			sqlString.append(" order by bca_clientvendor.ClientVendorID ");
 
 			pstmt = con.prepareStatement(sqlString.toString());
@@ -1940,8 +1952,7 @@ public class InvoiceInfo {
 				uform1.setServiceBalance((rs22.getDouble("ServiceBalance")));
 
 				uform1.setDefaultService(rs22.getInt("DefaultService"));
-				Loger.log("SERVICE   DDDD__________-----------________"
-						+ uform1.getDefaultService());
+				Loger.log("SERVICE   DDDD__________-----------________" + uform1.getDefaultService());
 
 				int svID = rs22.getInt("ServiceID");
 				uform1.setServiceID(svID);
@@ -1974,9 +1985,9 @@ public class InvoiceInfo {
 				request.setAttribute("DefaultService", default_ser);
 			}
 
-			//String country = "";
+			// String country = "";
 			if (rs.next()) {
-				//country = rs.getString(10);
+				// country = rs.getString(10);
 
 				/* General */
 
@@ -2022,18 +2033,18 @@ public class InvoiceInfo {
 				customer.setCardZip(rs.getString(32));
 
 				/* Finance */
-							
-				//customer.setFsUseIndividual(rs.getString(44).equals("1")?"true":"false");
+
+				// customer.setFsUseIndividual(rs.getString(44).equals("1")?"true":"false");
 				customer.setFsUseIndividual(rs.getString(44));
 				customer.setAnnualIntrestRate(rs.getString(45));
 				customer.setMinFCharges(rs.getString(46));
 				customer.setGracePrd(rs.getString(47));
 				String str1 = rs.getString(48);
-				
-				if(str1==null)
+
+				if (str1 == null)
 					customer.setFsAssessFinanceCharge("false");
 				else
-					customer.setFsAssessFinanceCharge(rs.getString(48).equals("1")?"true":"false");
+					customer.setFsAssessFinanceCharge(rs.getString(48).equals("1") ? "true" : "false");
 				customer.setIsPhoneMobileNumber(rs.getBoolean(49));
 				customer.setIsMobilePhoneNumber(rs.getBoolean(50));
 				customer.setMiddleName(rs.getString(51));
@@ -2043,11 +2054,12 @@ public class InvoiceInfo {
 			}
 			StringBuffer sqlString1 = new StringBuffer();
 			sqlString1.append("select bca_bsaddress.Name,bca_bsaddress.FirstName,");
-			sqlString1.append("bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
+			sqlString1.append(
+					"bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
 			sqlString1.append("bca_bsaddress.State,bca_bsaddress.Province ");
 			sqlString1.append(" from bca_bsaddress ");
-			sqlString1.append(" where ClientVendorID like '" + cvId
-					+ "' and AddressType like '1' and Status in ('N' , 'U') ");
+			sqlString1.append(
+					" where ClientVendorID like '" + cvId + "' and AddressType like '1' and Status in ('N' , 'U') ");
 			pstmt1 = con.prepareStatement(sqlString1.toString());
 			// Loger.log(sqlString1);
 			rs1 = pstmt1.executeQuery();
@@ -2063,19 +2075,17 @@ public class InvoiceInfo {
 				customer.setBsstate(rs1.getString(9));
 				customer.setBsprovince(rs1.getString(10));
 
-				
 				request.setAttribute("state_bt", customer.getBsstate());
 			}
 
 			StringBuffer sqlString2 = new StringBuffer();
-			sqlString2
-					.append(" select bca_bsaddress.Name,bca_bsaddress.FirstName,");
-			sqlString2
-					.append("bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
+			sqlString2.append(" select bca_bsaddress.Name,bca_bsaddress.FirstName,");
+			sqlString2.append(
+					"bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
 			sqlString2.append("bca_bsaddress.State,bca_bsaddress.Province ");
 			sqlString2.append(" from bca_bsaddress ");
-			sqlString2.append(" where ClientVendorID like '" + cvId
-					+ "' and AddressType like '0' and Status in ('N' , 'U') ");
+			sqlString2.append(
+					" where ClientVendorID like '" + cvId + "' and AddressType like '0' and Status in ('N' , 'U') ");
 
 			pstmt3 = con.prepareStatement(sqlString2.toString());
 			// Loger.log(sqlString2);
@@ -2092,14 +2102,14 @@ public class InvoiceInfo {
 				customer.setShcountry(rs2.getString(8));
 				customer.setShstate(rs2.getString(9));
 				customer.setShprovince(rs2.getString(10));
-				
+
 				request.setAttribute("state_st", customer.getShstate());
 
 			}
 
 			/* for Account tab */
-			pstmt4 = con
-					.prepareStatement("select SalesRepID,TermID,PaymentTypeID,ShipCarrierID from bca_clientvendor where CompanyID=? and ClientVendorID=?");
+			pstmt4 = con.prepareStatement(
+					"select SalesRepID,TermID,PaymentTypeID,ShipCarrierID from bca_clientvendor where CompanyID=? and ClientVendorID=?");
 			pstmt4.setString(1, compId);
 			pstmt4.setString(2, cvId);
 
@@ -2112,8 +2122,7 @@ public class InvoiceInfo {
 			}
 			// ---start---------------------------------------------------------------------code
 
-			pstmt4 = con.prepareStatement("select * from bca_cvcreditcard "
-					+ " where clientvendorid=? and active=1");
+			pstmt4 = con.prepareStatement("select * from bca_cvcreditcard " + " where clientvendorid=? and active=1");
 			pstmt4.setString(1, cvId);
 			rs3 = pstmt4.executeQuery();
 			List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByClientVendorIdAndActive(cvId);
@@ -2121,82 +2130,75 @@ public class InvoiceInfo {
 			if (rs3.next()) {
 				customer.setCcType(rs3.getString("CCTypeID"));
 				customer.setCardNo(rs3.getString("CardNumber"));
-				customer.setExpDate(rs3.getString("CardExpMonth") + "/"
-						+ rs3.getString("CardExpYear"));
+				customer.setExpDate(rs3.getString("CardExpMonth") + "/" + rs3.getString("CardExpYear"));
 				customer.setCw2(rs3.getString("CardCW2"));
 				customer.setCardHolderName(rs3.getString("CardHolderName"));
-				customer
-						.setCardBillAddress(rs3.getString("CardBillingAddress"));
+				customer.setCardBillAddress(rs3.getString("CardBillingAddress"));
 				customer.setCardZip(rs3.getString("CardBillingZipCode"));
 			}
 			// ---end---------------------------------------------------------------------code
 
-			
-
 			request.setAttribute("CustomerDetails", customer);
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class TaxInfo and  method -getFederalTax "
-							+ ee.toString());
-		}
-		finally {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (rs2 != null) {
 					db.close(rs2);
-					}
+				}
 				if (rs3 != null) {
 					db.close(rs3);
-					}
+				}
 				if (rs22 != null) {
 					db.close(rs22);
-					}
+				}
 				if (rs12 != null) {
 					db.close(rs12);
-					}
+				}
 				if (rs13 != null) {
 					db.close(rs13);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
+				}
 				if (pstmt2 != null) {
 					db.close(pstmt2);
-					}
+				}
 				if (pstmt3 != null) {
 					db.close(pstmt3);
-					}
+				}
 				if (pstmt4 != null) {
 					db.close(pstmt4);
-					}
+				}
 				if (pstmt12 != null) {
 					db.close(pstmt12);
-					}
+				}
 				if (pstmt13 != null) {
 					db.close(pstmt13);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 
 	}
-	
-	// search selected customer base on custid
-	public void SearchselectedCustomer(String compId, String cvId,HttpServletRequest request) {
 
-		Connection con = null ;
+	// search selected customer base on custid
+	public void SearchselectedCustomer(String compId, String cvId, HttpServletRequest request) {
+
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt2 = null;
@@ -2205,7 +2207,7 @@ public class InvoiceInfo {
 		PreparedStatement pstmt12 = null;
 		PreparedStatement pstmt13 = null;
 		SQLExecutor db = new SQLExecutor();
-		
+
 		ArrayList<UpdateInvoiceDto> serviceinfo = new ArrayList<UpdateInvoiceDto>();
 		ResultSet rs = null;
 		ResultSet rs1 = null;
@@ -2229,32 +2231,51 @@ public class InvoiceInfo {
 			sqlString.append("bca_clientvendor.Province,bca_clientvendor.Country,bca_clientvendor.ZipCode,");
 			sqlString.append("bca_clientvendor.Phone,bca_clientvendor.CellPhone,bca_clientvendor.Fax,");
 			sqlString.append("bca_clientvendor.Email,bca_clientvendor.HomePage,bca_clientvendor.CustomerTitle,");
-			sqlString.append("bca_clientvendor.ResellerTaxID,bca_clientvendor.VendorOpenDebit,bca_clientvendor.VendorAllowedCredit,");
+			sqlString.append(
+					"bca_clientvendor.ResellerTaxID,bca_clientvendor.VendorOpenDebit,bca_clientvendor.VendorAllowedCredit,");
 			sqlString.append("bca_clientvendor.Detail,bca_clientvendor.Taxable,bca_clientvendor.CVTypeID,");
-			sqlString.append("bca_clientvendor.cvcategoryid,date_format(bca_clientvendor.DateAdded,'%m-%d-%Y') As DateAdded,");
-			
-			sqlString.append("bca_creditcard.CardNumber,bca_creditcard.CardExpMonth,bca_creditcard.CardExpYear,bca_creditcard.CardCW2,");
-			sqlString.append("bca_creditcard.CardHolderName,bca_creditcard.CardBillingAddress,bca_creditcard.CardBillingZipCode,");
-			
+			sqlString.append(
+					"bca_clientvendor.cvcategoryid,date_format(bca_clientvendor.DateAdded,'%m-%d-%Y') As DateAdded,");
+
+			sqlString.append(
+					"bca_creditcard.CardNumber,bca_creditcard.CardExpMonth,bca_creditcard.CardExpYear,bca_creditcard.CardCW2,");
+			sqlString.append(
+					"bca_creditcard.CardHolderName,bca_creditcard.CardBillingAddress,bca_creditcard.CardBillingZipCode,");
+
 			sqlString.append("bca_bsaddress.Name,bca_bsaddress.FirstName,bca_bsaddress.LastName,");
 			sqlString.append("bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,");
-			sqlString.append("bca_bsaddress.ZipCode,bca_bsaddress.Country,bca_bsaddress.State,bca_bsaddress.Province,bca_bsaddress.AddressType,");
-			
-			sqlString.append("bca_clientvendorfinancecharges.UseIndividual,bca_clientvendorfinancecharges.AnnualInterestRate,bca_clientvendorfinancecharges.MinimumFinanceCharge ,");
-			/*sqlString.append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge ,bca_clientvendorfinancecharges.MarkFinanceCharge ");*/		/*Commented on 26-04-2019*/
-			sqlString.append("bca_clientvendorfinancecharges.GracePeriod,bca_clientvendorfinancecharges.AssessFinanceCharge");
-			
-			sqlString.append(" from bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
-			sqlString.append(" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
-			sqlString.append("bca_clientvendor.ClientVendorID and bca_clientvendorfinancecharges.ClientVendorID= bca_clientvendor.ClientVendorID )");
+			sqlString.append(
+					"bca_bsaddress.ZipCode,bca_bsaddress.Country,bca_bsaddress.State,bca_bsaddress.Province,bca_bsaddress.AddressType,");
+
+			sqlString.append(
+					"bca_clientvendorfinancecharges.UseIndividual,bca_clientvendorfinancecharges.AnnualInterestRate,bca_clientvendorfinancecharges.MinimumFinanceCharge ,");
+			/*
+			 * sqlString.
+			 * append("bca_clientvendorfinancecharges.GracePeriod ,bca_clientvendorfinancecharges.AssessFinanceCharge ,bca_clientvendorfinancecharges.MarkFinanceCharge "
+			 * );
+			 */ /* Commented on 26-04-2019 */
+			sqlString.append(
+					"bca_clientvendorfinancecharges.GracePeriod,bca_clientvendorfinancecharges.AssessFinanceCharge");
+
+			sqlString.append(
+					" from bca_clientvendor left join ( bca_cvcreditcard ,bca_bsaddress ,bca_clientvendorfinancecharges )");
+			sqlString.append(
+					" on (bca_creditcard.ClientVendorID= bca_clientvendor.ClientVendorID and bca_bsaddress.ClientVendorID= ");
+			sqlString.append(
+					"bca_clientvendor.ClientVendorID and bca_clientvendorfinancecharges.ClientVendorID= bca_clientvendor.ClientVendorID )");
 			sqlString.append(" where (bca_clientvendor.Status like 'N' or bca_clientvendor.Status like 'U')");
-			/*sqlString.append("and (bca_clientvendor.CVTypeID = '1' or bca_clientvendor.CVTypeID = '2') ");*/		//Commented on 19-09-2019
-			sqlString.append("and ( bca_clientvendor.Deleted = '0') and CompanyID='1' and bca_clientvendor.ClientVendorID ='"
+			/*
+			 * sqlString.
+			 * append("and (bca_clientvendor.CVTypeID = '1' or bca_clientvendor.CVTypeID = '2') "
+			 * );
+			 */ // Commented on 19-09-2019
+			sqlString.append(
+					"and ( bca_clientvendor.Deleted = '0') and CompanyID='1' and bca_clientvendor.ClientVendorID ='"
 							+ cvId + "' group by ( bca_clientvendor.ClientVendorID )");
 			sqlString.append(" order by bca_clientvendor.ClientVendorID ");
 
 			pstmt = con.prepareStatement(sqlString.toString());
-			//Loger.log(sqlString);
+			// Loger.log(sqlString);
 			rs = pstmt.executeQuery();
 
 			String sqlString11 = "select ClientVendorID,ServiceID,DateAdded,InvoiceStyleID,ServiceBalance,DefaultService from bca_clientvendorservice where CompanyID = ? and ClientVendorID = ?";
@@ -2273,7 +2294,8 @@ public class InvoiceInfo {
 				uform1.setServiceBalance((rs22.getDouble("ServiceBalance")));
 
 				uform1.setDefaultService(rs22.getInt("DefaultService"));
-				//Loger.log("SERVICE   DDDD__________-----------________"+ uform1.getDefaultService());
+				// Loger.log("SERVICE DDDD__________-----------________"+
+				// uform1.getDefaultService());
 
 				int svID = rs22.getInt("ServiceID");
 				uform1.setServiceID(svID);
@@ -2298,7 +2320,7 @@ public class InvoiceInfo {
 				serviceinfo.add(uform1);
 			}
 			request.setAttribute("ServiceInfo", serviceinfo);
-			//Loger.log("deafult_ser________________" + default_ser);
+			// Loger.log("deafult_ser________________" + default_ser);
 			if (!(default_ser.equals(""))) {
 				request.setAttribute("DefaultService", default_ser);
 			} else {
@@ -2351,36 +2373,38 @@ public class InvoiceInfo {
 				customer.setCardZip(rs.getString(32));
 
 				/* Finance */
-				if(rs.getString(44) != null)                   //changed by nxsol 09-05-2018 Applying condition
-				{	
-					customer.setFsUseIndividual(rs.getString(44).equals("1")?"true":"false");
+				if (rs.getString(44) != null) // changed by nxsol 09-05-2018 Applying condition
+				{
+					customer.setFsUseIndividual(rs.getString(44).equals("1") ? "true" : "false");
 				}
-				if(rs.getString(45) != null)                  //changed by nxsol 09-05-2018 Applying condition
-				{	
+				if (rs.getString(45) != null) // changed by nxsol 09-05-2018 Applying condition
+				{
 					customer.setAnnualIntrestRate(rs.getString(45));
 				}
-				if(rs.getString(46) != null) 					//changed by nxsol 09-05-2018 Applying condition
-				{	
+				if (rs.getString(46) != null) // changed by nxsol 09-05-2018 Applying condition
+				{
 					customer.setMinFCharges(rs.getString(46));
 				}
-				if(rs.getString(47) != null)					//changed by nxsol 09-05-2018 Applying condition
-				{	
+				if (rs.getString(47) != null) // changed by nxsol 09-05-2018 Applying condition
+				{
 					customer.setGracePrd(rs.getString(47));
-				}	
+				}
 				String str1 = rs.getString(48);
-				
-				if(str1==null)
+
+				if (str1 == null)
 					customer.setFsAssessFinanceCharge("false");
 				else
-					customer.setFsAssessFinanceCharge(rs.getString(48).equals("1")?"true":"false");
-			
+					customer.setFsAssessFinanceCharge(rs.getString(48).equals("1") ? "true" : "false");
+
 			}
 			StringBuffer sqlString1 = new StringBuffer();
 			sqlString1.append("select bca_bsaddress.Name,bca_bsaddress.FirstName,");
-			sqlString1.append("bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
+			sqlString1.append(
+					"bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
 			sqlString1.append("bca_bsaddress.State,bca_bsaddress.Province ");
 			sqlString1.append(" from bca_bsaddress ");
-			sqlString1.append(" where ClientVendorID like '" + cvId+ "' and AddressType like '1' and Status in ('N' , 'U') ");
+			sqlString1.append(
+					" where ClientVendorID like '" + cvId + "' and AddressType like '1' and Status in ('N' , 'U') ");
 			pstmt1 = con.prepareStatement(sqlString1.toString());
 			// Loger.log(sqlString1);
 			rs1 = pstmt1.executeQuery();
@@ -2401,11 +2425,12 @@ public class InvoiceInfo {
 
 			StringBuffer sqlString2 = new StringBuffer();
 			sqlString2.append(" select bca_bsaddress.Name,bca_bsaddress.FirstName,");
-			sqlString2.append("bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
+			sqlString2.append(
+					"bca_bsaddress.LastName,bca_bsaddress.Address1,bca_bsaddress.Address2,bca_bsaddress.City,bca_bsaddress.ZipCode,bca_bsaddress.Country,");
 			sqlString2.append("bca_bsaddress.State,bca_bsaddress.Province ");
 			sqlString2.append(" from bca_bsaddress ");
-			sqlString2.append(" where ClientVendorID like '" + cvId
-					+ "' and AddressType like '0' and Status in ('N' , 'U') ");
+			sqlString2.append(
+					" where ClientVendorID like '" + cvId + "' and AddressType like '0' and Status in ('N' , 'U') ");
 
 			pstmt3 = con.prepareStatement(sqlString2.toString());
 			// Loger.log(sqlString2);
@@ -2422,13 +2447,14 @@ public class InvoiceInfo {
 				customer.setShcountry(rs2.getString(8));
 				customer.setShstate(rs2.getString(9));
 				customer.setShprovince(rs2.getString(10));
-				
+
 				request.setAttribute("state_st", customer.getShstate());
 
 			}
 
 			/* for Account tab */
-			pstmt4 = con.prepareStatement("select SalesRepID,TermID,PaymentTypeID,ShipCarrierID from bca_clientvendor where CompanyID=? and ClientVendorID=?");
+			pstmt4 = con.prepareStatement(
+					"select SalesRepID,TermID,PaymentTypeID,ShipCarrierID from bca_clientvendor where CompanyID=? and ClientVendorID=?");
 			pstmt4.setString(1, compId);
 			pstmt4.setString(2, cvId);
 
@@ -2453,69 +2479,68 @@ public class InvoiceInfo {
 			}
 			request.setAttribute("CustomerDetails1", customer);
 		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class TaxInfo and  method -getFederalTax "+ ee.toString());
-		}finally {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (rs2 != null) {
 					db.close(rs2);
-					}
+				}
 				if (rs3 != null) {
 					db.close(rs3);
-					}
+				}
 				if (rs22 != null) {
 					db.close(rs22);
-					}
+				}
 				if (rs12 != null) {
 					db.close(rs12);
-					}
+				}
 				if (rs13 != null) {
 					db.close(rs13);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
+				}
 				if (pstmt2 != null) {
 					db.close(pstmt2);
-					}
+				}
 				if (pstmt3 != null) {
 					db.close(pstmt3);
-					}
+				}
 				if (pstmt4 != null) {
 					db.close(pstmt4);
-					}
+				}
 				if (pstmt12 != null) {
 					db.close(pstmt12);
-					}
+				}
 				if (pstmt13 != null) {
 					db.close(pstmt13);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 	}
-	public boolean insertCustomer(String cId, UpdateInvoiceDto c,
-			String compID, int istaxable, int isAlsoClient,
-			int useIndividualFinanceCharges, int AssessFinanceChk,
-			int FChargeInvoiceChk, String status) {
+
+	public boolean insertCustomer(String cId, UpdateInvoiceDto c, String compID, int istaxable, int isAlsoClient,
+			int useIndividualFinanceCharges, int AssessFinanceChk, int FChargeInvoiceChk, String status) {
 		boolean ret = false;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement ps = null;
 		SQLExecutor db = new SQLExecutor();
-						
+
 		if (db == null)
 			return ret;
 		con = db.getConnection();
@@ -2535,19 +2560,16 @@ public class InvoiceInfo {
 			} else
 				isAlsoClient = 1;
 
-			if (c.getOpeningUB() != null
-					&& c.getOpeningUB().trim().length() > 0)
+			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
 				oBal = c.getOpeningUB();
 
-			if (c.getExtCredit() != null
-					&& c.getExtCredit().trim().length() > 0)
+			if (c.getExtCredit() != null && c.getExtCredit().trim().length() > 0)
 				exCredit = c.getExtCredit();
 
 			VendorCategory vc = new VendorCategory();
 			String vcName = vc.CVCategory(c.getType());
 
 			Loger.log("The country name is ============" + c.getCountry());
-			
 
 			String sqlString = "insert into bca_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
 					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,"
@@ -2558,9 +2580,8 @@ public class InvoiceInfo {
 			pstmt.setInt(1, cvID);
 
 			pstmt.setString(2, c.getCname());
-			pstmt.setString(3, (c.getDateAdded().equals("")) ? String
-					.valueOf(pinfo.getdate(" now() ")) : String.valueOf(pinfo
-					.getdate(c.getDateAdded())));
+			pstmt.setString(3, (c.getDateAdded().equals("")) ? String.valueOf(pinfo.getdate(" now() "))
+					: String.valueOf(pinfo.getdate(c.getDateAdded())));
 			pstmt.setString(4, c.getTitle());
 			pstmt.setString(5, c.getFirstName());
 			pstmt.setString(6, c.getLastName());
@@ -2599,14 +2620,10 @@ public class InvoiceInfo {
 			}
 			Loger.log("@@@@@@@@@@@@@@@@@@@");
 			if (c.getShipping() != null && c.getShipping().trim().length() > 0)
-				pinfo
-						.updateClientVendor("ShipCarrierID", c.getShipping(),
-								cvID);
+				pinfo.updateClientVendor("ShipCarrierID", c.getShipping(), cvID);
 
-			if (c.getPaymentType() != null
-					&& c.getPaymentType().trim().length() > 0)
-				pinfo.updateClientVendor("PaymentTypeID", c.getPaymentType(),
-						cvID);
+			if (c.getPaymentType() != null && c.getPaymentType().trim().length() > 0)
+				pinfo.updateClientVendor("PaymentTypeID", c.getPaymentType(), cvID);
 
 			if (c.getRep() != null && c.getRep().trim().length() > 0)
 				pinfo.updateClientVendor("SalesRepID", c.getRep(), cvID);
@@ -2617,34 +2634,28 @@ public class InvoiceInfo {
 			if (c.getCcType() != null && c.getCcType().trim().length() > 0) {
 				pinfo.updateClientVendor("CCTypeID", c.getCcType(), cvID);
 			}
-			pinfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
+			pinfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(),
+					c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 			int bsAddID = pinfo.getLastBsAdd() + 1;
 
 			setStatus(cvID, bsAddID);
 			Loger.log("The country name is ============" + c.getBscountry());
-			Loger
-					.log("----------------->>>>>>>>>>>The Bill to State is---------------->>>>>>>>>>>> "
-							+ c.getBsstate());
-			Loger
-					.log("----------------->>>>>>>>>>>The Shipt  to State is---------------->>>>>>>>>>>> "
-							+ c.getShstate());
+			Loger.log("----------------->>>>>>>>>>>The Bill to State is---------------->>>>>>>>>>>> " + c.getBsstate());
+			Loger.log(
+					"----------------->>>>>>>>>>>The Shipt  to State is---------------->>>>>>>>>>>> " + c.getShstate());
 
-		
-			insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c
-					.getBsfirstName(), c.getBslastName(), c.getBsaddress1(), c
-					.getBsaddress2(), c.getBscity(), c.getBsstate(), c
-					.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
+			insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsfirstName(), c.getBslastName(),
+					c.getBsaddress1(), c.getBsaddress2(), c.getBscity(), c.getBsstate(), c.getBsprovince(),
+					c.getBscountry(), c.getBszipCode(), "1");
 
 			Loger.log("The Ship country code is" + c.getShcountry());
-			
-			insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c
-					.getShfirstName(), c.getShlastName(), c.getShaddress1(), c
-					.getShaddress2(), c.getShcity(), c.getShstate(), c
-					.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 
-			pinfo.insertVFCharge(cvID, useIndividualFinanceCharges, c
-					.getAnnualIntrestRate(), c.getMinFCharges(), c
-					.getGracePrd(), AssessFinanceChk, FChargeInvoiceChk);
+			insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShfirstName(), c.getShlastName(),
+					c.getShaddress1(), c.getShaddress2(), c.getShcity(), c.getShstate(), c.getShprovince(),
+					c.getShcountry(), c.getShzipCode(), "0");
+
+			pinfo.insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(),
+					c.getGracePrd(), AssessFinanceChk, FChargeInvoiceChk);
 
 			int i;
 			String sql;
@@ -2659,12 +2670,9 @@ public class InvoiceInfo {
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, cvID);
 			int qryRet = ps.executeUpdate();
-			Loger
-					.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>The No. of rows deleted are="
-							+ qryRet);
+			Loger.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>The No. of rows deleted are=" + qryRet);
 
-			if (!(serviceID.equals("") || invStyleID.equals("") || serviceBal
-					.equals(""))) {
+			if (!(serviceID.equals("") || invStyleID.equals("") || serviceBal.equals(""))) {
 
 				String temp[], temp2[], temp3[];
 				temp = serviceID.split(";"); // serviceID is in form like
@@ -2672,8 +2680,7 @@ public class InvoiceInfo {
 				temp2 = invStyleID.split(";");
 				temp3 = serviceBal.split(";");
 
-				java.sql.Date d = new java.sql.Date(new java.util.Date()
-						.getTime());
+				java.sql.Date d = new java.sql.Date(new java.util.Date().getTime());
 
 				for (i = 0; i < temp.length; i++) {
 					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
@@ -2683,15 +2690,13 @@ public class InvoiceInfo {
 					ps.setInt(3, Integer.parseInt(compID));
 					ps.setInt(4, Integer.parseInt(temp2[i]));
 					ps.setFloat(5, java.lang.Float.parseFloat(temp3[i]));
-					if (Integer.parseInt(temp[i]) == Integer
-							.parseInt(defaultser))
+					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser))
 						ps.setInt(6, 1);
 					else
 						ps.setInt(6, 0);
 					ps.setInt(7, Integer.parseInt(temp[i]));
 
-					System.out.println("\ninvstyle=" + temp2[i] + ", bal="
-							+ temp3[i] + ", servID=" + temp[i]);
+					System.out.println("\ninvstyle=" + temp2[i] + ", bal=" + temp3[i] + ", servID=" + temp[i]);
 
 					qryRet = ps.executeUpdate();
 				}
@@ -2699,22 +2704,19 @@ public class InvoiceInfo {
 			}
 
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class Employee and  method -insertEmployee "
-							+ " " + ee.toString());
-		}
-		finally {
+			Loger.log(2, " SQL Error in Class Employee and  method -insertEmployee " + " " + ee.toString());
+		} finally {
 			try {
 				if (ps != null) {
 					db.close(ps);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -2722,13 +2724,11 @@ public class InvoiceInfo {
 		return ret;
 	}
 
-	public boolean insertVendorBSAddress(int cvID, int bsID, String cname,
-			String fname, String lname, String add1, String add2, String city,
-			String state, String province, String country, String zip,
-			String addressType) {
+	public boolean insertVendorBSAddress(int cvID, int bsID, String cname, String fname, String lname, String add1,
+			String add2, String city, String state, String province, String country, String zip, String addressType) {
 		boolean ret = false;
-		Connection con = null ;
-		PreparedStatement pstmt = null ;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 
 		if (db == null)
@@ -2770,18 +2770,16 @@ public class InvoiceInfo {
 			pstmt.close();
 
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class Employee and  method -insertEmployee "
-							+ " " + ee.toString());
-		}finally {
+			Loger.log(2, " SQL Error in Class Employee and  method -insertEmployee " + " " + ee.toString());
+		} finally {
 			try {
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -2792,8 +2790,8 @@ public class InvoiceInfo {
 	public boolean setStatus(int cvID, int bsID) {
 
 		boolean ret = false;
-		Connection con = null ;
-		PreparedStatement pstmt = null ;
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 
 		if (db == null)
@@ -2814,15 +2812,15 @@ public class InvoiceInfo {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-		}finally {
+		} finally {
 			try {
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -2830,8 +2828,8 @@ public class InvoiceInfo {
 	}
 
 	public void setDefaultVal(int cvID) {
-		Connection con = null ;
-		PreparedStatement pstmt5 = null ;
+		Connection con = null;
+		PreparedStatement pstmt5 = null;
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
 
@@ -2847,27 +2845,29 @@ public class InvoiceInfo {
 
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (pstmt5 != null) {
 					db.close(pstmt5);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 	}
-	public ArrayList getSalesOrderRecord(HttpServletRequest request, InvoiceDto form,
-			String compId, long OrderNo) {  //Sales Order Fetch
-		Connection con = null ;
+
+	public ArrayList getSalesOrderRecord(HttpServletRequest request, InvoiceDto form, String compId, long OrderNo) { // Sales
+																														// Order
+																														// Fetch
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		ArrayList<InvoiceDto> list = new ArrayList<InvoiceDto>();
-		
+
 		if (db == null)
 			return null;
 		con = db.getConnection();
@@ -2891,7 +2891,7 @@ public class InvoiceInfo {
 				invoiceID = rs.getInt("InvoiceID");
 
 				form.setCustID(rs.getString("ClientVendorID"));
-				form.setPoNum(rs.getString("RefNum")); //sales Order
+				form.setPoNum(rs.getString("RefNum")); // sales Order
 
 				form.setOrderNo(String.valueOf(OrderNo));
 
@@ -2905,58 +2905,49 @@ public class InvoiceInfo {
 				form.setMessage(rs.getString("MessageID"));
 				form.setSalesTaxID(rs.getString("SalesTaxID"));
 				form.setServiceID(rs.getInt("ServiceID"));
-				form.setWeight(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("Weight")))));
-				form.setSubtotal(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("SubTotal")))));
+				form.setWeight(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Weight")))));
+				form.setSubtotal(Double.parseDouble(truncate(String.valueOf(rs.getDouble("SubTotal")))));
 
-				form.setTax(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("Tax")))));
-				form.setShipping(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("SH")))));
-				form.setTotal(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("Total")))));
-				form.setAdjustedtotal(Double.parseDouble(truncate(String
-						.valueOf(rs.getDouble("AdjustedTotal")))));
+				form.setTax(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Tax")))));
+				form.setShipping(Double.parseDouble(truncate(String.valueOf(rs.getDouble("SH")))));
+				form.setTotal(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Total")))));
+				form.setAdjustedtotal(Double.parseDouble(truncate(String.valueOf(rs.getDouble("AdjustedTotal")))));
 				form.setBsAddressID(rs.getString("BSAddressID"));
 				form.setCompanyID(rs.getString("CompanyID"));
 				form.setTaxID(rs.getString("SalesTaxID"));
 				form.setShipDate(rs.getString("DateConfirmed"));
 				form.setOrderDate(rs.getString("DateAdded"));
 
-				form.setBalance(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("Balance")))));
+				form.setBalance(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Balance")))));
 
-				form.setIsPending(rs.getInt("InvoiceTypeID") == 7 ? "true"
-						: "false");
+				form.setIsPending(rs.getInt("InvoiceTypeID") == 7 ? "true" : "false");
 				form.setTaxable(rs.getInt("Taxable") == 1 ? "true" : "false");
 
-				form.setItemShipped(rs.getInt("Shipped") == 1 ? "true": "false");
-				form.setPaid(rs.getInt("IsPaymentCompleted") == 1 ? "true" : "false");				
-				form.setMemo(rs.getString("Memo"));				
+				form.setItemShipped(rs.getInt("Shipped") == 1 ? "true" : "false");
+				form.setPaid(rs.getInt("IsPaymentCompleted") == 1 ? "true" : "false");
+				form.setMemo(rs.getString("Memo"));
 				form.setIsPending(rs.getInt("isPending") == 1 ? "true" : "false");
 			}
 			CountryState conState = new CountryState();
 			/* Bill Address */
 			pstmt = con.prepareStatement("select BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
-							+ " City,State,ZipCode,Country from bca_bsaddress"
-							+ " where  BSAddressID=? and AddressType =1");
+					+ " City,State,ZipCode,Country from bca_bsaddress" + " where  BSAddressID=? and AddressType =1");
 
 			pstmt.setString(1, form.getBsAddressID());
 
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				form.setBsAddressID(rs.getString("BSAddressID"));
-				form.setBillTo(rs.getString(3) + rs.getString(4)  //edited by jay 5-11-2018
-						+ rs.getString(5) + "\n" + rs.getString(6) + "\n"
-						+ rs.getString(7) + "\n" + rs.getString(8) + "\n"
-						+ conState.getStatesName(rs.getString(9)) + " " + rs.getString(10) + " " + conState.getCountryName(rs.getString(11)));
+				form.setBillTo(rs.getString(3) + rs.getString(4) // edited by jay 5-11-2018
+						+ rs.getString(5) + "\n" + rs.getString(6) + "\n" + rs.getString(7) + "\n" + rs.getString(8)
+						+ "\n" + conState.getStatesName(rs.getString(9)) + " " + rs.getString(10) + " "
+						+ conState.getCountryName(rs.getString(11)));
 
 			}
 
 			/* Ship Address */
-			pstmt = con
-					.prepareStatement("select BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,City,State,ZipCode,Country from bca_bsaddress  "
+			pstmt = con.prepareStatement(
+					"select BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,City,State,ZipCode,Country from bca_bsaddress  "
 							+ "where  BSAddressID=? and AddressType =0");
 
 			pstmt.setString(1, form.getBsAddressID());
@@ -2964,24 +2955,24 @@ public class InvoiceInfo {
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				form.setBsAddressID(rs.getString("BSAddressID"));
-				form.setShipTo(rs.getString(3) + "\n" + rs.getString(4) + " "
-						+ rs.getString(5) + "" + rs.getString(6) + ""
-						+ rs.getString(7) + "" + rs.getString(8) + ", " + conState.getStatesName(rs.getString(9)) + " " + rs.getString(10) + " " + conState.getCountryName(rs.getString(11)));
+				form.setShipTo(rs.getString(3) + "\n" + rs.getString(4) + " " + rs.getString(5) + "" + rs.getString(6)
+						+ "" + rs.getString(7) + "" + rs.getString(8) + ", " + conState.getStatesName(rs.getString(9))
+						+ " " + rs.getString(10) + " " + conState.getCountryName(rs.getString(11)));
 
 			}
-			String clientName="select LastName,FirstName from bca_clientvendor where ClientVendorID=? and CVTypeID in (1,2) ";
-			pstmt=con.prepareStatement(clientName);
-			pstmt.setString(1,form.getCustID());
-			rs=pstmt.executeQuery();
-			
-			if(rs.next()){
-				if(form.getServiceID()==0){
-					form.setFullName(rs.getString("LastName")+", "+rs.getString("FirstName"));
-				}
-				else
-					form.setFullName(rs.getString("LastName")+", "+rs.getString("FirstName")+"["+getServiceName(form.getServiceID())+"]");
+			String clientName = "select LastName,FirstName from bca_clientvendor where ClientVendorID=? and CVTypeID in (1,2) ";
+			pstmt = con.prepareStatement(clientName);
+			pstmt.setString(1, form.getCustID());
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				if (form.getServiceID() == 0) {
+					form.setFullName(rs.getString("LastName") + ", " + rs.getString("FirstName"));
+				} else
+					form.setFullName(rs.getString("LastName") + ", " + rs.getString("FirstName") + "["
+							+ getServiceName(form.getServiceID()) + "]");
 			}
-			request.setAttribute("CustomerName",form.getFullName());
+			request.setAttribute("CustomerName", form.getFullName());
 			list.add(form);
 			/* Item List in the cart */
 			itemList(invoiceID, compId, request);
@@ -2990,33 +2981,32 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in getRecord Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return list;
 	}
 
-	public ArrayList getRecord(HttpServletRequest request, InvoiceDto form,
-			String compId, long OrderNo) {
-		Connection con = null ;
+	public ArrayList getRecord(HttpServletRequest request, InvoiceDto form, String compId, long OrderNo) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
 		ArrayList<InvoiceDto> list = new ArrayList<InvoiceDto>();
 		String action = request.getParameter("tabid");
-		String sql="";
+		String sql = "";
 		if (db == null)
 			return null;
 		con = db.getConnection();
@@ -3024,28 +3014,43 @@ public class InvoiceInfo {
 			return null;
 
 		try {
-			if(action.equalsIgnoreCase("IBLU")){ //Send Invoice it
-			
-				 sql = " select InvoiceID,ClientVendorID,RefNum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,"
+			if (action.equalsIgnoreCase("IBLU")) { // Send Invoice it
+
+				sql = " select InvoiceID,ClientVendorID,RefNum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,"
 						+ " ShipCarrierID,MessageID,SalesTaxID,Weight,SubTotal,Tax,SH,Total,AdjustedTotal,"
 						+ " BSAddressID,CompanyID,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,"
 						+ " date_format(DateAdded,'%m-%d-%Y') as DateAdded ,Taxable,Balance,InvoiceTypeID,"
 						+ " Shipped,ServiceID,IsPaymentCompleted,Memo,isPending from bca_invoice where SONum =? and CompanyID = ? and invoiceStatus in (0,2)"
-						+ " and InvoiceTypeID in (1,7,9) ";				
-			}else {
-				//This Query Find Sales Order Num (SONum)
-				 /*sql = " select InvoiceID,ClientVendorID,RefNum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,"
-							+ " ShipCarrierID,MessageID,SalesTaxID,Weight,SubTotal,Tax,SH,Total,AdjustedTotal,"
-							+ " BSAddressID,CompanyID,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,"
-							+ " date_format(DateAdded,'%m-%d-%Y') as DateAdded ,Taxable,Balance,InvoiceTypeID,"
-							+ " Shipped,ServiceID,IsPaymentCompleted,Memo,isPending from bca_invoice where OrderNum =? and CompanyID = ? and invoiceStatus in (0,2)"
-							+ " and InvoiceTypeID in (1,7,9) ";*/	
-				 sql = "select InvoiceID,ClientVendorID,RefNum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,"
-				 		+ "ShipCarrierID,MessageID,SalesTaxID,Weight,SubTotal,Tax,SH,Total,AdjustedTotal,"
-				 		+ "BSAddressID,CompanyID,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,"
-				 		+ "date_format(DateAdded,'%m-%d-%Y') as DateAdded ,Taxable,Balance,InvoiceTypeID,"
-				 		+ "Shipped,ServiceID,IsPaymentCompleted,Memo,isPending from bca_invoice where OrderNum =? and CompanyID = ? and invoiceStatus in (0,2)";	//Removed ";" at the end of string on 26-11-2019
-			}	
+						+ " and InvoiceTypeID in (1,7,9) ";
+			} else {
+				// This Query Find Sales Order Num (SONum)
+				/*
+				 * sql =
+				 * " select InvoiceID,ClientVendorID,RefNum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,"
+				 * +
+				 * " ShipCarrierID,MessageID,SalesTaxID,Weight,SubTotal,Tax,SH,Total,AdjustedTotal,"
+				 * +
+				 * " BSAddressID,CompanyID,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,"
+				 * +
+				 * " date_format(DateAdded,'%m-%d-%Y') as DateAdded ,Taxable,Balance,InvoiceTypeID,"
+				 * +
+				 * " Shipped,ServiceID,IsPaymentCompleted,Memo,isPending from bca_invoice where OrderNum =? and CompanyID = ? and invoiceStatus in (0,2)"
+				 * + " and InvoiceTypeID in (1,7,9) ";
+				 */
+				sql = "select InvoiceID,ClientVendorID,RefNum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,"
+						+ "ShipCarrierID,MessageID,SalesTaxID,Weight,SubTotal,Tax,SH,Total,AdjustedTotal,"
+						+ "BSAddressID,CompanyID,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,"
+						+ "date_format(DateAdded,'%m-%d-%Y') as DateAdded ,Taxable,Balance,InvoiceTypeID,"
+						+ "Shipped,ServiceID,IsPaymentCompleted,Memo,isPending from bca_invoice where OrderNum =? and CompanyID = ? and invoiceStatus in (0,2)"; // Removed
+																																									// ";"
+																																									// at
+																																									// the
+																																									// end
+																																									// of
+																																									// string
+																																									// on
+																																									// 26-11-2019
+			}
 			pstmt = con.prepareStatement(sql);
 			pstmt.setLong(1, OrderNo);
 			pstmt.setString(2, compId);
@@ -3055,11 +3060,11 @@ public class InvoiceInfo {
 			if (rs.next()) {
 				invoiceID = rs.getInt("InvoiceID");
 				form.setCustID(rs.getString("ClientVendorID"));
-				form.setPoNum(rs.getString("RefNum")); //purches order
-                
+				form.setPoNum(rs.getString("RefNum")); // purches order
+
 				form.setOrderNo(String.valueOf(OrderNo));
-				if(action.equalsIgnoreCase("IBLU")){ //Send Invoice it
-					form.setOrderNo(getNewOrderNo(compId)); //Send New Invoice num
+				if (action.equalsIgnoreCase("IBLU")) { // Send Invoice it
+					form.setOrderNo(getNewOrderNo(compId)); // Send New Invoice num
 				}
 				style = rs.getString("InvoiceStyleID");
 				form.setInvoiceStyle(style);
@@ -3071,97 +3076,96 @@ public class InvoiceInfo {
 				form.setMessage(rs.getString("MessageID"));
 				form.setSalesTaxID(rs.getString("SalesTaxID"));
 				form.setServiceID(rs.getInt("ServiceID"));
-				form.setWeight(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("Weight")))));
-				form.setSubtotal(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("SubTotal")))));
+				form.setWeight(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Weight")))));
+				form.setSubtotal(Double.parseDouble(truncate(String.valueOf(rs.getDouble("SubTotal")))));
 
-				form.setTax(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("Tax")))));
-				form.setShipping(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("SH")))));
-				form.setTotal(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("Total")))));
-				form.setAdjustedtotal(Double.parseDouble(truncate(String
-						.valueOf(rs.getDouble("AdjustedTotal")))));
+				form.setTax(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Tax")))));
+				form.setShipping(Double.parseDouble(truncate(String.valueOf(rs.getDouble("SH")))));
+				form.setTotal(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Total")))));
+				form.setAdjustedtotal(Double.parseDouble(truncate(String.valueOf(rs.getDouble("AdjustedTotal")))));
 				form.setBsAddressID(rs.getString("BSAddressID"));
 				form.setCompanyID(rs.getString("CompanyID"));
 				form.setTaxID(rs.getString("SalesTaxID"));
 				form.setShipDate(rs.getString("DateConfirmed"));
 				form.setOrderDate(rs.getString("DateAdded"));
 
-				form.setBalance(Double.parseDouble(truncate(String.valueOf(rs
-						.getDouble("Balance")))));
+				form.setBalance(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Balance")))));
 
 //				form.setIsPending(rs.getInt("InvoiceTypeID") == 7 ? "true": "false");
-				form.setIsPending(rs.getInt("isPending") == 1 ? "true": "false"); //set value pending 
-				
+				form.setIsPending(rs.getInt("isPending") == 1 ? "true" : "false"); // set value pending
+
 				form.setTaxable(rs.getInt("Taxable") == 1 ? "true" : "false");
 
-				form.setItemShipped(rs.getInt("Shipped") == 1 ? "true"
-						: "false");
+				form.setItemShipped(rs.getInt("Shipped") == 1 ? "true" : "false");
 				form.setPaid(rs.getInt("IsPaymentCompleted") == 1 ? "true" : "false");
-				
+
 				form.setMemo(rs.getString("Memo"));
 			}
 			CountryState conState = new CountryState();
 			/* Bill Address */
-			/*pstmt = con.prepareStatement("select BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
-							+ " City,State,ZipCode,Country from bca_bsaddress"
-							+ " where  BSAddressID=? and AddressType =1");*/		//commented on 27-11-2019
+			/*
+			 * pstmt = con.
+			 * prepareStatement("select BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
+			 * + " City,State,ZipCode,Country from bca_bsaddress" +
+			 * " where  BSAddressID=? and AddressType =1");
+			 */ // commented on 27-11-2019
 			pstmt = con.prepareStatement("select AddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
-					+ " City,State,ZipCode,Country from bca_billingaddress"
-					+ " where  AddressID=? and isDefault=1");
+					+ " City,State,ZipCode,Country from bca_billingaddress" + " where  AddressID=? and isDefault=1");
 
 			pstmt.setString(1, form.getBsAddressID());
 
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				/*form.setBsAddressID(rs.getString("BSAddressID"));*/	//commented on 27-11-2019
+				/* form.setBsAddressID(rs.getString("BSAddressID")); */ // commented on 27-11-2019
 				form.setBsAddressID(rs.getString("AddressID"));
-				/*form.setBillTo(rs.getString(3) + "\n" + rs.getString(4) + " "
-						+ rs.getString(5) + "\n" + rs.getString(6) + "\n"
-						+ rs.getString(7) + " " + rs.getString(8) + " " + conState.getStatesName(rs.getString(9)) + " " + rs.getString(10) + "\n"
-						+ conState.getCountryName(rs.getString(11)));*/		//commented on 27-11-2019
-				form.setBillTo(rs.getString("Name") + "\n" + rs.getString("FirstName") + " "
-						+ rs.getString("LastName") + "\n" + rs.getString("Address1") + "\n"
-						+ rs.getString("Address2") + " " + rs.getString("City") + " " + conState.getStatesName(rs.getString("State")) + " " + rs.getString("ZipCode") + "\n"
+				/*
+				 * form.setBillTo(rs.getString(3) + "\n" + rs.getString(4) + " " +
+				 * rs.getString(5) + "\n" + rs.getString(6) + "\n" + rs.getString(7) + " " +
+				 * rs.getString(8) + " " + conState.getStatesName(rs.getString(9)) + " " +
+				 * rs.getString(10) + "\n" + conState.getCountryName(rs.getString(11)));
+				 */ // commented on 27-11-2019
+				form.setBillTo(rs.getString("Name") + "\n" + rs.getString("FirstName") + " " + rs.getString("LastName")
+						+ "\n" + rs.getString("Address1") + "\n" + rs.getString("Address2") + " " + rs.getString("City")
+						+ " " + conState.getStatesName(rs.getString("State")) + " " + rs.getString("ZipCode") + "\n"
 						+ conState.getCountryName(rs.getString("Country")));
 
 			}
 
 			/* Ship Address */
-			/*pstmt = con.prepareStatement("select BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,City,State,ZipCode,Country from bca_bsaddress  "
-							+ "where  BSAddressID=? and AddressType =0");*/	//commented on 27-11-2019
-			pstmt = con.prepareStatement("select AddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,City,State,ZipCode,Country from bca_billingaddress  "
-					+ "where AddressID=? and isDefault=1");
+			/*
+			 * pstmt = con.
+			 * prepareStatement("select BSAddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,City,State,ZipCode,Country from bca_bsaddress  "
+			 * + "where  BSAddressID=? and AddressType =0");
+			 */ // commented on 27-11-2019
+			pstmt = con.prepareStatement(
+					"select AddressID,ClientVendorID,Name,FirstName,LastName, Address1,Address2,City,State,ZipCode,Country from bca_billingaddress  "
+							+ "where AddressID=? and isDefault=1");
 
 			pstmt.setString(1, form.getBsAddressID());
 
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				/*form.setBsAddressID(rs.getString("BSAddressID"));*/		//commented on 27-11-2019			
+				/* form.setBsAddressID(rs.getString("BSAddressID")); */ // commented on 27-11-2019
 				form.setBsAddressID(rs.getString("AddressID"));
-				form.setShipTo(rs.getString(3) + "\n" + rs.getString(4) + " "
-						+ rs.getString(5) + "" + rs.getString(6) + ""
-						+ rs.getString(7) + "" + rs.getString(8) + ", "
-						+ conState.getStatesName(rs.getString(9)) + " " + rs.getString(10) + " " + conState.getCountryName(rs.getString(11)));
+				form.setShipTo(rs.getString(3) + "\n" + rs.getString(4) + " " + rs.getString(5) + "" + rs.getString(6)
+						+ "" + rs.getString(7) + "" + rs.getString(8) + ", " + conState.getStatesName(rs.getString(9))
+						+ " " + rs.getString(10) + " " + conState.getCountryName(rs.getString(11)));
 
 			}
-			
-			String clientName="select LastName,FirstName from bca_clientvendor where ClientVendorID=? and CVTypeID in (1,2) ";
-			pstmt=con.prepareStatement(clientName);
-			pstmt.setString(1,form.getCustID());
-			rs=pstmt.executeQuery();
-			
-			if(rs.next()){
-				if(form.getServiceID()==0){
-					form.setFullName(rs.getString("LastName")+", "+rs.getString("FirstName"));
-				}
-				else
-					form.setFullName(rs.getString("LastName")+", "+rs.getString("FirstName")+"["+getServiceName(form.getServiceID())+"]");
+
+			String clientName = "select LastName,FirstName from bca_clientvendor where ClientVendorID=? and CVTypeID in (1,2) ";
+			pstmt = con.prepareStatement(clientName);
+			pstmt.setString(1, form.getCustID());
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				if (form.getServiceID() == 0) {
+					form.setFullName(rs.getString("LastName") + ", " + rs.getString("FirstName"));
+				} else
+					form.setFullName(rs.getString("LastName") + ", " + rs.getString("FirstName") + "["
+							+ getServiceName(form.getServiceID()) + "]");
 			}
-			request.setAttribute("CustomerName",form.getFullName());
+			request.setAttribute("CustomerName", form.getFullName());
 			list.add(form);
 			/* Item List in the cart */
 			itemList(invoiceID, compId, request);
@@ -3170,27 +3174,26 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in getRecord Function " + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return list;
 	}
 
-	public void itemList(int invoiceID, String compId,
-			HttpServletRequest request) {
-		Connection con = null ;
+	public void itemList(int invoiceID, String compId, HttpServletRequest request) {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3202,8 +3205,7 @@ public class InvoiceInfo {
 			return;
 
 		try {
-			pstmt = con
-					.prepareStatement("select * from bca_cart where InvoiceID=? and companyID=?");
+			pstmt = con.prepareStatement("select * from bca_cart where InvoiceID=? and companyID=?");
 			pstmt.setInt(1, invoiceID);
 			pstmt.setString(2, compId);
 			rs = pstmt.executeQuery();
@@ -3218,8 +3220,7 @@ public class InvoiceInfo {
 				inForm.setUprice(uprice);
 				inForm.setWeight(rs.getDouble("UnitWeight"));
 				int tax = rs.getInt("Taxable");
-				inForm.setAmount(Double.parseDouble(truncate(String.valueOf(qty
-						* uprice))));
+				inForm.setAmount(Double.parseDouble(truncate(String.valueOf(qty * uprice))));
 				if (tax == 1) {
 					inForm.setTax("Yes");
 					taxTotal += (qty * uprice);
@@ -3234,24 +3235,23 @@ public class InvoiceInfo {
 			}
 			request.setAttribute("Cart", cart);
 			InvoiceDto form = new InvoiceDto();
-			form.setTaxValue(Double.parseDouble(truncate(String
-					.valueOf(taxTotal))));
+			form.setTaxValue(Double.parseDouble(truncate(String.valueOf(taxTotal))));
 			request.setAttribute("TaxValue", form);
 		} catch (SQLException ex) {
 			Loger.log("Exception in getRecord Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -3259,7 +3259,7 @@ public class InvoiceInfo {
 
 	public long getFirstOrderNo(String compId) {
 		long orderNo = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3272,37 +3272,37 @@ public class InvoiceInfo {
 		try {
 			String sql = "select OrderNum from bca_invoice where CompanyID =? and invoiceStatus in (0,2)"
 					+ " and InvoiceTypeID = 1 and OrderNum !=0 order by OrderNum asc";
-			
+
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, compId);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				orderNo = rs.getLong(1);
 			}
-		} 
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			Loger.log("Exception in FirstOrderNo Function:" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
 	}
+
 	public long getFirstSalesOrderNo(String compId) {
 		long orderNo = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3325,26 +3325,27 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in FirstOrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
 	}
+
 	public long getLastSalesOrderNo(String compId) {
 		long orderNo = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3367,26 +3368,27 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in FirstOrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
 	}
+
 	public long getLastOrderNo(String compId) {
 		long orderNo = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3409,18 +3411,18 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in FirstOrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -3429,7 +3431,7 @@ public class InvoiceInfo {
 
 	public long getNextOrderNo(String compId, String ordNo) {
 		long orderNo = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3454,26 +3456,27 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in NextOrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
 	}
+
 	public long getNextSalesOrderNo(String compId, String ordNo) {
 		long orderNo = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3485,8 +3488,7 @@ public class InvoiceInfo {
 			return 0;
 		try {
 			String sql = "select SONum from bca_invoice where SONum > ?"
-					+ " and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (7)"
-					+ " order by SONum asc";
+					+ " and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (7)" + " order by SONum asc";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, ordNo);
 			pstmt.setString(2, compId);
@@ -3498,26 +3500,27 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in NextOrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
 	}
+
 	public long getPreviousOrderNo(String compId, String ordNo) {
 		long orderNo = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3542,26 +3545,27 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in PreviousOrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
 	}
+
 	public long getPreviousSalesOrderNo(String compId, String ordNo) {
 		long orderNo = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3573,8 +3577,7 @@ public class InvoiceInfo {
 			return 0;
 		try {
 			String sql = "select SONum from bca_invoice where SONum < ?"
-					+ " and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (7)"
-					+ " order by SONum desc";
+					+ " and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (7)" + " order by SONum desc";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, ordNo);
 			pstmt.setString(2, compId);
@@ -3586,25 +3589,25 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in Previous Sales OrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
 	}
-	public void paymentHistory(String cvId, String compId,
-			HttpServletRequest request) {
+
+	public void paymentHistory(String cvId, String compId, HttpServletRequest request) {
 		Connection con = null;
 		PreparedStatement pstmt = null, pstmt1 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -3616,7 +3619,7 @@ public class InvoiceInfo {
 		try {
 			String sqlString = "select Name,FirstName,LastName from bca_clientvendor "
 					+ " where  (Status like 'N' or Status like 'U')  and CVTypeID in (1,2,3)"
-					+ " And Active=1 and ClientVendorID=?";					//CVTypeID = 3 is added on 11-09-2019
+					+ " And Active=1 and ClientVendorID=?"; // CVTypeID = 3 is added on 11-09-2019
 
 			pstmt = con.prepareStatement(sqlString);
 			pstmt.setString(1, cvId);
@@ -3628,32 +3631,29 @@ public class InvoiceInfo {
 				companyName = rs.getString(1);
 			}
 
-			/* commented on 20-06-2019 to get all ordernumbers from either invoice or sales order or estimation
-			 * String sql = "select distinct i.OrderNum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total , i.Balance, it.Name,i.InvoiceTypeID   from bca_invoice AS i inner join  bca_invoicetype "
-					+ "as it on (i.ClientVendorID = ? and  i.InvoiceTypeID = it.InvoiceTypeID ) order by it.name, ordernum";
-			
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, cvId);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				InvoiceDto invoiceList = new InvoiceDto();
-				invoiceList.setOrderNo(rs.getString(1));
-				invoiceList.setOrderDate(rs.getString(2));
-				invoiceList.setTotal(Double.parseDouble(truncate(rs
-						.getString(3))));
-				String value = rs.getString(4);
-				invoiceList.setBalance(Double.parseDouble(truncate(value)));
-				if (value.equals("0.0"))
-					invoiceList.setPaid("1");
-				else
-					invoiceList.setPaid("0");
-				invoiceList.setType(rs.getString(5));
+			/*
+			 * commented on 20-06-2019 to get all ordernumbers from either invoice or sales
+			 * order or estimation String sql =
+			 * "select distinct i.OrderNum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total , i.Balance, it.Name,i.InvoiceTypeID   from bca_invoice AS i inner join  bca_invoicetype "
+			 * +
+			 * "as it on (i.ClientVendorID = ? and  i.InvoiceTypeID = it.InvoiceTypeID ) order by it.name, ordernum"
+			 * ;
+			 * 
+			 * pstmt = con.prepareStatement(sql); pstmt.setString(1, cvId); rs =
+			 * pstmt.executeQuery(); while (rs.next()) { InvoiceDto invoiceList = new
+			 * InvoiceDto(); invoiceList.setOrderNo(rs.getString(1));
+			 * invoiceList.setOrderDate(rs.getString(2));
+			 * invoiceList.setTotal(Double.parseDouble(truncate(rs .getString(3)))); String
+			 * value = rs.getString(4);
+			 * invoiceList.setBalance(Double.parseDouble(truncate(value))); if
+			 * (value.equals("0.0")) invoiceList.setPaid("1"); else
+			 * invoiceList.setPaid("0"); invoiceList.setType(rs.getString(5));
+			 * 
+			 * Loger.log("ORDERNO############" + invoiceList.getOrderNo());
+			 * Loger.log("BALANCE############" + invoiceList.getBalance());
+			 * list.add(invoiceList); }
+			 */
 
-				Loger.log("ORDERNO############" + invoiceList.getOrderNo());
-				Loger.log("BALANCE############" + invoiceList.getBalance());
-				list.add(invoiceList);
-			}*/
-			
 			String sql = "select distinct i.OrderNum,i.PONum,i.SONum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total , i.Balance, it.Name,i.InvoiceTypeID   from bca_invoice AS i inner join  bca_invoicetype "
 					+ "as it on (i.ClientVendorID = ? and  i.InvoiceTypeID = it.InvoiceTypeID ) order by it.name, ordernum";
 
@@ -3665,22 +3665,16 @@ public class InvoiceInfo {
 				String orderNo = rs.getString(1);
 				String poNumber = rs.getString(2);
 				String soNumber = rs.getString(3);
-				
-				if(!poNumber.equals("0"))
-				{
+
+				if (!poNumber.equals("0")) {
 					invoiceList.setOrderNo(poNumber);
-				}
-				else if(!soNumber.equals("0"))
-				{
+				} else if (!soNumber.equals("0")) {
 					invoiceList.setOrderNo(soNumber);
-				}
-				else
-				{
+				} else {
 					invoiceList.setOrderNo(orderNo);
 				}
 				invoiceList.setOrderDate(rs.getString(4));
-				invoiceList.setTotal(Double.parseDouble(truncate(rs
-						.getString(5))));
+				invoiceList.setTotal(Double.parseDouble(truncate(rs.getString(5))));
 				String value = rs.getString(6);
 				invoiceList.setBalance(Double.parseDouble(truncate(value)));
 				if (value.equals("0.0"))
@@ -3692,8 +3686,8 @@ public class InvoiceInfo {
 				Loger.log("BALANCE############" + invoiceList.getBalance());
 				list.add(invoiceList);
 			}
-			pstmt = con
-					.prepareStatement("select distinct i.InvoiceTypeID  from bca_invoice as i inner join  bca_invoicetype as it on (i.ClientVendorID = ? and  i.InvoiceTypeID = it.InvoiceTypeID ) order by it.name, ordernum");
+			pstmt = con.prepareStatement(
+					"select distinct i.InvoiceTypeID  from bca_invoice as i inner join  bca_invoicetype as it on (i.ClientVendorID = ? and  i.InvoiceTypeID = it.InvoiceTypeID ) order by it.name, ordernum");
 			pstmt.setString(1, cvId);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -3710,10 +3704,8 @@ public class InvoiceInfo {
 				rs = pstmt.executeQuery();
 
 				if (rs.next()) {
-					invForm.setTotal(Double.parseDouble(truncate(rs
-							.getString(1))));
-					invForm.setBalance(Double.parseDouble(truncate(rs
-							.getString(2))));
+					invForm.setTotal(Double.parseDouble(truncate(rs.getString(1))));
+					invForm.setBalance(Double.parseDouble(truncate(rs.getString(2))));
 
 				}
 				pstmt.close();
@@ -3736,27 +3728,25 @@ public class InvoiceInfo {
 			request.setAttribute("Total", total);
 
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class TaxInfo and  method -getFederalTax "
-							+ " " + ee.toString());
-		}finally {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -3766,7 +3756,7 @@ public class InvoiceInfo {
 	public String truncate(String num) {
 		String string1 = num;
 		int seperation = 0;
-		if(string1 == null || string1.isEmpty())
+		if (string1 == null || string1.isEmpty())
 			string1 = "0";
 		if (string1.indexOf(".") == -1)
 			return (string1 + ".00");
@@ -3780,7 +3770,7 @@ public class InvoiceInfo {
 
 	public long getInvoiceID(String compId, String ordNo, String status) {
 		long orderNo = 0;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3813,24 +3803,23 @@ public class InvoiceInfo {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return orderNo;
 	}
 
-	public ArrayList emailInfo(HttpServletRequest request, long invoiceID,
-			String compId, String ordNo) {
+	public ArrayList emailInfo(HttpServletRequest request, long invoiceID, String compId, String ordNo) {
 		ArrayList<Object> list = new ArrayList<Object>();
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3864,28 +3853,28 @@ public class InvoiceInfo {
 				} else {
 					form.setIsEmailSent("false");
 				}
-				//form.setSubject("Your orders are delivered from cdromusa.com");
+				// form.setSubject("Your orders are delivered from cdromusa.com");
 				form.setSubject("Your orders are delivered from BzComposer.com");
 			}
 			// list.add(form);
 
-			form.setContent(getEmailContent(invoiceID, orderDate,ordNo).toString());
+			form.setContent(getEmailContent(invoiceID, orderDate, ordNo).toString());
 			request.setAttribute("EmailInfo", form);
 		} catch (SQLException ex) {
 			Loger.log("Exception in PreviousOrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -3894,7 +3883,7 @@ public class InvoiceInfo {
 	}
 
 	public StringBuffer getEmailContent(long invoiceID, String orderDate, String ordNo) {
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3905,11 +3894,9 @@ public class InvoiceInfo {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setLong(1, invoiceID);
 			rs = pstmt.executeQuery();
-			content
-					.append("Your order has been successfully received, and is scheduled to be processed shortly.\n\n"
-									+ "We really appreciate doing business with you.\n"
-									+"\nItem Details\n\n" + "Order Date : ")
-					.append(orderDate + "\n\nOrder ID : "+ordNo);
+			content.append("Your order has been successfully received, and is scheduled to be processed shortly.\n\n"
+					+ "We really appreciate doing business with you.\n" + "\nItem Details\n\n" + "Order Date : ")
+					.append(orderDate + "\n\nOrder ID : " + ordNo);
 			int items = 0;
 			while (rs.next()) {
 				items++;
@@ -3921,25 +3908,24 @@ public class InvoiceInfo {
 				content.append(rs.getString("InventoryName"));
 				content.append("\n");
 			}
-			content.append("\n\nTotal# of Items: " + items).append(
-					"\n==============================================");
-			//content.append("\nCDROMUSA.com");		//commented on 19-06-2019
+			content.append("\n\nTotal# of Items: " + items).append("\n==============================================");
+			// content.append("\nCDROMUSA.com"); //commented on 19-06-2019
 			content.append("\nBzComposer.com");
 		} catch (SQLException ex) {
 			Loger.log("Exception in PreviousOrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -3948,7 +3934,7 @@ public class InvoiceInfo {
 
 	public boolean send(String compId, InvoiceDto invoiceDto) {
 		boolean result = false;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
 		ResultSet rs = null;
@@ -3963,7 +3949,8 @@ public class InvoiceInfo {
 			if (rs.next()) {
 				emailAddr = rs.getString("Mail_senderEmail");
 			}
-			boolean isSend = mailSend.sendMail(invoiceDto.getEmailAddr(), invoiceDto.getSubject(), invoiceDto.getContent(), emailAddr);
+			boolean isSend = mailSend.sendMail(invoiceDto.getEmailAddr(), invoiceDto.getSubject(),
+					invoiceDto.getContent(), emailAddr);
 			if (isSend)
 				result = true;
 			else
@@ -3971,11 +3958,17 @@ public class InvoiceInfo {
 		} catch (SQLException ex) {
 			Loger.log("Exception in PreviousOrderNo Function" + ex.toString());
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -3991,13 +3984,17 @@ public class InvoiceInfo {
 		TrHistoryLookUp hlookup = new TrHistoryLookUp();
 		String sqlString = "SELECT "
 				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-				+ " WHERE i.ClientVendorID="+cvId+" AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 3 MONTH GROUP BY i.ClientVendorID) AS Amt3Month,"
+				+ " WHERE i.ClientVendorID=" + cvId
+				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 3 MONTH GROUP BY i.ClientVendorID) AS Amt3Month,"
 				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-				+ " WHERE i.ClientVendorID="+cvId+" AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 1 YEAR GROUP BY i.ClientVendorID) AS Amt1Year,"
+				+ " WHERE i.ClientVendorID=" + cvId
+				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 1 YEAR GROUP BY i.ClientVendorID) AS Amt1Year,"
 				+ "(SELECT SUM(i.Balance) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-				+ " WHERE i.ClientVendorID="+cvId+" AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.ClientVendorID) AS TotalOverdueAmt, "
+				+ " WHERE i.ClientVendorID=" + cvId
+				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.ClientVendorID) AS TotalOverdueAmt, "
 				+ "(SELECT date_format(i.dateadded,'%m-%d-%Y') as DateAdded FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-				+ " WHERE i.ClientVendorID="+cvId+" AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.InvoiceID ORDER BY InvoiceID DESC LIMIT 1) AS LastOrderDate "
+				+ " WHERE i.ClientVendorID=" + cvId
+				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.InvoiceID ORDER BY InvoiceID DESC LIMIT 1) AS LastOrderDate "
 				+ " FROM DUAL;";
 		try {
 			pstmt = con.prepareStatement(sqlString);
@@ -4009,16 +4006,22 @@ public class InvoiceInfo {
 				hlookup.setLast3MonthAmt(Double.parseDouble(truncate(rs.getString("Amt3Month"))));
 				hlookup.setLast1YearAmt(Double.parseDouble(truncate(rs.getString("Amt1Year"))));
 				hlookup.setTotalOverdueAmt(Double.parseDouble(truncate(rs.getString("TotalOverdueAmt"))));
-				
+
 				hlookup.setLastOrderDate(rs.getString("LastOrderDate"));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -4026,66 +4029,118 @@ public class InvoiceInfo {
 		return hlookup;
 	}
 
-	public ArrayList searchHistory(HttpServletRequest request, String cond, String cvId, String periodFrom, String periodTo) {
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
+	@Transactional
+	public ArrayList searchHistory(HttpServletRequest request, String cond, String cvId, String periodFrom,
+			String periodTo) {
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
 		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<TrHistoryLookUp> objList = new ArrayList<>();
 		BigDecimal finalTotal = new BigDecimal("0"), finalBalance = new BigDecimal("0");
-		
-		
+
 		String cvIdCase = "";
-		if(!cvId.isEmpty()){
-			cvIdCase = "i.ClientVendorID ="+cvId+" AND";
+//		if(!cvId.isEmpty()){
+//			cvIdCase = "i.ClientVendorID ="+cvId+" AND";
+//		}
+		if (!cvId.isEmpty()) {
+			cvIdCase = "i.clientVendor.clientVendorId =" + cvId + " and";
 		}
-		String sqlString = "select i.InvoiceID, i.OrderNum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total, i.Balance, i.Shipped, i.IsEmailed, it.Name,i.ClientVendorID "
-				+" FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-				+" WHERE "+cvIdCase+" i.InvoiceTypeID IN(1,7,10) ";
+//		String sqlString = "select i.InvoiceID, i.OrderNum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total, i.Balance, i.Shipped, i.IsEmailed, it.Name,i.ClientVendorID "
+//				+ " FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+//				+ " WHERE " + cvIdCase + " i.InvoiceTypeID IN(1,7,10) ";
+
+		StringBuffer query = new StringBuffer(
+				"select i from BcaInvoice as i inner join BcaInvoiceType as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
+						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
+//		if (cond.equalsIgnoreCase("ShowAll")) {
+//			Loger.log("The string of showall is " + sqlString);
+//		} else {
+//			Loger.log("the String of the By Period is" + sqlString);
+//			if (periodFrom != null && periodTo != null && periodFrom.trim().length() > 1
+//					&& periodTo.trim().length() > 1) {
+//				sqlString = sqlString + " and i.DateAdded between '" + cinfo.string2date(periodFrom) + "' and '"
+//						+ cinfo.string2date(periodTo) + "'";
+//			}
+//		}
+
 		if (cond.equalsIgnoreCase("ShowAll")) {
-			Loger.log("The string of showall is " + sqlString);
+			Loger.log("The string of showall is " + query.toString());
 		} else {
-			Loger.log("the String of the By Period is" + sqlString);
-			if (periodFrom != null && periodTo != null && periodFrom.trim().length() > 1 && periodTo.trim().length() > 1) {
-				sqlString = sqlString + " and i.DateAdded between '" + cinfo.string2date(periodFrom) + "' and '" + cinfo.string2date(periodTo) + "'";
+			Loger.log("the String of the By Period is" + query.toString());
+			if (periodFrom != null && periodTo != null && periodFrom.trim().length() > 1
+					&& periodTo.trim().length() > 1) {
+				query = query.append(" and i.dateAdded between '" + cinfo.string2date(periodFrom) + "' and '"
+						+ cinfo.string2date(periodTo) + "'");
 			}
 		}
-		sqlString = sqlString +" GROUP BY i.InvoiceID order by it.name, i.Ordernum";
+
+//		sqlString = sqlString + " GROUP BY i.InvoiceID order by it.name, i.Ordernum";
+		query.append(" group by i.invoiceId order by it.name , i.orderNum");
 		try {
-			pstmt = con.prepareStatement(sqlString);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query.toString(), BcaInvoice.class);
+			List<BcaInvoice> resultList = typedQuery.getResultList();
+			for (BcaInvoice bcaInvoice : resultList) {
 				TrHistoryLookUp hlookup = new TrHistoryLookUp();
-				hlookup.setInvoiceId(rs.getString(1));
-				hlookup.setOrderNum(rs.getString(2));
-				hlookup.setDateAdded(rs.getString(3));
-				hlookup.setTotal(truncate(rs.getString(4)));
-				hlookup.setBalance(truncate(rs.getString(5)));
-				hlookup.setShipped(rs.getInt(6));
-				hlookup.setEmailed(rs.getInt(7));
-				hlookup.setName(rs.getString(8));
-				hlookup.setClientVendorID(rs.getString(9));
+				hlookup.setInvoiceId(bcaInvoice.getInvoiceId().toString());
+				hlookup.setOrderNum(bcaInvoice.getOrderNum().toString());
+				hlookup.setDateAdded(bcaInvoice.getDateAdded().format(dateFormatter));
+				hlookup.setTotal(truncate(bcaInvoice.getTotal().toString()));
+				hlookup.setBalance(truncate(bcaInvoice.getBalance().toString()));
+				hlookup.setShipped(bcaInvoice.getShipped());
+				hlookup.setEmailed(bcaInvoice.getIsEmailed()==true?1:0);
+				hlookup.setName(bcaInvoice.getInvoiceType().getName() );
+				hlookup.setClientVendorID(bcaInvoice.getClientVendor().getClientVendorId().toString());
 				objList.add(hlookup);
-				BigDecimal total=new BigDecimal(hlookup.getTotal());
-				finalTotal=total.add(finalTotal);
-				BigDecimal balance=new BigDecimal(hlookup.getBalance());
-				finalBalance =balance.add(finalBalance);
+				BigDecimal total = new BigDecimal(hlookup.getTotal());
+				finalTotal = total.add(finalTotal);
+				BigDecimal balance = new BigDecimal(hlookup.getBalance());
+				finalBalance = balance.add(finalBalance);
 			}
+
+//			pstmt = con.prepareStatement(sqlString);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				TrHistoryLookUp hlookup = new TrHistoryLookUp();
+//				hlookup.setInvoiceId(rs.getString(1));
+//				hlookup.setOrderNum(rs.getString(2));
+//				hlookup.setDateAdded(rs.getString(3));
+//				hlookup.setTotal(truncate(rs.getString(4)));
+//				hlookup.setBalance(truncate(rs.getString(5)));
+//				hlookup.setShipped(rs.getInt(6));
+//				hlookup.setEmailed(rs.getInt(7));
+//				hlookup.setName(rs.getString(8));
+//				hlookup.setClientVendorID(rs.getString(9));
+//				objList.add(hlookup);
+//				BigDecimal total = new BigDecimal(hlookup.getTotal());
+//				finalTotal = total.add(finalTotal);
+//				BigDecimal balance = new BigDecimal(hlookup.getBalance());
+//				finalBalance = balance.add(finalBalance);
+//			}
 			request.setAttribute("FinalTotal", finalTotal);
 			request.setAttribute("FinalBalance", finalBalance);
 		} catch (Exception e) {
-			System.out.println("EXpe "+e.toString() );
+			System.out.println("EXpe " + e.toString());
 			Loger.log(e.toString());
-		}finally {
-			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return objList;
 	}
 
@@ -4094,9 +4149,9 @@ public class InvoiceInfo {
 		ArrayList<UpdateInvoiceDto> invoiceName = new ArrayList<>();
 		ArrayList<UpdateInvoiceDto> balenceDetails = new ArrayList<>();
 		ResultSet rs = null, rs1 = null, rs2 = null;
-		Connection con = null ;
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
-		PreparedStatement pstmt= null, pstmt1= null, pstmt2= null;
+		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
 		con = db.getConnection();
 		String sqlString = "select * from bca_servicetype";
 		String sqlString1 = "select  * from bca_invoicestyle where Active=1";
@@ -4147,13 +4202,27 @@ public class InvoiceInfo {
 			Loger.log(e.toString());
 		} finally {
 			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if (rs1 != null) { db.close(rs1); }
-				if (pstmt1 != null) { db.close(pstmt1); }
-				if (rs2 != null) { db.close(rs2); }
-				if (pstmt2 != null) { db.close(pstmt2); }
-				if(con != null){ db.close(con); }
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (rs1 != null) {
+					db.close(rs1);
+				}
+				if (pstmt1 != null) {
+					db.close(pstmt1);
+				}
+				if (rs2 != null) {
+					db.close(rs2);
+				}
+				if (pstmt2 != null) {
+					db.close(pstmt2);
+				}
+				if (con != null) {
+					db.close(con);
+				}
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -4176,14 +4245,13 @@ public class InvoiceInfo {
 
 	}
 
-	public void set(String cvId, HttpServletRequest request, ActionForm form,
-			String compId) {
+	public void set(String cvId, HttpServletRequest request, ActionForm form, String compId) {
 
-		Connection con = null ;
+		Connection con = null;
 
 		PreparedStatement pstmt2 = null;
 		PreparedStatement pstmt12 = null, pstmt13 = null;
-		
+
 		SQLExecutor db = new SQLExecutor();
 		// ArrayList<Object> objList = new ArrayList<Object>();
 		ArrayList<UpdateInvoiceDto> serviceinfo = new ArrayList<UpdateInvoiceDto>();
@@ -4213,23 +4281,18 @@ public class InvoiceInfo {
 			while (rs22.next()) {
 				UpdateInvoiceDto uform1 = new UpdateInvoiceDto();
 				Loger.log("we r in Search Customer");
-				Loger.log("The InvoiceStyleID from client vendor  is "
-						+ rs22.getString("InvoiceStyleID"));
-				Loger.log("The ServiceId  from client vendor is "
-						+ rs22.getString("ServiceID"));
+				Loger.log("The InvoiceStyleID from client vendor  is " + rs22.getString("InvoiceStyleID"));
+				Loger.log("The ServiceId  from client vendor is " + rs22.getString("ServiceID"));
 				uform1.setServiceBalance((rs22.getDouble("ServiceBalance")));
-				Loger.log("The ServiceBalance is from clientvendor "
-						+ rs22.getDouble("ServiceBalance"));
+				Loger.log("The ServiceBalance is from clientvendor " + rs22.getDouble("ServiceBalance"));
 
 				uform1.setDefaultService(rs22.getInt("DefaultService"));
 
 				// uform1.setServiceIdNo(rs22.getInt("ServiceID"));
 				uform1.setServiceID(rs22.getInt("ServiceID"));
 
-				Loger.log("The  service ID is from clientvendor"
-						+ rs22.getInt("ServiceID"));
-				Loger.log("33333333The  service ID is from clientvendor33333"
-						+ uform1.getServiceID());
+				Loger.log("The  service ID is from clientvendor" + rs22.getInt("ServiceID"));
+				Loger.log("33333333The  service ID is from clientvendor33333" + uform1.getServiceID());
 
 				pstmt12.setString(1, rs22.getString("InvoiceStyleID"));
 				rs12 = pstmt12.executeQuery();
@@ -4250,30 +4313,30 @@ public class InvoiceInfo {
 		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
-				if (rs22  != null) {
-					db.close(rs22 );
-					}
-				if (pstmt2  != null) {
-					db.close(pstmt2 );
-					}
-				if (rs12  != null) {
+				if (rs22 != null) {
+					db.close(rs22);
+				}
+				if (pstmt2 != null) {
+					db.close(pstmt2);
+				}
+				if (rs12 != null) {
 					db.close(rs12);
-					}
-				if (pstmt12   != null) {
+				}
+				if (pstmt12 != null) {
 					db.close(pstmt12);
-					}
+				}
 				if (rs13 != null) {
 					db.close(rs13);
-					}
-				if (pstmt13  != null) {
+				}
+				if (pstmt13 != null) {
 					db.close(pstmt13);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -4299,120 +4362,119 @@ public class InvoiceInfo {
 		da = m + "-" + d + "-" + (date.getYear());
 		return da;
 	}
-	public int getServiceID(String serviceNm){
-		Connection con = null ;
-		int serviceid=0;
+
+	public int getServiceID(String serviceNm) {
+		Connection con = null;
+		int serviceid = 0;
 		PreparedStatement pstmt = null;
-		
-		ResultSet rs= null;
+
+		ResultSet rs = null;
 		SQLExecutor db = new SQLExecutor();
 		if (db == null)
 			return 0;
 		con = db.getConnection();
-		try{
-			String serviceQuery="select ServiceID from bca_servicetype where ServiceName=?";
-			pstmt=con.prepareStatement(serviceQuery);
-			pstmt.setString(1,serviceNm);
-			rs=pstmt.executeQuery();
-			if(rs.next()){
-				serviceid=rs.getInt("ServiceID");
+		try {
+			String serviceQuery = "select ServiceID from bca_servicetype where ServiceName=?";
+			pstmt = con.prepareStatement(serviceQuery);
+			pstmt.setString(1, serviceNm);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				serviceid = rs.getInt("ServiceID");
 			}
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return serviceid;
 	}
-	
-	public String getServiceName(int serviceId){
-		Connection con = null ;
-		String serviceNm="";
+
+	public String getServiceName(int serviceId) {
+		Connection con = null;
+		String serviceNm = "";
 		PreparedStatement pstmt = null;
-		
-		ResultSet rs= null;
+
+		ResultSet rs = null;
 		SQLExecutor db = new SQLExecutor();
 		if (db == null)
 			return "";
 		con = db.getConnection();
-		try{
-			String serviceQuery="select ServiceName from bca_servicetype where ServiceID=?";
-			pstmt=con.prepareStatement(serviceQuery);
-			pstmt.setInt(1,serviceId);
-			rs=pstmt.executeQuery();
-			if(rs.next()){
-				serviceNm=rs.getString("ServiceName");
+		try {
+			String serviceQuery = "select ServiceName from bca_servicetype where ServiceID=?";
+			pstmt = con.prepareStatement(serviceQuery);
+			pstmt.setInt(1, serviceId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				serviceNm = rs.getString("ServiceName");
 			}
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return serviceNm;
 	}
-	public void invoiceIt(String SONum) {		
-		Connection con = null ;
+
+	public void invoiceIt(String SONum) {
+		Connection con = null;
 		PreparedStatement pstmtUpdate = null;
 		SQLExecutor db = new SQLExecutor();
-    	con = db.getConnection();
-		try {		
-				String updateQuery = "";		
-				updateQuery = "update bca_invoice set  ISInvoice = 1 where SONum = ?";			
-				pstmtUpdate = con.prepareStatement(updateQuery);
-				pstmtUpdate.setString(1, SONum);
-			    pstmtUpdate.executeUpdate();
-			
+		con = db.getConnection();
+		try {
+			String updateQuery = "";
+			updateQuery = "update bca_invoice set  ISInvoice = 1 where SONum = ?";
+			pstmtUpdate = con.prepareStatement(updateQuery);
+			pstmtUpdate.setString(1, SONum);
+			pstmtUpdate.executeUpdate();
+
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class InvoiceInfo and  method -InvoiceIt "
-							+ " " + ee.toString());
+			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -InvoiceIt " + " " + ee.toString());
 		}
-	
+
 		finally {
 			try {
 				if (pstmtUpdate != null) {
 					db.close(pstmtUpdate);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
-					Loger.log(2, "ParseException" + e.getMessage());
+				}
+			} catch (Exception e) {
+				Loger.log(2, "ParseException" + e.getMessage());
 			}
 		}
-	
+
 	}
 
-	public ArrayList customerInvoiceDetails(String compId, HttpServletRequest request) 
-	{
+	public ArrayList customerInvoiceDetails(String compId, HttpServletRequest request) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -4434,7 +4496,8 @@ public class InvoiceInfo {
 			while (rs.next()) {
 				cvId = rs.getString(1);
 				InvoiceDto invForm = new InvoiceDto();
-				objList.add(new org.apache.struts.util.LabelValueBean(rs.getString("Name")+"("+rs.getString(3)+ " " + rs.getString(2)+")", cvId));
+				objList.add(new org.apache.struts.util.LabelValueBean(
+						rs.getString("Name") + "(" + rs.getString(3) + " " + rs.getString(2) + ")", cvId));
 				invForm.setClientVendorID(cvId);
 				invForm.setFirstName(rs.getString(2));
 				invForm.setLastName(rs.getString(3));
@@ -4444,26 +4507,23 @@ public class InvoiceInfo {
 				invForm.setRep(rs.getString("SalesRepID"));
 				invForm.setTaxable(rs.getString("Taxable"));
 				details.add(invForm);
-				/*Loger.log("BEAN___________________________"+ invForm.getTaxable());*/
+				/* Loger.log("BEAN___________________________"+ invForm.getTaxable()); */
 			}
 			request.setAttribute("CustDetails", details);
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class InvoiceInfo and  method -customerInvoiceDetails "
-							+ " " + ee.toString());
-		}
-		finally {
+			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -customerInvoiceDetails " + " " + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
@@ -4471,8 +4531,7 @@ public class InvoiceInfo {
 		return objList;
 	}
 
-	public void updateBillingAddress(InvoiceDto frm, String cId, String billAddressId) 
-	{
+	public void updateBillingAddress(InvoiceDto frm, String cId, String billAddressId) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
@@ -4482,119 +4541,90 @@ public class InvoiceInfo {
 		String cvId = "";
 		try {
 			String sqlString1 = "select Name,FirstName,LastName, Address1,Address2,City,"
-					+ "State,ZipCode,Country from bca_billingaddress where ClientVendorID ="+cId+" and AddressID="+billAddressId; 
+					+ "State,ZipCode,Country from bca_billingaddress where ClientVendorID =" + cId + " and AddressID="
+					+ billAddressId;
 			String sqlString = "update bca_billingaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
-					+ "State=?,ZipCode=?,Country=? where AddressID ="+billAddressId;
+					+ "State=?,ZipCode=?,Country=? where AddressID =" + billAddressId;
 
 			pstmt1 = con.prepareStatement(sqlString1);
 			pstmt = con.prepareStatement(sqlString);
-			
+
 			rs = pstmt1.executeQuery();
-			while (rs.next()) 
-			{
-				if(frm.getCompanyName()!=null)
-				{
+			while (rs.next()) {
+				if (frm.getCompanyName() != null) {
 					pstmt.setString(1, frm.getCompanyName());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(1, rs.getString(1));
 				}
-				if(frm.getFirstName()!=null)
-				{
+				if (frm.getFirstName() != null) {
 					pstmt.setString(2, frm.getFirstName());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(2, rs.getString(2));
 				}
-				if(frm.getLastName()!=null)
-				{
+				if (frm.getLastName() != null) {
 					pstmt.setString(3, frm.getLastName());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(3, rs.getString(3));
 				}
-				if(frm.getAddress1()!=null)
-				{
+				if (frm.getAddress1() != null) {
 					pstmt.setString(4, frm.getAddress1());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(4, rs.getString(4));
 				}
-				if(frm.getAddress2()!=null)
-				{
+				if (frm.getAddress2() != null) {
 					pstmt.setString(5, frm.getAddress2());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(5, rs.getString(5));
 				}
-				if(frm.getCity()!=null)
-				{
+				if (frm.getCity() != null) {
 					pstmt.setString(6, frm.getCity());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(6, rs.getString(6));
 				}
-				if(frm.getCustomerstate()!=null)
-				{
+				if (frm.getCustomerstate() != null) {
 					pstmt.setString(7, frm.getCustomerstate());
+				} else {
+					pstmt.setString(7, rs.getString(7));
 				}
-				else
-				{
-					pstmt.setString(7,rs.getString(7));
-				}
-				if(frm.getZipcode()!=null)
-				{
+				if (frm.getZipcode() != null) {
 					pstmt.setString(8, frm.getZipcode());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(8, rs.getString(8));
 				}
-				if(frm.getCustomerstate()!=null)
-				{
+				if (frm.getCustomerstate() != null) {
 					pstmt.setString(9, frm.getCountry());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(9, rs.getString(9));
 				}
 			}
-			int rows = pstmt.executeUpdate(); 
-			if(rows>0){
-				System.out.println("Total Row updated:"+rows);
+			int rows = pstmt.executeUpdate();
+			if (rows > 0) {
+				System.out.println("Total Row updated:" + rows);
 			}
 			pstmt.close();
 		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class InvoiceInfo and  method -updateBillingAddress :" + ee.toString());
-		}
-		finally {
+			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -updateBillingAddress :" + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 	}
 
-	public void updateShippingAddress(InvoiceDto frm, String cId, String billAddressId) 
-	{
+	public void updateShippingAddress(InvoiceDto frm, String cId, String billAddressId) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
@@ -4603,113 +4633,88 @@ public class InvoiceInfo {
 		con = db.getConnection();
 		String cvId = "";
 		try {
-			/*String sqlString1 = "select Name,FirstName,LastName, Address1,Address2,City,"
-					+ "State,ZipCode,Country from bca_shippingaddress where ClientVendorID ="+cId+" and Active=1 and AddressID="+billAddressId;*/ 
+			/*
+			 * String sqlString1 = "select Name,FirstName,LastName, Address1,Address2,City,"
+			 * + "State,ZipCode,Country from bca_shippingaddress where ClientVendorID ="
+			 * +cId+" and Active=1 and AddressID="+billAddressId;
+			 */
 			String sqlString1 = "select Name,FirstName,LastName, Address1,Address2,City,"
-					+ "State,ZipCode,Country from bca_shippingaddress where Active=1 and AddressID="+billAddressId;
+					+ "State,ZipCode,Country from bca_shippingaddress where Active=1 and AddressID=" + billAddressId;
 			String sqlString = "update bca_shippingaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
-					+ "State=?,ZipCode=?,Country=? where AddressID ="+billAddressId;
+					+ "State=?,ZipCode=?,Country=? where AddressID =" + billAddressId;
 
 			pstmt1 = con.prepareStatement(sqlString1);
 			pstmt = con.prepareStatement(sqlString);
-			
+
 			rs = pstmt1.executeQuery();
-			while (rs.next()) 
-			{
-				if(frm.getCompanyName()!=null)
-				{
+			while (rs.next()) {
+				if (frm.getCompanyName() != null) {
 					pstmt.setString(1, frm.getCompanyName());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(1, rs.getString(1));
 				}
-				if(frm.getFirstName()!=null)
-				{
+				if (frm.getFirstName() != null) {
 					pstmt.setString(2, frm.getFirstName());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(2, rs.getString(2));
 				}
-				if(frm.getLastName()!=null)
-				{
+				if (frm.getLastName() != null) {
 					pstmt.setString(3, frm.getLastName());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(3, rs.getString(3));
 				}
-				if(frm.getAddress1()!=null)
-				{
+				if (frm.getAddress1() != null) {
 					pstmt.setString(4, frm.getAddress1());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(4, rs.getString(4));
 				}
-				if(frm.getAddress2()!=null)
-				{
+				if (frm.getAddress2() != null) {
 					pstmt.setString(5, frm.getAddress2());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(5, rs.getString(5));
 				}
-				if(frm.getCity()!=null)
-				{
+				if (frm.getCity() != null) {
 					pstmt.setString(6, frm.getCity());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(6, rs.getString(6));
 				}
-				if(frm.getCustomerstate()!=null)
-				{
+				if (frm.getCustomerstate() != null) {
 					pstmt.setString(7, frm.getCustomerstate());
+				} else {
+					pstmt.setString(7, rs.getString(7));
 				}
-				else
-				{
-					pstmt.setString(7,rs.getString(7));
-				}
-				if(frm.getZipcode()!=null)
-				{
+				if (frm.getZipcode() != null) {
 					pstmt.setString(8, frm.getZipcode());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(8, rs.getString(8));
 				}
-				if(frm.getCustomerstate()!=null)
-				{
+				if (frm.getCustomerstate() != null) {
 					pstmt.setString(9, frm.getCountry());
-				}
-				else
-				{
+				} else {
 					pstmt.setString(9, rs.getString(9));
 				}
 			}
-			int rows = pstmt.executeUpdate(); 
-			if(rows>0){
-				System.out.println("Total Row updated:"+rows);
+			int rows = pstmt.executeUpdate();
+			if (rows > 0) {
+				System.out.println("Total Row updated:" + rows);
 			}
 		} catch (SQLException ee) {
-			Loger.log(2," SQL Error in Class InvoiceInfo and  method -updateShippingAddress :" + ee.toString());
-		}finally {
+			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -updateShippingAddress :" + ee.toString());
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (pstmt != null) {
 					db.close(pstmt);
-					}
+				}
 				if (pstmt1 != null) {
 					db.close(pstmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}

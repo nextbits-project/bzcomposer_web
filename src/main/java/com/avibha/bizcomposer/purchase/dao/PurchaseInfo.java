@@ -20,6 +20,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.stereotype.Service;
+
 import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
@@ -38,6 +40,7 @@ import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 /* 
  * 
  */
+@Service
 public class PurchaseInfo {
 
 	/*

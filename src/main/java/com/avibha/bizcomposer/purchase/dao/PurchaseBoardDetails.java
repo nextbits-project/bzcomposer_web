@@ -4,8 +4,12 @@ import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
 import com.avibha.common.log.Loger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 
+@Service
 public class PurchaseBoardDetails {
 
 	public ArrayList getPurchaseBoardDetails(HttpServletRequest request, PurchaseBoardDto pform) {

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
@@ -41,6 +42,7 @@ import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 /*
  * 
  */
+@Service
 public class CustomerInfo {
 
 	public ArrayList customerDetails(String compId) {

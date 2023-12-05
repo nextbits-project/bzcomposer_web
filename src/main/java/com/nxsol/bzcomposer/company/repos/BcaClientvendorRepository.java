@@ -7,15 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.nxsol.bizcomposer.common.ConstValue;
-import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
-import com.pritesh.bizcomposer.accounting.bean.ClientvendorDto;
 
 @Repository
 public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor, Integer> {
-
+	
 	@Query(nativeQuery = true, value = "SELECT distinct c.ClientVendorID,c.Name,ti.Title,c.FirstName,c.LastName,c.Address1,c.Address2,c.City,c.State,c.Country,"
 			+ "c.Email,c.Phone,c.CellPhone,c.Fax,date_format(c.DateAdded,'%m-%d-%Y') as DateAdded,i.IsPaymentCompleted,c.CVCategoryName,"
 			+ "c.ZipCode,ct.Name AS CityName, st.Name AS StateName, cn.Name AS CountryName, c.DBAName, date_format(i.DateAdded,'%m-%d-%Y') as iDateAdded "
@@ -67,4 +65,20 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 			+ " and( a.deleted = 0 or a.active = 1 ) and a.status in ('U', 'N') and a.cvtypeId in (1,3) and b.billType = 0 and "
 			+ " b.status in (0,2) and b.dueDate <=  :dueDate order by b.dueDate ")	
 	List<Object[]> findPayBillsLists(@Param("companyId")Long companyId,@Param("dueDate")String dueDate); 
+
+
+	
+	
+	
+	
+	@Query(value="select distinct new com.avibha.bizcomposer.sales.forms.CustomerDto( c.clientVendorId , c.name ,c.customerTitle, c.firstName , c.lastName , c.address1, c.address2, c.city, c.state , c.zipCode , c.country ,"
+			+ " c.email , c.phone , c.cellPhone , c.fax ,date_format(c.dateAdded , '%m-%d-%Y') as dateAdded , i.isPaymentCompleted , c.cvcategoryName, ct.name as cityName , st.name as stateName , cn.name as countryName"
+			+ " , c.dbaname)  from BcaClientvendor as c left join BcaCountries as cn on cn.id =c.country left join BcaStates as st on st.id =c.state left join BcaCities as ct on ct.id = c.city "
+			+ "  left join BcaInvoice as i on i.clientVendor.clientVendorId = c.clientVendorId and not (i.invoiceStatus =1) and i.isPaymentCompleted = 0 and i.invoiceType.invoiceTypeId in (1,13,17)"
+			+ "  where c.company.companyId =  :companyId and c.cvtypeId in (1,2) and c.status in ('U' , 'N' ) and c.deleted = 0 and c.active =1 order by c.name  ")
+	List<CustomerDto> findCustomerInfo(@Param("companyId")Long companyId);
+		
+	
+	List<BcaClientvendor> findDistinctByCompany_CompanyIdAndStatusInAndDeletedAndActiveOrderByName(Long companyId,List<String> status , Integer deleted,Integer active);
+
 }
