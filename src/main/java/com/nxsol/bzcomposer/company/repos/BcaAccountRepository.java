@@ -49,28 +49,26 @@ public interface BcaAccountRepository extends JpaRepository<BcaAccount, Integer>
 	int updateBankAccount(@Param("accountId") int accountId, @Param("company") BcaCompany company);
 
 	List<BcaAccount> findByParentIdNotOrderByNameAsc(int parentId);
-	
 
-	
-@Query(value="select ba from BcaAccount ba where ba.company.companyId = :companyId and ba.acctCategory.acctCategoryId in (1,2)")
-	List<BcaAccount> findAccountByIdAndAcctCategoryId
-	(@Param("companyId")Long companyId);
+	@Query(value = "select ba from BcaAccount ba where ba.company.companyId = :companyId and ba.acctCategory.acctCategoryId in (1,2)")
+	List<BcaAccount> findAccountByIdAndAcctCategoryId(@Param("companyId") Long companyId);
 
+	@Query("select i.adjustedTotal from BcaInvoice i , BcaTerm b where i.company.companyId = :companyId "
+			+ " and i.term.termId = b.termId and i.adjustedTotal > 0 and i.isPaymentCompleted = 0 "
+			+ " and i.invoiceType.invoiceTypeId in (1, 12 , 13, 17 , 19 ) and i.invoiceStatus in (0 ,5 ,3 )")
+	List<Double> findAdjustedTotal(@Param("companyId") Long cId);
 
-@Query("select i.adjustedTotal from BcaInvoice i , BcaTerm b where i.company.companyId = :companyId "
-		+ " and i.term.termId = b.termId and i.adjustedTotal > 0 and i.isPaymentCompleted = 0 "
-		+ " and i.invoiceType.invoiceTypeId in (1, 12 , 13, 17 , 19 ) and i.invoiceStatus in (0 ,5 ,3 )")
-List<Double> findAdjustedTotal(@Param("companyId")Long cId);
+	@Query("select sum(bi.salePrice* bi.qty) as total from BcaIteminventory as bi,BcaCompany c where bi.company.companyId = :companyId ")
+	List<Double> findSum(@Param("companyId") Long cId);
 
-@Query("select sum(bi.salePrice* bi.qty) as total from BcaIteminventory as bi,BcaCompany c where bi.company.companyId = :companyId ")
-List<Double> findSum(@Param("companyId")Long cId);
+	@Query("select distinct a.accountId, a.name, a.isCategory from BcaAccount a left join a.acctCategory ac where ac.acctCategoryId = :acctCategoryId "
+			+ " and a.parentId = 0 and a.active =1 order by a.name asc")
+	List<BcaAccount> findAccountByAcctCategoryId(@Param("acctCategoryId") int acctCategoryId);
 
-@Query("select distinct a.accountId, a.name, a.isCategory from BcaAccount a left join a.acctCategory ac where ac.acctCategoryId = :acctCategoryId "
-		+ " and a.parentId = 0 and a.active =1 order by a.name asc")
-List<BcaAccount> findAccountByAcctCategoryId(@Param("acctCategoryId") int acctCategoryId);
+	@Query(value = "select a.accountId, a.name from BcaAccount a where a.parentId= :parentId and a.active=1 order by a.name asc")
+	List<BcaAccount> findAccountByParentId(@Param("parentId") int parentId);
 
-@Query(value="select a.accountId, a.name from BcaAccount a where a.parentId= :parentId and a.active=1 order by a.name asc")
-List<BcaAccount> findAccountByParentId(@Param("parentId")int parentId);
-
+	List<BcaAccount> findByCompanyAndAcctTypeAndActiveOrderByAcctTypeAscNameAsc(BcaCompany company,
+			BcaAccttype acctType, Integer active);
 
 }

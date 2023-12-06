@@ -37,4 +37,7 @@ public interface BcaCategoryRepository extends JpaRepository<BcaCategory, Intege
 	List<BcaCategory> findByCompanyAndIsActiveOrderByCategoryTypeIdAscNameAsc(BcaCompany company, boolean isActive);
 
 	List<BcaCategory> findByCompanyAndName(BcaCompany company, String name);
+	
+    List<BcaCategory> findByCompany_CompanyIdAndIsActiveOrderByCategoryTypeIdAscNameAsc(Long companyId, boolean isActive);
+
 }

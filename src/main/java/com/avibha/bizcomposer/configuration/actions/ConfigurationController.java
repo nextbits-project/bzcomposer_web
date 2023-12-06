@@ -70,6 +70,8 @@ public class ConfigurationController {
     private String pageActiveTab = "pageActiveTab";
     ArrayList<MailTemplateDto> mailTemplateDtos;
     
+    @Autowired
+	private CategoryManagerController catManagerController;
     
     @RequestMapping(value = {"/Configuration"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(ConfigurationDto configDto, CompanyInfoDto companyInfoDto, HttpServletRequest request, Model model) throws IOException, ServletException {
@@ -108,8 +110,8 @@ public class ConfigurationController {
             dao.getModulesName(configDto);
             dao.getWeight(companyID, configDto);
             dao.getModules(companyID, request, configDto);
-            dao.getSelectedModules(companyID, request, configDto);
-            dao.getPaymentType(companyID, request, configDto);
+            dao.getSelectedModules(companyIDL, configDto);
+            dao.getPaymentType(companyIDL, configDto);
             dao.getActiveTemplates(1, request, configDto);
             ArrayList<MailTemplateDto> mailTemplateDtoArrayList = dao.getEmailActiveTemplates(0);
             request.setAttribute("mailTemplateDtoArrayList", mailTemplateDtoArrayList);
@@ -162,10 +164,10 @@ public class ConfigurationController {
             request.getSession().setAttribute("CID", companyID);
 
             //ConfigurationDAO dao = new ConfigurationDAO();
-            dao.getCountry(companyID, request, configDto);
+            dao.getCountry(configDto);
             dao.getShipping(companyID, request, configDto);
             dao.getTerm(companyID, request, configDto);
-            dao.getPaymentType(companyID, request, configDto);
+            dao.getPaymentType(companyIDL, configDto);
             dao.getInvoiceStyle(companyID, request, configDto);
             dao.getCustomerGroup(configDto);
             dao.getStates("2", configDto);
@@ -221,7 +223,7 @@ public class ConfigurationController {
             ConfigurationDetails configDetails = new ConfigurationDetails();
             configDetails.getConfigurationInfo(request, configDto);
             ConfigurationDAO dao1 = new ConfigurationDAO();
-            dao.getCountry(companyID, request, configDto);
+            dao.getCountry(configDto);
             dao.getStates("2", configDto);
             dao.getJobTitle(request, configDto, companyID);
             forward = "redirect:Configuration?tabid=config11&&tab=tr11";
@@ -333,10 +335,10 @@ public class ConfigurationController {
 			 configInfo.getCongurationRecord(companyID,configDto,request);*/
 
            // ConfigurationDAO dao = new ConfigurationDAO();
-            dao.getCategory(companyID, request, configDto);
-            dao.getAccount(companyID, request, configDto);
-            dao.getPaymentType(companyID, request, configDto);
-            dao.getPaymentTypeGeneralAccount(companyID, request, configDto);
+            dao.getCategory(companyIDL, configDto);
+            dao.getAccount(companyIDL, configDto);
+            dao.getPaymentType(companyIDL, configDto);
+            dao.getPaymentTypeGeneralAccount(companyIDL, configDto);
             dao.getBillingTemplate(companyID, request, configDto);
 
            // ConfigurationInfo configInfo = new ConfigurationInfo();
@@ -366,7 +368,7 @@ public class ConfigurationController {
             request.setAttribute("showCmbValue", configDto.getShowCombinedBilling());
 
             //-------------------- CategoryManager ------------------
-            CategoryManagerController catManagerController = new CategoryManagerController();
+            //CategoryManagerController catManagerController = new CategoryManagerController();
             try {
                 catManagerController.categoryManager(null, request);
             }catch (Exception ex){
@@ -433,10 +435,10 @@ public class ConfigurationController {
             //ConfigurationInfoNEW configInfo = new ConfigurationInfoNEW();
             //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getPackingSlipTemplate(companyID, request, configDto);
-            dao.getCountry(companyID, request, configDto);
+            dao.getCountry(configDto);
             dao.getShipping(companyID, request, configDto);
             dao.getTerm(companyID, request, configDto);
-            dao.getPaymentType(companyID, request, configDto);
+            dao.getPaymentType(companyIDL, configDto);
             dao.getInvoiceStyle(companyID, request, configDto);
             dao.getCustomerGroup(configDto);
             dao.getStates("2", configDto);
@@ -552,15 +554,15 @@ public class ConfigurationController {
             request.setAttribute("businessTypes", vendorCategory.getCVCategoryList(companyID));
             request.setAttribute("customerTypeList", dao.getCustomerTypeList(companyID));
 
-            dao.getCountry(companyID, request, configDto);
+            dao.getCountry( configDto);
             dao.getStates("2", configDto);
-            dao.getCategory(companyID, request, configDto);
+            dao.getCategory(companyIDL, configDto);
             dao.getExistingLocation(companyID, request, configDto);
             dao.getActiveEmployee(companyID, request, configDto);
             dao.getShipCarrier(companyID, request, configDto);
             dao.getTerm(companyID, request, configDto);
             dao.getSalesRepresentative(companyID, request, configDto);
-            dao.getPaymentType(companyID, request, configDto);
+            dao.getPaymentType(companyIDL, configDto);
             dao.getMessages(companyID, request, configDto);
             dao.getInvoiceStyle(companyID, request, configDto);
             setConfigActiveTab(session, "vendorPurchaseOrderTab");
@@ -573,7 +575,7 @@ public class ConfigurationController {
             configDetails.getConfigurationInfo(request, configDto);
 
             //ConfigurationDAO dao = new ConfigurationDAO();
-            dao.getCountry(companyID, request, configDto);
+            dao.getCountry(configDto);
             dao.getStates("2", configDto);
             dao.getJobTitle(request, configDto, companyID);
             setConfigActiveTab(session, "employeeTab");
@@ -862,7 +864,7 @@ public class ConfigurationController {
             //dao.initStoreTypesModel(true);
             //ConfigurationDao dao = new ConfigurationDao();
             dao.getStores(5, request, configDto);
-            dao.getCountry(companyID, request, configDto);
+            dao.getCountry(configDto);
             dao.getStoreTypes(request, configDto);
             ArrayList<String> s = dao.getState();
             request.setAttribute("states", s);
@@ -874,7 +876,7 @@ public class ConfigurationController {
             //dao.initStoreTypesModel(true);
             //ConfigurationDao dao = new ConfigurationDao();
 
-            dao.getCountry(companyID, request, configDto);
+            dao.getCountry(configDto);
             dao.getStoreTypes(request, configDto);
             int storeTypeID = Integer.parseInt(request.getParameter("selectedStoreTypeId"));
             dao.getStores(storeTypeID, request, configDto);

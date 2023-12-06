@@ -35,14 +35,21 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
+import com.nxsol.bzcomposer.company.domain.BcaAccount;
+import com.nxsol.bzcomposer.company.domain.BcaAccttype;
+import com.nxsol.bzcomposer.company.domain.BcaBusinessmodules;
+import com.nxsol.bzcomposer.company.domain.BcaCategory;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaCountries;
 import com.nxsol.bzcomposer.company.domain.BcaFeatures;
 import com.nxsol.bzcomposer.company.domain.BcaMailtemplate;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingcontainer;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingmailtype;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingpackagesize;
+import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
 import com.nxsol.bzcomposer.company.domain.BcaRealtimeshippingservice;
+import com.nxsol.bzcomposer.company.domain.BcaReceivedtype;
 import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
 import com.nxsol.bzcomposer.company.domain.BcaShippingrate;
 import com.nxsol.bzcomposer.company.domain.BcaShippingservice;
@@ -52,14 +59,21 @@ import com.nxsol.bzcomposer.company.domain.BcpFedperallowance;
 import com.nxsol.bzcomposer.company.domain.BcpTaxCompany;
 import com.nxsol.bzcomposer.company.domain.SmdEbaycategory;
 import com.nxsol.bzcomposer.company.domain.SmdShipdetails;
+import com.nxsol.bzcomposer.company.repos.BcaAccountRepository;
+import com.nxsol.bzcomposer.company.repos.BcaAccttypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaBusinessmodulesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaFeaturesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMailtemplateRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingcontainerRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingmailtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingpackagesizeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRealtimeshippingserviceRepository;
+import com.nxsol.bzcomposer.company.repos.BcaReceivedtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingrateRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingserviceRepository;
@@ -141,291 +155,456 @@ public class ConfigurationDAO {
 //		return listPOJOs;
 //	}
 
-	public ArrayList<ConfigurationDto> getSelectedModules(String cId, HttpServletRequest request,
-			ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
+	@Autowired
+	private BcaBusinessmodulesRepository moduleRepository;
 
-		String dateBetween = "";
-		DateInfo dInfo = new DateInfo();
+	public ArrayList<ConfigurationDto> getSelectedModules(Long cId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		ArrayList<Date> selectedRange = new ArrayList<>();
-		CustomerInfo cInfo = new CustomerInfo();
 
 		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
-
-			String sql1 = "SELECT * FROM bca_businessmodules WHERE CompanyID = " + cId + " AND Active=1";
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedModuleId(rs.getInt("ModuleID"));
-				pojo.setSelectedModules(rs.getInt("ModuleID"));
-				pojo.setFeatureName(rs.getString("ModuleName"));
+			List<BcaBusinessmodules> modules = moduleRepository.findByCompany_CompanyIdAndActive(cId, 1);
+			for (BcaBusinessmodules module : modules) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedModuleId(module.getModulee().getModuleId());
+				pojo.setSelectedModules(module.getModulee().getModuleId());
+				pojo.setFeatureName(module.getModuleName());
 				listPOJOs.add(pojo);
 			}
-
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle or rethrow the exception as appropriate
 		}
+
 		form.setListOfExistingselectedModules(listPOJOs);
 		return listPOJOs;
-
 	}
 
+//	public ArrayList<ConfigurationDto> getSelectedModules(String cId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//
+//		String dateBetween = "";
+//		DateInfo dInfo = new DateInfo();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		ArrayList<Date> selectedRange = new ArrayList<>();
+//		CustomerInfo cInfo = new CustomerInfo();
+//
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//
+//			String sql1 = "SELECT * FROM bca_businessmodules WHERE CompanyID = " + cId + " AND Active=1";
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedModuleId(rs.getInt("ModuleID"));
+//				pojo.setSelectedModules(rs.getInt("ModuleID"));
+//				pojo.setFeatureName(rs.getString("ModuleName"));
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingselectedModules(listPOJOs);
+//		return listPOJOs;
+//
+//	}
+
 	/**/
-	public ArrayList<ConfigurationDto> getCategory(String cId, HttpServletRequest request, ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
+	@Autowired
+	private BcaCategoryRepository categoryRepository;
+
+	public ArrayList<ConfigurationDto> getCategory(Long cId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> roots = new ArrayList<>();
+
 		try {
-			String sql1 = "Select * from bca_category where CompanyID=" + cId
-					+ " and isActive=1 order by CategoryTypeID,Name ";
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setArCategory(rs.getInt("CategoryID"));
-				pojo.setPoCategory(rs.getInt("CategoryID"));
-				pojo.setBpCategory(rs.getInt("CategoryID"));
-				pojo.setSelectedCategoryId(rs.getInt("CategoryID"));
-				pojo.setCategoryName(rs.getString("Name"));
-				pojo.setCategoryNumber(rs.getString("CateNumber"));
+			List<BcaCategory> categories = categoryRepository
+					.findByCompany_CompanyIdAndIsActiveOrderByCategoryTypeIdAscNameAsc(cId, true);
+			for (BcaCategory category : categories) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setArCategory(category.getCategoryId());
+				pojo.setPoCategory(category.getCategoryId());
+				pojo.setBpCategory(category.getCategoryId());
+				pojo.setSelectedCategoryId(category.getCategoryId());
+				pojo.setCategoryName(category.getName());
+				pojo.setCategoryNumber(category.getCateNumber());
 				roots.add(pojo);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle or rethrow the exception as appropriate
 		}
+
 		form.setListOfExistingCategory(roots);
 		return roots;
 	}
 
-	public ArrayList<ConfigurationDto> getAccount(String cId, HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		// TODO Auto-generated method stub
+//	public ArrayList<ConfigurationDto> getCategory(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> roots = new ArrayList<>();
+//		try {
+//			String sql1 = "Select * from bca_category where CompanyID=" + cId
+//					+ " and isActive=1 order by CategoryTypeID,Name ";
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setArCategory(rs.getInt("CategoryID"));
+//				pojo.setPoCategory(rs.getInt("CategoryID"));
+//				pojo.setBpCategory(rs.getInt("CategoryID"));
+//				pojo.setSelectedCategoryId(rs.getInt("CategoryID"));
+//				pojo.setCategoryName(rs.getString("Name"));
+//				pojo.setCategoryNumber(rs.getString("CateNumber"));
+//				roots.add(pojo);
+//			}
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingCategory(roots);
+//		return roots;
+//	}
+
+	@Autowired
+	private BcaAccountRepository accountRepository;
+
+	@Autowired
+	private BcaAccttypeRepository accttypeRepository;
+
+	public ArrayList<ConfigurationDto> getAccount(Long cId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 
-		con = db.getConnection();
-
-		String sql = "SELECT * FROM bca_account" + " WHERE CompanyID = " + cId + " AND AcctTypeID = 2"
-				+ " AND Active = 1" +
-				// " ORDER BY AcctCategoryID,Name ASC";
-				" ORDER BY Name ASC";
-
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-
-				pojo.setArDepositTo(rs.getInt("AccountID"));
-				pojo.setPoDepositTo(rs.getInt("AccountID"));
-				pojo.setBpDepositTo(rs.getInt("AccountID"));
-
-				// pojo.setSelectedAccountId(rs.getInt("AccountID"));
-
-				pojo.setDefaultDepositToId(rs.getInt("AccountID"));
-				pojo.setDefaultPaymentMethodId(rs.getInt("AccountID"));
-				pojo.setAccountNumber(rs.getInt("AccountID"));
-				pojo.setAccountName(rs.getString("Name"));
+			BcaCompany company = companyRepository.findByCompanyId(cId);
+			BcaAccttype acctType = accttypeRepository.findByacctTypeId(2);
+			List<BcaAccount> accounts = accountRepository
+					.findByCompanyAndAcctTypeAndActiveOrderByAcctTypeAscNameAsc(company, acctType, 1);
+			for (BcaAccount account : accounts) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setArDepositTo(account.getAccountId());
+				pojo.setPoDepositTo(account.getAccountId());
+				pojo.setBpDepositTo(account.getAccountId());
+				pojo.setDefaultDepositToId(account.getAccountId());
+				pojo.setDefaultPaymentMethodId(account.getAccountId());
+				pojo.setAccountNumber(account.getAccountId()); // Ensure this is correct as account numbers are
+																// typically not the same as account IDs
+				pojo.setAccountName(account.getName());
 				listPOJOs.add(pojo);
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle or rethrow the exception as appropriate
 		}
+
 		form.setListOfExistingAccounts(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getPaymentType(String cId, HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public ArrayList<ConfigurationDto> getAccount(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		// TODO Auto-generated method stub
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//
+//		con = db.getConnection();
+//
+//		String sql = "SELECT * FROM bca_account" + " WHERE CompanyID = " + cId + " AND AcctTypeID = 2"
+//				+ " AND Active = 1" +
+//				" ORDER BY Name ASC";
+//
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//
+//				pojo.setArDepositTo(rs.getInt("AccountID"));
+//				pojo.setPoDepositTo(rs.getInt("AccountID"));
+//				pojo.setBpDepositTo(rs.getInt("AccountID"));
+//
+//				// pojo.setSelectedAccountId(rs.getInt("AccountID"));
+//
+//				pojo.setDefaultDepositToId(rs.getInt("AccountID"));
+//				pojo.setDefaultPaymentMethodId(rs.getInt("AccountID"));
+//				pojo.setAccountNumber(rs.getInt("AccountID"));
+//				pojo.setAccountName(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingAccounts(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaReceivedtypeRepository receivedTypeRepository;
+
+	public ArrayList<ConfigurationDto> getPaymentType(Long cId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> paymentType = new ArrayList<>();
+
 		try {
-			String sql = "select PaymentTypeID,Name,IsDefault from bca_receicedtype where CompanyID='" + cId
-					+ "' and Active=1 and TypeCategory=1 ORDER BY Name";
-			// String sql = "SELECT * FROM bca_paymenttype WHERE CompanyID = "+cId+" AND
-			// Active =1 AND TypeCategory=1 ORDER BY Name";
-			pstmt = con.prepareStatement(sql);
-			Loger.log(sql);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setPaymentTypeId(rs.getInt(1));
-				pojo.setPaymentName(rs.getString(2));
-				pojo.setDefaultPaymentTypeId(rs.getBoolean(3));
+
+			List<BcaReceivedtype> receivedTypes = receivedTypeRepository
+					.findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByNameAsc(cId, 1, 1);
+			for (BcaReceivedtype receivedType : receivedTypes) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setPaymentTypeId(receivedType.getPaymentTypeId());
+				pojo.setPaymentName(receivedType.getName());
+				pojo.setDefaultPaymentTypeId(receivedType.getIsDefault());
 				paymentType.add(pojo);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle or rethrow the exception as appropriate
 		}
+
 		form.setListOfExistingPayment(paymentType);
 		return paymentType;
 	}
+//	public ArrayList<ConfigurationDto> getPaymentType(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> paymentType = new ArrayList<>();
+//		try {
+//			String sql = "select PaymentTypeID,Name,IsDefault from bca_receicedtype where CompanyID='" + cId
+//					+ "' and Active=1 and TypeCategory=1 ORDER BY Name";
+//			// String sql = "SELECT * FROM bca_paymenttype WHERE CompanyID = "+cId+" AND
+//			// Active =1 AND TypeCategory=1 ORDER BY Name";
+//			pstmt = con.prepareStatement(sql);
+//			Loger.log(sql);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setPaymentTypeId(rs.getInt(1));
+//				pojo.setPaymentName(rs.getString(2));
+//				pojo.setDefaultPaymentTypeId(rs.getBoolean(3));
+//				paymentType.add(pojo);
+//			}
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingPayment(paymentType);
+//		return paymentType;
+//	}
 
-	public ArrayList<ConfigurationDto> getPaymentTypeGeneralAccount(String cId, HttpServletRequest request,
-			ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+	@Autowired
+	private BcaPaymenttypeRepository paymentTypeRepository;
+
+	public ArrayList<ConfigurationDto> getPaymentTypeGeneralAccount(Long cId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> paymentType = new ArrayList<>();
 
-		String sql = "SELECT distinct PaymentTypeID,Name,Type " + " FROM bca_paymenttype " + " WHERE CompanyID = " + cId
-				+ " AND Active = 1 " + " AND TypeCategory = 0" + " ORDER BY Name";
-		/*
-		 * String sql =
-		 * "SELECT PaymentTypeID,Name,Type,CCTypeID,Active,BankAcctID,TypeCategory FROM bca_paymenttype WHERE CompanyID = "
-		 * +cId+ " AND Active =1 AND TypeCategory = 0 ORDER BY Name"; //Added on
-		 * 08-05-2019
-		 */
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-
-				pojo.setBpReceivedType(rs.getInt("PaymentTypeID"));
-				pojo.setPoReceivedType(rs.getInt("PaymentTypeID"));
-				// pojo.setSelectedPaymentId(rs.getInt("PaymentTypeID"));
-				pojo.setPaymentId(rs.getInt("PaymentTypeID"));
-				pojo.setPaymentName(rs.getString("Name"));
-
+			BcaCompany company = companyRepository.findByCompanyId(cId);
+			List<BcaPaymenttype> paymentTypes = paymentTypeRepository
+					.findByCompanyAndActiveAndTypeCategoryOrderByName(company, 1, 0);
+			for (BcaPaymenttype paymentTypeEntity : paymentTypes) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setBpReceivedType(paymentTypeEntity.getPaymentTypeId());
+				pojo.setPoReceivedType(paymentTypeEntity.getPaymentTypeId());
+				// pojo.setSelectedPaymentId(paymentTypeEntity.getPaymentTypeId());
+				pojo.setPaymentId(paymentTypeEntity.getPaymentTypeId());
+				pojo.setPaymentName(paymentTypeEntity.getName());
 				paymentType.add(pojo);
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle or rethrow the exception as appropriate
 		}
+
 		form.setListOfExistingPaymentGeneralAccount(paymentType);
 		return paymentType;
 	}
 
-	public ArrayList<ConfigurationDto> getCountry(String cId, HttpServletRequest request, ConfigurationDto form) {
+//	public ArrayList<ConfigurationDto> getPaymentTypeGeneralAccount(String cId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> paymentType = new ArrayList<>();
+//
+//		String sql = "SELECT distinct PaymentTypeID,Name,Type " + " FROM bca_paymenttype " + " WHERE CompanyID = " + cId
+//				+ " AND Active = 1 " + " AND TypeCategory = 0" + " ORDER BY Name";
+//		/*
+//		 * String sql =
+//		 * "SELECT PaymentTypeID,Name,Type,CCTypeID,Active,BankAcctID,TypeCategory FROM bca_paymenttype WHERE CompanyID = "
+//		 * +cId+ " AND Active =1 AND TypeCategory = 0 ORDER BY Name"; //Added on
+//		 * 08-05-2019
+//		 */
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//
+//				pojo.setBpReceivedType(rs.getInt("PaymentTypeID"));
+//				pojo.setPoReceivedType(rs.getInt("PaymentTypeID"));
+//				// pojo.setSelectedPaymentId(rs.getInt("PaymentTypeID"));
+//				pojo.setPaymentId(rs.getInt("PaymentTypeID"));
+//				pojo.setPaymentName(rs.getString("Name"));
+//
+//				paymentType.add(pojo);
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingPaymentGeneralAccount(paymentType);
+//		return paymentType;
+//	}
 
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
+	@Autowired
+	private BcaCountriesRepository countriesRepository;
+
+	public ArrayList<ConfigurationDto> getCountry(ConfigurationDto form) {
 		ArrayList<ConfigurationDto> cList = new ArrayList<>();
+
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("select * from country order by CountryName ASC ");
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setCountryId(rs.getInt("CountryID"));
-				pojo.setSelectedCountryId1(rs.getInt("CountryID"));
-				pojo.setCountryName(rs.getString("CountryName"));
-				pojo.setCountryName1(rs.getString("CountryName"));
+			List<BcaCountries> countries = countriesRepository.findAllByOrderByName();
+			for (BcaCountries country : countries) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setCountryId(country.getId());
+				pojo.setSelectedCountryId1(country.getId());
+				pojo.setCountryName(country.getName());
+				pojo.setCountryName1(country.getName());
 				cList.add(pojo);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle or rethrow the exception as appropriate
 		}
+
 		form.setListOfExistingCountry(cList);
 		form.setListOfExistingCountry1(cList);
 		return cList;
 	}
+
+//	public ArrayList<ConfigurationDto> getCountry(String cId, HttpServletRequest request, ConfigurationDto form) {
+//
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> cList = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery("select * from country order by CountryName ASC ");
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setCountryId(rs.getInt("CountryID"));
+//				pojo.setSelectedCountryId1(rs.getInt("CountryID"));
+//				pojo.setCountryName(rs.getString("CountryName"));
+//				pojo.setCountryName1(rs.getString("CountryName"));
+//				cList.add(pojo);
+//			}
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingCountry(cList);
+//		form.setListOfExistingCountry1(cList);
+//		return cList;
+//	}
 
 	public ArrayList<ConfigurationDto> getStates(String cid, ConfigurationDto form) {
 		Connection con = null;
@@ -3868,8 +4047,7 @@ public class ConfigurationDAO {
 //		form.setListOfExistingFedexUSers(listPOJOs);
 //		return listPOJOs;
 //	}
-	
-	
+
 	@Autowired
 	private BcaStoreRepository storeRepository;
 
@@ -3945,7 +4123,8 @@ public class ConfigurationDAO {
 		try {
 			List<Integer> storeTypeIds = Arrays.asList(3, 9); // Store Type IDs
 			List<BcaStore> stores = storeRepository
-					.findByCompany_CompanyIdAndStoreType_StoreTypeIdInAndActiveAndDeleted(companyId, storeTypeIds, 1, 1);
+					.findByCompany_CompanyIdAndStoreType_StoreTypeIdInAndActiveAndDeleted(companyId, storeTypeIds, 1,
+							1);
 
 			for (BcaStore store : stores) {
 				ConfigurationDto pojo = new ConfigurationDto();
