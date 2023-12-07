@@ -139,9 +139,9 @@ public class ConfigurationController {
             request.setAttribute("Password", configDto.getPassword());
             request.setAttribute("Role", session.getAttribute("Role"));
             request.setAttribute("membershipLevel", dao.getmembershipLevel(companyID, request));
-            request.setAttribute("userSize", dao.getNumberOfUser(companyID, request, configDto));
-            request.setAttribute("AdminPassword", dao.checkPassword(companyID, request));
-            dao.getUserListDetails(companyID, request, configDto);
+            request.setAttribute("userSize", dao.getNumberOfUser(companyIDL, configDto));
+            request.setAttribute("AdminPassword", dao.checkPassword(companyIDL));
+            dao.getUserListDetails(companyIDL, configDto);
             dao.getUserGroup(companyID, request, configDto);
 
             setConfigActiveTab(session, "generalTab");
@@ -165,12 +165,12 @@ public class ConfigurationController {
 
             //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getCountry(configDto);
-            dao.getShipping(companyID, request, configDto);
-            dao.getTerm(companyID, request, configDto);
+            dao.getShipping(companyIDL, configDto);
+            dao.getTerm(companyIDL, configDto);
             dao.getPaymentType(companyIDL, configDto);
             dao.getInvoiceStyle(companyID, request, configDto);
             dao.getCustomerGroup(configDto);
-            dao.getStates("2", configDto);
+            dao.getStates(231, configDto);
 
             dao.getSalesRepresentative(companyID, request, configDto);
             dao.getMessages(companyID, request, configDto);
@@ -224,7 +224,7 @@ public class ConfigurationController {
             configDetails.getConfigurationInfo(request, configDto);
             ConfigurationDAO dao1 = new ConfigurationDAO();
             dao.getCountry(configDto);
-            dao.getStates("2", configDto);
+            dao.getStates(231, configDto);
             dao.getJobTitle(request, configDto, companyID);
             forward = "redirect:Configuration?tabid=config11&&tab=tr11";
         }
@@ -400,12 +400,12 @@ public class ConfigurationController {
            // ConfigurationDAO dao = new ConfigurationDAO();
             String membershipLevel = dao.getmembershipLevel(companyID, request);
             request.setAttribute("membershipLevel", membershipLevel);
-            int usercount = dao.getNumberOfUser(companyID, request, configDto);
+            int usercount = dao.getNumberOfUser(companyIDL, configDto);
             request.setAttribute("userSize", usercount);
 
-            String AdminPassword = dao.checkPassword(companyID, request);
+            String AdminPassword = dao.checkPassword(companyIDL);
             request.setAttribute("AdminPassword", AdminPassword);
-            dao.getUserListDetails(companyID, request, configDto);
+            dao.getUserListDetails(companyIDL, configDto);
             dao.getUserGroup(companyID, request, configDto);
 
             System.out.println("goes to networkSecurity page......................");
@@ -436,12 +436,12 @@ public class ConfigurationController {
             //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getPackingSlipTemplate(companyID, request, configDto);
             dao.getCountry(configDto);
-            dao.getShipping(companyID, request, configDto);
-            dao.getTerm(companyID, request, configDto);
+            dao.getShipping(companyIDL, configDto);
+            dao.getTerm(companyIDL, configDto);
             dao.getPaymentType(companyIDL, configDto);
             dao.getInvoiceStyle(companyID, request, configDto);
             dao.getCustomerGroup(configDto);
-            dao.getStates("2", configDto);
+            dao.getStates(231, configDto);
 
             dao.getSalesRepresentative(companyID, request, configDto);
             dao.getMessages(companyID, request, configDto);
@@ -555,12 +555,12 @@ public class ConfigurationController {
             request.setAttribute("customerTypeList", dao.getCustomerTypeList(companyID));
 
             dao.getCountry( configDto);
-            dao.getStates("2", configDto);
+            dao.getStates(231, configDto);
             dao.getCategory(companyIDL, configDto);
             dao.getExistingLocation(companyID, request, configDto);
             dao.getActiveEmployee(companyID, request, configDto);
             dao.getShipCarrier(companyID, request, configDto);
-            dao.getTerm(companyID, request, configDto);
+            dao.getTerm(companyIDL, configDto);
             dao.getSalesRepresentative(companyID, request, configDto);
             dao.getPaymentType(companyIDL, configDto);
             dao.getMessages(companyID, request, configDto);
@@ -576,7 +576,7 @@ public class ConfigurationController {
 
             //ConfigurationDAO dao = new ConfigurationDAO();
             dao.getCountry(configDto);
-            dao.getStates("2", configDto);
+            dao.getStates(231, configDto);
             dao.getJobTitle(request, configDto, companyID);
             setConfigActiveTab(session, "employeeTab");
             System.out.println("goes to employee page......................");
