@@ -575,7 +575,7 @@ public class POSController {
 
 			ConfigurationDAO dao = new ConfigurationDAO();
 			request.setAttribute("membershipLevel", dao.getmembershipLevel(companyID, request));
-			request.setAttribute("CustomerSize", dao.getNumberOfCustomer(companyID, request));
+			request.setAttribute("CustomerSize", dao.getNumberOfCustomer(Long.valueOf(companyID)));
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);
@@ -613,7 +613,7 @@ public class POSController {
 			ConfigurationDAO dao = new ConfigurationDAO();
 			String membershipLevel = dao.getmembershipLevel(companyID, request);
 			request.setAttribute("membershipLevel", membershipLevel);
-			String CustomerSize = dao.getNumberOfCustomer(companyID, request);
+			String CustomerSize = dao.getNumberOfCustomer(Long.valueOf(companyID));
 			request.setAttribute("CustomerSize", CustomerSize);
 			forward = "/sales/updateCustomer";
 		} else if (action.equalsIgnoreCase("deleteCustomer")) { // Delete Customer Info
@@ -719,7 +719,7 @@ public class POSController {
 
 			ConfigurationDAO dao = new ConfigurationDAO();
 			request.setAttribute("membershipLevel", dao.getmembershipLevel(companyID, request));
-			request.setAttribute("itemSize", dao.getNumberOfItem(companyID, request));
+//			request.setAttribute("itemSize", dao.getNumberOfItem(companyID, request));
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);

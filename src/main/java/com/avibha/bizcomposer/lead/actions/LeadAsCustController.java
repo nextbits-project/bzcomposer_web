@@ -646,7 +646,7 @@ public class LeadAsCustController {
 
 			ConfigurationDAO dao = new ConfigurationDAO();
 			request.setAttribute("membershipLevel", dao.getmembershipLevel(companyID, request));
-			request.setAttribute("CustomerSize", dao.getNumberOfCustomer(companyID, request));
+//			request.setAttribute("CustomerSize", dao.getNumberOfCustomer(companyID, request));
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);
@@ -684,7 +684,7 @@ public class LeadAsCustController {
 			ConfigurationDAO dao = new ConfigurationDAO();
 			String membershipLevel = dao.getmembershipLevel(companyID, request);
 			request.setAttribute("membershipLevel", membershipLevel);
-			String CustomerSize = dao.getNumberOfCustomer(companyID, request);
+			String CustomerSize = dao.getNumberOfCustomer(Long.valueOf(companyID));
 			request.setAttribute("CustomerSize", CustomerSize);
 			forward = "/leads/editLead";
 		} else if (action.equalsIgnoreCase("deleteLead")) { // Delete Lead Info

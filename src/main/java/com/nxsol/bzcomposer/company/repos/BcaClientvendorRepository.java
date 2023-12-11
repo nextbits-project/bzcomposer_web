@@ -81,4 +81,6 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 	
 	List<BcaClientvendor> findDistinctByCompany_CompanyIdAndStatusInAndDeletedAndActiveOrderByName(Long companyId,List<String> status , Integer deleted,Integer active);
 
+	@Query("SELECT COUNT(v) FROM BcaClientvendor v WHERE v.company.companyId = :companyId AND v.status IN :statuses AND v.deleted = 0 AND v.active = 1")
+    int countByCompany_CompanyIdAndStatusInAndDeletedIsFalseAndActiveIsTrue(@Param("companyId") Long companyId, @Param("statuses") List<String> statuses);
 }

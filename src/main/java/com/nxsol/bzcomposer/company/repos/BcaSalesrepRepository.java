@@ -1,5 +1,6 @@
 package com.nxsol.bzcomposer.company.repos;
 
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
 
 import java.util.List;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BcaSalesrepRepository extends JpaRepository<BcaSalesrep, Integer> {
-	
-	 List<BcaSalesrep> findByCompany_CompanyIdAndActive(Long companyId, Integer active);
+
+	List<BcaSalesrep> findByCompany_CompanyIdAndActive(Long companyId, Integer active);
+
+	List<BcaSalesrep> findByCompanyAndActive(BcaCompany company, Integer active);
+
 }

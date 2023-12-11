@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BcaIteminventoryRepository extends JpaRepository<BcaIteminventory, Integer> {
+    int countByCompany_CompanyIdAndActiveAndItemTypeIdNot(Long companyId, Integer active, Integer itemTypeId);
+
 }

@@ -41,43 +41,72 @@ import com.nxsol.bzcomposer.company.domain.BcaBusinessmodules;
 import com.nxsol.bzcomposer.company.domain.BcaCategory;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaCountries;
+import com.nxsol.bzcomposer.company.domain.BcaCreditcardtype;
 import com.nxsol.bzcomposer.company.domain.BcaFeatures;
+import com.nxsol.bzcomposer.company.domain.BcaInvoiceTemplate;
+import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
+import com.nxsol.bzcomposer.company.domain.BcaLineofcreditterm;
+import com.nxsol.bzcomposer.company.domain.BcaLocation;
 import com.nxsol.bzcomposer.company.domain.BcaMailtemplate;
 import com.nxsol.bzcomposer.company.domain.BcaMastercustomergroup;
+import com.nxsol.bzcomposer.company.domain.BcaMasterrmareason;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingcontainer;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingmailtype;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingpackagesize;
+import com.nxsol.bzcomposer.company.domain.BcaMessage;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
 import com.nxsol.bzcomposer.company.domain.BcaRealtimeshippingservice;
 import com.nxsol.bzcomposer.company.domain.BcaReceivedtype;
+import com.nxsol.bzcomposer.company.domain.BcaRefundreason;
+import com.nxsol.bzcomposer.company.domain.BcaRmareason;
+import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
+import com.nxsol.bzcomposer.company.domain.BcaSalestax;
+import com.nxsol.bzcomposer.company.domain.BcaSettings;
 import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
 import com.nxsol.bzcomposer.company.domain.BcaShippingrate;
 import com.nxsol.bzcomposer.company.domain.BcaShippingservice;
 import com.nxsol.bzcomposer.company.domain.BcaStates;
 import com.nxsol.bzcomposer.company.domain.BcaStore;
 import com.nxsol.bzcomposer.company.domain.BcaTerm;
+import com.nxsol.bzcomposer.company.domain.BcaUser;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
+import com.nxsol.bzcomposer.company.domain.BcaUsermapping;
 import com.nxsol.bzcomposer.company.domain.BcpFedperallowance;
 import com.nxsol.bzcomposer.company.domain.BcpTaxCompany;
 import com.nxsol.bzcomposer.company.domain.SmdEbaycategory;
+import com.nxsol.bzcomposer.company.domain.SmdGatewaydetails;
 import com.nxsol.bzcomposer.company.domain.SmdShipdetails;
 import com.nxsol.bzcomposer.company.repos.BcaAccountRepository;
 import com.nxsol.bzcomposer.company.repos.BcaAccttypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaBusinessmodulesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCategoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCreditcardtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaFeaturesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaInvoiceTemplateRepository;
+import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
+import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLineofcredittermRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLocationRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMailtemplateRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastercustomergroupRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMasterrmareasonRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingcontainerRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingmailtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingpackagesizeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMessageRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRealtimeshippingserviceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaReceivedtypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRefundreasonRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRmareasonRepository;
+import com.nxsol.bzcomposer.company.repos.BcaSalesrepRepository;
+import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
+import com.nxsol.bzcomposer.company.repos.BcaSettingsRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingrateRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingserviceRepository;
@@ -86,9 +115,11 @@ import com.nxsol.bzcomposer.company.repos.BcaStoreRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUserRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
+import com.nxsol.bzcomposer.company.repos.BcaUsermappingRepository;
 import com.nxsol.bzcomposer.company.repos.BcpFedperallowanceRepository;
 import com.nxsol.bzcomposer.company.repos.BcpTaxCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.SmdEbaycategoryRepository;
+import com.nxsol.bzcomposer.company.repos.SmdGatewaydetailsRepository;
 import com.nxsol.bzcomposer.company.repos.SmdShipdetailsRepository;
 
 @Service
@@ -1098,23 +1129,22 @@ public class ConfigurationDAO {
 //	}
 
 	public ArrayList<ConfigurationDto> getUserListDetails(Long companyId, ConfigurationDto form) {
-	    ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-	    try {
-	        List<ConfigurationDto> userDetails = userRepository.findUserDetailsByCompanyId(companyId);
-	        for (ConfigurationDto userDetail : userDetails) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+		try {
+			List<ConfigurationDto> userDetails = userRepository.findUserDetailsByCompanyId(companyId);
+			for (ConfigurationDto userDetail : userDetails) {
 //	            String status = userDetail.getActive() == 1 ? "Active" : "Inactive";
 //	            userDetail.setStatus(status);
-	            listPOJOs.add(userDetail);
-	        }
-	    } catch (Exception e) {
-	        Loger.log(e.toString());
-	        // Handle or rethrow the exception as appropriate
-	    }
-	    form.setListOfExistingUserList(listPOJOs);
-	    return listPOJOs;
+				listPOJOs.add(userDetail);
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle or rethrow the exception as appropriate
+		}
+		form.setListOfExistingUserList(listPOJOs);
+		return listPOJOs;
 	}
 
-	
 //	public ArrayList<ConfigurationDto> getUserListDetails(String cId, HttpServletRequest request,
 //			ConfigurationDto form) {
 //		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
@@ -1163,142 +1193,234 @@ public class ConfigurationDAO {
 //		return listPOJOs;
 //	}
 
-	public boolean updateSelctedUser(String companyID, String selectedUserId, String userEmail, String password1,
-			String groupID, HttpServletRequest request) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		PreparedStatement pstmt = null, pstmt2 = null;
-		boolean isUpdated = false;
-		con = db.getConnection();
-		try {
-			String sql1 = "update bca_user set Email_Address= ? , Password=?, "
-					+ "Confirm_Password =?  where ID=? and CompanyID=?";
-			pstmt = con.prepareStatement(sql1);
-			pstmt.setString(1, userEmail);
-			pstmt.setString(2, password1);
-			pstmt.setString(3, password1);
-			pstmt.setString(4, selectedUserId);
-			pstmt.setString(5, companyID);
+	@Autowired
+	private BcaUsermappingRepository userMappingRepository;
 
-			int updatedRows = pstmt.executeUpdate();
-			if (updatedRows > 0) {
-				String sql2 = "update bca_usermapping set UserGroupID=? where UserId=? and CompanyID=?";
-				pstmt2 = con.prepareStatement(sql2);
-				pstmt2.setString(1, groupID);
-				pstmt2.setString(2, selectedUserId);
-				pstmt2.setString(3, companyID);
-				isUpdated = pstmt2.executeUpdate() > 0 ? true : false;
-				return isUpdated;
+	public boolean updateSelectedUser(Long companyId, int selectedUserId, String userEmail, String password,
+			int groupId) {
+		boolean isUpdated = false;
+		try {
+			Optional<BcaUser> userOpt = userRepository.findById(selectedUserId);
+			if (userOpt.isPresent()) {
+				BcaUser user = userOpt.get();
+				user.setEmailAddress(userEmail);
+				user.setPassword(password);
+				user.setConfirmPassword(password);
+				userRepository.save(user);
+
+				Optional<BcaUsermapping> userMappingOpt = userMappingRepository
+						.findByUserIdAndCompany_CompanyId(selectedUserId, companyId);
+				Optional<BcaUsergroup> userGroup = bcaUsergroupRepository.findById(groupId);
+				if (userMappingOpt.isPresent()) {
+					BcaUsermapping userMapping = userMappingOpt.get();
+					userMapping.setUserGroup(userGroup.get());
+					userMappingRepository.save(userMapping);
+					isUpdated = true;
+				}
 			}
-		} catch (SQLException ee) {
-			Loger.log("Exception" + ee.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (pstmt2 != null) {
-					db.close(pstmt2);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
 		}
 		return isUpdated;
 	}
+//	public boolean updateSelctedUser(String companyID, String selectedUserId, String userEmail, String password1,
+//			String groupID, HttpServletRequest request) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		PreparedStatement pstmt = null, pstmt2 = null;
+//		boolean isUpdated = false;
+//		con = db.getConnection();
+//		try {
+//			String sql1 = "update bca_user set Email_Address= ? , Password=?, "
+//					+ "Confirm_Password =?  where ID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(sql1);
+//			pstmt.setString(1, userEmail);
+//			pstmt.setString(2, password1);
+//			pstmt.setString(3, password1);
+//			pstmt.setString(4, selectedUserId);
+//			pstmt.setString(5, companyID);
+//
+//			int updatedRows = pstmt.executeUpdate();
+//			if (updatedRows > 0) {
+//				String sql2 = "update bca_usermapping set UserGroupID=? where UserId=? and CompanyID=?";
+//				pstmt2 = con.prepareStatement(sql2);
+//				pstmt2.setString(1, groupID);
+//				pstmt2.setString(2, selectedUserId);
+//				pstmt2.setString(3, companyID);
+//				isUpdated = pstmt2.executeUpdate() > 0 ? true : false;
+//				return isUpdated;
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log("Exception" + ee.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (pstmt2 != null) {
+//					db.close(pstmt2);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return isUpdated;
+//	}
 
-	public boolean addNewUser(String companyID, HttpServletRequest request) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null, stmt1 = null, stmt2 = null;
-		ResultSet rs = null, rs2 = null;
-		PreparedStatement ps, ps2;
-		boolean check = false;
-		con = db.getConnection();
-		String membershipLevel = null;
-		int NewUserID = 0;
+	public boolean addNewUser(Long companyId, HttpServletRequest request) {
+		boolean isAdded = false;
 		HttpSession session = request.getSession();
 		String emailAddress = (String) session.getAttribute("Email_Address");
 		String LoginID = (String) session.getAttribute("LoginID");
 		String userEmail = request.getParameter("userName");
 		String userName = userEmail.substring(0, userEmail.indexOf("@"));
 		String userPassword = request.getParameter("userpassword");
-		String groupID = request.getParameter("groupID");
-		if (groupID == null)
+		String groupIDStr = request.getParameter("groupID");
+
+		if (groupIDStr == null) {
 			return false;
+		}
+		Long groupID = Long.parseLong(groupIDStr);
+
 		try {
-			// Getting membershipLevel
-			String sql1 = "select membershipLevel from bca_user where Email_Address='" + emailAddress
-					+ "' OR LoginID= '" + LoginID + "' and CompanyID=" + companyID;
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql1);
-			if (rs.next()) {
-				membershipLevel = rs.getString("membershipLevel");
-			}
-			// inserting new user
-			String sql = "insert into bca_user(LoginID, Email_Address, Password, CompanyID,membershipLevel,jobPosition,Active) "
-					+ "values ('" + userName + "','" + userEmail + "','" + userPassword + "'," + companyID + ",'"
-					+ membershipLevel + "','" + "" + "'," + 1 + ")";
-			ps = con.prepareStatement(sql);
-			Loger.log(sql);
-			ps.execute();
-			check = true;
+			// Getting membershipLevel - Assuming you have a method to get this
+			String membershipLevel = getMembershipLevel(emailAddress, LoginID, companyId);
 
-			// getting new user id
-			String sql2 = "select * from bca_user where Email_Address='" + userEmail + "' and Password= '"
-					+ userPassword + "' and CompanyID=" + companyID;
-			stmt2 = con.createStatement();
-			rs2 = stmt.executeQuery(sql2);
-			if (rs2.next()) {
-				NewUserID = rs2.getInt("ID");
-			}
+			BcaCompany company = companyRepository.findByCompanyId(companyId);
+			// Creating new user
+			BcaUser newUser = new BcaUser();
+			newUser.setLoginId(userName);
+			newUser.setEmailAddress(userEmail);
+			newUser.setPassword(userPassword);
+			newUser.setCompany(company);
+			newUser.setMembershipLevel(membershipLevel);
+			newUser.setJobPosition(""); // Assuming job position is empty as per your SQL
+			newUser.setActive(true);
 
-			// insert new user role in mapping table
-			String sql3 = "insert into bca_usermapping(UserGroupID, UserID, Role, CompanyID, Active, Deleted) values ('"
-					+ groupID + "','" + NewUserID + "','User'," + companyID + ",1,0)";
-			ps2 = con.prepareStatement(sql3);
-			Loger.log(sql3);
-			ps2.execute();
-			check = true;
+			BcaUser savedUser = userRepository.save(newUser);
+
+			// Creating new user mapping
+			Optional<BcaUsergroup> userGroup = bcaUsergroupRepository.findById(groupID.intValue());
+
+			BcaUsermapping newUserMapping = new BcaUsermapping();
+			newUserMapping.setUserGroup(userGroup.get());
+			newUserMapping.setUser(savedUser);
+			newUserMapping.setRole("User");
+			newUserMapping.setCompany(company);
+			newUserMapping.setActive(true);
+			newUserMapping.setDeleted(false);
+			userMappingRepository.save(newUserMapping);
+
+			isAdded = true;
 		} catch (Exception e) {
 			Loger.log(e.toString());
-			check = false;
-		} finally {
-			try {
-				if (rs != null)
-					db.close(rs);
-				if (stmt != null)
-					db.close(stmt);
-				if (stmt1 != null)
-					db.close(stmt1);
-				if (con != null)
-					db.close(con);
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
-		return check;
+
+		return isAdded;
 	}
 
-	public boolean deleteSelectedUser(String userID, String groupID, String companyID) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null, stmt1 = null;
-		ResultSet rs = null;
-		PreparedStatement ps;
-		con = db.getConnection();
-		try {
-			String sql1 = "update bca_user set Active=0 where ID=" + userID + " and CompanyID=" + companyID;
-			stmt = con.createStatement();
-			stmt.executeUpdate(sql1);
+	public String getMembershipLevel(String emailAddress, String loginId, Long companyId) {
+		return userRepository.findMembershipLevelByEmailOrLoginIdAndCompanyId(emailAddress, loginId, companyId)
+				.orElse(null); // Returns null if membershipLevel is not found
+	}
 
-			sql1 = "update bca_usermapping set Active=0,Deleted=1 where UserGroupID=" + groupID + " and UserID="
-					+ userID + " and CompanyID=" + companyID;
-			stmt = con.createStatement();
-			stmt.executeUpdate(sql1);
+//	public boolean addNewUser(String companyID, HttpServletRequest request) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null, stmt1 = null, stmt2 = null;
+//		ResultSet rs = null, rs2 = null;
+//		PreparedStatement ps, ps2;
+//		boolean check = false;
+//		con = db.getConnection();
+//		String membershipLevel = null;
+//		int NewUserID = 0;
+//		HttpSession session = request.getSession();
+//		String emailAddress = (String) session.getAttribute("Email_Address");
+//		String LoginID = (String) session.getAttribute("LoginID");
+//		String userEmail = request.getParameter("userName");
+//		String userName = userEmail.substring(0, userEmail.indexOf("@"));
+//		String userPassword = request.getParameter("userpassword");
+//		String groupID = request.getParameter("groupID");
+//		if (groupID == null)
+//			return false;
+//		try {
+//			// Getting membershipLevel
+//			String sql1 = "select membershipLevel from bca_user where Email_Address='" + emailAddress
+//					+ "' OR LoginID= '" + LoginID + "' and CompanyID=" + companyID;
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql1);
+//			if (rs.next()) {
+//				membershipLevel = rs.getString("membershipLevel");
+//			}
+//			// inserting new user
+//			String sql = "insert into bca_user(LoginID, Email_Address, Password, CompanyID,membershipLevel,jobPosition,Active) "
+//					+ "values ('" + userName + "','" + userEmail + "','" + userPassword + "'," + companyID + ",'"
+//					+ membershipLevel + "','" + "" + "'," + 1 + ")";
+//			ps = con.prepareStatement(sql);
+//			Loger.log(sql);
+//			ps.execute();
+//			check = true;
+//
+//			// getting new user id
+//			String sql2 = "select * from bca_user where Email_Address='" + userEmail + "' and Password= '"
+//					+ userPassword + "' and CompanyID=" + companyID;
+//			stmt2 = con.createStatement();
+//			rs2 = stmt.executeQuery(sql2);
+//			if (rs2.next()) {
+//				NewUserID = rs2.getInt("ID");
+//			}
+//
+//			// insert new user role in mapping table
+//			String sql3 = "insert into bca_usermapping(UserGroupID, UserID, Role, CompanyID, Active, Deleted) values ('"
+//					+ groupID + "','" + NewUserID + "','User'," + companyID + ",1,0)";
+//			ps2 = con.prepareStatement(sql3);
+//			Loger.log(sql3);
+//			ps2.execute();
+//			check = true;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//			check = false;
+//		} finally {
+//			try {
+//				if (rs != null)
+//					db.close(rs);
+//				if (stmt != null)
+//					db.close(stmt);
+//				if (stmt1 != null)
+//					db.close(stmt1);
+//				if (con != null)
+//					db.close(con);
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return check;
+//	}
+	public boolean deleteSelectedUser(int userId, int groupId, Long companyId) {
+		try {
+			// Updating BcaUser entity
+			Optional<BcaUser> userOpt = userRepository.findById(userId);
+			if (userOpt.isPresent()) {
+				BcaUser user = userOpt.get();
+				user.setActive(false); // Assuming setActive method exists to set the active state
+				userRepository.save(user);
+			}
+
+			// Updating BcaUserMapping entity
+			Optional<BcaUsermapping> userMappingOpt = userMappingRepository
+					.findByUserIdAndUserGroup_groupIdAndCompany_CompanyId(userId, groupId, companyId);
+			if (userMappingOpt.isPresent()) {
+				BcaUsermapping userMapping = userMappingOpt.get();
+				userMapping.setActive(false);
+				userMapping.setDeleted(true);
+				userMappingRepository.save(userMapping);
+			}
+
 			return true;
 		} catch (Exception e) {
 			Loger.log(e.toString());
@@ -1306,217 +1428,355 @@ public class ConfigurationDAO {
 		}
 	}
 
-	public String getNumberOfCustomer(String companyID, HttpServletRequest request) {
-		String CustomerSize = null;
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		String membershipLevel = null;
+//	public boolean deleteSelectedUser(String userID, String groupID, String companyID) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null, stmt1 = null;
+//		ResultSet rs = null;
+//		PreparedStatement ps;
+//		con = db.getConnection();
+//		try {
+//			String sql1 = "update bca_user set Active=0 where ID=" + userID + " and CompanyID=" + companyID;
+//			stmt = con.createStatement();
+//			stmt.executeUpdate(sql1);
+//
+//			sql1 = "update bca_usermapping set Active=0,Deleted=1 where UserGroupID=" + groupID + " and UserID="
+//					+ userID + " and CompanyID=" + companyID;
+//			stmt = con.createStatement();
+//			stmt.executeUpdate(sql1);
+//			return true;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//			return false;
+//		}
+//	}
+
+	@Autowired
+	private BcaClientvendorRepository clientVendorRepository;
+
+	public String getNumberOfCustomer(Long companyId) {
+		try {
+			int customerCount = clientVendorRepository
+					.countByCompany_CompanyIdAndStatusInAndDeletedIsFalseAndActiveIsTrue(companyId,
+							Arrays.asList("U", "N"));
+			return String.valueOf(customerCount);
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle or rethrow the exception as appropriate
+		}
+		return null;
+	}
+//	public String getNumberOfCustomer(String companyID, HttpServletRequest request) {
+//		String CustomerSize = null;
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		String membershipLevel = null;
+//		HttpSession session = request.getSession();
+//		String emailAddress = (String) session.getAttribute("Email_Address");
+//		String LoginID = (String) session.getAttribute("LoginID");
+//
+//		try {
+//			// String sql1 = "select membershipLevel from bca_user where
+//			// Email_Address='"+emailAddress+"' OR LoginID= '"+LoginID+"' and
+//			// CompanyID="+companyID;
+//			String sql1 = "SELECT COUNT(*) FROM bca_clientvendor WHERE CompanyID = " + companyID
+//					+ " AND Status IN ('U', 'N' ) AND Deleted = 0 AND Active = 1 ORDER BY Name";
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql1);
+//			if (rs.next()) {
+//				CustomerSize = rs.getString("COUNT(*)");
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//			// TODO: handle exception
+//		}
+//		return CustomerSize;
+//	}
+
+	@Autowired
+	private BcaIteminventoryRepository itemInventoryRepository;
+
+	public String getNumberOfItem(Long companyId) {
+		try {
+			int itemCount = itemInventoryRepository.countByCompany_CompanyIdAndActiveAndItemTypeIdNot(companyId, 1, 0);
+			return String.valueOf(itemCount);
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
+		return null;
+	}
+//	public String getNumberOfItem(String companyID, HttpServletRequest request) {
+//		String itemSize = null;
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		try {
+//			String sql1 = "select COUNT(*) from bca_iteminventory where CompanyID like " + companyID
+//					+ " and Active like '1' and ItemtypeId not like '0' order by parentid";
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql1);
+//			if (rs.next()) {
+//				itemSize = rs.getString("COUNT(*)");
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//			// TODO: handle exception
+//		}
+//		return itemSize;
+//	}
+
+	public String getmembershipLevel(String companyId, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String emailAddress = (String) session.getAttribute("Email_Address");
-		String LoginID = (String) session.getAttribute("LoginID");
-
-		try {
-			// String sql1 = "select membershipLevel from bca_user where
-			// Email_Address='"+emailAddress+"' OR LoginID= '"+LoginID+"' and
-			// CompanyID="+companyID;
-			String sql1 = "SELECT COUNT(*) FROM bca_clientvendor WHERE CompanyID = " + companyID
-					+ " AND Status IN ('U', 'N' ) AND Deleted = 0 AND Active = 1 ORDER BY Name";
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql1);
-			if (rs.next()) {
-				CustomerSize = rs.getString("COUNT(*)");
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-			// TODO: handle exception
-		}
-		return CustomerSize;
+		String loginId = (String) session.getAttribute("LoginID");
+		return userRepository
+				.findMembershipLevelByEmailOrLoginIdAndCompanyId(emailAddress, loginId, Long.valueOf(companyId))
+				.orElse(null); // Returns null if membershipLevel is not found
 	}
 
-	public String getNumberOfItem(String companyID, HttpServletRequest request) {
-		String itemSize = null;
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		try {
-			// String sql1 = "select membershipLevel from bca_user where
-			// Email_Address='"+emailAddress+"' OR LoginID= '"+LoginID+"' and
-			// CompanyID="+companyID;
-			String sql1 = "select COUNT(*) from bca_iteminventory where CompanyID like " + companyID
-					+ " and Active like '1' and ItemtypeId not like '0' order by parentid";
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql1);
-			if (rs.next()) {
-				itemSize = rs.getString("COUNT(*)");
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-			// TODO: handle exception
-		}
-		return itemSize;
-	}
+//	public String getmembershipLevel(String companyID, HttpServletRequest request) {
+//
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		String membershipLevel = null;
+//		HttpSession session = request.getSession();
+//		String emailAddress = (String) session.getAttribute("Email_Address");
+//		String LoginID = (String) session.getAttribute("LoginID");
+//
+//		try {
+//			String sql1 = "select membershipLevel from bca_user where Email_Address='" + emailAddress
+//					+ "' OR LoginID= '" + LoginID + "' and CompanyID=" + companyID;
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql1);
+//			if (rs.next()) {
+//				membershipLevel = rs.getString("membershipLevel");
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//			// TODO: handle exception
+//		}
+//		return membershipLevel;
+//
+//	}
 
-	public String getmembershipLevel(String companyID, HttpServletRequest request) {
+	@Autowired
+	private BcaUsergroupRepository usergroupRepository;
 
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		String membershipLevel = null;
-		HttpSession session = request.getSession();
-		String emailAddress = (String) session.getAttribute("Email_Address");
-		String LoginID = (String) session.getAttribute("LoginID");
-
-		try {
-			String sql1 = "select membershipLevel from bca_user where Email_Address='" + emailAddress
-					+ "' OR LoginID= '" + LoginID + "' and CompanyID=" + companyID;
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql1);
-			if (rs.next()) {
-				membershipLevel = rs.getString("membershipLevel");
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-			// TODO: handle exception
-		}
-		return membershipLevel;
-
-	}
-
-	public boolean saveUserGroupDetails(String companyID, ConfigurationDto configDto) {
+	public boolean saveUserGroupDetails(Long companyId, ConfigurationDto configDto) {
 		boolean result = false;
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		if (db == null)
-			return result;
-		con = db.getConnection();
-		if (con == null)
-			return result;
+
 		try {
+			BcaUsergroup userGroup;
 			if (configDto.getSelectedGroupId() > 0) {
-				String sqlString = "Update bca_usergroup set Description=?,AccessPermissions=? where GroupID=?";
-				pstmt = con.prepareStatement(sqlString);
-				pstmt.setString(1, configDto.getDescription());
-				pstmt.setString(2, configDto.getGroupPermissions());
-				pstmt.setInt(3, configDto.getSelectedGroupId());
+				// Update existing user group
+				Optional<BcaUsergroup> userGroupOpt = usergroupRepository.findById(configDto.getSelectedGroupId());
+				if (userGroupOpt.isPresent()) {
+					userGroup = userGroupOpt.get();
+					userGroup.setDescription(configDto.getDescription());
+					userGroup.setAccessPermissions(configDto.getGroupPermissions());
+					// other fields to update...
+				} else {
+					return false; // or handle the absence of the group appropriately
+				}
 			} else {
-				String sqlString = "insert into bca_usergroup(UserGroupName,Level,Description,Active,Deleted,AccessPermissions,CompanyID) values(?,?,?,?,?,?,?)";
-				pstmt = con.prepareStatement(sqlString);
-				pstmt.setString(1, configDto.getGroupName());
-				pstmt.setString(2, "0");
-				pstmt.setString(3, configDto.getDescription());
-				pstmt.setString(4, "1");
-				pstmt.setString(5, "0");
-				pstmt.setString(6, configDto.getGroupPermissions());
-				pstmt.setString(7, companyID);
+				// Create new user group
+				BcaCompany company = companyRepository.findByCompanyId(companyId);
+				userGroup = new BcaUsergroup();
+				userGroup.setUserGroupName(configDto.getGroupName());
+				userGroup.setLevel(0);
+				userGroup.setDescription(configDto.getDescription());
+				userGroup.setActive(true);
+				userGroup.setDeleted(false);
+				userGroup.setAccessPermissions(configDto.getGroupPermissions());
+				userGroup.setCompany(company);
+				// other fields to set...
 			}
-			int num = pstmt.executeUpdate();
-			if (num > 0) {
-				result = true;
-			}
-		} catch (SQLException ee) {
-			Loger.log(2, "SQLException in Class ConfigurationDAO,  method -saveUserGroupDetails " + ee.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+
+			usergroupRepository.save(userGroup);
+			result = true;
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
 		}
+
 		return result;
 	}
+//	public boolean saveUserGroupDetails(String companyID, ConfigurationDto configDto) {
+//		boolean result = false;
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		if (db == null)
+//			return result;
+//		con = db.getConnection();
+//		if (con == null)
+//			return result;
+//		try {
+//			if (configDto.getSelectedGroupId() > 0) {
+//				String sqlString = "Update bca_usergroup set Description=?,AccessPermissions=? where GroupID=?";
+//				pstmt = con.prepareStatement(sqlString);
+//				pstmt.setString(1, configDto.getDescription());
+//				pstmt.setString(2, configDto.getGroupPermissions());
+//				pstmt.setInt(3, configDto.getSelectedGroupId());
+//			} else {
+//				String sqlString = "insert into bca_usergroup(UserGroupName,Level,Description,Active,Deleted,AccessPermissions,CompanyID) values(?,?,?,?,?,?,?)";
+//				pstmt = con.prepareStatement(sqlString);
+//				pstmt.setString(1, configDto.getGroupName());
+//				pstmt.setString(2, "0");
+//				pstmt.setString(3, configDto.getDescription());
+//				pstmt.setString(4, "1");
+//				pstmt.setString(5, "0");
+//				pstmt.setString(6, configDto.getGroupPermissions());
+//				pstmt.setString(7, companyID);
+//			}
+//			int num = pstmt.executeUpdate();
+//			if (num > 0) {
+//				result = true;
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log(2, "SQLException in Class ConfigurationDAO,  method -saveUserGroupDetails " + ee.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return result;
+//	}
 
-	public int saveUserGroupDetailsID(String companyID, ConfigurationDto configDto) {
-		int groupID = -1;
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		if (db == null)
-			return groupID;
-		con = db.getConnection();
-		if (con == null)
-			return groupID;
+	public int saveUserGroupDetailsID(Long companyId, ConfigurationDto configDto) {
 		try {
-			String sqlString = "insert into bca_usergroup(UserGroupName,Level,Description,Active,Deleted,AccessPermissions,CompanyID) values(?,?,?,?,?,?,?)";
-			pstmt = con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
-			pstmt.setString(1, configDto.getGroupName());
-			pstmt.setString(2, "0");
-			pstmt.setString(3, configDto.getDescription());
-			pstmt.setString(4, "1");
-			pstmt.setString(5, "0");
-			pstmt.setString(6, configDto.getGroupPermissions());
-			pstmt.setString(7, companyID);
+			BcaUsergroup userGroup = new BcaUsergroup();
+			BcaCompany company = companyRepository.findByCompanyId(companyId);
 
-			pstmt.executeUpdate();
-			// Retrieve the inserted ID
-			// int insertedId = -1;
-			ResultSet generatedKeys = pstmt.getGeneratedKeys();
-			if (generatedKeys.next()) {
-				groupID = generatedKeys.getInt(1);
-			}
+			userGroup.setUserGroupName(configDto.getGroupName());
+			userGroup.setLevel(0);
+			userGroup.setDescription(configDto.getDescription());
+			userGroup.setActive(true);
+			userGroup.setDeleted(false);
+			userGroup.setAccessPermissions(configDto.getGroupPermissions());
+			userGroup.setCompany(company);
 
-		} catch (SQLException ee) {
-			Loger.log(2, "SQLException in Class ConfigurationDAO,  method -saveUserGroupDetails " + ee.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			userGroup = usergroupRepository.save(userGroup);
+
+			return userGroup.getGroupId();
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
 		}
-		return groupID;
+		return -1;
 	}
 
-	public boolean deleteUserGroupDetails(String groupId) {
+//	public int saveUserGroupDetailsID(String companyID, ConfigurationDto configDto) {
+//		int groupID = -1;
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		if (db == null)
+//			return groupID;
+//		con = db.getConnection();
+//		if (con == null)
+//			return groupID;
+//		try {
+//			String sqlString = "insert into bca_usergroup(UserGroupName,Level,Description,Active,Deleted,AccessPermissions,CompanyID) values(?,?,?,?,?,?,?)";
+//			pstmt = con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
+//			pstmt.setString(1, configDto.getGroupName());
+//			pstmt.setString(2, "0");
+//			pstmt.setString(3, configDto.getDescription());
+//			pstmt.setString(4, "1");
+//			pstmt.setString(5, "0");
+//			pstmt.setString(6, configDto.getGroupPermissions());
+//			pstmt.setString(7, companyID);
+//
+//			pstmt.executeUpdate();
+//			// Retrieve the inserted ID
+//			// int insertedId = -1;
+//			ResultSet generatedKeys = pstmt.getGeneratedKeys();
+//			if (generatedKeys.next()) {
+//				groupID = generatedKeys.getInt(1);
+//			}
+//
+//		} catch (SQLException ee) {
+//			Loger.log(2, "SQLException in Class ConfigurationDAO,  method -saveUserGroupDetails " + ee.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return groupID;
+//	}
+
+	public boolean deleteUserGroupDetails(Integer groupId) {
 		boolean result = false;
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		if (db == null)
-			return result;
-		con = db.getConnection();
-		if (con == null)
-			return result;
 		try {
-			String sqlString = "Update bca_usergroup set Deleted=1 where GroupID=" + groupId;
-			pstmt = con.prepareStatement(sqlString);
-			int num = pstmt.executeUpdate();
-			if (num > 0) {
+			Optional<BcaUsergroup> userGroupOpt = usergroupRepository.findById(groupId);
+			if (userGroupOpt.isPresent()) {
+				BcaUsergroup userGroup = userGroupOpt.get();
+				userGroup.setDeleted(true); // Assuming there's a method setDeleted in BcaUsergroup entity
+				usergroupRepository.save(userGroup);
 				result = true;
 			}
-		} catch (SQLException ee) {
-			Loger.log(2, "SQLException in Class ConfigurationDAO,  method -deleteUserGroupDetails " + ee.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
 		}
 		return result;
 	}
+
+//	public boolean deleteUserGroupDetails(String groupId) {
+//		boolean result = false;
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		if (db == null)
+//			return result;
+//		con = db.getConnection();
+//		if (con == null)
+//			return result;
+//		try {
+//			String sqlString = "Update bca_usergroup set Deleted=1 where GroupID=" + groupId;
+//			pstmt = con.prepareStatement(sqlString);
+//			int num = pstmt.executeUpdate();
+//			if (num > 0) {
+//				result = true;
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log(2, "SQLException in Class ConfigurationDAO,  method -deleteUserGroupDetails " + ee.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return result;
+//	}
 
 	@Autowired
 	private BcaUsergroupRepository bcaUsergroupRepository;
@@ -1591,52 +1851,74 @@ public class ConfigurationDAO {
 //		}
 	}
 
-	public ArrayList<ConfigurationDto> getUserGroup(String cId, HttpServletRequest request, ConfigurationDto form) {
-		// TODO Auto-generated method stub bca_usergroup
+	public ArrayList<ConfigurationDto> getUserGroup(Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "SELECT * FROM bca_usergroup where Deleted=0 AND UserGroupName <> 'Admin' AND CompanyID  = " + cId;
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
 
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedGroupId(rs.getInt("GroupID"));
-				pojo.setGroupName((rs.getString("UserGroupName")));
-				int active = Integer.parseInt(rs.getString("Active"));
-				if (active == 1) {
-					pojo.setStatus("Active");
-				} else {
-					pojo.setStatus("InActive");
-				}
+		try {
+			List<BcaUsergroup> userGroups = usergroupRepository
+					.findByDeletedFalseAndUserGroupNameNotAndCompany_CompanyId("Admin", companyId);
+			for (BcaUsergroup group : userGroups) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedGroupId(group.getGroupId());
+				pojo.setGroupName(group.getUserGroupName());
+				pojo.setStatus(group.getActive() ? "Active" : "InActive");
 				listPOJOs.add(pojo);
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingGroup(listPOJOs);
 		return listPOJOs;
 	}
+
+//	public ArrayList<ConfigurationDto> getUserGroup(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		// TODO Auto-generated method stub bca_usergroup
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "SELECT * FROM bca_usergroup where Deleted=0 AND UserGroupName <> 'Admin' AND CompanyID  = " + cId;
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedGroupId(rs.getInt("GroupID"));
+//				pojo.setGroupName((rs.getString("UserGroupName")));
+//				int active = Integer.parseInt(rs.getString("Active"));
+//				if (active == 1) {
+//					pojo.setStatus("Active");
+//				} else {
+//					pojo.setStatus("InActive");
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingGroup(listPOJOs);
+//		return listPOJOs;
+//	}
 
 	/*
 	 * public Set<ConfigurationDto> getPaymentGateways(String cId,HttpServletRequest
@@ -1669,755 +1951,1184 @@ public class ConfigurationDAO {
 	 * form.setListOfExistingPaymentGateways(listPOJOs); return listPOJOs; }
 	 */
 
-	public ArrayList<ConfigurationDto> getPaymentGateways(String cId, HttpServletRequest request,
-			ConfigurationDto form) {
+	@Autowired
+	private SmdGatewaydetailsRepository gatewayDetailsRepository;
 
+	public ArrayList<ConfigurationDto> getPaymentGateways(Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 
-		String sql = "SELECT * FROM smd_gatewaydetails where CompanyID= " + cId + " order by GatewayType";
-
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
 		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedPaymentGatewayId(rs.getInt("GatewayID"));
-				pojo.setGateWayId(rs.getInt("GatewayID"));
-				pojo.setGatewayName(rs.getString("GatewayType"));
-				pojo.setFieldName1(rs.getString("Field1"));
-				pojo.setFieldName2(rs.getString("Field2"));
-				pojo.setFieldName3(rs.getString("Field3"));
-				pojo.setFieldName4(rs.getString("Field4"));
+			List<SmdGatewaydetails> gateways = gatewayDetailsRepository
+					.findByCompany_CompanyIdOrderByGatewayType(companyId);
+			for (SmdGatewaydetails gateway : gateways) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedPaymentGatewayId(gateway.getGatewayId());
+				pojo.setGateWayId(gateway.getGatewayId());
+				pojo.setGatewayName(gateway.getGatewayType());
+				// Set other fields from gateway to pojo
 				listPOJOs.add(pojo);
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+
 		form.setListOfExistingPaymentGateways(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getInvoiceStyle(String cId, HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
+//	public ArrayList<ConfigurationDto> getPaymentGateways(String cId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//
+//		String sql = "SELECT * FROM smd_gatewaydetails where CompanyID= " + cId + " order by GatewayType";
+//
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedPaymentGatewayId(rs.getInt("GatewayID"));
+//				pojo.setGateWayId(rs.getInt("GatewayID"));
+//				pojo.setGatewayName(rs.getString("GatewayType"));
+//				pojo.setFieldName1(rs.getString("Field1"));
+//				pojo.setFieldName2(rs.getString("Field2"));
+//				pojo.setFieldName3(rs.getString("Field3"));
+//				pojo.setFieldName4(rs.getString("Field4"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingPaymentGateways(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaInvoicestyleRepository invoiceStyleRepository;
+
+	public ArrayList<ConfigurationDto> getInvoiceStyle(ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("select * from bca_invoicestyle where Active=1");
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setInvoiceStyle(rs.getString("Name"));
-				pojo.setSelectedInvoiceStyleId(rs.getInt("InvoiceStyleID"));
-				pojo.setInvoiceStyleId(rs.getInt("InvoiceStyleID"));
+			List<BcaInvoicestyle> invoiceStyles = invoiceStyleRepository.findByActive(1);
+			for (BcaInvoicestyle style : invoiceStyles) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setInvoiceStyle(style.getName());
+				pojo.setSelectedInvoiceStyleId(style.getInvoiceStyleId());
+				pojo.setInvoiceStyleId(style.getInvoiceStyleId());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingInvoiceStyle(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getInvoiceStyle1(String cId, HttpServletRequest request, ConfigurationDto form) {
+//	public ArrayList<ConfigurationDto> getInvoiceStyle(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery("select * from bca_invoicestyle where Active=1");
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setInvoiceStyle(rs.getString("Name"));
+//				pojo.setSelectedInvoiceStyleId(rs.getInt("InvoiceStyleID"));
+//				pojo.setInvoiceStyleId(rs.getInt("InvoiceStyleID"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingInvoiceStyle(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	public ArrayList<ConfigurationDto> getInvoiceStyle1(ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs1 = new ArrayList<>();
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
+
 		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
-			String sql2 = "select * from bca_invoicestyle where Active=0";
-			rs = stmt.executeQuery(sql2);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setInvoiceStyle1(rs.getString("Name"));
-				pojo.setInvoiceStyleId1(rs.getInt("InvoiceStyleID"));
+			List<BcaInvoicestyle> invoiceStyles = invoiceStyleRepository.findByActive(0);
+			for (BcaInvoicestyle style : invoiceStyles) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setInvoiceStyle1(style.getName());
+				pojo.setInvoiceStyleId1(style.getInvoiceStyleId());
 				listPOJOs1.add(pojo);
 			}
-
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingInvoiceStyle1(listPOJOs1);
 		return listPOJOs1;
 	}
 
-	public ArrayList<ConfigurationDto> getBillingTemplate(String cId, HttpServletRequest request,
-			ConfigurationDto form) {
+//	public ArrayList<ConfigurationDto> getInvoiceStyle1(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		ArrayList<ConfigurationDto> listPOJOs1 = new ArrayList<>();
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//			String sql2 = "select * from bca_invoicestyle where Active=0";
+//			rs = stmt.executeQuery(sql2);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setInvoiceStyle1(rs.getString("Name"));
+//				pojo.setInvoiceStyleId1(rs.getInt("InvoiceStyleID"));
+//				listPOJOs1.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingInvoiceStyle1(listPOJOs1);
+//		return listPOJOs1;
+//	}
+
+	@Autowired
+	private BcaInvoiceTemplateRepository invoiceTemplateRepository;
+
+	public ArrayList<ConfigurationDto> getBillingTemplate(Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
 		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
-
-			String sql1 = "select * from bca_invoice_template " + "LEFT JOIN bca_invoice_activetemplates "
-					+ "ON bca_invoice_activetemplates.TemplateId = bca_invoice_template.BaseTemplateID "
-					+ "WHERE TemplateStyleTypeID = 6" + " AND bca_invoice_template.TemplateTypeId = 9"
-					+ " AND (CompanyID = " + cId + " OR CompanyID = -1 ) " + "order by TemplateName";
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedBillingTypeId(rs.getInt("BaseTemplateId"));
-				pojo.setShowBillingStatStyle(rs.getInt("BaseTemplateId"));
-				// pojo.setBillingTypeId(rs.getInt("TemplateId"));
-				pojo.setBillingTypeName(rs.getString("TemplateName"));
+			List<BcaInvoiceTemplate> templates = invoiceTemplateRepository.findCustomTemplates(companyId);
+			for (BcaInvoiceTemplate template : templates) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedBillingTypeId(template.getBaseTemplateId());
+				// Set other relevant fields from template to pojo
 				listPOJOs.add(pojo);
 			}
-
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingBillingType(listPOJOs);
-		/* form.setListOfExistingBillingType(listPOJOs); */
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getSalesRepresentative(String cId, HttpServletRequest request,
-			ConfigurationDto form) {
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//	public ArrayList<ConfigurationDto> getBillingTemplate(String cId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//
+//			String sql1 = "select * from bca_invoice_template " + "LEFT JOIN bca_invoice_activetemplates "
+//					+ "ON bca_invoice_activetemplates.TemplateId = bca_invoice_template.BaseTemplateID "
+//					+ "WHERE TemplateStyleTypeID = 6" + " AND bca_invoice_template.TemplateTypeId = 9"
+//					+ " AND (CompanyID = " + cId + " OR CompanyID = -1 ) " + "order by TemplateName";
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedBillingTypeId(rs.getInt("BaseTemplateId"));
+//				pojo.setShowBillingStatStyle(rs.getInt("BaseTemplateId"));
+//				// pojo.setBillingTypeId(rs.getInt("TemplateId"));
+//				pojo.setBillingTypeName(rs.getString("TemplateName"));
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingBillingType(listPOJOs);
+//		/* form.setListOfExistingBillingType(listPOJOs); */
+//		return listPOJOs;
+//	}
 
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
+	@Autowired
+	private BcaSalesrepRepository salesRepRepository;
 
-			String sql1 = "SELECT SalesRepID,Name " + "FROM bca_salesrep " + "WHERE CompanyID = " + cId
-					+ " AND Active =1 ORDER BY Name";
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedSalesRepId(rs.getInt("SalesRepID"));
-				pojo.setSalesRepName(rs.getString("Name"));
-				listPOJOs.add(pojo);
-			}
-
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		form.setListOfExistingSalesRep(listPOJOs);
-		return listPOJOs;
-	}
-
-	public ArrayList<ConfigurationDto> getMessages(String cId, HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		try {
-			String sql1 = "SELECT * FROM bca_message WHERE CompanyID=" + cId + " AND Active=1 ORDER BY Name";
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedMessageId(rs.getInt("MessageID"));
-				pojo.setMessageName(rs.getString("Name"));
-				listPOJOs.add(pojo);
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		form.setMessages(listPOJOs);
-		return listPOJOs;
-	}
-
-	public ArrayList<ConfigurationDto> getExistingLocation(String cId, HttpServletRequest request,
-			ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		try {
-			String sql1 = "SELECT LocationID,Name FROM bca_location WHERE CompanyID=" + cId
-					+ " AND Active=1 ORDER BY Name";
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedLocationId(rs.getInt("LocationID"));
-				pojo.setLocationName(rs.getString("Name"));
-				listPOJOs.add(pojo);
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		form.setListOfExistingLocation(listPOJOs);
-		return listPOJOs;
-	}
-
-	public ArrayList<ConfigurationDto> getSalesTax(String cId, HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+	public ArrayList<ConfigurationDto> getSalesRepresentative(Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 
 		try {
-			stmt = con.createStatement();
-
-			String sql1 = "SELECT SalesTaxID,State,Rate " + "FROM bca_salestax " + "WHERE CompanyID = " + cId
-					+ " AND Active =1 ORDER BY State";
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedSalesTaxId(rs.getInt("SalesTaxID"));
-				pojo.setSalesTaxName(rs.getString("State"));
-				pojo.setSalesTaxRate(rs.getFloat("Rate"));
-				listPOJOs.add(pojo);
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		form.setListOfExistingSalesTax(listPOJOs);
-		return listPOJOs;
-	}
-
-	public ArrayList<ConfigurationDto> getCreditTerm(String cId, HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-
-		try {
-			stmt = con.createStatement();
-
-			String sql1 = "SELECT CreditTermId,Name,Days,isDefault " + "FROM bca_lineofcreditterm "
-					+ "WHERE CompanyID =" + cId + " " + "AND Active =1 ORDER BY Name";
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedCreditTermId(rs.getInt("CreditTermId"));
-				pojo.setDays(rs.getInt("Days"));
-				pojo.setCreditTermName(rs.getString("Name"));
-				int checked = rs.getInt("isDefault");
-				if (checked == 1) {
-					pojo.setIsDefault("on");
-				} else {
-					pojo.setIsDefault("off");
-				}
-				listPOJOs.add(pojo);
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		form.setListOfExistingCreditTerm(listPOJOs);
-		return listPOJOs;
-	}
-
-	public ArrayList<ConfigurationDto> getRefundReason(String cId, HttpServletRequest request, ConfigurationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_refundreason WHERE Active = 1 AND CompanyID =" + cId);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedRefundReasonId(rs.getInt("ReasonID"));
-				pojo.setRefundReason(rs.getString("RefundReason"));
-				pojo.setIsDefaultRefundReason(rs.getInt("IsDefaultReason"));
-				listPOJOs.add(pojo);
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		form.setListOfExistingRefundReason(listPOJOs);
-		return listPOJOs;
-	}
-
-	public ArrayList<ConfigurationDto> getExistingPrinter(String cId, HttpServletRequest request,
-			ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-
-		try {
-			stmt = con.createStatement();
-
-			String sql1 = "select * from bca_settings where CompanyID =" + cId;
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setPrinterName(rs.getString("DEFAULTPrinter"));
-				listPOJOs.add(pojo);
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		form.setListOfExistingDefaultPrinter(listPOJOs);
-		return listPOJOs;
-	}
-
-	public ArrayList<ConfigurationDto> getMasterReason(ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-
-		try {
-			stmt = con.createStatement();
-
-			String sql1 = "Select * from bca_masterrmareason where Active = 1";
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setReasonTypeId(rs.getInt("rmaReasonID"));
-				pojo.setReasonType(rs.getString("Name"));
-				listPOJOs.add(pojo);
-			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		form.setListOfExistingReasonType(listPOJOs);
-		return listPOJOs;
-	}
-
-	public ArrayList<ConfigurationDto> getMasterReason1(String companyID, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		ResultSet rs1 = null;
-		Statement stmt1 = null;
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		try {
-			stmt = con.createStatement();
-			stmt1 = con.createStatement();
-			String sql1 = "Select * from bca_masterrmareason where Active = 1";
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setParentReasonId(rs.getInt("rmaReasonID"));
-				pojo.setReasonType(rs.getString("Name"));
-				listPOJOs.add(pojo);
-
-				String sql2 = " Select * from bca_rmareason " + " where CompanyID = " + companyID + " and Active = 1 "
-						+ " and parentReasonID = " + pojo.getParentReasonId();
-
-				rs1 = stmt1.executeQuery(sql2);
-				while (rs1.next()) {
-					pojo = new ConfigurationDto();
-					pojo.setParentReasonId(rs.getInt("rmaReasonID"));
-					pojo.setReasonId(rs1.getInt("ReasonID"));
-					pojo.setReason(rs1.getString("rmaReason"));
-					pojo.setParentReasonId(rs1.getInt("parentReasonID"));
-					pojo.setActive(rs1.getInt("Active"));
+			Optional<BcaCompany> companyOpt = companyRepository.findById(companyId);
+			if (companyOpt.isPresent()) {
+				List<BcaSalesrep> salesReps = salesRepRepository.findByCompanyAndActive(companyOpt.get(), 1);
+				for (BcaSalesrep salesRep : salesReps) {
+					ConfigurationDto pojo = new ConfigurationDto();
+					pojo.setSelectedSalesRepId(salesRep.getSalesRepId());
+					pojo.setSalesRepName(salesRep.getName());
 					listPOJOs.add(pojo);
 				}
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
+		form.setListOfExistingSalesRep(listPOJOs);
+		return listPOJOs;
+	}
+
+//	public ArrayList<ConfigurationDto> getSalesRepresentative(String cId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//
+//			String sql1 = "SELECT SalesRepID,Name " + "FROM bca_salesrep " + "WHERE CompanyID = " + cId
+//					+ " AND Active =1 ORDER BY Name";
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedSalesRepId(rs.getInt("SalesRepID"));
+//				pojo.setSalesRepName(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingSalesRep(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaMessageRepository messageRepository;
+
+	public ArrayList<ConfigurationDto> getMessages(Long companyId, ConfigurationDto form) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
+		try {
+			Optional<BcaCompany> companyOpt = companyRepository.findById(companyId);
+			if (companyOpt.isPresent()) {
+				List<BcaMessage> messages = messageRepository.findByCompanyAndActive(companyOpt.get(), 1);
+				for (BcaMessage message : messages) {
+					ConfigurationDto pojo = new ConfigurationDto();
+					pojo.setSelectedMessageId(message.getMessageId());
+					pojo.setMessageName(message.getName());
+					listPOJOs.add(pojo);
+				}
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
+
+		form.setMessages(listPOJOs);
+		return listPOJOs;
+	}
+
+//	public ArrayList<ConfigurationDto> getMessages(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			String sql1 = "SELECT * FROM bca_message WHERE CompanyID=" + cId + " AND Active=1 ORDER BY Name";
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedMessageId(rs.getInt("MessageID"));
+//				pojo.setMessageName(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setMessages(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaLocationRepository locationRepository;
+
+	public ArrayList<ConfigurationDto> getExistingLocation(Long companyId, ConfigurationDto form) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
+		try {
+			Optional<BcaCompany> companyOpt = companyRepository.findById(companyId);
+			if (companyOpt.isPresent()) {
+				List<BcaLocation> locations = locationRepository.findByCompany_CompanyIdAndActive(companyId, 1);
+				for (BcaLocation location : locations) {
+					ConfigurationDto pojo = new ConfigurationDto();
+					pojo.setSelectedLocationId(location.getLocationId());
+					pojo.setLocationName(location.getName());
+					listPOJOs.add(pojo);
+				}
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
+
+		form.setListOfExistingLocation(listPOJOs);
+		return listPOJOs;
+	}
+
+//	public ArrayList<ConfigurationDto> getExistingLocation(String cId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			String sql1 = "SELECT LocationID,Name FROM bca_location WHERE CompanyID=" + cId
+//					+ " AND Active=1 ORDER BY Name";
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedLocationId(rs.getInt("LocationID"));
+//				pojo.setLocationName(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingLocation(listPOJOs);
+//		return listPOJOs;
+//	}
+	@Autowired
+	private BcaSalestaxRepository salesTaxRepository;
+
+	public ArrayList<ConfigurationDto> getSalesTax(Long companyId, ConfigurationDto form) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
+		try {
+			Optional<BcaCompany> companyOpt = companyRepository.findById(companyId);
+			if (companyOpt.isPresent()) {
+				List<BcaSalestax> salesTaxes = salesTaxRepository.findByCompanyAndActive(companyOpt.get(), 1);
+				for (BcaSalestax tax : salesTaxes) {
+					ConfigurationDto pojo = new ConfigurationDto();
+					pojo.setSelectedSalesTaxId(tax.getSalesTaxId());
+					pojo.setSalesTaxName(tax.getState());
+					pojo.setSalesTaxRate(tax.getRate().floatValue());
+					listPOJOs.add(pojo);
+				}
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
+
+		form.setListOfExistingSalesTax(listPOJOs);
+		return listPOJOs;
+	}
+
+//	public ArrayList<ConfigurationDto> getSalesTax(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//
+//		try {
+//			stmt = con.createStatement();
+//
+//			String sql1 = "SELECT SalesTaxID,State,Rate " + "FROM bca_salestax " + "WHERE CompanyID = " + cId
+//					+ " AND Active =1 ORDER BY State";
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedSalesTaxId(rs.getInt("SalesTaxID"));
+//				pojo.setSalesTaxName(rs.getString("State"));
+//				pojo.setSalesTaxRate(rs.getFloat("Rate"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingSalesTax(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaLineofcredittermRepository creditTermRepository;
+
+	public ArrayList<ConfigurationDto> getCreditTerm(Long companyId, ConfigurationDto form) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
+		try {
+			Optional<BcaCompany> companyOpt = companyRepository.findById(companyId);
+			if (companyOpt.isPresent()) {
+				List<BcaLineofcreditterm> creditTerms = creditTermRepository.findByCompanyAndActive(companyOpt.get(),
+						1);
+				for (BcaLineofcreditterm term : creditTerms) {
+					ConfigurationDto pojo = new ConfigurationDto();
+					pojo.setSelectedCreditTermId(term.getCreditTermId());
+					pojo.setDays(term.getDays());
+					pojo.setCreditTermName(term.getName());
+					pojo.setIsDefault(term.getIsDefault() == 1 ? "on" : "off");
+					listPOJOs.add(pojo);
+				}
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
+
+		form.setListOfExistingCreditTerm(listPOJOs);
+		return listPOJOs;
+	}
+
+//	public ArrayList<ConfigurationDto> getCreditTerm(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//
+//		try {
+//			stmt = con.createStatement();
+//
+//			String sql1 = "SELECT CreditTermId,Name,Days,isDefault " + "FROM bca_lineofcreditterm "
+//					+ "WHERE CompanyID =" + cId + " " + "AND Active =1 ORDER BY Name";
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedCreditTermId(rs.getInt("CreditTermId"));
+//				pojo.setDays(rs.getInt("Days"));
+//				pojo.setCreditTermName(rs.getString("Name"));
+//				int checked = rs.getInt("isDefault");
+//				if (checked == 1) {
+//					pojo.setIsDefault("on");
+//				} else {
+//					pojo.setIsDefault("off");
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingCreditTerm(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaRefundreasonRepository refundReasonRepository;
+
+	public ArrayList<ConfigurationDto> getRefundReason(Long companyId, ConfigurationDto form) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
+		try {
+			Optional<BcaCompany> companyOpt = companyRepository.findById(companyId);
+			if (companyOpt.isPresent()) {
+				List<BcaRefundreason> refundReasons = refundReasonRepository.findByCompanyAndActive(companyOpt.get(),
+						true);
+				for (BcaRefundreason reason : refundReasons) {
+					ConfigurationDto pojo = new ConfigurationDto();
+					pojo.setSelectedRefundReasonId(reason.getReasonId());
+					pojo.setRefundReason(reason.getRefundReason());
+					pojo.setIsDefaultRefundReason(reason.getIsDefaultReason() ? 1 : 0);
+					listPOJOs.add(pojo);
+				}
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
+
+		form.setListOfExistingRefundReason(listPOJOs);
+		return listPOJOs;
+	}
+//	public ArrayList<ConfigurationDto> getRefundReason(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM bca_refundreason WHERE Active = 1 AND CompanyID =" + cId);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedRefundReasonId(rs.getInt("ReasonID"));
+//				pojo.setRefundReason(rs.getString("RefundReason"));
+//				pojo.setIsDefaultRefundReason(rs.getInt("IsDefaultReason"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingRefundReason(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaSettingsRepository settingsRepository;
+
+	public ArrayList<ConfigurationDto> getExistingPrinter(Long companyId, ConfigurationDto form) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
+		try {
+			Optional<BcaCompany> companyOpt = companyRepository.findById(companyId);
+			if (companyOpt.isPresent()) {
+				List<BcaSettings> settings = settingsRepository.findByCompany(companyOpt.get());
+				for (BcaSettings setting : settings) {
+					ConfigurationDto pojo = new ConfigurationDto();
+					pojo.setPrinterName(setting.getDefaultPrinter());
+					listPOJOs.add(pojo);
+				}
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
+
+		form.setListOfExistingDefaultPrinter(listPOJOs);
+		return listPOJOs;
+	}
+
+//	public ArrayList<ConfigurationDto> getExistingPrinter(String cId, HttpServletRequest request,
+//			ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//
+//		try {
+//			stmt = con.createStatement();
+//
+//			String sql1 = "select * from bca_settings where CompanyID =" + cId;
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setPrinterName(rs.getString("DEFAULTPrinter"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingDefaultPrinter(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaMasterrmareasonRepository masterRmaReasonRepository;
+
+	public ArrayList<ConfigurationDto> getMasterReason(ConfigurationDto form) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
+		try {
+			List<BcaMasterrmareason> masterReasons = masterRmaReasonRepository.findByActive(1);
+			for (BcaMasterrmareason reason : masterReasons) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setReasonTypeId(reason.getRmaReasonId());
+				pojo.setReasonType(reason.getName());
+				listPOJOs.add(pojo);
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
+
+		form.setListOfExistingReasonType(listPOJOs);
+		return listPOJOs;
+	}
+
+//	public ArrayList<ConfigurationDto> getMasterReason(ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//
+//		try {
+//			stmt = con.createStatement();
+//
+//			String sql1 = "Select * from bca_masterrmareason where Active = 1";
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setReasonTypeId(rs.getInt("rmaReasonID"));
+//				pojo.setReasonType(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingReasonType(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaRmareasonRepository rmaReasonRepository;
+
+	public ArrayList<ConfigurationDto> getMasterReason1(Long companyId, ConfigurationDto form) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
+		try {
+			Optional<BcaCompany> companyOpt = companyRepository.findById(companyId);
+			if (companyOpt.isPresent()) {
+				List<BcaMasterrmareason> masterReasons = masterRmaReasonRepository.findByActive(1);
+				for (BcaMasterrmareason masterReason : masterReasons) {
+					ConfigurationDto pojo = new ConfigurationDto();
+					pojo.setParentReasonId(masterReason.getRmaReasonId());
+					pojo.setReasonType(masterReason.getName());
+					listPOJOs.add(pojo);
+
+					List<BcaRmareason> childReasons = rmaReasonRepository
+							.findByCompanyAndParentReasonAndActive(companyOpt.get(), masterReason, 1);
+					for (BcaRmareason childReason : childReasons) {
+						pojo = new ConfigurationDto();
+						pojo.setParentReasonId(childReason.getParentReason().getRmaReasonId());
+						pojo.setReasonId(childReason.getReason().getReasonId());
+						pojo.setReason(childReason.getRmaReason());
+						pojo.setActive(childReason.getActive());
+						listPOJOs.add(pojo);
+					}
+				}
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
+
 		form.setListOfExistingMasterReasonType(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getDefaultBank(int accCategoryId, HttpServletRequest request,
-			ConfigurationDto form, String comID) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		String dateBetween = "";
-		DateInfo dInfo = new DateInfo();
+//	public ArrayList<ConfigurationDto> getMasterReason1(String companyID, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ResultSet rs1 = null;
+//		Statement stmt1 = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			stmt1 = con.createStatement();
+//			String sql1 = "Select * from bca_masterrmareason where Active = 1";
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setParentReasonId(rs.getInt("rmaReasonID"));
+//				pojo.setReasonType(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//
+//				String sql2 = " Select * from bca_rmareason " + " where CompanyID = " + companyID + " and Active = 1 "
+//						+ " and parentReasonID = " + pojo.getParentReasonId();
+//
+//				rs1 = stmt1.executeQuery(sql2);
+//				while (rs1.next()) {
+//					pojo = new ConfigurationDto();
+//					pojo.setParentReasonId(rs.getInt("rmaReasonID"));
+//					pojo.setReasonId(rs1.getInt("ReasonID"));
+//					pojo.setReason(rs1.getString("rmaReason"));
+//					pojo.setParentReasonId(rs1.getInt("parentReasonID"));
+//					pojo.setActive(rs1.getInt("Active"));
+//					listPOJOs.add(pojo);
+//				}
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingMasterReasonType(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	public ArrayList<ConfigurationDto> getDefaultBank(int accCategoryId, Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		ArrayList<Date> selectedRange = new ArrayList<>();
-		CustomerInfo cInfo = new CustomerInfo();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-
-			if (accCategoryId == 1) {
-				sql = "SELECT * FROM bca_account WHERE AcctTypeID = 2 AND Active = 1 AND CompanyID = " + comID
-						+ " AND AcctCategoryID = " + accCategoryId + " ORDER BY Name ASC";
-			}
-
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedAccountId(rs.getInt("AccountID"));
-				pojo.setSelectedBankAccountId(rs.getInt("AccountID"));
-				pojo.setSelectedAccountName(rs.getString("Name"));
+			List<BcaAccount> accounts = accountRepository
+					.findByAcctType_acctTypeIdAndActiveAndCompany_CompanyIdAndAcctCategory_AcctCategoryId(2, 1,
+							companyId, accCategoryId);
+			for (BcaAccount account : accounts) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedAccountId(account.getAccountId());
+				pojo.setSelectedBankAccountId(account.getAccountId());
+				pojo.setSelectedAccountName(account.getName());
 				listPOJOs.add(pojo);
 			}
-
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingBankAccount(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getAllCreditCards(int accCategoryId, HttpServletRequest request,
-			ConfigurationDto form, String comID) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		String dateBetween = "";
-		DateInfo dInfo = new DateInfo();
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		ArrayList<Date> selectedRange = new ArrayList<>();
-		CustomerInfo cInfo = new CustomerInfo();
-		String sql = "";
-		try {
-			stmt = con.createStatement();
+//	public ArrayList<ConfigurationDto> getDefaultBank(int accCategoryId, HttpServletRequest request,
+//			ConfigurationDto form, String comID) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		String dateBetween = "";
+//		DateInfo dInfo = new DateInfo();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		ArrayList<Date> selectedRange = new ArrayList<>();
+//		CustomerInfo cInfo = new CustomerInfo();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//
+//			if (accCategoryId == 1) {
+//				sql = "SELECT * FROM bca_account WHERE AcctTypeID = 2 AND Active = 1 AND CompanyID = " + comID
+//						+ " AND AcctCategoryID = " + accCategoryId + " ORDER BY Name ASC";
+//			}
+//
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedAccountId(rs.getInt("AccountID"));
+//				pojo.setSelectedBankAccountId(rs.getInt("AccountID"));
+//				pojo.setSelectedAccountName(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingBankAccount(listPOJOs);
+//		return listPOJOs;
+//	}
 
-			sql = "SELECT DISTINCT CCTypeID, Name, CVV2, Active FROM bca_creditcardtype " + "WHERE Active <> -1 "
-					+ "AND TypeCategory = " + accCategoryId + " " + "AND CompanyID = " + comID + " ORDER BY Name";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setCreditCardName(rs.getString("Name"));
-				pojo.setCreditCardTypeId(rs.getInt("CCTypeID"));
-				int active = rs.getInt("Active");
-				if (active == 1) {
-					pojo.setIsActive(true);
-				} else {
-					pojo.setIsActive(false);
-				}
+	@Autowired
+	private BcaCreditcardtypeRepository creditCardTypeRepository;
+
+	public ArrayList<ConfigurationDto> getAllCreditCards(int accCategoryId, Long companyId, ConfigurationDto form) {
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
+		try {
+			List<BcaCreditcardtype> creditCardTypes = creditCardTypeRepository
+					.findByActiveAndTypeCategoryAndCompany_CompanyId(1, accCategoryId, companyId);
+			for (BcaCreditcardtype cardType : creditCardTypes) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setCreditCardName(cardType.getName());
+				pojo.setCreditCardTypeId(cardType.getCctypeId());
+				pojo.setIsActive(cardType.getActive() == 1 ? true : false);
 				listPOJOs.add(pojo);
 			}
-
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingCreditCard(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getAllCreditCardsType(int typeCategoryId, HttpServletRequest request,
-			ConfigurationDto form, String comID) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public ArrayList<ConfigurationDto> getAllCreditCards(int accCategoryId, HttpServletRequest request,
+//			ConfigurationDto form, String comID) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		String dateBetween = "";
+//		DateInfo dInfo = new DateInfo();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		ArrayList<Date> selectedRange = new ArrayList<>();
+//		CustomerInfo cInfo = new CustomerInfo();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//
+//			sql = "SELECT DISTINCT CCTypeID, Name, CVV2, Active FROM bca_creditcardtype " + "WHERE Active <> -1 "
+//					+ "AND TypeCategory = " + accCategoryId + " " + "AND CompanyID = " + comID + " ORDER BY Name";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setCreditCardName(rs.getString("Name"));
+//				pojo.setCreditCardTypeId(rs.getInt("CCTypeID"));
+//				int active = rs.getInt("Active");
+//				if (active == 1) {
+//					pojo.setIsActive(true);
+//				} else {
+//					pojo.setIsActive(false);
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingCreditCard(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	public ArrayList<ConfigurationDto> getAllCreditCardsType(int typeCategoryId, Long companyId,
+			ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			if (typeCategoryId == 0) {
-				sql = "SELECT DISTINCT Type FROM bca_paymenttype WHERE Active = 1 AND TypeCategory = " + typeCategoryId
-						+ "  AND CompanyID = " + comID + " ORDER BY Type";
-			}
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setCreditCardName(rs.getString("Type"));
+			List<BcaPaymenttype> paymentTypes = paymentTypeRepository
+					.findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByType(companyId, 1, typeCategoryId);
+			for (BcaPaymenttype paymentType : paymentTypes) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setCreditCardName(paymentType.getType());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingCreditCardType(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getAllPayemntTypeId(HttpServletRequest request, ConfigurationDto form,
-			String comID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
+//	public ArrayList<ConfigurationDto> getAllCreditCardsType(int typeCategoryId, HttpServletRequest request,
+//			ConfigurationDto form, String comID) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			if (typeCategoryId == 0) {
+//				sql = "SELECT DISTINCT Type FROM bca_paymenttype WHERE Active = 1 AND TypeCategory = " + typeCategoryId
+//						+ "  AND CompanyID = " + comID + " ORDER BY Type";
+//			}
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setCreditCardName(rs.getString("Type"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingCreditCardType(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	public ArrayList<ConfigurationDto> getAllPaymentTypeId(Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			String sql = "SELECT * FROM bca_paymenttype Where Active=1 AND TypeCategory=1 AND CompanyID =" + comID
-					+ " ORDER BY Name";
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setPaymentTypeId(rs.getInt("PaymentTypeID"));
-				pojo.setPaymentName(rs.getString("Name"));
-				pojo.setPaymentType(rs.getString("Type"));
-				pojo.setAcctID(rs.getInt("BankAcctID"));
+			List<BcaPaymenttype> paymentTypes = paymentTypeRepository
+					.findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByName(companyId, 1, 1);
+			for (BcaPaymenttype paymentType : paymentTypes) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setPaymentTypeId(paymentType.getPaymentTypeId());
+				pojo.setPaymentName(paymentType.getName());
+				pojo.setPaymentType(paymentType.getType());
+				pojo.setAcctID(paymentType.getBankAcctId());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingPaymentType(listPOJOs);
 		return listPOJOs;
 	}
+
+//	public ArrayList<ConfigurationDto> getAllPayemntTypeId(HttpServletRequest request, ConfigurationDto form,
+//			String comID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			String sql = "SELECT * FROM bca_paymenttype Where Active=1 AND TypeCategory=1 AND CompanyID =" + comID
+//					+ " ORDER BY Name";
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setPaymentTypeId(rs.getInt("PaymentTypeID"));
+//				pojo.setPaymentName(rs.getString("Name"));
+//				pojo.setPaymentType(rs.getString("Type"));
+//				pojo.setAcctID(rs.getInt("BankAcctID"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingPaymentType(listPOJOs);
+//		return listPOJOs;
+//	}
 
 	public ArrayList<ConfigurationDto> getAllReceicedTypeId(HttpServletRequest request, ConfigurationDto form,
 			String comID) {

@@ -70,5 +70,8 @@ public interface BcaAccountRepository extends JpaRepository<BcaAccount, Integer>
 
 	List<BcaAccount> findByCompanyAndAcctTypeAndActiveOrderByAcctTypeAscNameAsc(BcaCompany company,
 			BcaAccttype acctType, Integer active);
+	
+    List<BcaAccount> findByAcctType_acctTypeIdAndActiveAndCompany_CompanyIdAndAcctCategory_AcctCategoryId(Integer acctTypeId, Integer active, Long companyId, Integer acctCategoryId);
+
 
 }
