@@ -570,7 +570,8 @@ public class ConfigurationInfo {
 	private BcaPreferenceRepository bcaPreferenceRepository;
 
 	public void getCongurationRecord(String companyID, ConfigurationDto cForm, HttpServletRequest request) {
-		BcaPreference preference = bcaPreferenceRepository.findByCompany_CompanyId(Long.valueOf(companyID));
+		Optional<BcaPreference>  preferenceOpt = bcaPreferenceRepository.findByCompany_CompanyId(Long.valueOf(companyID));
+		BcaPreference preference= preferenceOpt.get();
 		if (preference != null) {
 			// Map fields from preference to cForm
 			// Example: cForm.setCurrencyID(preference.getCurrencyID());

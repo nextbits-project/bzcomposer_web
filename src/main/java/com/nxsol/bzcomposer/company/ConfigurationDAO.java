@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,6 +22,7 @@ import javax.transaction.Transactional;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -53,6 +55,7 @@ import com.nxsol.bzcomposer.company.domain.BcaMasterrmareason;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingcontainer;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingmailtype;
 import com.nxsol.bzcomposer.company.domain.BcaMastershippingpackagesize;
+import com.nxsol.bzcomposer.company.domain.BcaMasterstartingmodule;
 import com.nxsol.bzcomposer.company.domain.BcaMessage;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
@@ -68,11 +71,14 @@ import com.nxsol.bzcomposer.company.domain.BcaShippingrate;
 import com.nxsol.bzcomposer.company.domain.BcaShippingservice;
 import com.nxsol.bzcomposer.company.domain.BcaStates;
 import com.nxsol.bzcomposer.company.domain.BcaStore;
+import com.nxsol.bzcomposer.company.domain.BcaStoretype;
 import com.nxsol.bzcomposer.company.domain.BcaTerm;
 import com.nxsol.bzcomposer.company.domain.BcaUser;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
 import com.nxsol.bzcomposer.company.domain.BcaUsermapping;
+import com.nxsol.bzcomposer.company.domain.BcpDeductionlist;
 import com.nxsol.bzcomposer.company.domain.BcpFedperallowance;
+import com.nxsol.bzcomposer.company.domain.BcpJobtitle;
 import com.nxsol.bzcomposer.company.domain.BcpTaxCompany;
 import com.nxsol.bzcomposer.company.domain.SmdEbaycategory;
 import com.nxsol.bzcomposer.company.domain.SmdGatewaydetails;
@@ -97,6 +103,7 @@ import com.nxsol.bzcomposer.company.repos.BcaMasterrmareasonRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingcontainerRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingmailtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMastershippingpackagesizeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMasterstartingmoduleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMessageRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
@@ -112,11 +119,14 @@ import com.nxsol.bzcomposer.company.repos.BcaShippingrateRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingserviceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStoreRepository;
+import com.nxsol.bzcomposer.company.repos.BcaStoretypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUserRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUsermappingRepository;
+import com.nxsol.bzcomposer.company.repos.BcpDeductionlistRepository;
 import com.nxsol.bzcomposer.company.repos.BcpFedperallowanceRepository;
+import com.nxsol.bzcomposer.company.repos.BcpJobtitleRepository;
 import com.nxsol.bzcomposer.company.repos.BcpTaxCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.SmdEbaycategoryRepository;
 import com.nxsol.bzcomposer.company.repos.SmdGatewaydetailsRepository;
@@ -663,7 +673,6 @@ public class ConfigurationDAO {
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-			// Handle or rethrow the exception as appropriate
 		}
 
 		form.setListOfExistingState(sList);
@@ -3130,167 +3139,254 @@ public class ConfigurationDAO {
 //		return listPOJOs;
 //	}
 
-	public ArrayList<ConfigurationDto> getAllReceicedTypeId(HttpServletRequest request, ConfigurationDto form,
-			String comID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
+	public ArrayList<ConfigurationDto> getAllReceivedTypeId(Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			String sql = "SELECT * FROM bca_receicedtype Where Active=1 AND TypeCategory=1 AND CompanyID =" + comID
-					+ " ORDER BY Name";
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setPaymentTypeId(rs.getInt("PaymentTypeID"));
-				pojo.setPaymentName(rs.getString("Name"));
-				pojo.setPaymentType(rs.getString("Type"));
-				pojo.setAcctID(rs.getInt("BankAcctID"));
+			List<BcaReceivedtype> receivedTypes = receivedTypeRepository
+					.findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByNameAsc(companyId, 1, 1);
+			for (BcaReceivedtype receivedType : receivedTypes) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setPaymentTypeId(receivedType.getPaymentTypeId());
+				pojo.setPaymentName(receivedType.getName());
+				pojo.setPaymentType(receivedType.getType());
+				pojo.setAcctID(receivedType.getBankAcctId());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingReceivedType(listPOJOs);
 		return listPOJOs;
 	}
+//	public ArrayList<ConfigurationDto> getAllReceicedTypeId(HttpServletRequest request, ConfigurationDto form,
+//			String comID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			String sql = "SELECT * FROM bca_receicedtype Where Active=1 AND TypeCategory=1 AND CompanyID =" + comID
+//					+ " ORDER BY Name";
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setPaymentTypeId(rs.getInt("PaymentTypeID"));
+//				pojo.setPaymentName(rs.getString("Name"));
+//				pojo.setPaymentType(rs.getString("Type"));
+//				pojo.setAcctID(rs.getInt("BankAcctID"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingReceivedType(listPOJOs);
+//		return listPOJOs;
+//	}
 
-	public void initStoreTypesModel(boolean b) {
-		if (b) {
-			// SELECT * FROM bca_storetype Where StoreTypeID NOT IN (10,12) Order By
-			// StoreTypeName ASC
-			// getStoreTypes();
-		} else {
+//	public void initStoreTypesModel(boolean b) {
+//		if (b) {
+//			// SELECT * FROM bca_storetype Where StoreTypeID NOT IN (10,12) Order By
+//			// StoreTypeName ASC
+//			// getStoreTypes();
+//		} else {
+//
+//		}
+//
+//	}
 
-		}
-
-	}
-
-	public ArrayList<String> getState() {
+	public ArrayList<String> getState(Integer countryId) {
 		ArrayList<String> listPOJOs = new ArrayList<>();
 		listPOJOs.add(0, "");
-		listPOJOs.add(1, "AK");
-		listPOJOs.add(2, "AL");
-		listPOJOs.add(3, "AR");
-		listPOJOs.add(4, "AZ");
-		listPOJOs.add(5, "CA");
-		listPOJOs.add(6, "CO");
-		listPOJOs.add(7, "CT");
-		listPOJOs.add(8, "DC");
-		listPOJOs.add(9, "DE");
-		listPOJOs.add(10, "FL");
-		listPOJOs.add(11, "GA");
-		listPOJOs.add(12, "HI");
-		listPOJOs.add(13, "IA");
-		listPOJOs.add(14, "ID");
-		listPOJOs.add(15, "IL");
-		listPOJOs.add(16, "IN");
-		listPOJOs.add(17, "KS");
-		listPOJOs.add(18, "KY");
+		try {
+			List<BcaStates> states = stateRepository.findByCountry_Id(countryId);
+			for (BcaStates state : states) {
+				listPOJOs.add(state.getId(), state.getName());
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle or rethrow the exception as appropriate
+		}
+
 		return listPOJOs;
 	}
+//	public ArrayList<String> getState() {
+//		ArrayList<String> listPOJOs = new ArrayList<>();
+//		listPOJOs.add(0, "");
+//		listPOJOs.add(1, "AK");
+//		listPOJOs.add(2, "AL");
+//		listPOJOs.add(3, "AR");
+//		listPOJOs.add(4, "AZ");
+//		listPOJOs.add(5, "CA");
+//		listPOJOs.add(6, "CO");
+//		listPOJOs.add(7, "CT");
+//		listPOJOs.add(8, "DC");
+//		listPOJOs.add(9, "DE");
+//		listPOJOs.add(10, "FL");
+//		listPOJOs.add(11, "GA");
+//		listPOJOs.add(12, "HI");
+//		listPOJOs.add(13, "IA");
+//		listPOJOs.add(14, "ID");
+//		listPOJOs.add(15, "IL");
+//		listPOJOs.add(16, "IN");
+//		listPOJOs.add(17, "KS");
+//		listPOJOs.add(18, "KY");
+//		return listPOJOs;
+//	}
 
-	public ArrayList<ConfigurationDto> getStoreTypes(HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+	@Autowired
+	private BcaStoretypeRepository storeTypeRepository;
+
+	public ArrayList<ConfigurationDto> getStoreTypes(ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT * FROM bca_storetype Where StoreTypeID NOT IN (10,12) Order By StoreTypeName ASC";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setStoreTypeId(rs.getInt("StoreTypeID"));
-				pojo.setStoreTypeName(rs.getString("StoreTypeName"));
+			List<Integer> excludedIds = Arrays.asList(10, 12); // Store type IDs to exclude
+			List<BcaStoretype> storeTypes = storeTypeRepository.findByStoreTypeIdNotIn(excludedIds,
+					Sort.by("storeTypeName").ascending());
+			for (BcaStoretype storeType : storeTypes) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setStoreTypeId(storeType.getStoreTypeId());
+				pojo.setStoreTypeName(storeType.getStoreTypeName());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingStoreType(listPOJOs);
 		return listPOJOs;
-
 	}
+//	public ArrayList<ConfigurationDto> getStoreTypes(HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT * FROM bca_storetype Where StoreTypeID NOT IN (10,12) Order By StoreTypeName ASC";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setStoreTypeId(rs.getInt("StoreTypeID"));
+//				pojo.setStoreTypeName(rs.getString("StoreTypeName"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingStoreType(listPOJOs);
+//		return listPOJOs;
+//
+//	}
 
-	public ArrayList<ConfigurationDto> getStores(int storeTypeID, HttpServletRequest request, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+	public ArrayList<ConfigurationDto> getStores(int storeTypeID, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
-		try {
-			stmt = con.createStatement();
 
+		try {
+			List<BcaStore> stores;
 			if (storeTypeID == 15) {
-				sql = "SELECT * FROM bca_store " + " WHERE CompanyID=" + ConstValue.companyId + " AND Deleted = 1";
+				stores = storeRepository.findByCompany_CompanyIdAndDeleted(ConstValue.companyIdLong, 1);
 			} else {
-				sql = "SELECT * FROM bca_store " + " WHERE CompanyID=" + ConstValue.companyId + " AND StoreTypeID = "
-						+ storeTypeID + " AND Deleted = 1";
+				stores = storeRepository.findByCompany_CompanyIdAndDeletedAndStoreType_StoreTypeId(
+						ConstValue.companyIdLong, 1, storeTypeID);
 			}
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setStoreId(rs.getInt("StoreID"));
-				pojo.setStoreName(rs.getString("StoreName"));
-				pojo.setReturnPolicy(rs.getString("PackingReturnPolicy"));
+			for (BcaStore store : stores) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setStoreId(store.getStoreId());
+				pojo.setStoreName(store.getStoreName());
+				pojo.setReturnPolicy(store.getPackingReturnPolicy());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingStores(listPOJOs);
 		return listPOJOs;
 	}
+//	public ArrayList<ConfigurationDto> getStores(int storeTypeID, HttpServletRequest request, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//
+//			if (storeTypeID == 15) {
+//				sql = "SELECT * FROM bca_store " + " WHERE CompanyID=" + ConstValue.companyId + " AND Deleted = 1";
+//			} else {
+//				sql = "SELECT * FROM bca_store " + " WHERE CompanyID=" + ConstValue.companyId + " AND StoreTypeID = "
+//						+ storeTypeID + " AND Deleted = 1";
+//			}
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setStoreId(rs.getInt("StoreID"));
+//				pojo.setStoreName(rs.getString("StoreName"));
+//				pojo.setReturnPolicy(rs.getString("PackingReturnPolicy"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingStores(listPOJOs);
+//		return listPOJOs;
+//	}
 
 	@Autowired
 	private BcaMailtemplateRepository mailTemplateRepository;
@@ -5163,44 +5259,67 @@ public class ConfigurationDAO {
 //		return listPOJOs;
 //	}
 
+	@Autowired
+	private BcpFedperallowanceRepository fedPerAllowanceRepository;
+
 	public ArrayList<ConfigurationDto> getAvailableTaxYear(ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "SELECT DISTINCT(EYear) as TaxYear FROM bcp_fedperallowance GROUP BY EYear ORDER BY EYear DESC";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedTaxYear(rs.getInt("TaxYear"));
-				pojo.setAvailableTaxYear(rs.getInt("TaxYear"));
+			List<Integer> taxYears = fedPerAllowanceRepository.findDistinctTaxYears();
+			for (Integer taxYear : taxYears) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedTaxYear(taxYear);
+				pojo.setAvailableTaxYear(taxYear);
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingTaxYear(listPOJOs);
 		return listPOJOs;
 	}
+
+//	public ArrayList<ConfigurationDto> getAvailableTaxYear(ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "SELECT DISTINCT(EYear) as TaxYear FROM bcp_fedperallowance GROUP BY EYear ORDER BY EYear DESC";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedTaxYear(rs.getInt("TaxYear"));
+//				pojo.setAvailableTaxYear(rs.getInt("TaxYear"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingTaxYear(listPOJOs);
+//		return listPOJOs;
+//	}
 
 	@Autowired
 	private BcpTaxCompanyRepository taxCompanyRepository;
@@ -5214,11 +5333,6 @@ public class ConfigurationDAO {
 
 			for (BcpTaxCompany taxCompany : taxCompanies) {
 				CompanyTaxOptionDto compTax = new CompanyTaxOptionDto();
-				// Set all fields from taxCompany to compTax
-				// Use a mapper or manual mapping
-				// compTax.setDaily(taxCompany.getDaily());
-				// ... other fields
-
 				compTax.setDaily(taxCompany.getDaily().toString());
 				compTax.setWeekly(taxCompany.getWeekly().toString());
 				compTax.setSemiMonthly(taxCompany.getSemiMonthly().toString());
@@ -5344,6 +5458,8 @@ public class ConfigurationDAO {
 		StateIncomeTaxDto dto = null;
 
 		try {
+			// the table conf_tax_state is not available in the DB, need to fix this one.
+			// 20231212
 			String sqlString = "select * from conf_tax_state where CompanyID =? and StateID = ?";
 
 			pstmt = con.prepareStatement(sqlString);
@@ -5454,7 +5570,9 @@ public class ConfigurationDAO {
 //		}
 //	}
 
-	// start from here;
+	// Tax Section is not Converted due to table/entity is not available.. need to
+	// understand the requirement #STARTS
+
 	public void saveFIDCompanyTaxInfo(String companyID, ConfigurationDto configForm) {
 		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
@@ -5598,7 +5716,7 @@ public class ConfigurationDAO {
 				// System.out.println("**********Successfully Inserted**********");
 			}
 
-			dtos = getDeductionListDtos(companyID, con.createStatement());
+			dtos = getDeductionListDtos(Long.valueOf(companyID));
 
 		} catch (Exception e) {
 			Loger.log(e.toString());
@@ -5989,42 +6107,58 @@ public class ConfigurationDAO {
 
 		return loadSID(companyID, dto.getStateId());
 	}
+//Tax Section is not Converted due to table/entity is not available.. need to understand the requirement #ENDS
 
-	public List<DeductionListDto> deleteFIDCompanyTaxOptionDeduction(String companyID, DeductionListDto dto) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		con = db.getConnection();
-		String sql = "";
+	@Autowired
+	private BcpDeductionlistRepository deductionListRepository;
+
+	public List<DeductionListDto> deleteFIDCompanyTaxOptionDeduction(Long companyID, DeductionListDto dto) {
+		deductionListRepository.findByCompany_CompanyIdAndDeductionListId(companyID, dto.getDeductionListId())
+				.ifPresent(deductionList -> {
+					deductionList.setActive(0);
+					deductionListRepository.save(deductionList);
+				});
+
 		List<DeductionListDto> dtos = null;
-		try {
-			sql = "update  bcp_deductionlist set Active = 0 where CompanyID = ? and DeductionListID= ?";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, companyID);
-			pstmt.setLong(2, dto.getDeductionListId());
-
-			int rs = pstmt.executeUpdate();
-			if (rs > 0) {
-				// System.out.println("**********Successfully Inserted**********");
-			}
-
-			dtos = getDeductionListDtos(companyID, con.createStatement());
-
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-
-				if (con != null) {
-					con.close();
-				}
-
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		dtos = getDeductionListDtos(companyID);
 		return dtos;
 	}
+
+//	public List<DeductionListDto> deleteFIDCompanyTaxOptionDeduction(String companyID, DeductionListDto dto) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		con = db.getConnection();
+//		String sql = "";
+//		List<DeductionListDto> dtos = null;
+//		try {
+//			sql = "update  bcp_deductionlist set Active = 0 where CompanyID = ? and DeductionListID= ?";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setString(1, companyID);
+//			pstmt.setLong(2, dto.getDeductionListId());
+//
+//			int rs = pstmt.executeUpdate();
+//			if (rs > 0) {
+//				// System.out.println("**********Successfully Inserted**********");
+//			}
+//
+//			dtos = getDeductionListDtos(companyID, con.createStatement());
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//
+//				if (con != null) {
+//					con.close();
+//				}
+//
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return dtos;
+//	}
 
 	public List<CompanyTaxOptionDto> deleteFIDCompanyTaxOption(String companyID, CompanyTaxOptionDto dto) {
 		Connection con = null;
@@ -6081,7 +6215,7 @@ public class ConfigurationDAO {
 				form.setRateFUTA(rs.getDouble("FUTARate"));
 				form.setRateFIT(rs.getDouble("FITRate"));
 			}
-			List<DeductionListDto> dtos = getDeductionListDtos(companyID, stmt);
+			List<DeductionListDto> dtos = getDeductionListDtos(Long.valueOf(companyID));
 			form.setDeductionList(dtos);
 		} catch (Exception e) {
 			Loger.log(e.toString());
@@ -6102,69 +6236,111 @@ public class ConfigurationDAO {
 		}
 	}
 
-	private List<DeductionListDto> getDeductionListDtos(String companyID, Statement stmt) throws SQLException {
-		String sql;
-		ResultSet rs;
-		sql = "select  DeductionListID, DeductionList, DeductionAmount, DeductionRate, IsTaxExempt, DateAdded , UseRate from bcp_deductionlist where Active=1 and CompanyID ="
-				+ companyID;
-		rs = stmt.executeQuery(sql);
-		List<DeductionListDto> dtos = new ArrayList<DeductionListDto>();
-		while (rs.next()) {
-			DeductionListDto dto = new DeductionListDto();
-			dto.setDeductionListId(rs.getLong("DeductionListID"));
-			dto.setDeductionListName(rs.getString("DeductionList"));
-			dto.setDeductionAmount(rs.getInt("DeductionAmount"));
-			dto.setDeductionRate(rs.getInt("DeductionRate"));
-			dto.setIsTaxExempt(rs.getInt("IsTaxExempt"));
-			dto.setCreatedAt(rs.getDate("DateAdded").toString());
-			dto.setUseRate(rs.getInt("UseRate"));
-
-			dtos.add(dto);
-		}
-		return dtos;
+	private List<DeductionListDto> getDeductionListDtos(Long companyID) {
+		return deductionListRepository.findByActiveAndCompany_CompanyId(1, companyID).stream()
+				.map(this::convertToDeductionListDto).collect(Collectors.toList());
 	}
 
-	public ArrayList<ConfigurationDto> getJobTitle(HttpServletRequest request, ConfigurationDto form,
-			String companyID) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+	private DeductionListDto convertToDeductionListDto(BcpDeductionlist entity) {
+		DeductionListDto dto = new DeductionListDto();
+		dto.setDeductionListId(entity.getDeductionListId().longValue());
+		dto.setDeductionListName(entity.getDeductionList());
+		dto.setDeductionAmount(entity.getDeductionAmount());
+		dto.setDeductionRate(entity.getDeductionRate());
+		dto.setIsTaxExempt(entity.getIsTaxExempt() ? 1 : 0);
+		dto.setCreatedAt(entity.getDateAdded().toString());
+		dto.setUseRate(entity.getUseRate() ? 1 : 0);
+		return dto;
+	}
+
+//	private List<DeductionListDto> getDeductionListDtos(String companyID, Statement stmt) throws SQLException {
+//		String sql;
+//		ResultSet rs;
+//		sql = "select  DeductionListID, DeductionList, DeductionAmount, DeductionRate, IsTaxExempt, DateAdded , UseRate from bcp_deductionlist where Active=1 and CompanyID ="
+//				+ companyID;
+//		rs = stmt.executeQuery(sql);
+//		List<DeductionListDto> dtos = new ArrayList<DeductionListDto>();
+//		while (rs.next()) {
+//			DeductionListDto dto = new DeductionListDto();
+//			dto.setDeductionListId(rs.getLong("DeductionListID"));
+//			dto.setDeductionListName(rs.getString("DeductionList"));
+//			dto.setDeductionAmount(rs.getInt("DeductionAmount"));
+//			dto.setDeductionRate(rs.getInt("DeductionRate"));
+//			dto.setIsTaxExempt(rs.getInt("IsTaxExempt"));
+//			dto.setCreatedAt(rs.getDate("DateAdded").toString());
+//			dto.setUseRate(rs.getInt("UseRate"));
+//
+//			dtos.add(dto);
+//		}
+//		return dtos;
+//	}
+
+	@Autowired
+	private BcpJobtitleRepository jobTitleRepository;
+
+	public ArrayList<ConfigurationDto> getJobTitle(Long companyId, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		String sql = "";
+
 		try {
-			stmt = con.createStatement();
-			sql = "Select * from bcp_jobtitle where CompanyID = " + companyID + " AND Active = 1";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelecctedJobTitleId(rs.getInt("JobTitleID"));
-				pojo.setJobTitleId(rs.getInt("JobTitleID"));
-				pojo.setJobTitleName(rs.getString("JobTitle"));
+			List<BcpJobtitle> jobTitles = jobTitleRepository.findByCompany_CompanyIdAndActive(companyId, 1);
+			for (BcpJobtitle jobTitle : jobTitles) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelecctedJobTitleId(jobTitle.getJobTitleId());
+				pojo.setJobTitleId(jobTitle.getJobTitleId());
+				pojo.setJobTitleName(jobTitle.getJobTitle());
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfJobTitle(listPOJOs);
 		return listPOJOs;
 	}
 
+//	public ArrayList<ConfigurationDto> getJobTitle(HttpServletRequest request, ConfigurationDto form,
+//			String companyID) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = "Select * from bcp_jobtitle where CompanyID = " + companyID + " AND Active = 1";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelecctedJobTitleId(rs.getInt("JobTitleID"));
+//				pojo.setJobTitleId(rs.getInt("JobTitleID"));
+//				pojo.setJobTitleName(rs.getString("JobTitle"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfJobTitle(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	// not updated
 	public ArrayList<ConfigurationDto> getAccessPermissions(String companyID, HttpServletRequest request,
 			ConfigurationDto configForm) {
 		Connection con = null;
@@ -6243,187 +6419,265 @@ public class ConfigurationDAO {
 		return listPOJOs;
 	}
 
-	public void saveJobTitle(String companyID, HttpServletRequest request, ConfigurationDto configForm,
-			String jobTitle) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		con = db.getConnection();
-		String sql = "";
+	public void saveJobTitle(Long companyID, HttpServletRequest request, ConfigurationDto configForm, String jobTitle) {
 		try {
-			stmt = con.createStatement();
-			sql = " insert into bcp_jobtitle(JobTitle,Active,CompanyID)" + "Values( " + "'" + jobTitle + "'," + 1 + ","
-					+ companyID + ")";
-			int rs = stmt.executeUpdate(sql);
-			if (rs > 0) {
-				System.out.println("**********Successfully Inserted**********");
-			}
+			BcpJobtitle newJobTitle = new BcpJobtitle();
+			newJobTitle.setJobTitle(jobTitle);
+			newJobTitle.setActive(1);
+
+			// Fetch the company entity by companyID
+			companyRepository.findById(companyID).ifPresent(newJobTitle::setCompany);
+
+			jobTitleRepository.save(newJobTitle);
+			System.out.println("**********Successfully Inserted**********");
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
 	}
+//	public void saveJobTitle(String companyID, HttpServletRequest request, ConfigurationDto configForm,
+//			String jobTitle) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		con = db.getConnection();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = " insert into bcp_jobtitle(JobTitle,Active,CompanyID)" + "Values( " + "'" + jobTitle + "'," + 1 + ","
+//					+ companyID + ")";
+//			int rs = stmt.executeUpdate(sql);
+//			if (rs > 0) {
+//				System.out.println("**********Successfully Inserted**********");
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 
-	public void editJobTitle(String companyID, HttpServletRequest request, ConfigurationDto configForm, String jobTitle,
-			int id) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-
-		con = db.getConnection();
-		String sql = "";
+	public void editJobTitle(String companyID, ConfigurationDto configForm, String jobTitle, int id) {
 		try {
-			stmt = con.createStatement();
-			sql = " update bcp_jobtitle set JobTitle ='" + jobTitle + "' WHERE CompanyID = " + companyID
-					+ " AND JobTitleID = " + id;
-			int rs = stmt.executeUpdate(sql);
-			if (rs > 0) {
+			jobTitleRepository.findById(id).ifPresent(jobTitleEntity -> {
+				jobTitleEntity.setJobTitle(jobTitle);
+				// Optionally, you can also verify and set the company again
+				jobTitleRepository.save(jobTitleEntity);
 				System.out.println("**********Successfully Updated**********");
-			}
+			});
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 	}
 
-	public void deleteJobTitle(String companyID, HttpServletRequest request, ConfigurationDto configForm, int id) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		con = db.getConnection();
-		String sql = "";
+//	public void editJobTitle(String companyID, HttpServletRequest request, ConfigurationDto configForm, String jobTitle,
+//			int id) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//
+//		con = db.getConnection();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = " update bcp_jobtitle set JobTitle ='" + jobTitle + "' WHERE CompanyID = " + companyID
+//					+ " AND JobTitleID = " + id;
+//			int rs = stmt.executeUpdate(sql);
+//			if (rs > 0) {
+//				System.out.println("**********Successfully Updated**********");
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
+
+	public void deleteJobTitle(Long companyID, ConfigurationDto configForm, int id) {
 		try {
-			stmt = con.createStatement();
-			sql = " update bcp_jobtitle set Active = 0 WHERE JobTitleID = " + id + " AND CompanyID = " + companyID;
-			int rs = stmt.executeUpdate(sql);
-			if (rs > 0) {
-				System.out.println("**********Successfully Deleted**********");
-			}
+			jobTitleRepository.findById(id).ifPresent(jobTitle -> {
+				if (jobTitle.getCompany() != null && jobTitle.getCompany().getCompanyId().equals(companyID)) {
+					jobTitle.setActive(0); // Setting Active to false instead of deleting
+					jobTitleRepository.save(jobTitle);
+					System.out.println("**********Successfully Deleted**********");
+				}
+			});
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
-
 	}
 
+//	public void deleteJobTitle(String companyID, HttpServletRequest request, ConfigurationDto configForm, int id) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		con = db.getConnection();
+//		String sql = "";
+//		try {
+//			stmt = con.createStatement();
+//			sql = " update bcp_jobtitle set Active = 0 WHERE JobTitleID = " + id + " AND CompanyID = " + companyID;
+//			int rs = stmt.executeUpdate(sql);
+//			if (rs > 0) {
+//				System.out.println("**********Successfully Deleted**********");
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//
+//	}
+	@Autowired
+	private BcaMasterstartingmoduleRepository masterStartingModuleRepository;
+	
 	public ArrayList<ConfigurationDto> getModulesName(ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		String dateBetween = "";
-		DateInfo dInfo = new DateInfo();
-		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		ArrayList<Date> selectedRange = new ArrayList<>();
-		CustomerInfo cInfo = new CustomerInfo();
+	    ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 
-		try {
-			stmt = con.createStatement();
+	    try {
+	        List<BcaMasterstartingmodule> modules = masterStartingModuleRepository.findAllByOrderByModuleName();
+	        for (BcaMasterstartingmodule module : modules) {
+	            ConfigurationDto pojo = new ConfigurationDto();
+	            pojo.setModuleName(module.getModuleName());
+	            pojo.setModuleID(module.getStartModuleId());
+	            listPOJOs.add(pojo);
+	        }
+	    } catch (Exception e) {
+	        Loger.log(e.toString());
+	        // Handle exception
+	    }
 
-			String sql1 = "SELECT BusinessTypeID,ModuleName,StartModuleID " + "FROM " + "bca_masterstartingmodule "
-					+ "order by ModuleName";
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setModuleName(rs.getString("ModuleName"));
-				pojo.setModuleID(rs.getInt("StartModuleID"));
-				listPOJOs.add(pojo);
-			}
-
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		form.setListOfExistingModuleNames(listPOJOs);
-		// request.setAttribute("companyname",form.getCompanyName());
-
-		return listPOJOs;
+	    form.setListOfExistingModuleNames(listPOJOs);
+	    return listPOJOs;
 	}
+	
 
-	public int getdefaultModuleName(String companyID) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
+//	public ArrayList<ConfigurationDto> getModulesName(ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		String dateBetween = "";
+//		DateInfo dInfo = new DateInfo();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		ArrayList<Date> selectedRange = new ArrayList<>();
+//		CustomerInfo cInfo = new CustomerInfo();
+//
+//		try {
+//			stmt = con.createStatement();
+//
+//			String sql1 = "SELECT BusinessTypeID,ModuleName,StartModuleID " + "FROM " + "bca_masterstartingmodule "
+//					+ "order by ModuleName";
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setModuleName(rs.getString("ModuleName"));
+//				pojo.setModuleID(rs.getInt("StartModuleID"));
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingModuleNames(listPOJOs);
+//		// request.setAttribute("companyname",form.getCompanyName());
+//
+//		return listPOJOs;
+//	}
 
-		int defaultModule = 0;
-		try {
-			con = db.getConnection();
-			String sql = "SELECT defaultModule FROM bca_preference where CompanyID  =" + companyID;
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			if (rs.next()) {
-				defaultModule = rs.getInt(1);
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		return defaultModule;
-
+	public int getdefaultModuleName(Long companyID) {
+	    try {
+	        return preferenceRepository.findByCompany_CompanyId(companyID)
+	            .map(BcaPreference::getDefaultModule)
+	            .orElse(0); // Default to 0 if not found
+	    } catch (Exception e) {
+	        Loger.log(e.toString());
+	        // Handle exception
+	        return 0;
+	    }
 	}
+	
+//	public int getdefaultModuleName(String companyID) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//
+//		int defaultModule = 0;
+//		try {
+//			con = db.getConnection();
+//			String sql = "SELECT defaultModule FROM bca_preference where CompanyID  =" + companyID;
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//			if (rs.next()) {
+//				defaultModule = rs.getInt(1);
+//			}
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return defaultModule;
+//
+//	}
 
 	public ArrayList<ConfigurationDto> getWeight(String companyID, ConfigurationDto form) {
 		Connection con = null;

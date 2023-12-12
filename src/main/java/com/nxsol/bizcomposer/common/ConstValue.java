@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 public class ConstValue {
 
 	public static int companyId;
+	public static Long companyIdLong;
 	public static String companyName;
 	public static String countryID = "231";
 	public static String stateID = "3924";
@@ -33,6 +34,15 @@ public class ConstValue {
 
 	public static void setCompanyId(int companyId) {
 		ConstValue.companyId = companyId;
+		ConstValue.companyIdLong = Long.valueOf(companyId);
+	}
+
+	public static Long getCompanyIdLong() {
+		return companyIdLong;
+	}
+
+	public static void setCompanyIdLong(Long companyIdLong) {
+		ConstValue.companyIdLong = companyIdLong;
 	}
 
 	public static String getCompanyName() {

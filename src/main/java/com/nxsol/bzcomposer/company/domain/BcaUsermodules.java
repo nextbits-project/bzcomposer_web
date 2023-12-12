@@ -10,7 +10,7 @@ import java.util.Set;
 import javax.persistence.Table;
 
 @Entity
-@Table(name= "bca_usermapping")
+@Table(name= "bca_usermodules")
 public class BcaUsermodules {
 
     @Id

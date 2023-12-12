@@ -87,6 +87,7 @@ public class ConfigurationController {
 		String emailAddress = (String) session.getAttribute("Email_Address");
 		ConstValue c = new ConstValue();
 		c.setCompanyId(Integer.parseInt(companyID));
+		c.setCompanyIdLong(Long.valueOf(companyID));
 		ActionErrors e = new ActionErrors();
 		// till this
 		if (session.getAttribute("currentLocale") == null) {
@@ -179,7 +180,7 @@ public class ConfigurationController {
 
 			dao.getSalesRepresentative(companyIDL, configDto);
 			dao.getMessages(companyIDL, configDto);
-			dao.getJobTitle(request, configDto, companyID);
+			dao.getJobTitle(companyIDL, configDto);
 			dao.getExistingLocation(companyIDL, configDto);
 			dao.getSalesTax(companyIDL, configDto);
 			dao.getCreditTerm(companyIDL, configDto);
@@ -213,20 +214,20 @@ public class ConfigurationController {
 			// System.out.println("Performing operation:"+op);
 
 			if (op.equals("add")) {
-				dao.saveJobTitle(companyID, request, configDto, jobTitle);
+				dao.saveJobTitle(companyIDL, request, configDto, jobTitle);
 			} else if (op.equals("edit")) {
 				int id = Integer.parseInt(request.getParameter("titleId"));
-				dao.editJobTitle(companyID, request, configDto, jobTitle, id);
+				dao.editJobTitle(companyID, configDto, jobTitle, id);
 			} else if (op.equals("delete")) {
 				int id = Integer.parseInt(request.getParameter("titleId"));
-				dao.deleteJobTitle(companyID, request, configDto, id);
+				dao.deleteJobTitle(companyIDL, configDto, id);
 			}
 			ConfigurationDetails configDetails = new ConfigurationDetails();
 			configDetails.getConfigurationInfo(request, configDto);
 			ConfigurationDAO dao1 = new ConfigurationDAO();
 			dao.getCountry(configDto);
 			dao.getStates(231, configDto);
-			dao.getJobTitle(request, configDto, companyID);
+			dao.getJobTitle(companyIDL, configDto);
 			forward = "redirect:Configuration?tabid=config11&&tab=tr11";
 		} else if (action.equalsIgnoreCase("NewUser")) {
 			forward = "addNewUser";
@@ -294,7 +295,7 @@ public class ConfigurationController {
 			dao.getAllCreditCardsType(0, companyIDL, configDto);
 			dao.getAllPaymentTypeId(companyIDL, configDto);
 			dao.geteSalesStore(configDto, companyIDL);
-			dao.getStoreTypes(request, configDto);
+			dao.getStoreTypes(configDto);
 
 			dao.geteBayCategories(configDto);
 			/*
@@ -350,7 +351,7 @@ public class ConfigurationController {
 			ArrayList<ConfigurationDto> s = dao.getAllCreditCards(0, companyIDL, configDto);
 			dao.getAllCreditCardsType(0, companyIDL, configDto);
 			dao.getAllPaymentTypeId(companyIDL, configDto);
-			dao.getAllReceicedTypeId(request, configDto, companyID);
+			dao.getAllReceivedTypeId(companyIDL, configDto);
 
 			request.setAttribute("selectedId", configDto.getDefaultDepositToId());
 			request.setAttribute("paymentId", configDto.getDefaultPaymentMethodId());
@@ -442,7 +443,7 @@ public class ConfigurationController {
 
 			dao.getSalesRepresentative(companyIDL, configDto);
 			dao.getMessages(companyIDL, configDto);
-			dao.getJobTitle(request, configDto, companyID);
+			dao.getJobTitle(companyIDL, configDto);
 			dao.getExistingLocation(companyIDL, configDto);
 			dao.getSalesTax(companyIDL, configDto);
 			dao.getCreditTerm(companyIDL, configDto);
@@ -572,7 +573,7 @@ public class ConfigurationController {
 			// ConfigurationDAO dao = new ConfigurationDAO();
 			dao.getCountry(configDto);
 			dao.getStates(231, configDto);
-			dao.getJobTitle(request, configDto, companyID);
+			dao.getJobTitle(companyIDL, configDto);
 			setConfigActiveTab(session, "employeeTab");
 			System.out.println("goes to employee page......................");
 			forward = "/configuration/employee";
@@ -728,10 +729,10 @@ public class ConfigurationController {
 		} else if (action.equalsIgnoreCase("config17")) {
 			// System.out.println("Inside config17 condition");
 			// ConfigurationDAO dao = new ConfigurationDAO();
-			dao.getStoreTypes(request, configDto);
+			dao.getStoreTypes(configDto);
 			// int storeTypeID =
 			// Integer.parseInt(request.getParameter("selectedStoreTypeId"));
-			dao.getStores(5, request, configDto);
+			dao.getStores(5, configDto);
 			// configDto.setSelectedStoreTypeId(storeTypeID);
 			dao.geteActiveStore(configDto, companyIDL);
 
@@ -836,10 +837,10 @@ public class ConfigurationController {
 			// ConfigurationDAO dao = new ConfigurationDAO();
 			// dao.initStoreTypesModel(true);
 			// ConfigurationDao dao = new ConfigurationDao();
-			dao.getStores(5, request, configDto);
+			dao.getStores(5, configDto);
 			dao.getCountry(configDto);
-			dao.getStoreTypes(request, configDto);
-			ArrayList<String> s = dao.getState();
+			dao.getStoreTypes(configDto);
+			ArrayList<String> s = dao.getState(231);
 			request.setAttribute("states", s);
 			forward = "success7";
 		} else if (action.equalsIgnoreCase("showStore1")) {
@@ -849,11 +850,11 @@ public class ConfigurationController {
 			// ConfigurationDao dao = new ConfigurationDao();
 
 			dao.getCountry(configDto);
-			dao.getStoreTypes(request, configDto);
+			dao.getStoreTypes(configDto);
 			int storeTypeID = Integer.parseInt(request.getParameter("selectedStoreTypeId"));
-			dao.getStores(storeTypeID, request, configDto);
+			dao.getStores(storeTypeID, configDto);
 			configDto.setSelectedStoreTypeId(storeTypeID);
-			ArrayList<String> s = dao.getState();
+			ArrayList<String> s = dao.getState(231);
 			request.setAttribute("states", s);
 			forward = "success7";
 		}
@@ -1482,7 +1483,7 @@ public class ConfigurationController {
 			HttpServletRequest request) {
 		String companyID = (String) request.getSession().getAttribute("CID");
 		// ConfigurationDAO dao = new ConfigurationDAO();
-		return dao.deleteFIDCompanyTaxOptionDeduction(companyID, configDto);
+		return dao.deleteFIDCompanyTaxOptionDeduction(ConstValue.companyIdLong, configDto);
 	}
 
 	@ResponseBody
