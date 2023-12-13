@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -44,9 +46,11 @@ import com.nxsol.bzcomposer.company.domain.BcaCategory;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaCountries;
 import com.nxsol.bzcomposer.company.domain.BcaCreditcardtype;
+import com.nxsol.bzcomposer.company.domain.BcaCustomerType;
 import com.nxsol.bzcomposer.company.domain.BcaFeatures;
 import com.nxsol.bzcomposer.company.domain.BcaInvoiceTemplate;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
+import com.nxsol.bzcomposer.company.domain.BcaJobcategory;
 import com.nxsol.bzcomposer.company.domain.BcaLineofcreditterm;
 import com.nxsol.bzcomposer.company.domain.BcaLocation;
 import com.nxsol.bzcomposer.company.domain.BcaMailtemplate;
@@ -65,6 +69,7 @@ import com.nxsol.bzcomposer.company.domain.BcaRefundreason;
 import com.nxsol.bzcomposer.company.domain.BcaRmareason;
 import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
 import com.nxsol.bzcomposer.company.domain.BcaSalestax;
+import com.nxsol.bzcomposer.company.domain.BcaScheduletimes;
 import com.nxsol.bzcomposer.company.domain.BcaSettings;
 import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
 import com.nxsol.bzcomposer.company.domain.BcaShippingrate;
@@ -73,10 +78,12 @@ import com.nxsol.bzcomposer.company.domain.BcaStates;
 import com.nxsol.bzcomposer.company.domain.BcaStore;
 import com.nxsol.bzcomposer.company.domain.BcaStoretype;
 import com.nxsol.bzcomposer.company.domain.BcaTerm;
+import com.nxsol.bzcomposer.company.domain.BcaUnitofmeasure;
 import com.nxsol.bzcomposer.company.domain.BcaUser;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
 import com.nxsol.bzcomposer.company.domain.BcaUsermapping;
 import com.nxsol.bzcomposer.company.domain.BcpDeductionlist;
+import com.nxsol.bzcomposer.company.domain.BcpEmployee;
 import com.nxsol.bzcomposer.company.domain.BcpFedperallowance;
 import com.nxsol.bzcomposer.company.domain.BcpJobtitle;
 import com.nxsol.bzcomposer.company.domain.BcpTaxCompany;
@@ -91,10 +98,12 @@ import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCreditcardtypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCustomerTypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaFeaturesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceTemplateRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaJobcategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLineofcredittermRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLocationRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMailtemplateRepository;
@@ -113,6 +122,7 @@ import com.nxsol.bzcomposer.company.repos.BcaRefundreasonRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRmareasonRepository;
 import com.nxsol.bzcomposer.company.repos.BcaSalesrepRepository;
 import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
+import com.nxsol.bzcomposer.company.repos.BcaScheduletimesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaSettingsRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingrateRepository;
@@ -121,10 +131,12 @@ import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStoreRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStoretypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
+import com.nxsol.bzcomposer.company.repos.BcaUnitofmeasureRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUserRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUsermappingRepository;
 import com.nxsol.bzcomposer.company.repos.BcpDeductionlistRepository;
+import com.nxsol.bzcomposer.company.repos.BcpEmployeeRepository;
 import com.nxsol.bzcomposer.company.repos.BcpFedperallowanceRepository;
 import com.nxsol.bzcomposer.company.repos.BcpJobtitleRepository;
 import com.nxsol.bzcomposer.company.repos.BcpTaxCompanyRepository;
@@ -6559,27 +6571,26 @@ public class ConfigurationDAO {
 //	}
 	@Autowired
 	private BcaMasterstartingmoduleRepository masterStartingModuleRepository;
-	
+
 	public ArrayList<ConfigurationDto> getModulesName(ConfigurationDto form) {
-	    ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
 
-	    try {
-	        List<BcaMasterstartingmodule> modules = masterStartingModuleRepository.findAllByOrderByModuleName();
-	        for (BcaMasterstartingmodule module : modules) {
-	            ConfigurationDto pojo = new ConfigurationDto();
-	            pojo.setModuleName(module.getModuleName());
-	            pojo.setModuleID(module.getStartModuleId());
-	            listPOJOs.add(pojo);
-	        }
-	    } catch (Exception e) {
-	        Loger.log(e.toString());
-	        // Handle exception
-	    }
+		try {
+			List<BcaMasterstartingmodule> modules = masterStartingModuleRepository.findAllByOrderByModuleName();
+			for (BcaMasterstartingmodule module : modules) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setModuleName(module.getModuleName());
+				pojo.setModuleID(module.getStartModuleId());
+				listPOJOs.add(pojo);
+			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+		}
 
-	    form.setListOfExistingModuleNames(listPOJOs);
-	    return listPOJOs;
+		form.setListOfExistingModuleNames(listPOJOs);
+		return listPOJOs;
 	}
-	
 
 //	public ArrayList<ConfigurationDto> getModulesName(ConfigurationDto form) {
 //		Connection con = null;
@@ -6631,17 +6642,16 @@ public class ConfigurationDAO {
 //	}
 
 	public int getdefaultModuleName(Long companyID) {
-	    try {
-	        return preferenceRepository.findByCompany_CompanyId(companyID)
-	            .map(BcaPreference::getDefaultModule)
-	            .orElse(0); // Default to 0 if not found
-	    } catch (Exception e) {
-	        Loger.log(e.toString());
-	        // Handle exception
-	        return 0;
-	    }
+		try {
+			return preferenceRepository.findByCompany_CompanyId(companyID).map(BcaPreference::getDefaultModule)
+					.orElse(0); // Default to 0 if not found
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			// Handle exception
+			return 0;
+		}
 	}
-	
+
 //	public int getdefaultModuleName(String companyID) {
 //		Connection con = null;
 //		SQLExecutor db = new SQLExecutor();
@@ -6679,626 +6689,1014 @@ public class ConfigurationDAO {
 //
 //	}
 
-	public ArrayList<ConfigurationDto> getWeight(String companyID, ConfigurationDto form) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
-		String dateBetween = "";
-		DateInfo dInfo = new DateInfo();
-		int parentID = -1;
+	@Autowired
+	private BcaUnitofmeasureRepository unitOfMeasureRepository;
+
+	public ArrayList<ConfigurationDto> getWeight(Long companyID, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		ArrayList<Date> selectedRange = new ArrayList<>();
-		CustomerInfo cInfo = new CustomerInfo();
 
 		try {
-			stmt = con.createStatement();
-
-			String sql1 = "SELECT UnitCategoryID " + " FROM bca_unitofmeasure " + " WHERE CompanyID = " + companyID
-					+ " AND ParentId = 0" + " AND Name='Weight'" + " AND Active = 1 ";
-
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				parentID = rs.getInt("UnitCategoryID");
-			}
-
-			String sql = "SELECT * " + " FROM bca_unitofmeasure " + " WHERE CompanyID = " + companyID
-					+ " AND ParentId = " + parentID + " AND Active = 1 ";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setWeightID(rs.getInt("UnitCategoryID"));
-				pojo.setWeightName(rs.getString("Name"));
-				listPOJOs.add(pojo);
-			}
-
+			// Fetch the parent unit for 'Weight'
+			unitOfMeasureRepository.findByCompany_CompanyIdAndNameAndParentIdAndActive(companyID, "Weight", 0, 1)
+					.ifPresent(parentUnit -> {
+						// Fetch all active child units of 'Weight'
+						List<BcaUnitofmeasure> weights = unitOfMeasureRepository
+								.findByCompany_CompanyIdAndParentIdAndActive(companyID, parentUnit.getUnitCategoryId(),
+										1);
+						for (BcaUnitofmeasure weight : weights) {
+							ConfigurationDto pojo = new ConfigurationDto();
+							pojo.setWeightID(weight.getUnitCategoryId());
+							pojo.setWeightName(weight.getName());
+							listPOJOs.add(pojo);
+						}
+					});
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		form.setListOfExistingWeights(listPOJOs);
-		// request.setAttribute("companyname",form.getCompanyName());
-
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getPackingSlipTemplate(String companyID, HttpServletRequest request,
-			ConfigurationDto cForm) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public ArrayList<ConfigurationDto> getWeight(String companyID, ConfigurationDto form) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		String dateBetween = "";
+//		DateInfo dInfo = new DateInfo();
+//		int parentID = -1;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		ArrayList<Date> selectedRange = new ArrayList<>();
+//		CustomerInfo cInfo = new CustomerInfo();
+//
+//		try {
+//			stmt = con.createStatement();
+//
+//			String sql1 = "SELECT UnitCategoryID " + " FROM bca_unitofmeasure " + " WHERE CompanyID = " + companyID
+//					+ " AND ParentId = 0" + " AND Name='Weight'" + " AND Active = 1 ";
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				parentID = rs.getInt("UnitCategoryID");
+//			}
+//
+//			String sql = "SELECT * " + " FROM bca_unitofmeasure " + " WHERE CompanyID = " + companyID
+//					+ " AND ParentId = " + parentID + " AND Active = 1 ";
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setWeightID(rs.getInt("UnitCategoryID"));
+//				pojo.setWeightName(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingWeights(listPOJOs);
+//		// request.setAttribute("companyname",form.getCompanyName());
+//
+//		return listPOJOs;
+//	}
+
+	public ArrayList<ConfigurationDto> getPackingSlipTemplate(Long companyID, ConfigurationDto cForm) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			stmt = con.createStatement();
+			List<BcaInvoiceTemplate> templates = invoiceTemplateRepository.findCustomTemplates(8, 14, companyID);
 
-			String sql = "select * from bca_invoice_template " + "LEFT JOIN bca_invoice_activetemplates "
-					+ "ON bca_invoice_activetemplates.TemplateId = bca_invoice_template.BaseTemplateID "
-					+ "WHERE TemplateStyleTypeID = 8 " + "AND bca_invoice_template.TemplateTypeId = 14 "
-					+ "AND (CompanyID = " + companyID + " OR CompanyID = -1 )";
-
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setPackingSlipTemplateId(rs.getInt("TemplateId"));
-				pojo.setPackingSlipTemplateName(rs.getString("TemplateName"));
-				pojo.setBaseTemplateId(rs.getInt("BaseTemplateId"));
+			for (BcaInvoiceTemplate template : templates) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setPackingSlipTemplateId(template.getBaseTemplateId()); // Adjust according to your entity
+				pojo.setPackingSlipTemplateName(template.getTemplateName());
+				// Set other properties as needed
 				listPOJOs.add(pojo);
 			}
-
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		cForm.setListOfExistingPackingSlipTemplate(listPOJOs);
-
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getJobCategory(String cId, HttpServletRequest request, ConfigurationDto cForm) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
+//	public ArrayList<ConfigurationDto> getPackingSlipTemplate(String companyID, HttpServletRequest request,
+//			ConfigurationDto cForm) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//
+//			String sql = "select * from bca_invoice_template " + "LEFT JOIN bca_invoice_activetemplates "
+//					+ "ON bca_invoice_activetemplates.TemplateId = bca_invoice_template.BaseTemplateID "
+//					+ "WHERE TemplateStyleTypeID = 8 " + "AND bca_invoice_template.TemplateTypeId = 14 "
+//					+ "AND (CompanyID = " + companyID + " OR CompanyID = -1 )";
+//
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setPackingSlipTemplateId(rs.getInt("TemplateId"));
+//				pojo.setPackingSlipTemplateName(rs.getString("TemplateName"));
+//				pojo.setBaseTemplateId(rs.getInt("BaseTemplateId"));
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		cForm.setListOfExistingPackingSlipTemplate(listPOJOs);
+//
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaJobcategoryRepository jobCategoryRepository;
+
+	public ArrayList<ConfigurationDto> getJobCategory(Long cId, HttpServletRequest request, ConfigurationDto cForm) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			stmt = con.createStatement();
-			String sql1 = "SELECT * FROM bca_jobcategory WHERE CompanyID = " + cId
-					+ " AND Active=1 AND isRecurringServiceJob=1 ORDER BY Name";
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setJobCategoryId(rs.getInt("JobCategoryID"));
-				pojo.setJobCategory(rs.getString("Name"));
-				if (rs.getInt("isRecurringServiceJob") == 1) {
-					pojo.setRecurringServiceBill("on");
-				} else {
-					pojo.setRecurringServiceBill("off");
-				}
+			List<BcaJobcategory> jobCategories = jobCategoryRepository
+					.findByCompany_CompanyIdAndActiveAndIsRecurringServiceJob(cId, 1, 1);
+			for (BcaJobcategory category : jobCategories) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setJobCategoryId(category.getJobCategoryId());
+				pojo.setJobCategory(category.getName());
+				pojo.setRecurringServiceBill(category.getIsRecurringServiceJob() == 1 ? "on" : "off");
 				listPOJOs.add(pojo);
 			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		cForm.setListOfExistingJobCategory(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getActiveEmployee(String companyID, HttpServletRequest request,
+//	public ArrayList<ConfigurationDto> getJobCategory(String cId, HttpServletRequest request, ConfigurationDto cForm) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			String sql1 = "SELECT * FROM bca_jobcategory WHERE CompanyID = " + cId
+//					+ " AND Active=1 AND isRecurringServiceJob=1 ORDER BY Name";
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setJobCategoryId(rs.getInt("JobCategoryID"));
+//				pojo.setJobCategory(rs.getString("Name"));
+//				if (rs.getInt("isRecurringServiceJob") == 1) {
+//					pojo.setRecurringServiceBill("on");
+//				} else {
+//					pojo.setRecurringServiceBill("off");
+//				}
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		cForm.setListOfExistingJobCategory(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcpEmployeeRepository employeeRepository;
+
+	public ArrayList<ConfigurationDto> getActiveEmployee(Long companyID, HttpServletRequest request,
 			ConfigurationDto cForm) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			stmt = con.createStatement();
-
-			String sql = "SELECT EmployeeIndexID,EmployeeID,FirstName,LastName,NickName,SSN,Address1,Address2,"
-					+ " City,State,Province,Country,ZipCode,Phone,CellPhone,Email,EmployeeTitleID,"
-					+ " JobTitleID,EmployeeTypeID,Amount,PayrollPeriodID,FilingStatusID,"
-					+ " Allowance,TaxState,DateofBirth,DateAdded,DateStarted,DateTerminated,Detail, Active,"
-					+ " Hourly,Daily,Salary,UseJobCode " + " FROM bcp_employee " + " WHERE CompanyID = " + companyID
-					+ " AND Status IN ('N','U') " + " AND Active = 1 " + " ORDER BY FirstName,LastName ASC";
-
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setSelectedActiveEmployeeId(rs.getInt("EmployeeID"));
-				String fullName = rs.getString("FirstName") + " " + rs.getString("LastName");
-				// System.out.println("Active Employee Name:"+fullName);
+			List<String> statuses = Arrays.asList("N", "U");
+			List<BcpEmployee> employees = employeeRepository.findByCompany_CompanyIdAndStatusInAndActive(companyID,
+					statuses, 1);
+			for (BcpEmployee employee : employees) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setSelectedActiveEmployeeId(employee.getEmployeeId());
+				String fullName = employee.getFirstName() + " " + employee.getLastName();
 				pojo.setActiveEmployeeName(fullName);
 				listPOJOs.add(pojo);
 			}
-
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
-		cForm.setListOfExistingActiveEmployee(listPOJOs);
 
+		cForm.setListOfExistingActiveEmployee(listPOJOs);
 		return listPOJOs;
 	}
 
-	public ArrayList<ConfigurationDto> getShipCarrier(String companyID, HttpServletRequest request,
+//	public ArrayList<ConfigurationDto> getActiveEmployee(String companyID, HttpServletRequest request,
+//			ConfigurationDto cForm) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//
+//			String sql = "SELECT EmployeeIndexID,EmployeeID,FirstName,LastName,NickName,SSN,Address1,Address2,"
+//					+ " City,State,Province,Country,ZipCode,Phone,CellPhone,Email,EmployeeTitleID,"
+//					+ " JobTitleID,EmployeeTypeID,Amount,PayrollPeriodID,FilingStatusID,"
+//					+ " Allowance,TaxState,DateofBirth,DateAdded,DateStarted,DateTerminated,Detail, Active,"
+//					+ " Hourly,Daily,Salary,UseJobCode " + " FROM bcp_employee " + " WHERE CompanyID = " + companyID
+//					+ " AND Status IN ('N','U') " + " AND Active = 1 " + " ORDER BY FirstName,LastName ASC";
+//
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setSelectedActiveEmployeeId(rs.getInt("EmployeeID"));
+//				String fullName = rs.getString("FirstName") + " " + rs.getString("LastName");
+//				// System.out.println("Active Employee Name:"+fullName);
+//				pojo.setActiveEmployeeName(fullName);
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		cForm.setListOfExistingActiveEmployee(listPOJOs);
+//
+//		return listPOJOs;
+//	}
+
+	@Autowired
+	private BcaShipcarrierRepository shipCarrierRepository;
+
+	public ArrayList<ConfigurationDto> getShipCarrier(Long companyID, HttpServletRequest request,
 			ConfigurationDto cForm) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		// TODO Auto-generated method stub
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-		ResultSet rs1 = null;
-		Statement stmt1 = null;
-
-		con = db.getConnection();
-
-		String sql = "SELECT ShipCarrierID,Name " + "FROM bca_shipcarrier WHERE CompanyID =" + companyID + " "
-				+ "AND ParentID = 0 AND Active =1 " + "ORDER BY ShipCarrierID";
 
 		try {
-			stmt = con.createStatement();
-			stmt1 = con.createStatement();
-			rs = stmt.executeQuery(sql);
-
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setShipCarrierId(rs.getInt(("ShipCarrierID")));
-				int shipCarrierID = rs.getInt(("ShipCarrierID"));
-				pojo.setShipCarrierName(rs.getString("Name"));
+			List<BcaShipcarrier> carriers = shipCarrierRepository.findByCompany_CompanyIdAndParentIdAndActive(companyID,
+					0, 1);
+			for (BcaShipcarrier carrier : carriers) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setShipCarrierId(carrier.getShipCarrierId());
+				pojo.setShipCarrierName(carrier.getName());
 				listPOJOs.add(pojo);
-				if (rs.getString("Name").equals("User Defined")) {
-					sql = "SELECT ShipCarrierID,Name,ParentID " + " FROM bca_shipcarrier " + " WHERE CompanyID = "
-							+ companyID + "" + " AND Active =1 AND ParentID = " + shipCarrierID + " ORDER BY Name";
-					rs1 = stmt1.executeQuery(sql);
 
-					while (rs1.next()) {
-						pojo = new ConfigurationDto();
-						pojo.setShipCarrierId(rs1.getInt(("ShipCarrierID")));
-						pojo.setShipCarrierName("    " + rs1.getString("Name"));
-						pojo.setShipCarrierParentId(rs1.getInt("ParentID"));
-						listPOJOs.add(pojo);
+				if (carrier.getName().equals("User Defined")) {
+					List<BcaShipcarrier> childCarriers = shipCarrierRepository
+							.findByCompany_CompanyIdAndParentIdAndActive(companyID, carrier.getShipCarrierId(), 1);
+					for (BcaShipcarrier child : childCarriers) {
+						ConfigurationDto childPojo = new ConfigurationDto();
+						childPojo.setShipCarrierId(child.getShipCarrierId());
+						childPojo.setShipCarrierName("    " + child.getName());
+						childPojo.setShipCarrierParentId(child.getParentId());
+						listPOJOs.add(childPojo);
 					}
 				}
 			}
 			readSMCAll(cForm, companyID);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				db.close(rs1);
-				db.close(stmt1);
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		cForm.setListOfExistingShipCarrier(listPOJOs);
 		return listPOJOs;
 	}
 
-	private ArrayList<ConfigurationDto> readSMCAll(ConfigurationDto cForm, String companyID) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+//	public ArrayList<ConfigurationDto> getShipCarrier(String companyID, HttpServletRequest request,
+//			ConfigurationDto cForm) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		// TODO Auto-generated method stub
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		ResultSet rs1 = null;
+//		Statement stmt1 = null;
+//
+//		con = db.getConnection();
+//
+//		String sql = "SELECT ShipCarrierID,Name " + "FROM bca_shipcarrier WHERE CompanyID =" + companyID + " "
+//				+ "AND ParentID = 0 AND Active =1 " + "ORDER BY ShipCarrierID";
+//
+//		try {
+//			stmt = con.createStatement();
+//			stmt1 = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setShipCarrierId(rs.getInt(("ShipCarrierID")));
+//				int shipCarrierID = rs.getInt(("ShipCarrierID"));
+//				pojo.setShipCarrierName(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//				if (rs.getString("Name").equals("User Defined")) {
+//					sql = "SELECT ShipCarrierID,Name,ParentID " + " FROM bca_shipcarrier " + " WHERE CompanyID = "
+//							+ companyID + "" + " AND Active =1 AND ParentID = " + shipCarrierID + " ORDER BY Name";
+//					rs1 = stmt1.executeQuery(sql);
+//
+//					while (rs1.next()) {
+//						pojo = new ConfigurationDto();
+//						pojo.setShipCarrierId(rs1.getInt(("ShipCarrierID")));
+//						pojo.setShipCarrierName("    " + rs1.getString("Name"));
+//						pojo.setShipCarrierParentId(rs1.getInt("ParentID"));
+//						listPOJOs.add(pojo);
+//					}
+//				}
+//			}
+//			readSMCAll(cForm, companyID);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				db.close(rs1);
+//				db.close(stmt1);
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		cForm.setListOfExistingShipCarrier(listPOJOs);
+//		return listPOJOs;
+//	}
+
+	private ArrayList<ConfigurationDto> readSMCAll(ConfigurationDto cForm, Long companyID) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+
 		try {
-			String sql = "SELECT ShipCarrierID,Name,ParentID FROM bca_shipcarrier " + " WHERE CompanyID = " + companyID
-					+ " AND Active=1 AND ParentID=0 AND Name <> 'User Defined' ORDER BY Name";
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setShipCarrierId(rs.getInt(("ShipCarrierID")));
-				pojo.setShipCarrierName(rs.getString("Name"));
+			List<BcaShipcarrier> carriers = shipCarrierRepository
+					.findByCompany_CompanyIdAndParentIdAndActiveAndNameNot(companyID, 0, 1, "User Defined");
+			for (BcaShipcarrier carrier : carriers) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				pojo.setShipCarrierId(carrier.getShipCarrierId());
+				pojo.setShipCarrierName(carrier.getName());
 				listPOJOs.add(pojo);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		return listPOJOs;
 	}
+//	private ArrayList<ConfigurationDto> readSMCAll(ConfigurationDto cForm, String companyID) {
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//		try {
+//			String sql = "SELECT ShipCarrierID,Name,ParentID FROM bca_shipcarrier " + " WHERE CompanyID = " + companyID
+//					+ " AND Active=1 AND ParentID=0 AND Name <> 'User Defined' ORDER BY Name";
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setShipCarrierId(rs.getInt(("ShipCarrierID")));
+//				pojo.setShipCarrierName(rs.getString("Name"));
+//				listPOJOs.add(pojo);
+//			}
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return listPOJOs;
+//	}
 
-	public List<LabelValueBean> getCustomerTypeList(String companyID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
+	@Autowired
+	private BcaCustomerTypeRepository customerTypeRepository;
+
+	public List<LabelValueBean> getCustomerTypeList(Long companyID) {
 		List<LabelValueBean> ctTypeList = new ArrayList<>();
+
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_customer_type WHERE Deleted=0 AND CompanyID=" + companyID);
-			while (rs.next()) {
-				ctTypeList.add(new LabelValueBean(rs.getString("Name"), rs.getString("ID")));
+			List<BcaCustomerType> customerTypes = customerTypeRepository.findByCompany_CompanyIdAndDeleted(companyID,
+					0);
+			for (BcaCustomerType customerType : customerTypes) {
+				ctTypeList.add(new LabelValueBean(customerType.getName(), customerType.getId().toString()));
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		return ctTypeList;
 	}
 
-	public void saveCustomerType(String ID, String cTypeName, String companyID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
+//	public List<LabelValueBean> getCustomerTypeList(String companyID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		List<LabelValueBean> ctTypeList = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM bca_customer_type WHERE Deleted=0 AND CompanyID=" + companyID);
+//			while (rs.next()) {
+//				ctTypeList.add(new LabelValueBean(rs.getString("Name"), rs.getString("ID")));
+//			}
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return ctTypeList;
+//	}
+
+	public void saveCustomerType(String ID, String cTypeName, Long companyID) {
 		try {
-			String sql3 = "INSERT INTO bca_customer_type(Name, CompanyID, Deleted) VALUES('" + cTypeName + "',"
-					+ companyID + ",0)";
-			if (!ID.equalsIgnoreCase("0")) {
-				sql3 = "UPDATE bca_customer_type SET Name='" + cTypeName + "',CompanyID=" + companyID + " WHERE ID="
-						+ ID;
+			BcaCustomerType customerType;
+			BcaCompany company = companyRepository.findById(companyID).orElse(null);
+
+			if (company == null) {
+				// Handle the case where the company is not found
+				return;
 			}
-			pstmt = con.prepareStatement(sql3);
-			pstmt.executeUpdate();
+
+			if (!ID.equalsIgnoreCase("0")) {
+				// Update existing customer type
+				Integer id = Integer.parseInt(ID);
+				customerType = customerTypeRepository.findById(id).orElse(null);
+				if (customerType != null) {
+					customerType.setName(cTypeName);
+					customerType.setCompany(company);
+				}
+			} else {
+				// Create new customer type
+				customerType = new BcaCustomerType();
+				customerType.setName(cTypeName);
+				customerType.setCompany(company);
+				customerType.setDeleted(0);
+			}
+
+			if (customerType != null) {
+				customerTypeRepository.save(customerType);
+			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
 	}
+
+//	public void saveCustomerType(String ID, String cTypeName, String companyID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		try {
+//			String sql3 = "INSERT INTO bca_customer_type(Name, CompanyID, Deleted) VALUES('" + cTypeName + "',"
+//					+ companyID + ",0)";
+//			if (!ID.equalsIgnoreCase("0")) {
+//				sql3 = "UPDATE bca_customer_type SET Name='" + cTypeName + "',CompanyID=" + companyID + " WHERE ID="
+//						+ ID;
+//			}
+//			pstmt = con.prepareStatement(sql3);
+//			pstmt.executeUpdate();
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 
 	public void deleteCustomerType(String ID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("DELETE FROM bca_customer_type WHERE ID=" + ID);
-			pstmt.executeUpdate();
+			Integer id = Integer.parseInt(ID);
+			customerTypeRepository.deleteById(id);
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
 	}
 
+//	public void deleteCustomerType(String ID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		try {
+//			pstmt = con.prepareStatement("DELETE FROM bca_customer_type WHERE ID=" + ID);
+//			pstmt.executeUpdate();
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
+
+	@Autowired
+	private BcaRealtimeshippingserviceRepository shippingServiceRepository;
+
 	public boolean addShippingService(ConfigurationDto configDto, int shippingTypeId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
 		boolean rowAdded = false;
-		String sql = null;
+		BcaRealtimeshippingservice service;
 
 		try {
 			if (configDto.getRealTimeShippingServiceId() != 0) {
-				sql = "update bca_realtimeshippingservice set ShippingService = ?, Price = ? where ShippingServiceID =?";
-				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, configDto.getRealTimeShippingService());
-				pstmt.setDouble(2, configDto.getRealTimeShippingPrice());
-				pstmt.setInt(3, configDto.getRealTimeShippingServiceId());
+				// Update existing service
+				service = shippingServiceRepository.findById(configDto.getRealTimeShippingServiceId()).orElse(null);
+				if (service != null) {
+					service.setShippingService(configDto.getRealTimeShippingService());
+					service.setPrice(configDto.getRealTimeShippingPrice());
+				}
 			} else {
-				sql = "INSERT INTO bca_realtimeshippingservice(ShippingType,ShippingService, Price, Active) Values(?,?,?,?)";
-				pstmt = con.prepareStatement(sql);
-				pstmt.setInt(1, shippingTypeId);
-				pstmt.setString(2, configDto.getRealTimeShippingService());
-				pstmt.setDouble(3, configDto.getRealTimeShippingPrice());
-				pstmt.setInt(4, 1);
+				// Create new service
+				service = new BcaRealtimeshippingservice();
+				service.setShippingType(shippingTypeId);
+				service.setShippingService(configDto.getRealTimeShippingService());
+				service.setPrice(configDto.getRealTimeShippingPrice());
+				service.setActive(1);
 			}
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+
+			if (service != null) {
+				shippingServiceRepository.save(service);
+				rowAdded = true;
+			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		return rowAdded;
 	}
 
-	public boolean deleteUspsShippingService(int shippingServiceId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowDeleted = false;
-		String sql = null;
+//	public boolean addShippingService(ConfigurationDto configDto, int shippingTypeId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		String sql = null;
+//
+//		try {
+//			if (configDto.getRealTimeShippingServiceId() != 0) {
+//				sql = "update bca_realtimeshippingservice set ShippingService = ?, Price = ? where ShippingServiceID =?";
+//				pstmt = con.prepareStatement(sql);
+//				pstmt.setString(1, configDto.getRealTimeShippingService());
+//				pstmt.setDouble(2, configDto.getRealTimeShippingPrice());
+//				pstmt.setInt(3, configDto.getRealTimeShippingServiceId());
+//			} else {
+//				sql = "INSERT INTO bca_realtimeshippingservice(ShippingType,ShippingService, Price, Active) Values(?,?,?,?)";
+//				pstmt = con.prepareStatement(sql);
+//				pstmt.setInt(1, shippingTypeId);
+//				pstmt.setString(2, configDto.getRealTimeShippingService());
+//				pstmt.setDouble(3, configDto.getRealTimeShippingPrice());
+//				pstmt.setInt(4, 1);
+//			}
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
 
+	public boolean deleteUspsShippingService(int shippingServiceId) {
+		boolean rowDeleted = false;
 		try {
-			sql = "update bca_realtimeshippingservice set Active = ? where ShippingServiceID =?";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, 0);
-			pstmt.setInt(2, shippingServiceId);
-			rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+			BcaRealtimeshippingservice service = shippingServiceRepository.findById(shippingServiceId).orElse(null);
+			if (service != null) {
+				service.setActive(0);
+				shippingServiceRepository.save(service);
+				rowDeleted = true;
+			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		return rowDeleted;
 	}
 
-	public ArrayList<ScheduleDateDto> getScheduleTimes(String companyID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
+//	public boolean deleteUspsShippingService(int shippingServiceId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowDeleted = false;
+//		String sql = null;
+//
+//		try {
+//			sql = "update bca_realtimeshippingservice set Active = ? where ShippingServiceID =?";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setInt(1, 0);
+//			pstmt.setInt(2, shippingServiceId);
+//			rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowDeleted;
+//	}
 
+	@Autowired
+	private BcaScheduletimesRepository scheduleTimesRepository;
+
+	public ArrayList<ScheduleDateDto> getScheduleTimes(Long companyID) {
+		ArrayList<ScheduleDateDto> scheduleDateDtoArrayList = new ArrayList<>();
 		Calendar c = Calendar.getInstance();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-		ArrayList<ScheduleDateDto> scheduleDateDtoArrayList = new ArrayList<>();
-		try {
-			stmt = con.createStatement();
-			String sql = "Select ScheduleId,ScheduleTime,ScheduleMinute,CategeoryType,StoreID From bca_scheduletimes Where  CompanyID ="
-					+ companyID + " order by ScheduleId asc";
-			rs = stmt.executeQuery(sql);
 
-			while (rs.next()) {
+		try {
+			List<BcaScheduletimes> scheduleTimes = scheduleTimesRepository
+					.findByCompany_CompanyIdOrderByScheduleIdAsc(companyID);
+			for (BcaScheduletimes scheduleTime : scheduleTimes) {
 				ScheduleDateDto scheduleDateDto = new ScheduleDateDto();
 				String period = "AM";
-				int h = rs.getInt("ScheduleTime");
+				int h = scheduleTime.getScheduleTime();
 				if (h >= 12) {
 					h = h - 12;
 					period = "PM";
 				}
 				c.set(Calendar.HOUR_OF_DAY, h);
-				int m = rs.getInt("ScheduleMinute");
-				c.set(Calendar.MINUTE, m);
-				scheduleDateDto.setId(rs.getInt("ScheduleId"));
+				c.set(Calendar.MINUTE, scheduleTime.getScheduleMinute());
+
+				scheduleDateDto.setId(scheduleTime.getScheduleId());
 				scheduleDateDto.setDate(c.getTime());
-				scheduleDateDto.setStoreID(-1);
-				scheduleDateDto.setType(rs.getInt("CategeoryType"));
+				scheduleDateDto.setStoreID(-1); // Adjust as per your logic
+				scheduleDateDto.setType(scheduleTime.getCategeoryType());
 				scheduleDateDto.setTime(simpleDateFormat.format(c.getTime()));
 				scheduleDateDto.setPeriod(period);
 				scheduleDateDtoArrayList.add(scheduleDateDto);
-
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			// Handle exception
 		}
+
 		return scheduleDateDtoArrayList;
 	}
 
-	public boolean insertScheduleTime(int hour, int min, int type, int storeID, String companyId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowAdded = false;
-		String sql = null;
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM");
+//	public ArrayList<ScheduleDateDto> getScheduleTimes(String companyID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//
+//		Calendar c = Calendar.getInstance();
+//		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+//		ArrayList<ScheduleDateDto> scheduleDateDtoArrayList = new ArrayList<>();
+//		try {
+//			stmt = con.createStatement();
+//			String sql = "Select ScheduleId,ScheduleTime,ScheduleMinute,CategeoryType,StoreID From bca_scheduletimes Where  CompanyID ="
+//					+ companyID + " order by ScheduleId asc";
+//			rs = stmt.executeQuery(sql);
+//
+//			while (rs.next()) {
+//				ScheduleDateDto scheduleDateDto = new ScheduleDateDto();
+//				String period = "AM";
+//				int h = rs.getInt("ScheduleTime");
+//				if (h >= 12) {
+//					h = h - 12;
+//					period = "PM";
+//				}
+//				c.set(Calendar.HOUR_OF_DAY, h);
+//				int m = rs.getInt("ScheduleMinute");
+//				c.set(Calendar.MINUTE, m);
+//				scheduleDateDto.setId(rs.getInt("ScheduleId"));
+//				scheduleDateDto.setDate(c.getTime());
+//				scheduleDateDto.setStoreID(-1);
+//				scheduleDateDto.setType(rs.getInt("CategeoryType"));
+//				scheduleDateDto.setTime(simpleDateFormat.format(c.getTime()));
+//				scheduleDateDto.setPeriod(period);
+//				scheduleDateDtoArrayList.add(scheduleDateDto);
+//
+//			}
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return scheduleDateDtoArrayList;
+//	}
 
+	public boolean insertScheduleTime(int hour, int min, int type, int storeID, Long companyId) {
 		try {
-			sql = "INSERT INTO bca_scheduletimes(ScheduleTime,ScheduleMinute,ScheduleDate,CategeoryType,CompanyID)"
-					+ " Values (?,?,?,?,?)";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, hour);
-			pstmt.setInt(2, min);
-			pstmt.setString(3, simpleDateFormat.format(new Date()));
-			pstmt.setInt(4, type);
-			pstmt.setString(5, companyId);
+			BcaCompany company = companyRepository.findById(companyId).orElse(null);
+			OffsetDateTime offsetDateTime = OffsetDateTime.now(ZoneId.systemDefault());
 
-			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+			BcaScheduletimes scheduleTime = new BcaScheduletimes();
+			scheduleTime.setScheduleTime(hour);
+			scheduleTime.setScheduleMinute(min);
+			scheduleTime.setScheduleDate(offsetDateTime);
+			scheduleTime.setCategeoryType(type);
+			scheduleTime.setCompany(company);
+
+			scheduleTimesRepository.save(scheduleTime);
+			return true;
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			return false;
 		}
-		return rowAdded;
 	}
+
+//	public boolean insertScheduleTime(int hour, int min, int type, int storeID, String companyId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowAdded = false;
+//		String sql = null;
+//		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM");
+//
+//		try {
+//			sql = "INSERT INTO bca_scheduletimes(ScheduleTime,ScheduleMinute,ScheduleDate,CategeoryType,CompanyID)"
+//					+ " Values (?,?,?,?,?)";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setInt(1, hour);
+//			pstmt.setInt(2, min);
+//			pstmt.setString(3, simpleDateFormat.format(new Date()));
+//			pstmt.setInt(4, type);
+//			pstmt.setString(5, companyId);
+//
+//			rowAdded = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowAdded;
+//	}
+
+	@Autowired
+	private BcaScheduletimesRepository scheduleTimeRepository;
 
 	public boolean deleteTimes(int scheduleId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowDeleted = false;
-		String sql = null;
-
 		try {
-			sql = "delete From bca_scheduletimes Where  ScheduleId = ?";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, scheduleId);
-			rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+			if (scheduleTimeRepository.existsById(scheduleId)) {
+				scheduleTimeRepository.deleteById(scheduleId);
+				return true;
+			} else {
+				return false;
+			}
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		return rowDeleted;
-	}
-
-	public void updateRemindersInfo(ConfigurationDto cForm, String compId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean rowUpdated = false;
-		try {
-			String sql = "update bca_preference set ShowReminder = ?, InvoiceMemo = ?,InvoiceMemoDays = ?, "
-					+ "OverdueInvoice = ?, OverdueinvoiceDays = ?, InventoryOrder = ?, InventoryOrderDays = ?, "
-					+ "BillstoPay = ?,BillstoPayDays = ?,Memobill = ?,MemobillDays = ?,EstimationMemo = ?,EstimationMemoDays = ?, "
-					+ "POMemo = ?,POMemoDays = ?,ServiceBillsMemo = ?,ServiceBillsMemoDays = ? Where CompanyID = ?";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, cForm.getShowReminder());
-			pstmt.setInt(2, cForm.getInvoiceMemo());
-			pstmt.setInt(3, cForm.getInvoiceMemoDays());
-			pstmt.setInt(4, cForm.getOverdueInvoice());
-			pstmt.setInt(5, cForm.getOverdueInvoiceDays());
-			pstmt.setInt(6, cForm.getInventoryOrder());
-			pstmt.setInt(7, cForm.getInventoryOrderDays());
-			pstmt.setInt(8, cForm.getBillsToPay());
-			pstmt.setInt(9, cForm.getBillsToPayDays());
-			pstmt.setInt(10, cForm.getMemorizeBill());
-			pstmt.setInt(11, cForm.getMemorizeBillDays());
-			pstmt.setInt(12, cForm.getMemorizeEstimation());
-			pstmt.setInt(13, cForm.getMemorizeEstimationDays());
-			pstmt.setInt(14, cForm.getMemorizePurchaseOrder());
-			pstmt.setInt(15, cForm.getMemorizePurchaseOrderDays());
-			pstmt.setInt(16, cForm.getServiceBilling());
-			pstmt.setInt(17, cForm.getServiceBillingDays());
-			pstmt.setString(18, compId);
-
-			rowUpdated = pstmt.executeUpdate() > 0 ? true : false;
-
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			return false;
 		}
 	}
+
+//	public boolean deleteTimes(int scheduleId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowDeleted = false;
+//		String sql = null;
+//
+//		try {
+//			sql = "delete From bca_scheduletimes Where  ScheduleId = ?";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setInt(1, scheduleId);
+//			rowDeleted = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return rowDeleted;
+//	}
+
+	public void updateRemindersInfo(ConfigurationDto cForm, String companyId) {
+		Long compId = Long.parseLong(companyId); // Convert to Long if necessary
+
+		Optional<BcaPreference> preferenceOpt = preferenceRepository.findByCompany_CompanyId(compId);
+
+		if (preferenceOpt.isPresent()) {
+			BcaPreference preference = preferenceOpt.get();
+
+			// Set the fields from cForm
+			preference.setShowReminder(Integer.valueOf(cForm.getShowReminder()));
+			preference.setInvoiceMemo(cForm.getInvoiceMemo());
+			preference.setInvoiceMemoDays(cForm.getInvoiceMemoDays());
+			preference.setOverdueInvoice(cForm.getOverdueInvoice());
+			preference.setOverdueinvoiceDays(cForm.getOverdueInvoiceDays());
+			preference.setInventoryOrder(cForm.getInventoryOrder());
+			preference.setInventoryOrderDays(cForm.getInventoryOrderDays());
+			preference.setBillstoPay(cForm.getBillsToPay());
+			preference.setBillstoPayDays(cForm.getBillsToPayDays());
+			preference.setMemobill(cForm.getMemorizeBill());
+			preference.setMemobillDays(cForm.getMemorizeBillDays());
+			preference.setEstimationMemo(cForm.getMemorizeEstimation());
+			preference.setEstimationMemoDays(cForm.getMemorizeEstimationDays());
+			preference.setPomemo(cForm.getMemorizePurchaseOrder());
+			preference.setPomemoDays(cForm.getMemorizePurchaseOrderDays());
+			preference.setServiceBillsMemo(cForm.getServiceBilling());
+			preference.setServiceBillsMemoDays(cForm.getServiceBillingDays());
+
+			preferenceRepository.save(preference); // This will update the record
+		} else {
+			// Handle the case where the preference does not exist
+			Loger.log("Preference not found for Company ID: " + compId);
+		}
+	}
+
+//	public void updateRemindersInfo(ConfigurationDto cForm, String compId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean rowUpdated = false;
+//		try {
+//			String sql = "update bca_preference set ShowReminder = ?, InvoiceMemo = ?,InvoiceMemoDays = ?, "
+//					+ "OverdueInvoice = ?, OverdueinvoiceDays = ?, InventoryOrder = ?, InventoryOrderDays = ?, "
+//					+ "BillstoPay = ?,BillstoPayDays = ?,Memobill = ?,MemobillDays = ?,EstimationMemo = ?,EstimationMemoDays = ?, "
+//					+ "POMemo = ?,POMemoDays = ?,ServiceBillsMemo = ?,ServiceBillsMemoDays = ? Where CompanyID = ?";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setString(1, cForm.getShowReminder());
+//			pstmt.setInt(2, cForm.getInvoiceMemo());
+//			pstmt.setInt(3, cForm.getInvoiceMemoDays());
+//			pstmt.setInt(4, cForm.getOverdueInvoice());
+//			pstmt.setInt(5, cForm.getOverdueInvoiceDays());
+//			pstmt.setInt(6, cForm.getInventoryOrder());
+//			pstmt.setInt(7, cForm.getInventoryOrderDays());
+//			pstmt.setInt(8, cForm.getBillsToPay());
+//			pstmt.setInt(9, cForm.getBillsToPayDays());
+//			pstmt.setInt(10, cForm.getMemorizeBill());
+//			pstmt.setInt(11, cForm.getMemorizeBillDays());
+//			pstmt.setInt(12, cForm.getMemorizeEstimation());
+//			pstmt.setInt(13, cForm.getMemorizeEstimationDays());
+//			pstmt.setInt(14, cForm.getMemorizePurchaseOrder());
+//			pstmt.setInt(15, cForm.getMemorizePurchaseOrderDays());
+//			pstmt.setInt(16, cForm.getServiceBilling());
+//			pstmt.setInt(17, cForm.getServiceBillingDays());
+//			pstmt.setString(18, compId);
+//
+//			rowUpdated = pstmt.executeUpdate() > 0 ? true : false;
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 }

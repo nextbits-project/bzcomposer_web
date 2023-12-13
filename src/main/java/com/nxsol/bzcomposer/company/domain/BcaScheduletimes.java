@@ -12,88 +12,99 @@ import java.time.OffsetDateTime;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="bca_scheduletimes")
+@Table(name = "bca_scheduletimes")
 public class BcaScheduletimes {
 
-    @Id
-    @Column(name="ScheduleTime", nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer scheduleTime;
+	@Id
+	@Column(name = "ScheduleId", nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer scheduleId;
 
-    @Column(name="ScheduleDate", nullable = false)
-    private OffsetDateTime scheduleDate;
+	@Column(name = "ScheduleTime")
+	private Integer scheduleTime;
 
-    @Column(name="CategeoryType")
-    private Integer categeoryType;
+	@Column(name = "ScheduleDate", nullable = false)
+	private OffsetDateTime scheduleDate;
 
-    @Column(name="ScheduleMinute")
-    private Integer scheduleMinute;
+	@Column(name = "CategeoryType")
+	private Integer categeoryType;
 
-    @Column(name="isCompleted")
-    private Integer isCompleted;
+	@Column(name = "ScheduleMinute")
+	private Integer scheduleMinute;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CompanyID")
-    private BcaCompany company;
+	@Column(name = "isCompleted")
+	private Integer isCompleted;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "StoreID")
-    private BcaStore store;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CompanyID")
+	private BcaCompany company;
 
-    public Integer getScheduleTime() {
-        return scheduleTime;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "StoreID")
+	private BcaStore store;
 
-    public void setScheduleTime(final Integer scheduleTime) {
-        this.scheduleTime = scheduleTime;
-    }
+	public Integer getScheduleId() {
+		return scheduleId;
+	}
 
-    public OffsetDateTime getScheduleDate() {
-        return scheduleDate;
-    }
+	public void setScheduleId(Integer scheduleId) {
+		this.scheduleId = scheduleId;
+	}
 
-    public void setScheduleDate(final OffsetDateTime scheduleDate) {
-        this.scheduleDate = scheduleDate;
-    }
+	public Integer getScheduleTime() {
+		return scheduleTime;
+	}
 
-    public Integer getCategeoryType() {
-        return categeoryType;
-    }
+	public void setScheduleTime(final Integer scheduleTime) {
+		this.scheduleTime = scheduleTime;
+	}
 
-    public void setCategeoryType(final Integer categeoryType) {
-        this.categeoryType = categeoryType;
-    }
+	public OffsetDateTime getScheduleDate() {
+		return scheduleDate;
+	}
 
-    public Integer getScheduleMinute() {
-        return scheduleMinute;
-    }
+	public void setScheduleDate(final OffsetDateTime scheduleDate) {
+		this.scheduleDate = scheduleDate;
+	}
 
-    public void setScheduleMinute(final Integer scheduleMinute) {
-        this.scheduleMinute = scheduleMinute;
-    }
+	public Integer getCategeoryType() {
+		return categeoryType;
+	}
 
-    public Integer getIsCompleted() {
-        return isCompleted;
-    }
+	public void setCategeoryType(final Integer categeoryType) {
+		this.categeoryType = categeoryType;
+	}
 
-    public void setIsCompleted(final Integer isCompleted) {
-        this.isCompleted = isCompleted;
-    }
+	public Integer getScheduleMinute() {
+		return scheduleMinute;
+	}
 
-    public BcaCompany getCompany() {
-        return company;
-    }
+	public void setScheduleMinute(final Integer scheduleMinute) {
+		this.scheduleMinute = scheduleMinute;
+	}
 
-    public void setCompany(final BcaCompany company) {
-        this.company = company;
-    }
+	public Integer getIsCompleted() {
+		return isCompleted;
+	}
 
-    public BcaStore getStore() {
-        return store;
-    }
+	public void setIsCompleted(final Integer isCompleted) {
+		this.isCompleted = isCompleted;
+	}
 
-    public void setStore(final BcaStore store) {
-        this.store = store;
-    }
+	public BcaCompany getCompany() {
+		return company;
+	}
+
+	public void setCompany(final BcaCompany company) {
+		this.company = company;
+	}
+
+	public BcaStore getStore() {
+		return store;
+	}
+
+	public void setStore(final BcaStore store) {
+		this.store = store;
+	}
 
 }

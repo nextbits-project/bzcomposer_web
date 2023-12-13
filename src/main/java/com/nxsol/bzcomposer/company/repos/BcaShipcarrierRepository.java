@@ -15,4 +15,7 @@ public interface BcaShipcarrierRepository extends JpaRepository<BcaShipcarrier, 
 
 	List<BcaShipcarrier> findByCompany_CompanyIdAndParentIdAndActive(Long companyId, int parentId, int active);
 
+	List<BcaShipcarrier> findByCompany_CompanyIdAndParentIdAndActiveAndNameNot(Long companyId, Integer parentId,
+			Integer active, String name);
+
 }

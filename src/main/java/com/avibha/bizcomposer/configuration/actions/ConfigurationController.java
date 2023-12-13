@@ -64,6 +64,8 @@ public class ConfigurationController {
 	@Autowired
 	private SalesDetailsDao sd;
 
+	@Autowired
+	ConfigurationDAO configDao;
 //	@Autowired
 //	private	ReceivableLIst rl;
 
@@ -116,7 +118,7 @@ public class ConfigurationController {
 			// test calls ends
 			dao.getDetails(companyID, request, configDto);
 			dao.getModulesName(configDto);
-			dao.getWeight(companyID, configDto);
+			dao.getWeight(companyIDL, configDto);
 			dao.getModules(companyID, request, configDto);
 			dao.getSelectedModules(companyIDL, configDto);
 			dao.getPaymentType(companyIDL, configDto);
@@ -432,7 +434,7 @@ public class ConfigurationController {
 			// System.out.println("Inside config6 condition");
 			// ConfigurationInfoNEW configInfo = new ConfigurationInfoNEW();
 			// ConfigurationDAO dao = new ConfigurationDAO();
-			dao.getPackingSlipTemplate(companyID, request, configDto);
+			dao.getPackingSlipTemplate(companyIDL, configDto);
 			dao.getCountry(configDto);
 			dao.getShipping(companyIDL, configDto);
 			dao.getTerm(companyIDL, configDto);
@@ -448,7 +450,7 @@ public class ConfigurationController {
 			dao.getSalesTax(companyIDL, configDto);
 			dao.getCreditTerm(companyIDL, configDto);
 			dao.getRefundReason(companyIDL, configDto);
-			dao.getJobCategory(companyID, request, configDto);
+			dao.getJobCategory(companyIDL, request, configDto);
 
 			// ConfigurationInfo configInfo = new ConfigurationInfo();
 			configInfo.getCongurationRecord(companyID, configDto, request);
@@ -549,14 +551,14 @@ public class ConfigurationController {
 			request.setAttribute("showTelephone", configDto.getPoShowTelephone());
 			request.setAttribute("purchasePrefix", configDto.getIsPurchasePrefix());
 			request.setAttribute("businessTypes", vendorCategory.getCVCategoryList(companyID));
-			request.setAttribute("customerTypeList", dao.getCustomerTypeList(companyID));
+			request.setAttribute("customerTypeList", dao.getCustomerTypeList(companyIDL));
 
 			dao.getCountry(configDto);
 			dao.getStates(231, configDto);
 			dao.getCategory(companyIDL, configDto);
 			dao.getExistingLocation(companyIDL, configDto);
-			dao.getActiveEmployee(companyID, request, configDto);
-			dao.getShipCarrier(companyID, request, configDto);
+			dao.getActiveEmployee(companyIDL, request, configDto);
+			dao.getShipCarrier(companyIDL, request, configDto);
 			dao.getTerm(companyIDL, configDto);
 			dao.getSalesRepresentative(companyIDL, configDto);
 			dao.getPaymentType(companyIDL, configDto);
@@ -640,7 +642,7 @@ public class ConfigurationController {
 			dao.getActiveRealTimeShippingServices(2, request, configDto);
 			dao.getActiveRealTimeShippingServices(3, request, configDto);
 
-			ArrayList<ScheduleDateDto> scheduleDateList = dao.getScheduleTimes(companyID);
+			ArrayList<ScheduleDateDto> scheduleDateList = dao.getScheduleTimes(companyIDL);
 			request.setAttribute("scheduleDateList", scheduleDateList);
 
 			dao.getActiveMailType(request, configDto);
@@ -686,7 +688,7 @@ public class ConfigurationController {
 			}
 			// c1.set(Calendar.AM_PM, period.equals("AM") ? 0 : 1);
 			// hour = period.equals("AM") ? hour : (hour + 12);
-			dao.insertScheduleTime(hour, min, 2, -1, companyID);
+			dao.insertScheduleTime(hour, min, 2, -1, companyIDL);
 
 		} else if (action.equalsIgnoreCase("deleteTimes")) {
 			String scheduleTimeId = request.getParameter("scheduleTimeId");
@@ -1195,13 +1197,13 @@ public class ConfigurationController {
 			configInfo.removeJobCodeTimesheet(request);
 			forward = "redirect:Configuration?tabid=config11&&tab=tr11";
 		} else if (action.equalsIgnoreCase("SaveCustomerType")) {
-			ConfigurationDAO configDao = new ConfigurationDAO();
+			//ConfigurationDAO configDao = new ConfigurationDAO();
 			String ID = request.getParameter("ID");
 			String custTypeName = request.getParameter("custTypeName");
-			configDao.saveCustomerType(ID, custTypeName, companyID);
+			configDao.saveCustomerType(ID, custTypeName, companyIDL);
 			forward = "redirect:Configuration?tabid=config10&tab=tr10";
 		} else if (action.equalsIgnoreCase("DeleteCustomerType")) {
-			ConfigurationDAO configDao = new ConfigurationDAO();
+			//ConfigurationDAO configDao = new ConfigurationDAO();
 			String ID = request.getParameter("ID");
 			configDao.deleteCustomerType(ID);
 			forward = "redirect:Configuration?tabid=config10&tab=tr10";
