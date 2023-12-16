@@ -49,7 +49,13 @@ public class FileController {
 
 	@Autowired
 	private DataImportExportUtils importExportUtils;
-
+	
+	@Autowired
+	private CompanyInfo customer;
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
+	
 	@Autowired
 	private LeadDAO leadDAO;
 
@@ -102,8 +108,8 @@ public class FileController {
 			forward = "success5";
 		} else if (action.equalsIgnoreCase("Dashboard")) {
 			HttpSession sess = request.getSession();
-			CompanyInfo customer = new CompanyInfo();
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+//			CompanyInfo customer = new CompanyInfo();
+//			ConfigurationInfo configInfo = new ConfigurationInfo();
 			System.out.println("CompanyID: " + compId);
 
 			request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo));
@@ -114,7 +120,7 @@ public class FileController {
 			forward = "/include/dashboard";
 		} else if (action.equalsIgnoreCase("CompanyInfo")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			AddNewCompanyDAO dao = new AddNewCompanyDAO();
 
 			dao.getBusinessType(compId, request, companyInfoDto);
@@ -166,7 +172,7 @@ public class FileController {
 		else if (action.equalsIgnoreCase("CompanyInformation")) {
 			HttpSession sess = request.getSession();
 			int userID = (Integer) sess.getAttribute("userID");
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			ArrayList<CompanyInfoDto> comanyDetails = customer.SearchCompany(compId, userID, companyInfoDto, request);
 			CompanyDetails cdetails = new CompanyDetails();
 			cdetails.getAllList(request);
@@ -196,7 +202,7 @@ public class FileController {
 
 		else if (action.equalsIgnoreCase("SetUpprintForms")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			forward = "/file/setupprintForm";
 		} else if (action.equalsIgnoreCase("MultiPrintInvoice")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");
@@ -330,7 +336,7 @@ public class FileController {
 			companyInfoDto.setTaxID(request.getParameter("taxID"));
 			companyInfoDto.setJobPosition(request.getParameter("jobPosition"));
 
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			customer.updateComapanyinfo(companyInfoDto, userID, compId);
 
 			/* Reminders */
@@ -359,7 +365,7 @@ public class FileController {
 			status = "Success";
 		} else if (action.equalsIgnoreCase("editSecurity")) {
 			String compId = (String) request.getSession().getAttribute("CID");
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			customer.updateComapanySecurity(request.getParameter("password"), compId);
 			status = "Success";
 		}

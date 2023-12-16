@@ -12,11 +12,15 @@ import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.MyUtility;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+@Service
 public class CompanyInfo {
 
     public ArrayList<CompanyInfoDto> SearchCompany(String compId, int userID, CompanyInfoDto customer, HttpServletRequest request) {

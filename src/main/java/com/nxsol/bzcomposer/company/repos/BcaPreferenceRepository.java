@@ -12,11 +12,11 @@ import com.nxsol.bzcomposer.company.domain.BcaPreference;
 @Repository
 public interface BcaPreferenceRepository extends JpaRepository<BcaPreference, Integer> {
 	Optional<BcaPreference> findByCompany_CompanyId(Long companyId);
-	
-	
+
 	@Query("select bp.invoiceStyle.invoiceStyleId from BcaPreference bp where bp.company.companyId = :companyId")
-	Integer findInvoiceStyleIDByCompanyId(@Param("companyId")Long companyID);
-	
-    //Optional<BcaPreference> findByCompany_CompanyId(Long companyId);
+	Integer findInvoiceStyleIDByCompanyId(@Param("companyId") Long companyID);
+
+	// Optional<BcaPreference> findByCompany_CompanyId(Long companyId);
+	Optional<BcaPreference> findByCompany_CompanyIdAndActive(Long companyId, Integer active);
 
 }

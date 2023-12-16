@@ -66,8 +66,9 @@ public class ConfigurationController {
 
 	@Autowired
 	ConfigurationDAO configDao;
-//	@Autowired
-//	private	ReceivableLIst rl;
+	
+	@Autowired
+	private	ReceivableLIst rl;
 
 	private String pageActiveTab = "pageActiveTab";
 	ArrayList<MailTemplateDto> mailTemplateDtos;
@@ -108,7 +109,7 @@ public class ConfigurationController {
 			// ConfigurationDetails configDetails = new ConfigurationDetails();
 			configDetails.getConfigurationInfo(request, configDto);
 
-			ReceivableLIst rl = new ReceivableListImpl();
+//			ReceivableLIst rl = new ReceivableListImpl();
 			request.setAttribute("PaymentTypeForCombo", rl.getPaymentType());
 
 			// ConfigurationDAO dao = new ConfigurationDAO();
@@ -144,7 +145,7 @@ public class ConfigurationController {
 			model.addAttribute("companyInfoDto", companyInfoDto);
 
 			// Admin-Security-Data
-			configInfo.getAdministratorDetails(companyID, configDto, emailAddress);
+			configInfo.getAdministratorDetails(companyIDL, configDto, emailAddress);
 			request.setAttribute("UserName", configDto.getEmailAddress());
 			request.setAttribute("Password", configDto.getPassword());
 			request.setAttribute("Role", session.getAttribute("Role"));
@@ -386,12 +387,12 @@ public class ConfigurationController {
 			String modalNewPassword = request.getParameter("modalNewPassword");
 			System.out.println("modalNewPassword" + modalNewPassword);
 			// ConfigurationInfo configInfo = new ConfigurationInfo();
-			configInfo.getAdministratorDetails(companyID, emailAddress, modalNewPassword);
+			configInfo.updateAdministratorPassword(companyIDL, emailAddress, modalNewPassword);
 			forward = "redirect:Configuration?tabid=config&tab=tr2";
 		} else if (action.equalsIgnoreCase("config04")) {
 			// System.out.println("Inside config04 condition");
 			// ConfigurationInfo configInfo = new ConfigurationInfo();
-			configInfo.getAdministratorDetails(companyID, configDto, emailAddress);
+			configInfo.getAdministratorDetails(companyIDL, configDto, emailAddress);
 			String UserName = configDto.getEmailAddress();
 			String Password = configDto.getPassword();
 			request.setAttribute("UserName", UserName);

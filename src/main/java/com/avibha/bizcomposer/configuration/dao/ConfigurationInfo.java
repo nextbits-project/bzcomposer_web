@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +30,29 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaCountries;
 import com.nxsol.bzcomposer.company.domain.BcaFootnote;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
 import com.nxsol.bzcomposer.company.domain.BcaLabel;
-
+import com.nxsol.bzcomposer.company.domain.BcaPostyle;
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
 import com.nxsol.bzcomposer.company.domain.BcaSalestax;
 import com.nxsol.bzcomposer.company.domain.BcaServicetype;
+import com.nxsol.bzcomposer.company.domain.BcaStates;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
 import com.nxsol.bzcomposer.company.domain.BcpJobcode;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaFootnoteResult2;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLabelRepository;
-
+import com.nxsol.bzcomposer.company.repos.BcaPostyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
 import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaUserRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
 import com.nxsol.bzcomposer.company.repos.BcpJobcodeRepository;
 
@@ -53,27 +61,26 @@ public class ConfigurationInfo {
 
 	@Autowired
 	private BcaLabelRepository bcaLabelRepository;
-	
+
 	@Autowired
 	private BcaUsergroupRepository bcaUsergroupRepository;
-	
+
 	@Autowired
 	private BcaCompanyRepository bcaCompanyRepository;
-	
+
 	@Autowired
 	private BcaInvoicestyleRepository bcaInvoicestyleRepository;
-	
+
 	@Autowired
-	private BcpJobcodeRepository bcpJobcodeRepository; 
-	
+	private BcpJobcodeRepository bcpJobcodeRepository;
+
 	@Autowired
 	private BcaSalestaxRepository bcaSalestaxRepository;
-	
+
 	@Autowired
-	private BcaServicetypeRepository bcaServicetypeRepository; 
-	
+	private BcaServicetypeRepository bcaServicetypeRepository;
+
 	private static HttpServletRequest request;
-	
 
 	@Autowired
 	private BcaLabelRepository bcaLabelRepo;
@@ -89,17 +96,44 @@ public class ConfigurationInfo {
 	}
 
 	public ConfigurationDto getDefaultCongurationDataBySession() {
-		// HttpSession sess = request.getSession();
-		String companyID = "1";// (String) request.getSession().getAttribute("CID");
+		HttpSession sess = null;
+		if (request != null) {
+			sess = request.getSession();
+		}
+
+		String companyID = "";
+		Long companyIdL = 1L;
 		ConfigurationDto configDto = null;
-//        if(request.getSession().getAttribute("DefaultCongurationData") != null) {
-//            configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
-//        }else{
-//            configDto = getDefaultCongurationData(companyID);
-//        }
-		configDto = getDefaultCongurationData(companyID);
+		if (sess != null) {
+			if (request.getSession().getAttribute("DefaultCongurationData") != null) {
+				configDto = (ConfigurationDto) request.getSession().getAttribute("DefaultCongurationData");
+			} else {
+				companyID = (String) request.getSession().getAttribute("CID");
+				companyIdL = Long.valueOf(companyID);
+				configDto = getDefaultCongurationData(companyIdL, request);
+
+			}
+
+		} else {
+			companyID = "1";
+			configDto = getDefaultCongurationData(companyID);
+		}
+
+//		
 		return configDto;
 	}
+//	public ConfigurationDto getDefaultCongurationDataBySession() {
+//		// HttpSession sess = request.getSession();
+//		String companyID = "1";// (String) request.getSession().getAttribute("CID");
+//		ConfigurationDto configDto = null;
+////        if(request.getSession().getAttribute("DefaultCongurationData") != null) {
+////            configDto = (ConfigurationDto)request.getSession().getAttribute("DefaultCongurationData");
+////        }else{
+////            configDto = getDefaultCongurationData(companyID);
+////        }
+//		configDto = getDefaultCongurationData(companyID);
+//		return configDto;
+//	}
 
 	/* Label List with id & name */
 
@@ -136,11 +170,9 @@ public class ConfigurationInfo {
 	public List<LabelValueBean> labelInfo() {
 		List<BcaLabel> labels = bcaLabelRepo.findAll();
 
-
 		return labels.stream().map(label -> new LabelValueBean(label.getLabelType(), label.getId().toString()))
 				.collect(Collectors.toList());
 	}
-
 
 	/* User group information with id & name */
 //	public ArrayList userGroupInfo(String compId) {
@@ -191,7 +223,6 @@ public class ConfigurationInfo {
 	/* Invoice Style List with id & name */
 	public List<LabelValueBean> invoiceStyleList() {
 		List<BcaInvoicestyle> invoiceStyles = bcaInvoiceStyleRepo.findByActive(1);
-
 
 		return invoiceStyles.stream()
 				.map(style -> new LabelValueBean(style.getName(), style.getInvoiceStyleId().toString()))
@@ -319,10 +350,8 @@ public class ConfigurationInfo {
 //        return footnoteList;
 //    }
 
-
 	@Autowired
 	private BcpJobcodeRepository jobCodeRepository;
-
 
 	/* Job code List with id,name,cost & description */
 	public List<ConfigurationDto> jobCodeList(String compId) {
@@ -378,7 +407,6 @@ public class ConfigurationInfo {
 	@Autowired
 	private BcaSalestaxRepository salesTaxRepository;
 
-
 	public List<LabelValueBean> salesTaxList(String compId) {
 		List<BcaSalestax> salesTaxes = salesTaxRepository.findByCompany_CompanyIdAndActive(Long.valueOf(compId), 1);
 
@@ -431,7 +459,6 @@ public class ConfigurationInfo {
 			configForm.setServiceID(serviceType.getServiceId());
 			configForm.setServiceName(serviceType.getServiceName());
 			configForm.setInvStyleID(serviceType.getInvoiceStyle().getInvoiceStyleId());
-
 
 			BcaInvoicestyle invoiceStyle = invoiceStyleRepository
 					.findByInvoiceStyleIdAndActive(serviceType.getInvoiceStyle().getInvoiceStyleId(), 1);
@@ -494,6 +521,65 @@ public class ConfigurationInfo {
 //
 //		return serviceTypeList;
 //	}
+
+	@Autowired
+	private BcaPreferenceRepository preferenceRepository;
+
+	public ConfigurationDto getDefaultCongurationData(Long companyId, HttpServletRequest request) {
+		Optional<BcaPreference> preferenceOpt = preferenceRepository.findByCompany_CompanyIdAndActive(companyId, 1);
+
+		ConfigurationDto cForm = new ConfigurationDto();
+		if (preferenceOpt.isPresent()) {
+			BcaPreference preference = preferenceOpt.get();
+
+			// Map fields from preference to cForm
+			cForm.setPreferenceID(preference.getPreferenceId());
+			cForm.setAddressSettings(preference.getCopyAddress() ? "on" : "off");
+			cForm.setCustDefaultCountryID(preference.getCustomerCountry().getId());
+			cForm.setSelectedStateId(preference.getCustomerState().getId());
+			cForm.setCustTaxable(preference.getCustomerTaxable() == 1 ? "on" : "off");
+			cForm.setSelectedTermId(preference.getSalesTermId());
+			cForm.setSelectedSalesRepId(preference.getSalesRepId());
+			cForm.setSelectedPaymentId(preference.getSalesPayMethodId());
+			cForm.setCustomerShippingId(preference.getSalesViaId());
+			cForm.setAnnualInterestRate(preference.getChargeInterest());
+			cForm.setMinCharge(preference.getChargeMinimum());
+			cForm.setGracePeriod(preference.getChargeGrace().intValue());
+			cForm.setAssessFinanceCharge(preference.getChargeReassess() ? "on" : "off");
+			cForm.setMarkFinanceCharge(preference.getChargeMarkFinance() ? "on" : "off");
+			cForm.setProductCategoryID(preference.getProductCategoryId());
+			cForm.setLocationID(preference.getLocationId());
+			cForm.setReorderPoint(preference.getReOrderPoint());
+			cForm.setVendorInvoiceStyleId(preference.getVendorInvoiceStyleId());
+			cForm.setCustomerType(preference.getCustomerType());
+			cForm.setPriceLevelPriority(preference.getPriceLevelPriority());
+			cForm.setPriceLevelDealer(preference.getPriceLevelDealer());
+			cForm.setPriceLevelCustomer(preference.getPriceLevelCustomer());
+			cForm.setPriceLevelGeneral(preference.getPriceLevelGeneral());
+			cForm.setSaleTaxRate(preference.getSalesTaxRate());
+			cForm.setShowUSAInBillShipAddress(preference.getShowUsainBillShipAddress());
+			cForm.setInvoiceTemplateType(preference.getInvoiceTemplateType());
+			cForm.setEstTemplateType(preference.getEstimationTemplateType());
+			cForm.setSoTemplateType(preference.getSalesOrderTemplateType());
+			cForm.setPoTemplateType(preference.getPurchaseOrderTemplateType());
+			cForm.setPsTemplateType(preference.getPackingSlipTemplateType());
+			cForm.setDisplayPeriod(preference.getDisplayPeriod());
+			cForm.setStartInvoiceNum(preference.getStartingInvoiceNumber().toString());
+			cForm.setStartEstimationNum(preference.getStartingEstimationNumber().toString());
+			cForm.setStartSalesOrderNum(preference.getStartingSalesOrderNumber().toString());
+			cForm.setStartPONum(preference.getStartingPonumber());
+			cForm.setEstimationStyleID(preference.getEstimationStyleId());
+			cForm.setSoStyleID(preference.getSostyleId());
+			cForm.setIsSalePrefix(preference.getIsSalePrefix() ? "on" : "off");
+			cForm.setIsPurchasePrefix(preference.getIsPurchasePrefix() ? "on" : "off");
+
+			request.getSession().setAttribute("DefaultCongurationData", cForm);
+		} else {
+			// Handle case where preferences are not found
+			Loger.log("Preferences not found for Company ID: " + companyId);
+		}
+		return cForm;
+	}
 
 	public ConfigurationDto getDefaultCongurationData(String companyID) {
 		SQLExecutor executor = new SQLExecutor();
@@ -570,8 +656,9 @@ public class ConfigurationInfo {
 	private BcaPreferenceRepository bcaPreferenceRepository;
 
 	public void getCongurationRecord(String companyID, ConfigurationDto cForm, HttpServletRequest request) {
-		Optional<BcaPreference>  preferenceOpt = bcaPreferenceRepository.findByCompany_CompanyId(Long.valueOf(companyID));
-		BcaPreference preference= preferenceOpt.get();
+		Optional<BcaPreference> preferenceOpt = bcaPreferenceRepository
+				.findByCompany_CompanyId(Long.valueOf(companyID));
+		BcaPreference preference = preferenceOpt.get();
 		if (preference != null) {
 			// Map fields from preference to cForm
 			// Example: cForm.setCurrencyID(preference.getCurrencyID());
@@ -612,13 +699,20 @@ public class ConfigurationInfo {
 					preference.getDefaultArcategoryIdforac() != null ? preference.getDefaultArcategoryIdforac() : -1);
 			cForm.setPoCategory(
 					preference.getDefaultArcategoryIdforpo() != null ? preference.getDefaultArcategoryIdforpo() : -1);
-			cForm.setBpCategory(preference.getDefaultArcategoryIdforbp() != null ? preference.getDefaultArcategoryIdforbp() : -1);
-			cForm.setArDepositTo(preference.getDefaultdepositoforac() != null ? preference.getDefaultdepositoforac() : -1);
-			cForm.setPoDepositTo(preference.getDefaultdepositoforpo() != null ? preference.getDefaultdepositoforpo() : -1);
-			cForm.setBpDepositTo(preference.getDefaultdepositoforbp() != null ? preference.getDefaultdepositoforbp() : -1);
-			cForm.setArReceivedType(preference.getDefaultReceivedforac() != null ? preference.getDefaultReceivedforac() : -1);
-			cForm.setPoReceivedType(preference.getDefaultReceivedforpo() != null ? preference.getDefaultReceivedforpo() : -1);
-			cForm.setBpReceivedType(preference.getDefaultReceivedforbp() != null ? preference.getDefaultReceivedforbp() : -1);
+			cForm.setBpCategory(
+					preference.getDefaultArcategoryIdforbp() != null ? preference.getDefaultArcategoryIdforbp() : -1);
+			cForm.setArDepositTo(
+					preference.getDefaultdepositoforac() != null ? preference.getDefaultdepositoforac() : -1);
+			cForm.setPoDepositTo(
+					preference.getDefaultdepositoforpo() != null ? preference.getDefaultdepositoforpo() : -1);
+			cForm.setBpDepositTo(
+					preference.getDefaultdepositoforbp() != null ? preference.getDefaultdepositoforbp() : -1);
+			cForm.setArReceivedType(
+					preference.getDefaultReceivedforac() != null ? preference.getDefaultReceivedforac() : -1);
+			cForm.setPoReceivedType(
+					preference.getDefaultReceivedforpo() != null ? preference.getDefaultReceivedforpo() : -1);
+			cForm.setBpReceivedType(
+					preference.getDefaultReceivedforbp() != null ? preference.getDefaultReceivedforbp() : -1);
 			cForm.setScheduleDays(preference.getAutoPaymentDuration());
 			cForm.setReimbursementSettings(preference.getDefaultReimbusrementSetting());
 			/* Inventory Setting */
@@ -788,533 +882,778 @@ public class ConfigurationInfo {
 		}
 	}
 
-	public void getCongurationRecordOld(String companyID, ConfigurationDto cForm, HttpServletRequest request) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			String recordQuery = "SELECT CompanyLogoPath,CurrencyID,WeightID,LabelSizeID,defaultModule,FilterOption,StartingEstimationNumber,StartingSalesOrderNumber,"
-					+ "StartingBillNumber,PrintBills,MailToCustomer,showCombinedBilling,showBillingStatStyle,DEFAULTRMACheckingBankID,DefaultBankTransferAccID,"
-					+ "defaultARCategoryID,defaultARCategoryIDforac,defaultARCategoryIDforpo,defaultARCategoryIDforbp,defaultdepositoforac,defaultdepositoforpo,"
-					+ "defaultdepositoforbp,defaultReceivedforac,defaultReceivedforpo,defaultReceivedforbp,AutoPaymentDuration,DefaultReimbusrementSetting,"
-					+ "showReorderPointList,showReorderPointWarring,reservedQuantity,salesOrderQty,AdminPassword,Multimode,DEFAULTCustomerSortID,DEFAULTCustomerGroupID,"
-					+ "CustomerCountryID,CustomerTaxable,showSalesOrder,CustomerProvience,SalesViaID,SalesTermID,SalesRepID,SalesPayMethodID,"
-					+ "StartingInvoiceNumber,copyAddress,CustomerStateID,ShippingFeeMethod,"
-					+ "DefaultPackingSlipStyleID,SalesPOPrefix,InvoiceFootnoteID,SaleShowCountry,IsRatePriceChangeble,"
-					+ "SaleShowTelephone,IsSalePrefix,ExtraCharge,ChargeAmount,OrderAmount,HowOftenSalestax,DropShipCharge,SalesTaxCode,SalesTaxRate,"
-					+ "DropShipCharge,ShowDropShipItems,isRefundAllowed,"
-					+ "VendorCountryID,StartingPONumber,POStyleID,InvoiceStyleID,InvoiceFootnoteID,UseProductWeight,UseShippingTable,"
-					+ "DefaultVendorrSortID,VendorCountryID,VendorStateID,VendorProvience,StartingPONumber,POFootnoteID,POViaID,POTermID,PORepID,POPayMethodID,EmployeeInChargeID,"
-					+ "POShowCountry,POShowTelephone,IsPurchasePrefix,"
-					+ "StartingRINumber,ProductTaxable,EmployeeStateID,EmployeeCountryID,TimeSheetSet,ChargeSalestax,HowOftenSalestax,SalesTaxID,ShowReminder,"
-					+ "InvoiceMemo,InvoiceMemoDays,OverdueInvoice,OverdueInvoiceDays,InventoryOrder,InventoryOrderDays,BillstoPay,BillstoPayDays,"
-					+ "EstimationMemo,EstimationMemoDays,POMemo,PoMemoDays,ServiceBillsMemo,ServiceBillsMemoDays,MemoBill,MemoBillDays,Charge_interest,"
-					+ "Charge_minimum,Charge_grace,Charge_reassess,Charge_MarkFinance,BudgetStartMonth,BudgetEndMonth,Performance,Mail_senderEmail,Mailserver,"
-					+ "Mail_username,Mail_password,Mail_Auth,poboard,itemsReceivedBoard,itemsShippedBoard,SalesOrderBoard,ProductCategoryID,LocationID,ReOrderPoint,"
-					+ "VendorBusinessTypeID,VendorInvoiceStyleId,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,"
-					+ "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod, EstimationStyleID,SOStyleID,"
-					+ "SalesTaxRate2,isBackOrderNeeded,isRecurringServiceBill,serviceBillName "
-					+ " FROM bca_preference WHERE CompanyID=" + companyID;
-			pstmt = con.prepareStatement(recordQuery);
-//			pstmt.setString(1, compId);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				String logoPath = rs.getString("CompanyLogoPath");
-				cForm.setFileName(logoPath);
-				request.setAttribute("Image", logoPath);
-				Loger.log("Image =>" + logoPath);
-				/* General */
-				cForm.setCurrencyID(rs.getInt("CurrencyID"));
-				cForm.setWeightID(rs.getInt("WeightID"));
-				cForm.setDefaultLabelID(rs.getInt("LabelSizeID"));
-				cForm.setModuleID(rs.getInt("defaultModule"));
-				cForm.setFilterOption(rs.getString("FilterOption"));
+//	public void getCongurationRecord(String companyID, ConfigurationDto cForm, HttpServletRequest request) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		try {
+//			String recordQuery = "SELECT CompanyLogoPath,CurrencyID,WeightID,LabelSizeID,defaultModule,FilterOption,StartingEstimationNumber,StartingSalesOrderNumber,"
+//					+ "StartingBillNumber,PrintBills,MailToCustomer,showCombinedBilling,showBillingStatStyle,DEFAULTRMACheckingBankID,DefaultBankTransferAccID,"
+//					+ "defaultARCategoryID,defaultARCategoryIDforac,defaultARCategoryIDforpo,defaultARCategoryIDforbp,defaultdepositoforac,defaultdepositoforpo,"
+//					+ "defaultdepositoforbp,defaultReceivedforac,defaultReceivedforpo,defaultReceivedforbp,AutoPaymentDuration,DefaultReimbusrementSetting,"
+//					+ "showReorderPointList,showReorderPointWarring,reservedQuantity,salesOrderQty,AdminPassword,Multimode,DEFAULTCustomerSortID,DEFAULTCustomerGroupID,"
+//					+ "CustomerCountryID,CustomerTaxable,showSalesOrder,CustomerProvience,SalesViaID,SalesTermID,SalesRepID,SalesPayMethodID,"
+//					+ "StartingInvoiceNumber,copyAddress,CustomerStateID,ShippingFeeMethod,"
+//					+ "DefaultPackingSlipStyleID,SalesPOPrefix,InvoiceFootnoteID,SaleShowCountry,IsRatePriceChangeble,"
+//					+ "SaleShowTelephone,IsSalePrefix,ExtraCharge,ChargeAmount,OrderAmount,HowOftenSalestax,DropShipCharge,SalesTaxCode,SalesTaxRate,"
+//					+ "DropShipCharge,ShowDropShipItems,isRefundAllowed,"
+//					+ "VendorCountryID,StartingPONumber,POStyleID,InvoiceStyleID,InvoiceFootnoteID,UseProductWeight,UseShippingTable,"
+//					+ "DefaultVendorrSortID,VendorCountryID,VendorStateID,VendorProvience,StartingPONumber,POFootnoteID,POViaID,POTermID,PORepID,POPayMethodID,EmployeeInChargeID,"
+//					+ "POShowCountry,POShowTelephone,IsPurchasePrefix,"
+//					+ "StartingRINumber,ProductTaxable,EmployeeStateID,EmployeeCountryID,TimeSheetSet,ChargeSalestax,HowOftenSalestax,SalesTaxID,ShowReminder,"
+//					+ "InvoiceMemo,InvoiceMemoDays,OverdueInvoice,OverdueInvoiceDays,InventoryOrder,InventoryOrderDays,BillstoPay,BillstoPayDays,"
+//					+ "EstimationMemo,EstimationMemoDays,POMemo,PoMemoDays,ServiceBillsMemo,ServiceBillsMemoDays,MemoBill,MemoBillDays,Charge_interest,"
+//					+ "Charge_minimum,Charge_grace,Charge_reassess,Charge_MarkFinance,BudgetStartMonth,BudgetEndMonth,Performance,Mail_senderEmail,Mailserver,"
+//					+ "Mail_username,Mail_password,Mail_Auth,poboard,itemsReceivedBoard,itemsShippedBoard,SalesOrderBoard,ProductCategoryID,LocationID,ReOrderPoint,"
+//					+ "VendorBusinessTypeID,VendorInvoiceStyleId,CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,ShowUSAInBillShipAddress,"
+//					+ "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod, EstimationStyleID,SOStyleID,"
+//					+ "SalesTaxRate2,isBackOrderNeeded,isRecurringServiceBill,serviceBillName "
+//					+ " FROM bca_preference WHERE CompanyID=" + companyID;
+//			pstmt = con.prepareStatement(recordQuery);
+////			pstmt.setString(1, compId);
+//			rs = pstmt.executeQuery();
+//			if (rs.next()) {
+//				String logoPath = rs.getString("CompanyLogoPath");
+//				cForm.setFileName(logoPath);
+//				request.setAttribute("Image", logoPath);
+//				Loger.log("Image =>" + logoPath);
+//				/* General */
+//				cForm.setCurrencyID(rs.getInt("CurrencyID"));
+//				cForm.setWeightID(rs.getInt("WeightID"));
+//				cForm.setDefaultLabelID(rs.getInt("LabelSizeID"));
+//				cForm.setModuleID(rs.getInt("defaultModule"));
+//				cForm.setFilterOption(rs.getString("FilterOption"));
+//
+//				/* Estimation */
+//				cForm.setStartEstimationNum(rs.getString("StartingEstimationNumber"));
+//				cForm.setStartSalesOrderNum(rs.getString("StartingSalesOrderNumber"));
+//
+//				/* Billing */
+//				cForm.setStartingBillNumber(rs.getInt("StartingBillNumber"));
+//				cForm.setPrintBills("1".equals(rs.getString("PrintBills")) ? "on" : "off");
+//				cForm.setMailToCustomer("1".equals(rs.getString("MailToCustomer")) ? "on" : "off");
+//				cForm.setShowCombinedBilling("1".equals(rs.getString("showCombinedBilling")) ? "on" : "off");
+//				cForm.setShowBillingStatStyle(rs.getInt("showBillingStatStyle"));
+//
+//				/* RMA */
+//				cForm.setSelectedAccountId(rs.getInt("DEFAULTRMACheckingBankID"));
+//
+//				/* Account&Payment */
+//				// cForm.setSelectedCategoryId(rs.getInt("defaultARCategoryID"));
+//				cForm.setDefaultPaymentMethodId(rs.getInt("DefaultBankTransferAccID"));
+//				cForm.setDefaultDepositToId(rs.getInt("DefaultBankTransferAccID"));
+//				cForm.setDefaultCategoryId(rs.getInt("defaultARCategoryID"));
+//				cForm.setDefaultDepositToId(rs.getInt("DefaultBankTransferAccID"));
+//				cForm.setArCategory(rs.getInt("defaultARCategoryIDforac"));
+//				cForm.setPoCategory(rs.getInt("defaultARCategoryIDforpo"));
+//				cForm.setBpCategory(rs.getInt("defaultARCategoryIDforbp"));
+//				cForm.setArDepositTo(rs.getInt("defaultdepositoforac"));
+//				cForm.setPoDepositTo(rs.getInt("defaultdepositoforpo"));
+//				cForm.setBpDepositTo(rs.getInt("defaultdepositoforbp"));
+//				cForm.setArReceivedType(rs.getInt("defaultReceivedforac"));
+//				cForm.setPoReceivedType(rs.getInt("defaultReceivedforpo"));
+//				cForm.setBpReceivedType(rs.getInt("defaultReceivedforbp"));
+//				cForm.setScheduleDays(rs.getInt("AutoPaymentDuration"));
+//				cForm.setReimbursementSettings(rs.getInt("DefaultReimbusrementSetting"));
+//				/* Inventory Setting */
+//				cForm.setShowReorderPointList("1".equals(rs.getString("showReorderPointList")) ? "on" : "off");
+//				cForm.setShowReorderPointWarning("1".equals(rs.getString("showReorderPointWarring")) ? "on" : "off");
+//				cForm.setReservedQuantity("1".equals(rs.getString("reservedQuantity")) ? "on" : "off");
+//				cForm.setSalesOrderQty("1".equals(rs.getString("salesOrderQty")) ? "on" : "off");
+//
+//				/* Networking & Security */
+//				cForm.setPassword(rs.getString("AdminPassword"));
+//				cForm.setMultiUserConnection(rs.getInt("Multimode"));
+//
+//				/* Sales & Customer */
+//				cForm.setSortBy(rs.getInt("DEFAULTCustomerSortID"));
+//				cForm.setCustomerGroup(rs.getInt("DEFAULTCustomerGroupID"));
+//				cForm.setCustDefaultCountryID(rs.getInt("CustomerCountryID"));
+//				cForm.setCustTaxable("1".equals(rs.getString("CustomerTaxable")) ? "on" : "off");
+//				cForm.setIsSalesOrder("1".equals(rs.getString("showSalesOrder")) ? "on" : "off");
+//				cForm.setCustomerProvince(rs.getString("CustomerProvience"));
+//				cForm.setCustomerShippingId((rs.getInt("SalesViaID")));
+//
+//				cForm.setStartInvoiceNum(rs.getString("StartingInvoiceNumber"));
+//				cForm.setAddressSettings("1".equals(rs.getString("copyAddress")) ? "on" : "off");
+//				cForm.setSelectedStateId(rs.getInt("CustomerStateID"));
+//				cForm.setSelectedShippingId(rs.getInt("ShippingFeeMethod"));
+//				cForm.setSelectedSalesRepId(rs.getInt("SalesRepID"));
+//				cForm.setSelectedPaymentId(rs.getInt("SalesPayMethodID"));
+//
+//				cForm.setPackingSlipTemplateId(rs.getInt("DefaultPackingSlipStyleID"));
+//				cForm.setPoNumPrefix(rs.getString("SalesPOPrefix"));
+//				// added by tulsi
+//				cForm.setInvStyleID(rs.getInt("InvoiceStyleID"));
+//				cForm.setSelectedMessageId(rs.getInt("InvoiceFootnoteID"));
+//				cForm.setSaleShowCountry("1".equals(rs.getString("SaleShowCountry")) ? "on" : "off");
+//				cForm.setRatePriceChangable("1".equals(rs.getString("IsRatePriceChangeble")) ? "on" : "off");
+//				cForm.setSaleShowTelephone("1".equals(rs.getString("SaleShowTelephone")) ? "on" : "off");
+//				cForm.setIsSalePrefix("1".equals(rs.getString("IsSalePrefix")) ? "on" : "off");
+//				cForm.setExtraChargeApplicable("1".equals(rs.getString("ExtraCharge")) ? "on" : "off");
+//				cForm.setChargeAmount(rs.getInt("ChargeAmount"));
+//				cForm.setOrderAmount(rs.getInt("OrderAmount"));
+//				cForm.setHowOftenSalestax(rs.getInt("HowOftenSalestax"));
+//				cForm.setDropShipCharge(rs.getInt("DropShipCharge"));
+//				cForm.setSalesTaxCode(rs.getString("SalesTaxCode"));
+//				cForm.setSaleTaxRate(rs.getDouble("SalesTaxRate"));
+//				cForm.setDropShipCharge(rs.getInt("DropShipCharge"));
+//				cForm.setIsShowDropShipItems(rs.getInt("ShowDropShipItems"));
+//				cForm.setIsRefundAllowed("1".equals(rs.getString("isRefundAllowed")) ? "on" : "off");
+//				/* Purchase & Vendor */
+//				/*
+//				 * cForm.setVendorDefaultCountryID(rs.getInt("VendorCountryID"));
+//				 * cForm.setStartPONum(rs.getLong("StartingPONumber"));
+//				 * cForm.setPoStyleID(rs.getInt("POStyleID"));
+//				 * cForm.setVendorDefaultFootnoteID(rs.getInt("POFootnoteID"));
+//				 * cForm.setInvStyleID(rs.getInt("InvoiceStyleID"));
+//				 * cForm.setDefaultFootnoteID(rs.getInt("InvoiceFootnoteID"));
+//				 * cForm.setVendorDefaultFootnoteID(rs.getInt("InvoiceFootnoteID"));
+//				 * cForm.setIsProductWeight(rs.getString("UseProductWeight").equals("1") ?
+//				 * "true" : "false");
+//				 * cForm.setIsCompanyName(rs.getString("UseShippingTable").equals("1") ? "true"
+//				 * : "false");
+//				 */
+//
+//				cForm.setSortBy(rs.getInt("DefaultVendorrSortID"));
+//				cForm.setSelectedCountryId1(rs.getInt("vendorCountryID"));
+//				cForm.setSelectedStateId1(rs.getInt("vendorStateID"));
+//				cForm.setVendorProvience(rs.getString("VendorProvience"));
+//				cForm.setStartPONum(rs.getString("StartingPONumber"));
+//				cForm.setVendorDefaultFootnoteID(rs.getInt("POFootnoteID"));
+//				cForm.setShipCarrierId(rs.getInt("POViaID"));
+//				cForm.setSelectedTermId(rs.getInt("POTermID"));
+//				cForm.setSelectedSalesRepId(rs.getInt("PORepID"));
+//				cForm.setSelectedPaymentId(rs.getInt("POPayMethodID"));
+//				cForm.setSelectedActiveEmployeeId(rs.getInt("EmployeeInChargeID"));
+//				cForm.setPoShowCountry("1".equals(rs.getString("POShowCountry")) ? "on" : "off");
+//				cForm.setPoShowTelephone("1".equals(rs.getString("POShowTelephone")) ? "on" : "off");
+//				cForm.setIsPurchasePrefix("1".equals(rs.getString("IsPurchasePrefix")) ? "on" : "off");
+//
+//				/* Inventory */
+//				cForm.setStartRINum(rs.getLong("StartingRINumber"));
+//				cForm.setProductTaxable("1".equals(rs.getString("ProductTaxable")) ? "on" : "off");
+//
+//				/* Employee */
+//				cForm.setEmpStateID(rs.getInt("EmployeeStateID"));
+//				request.setAttribute("EmpState", String.valueOf(cForm.getEmpStateID()));
+//
+//				cForm.setEmpCountryID(rs.getInt("EmployeeCountryID"));
+//				cForm.setTimeSheet(rs.getLong("TimeSheetSet"));
+//
+//				/* Tax */
+//				cForm.setChargeSalesTax("1".equals(rs.getString("ChargeSalestax")) ? "true" : "false");
+//				cForm.setHowOftenSalesTax(rs.getInt("HowOftenSalestax"));
+//				cForm.setSalesTaxID(rs.getInt("SalesTaxID"));
+//
+//				/* Reminders */
+//				cForm.setShowReminder("1".equals(rs.getString("ShowReminder")) ? "on" : "off");
+//				cForm.setInvoiceMemo(rs.getInt("InvoiceMemo"));
+//				cForm.setInvoiceMemoDays(rs.getInt("InvoiceMemoDays"));
+//				cForm.setOverdueInvoice(rs.getInt("OverdueInvoice"));
+//				cForm.setOverdueInvoiceDays(rs.getInt("OverdueInvoiceDays"));
+//				cForm.setInventoryOrder(rs.getInt("InventoryOrder"));
+//				cForm.setInventoryOrderDays(rs.getInt("InventoryOrderDays"));
+//				cForm.setBillsToPay(rs.getInt("BillstoPay"));
+//				cForm.setBillsToPayDays(rs.getInt("BillstoPayDays"));
+//				cForm.setMemorizeEstimation(rs.getInt("EstimationMemo"));
+//				cForm.setMemorizeEstimationDays(rs.getInt("EstimationMemoDays"));
+//				cForm.setMemorizeBill(rs.getInt("MemoBill"));
+//				cForm.setMemorizeBillDays(rs.getInt("MemoBillDays"));
+//				cForm.setMemorizePurchaseOrder(rs.getInt("POMemo"));
+//				cForm.setMemorizePurchaseOrderDays(rs.getInt("PoMemoDays"));
+//				cForm.setServiceBilling(rs.getInt("ServiceBillsMemo"));
+//				cForm.setServiceBillingDays(rs.getInt("ServiceBillsMemoDays"));
+//
+//				/* Finance Charge */
+//				cForm.setAnnualInterestRate(rs.getDouble("Charge_interest"));
+//				cForm.setMinCharge(rs.getDouble("Charge_minimum"));
+//				cForm.setGracePeriod(rs.getInt("Charge_grace"));
+//				cForm.setAssessFinanceCharge("1".equals(rs.getString("Charge_reassess")) ? "on" : "off");
+//				cForm.setMarkFinanceCharge("1".equals(rs.getString("Charge_MarkFinance")) ? "on" : "off");
+//				cForm.setStartMonth(rs.getInt("BudgetStartMonth"));
+//				cForm.setEndMonth(rs.getInt("BudgetEndMonth"));
+//
+//				/* Performance */
+//				long perform = rs.getLong("Performance");
+//				if (perform != 2000 && perform != 5000 && perform != 10000) {
+//					cForm.setPerformance(1);
+//					cForm.setUserDefinePerform(perform);
+//				} else {
+//					cForm.setPerformance((int) perform);
+//					cForm.setUserDefinePerform(20000);
+//				}
+//
+//				/* SMTP setup */
+//				cForm.setSenderEmail(rs.getString("Mail_senderEmail"));
+//				cForm.setMailServer(rs.getString("Mailserver"));
+//				cForm.setMailUserName(rs.getString("Mail_username"));
+//				cForm.setMailPassword(rs.getString("Mail_password"));
+//				cForm.setMailAuth("1".equals(rs.getString("Mail_Auth")) ? "true" : "false");
+//
+//				/* Dashboard */
+//				cForm.setPoboard(rs.getString("poboard").equals("1") ? "on" : "off");
+//				cForm.setItemReceivedBoard(rs.getString("itemsReceivedBoard").equals("1") ? "on" : "off");
+//				cForm.setItemShippedBoard(rs.getString("itemsShippedBoard").equals("1") ? "on" : "off");
+//				cForm.setSalesOrderBoard(rs.getString("SalesOrderBoard").equals("1") ? "on" : "off");
+//				cForm.setProductCategoryID(rs.getInt("ProductCategoryID"));
+//				cForm.setLocationID(rs.getInt("LocationID"));
+//				cForm.setReorderPoint(rs.getInt("ReOrderPoint"));
+//				cForm.setVendorBusinessTypeID(rs.getInt("VendorBusinessTypeID"));
+//				cForm.setVendorInvoiceStyleId(rs.getInt("VendorInvoiceStyleId"));
+//				cForm.setCustomerType(rs.getInt("CustomerType"));
+//				cForm.setPriceLevelPriority(rs.getInt("PriceLevelPriority"));
+//				cForm.setPriceLevelDealer(rs.getInt("PriceLevelDealer"));
+//				cForm.setPriceLevelCustomer(rs.getInt("PriceLevelCustomer"));
+//				cForm.setPriceLevelGeneral(rs.getInt("PriceLevelGeneral"));
+//				cForm.setShowUSAInBillShipAddress(rs.getBoolean("ShowUSAInBillShipAddress"));
+//				cForm.setInvoiceTemplateType(rs.getInt("InvoiceTemplateType"));
+//				cForm.setEstTemplateType(rs.getInt("EstimationTemplateType"));
+//				cForm.setSoTemplateType(rs.getInt("SalesOrderTemplateType"));
+//				cForm.setPoTemplateType(rs.getInt("PurchaseOrderTemplateType"));
+//				cForm.setPsTemplateType(rs.getInt("PackingSlipTemplateType"));
+//				cForm.setDisplayPeriod(rs.getInt("DisplayPeriod"));
+//				cForm.setEstimationStyleID(rs.getInt("EstimationStyleID"));
+//				cForm.setSoStyleID(rs.getInt("SOStyleID"));
+//				cForm.setSaleTaxRate2(rs.getDouble("SalesTaxRate2"));
+//				cForm.setBackOrderNeeded("1".equals(rs.getString("isBackOrderNeeded")) ? "on" : "off");
+//				cForm.setRecurringServiceBill("1".equals(rs.getString("isRecurringServiceBill")) ? "on" : "off");
+//				cForm.setServiceBillName(rs.getString("serviceBillName"));
+//			}
+//			pstmt.close();
+//			rs.close();
+//		} catch (SQLException ex) {
+//			ex.printStackTrace();
+//			Loger.log("Exception in the class ConfigurationInfo and in method getCongurationRecord " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//	}
 
-				/* Estimation */
-				cForm.setStartEstimationNum(rs.getString("StartingEstimationNumber"));
-				cForm.setStartSalesOrderNum(rs.getString("StartingSalesOrderNumber"));
+	@Autowired
+	private BcaUserRepository userRepository;
 
-				/* Billing */
-				cForm.setStartingBillNumber(rs.getInt("StartingBillNumber"));
-				cForm.setPrintBills("1".equals(rs.getString("PrintBills")) ? "on" : "off");
-				cForm.setMailToCustomer("1".equals(rs.getString("MailToCustomer")) ? "on" : "off");
-				cForm.setShowCombinedBilling("1".equals(rs.getString("showCombinedBilling")) ? "on" : "off");
-				cForm.setShowBillingStatStyle(rs.getInt("showBillingStatStyle"));
+	public void updateAdministratorPassword(Long compId, String emailAddress, String newPassword) {
+//		String hashedPassword = hashPassword(newPassword); // Implement this method to hash the password
 
-				/* RMA */
-				cForm.setSelectedAccountId(rs.getInt("DEFAULTRMACheckingBankID"));
-
-				/* Account&Payment */
-				// cForm.setSelectedCategoryId(rs.getInt("defaultARCategoryID"));
-				cForm.setDefaultPaymentMethodId(rs.getInt("DefaultBankTransferAccID"));
-				cForm.setDefaultDepositToId(rs.getInt("DefaultBankTransferAccID"));
-				cForm.setDefaultCategoryId(rs.getInt("defaultARCategoryID"));
-				cForm.setDefaultDepositToId(rs.getInt("DefaultBankTransferAccID"));
-				cForm.setArCategory(rs.getInt("defaultARCategoryIDforac"));
-				cForm.setPoCategory(rs.getInt("defaultARCategoryIDforpo"));
-				cForm.setBpCategory(rs.getInt("defaultARCategoryIDforbp"));
-				cForm.setArDepositTo(rs.getInt("defaultdepositoforac"));
-				cForm.setPoDepositTo(rs.getInt("defaultdepositoforpo"));
-				cForm.setBpDepositTo(rs.getInt("defaultdepositoforbp"));
-				cForm.setArReceivedType(rs.getInt("defaultReceivedforac"));
-				cForm.setPoReceivedType(rs.getInt("defaultReceivedforpo"));
-				cForm.setBpReceivedType(rs.getInt("defaultReceivedforbp"));
-				cForm.setScheduleDays(rs.getInt("AutoPaymentDuration"));
-				cForm.setReimbursementSettings(rs.getInt("DefaultReimbusrementSetting"));
-				/* Inventory Setting */
-				cForm.setShowReorderPointList("1".equals(rs.getString("showReorderPointList")) ? "on" : "off");
-				cForm.setShowReorderPointWarning("1".equals(rs.getString("showReorderPointWarring")) ? "on" : "off");
-				cForm.setReservedQuantity("1".equals(rs.getString("reservedQuantity")) ? "on" : "off");
-				cForm.setSalesOrderQty("1".equals(rs.getString("salesOrderQty")) ? "on" : "off");
-
-				/* Networking & Security */
-				cForm.setPassword(rs.getString("AdminPassword"));
-				cForm.setMultiUserConnection(rs.getInt("Multimode"));
-
-				/* Sales & Customer */
-				cForm.setSortBy(rs.getInt("DEFAULTCustomerSortID"));
-				cForm.setCustomerGroup(rs.getInt("DEFAULTCustomerGroupID"));
-				cForm.setCustDefaultCountryID(rs.getInt("CustomerCountryID"));
-				cForm.setCustTaxable("1".equals(rs.getString("CustomerTaxable")) ? "on" : "off");
-				cForm.setIsSalesOrder("1".equals(rs.getString("showSalesOrder")) ? "on" : "off");
-				cForm.setCustomerProvince(rs.getString("CustomerProvience"));
-				cForm.setCustomerShippingId((rs.getInt("SalesViaID")));
-
-				cForm.setStartInvoiceNum(rs.getString("StartingInvoiceNumber"));
-				cForm.setAddressSettings("1".equals(rs.getString("copyAddress")) ? "on" : "off");
-				cForm.setSelectedStateId(rs.getInt("CustomerStateID"));
-				cForm.setSelectedShippingId(rs.getInt("ShippingFeeMethod"));
-				cForm.setSelectedSalesRepId(rs.getInt("SalesRepID"));
-				cForm.setSelectedPaymentId(rs.getInt("SalesPayMethodID"));
-
-				cForm.setPackingSlipTemplateId(rs.getInt("DefaultPackingSlipStyleID"));
-				cForm.setPoNumPrefix(rs.getString("SalesPOPrefix"));
-				// added by tulsi
-				cForm.setInvStyleID(rs.getInt("InvoiceStyleID"));
-				cForm.setSelectedMessageId(rs.getInt("InvoiceFootnoteID"));
-				cForm.setSaleShowCountry("1".equals(rs.getString("SaleShowCountry")) ? "on" : "off");
-				cForm.setRatePriceChangable("1".equals(rs.getString("IsRatePriceChangeble")) ? "on" : "off");
-				cForm.setSaleShowTelephone("1".equals(rs.getString("SaleShowTelephone")) ? "on" : "off");
-				cForm.setIsSalePrefix("1".equals(rs.getString("IsSalePrefix")) ? "on" : "off");
-				cForm.setExtraChargeApplicable("1".equals(rs.getString("ExtraCharge")) ? "on" : "off");
-				cForm.setChargeAmount(rs.getInt("ChargeAmount"));
-				cForm.setOrderAmount(rs.getInt("OrderAmount"));
-				cForm.setHowOftenSalestax(rs.getInt("HowOftenSalestax"));
-				cForm.setDropShipCharge(rs.getInt("DropShipCharge"));
-				cForm.setSalesTaxCode(rs.getString("SalesTaxCode"));
-				cForm.setSaleTaxRate(rs.getDouble("SalesTaxRate"));
-				cForm.setDropShipCharge(rs.getInt("DropShipCharge"));
-				cForm.setIsShowDropShipItems(rs.getInt("ShowDropShipItems"));
-				cForm.setIsRefundAllowed("1".equals(rs.getString("isRefundAllowed")) ? "on" : "off");
-				/* Purchase & Vendor */
-				/*
-				 * cForm.setVendorDefaultCountryID(rs.getInt("VendorCountryID"));
-				 * cForm.setStartPONum(rs.getLong("StartingPONumber"));
-				 * cForm.setPoStyleID(rs.getInt("POStyleID"));
-				 * cForm.setVendorDefaultFootnoteID(rs.getInt("POFootnoteID"));
-				 * cForm.setInvStyleID(rs.getInt("InvoiceStyleID"));
-				 * cForm.setDefaultFootnoteID(rs.getInt("InvoiceFootnoteID"));
-				 * cForm.setVendorDefaultFootnoteID(rs.getInt("InvoiceFootnoteID"));
-				 * cForm.setIsProductWeight(rs.getString("UseProductWeight").equals("1") ?
-				 * "true" : "false");
-				 * cForm.setIsCompanyName(rs.getString("UseShippingTable").equals("1") ? "true"
-				 * : "false");
-				 */
-
-				cForm.setSortBy(rs.getInt("DefaultVendorrSortID"));
-				cForm.setSelectedCountryId1(rs.getInt("vendorCountryID"));
-				cForm.setSelectedStateId1(rs.getInt("vendorStateID"));
-				cForm.setVendorProvience(rs.getString("VendorProvience"));
-				cForm.setStartPONum(rs.getString("StartingPONumber"));
-				cForm.setVendorDefaultFootnoteID(rs.getInt("POFootnoteID"));
-				cForm.setShipCarrierId(rs.getInt("POViaID"));
-				cForm.setSelectedTermId(rs.getInt("POTermID"));
-				cForm.setSelectedSalesRepId(rs.getInt("PORepID"));
-				cForm.setSelectedPaymentId(rs.getInt("POPayMethodID"));
-				cForm.setSelectedActiveEmployeeId(rs.getInt("EmployeeInChargeID"));
-				cForm.setPoShowCountry("1".equals(rs.getString("POShowCountry")) ? "on" : "off");
-				cForm.setPoShowTelephone("1".equals(rs.getString("POShowTelephone")) ? "on" : "off");
-				cForm.setIsPurchasePrefix("1".equals(rs.getString("IsPurchasePrefix")) ? "on" : "off");
-
-				/* Inventory */
-				cForm.setStartRINum(rs.getLong("StartingRINumber"));
-				cForm.setProductTaxable("1".equals(rs.getString("ProductTaxable")) ? "on" : "off");
-
-				/* Employee */
-				cForm.setEmpStateID(rs.getInt("EmployeeStateID"));
-				request.setAttribute("EmpState", String.valueOf(cForm.getEmpStateID()));
-
-				cForm.setEmpCountryID(rs.getInt("EmployeeCountryID"));
-				cForm.setTimeSheet(rs.getLong("TimeSheetSet"));
-
-				/* Tax */
-				cForm.setChargeSalesTax("1".equals(rs.getString("ChargeSalestax")) ? "true" : "false");
-				cForm.setHowOftenSalesTax(rs.getInt("HowOftenSalestax"));
-				cForm.setSalesTaxID(rs.getInt("SalesTaxID"));
-
-				/* Reminders */
-				cForm.setShowReminder("1".equals(rs.getString("ShowReminder")) ? "on" : "off");
-				cForm.setInvoiceMemo(rs.getInt("InvoiceMemo"));
-				cForm.setInvoiceMemoDays(rs.getInt("InvoiceMemoDays"));
-				cForm.setOverdueInvoice(rs.getInt("OverdueInvoice"));
-				cForm.setOverdueInvoiceDays(rs.getInt("OverdueInvoiceDays"));
-				cForm.setInventoryOrder(rs.getInt("InventoryOrder"));
-				cForm.setInventoryOrderDays(rs.getInt("InventoryOrderDays"));
-				cForm.setBillsToPay(rs.getInt("BillstoPay"));
-				cForm.setBillsToPayDays(rs.getInt("BillstoPayDays"));
-				cForm.setMemorizeEstimation(rs.getInt("EstimationMemo"));
-				cForm.setMemorizeEstimationDays(rs.getInt("EstimationMemoDays"));
-				cForm.setMemorizeBill(rs.getInt("MemoBill"));
-				cForm.setMemorizeBillDays(rs.getInt("MemoBillDays"));
-				cForm.setMemorizePurchaseOrder(rs.getInt("POMemo"));
-				cForm.setMemorizePurchaseOrderDays(rs.getInt("PoMemoDays"));
-				cForm.setServiceBilling(rs.getInt("ServiceBillsMemo"));
-				cForm.setServiceBillingDays(rs.getInt("ServiceBillsMemoDays"));
-
-				/* Finance Charge */
-				cForm.setAnnualInterestRate(rs.getDouble("Charge_interest"));
-				cForm.setMinCharge(rs.getDouble("Charge_minimum"));
-				cForm.setGracePeriod(rs.getInt("Charge_grace"));
-				cForm.setAssessFinanceCharge("1".equals(rs.getString("Charge_reassess")) ? "on" : "off");
-				cForm.setMarkFinanceCharge("1".equals(rs.getString("Charge_MarkFinance")) ? "on" : "off");
-				cForm.setStartMonth(rs.getInt("BudgetStartMonth"));
-				cForm.setEndMonth(rs.getInt("BudgetEndMonth"));
-
-				/* Performance */
-				long perform = rs.getLong("Performance");
-				if (perform != 2000 && perform != 5000 && perform != 10000) {
-					cForm.setPerformance(1);
-					cForm.setUserDefinePerform(perform);
-				} else {
-					cForm.setPerformance((int) perform);
-					cForm.setUserDefinePerform(20000);
-				}
-
-				/* SMTP setup */
-				cForm.setSenderEmail(rs.getString("Mail_senderEmail"));
-				cForm.setMailServer(rs.getString("Mailserver"));
-				cForm.setMailUserName(rs.getString("Mail_username"));
-				cForm.setMailPassword(rs.getString("Mail_password"));
-				cForm.setMailAuth("1".equals(rs.getString("Mail_Auth")) ? "true" : "false");
-
-				/* Dashboard */
-				cForm.setPoboard(rs.getString("poboard").equals("1") ? "on" : "off");
-				cForm.setItemReceivedBoard(rs.getString("itemsReceivedBoard").equals("1") ? "on" : "off");
-				cForm.setItemShippedBoard(rs.getString("itemsShippedBoard").equals("1") ? "on" : "off");
-				cForm.setSalesOrderBoard(rs.getString("SalesOrderBoard").equals("1") ? "on" : "off");
-				cForm.setProductCategoryID(rs.getInt("ProductCategoryID"));
-				cForm.setLocationID(rs.getInt("LocationID"));
-				cForm.setReorderPoint(rs.getInt("ReOrderPoint"));
-				cForm.setVendorBusinessTypeID(rs.getInt("VendorBusinessTypeID"));
-				cForm.setVendorInvoiceStyleId(rs.getInt("VendorInvoiceStyleId"));
-				cForm.setCustomerType(rs.getInt("CustomerType"));
-				cForm.setPriceLevelPriority(rs.getInt("PriceLevelPriority"));
-				cForm.setPriceLevelDealer(rs.getInt("PriceLevelDealer"));
-				cForm.setPriceLevelCustomer(rs.getInt("PriceLevelCustomer"));
-				cForm.setPriceLevelGeneral(rs.getInt("PriceLevelGeneral"));
-				cForm.setShowUSAInBillShipAddress(rs.getBoolean("ShowUSAInBillShipAddress"));
-				cForm.setInvoiceTemplateType(rs.getInt("InvoiceTemplateType"));
-				cForm.setEstTemplateType(rs.getInt("EstimationTemplateType"));
-				cForm.setSoTemplateType(rs.getInt("SalesOrderTemplateType"));
-				cForm.setPoTemplateType(rs.getInt("PurchaseOrderTemplateType"));
-				cForm.setPsTemplateType(rs.getInt("PackingSlipTemplateType"));
-				cForm.setDisplayPeriod(rs.getInt("DisplayPeriod"));
-				cForm.setEstimationStyleID(rs.getInt("EstimationStyleID"));
-				cForm.setSoStyleID(rs.getInt("SOStyleID"));
-				cForm.setSaleTaxRate2(rs.getDouble("SalesTaxRate2"));
-				cForm.setBackOrderNeeded("1".equals(rs.getString("isBackOrderNeeded")) ? "on" : "off");
-				cForm.setRecurringServiceBill("1".equals(rs.getString("isRecurringServiceBill")) ? "on" : "off");
-				cForm.setServiceBillName(rs.getString("serviceBillName"));
-			}
-			pstmt.close();
-			rs.close();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			Loger.log("Exception in the class ConfigurationInfo and in method getCongurationRecord " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
+		bcaCompanyRepository.findById(compId).ifPresent(company -> {
+			userRepository.findByCompanyAndEmailAddress(company, emailAddress).ifPresent(user -> {
+				user.setPassword(newPassword);
+				userRepository.save(user);
+			});
+		});
 	}
 
-	public void getAdministratorDetails(String compId, String emailAddress, String modalNewPassword) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		con = executor.getConnection();
-		try {
-			String recordQuery = "update bca_user set Password='" + modalNewPassword + "' where Email_Address='"
-					+ emailAddress + "'  and CompanyID  = '" + compId + "'";
-			pstmt = con.prepareStatement(recordQuery);
-			int Check = pstmt.executeUpdate();
-			pstmt.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			Loger.log(e.toString());
-		} finally {
-			executor.close(con);
-		}
-	}
+	/*
+	 * private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	 * 
+	 * private String hashPassword(String password) { return
+	 * passwordEncoder.encode(password); }
+	 */
+//	public void getAdministratorDetails(String compId, String emailAddress, String modalNewPassword) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		con = executor.getConnection();
+//		try {
+//			String recordQuery = "update bca_user set Password='" + modalNewPassword + "' where Email_Address='"
+//					+ emailAddress + "'  and CompanyID  = '" + compId + "'";
+//			pstmt = con.prepareStatement(recordQuery);
+//			int Check = pstmt.executeUpdate();
+//			pstmt.close();
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			Loger.log(e.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//	}
 
-	public void getAdministratorDetails(String compId, ConfigurationDto cForm, String emailAddress) {
-		System.out.println("cid=" + compId);
-		System.out.println("emailAddress=" + emailAddress);
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		con = executor.getConnection();
-		try {
-			String recordQuery = "Select * from bca_user where Email_Address= ?";
-			pstmt = con.prepareStatement(recordQuery);
-			pstmt.setString(1, emailAddress);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				cForm.setPassword(rs.getString("Password"));
-				cForm.setUserName(rs.getString("LoginID"));
-				cForm.setEmailAddress(rs.getString("Email_Address"));
-			}
-			pstmt.close();
-			rs.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			Loger.log(e.toString());
-		} finally {
-			executor.close(con);
-		}
+	public void getAdministratorDetails(Long companyId, ConfigurationDto cForm, String emailAddress) {
+		bcaCompanyRepository.findById(companyId).ifPresent(company -> {
+			userRepository.findByCompanyAndEmailAddress(company, emailAddress).ifPresent(user -> {
+				cForm.setPassword(user.getPassword());
+				cForm.setUserName(user.getLoginId());
+				cForm.setEmailAddress(user.getEmailAddress());
+			});
+		});
 
 	}
+//	public void getAdministratorDetails(String compId, ConfigurationDto cForm, String emailAddress) {
+//		System.out.println("cid=" + compId);
+//		System.out.println("emailAddress=" + emailAddress);
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		con = executor.getConnection();
+//		try {
+//			String recordQuery = "Select * from bca_user where Email_Address= ?";
+//			pstmt = con.prepareStatement(recordQuery);
+//			pstmt.setString(1, emailAddress);
+//			rs = pstmt.executeQuery();
+//			if (rs.next()) {
+//				cForm.setPassword(rs.getString("Password"));
+//				cForm.setUserName(rs.getString("LoginID"));
+//				cForm.setEmailAddress(rs.getString("Email_Address"));
+//			}
+//			pstmt.close();
+//			rs.close();
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			Loger.log(e.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//
+//	}
 
 	/*
 	 * Saves the information required for the application configuration to the
 	 * database.
 	 */
-	public boolean saveConfigurationRecord(ConfigurationDto cForm, long compId, HttpServletRequest request) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
+	@Autowired
+	BcaCountriesRepository countriesRepository;
+
+	@Autowired
+	BcaInvoicestyleRepository invoicestyleRepository;
+
+	@Autowired
+	BcaPostyleRepository postyleRepository;
+
+	@Autowired
+	BcaStatesRepository stateRepository;
+
+	public boolean saveConfigurationRecord(ConfigurationDto cForm, Long compId, HttpServletRequest request) {
 		boolean isSaved = false;
-		try {
-			String insertRecord = "update bca_preference set  CurrencyID = ?,CurrencyText = ?,WeightID = ?,"
-					+ "Weight = ?,LabelSizeID = ?,LabelSize = ?,AdminUsername = ?,"
-					+ "AdminPassword = ?,Multimode = ?,CustomerCountryID = ?,CustomerCountry = ?,"
-					+ "CustomerTaxable = ?,StartingInvoiceNumber = ?,InvoiceStyleID = ?,InvoiceFootnoteID = ?,"
-					+ "UseProductWeight = ?,UseShippingTable = ?,VendorCountry = ?,VendorCountryID = ?,"
-					+ "StartingPONumber = ?,POStyleID = ?,POFootnoteID = ?,POUseCountry = ?,"
-					+ "StartingRINumber = ?,ProductTaxable = ?,EmployeeState = ?,EmployeeStateID = ?,"
-					+ "EmployeeCountry = ?,EmployeeCountryID = ?,ChargeSalestax = ?,HowOftenSalestax = ?,"
-					+ "SalesTaxID = ?,ShowReminder = ?,InvoiceMemo = ?,InvoiceMemoDays = ?,OverdueInvoice = ?,"
-					+ "OverdueInvoiceDays = ?,InventoryOrder = ?,InventoryOrderDays = ?,BillstoPay = ?,"
-					+ "BillstoPayDays = ?,CompanyLogoPath = ?,"
-					+ "Charge_interest = ?,Charge_minimum =  ?,Charge_grace =  ?,Charge_reassess =  ?,"
-					+ "Charge_name_display =  ?,TimeSheetSet = ? ,Performance=? ,"
-					+ "Mailserver = ?, Mail_username = ?, Mail_password = ?,Mail_Auth = ?, Mail_senderEmail =? "
-					+ " where CompanyID = ?";
+		Optional<BcaCountries> country = null;
+		Optional<BcaInvoicestyle> invoiceStyle = null;
+		Optional<BcaPostyle> poStyle = null;
+		Optional<BcaStates> state = null;
+		Optional<BcaSalestax> salesTax = null;
 
-			pstmt = con.prepareStatement(insertRecord);
-			pstmt.setInt(1, cForm.getCurrencyID());
-			pstmt.setString(2, "");
-			pstmt.setInt(3, cForm.getWeightID());
-			pstmt.setString(4, "");
-			pstmt.setInt(5, cForm.getDefaultLabelID());
-			pstmt.setString(6, cForm.getLabelName());
-			pstmt.setString(7, "Admin");
-			pstmt.setString(8, cForm.getPassword());
-			pstmt.setInt(9, cForm.getMultiUserConnection());
-			pstmt.setInt(10, cForm.getCustDefaultCountryID());
-			pstmt.setString(11, "");
-			pstmt.setString(12, "on".equals(cForm.getCustTaxable()) ? "1" : "0");
-			pstmt.setString(13, cForm.getStartInvoiceNum());
-			pstmt.setInt(14, cForm.getInvStyleID());
-			pstmt.setInt(15, cForm.getDefaultFootnoteID());
-			pstmt.setString(16, "on".equals(cForm.getIsProductWeight()) ? "1" : "0");
-			pstmt.setString(17, "on".equals(cForm.getIsCompanyName()) ? "1" : "0");
-			pstmt.setString(18, "");
-			pstmt.setInt(19, cForm.getVendorDefaultCountryID());
-			pstmt.setString(20, cForm.getStartPONum());
-			pstmt.setInt(21, cForm.getPoStyleID());
-			pstmt.setInt(22, cForm.getVendorDefaultFootnoteID());
-			pstmt.setInt(23, -1);
-			pstmt.setLong(24, cForm.getStartRINum());
-			pstmt.setString(25, "on".equals(cForm.getProductTaxable()) ? "1" : "0");
-			pstmt.setString(26, "");
-			pstmt.setInt(27, cForm.getEmpStateID());
-			pstmt.setString(28, "");
-			pstmt.setInt(29, cForm.getEmpCountryID());
-			pstmt.setString(30, "on".equals(cForm.getChargeSalesTax()) ? "1" : "0");
-			pstmt.setInt(31, cForm.getHowOftenSalesTax());
-			pstmt.setInt(32, cForm.getSalesTaxID());
-			pstmt.setString(33, "on".equals(cForm.getShowReminder()) ? "1" : "0");
-			pstmt.setInt(34, cForm.getInvoiceMemo());
-			pstmt.setInt(35, cForm.getInvoiceMemoDays());
-			pstmt.setInt(36, cForm.getOverdueInvoice());
-			pstmt.setInt(37, cForm.getOverdueInvoiceDays());
-			pstmt.setInt(38, cForm.getInventoryOrder());
-			pstmt.setInt(39, cForm.getInventoryOrderDays());
-			pstmt.setInt(40, cForm.getBillsToPay());
-			pstmt.setInt(41, cForm.getBillsToPayDays());
+		Optional<BcaPreference> preferenceOpt = preferenceRepository.findByCompany_CompanyId(compId);
 
-			pstmt.setString(42, "");
-			pstmt.setDouble(43, cForm.getAnnualInterestRate());
-			pstmt.setDouble(44, cForm.getMinCharge());
-			pstmt.setLong(45, cForm.getGracePeriod());
-			pstmt.setString(46, "on".equals(cForm.getAssessFinanceCharge()) ? "1" : "0");
-			pstmt.setInt(47, 3);
-			pstmt.setLong(48, cForm.getTimeSheet());
+		if (preferenceOpt.isPresent()) {
+			BcaPreference preference = preferenceOpt.get();
+			// Update fields from cForm to preference entity
+			preference.setCurrencyId(cForm.getCurrencyID());
+			preference.setCurrencyText("");
+			preference.setWeightId(cForm.getWeightID());
+			preference.setWeight("");
+			preference.setLabelSizeId(cForm.getDefaultLabelID());
+			preference.setLabelSize(cForm.getLabelName());
+			preference.setAdminUsername("Admin");
+			preference.setAdminPassword(cForm.getPassword());
+			preference.setMultimode(cForm.getMultiUserConnection());
+
+			country = countriesRepository.findById(cForm.getCustDefaultCountryID());
+
+			preference.setCustomerCountry(country.get());
+			preference.setCustomerTaxable("on".equals(cForm.getCustTaxable()) ? 1 : 0);
+			preference.setStartingInvoiceNumber(Integer.valueOf(cForm.getStartInvoiceNum()));
+
+			invoiceStyle = invoicestyleRepository.findById(cForm.getInvStyleID());
+
+			preference.setInvoiceStyle(invoiceStyle.get());
+			preference.setInvoiceFootnoteId(cForm.getDefaultFootnoteID());
+			preference.setUseProductWeight("on".equals(cForm.getIsProductWeight()) ? 1 : 0);
+			preference.setUseShippingTable("on".equals(cForm.getIsCompanyName()) ? 1 : 0);
+
+			country = countriesRepository.findById(cForm.getVendorDefaultCountryID());
+
+			preference.setVendorCountry(country.get());
+			preference.setStartingPonumber(cForm.getStartPONum());
+
+			poStyle = postyleRepository.findById(cForm.getPoStyleID());
+			preference.setPostyle(poStyle.get());
+			preference.setPofootnoteId(cForm.getVendorDefaultFootnoteID());
+			preference.setStartingRinumber(String.valueOf(cForm.getStartRINum()));
+			preference.setProductTaxable("on".equals(cForm.getProductTaxable()) ? 1 : 0);
+
+			state = stateRepository.findById(cForm.getEmpStateID());
+
+			preference.setEmployeeState(state.get());
+
+			country = countriesRepository.findById(cForm.getEmpCountryID());
+			preference.setEmployeeCountry(country.get());
+			preference.setChargeSalestax("on".equals(cForm.getChargeSalesTax()) ? 1 : 0);
+			preference.setHowOftenSalestax(cForm.getHowOftenSalesTax());
+
+			salesTax = salesTaxRepository.findById(cForm.getSalesTaxID());
+
+			preference.setSalesTax(salesTax.get());
+			preference.setShowReminder("on".equals(cForm.getShowReminder()) ? 1 : 0);
+			preference.setInvoiceMemo(cForm.getInvoiceMemo());
+			preference.setInvoiceMemoDays(cForm.getInvoiceMemoDays());
+			preference.setOverdueInvoice(cForm.getOverdueInvoice());
+			preference.setOverdueinvoiceDays(cForm.getOverdueInvoiceDays());
+			preference.setInventoryOrder(cForm.getInventoryOrder());
+			preference.setInventoryOrderDays(cForm.getInventoryOrderDays());
+			preference.setBillstoPay(cForm.getBillsToPay());
+			preference.setBillstoPayDays(cForm.getBillsToPayDays());
+
+			preference.setCompanyLogoPath("");
+			preference.setChargeInterest(cForm.getAnnualInterestRate());
+			preference.setChargeMinimum(cForm.getMinCharge());
+			preference.setChargeGrace(Double.valueOf(cForm.getGracePeriod()));
+			preference.setChargeReassess("on".equals(cForm.getAssessFinanceCharge()) ? true : false);
+			preference.setChargeNameDisplay(3);
+			preference.setTimeSheetSet((int) cForm.getTimeSheet());
 
 			// Performance
 			if (cForm.getPerformance() == 1) {
-				pstmt.setLong(49, cForm.getUserDefinePerform());
+				preference.setPerformance(String.valueOf(cForm.getUserDefinePerform()));
 			} else {
-				pstmt.setInt(49, cForm.getPerformance());
+				preference.setPerformance(String.valueOf(cForm.getPerformance()));
 			}
 
 			// SMTP
-			pstmt.setString(50, cForm.getMailServer());
-			pstmt.setString(51, cForm.getMailUserName());
-			pstmt.setString(52, cForm.getMailPassword());
-			pstmt.setString(53, "on".equals(cForm.getMailAuth()) ? "1" : "0");
-			pstmt.setString(54, cForm.getSenderEmail());
-			pstmt.setLong(55, compId);
+			preference.setMailserver(cForm.getMailServer());
+			preference.setMailUsername(cForm.getMailUserName());
+			preference.setMailPassword(cForm.getMailPassword());
+			preference.setMailAuth("on".equals(cForm.getMailAuth()) ? true : false);
+			preference.setMailSenderEmail(cForm.getSenderEmail());
 
-			int saved = pstmt.executeUpdate();
-			if (saved > 0) {
-				isSaved = true;
-				uploadImage(cForm, request);
-			}
-			pstmt.close();
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveConfigurationRecord "
-					+ ex.toString());
-		} finally {
-			executor.close(con);
+			preferenceRepository.save(preference);
+
+			// Assuming uploadImage method handles the image uploading part
+			uploadImage(cForm, request);
+
+			isSaved = true;
 		}
+
 		return isSaved;
 	}
+//	public boolean saveConfigurationRecord(ConfigurationDto cForm, long compId, HttpServletRequest request) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String insertRecord = "update bca_preference set  CurrencyID = ?,CurrencyText = ?,WeightID = ?,"
+//					+ "Weight = ?,LabelSizeID = ?,LabelSize = ?,AdminUsername = ?,"
+//					+ "AdminPassword = ?,Multimode = ?,CustomerCountryID = ?,CustomerCountry = ?,"
+//					+ "CustomerTaxable = ?,StartingInvoiceNumber = ?,InvoiceStyleID = ?,InvoiceFootnoteID = ?,"
+//					+ "UseProductWeight = ?,UseShippingTable = ?,VendorCountry = ?,VendorCountryID = ?,"
+//					+ "StartingPONumber = ?,POStyleID = ?,POFootnoteID = ?,POUseCountry = ?,"
+//					+ "StartingRINumber = ?,ProductTaxable = ?,EmployeeState = ?,EmployeeStateID = ?,"
+//					+ "EmployeeCountry = ?,EmployeeCountryID = ?,ChargeSalestax = ?,HowOftenSalestax = ?,"
+//					+ "SalesTaxID = ?,ShowReminder = ?,InvoiceMemo = ?,InvoiceMemoDays = ?,OverdueInvoice = ?,"
+//					+ "OverdueInvoiceDays = ?,InventoryOrder = ?,InventoryOrderDays = ?,BillstoPay = ?,"
+//					+ "BillstoPayDays = ?,CompanyLogoPath = ?,"
+//					+ "Charge_interest = ?,Charge_minimum =  ?,Charge_grace =  ?,Charge_reassess =  ?,"
+//					+ "Charge_name_display =  ?,TimeSheetSet = ? ,Performance=? ,"
+//					+ "Mailserver = ?, Mail_username = ?, Mail_password = ?,Mail_Auth = ?, Mail_senderEmail =? "
+//					+ " where CompanyID = ?";
+//
+//			pstmt = con.prepareStatement(insertRecord);
+//			pstmt.setInt(1, cForm.getCurrencyID());
+//			pstmt.setString(2, "");
+//			pstmt.setInt(3, cForm.getWeightID());
+//			pstmt.setString(4, "");
+//			pstmt.setInt(5, cForm.getDefaultLabelID());
+//			pstmt.setString(6, cForm.getLabelName());
+//			pstmt.setString(7, "Admin");
+//			pstmt.setString(8, cForm.getPassword());
+//			pstmt.setInt(9, cForm.getMultiUserConnection());
+//			pstmt.setInt(10, cForm.getCustDefaultCountryID());
+//			pstmt.setString(11, "");
+//			pstmt.setString(12, "on".equals(cForm.getCustTaxable()) ? "1" : "0");
+//			pstmt.setString(13, cForm.getStartInvoiceNum());
+//			pstmt.setInt(14, cForm.getInvStyleID());
+//			pstmt.setInt(15, cForm.getDefaultFootnoteID());
+//			pstmt.setString(16, "on".equals(cForm.getIsProductWeight()) ? "1" : "0");
+//			pstmt.setString(17, "on".equals(cForm.getIsCompanyName()) ? "1" : "0");
+//			pstmt.setString(18, "");
+//			pstmt.setInt(19, cForm.getVendorDefaultCountryID());
+//			pstmt.setString(20, cForm.getStartPONum());
+//			pstmt.setInt(21, cForm.getPoStyleID());
+//			pstmt.setInt(22, cForm.getVendorDefaultFootnoteID());
+//			pstmt.setInt(23, -1);
+//			pstmt.setLong(24, cForm.getStartRINum());
+//			pstmt.setString(25, "on".equals(cForm.getProductTaxable()) ? "1" : "0");
+//			pstmt.setString(26, "");
+//			pstmt.setInt(27, cForm.getEmpStateID());
+//			pstmt.setString(28, "");
+//			pstmt.setInt(29, cForm.getEmpCountryID());
+//			pstmt.setString(30, "on".equals(cForm.getChargeSalesTax()) ? "1" : "0");
+//			pstmt.setInt(31, cForm.getHowOftenSalesTax());
+//			pstmt.setInt(32, cForm.getSalesTaxID());
+//			pstmt.setString(33, "on".equals(cForm.getShowReminder()) ? "1" : "0");
+//			pstmt.setInt(34, cForm.getInvoiceMemo());
+//			pstmt.setInt(35, cForm.getInvoiceMemoDays());
+//			pstmt.setInt(36, cForm.getOverdueInvoice());
+//			pstmt.setInt(37, cForm.getOverdueInvoiceDays());
+//			pstmt.setInt(38, cForm.getInventoryOrder());
+//			pstmt.setInt(39, cForm.getInventoryOrderDays());
+//			pstmt.setInt(40, cForm.getBillsToPay());
+//			pstmt.setInt(41, cForm.getBillsToPayDays());
+//
+//			pstmt.setString(42, "");
+//			pstmt.setDouble(43, cForm.getAnnualInterestRate());
+//			pstmt.setDouble(44, cForm.getMinCharge());
+//			pstmt.setLong(45, cForm.getGracePeriod());
+//			pstmt.setString(46, "on".equals(cForm.getAssessFinanceCharge()) ? "1" : "0");
+//			pstmt.setInt(47, 3);
+//			pstmt.setLong(48, cForm.getTimeSheet());
+//
+//			// Performance
+//			if (cForm.getPerformance() == 1) {
+//				pstmt.setLong(49, cForm.getUserDefinePerform());
+//			} else {
+//				pstmt.setInt(49, cForm.getPerformance());
+//			}
+//
+//			// SMTP
+//			pstmt.setString(50, cForm.getMailServer());
+//			pstmt.setString(51, cForm.getMailUserName());
+//			pstmt.setString(52, cForm.getMailPassword());
+//			pstmt.setString(53, "on".equals(cForm.getMailAuth()) ? "1" : "0");
+//			pstmt.setString(54, cForm.getSenderEmail());
+//			pstmt.setLong(55, compId);
+//
+//			int saved = pstmt.executeUpdate();
+//			if (saved > 0) {
+//				isSaved = true;
+//				uploadImage(cForm, request);
+//			}
+//			pstmt.close();
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveConfigurationRecord "
+//					+ ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
 
 	public void saveformCustomization(ConfigurationDto cForm) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null, pstmt1 = null;
-		String[] ActiveInvoiceStyleList = cForm.getListOfActiveInvoiceStyle();
-		String[] DeActiveInvoiceStyleList = cForm.getListOfDeActiveInvoiceStyle();
-		int i = ActiveInvoiceStyleList.length;
-		int i1 = DeActiveInvoiceStyleList.length;
-		try {
-			con = executor.getConnection();
+		// Activating styles
+		for (String styleId : cForm.getListOfActiveInvoiceStyle()) {
+			invoiceStyleRepository.findById(Integer.parseInt(styleId)).ifPresent(style -> {
+				style.setActive(1);
+				invoiceStyleRepository.save(style);
+			});
+		}
 
-			for (i = 0; i < ActiveInvoiceStyleList.length; i++) {
-				String updateActiveInvoiceStyle = "update bca_invoicestyle set Active = 1 where InvoiceStyleID='"
-						+ ActiveInvoiceStyleList[i] + "'";
-				pstmt = con.prepareStatement(updateActiveInvoiceStyle);
-				int saved = pstmt.executeUpdate();
-			}
-			for (i1 = 0; i1 < DeActiveInvoiceStyleList.length; i1++) {
-				String updateDeActiveInvoiceStyle = "update bca_invoicestyle set Active = 0 where InvoiceStyleID='"
-						+ DeActiveInvoiceStyleList[i1] + "'";
-				pstmt1 = con.prepareStatement(updateDeActiveInvoiceStyle);
-				int saved = pstmt1.executeUpdate();
-			}
-			pstmt.close();
-			pstmt1.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			Loger.log(e.toString());
-		} finally {
-			executor.close(con);
+		// Deactivating styles
+		for (String styleId : cForm.getListOfDeActiveInvoiceStyle()) {
+			invoiceStyleRepository.findById(Integer.parseInt(styleId)).ifPresent(style -> {
+				style.setActive(0);
+				invoiceStyleRepository.save(style);
+			});
 		}
 	}
+
+//	public void saveformCustomization(ConfigurationDto cForm) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null, pstmt1 = null;
+//		String[] ActiveInvoiceStyleList = cForm.getListOfActiveInvoiceStyle();
+//		String[] DeActiveInvoiceStyleList = cForm.getListOfDeActiveInvoiceStyle();
+//		int i = ActiveInvoiceStyleList.length;
+//		int i1 = DeActiveInvoiceStyleList.length;
+//		try {
+//			con = executor.getConnection();
+//
+//			for (i = 0; i < ActiveInvoiceStyleList.length; i++) {
+//				String updateActiveInvoiceStyle = "update bca_invoicestyle set Active = 1 where InvoiceStyleID='"
+//						+ ActiveInvoiceStyleList[i] + "'";
+//				pstmt = con.prepareStatement(updateActiveInvoiceStyle);
+//				int saved = pstmt.executeUpdate();
+//			}
+//			for (i1 = 0; i1 < DeActiveInvoiceStyleList.length; i1++) {
+//				String updateDeActiveInvoiceStyle = "update bca_invoicestyle set Active = 0 where InvoiceStyleID='"
+//						+ DeActiveInvoiceStyleList[i1] + "'";
+//				pstmt1 = con.prepareStatement(updateDeActiveInvoiceStyle);
+//				int saved = pstmt1.executeUpdate();
+//			}
+//			pstmt.close();
+//			pstmt1.close();
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			Loger.log(e.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//	}
 
 	public boolean saveConfigurationRecordGeneral(ConfigurationDto cForm, HttpServletRequest request) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
-		ResultSet rs = null;
+		Optional<BcaCountries> country = null;
+		Optional<BcaInvoicestyle> invoiceStyle = null;
+		Optional<BcaPostyle> poStyle = null;
+		Optional<BcaStates> state = null;
+		Optional<BcaSalestax> salesTax = null;
+		Optional<BcaCompany> company = null;
+
 		boolean isSaved = false;
-		String companyID = (String) request.getSession().getAttribute("CID");
-		try {
-			pstmt2 = con.prepareStatement("SELECT PreferenceID FROM bca_preference WHERE CompanyID=" + companyID);
-			rs = pstmt2.executeQuery();
-			if (!rs.next()) {
-				pstmt2 = con.prepareStatement("INSERT INTO bca_preference(CompanyID,AdminPassword,CustomerCountryID,"
-						+ "SalesTaxRate,SalesTaxRate2,SalesTaxCode,Mailserver,Mail_username,Mail_password,Mail_senderEmail,FilterOption,"
-						+ "StartingInvoiceNumber,StartingEstimationNumber,StartingPONumber,StartingSalesOrderNumber,"
-						+ "showReorderPointList,showReorderPointWarring,reservedQuantity,salesOrderQty,DateAdded) "
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-//                LineofCreditTermID,BillingStyleTypeID,POStyleTypeID,SalesOrderStyleTypeID,InvoiceStyleTypeID,PackingSlipStyleTypeID,
-				pstmt2.setString(1, companyID);
-				pstmt2.setString(2, cForm.getPassword());
-				pstmt2.setInt(3, cForm.getCustDefaultCountryID());
-				pstmt2.setFloat(4, cForm.getSalesTaxRate());
-				pstmt2.setDouble(5, cForm.getSaleTaxRate2());
-				pstmt2.setString(6, cForm.getSalesTaxCode());
-				pstmt2.setString(7, cForm.getMailServer());
-				pstmt2.setString(8, cForm.getMailUserName());
-				pstmt2.setString(9, cForm.getMailPassword());
-				pstmt2.setString(10, cForm.getSenderEmail());
-				pstmt2.setString(11, cForm.getFilterOption());
-				pstmt2.setString(12, cForm.getStartInvoiceNum());
-				pstmt2.setString(13, cForm.getStartEstimationNum());
-				pstmt2.setString(14, cForm.getStartPONum());
-				pstmt2.setString(15, cForm.getStartSalesOrderNum());
-				pstmt2.setInt(16, "on".equals(cForm.getShowReorderPointList()) ? 1 : 0);
-				pstmt2.setInt(17, "on".equals(cForm.getShowReorderPointWarning()) ? 1 : 0);
-				pstmt2.setInt(18, "on".equals(cForm.getReservedQuantity()) ? 1 : 0);
-				pstmt2.setInt(19, "on".equals(cForm.getSalesOrderQty()) ? 1 : 0);
-				pstmt2.setDate(20, MyUtility.string2Date("now()"));
-				pstmt2.executeUpdate();
-			}
+		Long companyId = Long.parseLong((String) request.getSession().getAttribute("CID"));
 
-			String insertRecord = "update bca_preference set CurrencyID=?,WeightID=?,LabelSizeID=?,defaultModule=?,FilterOption=?,poboard=?,"
-					+ "itemsReceivedBoard=?,itemsShippedBoard=?,SalesOrderBoard=?,Mailserver=?,Mail_senderEmail=?,Mail_username=?,Mail_password=?, "
-					+ "ShowUSAInBillShipAddress=?,Multimode=? WHERE CompanyID=?";
-			pstmt = con.prepareStatement(insertRecord);
-			pstmt.setInt(1, cForm.getCurrencyID());
-			pstmt.setInt(2, cForm.getWeightID());
-			pstmt.setInt(3, cForm.getDefaultLabelID());
-			pstmt.setInt(4, cForm.getModuleID());
-			pstmt.setString(5, cForm.getFilterOption());
-			pstmt.setString(6, "on".equals(cForm.getPoboard()) ? "1" : "0");
-			pstmt.setString(7, "on".equals(cForm.getItemReceivedBoard()) ? "1" : "0");
-			pstmt.setString(8, "on".equals(cForm.getItemShippedBoard()) ? "1" : "0");
-			pstmt.setString(9, "on".equals(cForm.getSalesOrderBoard()) ? "1" : "0");
-			pstmt.setString(10, cForm.getMailServer());
-			pstmt.setString(11, cForm.getSenderEmail());
-			pstmt.setString(12, cForm.getMailUserName());
-			pstmt.setString(13, cForm.getMailPassword());
-			pstmt.setBoolean(14, cForm.isShowUSAInBillShipAddress());
-			pstmt.setInt(15, cForm.getMultiUserConnection());
-			pstmt.setString(16, companyID);
-			int saved = pstmt.executeUpdate();
-			if (saved > 0) {
-				isSaved = true;
-			}
-			pstmt.close();
-		} catch (SQLException ex) {
-			Loger.log(
-					"Exception in the class ConfigurationInfo and in method saveConfigurationRecord " + ex.toString());
-			ex.printStackTrace();
+		Optional<BcaPreference> prefOpt = preferenceRepository.findByCompany_CompanyIdAndActive(companyId, 1);
+		BcaPreference pref;
+		if (prefOpt.isPresent()) {
+			pref = prefOpt.get();
+			// Update fields in pref using cForm
+
+			pref.setMailserver(cForm.getMailServer());
+			pref.setMailUsername(cForm.getMailUserName());
+			pref.setMailPassword(cForm.getMailPassword());
+			pref.setMailSenderEmail(cForm.getSenderEmail());
+			pref.setFilterOption(cForm.getFilterOption());
+			pref.setCurrencyId(cForm.getCurrencyID());
+			pref.setWeightId(cForm.getWeightID());
+			pref.setLabelSizeId(cForm.getDefaultLabelID());
+			pref.setDefaultModule(cForm.getModuleID());
+			pref.setPoboard("on".equals(cForm.getPoboard()) ? 1 : 0);
+			pref.setItemsReceivedBoard("on".equals(cForm.getItemReceivedBoard()) ? 1 : 0);
+			pref.setItemsShippedBoard("on".equals(cForm.getItemShippedBoard()) ? 1 : 0);
+			pref.setSalesOrderBoard("on".equals(cForm.getSalesOrderBoard()) ? 1 : 0);
+			pref.setShowUsainBillShipAddress(cForm.isShowUSAInBillShipAddress());
+			pref.setMultimode(cForm.getMultiUserConnection());
+		} else {
+			pref = new BcaPreference();
+			// Set fields in pref using cForm
+			company = bcaCompanyRepository.findById(companyId);
+			pref.setCompany(company.get());
+			pref.setAdminPassword(cForm.getPassword());
+
+			country = countriesRepository.findById(cForm.getCustDefaultCountryID());
+			pref.setCustomerCountry(country.get());
+			pref.setSalesTaxRate(Double.valueOf(cForm.getSalesTaxRate()));
+			pref.setSalesTaxRate2(cForm.getSaleTaxRate2());
+			pref.setSalesTaxCode(cForm.getSalesTaxCode());
+			pref.setMailserver(cForm.getMailServer());
+			pref.setMailUsername(cForm.getMailUserName());
+			pref.setMailPassword(cForm.getMailPassword());
+			pref.setMailSenderEmail(cForm.getSenderEmail());
+			pref.setFilterOption(cForm.getFilterOption());
+			pref.setStartingInvoiceNumber(Integer.valueOf(cForm.getStartInvoiceNum()));
+			pref.setStartingEstimationNumber(Integer.valueOf(cForm.getStartEstimationNum()));
+			pref.setStartingPonumber(cForm.getStartPONum());
+			pref.setStartingSalesOrderNumber(Integer.valueOf(cForm.getStartSalesOrderNum()));
+			pref.setShowReorderPointList("on".equals(cForm.getShowReorderPointList()) ? 1 : 0);
+			pref.setShowReorderPointWarring("on".equals(cForm.getShowReorderPointWarning()) ? 1 : 0);
+			pref.setReservedQuantity("on".equals(cForm.getReservedQuantity()) ? 1 : 0);
+			pref.setSalesOrderQty("on".equals(cForm.getSalesOrderQty()) ? 1 : 0);
+
+			OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+
+			pref.setDateAdded(now);
+			pref.setCurrencyId(cForm.getCurrencyID());
+			pref.setWeightId(cForm.getWeightID());
+			pref.setLabelSizeId(cForm.getDefaultLabelID());
+			pref.setDefaultModule(cForm.getModuleID());
+			pref.setPoboard("on".equals(cForm.getPoboard()) ? 1 : 0);
+			pref.setItemsReceivedBoard("on".equals(cForm.getItemReceivedBoard()) ? 1 : 0);
+			pref.setItemsShippedBoard("on".equals(cForm.getItemShippedBoard()) ? 1 : 0);
+			pref.setSalesOrderBoard("on".equals(cForm.getSalesOrderBoard()) ? 1 : 0);
+			pref.setShowUsainBillShipAddress(cForm.isShowUSAInBillShipAddress());
+			pref.setMultimode(cForm.getMultiUserConnection());
 		}
+		preferenceRepository.save(pref);
 
-		try {
-			String DeleteModules = "delete FROM bca_businessmodules  where CompanyID=" + companyID;
-			pstmt1 = con.prepareStatement(DeleteModules);
-			int check = pstmt1.executeUpdate();
-			pstmt1.close();
+		// Delete business modules
+		// businessModuleRepository.deleteByCompanyId(companyId);
 
-//            String[] Modules = cForm.getListOfExistingModules1();
-//            for(int i=0;i<Modules.length;i++) {
-//                String insertmodules=" insert into bca_businessmodules (ModuleName,Active,CompanyID) values('"+Modules[i]+"',1,"+companyID+")";
-//                pstmt2 = con.prepareStatement(insertmodules);
-//            }
-//            pstmt2.close();
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			executor.close(con);
-		}
+		// Logic to insert new business modules if necessary
+		// ...
+
+		isSaved = true; // If no exceptions are thrown
 		return isSaved;
 	}
+
+//	public boolean saveConfigurationRecordGeneral(ConfigurationDto cForm, HttpServletRequest request) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null;
+//		ResultSet rs = null;
+//		boolean isSaved = false;
+//		String companyID = (String) request.getSession().getAttribute("CID");
+//		try {
+//			pstmt2 = con.prepareStatement("SELECT PreferenceID FROM bca_preference WHERE CompanyID=" + companyID);
+//			rs = pstmt2.executeQuery();
+//			if (!rs.next()) {
+//				pstmt2 = con.prepareStatement("INSERT INTO bca_preference(CompanyID,AdminPassword,CustomerCountryID,"
+//						+ "SalesTaxRate,SalesTaxRate2,SalesTaxCode,Mailserver,Mail_username,Mail_password,Mail_senderEmail,FilterOption,"
+//						+ "StartingInvoiceNumber,StartingEstimationNumber,StartingPONumber,StartingSalesOrderNumber,"
+//						+ "showReorderPointList,showReorderPointWarring,reservedQuantity,salesOrderQty,DateAdded) "
+//						+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+////                LineofCreditTermID,BillingStyleTypeID,POStyleTypeID,SalesOrderStyleTypeID,InvoiceStyleTypeID,PackingSlipStyleTypeID,
+//				pstmt2.setString(1, companyID);
+//				pstmt2.setString(2, cForm.getPassword());
+//				pstmt2.setInt(3, cForm.getCustDefaultCountryID());
+//				pstmt2.setFloat(4, cForm.getSalesTaxRate());
+//				pstmt2.setDouble(5, cForm.getSaleTaxRate2());
+//				pstmt2.setString(6, cForm.getSalesTaxCode());
+//				pstmt2.setString(7, cForm.getMailServer());
+//				pstmt2.setString(8, cForm.getMailUserName());
+//				pstmt2.setString(9, cForm.getMailPassword());
+//				pstmt2.setString(10, cForm.getSenderEmail());
+//				pstmt2.setString(11, cForm.getFilterOption());
+//				pstmt2.setString(12, cForm.getStartInvoiceNum());
+//				pstmt2.setString(13, cForm.getStartEstimationNum());
+//				pstmt2.setString(14, cForm.getStartPONum());
+//				pstmt2.setString(15, cForm.getStartSalesOrderNum());
+//				pstmt2.setInt(16, "on".equals(cForm.getShowReorderPointList()) ? 1 : 0);
+//				pstmt2.setInt(17, "on".equals(cForm.getShowReorderPointWarning()) ? 1 : 0);
+//				pstmt2.setInt(18, "on".equals(cForm.getReservedQuantity()) ? 1 : 0);
+//				pstmt2.setInt(19, "on".equals(cForm.getSalesOrderQty()) ? 1 : 0);
+//				pstmt2.setDate(20, MyUtility.string2Date("now()"));
+//				pstmt2.executeUpdate();
+//			}
+//
+//			String insertRecord = "update bca_preference set CurrencyID=?,WeightID=?,LabelSizeID=?,defaultModule=?,FilterOption=?,poboard=?,"
+//					+ "itemsReceivedBoard=?,itemsShippedBoard=?,SalesOrderBoard=?,Mailserver=?,Mail_senderEmail=?,Mail_username=?,Mail_password=?, "
+//					+ "ShowUSAInBillShipAddress=?,Multimode=? WHERE CompanyID=?";
+//			pstmt = con.prepareStatement(insertRecord);
+//			pstmt.setInt(1, cForm.getCurrencyID());
+//			pstmt.setInt(2, cForm.getWeightID());
+//			pstmt.setInt(3, cForm.getDefaultLabelID());
+//			pstmt.setInt(4, cForm.getModuleID());
+//			pstmt.setString(5, cForm.getFilterOption());
+//			pstmt.setString(6, "on".equals(cForm.getPoboard()) ? "1" : "0");
+//			pstmt.setString(7, "on".equals(cForm.getItemReceivedBoard()) ? "1" : "0");
+//			pstmt.setString(8, "on".equals(cForm.getItemShippedBoard()) ? "1" : "0");
+//			pstmt.setString(9, "on".equals(cForm.getSalesOrderBoard()) ? "1" : "0");
+//			pstmt.setString(10, cForm.getMailServer());
+//			pstmt.setString(11, cForm.getSenderEmail());
+//			pstmt.setString(12, cForm.getMailUserName());
+//			pstmt.setString(13, cForm.getMailPassword());
+//			pstmt.setBoolean(14, cForm.isShowUSAInBillShipAddress());
+//			pstmt.setInt(15, cForm.getMultiUserConnection());
+//			pstmt.setString(16, companyID);
+//			int saved = pstmt.executeUpdate();
+//			if (saved > 0) {
+//				isSaved = true;
+//			}
+//			pstmt.close();
+//		} catch (SQLException ex) {
+//			Loger.log(
+//					"Exception in the class ConfigurationInfo and in method saveConfigurationRecord " + ex.toString());
+//			ex.printStackTrace();
+//		}
+//
+//		try {
+//			String DeleteModules = "delete FROM bca_businessmodules  where CompanyID=" + companyID;
+//			pstmt1 = con.prepareStatement(DeleteModules);
+//			int check = pstmt1.executeUpdate();
+//			pstmt1.close();
+//
+////            String[] Modules = cForm.getListOfExistingModules1();
+////            for(int i=0;i<Modules.length;i++) {
+////                String insertmodules=" insert into bca_businessmodules (ModuleName,Active,CompanyID) values('"+Modules[i]+"',1,"+companyID+")";
+////                pstmt2 = con.prepareStatement(insertmodules);
+////            }
+////            pstmt2.close();
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
 
 	public boolean saveConfigurationRecordEstimation(ConfigurationDto cForm, long compId, HttpServletRequest request) {
 		SQLExecutor executor = new SQLExecutor();

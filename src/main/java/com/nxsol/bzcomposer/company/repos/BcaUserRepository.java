@@ -1,6 +1,7 @@
 package com.nxsol.bzcomposer.company.repos;
 
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaUser;
 
 import java.util.List;
@@ -28,5 +29,7 @@ public interface BcaUserRepository extends JpaRepository<BcaUser, Integer> {
 	
 	@Query("SELECT u.membershipLevel FROM BcaUser u WHERE (u.emailAddress = :emailAddress OR u.loginId = :loginId) AND u.company.id = :companyId AND u.active = true")
     Optional<String> findMembershipLevelByEmailOrLoginIdAndCompanyId(@Param("emailAddress") String emailAddress, @Param("loginId") String loginId, @Param("companyId") Long companyId);
+
+    Optional<BcaUser> findByCompanyAndEmailAddress(BcaCompany company, String emailAddress);
 
 }
