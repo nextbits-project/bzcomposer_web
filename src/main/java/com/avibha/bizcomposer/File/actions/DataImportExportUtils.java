@@ -429,9 +429,9 @@ public class DataImportExportUtils {
 			}
 //			ConfigurationInfo cinfo = new ConfigurationInfo();
 			cinfo.saveConfigurationRecordGeneral(configDto, request);
-			cinfo.saveConfigurationRecordInventorySettting(configDto, Integer.parseInt(compId));
+			cinfo.saveConfigurationRecordInventorySetting(configDto, Long.valueOf(compId));
 			cinfo.saveConfigurationRecord(configDto, Long.valueOf(compId), request);
-			cinfo.saveCustomerInvoice(configDto, Integer.parseInt(compId));
+			cinfo.saveCustomerInvoice(configDto, Long.valueOf(compId));
 			cinfo.saveVendorPurchaseValuesInConfigInfo(configDto, Integer.parseInt(compId));
 			request.getSession().setAttribute("successMessage", "Success");
 			status = true;

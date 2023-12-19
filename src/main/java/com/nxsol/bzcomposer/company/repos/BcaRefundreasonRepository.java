@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BcaRefundreasonRepository extends JpaRepository<BcaRefundreason, Integer> {
-    List<BcaRefundreason> findByCompanyAndActive(BcaCompany company, Boolean active);
+	List<BcaRefundreason> findByCompanyAndActive(BcaCompany company, Boolean active);
+
+	List<BcaRefundreason> findByCompany(BcaCompany company);
 
 }

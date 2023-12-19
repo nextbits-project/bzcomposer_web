@@ -8171,7 +8171,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				cv.setFirstName(clientvendor.getFirstName());
 				cv.setLastName(clientvendor.getLastName());
 				cv.setTaxable(clientvendor.getTaxable().intValue());
-				cv.setSalesRepID(clientvendor.getSalesRep().getSalesTaxId());
+				cv.setSalesRepID(clientvendor.getSalesRep().getSalesRepId());
 				cv.setTermID(clientvendor.getTerm().getTermId());
 				cv.setShipCarrierID(clientvendor.getShipCarrier().getShipCarrierId());
 				cv.setPaymentTypeID(clientvendor.getPaymentType().getPaymentTypeId());

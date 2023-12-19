@@ -3,6 +3,9 @@ package com.avibha.bizcomposer.configuration.dao;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,11 +14,13 @@ import java.sql.Statement;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -23,6 +28,7 @@ import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
@@ -33,12 +39,21 @@ import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaCountries;
 import com.nxsol.bzcomposer.company.domain.BcaFootnote;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
+import com.nxsol.bzcomposer.company.domain.BcaJobcategory;
 import com.nxsol.bzcomposer.company.domain.BcaLabel;
+import com.nxsol.bzcomposer.company.domain.BcaLineofcreditterm;
+import com.nxsol.bzcomposer.company.domain.BcaLocation;
+import com.nxsol.bzcomposer.company.domain.BcaMasterrmareason;
+import com.nxsol.bzcomposer.company.domain.BcaMessage;
 import com.nxsol.bzcomposer.company.domain.BcaPostyle;
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
+import com.nxsol.bzcomposer.company.domain.BcaRefundreason;
+import com.nxsol.bzcomposer.company.domain.BcaRmareason;
+import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
 import com.nxsol.bzcomposer.company.domain.BcaSalestax;
 import com.nxsol.bzcomposer.company.domain.BcaServicetype;
 import com.nxsol.bzcomposer.company.domain.BcaStates;
+import com.nxsol.bzcomposer.company.domain.BcaTerm;
 import com.nxsol.bzcomposer.company.domain.BcaUsergroup;
 import com.nxsol.bzcomposer.company.domain.BcpJobcode;
 import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaFootnoteResult2;
@@ -46,12 +61,21 @@ import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
+import com.nxsol.bzcomposer.company.repos.BcaJobcategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLabelRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLineofcredittermRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLocationRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMasterrmareasonRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMessageRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPostyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRefundreasonRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRmareasonRepository;
+import com.nxsol.bzcomposer.company.repos.BcaSalesrepRepository;
 import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
 import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUserRepository;
 import com.nxsol.bzcomposer.company.repos.BcaUsergroupRepository;
 import com.nxsol.bzcomposer.company.repos.BcpJobcodeRepository;
@@ -1655,111 +1679,148 @@ public class ConfigurationInfo {
 //		return isSaved;
 //	}
 
-	public boolean saveConfigurationRecordEstimation(ConfigurationDto cForm, long compId, HttpServletRequest request) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
-		try {
-			pstmt = con.prepareStatement("update bca_preference set StartingEstimationNumber=? where CompanyID=?");
-			pstmt.setString(1, cForm.getStartEstimationNum());
-			pstmt.setLong(2, compId);
-			int saved = pstmt.executeUpdate();
-			if (saved > 0) {
-				isSaved = true;
-			}
-			pstmt.close();
-		} catch (SQLException ex) {
-			Loger.log(
-					"Exception in the class ConfigurationInfo and in method saveConfigurationRecord " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
+	public boolean saveConfigurationRecordEstimation(ConfigurationDto cForm, Long compId) {
+
+		return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+			preference.setStartingEstimationNumber(Integer.valueOf(cForm.getStartEstimationNum()));
+			preferenceRepository.save(preference);
+			return true;
+		}).orElse(false);
 	}
 
-	public boolean saveConfigurationRecordBilling(ConfigurationDto cForm, long compId) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
-		try {
-			String insertRecord = "update bca_preference set StartingBillNumber = ?,showCombinedBilling=?,"
-					+ "showBillingStatStyle=?,PrintBills=?,MailToCustomer=?  where CompanyID = ?";
+//	public boolean saveConfigurationRecordEstimation(ConfigurationDto cForm, long compId, HttpServletRequest request) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			pstmt = con.prepareStatement("update bca_preference set StartingEstimationNumber=? where CompanyID=?");
+//			pstmt.setString(1, cForm.getStartEstimationNum());
+//			pstmt.setLong(2, compId);
+//			int saved = pstmt.executeUpdate();
+//			if (saved > 0) {
+//				isSaved = true;
+//			}
+//			pstmt.close();
+//		} catch (SQLException ex) {
+//			Loger.log(
+//					"Exception in the class ConfigurationInfo and in method saveConfigurationRecord " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
 
-			pstmt = con.prepareStatement(insertRecord);
-			pstmt.setLong(1, cForm.getStartingBillNumber());
-			pstmt.setString(2, "on".equals(cForm.getShowCombinedBilling()) ? "1" : "0");
-			pstmt.setInt(3, cForm.getShowBillingStatStyle());
-			pstmt.setString(4, "on".equals(cForm.getPrintBills()) ? "1" : "0");
-			pstmt.setString(5, "on".equals(cForm.getMailToCustomer()) ? "1" : "0");
-			pstmt.setLong(6, compId);
-			int saved = pstmt.executeUpdate();
-			if (saved > 0) {
-				isSaved = true;
-			}
-			pstmt.close();
-		} catch (SQLException ex) {
-			Loger.log(
-					"Exception in the class ConfigurationInfo and in method saveConfigurationRecord " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
+	public boolean saveConfigurationRecordBilling(ConfigurationDto cForm, Long compId) {
+		return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+			preference.setStartingBillNumber(cForm.getStartingBillNumber());
+			preference.setShowCombinedBilling("on".equals(cForm.getShowCombinedBilling()) ? 1 : 0);
+			preference.setShowBillingStatStyle(cForm.getShowBillingStatStyle());
+			preference.setPrintBills("on".equals(cForm.getPrintBills()) ? 1 : 0);
+			preference.setMailToCustomer("on".equals(cForm.getMailToCustomer()) ? 1 : 0);
+			preferenceRepository.save(preference);
+			return true;
+		}).orElse(false);
 	}
+
+//	public boolean saveConfigurationRecordBilling(ConfigurationDto cForm, long compId) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String insertRecord = "update bca_preference set StartingBillNumber = ?,showCombinedBilling=?,"
+//					+ "showBillingStatStyle=?,PrintBills=?,MailToCustomer=?  where CompanyID = ?";
+//
+//			pstmt = con.prepareStatement(insertRecord);
+//			pstmt.setLong(1, cForm.getStartingBillNumber());
+//			pstmt.setString(2, "on".equals(cForm.getShowCombinedBilling()) ? "1" : "0");
+//			pstmt.setInt(3, cForm.getShowBillingStatStyle());
+//			pstmt.setString(4, "on".equals(cForm.getPrintBills()) ? "1" : "0");
+//			pstmt.setString(5, "on".equals(cForm.getMailToCustomer()) ? "1" : "0");
+//			pstmt.setLong(6, compId);
+//			int saved = pstmt.executeUpdate();
+//			if (saved > 0) {
+//				isSaved = true;
+//			}
+//			pstmt.close();
+//		} catch (SQLException ex) {
+//			Loger.log(
+//					"Exception in the class ConfigurationInfo and in method saveConfigurationRecord " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
 
 	/*
 	 * Upload(Saves) the image required for the default invoice logo. Also save the
 	 * images to the uploadImages folder of the application.
 	 */
 	public void uploadImage(ConfigurationDto configFrm, HttpServletRequest request) {
-		String fileSep = System.getProperty("file.separator");
-		FileOutputStream fo = null;
 		try {
 			MultipartFile f = configFrm.getInvoiceDefaultLogo();
-			Loger.log("value of f: " + f);
-			String contentType = "";
-			String filename = "";
-			if (f != null) {
-				contentType = f.getContentType();
-				Loger.log(contentType);
-				filename = f.getOriginalFilename();
-			}
+			if (f != null && !f.isEmpty() && f.getContentType().startsWith("image/")) {
+				String filename = f.getOriginalFilename();
+				Path uploadPath = Paths.get(request.getServletContext().getRealPath("uploadedImages"), filename);
 
-			StringTokenizer st = new StringTokenizer(contentType, "/");
-			if (st.hasMoreTokens()) {
-				String val = st.nextToken("/");
-				if ("image".equals(val) == true) {
-
-					Loger.log(request.getServletContext().getRealPath("/"));
-					if (filename.length() > 0) {
-						String s = request.getServletContext().getRealPath("uploadedImages") + fileSep + filename;
-						byte[] contentArray = f.getBytes();
-
-						if (contentArray != null || contentArray.length > 0) {
-							File tosave = new File(s);
-							fo = new FileOutputStream(tosave);
-							fo.write(contentArray);
-						}
-					}
-
+				File toSave = uploadPath.toFile();
+				try (FileOutputStream fo = new FileOutputStream(toSave)) {
+					fo.write(f.getBytes());
 				}
 			}
-
-		} catch (IOException ee) {
-			Loger.log(2, "error in execute() in PhotoAction class" + ee);
-		} catch (Exception eee) {
-			Loger.log(2, "error in execute() in PhotoAction class" + eee);
-		} finally {
-			try {
-				if (fo != null)
-					fo.close();
-			} catch (Exception eeee) {
-				Loger.log(2, "File Not Stored Properly in PhotoAction class" + eeee);
-			}
+		} catch (IOException e) {
+			Loger.log("Error in uploading image: " + e.getMessage());
 		}
-
 	}
+//	public void uploadImage(ConfigurationDto configFrm, HttpServletRequest request) {
+//		String fileSep = System.getProperty("file.separator");
+//		FileOutputStream fo = null;
+//		try {
+//			MultipartFile f = configFrm.getInvoiceDefaultLogo();
+//			Loger.log("value of f: " + f);
+//			String contentType = "";
+//			String filename = "";
+//			if (f != null) {
+//				contentType = f.getContentType();
+//				Loger.log(contentType);
+//				filename = f.getOriginalFilename();
+//			}
+//
+//			StringTokenizer st = new StringTokenizer(contentType, "/");
+//			if (st.hasMoreTokens()) {
+//				String val = st.nextToken("/");
+//				if ("image".equals(val) == true) {
+//
+//					Loger.log(request.getServletContext().getRealPath("/"));
+//					if (filename.length() > 0) {
+//						String s = request.getServletContext().getRealPath("uploadedImages") + fileSep + filename;
+//						byte[] contentArray = f.getBytes();
+//
+//						if (contentArray != null || contentArray.length > 0) {
+//							File tosave = new File(s);
+//							fo = new FileOutputStream(tosave);
+//							fo.write(contentArray);
+//						}
+//					}
+//
+//				}
+//			}
+//
+//		} catch (IOException ee) {
+//			Loger.log(2, "error in execute() in PhotoAction class" + ee);
+//		} catch (Exception eee) {
+//			Loger.log(2, "error in execute() in PhotoAction class" + eee);
+//		} finally {
+//			try {
+//				if (fo != null)
+//					fo.close();
+//			} catch (Exception eeee) {
+//				Loger.log(2, "File Not Stored Properly in PhotoAction class" + eeee);
+//			}
+//		}
+//
+//	}
 
 	/*
 	 * Invoke(get) the footnote id,name & description. So it is useful for the
@@ -1827,7 +1888,8 @@ public class ConfigurationInfo {
 //            return isRecordDeleted;
 
 //        try {
-		String deleteQuery = "update bca_footnote set Active=0 where FootNoteID=? and CompanyID=?";
+		// String deleteQuery = "update bca_footnote set Active=0 where FootNoteID=? and
+		// CompanyID=?";
 //            pstmt = con.prepareStatement(deleteQuery);
 //            pstmt.setInt(1, cForm.getFootnote());
 //            pstmt.setString(2, compId);
@@ -1941,39 +2003,68 @@ public class ConfigurationInfo {
 	 * description.
 	 */
 	public boolean addJobCodeTimesheet(HttpServletRequest request) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		boolean added = false;
-		if (executor == null)
-			return added;
-		con = executor.getConnection();
-		if (con == null)
-			return added;
 		try {
 			String jName = request.getParameter("code");
 			String jCost = request.getParameter("cost");
 			String jDesc = request.getParameter("desc");
-			long compId = Long.parseLong((String) request.getSession().getAttribute("CID"));
-			String insertQuery = "insert into bcp_jobcode(Name,Cost,Description,CompanyID) value(?,?,?,?)";
-			pstmt = con.prepareStatement(insertQuery);
-			pstmt.setString(1, jName);
-			pstmt.setString(2, jCost);
-			pstmt.setString(3, jDesc);
-			pstmt.setLong(4, compId);
-			int isAdded = pstmt.executeUpdate();
-			if (isAdded > 0) {
-				added = true;
+			Long compId = Long.parseLong((String) request.getSession().getAttribute("CID"));
+
+			BcaCompany company = bcaCompanyRepository.findById(compId).orElse(null);
+			if (company == null) {
+				return false;
 			}
 
-		} catch (SQLException ex) {
-			Loger.log(
-					"Exception in the class ConfigurationInfo and in method " + "addJobCodeTimesheet " + ex.toString());
-		} finally {
-			executor.close(con);
+			BcpJobcode jobCode = new BcpJobcode();
+			jobCode.setName(jName);
+			jobCode.setCost(new BigDecimal(jCost)); // Convert String to BigDecimal
+			jobCode.setDescription(jDesc);
+			jobCode.setCompany(company);
+
+			jobCodeRepository.save(jobCode);
+			return true;
+
+		} catch (NumberFormatException e) {
+			Loger.log("Number format exception in addJobCodeTimesheet: " + e.toString());
+			return false;
+		} catch (Exception e) {
+			Loger.log("Exception in addJobCodeTimesheet: " + e.toString());
+			return false;
 		}
-		return added;
 	}
+//	public boolean addJobCodeTimesheet(HttpServletRequest request) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		boolean added = false;
+//		if (executor == null)
+//			return added;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return added;
+//		try {
+//			String jName = request.getParameter("code");
+//			String jCost = request.getParameter("cost");
+//			String jDesc = request.getParameter("desc");
+//			long compId = Long.parseLong((String) request.getSession().getAttribute("CID"));
+//			String insertQuery = "insert into bcp_jobcode(Name,Cost,Description,CompanyID) value(?,?,?,?)";
+//			pstmt = con.prepareStatement(insertQuery);
+//			pstmt.setString(1, jName);
+//			pstmt.setString(2, jCost);
+//			pstmt.setString(3, jDesc);
+//			pstmt.setLong(4, compId);
+//			int isAdded = pstmt.executeUpdate();
+//			if (isAdded > 0) {
+//				added = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log(
+//					"Exception in the class ConfigurationInfo and in method " + "addJobCodeTimesheet " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return added;
+//	}
 
 	/*
 	 * Edit (update) the job code selected by user in existing job code with cost &
@@ -1981,1418 +2072,2276 @@ public class ConfigurationInfo {
 	 *
 	 */
 	public boolean editJobCodeTimesheet(HttpServletRequest request) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		boolean edited = false;
-		if (executor == null)
-			return edited;
-		con = executor.getConnection();
-		if (con == null)
-			return edited;
 		try {
 			int jobId = Integer.parseInt(request.getParameter("jobId"));
 			String jName = request.getParameter("code");
-			String jCost = request.getParameter("cost");
+			String jCost = request.getParameter("cost"); // Consider using BigDecimal for monetary values
 			String jDesc = request.getParameter("desc");
-			long compId = Long.parseLong((String) request.getSession().getAttribute("CID"));
-			String insertQuery = "update bcp_jobcode set Name=?,Cost=?,Description=? where CompanyID=? and JobID=?";
-			pstmt = con.prepareStatement(insertQuery);
-			pstmt.setString(1, jName);
-			pstmt.setString(2, jCost);
-			pstmt.setString(3, jDesc);
-			pstmt.setLong(4, compId);
-			pstmt.setInt(5, jobId);
+			Long compId = Long.parseLong((String) request.getSession().getAttribute("CID"));
 
-			int isupdated = pstmt.executeUpdate();
-			if (isupdated > 0) {
-				edited = true;
-			}
+			return jobCodeRepository.findByJobIdAndCompany_CompanyId(jobId, compId).map(jobCode -> {
+				jobCode.setName(jName);
+				jobCode.setCost(new BigDecimal(jCost)); // Convert String to BigDecimal
+				jobCode.setDescription(jDesc);
+				jobCodeRepository.save(jobCode);
+				return true;
+			}).orElse(false);
 
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "editJobCodeTimesheet "
-					+ ex.toString());
-		} finally {
-			executor.close(con);
+		} catch (NumberFormatException e) {
+			Loger.log("Number format exception in editJobCodeTimesheet: " + e.toString());
+			return false;
+		} catch (Exception e) {
+			Loger.log("Exception in editJobCodeTimesheet: " + e.toString());
+			return false;
 		}
-		return edited;
 	}
+//	public boolean editJobCodeTimesheet(HttpServletRequest request) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		boolean edited = false;
+//		if (executor == null)
+//			return edited;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return edited;
+//		try {
+//			int jobId = Integer.parseInt(request.getParameter("jobId"));
+//			String jName = request.getParameter("code");
+//			String jCost = request.getParameter("cost");
+//			String jDesc = request.getParameter("desc");
+//			long compId = Long.parseLong((String) request.getSession().getAttribute("CID"));
+//			String insertQuery = "update bcp_jobcode set Name=?,Cost=?,Description=? where CompanyID=? and JobID=?";
+//			pstmt = con.prepareStatement(insertQuery);
+//			pstmt.setString(1, jName);
+//			pstmt.setString(2, jCost);
+//			pstmt.setString(3, jDesc);
+//			pstmt.setLong(4, compId);
+//			pstmt.setInt(5, jobId);
+//
+//			int isupdated = pstmt.executeUpdate();
+//			if (isupdated > 0) {
+//				edited = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "editJobCodeTimesheet "
+//					+ ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return edited;
+//	}
 
 	/*
 	 * Remove the job code selected by user in existing job code from database.
 	 */
 	public boolean removeJobCodeTimesheet(HttpServletRequest request) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		boolean deleted = false;
-		if (executor == null)
-			return deleted;
-		con = executor.getConnection();
-		if (con == null)
-			return deleted;
 		try {
 			int jobId = Integer.parseInt(request.getParameter("jobId"));
 			long compId = Long.parseLong((String) request.getSession().getAttribute("CID"));
-			String insertQuery = "delete from bcp_jobcode where JobID=? and CompanyID=?";
-			pstmt = con.prepareStatement(insertQuery);
-			pstmt.setInt(1, jobId);
-			pstmt.setLong(2, compId);
-			int isDeleted = pstmt.executeUpdate();
-			if (isDeleted > 0) {
-				deleted = true;
-			}
-			pstmt.close();
 
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "removeJobCodeTimesheet "
-					+ ex.toString());
-		} finally {
-			executor.close(con);
+			Optional<BcpJobcode> jobCodeOpt = jobCodeRepository.findByJobIdAndCompany_CompanyId(jobId, compId);
+			if (jobCodeOpt.isPresent()) {
+				jobCodeRepository.delete(jobCodeOpt.get());
+				return true;
+			}
+			return false;
+
+		} catch (NumberFormatException e) {
+			Loger.log("Number format exception in removeJobCodeTimesheet: " + e.toString());
+			return false;
+		} catch (Exception e) {
+			Loger.log("Exception in removeJobCodeTimesheet: " + e.toString());
+			return false;
 		}
-		return deleted;
 	}
+//	public boolean removeJobCodeTimesheet(HttpServletRequest request) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		boolean deleted = false;
+//		if (executor == null)
+//			return deleted;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return deleted;
+//		try {
+//			int jobId = Integer.parseInt(request.getParameter("jobId"));
+//			long compId = Long.parseLong((String) request.getSession().getAttribute("CID"));
+//			String insertQuery = "delete from bcp_jobcode where JobID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(insertQuery);
+//			pstmt.setInt(1, jobId);
+//			pstmt.setLong(2, compId);
+//			int isDeleted = pstmt.executeUpdate();
+//			if (isDeleted > 0) {
+//				deleted = true;
+//			}
+//			pstmt.close();
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "removeJobCodeTimesheet "
+//					+ ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return deleted;
+//	}
 
 	/*
 	 * Add the new service type to the database with invoice style id.
 	 */
 	public boolean addServiceType(String sName, int invStyleId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		boolean added = false;
-		if (executor == null)
-			return added;
-		con = executor.getConnection();
-		if (con == null)
-			return added;
 		try {
-			String insertService = "insert into bca_servicetype(ServiceName,InvoiceStyleID) values(?,?)";
-			pstmt = con.prepareStatement(insertService);
-			pstmt.setString(1, sName);
-			pstmt.setInt(2, invStyleId);
-			int isAdded = pstmt.executeUpdate();
-			if (isAdded > 0) {
-				added = true;
-			}
-			pstmt.close();
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "addServiceType " + ex.toString());
-		} finally {
-			executor.close(con);
+			BcaInvoicestyle invoiceStyle = invoiceStyleRepository.findById(invStyleId)
+					.orElseThrow(() -> new EntityNotFoundException("InvoiceStyle not found"));
+
+			BcaServicetype serviceType = new BcaServicetype();
+			serviceType.setServiceName(sName);
+			serviceType.setInvoiceStyle(invoiceStyle);
+			// Set other required fields, like Company, Inventory, etc., as per your logic
+
+			serviceTypeRepository.save(serviceType);
+			return true;
+		} catch (EntityNotFoundException e) {
+			Loger.log("EntityNotFoundException in addServiceType: " + e.toString());
+			return false;
+		} catch (Exception e) {
+			Loger.log("Exception in addServiceType: " + e.toString());
+			return false;
 		}
-		return added;
 	}
+//	public boolean addServiceType(String sName, int invStyleId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		boolean added = false;
+//		if (executor == null)
+//			return added;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return added;
+//		try {
+//			String insertService = "insert into bca_servicetype(ServiceName,InvoiceStyleID) values(?,?)";
+//			pstmt = con.prepareStatement(insertService);
+//			pstmt.setString(1, sName);
+//			pstmt.setInt(2, invStyleId);
+//			int isAdded = pstmt.executeUpdate();
+//			if (isAdded > 0) {
+//				added = true;
+//			}
+//			pstmt.close();
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "addServiceType " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return added;
+//	}
 
 	/*
 	 * Edit the existing service type with invoice style id.
 	 */
 	public boolean editServiceType(String sName, int invStyleId, int serviceId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		boolean edited = false;
-
-		if (executor == null)
-			return edited;
-		con = executor.getConnection();
-		if (con == null)
-			return edited;
-
 		try {
-			String editService = "update bca_servicetype set ServiceName=?,InvoiceStyleID=? where ServiceID=?";
-			pstmt = con.prepareStatement(editService);
-			pstmt.setString(1, sName);
-			pstmt.setInt(2, invStyleId);
-			pstmt.setInt(3, serviceId);
-			int isEdited = pstmt.executeUpdate();
-			if (isEdited > 0) {
-				edited = true;
+			Optional<BcaServicetype> serviceTypeOpt = serviceTypeRepository.findById(serviceId);
+			if (!serviceTypeOpt.isPresent()) {
+				return false;
 			}
-			pstmt.close();
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "editServiceType " + ex.toString());
-		} finally {
-			executor.close(con);
+
+			BcaServicetype serviceType = serviceTypeOpt.get();
+			serviceType.setServiceName(sName);
+
+			BcaInvoicestyle invoiceStyle = invoiceStyleRepository.findById(invStyleId)
+					.orElseThrow(() -> new EntityNotFoundException("InvoiceStyle not found"));
+			serviceType.setInvoiceStyle(invoiceStyle);
+
+			serviceTypeRepository.save(serviceType);
+			return true;
+
+		} catch (EntityNotFoundException e) {
+			Loger.log("EntityNotFoundException in editServiceType: " + e.toString());
+			return false;
+		} catch (Exception e) {
+			Loger.log("Exception in editServiceType: " + e.toString());
+			return false;
 		}
-		return edited;
 	}
+//	public boolean editServiceType(String sName, int invStyleId, int serviceId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		boolean edited = false;
+//
+//		if (executor == null)
+//			return edited;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return edited;
+//
+//		try {
+//			String editService = "update bca_servicetype set ServiceName=?,InvoiceStyleID=? where ServiceID=?";
+//			pstmt = con.prepareStatement(editService);
+//			pstmt.setString(1, sName);
+//			pstmt.setInt(2, invStyleId);
+//			pstmt.setInt(3, serviceId);
+//			int isEdited = pstmt.executeUpdate();
+//			if (isEdited > 0) {
+//				edited = true;
+//			}
+//			pstmt.close();
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "editServiceType " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return edited;
+//	}
 
 	/*
 	 * Delete the service type selected by user in the existing service type list
 	 * from database. *
 	 */
 	public boolean deleteServiceType(int serviceId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		boolean deleted = false;
-
-		if (executor == null)
-			return deleted;
-		con = executor.getConnection();
-		if (con == null)
-			return deleted;
-
 		try {
-			String deleteService = "delete from bca_servicetype where ServiceID=?";
-			pstmt = con.prepareStatement(deleteService);
-			pstmt.setInt(1, serviceId);
-			int isDeleted = pstmt.executeUpdate();
-			if (isDeleted > 0) {
-				deleted = true;
+			Optional<BcaServicetype> serviceTypeOpt = serviceTypeRepository.findById(serviceId);
+			if (serviceTypeOpt.isPresent()) {
+				serviceTypeRepository.delete(serviceTypeOpt.get());
+				return true;
 			}
-			pstmt.close();
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteServiceType " + ex.toString());
-		} finally {
-			executor.close(con);
+			return false;
+		} catch (Exception e) {
+			Loger.log("Exception in deleteServiceType: " + e.toString());
+			return false;
 		}
-		return deleted;
 	}
+//	public boolean deleteServiceType(int serviceId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		boolean deleted = false;
+//
+//		if (executor == null)
+//			return deleted;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return deleted;
+//
+//		try {
+//			String deleteService = "delete from bca_servicetype where ServiceID=?";
+//			pstmt = con.prepareStatement(deleteService);
+//			pstmt.setInt(1, serviceId);
+//			int isDeleted = pstmt.executeUpdate();
+//			if (isDeleted > 0) {
+//				deleted = true;
+//			}
+//			pstmt.close();
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteServiceType " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return deleted;
+//	}
 
 	/*
 	 * Get the service type id of newly added service type.
 	 */
 	public int getServiceId() {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		int serviceid = 0;
-		if (executor == null)
-			return 0;
-		con = executor.getConnection();
-		if (con == null)
-			return 0;
 		try {
-			String serviceID = "select ServiceID from bca_servicetype order by ServiceID desc";
-			pstmt = con.prepareStatement(serviceID);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				serviceid = rs.getInt("ServiceID");
-			}
-			pstmt.close();
-			rs.close();
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "getServiceId " + ex.toString());
-		} finally {
-			executor.close(con);
+			Integer maxServiceId = serviceTypeRepository.findMaxServiceId();
+			return maxServiceId != null ? maxServiceId : 0;
+		} catch (Exception e) {
+			Loger.log("Exception in getServiceId: " + e.toString());
+			return 0;
 		}
-		return serviceid;
 	}
+//	public int getServiceId() {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		int serviceid = 0;
+//		if (executor == null)
+//			return 0;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return 0;
+//		try {
+//			String serviceID = "select ServiceID from bca_servicetype order by ServiceID desc";
+//			pstmt = con.prepareStatement(serviceID);
+//			rs = pstmt.executeQuery();
+//			if (rs.next()) {
+//				serviceid = rs.getInt("ServiceID");
+//			}
+//			pstmt.close();
+//			rs.close();
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "getServiceId " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return serviceid;
+//	}
 
-	public boolean saveRMAReason(ConfigurationDto cForm, int compId) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
+	@Autowired
+	private BcaRmareasonRepository rmaReasonRepository;
+
+	@Autowired
+	private BcaMasterrmareasonRepository masterRmaReasonRepository;
+
+	public boolean saveRMAReason(ConfigurationDto cForm, Long compId) {
 		try {
-			String updateQuery = "insert into bca_rmareason(rmaReason,parentReasonID,CompanyID,Active) values(?,?,?,?)";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getReason());
-			pstmt.setInt(2, cForm.getParentReasonId());
-			pstmt.setInt(3, compId);
-			pstmt.setInt(4, 1);
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method saveRMAReason " + ex.toString());
-		} finally {
-			executor.close(con);
+			BcaCompany company = bcaCompanyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaMasterrmareason parentReason = masterRmaReasonRepository.findById(cForm.getParentReasonId())
+					.orElse(null); // Handling if parent reason is optional
+
+			BcaRmareason newRmaReason = new BcaRmareason();
+			newRmaReason.setRmaReason(cForm.getReason());
+			newRmaReason.setParentReason(parentReason);
+			newRmaReason.setCompany(company);
+			newRmaReason.setActive(1); // Assuming active status is set to 1
+
+			rmaReasonRepository.save(newRmaReason);
+			return true;
+		} catch (EntityNotFoundException e) {
+			// Log and handle entity not found exception
+			return false;
+		} catch (Exception e) {
+			Loger.log("Exception in the class ConfigurationInfo and in method saveRMAReason " + e.toString());
+			return false;
 		}
-		return isSaved;
 	}
+//	public boolean saveRMAReason(ConfigurationDto cForm, int compId) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String updateQuery = "insert into bca_rmareason(rmaReason,parentReasonID,CompanyID,Active) values(?,?,?,?)";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getReason());
+//			pstmt.setInt(2, cForm.getParentReasonId());
+//			pstmt.setInt(3, compId);
+//			pstmt.setInt(4, 1);
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method saveRMAReason " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
 
 	public boolean deleteRMAReason(ConfigurationDto cForm) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isUpdated = false;
 		try {
-			pstmt = con.prepareStatement("Update bca_rmareason set Active=0 Where rmaReason=?");
-			pstmt.setString(1, cForm.getReason());
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isUpdated = true;
-			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method deleteRMAReason " + ex.toString());
-		} finally {
-			executor.close(con);
+			String rmaReasonStr = cForm.getReason();
+			return rmaReasonRepository.findById(rmaReasonStr).map(rmaReason -> {
+				rmaReason.setActive(0); // Set Active to 0 for soft delete
+				rmaReasonRepository.save(rmaReason);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in deleteRMAReason: " + e.toString());
+			return false;
 		}
-		return isUpdated;
 	}
+
+//	public boolean deleteRMAReason(ConfigurationDto cForm) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isUpdated = false;
+//		try {
+//			pstmt = con.prepareStatement("Update bca_rmareason set Active=0 Where rmaReason=?");
+//			pstmt.setString(1, cForm.getReason());
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method deleteRMAReason " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//	}
 
 	public boolean updateRMAReason(ConfigurationDto cForm) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isUpdated = false;
 		try {
-			String updateQuery = "Update bca_rmareason set rmaReason=?, parentReasonId = ? where ReasonID = ?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getReason());
-			pstmt.setInt(2, cForm.getParentReasonId());
-			pstmt.setInt(3, cForm.getReasonId());
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isUpdated = true;
+			String reasonId = String.valueOf(cForm.getReasonId());
+			Optional<BcaRmareason> rmaReasonOpt = rmaReasonRepository.findById(reasonId);
+			if (rmaReasonOpt.isPresent()) {
+				BcaRmareason rmaReason = rmaReasonOpt.get();
+				rmaReason.setRmaReason(cForm.getReason());
+
+				// Assuming parentReasonId corresponds to an entity like BcaMasterrmareason
+				BcaMasterrmareason parentReason = masterRmaReasonRepository.findById(cForm.getParentReasonId())
+						.orElse(null); // Handling if parent reason is optional
+				rmaReason.setParentReason(parentReason);
+
+				rmaReasonRepository.save(rmaReason);
+				return true;
 			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method updateRMAReason " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isUpdated;
-	}
-
-	public boolean saveDefaultBankDetails(ConfigurationDto cForm, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isUpdated = false;
-		if (executor == null)
-			return isUpdated;
-		con = executor.getConnection();
-		if (con == null)
-			return isUpdated;
-
-		try {
-			String updateQuery = "Update bca_preference set DefaultRMACheckingBankID=? where companyID = ?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, cForm.getSelectedBankAccountId());
-			pstmt.setInt(2, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isUpdated = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveDefaultBankDetails "
-					+ ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isUpdated;
-
-	}
-
-	public boolean saveConfigurationRecordInventorySettting(ConfigurationDto cForm, int compId) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null, pstmt1 = null;
-		boolean isUpdated = false;
-		try {
-			String updateQuery = "Update bca_preference SET showReorderPointWarring=?,reservedQuantity=?,salesOrderQty=?,productTaxable=?,"
-					+ "ProductCategoryID=?,ReOrderPoint=? WHERE companyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, "on".equals(cForm.getShowReorderPointWarning()) ? "1" : "0");
-			pstmt.setString(2, "on".equals(cForm.getReservedQuantity()) ? "1" : "0");
-			pstmt.setString(3, "on".equals(cForm.getSalesOrderQty()) ? "1" : "0");
-			pstmt.setString(4, "on".equals(cForm.getProductTaxable()) ? "1" : "0");
-			pstmt.setInt(5, cForm.getProductCategoryID());
-			pstmt.setInt(6, cForm.getReorderPoint());
-			pstmt.setInt(7, compId);
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isUpdated = true;
-			}
-
-//			String query = "insert into bca_scheduleTimes(ScheduleDate,CompanyID) values(?,?)";
-//			pstmt1 = con.prepareStatement(query);
-//			pstmt1.setString(1, cForm.getScheduleTimes());
-//			pstmt1.setInt(2,compId);
-			// executor.close(pstmt1);
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method saveConfigurationRecordInventorySettting "
-					+ ex.toString());
-		} finally {
-			executor.close(pstmt);
-			executor.close(con);
-		}
-		return isUpdated;
-	}
-
-	public boolean saveFinanceCharges(ConfigurationDto cForm, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isUpdated = false;
-		if (executor == null)
-			return isUpdated;
-		con = executor.getConnection();
-		if (con == null)
-			return isUpdated;
-
-		try {
-			String updateQuery = "Update bca_preference set Charge_interest=?,Charge_minimum=?,"
-					+ "Charge_grace=?,Charge_reassess=? where companyID = ?";
-
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setDouble(1, cForm.getAnnualInterestRate());
-			pstmt.setDouble(2, cForm.getMinCharge());
-			pstmt.setInt(3, cForm.getGracePeriod());
-			pstmt.setString(4, cForm.getAssessFinanceCharge().equals("on") ? "1" : "0");
-			pstmt.setInt(5, compId);
-
-			int updated = pstmt.executeUpdate();
-
-			if (updated > 0) {
-				isUpdated = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log(
-					"Exception in the class ConfigurationInfo and in method " + "saveFinanceCharges " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isUpdated;
-	}
-
-	public boolean saveAccountPaymentDetails(ConfigurationDto cForm, int compId) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isUpdated = false;
-		try {
-			// String updateQuery = "Update bca_preference set StartingBillNumber=? where
-			// companyID = ?";
-			String updateQuery = "Update bca_preference set "
-					+ "defaultBankTransferAccID=?,defaultARCategoryID=?,DefaultReimbusrementSetting=?,BudgetStartMonth=?,BudgetEndMonth=?,AutoPaymentDuration=?, "
-					+ "defaultARCategoryIDforac=?,defaultARCategoryIDforpo=?,defaultARCategoryIDforbp=?,defaultdepositoforac=?,defaultdepositoforpo=?,"
-					+ "defaultdepositoforbp=?,defaultReceivedforac=?,defaultReceivedforpo=?,defaultReceivedforbp=?,StartingBillNumber=? where companyID = ?";
-
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, cForm.getDefaultPaymentMethodId());
-			pstmt.setInt(2, cForm.getDefaultCategoryId());
-			pstmt.setInt(3, cForm.getReimbursementSettings());
-			pstmt.setInt(4, cForm.getStartMonth());
-			pstmt.setInt(5, cForm.getEndMonth());
-			pstmt.setInt(6, cForm.getScheduleDays());
-			pstmt.setInt(7, cForm.getArCategory());
-			pstmt.setInt(8, cForm.getPoCategory());
-			pstmt.setInt(9, cForm.getBpCategory());
-			pstmt.setInt(10, cForm.getArDepositTo());
-			pstmt.setInt(11, cForm.getPoDepositTo());
-			pstmt.setInt(12, cForm.getBpDepositTo());
-			pstmt.setInt(13, cForm.getArReceivedType());
-			pstmt.setInt(14, cForm.getPoReceivedType());
-			pstmt.setInt(15, cForm.getBpReceivedType());
-			pstmt.setLong(16, cForm.getStartingBillNumber());
-			pstmt.setInt(17, compId);
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isUpdated = true;
-			}
-		} catch (SQLException ex) {
-			System.out.println("Exception in the class ConfigurationInfo and in method " + "saveAccountPaymentDetails "
-					+ ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isUpdated;
-	}
-
-	public boolean savePerformance(ConfigurationDto cForm, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isUpdated = false;
-		if (executor == null)
-			return isUpdated;
-		con = executor.getConnection();
-		if (con == null)
-			return isUpdated;
-
-		try {
-			String updateQuery = "Update bca_preference set Performance=? where companyID = ?";
-
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setDouble(1, cForm.getPerformance());
-			pstmt.setInt(2, compId);
-
-			int updated = pstmt.executeUpdate();
-
-			if (updated > 0) {
-				isUpdated = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "savePerformance " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isUpdated;
-	}
-
-	public boolean saveDashboard(ConfigurationDto cForm, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isUpdated = false;
-		if (executor == null)
-			return isUpdated;
-		con = executor.getConnection();
-		if (con == null)
-			return isUpdated;
-
-		try {
-			String updateQuery = "Update bca_preference set poboard=?,itemsReceivedBoard=?,itemsShippedBoard=?,SalesOrderBoard=? where companyID = ?";
-
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getPoboard().equals("on") ? "1" : "0");
-			pstmt.setString(2, cForm.getItemReceivedBoard().equals("on") ? "1" : "0");
-			pstmt.setString(3, cForm.getItemShippedBoard().equals("on") ? "1" : "0");
-			pstmt.setString(4, cForm.getSalesOrderBoard().equals("on") ? "1" : "0");
-			pstmt.setInt(5, compId);
-
-			int updated = pstmt.executeUpdate();
-
-			if (updated > 0) {
-				isUpdated = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveDashboard " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isUpdated;
-	}
-
-	public boolean saveReminder(ConfigurationDto cForm, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isUpdated = false;
-		if (executor == null)
-			return isUpdated;
-		con = executor.getConnection();
-		if (con == null)
-			return isUpdated;
-
-		try {
-			String updateQuery = "Update bca_preference set ShowReminder=?,InvoiceMemo=?,InvoiceMemoDays=?,OverdueInvoice=?,OverdueinvoiceDays=?,"
-					+ "InventoryOrder=?,InventoryOrderDays=?,BillstoPay=?,BillstoPayDays=?,EstimationMemo=?,EstimationMemoDays=?,"
-					+ "POMemo=?,POMemoDays=?,MemoBill=?,MemoBillDays=?,ServiceBillsMemo=?,ServiceBillsMemoDays=? where companyID = ?";
-
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getShowReminder().equals("on") ? "1" : "0");
-			pstmt.setInt(2, cForm.getInvoiceMemo()); // InvoiceMemo
-			pstmt.setInt(3, cForm.getInvoiceMemoDays());
-			pstmt.setInt(4, cForm.getOverdueInvoice()); // overDue Invoice
-			pstmt.setInt(5, cForm.getOverdueInvoiceDays());
-			pstmt.setInt(6, cForm.getInventoryOrder()); // inventory order
-			pstmt.setInt(7, cForm.getInventoryOrderDays());
-			pstmt.setInt(8, cForm.getBillsToPay()); // BillsToPay
-			pstmt.setInt(9, cForm.getBillsToPayDays());
-			pstmt.setInt(10, cForm.getMemorizeEstimation()); // MemorizeEstimation
-			pstmt.setInt(11, cForm.getMemorizeEstimationDays());
-			pstmt.setInt(12, cForm.getMemorizePurchaseOrder()); // PoMemo
-			pstmt.setInt(13, cForm.getMemorizePurchaseOrderDays());
-			pstmt.setInt(14, cForm.getMemorizeBill()); // MemoBill
-			pstmt.setInt(15, cForm.getMemorizeBillDays());
-			pstmt.setInt(16, cForm.getServiceBilling()); // Service Billing
-			pstmt.setInt(17, cForm.getServiceBillingDays());
-			pstmt.setInt(18, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isUpdated = true;
-			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveReminder " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isUpdated;
-	}
-
-	public boolean saveCustomerInvoice(ConfigurationDto cForm, int compId) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isUpdated = false;
-		try {
-			String updateQuery = "Update bca_preference set DEFAULTCustomerSortID=?,DEFAULTCustomerGroupID=?,CustomerCountryID=?,CustomerStateID=?,"
-					+ "CustomerTaxable=?,showSalesOrder=?,CustomerProvience=?,SalesViaID=?,SalesTermID=?,SalesRepID=?,SalesPayMethodID=?,copyAddress=?,"
-					+ "StartingInvoiceNumber=?,DefaultPackingSlipStyleID=?,SalesPOPrefix=?,InvoiceFootnoteID=?,SaleShowCountry=?,IsRatePriceChangeble=?,"
-					+ "SaleShowTelephone=?,IsSalePrefix=?,ExtraCharge=?,ChargeAmount=?,OrderAmount=?,HowOftenSalestax=?,DropShipCharge=?,SalesTaxCode=?,SalesTaxRate=?,"
-					+ "DropShipCharge=?,ShowDropShipItems=?,isRefundAllowed=?,StartingEstimationNumber=?,InvoiceStyleID =?,POTermID=?, SalesRepID=?, POPayMethodID=?,"
-					+ "Charge_interest=?, Charge_minimum=?, Charge_grace=?, Charge_reassess=?, Charge_MarkFinance=?, StartingSalesOrderNumber=?, DisplayPeriod=?,"
-					+ "EstimationStyleID=?, SOStyleID=?, SalesTaxRate2=?, isBackOrderNeeded=?, isRecurringServiceBill=?,serviceBillName=? "
-					+ " WHERE companyID = ?";
-			int r = cForm.getSortBy();
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, cForm.getSortBy());
-			pstmt.setInt(2, cForm.getCustomerGroup());
-			pstmt.setInt(3, cForm.getCustDefaultCountryID());
-			pstmt.setInt(4, cForm.getSelectedStateId());
-			pstmt.setString(5, "on".equals(cForm.getCustTaxable()) ? "1" : "0");
-			pstmt.setString(6, "on".equals(cForm.getIsSalesOrder()) ? "1" : "0");
-			pstmt.setString(7, cForm.getCustomerProvince());
-			pstmt.setInt(8, cForm.getCustomerShippingId());
-			pstmt.setInt(9, cForm.getSelectedTermId());
-			pstmt.setInt(10, cForm.getSelectedSalesRepId());
-			pstmt.setInt(11, cForm.getSelectedPaymentId());
-			pstmt.setString(12, "on".equals(cForm.getAddressSettings()) ? "1" : "0");
-
-			pstmt.setString(13, cForm.getStartInvoiceNum());
-			pstmt.setInt(14, cForm.getPackingSlipTemplateId());
-			pstmt.setString(15, cForm.getPoNumPrefix());
-			pstmt.setInt(16, cForm.getSelectedMessageId());
-			pstmt.setString(17, "on".equals(cForm.getSaleShowCountry()) ? "1" : "0");
-			pstmt.setString(18, "on".equals(cForm.getRatePriceChangable()) ? "1" : "0");
-			pstmt.setString(19, "on".equals(cForm.getSaleShowTelephone()) ? "1" : "0");
-			pstmt.setString(20, "on".equals(cForm.getIsSalePrefix()) ? "1" : "0");
-			pstmt.setString(21, "on".equals(cForm.getExtraChargeApplicable()) ? "1" : "0");
-			pstmt.setInt(22, cForm.getChargeAmount());
-			pstmt.setInt(23, cForm.getOrderAmount());
-			pstmt.setInt(24, cForm.getHowOftenSalestax());
-			pstmt.setInt(25, cForm.getDropShipCharge());
-			pstmt.setString(26, cForm.getSalesTaxCode());
-			pstmt.setDouble(27, cForm.getSaleTaxRate());
-			pstmt.setInt(28, cForm.getDropShipCharge());
-			pstmt.setInt(29, cForm.getIsShowDropShipItems());
-			pstmt.setString(30, "on".equals(cForm.getIsRefundAllowed()) ? "1" : "0");
-			pstmt.setString(31, cForm.getStartEstimationNum());
-			pstmt.setInt(32, cForm.getInvStyleID());
-			pstmt.setInt(33, cForm.getSelectedTermId());
-			pstmt.setInt(34, cForm.getSelectedSalesRepId());
-			pstmt.setInt(35, cForm.getSelectedPaymentId());
-			pstmt.setDouble(36, cForm.getAnnualInterestRate());
-			pstmt.setDouble(37, cForm.getMinCharge());
-			pstmt.setInt(38, cForm.getGracePeriod());
-			pstmt.setString(39, "on".equals(cForm.getAssessFinanceCharge()) ? "1" : "0");
-			pstmt.setString(40, "on".equals(cForm.getMarkFinanceCharge()) ? "1" : "0");
-			pstmt.setString(41, cForm.getStartSalesOrderNum());
-			pstmt.setInt(42, cForm.getDisplayPeriod());
-			pstmt.setInt(43, cForm.getEstimationStyleID());
-			pstmt.setInt(44, cForm.getSoStyleID());
-			pstmt.setDouble(45, cForm.getSaleTaxRate2());
-			pstmt.setString(46, "on".equals(cForm.getBackOrderNeeded()) ? "1" : "0");
-			pstmt.setString(47, "on".equals(cForm.getRecurringServiceBill()) ? "1" : "0");
-			pstmt.setString(48, cForm.getServiceBillName());
-			pstmt.setInt(49, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isUpdated = true;
-			}
-		} catch (SQLException ex) {
-			Loger.log(
-					"Exception in the class ConfigurationInfo and in method " + "saveCustomerInvoice " + ex.toString());
-			ex.printStackTrace();
-		} finally {
-			executor.close(con);
-		}
-		return isUpdated;
-	}
-
-	public boolean saveDescription(ConfigurationDto cForm, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "insert into bca_location(Name,CompanyID,Active) values(?,?,?)";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, compId);
-			pstmt.setInt(3, 1);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveDescription " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean deleteLocation(int descriptionID, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_location set Active=0 where LocationId=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, descriptionID);
-			pstmt.setInt(2, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteDescription " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean updateDescription(ConfigurationDto cForm, int compId, int locationId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_location set  Name=? where LocationId=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, locationId);
-			pstmt.setInt(3, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateDescription " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean saveMessage(ConfigurationDto cForm, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "insert into bca_message(Name,CompanyID,Active) values(?,?,?)";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, compId);
-			pstmt.setInt(3, 1);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveMessage " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean saveSalesRep(ConfigurationDto cForm, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "insert into bca_salesrep(Name,CompanyID,Active) values(?,?,?)";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, compId);
-			pstmt.setInt(3, 1);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveSalesRep " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean saveNewTerm(ConfigurationDto cForm, int compId, int days) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "insert into bca_term(Name,CompanyID,Active,Days) values(?,?,?,?)";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, compId);
-			pstmt.setInt(3, 1);
-			pstmt.setInt(4, days);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveNewTerm " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean saveNewSalesTax(ConfigurationDto cForm, int compId, float tax) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
-		con = executor.getConnection();
-		try {
-			String updateQuery = "insert into bca_salestax(State,CompanyID,Active,Rate) values(?,?,?,?)";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, compId);
-			pstmt.setInt(3, 1);
-			pstmt.setFloat(4, tax);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method saveNewSalesTax " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean saveNewCreditTerms(ConfigurationDto cForm, int compId, int days) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "insert into bca_lineofcreditterm(Name,CompanyID,Active,Days,isDefault) values(?,?,?,?,?)";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, compId);
-			pstmt.setInt(3, 1);
-			pstmt.setInt(4, days);
-			pstmt.setInt(5, cForm.getIsDefaultCreditTerm().equals("on") ? 1 : 0);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log(
-					"Exception in the class ConfigurationInfo and in method " + "saveNewCreditTerms " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean updateMessage(ConfigurationDto cForm, int compId, int messageID) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_Message set Name=? where MessageId=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, messageID);
-			pstmt.setInt(3, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateMessage " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean updateSalesRep(ConfigurationDto cForm, int compId, int salesRepID) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_salesrep set Name=? where SalesRepID=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, salesRepID);
-			pstmt.setInt(3, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateSalesRep " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean updateTerm(ConfigurationDto cForm, int compId, int termID, int days) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_term set Name=?,Days=? where TermID=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setInt(2, days);
-			pstmt.setInt(3, termID);
-			pstmt.setInt(4, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateTerm " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean updateSalesTax(ConfigurationDto cForm, int compId, int salesTaxID, float tax) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_salestax set State=?,Rate=? where SalesTaxID=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setFloat(2, tax);
-			pstmt.setInt(3, salesTaxID);
-			pstmt.setInt(4, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateSalesTax " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean updateCreditTerm(ConfigurationDto cForm, int compId, int creditTermID, int days) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_lineofcreditterm set Name=?,Days=?,isDefault=? where CreditTermId=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, cForm.getDescription());
-			pstmt.setFloat(2, days);
-			pstmt.setInt(3, cForm.getIsDefaultCreditTerm().equals("on") ? 1 : 0);
-			pstmt.setInt(4, creditTermID);
-			pstmt.setInt(5, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateCreditTerm " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean deleteMessage(int compId, int messageID) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_Message set Active=? where MessageId=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, 0);
-			pstmt.setInt(2, messageID);
-			pstmt.setInt(3, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteMessage " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean deleteSalesRep(int compId, int salesRepId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_salesrep set Active=? where SalesRepID=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, 0);
-			pstmt.setInt(2, salesRepId);
-			pstmt.setInt(3, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteSalesRep " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean deleteTerm(int compId, int termId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_term set Active=? where TermID=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, 0);
-			pstmt.setInt(2, termId);
-			pstmt.setInt(3, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteTerm " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean deleteSalesTax(int compId, int salesTaxId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_salestax set Active=? where SalesTaxID=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, 0);
-			pstmt.setInt(2, salesTaxId);
-			pstmt.setInt(3, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteSalesTax " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean deleteCreditTerm(int compId, int creditTermId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
-
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
-		try {
-			String updateQuery = "update bca_lineofcreditterm set Active=? where CreditTermId=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, 0);
-			pstmt.setInt(2, creditTermId);
-			pstmt.setInt(3, compId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteCreditTerm " + ex.toString());
-		} finally {
-			executor.close(con);
-		}
-		return isSaved;
-	}
-
-	public boolean insertRefundReason(int compId, String refundReason) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
-		try {
-			String updateQuery = "insert into bca_refundreason (RefundReason,Active,IsDefaultReason,CompanyID) values(?,?,?,?)";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, refundReason);
-			pstmt.setInt(2, 1);
-			pstmt.setInt(3, 0);
-			pstmt.setInt(4, compId);
-			isSaved = pstmt.executeUpdate() > 0 ? true : false;
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method insertRefundReason " + ex.toString());
-		} finally {
-			if (pstmt != null) {
-				db.close(pstmt);
-			}
-			if (con != null) {
-				db.close(con);
-			}
-		}
-		return isSaved;
-	}
-
-	public boolean updateRefundReason(int compId, int refundReasonId, String newRefundReason) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
-		try {
-			String updateQuery = "update bca_refundreason set RefundReason=?,Active=?,IsDefaultReason=? where ReasonID=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, newRefundReason);
-			pstmt.setInt(2, 1);
-			pstmt.setInt(3, 0);
-			pstmt.setInt(4, refundReasonId);
-			pstmt.setInt(5, compId);
-			isSaved = pstmt.executeUpdate() > 0 ? true : false;
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method updateRefundReason " + ex.toString());
-		} finally {
-			if (pstmt != null) {
-				db.close(pstmt);
-			}
-			if (con != null) {
-				db.close(con);
-			}
-		}
-		return isSaved;
-	}
-
-	public boolean deleteRefundReason(int compId, int refundReasonId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
-		try {
-			String updateQuery = "update bca_refundreason set Active=0 where ReasonID=? and CompanyID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, refundReasonId);
-			pstmt.setInt(2, compId);
-			isSaved = pstmt.executeUpdate() > 0 ? true : false;
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method deleteRefundReason " + ex.toString());
-		} finally {
-			if (pstmt != null) {
-				db.close(pstmt);
-			}
-			if (con != null) {
-				db.close(con);
-			}
-		}
-		return isSaved;
-	}
-
-	public boolean setDefaultRefundReason(int reasonID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		Statement stmt = null;
-		boolean status = false;
-		try {
-			stmt = con.createStatement();
-			stmt.addBatch("UPDATE bca_refundreason SET IsDefaultReason=0 WHERE IsDefaultReason=1");
-			stmt.addBatch("UPDATE bca_refundreason SET IsDefaultReason=1 WHERE ReasonID=" + reasonID);
-			status = stmt.executeBatch().length > 0 ? true : false;
+			return false;
 		} catch (Exception e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+			Loger.log("Exception in updateRMAReason: " + e.toString());
+			return false;
 		}
-		return status;
 	}
 
-	public boolean addJobCategory(ConfigurationDto cForm, int compId, String jobCategory) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
+//	public boolean updateRMAReason(ConfigurationDto cForm) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isUpdated = false;
+//		try {
+//			String updateQuery = "Update bca_rmareason set rmaReason=?, parentReasonId = ? where ReasonID = ?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getReason());
+//			pstmt.setInt(2, cForm.getParentReasonId());
+//			pstmt.setInt(3, cForm.getReasonId());
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method updateRMAReason " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//	}
+
+	public boolean saveDefaultBankDetails(ConfigurationDto cForm, Long compId) {
 		try {
-			String updateQuery = "insert into bca_jobcategory (Name,CompanyID,isRecurringServiceJob,Active) VALUES (?,?,?,?)";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, jobCategory);
-			pstmt.setInt(2, compId);
-			pstmt.setInt(3, 1);
-			pstmt.setInt(4, 1);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method addJobCategory " + ex.toString());
-		} finally {
-			executor.close(pstmt);
-			executor.close(con);
+			return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+				preference.setDefaultRmacheckingBankId(cForm.getSelectedBankAccountId());
+				preferenceRepository.save(preference);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in saveDefaultBankDetails: " + e.toString());
+			return false;
 		}
-		return isSaved;
 	}
+//	public boolean saveDefaultBankDetails(ConfigurationDto cForm, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isUpdated = false;
+//		if (executor == null)
+//			return isUpdated;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isUpdated;
+//
+//		try {
+//			String updateQuery = "Update bca_preference set DefaultRMACheckingBankID=? where companyID = ?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, cForm.getSelectedBankAccountId());
+//			pstmt.setInt(2, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveDefaultBankDetails "
+//					+ ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//
+//	}
 
-	public boolean updateJobCategory(ConfigurationDto cForm, int compId, int jobCategoryId, String newJobCategoryName) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
+	public boolean saveConfigurationRecordInventorySetting(ConfigurationDto cForm, Long compId) {
 		try {
-			String updateQuery = "update bca_jobcategory set Name=?,isRecurringServiceJob=? where CompanyID=? and JobCategoryID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, newJobCategoryName);
-			pstmt.setInt(2, 1);
-			pstmt.setInt(3, compId);
-			pstmt.setInt(4, jobCategoryId);
+			return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+				preference
+						.setShowReorderPointWarring(convertOnOffToBoolean(cForm.getShowReorderPointWarning()) ? 1 : 0);
+				preference.setReservedQuantity(convertOnOffToBoolean(cForm.getReservedQuantity()) ? 1 : 0);
+				preference.setSalesOrderQty(convertOnOffToBoolean(cForm.getSalesOrderQty()) ? 1 : 0);
+				preference.setProductTaxable(convertOnOffToBoolean(cForm.getProductTaxable()) ? 1 : 0);
+				preference.setProductCategoryId(cForm.getProductCategoryID());
+				preference.setReOrderPoint(cForm.getReorderPoint());
 
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method updateJobCategory " + ex.toString());
-		} finally {
-			executor.close(pstmt);
-			executor.close(con);
+				preferenceRepository.save(preference);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in saveConfigurationRecordInventorySetting: " + e.toString());
+			return false;
 		}
-		return isSaved;
 	}
 
-	public boolean deleteJobCategory(int jCategoryId, int compId) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
+	private boolean convertOnOffToBoolean(String onOffValue) {
+		return "on".equals(onOffValue);
+	}
+
+//	public boolean saveConfigurationRecordInventorySetting(ConfigurationDto cForm, int compId) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null, pstmt1 = null;
+//		boolean isUpdated = false;
+//		try {
+//			String updateQuery = "Update bca_preference SET showReorderPointWarring=?,reservedQuantity=?,salesOrderQty=?,productTaxable=?,"
+//					+ "ProductCategoryID=?,ReOrderPoint=? WHERE companyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, "on".equals(cForm.getShowReorderPointWarning()) ? "1" : "0");
+//			pstmt.setString(2, "on".equals(cForm.getReservedQuantity()) ? "1" : "0");
+//			pstmt.setString(3, "on".equals(cForm.getSalesOrderQty()) ? "1" : "0");
+//			pstmt.setString(4, "on".equals(cForm.getProductTaxable()) ? "1" : "0");
+//			pstmt.setInt(5, cForm.getProductCategoryID());
+//			pstmt.setInt(6, cForm.getReorderPoint());
+//			pstmt.setInt(7, compId);
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//
+////			String query = "insert into bca_scheduleTimes(ScheduleDate,CompanyID) values(?,?)";
+////			pstmt1 = con.prepareStatement(query);
+////			pstmt1.setString(1, cForm.getScheduleTimes());
+////			pstmt1.setInt(2,compId);
+//			// executor.close(pstmt1);
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method saveConfigurationRecordInventorySettting "
+//					+ ex.toString());
+//		} finally {
+//			executor.close(pstmt);
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//	}
+
+	public boolean saveFinanceCharges(ConfigurationDto cForm, Long compId) {
 		try {
-			String updateQuery = "update bca_jobcategory set Active=? where CompanyID=? and JobCategoryID=?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, 0);
-			pstmt.setInt(2, compId);
-			pstmt.setInt(3, jCategoryId);
-
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method deleteJobCategory " + ex.toString());
-		} finally {
-			executor.close(pstmt);
-			executor.close(con);
+			return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+				preference.setChargeInterest(cForm.getAnnualInterestRate());
+				preference.setChargeMinimum(cForm.getMinCharge());
+				preference.setChargeGrace(Double.valueOf(cForm.getGracePeriod()));
+				preference.setChargeReassess("on".equals(cForm.getAssessFinanceCharge()) ? true : false);
+				preferenceRepository.save(preference);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in saveFinanceCharges: " + e.toString());
+			return false;
 		}
-		return isSaved;
 	}
 
-	public boolean editServiceBillInfo(ConfigurationDto cForm, String billName, int compId) {
-		Connection con = null;
-		SQLExecutor executor = new SQLExecutor();
-		PreparedStatement pstmt = null;
+//	public boolean saveFinanceCharges(ConfigurationDto cForm, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isUpdated = false;
+//		if (executor == null)
+//			return isUpdated;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isUpdated;
+//
+//		try {
+//			String updateQuery = "Update bca_preference set Charge_interest=?,Charge_minimum=?,"
+//					+ "Charge_grace=?,Charge_reassess=? where companyID = ?";
+//
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setDouble(1, cForm.getAnnualInterestRate());
+//			pstmt.setDouble(2, cForm.getMinCharge());
+//			pstmt.setInt(3, cForm.getGracePeriod());
+//			pstmt.setString(4, cForm.getAssessFinanceCharge().equals("on") ? "1" : "0");
+//			pstmt.setInt(5, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log(
+//					"Exception in the class ConfigurationInfo and in method " + "saveFinanceCharges " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//	}
 
-		boolean isSaved = false;
-		if (executor == null)
-			return isSaved;
-		con = executor.getConnection();
-		if (con == null)
-			return isSaved;
-
+	public boolean saveAccountPaymentDetails(ConfigurationDto cForm, Long compId) {
 		try {
-			String updateQuery = "UPDATE bca_jobcategory SET Name = ?,Active = ? WHERE isRecurringServiceJob  = ? "
-					+ " AND JobCategoryID = ?" + " AND CompanyID = ?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setString(1, billName);
-			pstmt.setInt(2, cForm.getRecurringServiceBill().equals("on") ? 1 : 0);
-			pstmt.setInt(3, 1);
-			pstmt.setInt(4, -1);
-			pstmt.setInt(5, compId);
+			return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+				// Set fields based on cForm's data
+				preference.setDefaultBankTransferAccId(cForm.getDefaultPaymentMethodId());
+				preference.setDefaultArcategoryId(cForm.getDefaultCategoryId());
+				preference.setDefaultReimbusrementSetting(cForm.getReimbursementSettings());
+				preference.setBudgetStartMonth(cForm.getStartMonth());
+				preference.setBudgetEndMonth(cForm.getEndMonth());
+				preference.setAutoPaymentDuration(cForm.getScheduleDays());
+				preference.setDefaultArcategoryIdforac(cForm.getArCategory());
+				preference.setDefaultArcategoryIdforpo(cForm.getPoCategory());
+				preference.setDefaultArcategoryIdforbp(cForm.getBpCategory());
+				preference.setDefaultdepositoforac(cForm.getArDepositTo());
+				preference.setDefaultdepositoforpo(cForm.getPoDepositTo());
+				preference.setDefaultdepositoforbp(cForm.getBpDepositTo());
+				preference.setDefaultReceivedforac(cForm.getArReceivedType());
+				preference.setDefaultReceivedforpo(cForm.getPoReceivedType());
+				preference.setDefaultReceivedforbp(cForm.getBpReceivedType());
+				preference.setStartingBillNumber(cForm.getStartingBillNumber());
 
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
+				preferenceRepository.save(preference);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			System.out.println("Exception in saveAccountPaymentDetails: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean saveAccountPaymentDetails(ConfigurationDto cForm, int compId) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isUpdated = false;
+//		try {
+//			// String updateQuery = "Update bca_preference set StartingBillNumber=? where
+//			// companyID = ?";
+//			String updateQuery = "Update bca_preference set "
+//					+ "defaultBankTransferAccID=?,defaultARCategoryID=?,DefaultReimbusrementSetting=?,BudgetStartMonth=?,BudgetEndMonth=?,AutoPaymentDuration=?, "
+//					+ "defaultARCategoryIDforac=?,defaultARCategoryIDforpo=?,defaultARCategoryIDforbp=?,defaultdepositoforac=?,defaultdepositoforpo=?,"
+//					+ "defaultdepositoforbp=?,defaultReceivedforac=?,defaultReceivedforpo=?,defaultReceivedforbp=?,StartingBillNumber=? where companyID = ?";
+//
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, cForm.getDefaultPaymentMethodId());
+//			pstmt.setInt(2, cForm.getDefaultCategoryId());
+//			pstmt.setInt(3, cForm.getReimbursementSettings());
+//			pstmt.setInt(4, cForm.getStartMonth());
+//			pstmt.setInt(5, cForm.getEndMonth());
+//			pstmt.setInt(6, cForm.getScheduleDays());
+//			pstmt.setInt(7, cForm.getArCategory());
+//			pstmt.setInt(8, cForm.getPoCategory());
+//			pstmt.setInt(9, cForm.getBpCategory());
+//			pstmt.setInt(10, cForm.getArDepositTo());
+//			pstmt.setInt(11, cForm.getPoDepositTo());
+//			pstmt.setInt(12, cForm.getBpDepositTo());
+//			pstmt.setInt(13, cForm.getArReceivedType());
+//			pstmt.setInt(14, cForm.getPoReceivedType());
+//			pstmt.setInt(15, cForm.getBpReceivedType());
+//			pstmt.setLong(16, cForm.getStartingBillNumber());
+//			pstmt.setInt(17, compId);
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//		} catch (SQLException ex) {
+//			System.out.println("Exception in the class ConfigurationInfo and in method " + "saveAccountPaymentDetails "
+//					+ ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//	}
+
+	public boolean savePerformance(ConfigurationDto cForm, Long compId) {
+		try {
+			return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+				preference.setPerformance(String.valueOf(cForm.getPerformance()));
+				preferenceRepository.save(preference);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in savePerformance: " + e.toString());
+			return false;
+		}
+	}
+//	public boolean savePerformance(ConfigurationDto cForm, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isUpdated = false;
+//		if (executor == null)
+//			return isUpdated;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isUpdated;
+//
+//		try {
+//			String updateQuery = "Update bca_preference set Performance=? where companyID = ?";
+//
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setDouble(1, cForm.getPerformance());
+//			pstmt.setInt(2, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "savePerformance " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//	}
+
+	public boolean saveDashboard(ConfigurationDto cForm, Long compId) {
+		try {
+			return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+				preference.setPoboard("on".equals(cForm.getPoboard()) ? 1 : 0);
+				preference.setItemsReceivedBoard("on".equals(cForm.getItemReceivedBoard()) ? 1 : 0);
+				preference.setItemsShippedBoard("on".equals(cForm.getItemShippedBoard()) ? 1 : 0);
+				preference.setSalesOrderBoard("on".equals(cForm.getSalesOrderBoard()) ? 1 : 0);
+				preferenceRepository.save(preference);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in saveDashboard: " + e.toString());
+			return false;
+		}
+	}
+//	public boolean saveDashboard(ConfigurationDto cForm, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isUpdated = false;
+//		if (executor == null)
+//			return isUpdated;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isUpdated;
+//
+//		try {
+//			String updateQuery = "Update bca_preference set poboard=?,itemsReceivedBoard=?,itemsShippedBoard=?,SalesOrderBoard=? where companyID = ?";
+//
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getPoboard().equals("on") ? "1" : "0");
+//			pstmt.setString(2, cForm.getItemReceivedBoard().equals("on") ? "1" : "0");
+//			pstmt.setString(3, cForm.getItemShippedBoard().equals("on") ? "1" : "0");
+//			pstmt.setString(4, cForm.getSalesOrderBoard().equals("on") ? "1" : "0");
+//			pstmt.setInt(5, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveDashboard " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//	}
+
+	public boolean saveReminder(ConfigurationDto cForm, Long compId) {
+		try {
+			return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+				preference.setShowReminder("on".equals(cForm.getShowReminder()) ? 1 : 0);
+				preference.setInvoiceMemo(cForm.getInvoiceMemo());
+				preference.setInvoiceMemoDays(cForm.getInvoiceMemoDays());
+				preference.setOverdueInvoice(cForm.getOverdueInvoice()); // overDue Invoice
+				preference.setOverdueinvoiceDays(cForm.getOverdueInvoiceDays());
+				preference.setInventoryOrder(cForm.getInventoryOrder()); // inventory order
+				preference.setInventoryOrderDays(cForm.getInventoryOrderDays());
+				preference.setBillstoPay(cForm.getBillsToPay()); // BillsToPay
+				preference.setBillstoPayDays(cForm.getBillsToPayDays());
+				preference.setEstimationMemo(cForm.getMemorizeEstimation()); // MemorizeEstimation
+				preference.setEstimationMemoDays(cForm.getMemorizeEstimationDays());
+				preference.setPomemo(cForm.getMemorizePurchaseOrder()); // PoMemo
+				preference.setPomemoDays(cForm.getMemorizePurchaseOrderDays());
+				preference.setMemobill(cForm.getMemorizeBill()); // MemoBill
+				preference.setMemobillDays(cForm.getMemorizeBillDays());
+				preference.setServiceBillsMemo(cForm.getServiceBilling()); // Service Billing
+				preference.setServiceBillsMemoDays(cForm.getServiceBillingDays());
+
+				preferenceRepository.save(preference);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in saveReminder: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean saveReminder(ConfigurationDto cForm, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isUpdated = false;
+//		if (executor == null)
+//			return isUpdated;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isUpdated;
+//
+//		try {
+//			String updateQuery = "Update bca_preference set ShowReminder=?,InvoiceMemo=?,InvoiceMemoDays=?,OverdueInvoice=?,OverdueinvoiceDays=?,"
+//					+ "InventoryOrder=?,InventoryOrderDays=?,BillstoPay=?,BillstoPayDays=?,EstimationMemo=?,EstimationMemoDays=?,"
+//					+ "POMemo=?,POMemoDays=?,MemoBill=?,MemoBillDays=?,ServiceBillsMemo=?,ServiceBillsMemoDays=? where companyID = ?";
+//
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getShowReminder().equals("on") ? "1" : "0");
+//			pstmt.setInt(2, cForm.getInvoiceMemo()); // InvoiceMemo
+//			pstmt.setInt(3, cForm.getInvoiceMemoDays());
+//			pstmt.setInt(4, cForm.getOverdueInvoice()); // overDue Invoice
+//			pstmt.setInt(5, cForm.getOverdueInvoiceDays());
+//			pstmt.setInt(6, cForm.getInventoryOrder()); // inventory order
+//			pstmt.setInt(7, cForm.getInventoryOrderDays());
+//			pstmt.setInt(8, cForm.getBillsToPay()); // BillsToPay
+//			pstmt.setInt(9, cForm.getBillsToPayDays());
+//			pstmt.setInt(10, cForm.getMemorizeEstimation()); // MemorizeEstimation
+//			pstmt.setInt(11, cForm.getMemorizeEstimationDays());
+//			pstmt.setInt(12, cForm.getMemorizePurchaseOrder()); // PoMemo
+//			pstmt.setInt(13, cForm.getMemorizePurchaseOrderDays());
+//			pstmt.setInt(14, cForm.getMemorizeBill()); // MemoBill
+//			pstmt.setInt(15, cForm.getMemorizeBillDays());
+//			pstmt.setInt(16, cForm.getServiceBilling()); // Service Billing
+//			pstmt.setInt(17, cForm.getServiceBillingDays());
+//			pstmt.setInt(18, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveReminder " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//	}
+
+	public boolean saveCustomerInvoice(ConfigurationDto cForm, Long compId) {
+		try {
+			return preferenceRepository.findByCompany_CompanyId(compId).map(preference -> {
+				// Update fields based on cForm's data
+				preference.setDefaultCustomerSortId(cForm.getSortBy());
+				preference.setDefaultCustomerGroupId(cForm.getCustomerGroup());
+
+				BcaCountries country = countriesRepository.findById(cForm.getCustDefaultCountryID()).get();
+
+				preference.setCustomerCountry(country);
+
+				BcaStates state = stateRepository.findById(cForm.getSelectedStateId()).get();
+				preference.setCustomerState(state);
+
+				preference.setCustomerTaxable("on".equals(cForm.getCustTaxable()) ? 1 : 0);
+				preference.setShowSalesOrder("on".equals(cForm.getIsSalesOrder()) ? 1 : 0);
+				preference.setCustomerProvience(cForm.getCustomerProvince());
+				preference.setSalesViaId(cForm.getCustomerShippingId());
+				preference.setSalesTermId(cForm.getSelectedTermId());
+				preference.setSalesRepId(cForm.getSelectedSalesRepId());
+				preference.setSalesPayMethodId(cForm.getSelectedPaymentId());
+				preference.setCopyAddress("on".equals(cForm.getAddressSettings()) ? true : false);
+
+				preference.setStartingInvoiceNumber(Integer.valueOf(cForm.getStartInvoiceNum()));
+				preference.setDefaultPackingSlipStyleId(cForm.getPackingSlipTemplateId());
+				preference.setSalesPoprefix(cForm.getPoNumPrefix());
+				preference.setInvoiceFootnoteId(cForm.getSelectedMessageId());
+				preference.setSaleShowCountry("on".equals(cForm.getSaleShowCountry()) ? true : false);
+				preference.setIsRatePriceChangeble("on".equals(cForm.getRatePriceChangable()) ? true : false);
+				preference.setSaleShowTelephone("on".equals(cForm.getSaleShowTelephone()) ? true : false);
+				preference.setIsSalePrefix("on".equals(cForm.getIsSalePrefix()) ? true : false);
+				preference.setExtraCharge("on".equals(cForm.getExtraChargeApplicable()) ? true : false);
+				preference.setChargeAmount(cForm.getChargeAmount());
+				preference.setOrderAmount(cForm.getOrderAmount());
+				preference.setHowOftenSalestax(cForm.getHowOftenSalestax());
+				preference.setDropShipCharge(cForm.getDropShipCharge());
+				preference.setSalesTaxCode(cForm.getSalesTaxCode());
+				preference.setSalesTaxRate(cForm.getSaleTaxRate());
+				preference.setShowDropShipItems(cForm.getIsShowDropShipItems() == 1 ? true : false);
+				preference.setIsRefundAllowed("on".equals(cForm.getIsRefundAllowed()) ? true : false);
+				preference.setStartingEstimationNumber(Integer.valueOf(cForm.getStartEstimationNum()));
+
+				BcaInvoicestyle invoiceStyle = invoicestyleRepository.findById(cForm.getInvStyleID()).get();
+
+				preference.setInvoiceStyle(invoiceStyle);
+
+				preference.setPotermId(cForm.getSelectedTermId());
+				preference.setPopayMethodId(cForm.getSelectedPaymentId());
+				preference.setChargeInterest(cForm.getAnnualInterestRate());
+				preference.setChargeMinimum(cForm.getMinCharge());
+				preference.setChargeGrace(Double.valueOf(cForm.getGracePeriod()));
+				preference.setChargeReassess("on".equals(cForm.getAssessFinanceCharge()) ? true : false);
+				preference.setChargeMarkFinance("on".equals(cForm.getMarkFinanceCharge()) ? true : false);
+				preference.setStartingSalesOrderNumber(Integer.valueOf(cForm.getStartSalesOrderNum()));
+				preference.setDisplayPeriod(cForm.getDisplayPeriod());
+				preference.setEstimationStyleId(cForm.getEstimationStyleID());
+				preference.setSostyleId(cForm.getSoStyleID());
+				preference.setSalesTaxRate2(cForm.getSaleTaxRate2());
+				preference.setIsBackOrderNeeded("on".equals(cForm.getBackOrderNeeded()) ? true : false);
+				preference.setIsRecurringServiceBill("on".equals(cForm.getRecurringServiceBill()) ? true : false);
+				preference.setServiceBillName(cForm.getServiceBillName());
+
+				preferenceRepository.save(preference);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in saveCustomerInvoice: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean saveCustomerInvoice(ConfigurationDto cForm, int compId) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isUpdated = false;
+//		try {
+//			String updateQuery = "Update bca_preference set DEFAULTCustomerSortID=?,DEFAULTCustomerGroupID=?,CustomerCountryID=?,CustomerStateID=?,"
+//					+ "CustomerTaxable=?,showSalesOrder=?,CustomerProvience=?,SalesViaID=?,SalesTermID=?,SalesRepID=?,SalesPayMethodID=?,copyAddress=?,"
+//					+ "StartingInvoiceNumber=?,DefaultPackingSlipStyleID=?,SalesPOPrefix=?,InvoiceFootnoteID=?,SaleShowCountry=?,IsRatePriceChangeble=?,"
+//					+ "SaleShowTelephone=?,IsSalePrefix=?,ExtraCharge=?,ChargeAmount=?,OrderAmount=?,HowOftenSalestax=?,DropShipCharge=?,SalesTaxCode=?,SalesTaxRate=?,"
+//					+ "DropShipCharge=?,ShowDropShipItems=?,isRefundAllowed=?,StartingEstimationNumber=?,InvoiceStyleID =?,POTermID=?, SalesRepID=?, POPayMethodID=?,"
+//					+ "Charge_interest=?, Charge_minimum=?, Charge_grace=?, Charge_reassess=?, Charge_MarkFinance=?, StartingSalesOrderNumber=?, DisplayPeriod=?,"
+//					+ "EstimationStyleID=?, SOStyleID=?, SalesTaxRate2=?, isBackOrderNeeded=?, isRecurringServiceBill=?,serviceBillName=? "
+//					+ " WHERE companyID = ?";
+//			int r = cForm.getSortBy();
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, cForm.getSortBy());
+//			pstmt.setInt(2, cForm.getCustomerGroup());
+//			pstmt.setInt(3, cForm.getCustDefaultCountryID());
+//			pstmt.setInt(4, cForm.getSelectedStateId());
+//			pstmt.setString(5, "on".equals(cForm.getCustTaxable()) ? "1" : "0");
+//			pstmt.setString(6, "on".equals(cForm.getIsSalesOrder()) ? "1" : "0");
+//			pstmt.setString(7, cForm.getCustomerProvince());
+//			pstmt.setInt(8, cForm.getCustomerShippingId());
+//			pstmt.setInt(9, cForm.getSelectedTermId());
+//			pstmt.setInt(10, cForm.getSelectedSalesRepId());
+//			pstmt.setInt(11, cForm.getSelectedPaymentId());
+//			pstmt.setString(12, "on".equals(cForm.getAddressSettings()) ? "1" : "0");
+//
+//			pstmt.setString(13, cForm.getStartInvoiceNum());
+//			pstmt.setInt(14, cForm.getPackingSlipTemplateId());
+//			pstmt.setString(15, cForm.getPoNumPrefix());
+//			pstmt.setInt(16, cForm.getSelectedMessageId());
+//			pstmt.setString(17, "on".equals(cForm.getSaleShowCountry()) ? "1" : "0");
+//			pstmt.setString(18, "on".equals(cForm.getRatePriceChangable()) ? "1" : "0");
+//			pstmt.setString(19, "on".equals(cForm.getSaleShowTelephone()) ? "1" : "0");
+//			pstmt.setString(20, "on".equals(cForm.getIsSalePrefix()) ? "1" : "0");
+//			pstmt.setString(21, "on".equals(cForm.getExtraChargeApplicable()) ? "1" : "0");
+//			pstmt.setInt(22, cForm.getChargeAmount());
+//			pstmt.setInt(23, cForm.getOrderAmount());
+//			pstmt.setInt(24, cForm.getHowOftenSalestax());
+//			pstmt.setInt(25, cForm.getDropShipCharge());
+//			pstmt.setString(26, cForm.getSalesTaxCode());
+//			pstmt.setDouble(27, cForm.getSaleTaxRate());
+//			pstmt.setInt(28, cForm.getDropShipCharge());
+//			pstmt.setInt(29, cForm.getIsShowDropShipItems());
+//			pstmt.setString(30, "on".equals(cForm.getIsRefundAllowed()) ? "1" : "0");
+//			pstmt.setString(31, cForm.getStartEstimationNum());
+//			pstmt.setInt(32, cForm.getInvStyleID());
+//			pstmt.setInt(33, cForm.getSelectedTermId());
+//			pstmt.setInt(34, cForm.getSelectedSalesRepId());
+//			pstmt.setInt(35, cForm.getSelectedPaymentId());
+//			pstmt.setDouble(36, cForm.getAnnualInterestRate());
+//			pstmt.setDouble(37, cForm.getMinCharge());
+//			pstmt.setInt(38, cForm.getGracePeriod());
+//			pstmt.setString(39, "on".equals(cForm.getAssessFinanceCharge()) ? "1" : "0");
+//			pstmt.setString(40, "on".equals(cForm.getMarkFinanceCharge()) ? "1" : "0");
+//			pstmt.setString(41, cForm.getStartSalesOrderNum());
+//			pstmt.setInt(42, cForm.getDisplayPeriod());
+//			pstmt.setInt(43, cForm.getEstimationStyleID());
+//			pstmt.setInt(44, cForm.getSoStyleID());
+//			pstmt.setDouble(45, cForm.getSaleTaxRate2());
+//			pstmt.setString(46, "on".equals(cForm.getBackOrderNeeded()) ? "1" : "0");
+//			pstmt.setString(47, "on".equals(cForm.getRecurringServiceBill()) ? "1" : "0");
+//			pstmt.setString(48, cForm.getServiceBillName());
+//			pstmt.setInt(49, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isUpdated = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log(
+//					"Exception in the class ConfigurationInfo and in method " + "saveCustomerInvoice " + ex.toString());
+//			ex.printStackTrace();
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isUpdated;
+//	}
+
+	@Autowired
+	private BcaLocationRepository locationRepository;
+
+	@Autowired
+	private BcaCompanyRepository companyRepository; // Assuming you have this for fetching BcaCompany
+
+	public boolean saveDescription(ConfigurationDto cForm, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaLocation location = new BcaLocation();
+			location.setName(cForm.getDescription());
+			location.setCompany(company);
+			location.setActive(1);
+
+			locationRepository.save(location);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in saveDescription: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean saveDescription(ConfigurationDto cForm, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "insert into bca_location(Name,CompanyID,Active) values(?,?,?)";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, compId);
+//			pstmt.setInt(3, 1);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveDescription " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean deleteLocation(int descriptionID, Long compId) {
+		try {
+
+			Optional<BcaLocation> locationOpt = locationRepository.findByLocationIdAndCompany_CompanyId(descriptionID,
+					compId);
+			if (locationOpt.isPresent()) {
+				BcaLocation location = locationOpt.get();
+				location.setActive(0); // Soft delete by setting Active to 0
+				locationRepository.save(location);
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			Loger.log("Exception in deleteLocation: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean deleteLocation(int descriptionID, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_location set Active=0 where LocationId=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, descriptionID);
+//			pstmt.setInt(2, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteDescription " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean updateDescription(ConfigurationDto cForm, Long compId, int locationId) {
+		try {
+			return locationRepository.findByLocationIdAndCompany_CompanyId(locationId, compId).map(location -> {
+				location.setName(cForm.getDescription());
+				locationRepository.save(location);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in updateDescription: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean updateDescription(ConfigurationDto cForm, int compId, int locationId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_location set  Name=? where LocationId=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, locationId);
+//			pstmt.setInt(3, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateDescription " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	@Autowired
+	private BcaMessageRepository messageRepository;
+
+	public boolean saveMessage(ConfigurationDto cForm, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaMessage message = new BcaMessage();
+			message.setName(cForm.getDescription());
+			message.setCompany(company);
+			message.setActive(1);
+
+			messageRepository.save(message);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in saveMessage: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean saveMessage(ConfigurationDto cForm, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "insert into bca_message(Name,CompanyID,Active) values(?,?,?)";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, compId);
+//			pstmt.setInt(3, 1);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveMessage " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	@Autowired
+	private BcaSalesrepRepository salesRepRepository;
+
+	public boolean saveSalesRep(ConfigurationDto cForm, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaSalesrep salesRep = new BcaSalesrep();
+			salesRep.setName(cForm.getDescription());
+			salesRep.setCompany(company);
+			salesRep.setActive(1);
+
+			salesRepRepository.save(salesRep);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in saveSalesRep: " + e.toString());
+			return false;
+		}
+	}
+//	public boolean saveSalesRep(ConfigurationDto cForm, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "insert into bca_salesrep(Name,CompanyID,Active) values(?,?,?)";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, compId);
+//			pstmt.setInt(3, 1);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveSalesRep " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	@Autowired
+	private BcaTermRepository termRepository;
+
+	public boolean saveNewTerm(ConfigurationDto cForm, Long compId, int days) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaTerm term = new BcaTerm();
+			term.setName(cForm.getDescription());
+			term.setCompany(company);
+			term.setActive(1);
+			term.setDays(days);
+
+			termRepository.save(term);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in saveNewTerm: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean saveNewTerm(ConfigurationDto cForm, int compId, int days) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "insert into bca_term(Name,CompanyID,Active,Days) values(?,?,?,?)";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, compId);
+//			pstmt.setInt(3, 1);
+//			pstmt.setInt(4, days);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "saveNewTerm " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean saveNewSalesTax(ConfigurationDto cForm, Long compId, float tax) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaSalestax salesTax = new BcaSalestax();
+			salesTax.setState(cForm.getDescription());
+			salesTax.setCompany(company);
+			salesTax.setActive(1);
+			salesTax.setRate(Double.valueOf(tax));
+
+			salesTaxRepository.save(salesTax);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in saveNewSalesTax: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean saveNewSalesTax(ConfigurationDto cForm, int compId, float tax) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		con = executor.getConnection();
+//		try {
+//			String updateQuery = "insert into bca_salestax(State,CompanyID,Active,Rate) values(?,?,?,?)";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, compId);
+//			pstmt.setInt(3, 1);
+//			pstmt.setFloat(4, tax);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method saveNewSalesTax " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	@Autowired
+	private BcaLineofcredittermRepository lineOfCreditTermRepository;
+
+	public boolean saveNewCreditTerms(ConfigurationDto cForm, Long compId, int days) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaLineofcreditterm creditTerm = new BcaLineofcreditterm();
+			creditTerm.setName(cForm.getDescription());
+			creditTerm.setCompany(company);
+			creditTerm.setActive(1);
+			creditTerm.setDays(days);
+			creditTerm.setIsDefault(cForm.getIsDefaultCreditTerm().equals("on") ? 1 : 0);
+
+			lineOfCreditTermRepository.save(creditTerm);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in saveNewCreditTerms: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean saveNewCreditTerms(ConfigurationDto cForm, int compId, int days) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "insert into bca_lineofcreditterm(Name,CompanyID,Active,Days,isDefault) values(?,?,?,?,?)";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, compId);
+//			pstmt.setInt(3, 1);
+//			pstmt.setInt(4, days);
+//			pstmt.setInt(5, cForm.getIsDefaultCreditTerm().equals("on") ? 1 : 0);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log(
+//					"Exception in the class ConfigurationInfo and in method " + "saveNewCreditTerms " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean updateMessage(ConfigurationDto cForm, Long compId, int messageID) {
+		try {
+			return messageRepository.findByMessageIdAndCompany_CompanyId(messageID, compId).map(message -> {
+				message.setName(cForm.getDescription());
+				messageRepository.save(message);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in updateMessage: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean updateMessage(ConfigurationDto cForm, int compId, int messageID) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_Message set Name=? where MessageId=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, messageID);
+//			pstmt.setInt(3, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateMessage " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean updateSalesRep(ConfigurationDto cForm, Long compId, int salesRepID) {
+		try {
+			return salesRepRepository.findBySalesRepIdAndCompany_CompanyId(salesRepID, compId).map(salesRep -> {
+				salesRep.setName(cForm.getDescription());
+				salesRepRepository.save(salesRep);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in updateSalesRep: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean updateSalesRep(ConfigurationDto cForm, int compId, int salesRepID) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_salesrep set Name=? where SalesRepID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, salesRepID);
+//			pstmt.setInt(3, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateSalesRep " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean updateTerm(ConfigurationDto cForm, Long compId, int termID, int days) {
+		try {
+			return termRepository.findByTermIdAndCompany_CompanyId(termID, compId).map(term -> {
+				term.setName(cForm.getDescription());
+				term.setDays(days);
+				termRepository.save(term);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in updateTerm: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean updateTerm(ConfigurationDto cForm, int compId, int termID, int days) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_term set Name=?,Days=? where TermID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setInt(2, days);
+//			pstmt.setInt(3, termID);
+//			pstmt.setInt(4, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateTerm " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean updateSalesTax(ConfigurationDto cForm, Long compId, int salesTaxID, float tax) {
+		try {
+			return salesTaxRepository.findBySalesTaxIdAndCompany_CompanyId(salesTaxID, compId).map(salesTax -> {
+				salesTax.setState(cForm.getDescription());
+				salesTax.setRate(Double.valueOf(tax));
+				salesTaxRepository.save(salesTax);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in updateSalesTax: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean updateSalesTax(ConfigurationDto cForm, int compId, int salesTaxID, float tax) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_salestax set State=?,Rate=? where SalesTaxID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setFloat(2, tax);
+//			pstmt.setInt(3, salesTaxID);
+//			pstmt.setInt(4, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateSalesTax " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean updateCreditTerm(ConfigurationDto cForm, Long compId, int creditTermID, int days) {
+		try {
+			return lineOfCreditTermRepository.findByCreditTermIdAndCompany_CompanyId(creditTermID, compId)
+					.map(creditTerm -> {
+						creditTerm.setName(cForm.getDescription());
+						creditTerm.setDays(days);
+						creditTerm.setIsDefault(cForm.getIsDefaultCreditTerm().equals("on") ? 1 : 0);
+						lineOfCreditTermRepository.save(creditTerm);
+						return true;
+					}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in updateCreditTerm: " + e.toString());
+			return false;
+		}
+	}
+//	public boolean updateCreditTerm(ConfigurationDto cForm, int compId, int creditTermID, int days) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_lineofcreditterm set Name=?,Days=?,isDefault=? where CreditTermId=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, cForm.getDescription());
+//			pstmt.setFloat(2, days);
+//			pstmt.setInt(3, cForm.getIsDefaultCreditTerm().equals("on") ? 1 : 0);
+//			pstmt.setInt(4, creditTermID);
+//			pstmt.setInt(5, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "updateCreditTerm " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean deleteMessage(Long compId, int messageID) {
+		try {
+			return messageRepository.findByMessageIdAndCompany_CompanyId(messageID, compId).map(message -> {
+				message.setActive(0); // Soft delete by setting Active to 0
+				messageRepository.save(message);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in deleteMessage: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean deleteMessage(int compId, int messageID) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_Message set Active=? where MessageId=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, 0);
+//			pstmt.setInt(2, messageID);
+//			pstmt.setInt(3, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteMessage " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean deleteSalesRep(Long compId, int salesRepId) {
+		try {
+			return salesRepRepository.findBySalesRepIdAndCompany_CompanyId(salesRepId, compId).map(salesRep -> {
+				salesRep.setActive(0); // Soft delete by setting Active to 0
+				salesRepRepository.save(salesRep);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in deleteSalesRep: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean deleteSalesRep(int compId, int salesRepId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_salesrep set Active=? where SalesRepID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, 0);
+//			pstmt.setInt(2, salesRepId);
+//			pstmt.setInt(3, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteSalesRep " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean deleteTerm(Long compId, int termId) {
+		try {
+			return termRepository.findByTermIdAndCompany_CompanyId(termId, compId).map(term -> {
+				term.setActive(0); // Soft delete by setting Active to 0
+				termRepository.save(term);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in deleteTerm: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean deleteTerm(int compId, int termId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_term set Active=? where TermID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, 0);
+//			pstmt.setInt(2, termId);
+//			pstmt.setInt(3, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteTerm " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean deleteSalesTax(Long compId, int salesTaxId) {
+		try {
+			return salesTaxRepository.findBySalesTaxIdAndCompany_CompanyId(salesTaxId, compId).map(salesTax -> {
+				salesTax.setActive(0); // Soft delete by setting Active to 0
+				salesTaxRepository.save(salesTax);
+				return true;
+			}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in deleteSalesTax: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean deleteSalesTax(int compId, int salesTaxId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_salestax set Active=? where SalesTaxID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, 0);
+//			pstmt.setInt(2, salesTaxId);
+//			pstmt.setInt(3, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteSalesTax " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean deleteCreditTerm(Long compId, int creditTermId) {
+		try {
+			return lineOfCreditTermRepository.findByCreditTermIdAndCompany_CompanyId(creditTermId, compId)
+					.map(creditTerm -> {
+						creditTerm.setActive(0); // Soft delete by setting Active to 0
+						lineOfCreditTermRepository.save(creditTerm);
+						return true;
+					}).orElse(false);
+		} catch (Exception e) {
+			Loger.log("Exception in deleteCreditTerm: " + e.toString());
+			return false;
+		}
+	}
+//	public boolean deleteCreditTerm(int compId, int creditTermId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "update bca_lineofcreditterm set Active=? where CreditTermId=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, 0);
+//			pstmt.setInt(2, creditTermId);
+//			pstmt.setInt(3, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method " + "deleteCreditTerm " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	@Autowired
+	private BcaRefundreasonRepository refundReasonRepository;
+
+	public boolean insertRefundReason(Long compId, String refundReason) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaRefundreason reason = new BcaRefundreason();
+			reason.setRefundReason(refundReason);
+			reason.setActive(1);
+			reason.setIsDefaultReason(false);
+			reason.setCompany(company);
+
+			refundReasonRepository.save(reason);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in insertRefundReason: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean insertRefundReason(int compId, String refundReason) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String updateQuery = "insert into bca_refundreason (RefundReason,Active,IsDefaultReason,CompanyID) values(?,?,?,?)";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, refundReason);
+//			pstmt.setInt(2, 1);
+//			pstmt.setInt(3, 0);
+//			pstmt.setInt(4, compId);
+//			isSaved = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method insertRefundReason " + ex.toString());
+//		} finally {
+//			if (pstmt != null) {
+//				db.close(pstmt);
+//			}
+//			if (con != null) {
+//				db.close(con);
+//			}
+//		}
+//		return isSaved;
+//	}
+
+	public boolean updateRefundReason(Long compId, int refundReasonId, String newRefundReason) {
+		try {
+			BcaRefundreason reason = refundReasonRepository.findById(refundReasonId)
+					.orElseThrow(() -> new EntityNotFoundException("Refund reason not found"));
+
+			if (reason.getCompany().getCompanyId().equals(compId)) {
+				reason.setRefundReason(newRefundReason);
+				reason.setActive(1); // Assuming Active is set to 1 for an update
+				reason.setIsDefaultReason(false); // Assuming IsDefaultReason is set to false for an update
+
+				refundReasonRepository.save(reason);
+				return true;
+			} else {
+				Loger.log("Company ID does not match");
+				return false;
+			}
+		} catch (Exception e) {
+			Loger.log("Exception in updateRefundReason: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean updateRefundReason(int compId, int refundReasonId, String newRefundReason) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String updateQuery = "update bca_refundreason set RefundReason=?,Active=?,IsDefaultReason=? where ReasonID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, newRefundReason);
+//			pstmt.setInt(2, 1);
+//			pstmt.setInt(3, 0);
+//			pstmt.setInt(4, refundReasonId);
+//			pstmt.setInt(5, compId);
+//			isSaved = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method updateRefundReason " + ex.toString());
+//		} finally {
+//			if (pstmt != null) {
+//				db.close(pstmt);
+//			}
+//			if (con != null) {
+//				db.close(con);
+//			}
+//		}
+//		return isSaved;
+//	}
+
+	public boolean deleteRefundReason(Long compId, int refundReasonId) {
+		try {
+			BcaRefundreason reason = refundReasonRepository.findById(refundReasonId)
+					.orElseThrow(() -> new EntityNotFoundException("Refund reason not found"));
+
+			if (reason.getCompany().getCompanyId().equals(compId)) {
+				reason.setActive(0); // Set Active to 0 to indicate a 'soft delete'
+				refundReasonRepository.save(reason);
+				return true;
+			} else {
+				Loger.log("Company ID does not match");
+				return false;
+			}
+		} catch (Exception e) {
+			Loger.log("Exception in deleteRefundReason: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean deleteRefundReason(int compId, int refundReasonId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String updateQuery = "update bca_refundreason set Active=0 where ReasonID=? and CompanyID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, refundReasonId);
+//			pstmt.setInt(2, compId);
+//			isSaved = pstmt.executeUpdate() > 0 ? true : false;
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method deleteRefundReason " + ex.toString());
+//		} finally {
+//			if (pstmt != null) {
+//				db.close(pstmt);
+//			}
+//			if (con != null) {
+//				db.close(con);
+//			}
+//		}
+//		return isSaved;
+//	}
+
+	@Transactional
+	public boolean setDefaultRefundReason(int reasonID, Long compId) {
+		try {
+			// Set all reasons' isDefaultReason to false
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			List<BcaRefundreason> reasons = refundReasonRepository.findByCompany(company);
+
+			for (BcaRefundreason reason : reasons) {
+				reason.setIsDefaultReason(false);
+				refundReasonRepository.save(reason);
 			}
 
-		} catch (SQLException ex) {
-			Loger.log(
-					"Exception in the class ConfigurationInfo and in method " + "editServiceBillInfo " + ex.toString());
-		} finally {
-			executor.close(con);
+			// Set the specified reason's isDefaultReason to true
+			BcaRefundreason reason = refundReasonRepository.findById(reasonID)
+					.orElseThrow(() -> new EntityNotFoundException("Refund reason not found"));
+			reason.setIsDefaultReason(true);
+			refundReasonRepository.save(reason);
+
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in setDefaultRefundReason: " + e.toString());
+			return false;
 		}
-		return isSaved;
 	}
+
+//	public boolean setDefaultRefundReason(int reasonID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		Statement stmt = null;
+//		boolean status = false;
+//		try {
+//			stmt = con.createStatement();
+//			stmt.addBatch("UPDATE bca_refundreason SET IsDefaultReason=0 WHERE IsDefaultReason=1");
+//			stmt.addBatch("UPDATE bca_refundreason SET IsDefaultReason=1 WHERE ReasonID=" + reasonID);
+//			status = stmt.executeBatch().length > 0 ? true : false;
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return status;
+//	}
+
+	@Autowired
+	private BcaJobcategoryRepository jobCategoryRepository;
+
+	public boolean addJobCategory(ConfigurationDto cForm, Long compId, String jobCategory) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaJobcategory newJobCategory = new BcaJobcategory();
+			newJobCategory.setName(jobCategory);
+			newJobCategory.setCompany(company);
+			newJobCategory.setIsRecurringServiceJob(1);
+			newJobCategory.setActive(1);
+
+			jobCategoryRepository.save(newJobCategory);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in addJobCategory: " + e.toString());
+			return false;
+		}
+	}
+
+//	public boolean addJobCategory(ConfigurationDto cForm, int compId, String jobCategory) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String updateQuery = "insert into bca_jobcategory (Name,CompanyID,isRecurringServiceJob,Active) VALUES (?,?,?,?)";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, jobCategory);
+//			pstmt.setInt(2, compId);
+//			pstmt.setInt(3, 1);
+//			pstmt.setInt(4, 1);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method addJobCategory " + ex.toString());
+//		} finally {
+//			executor.close(pstmt);
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean updateJobCategory(ConfigurationDto cForm, Long compId, int jobCategoryId,
+			String newJobCategoryName) {
+		try {
+			// Find the company by ID
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			// Find the job category by ID and ensure it belongs to the given company
+			BcaJobcategory jobCategory = jobCategoryRepository.findByJobCategoryIdAndCompany(jobCategoryId, company)
+					.orElseThrow(() -> new EntityNotFoundException("Job category not found"));
+
+			// Update the job category name and isRecurringServiceJob
+			jobCategory.setName(newJobCategoryName);
+			jobCategory.setIsRecurringServiceJob(1);
+
+			jobCategoryRepository.save(jobCategory);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in updateJobCategory: " + e.toString());
+			return false;
+		}
+	}
+//	public boolean updateJobCategory(ConfigurationDto cForm, int compId, int jobCategoryId, String newJobCategoryName) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String updateQuery = "update bca_jobcategory set Name=?,isRecurringServiceJob=? where CompanyID=? and JobCategoryID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, newJobCategoryName);
+//			pstmt.setInt(2, 1);
+//			pstmt.setInt(3, compId);
+//			pstmt.setInt(4, jobCategoryId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method updateJobCategory " + ex.toString());
+//		} finally {
+//			executor.close(pstmt);
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	public boolean deleteJobCategory(int jCategoryId, Long compId) {
+		try {
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+			BcaJobcategory jobCategory = jobCategoryRepository.findById(jCategoryId)
+					.orElseThrow(() -> new EntityNotFoundException("Job Category not found"));
+
+			if (jobCategory.getCompany().getCompanyId().equals(compId)) {
+				jobCategory.setActive(0); // Set Active to 0 to indicate a soft delete
+				jobCategoryRepository.save(jobCategory);
+				return true;
+			} else {
+				Loger.log("Company ID does not match");
+				return false;
+			}
+		} catch (Exception e) {
+			Loger.log("Exception in deleteJobCategory: " + e.toString());
+			return false;
+		}
+	}
+//	public boolean deleteJobCategory(int jCategoryId, int compId) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String updateQuery = "update bca_jobcategory set Active=? where CompanyID=? and JobCategoryID=?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, 0);
+//			pstmt.setInt(2, compId);
+//			pstmt.setInt(3, jCategoryId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method deleteJobCategory " + ex.toString());
+//		} finally {
+//			executor.close(pstmt);
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
+
+	@Transactional
+	public boolean editServiceBillInfo(int jCategoryId, ConfigurationDto cForm, String billName, Long compId) {
+		try {
+			boolean isActive = cForm.getRecurringServiceBill().equals("on");
+
+			BcaJobcategory jobCategory = jobCategoryRepository.findById(jCategoryId)
+					.orElseThrow(() -> new EntityNotFoundException("Job Category not found"));
+
+			if (jobCategory.getCompany().getCompanyId().equals(compId)) {
+				jobCategory.setName(billName);
+				jobCategory.setActive(isActive ? 1 : 0); // Set Active to 0 to indicate a soft delete
+				jobCategoryRepository.save(jobCategory);
+				return true;
+			}
+
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in editServiceBillInfo: " + e.toString());
+			return false;
+		}
+	}
+//	public boolean editServiceBillInfo(ConfigurationDto cForm, String billName, int compId) {
+//		Connection con = null;
+//		SQLExecutor executor = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//
+//		boolean isSaved = false;
+//		if (executor == null)
+//			return isSaved;
+//		con = executor.getConnection();
+//		if (con == null)
+//			return isSaved;
+//
+//		try {
+//			String updateQuery = "UPDATE bca_jobcategory SET Name = ?,Active = ? WHERE isRecurringServiceJob  = ? "
+//					+ " AND JobCategoryID = ?" + " AND CompanyID = ?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setString(1, billName);
+//			pstmt.setInt(2, cForm.getRecurringServiceBill().equals("on") ? 1 : 0);
+//			pstmt.setInt(3, 1);
+//			pstmt.setInt(4, -1);
+//			pstmt.setInt(5, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			Loger.log(
+//					"Exception in the class ConfigurationInfo and in method " + "editServiceBillInfo " + ex.toString());
+//		} finally {
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
 
 	public boolean saveVendorPurchaseValuesInConfigInfo(ConfigurationDto cForm, int compId) {
 		SQLExecutor executor = new SQLExecutor();

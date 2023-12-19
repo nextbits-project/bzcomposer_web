@@ -36,11 +36,9 @@ public class ConfigurationDetails {
 		/* For the user group list */
 		request.setAttribute("UserGroup", configInfo.userGroupInfo(compId));
 
-
 		/* For country list */
 		// CountryState conState = new CountryState();
 		request.setAttribute("CountryList", conState.getCountry());
-
 
 		/* For invoice style List */
 		request.setAttribute("InvStyle", configInfo.invoiceStyleList());
@@ -166,7 +164,7 @@ public class ConfigurationDetails {
 	public void saveRecordsEstimation(ConfigurationDto configDto, HttpServletRequest request) {
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		long compId = Long.parseLong((String) request.getSession().getAttribute("CID"));
-		cinfo.saveConfigurationRecordEstimation(configDto, compId, request);
+		cinfo.saveConfigurationRecordEstimation(configDto, compId);
 	}
 
 	public void saveRecordsBilling(ConfigurationDto configDto, HttpServletRequest request, String printValue,
@@ -182,7 +180,7 @@ public class ConfigurationDetails {
 	public void addRMAReason(ConfigurationDto configDto, String companyID, String reason, int parentReasonID) {
 		configDto.setReason(reason);
 		configDto.setParentReasonId(parentReasonID);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.saveRMAReason(configDto, compId);
 		if (saved) {
@@ -219,7 +217,7 @@ public class ConfigurationDetails {
 
 	public void saveDefaultBank(ConfigurationDto configDto, HttpServletRequest request) {
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
-		int compId = Integer.parseInt((String) request.getSession().getAttribute("CID"));
+		Long compId = Long.valueOf((String) request.getSession().getAttribute("CID"));
 		boolean updated = cinfo.saveDefaultBankDetails(configDto, compId);
 		if (updated) {
 			System.out.println("Bank Updated Successfully...");
@@ -237,8 +235,8 @@ public class ConfigurationDetails {
 		configDto.setReorderPoint(Integer.parseInt(request.getParameter("reorderPoint")));
 
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
-		int compId = Integer.parseInt((String) request.getSession().getAttribute("CID"));
-		boolean saved = cinfo.saveConfigurationRecordInventorySettting(configDto, compId);
+		Long compId = Long.valueOf((String) request.getSession().getAttribute("CID"));
+		boolean saved = cinfo.saveConfigurationRecordInventorySetting(configDto, compId);
 		if (saved) {
 			System.out.println("Record Saved Successfully...");
 		} else {
@@ -250,7 +248,7 @@ public class ConfigurationDetails {
 			String assetFinanceChargeStatus) {
 		configDto.setAssessFinanceCharge(assetFinanceChargeStatus);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
-		int compId = Integer.parseInt((String) request.getSession().getAttribute("CID"));
+		Long compId = Long.valueOf((String) request.getSession().getAttribute("CID"));
 		boolean saved = cinfo.saveFinanceCharges(configDto, compId);
 		if (saved) {
 			System.out.println("Finance Charges Saved Successfully...");
@@ -262,7 +260,7 @@ public class ConfigurationDetails {
 
 	public void saveAccountPaymentDetails(ConfigurationDto configDto, HttpServletRequest request, String companyID) {
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
-		int compId = Integer.parseInt((String) request.getSession().getAttribute("CID"));
+		Long compId = Long.valueOf((String) request.getSession().getAttribute("CID"));
 		boolean saved = cinfo.saveAccountPaymentDetails(configDto, compId);
 		if (saved) {
 			System.out.println("Payment Details Updated Successfully...");
@@ -274,7 +272,7 @@ public class ConfigurationDetails {
 
 	public void savePerformance(ConfigurationDto configDto, HttpServletRequest request, String companyID) {
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
-		int compId = Integer.parseInt((String) request.getSession().getAttribute("CID"));
+		Long compId = Long.valueOf((String) request.getSession().getAttribute("CID"));
 		boolean saved = cinfo.savePerformance(configDto, compId);
 		if (saved) {
 			System.out.println("Performance Updated Successfully...");
@@ -291,7 +289,7 @@ public class ConfigurationDetails {
 		configDto.setPoboard(poBoard);
 
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
-		int compId = Integer.parseInt((String) request.getSession().getAttribute("CID"));
+		Long compId = Long.valueOf((String) request.getSession().getAttribute("CID"));
 		boolean saved = cinfo.saveDashboard(configDto, compId);
 		if (saved) {
 			System.out.println("Dashboard Updated Successfully...");
@@ -304,7 +302,7 @@ public class ConfigurationDetails {
 			String showReminderStatus) {
 		configDto.setShowReminder(showReminderStatus);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
-		int compId = Integer.parseInt((String) request.getSession().getAttribute("CID"));
+		Long compId = Long.valueOf((String) request.getSession().getAttribute("CID"));
 		boolean saved = cinfo.saveReminder(configDto, compId);
 		if (saved) {
 			System.out.println("Reminder Details Updated Successfully...");
@@ -323,7 +321,7 @@ public class ConfigurationDetails {
 		 * request.getSession().getServletContext().getRealPath("logoPath");
 		 */
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
-		boolean saved = cinfo.saveCustomerInvoice(configDto, Integer.parseInt(companyID));
+		boolean saved = cinfo.saveCustomerInvoice(configDto, Long.valueOf(companyID));
 		if (saved) {
 			System.out.println("CustomerInvoice Details Updated Successfully...");
 			return "200";
@@ -335,7 +333,7 @@ public class ConfigurationDetails {
 
 	public void addNewDescription(ConfigurationDto configDto, String companyID, String description) {
 		configDto.setDescription(description);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.saveDescription(configDto, compId);
 		if (saved) {
@@ -347,7 +345,7 @@ public class ConfigurationDetails {
 
 	public void deleteLocation(String companyID, int descriptionID) {
 		// configDto.setDescription(descriptionID);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.deleteLocation(descriptionID, compId);
 		if (saved) {
@@ -359,7 +357,7 @@ public class ConfigurationDetails {
 
 	public void updateDescription(ConfigurationDto configDto, String companyID, String description, String locationID) {
 		configDto.setDescription(description);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		int locationId = Integer.parseInt(locationID);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.updateDescription(configDto, compId, locationId);
@@ -372,7 +370,7 @@ public class ConfigurationDetails {
 
 	public void addNewMessage(ConfigurationDto configDto, String companyID, String description) {
 		configDto.setDescription(description);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.saveMessage(configDto, compId);
 		if (saved) {
@@ -384,7 +382,7 @@ public class ConfigurationDetails {
 
 	public void addNewSalesRep(ConfigurationDto configDto, String companyID, String description) {
 		configDto.setDescription(description);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.saveSalesRep(configDto, compId);
 		if (saved) {
@@ -396,7 +394,7 @@ public class ConfigurationDetails {
 
 	public void addNewTerm(ConfigurationDto configDto, String companyID, String term, int days) {
 		configDto.setDescription(term);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.saveNewTerm(configDto, compId, days);
 		if (saved) {
@@ -408,7 +406,7 @@ public class ConfigurationDetails {
 
 	public void addNewSalesTax(ConfigurationDto configDto, String companyID, String term, float tax) {
 		configDto.setDescription(term);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.saveNewSalesTax(configDto, compId, tax);
 		if (saved) {
@@ -422,7 +420,7 @@ public class ConfigurationDetails {
 			String isDefault) {
 		configDto.setDescription(term);
 		configDto.setIsDefaultCreditTerm(isDefault);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.saveNewCreditTerms(configDto, compId, days);
 		if (saved) {
@@ -434,7 +432,7 @@ public class ConfigurationDetails {
 
 	public void updateMessage(ConfigurationDto configDto, String companyID, String message, String messageId) {
 		configDto.setDescription(message);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		int messageID = Integer.parseInt(messageId);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.updateMessage(configDto, compId, messageID);
@@ -447,7 +445,7 @@ public class ConfigurationDetails {
 
 	public void updateSalesRep(ConfigurationDto configDto, String companyID, String salesRep, String salesRepId) {
 		configDto.setDescription(salesRep);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		int salesRepID = Integer.parseInt(salesRepId);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.updateSalesRep(configDto, compId, salesRepID);
@@ -460,7 +458,7 @@ public class ConfigurationDetails {
 
 	public void updateTerm(ConfigurationDto configDto, String companyID, String term, String termId, int days) {
 		configDto.setDescription(term);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		int termID = Integer.parseInt(termId);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.updateTerm(configDto, compId, termID, days);
@@ -474,7 +472,7 @@ public class ConfigurationDetails {
 	public void updateSalesTax(ConfigurationDto configDto, String companyID, String salesTax, String salesTaxId,
 			float tax) {
 		configDto.setDescription(salesTax);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		int salesTaxID = Integer.parseInt(salesTaxId);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.updateSalesTax(configDto, compId, salesTaxID, tax);
@@ -489,7 +487,7 @@ public class ConfigurationDetails {
 			String isDefault, String Days) {
 		configDto.setDescription(creditTerm);
 		configDto.setIsDefaultCreditTerm(isDefault);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		int creditTermID = Integer.parseInt(creditTermId);
 		int days = Integer.parseInt(Days);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
@@ -502,7 +500,7 @@ public class ConfigurationDetails {
 	}
 
 	public void deleteMessage(String companyID, int messageID) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.deleteMessage(compId, messageID);
 		if (saved) {
@@ -513,7 +511,7 @@ public class ConfigurationDetails {
 	}
 
 	public void deleteSalesRep(ConfigurationDto configDto, String companyID, int salesRepId) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.deleteSalesRep(compId, salesRepId);
 		if (saved) {
@@ -524,7 +522,7 @@ public class ConfigurationDetails {
 	}
 
 	public void deleteTerm(String companyID, int termId) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.deleteTerm(compId, termId);
 		if (saved) {
@@ -535,7 +533,7 @@ public class ConfigurationDetails {
 	}
 
 	public void deleteSalesTax(String companyID, int salesTaxId) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.deleteSalesTax(compId, salesTaxId);
 		if (saved) {
@@ -546,7 +544,7 @@ public class ConfigurationDetails {
 	}
 
 	public void deleteCreditTerm(String companyID, int creditTermId) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.deleteCreditTerm(compId, creditTermId);
 		if (saved) {
@@ -557,7 +555,7 @@ public class ConfigurationDetails {
 	}
 
 	public void insertRefundReason(String companyID, String refundReason) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.insertRefundReason(compId, refundReason);
 		if (saved) {
@@ -568,7 +566,7 @@ public class ConfigurationDetails {
 	}
 
 	public void updateRefundReason(String companyID, int refundReasonId, String newRefundReason) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.updateRefundReason(compId, refundReasonId, newRefundReason);
 		if (saved) {
@@ -579,7 +577,7 @@ public class ConfigurationDetails {
 	}
 
 	public void deleteRefundReason(String companyID, int refundReasonId) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.deleteRefundReason(compId, refundReasonId);
 		if (saved) {
@@ -589,13 +587,15 @@ public class ConfigurationDetails {
 		}
 	}
 
-	public boolean setDefaultRefundReason(int reasonID) {
+	public boolean setDefaultRefundReason(int reasonID, String companyID) {
+		Long compId = Long.valueOf(companyID);
+
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
-		return cinfo.setDefaultRefundReason(reasonID);
+		return cinfo.setDefaultRefundReason(reasonID, compId);
 	}
 
 	public void addJobCategory(ConfigurationDto configDto, String companyID, String jobCategory) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.addJobCategory(configDto, compId, jobCategory);
 		if (saved) {
@@ -607,7 +607,7 @@ public class ConfigurationDetails {
 
 	public void updateJobCategory(ConfigurationDto configDto, String companyID, int jobCategoryId,
 			String newJobCategoryName) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.updateJobCategory(configDto, compId, jobCategoryId, newJobCategoryName);
 		if (saved) {
@@ -618,7 +618,7 @@ public class ConfigurationDetails {
 	}
 
 	public void deleteJobCategory(String companyID, int jCategoryId) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.deleteJobCategory(jCategoryId, compId);
 		if (saved) {
@@ -628,12 +628,12 @@ public class ConfigurationDetails {
 		}
 	}
 
-	public void editServiceBillInfo(ConfigurationDto configDto, String companyID, String billName,
+	public void editServiceBillInfo(int jCategoryId, ConfigurationDto configDto, String companyID, String billName,
 			String recurringServiceBill) {
 		configDto.setRecurringServiceBill(recurringServiceBill);
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
-		boolean saved = cinfo.editServiceBillInfo(configDto, billName, compId);
+		boolean saved = cinfo.editServiceBillInfo(jCategoryId, configDto, billName, compId);
 		if (saved) {
 			System.out.println("JobCategory Deleted Successfully...");
 		} else {

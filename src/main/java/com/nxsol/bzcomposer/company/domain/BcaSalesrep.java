@@ -32,6 +32,9 @@ public class BcaSalesrep {
 
     @OneToMany(mappedBy = "salesRep")
     private Set<BcaLead> salesRepBcaLeads;
+    
+    @OneToMany(mappedBy = "salesRep")
+    private Set<BcaClientvendor> salesRepBcaClientVendor;
 
     @OneToMany(mappedBy = "salesRep")
     private Set<BcaRefundlist> salesRepBcaRefundlists;
@@ -49,6 +52,7 @@ public class BcaSalesrep {
 //    @OneToMany(mappedBy = "salesRep")
 //    private Set<StorageInvoice> salesRepStorageInvoices;
 
+    
     public Integer getSalesRepId() {
         return salesRepId;
     }
@@ -89,7 +93,15 @@ public class BcaSalesrep {
         this.salesRepBcaRefundlists = salesRepBcaRefundlists;
     }
 
-    public BcaCompany getCompany() {
+    public Set<BcaClientvendor> getSalesRepBcaClientVendor() {
+		return salesRepBcaClientVendor;
+	}
+
+	public void setSalesRepBcaClientVendor(Set<BcaClientvendor> salesRepBcaClientVendor) {
+		this.salesRepBcaClientVendor = salesRepBcaClientVendor;
+	}
+
+	public BcaCompany getCompany() {
         return company;
     }
 

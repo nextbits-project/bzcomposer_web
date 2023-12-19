@@ -707,7 +707,7 @@ private BcaPreferenceRepository bcaPreferenceRepository;
 			invForm.setVia(vendor.getShipCarrier().getShipCarrierId().toString());
 			invForm.setPayMethod(vendor.getPaymentType().getPaymentTypeId().toString());
 			invForm.setTerm(vendor.getTerm().getTermId().toString());
-			invForm.setRep(vendor.getSalesRep().getSalesTaxId().toString());
+			invForm.setRep(vendor.getSalesRep().getSalesRepId().toString());
 			invForm.setTaxable(vendor.getTaxable().toString());
 			invForm.setCustomerHasBalance(isCustomerHasBalance(cvId));
 			details.add(invForm);

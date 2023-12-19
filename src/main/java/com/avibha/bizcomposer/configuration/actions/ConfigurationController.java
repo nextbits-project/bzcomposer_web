@@ -1131,7 +1131,7 @@ public class ConfigurationController {
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
 		} else if (action.equalsIgnoreCase("makeDefaultReason")) {
 			ConfigurationDetails cDetails = new ConfigurationDetails();
-			cDetails.setDefaultRefundReason(Integer.parseInt(request.getParameter("locationID")));
+			cDetails.setDefaultRefundReason(Integer.parseInt(request.getParameter("locationID")), companyID);
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
 		}
 
@@ -1155,10 +1155,11 @@ public class ConfigurationController {
 			session.setAttribute(pageActiveTab, "Customer&Job0");
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
 		} else if (action.equalsIgnoreCase("EditServiceBillInfo")) {
+			int jCategoryId = Integer.parseInt(request.getParameter("locationID"));
 			String billName = request.getParameter("Description");
 			String recurringServiceBill = request.getParameter("isDefault");
 			ConfigurationDetails cDetails = new ConfigurationDetails();
-			cDetails.editServiceBillInfo(configDto, companyID, billName, recurringServiceBill);
+			cDetails.editServiceBillInfo(jCategoryId,configDto, companyID, billName, recurringServiceBill);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		}
 

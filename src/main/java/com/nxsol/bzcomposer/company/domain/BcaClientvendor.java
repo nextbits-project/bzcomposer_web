@@ -209,7 +209,7 @@ public class BcaClientvendor {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SalesRepID")
-    private BcaSalestax salesRep;
+    private BcaSalesrep salesRep;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ShipCarrierID")
@@ -767,11 +767,11 @@ public class BcaClientvendor {
         this.paymentType = paymentType;
     }
 
-    public BcaSalestax getSalesRep() {
+    public BcaSalesrep getSalesRep() {
         return salesRep;
     }
 
-    public void setSalesRep(final BcaSalestax salesRep) {
+    public void setSalesRep(final BcaSalesrep salesRep) {
         this.salesRep = salesRep;
     }
 
