@@ -12,10 +12,14 @@ import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
+@Service
 public class AddNewCompanyDAO {
 
     public static ArrayList<CompanyInfoDto> vTerm_ID;

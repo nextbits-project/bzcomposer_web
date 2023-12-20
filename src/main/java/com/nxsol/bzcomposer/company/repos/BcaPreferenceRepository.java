@@ -7,11 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
 
 @Repository
 public interface BcaPreferenceRepository extends JpaRepository<BcaPreference, Integer> {
 	Optional<BcaPreference> findByCompany_CompanyId(Long companyId);
+
+	Optional<BcaPreference> findByCompany(BcaCompany company);
 
 	@Query("select bp.invoiceStyle.invoiceStyleId from BcaPreference bp where bp.company.companyId = :companyId")
 	Integer findInvoiceStyleIDByCompanyId(@Param("companyId") Long companyID);

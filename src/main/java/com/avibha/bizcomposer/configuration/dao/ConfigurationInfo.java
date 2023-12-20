@@ -4343,53 +4343,102 @@ public class ConfigurationInfo {
 //		return isSaved;
 //	}
 
-	public boolean saveVendorPurchaseValuesInConfigInfo(ConfigurationDto cForm, int compId) {
-		SQLExecutor executor = new SQLExecutor();
-		Connection con = executor.getConnection();
-		PreparedStatement pstmt = null;
-		boolean isSaved = false;
+	public boolean saveVendorPurchaseValuesInConfigInfo(ConfigurationDto cForm, Long compId) {
 		try {
-			String updateQuery = "UPDATE bca_preference SET DefaultVendorrSortID = ?,VendorCountryID = ?,VendorStateID=?,VendorProvience=?,StartingPONumber=?,"
-					+ "POFootnoteID=?,POViaID=?,POTermID=?,PORepID=?,POPayMethodID=?,EmployeeInChargeID=?,POShowCountry=?,POShowTelephone=?,IsPurchasePrefix=?,"
-					+ "DEFAULTARCategoryID=?,VendorBusinessTypeID=?,VendorInvoiceStyleId=?,CustomerType=?,PriceLevelPriority=?,PriceLevelDealer=?,PriceLevelCustomer=?,"
-					+ "PriceLevelGeneral=?  where CompanyID = ?";
-			pstmt = con.prepareStatement(updateQuery);
-			pstmt.setInt(1, cForm.getSortBy());
-			pstmt.setInt(2, cForm.getSelectedCountryId1());
-			pstmt.setInt(3, cForm.getSelectedStateId1());
-			pstmt.setString(4, cForm.getVendorProvience());
-			pstmt.setString(5, cForm.getStartPONum());
-			pstmt.setInt(6, cForm.getVendorDefaultFootnoteID());
-			pstmt.setInt(7, cForm.getShipCarrierId());
-			pstmt.setInt(8, cForm.getSelectedTermId());
-			pstmt.setInt(9, cForm.getSelectedSalesRepId());
-			pstmt.setInt(10, cForm.getSelectedPaymentId());
-			pstmt.setInt(11, cForm.getSelectedActiveEmployeeId());
-			pstmt.setString(12, "on".equals(cForm.getPoShowCountry()) ? "1" : "0");
-			pstmt.setString(13, "on".equals(cForm.getPoShowTelephone()) ? "1" : "0");
-			pstmt.setString(14, "on".equals(cForm.getIsPurchasePrefix()) ? "1" : "0");
-			pstmt.setInt(15, cForm.getSelectedCategoryId());
-			pstmt.setInt(16, cForm.getVendorBusinessTypeID());
-			pstmt.setInt(17, cForm.getVendorInvoiceStyleId());
-			pstmt.setInt(18, cForm.getCustomerType());
-			pstmt.setInt(19, cForm.getPriceLevelPriority());
-			pstmt.setInt(20, cForm.getPriceLevelDealer());
-			pstmt.setInt(21, cForm.getPriceLevelCustomer());
-			pstmt.setInt(22, cForm.getPriceLevelGeneral());
-			pstmt.setInt(23, compId);
+			BcaCompany company = companyRepository.findById(compId)
+					.orElseThrow(() -> new EntityNotFoundException("Company not found"));
 
-			int updated = pstmt.executeUpdate();
-			if (updated > 0) {
-				isSaved = true;
-			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in the class ConfigurationInfo and in method saveVendorPurchaseValuesInConfigInfo "
-					+ ex.toString());
-			ex.printStackTrace();
-		} finally {
-			executor.close(pstmt);
-			executor.close(con);
+			BcaPreference preference = preferenceRepository.findByCompany(company).orElse(new BcaPreference()); // Create
+																												// new
+																												// if
+																												// not
+																												// found
+
+			// Set values from ConfigurationDto to BcaPreference entity
+			preference.setDefaultVendorrSortId(cForm.getSortBy());
+
+			BcaCountries country = countriesRepository.findById(cForm.getSelectedCountryId1()).get();
+
+			BcaStates state = stateRepository.findById(cForm.getSelectedStateId1()).get();
+
+			preference.setVendorCountry(country);
+
+			preference.setVendorState(state);
+
+			preference.setVendorProvience(cForm.getVendorProvience());
+			preference.setStartingPonumber(cForm.getStartPONum());
+			preference.setPofootnoteId(cForm.getVendorDefaultFootnoteID());
+			preference.setPoviaId(cForm.getShipCarrierId());
+			preference.setPotermId(cForm.getSelectedTermId());
+			preference.setPorepId(cForm.getSelectedSalesRepId());
+			preference.setPopayMethodId(cForm.getSelectedPaymentId());
+			preference.setEmployeeInChargeId(cForm.getSelectedActiveEmployeeId());
+			preference.setPoshowCountry("on".equals(cForm.getPoShowCountry()) ? true : false);
+			preference.setPoshowTelephone("on".equals(cForm.getPoShowTelephone()) ? true : false);
+			preference.setIsPurchasePrefix("on".equals(cForm.getIsPurchasePrefix()) ? true : false);
+			preference.setDefaultArcategoryId(cForm.getSelectedCategoryId());
+			preference.setVendorBusinessTypeId(cForm.getVendorBusinessTypeID());
+			preference.setVendorInvoiceStyleId(cForm.getVendorInvoiceStyleId());
+			preference.setCustomerType(cForm.getCustomerType());
+			preference.setPriceLevelPriority(cForm.getPriceLevelPriority());
+			preference.setPriceLevelDealer(cForm.getPriceLevelDealer());
+			preference.setPriceLevelCustomer(cForm.getPriceLevelCustomer());
+			preference.setPriceLevelGeneral(cForm.getPriceLevelGeneral());
+
+			preferenceRepository.save(preference);
+			return true;
+		} catch (Exception e) {
+			Loger.log("Exception in saveVendorPurchaseValuesInConfigInfo: " + e.toString());
+			return false;
 		}
-		return isSaved;
 	}
+//	public boolean saveVendorPurchaseValuesInConfigInfo(ConfigurationDto cForm, int compId) {
+//		SQLExecutor executor = new SQLExecutor();
+//		Connection con = executor.getConnection();
+//		PreparedStatement pstmt = null;
+//		boolean isSaved = false;
+//		try {
+//			String updateQuery = "UPDATE bca_preference SET DefaultVendorrSortID = ?,VendorCountryID = ?,VendorStateID=?,VendorProvience=?,StartingPONumber=?,"
+//					+ "POFootnoteID=?,POViaID=?,POTermID=?,PORepID=?,POPayMethodID=?,EmployeeInChargeID=?,POShowCountry=?,POShowTelephone=?,IsPurchasePrefix=?,"
+//					+ "DEFAULTARCategoryID=?,VendorBusinessTypeID=?,VendorInvoiceStyleId=?,CustomerType=?,PriceLevelPriority=?,PriceLevelDealer=?,PriceLevelCustomer=?,"
+//					+ "PriceLevelGeneral=?  where CompanyID = ?";
+//			pstmt = con.prepareStatement(updateQuery);
+//			pstmt.setInt(1, cForm.getSortBy());
+//			pstmt.setInt(2, cForm.getSelectedCountryId1());
+//			pstmt.setInt(3, cForm.getSelectedStateId1());
+//			pstmt.setString(4, cForm.getVendorProvience());
+//			pstmt.setString(5, cForm.getStartPONum());
+//			pstmt.setInt(6, cForm.getVendorDefaultFootnoteID());
+//			pstmt.setInt(7, cForm.getShipCarrierId());
+//			pstmt.setInt(8, cForm.getSelectedTermId());
+//			pstmt.setInt(9, cForm.getSelectedSalesRepId());
+//			pstmt.setInt(10, cForm.getSelectedPaymentId());
+//			pstmt.setInt(11, cForm.getSelectedActiveEmployeeId());
+//			pstmt.setString(12, "on".equals(cForm.getPoShowCountry()) ? "1" : "0");
+//			pstmt.setString(13, "on".equals(cForm.getPoShowTelephone()) ? "1" : "0");
+//			pstmt.setString(14, "on".equals(cForm.getIsPurchasePrefix()) ? "1" : "0");
+//			pstmt.setInt(15, cForm.getSelectedCategoryId());
+//			pstmt.setInt(16, cForm.getVendorBusinessTypeID());
+//			pstmt.setInt(17, cForm.getVendorInvoiceStyleId());
+//			pstmt.setInt(18, cForm.getCustomerType());
+//			pstmt.setInt(19, cForm.getPriceLevelPriority());
+//			pstmt.setInt(20, cForm.getPriceLevelDealer());
+//			pstmt.setInt(21, cForm.getPriceLevelCustomer());
+//			pstmt.setInt(22, cForm.getPriceLevelGeneral());
+//			pstmt.setInt(23, compId);
+//
+//			int updated = pstmt.executeUpdate();
+//			if (updated > 0) {
+//				isSaved = true;
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method saveVendorPurchaseValuesInConfigInfo "
+//					+ ex.toString());
+//			ex.printStackTrace();
+//		} finally {
+//			executor.close(pstmt);
+//			executor.close(con);
+//		}
+//		return isSaved;
+//	}
 }

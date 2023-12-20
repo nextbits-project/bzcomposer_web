@@ -1003,52 +1003,76 @@ public class ConfigurationDAO {
 //		return listPOJOs;
 //	}
 
-	public ArrayList<ConfigurationDto> getDetails(String cId, HttpServletRequest request, ConfigurationDto form) {
+	public ArrayList<ConfigurationDto> getDetails(Long companyId, HttpServletRequest request, ConfigurationDto form) {
 		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
-
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null;
-		ResultSet rs = null;
 		try {
-			con = db.getConnection();
-			stmt = con.createStatement();
+			// This method needs to be defined in the repository to perform the join and
+			// fetch the data
 
-			String sql1 = "" + "SELECT a.*,b.* ,c.AccessPermissions "
-					+ "FROM bca_user a, bca_usermapping b,bca_usergroup c " + "WHERE b.Deleted=0 "
-					+ "AND a.ID=b.UserID " + "AND b.UserGroupID=c.GroupID " + "AND b.Role <> 'SuperAdmin' "
-					+ "AND b.CompanyID  = " + cId;
+			List<Object[]> results = userRepository.findUserDetailsByCompany(companyId);
 
-			rs = stmt.executeQuery(sql1);
-			while (rs.next()) {
-				pojo = new ConfigurationDto();
-				pojo.setUserName(rs.getString("LoginID"));
-				pojo.setPassword(rs.getString("Password"));
+			for (Object[] row : results) {
+				ConfigurationDto pojo = new ConfigurationDto();
+				BcaUser user = (BcaUser) row[0];
+				pojo.setUserName(user.getLoginId());
+				pojo.setPassword(user.getPassword());
 				listPOJOs.add(pojo);
 			}
-
 		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+
 		form.setListOfExistingModules(listPOJOs);
 		request.setAttribute("companyname", form.getCompanyName());
 
 		return listPOJOs;
 	}
+//	public ArrayList<ConfigurationDto> getDetails(String cId, HttpServletRequest request, ConfigurationDto form) {
+//		ArrayList<ConfigurationDto> listPOJOs = new ArrayList<>();
+//
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		try {
+//			con = db.getConnection();
+//			stmt = con.createStatement();
+//
+//			String sql1 = "" + "SELECT a.*,b.* ,c.AccessPermissions "
+//					+ "FROM bca_user a, bca_usermapping b,bca_usergroup c " + "WHERE b.Deleted=0 "
+//					+ "AND a.ID=b.UserID " + "AND b.UserGroupID=c.GroupID " + "AND b.Role <> 'SuperAdmin' "
+//					+ "AND b.CompanyID  = " + cId;
+//
+//			rs = stmt.executeQuery(sql1);
+//			while (rs.next()) {
+//				pojo = new ConfigurationDto();
+//				pojo.setUserName(rs.getString("LoginID"));
+//				pojo.setPassword(rs.getString("Password"));
+//				listPOJOs.add(pojo);
+//			}
+//
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		form.setListOfExistingModules(listPOJOs);
+//		request.setAttribute("companyname", form.getCompanyName());
+//
+//		return listPOJOs;
+//	}
 
 	@Autowired
 	BcaUserRepository userRepository;

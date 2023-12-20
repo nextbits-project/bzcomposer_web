@@ -642,7 +642,7 @@ public class ConfigurationDetails {
 	}
 
 	public void saveVendorPurchaseValues(ConfigurationDto configDto, String companyID) {
-		int compId = Integer.parseInt(companyID);
+		Long compId = Long.valueOf(companyID);
 		// ConfigurationInfo cinfo = new ConfigurationInfo();
 		boolean saved = cinfo.saveVendorPurchaseValuesInConfigInfo(configDto, compId);
 		if (saved) {
