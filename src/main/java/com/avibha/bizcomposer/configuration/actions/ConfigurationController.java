@@ -54,7 +54,7 @@ public class ConfigurationController {
 
 	@Autowired
 	private ConfigurationDetails configDetails;
-	
+
 	@Autowired
 	private ConfigurationDetails cDetails;
 
@@ -69,15 +69,18 @@ public class ConfigurationController {
 
 	@Autowired
 	ConfigurationDAO configDao;
-	
+
 	@Autowired
-	private	ReceivableLIst rl;
+	private ReceivableLIst rl;
 
 	private String pageActiveTab = "pageActiveTab";
 	ArrayList<MailTemplateDto> mailTemplateDtos;
 
 	@Autowired
 	private CategoryManagerController catManagerController;
+
+	@Autowired
+	private CompanyInfo customer;
 
 	@RequestMapping(value = { "/Configuration" }, method = { RequestMethod.GET, RequestMethod.POST })
 	public String execute(ConfigurationDto configDto, CompanyInfoDto companyInfoDto, HttpServletRequest request,
@@ -120,7 +123,8 @@ public class ConfigurationController {
 			dao.getNumberOfCustomer(companyIDL);
 
 			// test calls ends
-			dao.getDetails(companyIDL, request, configDto); //disabled this call, seems not required and have security issues 20231220
+			dao.getDetails(companyIDL, request, configDto); // disabled this call, seems not required and have security
+															// issues 20231220
 			dao.getModulesName(configDto);
 			dao.getWeight(companyIDL, configDto);
 			dao.getModules(companyID, request, configDto);
@@ -136,10 +140,10 @@ public class ConfigurationController {
 			request.setAttribute("isSelectedWeightID", configDto.getWeightID());
 
 			int userID = (Integer) request.getSession().getAttribute("userID");
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			AddNewCompanyDAO companyDAO = new AddNewCompanyDAO();
 			companyDAO.getBusinessType(companyID, request, companyInfoDto);
-			customer.SearchCompany(companyID, userID, companyInfoDto, request);
+			customer.searchCompany(companyIDL, userID, request);
 
 			CountryState cs = new CountryState();
 			request.setAttribute("countryList", cs.getCountryList());
@@ -171,7 +175,7 @@ public class ConfigurationController {
 			System.out.println("goes to configModule page......................");
 			forward = "/configuration/modules";
 		} else if (action.equalsIgnoreCase("config1")) {
-			//ConfigurationDetails configDetails = new ConfigurationDetails();
+			// ConfigurationDetails configDetails = new ConfigurationDetails();
 			configDetails.getConfigurationInfo(request, configDto);
 			request.getSession().setAttribute("CID", companyID);
 
@@ -866,39 +870,39 @@ public class ConfigurationController {
 		}
 		/* Show the footnote list & related information in the special window */
 		else if (action.equalsIgnoreCase("ShowEditFootnote")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.newFootnote(request, configDto);
 			forward = "/configuration/editFootnote";
 		}
 
 		/* Delete the selected footnote & its related information */
 		else if (action.equalsIgnoreCase("DeleteFootnote")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteFootnote(request, configDto);
 			forward = "/configuration/editFootnote";
 		}
 
 		/* Save the new footnote as user enter */
 		else if (action.equalsIgnoreCase("SaveFootnote")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.saveFootnote(request, configDto);
 			forward = "/configuration/editFootnote";
 		}
 
 		/* Update the existing footnote & its information */
 		else if (action.equalsIgnoreCase("UpdateFootnote")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateFootnote(request, configDto);
 			forward = "/configuration/editFootnote";
 		} else if (action.equalsIgnoreCase("SaveConfigurationGeneral")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.saveRecordsGeneral(configDto, request);
 			cDetails.getConfigurationInfo(request, configDto);
 			e.add("common.recoversucess", new ActionMessage("err.general.success"));
 			forward = "redirect:Configuration?tabid=config";
 		} else if (action.equalsIgnoreCase("SaveConfigurationEstimation")) {
 
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.saveRecordsEstimation(configDto, request);
 			cDetails.getConfigurationInfo(request, configDto);
 			e.add("common.recoversucess", new ActionMessage("err.general.success"));
@@ -911,29 +915,29 @@ public class ConfigurationController {
 			System.out.println("is showCombinedBilling Checked?:" + showCombinedValue + "" + "\nis PrintBills Checked?:"
 					+ printBillValue + "\nis MailToCustomer Checked?:" + mailCustomerValue);
 
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.saveRecordsBilling(configDto, request, printBillValue, mailCustomerValue, showCombinedValue);
 			cDetails.getConfigurationInfo(request, configDto);
 			e.add("common.recoversucess", new ActionMessage("err.general.success"));
 			forward = "success11";
 		} else if (action.equalsIgnoreCase("SaveConfigurationInventorySettng")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.saveRecordsInventorySettings(configDto, request);
 			cDetails.getConfigurationInfo(request, configDto);
 			forward = "success23";
 		} else if (action.equalsIgnoreCase("SaveConfigurationAccountPayment")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.saveAccountPaymentDetails(configDto, request, companyID);
 			cDetails.getConfigurationInfo(request, configDto);
 			forward = "redirect:Configuration?tabid=config03&tab=tr3";
 		} else if (action.equalsIgnoreCase("SavePerformance")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 
 			cDetails.savePerformance(configDto, request, companyID);
 			cDetails.getConfigurationInfo(request, configDto);
 			forward = "success54";
 		} else if (action.equalsIgnoreCase("SaveFinanceCharges")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 
 			String assetFinanceChargeStatus = request.getParameter("assetFinanceChargeStatus");
 			cDetails.saveFinanceCharges(configDto, request, companyID, assetFinanceChargeStatus);
@@ -943,7 +947,7 @@ public class ConfigurationController {
 			String Reason = request.getParameter("reason");
 			int parentReasonID = Integer.parseInt(request.getParameter("parentReasonId"));
 
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.addRMAReason(configDto, companyID, Reason, parentReasonID);
 			session.setAttribute(pageActiveTab, "RefundSettings0");
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -954,7 +958,7 @@ public class ConfigurationController {
 			String parentReasonId = request.getParameter("parentReasonId");
 			int parentReasonID = Integer.parseInt(parentReasonId);
 
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateMAReason(configDto, Reason, reasonId, parentReasonID);
 			session.setAttribute(pageActiveTab, "RefundSettings0");
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
@@ -963,18 +967,18 @@ public class ConfigurationController {
 			String parentReasonId = request.getParameter("parentReasonId");
 			int parentReasonID = Integer.parseInt(parentReasonId);
 
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteRMAReason(configDto, Reason, parentReasonID);
 			session.setAttribute(pageActiveTab, "RefundSettings0");
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("SaveDefaultBank")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.saveDefaultBank(configDto, request);
 			cDetails.getConfigurationInfo(request, configDto);
 			/* e.add("common.recoversucess", new ActionMessage("err.general.success")); */
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("SaveDashboardSetting")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 
 			String salesOrder = request.getParameter("salesOrderBoard");
 			String itemReceived = request.getParameter("itemReceivedBoard");
@@ -986,7 +990,7 @@ public class ConfigurationController {
 			cDetails.getConfigurationInfo(request, configDto);
 			forward = "success56";
 		} else if (action.equalsIgnoreCase("SaveReminderSetting")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			String showReminderStatus = request.getParameter("showReminderStatus");
 
 			cDetails.saveReminderSetting(configDto, request, companyID, showReminderStatus);
@@ -995,65 +999,65 @@ public class ConfigurationController {
 		} else if (action.equalsIgnoreCase("addDescription")) {
 			String description = request.getParameter("Description");
 			System.out.println("New Description To be added:" + description);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.addNewDescription(configDto, companyID, description);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("updateDescription")) {
 			String description = request.getParameter("Description");
 			String locationID = request.getParameter("locationID");
 			System.out.println("LocationId:" + locationID + "\nDescription To be updated:" + description);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateDescription(configDto, companyID, description, locationID);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("deleteLocation")) {
 			int descriptionID = Integer.parseInt(request.getParameter("locationID"));
 			System.out.println("locationId To be Delete:" + descriptionID);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteLocation(companyID, descriptionID);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("addNewMessage")) {
 			String description = request.getParameter("Description");
 			System.out.println("New Message To be added:" + description);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.addNewMessage(configDto, companyID, description);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("updateMessage")) {
 			String message = request.getParameter("Description");
 			String messageId = request.getParameter("locationID");
 			System.out.println("MessageId:" + messageId + "\nNew Message To be updated:" + message);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateMessage(configDto, companyID, message, messageId);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("deleteMessage")) {
 			int messageID = Integer.parseInt(request.getParameter("locationID"));
 			System.out.println("MessageId To be Delete:" + messageID);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteMessage(companyID, messageID);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("addNewSalesRep")) {
 			String description = request.getParameter("Description");
 			System.out.println("New Sales Representative To be added:" + description);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.addNewSalesRep(configDto, companyID, description);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("updateSalesRep")) {
 			String salesRep = request.getParameter("Description");
 			String salesRepId = request.getParameter("locationID");
 			System.out.println("SalesRepId:" + salesRepId + "\nNSales Representative:" + salesRep);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateSalesRep(configDto, companyID, salesRep, salesRepId);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("deleteSalesRep")) {
 			int salesRepId = Integer.parseInt(request.getParameter("locationID"));
 			System.out.println("Sales Representative Id To be Deleted:" + salesRepId);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteSalesRep(configDto, companyID, salesRepId);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("addNewTerms")) {
 			String term = request.getParameter("Description");
 			int days = Integer.parseInt(request.getParameter("locationID"));
 			System.out.println("New Term To be added:" + term + "\n Days:" + days);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.addNewTerm(configDto, companyID, term, days);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("updateTerms")) {
@@ -1061,20 +1065,20 @@ public class ConfigurationController {
 			String termId = request.getParameter("locationID");
 			int days = Integer.parseInt(request.getParameter("isDefault"));
 			System.out.println("TermId:" + termId + "\nTerm:" + term + "\nDays:" + days);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateTerm(configDto, companyID, term, termId, days);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("deleteTerms")) {
 			int termId = Integer.parseInt(request.getParameter("locationID"));
 			System.out.println("Term Id To be Deleted:" + termId);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteTerm(companyID, termId);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("addNewSalesTax")) {
 			String term = request.getParameter("Description");
 			float tax = Float.parseFloat((request.getParameter("locationID")));
 			System.out.println("New Term To be added:" + term + "\n Tax:" + tax);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.addNewSalesTax(configDto, companyID, term, tax);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("updateSalesTax")) {
@@ -1082,13 +1086,13 @@ public class ConfigurationController {
 			String salesTaxId = request.getParameter("locationID");
 			float tax = Float.parseFloat(request.getParameter("isDefault"));
 			System.out.println("SalesTaxId:" + salesTaxId + "\nSalesTaxName:" + salesTax + "\nTax:" + tax);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateSalesTax(configDto, companyID, salesTax, salesTaxId, tax);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("deleteSalesTax")) {
 			int salesTaxId = Integer.parseInt(request.getParameter("locationID"));
 			System.out.println("SalesTax Id To be Deleted:" + salesTaxId);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteSalesTax(companyID, salesTaxId);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("addNewCreditTerm")) {
@@ -1096,7 +1100,7 @@ public class ConfigurationController {
 			String isDefault = request.getParameter("isDefault");
 			int days = Integer.parseInt(request.getParameter("locationID"));
 			System.out.println("New CreditTerm To be added:" + term + "\nDays:" + days + "\nIs Default:" + isDefault);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.addNewCreditTerms(configDto, companyID, term, days, isDefault);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("updateCreditTerm")) {
@@ -1106,54 +1110,54 @@ public class ConfigurationController {
 			String days = request.getParameter("creditTermDays");
 			System.out.println("CreditTermId:" + creditTermId + "\nCreditTerm:" + creditTerm + "\nDefault is checked?:"
 					+ isDefault + "\nDays:" + days);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateCreditTerm(configDto, companyID, creditTerm, creditTermId, isDefault, days);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("deleteCreditTerm")) {
 			int creditTermId = Integer.parseInt(request.getParameter("locationID"));
 			System.out.println("creditTerm Id To be Deleted:" + creditTermId);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteCreditTerm(companyID, creditTermId);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		} else if (action.equalsIgnoreCase("addRefundReason")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.insertRefundReason(companyID, request.getParameter("Description"));
 			session.setAttribute(pageActiveTab, "RefundSettings0");
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
 		} else if (action.equalsIgnoreCase("updateRefundReason")) {
 			int refundReasonId = Integer.parseInt(request.getParameter("locationID"));
 			String newRefundReason = request.getParameter("Description");
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateRefundReason(companyID, refundReasonId, newRefundReason);
 			session.setAttribute(pageActiveTab, "RefundSettings0");
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
 		} else if (action.equalsIgnoreCase("deleteRefundReason")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteRefundReason(companyID, Integer.parseInt(request.getParameter("locationID")));
 			session.setAttribute(pageActiveTab, "RefundSettings0");
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
 		} else if (action.equalsIgnoreCase("makeDefaultReason")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.setDefaultRefundReason(Integer.parseInt(request.getParameter("locationID")), companyID);
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
 		}
 
 		else if (action.equalsIgnoreCase("addJobCategory")) {
 			String jobCategory = request.getParameter("Description");
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.addJobCategory(configDto, companyID, jobCategory);
 			session.setAttribute(pageActiveTab, "Customer&Job0");
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
 		} else if (action.equalsIgnoreCase("updateJobCategory")) {
 			int jobCategoryId = Integer.parseInt(request.getParameter("locationID"));
 			String newJobCategoryName = request.getParameter("Description");
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.updateJobCategory(configDto, companyID, jobCategoryId, newJobCategoryName);
 			session.setAttribute(pageActiveTab, "Customer&Job0");
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
 		} else if (action.equalsIgnoreCase("deleteJobCategory")) {
 			int jCategoryId = Integer.parseInt(request.getParameter("locationID"));
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.deleteJobCategory(companyID, jCategoryId);
 			session.setAttribute(pageActiveTab, "Customer&Job0");
 			forward = "redirect:Configuration?tabid=config6&tab=tr6";
@@ -1161,8 +1165,8 @@ public class ConfigurationController {
 			int jCategoryId = Integer.parseInt(request.getParameter("locationID"));
 			String billName = request.getParameter("Description");
 			String recurringServiceBill = request.getParameter("isDefault");
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
-			cDetails.editServiceBillInfo(jCategoryId,configDto, companyID, billName, recurringServiceBill);
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
+			cDetails.editServiceBillInfo(jCategoryId, configDto, companyID, billName, recurringServiceBill);
 			forward = "redirect:Configuration?tabid=config6&&tab=tr6";
 		}
 
@@ -1185,7 +1189,7 @@ public class ConfigurationController {
 		else if (action.equalsIgnoreCase("SavePreferences")) {
 			String multiUserConnection1 = request.getParameter("multiUserConnection");
 			int multiUserConnection = Integer.valueOf(multiUserConnection1);
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.saveRecords(configDto, request, multiUserConnection);
 			cDetails.getConfigurationInfo(request, configDto);
 			forward = "success_setPreference";
@@ -1202,13 +1206,13 @@ public class ConfigurationController {
 			configInfo.removeJobCodeTimesheet(request);
 			forward = "redirect:Configuration?tabid=config11&&tab=tr11";
 		} else if (action.equalsIgnoreCase("SaveCustomerType")) {
-			//ConfigurationDAO configDao = new ConfigurationDAO();
+			// ConfigurationDAO configDao = new ConfigurationDAO();
 			String ID = request.getParameter("ID");
 			String custTypeName = request.getParameter("custTypeName");
 			configDao.saveCustomerType(ID, custTypeName, companyIDL);
 			forward = "redirect:Configuration?tabid=config10&tab=tr10";
 		} else if (action.equalsIgnoreCase("DeleteCustomerType")) {
-			//ConfigurationDAO configDao = new ConfigurationDAO();
+			// ConfigurationDAO configDao = new ConfigurationDAO();
 			String ID = request.getParameter("ID");
 			configDao.deleteCustomerType(ID);
 			forward = "redirect:Configuration?tabid=config10&tab=tr10";
@@ -1231,7 +1235,7 @@ public class ConfigurationController {
 		ActionErrors e = new ActionErrors();
 
 		if (action.equalsIgnoreCase("SaveCustomerInvoiceSettings")) {
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			configDto.setCustTaxable(request.getParameter("custTaxable"));
 			configDto.setIsSalesOrder(request.getParameter("isSalesOrder"));
 			configDto.setAddressSettings(request.getParameter("addressSettings"));
@@ -1333,7 +1337,7 @@ public class ConfigurationController {
 
 			String DeActiveInvoiceStylelist = request.getParameter("DeActiveInvoiceStylelist");
 			String[] DeActiveInvoiceStylelists = DeActiveInvoiceStylelist.split(",");
-			//ConfigurationDetails cDetails = new ConfigurationDetails();
+			// ConfigurationDetails cDetails = new ConfigurationDetails();
 			cDetails.saveInvoiceStyle(configDto, ActiveInvoiceStylelists, DeActiveInvoiceStylelists);
 		}
 		/* Save all the configuration records (i.e:- inventory,sales,purchase,etc). */

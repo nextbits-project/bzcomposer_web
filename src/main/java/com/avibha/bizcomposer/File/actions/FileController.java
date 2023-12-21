@@ -49,13 +49,13 @@ public class FileController {
 
 	@Autowired
 	private DataImportExportUtils importExportUtils;
-	
+
 	@Autowired
 	private CompanyInfo customer;
-	
+
 	@Autowired
 	private ConfigurationInfo configInfo;
-	
+
 	@Autowired
 	private LeadDAO leadDAO;
 
@@ -85,7 +85,7 @@ public class FileController {
 		String forward = "/include/dashboard";
 		String action = request.getParameter("tabid");
 		String compId = (String) request.getSession().getAttribute("CID");
-
+		Long compIdL = Long.valueOf(compId);
 		if (action.equalsIgnoreCase("AdminDashboard")) {
 			ArrayList<LoginFormDto> list = LoginDAOImpl.getAllCompany(request);
 			request.setAttribute("cList", list);
@@ -124,7 +124,7 @@ public class FileController {
 			AddNewCompanyDAO dao = new AddNewCompanyDAO();
 
 			dao.getBusinessType(compId, request, companyInfoDto);
-			customer.SearchCompany(compId, userID, companyInfoDto, request);
+			customer.searchCompany(compIdL, userID, request);
 
 			CountryState cs = new CountryState();
 			request.setAttribute("cList", cs.getCountryNew());
@@ -173,7 +173,7 @@ public class FileController {
 			HttpSession sess = request.getSession();
 			int userID = (Integer) sess.getAttribute("userID");
 //			CompanyInfo customer = new CompanyInfo();
-			ArrayList<CompanyInfoDto> comanyDetails = customer.SearchCompany(compId, userID, companyInfoDto, request);
+			ArrayList<CompanyInfoDto> comanyDetails = customer.searchCompany(compIdL, userID, request);
 			CompanyDetails cdetails = new CompanyDetails();
 			cdetails.getAllList(request);
 			forward = "Success1";
@@ -252,33 +252,33 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("DownloadLeadTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-  				 importExportUtils.downloadLeadTemplate(type, response);
+				importExportUtils.downloadLeadTemplate(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportLeads";
 			}
 		} else if (action.equalsIgnoreCase("DownloadCustomerTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-  				 importExportUtils.downloadCustomerTemplate(type, response);
+				importExportUtils.downloadCustomerTemplate(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportCustomer";
 			}
-		}else if (action.equalsIgnoreCase("DownloadVendorTemplate")) {
+		} else if (action.equalsIgnoreCase("DownloadVendorTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-  				 importExportUtils.downloadVendorTemplate(type, response);
+				importExportUtils.downloadVendorTemplate(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportVendor";
 			}
-			
-		 }else if (action.equalsIgnoreCase("DownloadItemTemplate")) {
+
+		} else if (action.equalsIgnoreCase("DownloadItemTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-  				 importExportUtils.downloadItemTemplate(type, response);
+				importExportUtils.downloadItemTemplate(type, response);
 			} else {
 				forward = "redirect:/Item?tabid=UploadItem";
 			}
-		 }else if (action.equalsIgnoreCase("ExportVendor")) {
+		} else if (action.equalsIgnoreCase("ExportVendor")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
 				PurchaseInfoDao purchaseInfoDao = new PurchaseInfoDao();
