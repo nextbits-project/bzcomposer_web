@@ -1358,7 +1358,7 @@ function pleaseWaitDialog(){
                                                             <input type="hidden" id="usersSize" value='${configDto.listOfExistingUserList.size()}' />
                                                             <c:forEach items="${configDto.listOfExistingUserList}" var="objList1" varStatus="loop">
                                                                 <tr id='${loop.index}usrIndex' onclick="selectUserData('${objList1.upsUserId}', '${objList1.groupID}', '${objList1.emailAddress}', '${objList1.password}', '${objList1.groupName}','${objList1.status}', '${loop.index}usrIndex');">
-                                                                    <td>${objList1.emailAddress}</td>
+                                                                    <td>${objList1.userName}</td>
                                                                     <td>${objList1.password}</td>
                                                                     <td>${objList1.groupName}</td>
                                                                     <td>${objList1.status}</td>

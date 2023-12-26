@@ -1824,9 +1824,9 @@ public class CustomerInfoDao {
 			if (term.isPresent())
 				bcv.setTerm(term.get());
 			int salesTaxId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(c.getRep());
-			Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(salesTaxId);
-			if (salesTax.isPresent())
-				bcv.setSalesRep(salesTax.get());
+			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesTaxId);
+			if (salesRep.isPresent())
+				bcv.setSalesRep(salesRep.get());
 
 			Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(c.getShipping()));
 			if (shipCarrier.isPresent())

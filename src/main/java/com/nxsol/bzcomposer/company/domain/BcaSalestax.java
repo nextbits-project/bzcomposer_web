@@ -30,9 +30,6 @@ public class BcaSalestax {
     @Column(name="Active")
     private Integer active;
 
-    @OneToMany(mappedBy = "salesRep")
-    private Set<BcaClientvendor> salesRepBcaClientvendors;
-
     @OneToMany(mappedBy = "salesTax")
     private Set<BcaCompany> salesTaxBcaCompanys;
 
@@ -85,14 +82,6 @@ public class BcaSalestax {
 
     public void setActive(final Integer active) {
         this.active = active;
-    }
-
-    public Set<BcaClientvendor> getSalesRepBcaClientvendors() {
-        return salesRepBcaClientvendors;
-    }
-
-    public void setSalesRepBcaClientvendors(final Set<BcaClientvendor> salesRepBcaClientvendors) {
-        this.salesRepBcaClientvendors = salesRepBcaClientvendors;
     }
 
     public Set<BcaCompany> getSalesTaxBcaCompanys() {

@@ -724,6 +724,22 @@ public class ConfigurationDto implements Serializable {
 	private int shippingViaID;
 	private String backOrderNeeded;
 
+	public ConfigurationDto() {
+
+	}
+
+	public ConfigurationDto(Integer id, String loginId, String password, String emailAddress, Integer groupId,
+			String groupName, Boolean active) {
+		this.setUpsUserId(id.toString());
+		this.setUserName(loginId);
+		this.setPassword(password);
+		this.setEmailAddress(emailAddress);
+		this.setGroupID(groupId); 
+		this.setGroupName(groupName);
+		String status = active ? "Active" : "Inactive";
+		this.setStatus(status);
+	}
+
 	public String getBackOrderNeeded() {
 		return backOrderNeeded;
 	}
@@ -4624,6 +4640,5 @@ public class ConfigurationDto implements Serializable {
 	public void setShippingViaID(int shippingViaID) {
 		this.shippingViaID = shippingViaID;
 	}
-
 
 }

@@ -616,7 +616,7 @@ public class LoginController
 			request.getSession().setAttribute("user",companyName);
 
 
-			int defaultModule = dao.getdefaultModuleName(companyID);
+			int defaultModule = dao.getdefaultModuleName(ConstValue.companyIdLong);
 			if(defaultModule == 1) {
 				//forward="/Invoice?tabid=invoice";
 				return "forward:/Invoice?tabid=invoice";

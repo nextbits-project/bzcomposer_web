@@ -51,6 +51,12 @@ public class FileController {
 	private DataImportExportUtils importExportUtils;
 
 	@Autowired
+	private CompanyInfo customer;
+
+	@Autowired
+	private ConfigurationInfo configInfo;
+
+	@Autowired
 	private LeadDAO leadDAO;
 
 	@GetMapping("/changeLocale")
@@ -79,7 +85,7 @@ public class FileController {
 		String forward = "/include/dashboard";
 		String action = request.getParameter("tabid");
 		String compId = (String) request.getSession().getAttribute("CID");
-
+		Long compIdL = Long.valueOf(compId);
 		if (action.equalsIgnoreCase("AdminDashboard")) {
 			ArrayList<LoginFormDto> list = LoginDAOImpl.getAllCompany(request);
 			request.setAttribute("cList", list);
@@ -102,8 +108,8 @@ public class FileController {
 			forward = "success5";
 		} else if (action.equalsIgnoreCase("Dashboard")) {
 			HttpSession sess = request.getSession();
-			CompanyInfo customer = new CompanyInfo();
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+//			CompanyInfo customer = new CompanyInfo();
+//			ConfigurationInfo configInfo = new ConfigurationInfo();
 			System.out.println("CompanyID: " + compId);
 
 			request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo));
@@ -114,11 +120,11 @@ public class FileController {
 			forward = "/include/dashboard";
 		} else if (action.equalsIgnoreCase("CompanyInfo")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			AddNewCompanyDAO dao = new AddNewCompanyDAO();
 
 			dao.getBusinessType(compId, request, companyInfoDto);
-			customer.SearchCompany(compId, userID, companyInfoDto, request);
+			customer.searchCompany(compIdL, userID, request);
 
 			CountryState cs = new CountryState();
 			request.setAttribute("cList", cs.getCountryNew());
@@ -166,8 +172,8 @@ public class FileController {
 		else if (action.equalsIgnoreCase("CompanyInformation")) {
 			HttpSession sess = request.getSession();
 			int userID = (Integer) sess.getAttribute("userID");
-			CompanyInfo customer = new CompanyInfo();
-			ArrayList<CompanyInfoDto> comanyDetails = customer.SearchCompany(compId, userID, companyInfoDto, request);
+//			CompanyInfo customer = new CompanyInfo();
+			ArrayList<CompanyInfoDto> comanyDetails = customer.searchCompany(compIdL, userID, request);
 			CompanyDetails cdetails = new CompanyDetails();
 			cdetails.getAllList(request);
 			forward = "Success1";
@@ -196,7 +202,7 @@ public class FileController {
 
 		else if (action.equalsIgnoreCase("SetUpprintForms")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			forward = "/file/setupprintForm";
 		} else if (action.equalsIgnoreCase("MultiPrintInvoice")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");
@@ -246,33 +252,33 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("DownloadLeadTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-  				 importExportUtils.downloadLeadTemplate(type, response);
+				importExportUtils.downloadLeadTemplate(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportLeads";
 			}
 		} else if (action.equalsIgnoreCase("DownloadCustomerTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-  				 importExportUtils.downloadCustomerTemplate(type, response);
+				importExportUtils.downloadCustomerTemplate(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportCustomer";
 			}
-		}else if (action.equalsIgnoreCase("DownloadVendorTemplate")) {
+		} else if (action.equalsIgnoreCase("DownloadVendorTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-  				 importExportUtils.downloadVendorTemplate(type, response);
+				importExportUtils.downloadVendorTemplate(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportVendor";
 			}
-			
-		 }else if (action.equalsIgnoreCase("DownloadItemTemplate")) {
+
+		} else if (action.equalsIgnoreCase("DownloadItemTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-  				 importExportUtils.downloadItemTemplate(type, response);
+				importExportUtils.downloadItemTemplate(type, response);
 			} else {
 				forward = "redirect:/Item?tabid=UploadItem";
 			}
-		 }else if (action.equalsIgnoreCase("ExportVendor")) {
+		} else if (action.equalsIgnoreCase("ExportVendor")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
 				PurchaseInfoDao purchaseInfoDao = new PurchaseInfoDao();
@@ -330,7 +336,7 @@ public class FileController {
 			companyInfoDto.setTaxID(request.getParameter("taxID"));
 			companyInfoDto.setJobPosition(request.getParameter("jobPosition"));
 
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			customer.updateComapanyinfo(companyInfoDto, userID, compId);
 
 			/* Reminders */
@@ -359,7 +365,7 @@ public class FileController {
 			status = "Success";
 		} else if (action.equalsIgnoreCase("editSecurity")) {
 			String compId = (String) request.getSession().getAttribute("CID");
-			CompanyInfo customer = new CompanyInfo();
+//			CompanyInfo customer = new CompanyInfo();
 			customer.updateComapanySecurity(request.getParameter("password"), compId);
 			status = "Success";
 		}

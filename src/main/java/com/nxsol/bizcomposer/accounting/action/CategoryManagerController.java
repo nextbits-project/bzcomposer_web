@@ -7,6 +7,8 @@ import com.nxsol.bizcomposer.common.TblBudgetCategory;
 import com.nxsol.bizcomposer.common.TblCategoryType;
 import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +18,14 @@ import java.util.ArrayList;
 
 @Controller
 public class CategoryManagerController {
-
+	
+	@Autowired
+	private ReceivableLIst rl;
+	
 	@GetMapping("/CategoryManager")
 	public String categoryManager(TblCategoryDto tblCategoryDto, HttpServletRequest request) throws Exception {
 		String action = request.getParameter("tabid");
-		ReceivableLIst rl = new ReceivableListImpl();
+		
 
 		ArrayList<TblBudgetCategory> budgetCategoryList = rl.readBudgetCategory();
 		ArrayList<TblCategoryDto> listOfCategory = rl.getListOfCategoryForCategoryManager();

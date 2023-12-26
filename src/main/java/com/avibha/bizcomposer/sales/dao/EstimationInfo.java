@@ -600,9 +600,9 @@ public class EstimationInfo {
 //				orderNo = rs.getInt(1);
 //			}
 			if (orderNo == 0) {
-				BcaPreference bcaPreference = bcaPreferenceRepository.findByCompanyIdAndActive(Long.valueOf(compId), 1);
-				if(null!=bcaPreference)
-					orderNo=bcaPreference.getStartingInvoiceNumber();
+				Optional<BcaPreference> bcaPreference = bcaPreferenceRepository.findByCompany_CompanyIdAndActive(Long.valueOf(compId), 1);
+				if(bcaPreference.isPresent())
+					orderNo=bcaPreference.get().getStartingInvoiceNumber();
 //				String defaultOrderNo = "select StartingInvoiceNumber from bca_preference where CompanyID=? and Active=?";
 //		
 //				pstmt = con.prepareStatement(defaultOrderNo);

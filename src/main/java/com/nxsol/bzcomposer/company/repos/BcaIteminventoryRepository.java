@@ -14,6 +14,7 @@ import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
 
 @Repository
 public interface BcaIteminventoryRepository extends JpaRepository<BcaIteminventory, Integer> {
+
 	
 	
 	
@@ -48,4 +49,7 @@ public interface BcaIteminventoryRepository extends JpaRepository<BcaIteminvento
 	@Query("select bi from BcaIteminventory  bi where bi.company.companyId = :companyId and bi.active = :active and biitemTypeId <> :itemTypeId  and bi.inventoryId = :inventoryId")
 	List<BcaIteminventory>  findByCompanyIdAndActiveAndItemTypeNotAndInventoryId(@Param("companyId")Long companyId ,@Param("active") Integer active,@Param("itemTypeId")Integer itemTypeId,@Param("inventoryId") Integer inventoryId);
 	
+
+    int countByCompany_CompanyIdAndActiveAndItemTypeIdNot(Long companyId, Integer active, Integer itemTypeId);
+
 }

@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface BcaReceivedtypeRepository extends JpaRepository<BcaReceivedtype, Integer> {
 	List<BcaReceivedtype> findByCompany_CompanyIdAndActiveAndTypeCategory(Long companyId, Integer active,
 			Integer typeCategory);
+    List<BcaReceivedtype> findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByNameAsc(Long companyId, Integer active, Integer typeCategory);
 
 }

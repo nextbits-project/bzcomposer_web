@@ -104,4 +104,6 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 //			+ " And Active=1 and ClientVendorID=?"; // CVTypeID = 3 is added on 11-09-2019
 
 
+	@Query("SELECT COUNT(v) FROM BcaClientvendor v WHERE v.company.companyId = :companyId AND v.status IN :statuses AND v.deleted = 0 AND v.active = 1")
+    int countByCompany_CompanyIdAndStatusInAndDeletedIsFalseAndActiveIsTrue(@Param("companyId") Long companyId, @Param("statuses") List<String> statuses);
 }

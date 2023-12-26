@@ -86,6 +86,10 @@ public class BcaClientvendorService {
 	@Autowired
 	private CustomerInfoDao customerInfoDao;
 
+	@Autowired
+	private CountryState cs;
+	
+	
 	public ArrayList<CustomerDto> customerDetails(String compId) {
 		BcaCompany company = bcaCompanyRepo.getOne(Long.parseLong(compId));
 		List<Object[]> clientVendors = clientVendorRepo.fetchClientVendorDetails(company);
@@ -276,7 +280,6 @@ public class BcaClientvendorService {
 	}
 
 	public void getAllList(HttpServletRequest request) {
-		// CountryState cs = new CountryState();
 		HttpSession sess = request.getSession();
 		String cid = (String) sess.getAttribute("CID");
 		String countryID = ConstValue.countryID;

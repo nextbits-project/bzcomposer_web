@@ -23,6 +23,12 @@ public interface BcaPaymenttypeRepository extends JpaRepository<BcaPaymenttype, 
 	List<BcaPaymenttype> findByCompany_CompanyIdAndActiveAndTypeCategory(Long companyId, Integer active,
 			Integer typeCategory);
 
+	List<BcaPaymenttype> findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByName(Long companyId, Integer active,
+			Integer typeCategory);
+
+	List<BcaPaymenttype> findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByType(Long companyId, Integer active,
+			Integer typeCategory);
+
 	List<BcaPaymenttype> findByCompany(BcaCompany company);
 
 	List<BcaPaymenttype> findByCompanyAndActiveAndTypeCategoryOrderByName(BcaCompany company, Integer active,
@@ -42,6 +48,7 @@ public interface BcaPaymenttypeRepository extends JpaRepository<BcaPaymenttype, 
 
 	List<BcaPaymenttype> findByCompany_CompanyIdAndActive(Long companyId, Integer active);
 
-
+	// List<BcaPaymenttype> findByActiveTrueAndTypeCategoryAndCompany_Id(int
+	// typeCategory, Long companyId);
 
 }

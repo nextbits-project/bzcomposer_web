@@ -549,7 +549,7 @@ public class InvoiceInfo {
 				if (null != clientvendor.getTerm())
 					invForm.setTerm(String.valueOf(clientvendor.getTerm()));
 				if (null != clientvendor.getSalesRep())
-					invForm.setRep(String.valueOf(clientvendor.getSalesRep().getSalesTaxId()));
+					invForm.setRep(String.valueOf(clientvendor.getSalesRep().getSalesRepId()));
 				invForm.setTaxable(String.valueOf(clientvendor.getTaxable()));
 				details.add(invForm);
 			}
@@ -1177,9 +1177,9 @@ public class InvoiceInfo {
 //			if (rs.next()) {
 //				invStyle = rs.getInt(1);
 //			}
-			BcaPreference bcaPreference = bcaPreferenceRepository.findByCompany_CompanyId(Long.valueOf(compId));
-			if (null != bcaPreference.getInvoiceStyle())
-				invStyle = bcaPreference.getInvoiceStyle().getInvoiceStyleId();
+			Optional<BcaPreference> bcaPreference = bcaPreferenceRepository.findByCompany_CompanyId(Long.valueOf(compId));
+			if ( bcaPreference.isPresent())
+				invStyle = bcaPreference.get().getInvoiceStyle().getInvoiceStyleId();
 		} catch (Exception ee) {
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getDefaultInvoiceStyleNo " + " " + ee.toString());
 		}
@@ -2527,7 +2527,7 @@ public class InvoiceInfo {
 			BcaClientvendor clientVendor = bcaClientvendorRepository
 					.findByCompanyIdAndClientvendorId(Long.valueOf(compId), Integer.parseInt(cvId));
 			if (null != clientVendor) {
-				customer.setRep(String.valueOf(clientVendor.getSalesRep().getSalesTaxId()));
+				customer.setRep(String.valueOf(clientVendor.getSalesRep().getSalesRepId()));
 				customer.setTerm(String.valueOf(clientVendor.getTerm().getTermId()));
 				customer.setPaymentType(String.valueOf(clientVendor.getPaymentType().getPaymentTypeId()));
 				customer.setShipping(String.valueOf(clientVendor.getShipCarrier().getShipCarrierId()));
@@ -3114,9 +3114,9 @@ public class InvoiceInfo {
 //				purchaseInfo.updateClientVendor("PaymentTypeID", c.getPaymentType(), cvID);
 			}
 			if (c.getRep() != null && c.getRep().trim().length() > 0) {
-				Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(Integer.parseInt(c.getRep()));
-				if (salesTax.isPresent()) {
-					bcaClientvendor.setSalesRep(salesTax.get());
+				Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(Integer.parseInt(c.getRep()));
+				if (salesRep.isPresent()) {
+					bcaClientvendor.setSalesRep(salesRep.get());
 				}
 //				purchaseInfo.updateClientVendor("SalesRepID", c.getRep(), cvID);}
 			}

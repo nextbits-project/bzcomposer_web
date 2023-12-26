@@ -882,27 +882,26 @@ public class InvoiceInfoDao {
 		ArrayList<InvoiceDto> details = new ArrayList<>();
 		try {
 
-			List<String> status = Arrays.asList("U", "N");
-			List<BcaClientvendor> clientVendor = bcaClientvendorRepository
-					.findDistinctByCompany_CompanyIdAndStatusInAndDeletedAndActiveOrderByName(Long.parseLong(compId),
-							status, 0, 1);
-			for (BcaClientvendor vendor : clientVendor) {
-				String cvId = vendor.getClientVendorId().toString();
-				InvoiceDto invForm = new InvoiceDto();
-				objList.add(new LabelValueBean(
-						vendor.getName() + "(" + vendor.getLastName() + ", " + vendor.getFirstName() + ")", cvId));
-				invForm.setClientVendorID(cvId);
-				invForm.setCompanyName(vendor.getName());
-				invForm.setFirstName(vendor.getFirstName());
-				invForm.setLastName(vendor.getLastName());
-				invForm.setVia(vendor.getShipCarrier().getShipCarrierId().toString());
-				invForm.setPayMethod(vendor.getPaymentType().getPaymentTypeId().toString());
-				invForm.setTerm(vendor.getTerm().getTermId().toString());
-				invForm.setRep(vendor.getSalesRep().getSalesTaxId().toString());
-				invForm.setTaxable(vendor.getTaxable().toString());
-				invForm.setCustomerHasBalance(isCustomerHasBalance(cvId));
-				details.add(invForm);
-			}
+			
+			List<String> status=Arrays.asList("U","N");
+		List<BcaClientvendor> clientVendor=	bcaClientvendorRepository.findDistinctByCompany_CompanyIdAndStatusInAndDeletedAndActiveOrderByName(Long.parseLong(compId), status, 0, 1);
+		for(BcaClientvendor vendor: clientVendor) {
+			String cvId = vendor.getClientVendorId().toString();
+			InvoiceDto invForm = new InvoiceDto();
+			objList.add(new LabelValueBean(
+					vendor.getName() + "(" + vendor.getLastName() + ", " + vendor.getFirstName()+ ")", cvId));
+			invForm.setClientVendorID(cvId);
+			invForm.setCompanyName(vendor.getName());
+			invForm.setFirstName(vendor.getFirstName());
+			invForm.setLastName(vendor.getLastName());
+			invForm.setVia(vendor.getShipCarrier().getShipCarrierId().toString());
+			invForm.setPayMethod(vendor.getPaymentType().getPaymentTypeId().toString());
+			invForm.setTerm(vendor.getTerm().getTermId().toString());
+			invForm.setRep(vendor.getSalesRep().getSalesRepId().toString());
+			invForm.setTaxable(vendor.getTaxable().toString());
+			invForm.setCustomerHasBalance(isCustomerHasBalance(cvId));
+			details.add(invForm);
+		}
 
 //		String sqlString = "SELECT distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name "
 //					+ "FROM bca_clientvendor WHERE CompanyID=? AND Status IN ('U', 'N') AND Deleted=0 AND Active=1 ORDER BY Name";
@@ -983,7 +982,7 @@ public class InvoiceInfoDao {
 				if (null != bcv.getTerm())
 					invForm.setTerm(String.valueOf(bcv.getTerm().getTermId()));
 				if (null != bcv.getSalesRep())
-					invForm.setRep(String.valueOf(bcv.getSalesRep().getSalesTaxId()));
+					invForm.setRep(String.valueOf(bcv.getSalesRep().getSalesRepId()));
 				invForm.setTaxable(String.valueOf(bcv.getTaxable()));
 				details.add(invForm);
 			}

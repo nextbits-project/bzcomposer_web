@@ -145,7 +145,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			configDto.setDescription("Admin");
 			configDto.setGroupPermissions("1111111111111111111111111111111111111111111");
 
-			int groupID = confgDao.saveUserGroupDetailsID(String.valueOf(user.getCompanyID()), configDto);
+			int groupID = confgDao.saveUserGroupDetailsID(Long.valueOf(user.getCompanyID()), configDto);
 
 			pstmt3 = con
 					.prepareStatement("INSERT INTO bca_usermapping (CompanyID,UserGroupID,UserID,Role,Active,Deleted) Values("
