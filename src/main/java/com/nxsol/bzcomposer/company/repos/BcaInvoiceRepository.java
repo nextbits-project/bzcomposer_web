@@ -1,10 +1,9 @@
 package com.nxsol.bzcomposer.company.repos;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,6 +22,8 @@ import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaInvoiceTermClientVendor
 
 @Repository
 public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer> {
+	
+
 
 	@Query(value = "Select a.InvoiceID,a.OrderNum,a.DateAdded,a.TermID,a.Total,a.Balance,b.Firstname,b.LastName,a.clientvendorId from bca_invoice as a, bca_clientvendor as b"
 			+ " where a.ClientVendorId=b.ClientVendorId and b.Status in ('U','N') and b.Active=1 and a.invoicestatus in (0,2) and a.invoicetypeID in (1,7) and b.deleted=0 and a.CompanyID=?", nativeQuery = true)
@@ -48,13 +49,13 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 	@Modifying
 	@Transactional
 	@Query("update BcaInvoice bi set bi.invoiceStatus = :invoiceStatus , bi.memo = :memo where bi.company =:company and bi.invoiceId = :invoiceId ")
-	int updateInvoiceByCompanyAndInvoice(@Param("company") BcaCompany company, @Param("invoiceId") int invoiceId,
-			@Param("invoiceStatus") int invoiceStatus, @Param("memo") String memo);
+	int updateInvoiceStatusAndMemoByCompanyAndInvoice(@Param("company") BcaCompany company,
+			@Param("invoiceId") int invoiceId, @Param("invoiceStatus") int invoiceStatus, @Param("memo") String memo);
 
 	@Modifying
 	@Transactional
 	@Query("update BcaInvoice bi set bi.invoiceType = :invoiceType where bi.company = :company and bi.invoiceId = :invoiceId ")
-	int updateInvoiceStatusForLayaway(@Param("invoiceType") BcaInvoicetype inoviceType,
+	int updateInvoiceTypeByCompanyIdAndInvoiceId(@Param("invoiceType") BcaInvoicetype inoviceType,
 			@Param("company") BcaCompany company, @Param("invoiceId") int invoiceId);
 
 	@Modifying
@@ -176,17 +177,56 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			+ "and bp.deleted !=1 ) or (select sum(bp.amount) from BcaPayment bp where bp.invoice.invoiceId = i.invoiceId "
 			+ "and bp.deleted !=1 ) is null) order by orderNum desc")
 	List<Object[]> findRecievableList(@Param("companyId") Long companyId);
-	
-	
+
 //	String sqlString = "select i.InvoiceID, i.OrderNum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total, i.Balance, i.Shipped, i.IsEmailed, it.Name,i.ClientVendorID "
 //			+" FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
 //			+" WHERE "+cvIdCase+" i.InvoiceTypeID IN(1,7,10) ";
-	@Query(value="select i 	from BcaInvoice i inner join BcaInvoicetype it on i.invoiceType.invoiceTypeId = it.invoiceTypeId")
+	@Query(value = "select i 	from BcaInvoice i inner join BcaInvoicetype it on i.invoiceType.invoiceTypeId = it.invoiceTypeId")
 	List<BcaInvoice> findInvoiceBySearchHistory();
-	
-	
-	
-	@Query(value="select bi.orderNum from BcaInvoice bi left join bi.company c where c.companyId= :companyId and bi.invoiceStatus in :invoiceStatus order by orderNume desc   ")
-	List<Integer> findOrderNumByCompanyIdAndInvoiceStatus(@Param("companyId") Long companyId , @Param("invoiceStatus") List<Integer> invoiceStatus);
-    
+
+	@Query(value = "select bi.orderNum from BcaInvoice bi left join bi.company c where c.companyId= :companyId and bi.invoiceStatus in :invoiceStatus order by orderNume desc   ")
+	List<Integer> findOrderNumByCompanyIdAndInvoiceStatus(@Param("companyId") Long companyId,
+			@Param("invoiceStatus") List<Integer> invoiceStatus);
+
+	@Query(value = "select bi  from BcaInvoice bi where bi.company.companyId = :companyId and invoiceStatus in :invoiceStatus and bi.invoiceType.invoiceTypeId in :invoiceTypeId  order by bi.estNum desc ")
+	List<BcaInvoice> findByCompanyIdAndInvoiceStatusAndInvoiceTypeId(@Param("companyId") Long companyId,
+			@Param("invoiceStatus") List<Integer> invoiceStatus, @Param("invoiceTypeId") List<Integer> invoiceTypeId);
+
+	@Modifying
+	@Transactional
+	@Query("update BcaInvoice bi set bi.shipped = :shipped where bi.estNum = :estNum ")
+	Integer updateShippedByEstNum(@Param("shipped") int shipped, @Param("estNum") int estNum);
+
+	@Modifying
+	@Transactional
+	@Query("update BcaInvoice bi set bi.shipped = :shipped where bi.orderNum = :orderNum ")
+	Integer updateShippedByOrderNum(@Param("shipped") int shipped, @Param("orderNum") int orderNum);
+
+	@Modifying
+	@Transactional
+	@Query("update BcaInvoice bi set bi.isInvoice = :isInvoice where bi.orderNum = :orderNum ")
+	Integer updateIsInvoiceByOrderNum(@Param("isInvoice") int isInvoice, @Param("orderNum") int orderNum);
+
+	@Query("select SUM(inv.adjustedTotal) AS salesTotal " + "FROM BcaInvoice inv "
+			+ "WHERE inv.clientVendor.clientVendorId = :cvId " + "AND inv.company.companyId = :comId "
+			+ "AND inv.invoiceType.invoiceTypeId = 1 " + "AND inv.invoiceStatus <> 1")
+	Double calculateSalesTotal(@Param("cvId") Integer cvId, @Param("comId") Long comId);
+
+	@Query(value = " select bi from BcaInvoice bi where bi.company.companyId = :companyId and bi.orderNum = :orderNum")
+	BcaInvoice findByCompanyIdAndOrderNum(@Param("companyId") Long companyId, @Param("orderNum") Integer orderNum);
+
+	@Query(value = " select bi from BcaInvoice bi where bi.company.companyId = :companyId and bi.ponum = :ponum")
+	BcaInvoice findByCompanyIdAndPoNum(@Param("companyId") Long companyId, @Param("ponum") Integer ponum);
+
+	@Query(value = "select inv from BcaInvoice as inv where inv.estNum = :estNum and inv.company.companyId = :companyId and inv.invoiceStatus in :invoiceStatus and inv.invoiceType.invoiceTypeId = :invoiceTypeId")
+	List<BcaInvoice> findByCompanyIdAndEstNumAndInvoiceStatusAndInvoiceTypeId(@Param("companyId") Long companyId,
+			@Param("estNum") Integer estNum, @Param("invoiceStatus") List<Integer> invoiceStatus,
+			@Param("invoiceTypeId") Integer invoiceTypeId);
+
+	@Modifying
+	@Transactional
+	@Query("update BcaInvoice bi set bi.invoiceStatus = :invoiceStatus where bi.estNum = :estNum  and bi.company.companyId = :companyId")
+	Integer updateInvoiceStatusByEstNumAndCompanyId(@Param("invoiceStatus") int invoiceStatus,
+			@Param("estNum") int estNum, @Param("companyId") Long companyId);
+
 }

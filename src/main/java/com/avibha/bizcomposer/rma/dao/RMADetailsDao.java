@@ -12,19 +12,25 @@ import com.avibha.common.log.Loger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+@Service
 public class RMADetailsDao {
+	@Autowired
+	private RMAInfoDao rmaInfoDao;
 
 	
 	public void getRAMDetails(HttpServletRequest request, RMADto rFrm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		RMAInfoDao rmaInfo = new RMAInfoDao();
+//		RMAInfoDao rmaInfo = new RMAInfoDao();
 		ArrayList UNameList = new ArrayList();
-		UNameList=rmaInfo.getUserName(compId);
+		UNameList=rmaInfoDao.getUserName(compId);
 
-		ArrayList orderDetails =rmaInfo.getOrderForRMACreate(compId, rFrm.getFname(), rFrm.getOrder(),rFrm.getLname(),  rFrm.getOrderDate() );
+		ArrayList orderDetails =rmaInfoDao.getOrderForRMACreate(compId, rFrm.getFname(), rFrm.getOrder(),rFrm.getLname(),  rFrm.getOrderDate() );
 		request.setAttribute("UNameList",UNameList);
 		request.setAttribute("RMADetails",orderDetails);
 		Loger.log("Size of FNameList="+UNameList.size());
@@ -34,11 +40,11 @@ public class RMADetailsDao {
 	public void getRAMInfo(HttpServletRequest request, RMADto form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		RMAInfoDao rmaInfo = new RMAInfoDao();
+//		RMAInfoDao rmaInfo = new RMAInfoDao();
 		String fname= request.getParameter("Fname");
 		String lname= request.getParameter("Lname");
 		
-		String LastRMA=rmaInfo.getLastRMA();
+		String LastRMA=rmaInfoDao.getLastRMA();
 		String OrderID=request.getParameter("OrderID");
 		
 		if(OrderID!=null){
@@ -64,8 +70,8 @@ public class RMADetailsDao {
 		
 		ArrayList RMADetails = new ArrayList();
 		ArrayList ItemDetails = new ArrayList();
-		ItemDetails=rmaInfo.getItemDetails(compId,OrderID);
-		RMADetails=rmaInfo.getRMADetails(compId,OrderID);
+		ItemDetails=rmaInfoDao.getItemDetails(compId,OrderID);
+		RMADetails=rmaInfoDao.getRMADetails(compId,OrderID);
 		request.setAttribute("ItemDetails",ItemDetails);
 		request.setAttribute("RMADetails",RMADetails);
 		
@@ -76,15 +82,15 @@ public class RMADetailsDao {
 	public void getRAMSearch(HttpServletRequest request, RMADto rFrm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		RMAInfoDao rmaInfo = new RMAInfoDao();
+//		RMAInfoDao rmaInfo = new RMAInfoDao();
 		ArrayList RMADetails = new ArrayList();
 		ArrayList UNameList = new ArrayList();
 		String fname=request.getParameter("fnameTxt");
 		String lname=request.getParameter("lnameTxt");
-		UNameList=rmaInfo.getUserName(compId);
+		UNameList=rmaInfoDao.getUserName(compId);
 		request.setAttribute("FName",fname);
 		request.setAttribute("LName",lname);
-		RMADetails=rmaInfo.getRMASearch(compId,fname,lname,rFrm.getOrder(),rFrm.getOrderDate());
+		RMADetails=rmaInfoDao.getRMASearch(compId,fname,lname,rFrm.getOrder(),rFrm.getOrderDate());
 		request.setAttribute("NameList",UNameList);
 		request.setAttribute("RMADetails",RMADetails);
 		Loger.log("Size of FNameList="+UNameList.size());
@@ -95,14 +101,14 @@ public class RMADetailsDao {
 	public void getRAMList(HttpServletRequest request, RMADto rForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		RMAInfoDao rmaInfo = new RMAInfoDao();
+	//	RMAInfoDao rmaInfo = new RMAInfoDao();
 		ArrayList RMAList = new ArrayList();
 		int limit = 10;         // Limit to no. of records display
-		int total = rmaInfo.calculatePages(Long.parseLong(compId),limit);
+		int total = rmaInfoDao.calculatePages(Long.parseLong(compId),limit);
 		
 		int pageCount = 3; 
 		int start = rForm.getStartPage();
-		RMAList=rmaInfo.getRMAList(compId,start,limit);
+		RMAList=rmaInfoDao.getRMAList(compId,start,limit);
 		rForm.setTotalPages(total);
 		request.setAttribute("PageValue",String.valueOf(start));
 		request.setAttribute("RMAList",RMAList);
@@ -141,13 +147,13 @@ public class RMADetailsDao {
 	}
 
 	public void insertRAM(HttpServletRequest request, RMADto rFrm) {
-		RMAInfoDao rmaInfo = new RMAInfoDao();
+//		RMAInfoDao rmaInfo = new RMAInfoDao();
 		boolean isRmaExist=false;
 		
-		isRmaExist=rmaInfo.isExistingRMA(rFrm.getRma());
+		isRmaExist=rmaInfoDao.isExistingRMA(rFrm.getRma());
 			if(isRmaExist==false){
 				String cartId= request.getParameter("cartID");
-				rmaInfo.insertRMA(rFrm.getRma(),rFrm.getQty(),rFrm.getReason(),cartId);
+				rmaInfoDao.insertRMA(rFrm.getRma(),rFrm.getQty(),rFrm.getReason(),cartId);
 			}
 			else{
 				String msg="RMA# has been already used.Please use other number";
@@ -157,9 +163,9 @@ public class RMADetailsDao {
 		}
 	
 	public void deleteRAM(HttpServletRequest request) {
-		RMAInfoDao rmaInfo = new RMAInfoDao();
+//		RMAInfoDao rmaInfo = new RMAInfoDao();
 		String rmaNo=request.getParameter("RMAno");
-		rmaInfo.deleteRMA(rmaNo);
+		rmaInfoDao.deleteRMA(rmaNo);
 		}
 	
 	

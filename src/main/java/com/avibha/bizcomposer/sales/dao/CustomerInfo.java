@@ -14,6 +14,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -35,8 +36,15 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
+import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
+import com.nxsol.bzcomposer.company.domain.BcaServicetype;
+import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
+import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /*
@@ -44,6 +52,18 @@ import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
  */
 @Service
 public class CustomerInfo {
+
+	@Autowired
+	private BcaIteminventoryRepository bcaIteminventoryRepository;
+
+	@Autowired
+	private BcaServicetypeRepository bcaServicetypeRepository;
+
+	@Autowired
+	private BcaInvoicestyleRepository bcaInvoicestyleRepository;
+
+	@Autowired
+	private BcaClientvendorRepository bcaClientvendorRepository;
 
 	public ArrayList customerDetails(String compId) {
 		Connection con = null;
@@ -417,7 +437,7 @@ public class CustomerInfo {
 		}
 		return balance;
 	}
-	
+
 	@Autowired
 	private BcaCvtypeRepository bcaCvtypeRepository;
 
@@ -433,15 +453,15 @@ public class CustomerInfo {
 //			String strSql = "SELECT CVTypeID from bca_cvtype " + "WHERE name='" + customerType + "'";
 //			stmt = con.createStatement();
 //			rst = stmt.executeQuery(strSql);
-			List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
-			
+		List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
+
 //			if (rst.next()) {
 //				cvTypeId = rst.getInt("CVTypeID");
 //			}
 
-			if ( CVTypeIDs.size() > 0  ) {
-				cvTypeId = CVTypeIDs.get(0);
-			}
+		if (CVTypeIDs.size() > 0) {
+			cvTypeId = CVTypeIDs.get(0);
+		}
 //
 //		} catch (Exception e) {
 //
@@ -1295,38 +1315,41 @@ public class CustomerInfo {
 	}
 
 	public boolean UpdateCustomer(String compId, String cvId) {
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
 		boolean valid = false;
 		// ResultSet rs = null;
-		con = db.getConnection();
-		Statement stmt = null;
+//		con = db.getConnection();
+//		Statement stmt = null;
 
 		try {
-			stmt = con.createStatement();
-			StringBuffer sqlString = new StringBuffer();
-			sqlString.append("update bca_clientvendor set status='O' where ClientVendorID = '" + cvId
-					+ "' and status IN ('N','U') ");
-			Loger.log(sqlString);
-			int count = stmt.executeUpdate(sqlString.toString());
+			int count = bcaClientvendorRepository.updateStatusByClientVendorIdAndStatus("O", Integer.parseInt(cvId),
+					Arrays.asList("N", "U"));
+//			stmt = con.createStatement();
+//			StringBuffer sqlString = new StringBuffer();
+//			sqlString.append("update bca_clientvendor set status='O' where ClientVendorID = '" + cvId
+//					+ "' and status IN ('N','U') ");
+//			Loger.log(sqlString);
+//			int count = stmt.executeUpdate(sqlString.toString());
 			if (count > 0) {
 				valid = true;
 				Loger.log("status updated successfully");
 			}
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class CustomerInfo and  method -UpdateCustomer " + ee.toString());
-		} finally {
-			try {
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		} 
+//		finally {
+//			try {
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return valid;
 	}
 
@@ -1740,8 +1763,9 @@ public class CustomerInfo {
 	 * Function to delete the particular Customer Do not actualy DELETE the record;
 	 * just UPDATE the value of deleted attribute to 1
 	 */
-	
+
 	BcaCvcreditcardRepository bcaCvcreditcardRepository;
+
 	public boolean deleteCustomer(String cvID, String compId) {
 		boolean ret = false;
 		Connection con = null;
@@ -1820,75 +1844,89 @@ public class CustomerInfo {
 		ArrayList<UpdateInvoiceDto> serviceList = new ArrayList<UpdateInvoiceDto>();
 		ArrayList<UpdateInvoiceDto> invoiceName = new ArrayList<UpdateInvoiceDto>();
 		// ArrayList balenceDetails = new ArrayList();
-		ResultSet rs = null;
-		ResultSet rs1 = null;
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		PreparedStatement pstmt1 = null;
-		con = db.getConnection();
+//		 
 
-		String sqlString = "select * from bca_servicetype";
-		String sqlString1 = "select  * from bca_invoicestyle where Active=1";
+//		String sqlString = "select * from bca_servicetype";
+//		String sqlString1 = "select  * from bca_invoicestyle where Active=1";
 
 		try {
-			pstmt = con.prepareStatement(sqlString);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			List<BcaServicetype> bcaServicetypes = bcaServicetypeRepository.findAll();
+			for (BcaServicetype bcaServicetype : bcaServicetypes) {
 				UpdateInvoiceDto uform = new UpdateInvoiceDto();
-				uform.setServiceID(rs.getInt(1));
-				uform.setServiceName(rs.getString(2));
-				uform.setInvoiceStyleId(rs.getInt(3));
+				uform.setServiceID(bcaServicetype.getServiceId());
+				uform.setServiceName(bcaServicetype.getServiceName());
+				if (null != bcaServicetype.getInvoiceStyle())
+					uform.setInvoiceStyleId(bcaServicetype.getInvoiceStyle().getInvoiceStyleId());
 				serviceList.add(uform);
 			}
-		} catch (SQLException e) {
+//			pstmt = con.prepareStatement(sqlString);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				UpdateInvoiceDto uform = new UpdateInvoiceDto();
+//				uform.setServiceID(rs.getInt(1));
+//				uform.setServiceName(rs.getString(2));
+//				uform.setInvoiceStyleId(rs.getInt(3));
+//				serviceList.add(uform);
+//			}
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		request.setAttribute("ServiceList", serviceList);
 
 		try {
-			con = db.getConnection();
-			pstmt1 = con.prepareStatement(sqlString1);
-			rs1 = pstmt1.executeQuery();
-			while (rs1.next()) {
+			List<BcaInvoicestyle> bcaInvoicestyles = bcaInvoicestyleRepository.findByActive(1);
+			for (BcaInvoicestyle bcaInvoicestyle : bcaInvoicestyles) {
 				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 				// Loger.log("The Incoice style id is " + rs1.getString(1));
-				uform.setInvoiceStyleId(rs1.getInt(1));
+				uform.setInvoiceStyleId(bcaInvoicestyle.getInvoiceStyleId());
 				// Loger.log("The Invoice Style name is " + rs1.getString(2));
-				uform.setInvoiceStyle(rs1.getString(2));
+				uform.setInvoiceStyle(bcaInvoicestyle.getName());
 				invoiceName.add(uform);
 			}
-		} catch (SQLException e) {
+//			con = db.getConnection();
+//			pstmt1 = con.prepareStatement(sqlString1);
+//			rs1 = pstmt1.executeQuery();
+//			while (rs1.next()) {
+//				UpdateInvoiceDto uform = new UpdateInvoiceDto();
+//				// Loger.log("The Incoice style id is " + rs1.getString(1));
+//				uform.setInvoiceStyleId(rs1.getInt(1));
+//				// Loger.log("The Invoice Style name is " + rs1.getString(2));
+//				uform.setInvoiceStyle(rs1.getString(2));
+//				invoiceName.add(uform);
+//			}
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs1 != null) {
-					db.close(rs1);
-				}
-				if (pstmt1 != null) {
-					db.close(pstmt1);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs1 != null) {
+//					db.close(rs1);
+//				}
+//				if (pstmt1 != null) {
+//					db.close(pstmt1);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 	}
 
 	public java.sql.Date string2date(String d) {
@@ -2536,72 +2574,86 @@ public class CustomerInfo {
 	}
 
 	public void setNewitemNameEstimation(String companyID, int itemId, String itemName) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
 		try {
 			/*
 			 * String sqlString =
 			 * "update bca_inventory set InventoryName=?,InventoryDescription=? where InventoryID =? and CompanyID=?"
 			 * ;
 			 */
-			String sqlString = "update bca_iteminventory set InventoryName=? where InventoryID =? and CompanyID=?";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, itemName);
-			/* pstmt.setString(2,itemName); */
-			pstmt.setInt(2, itemId);
-			pstmt.setString(3, companyID);
-			int count = pstmt.executeUpdate();
+
+//			String sqlString = "update bca_iteminventory set InventoryName=? where InventoryID =? and CompanyID=?";
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, itemName);
+//			/* pstmt.setString(2,itemName); */
+//			pstmt.setInt(2, itemId);
+//			pstmt.setString(3, companyID);
+//			int count = pstmt.executeUpdate();
+			int count = bcaIteminventoryRepository.updateInventoryNameByInventoryIdAndCompanyId(itemName, itemId,
+					Long.valueOf(companyID));
+
 			if (count > 0) {
 				System.out.println(count + " Row updated...");
 			}
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, "SQL Error in Class CustomerInfo and  method -setNewitemNameEstimation " + ee.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception ex) {
-				Loger.log(2, "SQL Error in Class CustomerInfo and method -setNewitemNameEstimation " + ex.toString());
-
-			}
 		}
+//		finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception ex) {
+//				Loger.log(2, "SQL Error in Class CustomerInfo and method -setNewitemNameEstimation " + ex.toString());
+//
+//			}
+//		}
 	}
 
 	public void setUnitPriceEstimation(String companyID, int itemId, double price) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
 		try {
-			String sqlString = "update bca_iteminventory set SalePrice=? where InventoryID =? and CompanyID=?";
-			pstmt = con.prepareStatement(sqlString);
-			price = Double.parseDouble(new DecimalFormat("##.##").format(price));
-			pstmt.setDouble(1, price);
-			pstmt.setInt(2, itemId);
-			pstmt.setString(3, companyID);
-			int count = pstmt.executeUpdate();
+
+//			
+//			String sqlString = "update bca_iteminventory set SalePrice=? where InventoryID =? and CompanyID=?";
+//			pstmt = con.prepareStatement(sqlString);
+//			price = Double.parseDouble(new DecimalFormat("##.##").format(price));
+//			pstmt.setDouble(1, price);
+//			pstmt.setInt(2, itemId);
+//			pstmt.setString(3, companyID);
+//			int count = pstmt.executeUpdate();
+//			if (count > 0) {
+//				System.out.println(count + " Row updated...");
+//			}
+
+			int count = bcaIteminventoryRepository.updateSalesPriceByInventoryIdAndCompanyId(price, itemId,
+					Long.valueOf(companyID));
 			if (count > 0) {
 				System.out.println(count + " Row updated...");
 			}
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, "SQL Error in Class CustomerInfo and  method -setNewUnitPrice " + ee.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception ex) {
-				Loger.log(2, "SQL Error in Class CustomerInfo and method -setUnitPriceEstimation " + ex.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception ex) {
+//				Loger.log(2, "SQL Error in Class CustomerInfo and method -setUnitPriceEstimation " + ex.toString());
+//			}
+//		}
 	}
 }

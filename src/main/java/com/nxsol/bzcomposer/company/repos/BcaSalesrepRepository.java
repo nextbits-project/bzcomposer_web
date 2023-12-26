@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface BcaSalesrepRepository extends JpaRepository<BcaSalesrep, Integer> {
 	
 	 List<BcaSalesrep> findByCompany_CompanyIdAndActive(Long companyId, Integer active);
+	 BcaSalesrep findBySalesRepId(Integer salesRepId);
 }

@@ -15,6 +15,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,13 @@ public class RMAController {
 	 *      javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
+	
+	@Autowired
+	private RMADetailsDao rmaDetailsDao;
+	
+	@Autowired
+	private RMAInfoDao rmaInfoDao;
+	
 	@RequestMapping(value = {"/RMA"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView RMA(RMADto rmaDto, HttpServletRequest request) throws IOException, ServletException {
 		String forward = "/rma/rma";
@@ -45,75 +53,75 @@ public class RMAController {
 		Loger.log("Acc "+action);
 		request.setAttribute("rmaDto",rmaDto);
 		if(action == null){
-			RMADetailsDao rd=new RMADetailsDao();
-			rd.getRAMDetails(request, rmaDto);
+//			RMADetailsDao rd=new RMADetailsDao();
+			rmaDetailsDao.getRAMDetails(request, rmaDto);
 			forward = "/rma/rma";
 		}
 		else if (action.equalsIgnoreCase("CreateRMA")) {
-			RMADetailsDao rd=new RMADetailsDao();
+//			RMADetailsDao rd=new RMADetailsDao();
 			int orderNo = Integer.parseInt(request.getParameter("orderNumber"));
 
 			// Get invoice Id using order number
-			RMAInfoDao rmaInfo = new RMAInfoDao();
-			int invoiceId = rmaInfo.getInvoiceId(orderNo, 1, compId); // 1 = InvoiceTypeID for Sales Order
+//			RMAInfoDao rmaInfo = new RMAInfoDao();
+			int invoiceId = rmaInfoDao.getInvoiceId(orderNo, 1, compId); // 1 = InvoiceTypeID for Sales Order
 			// Get invoice Details using invoiceId
-			SalesBoard invoiceObj = rmaInfo.getInvoice(invoiceId, compId);
+			SalesBoard invoiceObj = rmaInfoDao.getInvoice(invoiceId, compId);
 
 			// Get Cart id using invoice ID
 			//int cartId = rmaInfo.getCartId(invoiceId, compId);
 			if (invoiceObj.isPaymentCompleted() && invoiceObj.getShipped() == 1) {
 				String reason = "Not Used";
-				rmaInfo.insertRMA2(invoiceObj.getInventoryQty(),reason,invoiceObj.getInventoryId());
+				rmaInfoDao.insertRMA2(invoiceObj.getInventoryQty(),reason,invoiceObj.getInventoryId());
 			}else{
 				System.out.println("RMA is created only for paid and shipped invoice.");
 			}
-			rd.getRAMDetails(request, rmaDto);
+			rmaDetailsDao.getRAMDetails(request, rmaDto);
 			forward = "redirect:/RMA?tabid=R0L0S0";
 
 		}
 		else if (action.equalsIgnoreCase("R0M0A0")) { // For Fname and lname listing
-			RMADetailsDao rd=new RMADetailsDao();
-			rd.getRAMDetails(request, rmaDto);
+//			RMADetailsDao rd=new RMADetailsDao();
+			rmaDetailsDao.getRAMDetails(request, rmaDto);
 			forward = "/rma/rma";
 		}
 		
 		else if (action.equalsIgnoreCase("RmaInfo")) { // for RMA Details
-			RMADetailsDao rd=new RMADetailsDao();
-			rd.getRAMInfo(request,rmaDto);
+//			RMADetailsDao rd=new RMADetailsDao();
+			rmaDetailsDao.getRAMInfo(request,rmaDto);
 			forward = "/rma/rmaDetails";
 		}
 		
 		else if (action.equalsIgnoreCase("R0A0D0")) {  // to insert or approve RMA 
-			RMADetailsDao rd=new RMADetailsDao();
-			rd.insertRAM(request,rmaDto);
-			rd.getRAMInfo(request,rmaDto);
+//			RMADetailsDao rd=new RMADetailsDao();
+			rmaDetailsDao.insertRAM(request,rmaDto);
+			rmaDetailsDao.getRAMInfo(request,rmaDto);
 			forward = "/rma/rmaDetails";
 		}
 		
 		else if (action.equalsIgnoreCase("R0R0M0")) { // to Delete or cancel RMA 
-			RMADetailsDao rd=new RMADetailsDao();
-			rd.deleteRAM(request);
-			rd.getRAMInfo(request,rmaDto);
+//			RMADetailsDao rd=new RMADetailsDao();
+			rmaDetailsDao.deleteRAM(request);
+			rmaDetailsDao.getRAMInfo(request,rmaDto);
 			forward = "/rma/rmaDetails";
 		}
 		
 		else if (action.equalsIgnoreCase("R0S0C0")) { //to find RMA 
-			RMADetailsDao rd=new RMADetailsDao();
-			rd.getRAMSearch(request,rmaDto);
+//			RMADetailsDao rd=new RMADetailsDao();
+			rmaDetailsDao.getRAMSearch(request,rmaDto);
 			forward = "/rma/rma";
 		}
 		
 		else if (action.equalsIgnoreCase("R0L0S0")) { // for RMA List
-			RMADetailsDao rd=new RMADetailsDao();
+//			RMADetailsDao rd=new RMADetailsDao();
 			rmaDto.setStartPage(1);
 			request.getSession().setAttribute("StartPage",String.valueOf(rmaDto.getStartPage()));
-			rd.getRAMList(request,rmaDto);
+			rmaDetailsDao.getRAMList(request,rmaDto);
 			forward = "/rma/rmaList";
 		}
 		else if (action.equalsIgnoreCase("R0L0S0List")) { // for RMA List
-			RMADetailsDao rd=new RMADetailsDao();
+//			RMADetailsDao rd=new RMADetailsDao();
 
-			rd.getRAMList(request,rmaDto);
+			rmaDetailsDao.getRAMList(request,rmaDto);
 			forward = "/rma/rmaList";
 		}
 		else if (action.equalsIgnoreCase("CreditMemo")) {

@@ -3003,7 +3003,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //			System.out.println("Invoice Updated :-----" + i);
 			Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(ConstValue.companyId));
 			if (company.isPresent()) {
-				int i = bcaInvoiceRepository.updateInvoiceByCompanyAndInvoice(company.get(), invoiceId,
+				int i = bcaInvoiceRepository.updateInvoiceStatusAndMemoByCompanyAndInvoice(company.get(), invoiceId,
 						ReceivableListDto.CANCELLED_INVOICE_STATUS, "Cancelled Payment");
 				System.out.println("Invoice Updated :-----" + i);
 			}
@@ -4742,7 +4742,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			Optional<BcaInvoicetype> invoiceType = bcaInvoicetypeRepository.findById(ReceivableListDto.LAYAWAYS_TYPE);
 			Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(ConstValue.companyId));
 			if (invoiceType.isPresent() && company.isPresent()) {
-				i = bcaInvoiceRepository.updateInvoiceStatusForLayaway(invoiceType.get(), company.get(), invoiceID);
+				i = bcaInvoiceRepository.updateInvoiceTypeByCompanyIdAndInvoiceId(invoiceType.get(), company.get(), invoiceID);
 			}
 			System.out.println("update layaways : ------" + i);
 
@@ -10172,44 +10172,37 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	@Override
 	public ArrayList<TblCategoryType> getCategoryType() {
-		return null;
-//		return tblCategoryTypeRepository.findByIsActiveOrderByCategoryTypeNameAsc(true);
-
-//		Statement stmt = null;
-//		Connection con = null;
-//		SQLExecutor db = new SQLExecutor();
-//		con = db.getConnection();
-//		ResultSet rs = null;
-//		ArrayList<TblCategoryType> categoryType = new ArrayList<TblCategoryType>();
-//		String sql = "SELECT * FROM bca_categorytype WHERE isActive = 1 ORDER BY CategoryTypeName";
-//		try {
-//			stmt = con.createStatement();
-//			rs = stmt.executeQuery(sql);
-//			while (rs.next()) {
-//				TblCategoryType type = new TblCategoryType();
-//				type.setCategoryTypeID(rs.getLong("CategoryTypeID"));
-//				type.setCategoryTypeName(rs.getString("CategoryTypeName"));
-//				categoryType.add(type);
-//			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			Loger.log(e.toString());
-//		} finally {
-//			try {
-//				if (rs != null) {
-//					db.close(rs);
-//				}
-//				if (stmt != null) {
-//					db.close(stmt);
-//				}
-//				if (con != null) {
-//					db.close(con);
-//				}
-//			} catch (Exception e) {
-//				Loger.log(e.toString());
-//			}
-//		}
-//		return categoryType;
+		// TODO Auto-generated method stub
+		Statement stmt = null;
+        Connection con = null;
+        SQLExecutor db = new SQLExecutor();
+		con = db.getConnection();
+		ResultSet rs = null;
+		ArrayList<TblCategoryType> categoryType = new ArrayList<TblCategoryType>();
+		String sql = "SELECT * FROM bca_categorytype WHERE isActive = 1 ORDER BY CategoryTypeName";
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				TblCategoryType type = new TblCategoryType();
+				type.setCategoryTypeID(rs.getLong("CategoryTypeID"));
+				type.setCategoryTypeName(rs.getString("CategoryTypeName"));
+				categoryType.add(type);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (rs != null) { db.close(rs); }
+				if (stmt != null) { db.close(stmt); }
+				if(con != null){ db.close(con); }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return categoryType;
 	}
 
 	@Override

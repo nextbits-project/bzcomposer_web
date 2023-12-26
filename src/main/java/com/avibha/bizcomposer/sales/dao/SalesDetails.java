@@ -48,6 +48,44 @@ public class SalesDetails {
 
 	@Autowired
 	private SalesInfo sales;
+	@Autowired
+	private EstimationInfo estimationInfo;
+	
+	@Autowired
+	private InvoiceInfo invoiceInfo;
+	
+	@Autowired
+	private CustomerInfo customerInfo;
+	
+	@Autowired
+	private ItemInfo itemInfo; 
+	
+	@Autowired
+	private Title title;
+	
+	@Autowired
+	private CountryState countryState;
+	
+	@Autowired
+	private Term term;
+	
+	@Autowired
+	private Rep rep;
+	
+	@Autowired
+	private PayMethod payMethod;
+	
+	@Autowired
+	private Shipping shipping;
+	
+	@Autowired
+	private CreditCard creditCard;
+	
+	@Autowired
+	private VendorCategory vendorCategory;
+	
+	
+	
 
 	public void getdataManager(HttpServletRequest request, ActionForm form) {
 		HttpSession sess = request.getSession();
@@ -153,47 +191,47 @@ public class SalesDetails {
 		HttpSession sess = request.getSession();
 		String cid = (String) sess.getAttribute("CID");
 		// Title List
-		Title t = new Title();
-		request.setAttribute("titleList", t.getTitleList(cid));
+//		Title t = new Title();
+		request.setAttribute("titleList", title.getTitleList(cid));
 
 		// country List
-		CountryState cs = new CountryState();
-		request.setAttribute("cList", cs.getCountry());
+//		CountryState cs = new CountryState();
+		request.setAttribute("cList", countryState.getCountry());
 
 		// Term List
-		Term tr = new Term();
-		request.setAttribute("TermList", tr.getTermList(cid));
+//		Term tr = new Term();
+		request.setAttribute("TermList", term.getTermList(cid));
 
 		// Rep List
-		Rep rap = new Rep();
-		request.setAttribute("RepList", rap.getRepList(cid));
+//		Rep rap = new Rep();
+		request.setAttribute("RepList", rep.getRepList(cid));
 
 		// PayMethod List
-		PayMethod pmethod = new PayMethod();
-		request.setAttribute("PaymentList", pmethod.getPaymentTypeList(cid));
+//		PayMethod pmethod = new PayMethod();
+		request.setAttribute("PaymentList", payMethod.getPaymentTypeList(cid));
 
 		// ShipCarrier List
-		Shipping ship = new Shipping();
-		request.setAttribute("ShipCarrierList", ship.getShipCarrierList(cid));
+//		Shipping ship = new Shipping();
+		request.setAttribute("ShipCarrierList", shipping.getShipCarrierList(cid));
 
 		// CreditCard List
-		CreditCard cc = new CreditCard();
-		request.setAttribute("CreditCardList", cc.getCCTypeList(cid));
+//		CreditCard cc = new CreditCard();
+		request.setAttribute("CreditCardList", creditCard.getCCTypeList(cid));
 
 		// VendorCategoryList List
-		VendorCategory cv = new VendorCategory();
-		request.setAttribute("VendorCategoryList", cv.getCVCategoryList(cid));
+//		VendorCategory cv = new VendorCategory();
+		request.setAttribute("VendorCategoryList", vendorCategory.getCVCategoryList(cid));
 
 		/* Item List */
 
 		String compId = (String) request.getSession().getAttribute("CID");
-		InvoiceInfo invoice = new InvoiceInfo();
+//		InvoiceInfo invoice = new InvoiceInfo();
 		ArrayList itemList = new ArrayList();
-		itemList = invoice.getItemList(compId);
+		itemList = invoiceInfo.getItemList(compId);
 		request.setAttribute("ItemList", itemList);
 
-		CustomerInfo customer = new CustomerInfo();
-		customer.getServices(request, cid);
+//		CustomerInfo customer = new CustomerInfo();
+		customerInfo.getServices(request, cid);
 	}
 
 	public void addSupplierDetails(HttpServletRequest request) {
@@ -425,8 +463,8 @@ public class SalesDetails {
 		ArrayList CustomerDetails = new ArrayList();
 		sess.setAttribute("CustID", cvId);
 		CustomerDetails = customer.SearchCustomer(compId, cvId, form);
-		InvoiceInfo invoice = new InvoiceInfo();
-		invoice.getServices(request, compId, cvId);
+//		InvoiceInfo invoice = new InvoiceInfo();
+		invoiceInfo.getServices(request, compId, cvId);
 		request.setAttribute("CustomerDetails", CustomerDetails);
 	}
 
@@ -434,10 +472,10 @@ public class SalesDetails {
 	public void searchSelectedCustomer(String cvId, HttpServletRequest request, ActionForm form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		InvoiceInfo invoice = new InvoiceInfo();
+//		InvoiceInfo invoice = new InvoiceInfo();
 		// Loger.log("The Client vendor is from sales detail is " + cvId);
-		invoice.SearchselectedCustomer(compId, cvId, request);
-		invoice.getServices(request, compId, cvId);
+		invoiceInfo.SearchselectedCustomer(compId, cvId, request);
+		invoiceInfo.getServices(request, compId, cvId);
 		// request.setAttribute("CustomerDetails", CustomerDetails);
 	}
 
@@ -513,11 +551,11 @@ public class SalesDetails {
 	public void UpdateCustInfo(HttpServletRequest request, UpdateInvoiceDto uform) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		CustomerInfo customer = new CustomerInfo();
-		InvoiceInfo customer1 = new InvoiceInfo();
+//		CustomerInfo customer = new CustomerInfo();
+//		InvoiceInfo customer1 = new InvoiceInfo();
 		// String cvId=(String)sess.getAttribute("CustID");
 		String cvId = uform.getCustId();
-		customer.UpdateCustomer(compId, cvId);
+		customerInfo.UpdateCustomer(compId, cvId);
 
 		String istaxable = uform.getTaxAble();
 		Loger.log("The value of taxable is " + uform.getTaxAble());
@@ -562,7 +600,7 @@ public class SalesDetails {
 			fICharge = 1;
 
 		// UpdateInvoiceDto cfrm= new UpdateInvoiceDto();
-		customer1.insertCustomer(cvId, uform, compId, istax, isclient, indCharge, aFCharge, fICharge, "U");
+		invoiceInfo.insertCustomer(cvId, uform, compId, istax, isclient, indCharge, aFCharge, fICharge, "U");
 		updateInvoice(cvId, request);
 	}
 
@@ -934,64 +972,64 @@ public class SalesDetails {
 	/* Method for getting Invoice information */
 	public void getInvoiceInfo(HttpServletRequest request) throws SQLException {
 		String compId = (String) request.getSession().getAttribute("CID");
-		InvoiceInfo invoice = new InvoiceInfo();
-		ItemInfo item = new ItemInfo();
+//		InvoiceInfo invoice = new InvoiceInfo();
+//		ItemInfo item = new ItemInfo();
 		ArrayList ClientDetails = new ArrayList();
-		ClientDetails = invoice.customerDetails(compId, request);
+		ClientDetails = invoiceInfo.customerDetails(compId, request);
 		request.setAttribute("CDetails", ClientDetails);
 
 		ArrayList shAddr = new ArrayList();
 		String companyName = (String) request.getSession().getAttribute("user");
 		// System.out.println("CompanyName:"+companyName);
-		shAddr = invoice.shipAddress(companyName);
+		shAddr = invoiceInfo.shipAddress(companyName);
 		request.setAttribute("ShAddr", shAddr);
 
 		ArrayList billAddr = new ArrayList();
-		billAddr = invoice.billAddress(Integer.parseInt(compId), companyName);
+		billAddr = invoiceInfo.billAddress(Integer.parseInt(compId), companyName);
 		request.getSession().setAttribute("BillAddr", billAddr);
 
 		/* Invoice Style */
 		ArrayList InvoiceStyle = new ArrayList();
-		InvoiceStyle = invoice.getInvoiceStyle();
+		InvoiceStyle = invoiceInfo.getInvoiceStyle();
 		request.setAttribute("InvoiceStyle", InvoiceStyle);
 
 		/* Via Information */
 		ArrayList via = new ArrayList();
-		via = invoice.getVia(compId);
+		via = invoiceInfo.getVia(compId);
 		request.setAttribute("Via", via);
 
 		/* Rep Information */
 		ArrayList rep = new ArrayList();
-		rep = invoice.getRep(compId);
+		rep = invoiceInfo.getRep(compId);
 		request.getSession().setAttribute("Rep", rep);
 
 		/* Term Information */
 		ArrayList term = new ArrayList();
-		term = invoice.getTerm(compId);
+		term = invoiceInfo.getTerm(compId);
 		request.setAttribute("Term", term);
 
 		/* Term Information */
 		ArrayList payMethod = new ArrayList();
-		payMethod = invoice.getPayMethod(compId);
+		payMethod = invoiceInfo.getPayMethod(compId);
 		request.setAttribute("PayMethod", payMethod);
 
 		/* Messages */
 		ArrayList message = new ArrayList();
-		message = invoice.getMessage(compId);
+		message = invoiceInfo.getMessage(compId);
 		request.setAttribute("Message", message);
 
 		/* Tax */
 		ArrayList tax = new ArrayList();
-		tax = invoice.getTaxes(compId);
+		tax = invoiceInfo.getTaxes(compId);
 		request.setAttribute("Tax", tax);
 
 		/* Item List */
 		ArrayList itemList = new ArrayList();
-		itemList = invoice.getItemList(compId);
+		itemList = invoiceInfo.getItemList(compId);
 		request.setAttribute("ItemList", itemList);
 
 		ArrayList itemDetails = new ArrayList();
-		itemDetails = item.getItemList(compId);
+		itemDetails = itemInfo.getItemList(compId);
 		request.setAttribute("ItemDetails", itemList);
 	}
 
@@ -1457,11 +1495,11 @@ public class SalesDetails {
 	public void updateInvoice(String cvId, HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		InvoiceInfo invoice = new InvoiceInfo();
+//		InvoiceInfo invoice = new InvoiceInfo();
 		Loger.log("The Client vendor is from sales detail is " + cvId);
 
-		invoice.SearchCustomer(compId, cvId, request);
-		invoice.getServices(request, compId, cvId);
+		invoiceInfo.SearchCustomer(compId, cvId, request);
+		invoiceInfo.getServices(request, compId, cvId);
 		// request.setAttribute("CustomerDetails",CustomerDetails);
 	}
 
@@ -1653,8 +1691,8 @@ public class SalesDetails {
 
 	public void payHistory(String cvId, HttpServletRequest request) {
 		String compId = (String) request.getSession().getAttribute("CID");
-		InvoiceInfo invoice = new InvoiceInfo();
-		invoice.paymentHistory(cvId, compId, request);
+//		InvoiceInfo invoice = new InvoiceInfo();
+		invoiceInfo.paymentHistory(cvId, compId, request);
 
 	}
 
@@ -1734,11 +1772,11 @@ public class SalesDetails {
 	}
 
 	public void newEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
-		EstimationInfo estimation = new EstimationInfo();
+//		EstimationInfo estimation = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
-		String estNum = estimation.getNewEstimationNo(compId);
+		String estNum = estimationInfo.getNewEstimationNo(compId);
 		estimationDto.setPoNum(estNum);
-		InvoiceInfo invoice = new InvoiceInfo();
+//		InvoiceInfo invoice = new InvoiceInfo();
 		estimationDto.setOrderNo(estNum);
 		DateInfo date = new DateInfo();
 		int month = date.getMonth();
@@ -1758,7 +1796,7 @@ public class SalesDetails {
 		estimationDto.setOrderDate(da);
 
 		estimationDto.setCustID("0");
-		estimationDto.setInvoiceStyle(invoice.getDefaultInvoiceStyleNo(compId));
+		estimationDto.setInvoiceStyle(invoiceInfo.getDefaultInvoiceStyleNo(compId));
 		estimationDto.setVia("0");
 		estimationDto.setTerm("0");
 		estimationDto.setRep("0");
@@ -1787,19 +1825,19 @@ public class SalesDetails {
 	}
 
 	public void saveEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
-		EstimationInfo invoice = new EstimationInfo();
+//		EstimationInfo invoice = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		if (estimationDto.getOrderNo().contains("-")) {
 			String orderNo = estimationDto.getOrderNo();
 			estimationDto.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
 		}
-		boolean exist = invoice.estimationExist(compId, estimationDto.getOrderNo());
+		boolean exist = estimationInfo.estimationExist(compId, estimationDto.getOrderNo());
 		if (exist == true) {
-			boolean saveStatus = invoice.Update(compId, estimationDto);
+			boolean saveStatus = estimationInfo.Update(compId, estimationDto);
 			request.getSession().setAttribute("SaveStatus",
 					saveStatus ? "Estimation is updated successfully." : "Estimation is not updated successfully.");
 		} else {
-			boolean saveStatus = invoice.Save(compId, estimationDto);
+			boolean saveStatus = estimationInfo.Save(compId, estimationDto);
 			request.getSession().setAttribute("SaveStatus",
 					saveStatus ? "Estimation is saved successfully." : "Estimation is not saved successfully.");
 		}
@@ -1823,15 +1861,15 @@ public class SalesDetails {
 
 	public boolean deleteEstimation(HttpServletRequest request, EstimationDto estimationDto) throws SQLException {
 		boolean val = false;
-		EstimationInfo invoice = new EstimationInfo();
+//		EstimationInfo invoice = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
 		getInvoiceInfo(request);
 
 		String estNo = estimationDto.getOrderNo();
-		boolean exist = invoice.estimationExist(compId, estNo);
+		boolean exist = estimationInfo.estimationExist(compId, estNo);
 		if (exist == true) {
 			try {
-				invoice.Delete(compId, estNo);
+				estimationInfo.Delete(compId, estNo);
 				newEstimation(request, estimationDto);
 				request.setAttribute("SaveStatus", "Estimation is successfully deleted.");
 				val = true;
@@ -1930,25 +1968,25 @@ public class SalesDetails {
 	}
 
 	public void setUnitPriceEstimation(String companyID, int itemId, double price) {
-		CustomerInfo customer = new CustomerInfo();
-		customer.setUnitPriceEstimation(companyID, itemId, price);
+//		CustomerInfo customer = new CustomerInfo();
+		customerInfo.setUnitPriceEstimation(companyID, itemId, price);
 	}
 
 	public void setItemNameEstimation(String companyID, int itemId, String itemName) {
-		CustomerInfo customer = new CustomerInfo();
-		customer.setNewitemNameEstimation(companyID, itemId, itemName);
+//		CustomerInfo customer = new CustomerInfo();
+		customerInfo.setNewitemNameEstimation(companyID, itemId, itemName);
 	}
 
 	public void getSortedEstimationInfo(HttpServletRequest request, String sort) throws SQLException {
 		String compId = (String) request.getSession().getAttribute("CID");
-		InvoiceInfo invoice = new InvoiceInfo();
-		ItemInfo item = new ItemInfo();
+//		InvoiceInfo invoice = new InvoiceInfo();
+//		ItemInfo item = new ItemInfo();
 		ArrayList ClientDetails = new ArrayList();
 		if (sort.equals("Name")) {
-			ClientDetails = invoice.customerDetails(compId, request);
+			ClientDetails = invoiceInfo.customerDetails(compId, request);
 			System.out.println("Calling sortByName method and getting data:" + ClientDetails.toString());
 		} else {
-			ClientDetails = invoice.sortedcustomerDetails(compId, request, sort);
+			ClientDetails = invoiceInfo.sortedcustomerDetails(compId, request, sort);
 			System.out.println("Calling sortByLastName method and getting data:" + ClientDetails.toString());
 		}
 		request.setAttribute("CDetails", ClientDetails);
@@ -1956,51 +1994,51 @@ public class SalesDetails {
 		ArrayList shAddr = new ArrayList();
 		String companyName = (String) request.getSession().getAttribute("user");
 		// System.out.println("CompanyName:"+companyName);
-		shAddr = invoice.shipAddress(companyName);
+		shAddr = invoiceInfo.shipAddress(companyName);
 		request.setAttribute("ShAddr", shAddr);
 
 		ArrayList billAddr = new ArrayList();
-		billAddr = invoice.billAddress(Integer.parseInt(compId), companyName);
+		billAddr = invoiceInfo.billAddress(Integer.parseInt(compId), companyName);
 		request.getSession().setAttribute("BillAddr", billAddr);
 
 		/* Invoice Style */
 		ArrayList InvoiceStyle = new ArrayList();
-		InvoiceStyle = invoice.getInvoiceStyle();
+		InvoiceStyle = invoiceInfo.getInvoiceStyle();
 		request.setAttribute("InvoiceStyle", InvoiceStyle);
 
 		/* Via Information */
 		ArrayList via = new ArrayList();
-		via = invoice.getVia(compId);
+		via = invoiceInfo.getVia(compId);
 		request.setAttribute("Via", via);
 
 		/* Rep Information */
 		ArrayList rep = new ArrayList();
-		rep = invoice.getRep(compId);
+		rep = invoiceInfo.getRep(compId);
 		request.getSession().setAttribute("Rep", rep);
 
 		/* Term Information */
 		ArrayList term = new ArrayList();
-		term = invoice.getTerm(compId);
+		term = invoiceInfo.getTerm(compId);
 		request.setAttribute("Term", term);
 
 		/* Term Information */
 		ArrayList payMethod = new ArrayList();
-		payMethod = invoice.getPayMethod(compId);
+		payMethod = invoiceInfo.getPayMethod(compId);
 		request.setAttribute("PayMethod", payMethod);
 
 		/* Messages */
 		ArrayList message = new ArrayList();
-		message = invoice.getMessage(compId);
+		message = invoiceInfo.getMessage(compId);
 		request.setAttribute("Message", message);
 
 		/* Tax */
 		ArrayList tax = new ArrayList();
-		tax = invoice.getTaxes(compId);
+		tax = invoiceInfo.getTaxes(compId);
 		request.setAttribute("Tax", tax);
 
 		/* Item List */
 		ArrayList itemList = new ArrayList();
-		itemList = invoice.getItemList(compId);
+		itemList = invoiceInfo.getItemList(compId);
 		request.setAttribute("ItemList", itemList);
 
 	}

@@ -20,7 +20,10 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.common.TblInventoryUnitMeasure;
 import com.nxsol.bizcomposer.common.TblItemInventory;
-
+import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
+import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
+import com.nxsol.bzcomposer.company.utils.JpaHelper;
+import com.pritesh.bizcomposer.accounting.bean.BcaIteminventoryDto;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -32,8 +35,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigDecimal;
@@ -47,10 +54,16 @@ import java.util.*;
 /*
  * 
  */
+@Service
 public class ItemInfoDao {
-	
+
 //	private TblInventoryUnitMeasureRepository tTblInventoryUnitMeasureRepository;
 
+	@Autowired
+	private EntityManager entityManager;
+
+	@Autowired
+	BcaIteminventoryRepository bcaIteminventoryRepository;
 
 	public ArrayList getDicontinuedItemList(String datesCombo, String fromDate, String toDate, String sortBy,
 			String cId, HttpServletRequest request, ItemDto form) {
@@ -65,7 +78,7 @@ public class ItemInfoDao {
 		CustomerInfo cInfo = new CustomerInfo();
 		String dateBetween = "";
 
-		if (datesCombo != null && !datesCombo.equals("8")) {
+		if (datesCombo != null  && !datesCombo.equals("8")) {
 			if (datesCombo != null && !datesCombo.equals("")) {
 				selectedRange = dInfo.selectedIndex(Integer.parseInt(datesCombo));
 				if (!selectedRange.isEmpty() && selectedRange != null) {
@@ -1325,176 +1338,306 @@ public class ItemInfoDao {
 	}
 
 	public ArrayList getItemList(String compId) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> objList = new ArrayList<>();
-		ResultSet rs = null;
-		con = db.getConnection();
+//		ResultSet rs = null;
+//		con = db.getConnection();
 		try {
-			String sqlString = "SELECT a.InventoryID,a.ParentID,a.isCategory,a.InventoryCode,a.InventoryName,a.SalePrice,a.PurchasePrice,a.DealerPrice,"
-					+ "a.Qty,a.Weight,a.taxable,a.serialNum,a.itemtypeid,date_format(a.DateAdded,'%m-%d-%Y') as DateAdded, l.Name As Location, "
-					+ "date_format(a.DateReceived,'%m-%d-%Y') as DateReceived,a.Memo,a.ExpectedQty,b.InventoryCode AS Category,a.ReorderPoint "
-					+ " FROM bca_iteminventory AS a INNER JOIN bca_iteminventory AS b ON a.ParentID=b.InventoryID LEFT JOIN bca_location AS l ON l.LocationID=a.Location "
-					+ " WHERE a.CompanyID=" + compId
-					+ " AND a.ParentID<>0 AND a.Active=1 AND a.ItemtypeId<>0 ORDER BY a.ParentID";
+//			String sqlString = "SELECT a.InventoryID,a.ParentID,a.isCategory,a.InventoryCode,a.InventoryName,a.SalePrice,a.PurchasePrice,a.DealerPrice,"
+//					+ "a.Qty,a.Weight,a.taxable,a.serialNum,a.itemtypeid,date_format(a.DateAdded,'%m-%d-%Y') as DateAdded, l.Name As Location, "
+//					+ "date_format(a.DateReceived,'%m-%d-%Y') as DateReceived,a.Memo,a.ExpectedQty,b.InventoryCode AS Category,a.ReorderPoint "
+//					+ " FROM bca_iteminventory AS a INNER JOIN bca_iteminventory AS b ON a.ParentID=b.InventoryID LEFT JOIN bca_location AS l ON l.LocationID=a.Location "
+//					+ " WHERE a.CompanyID=" + compId
+//					+ " AND a.ParentID<>0 AND a.Active=1 AND a.ItemtypeId<>0 ORDER BY a.ParentID";
 
-			pstmt = con.prepareStatement(sqlString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			Loger.log(sqlString);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			StringBuffer query = new StringBuffer("select new " + BcaIteminventoryDto.class.getCanonicalName()
+					+ " (a.inventoryId , a.parentId , a.isCategory , a.inventoryCode , a.inventoryName , a.salePrice , a.purchasePrice , a.dealerPrice , a.qty , a.weight ,"
+					+ " a.taxable , a.serialNum , a.itemTypeId,date_format(a.dateAdded,'%m-%d-%Y') as dateAdded , l.name  as location , "
+					+ " date_format(a.dateReceived,'%m-%d-%Y') as dateRecieved , a.memo , a.expectedQty , a.inventoryCode as category , a.reorderPoint)  "
+					+ " from BcaIteminventory as a inner join BcaIteminventory as b on a.parentId = b.inventoryId left join BcaLocation as l on "
+					+ " l.locationId = a.location where a.company.companyId = :companyId and a.parentId <> 0 and a.active = :active and "
+					+ " a.itemTypeId <> 0 order by a.parentId  ");
+			TypedQuery<BcaIteminventoryDto> typedQuery = this.entityManager.createQuery(query.toString(),
+					BcaIteminventoryDto.class);
+			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.parseLong(compId));
+			JpaHelper.addParameter(typedQuery, query.toString(), "active", 1);
+
+			List<BcaIteminventoryDto> list = typedQuery.getResultList();
+			for (BcaIteminventoryDto dto : list) {
 				ItemDto item = new ItemDto();
-				item.setInventoryId(rs.getString("InventoryID"));
-				item.setParentID(rs.getString("ParentID"));
-				item.setTectcmd(rs.getInt("ParentID"));
-				item.setIscategory(rs.getString("isCategory"));
-				item.setItemCode(rs.getString("InventoryCode"));
-				item.setItemName(rs.getString("InventoryName"));
-				if (rs.getString("PurchasePrice") != null) {
-					item.setPurchasePrice(
-							String.valueOf(rs.getBigDecimal("PurchasePrice").setScale(2, BigDecimal.ROUND_HALF_UP)));
+				item.setInventoryId(dto.getInventoryId().toString());
+				item.setParentID(dto.getParentId().toString());
+				item.setTectcmd(dto.getParentId());
+				item.setIscategory(dto.getIsCategory().toString());
+				item.setItemCode(dto.getInventoryCode());
+				item.setItemName(dto.getInventoryName());
+				if (null != dto.getPurchasePrice()) {
+					item.setPurchasePrice(String
+							.valueOf(new BigDecimal(dto.getPurchasePrice()).setScale(2, BigDecimal.ROUND_HALF_UP)));
 				} else {
-					item.setPurchasePrice(rs.getString("PurchasePrice"));
+					item.setPurchasePrice(dto.getPurchasePrice().toString());
 				}
-				if (rs.getString("SalePrice") != null) {
+				if (dto.getSalePrice() != null) {
 					item.setSalePrice(
-							String.valueOf(rs.getBigDecimal("SalePrice").setScale(2, BigDecimal.ROUND_HALF_UP)));
+							String.valueOf(new BigDecimal(dto.getSalePrice()).setScale(2, BigDecimal.ROUND_HALF_UP)));
 				} else {
-					item.setSalePrice(rs.getString("SalePrice"));
+					item.setSalePrice(dto.getSalePrice().toString());
 				}
 
-				if (rs.getString("DealerPrice") != null) {
-					item.setDealerPrice(
-							String.valueOf(rs.getBigDecimal("DealerPrice").setScale(2, BigDecimal.ROUND_HALF_UP)));
+				if (dto.getDealerPrice() != null) {
+					item.setDealerPrice(String.valueOf(dto.getDealerPrice().setScale(2, BigDecimal.ROUND_HALF_UP)));
 				} else {
-					item.setDealerPrice(rs.getString("DealerPrice"));
+					item.setDealerPrice(dto.getDealerPrice().toString());
 				}
-				item.setQty(rs.getString("Qty"));
-				item.setWeight(rs.getString("Weight"));
-				item.setLocation(rs.getString("Location"));
-				item.setTaxable(rs.getString("taxable") == null ? "0" : rs.getString("taxable"));
-				item.setSerialNum(rs.getString("serialNum"));
-				item.setItemType(rs.getString("itemtypeid"));
-				item.setDateAdded(rs.getString("DateAdded"));
-				item.setDateReceived(rs.getString("DateReceived"));
-				if(Integer.parseInt(rs.getString("ExpectedQty"))<0) {
+				if (null != dto.getQty())
+					item.setQty(dto.getQty().toString());
+				item.setWeight(dto.getWeight().toString());
+				if (null != dto.getLocation())
+					item.setLocation(dto.getLocation());
+				item.setTaxable(dto.getTaxable() == null ? "0" : dto.getTaxable().toString());
+				if (dto.getSerialNum() != null) {
+					item.setSerialNum(dto.getSerialNum());
+				}
+				item.setItemType(dto.getItemTypeId().toString());
+				item.setDateAdded(dto.getDateAdded());
+				if (null != dto.getDateRecieved())
+					item.setDateReceived(dto.getDateRecieved());
+				if (dto.getExpectedQty() < 0) {
 					item.setExpectedQty("0");
-				}else {
-				item.setExpectedQty(rs.getString("ExpectedQty"));
+				} else {
+					item.setExpectedQty(dto.getExpectedQty().toString());
 				}
-				item.setMemo(rs.getString("Memo"));
-				item.setCategoryName(rs.getString("Category"));
-				item.setReorderPoint(rs.getInt("ReorderPoint"));
+				if (null != dto.getMemo())
+					item.setMemo(dto.getMemo());
+				item.setCategoryName(dto.getCategory());
+				if (null != dto.getReorderPoint())
+					item.setReorderPoint(dto.getReorderPoint());
 				objList.add(item);
 			}
-		} catch (SQLException ee) {
+
+//			pstmt = con.prepareStatement(sqlString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+//			Loger.log(sqlString);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				ItemDto item = new ItemDto();
+//				item.setInventoryId(rs.getString("InventoryID"));
+//				item.setParentID(rs.getString("ParentID"));
+//				item.setTectcmd(rs.getInt("ParentID"));
+//				item.setIscategory(rs.getString("isCategory"));
+//				item.setItemCode(rs.getString("InventoryCode"));
+//				item.setItemName(rs.getString("InventoryName"));
+//				if (rs.getString("PurchasePrice") != null) {
+//					item.setPurchasePrice(
+//							String.valueOf(rs.getBigDecimal("PurchasePrice").setScale(2, BigDecimal.ROUND_HALF_UP)));
+//				} else {
+//					item.setPurchasePrice(rs.getString("PurchasePrice"));
+//				}
+//				if (rs.getString("SalePrice") != null) {
+//					item.setSalePrice(
+//							String.valueOf(rs.getBigDecimal("SalePrice").setScale(2, BigDecimal.ROUND_HALF_UP)));
+//				} else {
+//					item.setSalePrice(rs.getString("SalePrice"));
+//				}
+//
+//				if (rs.getString("DealerPrice") != null) {
+//					item.setDealerPrice(
+//							String.valueOf(rs.getBigDecimal("DealerPrice").setScale(2, BigDecimal.ROUND_HALF_UP)));
+//				} else {
+//					item.setDealerPrice(rs.getString("DealerPrice"));
+//				}
+//				item.setQty(rs.getString("Qty"));
+//				item.setWeight(rs.getString("Weight"));
+//				item.setLocation(rs.getString("Location"));
+//				item.setTaxable(rs.getString("taxable") == null ? "0" : rs.getString("taxable"));
+//				item.setSerialNum(rs.getString("serialNum"));
+//				item.setItemType(rs.getString("itemtypeid"));
+//				item.setDateAdded(rs.getString("DateAdded"));
+//				item.setDateReceived(rs.getString("DateReceived"));
+//				if (Integer.parseInt(rs.getString("ExpectedQty")) < 0) {
+//					item.setExpectedQty("0");
+//				} else {
+//					item.setExpectedQty(rs.getString("ExpectedQty"));
+//				}
+//				item.setMemo(rs.getString("Memo"));
+//				item.setCategoryName(rs.getString("Category"));
+//				item.setReorderPoint(rs.getInt("ReorderPoint"));
+//				objList.add(item);
+//			}
+		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
 
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return objList;
 	}
 
 	public ArrayList SearchItem(String compId, String invId, ItemDto item, HttpServletRequest request) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
 		ArrayList<ItemDto> itemList = new ArrayList<>();
-		ResultSet rs = null;
-		con = db.getConnection();
+//		ResultSet rs = null;
+//		con = db.getConnection();
+		List<BcaIteminventory> itemInventories = null;
 		try {
-			String sqlString = "select * from bca_iteminventory where CompanyID=" + compId
-					+ " and Active=1 and ItemtypeId <> 0 ";
+//			String sqlString = "select * from bca_iteminventory where CompanyID=" + compId
+//					+ " and Active=1 and ItemtypeId <> 0 ";
 			if (invId != null) {
-				sqlString = sqlString + " and inventoryId = " + invId;
+//				sqlString = sqlString + " and inventoryId = " + invId;
+
+				itemInventories = bcaIteminventoryRepository.findByCompanyIdAndActiveAndItemTypeNotAndInventoryId(
+						Long.parseLong(compId), 1, 0, Integer.parseInt(invId));
+
+			} else {
+				itemInventories = bcaIteminventoryRepository
+						.findByCompanyIdAndActiveAndItemTypeIdNot(Long.parseLong(compId), 1, 0);
 			}
-			pstmt = con.prepareStatement(sqlString);
-			Loger.log(sqlString);
-			rs = pstmt.executeQuery();
-			String file = "";
-			while (rs.next()) {
+			for (BcaIteminventory rs : itemInventories) {
 				if (!itemList.isEmpty()) {
 					item = new ItemDto();
 				}
-				item.setInventoryId(rs.getString("InventoryId"));
-				item.setParentID(rs.getString("ParentID"));
-				item.setTectcmd(rs.getInt("ParentID"));
-				item.setItemSubCategory(rs.getInt("itemSubCategory"));
-				item.setItemCode(rs.getString("InventoryCode"));
-				item.setItemName(rs.getString("inventoryName"));
-				item.setPurchasePrice(rs.getString("PurchasePrice"));
-				item.setSalePrice(rs.getString("SalePrice"));
-				item.setDealerPrice(rs.getString("DealerPrice"));
-				item.setQty(rs.getString("Qty"));
-				item.setAvailableQty(rs.getString("AvailableQty"));
-				item.setWeight(rs.getString("weight"));
-				item.setLocation(rs.getString("location"));
-				item.setItemType(rs.getString("itemtypeid"));
-				item.setSerialNum(rs.getString("serialNum"));
-				item.setTaxable(rs.getString("taxable") == null ? "0" : rs.getString("taxable"));
-				item.setIscategory(rs.getString("isCategory"));
-				item.setConsignedItem(rs.getInt("isConsignedItem") == 1 ? true : false);
-				item.setDiscontinued(rs.getString("isDiscontinued"));
-				item.setItemTaxable(rs.getInt("isItemTaxable") == 1 ? true : false);
-				item.setDropShipping(rs.getInt("isDropShip") == 1 ? true : false);
-				item.setDiscounted(rs.getInt("isDiscounted") == 1 ? true : false);
-				item.setPrimarySupplier(rs.getInt("isPrimarySupplier") == 1 ? true : false);
+				item.setInventoryId(String.valueOf(rs.getInventoryId()));
+				item.setParentID(String.valueOf(rs.getParentId()));
+				item.setTectcmd(rs.getParentId());
+				item.setItemSubCategory(rs.getItemSubCategory());
+				item.setItemCode(rs.getInventoryCode());
+				item.setItemName(rs.getInventoryName());
+				item.setPurchasePrice(String.valueOf(rs.getPurchasePrice()));
+				item.setSalePrice(String.valueOf(rs.getSalePrice()));
+				item.setDealerPrice(String.valueOf(rs.getDealerPrice()));
+				item.setQty(String.valueOf(rs.getQty()));
+				item.setAvailableQty(String.valueOf(rs.getAvailableQty()));
+				item.setWeight(String.valueOf(rs.getWeight()));
+				item.setLocation(rs.getLocation());
+				item.setItemType(String.valueOf(rs.getItemTypeId()));
+				item.setSerialNum(String.valueOf(rs.getSerialNum()));
+				item.setTaxable(String.valueOf(rs.getTaxable()));
+				item.setIscategory(String.valueOf(rs.getIsCategory()));
+				item.setConsignedItem(rs.getIsConsignedItem());
+				item.setDiscontinued(String.valueOf(rs.getIsDiscontinued()));
+				item.setItemTaxable(rs.getIsItemTaxable());
+				item.setDropShipping(rs.getIsDropShip());
+				item.setDiscounted(rs.getIsDiscounted());
+				item.setPrimarySupplier(rs.getIsPrimarySupplier());
 
-				item.setInvTitle(rs.getString("inventoryDescription"));
-				item.setBarcode(rs.getString("InventoryBarCode"));
-				item.setDiscontinued(rs.getString("isDiscontinued"));
-				item.setFileName(rs.getString("PictureURL"));
-				item.setProductSKU(rs.getString("productSKU"));
-				item.setSupplierSKU(rs.getString("supplierSKU"));
-				item.setOrderUnit(rs.getInt("OrderUnit"));
-				item.setMinOrderUnit(rs.getInt("minOrderUnit"));
-				item.setReorderPoint(rs.getInt("ReorderPoint"));
-				item.setWeightUnit(rs.getInt("weightUnit"));
-				item.setSupplierIDs(rs.getString("supplierIDs"));
-				item.setActualWeight(rs.getString("actualWeight"));
-				item.setTextAreaContent(rs.getString("textAreaContent"));
-				item.setAccountId(rs.getInt("accountId"));
-				item.setLocationId(rs.getInt("Location"));
-				item.setMeasurementId(rs.getInt("measurementId"));
-				item.setSubmeasurementId(rs.getInt("subMeasurementId"));
+				item.setInvTitle(rs.getInventoryDescription());
+				item.setBarcode(rs.getInventoryBarCode());
+				item.setDiscontinued(String.valueOf(rs.getIsDiscontinued()));
+				item.setFileName(rs.getPictureUrl());
+				item.setProductSKU(rs.getProductSku());
+				item.setSupplierSKU(rs.getSupplierSku());
+				if (null != rs.getOrderUnit())
+					item.setOrderUnit(Integer.parseInt(rs.getOrderUnit()));
+				
+				
+				item.setMinOrderUnit(rs.getMinOrderUnit());
+				item.setReorderPoint(rs.getReorderPoint());
+				item.setWeightUnit(rs.getWeightUnit());
+				item.setSupplierIDs(rs.getSupplierIds());
+				item.setActualWeight(String.valueOf(rs.getActualWeight()));
+				item.setTextAreaContent(rs.getTextAreaContent());
+				item.setAccountId(rs.getAccountId());
+				item.setLocationId(Integer.parseInt(rs.getLocation()));
+				item.setMeasurementId(rs.getMeasurementId());
+				item.setSubmeasurementId(rs.getSubMeasurementId());
 
 				if (item.getIscategory().equals("true")) {
 					request.setAttribute("ISCategory", "1");
 				}
 				itemList.add(item);
 			}
+
+//			pstmt = con.prepareStatement(sqlString);
+//			Loger.log(sqlString);
+//			rs = pstmt.executeQuery();
+			String file = "";
+//			while (rs.next()) {
+//				if (!itemList.isEmpty()) {
+//					item = new ItemDto();
+//				}
+//				item.setInventoryId(rs.getString("InventoryId"));
+//				item.setParentID(rs.getString("ParentID"));
+//				item.setTectcmd(rs.getInt("ParentID"));
+//				item.setItemSubCategory(rs.getInt("itemSubCategory"));
+//				item.setItemCode(rs.getString("InventoryCode"));
+//				item.setItemName(rs.getString("inventoryName"));
+//				item.setPurchasePrice(rs.getString("PurchasePrice"));
+//				item.setSalePrice(rs.getString("SalePrice"));
+//				item.setDealerPrice(rs.getString("DealerPrice"));
+//				item.setQty(rs.getString("Qty"));
+//				item.setAvailableQty(rs.getString("AvailableQty"));
+//				item.setWeight(rs.getString("weight"));
+//				item.setLocation(rs.getString("location"));
+//				item.setItemType(rs.getString("itemtypeid"));
+//				item.setSerialNum(rs.getString("serialNum"));
+//				item.setTaxable(rs.getString("taxable") == null ? "0" : rs.getString("taxable"));
+//				item.setIscategory(rs.getString("isCategory"));
+//				item.setConsignedItem(rs.getInt("isConsignedItem") == 1 ? true : false);
+//				item.setDiscontinued(rs.getString("isDiscontinued"));
+//				item.setItemTaxable(rs.getInt("isItemTaxable") == 1 ? true : false);
+//				item.setDropShipping(rs.getInt("isDropShip") == 1 ? true : false);
+//				item.setDiscounted(rs.getInt("isDiscounted") == 1 ? true : false);
+//				item.setPrimarySupplier(rs.getInt("isPrimarySupplier") == 1 ? true : false);
+//
+//				item.setInvTitle(rs.getString("inventoryDescription"));
+//				item.setBarcode(rs.getString("InventoryBarCode"));
+//				item.setDiscontinued(rs.getString("isDiscontinued"));
+//				item.setFileName(rs.getString("PictureURL"));
+//				item.setProductSKU(rs.getString("productSKU"));
+//				item.setSupplierSKU(rs.getString("supplierSKU"));
+//				item.setOrderUnit(rs.getInt("OrderUnit"));
+//				item.setMinOrderUnit(rs.getInt("minOrderUnit"));
+//				item.setReorderPoint(rs.getInt("ReorderPoint"));
+//				item.setWeightUnit(rs.getInt("weightUnit"));
+//				item.setSupplierIDs(rs.getString("supplierIDs"));
+//				item.setActualWeight(rs.getString("actualWeight"));
+//				item.setTextAreaContent(rs.getString("textAreaContent"));
+//				item.setAccountId(rs.getInt("accountId"));
+//				item.setLocationId(rs.getInt("Location"));
+//				item.setMeasurementId(rs.getInt("measurementId"));
+//				item.setSubmeasurementId(rs.getInt("subMeasurementId"));
+//
+//				if (item.getIscategory().equals("true")) {
+//					request.setAttribute("ISCategory", "1");
+//				}
+//				itemList.add(item);
+//			}
 			request.setAttribute("FileName", file);
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
 
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		} 
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return itemList;
 	}
 

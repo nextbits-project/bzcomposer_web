@@ -8,6 +8,9 @@ package com.avibha.bizcomposer.sales.dao;
 
 import java.math.BigDecimal;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class SalesBoard {
 	private int invoiceID;
 
@@ -767,4 +770,20 @@ public class SalesBoard {
 		this.isPaymentCompleted = isPaymentCompleted;
 	}
 
+	public SalesBoard( String lastName,String firstName, String email, String address1, String address2, String city, String state,
+			String country, String zipCode,String companyName) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address1 = address1;
+		this.address2 = address2;
+		this.city = city;
+		this.state = state;
+		this.country = country;
+		this.zipCode = zipCode;
+		this.email = email;
+		this.companyName =companyName;
+	}
+		
+	
 }

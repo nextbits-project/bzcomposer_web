@@ -13,9 +13,11 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -39,10 +41,41 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.nxsol.bzcomposer.company.domain.BcaAccount;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendorservice;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaCreditcardtype;
 import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
+import com.nxsol.bzcomposer.company.domain.BcaCvtype;
+import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
+import com.nxsol.bzcomposer.company.domain.BcaLabel;
+import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
+import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
+import com.nxsol.bzcomposer.company.domain.BcaSalestax;
+import com.nxsol.bzcomposer.company.domain.BcaServicetype;
+import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
+import com.nxsol.bzcomposer.company.domain.BcaTerm;
+import com.nxsol.bzcomposer.company.domain.SmdCvinfo;
+import com.nxsol.bzcomposer.company.domain.StorageClientvendor;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCreditcardtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
+import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLabelRepository;
+import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaSalesrepRepository;
+import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
+import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
+import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
+import com.nxsol.bzcomposer.company.repos.SmdCvinfoRepository;
+import com.nxsol.bzcomposer.company.repos.StorageClientvendorRepository;
+import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
+import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.nxsol.bzcomposer.company.utils.JpaHelper;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
@@ -52,13 +85,63 @@ import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
  */
 @Service
 public class CustomerInfoDao {
-	
-//	@PersistenceContext
-//	private EntityManager entityManager;
-	
+
+	@Autowired
+	private EntityManager entityManager;
+
+	@Autowired
+	private BcaLabelRepository bcaLabelRepository;
+
 	@Autowired
 	private BcaClientvendorRepository bcaClientvendorRepository;
-	
+
+	@Autowired
+	private BcaIteminventoryRepository bcaIteminventoryRepository;
+
+	@Autowired
+	private BcaServicetypeRepository bcaServicetypeRepository;
+
+	@Autowired
+	private BcaInvoicestyleRepository bcaInvoicestyleRepository;
+
+	@Autowired
+	private BcaCompanyRepository bcaCompanyRepository;
+
+	@Autowired
+	private BcaTermRepository bcaTermRepository;
+
+	@Autowired
+	private BcaShipcarrierRepository bcaShipcarrierRepository;
+
+	@Autowired
+	private BcaSalesrepRepository bcaSalesrepRepository;
+
+	@Autowired
+	private BcaPaymenttypeRepository bcaPaymenttypeRepository;
+
+	@Autowired
+	private BcaSalestaxRepository bcaSalestaxRepository;
+
+	@Autowired
+	private BcaCreditcardtypeRepository bcaCreditcardtypeRepository;
+
+	@Autowired
+	private BcaCvtypeRepository bcaCvtypeRepository;
+
+	@Autowired
+	private StorageClientvendorRepository storageClientvendorRepository;
+
+	@Autowired
+	private CountryState countryState;
+	@Autowired
+	private VendorCategory vendorCategory;
+
+	@Autowired
+	private PurchaseInfo purchaseInfo;
+
+	@Autowired
+	private SmdCvinfoRepository smdCvinfoRepository;
+
 	public ArrayList<CustomerDto> customerDetails(String compId) {
 
 //		Connection con = null;
@@ -80,8 +163,7 @@ public class CustomerInfoDao {
 //					+ "LEFT JOIN bca_invoice as i ON i.ClientVendorID=c.ClientVendorID AND NOT (i.invoiceStatus=1) AND i.IsPaymentCompleted = 0 AND i.InvoiceTypeID IN (1,13,17) "
 //					+ "WHERE c.CompanyID = " + compId
 //					+ " AND CVTypeID IN (1, 2) AND c.Status IN ('U', 'N') AND c.Deleted = 0 AND c.Active=1 ORDER BY c.Name";
-			
-			
+
 //			String query = " select distinct c.clientVendorId , c.name ,c.customerTitle, c.firstName , c.lastName , c.address1, c.address2, c.city, c.state , c.zipCode , c.country , "
 //					+ "c.email , c.phone , c.cellPhone , c.fax ,date_format(c.dateAdded , '%m-%d-%Y') as dateAdded , i.isPaymentCompleted , c.cvcategoryName, ct.name as cityName , st.name as stateName , cn.name as countryName "
 //					+ ", c.DBAName  from BcaClientvendor as c left join BcaCountries as cn on cn.Id =c.country left join BcaStates as st on st.Id =c.state left join BcaCities as ct on ct.Id = c.city"
@@ -93,18 +175,18 @@ public class CustomerInfoDao {
 //			List<?> list=typedQuery.getResultList();
 //			int size =list.size();
 //			
-			
+
 			List<CustomerDto> listOfCustomer = bcaClientvendorRepository.findCustomerInfo(new Long(compId));
-			for(CustomerDto  customer:listOfCustomer) {
+			for (CustomerDto customer : listOfCustomer) {
 				for (LabelValueBean lvBean : titleList) {
 					if (lvBean.getValue().equalsIgnoreCase(customer.getTitle())) {
 						customer.setTitle(lvBean.getLabel());
 						break;
 					}
-				}	
+				}
 				objList.add(customer);
 			}
-			
+
 //			pstmt = con.prepareStatement(sqlString);
 			// Loger.log(sqlString);
 //			rs = pstmt.executeQuery();
@@ -473,9 +555,6 @@ public class CustomerInfoDao {
 		return balance;
 	}
 
-	@Autowired
-	private BcaCvtypeRepository bcaCvtypeRepository;
-	
 	public int getCustomerTypeId(String customerType) {
 		int cvTypeId = 0;
 //		Statement stmt = null;
@@ -488,14 +567,14 @@ public class CustomerInfoDao {
 //			String strSql = "SELECT CVTypeID from bca_cvtype " + "WHERE name='" + customerType + "'";
 //			stmt = con.createStatement();
 //			rst = stmt.executeQuery(strSql);
-			List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
+		List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
 //			if (rst.next()) {
 //				cvTypeId = rst.getInt("CVTypeID");
 //			}
-			
-			if ( CVTypeIDs.size() > 0  ) {
-				cvTypeId = CVTypeIDs.get(0);
-			}
+
+		if (CVTypeIDs.size() > 0) {
+			cvTypeId = CVTypeIDs.get(0);
+		}
 
 //		} catch (Exception e) {
 //
@@ -909,136 +988,177 @@ public class CustomerInfoDao {
 	}
 
 	public void getLabel(int lblId, CustomerDto label) {
-		Connection con = null;
-		PreparedStatement pstmt_lbl = null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		con = db.getConnection();
+//		Connection con = null;
+//		PreparedStatement pstmt_lbl = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		con = db.getConnection();
 
 		try {
-			pstmt_lbl = con.prepareStatement(
-					"select ID,LabelType,Mar_Top,Mar_Left,Size_Width,Size_Height,Spacing_Hor,Spacing_Vert from bca_label where ID=?");
-			pstmt_lbl.setInt(1, lblId);
-			rs = pstmt_lbl.executeQuery();
-			if (rs.next()) {
 
-				label.setLabelType(rs.getInt("ID"));
-				label.setLabelName(rs.getString("LabelType"));
-				label.setTopMargin(rs.getString("Mar_Top"));
-				label.setLeftMargin(rs.getString("Mar_Left"));
-				label.setLabelWidth(rs.getString("Size_Width"));
-				label.setLabelHeight(rs.getString("Size_Height"));
-				label.setVertical(rs.getString("Spacing_Vert"));
-				label.setHorizon(rs.getString("Spacing_Hor"));
-
+			Optional<BcaLabel> bcaLabel = bcaLabelRepository.findById(lblId);
+			if (bcaLabel.isPresent()) {
+				BcaLabel bca_label = bcaLabel.get();
+				label.setLabelType(bca_label.getId());
+				label.setLabelName(bca_label.getLabelType());
+				label.setTopMargin(String.valueOf(bca_label.getMarTop()));
+				label.setLeftMargin(String.valueOf(bca_label.getMarLeft()));
+				label.setLabelWidth(String.valueOf(bca_label.getSizeWidth()));
+				label.setLabelHeight(String.valueOf(bca_label.getSizeHeight()));
+				label.setVertical(String.valueOf(bca_label.getSpacingVert()));
+				label.setHorizon(String.valueOf(bca_label.getSpacingHor()));
 			}
+//			pstmt_lbl = con.prepareStatement(
+//					"select ID,LabelType,Mar_Top,Mar_Left,Size_Width,Size_Height,Spacing_Hor,Spacing_Vert from bca_label where ID=?");
+//			pstmt_lbl.setInt(1, lblId);
+//			rs = pstmt_lbl.executeQuery();
+//			if (rs.next()) {
+//
+//				label.setLabelType(rs.getInt("ID"));
+//				label.setLabelName(rs.getString("LabelType"));
+//				label.setTopMargin(rs.getString("Mar_Top"));
+//				label.setLeftMargin(rs.getString("Mar_Left"));
+//				label.setLabelWidth(rs.getString("Size_Width"));
+//				label.setLabelHeight(rs.getString("Size_Height"));
+//				label.setVertical(rs.getString("Spacing_Vert"));
+//				label.setHorizon(rs.getString("Spacing_Hor"));
+//
+//			}
 
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt_lbl != null) {
-					db.close(pstmt_lbl);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt_lbl != null) {
+//					db.close(pstmt_lbl);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 	}
 
 	public ArrayList labelTypeDetails() {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
 		ArrayList<CustomerDto> objList = new ArrayList<>();
-		ResultSet rs = null;
-		con = db.getConnection();
+//		ResultSet rs = null;
+//		con = db.getConnection();
 
 		try {
-			pstmt = con.prepareStatement(
-					"select ID,LabelType,Mar_Top,Mar_Left,Size_Width,Size_Height,Spacing_Hor,Spacing_Vert from bca_label order by LabelType");
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			List<BcaLabel> bcaLabel = bcaLabelRepository.findAllByOrderByLabelType();
+			for (BcaLabel bca_label : bcaLabel) {
 				CustomerDto label = new CustomerDto();
-				label.setLabelType(rs.getInt("ID"));
-				label.setLabelName(rs.getString("LabelType"));
-				label.setTopMargin(rs.getString("Mar_Top"));
-				label.setLeftMargin(rs.getString("Mar_Left"));
-				label.setLabelWidth(rs.getString("Size_Width"));
-				label.setLabelHeight(rs.getString("Size_Height"));
-				label.setVertical(rs.getString("Spacing_Vert"));
-				label.setHorizon(rs.getString("Spacing_Hor"));
+				label.setLabelType(bca_label.getId());
+				label.setLabelName(bca_label.getLabelType());
+				label.setTopMargin(String.valueOf(bca_label.getMarTop()));
+				label.setLeftMargin(String.valueOf(bca_label.getMarLeft()));
+				label.setLabelWidth(String.valueOf(bca_label.getSizeWidth()));
+				label.setLabelHeight(String.valueOf(bca_label.getSizeHeight()));
+				label.setVertical(String.valueOf(bca_label.getSpacingVert()));
+				label.setHorizon(String.valueOf(bca_label.getSpacingHor()));
 				objList.add(label);
-
 			}
+//			pstmt = con.prepareStatement(
+//					"select ID,LabelType,Mar_Top,Mar_Left,Size_Width,Size_Height,Spacing_Hor,Spacing_Vert from bca_label order by LabelType");
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				CustomerDto label = new CustomerDto();
+//				label.setLabelType(rs.getInt("ID"));
+//				label.setLabelName(rs.getString("LabelType"));
+//				label.setTopMargin(rs.getString("Mar_Top"));
+//				label.setLeftMargin(rs.getString("Mar_Left"));
+//				label.setLabelWidth(rs.getString("Size_Width"));
+//				label.setLabelHeight(rs.getString("Size_Height"));
+//				label.setVertical(rs.getString("Spacing_Vert"));
+//				label.setHorizon(rs.getString("Spacing_Hor"));
+//				objList.add(label);
+//
+//			}
 
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return objList;
 	}
 
 	public void saveLabel(CustomerDto form) {
-		Connection con = null;
-		PreparedStatement pstmt = null, pstmt1;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		con = db.getConnection();
+
+//		Connection con = null;
+//		PreparedStatement pstmt = null, pstmt1;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		con = db.getConnection();
 
 		try {
-			int labelID = 0;
-			pstmt1 = con.prepareStatement("select max(ID)+1 from bca_label");
-			rs = pstmt1.executeQuery();
-			if (rs.next()) {
-				labelID = rs.getInt(1);
-			}
-			pstmt = con.prepareStatement("insert into bca_label values(?,\"" + form.getLabelName() + "\",?,?,?,?,?,?)");
-			pstmt.setInt(1, labelID);
-			pstmt.setString(2, form.getTopMargin());
-			pstmt.setString(3, form.getLeftMargin());
-			pstmt.setString(4, form.getLabelWidth());
-			pstmt.setString(5, form.getLabelHeight());
-			pstmt.setString(6, form.getHorizon());
-			pstmt.setString(7, form.getVertical());
-			pstmt.executeUpdate();
+//			int labelID = 0;
+//			pstmt1 = con.prepareStatement("select max(ID)+1 from bca_label");
+//			rs = pstmt1.executeQuery();
+//			if (rs.next()) {
+//				labelID = rs.getInt(1);
+//			}
 
-		} catch (SQLException ee) {
+			BcaLabel bcaLabel = new BcaLabel();
+			bcaLabel.setLabelType(form.getLabelName());
+			bcaLabel.setMarTop(Double.parseDouble(form.getTopMargin()));
+			bcaLabel.setMarLeft(Double.parseDouble(form.getLeftMargin()));
+			bcaLabel.setSizeWidth(Double.parseDouble(form.getLabelWidth()));
+			bcaLabel.setSizeHeight(Double.parseDouble(form.getLabelHeight()));
+			bcaLabel.setSpacingHor(Double.parseDouble(form.getHorizon()));
+			bcaLabel.setSpacingVert(Double.parseDouble(form.getVertical()));
+
+			bcaLabelRepository.save(bcaLabel);
+//			pstmt = con.prepareStatement("insert into bca_label values(?,\"" + form.getLabelName() + "\",?,?,?,?,?,?)");
+//			pstmt.setInt(1, labelID);
+//			pstmt.setString(2, form.getTopMargin());
+//			pstmt.setString(3, form.getLeftMargin());
+//			pstmt.setString(4, form.getLabelWidth());
+//			pstmt.setString(5, form.getLabelHeight());
+//			pstmt.setString(6, form.getHorizon());
+//			pstmt.setString(7, form.getVertical());
+//			pstmt.executeUpdate();
+
+		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 	}
 
 	public void deleteLabel(int lblId, CustomerDto form) {
@@ -1090,10 +1210,10 @@ public class CustomerInfoDao {
 	}
 
 	public void updateLabel(int labelID, CustomerDto form) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
 
 		try {
 			if (form.getTopMargin().equals("")) {
@@ -1117,31 +1237,46 @@ public class CustomerInfoDao {
 			Loger.log("TOP_____________" + form.getTopMargin());
 			Loger.log("NAME_____________" + form.getLabelName());
 			Loger.log("HERTICAL_____________" + form.getHorizon());
-			pstmt = con.prepareStatement("update bca_label set LabelType=\"" + form.getLabelName()
-					+ "\",Mar_Top=?,Mar_Left=?,Size_Width=?,Size_Height=?,Spacing_Hor=?,Spacing_Vert=? where ID=?");
-			pstmt.setString(1, form.getTopMargin());
-			pstmt.setString(2, form.getLeftMargin());
-			pstmt.setString(3, form.getLabelWidth());
-			pstmt.setString(4, form.getLabelHeight());
-			pstmt.setString(5, form.getHorizon());
-			pstmt.setString(6, form.getVertical());
-			pstmt.setInt(7, labelID);
-			pstmt.executeUpdate();
 
-		} catch (SQLException ee) {
-			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+			Optional<BcaLabel> bca_label = bcaLabelRepository.findById(labelID);
+			if (bca_label.isPresent()) {
+				BcaLabel bcaLabel = bca_label.get();
+				bcaLabel.setLabelType(form.getLabelName());
+				bcaLabel.setMarTop(Double.parseDouble(form.getTopMargin()));
+				bcaLabel.setMarLeft(Double.parseDouble(form.getLeftMargin()));
+				bcaLabel.setSizeWidth(Double.parseDouble(form.getLabelWidth()));
+				bcaLabel.setSizeHeight(Double.parseDouble(form.getLabelHeight()));
+				bcaLabel.setSpacingHor(Double.parseDouble(form.getHorizon()));
+				bcaLabel.setSpacingVert(Double.parseDouble(form.getVertical()));
+				bcaLabelRepository.save(bcaLabel);
 			}
+
+//			pstmt = con.prepareStatement("update bca_label set LabelType=\"" + form.getLabelName()
+//					+ "\",Mar_Top=?,Mar_Left=?,Size_Width=?,Size_Height=?,Spacing_Hor=?,Spacing_Vert=? where ID=?");
+//			pstmt.setString(1, form.getTopMargin());
+//			pstmt.setString(2, form.getLeftMargin());
+//			pstmt.setString(3, form.getLabelWidth());
+//			pstmt.setString(4, form.getLabelHeight());
+//			pstmt.setString(5, form.getHorizon());
+//			pstmt.setString(6, form.getVertical());
+//			pstmt.setInt(7, labelID);
+//			pstmt.executeUpdate();
+
+		} catch (Exception ee) {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
 		}
+//		finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 	}
 
 	public ArrayList SearchCustomer(String compId, String cvId, CustomerDto customer) {
@@ -1315,7 +1450,9 @@ public class CustomerInfoDao {
 		}
 		return objList;
 	}
-private BcaCvcreditcardRepository bcaCvcreditcardRepository;
+
+	private BcaCvcreditcardRepository bcaCvcreditcardRepository;
+
 	public boolean makeCustomerCardDefault(String cvID, String cardID) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -1327,30 +1464,30 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 //			String sqlString = "select * from bca_cvcreditcard where DEFAULTCard=1 AND ClientVendorID=" + cvID;
 //			stmt = con.createStatement();
 //			rs = stmt.executeQuery(sqlString);
-			List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByDefaultCardAndClientVendorId(1,Integer.parseInt(cvID)); 
+		List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByDefaultCardAndClientVendorId(1,
+				Integer.parseInt(cvID));
 //			if (rs.next()) {
 //				long ccID = rs.getInt("CreditCardID");
 //				sqlString = "update bca_cvcreditcard set DEFAULTCard=0 where CreditCardID = " + ccID;
 //				pstmt = con.prepareStatement(sqlString);
 //				int count = pstmt.executeUpdate(sqlString);
 //			}
-			for(BcaCvcreditcard bcaCvcreditcard : bcaCvcreditcards)
-			{
-				long ccID = bcaCvcreditcard.getCreditCardId();
+		for (BcaCvcreditcard bcaCvcreditcard : bcaCvcreditcards) {
+			long ccID = bcaCvcreditcard.getCreditCardId();
 //				sqlString = "update bca_cvcreditcard set DEFAULTCard=0 where CreditCardID = " + ccID;
 //				pstmt = con.prepareStatement(sqlString);
-				
+
 //				int count = pstmt.executeUpdate(sqlString);
-				int count = bcaCvcreditcardRepository.updateByCreditCardId(0,ccID);
-			}
+			int count = bcaCvcreditcardRepository.updateByCreditCardId(0, ccID);
+		}
 //			sqlString = "update bca_cvcreditcard set DEFAULTCard=1 where CreditCardID = " + cardID;
 //			pstmt2 = con.prepareStatement(sqlString);
 //			int count = pstmt2.executeUpdate(sqlString);
-			int count = bcaCvcreditcardRepository.updateByCreditCardId(1,Long.valueOf(cardID));// JPA Check
-			if (count > 0) {
-				valid = true;
-			}
-			
+		int count = bcaCvcreditcardRepository.updateByCreditCardId(1, Long.valueOf(cardID));// JPA Check
+		if (count > 0) {
+			valid = true;
+		}
+
 //		} catch (SQLException ee) {
 //			Loger.log(2, " SQL Error in Class CustomerInfo and  method -makeCustomerCardDefault " + ee.toString());
 //
@@ -1416,16 +1553,16 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 
 //	Insert Customer into storage_clientvendor
 	public boolean insertCustomerStorage(CustomerDto c, String compID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement ps = null, pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement ps = null, pstmt = null;
 		boolean ret = false;
 		try {
 			String oBal = "0.0";
 			String exCredit = "0.0";
 			String status = "N";
-			PurchaseInfo pinfo = new PurchaseInfo();
-			int cvID = pinfo.getLastClientVendorID();
+//			PurchaseInfo pinfo = new PurchaseInfo();
+			int cvID = purchaseInfo.getLastClientVendorID();
 
 			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
 				oBal = c.getOpeningUB();
@@ -1433,89 +1570,178 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 			if (c.getExtCredit() != null && c.getExtCredit().trim().length() > 0)
 				exCredit = c.getExtCredit();
 
-			VendorCategory vc = new VendorCategory();
-			String vcName = vc.CVCategory(c.getType());
+//			VendorCategory vc = new VendorCategory();
+			String vcName = vendorCategory.CVCategory(c.getType());
 
-			String sqlString = "insert into storage_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
-					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,ResellerTaxID,VendorOpenDebit,"
-					+ " VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,isPhoneMobileNumber,isMobilePhoneNumber,"
-					+ " MiddleName,DateInput,DateTerminated,isTerminated,DBAName, TermID,SalesRepID,ShipCarrierID,PaymentTypeID,CCTypeID, CustomerGroupID) "
-					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+//			String sqlString = "insert into storage_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
+//					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,ResellerTaxID,VendorOpenDebit,"
+//					+ " VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,isPhoneMobileNumber,isMobilePhoneNumber,"
+//					+ " MiddleName,DateInput,DateTerminated,isTerminated,DBAName, TermID,SalesRepID,ShipCarrierID,PaymentTypeID,CCTypeID, CustomerGroupID) "
+//					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setInt(1, cvID);
-			pstmt.setString(2, c.getCname());
-			pstmt.setDate(3, (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ")
-					: string2date(c.getDateAdded()));
-			pstmt.setString(4, c.getTitle());
-			pstmt.setString(5, c.getFirstName());
-			pstmt.setString(6, c.getLastName());
-			pstmt.setString(7, c.getAddress1());
-			pstmt.setString(8, c.getAddress2());
-			pstmt.setString(9, c.getCity());
-			pstmt.setString(10, c.getState());
-			pstmt.setString(11, c.getProvince());
-			pstmt.setString(12, c.getCountry());
-			pstmt.setString(13, c.getZipCode());
-			pstmt.setString(14, c.getPhone());
-			pstmt.setString(15, c.getCellPhone());
-			pstmt.setString(16, c.getFax());
-			pstmt.setString(17, c.getHomePage());
-			pstmt.setString(18, c.getEmail());
-			pstmt.setString(19, compID);
-			pstmt.setString(20, c.getTexID());
-			pstmt.setDouble(21, Double.parseDouble(oBal));
-			pstmt.setDouble(22, Double.parseDouble(exCredit));
-			pstmt.setString(23, c.getMemo());
-			pstmt.setString(24, c.getTaxAble());
-			pstmt.setString(25, c.getIsclient());
-			pstmt.setString(26, c.getType());
-			pstmt.setString(27, vcName);
-			pstmt.setString(28, "1");
-			pstmt.setString(29, "0");
-			pstmt.setString(30, status);
-			pstmt.setBoolean(31, c.isIsPhoneMobileNumber());
-			pstmt.setBoolean(32, c.isIsMobilePhoneNumber());
-			pstmt.setString(33, c.getMiddleName());
-			pstmt.setDate(34, (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
-					: string2date(c.getDateInput()));
-			pstmt.setDate(35, (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
-					: string2date(c.getTerminatedDate()));
-			pstmt.setBoolean(36, c.isTerminated());
-			pstmt.setString(37, c.getDbaName());
-			pstmt.setInt(38,
-					(c.getTerm() == null || c.getTerm().trim().equals("")) ? 0 : Integer.parseInt(c.getTerm())); // c.getTerm()
-			pstmt.setString(39, (c.getRep() == null || c.getRep().trim().equals("")) ? null : c.getRep()); // c.getRep()
-			pstmt.setString(40, c.getShipping());
-			pstmt.setString(41,
-					(c.getPaymentType() == null || c.getPaymentType().trim().equals("")) ? null : c.getPaymentType()); // c.getPaymentType()
-			pstmt.setString(42, "".equalsIgnoreCase(c.getCcType()) ? null : c.getCcType());
-			pstmt.setString(43, c.getCustomerGroup());
-			Loger.log(sqlString);
-			int num = pstmt.executeUpdate();
-			if (num > 0) {
+			StorageClientvendor scv = new StorageClientvendor();
+			Optional<BcaClientvendor> bcaClientVendor = bcaClientvendorRepository.findById(cvID);
+			if (bcaClientVendor.isPresent())
+				scv.setClientVendor(bcaClientVendor.get());
+			scv.setName(c.getCname());
+			Date dateAdded = (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ")
+					: string2date(c.getDateAdded());
+			scv.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
+			scv.setCustomerTitle(c.getTitle());
+			scv.setFirstName(c.getFirstName());
+			scv.setLastName(c.getLastName());
+			scv.setAddress1(c.getAddress1());
+			scv.setAddress2(c.getAddress2());
+			scv.setCity(c.getCity());
+			scv.setState(c.getState());
+			scv.setProvince(c.getProvince());
+			scv.setCountry(c.getCountry());
+			scv.setZipCode(c.getZipCode());
+			scv.setPhone(c.getPhone());
+			scv.setCellPhone(c.getCellPhone());
+			scv.setFax(c.getFax());
+			scv.setHomePage(c.getHomePage());
+			scv.setEmail(c.getEmail());
+			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
+			if (company.isPresent())
+				scv.setCompany(company.get());
+
+			scv.setResellerTaxId(c.getTexID());
+			scv.setVendorOpenDebit(Double.parseDouble(oBal));
+			scv.setVendorAllowedCredit(Double.parseDouble(exCredit));
+			scv.setDetail(c.getMemo());
+			if (null != c.getTaxAble())
+
+				scv.setTaxable(Long.parseLong(c.getTaxAble()));
+
+			Optional<BcaCvtype> cvType = bcaCvtypeRepository.findById(Integer.parseInt(c.getIsclient()));
+			if (cvType.isPresent()) {
+				scv.setCvtype(cvType.get());
+			}
+			scv.setCvcategory(null);
+			scv.setCvcategoryName(vcName);
+			scv.setActive(1);
+			scv.setDeleted(0);
+			scv.setStatus(status);
+			scv.setIsPhoneMobileNumber(c.isIsPhoneMobileNumber());
+			scv.setIsMobilePhoneNumber(c.isIsMobilePhoneNumber());
+			scv.setMiddleName(c.getMiddleName());
+			Date dateInput = (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
+					: string2date(c.getDateInput());
+			scv.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
+			Date dateTerminated = (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
+					: string2date(c.getTerminatedDate());
+			scv.setDateTerminated(DateHelper.convertDateToOffsetDateTime(dateTerminated));
+
+			scv.setIsTerminated(c.isTerminated());
+			scv.setDbaname(c.getDbaName());
+
+			int termId = (c.getTerm() == null || c.getTerm().trim().equals("")) ? 0 : Integer.parseInt(c.getTerm());
+			Optional<BcaTerm> term = bcaTermRepository.findById(termId);
+			if (term.isPresent())
+				scv.setTerm(term.get());
+			int salesRepId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(c.getRep());
+			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesRepId);
+			if (salesRep.isPresent())
+				scv.setSalesRep(salesRep.get());
+
+			Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(c.getShipping()));
+			if (shipCarrier.isPresent())
+				scv.setShipCarrier(shipCarrier.get());
+			int paymentTypeId = (c.getPaymentType() == null || c.getPaymentType().trim().equals("")) ? 0
+					: Integer.parseInt(c.getPaymentType());
+			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(paymentTypeId);
+			if (paymentType.isPresent())
+				scv.setPaymentType(paymentType.get());
+			if (null != c.getCcType()) {
+				Optional<BcaCreditcardtype> creditcardtype = bcaCreditcardtypeRepository
+						.findById(Integer.parseInt(c.getCcType()));
+				if (creditcardtype.isPresent())
+					scv.setCctype(creditcardtype.get());
+			}
+			if (null != c.getCustomerGroup())
+				scv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
+			scv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
+
+			StorageClientvendor save = storageClientvendorRepository.save(scv);
+			if (null != save) {
 				ret = true;
 			}
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setInt(1, cvID);
+//			pstmt.setString(2, c.getCname());
+//			pstmt.setDate(3, (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ")
+//					: string2date(c.getDateAdded()));
+//			pstmt.setString(4, c.getTitle());
+//			pstmt.setString(5, c.getFirstName());
+//			pstmt.setString(6, c.getLastName());
+//			pstmt.setString(7, c.getAddress1());
+//			pstmt.setString(8, c.getAddress2());
+//			pstmt.setString(9, c.getCity());
+//			pstmt.setString(10, c.getState());
+//			pstmt.setString(11, c.getProvince());
+//			pstmt.setString(12, c.getCountry());
+//			pstmt.setString(13, c.getZipCode());
+//			pstmt.setString(14, c.getPhone());
+//			pstmt.setString(15, c.getCellPhone());
+//			pstmt.setString(16, c.getFax());
+//			pstmt.setString(17, c.getHomePage());
+//			pstmt.setString(18, c.getEmail());
+//			pstmt.setString(19, compID);
+//			pstmt.setString(20, c.getTexID());
+//			pstmt.setDouble(21, Double.parseDouble(oBal));
+//			pstmt.setDouble(22, Double.parseDouble(exCredit));
+//			pstmt.setString(23, c.getMemo());
+//			pstmt.setString(24, c.getTaxAble());
+//			pstmt.setString(25, c.getIsclient());
+//			pstmt.setString(26, c.getType());
+//			pstmt.setString(27, vcName);
+//			pstmt.setString(28, "1");
+//			pstmt.setString(29, "0");
+//			pstmt.setString(30, status);
+//			pstmt.setBoolean(31, c.isIsPhoneMobileNumber());
+//			pstmt.setBoolean(32, c.isIsMobilePhoneNumber());
+//			pstmt.setString(33, c.getMiddleName());
+//			pstmt.setDate(34, (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
+//					: string2date(c.getDateInput()));
+//			pstmt.setDate(35, (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
+//					: string2date(c.getTerminatedDate()));
+//			pstmt.setBoolean(36, c.isTerminated());
+//			pstmt.setString(37, c.getDbaName());
+//			pstmt.setInt(38,
+//					(c.getTerm() == null || c.getTerm().trim().equals("")) ? 0 : Integer.parseInt(c.getTerm())); // c.getTerm()
+//			pstmt.setString(39, (c.getRep() == null || c.getRep().trim().equals("")) ? null : c.getRep()); // c.getRep()
+//			pstmt.setString(40, c.getShipping());
+//			pstmt.setString(41,
+//					(c.getPaymentType() == null || c.getPaymentType().trim().equals("")) ? null : c.getPaymentType()); // c.getPaymentType()
+//			pstmt.setString(42, "".equalsIgnoreCase(c.getCcType()) ? null : c.getCcType());
+//			pstmt.setString(43, c.getCustomerGroup());
+//			Loger.log(sqlString);
+//			int num = pstmt.executeUpdate();
+//			if (num > 0) {
+//				ret = true;
+//			}
 
 			// -------------------Code to save services---END-----------------------
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, "SQLException in Class CustomerInfo,  method -insertCustomerStorage " + ee.toString());
 
-		} finally {
-			try {
-				if (ps != null) {
-					db.close(ps);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (ps != null) {
+//					db.close(ps);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return ret;
 	}
 
@@ -1529,8 +1755,8 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 			String oBal = "0.0";
 			String exCredit = "0.0";
 			String status = "N";
-			PurchaseInfo pinfo = new PurchaseInfo();
-			int cvID = pinfo.getLastClientVendorID() + 1;
+//			PurchaseInfo pinfo = new PurchaseInfo();
+			int cvID = purchaseInfo.getLastClientVendorID() + 1;
 
 			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
 				oBal = c.getOpeningUB();
@@ -1541,103 +1767,183 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 			VendorCategory vc = new VendorCategory();
 			String vcName = vc.CVCategory(c.getType());
 
-			String sqlString = "insert into bca_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
-					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,ResellerTaxID,VendorOpenDebit,"
-					+ " VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,isPhoneMobileNumber,isMobilePhoneNumber,"
-					+ " MiddleName,DateInput,DateTerminated,isTerminated,DBAName, TermID,SalesRepID,ShipCarrierID,PaymentTypeID,CCTypeID, CustomerGroupID) "
-					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			BcaClientvendor bcv = new BcaClientvendor();
+			bcv.setClientVendorId(cvID);
+			bcv.setName(c.getCname());
 
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setInt(1, cvID);
-			pstmt.setString(2, c.getCname());
-			pstmt.setDate(3, (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ")
-					: string2date(c.getDateAdded()));
-			pstmt.setString(4, c.getTitle());
-			pstmt.setString(5, c.getFirstName());
-			pstmt.setString(6, c.getLastName());
-			pstmt.setString(7, c.getAddress1());
-			pstmt.setString(8, c.getAddress2());
-			pstmt.setString(9, c.getCity());
-			pstmt.setString(10, c.getState());
-			pstmt.setString(11, c.getProvince());
-			pstmt.setString(12, c.getCountry());
-			pstmt.setString(13, c.getZipCode());
-			pstmt.setString(14, c.getPhone());
-			pstmt.setString(15, c.getCellPhone());
-			pstmt.setString(16, c.getFax());
-			pstmt.setString(17, c.getHomePage());
-			pstmt.setString(18, c.getEmail());
-			pstmt.setString(19, compID);
-			pstmt.setString(20, c.getTexID());
-			pstmt.setDouble(21, Double.parseDouble(oBal));
-			pstmt.setDouble(22, Double.parseDouble(exCredit));
-			pstmt.setString(23, c.getMemo());
-			pstmt.setString(24, c.getTaxAble());
-			pstmt.setString(25, c.getIsclient());
-			pstmt.setString(26, c.getType());
-			pstmt.setString(27, vcName);
-			pstmt.setString(28, "1");
-			pstmt.setString(29, "0");
-			pstmt.setString(30, status);
-			pstmt.setBoolean(31, c.isIsPhoneMobileNumber());
-			pstmt.setBoolean(32, c.isIsMobilePhoneNumber());
-			pstmt.setString(33, c.getMiddleName());
-			pstmt.setDate(34, (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
-					: string2date(c.getDateInput()));
-			pstmt.setDate(35, (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
-					: string2date(c.getTerminatedDate()));
-			pstmt.setBoolean(36, c.isTerminated());
-			pstmt.setString(37, c.getDbaName());
-			pstmt.setInt(38,
-					(c.getTerm() == null || c.getTerm().trim().equals("")) ? 0 : Integer.parseInt(c.getTerm())); // c.getTerm()
-			pstmt.setString(39, (c.getRep() == null || c.getRep().trim().equals("")) ? null : c.getRep()); // c.getRep()
-			pstmt.setString(40, c.getShipping());
-			pstmt.setString(41,
-					(c.getPaymentType() == null || c.getPaymentType().trim().equals("")) ? null : c.getPaymentType()); // c.getPaymentType()
-			pstmt.setString(42, "".equalsIgnoreCase(c.getCcType()) ? null : c.getCcType());
-			pstmt.setString(43, c.getCustomerGroup());
-			Loger.log(sqlString);
-			int num = pstmt.executeUpdate();
-			if (num > 0) {
+			Date dateAdded = (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ")
+					: string2date(c.getDateAdded());
+			bcv.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
+			bcv.setCustomerTitle(c.getTitle());
+			bcv.setFirstName(c.getFirstName());
+			bcv.setLastName(c.getLastName());
+			bcv.setAddress1(c.getAddress1());
+			bcv.setAddress2(c.getAddress2());
+			bcv.setCity(c.getCity());
+			bcv.setState(c.getState());
+			bcv.setProvince(c.getProvince());
+			bcv.setCountry(c.getCountry());
+			bcv.setZipCode(c.getZipCode());
+			bcv.setPhone(c.getPhone());
+			bcv.setCellPhone(c.getPhone());
+			bcv.setFax(c.getFax());
+			bcv.setHomePage(c.getHomePage());
+			bcv.setEmail(c.getEmail());
+			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
+			if (company.isPresent()) {
+				bcv.setCompany(company.get());
+			}
+
+			bcv.setResellerTaxId(c.getTexID());
+			bcv.setVendorOpenDebit(Double.parseDouble(oBal));
+			bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
+			bcv.setDetail(c.getMemo());
+			if (null != c.getTaxAble())
+				bcv.setTaxable(Long.parseLong(c.getTaxAble()));
+			if (null != c.getIsclient())
+				bcv.setCvtypeId(Integer.parseInt(c.getIsclient()));
+			if (null != c.getType())
+				bcv.setCvcategoryId(Integer.parseInt(c.getType()));
+			bcv.setCvcategoryName(vcName);
+			bcv.setActive(1);
+			bcv.setDeleted(0);
+			bcv.setStatus(status);
+			bcv.setIsPhoneMobileNumber(c.isIsPhoneMobileNumber());
+			bcv.setIsMobilePhoneNumber(c.isIsMobilePhoneNumber());
+			bcv.setMiddleName(c.getMiddleName());
+			Date dateInput = (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
+					: string2date(c.getDateInput());
+			bcv.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
+			Date dateTerminated = (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
+					: string2date(c.getTerminatedDate());
+			bcv.setDateTerminated(DateHelper.convertDateToOffsetDateTime(dateTerminated));
+			bcv.setIsTerminated(c.isTerminated());
+			int termId = c.getTerm() == null || c.getTerm().trim().equals("") ? 0 : Integer.parseInt(c.getTerm());
+			bcv.setDbaname(c.getDbaName());
+			Optional<BcaTerm> term = bcaTermRepository.findById(termId);
+			if (term.isPresent())
+				bcv.setTerm(term.get());
+			int salesTaxId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(c.getRep());
+			Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(salesTaxId);
+			if (salesTax.isPresent())
+				bcv.setSalesRep(salesTax.get());
+
+			Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(c.getShipping()));
+			if (shipCarrier.isPresent())
+				bcv.setShipCarrier(shipCarrier.get());
+			int paymentTypeId = (c.getPaymentType() == null || c.getPaymentType().trim().equals("")) ? 0
+					: Integer.parseInt(c.getPaymentType());
+			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(paymentTypeId);
+			if (paymentType.isPresent())
+				bcv.setPaymentType(paymentType.get());
+			if (null != c.getCcType())
+				bcv.setCctypeId(Integer.parseInt(c.getCcType()));
+			if (null != c.getCustomerGroup())
+				bcv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
+
+			BcaClientvendor save = bcaClientvendorRepository.save(bcv);
+			if (null != save) {
 				ret = true;
 				insertCustomerStorage(c, compID);
 			}
+//
+//			String sqlString = "insert into bca_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
+//					+ " City, State, Province, Country, ZipCode, Phone, CellPhone,Fax,HomePage, Email, CompanyID,ResellerTaxID,VendorOpenDebit,"
+//					+ " VendorAllowedCredit,Detail,Taxable,CVTypeID,CVCategoryID,CVCategoryName,Active,Deleted,Status,isPhoneMobileNumber,isMobilePhoneNumber,"
+//					+ " MiddleName,DateInput,DateTerminated,isTerminated,DBAName, TermID,SalesRepID,ShipCarrierID,PaymentTypeID,CCTypeID, CustomerGroupID) "
+//					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+//
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setInt(1, cvID);
+//			pstmt.setString(2, c.getCname());
+//			pstmt.setDate(3, (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ")
+//					: string2date(c.getDateAdded()));
+//			pstmt.setString(4, c.getTitle());
+//			pstmt.setString(5, c.getFirstName());
+//			pstmt.setString(6, c.getLastName());
+//			pstmt.setString(7, c.getAddress1());
+//			pstmt.setString(8, c.getAddress2());
+//			pstmt.setString(9, c.getCity());
+//			pstmt.setString(10, c.getState());
+//			pstmt.setString(11, c.getProvince());
+//			pstmt.setString(12, c.getCountry());
+//			pstmt.setString(13, c.getZipCode());
+//			pstmt.setString(14, c.getPhone());
+//			pstmt.setString(15, c.getCellPhone());
+//			pstmt.setString(16, c.getFax());
+//			pstmt.setString(17, c.getHomePage());
+//			pstmt.setString(18, c.getEmail());
+//			pstmt.setString(19, compID);
+//			pstmt.setString(20, c.getTexID());
+//			pstmt.setDouble(21, Double.parseDouble(oBal));
+//			pstmt.setDouble(22, Double.parseDouble(exCredit));
+//			pstmt.setString(23, c.getMemo());
+//			pstmt.setString(24, c.getTaxAble());
+//			pstmt.setString(25, c.getIsclient());
+//			pstmt.setString(26, c.getType());
+//			pstmt.setString(27, vcName);
+//			pstmt.setString(28, "1");
+//			pstmt.setString(29, "0");
+//			pstmt.setString(30, status);
+//			pstmt.setBoolean(31, c.isIsPhoneMobileNumber());
+//			pstmt.setBoolean(32, c.isIsMobilePhoneNumber());
+//			pstmt.setString(33, c.getMiddleName());
+//			pstmt.setDate(34, (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
+//					: string2date(c.getDateInput()));
+//			pstmt.setDate(35, (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
+//					: string2date(c.getTerminatedDate()));
+//			pstmt.setBoolean(36, c.isTerminated());
+//			pstmt.setString(37, c.getDbaName());
+//			pstmt.setInt(38,
+//					(c.getTerm() == null || c.getTerm().trim().equals("")) ? 0 : Integer.parseInt(c.getTerm())); // c.getTerm()
+//			pstmt.setString(39, (c.getRep() == null || c.getRep().trim().equals("")) ? null : c.getRep()); // c.getRep()
+//			pstmt.setString(40, c.getShipping());
+//			pstmt.setString(41,
+//					(c.getPaymentType() == null || c.getPaymentType().trim().equals("")) ? null : c.getPaymentType()); // c.getPaymentType()
+//			pstmt.setString(42, "".equalsIgnoreCase(c.getCcType()) ? null : c.getCcType());
+//			pstmt.setString(43, c.getCustomerGroup());
+//			Loger.log(sqlString);
+//			int num = pstmt.executeUpdate();
+//			if (num > 0) {
+//				ret = true;
+//				insertCustomerStorage(c, compID);
+//			}
 
-			pinfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(),
+			purchaseInfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(),
 					c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
-			int bsAddID = pinfo.getLastBsAdd() + 1;
+			int bsAddID = purchaseInfo.getLastBsAdd() + 1;
 			TblBSAddress2 address = new TblBSAddress2();
 			if ("0".equals(c.getSetdefaultbs())) {
-				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(),
+				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(),
 						c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(), c.getBsstate(),
 						c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
 
-				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(),
+				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(),
 						c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(), c.getShstate(),
 						c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
-				
+
 				address.setAddressWithCustomerDtoBilling(c, cvID);
-				pinfo.insertBillingShippingAddress(address, 1, true);
+				purchaseInfo.insertBillingShippingAddress(address, 1, true);
 				address.setAddressWithCustomerDtoShipping(c, cvID);
-				pinfo.insertBillingShippingAddress(address, 0, true);
+				purchaseInfo.insertBillingShippingAddress(address, 0, true);
 			} else {
-				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
+				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 						c.getCountry(), c.getZipCode(), "1");
 
-				pinfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
+				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 						c.getCountry(), c.getZipCode(), "0");
 				address.setAddressWithCustomerDto(c, cvID);
-				pinfo.insertBillingShippingAddress(address, 1, true);
-				pinfo.insertBillingShippingAddress(address, 0, true);
+				purchaseInfo.insertBillingShippingAddress(address, 1, true);
+				purchaseInfo.insertBillingShippingAddress(address, 0, true);
 			}
 
 			if (c.getCvTypeID() != 3) {
 				insertClientInfo(c, cvID, compID);
 			}
-			
-			insertClientVendorAccount( c,cvID);
+
+			insertClientVendorAccount(c, cvID);
 //		    bca_account			done
 //		    smd_cvinfo			done
 //		    bca_billingaddress
@@ -1648,7 +1954,7 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 			int useIndividual = "1".equals(c.getFsUseIndividual()) ? 1 : 0;
 			int assFCharge = "1".equals(c.getFsAssessFinanceCharge()) ? 1 : 0;
 			int markFCharge = "1".equals(c.getFsMarkFinanceCharge()) ? 1 : 0;
-			pinfo.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(), c.getGracePrd(),
+			purchaseInfo.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(), c.getGracePrd(),
 					assFCharge, markFCharge);
 
 			// -----------------------code to save services---START------------------------
@@ -1673,6 +1979,17 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 				java.sql.Date d = new java.sql.Date(new Date().getTime());
 
 				for (i = 0; i < temp.length; i++) {
+//					BcaClientvendorservice bcvs=new BcaClientvendorservice();
+//					bcvs.setClientVendor(save);
+//					bcvs.setDateAdded(null);
+//					bcvs.setCompany(null);
+//					bcvs.setInvoiceStyleId(null);
+//					bcvs.setDefaultService(null);
+//					bcvs.setServiceId(null);
+//					bcvs.setSalePrice(null);
+				
+					
+					
 					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
 					ps = con.prepareStatement(sql);
 					ps.setInt(1, cvID);
@@ -1690,10 +2007,11 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 				}
 			}
 			// -------------------Code to save services---END-----------------------
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, "SQLException in Class CustomerInfo,  method -insertCustomer " + ee.toString());
 
-		} finally {
+		}
+		finally {
 			try {
 				if (ps != null) {
 					db.close(ps);
@@ -1723,6 +2041,33 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 		Connection con = db.getConnection();
 		Statement stmt = null;
 		boolean ret = false;
+//		SmdCvinfo smdCvinfo = new SmdCvinfo();
+//		Optional<BcaClientvendor> bcaClientvendor = bcaClientvendorRepository.findById(cvId);
+//		if (bcaClientvendor.isPresent())
+//			smdCvinfo.setClientVendor(bcaClientvendor.get());
+//		
+//			smdCvinfo.setCompany(ConstValue.companyName );
+//		smdCvinfo.setPassword(" ");
+//		smdCvinfo.setPasswordHint(" ");
+//		smdCvinfo.setPasswordAnswer(" ");
+//		smdCvinfo.setNewsletter("Y");
+//		smdCvinfo.setSubscribe(" ");
+//		smdCvinfo.setIsChecked(" ");
+//		smdCvinfo.setStatus("Approved");
+//		smdCvinfo.setHomePage(" ");
+//		smdCvinfo.setResellerTaxId(" ");
+//		smdCvinfo.setTaxable(c.getTaxAble());
+//		smdCvinfo.setFid(" ");
+//		smdCvinfo.setCustomerGroupId(1);
+//		smdCvinfo.setBillingAddressId(0);
+//		smdCvinfo.setShippingAddressId(0);
+//		smdCvinfo.setAllowMultipleAddress(" ");
+//		smdCvinfo.setWww(" ");
+//		smdCvinfo.setSourceInfo(0);
+//		smdCvinfo.setBusinessType(" ");
+//		smdCvinfo.setUserPhoto(" ");
+//		smdCvinfo.setIsPhotoPrivate(0);
+//		smdCvinfoRepository.save(smdCvinfo);
 
 		String sql2 = " INSERT INTO smd_cvinfo (ClientVendorID,Company,Password," + "PasswordHint, "
 				+ "PasswordAnswer, Newsletter, Subscribe, IsChecked,Status,HomePage,ResellerTaxID,Taxable,"
@@ -1780,7 +2125,7 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 	private void insertClientVendorAccount(CustomerDto c, int cvId) {
 
 		String oBal = "0.00";
-		int cvTypeID =c.getCvTypeID();
+		int cvTypeID = c.getCvTypeID();
 		if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
 			oBal = c.getOpeningUB();
 		Double openingBalance = Double.parseDouble(oBal);
@@ -1849,9 +2194,26 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 		ResultSet rs = null;
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
-		
-		int accountId = -1;
 
+		int accountId = -1;
+//		BcaAccount bcaAccount = new BcaAccount();
+//		bcaAccount.setParentId( account.getParentID());
+//		bcaAccount.setIsCategory(account.isIsCategory());
+//		bcaAccount.setName(account.getName().replaceAll("'", "''"));
+//		bcaAccount.setDescription(account.getDescription().replaceAll("'", "''"));
+//		
+//		bcaAccount.setAcctType(null);
+//		bcaAccount.setAcctCategory(null);
+//		
+//		bcaAccount.setCompany(null);
+//		bcaAccount.setClientVendor(null);
+//		bcaAccount.setDepositPaymentId(account.getDepositPaymentID() );
+//		bcaAccount.setCustomerStartingBalance(account.getCustomerStartingBalance() );
+//		bcaAccount.setCustomerCurrentBalance(account.getCustomerCurrentBalance());
+//		bcaAccount.setVendorStartingBalance(account.getVendorStartingBalance());
+//		bcaAccount.setVendorCurrentBalance(account.getVendorCurrentBalance() );
+//		bcaAccount.setActive(1);
+//		bcaAccount.setDateAdded(DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new java.util.Date())));
 		String sql = "INSERT INTO bca_account (ParentID,isCategory,Name,"
 				+ "Description,AcctTypeID,AcctCategoryID,CompanyID,"
 				+ "ClientVendorID,DepositPaymentID,CustomerStartingBalance,"
@@ -1878,9 +2240,11 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 			stmt.executeUpdate(sql);
 			// select IDENTITY_VAL_LOCAL
 			// rs = stmt.executeQuery("select IDENTITY_VAL_LOCAL() AS LastID");
-			rs = stmt.executeQuery("SELECT Max(AccountID) AS LastID from "
-					+ "bca_account where companyid=" + ConstValue.companyId); // stmt.executeQuery("SELECT @@IDENTITY AS
-																				// LastID");
+			rs = stmt.executeQuery(
+					"SELECT Max(AccountID) AS LastID from " + "bca_account where companyid=" + ConstValue.companyId); // stmt.executeQuery("SELECT
+																														// @@IDENTITY
+																														// AS
+																														// LastID");
 			if (rs.next()) {
 				accountId = rs.getInt("LastID");
 			}
@@ -2143,75 +2507,96 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 		ArrayList<UpdateInvoiceDto> serviceList = new ArrayList<>();
 		ArrayList<UpdateInvoiceDto> invoiceName = new ArrayList<>();
 		// ArrayList balenceDetails = new ArrayList();
-		ResultSet rs = null;
-		ResultSet rs1 = null;
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		PreparedStatement pstmt = null;
-		PreparedStatement pstmt1 = null;
-		con = db.getConnection();
+//		ResultSet rs = null;
+//		ResultSet rs1 = null;
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		PreparedStatement pstmt = null;
+//		PreparedStatement pstmt1 = null;
+//		con = db.getConnection();
 
-		String sqlString = "select * from bca_servicetype";
-		String sqlString1 = "select  * from bca_invoicestyle where Active=1";
+//		String sqlString = "select * from bca_servicetype";
+//		String sqlString1 = "select  * from bca_invoicestyle where Active=1";
 
 		try {
-			pstmt = con.prepareStatement(sqlString);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			List<BcaServicetype> serivceTypeList = bcaServicetypeRepository.findAll();
+			for (BcaServicetype servicetype : serivceTypeList) {
 				UpdateInvoiceDto uform = new UpdateInvoiceDto();
-				uform.setServiceID(rs.getInt(1));
-				uform.setServiceName(rs.getString(2));
-				uform.setInvoiceStyleId(rs.getInt(3));
+				uform.setServiceID(servicetype.getServiceId());
+				uform.setServiceName(servicetype.getServiceName());
+				if (null != servicetype.getInvoiceStyle())
+					uform.setInvoiceStyleId(servicetype.getInvoiceStyle().getInvoiceStyleId());
 				serviceList.add(uform);
 			}
-		} catch (SQLException e) {
+//			pstmt = con.prepareStatement(sqlString);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				UpdateInvoiceDto uform = new UpdateInvoiceDto();
+//				uform.setServiceID(rs.getInt(1));
+//				uform.setServiceName(rs.getString(2));
+//				uform.setInvoiceStyleId(rs.getInt(3));
+//				serviceList.add(uform);
+//			}
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		request.setAttribute("ServiceList", serviceList);
 
 		try {
-			con = db.getConnection();
-			pstmt1 = con.prepareStatement(sqlString1);
-			rs1 = pstmt1.executeQuery();
-			while (rs1.next()) {
+			List<BcaInvoicestyle> invoiceStyles = bcaInvoicestyleRepository.findByActive(1);
+			for (BcaInvoicestyle invoicestyle : invoiceStyles) {
 				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 				// Loger.log("The Incoice style id is " + rs1.getString(1));
-				uform.setInvoiceStyleId(rs1.getInt(1));
+				uform.setInvoiceStyleId(invoicestyle.getInvoiceStyleId());
 				// Loger.log("The Invoice Style name is " + rs1.getString(2));
-				uform.setInvoiceStyle(rs1.getString(2));
+				uform.setInvoiceStyle(invoicestyle.getName());
 				invoiceName.add(uform);
 			}
-		} catch (SQLException e) {
+
+//			con = db.getConnection();
+//			pstmt1 = con.prepareStatement(sqlString1);
+//			rs1 = pstmt1.executeQuery();
+//			while (rs1.next()) {
+//				UpdateInvoiceDto uform = new UpdateInvoiceDto();
+//				// Loger.log("The Incoice style id is " + rs1.getString(1));
+//				uform.setInvoiceStyleId(rs1.getInt(1));
+//				// Loger.log("The Invoice Style name is " + rs1.getString(2));
+//				uform.setInvoiceStyle(rs1.getString(2));
+//				invoiceName.add(uform);
+//			}
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs1 != null) {
-					db.close(rs1);
-				}
-				if (pstmt1 != null) {
-					db.close(pstmt1);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs1 != null) {
+//					db.close(rs1);
+//				}
+//				if (pstmt1 != null) {
+//					db.close(pstmt1);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 	}
 
 	public java.sql.Date string2date(String d) {
@@ -2552,122 +2937,188 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 	}
 
 	public ArrayList customerDetailsSortByFirstName(String compId) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
 		ArrayList<CustomerDto> objList = new ArrayList<>();
-		ResultSet rs = null;
-		con = db.getConnection();
-		CountryState cs = new CountryState();
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		CountryState cs = new CountryState();
 		try {
-			String sqlString = "select distinct ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
-					+ "City,State,ZipCode, Phone,CellPhone,Fax,Email,date_format(DateAdded,'%m-%d-%Y') as DateAdded,Country from bca_clientvendor  "
-					+ "where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
-					+ "and ( Deleted = '0') and CompanyID='" + compId + "'   order by FirstName ";
+			String query = "select distinct bcv from BcaClientvendor bcv where (bcv.status like 'N' or bcv.status like 'U') and (bcv.cvtypeId = 1 or bcv.cvtypeId = 2) and (bcv.deleted = 0 )"
+					+ " and bcv.company.companyId = :companyId  order by bcv.firstName";
 
-			pstmt = con.prepareStatement(sqlString);
-			Loger.log(sqlString);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			TypedQuery<BcaClientvendor> typedQuery = this.entityManager.createNamedQuery(query, BcaClientvendor.class);
+			JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
+
+			List<BcaClientvendor> clientvendors = typedQuery.getResultList();
+			for (BcaClientvendor cv : clientvendors) {
 				CustomerDto customer = new CustomerDto();
-				customer.setClientVendorID(rs.getString(1));
-				customer.setCname(rs.getString(2) + "(" + rs.getString(3) + " " + rs.getString(4) + ")");
-				customer.setFirstName(rs.getString(3));
-				customer.setLastName(rs.getString(4));
-				customer.setAddress1(rs.getString(5));
-				customer.setAddress2(rs.getString(6));
-				customer.setCity(rs.getString(7));
-				customer.setStateName(cs.getStatesName(rs.getString(8)));
-				customer.setZipCode(rs.getString(9));
-				customer.setPhone(rs.getString(10));
-				customer.setCellPhone(rs.getString(11));
-				customer.setFax(rs.getString(12));
-				customer.setEmail(rs.getString(13));
-				customer.setDateAdded(rs.getString(14));
-				customer.setCountry(cs.getCountryName(rs.getString(15)));
-				customer.setFullName(rs.getString(3) + " " + rs.getString(4)); // changed by pritesh 10-09-2018
-				customer.setBillTo(rs.getString(3) + rs.getString(4)); // changed by jay 05-11-2018
+				customer.setClientVendorID(String.valueOf(cv.getClientVendorId()));
+				customer.setCname(cv.getName() + "(" + cv.getFirstName() + " " + cv.getLastName() + ")");
+				customer.setFirstName(cv.getFirstName());
+				customer.setLastName(cv.getLastName());
+				customer.setAddress1(cv.getAddress1());
+				customer.setAddress2(cv.getAddress2());
+				customer.setCity(cv.getCity());
+				customer.setStateName(countryState.getStatesName(cv.getState()));
+				customer.setZipCode(cv.getZipCode());
+				customer.setPhone(cv.getPhone());
+				customer.setCellPhone(cv.getCellPhone());
+				customer.setFax(cv.getFax());
+				customer.setEmail(cv.getEmail());
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+				customer.setDateAdded(cv.getDateAdded().format(formatter));
+				customer.setCountry(countryState.getCountryName(cv.getCountry()));
+				customer.setFullName(cv.getFirstName() + " " + cv.getLastName()); // changed by pritesh 10-09-2018
+				customer.setBillTo(cv.getFirstName() + cv.getLastName()); // changed by jay 05-11-2018
 				objList.add(customer);
+
 			}
 
-		} catch (SQLException ee) {
+//			String sqlString = "select distinct ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
+//					+ "City,State,ZipCode, Phone,CellPhone,Fax,Email,date_format(DateAdded,'%m-%d-%Y') as DateAdded,Country from bca_clientvendor  "
+//					+ "where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
+//					+ "and ( Deleted = '0') and CompanyID='" + compId + "'   order by FirstName ";
+//
+//			pstmt = con.prepareStatement(sqlString);
+//			Loger.log(sqlString);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				CustomerDto customer = new CustomerDto();
+//				customer.setClientVendorID(rs.getString(1));
+//				customer.setCname(rs.getString(2) + "(" + rs.getString(3) + " " + rs.getString(4) + ")");
+//				customer.setFirstName(rs.getString(3));
+//				customer.setLastName(rs.getString(4));
+//				customer.setAddress1(rs.getString(5));
+//				customer.setAddress2(rs.getString(6));
+//				customer.setCity(rs.getString(7));
+//				customer.setStateName(cs.getStatesName(rs.getString(8)));
+//				customer.setZipCode(rs.getString(9));
+//				customer.setPhone(rs.getString(10));
+//				customer.setCellPhone(rs.getString(11));
+//				customer.setFax(rs.getString(12));
+//				customer.setEmail(rs.getString(13));
+//				customer.setDateAdded(rs.getString(14));
+//				customer.setCountry(cs.getCountryName(rs.getString(15)));
+//				customer.setFullName(rs.getString(3) + " " + rs.getString(4)); // changed by pritesh 10-09-2018
+//				customer.setBillTo(rs.getString(3) + rs.getString(4)); // changed by jay 05-11-2018
+//				objList.add(customer);
+//			}
+
+		} catch (Exception ee) {
 			Loger.log(2, "SQL Error in Class TaxInfo and  method -customerDetailsSortByFirstName " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception ex) {
-				Loger.log(2, "SQL Error in Class TaxInfo and  method -customerDetailsSortByFirstName " + ex.toString());
-
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception ex) {
+//				Loger.log(2, "SQL Error in Class TaxInfo and  method -customerDetailsSortByFirstName " + ex.toString());
+//
+//			}
+//		}
 		return objList;
 	}
 
 	public ArrayList<CustomerDto> customerDetailsSortByLastName(String compId) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
 		ArrayList<CustomerDto> objList = new ArrayList<>();
-		ResultSet rs = null;
-		con = db.getConnection();
-		CountryState cs = new CountryState();
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		CountryState cs = new CountryState();
 		try {
-			String sqlString = "select distinct ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
-					+ "City,State,ZipCode, Phone,CellPhone,Fax,Email,date_format(DateAdded,'%m-%d-%Y') as DateAdded,Country from bca_clientvendor  "
-					+ "where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
-					+ "and ( Deleted = '0') and CompanyID='" + compId + "'   order by LastName ";
+			String query = "select distinct bcv from BcaClientvendor bcv where (bcv.status like 'N' or bcv.status like 'U') and (bcv.cvtypeId = 1 or bcv.cvtypeId = 2) and (bcv.deleted = 0 )"
+					+ " and bcv.company.companyId = :companyId  order by bcv.lastName";
+			TypedQuery<BcaClientvendor> typedQuery = this.entityManager.createNamedQuery(query, BcaClientvendor.class);
+			JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
 
-			pstmt = con.prepareStatement(sqlString);
-			// Loger.log(sqlString);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			List<BcaClientvendor> clientvendors = typedQuery.getResultList();
+			for (BcaClientvendor cv : clientvendors) {
 				CustomerDto customer = new CustomerDto();
-				customer.setClientVendorID(rs.getString(1));
-				customer.setCname(rs.getString(2) + "(" + rs.getString(3) + " " + rs.getString(4) + ")");
-				customer.setFirstName(rs.getString(3));
-				customer.setLastName(rs.getString(4));
-				customer.setAddress1(rs.getString(5));
-				customer.setAddress2(rs.getString(6));
-				customer.setCity(rs.getString(7));
-				customer.setStateName(cs.getStatesName(rs.getString(8)));
-				customer.setZipCode(rs.getString(9));
-				customer.setPhone(rs.getString(10));
-				customer.setCellPhone(rs.getString(11));
-				customer.setFax(rs.getString(12));
-				customer.setEmail(rs.getString(13));
-				customer.setDateAdded(rs.getString(14));
-				customer.setCountry(cs.getCountryName(rs.getString(15)));
-				customer.setFullName(rs.getString(3) + " " + rs.getString(4)); // changed by pritesh 10-09-2018
-				customer.setBillTo(rs.getString(3) + rs.getString(4)); // changed by jay 05-11-2018
+				customer.setClientVendorID(String.valueOf(cv.getClientVendorId()));
+				customer.setCname(cv.getName() + "(" + cv.getFirstName() + " " + cv.getLastName() + ")");
+				customer.setFirstName(cv.getFirstName());
+				customer.setLastName(cv.getLastName());
+				customer.setAddress1(cv.getAddress1());
+				customer.setAddress2(cv.getAddress2());
+				customer.setCity(cv.getCity());
+				customer.setStateName(countryState.getStatesName(cv.getState()));
+				customer.setZipCode(cv.getZipCode());
+				customer.setPhone(cv.getPhone());
+				customer.setCellPhone(cv.getCellPhone());
+				customer.setFax(cv.getFax());
+				customer.setEmail(cv.getEmail());
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+				customer.setDateAdded(cv.getDateAdded().format(formatter));
+				customer.setCountry(countryState.getCountryName(cv.getCountry()));
+				customer.setFullName(cv.getFirstName() + " " + cv.getLastName()); // changed by pritesh 10-09-2018
+				customer.setBillTo(cv.getFirstName() + cv.getLastName()); // changed by jay 05-11-2018
 				objList.add(customer);
 			}
 
-		} catch (SQLException ee) {
-			Loger.log(2, "SQL Error in Class TaxInfo and  method -customerDetailsSortByLastName " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception ex) {
-				Loger.log(2, "SQL Error in Class TaxInfo and  method -customerDetailsSortByLastName " + ex.toString());
+//			String sqlString = "select distinct ClientVendorID,Name,FirstName,LastName, Address1,Address2,"
+//					+ "City,State,ZipCode, Phone,CellPhone,Fax,Email,date_format(DateAdded,'%m-%d-%Y') as DateAdded,Country from bca_clientvendor  "
+//					+ "where  (Status like 'N' or Status like 'U')  and  (CVTypeID = '1' or CVTypeID = '2') "
+//					+ "and ( Deleted = '0') and CompanyID='" + compId + "'   order by LastName ";
+//
+//			
+//			
+//			pstmt = con.prepareStatement(sqlString);
+//			// Loger.log(sqlString);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				CustomerDto customer = new CustomerDto();
+//				customer.setClientVendorID(rs.getString(1));
+//				customer.setCname(rs.getString(2) + "(" + rs.getString(3) + " " + rs.getString(4) + ")");
+//				customer.setFirstName(rs.getString(3));
+//				customer.setLastName(rs.getString(4));
+//				customer.setAddress1(rs.getString(5));
+//				customer.setAddress2(rs.getString(6));
+//				customer.setCity(rs.getString(7));
+//				customer.setStateName(countryState.getStatesName(rs.getString(8)));
+//				customer.setZipCode(rs.getString(9));
+//				customer.setPhone(rs.getString(10));
+//				customer.setCellPhone(rs.getString(11));
+//				customer.setFax(rs.getString(12));
+//				customer.setEmail(rs.getString(13));
+//				customer.setDateAdded(rs.getString(14));
+//				customer.setCountry(countryState.getCountryName(rs.getString(15)));
+//				customer.setFullName(rs.getString(3) + " " + rs.getString(4)); // changed by pritesh 10-09-2018
+//				customer.setBillTo(rs.getString(3) + rs.getString(4)); // changed by jay 05-11-2018
+//				objList.add(customer);
+//			}
 
-			}
+		} catch (Exception ee) {
+			Loger.log(2, "SQL Error in Class TaxInfo and  method -customerDetailsSortByLastName " + ee.toString());
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception ex) {
+//				Loger.log(2, "SQL Error in Class TaxInfo and  method -customerDetailsSortByLastName " + ex.toString());
+//
+//			}
+//		}
 		return objList;
 	}
 
@@ -2848,76 +3299,84 @@ private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 	}
 
 	public void setNewUnitPrice(String companyID, int itemId, double price) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
 		try {
-			String sqlString = "update bca_iteminventory set SalePrice=? where InventoryID =? and CompanyID=?";
-			pstmt = con.prepareStatement(sqlString);
+
+//			String sqlString = "update bca_iteminventory set SalePrice=? where InventoryID =? and CompanyID=?";
+//			pstmt = con.prepareStatement(sqlString);
+
 			price = Double.parseDouble(new DecimalFormat("##.##").format(price));
-			pstmt.setDouble(1, price);
-			pstmt.setInt(2, itemId);
-			pstmt.setString(3, companyID);
-			int count = pstmt.executeUpdate();
+			int count = bcaIteminventoryRepository.updateSalesPriceByInventoryIdAndCompanyId(price, itemId,
+					Long.parseLong(companyID));
+
+//			pstmt.setDouble(1, price);
+//			pstmt.setInt(2, itemId);
+//			pstmt.setString(3, companyID);
+//			int count = pstmt.executeUpdate();
 			if (count > 0) {
 				System.out.println(count + " Row updated...");
 			}
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, "SQL Error in Class CustomerInfo and  method -setNewUnitPrice " + ee.toString());
 		}
 
-		finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception ex) {
-				Loger.log(2, "SQL Error in Class CustomerInfo and method -setNewUnitPrice " + ex.toString());
-
-			}
-		}
+//		finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception ex) {
+//				Loger.log(2, "SQL Error in Class CustomerInfo and method -setNewUnitPrice " + ex.toString());
+//
+//			}
+//		}
 	}
 
 	public void setNewitemName(String companyID, int itemId, String itemName) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
 		try {
 			/*
 			 * String sqlString =
 			 * "update bca_inventory set InventoryName=?,InventoryDescription=? where InventoryID =? and CompanyID=?"
 			 * ;
 			 */
-			String sqlString = "update bca_iteminventory set InventoryName=? where InventoryID =? and CompanyID=?";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, itemName);
-			/* pstmt.setString(2,itemName); */
-			pstmt.setInt(2, itemId);
-			pstmt.setString(3, companyID);
-			int count = pstmt.executeUpdate();
+			int count = bcaIteminventoryRepository.updateInventoryNameByInventoryIdAndCompanyId(itemName, itemId,
+					Long.parseLong(companyID));
+//			String sqlString = "update bca_iteminventory set InventoryName=? where InventoryID =? and CompanyID=?";
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, itemName);
+//			/* pstmt.setString(2,itemName); */
+//			pstmt.setInt(2, itemId);
+//			pstmt.setString(3, companyID);
+//			int count = pstmt.executeUpdate();
 			if (count > 0) {
 				System.out.println(count + " Row updated...");
 			}
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, "SQL Error in Class CustomerInfo and  method -setNewitemName " + ee.toString());
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception ex) {
-				Loger.log(2, "SQL Error in Class CustomerInfo and method -setNewitemName " + ex.toString());
-
-			}
 		}
+//		finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception ex) {
+//				Loger.log(2, "SQL Error in Class CustomerInfo and method -setNewitemName " + ex.toString());
+//
+//			}
+//		}
 	}
 
 	public void setNewitemNameEstimation(String companyID, int itemId, String itemName) {

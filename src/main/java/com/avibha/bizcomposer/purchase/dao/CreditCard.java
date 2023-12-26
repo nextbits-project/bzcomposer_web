@@ -11,63 +11,77 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.nxsol.bzcomposer.company.domain.BcaCreditcardtype;
+import com.nxsol.bzcomposer.company.repos.BcaCreditcardtypeRepository;
 
 /*
  * 
  */
+@Service
 public class CreditCard {
 	
 	/* The method get the credit card type list
 	 * from the database with the ids & names. 
 	 */
+	@Autowired
+	private BcaCreditcardtypeRepository bcaCreditcardtypeRepository;
 	public ArrayList getCCTypeList(String CompanyID) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		// boolean ret = false;
-		Connection con = null ;
-		PreparedStatement pstmt=null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		if (db == null)
-			arr = null;
-		con = db.getConnection();
-
-		if (con == null)
-			arr = null;
+//		Connection con = null ;
+//		PreparedStatement pstmt=null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		if (db == null)
+//			arr = null;
+//		con = db.getConnection();
+//
+//		if (con == null)
+//			arr = null;
 
 		try {
-			String sqlString = "SELECT CCTypeID,Name FROM bca_creditcardtype where CompanyID=? and Active=1";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, CompanyID);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				arr.add(new org.apache.struts.util.LabelValueBean(rs
-						.getString("Name"), rs.getString("CCTypeID")));
+			List<BcaCreditcardtype> bcaCreditCardType = bcaCreditcardtypeRepository.findByCompany_CompanyIdAndActive(Long.parseLong(CompanyID), 1);
+			for(BcaCreditcardtype creditcardtype: bcaCreditCardType) {
+				arr.add(new org.apache.struts.util.LabelValueBean(creditcardtype.getName()
+						,String.valueOf(creditcardtype.getCctypeId()) ));
 			}
-			pstmt.close();
-			rs.close();
-		} catch (SQLException ee) {
+//			String sqlString = "SELECT CCTypeID,Name FROM bca_creditcardtype where CompanyID=? and Active=1";
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, CompanyID);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				arr.add(new org.apache.struts.util.LabelValueBean(rs
+//						.getString("Name"), rs.getString("CCTypeID")));
+//			}
+//			pstmt.close();
+//			rs.close();
+		} catch (Exception ee) {
 			Loger.log(2, "Error in  Class CreditCard and method -getCCTypeList "
 					+ " " + ee.toString());
-		}finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-					}
-				if (pstmt != null) {
-					db.close(pstmt);
-					}
-					if(con != null){
-					db.close(con);
-					}
-				} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//					}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//					}
+//					if(con != null){
+//					db.close(con);
+//					}
+//				} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 
 		return arr;
 	}

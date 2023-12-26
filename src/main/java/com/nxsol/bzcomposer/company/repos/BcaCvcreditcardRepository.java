@@ -28,8 +28,8 @@ public interface BcaCvcreditcardRepository extends JpaRepository<BcaCvcreditcard
 	@Query(value = "select CreditCardID from bca_cvcreditcard order by CreditCardID desc ", nativeQuery = true)
 	List<Integer> findByOrderByCreditCardId();
 
-	@Query(value = "select * from bca_cvcreditcard where clientvendorid = ? and active = 1 ", nativeQuery = true)
-	List<BcaCvcreditcard> findByClientVendorIdAndActive(String clientvendorid);
+	@Query(value = "select bcc from BcaCvcreditcard bcc where bcc.clientVendor.clientVendorId = :clientVendorId and bcc.active = :active ", nativeQuery = true)
+	List<BcaCvcreditcard> findByClientVendorIdAndActive(@Param("clientVendorId")Integer clientvendorid, @Param("active")Integer active);
 
 	@Query(value = "UPDATE bca_cvcreditcard SET active=0 WHERE clientvendorid=?", nativeQuery = true)
 	void updateByActiveAndClientVendorId(int cvID);

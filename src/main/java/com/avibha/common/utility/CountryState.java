@@ -15,11 +15,24 @@ import com.avibha.common.Country;
 import com.avibha.common.State;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
+import com.nxsol.bzcomposer.company.domain.BcaCities;
 import com.nxsol.bzcomposer.company.domain.BcaCountries;
+import com.nxsol.bzcomposer.company.domain.BcaStates;
+import com.nxsol.bzcomposer.company.repos.BcaCitiesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 
 @Service
 public class CountryState {
+	
+	@Autowired
+	private BcaCountriesRepository bcaCountriesRepository;
+	
+	@Autowired
+	private BcaStatesRepository bcaStatesRepository;
+	
+	@Autowired
+	private BcaCitiesRepository bcaCitiesRepository;
 
 	private String id = null;
 	private String name = null;
@@ -271,108 +284,136 @@ public class CountryState {
 
 //	=================================== BCA_RECORDS ====================================
 	public ArrayList<Country> getCountryList() {
-		Statement stmt = null;
-		ResultSet rs = null;
-		SQLExecutor db = new SQLExecutor();
-		Connection c = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection c = db.getConnection();
 		ArrayList<Country> countryList = new ArrayList<>();
 		try {
-			stmt = c.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_countries");
-			while (rs.next()) {
+			
+			List<BcaCountries> countries = bcaCountriesRepository.findAll();
+			for(BcaCountries bcaCountries:countries) {
 				Country form = new Country();
-				form.setCountryId(rs.getInt("id"));
-				form.setCountryName(rs.getString("name"));
-				form.setPhoneCode(rs.getString("phonecode"));
+				form.setCountryId(bcaCountries.getId());
+				form.setCountryName(bcaCountries.getName());
+				form.setPhoneCode(String.valueOf(bcaCountries.getPhonecode()));
 				countryList.add(form);
 			}
-		} catch (SQLException e) {
+			
+//			stmt = c.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM bca_countries");
+//			while (rs.next()) {
+//				Country form = new Country();
+//				form.setCountryId(rs.getInt("id"));
+//				form.setCountryName(rs.getString("name"));
+//				form.setPhoneCode(rs.getString("phonecode"));
+//				countryList.add(form);
+//			}
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (c != null) {
-					db.close(c);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		} 
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (c != null) {
+//					db.close(c);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return countryList;
 	}
 
 	public ArrayList<State> getStateList(String country_id) {
-		Statement stmt = null;
-		ResultSet rs = null;
-		SQLExecutor db = new SQLExecutor();
-		Connection c = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection c = db.getConnection();
 		ArrayList<State> stateList = new ArrayList<>();
 		try {
-			stmt = c.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_states where country_id=" + country_id);
-			while (rs.next()) {
+			List<BcaStates> states = bcaStatesRepository.findByCountry_Id(Integer.parseInt(country_id));
+			for(BcaStates state :states) {
 				State form = new State();
-				form.setStateId(rs.getInt("id"));
-				form.setState(rs.getString("name"));
-				stateList.add(form);
+				form.setStateId(state.getId());
+				form.setState(state.getName());
+				stateList.add(form);	
 			}
-		} catch (SQLException e) {
+//			stmt = c.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM bca_states where country_id=" + country_id);
+//			while (rs.next()) {
+//				State form = new State();
+//				form.setStateId(rs.getInt("id"));
+//				form.setState(rs.getString("name"));
+//				stateList.add(form);
+//			}
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (c != null) {
-					db.close(c);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		} 
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (c != null) {
+//					db.close(c);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return stateList;
 	}
 
 	public ArrayList<City> getCityList(String state_id) {
-		Statement stmt = null;
-		ResultSet rs = null;
-		SQLExecutor db = new SQLExecutor();
-		Connection c = db.getConnection();
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection c = db.getConnection();
 		ArrayList<City> cityList = new ArrayList<>();
 		try {
-			stmt = c.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM bca_cities where state_id=" + state_id);
-			while (rs.next()) {
+			List<BcaCities> cities = bcaCitiesRepository.findByState_Id(Integer.parseInt(state_id));
+			for(BcaCities city :cities) {
 				City form = new City();
-				form.setCityId(rs.getInt("id"));
-				form.setCityName(rs.getString("name"));
+				form.setCityId(city.getId());
+				form.setCityName(city.getName());
 				cityList.add(form);
 			}
-		} catch (SQLException e) {
+			
+//			stmt = c.createStatement();
+//			rs = stmt.executeQuery("SELECT * FROM bca_cities where state_id=" + state_id);
+//			while (rs.next()) {
+//				City form = new City();
+//				form.setCityId(rs.getInt("id"));
+//				form.setCityName(rs.getString("name"));
+//				cityList.add(form);
+//			}
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (c != null) {
-					db.close(c);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		} 
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (c != null) {
+//					db.close(c);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return cityList;
 	}
 

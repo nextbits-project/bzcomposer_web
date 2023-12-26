@@ -62,7 +62,7 @@ public class SalesController {
 	private ConfigurationInfo configInfo;
 
 	@Autowired
-	private CustomerInfo ci;
+	private CustomerInfo customerInfo;
 
 	@Autowired
 	private CustomerInfoDao customerInfoDao;
@@ -74,13 +74,13 @@ public class SalesController {
 	private ReceivableLIst rl;
 
 	@Autowired
-	private InvoiceInfo invoice;
+	private InvoiceInfo invoiceInfo;
 
 	@Autowired
 	private ConfigurationDAO dao;
 
 	@Autowired
-	private InvoiceInfoDao invoiceDao;
+	private InvoiceInfoDao invoiceInfoDao;
 
 	@Autowired
 	private PurchaseInfo pinfo;
@@ -89,8 +89,10 @@ public class SalesController {
 	private CountryState cs;
 	
 	@Autowired
-	private PurchaseBoardDetails pd;
+	private PurchaseBoardDetails purchaseBoardDetails;
 
+	@Autowired
+	private TblCategoryDtoLoader categoryDtoLoader;
 	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
 			RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
@@ -180,7 +182,7 @@ public class SalesController {
 		if (vendorAction != null && vendorAction.equalsIgnoreCase("DELETE")) {
 			cvID = request.getParameter("cvID");
 //			CustomerInfo ci = new CustomerInfo();
-			if (ci.deleteCustomer(cvID, companyID)) {
+			if (customerInfo.deleteCustomer(cvID, companyID)) {
 				Loger.log("\nCustomer DELETE succeeded, id=" + cvID);
 				sess.setAttribute("actionMsg", "Customer DELETE successfully!");
 			} else {
@@ -547,8 +549,8 @@ public class SalesController {
 		else if (action.equalsIgnoreCase("AccountReceiveble")) {
 //			ReceivableLIst rl = new ReceivableListImpl();
 			ArrayList<ReceivableListDto> ReceivableList = rl.getReceivableList(Integer.parseInt(companyID));
-			TblCategoryDtoLoader category = new TblCategoryDtoLoader();
-			ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
+//			TblCategoryDtoLoader category = new TblCategoryDtoLoader();
+			ArrayList<TblCategoryDto> categoryforcombo = categoryDtoLoader.getCategoryForCombo();
 			ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 			ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
 			ArrayList<TblAccount> account = rl.getAccount();
@@ -637,7 +639,7 @@ public class SalesController {
 			String pfrom = request.getParameter("pfrom");
 			String pto = request.getParameter("pto");
 //			InvoiceInfo invoice = new InvoiceInfo();
-			ArrayList lookDetails = invoice.searchHistory(request, cond, custID, pfrom, pto);
+			ArrayList lookDetails = invoiceInfo.searchHistory(request, cond, custID, pfrom, pto);
 			request.setAttribute("LookupDetails", lookDetails);
 			forward = "/sales/addTransactionHistory";
 		}
@@ -647,8 +649,8 @@ public class SalesController {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 //			InvoiceInfoDao invoice = new InvoiceInfoDao();
 
-			invoiceDao.set(cvId, request, updateInvoiceDto, companyID);
-			invoiceDao.getServices(request, companyID, cvId);
+			invoiceInfoDao.set(cvId, request, updateInvoiceDto, companyID);
+			invoiceInfoDao.getServices(request, companyID, cvId);
 			sd.getInvoiceInfo(request);
 			sd.getAllList(request);
 			// sdetails.getCustomerList(request);
@@ -676,7 +678,7 @@ public class SalesController {
 
 //			PurchaseInfo pinfo = new PurchaseInfo();
 			customerDto.setClientVendorID((pinfo.getLastClientVendorID() + 1) + "");
-			customerDto.setDateAdded(invoice.setCurrentDate());
+			customerDto.setDateAdded(invoiceInfo.setCurrentDate());
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "/sales/addNewCustomer";
 			} else {
@@ -701,7 +703,7 @@ public class SalesController {
 			String CustIDs = request.getParameter("CustIDs");
 //			CustomerInfo ci = new CustomerInfo();
 			for (String cvID1 : CustIDs.split(":")) {
-				ci.deleteCustomer(cvID1, companyID);
+				customerInfo.deleteCustomer(cvID1, companyID);
 			}
 			forward = "redirect:/Customer?tabid=ContactBoard";
 		} else if (action.equalsIgnoreCase("SearchCustomer")) { // to update customer information.
@@ -1220,7 +1222,7 @@ public class SalesController {
 		} else if (action.equalsIgnoreCase("ShowEmailOnCustomerBoard")) {
 			String CustIDs = request.getParameter("CustIDs");
 //			InvoiceInfoDao invoice = new InvoiceInfoDao();
-			EmailSenderDto emsDto = invoiceDao.getEmailSenderInfo(companyID);
+			EmailSenderDto emsDto = invoiceInfoDao.getEmailSenderInfo(companyID);
 //			CustomerInfoDao info = new CustomerInfoDao();
 			ArrayList<CustomerDto> custList = customerInfoDao.customerDetails(companyID);
 			String emails = "";
@@ -1266,7 +1268,7 @@ public class SalesController {
 			sd.getInitialize(orderNo, request, invoiceDto);
 
 //			InvoiceInfoDao invoice = new InvoiceInfoDao();
-			invoiceDao.invoiceIt(orderNo); // Action Sales Board InInvoice True
+			invoiceInfoDao.invoiceIt(orderNo); // Action Sales Board InInvoice True
 			request.setAttribute("Enable", "true");
 			forward = "/sales/invoice";
 		} else if (action.equalsIgnoreCase("CUSTLOOKUP")) {
@@ -1421,7 +1423,7 @@ public class SalesController {
 			}
 		} else if (action.equalsIgnoreCase("ReceivedItemList")) { // for Received-Item List Report
 //			PurchaseBoardDetails pd = new PurchaseBoardDetails();
-			pd.getPurchaseBoardDetails(request, new PurchaseBoardDto());
+			purchaseBoardDetails.getPurchaseBoardDetails(request, new PurchaseBoardDto());
 			forward = "/reports/receivedItemList";
 		} else if (action.equalsIgnoreCase("ItemPriceList")) { // for ItemPriceList List Report
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
@@ -1434,7 +1436,7 @@ public class SalesController {
 		} else if (action.equalsIgnoreCase("CustomerList")) { // for CustomerList Report
 //			CustomerInfo cinfo = new CustomerInfo();
 			ArrayList Customerlist = new ArrayList();
-			Customerlist = ci.customerDetails(companyID);
+			Customerlist = customerInfo.customerDetails(companyID);
 			model.addAttribute("customerlist", Customerlist);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustomerListReport";
@@ -1443,7 +1445,7 @@ public class SalesController {
 			}
 		} else if (action.equalsIgnoreCase("CustomerPhoneList")) {
 //			CustomerInfo cinfo = new CustomerInfo();
-			ArrayList CustomerPhoneList = ci.customerDetails(companyID);
+			ArrayList CustomerPhoneList = customerInfo.customerDetails(companyID);
 			model.addAttribute("customerphonelist", CustomerPhoneList);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustomerPhoneList";
@@ -1452,7 +1454,7 @@ public class SalesController {
 			}
 		} else if (action.equalsIgnoreCase("CustomerContactList")) {
 //			CustomerInfo cinfo = new CustomerInfo();
-			ArrayList customerContactList = ci.customerDetails(companyID);
+			ArrayList customerContactList = customerInfo.customerDetails(companyID);
 			model.addAttribute("customerContactList", customerContactList);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustomerContactList";
@@ -1823,9 +1825,9 @@ public class SalesController {
 		} else if (action.equalsIgnoreCase("getCustomerDetails")) {
 			String cvId = request.getParameter("cvId");
 			sd.getCustomerDetails(cvId, request, customerDto);
-			ArrayList<InvoiceDto> shipAddress = invoiceDao.shipAddress(companyID, cvId);
-			ArrayList<InvoiceDto> billAddress = invoiceDao.billAddress(companyID, cvId);
-			TrHistoryLookUp hlookup = invoice.getCustomerPaymentDetailsForCustomerBoardPage(cvId);
+			ArrayList<InvoiceDto> shipAddress = invoiceInfoDao.shipAddress(companyID, cvId);
+			ArrayList<InvoiceDto> billAddress = invoiceInfoDao.billAddress(companyID, cvId);
+			TrHistoryLookUp hlookup = invoiceInfo.getCustomerPaymentDetailsForCustomerBoardPage(cvId);
 			customerDto.setLast3MonthAmt(hlookup.getLast3MonthAmt());
 			customerDto.setLast1YearAmt(hlookup.getLast1YearAmt());
 			customerDto.setTotalOverdueAmt(hlookup.getTotalOverdueAmt());

@@ -17,6 +17,8 @@ import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.utility.Path;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,6 +31,9 @@ import java.util.ArrayList;
 
 @Controller
 public class PurchaseController {
+	@Autowired
+	private PurchaseDetailsDao pdetails ;
+	
 
 	@RequestMapping(value = {"/Vendor"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String vendor(VendorDto vendorDto, UpdateInvoiceDto updateInvoiceDto, HttpServletRequest request) throws IOException, ServletException {
@@ -39,7 +44,7 @@ public class PurchaseController {
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
 
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			pdetails.getVendors(request);
 			pdetails.searchVendor(cvId, request,vendorDto);
 			pdetails.getAllList(request);
@@ -59,7 +64,7 @@ public class PurchaseController {
 		}
 
 		else if (action.equalsIgnoreCase("VONODO")) { // for Vendor List
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+//			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			pdetails.getVendors(request);
 			pdetails.getAllList(request);
 			forward = "/purchase/vendorsNew";
@@ -70,7 +75,7 @@ public class PurchaseController {
 			String cvId = request.getParameter("CustId");
 			InvoiceInfoDao invoice = new InvoiceInfoDao();
 
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			pdetails.getAllList(request);
 			invoice.set(cvId, request, updateInvoiceDto, compId);
 			invoice.getServices(request, compId, cvId);
@@ -90,7 +95,7 @@ public class PurchaseController {
 		}
 
 		else if (action.equalsIgnoreCase("AOVODO")) { // to Add/Save Vendor details
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			String compId = (String) request.getSession().getAttribute("CID");
 			pdetails.AddVendor(request, vendorDto, compId);
 			forward = "redirect:/Vendor?tabid=AODOVO";
@@ -99,14 +104,14 @@ public class PurchaseController {
 		else if (action.equalsIgnoreCase("editVendor")) {	//Get Vendor details for EditVendor Page
 			String cvId = request.getParameter("cvId");
 			request.getSession().setAttribute("editedCVID", cvId);
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			pdetails.searchVendor(cvId, request, vendorDto);
 			pdetails.getAllList(request);
 			forward = "/purchase/updateVendor";
 		}
 		else if(action.equalsIgnoreCase("updateVendor")){	//Update Vendor Details
 			String cvId = (String) request.getSession().getAttribute("editedCVID");
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			pdetails.UpdateVendor(request, vendorDto);
 			forward = "redirect:Vendor?tabid=editVendor&cvId="+cvId;
 		}
@@ -132,7 +137,7 @@ public class PurchaseController {
 	public Object VendorAjaxCall(VendorDto vendorDto, HttpServletRequest request) throws Exception {
 		String action = request.getParameter("tabid");
 		String status = "Success";
-		PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+		//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 		if(action.equalsIgnoreCase("sortVendors")) {
 			int sortById = Integer.parseInt(request.getParameter("SortBy"));
 			request.setAttribute("sortById", sortById);

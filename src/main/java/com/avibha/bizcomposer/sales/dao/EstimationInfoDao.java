@@ -5,6 +5,23 @@
  */
 package com.avibha.bizcomposer.sales.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
@@ -15,24 +32,16 @@ import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
-import com.avibha.common.utility.CountryState;
-import org.apache.struts.util.LabelValueBean;
-
-import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.nxsol.bzcomposer.company.domain.BcaInvoice;
+import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 
 /*
  * 
  */
+@Service
 public class EstimationInfoDao {
+	@Autowired
+	private BcaInvoiceRepository bcaInvoiceRepository;
 
 	public ArrayList getItemList(String compId) {
 		Connection con = null ;
@@ -619,37 +628,49 @@ public class EstimationInfoDao {
 	}
 
 	public String getNewEstimationNo(String compId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null;
 		int lastOrderNo = 0;
 		try {
 			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
-
-			String sqlString = "SELECT EstNum FROM bca_invoice WHERE CompanyID=? AND invoiceStatus IN (0,2) AND InvoiceTypeID IN (10) ORDER BY EstNum DESC";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, compId);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				lastOrderNo = rs.getInt(1)+1;
-			}
-			else{
+			List<Integer> invoiceStatus=Arrays.asList(0,2);
+			List<Integer> invoiceTypeId=Arrays.asList(0,2);
+		List<BcaInvoice> bcaInvoices=bcaInvoiceRepository.findByCompanyIdAndInvoiceStatusAndInvoiceTypeId(Long.valueOf(compId), invoiceStatus, invoiceTypeId);
+			if(bcaInvoices.isEmpty()) {
 				String startNumber = configDto.getStartEstimationNum();
 				lastOrderNo = Integer.parseInt(startNumber.substring(startNumber.indexOf("-")+1));
+			}else {
+				BcaInvoice bcaInvoice=bcaInvoices.get(0);
+				lastOrderNo =bcaInvoice.getEstNum();
 			}
-		} catch (SQLException ee) {
+		
+		
+//		String sqlString = "SELECT EstNum FROM bca_invoice WHERE CompanyID=? AND invoiceStatus IN (0,2) AND InvoiceTypeID IN (10) ORDER BY EstNum DESC";
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, compId);
+//			rs = pstmt.executeQuery();
+//			if (rs.next()) {
+//				lastOrderNo = rs.getInt(1)+1;
+//			}
+//			else{
+//				String startNumber = configDto.getStartEstimationNum();
+//				lastOrderNo = Integer.parseInt(startNumber.substring(startNumber.indexOf("-")+1));
+//			}
+		} catch (Exception ee) {
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) { db.close(rs); }
-				if (pstmt != null) { db.close(pstmt); }
-				if(con != null){ db.close(con); }
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		} 
+//		finally {
+//			try {
+//				if (rs != null) { db.close(rs); }
+//				if (pstmt != null) { db.close(pstmt); }
+//				if(con != null){ db.close(con); }
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return String.valueOf(lastOrderNo);
 	}
 

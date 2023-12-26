@@ -1,5 +1,8 @@
 package com.nxsol.bzcomposer.company.domain;
 
+import java.time.OffsetDateTime;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.time.OffsetDateTime;
-import java.util.Set;
 import javax.persistence.Table;
 
 @Entity
@@ -130,6 +131,10 @@ public class BcaCart {
 
     @OneToMany(mappedBy = "cart")
     private Set<BcaRmaitem> cartBcaRmaitems;
+    
+    @OneToMany(mappedBy = "cart")
+    private Set<BcaRma> cartBcaRma;
+
 
     public Integer getCartId() {
         return cartId;
@@ -418,5 +423,13 @@ public class BcaCart {
     public void setCartBcaRmaitems(final Set<BcaRmaitem> cartBcaRmaitems) {
         this.cartBcaRmaitems = cartBcaRmaitems;
     }
+
+	public Set<BcaRma> getCartBcaRma() {
+		return cartBcaRma;
+	}
+
+	public void setCartBcaRma(Set<BcaRma> cartBcaRma) {
+		this.cartBcaRma = cartBcaRma;
+	}
 
 }

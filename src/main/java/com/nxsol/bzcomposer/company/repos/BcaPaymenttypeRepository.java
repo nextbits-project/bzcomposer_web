@@ -40,4 +40,8 @@ public interface BcaPaymenttypeRepository extends JpaRepository<BcaPaymenttype, 
 	List<BcaPaymenttype> findByPaymentTypeIdAndCompanyAndActiveAndTypeCategory(Integer paymentTypeId,
 			BcaCompany company, Integer active, Integer typeCategory);
 
+	List<BcaPaymenttype> findByCompany_CompanyIdAndActive(Long companyId, Integer active);
+
+
+
 }

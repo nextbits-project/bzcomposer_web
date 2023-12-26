@@ -5,6 +5,8 @@ import com.avibha.bizcomposer.sales.dao.SalesOrderBoardDetails;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
 import com.avibha.common.log.Loger;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,8 @@ import java.io.IOException;
 
 @Controller
 public class SalesOrderBoardController {
+	@Autowired
+	private SalesOrderBoardDetails salesOrderBoardDetails;
 
     @RequestMapping(value = {"/SalesOrderBoard"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(SalesBoardDto salesBoardDto, HttpServletRequest request, Model model) throws IOException, ServletException {
@@ -26,22 +30,22 @@ public class SalesOrderBoardController {
         model.addAttribute("salesBoardDto", salesBoardDto);
         String action = request.getParameter("tabid");
         if (action.equalsIgnoreCase("ShowList")) { // For Fname and lname listing
-            SalesOrderBoardDetails sd = new SalesOrderBoardDetails();
-            sd.getSalesOrderBoardDetails(request, salesBoardDto);
+         //   SalesOrderBoardDetails sd = new SalesOrderBoardDetails();
+            salesOrderBoardDetails.getSalesOrderBoardDetails(request, salesBoardDto);
         }
         else if (action.equalsIgnoreCase("UpdateRecord")) { // For Fname and lname listing
-            SalesOrderBoardDetails sd = new SalesOrderBoardDetails();
-            sd.updateRecord(request);
-            sd.getSalesOrderBoardDetails(request, salesBoardDto);
+//            SalesOrderBoardDetails sd = new SalesOrderBoardDetails();
+            salesOrderBoardDetails.updateRecord(request);
+            salesOrderBoardDetails.getSalesOrderBoardDetails(request, salesBoardDto);
         }
         else if (action.equalsIgnoreCase("ReservedInventoryList")) { // ReservedInventoryList Report
-            SalesOrderBoardDetails sd = new SalesOrderBoardDetails();
-            sd.getSalesOrderBoardDetails(request, salesBoardDto);
+//            SalesOrderBoardDetails sd = new SalesOrderBoardDetails();
+            salesOrderBoardDetails.getSalesOrderBoardDetails(request, salesBoardDto);
             forward = "/reports/reservedInventoryList";
         }
         else if(action.equalsIgnoreCase("DamagedInvList")) {
-            SalesOrderBoardDetails sd = new SalesOrderBoardDetails();
-            sd.getSalesOrderBoardDetails(request, salesBoardDto);
+//            SalesOrderBoardDetails sd = new SalesOrderBoardDetails();
+            salesOrderBoardDetails.getSalesOrderBoardDetails(request, salesBoardDto);
         }
         return forward;
     }

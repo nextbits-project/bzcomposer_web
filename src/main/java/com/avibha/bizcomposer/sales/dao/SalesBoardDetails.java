@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class SalesBoardDetails {
 
 	@Autowired
-	SalesBoardInfo SaleInfo;
+	SalesBoardInfo saleInfo;
 	
     public ArrayList getSalesBoardDetails(HttpServletRequest request, SalesBoardDto salesBoardDto) {
         String compId = (String) request.getSession().getAttribute("CID");
@@ -22,7 +22,7 @@ public class SalesBoardDetails {
         invoiceReportType =(invoiceReportType == null) ?"":invoiceReportType;
 
 //        SalesBoardInfo SaleInfo = new SalesBoardInfo();
-        ArrayList saleDetails = SaleInfo.SalesRecordSearch(compId, invoiceReportType, salesBoardDto);
+        ArrayList saleDetails = saleInfo.SalesRecordSearch(compId, invoiceReportType, salesBoardDto);
         request.setAttribute("SalesBoardDetails", saleDetails);
         request.setAttribute("Market", salesBoardDto.getFilterMarket());
         return saleDetails;
@@ -34,8 +34,8 @@ public class SalesBoardDetails {
         String invoiceReportType1 = request.getParameter("ilist");
         invoiceReportType1 =(invoiceReportType == null) ?"":invoiceReportType1;
 
-        SalesBoardInfo SaleInfo = new SalesBoardInfo();
-        ArrayList salesRBC = SaleInfo.getSaleReportCustomerSearch(compId, invoiceReportType1, salesBoardDto);
+//        SalesBoardInfo SaleInfo = new SalesBoardInfo();
+        ArrayList salesRBC = saleInfo.getSaleReportCustomerSearch(compId, invoiceReportType1, salesBoardDto);
         request.setAttribute("salesRBC", salesRBC);
     }
 
@@ -44,20 +44,20 @@ public class SalesBoardDetails {
         HttpSession sess = request.getSession();
         String compId = (String) sess.getAttribute("CID");
 
-        SalesBoardInfo SaleInfo = new SalesBoardInfo();
+//        SalesBoardInfo SaleInfo = new SalesBoardInfo();
 
         ArrayList SalesReportByRep = new ArrayList();
         String oDate1 = salesBoardDto.getOrderDate1();
         String oDate2 = salesBoardDto.getOrderDate2();
 
-        SalesReportByRep = SaleInfo.SalesReportByRep(compId, oDate1, oDate2);
+        SalesReportByRep = saleInfo.SalesReportByRep(compId, oDate1, oDate2);
         request.setAttribute("SalesReportByRep", SalesReportByRep);
         request.setAttribute("Market", salesBoardDto.getFilterMarket());
     }
 
     public void updateRecord(HttpServletRequest request) {
-        SalesBoardInfo salesInfo = new SalesBoardInfo();
-        boolean result = salesInfo.update(request);
+//        SalesBoardInfo salesInfo = new SalesBoardInfo();
+        boolean result = saleInfo.update(request);
         String msg = "";
         if (result) {
             msg = "**Update is sucessfully completed";
@@ -71,12 +71,12 @@ public class SalesBoardDetails {
     public void getRefundInvoiceReport(HttpServletRequest request, SalesBoardDto salesBoardDto) {
         HttpSession sess = request.getSession();
         String compId = (String) sess.getAttribute("CID");
-        SalesBoardInfo SaleInfo = new SalesBoardInfo();
+//        SalesBoardInfo SaleInfo = new SalesBoardInfo();
         ArrayList refundInvoiceReport = new ArrayList();
         String oDate1 = salesBoardDto.getOrderDate1();
         String oDate2 = salesBoardDto.getOrderDate2();
 
-        refundInvoiceReport = SaleInfo.getRefundInvoiceReport(compId,oDate1,oDate2);
+        refundInvoiceReport = saleInfo.getRefundInvoiceReport(compId,oDate1,oDate2);
         request.setAttribute("refundInvoice", refundInvoiceReport);
     }
 }

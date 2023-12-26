@@ -8,6 +8,8 @@ import com.avibha.bizcomposer.sales.forms.*;
 import com.avibha.common.constants.AppConstants;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +27,11 @@ import java.util.List;
  */
 @Controller
 public class EstimationController {
+	@Autowired
+	private  SalesDetailsDao sdetailsDao ;
+	
+	@Autowired
+	private SalesDetails salesDetails;
 
     @RequestMapping(value = {"/Estimation"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(EstimationDto estimationDto, InvoiceDto invoiceDto, UpdateInvoiceDto updateInvoiceDto, HttpServletRequest request) throws IOException, ServletException, SQLException {
@@ -49,8 +56,8 @@ public class EstimationController {
         }
 
         if (action.equalsIgnoreCase("Estimation")) {
-            SalesDetailsDao sdetails = new SalesDetailsDao();
-            sdetails.newEstimation(request, estimationDto);
+//            SalesDetailsDao sdetails = new SalesDetailsDao();
+            sdetailsDao.newEstimation(request, estimationDto);
             ConfigurationInfo configInfo = new ConfigurationInfo();
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
@@ -72,9 +79,9 @@ public class EstimationController {
         }
         else if (action.equalsIgnoreCase("FirstEstimation") || action.equalsIgnoreCase("LastEstimation")
                 || action.equalsIgnoreCase("NextEstimation") || action.equalsIgnoreCase("PreviousEstimation")) {
-            SalesDetailsDao sdetails = new SalesDetailsDao();
-            sdetails.newEstimation(request, estimationDto);
-            sdetails.getEstimationDetailsByBtnName(request, estimationDto);
+//            SalesDetailsDao sdetails = new SalesDetailsDao();
+            sdetailsDao.newEstimation(request, estimationDto);
+            sdetailsDao.getEstimationDetailsByBtnName(request, estimationDto);
             ConfigurationInfo configInfo = new ConfigurationInfo();
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
             invoiceDto.setSalesTaxID("1");
@@ -89,22 +96,22 @@ public class EstimationController {
             forward = "/sales/estimation";
         }
         else if (action.equalsIgnoreCase("SaveEstimation")) {
-            SalesDetails sdetails = new SalesDetails();
-            sdetails.saveEstimation(request, estimationDto);
+//            SalesDetails sdetails = new SalesDetails();
+        	salesDetails.saveEstimation(request, estimationDto);
             forward = "redirect:Estimation?tabid=Estimation";
         }
         else if(action.equalsIgnoreCase("sortEstimation")) {
-            SalesDetails sdetails = new SalesDetails();
-            sdetails.getSortedEstimationInfo(request,request.getParameter("SortBy"));
+//            SalesDetails sdetails = new SalesDetails();
+            salesDetails.getSortedEstimationInfo(request,request.getParameter("SortBy"));
             forward = "success1";
         }
         else if(action.equalsIgnoreCase("saveUnitPrice")) {
             int itemId = Integer.parseInt(request.getParameter("itemID"));
             double price  = Double.parseDouble(request.getParameter("price"));
             System.out.println("method:saveUnitPrice\nitemId:"+itemId+"\nPrice:"+price);
-            SalesDetails sd = new SalesDetails();
-            sd.setUnitPriceEstimation(companyID,itemId,price);
-            sd.getInvoiceInfo(request);
+//            SalesDetails sd = new SalesDetails();
+            salesDetails.setUnitPriceEstimation(companyID,itemId,price);
+            salesDetails.getInvoiceInfo(request);
 //            forward = "success1";
             forward = "redirect:Estimation?tabid=Estimation";
         }
@@ -112,21 +119,21 @@ public class EstimationController {
             int itemId = Integer.parseInt(request.getParameter("itemID"));
             String itemName = request.getParameter("itemName");
             System.out.println("method:saveUnitPrice\nitemId:"+itemId+"\nItemName:"+itemName);
-            SalesDetails sd = new SalesDetails();
-            sd.setItemNameEstimation(companyID,itemId,itemName);
-            sd.getInvoiceInfo(request);
+//            SalesDetails sd = new SalesDetails();
+            salesDetails.setItemNameEstimation(companyID,itemId,itemName);
+            salesDetails.getInvoiceInfo(request);
             forward = "success1";
         }
         else if (action.equalsIgnoreCase("DeleteEstimation")) {
-            SalesDetails sdetails = new SalesDetails();
-            sdetails.deleteEstimation(request, estimationDto);
+//            SalesDetails sdetails = new SalesDetails();
+            salesDetails.deleteEstimation(request, estimationDto);
             forward = "success1";
         }
         else if (action.equalsIgnoreCase("ShowInvoiceUpdate")) {
             String cvId = request.getParameter("CustId");
-            SalesDetails sdetails = new SalesDetails();
-            sdetails.updateInvoice(cvId, request);
-            sdetails.getAllList(request);
+//            SalesDetails sdetails = new SalesDetails();
+            salesDetails.updateInvoice(cvId, request);
+            salesDetails.getAllList(request);
             forward = "success2";
 
         }
@@ -138,10 +145,10 @@ public class EstimationController {
          * sdetails.getAllList(request); forward = "success2"; }
          */
         else if (action.equalsIgnoreCase("UpdateCustInfo")) {
-            SalesDetails sdetails = new SalesDetails();
-            sdetails.UpdateCustInfo(request, updateInvoiceDto);
+//            SalesDetails sdetails = new SalesDetails();
+        	salesDetails.UpdateCustInfo(request, updateInvoiceDto);
 
-            sdetails.getAllList(request);
+        	salesDetails.getAllList(request);
             System.out.println("Updated");
             forward = "success2";
 

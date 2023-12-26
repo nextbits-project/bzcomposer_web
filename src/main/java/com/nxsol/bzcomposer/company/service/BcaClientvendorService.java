@@ -58,9 +58,33 @@ public class BcaClientvendorService {
 
 	@Autowired
 	private BcaTitleRepository titleRepository;
+	
+	@Autowired
+	private CountryState countryState;
+	
+	@Autowired
+	private InvoiceInfoDao invoiceInfoDao;
 
 	@PersistenceContext
 	private EntityManager em;
+	
+	@Autowired
+	private Title title;
+	@Autowired
+	private Term term;
+	@Autowired
+	private PayMethod payMethod;
+	@Autowired
+	private Shipping shipping;
+	@Autowired
+	private Rep rep;
+	@Autowired
+	private CreditCard creditCard;
+	@Autowired
+	private VendorCategory vendorCategory;
+	
+	@Autowired
+	private CustomerInfoDao customerInfoDao;
 
 	public ArrayList<CustomerDto> customerDetails(String compId) {
 		BcaCompany company = bcaCompanyRepo.getOne(Long.parseLong(compId));
@@ -130,7 +154,7 @@ public class BcaClientvendorService {
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<CustomerDto> objList = new ArrayList<>();
 		ResultSet rs = null;
-		CountryState cs = new CountryState();
+		// CountryState cs = new CountryState();
 		Title title = new Title();
 		try {
 			con = db.getConnection();
@@ -252,7 +276,7 @@ public class BcaClientvendorService {
 	}
 
 	public void getAllList(HttpServletRequest request) {
-		CountryState cs = new CountryState();
+		// CountryState cs = new CountryState();
 		HttpSession sess = request.getSession();
 		String cid = (String) sess.getAttribute("CID");
 		String countryID = ConstValue.countryID;
@@ -262,57 +286,57 @@ public class BcaClientvendorService {
 			CustomerDto customer = (CustomerDto) request.getAttribute("CustomerDetails");
 			countryID = customer.getCountry();
 			stateID = customer.getState();
-			request.setAttribute("stateList2", cs.getStateList(customer.getBscountry()));
-			request.setAttribute("cityList2", cs.getCityList(customer.getBsstate()));
-			request.setAttribute("stateList3", cs.getStateList(customer.getShcountry()));
-			request.setAttribute("cityList3", cs.getCityList(customer.getShstate()));
+			request.setAttribute("stateList2", countryState.getStateList(customer.getBscountry()));
+			request.setAttribute("cityList2", countryState.getCityList(customer.getBsstate()));
+			request.setAttribute("stateList3", countryState.getStateList(customer.getShcountry()));
+			request.setAttribute("cityList3", countryState.getCityList(customer.getShstate()));
 		}
 		// country List
-		request.setAttribute("cList", cs.getCountry());
-		request.setAttribute("countryList", cs.getCountryList());
-		request.setAttribute("stateList", cs.getStateList(countryID));
-		request.setAttribute("cityList", cs.getCityList(stateID));
+		request.setAttribute("cList", countryState.getCountry());
+		request.setAttribute("countryList", countryState.getCountryList());
+		request.setAttribute("stateList", countryState.getStateList(countryID));
+		request.setAttribute("cityList", countryState.getCityList(stateID));
 
 		// Title List
-		Title t = new Title();
-		request.setAttribute("titleList", t.getTitleList(cid));
+//		Title t = new Title();
+		request.setAttribute("titleList", title.getTitleList(cid));
 
 		// Term List
-		Term tr = new Term();
-		request.setAttribute("TermList", tr.getTermList(cid));
+//		Term tr = new Term();
+		request.setAttribute("TermList", term.getTermList(cid));
 
 		// Rep List
-		Rep rap = new Rep();
-		request.setAttribute("RepList", rap.getRepList(cid));
+//		Rep rap = new Rep();
+		request.setAttribute("RepList", rep.getRepList(cid));
 
 		// PayMethod List
-		PayMethod pmethod = new PayMethod();
-		request.setAttribute("PaymentList", pmethod.getPaymentTypeList(cid));
+//		PayMethod pmethod = new PayMethod();
+		request.setAttribute("PaymentList", payMethod.getPaymentTypeList(cid));
 
 		// ShipCarrier List
-		Shipping ship = new Shipping();
-		request.setAttribute("ShipCarrierList", ship.getShipCarrierList(cid));
+//		Shipping ship = new Shipping();
+		request.setAttribute("ShipCarrierList", shipping.getShipCarrierList(cid));
 
 		// CreditCard List
-		CreditCard cc = new CreditCard();
-		request.setAttribute("CreditCardList", cc.getCCTypeList(cid));
+//		CreditCard cc = new CreditCard();
+		request.setAttribute("CreditCardList", creditCard.getCCTypeList(cid));
 
 		// VendorCategoryList List
-		VendorCategory cv = new VendorCategory();
-		request.setAttribute("VendorCategoryList", cv.getCVCategoryList(cid));
+//		VendorCategory cv = new VendorCategory();
+		request.setAttribute("VendorCategoryList", vendorCategory.getCVCategoryList(cid));
 
 		// customerGroupList List
-		request.setAttribute("customerGroupList", cv.getCustomerGroupList());
+		request.setAttribute("customerGroupList",vendorCategory.getCustomerGroupList());
 
 		/* Item List */
 		String compId = (String) request.getSession().getAttribute("CID");
-		InvoiceInfoDao invoice = new InvoiceInfoDao();
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		ArrayList itemList = new ArrayList();
-		itemList = invoice.getItemList(compId);
+		itemList = invoiceInfoDao.getItemList(compId);
 		request.setAttribute("ItemList", itemList);
 
-		CustomerInfoDao customer = new CustomerInfoDao();
-		customer.getServices(request, cid);
+//		CustomerInfoDao customer = new CustomerInfoDao();
+		customerInfoDao.getServices(request, cid);
 	}
 
 }

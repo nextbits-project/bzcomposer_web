@@ -40,6 +40,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
@@ -69,6 +70,7 @@ import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 /*
  * 
  */
+@Service
 public class ItemInfo {
 	
 //	private InventoryUnitMeasureRepository tTblInventoryUnitMeasureRepository;

@@ -11,9 +11,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.nxsol.bizcompser.global.table.TblTerm;
+import com.nxsol.bzcomposer.company.domain.BcaTerm;
+import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
+
 import org.apache.struts.util.LabelValueBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
@@ -21,60 +27,73 @@ import com.avibha.common.log.Loger;
 /*
  * 
  */
+@Service
 public class Term {
 	/*
 	 * 
 	 */
+	
+	@Autowired
+	private BcaTermRepository bcaTermRepository;
+	
 	public ArrayList getTermList(String CompanyID) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		ArrayList<TblTerm> arr1 = new ArrayList<TblTerm>();
 		// boolean ret = false;
-		Connection con = null ;
-		PreparedStatement pstmt=null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		if (db == null)
-			//arr = null;
-			arr1 = null;
-		con = db.getConnection();
-
-		if (con == null)
-			//arr = null;
-			arr1 = null;
+//		Connection con = null ;
+//		PreparedStatement pstmt=null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		if (db == null)
+//			//arr = null;
+//			arr1 = null;
+//		con = db.getConnection();
+//
+//		if (con == null)
+//			//arr = null;
+//			arr1 = null;
 
 		try {
-			String sqlString = "select TermID,Name from bca_term where CompanyID=? and Active=?";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, CompanyID);
-			pstmt.setString(2, "1");
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				//arr.add(new org.apache.struts.util.LabelValueBean(rs
-				//		.getString("Name"), rs.getString("TermID")));
+			List<BcaTerm> bcaTerm = bcaTermRepository.findByCompany_CompanyIdAndActive(Long.parseLong(CompanyID), 1);
+			for(BcaTerm term : bcaTerm) {
 				TblTerm trmObj = new TblTerm();
-				trmObj.setTerm(Integer.parseInt(rs.getString("TermID")));
-				trmObj.setName(rs.getString("Name"));
+				trmObj.setTerm(term.getTermId());
+				trmObj.setName(term.getName());
 				arr1.add(trmObj);
 			}
-		} catch (SQLException ee) {
+//			String sqlString = "select TermID,Name from bca_term where CompanyID=? and Active=?";
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, CompanyID);
+//			pstmt.setString(2, "1");
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				//arr.add(new org.apache.struts.util.LabelValueBean(rs
+//				//		.getString("Name"), rs.getString("TermID")));
+//				TblTerm trmObj = new TblTerm();
+//				trmObj.setTerm(Integer.parseInt(rs.getString("TermID")));
+//				trmObj.setName(rs.getString("Name"));
+//				arr1.add(trmObj);
+//			}
+		} catch (Exception ee) {
 			Loger.log(2, "Error in  Class Term and method -getTitleList "
 					+ " " + ee.toString());
 			
-		}finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-					}
-				if (pstmt != null) {
-					db.close(pstmt);
-					}
-					if(con != null){
-					db.close(con);
-					}
-				} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//					}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//					}
+//					if(con != null){
+//					db.close(con);
+//					}
+//				} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return arr1;
 	}
 

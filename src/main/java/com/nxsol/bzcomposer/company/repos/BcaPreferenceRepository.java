@@ -15,5 +15,6 @@ public interface BcaPreferenceRepository extends JpaRepository<BcaPreference, In
 	@Query("select bp.invoiceStyle.invoiceStyleId from BcaPreference bp where bp.company.companyId = :companyId")
 	Integer findInvoiceStyleIDByCompanyId(@Param("companyId")Long companyID);
 	
-	
+	@Query("select bp  from BcaPreference as bp where bp.company.companyId = :companyId and bp.active = :active")
+	BcaPreference findByCompanyIdAndActive(@Param("companyId")Long companyId,@Param("active")Integer active);
 }

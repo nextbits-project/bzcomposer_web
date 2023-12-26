@@ -9,8 +9,12 @@ package com.avibha.bizcomposer.rma.forms;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
-import javax.servlet.http.HttpServletRequest;
+import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
+
+import javax.servlet.http.HttpServletRequest;
+@NoArgsConstructor
 public class RMADto {
 	
 	private static final long serialVersionUID = 0;
@@ -207,4 +211,40 @@ public class RMADto {
 	public void setTotalPages(int totalPages) {
 		this.totalPages = totalPages;
 	}
+	public RMADto(String firstName, String lastName, Integer orderNum, String dateAdded, String dateConfirmed) {
+		this.fname = firstName;
+		this.lname = lastName;
+		this.Rma = Integer.toString(orderNum);
+		this.orderDate = dateAdded;
+		this.sentDate = dateConfirmed;
+	}
+	public RMADto(Integer rmaNo, String firstName , String lastName ,String inventoryCode, String inventoryName, String rmaReason 
+			, Integer rmaQty ,Double unitPrice , Double unitWeight , OffsetDateTime dateAdded ) {
+		this.Rma=Integer.toString(rmaNo);
+		this.fname=firstName;
+		this.lname=lastName;
+		this.itemCode=inventoryCode;
+		this.itemDesc=inventoryName;
+		this.Reason=rmaReason;
+		this.Qty=Double.toString(rmaQty);
+		this.unitPrice=Double.toString(unitPrice);
+		this.unitWeight=Double.toString(unitWeight);
+		this.sentDate=dateAdded.toString();
+	}
+	public RMADto(Integer rmaNo, String firstName , String lastName ,String inventoryCode, String inventoryName, String rmaReason 
+			, Integer rmaQty ,Double unitPrice , Double unitWeight , String dateAdded, Integer orderNum ) {
+		this.Rma=Integer.toString(rmaNo);
+		this.fname=firstName;
+		this.lname=lastName;
+		this.itemCode=inventoryCode;
+		this.itemDesc=inventoryName;
+		this.Reason=rmaReason;
+		this.Qty=Double.toString(rmaQty);
+		this.unitPrice=Double.toString(unitPrice);
+		this.unitWeight=Double.toString(unitWeight);
+		this.sentDate=dateAdded;
+		this.order=orderNum.toString();
+	}
+	
+	
 }
