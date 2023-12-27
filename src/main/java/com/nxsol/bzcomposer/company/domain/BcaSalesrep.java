@@ -49,8 +49,6 @@ public class BcaSalesrep {
     @OneToMany(mappedBy = "salesRep")
     private Set<StorageInvoice> salesRepStorageInvoices;
 
-//    @OneToMany(mappedBy = "salesRep")
-//    private Set<StorageInvoice> salesRepStorageInvoices;
 
     
     public Integer getSalesRepId() {

@@ -882,26 +882,27 @@ public class InvoiceInfoDao {
 		ArrayList<InvoiceDto> details = new ArrayList<>();
 		try {
 
-			
-			List<String> status=Arrays.asList("U","N");
-		List<BcaClientvendor> clientVendor=	bcaClientvendorRepository.findDistinctByCompany_CompanyIdAndStatusInAndDeletedAndActiveOrderByName(Long.parseLong(compId), status, 0, 1);
-		for(BcaClientvendor vendor: clientVendor) {
-			String cvId = vendor.getClientVendorId().toString();
-			InvoiceDto invForm = new InvoiceDto();
-			objList.add(new LabelValueBean(
-					vendor.getName() + "(" + vendor.getLastName() + ", " + vendor.getFirstName()+ ")", cvId));
-			invForm.setClientVendorID(cvId);
-			invForm.setCompanyName(vendor.getName());
-			invForm.setFirstName(vendor.getFirstName());
-			invForm.setLastName(vendor.getLastName());
-			invForm.setVia(vendor.getShipCarrier().getShipCarrierId().toString());
-			invForm.setPayMethod(vendor.getPaymentType().getPaymentTypeId().toString());
-			invForm.setTerm(vendor.getTerm().getTermId().toString());
-			invForm.setRep(vendor.getSalesRep().getSalesRepId().toString());
-			invForm.setTaxable(vendor.getTaxable().toString());
-			invForm.setCustomerHasBalance(isCustomerHasBalance(cvId));
-			details.add(invForm);
-		}
+			List<String> status = Arrays.asList("U", "N");
+			List<BcaClientvendor> clientVendor = bcaClientvendorRepository
+					.findDistinctByCompany_CompanyIdAndStatusInAndDeletedAndActiveOrderByName(Long.parseLong(compId),
+							status, 0, 1);
+			for (BcaClientvendor vendor : clientVendor) {
+				String cvId = vendor.getClientVendorId().toString();
+				InvoiceDto invForm = new InvoiceDto();
+				objList.add(new LabelValueBean(
+						vendor.getName() + "(" + vendor.getLastName() + ", " + vendor.getFirstName() + ")", cvId));
+				invForm.setClientVendorID(cvId);
+				invForm.setCompanyName(vendor.getName());
+				invForm.setFirstName(vendor.getFirstName());
+				invForm.setLastName(vendor.getLastName());
+				invForm.setVia(vendor.getShipCarrier().getShipCarrierId().toString());
+				invForm.setPayMethod(vendor.getPaymentType().getPaymentTypeId().toString());
+				invForm.setTerm(vendor.getTerm().getTermId().toString());
+				invForm.setRep(vendor.getSalesRep().getSalesRepId().toString());
+				invForm.setTaxable(vendor.getTaxable().toString());
+				invForm.setCustomerHasBalance(isCustomerHasBalance(cvId));
+				details.add(invForm);
+			}
 
 //		String sqlString = "SELECT distinct ClientVendorID,FirstName,LastName,ShipCarrierID,PaymentTypeID,TermID,SalesRepID,Taxable,Name "
 //					+ "FROM bca_clientvendor WHERE CompanyID=? AND Status IN ('U', 'N') AND Deleted=0 AND Active=1 ORDER BY Name";
@@ -1362,7 +1363,7 @@ public class InvoiceInfoDao {
 					.findOrderNumByCompanyIdAndInvoiceStatus(Long.parseLong(compId), invoiceStatus);
 
 			if (null != orderNum) {
-				lastOrderNo = orderNum.get(0);
+				lastOrderNo = orderNum.get(0) + 1;
 			} else {
 				String startNumber = configDto.getStartInvoiceNum();
 				lastOrderNo = Integer.parseInt(startNumber.substring(startNumber.indexOf("-") + 1));
@@ -4785,8 +4786,9 @@ public class InvoiceInfoDao {
 //			return;
 		// UpdateInvoiceDto customer = new UpdateInvoiceDto();
 		try {
-			List<BcaClientvendorservice> clientVendorServiceList = bcaClientvendorserviceRepository.findByCompanyIdAndClientVendorId(Long.valueOf(compId), Integer.parseInt(cvId));
-			for(BcaClientvendorservice bcvs : clientVendorServiceList) {
+			List<BcaClientvendorservice> clientVendorServiceList = bcaClientvendorserviceRepository
+					.findByCompanyIdAndClientVendorId(Long.valueOf(compId), Integer.parseInt(cvId));
+			for (BcaClientvendorservice bcvs : clientVendorServiceList) {
 				UpdateInvoiceDto uform1 = new UpdateInvoiceDto();
 //				Loger.log("we r in Search Customer");
 //				Loger.log("The InvoiceStyleID from client vendor  is " + rs22.getString("InvoiceStyleID"));
@@ -4794,26 +4796,25 @@ public class InvoiceInfoDao {
 				uform1.setServiceBalance((bcvs.getServiceBalance()));
 				Loger.log("The ServiceBalance is from clientvendor " + bcvs.getServiceBalance());
 
-				uform1.setDefaultService(bcvs.getDefaultService()?1:0);
+				uform1.setDefaultService(bcvs.getDefaultService() ? 1 : 0);
 
 				// uform1.setServiceIdNo(rs22.getInt("ServiceID"));
 				uform1.setServiceID(bcvs.getServiceId());
 
 				Loger.log("The  service ID is from clientvendor" + bcvs.getServiceId());
 				Loger.log("33333333The  service ID is from clientvendor33333" + uform1.getServiceID());
-				BcaInvoicestyle invoiceStyle = bcaInvoicestyleRepository.findByInvoiceStyleIdAndActive(bcvs.getInvoiceStyleId(), 1);
+				BcaInvoicestyle invoiceStyle = bcaInvoicestyleRepository
+						.findByInvoiceStyleIdAndActive(bcvs.getInvoiceStyleId(), 1);
 				uform1.setInvoiceStyle(invoiceStyle.getName());
 				Optional<BcaServicetype> serviceType = bcaServicetypeRepository.findById(bcvs.getServiceId());
-				if(serviceType.isPresent()) {
+				if (serviceType.isPresent()) {
 					uform1.setServiceName(serviceType.get().getServiceName());
 				}
-				
-				
+
 				serviceinfo.add(uform1);
 				Loger.log("Valur @@@@@@@@@@" + uform1.getDefaultService());
 			}
-			
-			
+
 //			String sqlString11 = "select ClientVendorID,ServiceID,DateAdded,InvoiceStyleID,ServiceBalance,DefaultService from bca_clientvendorservice where CompanyID = ? and ClientVendorID = ?";
 //			String sqlString12 = "select  Name from bca_invoicestyle where Active=1 and InvoiceStyleID=?";
 //			String sqlString13 = "select ServiceName from bca_servicetype where ServiceID=? ";
@@ -4861,7 +4862,7 @@ public class InvoiceInfoDao {
 		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		} 
+		}
 //		finally {
 //			try {
 //				if (rs22 != null) {
@@ -5086,7 +5087,7 @@ public class InvoiceInfoDao {
 
 				BcaShippingaddress address = bcaShippingaddressRepository.findByClientVendorIdAndAddressId(
 						Integer.parseInt(form.getClientVendorID()), Integer.parseInt(form.getAddressID()));
-				if(null!=address) {
+				if (null != address) {
 					form.setCompanyName(address.getName());
 					form.setFirstName(address.getFirstName());
 					form.setLastName(address.getLastName());
@@ -5097,13 +5098,12 @@ public class InvoiceInfoDao {
 					form.setState(address.getState());
 					form.setCountry(address.getCountry());
 				}
-				
-				
+
 //				addType = 0;
-			}else {
+			} else {
 				BcaBillingaddress address = bcaBillingaddressRepository.findByClientVendorIdAndAddressId(
 						Integer.parseInt(form.getClientVendorID()), Integer.parseInt(form.getAddressID()));
-				if(null!=address) {
+				if (null != address) {
 					form.setCompanyName(address.getName());
 					form.setFirstName(address.getFirstName());
 					form.setLastName(address.getLastName());
@@ -5143,7 +5143,7 @@ public class InvoiceInfoDao {
 			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -updateBillingAddress :" + ee.toString());
 
 		}
-		
+
 //		finally {
 //			try {
 //				if (rs != null) {
@@ -5173,38 +5173,37 @@ public class InvoiceInfoDao {
 //					+ "State,ZipCode,Country from bca_billingaddress where ClientVendorID ="+cvId+" and AddressID="+addressID;
 //			String sqlString2 = "update bca_billingaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
 //					+ "State=?,ZipCode=?,Country=? where AddressID ="+addressID;
-			
-			
+
 //			String sqlString2 = "update bca_billingaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
 //					+ "State=?,ZipCode=?,Country=? where AddressID =" + addressID + " AND ClientVendorID=" + cvId;
 //			pstmt2 = con.prepareStatement(sqlString2);
 //			
-			
+
 //			pstmt = con.prepareStatement(sqlString);
 //			rs = pstmt.executeQuery();
-			BcaBillingaddress bcaBillingaddress = bcaBillingaddressRepository.findByClientVendorIdAndAddressId(Integer.parseInt(cvId), Integer.parseInt(addressID));
+			BcaBillingaddress bcaBillingaddress = bcaBillingaddressRepository
+					.findByClientVendorIdAndAddressId(Integer.parseInt(cvId), Integer.parseInt(addressID));
 			bcaBillingaddress.setName(frm.getCompanyName());
 			bcaBillingaddress.setFirstName(frm.getFirstName());
-			bcaBillingaddress.setLastName( frm.getLastName());
+			bcaBillingaddress.setLastName(frm.getLastName());
 			bcaBillingaddress.setAddress1(frm.getAddress1());
 			bcaBillingaddress.setAddress2(frm.getAddress2());
 			bcaBillingaddress.setCity(frm.getCity());
-			bcaBillingaddress.setState( frm.getState());
-			bcaBillingaddress.setZipCode( frm.getZipcode());
+			bcaBillingaddress.setState(frm.getState());
+			bcaBillingaddress.setZipCode(frm.getZipcode());
 			bcaBillingaddress.setCountry(frm.getCountry());
 			try {
-			BcaBillingaddress save = bcaBillingaddressRepository.save(bcaBillingaddress);
-			if(save!=null)
-			{
-				status =true;
+				BcaBillingaddress save = bcaBillingaddressRepository.save(bcaBillingaddress);
+				if (save != null) {
+					status = true;
+				}
+
+			} catch (IllegalArgumentException exception) {
+				status = false;
+				Loger.log(2,
+						" SQL Error in Class InvoiceInfo and  method -updateBillingAddress :" + exception.toString());
+
 			}
-			
-			}catch(IllegalArgumentException exception ) {
-				status =false;
-				Loger.log(2, " SQL Error in Class InvoiceInfo and  method -updateBillingAddress :" + exception.toString());
-	
-			}
-			
 
 //			pstmt2.setString(1, frm.getCompanyName());
 //			pstmt2.setString(2, frm.getFirstName());
@@ -5266,28 +5265,29 @@ public class InvoiceInfoDao {
 //			String sqlString = "update bca_shippingaddress set Name=?,FirstName=?,LastName=?, Address1=?,Address2=?,City=?,"
 //					+ "State=?,ZipCode=?,Country=? where AddressID =" + addressID + " AND ClientVendorID=" + cvId;
 //			
-			BcaShippingaddress shippingAddress = bcaShippingaddressRepository.findByClientVendorIdAndAddressId(Integer.parseInt(cvId), Integer.parseInt(addressID));
+			BcaShippingaddress shippingAddress = bcaShippingaddressRepository
+					.findByClientVendorIdAndAddressId(Integer.parseInt(cvId), Integer.parseInt(addressID));
 			shippingAddress.setName(frm.getCompanyName());
 			shippingAddress.setFirstName(frm.getFirstName());
-			shippingAddress.setLastName( frm.getLastName());
+			shippingAddress.setLastName(frm.getLastName());
 			shippingAddress.setAddress1(frm.getAddress1());
 			shippingAddress.setAddress2(frm.getAddress2());
 			shippingAddress.setCity(frm.getCity());
-			shippingAddress.setState( frm.getState());
-			shippingAddress.setZipCode( frm.getZipcode());
+			shippingAddress.setState(frm.getState());
+			shippingAddress.setZipCode(frm.getZipcode());
 			shippingAddress.setCountry(frm.getCountry());
 			try {
 				BcaShippingaddress save = bcaShippingaddressRepository.save(shippingAddress);
-				if(save!=null)
-				{
-					status =true;
+				if (save != null) {
+					status = true;
 				}
-				
-				}catch(IllegalArgumentException exception ) {
-					status =false;
-					Loger.log(2, " SQL Error in Class InvoiceInfo and  method -updateBillingAddress :" + exception.toString());
-		
-				}
+
+			} catch (IllegalArgumentException exception) {
+				status = false;
+				Loger.log(2,
+						" SQL Error in Class InvoiceInfo and  method -updateBillingAddress :" + exception.toString());
+
+			}
 //			pstmt2 = con.prepareStatement(sqlString);
 //			pstmt2.setString(1, frm.getCompanyName());
 //			pstmt2.setString(2, frm.getFirstName());
@@ -5319,7 +5319,7 @@ public class InvoiceInfoDao {
 		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -updateShippingAddress :" + ee.toString());
 
-		} 
+		}
 //		finally {
 //			try {
 ////				if (rs != null) { db.close(rs); }

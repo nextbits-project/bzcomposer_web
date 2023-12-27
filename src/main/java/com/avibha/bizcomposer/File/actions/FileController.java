@@ -59,6 +59,9 @@ public class FileController {
 	@Autowired
 	private LeadDAO leadDAO;
 
+	@Autowired
+	private AddNewCompanyDAO dao;
+
 	@GetMapping("/changeLocale")
 	public String changeLocale(HttpServletRequest request) throws Exception {
 		String url = "redirect:/";
@@ -121,9 +124,9 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("CompanyInfo")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");
 //			CompanyInfo customer = new CompanyInfo();
-			AddNewCompanyDAO dao = new AddNewCompanyDAO();
+//			AddNewCompanyDAO dao = new AddNewCompanyDAO();
 
-			dao.getBusinessType(compId, request, companyInfoDto);
+			dao.getBusinessType(request, companyInfoDto);
 			customer.searchCompany(compIdL, userID, request);
 
 			CountryState cs = new CountryState();

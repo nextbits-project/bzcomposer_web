@@ -4,6 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +27,13 @@ import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 
 @Service
 public class CountryState {
-	
+
 	@Autowired
 	private BcaCountriesRepository bcaCountriesRepository;
-	
+
 	@Autowired
 	private BcaStatesRepository bcaStatesRepository;
-	
+
 	@Autowired
 	private BcaCitiesRepository bcaCitiesRepository;
 
@@ -290,16 +293,16 @@ public class CountryState {
 //		Connection c = db.getConnection();
 		ArrayList<Country> countryList = new ArrayList<>();
 		try {
-			
+
 			List<BcaCountries> countries = bcaCountriesRepository.findAll();
-			for(BcaCountries bcaCountries:countries) {
+			for (BcaCountries bcaCountries : countries) {
 				Country form = new Country();
 				form.setCountryId(bcaCountries.getId());
 				form.setCountryName(bcaCountries.getName());
 				form.setPhoneCode(String.valueOf(bcaCountries.getPhonecode()));
 				countryList.add(form);
 			}
-			
+
 //			stmt = c.createStatement();
 //			rs = stmt.executeQuery("SELECT * FROM bca_countries");
 //			while (rs.next()) {
@@ -311,7 +314,7 @@ public class CountryState {
 //			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		} 
+		}
 //		finally {
 //			try {
 //				if (rs != null) {
@@ -338,11 +341,11 @@ public class CountryState {
 		ArrayList<State> stateList = new ArrayList<>();
 		try {
 			List<BcaStates> states = bcaStatesRepository.findByCountry_Id(Integer.parseInt(country_id));
-			for(BcaStates state :states) {
+			for (BcaStates state : states) {
 				State form = new State();
 				form.setStateId(state.getId());
 				form.setState(state.getName());
-				stateList.add(form);	
+				stateList.add(form);
 			}
 //			stmt = c.createStatement();
 //			rs = stmt.executeQuery("SELECT * FROM bca_states where country_id=" + country_id);
@@ -354,7 +357,7 @@ public class CountryState {
 //			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		} 
+		}
 //		finally {
 //			try {
 //				if (rs != null) {
@@ -381,13 +384,13 @@ public class CountryState {
 		ArrayList<City> cityList = new ArrayList<>();
 		try {
 			List<BcaCities> cities = bcaCitiesRepository.findByState_Id(Integer.parseInt(state_id));
-			for(BcaCities city :cities) {
+			for (BcaCities city : cities) {
 				City form = new City();
 				form.setCityId(city.getId());
 				form.setCityName(city.getName());
 				cityList.add(form);
 			}
-			
+
 //			stmt = c.createStatement();
 //			rs = stmt.executeQuery("SELECT * FROM bca_cities where state_id=" + state_id);
 //			while (rs.next()) {
@@ -398,7 +401,7 @@ public class CountryState {
 //			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		} 
+		}
 //		finally {
 //			try {
 //				if (rs != null) {
@@ -417,33 +420,64 @@ public class CountryState {
 		return cityList;
 	}
 
+	@Autowired
+	private EntityManager entityManager;
+
 	public CustomerDto getAddressDetailsByZipcode(String zipcode) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
 		CustomerDto customerDto = null;
 		try {
 			String sqlString = "SELECT cs.ZIP_CODE, cs.CITY_NAME, cs.STATE_NAME, c.id AS CityID, s.ID AS STATE_ID, s.Country_ID "
-					+ "FROM city_state_zip AS cs INNER JOIN bca_states AS s ON s.Name=cs.STATE_NAME "
-					+ "INNER JOIN bca_cities AS c ON c.Name=cs.CITY_NAME AND c.State_ID=s.ID WHERE cs.ZIP_CODE=? LIMIT 1;";
-			PreparedStatement pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, zipcode);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
+					+ "FROM city_state_zip AS cs " + "INNER JOIN bca_states AS s ON s.Name=cs.STATE_NAME "
+					+ "INNER JOIN bca_cities AS c ON c.Name=cs.CITY_NAME AND c.State_ID=s.ID "
+					+ "WHERE cs.ZIP_CODE=? LIMIT 1;";
+
+			Query query = entityManager.createNativeQuery(sqlString);
+			query.setParameter(1, zipcode);
+
+			List<Object[]> results = query.getResultList();
+			if (!results.isEmpty()) {
+				Object[] result = results.get(0); // Expecting only one result due to LIMIT 1
 				customerDto = new CustomerDto();
-				customerDto.setZipCode(rs.getString("ZIP_CODE"));
-				customerDto.setCity(rs.getString("CITY_NAME"));
-				customerDto.setStateName(rs.getString("STATE_NAME"));
-				customerDto.setCityID(rs.getString("CityID"));
-				customerDto.setState(rs.getString("STATE_ID"));
-				customerDto.setCountry(rs.getString("Country_ID"));
+				customerDto.setZipCode(result[0].toString());
+				customerDto.setCity(result[1].toString());
+				customerDto.setStateName(result[2].toString());
+				customerDto.setCityID(result[3].toString());
+				customerDto.setState(result[4].toString());
+				customerDto.setCountry(result[5].toString());
 			}
-		} catch (SQLException ee) {
-			Loger.log("Error in State Name Selection:" + ee);
-		} finally {
-			db.close(con);
+		} catch (Exception e) {
+			// Log or handle the exception
+			e.printStackTrace();
 		}
 		return customerDto;
 	}
+//	public CustomerDto getAddressDetailsByZipcode(String zipcode) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		CustomerDto customerDto = null;
+//		try {
+//			String sqlString = "SELECT cs.ZIP_CODE, cs.CITY_NAME, cs.STATE_NAME, c.id AS CityID, s.ID AS STATE_ID, s.Country_ID "
+//					+ "FROM city_state_zip AS cs INNER JOIN bca_states AS s ON s.Name=cs.STATE_NAME "
+//					+ "INNER JOIN bca_cities AS c ON c.Name=cs.CITY_NAME AND c.State_ID=s.ID WHERE cs.ZIP_CODE=? LIMIT 1;";
+//			PreparedStatement pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, zipcode);
+//			rs = pstmt.executeQuery();
+//			if (rs.next()) {
+//				customerDto = new CustomerDto();
+//				customerDto.setZipCode(rs.getString("ZIP_CODE"));
+//				customerDto.setCity(rs.getString("CITY_NAME"));
+//				customerDto.setStateName(rs.getString("STATE_NAME"));
+//				customerDto.setCityID(rs.getString("CityID"));
+//				customerDto.setState(rs.getString("STATE_ID"));
+//				customerDto.setCountry(rs.getString("Country_ID"));
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log("Error in State Name Selection:" + ee);
+//		} finally {
+//			db.close(con);
+//		}
+//		return customerDto;
+//	}
 
 }

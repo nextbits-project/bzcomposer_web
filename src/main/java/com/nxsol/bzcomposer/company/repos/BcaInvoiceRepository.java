@@ -184,7 +184,7 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 	@Query(value = "select i 	from BcaInvoice i inner join BcaInvoicetype it on i.invoiceType.invoiceTypeId = it.invoiceTypeId")
 	List<BcaInvoice> findInvoiceBySearchHistory();
 
-	@Query(value = "select bi.orderNum from BcaInvoice bi left join bi.company c where c.companyId= :companyId and bi.invoiceStatus in :invoiceStatus order by orderNume desc   ")
+	@Query(value = "select bi.orderNum from BcaInvoice bi left join bi.company c where c.companyId= :companyId and bi.invoiceStatus in :invoiceStatus order by orderNum desc   ")
 	List<Integer> findOrderNumByCompanyIdAndInvoiceStatus(@Param("companyId") Long companyId,
 			@Param("invoiceStatus") List<Integer> invoiceStatus);
 

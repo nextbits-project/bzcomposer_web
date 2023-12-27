@@ -30,6 +30,9 @@ public class RegistrationController {
 
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Autowired
+	private CountryState cs;
 
 	@GetMapping("/Register")
 	public String register(MultiUserForm mform, Model model) {
@@ -157,7 +160,7 @@ public class RegistrationController {
 	public Object loadStatesByCountry(HttpServletRequest request) throws Exception {
 		String status = "Success";
 		String action = request.getParameter("tabid");
-		CountryState cs = new CountryState();
+//		CountryState cs = new CountryState();
 		if (action.equalsIgnoreCase("loadStatesByCountryID")) {
 			return cs.getStateList(request.getParameter("id"));
 		} else if (action.equalsIgnoreCase("loadCitiesByStateID")) {

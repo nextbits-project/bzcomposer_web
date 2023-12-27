@@ -82,6 +82,12 @@ public class ConfigurationController {
 	@Autowired
 	private CompanyInfo customer;
 
+	@Autowired
+	private AddNewCompanyDAO companyDAO;
+
+	@Autowired
+	private CountryState cs;
+
 	@RequestMapping(value = { "/Configuration" }, method = { RequestMethod.GET, RequestMethod.POST })
 	public String execute(ConfigurationDto configDto, CompanyInfoDto companyInfoDto, HttpServletRequest request,
 			Model model) throws IOException, ServletException {
@@ -141,11 +147,11 @@ public class ConfigurationController {
 
 			int userID = (Integer) request.getSession().getAttribute("userID");
 //			CompanyInfo customer = new CompanyInfo();
-			AddNewCompanyDAO companyDAO = new AddNewCompanyDAO();
-			companyDAO.getBusinessType(companyID, request, companyInfoDto);
+//			AddNewCompanyDAO companyDAO = new AddNewCompanyDAO();
+			companyDAO.getBusinessType(request, companyInfoDto);
 			customer.searchCompany(companyIDL, userID, request);
 
-			CountryState cs = new CountryState();
+//			CountryState cs = new CountryState();
 			request.setAttribute("countryList", cs.getCountryList());
 			request.setAttribute("stateList", cs.getStateList(companyInfoDto.getCountryId() + ""));
 			request.setAttribute("cityList", cs.getCityList(companyInfoDto.getStateId() + ""));
