@@ -4,18 +4,30 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class DateHelper {
 
-	public static  OffsetDateTime convertDateToOffsetDateTime(Date utilDate) {
-		Instant instant = utilDate.toInstant();
-		return instant.atOffset(ZoneOffset.UTC);
-		// You can replace ZoneOffset.UTC with the desired time zone offset
+	public static OffsetDateTime convertDateToOffsetDateTime(Date utilDate) {
+		if (utilDate == null) {
+			return null; // or handle it based on your requirement
+		}
+
+		// Convert Date to Calendar, then to Instant, and finally to OffsetDateTime
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(utilDate);
+		return calendar.toInstant().atOffset(ZoneOffset.UTC);
 	}
+//	public static  OffsetDateTime convertDateToOffsetDateTime(Date utilDate) {
+//		Instant instant = utilDate.toInstant();
+//		return instant.atOffset(ZoneOffset.UTC);
+//		// You can replace ZoneOffset.UTC with the desired time zone offset
+//	}
 
 	public static OffsetDateTime StringToOffsetDateTime(String date) {
 		// Define the date format that matches your input string

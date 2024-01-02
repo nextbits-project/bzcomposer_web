@@ -2556,7 +2556,7 @@ public class InvoiceInfo {
 					.findByClientVendorIdAndActive(Integer.parseInt(cvId), 1);
 			if (bcaCvcreditcards.size() > 0) {
 				BcaCvcreditcard cv = bcaCvcreditcards.get(0);
-				customer.setCcType(cv.getCctypeId());
+				customer.setCcType(cv.getCctype().getcCTypeID().toString());
 				customer.setCardNo(cv.getCardNumber());
 				customer.setExpDate(cv.getCardExpMonth() + "/" + cv.getCardExpYear());
 				customer.setCw2(cv.getCardCw2());

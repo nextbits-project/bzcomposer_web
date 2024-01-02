@@ -37,13 +37,17 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaBsaddress;
+import com.nxsol.bzcomposer.company.domain.BcaCctype;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorfinancecharges;
+import com.nxsol.bzcomposer.company.domain.BcaCreditcardtype;
 import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
 import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaBsaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCctypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorfinancechargesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCreditcardtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
@@ -618,7 +622,11 @@ public class PurchaseInfo {
 	 * credit card
 	 */
 
+	@Autowired
 	private BcaCvcreditcardRepository bcaCvcreditcardRepository;
+
+	@Autowired
+	private BcaCctypeRepository cctypeRepository;
 
 	public boolean insertVendorCreditCard(int cvID, String cardType, String ccNo, String expDate, String cw2,
 			String cHoldername, String bsAddress, String zip) {
@@ -659,7 +667,7 @@ public class PurchaseInfo {
 		}
 
 		try {
-
+			Optional<BcaCctype> ccType = cctypeRepository.findById(Integer.valueOf(cardType));
 			// int ccID = getLastCCID() + 1;
 			// pstmtUpdate = con.prepareStatement("update bca_cvcreditcard set Active=0
 			// where ClientVendorID=? and Active=1");
@@ -671,7 +679,7 @@ public class PurchaseInfo {
 //					+ " values(?,?,?,?,?,?,?,?,?,?,?,?)";
 //		JPA check 	java.sql.Date d = new java.sql.Date(new java.util.Date().getTime());
 			BcaCvcreditcard bcaCvcreditcard = new BcaCvcreditcard();
-			bcaCvcreditcard.setCctypeId(cardType);
+			bcaCvcreditcard.setCctype(ccType.get());
 			BcaClientvendor bcaClientvendor = new BcaClientvendor();
 			bcaClientvendor.setClientVendorId(cvID);
 			bcaCvcreditcard.setClientVendor(bcaClientvendor);
@@ -826,13 +834,11 @@ public class PurchaseInfo {
 		} else if (address.getAddressName().equals("")) {
 			address.setAddressName(address.getName() + JProjectUtil.dateFormatLong.format(new Date()));
 		}
-		
-		
+
 		if (addressType == TblBSAddress2.BILLING_ADDR_TYPE) {
 			if (address.getState() == null)
 				address.setState("");
 			sql_update = "UPDATE bca_billingaddress SET Status = 'U' " + "WHERE ClientVendorID = " + address.getCvId();
-
 
 			sql_insert = "INSERT INTO bca_billingaddress (AddressName,"
 					+ "ClientVendorID,Name,FirstName,LastName,Address1,"
@@ -854,10 +860,7 @@ public class PurchaseInfo {
 					+ ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''") + "'" + "," + "'"
 					+ ConstValue.hateNull(address.getFax()).replaceAll("'", "''") + "'" + "," + address.getIsDefault()
 					+ "," + address.getActive() + ")";
-			
 
-			
-			
 		} else {
 			sql_update = "UPDATE bca_shippingaddress SET Status = 'U' " + "WHERE ClientVendorID = " + address.getCvId();
 
@@ -1803,7 +1806,7 @@ public class PurchaseInfo {
 //			}
 			for (BcaCvcreditcard bcaCvcreditcard : bcaCvcreditcards) {
 
-				customer.setCcType(bcaCvcreditcard.getCctypeId());
+				customer.setCcType(bcaCvcreditcard.getCctype().getcCTypeID().toString());
 				customer.setCardNo(bcaCvcreditcard.getCardNumber());
 				customer.setExpDate(bcaCvcreditcard.getCardExpMonth() + "/" + bcaCvcreditcard.getCardExpYear());
 				customer.setCw2(bcaCvcreditcard.getCardCw2());

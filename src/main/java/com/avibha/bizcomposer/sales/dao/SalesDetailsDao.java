@@ -44,7 +44,7 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private CustomerInfoDao customerInfoDao;
-	
+
 	@Autowired
 	private InvoiceInfoDao invoiceInfoDao;
 
@@ -59,13 +59,34 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private EstimationInfo estimationInfo;
-	
+
 	@Autowired
 	private InvoiceInfo invoiceInfo;
-	
+
 	@Autowired
 	private PurchaseInfo purchaseInfo;
 
+	@Autowired
+	private Title t;
+
+	@Autowired
+	private Term tr;
+
+	@Autowired
+	private Rep rap;
+
+	@Autowired
+	private PayMethod pmethod;
+	
+	@Autowired
+	private Shipping ship;
+
+	@Autowired
+	private CreditCard cc;
+	
+	@Autowired
+	private VendorCategory cv;
+	
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
@@ -144,31 +165,31 @@ public class SalesDetailsDao {
 		request.setAttribute("cityList", countryState.getCityList(stateID));
 
 		// Title List
-		Title t = new Title();
+//		Title t = new Title();
 		request.setAttribute("titleList", t.getTitleList(cid));
 
 		// Term List
-		Term tr = new Term();
+//		Term tr = new Term();
 		request.setAttribute("TermList", tr.getTermList(cid));
 
 		// Rep List
-		Rep rap = new Rep();
+//		Rep rap = new Rep();
 		request.setAttribute("RepList", rap.getRepList(cid));
 
 		// PayMethod List
-		PayMethod pmethod = new PayMethod();
+//		PayMethod pmethod = new PayMethod();
 		request.setAttribute("PaymentList", pmethod.getPaymentTypeList(cid));
 
 		// ShipCarrier List
-		Shipping ship = new Shipping();
+//		Shipping ship = new Shipping();
 		request.setAttribute("ShipCarrierList", ship.getShipCarrierList(cid));
 
 		// CreditCard List
-		CreditCard cc = new CreditCard();
+//		CreditCard cc = new CreditCard();
 		request.setAttribute("CreditCardList", cc.getCCTypeList(cid));
 
 		// VendorCategoryList List
-		VendorCategory cv = new VendorCategory();
+//		VendorCategory cv = new VendorCategory();
 		request.setAttribute("VendorCategoryList", cv.getCVCategoryList(cid));
 
 		// customerGroupList List
@@ -189,7 +210,7 @@ public class SalesDetailsDao {
 		HttpSession sess = request.getSession();
 		String cid = (String) sess.getAttribute("CID");
 		// Title List
-		Title t = new Title();
+//		Title t = new Title();
 		request.setAttribute("titleList", t.getTitleList(cid));
 
 		// country List
@@ -201,23 +222,23 @@ public class SalesDetailsDao {
 		request.setAttribute("sList", cs1.getStates(cid));
 
 		// Term List
-		Term tr = new Term();
+//		Term tr = new Term();
 		request.setAttribute("TermList", tr.getTermList(cid));
 
 		// Rep List
-		Rep rap = new Rep();
+//		Rep rap = new Rep();
 		request.setAttribute("RepList", rap.getRepList(cid));
 
 		// PayMethod List
-		PayMethod pmethod = new PayMethod();
+//		PayMethod pmethod = new PayMethod();
 		request.setAttribute("PaymentList", pmethod.getPaymentTypeList(cid));
 
 		// ShipCarrier List
-		Shipping ship = new Shipping();
+//		Shipping ship = new Shipping();
 		request.setAttribute("ShipCarrierList", ship.getShipCarrierList(cid));
 
 		// CreditCard List
-		CreditCard cc = new CreditCard();
+//		CreditCard cc = new CreditCard();
 		request.setAttribute("CreditCardList", cc.getCCTypeList(cid));
 
 		// CreditTerm List
@@ -527,7 +548,7 @@ public class SalesDetailsDao {
 		String compId = (String) sess.getAttribute("CID");
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		// Loger.log("The Client vendor is from sales detail is " + cvId);
-		invoiceInfoDao.SearchselectedCustomer(compId, cvId, request);
+		invoiceInfoDao.searchSelectedCustomer(compId, cvId, request);
 		invoiceInfoDao.getServices(request, compId, cvId);
 		// request.setAttribute("CustomerDetails", CustomerDetails);
 	}

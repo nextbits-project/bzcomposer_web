@@ -1823,8 +1823,8 @@ public class CustomerInfoDao {
 			Optional<BcaTerm> term = bcaTermRepository.findById(termId);
 			if (term.isPresent())
 				bcv.setTerm(term.get());
-			int salesTaxId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(c.getRep());
-			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesTaxId);
+			int salesRepId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(c.getRep());
+			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesRepId);
 			if (salesRep.isPresent())
 				bcv.setSalesRep(salesRep.get());
 
@@ -1836,7 +1836,7 @@ public class CustomerInfoDao {
 			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(paymentTypeId);
 			if (paymentType.isPresent())
 				bcv.setPaymentType(paymentType.get());
-			if (null != c.getCcType())
+			if (null != c.getCcType() && !c.getCcType().trim().isEmpty())
 				bcv.setCctypeId(Integer.parseInt(c.getCcType()));
 			if (null != c.getCustomerGroup())
 				bcv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));

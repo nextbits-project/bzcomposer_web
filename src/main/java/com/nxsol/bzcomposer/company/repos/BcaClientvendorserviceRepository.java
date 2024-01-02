@@ -17,4 +17,9 @@ public interface BcaClientvendorserviceRepository extends JpaRepository<BcaClien
 	
 	@Query("delete from BcaClientvendorservice bcvs where bcvs.clientVendor.clientVendorId = :clientVendorId")
 	void deleteByClientVendorId(@Param("clientVendorId")Integer clientVendorId);
+	
+//    List<BcaClientvendorservice> findByCompany_CompanyIdAndClientVendor_ClientVendorId(Long companyId, int clientVendorId);
+
+    @Query(value = "SELECT * FROM bca_clientvendorservice WHERE CompanyID = ?1 AND ClientVendorID = ?2", nativeQuery = true)
+    List<BcaClientvendorservice> findByCompanyAndClientVendor(Long companyId, int clientVendorId);
 }
