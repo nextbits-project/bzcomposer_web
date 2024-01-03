@@ -4588,8 +4588,11 @@ public class InvoiceInfo {
 //				+ " FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
 //				+ " WHERE " + cvIdCase + " i.InvoiceTypeID IN(1,7,10) ";
 
+//		StringBuffer query = new StringBuffer(
+//				"select i from BcaInvoice as i inner join BcaInvoiceType as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
+//						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
 		StringBuffer query = new StringBuffer(
-				"select i from BcaInvoice as i inner join BcaInvoiceType as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
+				"select i from BcaInvoice as i inner join i.invoiceType as it where "
 						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
 //		if (cond.equalsIgnoreCase("ShowAll")) {
 //			Loger.log("The string of showall is " + sqlString);
@@ -4626,7 +4629,7 @@ public class InvoiceInfo {
 				hlookup.setTotal(truncate(bcaInvoice.getTotal().toString()));
 				hlookup.setBalance(truncate(bcaInvoice.getBalance().toString()));
 				hlookup.setShipped(bcaInvoice.getShipped());
-				hlookup.setEmailed(bcaInvoice.getIsEmailed() == true ? 1 : 0);
+				hlookup.setEmailed(bcaInvoice != null && Boolean.TRUE.equals(bcaInvoice.getIsEmailed()) ? 1 : 0);
 				hlookup.setName(bcaInvoice.getInvoiceType().getName());
 				hlookup.setClientVendorID(bcaInvoice.getClientVendor().getClientVendorId().toString());
 				objList.add(hlookup);

@@ -15,10 +15,14 @@ import javax.persistence.Table;
 @Table(name= "bca_clientvendorservice")
 public class BcaClientvendorservice {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@Column(name = "ClientVendorID", nullable = false, updatable = false)
+	private Integer clientVendorId;
+	
+//    @Id
+//    @Column(nullable = false, updatable = false)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     @Column(name= "DateAdded")
     private OffsetDateTime dateAdded;
@@ -67,18 +71,27 @@ public class BcaClientvendorservice {
     private BcaCompany company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ClientVendorID")
+	@JoinColumn(name = "ClientVendorID", referencedColumnName = "ClientVendorID", insertable = false, updatable = false)
     private BcaClientvendor clientVendor;
 
-    public Long getId() {
-        return id;
-    }
+    
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(final Long id) {
+//        this.id = id;
+//    }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
+    public Integer getClientVendorId() {
+		return clientVendorId;
+	}
 
-    public OffsetDateTime getDateAdded() {
+	public void setClientVendorId(Integer clientVendorId) {
+		this.clientVendorId = clientVendorId;
+	}
+
+	public OffsetDateTime getDateAdded() {
         return dateAdded;
     }
 
