@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
@@ -4511,58 +4512,95 @@ public class InvoiceInfo {
 		return result;
 	}
 
-	public TrHistoryLookUp getCustomerPaymentDetailsForCustomerBoardPage(String cvId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		TrHistoryLookUp hlookup = new TrHistoryLookUp();
-		String sqlString = "SELECT "
-				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-				+ " WHERE i.ClientVendorID=" + cvId
-				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 3 MONTH GROUP BY i.ClientVendorID) AS Amt3Month,"
-				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-				+ " WHERE i.ClientVendorID=" + cvId
-				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 1 YEAR GROUP BY i.ClientVendorID) AS Amt1Year,"
-				+ "(SELECT SUM(i.Balance) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-				+ " WHERE i.ClientVendorID=" + cvId
-				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.ClientVendorID) AS TotalOverdueAmt, "
-				+ "(SELECT date_format(i.dateadded,'%m-%d-%Y') as DateAdded FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-				+ " WHERE i.ClientVendorID=" + cvId
-				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.InvoiceID ORDER BY InvoiceID DESC LIMIT 1) AS LastOrderDate "
-				+ " FROM DUAL;";
-		try {
-			pstmt = con.prepareStatement(sqlString);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-//				hlookup.setLast3MonthAmt(Double.parseDouble(truncate(rs.getString("Amt3Month")))/2);
-//				hlookup.setLast1YearAmt(Double.parseDouble(truncate(rs.getString("Amt1Year")))/2);
-//				hlookup.setTotalOverdueAmt(Double.parseDouble(truncate(rs.getString("TotalOverdueAmt")))/2);
-				hlookup.setLast3MonthAmt(Double.parseDouble(truncate(rs.getString("Amt3Month"))));
-				hlookup.setLast1YearAmt(Double.parseDouble(truncate(rs.getString("Amt1Year"))));
-				hlookup.setTotalOverdueAmt(Double.parseDouble(truncate(rs.getString("TotalOverdueAmt"))));
+	 public TrHistoryLookUp getCustomerPaymentDetailsForCustomerBoardPage(String cvId) {
+	        TrHistoryLookUp hlookup = new TrHistoryLookUp();
 
-				hlookup.setLastOrderDate(rs.getString("LastOrderDate"));
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		return hlookup;
-	}
+	        try {
+	        	String sqlString = "SELECT "
+	    				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+	    				+ " WHERE i.ClientVendorID=" + cvId
+	    				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 3 MONTH GROUP BY i.ClientVendorID) AS Amt3Month,"
+	    				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+	    				+ " WHERE i.ClientVendorID=" + cvId
+	    				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 1 YEAR GROUP BY i.ClientVendorID) AS Amt1Year,"
+	    				+ "(SELECT SUM(i.Balance) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+	    				+ " WHERE i.ClientVendorID=" + cvId
+	    				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.ClientVendorID) AS TotalOverdueAmt, "
+	    				+ "(SELECT date_format(i.dateadded,'%m-%d-%Y') as DateAdded FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+	    				+ " WHERE i.ClientVendorID=" + cvId
+	    				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.InvoiceID ORDER BY InvoiceID DESC LIMIT 1) AS LastOrderDate "
+	    				+ " FROM DUAL;";
+
+	            Query query = entityManager.createNativeQuery(sqlString);
+	            //query.setParameter(1, cvId);
+
+	            Object[] result = (Object[]) query.getSingleResult();
+
+	            if (result != null) {
+	            	hlookup.setLast3MonthAmt(result[0] != null ? Double.parseDouble(truncate(result[0].toString())) : 0.0);
+	                hlookup.setLast1YearAmt(result[1] != null ? Double.parseDouble(truncate(result[1].toString())) : 0.0);
+	                hlookup.setTotalOverdueAmt(result[2] != null ? Double.parseDouble(truncate(result[2].toString())) : 0.0);
+	                hlookup.setLastOrderDate(result[3] != null ? result[3].toString() : "");
+	            }
+	        } catch (Exception ex) {
+	            // Handle exceptions
+	            ex.printStackTrace();
+	        }
+	        return hlookup;
+	    }
+	 
+//	public TrHistoryLookUp getCustomerPaymentDetailsForCustomerBoardPage(String cvId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		TrHistoryLookUp hlookup = new TrHistoryLookUp();
+//		String sqlString = "SELECT "
+//				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+//				+ " WHERE i.ClientVendorID=" + cvId
+//				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 3 MONTH GROUP BY i.ClientVendorID) AS Amt3Month,"
+//				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+//				+ " WHERE i.ClientVendorID=" + cvId
+//				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 1 YEAR GROUP BY i.ClientVendorID) AS Amt1Year,"
+//				+ "(SELECT SUM(i.Balance) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+//				+ " WHERE i.ClientVendorID=" + cvId
+//				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.ClientVendorID) AS TotalOverdueAmt, "
+//				+ "(SELECT date_format(i.dateadded,'%m-%d-%Y') as DateAdded FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+//				+ " WHERE i.ClientVendorID=" + cvId
+//				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.InvoiceID ORDER BY InvoiceID DESC LIMIT 1) AS LastOrderDate "
+//				+ " FROM DUAL;";
+//		try {
+//			pstmt = con.prepareStatement(sqlString);
+//			rs = pstmt.executeQuery();
+//			if (rs.next()) {
+////				hlookup.setLast3MonthAmt(Double.parseDouble(truncate(rs.getString("Amt3Month")))/2);
+////				hlookup.setLast1YearAmt(Double.parseDouble(truncate(rs.getString("Amt1Year")))/2);
+////				hlookup.setTotalOverdueAmt(Double.parseDouble(truncate(rs.getString("TotalOverdueAmt")))/2);
+//				hlookup.setLast3MonthAmt(Double.parseDouble(truncate(rs.getString("Amt3Month"))));
+//				hlookup.setLast1YearAmt(Double.parseDouble(truncate(rs.getString("Amt1Year"))));
+//				hlookup.setTotalOverdueAmt(Double.parseDouble(truncate(rs.getString("TotalOverdueAmt"))));
+//
+//				hlookup.setLastOrderDate(rs.getString("LastOrderDate"));
+//			}
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return hlookup;
+//	}
 
 	@Transactional
 	public ArrayList searchHistory(HttpServletRequest request, String cond, String cvId, String periodFrom,

@@ -1604,7 +1604,7 @@ public class SalesDetailsDao {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
-		invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
+//		invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
 		ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
 		CustomerDto customerDto2 = customerList.get(0);
 		String cityId = customerDto2.getCity();

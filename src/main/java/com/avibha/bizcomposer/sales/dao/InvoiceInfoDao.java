@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
@@ -2961,7 +2962,7 @@ public class InvoiceInfoDao {
 				// Assuming you want to handle only the first credit card.
 				// You can iterate through the set if you have multiple cards for a single
 				// customer.
-				if (!creditCards.isEmpty()) {
+				if (creditCards != null && !creditCards.isEmpty()) {
 					BcaCvcreditcard firstCreditCard = creditCards.iterator().next(); // Retrieve the first credit card
 
 					customer.setCardNo(firstCreditCard.getCardNumber());
@@ -3024,7 +3025,7 @@ public class InvoiceInfoDao {
 
 				// Process Shipping Addresses
 				Set<BcaShippingaddress> shippingAddresses = cv.getClientVendorBcaShippingaddresss();
-				if (!shippingAddresses.isEmpty()) {
+				if (shippingAddresses != null && !shippingAddresses.isEmpty()) {
 					BcaShippingaddress firstShipAddres = shippingAddresses.iterator().next();
 					// Process or store shipping address information
 					customer.setShcname(firstShipAddres.getName());
@@ -3043,7 +3044,7 @@ public class InvoiceInfoDao {
 
 				// Process Billing Addresses
 				Set<BcaBillingaddress> billingAddresses = cv.getClientVendorBcaBillingaddresss();
-				if (!billingAddresses.isEmpty()) {
+				if (billingAddresses != null && !billingAddresses.isEmpty()) {
 					BcaBillingaddress firstBillAddress = billingAddresses.iterator().next(); // Retrieve the first
 																								// credit card
 					// Process or store shipping address information
@@ -4725,42 +4726,64 @@ public class InvoiceInfoDao {
 	}
 
 	public boolean isCustomerHasBalance(String cvId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
-		boolean isBalanceFound = false;
-		try {
-			String sql = "SELECT distinct OrderNum, Total, Balance FROM bca_invoice WHERE ClientVendorID=? HAVING Balance>0";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, cvId);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				double balance = rs.getDouble(3);
-				if (balance > 0) {
-					isBalanceFound = true;
-					break;
-				}
-			}
-		} catch (SQLException ee) {
-			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		return isBalanceFound;
+	    boolean isBalanceFound = false;
+
+	    try {
+	        String sqlString = "SELECT DISTINCT Balance FROM bca_invoice WHERE ClientVendorID = ? AND Balance > 0";
+	        
+	        Query query = entityManager.createNativeQuery(sqlString);
+	        query.setParameter(1, cvId);  // Parameter binding
+
+	        List<Double> balances = query.getResultList();
+	        
+	        if (!balances.isEmpty()) {
+	            isBalanceFound = true;
+	        }
+	    } catch (Exception ex) {
+	        // Handle exceptions
+	        ex.printStackTrace();
+	    }
+	    
+	    return isBalanceFound;
 	}
+	
+//	public boolean isCustomerHasBalance(String cvId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null;
+//		boolean isBalanceFound = false;
+//		try {
+//			String sql = "SELECT distinct OrderNum, Total, Balance FROM bca_invoice WHERE ClientVendorID=? HAVING Balance>0";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setString(1, cvId);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				double balance = rs.getDouble(3);
+//				if (balance > 0) {
+//					isBalanceFound = true;
+//					break;
+//				}
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return isBalanceFound;
+//	}
 
 	public String truncate(String num) {
 		String string1 = null;

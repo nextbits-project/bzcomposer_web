@@ -51,7 +51,7 @@ public class PayMethod {
 //			//arr = null;
 //			arr1 = null;
 		try {
-			List<BcaPaymenttype> bcaPaymenttype = bcaPaymenttypeRepository.findByCompany_CompanyIdAndActive(Long.parseLong(CompanyID), 1);
+			List<BcaPaymenttype> bcaPaymenttype = bcaPaymenttypeRepository.findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByName(Long.valueOf(CompanyID), 1, 1);;
 			for(BcaPaymenttype paymenttype:bcaPaymenttype) {
 				TblPaymentType tblpaymnt = new TblPaymentType();
 				tblpaymnt.setId(paymenttype.getPaymentTypeId());

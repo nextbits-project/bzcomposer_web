@@ -20,6 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +76,9 @@ public class PurchaseInfo {
 	private BcaClientvendorRepository bcaClientvendorRepository;
 	@Autowired
 	private BcaBillingaddressRepository bcaBillingaddressRepository;
+
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	public ArrayList getVendorsBySort(String compId, String sortBy) {
 		SQLExecutor db = new SQLExecutor();
@@ -1300,38 +1306,59 @@ public class PurchaseInfo {
 	 */
 
 	public int getLastClientVendorID() {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
 		int CVID = 0;
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
+
 		try {
-			String sqlString = "select ClientVendorID from bca_clientvendor order by ClientVendorID desc ";
-			pstmt = con.prepareStatement(sqlString);
-			Loger.log(sqlString);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				CVID = rs.getInt(1);
+			String jpql = "SELECT c.clientVendorId FROM BcaClientvendor c ORDER BY c.clientVendorId DESC";
+
+			TypedQuery<Integer> query = entityManager.createQuery(jpql, Integer.class);
+			query.setMaxResults(1); // Fetch only the first result
+
+			List<Integer> results = query.getResultList();
+
+			if (!results.isEmpty()) {
+				CVID = results.get(0);
 			}
-		} catch (SQLException ee) {
-			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+		} catch (Exception ex) {
+			// Handle exceptions
+			ex.printStackTrace();
 		}
+
 		return CVID;
 	}
+//	public int getLastClientVendorID() {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		int CVID = 0;
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null;
+//		try {
+//			String sqlString = "select ClientVendorID from bca_clientvendor order by ClientVendorID desc ";
+//			pstmt = con.prepareStatement(sqlString);
+//			Loger.log(sqlString);
+//			rs = pstmt.executeQuery();
+//			if (rs.next()) {
+//				CVID = rs.getInt(1);
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return CVID;
+//	}
 
 	/*
 	 * Get the Id of last credit card.
