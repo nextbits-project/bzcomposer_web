@@ -48,7 +48,7 @@ public interface BcaCvcreditcardRepository extends JpaRepository<BcaCvcreditcard
 	@Query("SELECT c FROM BcaCvcreditcard c WHERE c.clientVendor.clientVendorId = :clientVendorId")
 	List<BcaCvcreditcard> findByClientVendorId(@Param("clientVendorId") Integer clientVendorId);
 
-	@Query("SELECT DISTINCT c,t.name as cctypeName  FROM BcaCvcreditcard c " + "INNER JOIN BcaCreditcardtype t ON t.cctypeId = c.cctypeId "
+	@Query("SELECT DISTINCT c,t.name as cctypeName  FROM BcaCvcreditcard c " + "INNER JOIN BcaCreditcardtype t ON t.cctypeId = c.cctype.cCTypeID "
 			+ "WHERE c.clientVendor.clientVendorId = :clientVendorId AND c.active = :active")
 	List<Object[]> findDistinctByClientVendorIdAndActive(@Param("clientVendorId") Integer clientVendorId,@Param("active")Integer active);
 

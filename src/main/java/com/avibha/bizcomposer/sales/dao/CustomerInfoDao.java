@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -143,6 +144,157 @@ public class CustomerInfoDao {
 	private SmdCvinfoRepository smdCvinfoRepository;
 
 	public ArrayList<CustomerDto> customerDetails(String compId) {
+		ArrayList<CustomerDto> objList = new ArrayList<>();
+		Title title = new Title();
+		try {
+			@SuppressWarnings("unchecked")
+			ArrayList<LabelValueBean> titleList = title.getTitleList(compId);
+
+//			String sqlString = "SELECT distinct c.ClientVendorID,c.Name,c.CustomerTitle,c.FirstName,c.LastName,c.Address1,c.Address2,c.City,c.State,c.ZipCode,c.Country,"
+//					+ "c.Email,c.Phone,c.CellPhone,c.Fax,date_format(c.DateAdded,'%m-%d-%Y') as DateAdded,i.IsPaymentCompleted,c.CVCategoryName,"
+//					+ "ct.Name AS CityName, st.Name AS StateName, cn.Name AS CountryName, c.DBAName "
+//					+ "FROM bca_clientvendor AS c LEFT JOIN bca_countries as cn ON cn.ID=c.Country LEFT JOIN bca_states as st ON st.ID=c.State LEFT JOIN bca_cities as ct ON ct.ID=c.City "
+//					+ "LEFT JOIN bca_invoice as i ON i.ClientVendorID=c.ClientVendorID AND NOT (i.invoiceStatus=1) AND i.IsPaymentCompleted = 0 AND i.InvoiceTypeID IN (1,13,17) "
+//					+ "WHERE c.CompanyID = " + compId
+//					+ " AND CVTypeID IN (1, 2) AND c.Status IN ('U', 'N') AND c.Deleted = 0 AND c.Active=1 ORDER BY c.Name";
+
+//			String query = " select distinct c.clientVendorId , c.name ,c.customerTitle, c.firstName , c.lastName , c.address1, c.address2, c.city, c.state , c.zipCode , c.country , "
+//					+ "c.email , c.phone , c.cellPhone , c.fax ,date_format(c.dateAdded , '%m-%d-%Y') as dateAdded , i.isPaymentCompleted , c.cvcategoryName, ct.name as cityName , st.name as stateName , cn.name as countryName "
+//					+ ", c.DBAName  from BcaClientvendor as c left join BcaCountries as cn on cn.Id =c.country left join BcaStates as st on st.Id =c.state left join BcaCities as ct on ct.Id = c.city"
+//					+ " left join BcaInvoice as i on i.clientVendor.clientVendorId = c.clientVendorId and not (i.invoiceStatus =1) and i.isPaymentCompleted = 0 and i.invoiceType.invoiceTypeId in (1,13,17) "
+//					+ " where c.company.companyId =  :companyId and c.cvtypeId in (1,2) and c.status in ('U' , 'N' ) and c.deleted = 0 and c.active =1 order by c.name ";
+
+			List<String> status = Arrays.asList("U", "N");
+			List<Integer> cvTypeId = Arrays.asList(1, 2);
+
+			List<BcaClientvendor> cvs = bcaClientvendorRepository
+					.findDistinctByCompany_CompanyIdAndStatusInAndCvtypeIdInAndDeletedAndActiveOrderByName(
+							Long.valueOf(compId), status, cvTypeId, 0, 1);
+
+			DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+			for (BcaClientvendor cv : cvs) {
+				CustomerDto customer = new CustomerDto();
+				customer.setClientVendorID(cv.getClientVendorId().toString());
+				customer.setCompanyName(cv.getName());
+				customer.setCname(cv.getName() + "(" + cv.getFirstName() + " " + cv.getLastName() + ")");
+				customer.setTitle(cv.getCustomerTitle());
+				customer.setFirstName(cv.getFirstName());
+				customer.setLastName(cv.getLastName());
+				customer.setAddress1(cv.getAddress1());
+				customer.setAddress2(cv.getAddress2());
+				customer.setZipCode(cv.getZipCode());
+				customer.setCity(cv.getCity());
+				customer.setStateName(cv.getState());
+				String countryName = cv.getCountry();
+				if (countryName != null && countryName.contains("United States")) {
+					countryName = "USA";
+				}
+				customer.setCountry(countryName);
+				customer.setEmail(cv.getEmail());
+				customer.setPhone(cv.getPhone());
+				customer.setCellPhone(cv.getCellPhone());
+				customer.setFax(cv.getFax());
+				customer.setDateAdded(cv.getDateAdded() != null ? outputFormat.format(cv.getDateAdded()) : "");
+//				customer.setDateAdded(outputFormat.format(cv.getDateAdded()));
+				String fullName= cv.getFirstName() + " " + cv.getLastName();
+				customer.setFullName(fullName);
+				customer.setBillTo(fullName);
+				
+//				boolean paymentUnpaid = (cv.getString("IsPaymentCompleted") != null
+//						&& cv.getString("IsPaymentCompleted").equals("0")) ? true : false;
+//				customer.setPaymentUnpaid(paymentUnpaid);
+				
+				customer.setType(cv.getCvcategoryName());
+				customer.setDbaName(cv.getDbaname());
+				for (LabelValueBean lvBean : titleList) {
+					if (lvBean.getValue().equalsIgnoreCase(customer.getTitle())) {
+						customer.setTitle(lvBean.getLabel());
+						break;
+					}
+				}
+				objList.add(customer);
+			}
+
+//			List<CustomerDto> listOfCustomer = bcaClientvendorRepository.findCustomerInfo(new Long(compId));
+//			for (CustomerDto customer : listOfCustomer) {
+//				for (LabelValueBean lvBean : titleList) {
+//					if (lvBean.getValue().equalsIgnoreCase(customer.getTitle())) {
+//						customer.setTitle(lvBean.getLabel());
+//						break;
+//					}
+//				}
+//				objList.add(customer);
+//			}
+
+//			pstmt = con.prepareStatement(sqlString);
+			// Loger.log(sqlString);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				CustomerDto customer = new CustomerDto();
+//				customer.setClientVendorID(rs.getString("ClientVendorID"));
+//				customer.setCompanyName(rs.getString("Name"));
+//				customer.setCname(
+//						rs.getString("Name") + "(" + rs.getString("FirstName") + " " + rs.getString("LastName") + ")");
+//				customer.setTitle(rs.getString("CustomerTitle"));
+//				customer.setFirstName(rs.getString("FirstName"));
+//				customer.setLastName(rs.getString("LastName"));
+//				customer.setAddress1(rs.getString("Address1"));
+//				customer.setAddress2(rs.getString("Address2"));
+//				customer.setZipCode(rs.getString("ZipCode"));
+//				customer.setCity(rs.getString("CityName") != null ? rs.getString("CityName") : rs.getString("City"));
+//				customer.setStateName(
+//						rs.getString("StateName") != null ? rs.getString("StateName") : rs.getString("State"));
+//				String countryName = rs.getString("CountryName") != null ? rs.getString("CountryName")
+//						: rs.getString("Country");
+//				if (countryName != null && countryName.contains("United States")) {
+//					countryName = "USA";
+//				}
+//				customer.setCountry(countryName);
+//				customer.setEmail(rs.getString("Email"));
+//				customer.setPhone(rs.getString("Phone"));
+//				customer.setCellPhone(rs.getString("CellPhone"));
+//				customer.setFax(rs.getString("Fax"));
+//				customer.setDateAdded(rs.getString("DateAdded"));
+//
+//				customer.setFullName(rs.getString("FirstName") + " " + rs.getString("LastName"));
+//				customer.setBillTo(rs.getString("FirstName") + rs.getString("LastName"));
+//				boolean paymentUnpaid = (rs.getString("IsPaymentCompleted") != null
+//						&& rs.getString("IsPaymentCompleted").equals("0")) ? true : false;
+//				customer.setPaymentUnpaid(paymentUnpaid);
+//				customer.setType(rs.getString("CVCategoryName"));
+//				customer.setDbaName(rs.getString("DBAName"));
+//				for (LabelValueBean lvBean : titleList) {
+//					if (lvBean.getValue().equalsIgnoreCase(customer.getTitle())) {
+//						customer.setTitle(lvBean.getLabel());
+//						break;
+//					}
+//				}
+//				objList.add(customer);
+//			}
+		} catch (Exception ee) {
+			Loger.log(2, " SQL Error in Class CustomerInfo and  method -customerDetails " + " " + ee.toString());
+
+		}
+//		finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+		return objList;
+	}
+
+	public ArrayList<CustomerDto> customerDetailsDELETE(String compId) {
 
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -1823,8 +1975,8 @@ public class CustomerInfoDao {
 			Optional<BcaTerm> term = bcaTermRepository.findById(termId);
 			if (term.isPresent())
 				bcv.setTerm(term.get());
-			int salesTaxId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(c.getRep());
-			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesTaxId);
+			int salesRepId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(c.getRep());
+			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesRepId);
 			if (salesRep.isPresent())
 				bcv.setSalesRep(salesRep.get());
 
@@ -1836,7 +1988,7 @@ public class CustomerInfoDao {
 			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(paymentTypeId);
 			if (paymentType.isPresent())
 				bcv.setPaymentType(paymentType.get());
-			if (null != c.getCcType())
+			if (null != c.getCcType() && !c.getCcType().trim().isEmpty())
 				bcv.setCctypeId(Integer.parseInt(c.getCcType()));
 			if (null != c.getCustomerGroup())
 				bcv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
@@ -1954,8 +2106,8 @@ public class CustomerInfoDao {
 			int useIndividual = "1".equals(c.getFsUseIndividual()) ? 1 : 0;
 			int assFCharge = "1".equals(c.getFsAssessFinanceCharge()) ? 1 : 0;
 			int markFCharge = "1".equals(c.getFsMarkFinanceCharge()) ? 1 : 0;
-			purchaseInfo.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(), c.getGracePrd(),
-					assFCharge, markFCharge);
+			purchaseInfo.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(),
+					c.getGracePrd(), assFCharge, markFCharge);
 
 			// -----------------------code to save services---START------------------------
 			int i;
@@ -1987,9 +2139,7 @@ public class CustomerInfoDao {
 //					bcvs.setDefaultService(null);
 //					bcvs.setServiceId(null);
 //					bcvs.setSalePrice(null);
-				
-					
-					
+
 					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
 					ps = con.prepareStatement(sql);
 					ps.setInt(1, cvID);
@@ -2010,8 +2160,7 @@ public class CustomerInfoDao {
 		} catch (Exception ee) {
 			Loger.log(2, "SQLException in Class CustomerInfo,  method -insertCustomer " + ee.toString());
 
-		}
-		finally {
+		} finally {
 			try {
 				if (ps != null) {
 					db.close(ps);

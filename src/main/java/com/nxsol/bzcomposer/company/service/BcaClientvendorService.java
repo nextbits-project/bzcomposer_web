@@ -58,16 +58,16 @@ public class BcaClientvendorService {
 
 	@Autowired
 	private BcaTitleRepository titleRepository;
-	
+
 	@Autowired
 	private CountryState countryState;
-	
+
 	@Autowired
 	private InvoiceInfoDao invoiceInfoDao;
 
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	@Autowired
 	private Title title;
 	@Autowired
@@ -82,14 +82,13 @@ public class BcaClientvendorService {
 	private CreditCard creditCard;
 	@Autowired
 	private VendorCategory vendorCategory;
-	
+
 	@Autowired
 	private CustomerInfoDao customerInfoDao;
 
 	@Autowired
 	private CountryState cs;
-	
-	
+
 	public ArrayList<CustomerDto> customerDetails(String compId) {
 		BcaCompany company = bcaCompanyRepo.getOne(Long.parseLong(compId));
 		List<Object[]> clientVendors = clientVendorRepo.fetchClientVendorDetails(company);
@@ -129,7 +128,8 @@ public class BcaClientvendorService {
 		cusDto.setDateAdded(clientVendors[14].toString());
 
 		cusDto.setPaymentUnpaid(Boolean.valueOf(clientVendors[15] != null ? clientVendors[15].toString() : ""));
-		cusDto.setType(clientVendors[16].toString());
+//		cusDto.setType(clientVendors[16].toString());
+		cusDto.setType(clientVendors[16] != null ? clientVendors[16].toString() : "");
 
 		cusDto.setZipCode(clientVendors[17].toString());
 		cusDto.setCity(clientVendors[18].toString());
@@ -231,9 +231,9 @@ public class BcaClientvendorService {
 
 	public String getCustomerList(HttpServletRequest request) {
 		String compId = (String) request.getSession().getAttribute("CID");
-		String action = ConstValue.hateNull(request.getParameter("tabid"));
+//		String action = ConstValue.hateNull(request.getParameter("tabid"));
 //		CustomerInfoDao customer = new CustomerInfoDao();
-		InvoiceInfo invoiceInfo = new InvoiceInfo();
+//		InvoiceInfo invoiceInfo = new InvoiceInfo();
 		List<CustomerDto> customerList = this.customerDetails(compId);
 //		if (action.equalsIgnoreCase("Customer") || action.equalsIgnoreCase("ContactBoard")) {
 //			List<TrHistoryLookUp> hlookupList = invoiceInfo.searchHistory(request, "ShowAll", "", null, null);
@@ -261,12 +261,15 @@ public class BcaClientvendorService {
 		return firstCvID;
 	}
 
+	@Autowired
+	private InvoiceInfoDao invoice;
+
 	public void searchSelectedCustomer(String cvId, HttpServletRequest request, CustomerDto form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		InvoiceInfoDao invoice = new InvoiceInfoDao();
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		// Loger.log("The Client vendor is from sales detail is " + cvId);
-		invoice.SearchselectedCustomer(compId, cvId, request);
+		invoice.searchSelectedCustomer(compId, cvId, request);
 		invoice.getServices(request, compId, cvId);
 //		 request.setAttribute("CustomerDetails", CustomerDetails);
 	}
@@ -321,7 +324,7 @@ public class BcaClientvendorService {
 		request.setAttribute("VendorCategoryList", vendorCategory.getCVCategoryList(cid));
 
 		// customerGroupList List
-		request.setAttribute("customerGroupList",vendorCategory.getCustomerGroupList());
+		request.setAttribute("customerGroupList", vendorCategory.getCustomerGroupList());
 
 		/* Item List */
 		String compId = (String) request.getSession().getAttribute("CID");

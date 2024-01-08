@@ -244,7 +244,7 @@ public class CustomerDto {
 		this.paymentUnpaid = isPaymentCompleted;
 		this.type = cvcategoryName;
 		this.dbaName = dbaname;
-		
+
 	}
 
 	public String getCustId() {

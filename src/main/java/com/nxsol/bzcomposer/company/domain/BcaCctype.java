@@ -1,5 +1,7 @@
 package com.nxsol.bzcomposer.company.domain;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,29 +10,33 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="bca_cctype")
+@Table(name = "bca_cctype")
 public class BcaCctype {
 
-    @Id
-    @Column(name = "CCTypeID", nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer cCTypeID;
+	@Id
+	@Column(name = "CCTypeID", nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer cCTypeID;
 
-    @Column(name = "Name", length = 50)
-    private String name;
+	@Column(name = "Name", length = 50)
+	private String name;
 
-    @Column(name="Active")
-    private Integer active;
-    
-    @Column(name="IsDefault")
-    private Boolean isDefault;
+	@Column(name = "Active")
+	private Integer active;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CompanyID")
-    private BcaCompany company;
+	@Column(name = "IsDefault")
+	private Boolean isDefault;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CompanyID")
+	private BcaCompany company;
+
+	@OneToMany(mappedBy = "cctype", fetch = FetchType.LAZY)
+	private Set<BcaCvcreditcard> creditCards;
 
 	public Integer getcCTypeID() {
 		return cCTypeID;
@@ -72,6 +78,12 @@ public class BcaCctype {
 		this.company = company;
 	}
 
+	public Set<BcaCvcreditcard> getCreditCards() {
+		return creditCards;
+	}
 
-    
+	public void setCreditCards(Set<BcaCvcreditcard> creditCards) {
+		this.creditCards = creditCards;
+	}
+
 }

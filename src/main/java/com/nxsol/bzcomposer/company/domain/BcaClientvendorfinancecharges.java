@@ -11,98 +11,110 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name= "bca_clientvendorfinancecharges")
+@Table(name = "bca_clientvendorfinancecharges")
 public class BcaClientvendorfinancecharges {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @Column(nullable = false, updatable = false)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
-    @Column(name= "UseIndividual")
-    private Boolean useIndividual;
+	@Id
+	@Column(name = "ClientVendorID", nullable = false, updatable = false)
+	private Integer clientVendorId;
 
-    @Column(name= "AnnualInterestRate")
-    private Double annualInterestRate;
+	@Column(name = "UseIndividual")
+	private Boolean useIndividual;
 
-    @Column(name= "MinimumFinanceCharge")
-    private Double minimumFinanceCharge;
+	@Column(name = "AnnualInterestRate")
+	private Double annualInterestRate;
 
-    @Column(name= "GracePeriod")
-    private Integer gracePeriod;
+	@Column(name = "MinimumFinanceCharge")
+	private Double minimumFinanceCharge;
 
-    @Column(name= "AssessFinanceCharge")
-    private Boolean assessFinanceCharge;
+	@Column(name = "GracePeriod")
+	private Integer gracePeriod;
 
-    @Column(name= "MarkFinanceCharge")
-    private Boolean markFinanceCharge;
+	@Column(name = "AssessFinanceCharge")
+	private Boolean assessFinanceCharge;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ClientVendorID")
-    private BcaClientvendor clientVendor;
+	@Column(name = "MarkFinanceCharge")
+	private Boolean markFinanceCharge;
 
-    public Long getId() {
-        return id;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ClientVendorID", referencedColumnName = "ClientVendorID", insertable = false, updatable = false)
+	private BcaClientvendor clientVendor;
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(final Long id) {
+//        this.id = id;
+//    }
 
-    public Boolean getUseIndividual() {
-        return useIndividual;
-    }
+	public Integer getClientVendorId() {
+		return clientVendorId;
+	}
 
-    public void setUseIndividual(final Boolean useIndividual) {
-        this.useIndividual = useIndividual;
-    }
+	public void setClientVendorId(Integer clientVendorId) {
+		this.clientVendorId = clientVendorId;
+	}
 
-    public Double getAnnualInterestRate() {
-        return annualInterestRate;
-    }
+	public Boolean getUseIndividual() {
+		return useIndividual;
+	}
 
-    public void setAnnualInterestRate(final Double annualInterestRate) {
-        this.annualInterestRate = annualInterestRate;
-    }
+	public void setUseIndividual(final Boolean useIndividual) {
+		this.useIndividual = useIndividual;
+	}
 
-    public Double getMinimumFinanceCharge() {
-        return minimumFinanceCharge;
-    }
+	public Double getAnnualInterestRate() {
+		return annualInterestRate;
+	}
 
-    public void setMinimumFinanceCharge(final Double minimumFinanceCharge) {
-        this.minimumFinanceCharge = minimumFinanceCharge;
-    }
+	public void setAnnualInterestRate(final Double annualInterestRate) {
+		this.annualInterestRate = annualInterestRate;
+	}
 
-    public Integer getGracePeriod() {
-        return gracePeriod;
-    }
+	public Double getMinimumFinanceCharge() {
+		return minimumFinanceCharge;
+	}
 
-    public void setGracePeriod(final Integer gracePeriod) {
-        this.gracePeriod = gracePeriod;
-    }
+	public void setMinimumFinanceCharge(final Double minimumFinanceCharge) {
+		this.minimumFinanceCharge = minimumFinanceCharge;
+	}
 
-    public Boolean getAssessFinanceCharge() {
-        return assessFinanceCharge;
-    }
+	public Integer getGracePeriod() {
+		return gracePeriod;
+	}
 
-    public void setAssessFinanceCharge(final Boolean assessFinanceCharge) {
-        this.assessFinanceCharge = assessFinanceCharge;
-    }
+	public void setGracePeriod(final Integer gracePeriod) {
+		this.gracePeriod = gracePeriod;
+	}
 
-    public Boolean getMarkFinanceCharge() {
-        return markFinanceCharge;
-    }
+	public Boolean getAssessFinanceCharge() {
+		return assessFinanceCharge;
+	}
 
-    public void setMarkFinanceCharge(final Boolean markFinanceCharge) {
-        this.markFinanceCharge = markFinanceCharge;
-    }
+	public void setAssessFinanceCharge(final Boolean assessFinanceCharge) {
+		this.assessFinanceCharge = assessFinanceCharge;
+	}
 
-    public BcaClientvendor getClientVendor() {
-        return clientVendor;
-    }
+	public Boolean getMarkFinanceCharge() {
+		return markFinanceCharge;
+	}
 
-    public void setClientVendor(final BcaClientvendor clientVendor) {
-        this.clientVendor = clientVendor;
-    }
+	public void setMarkFinanceCharge(final Boolean markFinanceCharge) {
+		this.markFinanceCharge = markFinanceCharge;
+	}
+
+	public BcaClientvendor getClientVendor() {
+		return clientVendor;
+	}
+
+	public void setClientVendor(final BcaClientvendor clientVendor) {
+		this.clientVendor = clientVendor;
+	}
 
 }

@@ -46,6 +46,7 @@ import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaBsaddress;
+import com.nxsol.bzcomposer.company.domain.BcaCctype;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorfinancecharges;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorservice;
@@ -62,6 +63,7 @@ import com.nxsol.bzcomposer.company.domain.StorageBillingaddress;
 import com.nxsol.bzcomposer.company.domain.StorageShippingaddress;
 import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaBsaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCctypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorfinancechargesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorserviceRepository;
@@ -148,6 +150,7 @@ public class PurchaseInfo {
 	public List<VendorDto> getVendorsBySort(String compId, String sortBy) {
 		List<VendorDto> objList = new ArrayList<>();
 		List<VendorDto> serviceList = new ArrayList<>();
+
 		List<String> vendorIDs = new ArrayList<>();
 
 		try {
@@ -799,7 +802,11 @@ public class PurchaseInfo {
 	 * credit card
 	 */
 
+	@Autowired
 	private BcaCvcreditcardRepository bcaCvcreditcardRepository;
+
+	@Autowired
+	private BcaCctypeRepository cctypeRepository;
 
 	public boolean insertVendorCreditCard(int cvID, String cardType, String ccNo, String expDate, String cw2,
 			String cHoldername, String bsAddress, String zip) {
@@ -840,7 +847,7 @@ public class PurchaseInfo {
 		}
 
 		try {
-
+			Optional<BcaCctype> ccType = cctypeRepository.findById(Integer.valueOf(cardType));
 			// int ccID = getLastCCID() + 1;
 			// pstmtUpdate = con.prepareStatement("update bca_cvcreditcard set Active=0
 			// where ClientVendorID=? and Active=1");
@@ -852,7 +859,7 @@ public class PurchaseInfo {
 //					+ " values(?,?,?,?,?,?,?,?,?,?,?,?)";
 //		JPA check 	java.sql.Date d = new java.sql.Date(new java.util.Date().getTime());
 			BcaCvcreditcard bcaCvcreditcard = new BcaCvcreditcard();
-			bcaCvcreditcard.setCctypeId(cardType);
+			bcaCvcreditcard.setCctype(ccType.get());
 			BcaClientvendor bcaClientvendor = new BcaClientvendor();
 			bcaClientvendor.setClientVendorId(cvID);
 			bcaCvcreditcard.setClientVendor(bcaClientvendor);
@@ -1006,9 +1013,11 @@ public class PurchaseInfo {
 		} else if (address.getAddressName().equals("")) {
 			address.setAddressName(address.getName() + JProjectUtil.dateFormatLong.format(new Date()));
 		}
+
 		if (addressType == TblBSAddress2.BILLING_ADDR_TYPE) {
 			if (address.getState() == null)
 				address.setState("");
+
 
 			bcaBillingaddressRepository.updateStatusByClientVendorId("U", address.getCvId());
 			BcaBillingaddress bcaBillingaddress = new BcaBillingaddress();
@@ -1035,6 +1044,7 @@ public class PurchaseInfo {
 			bcaBillingaddress.setIsDefault(address.getIsDefault());
 			bcaBillingaddress.setActive(Integer.parseInt(address.getActive()));
 			bcaBillingaddressRepository.save(bcaBillingaddress);
+
 		} else {
 			bcaShippingaddressRepository.updateStatusByClientVendorId("U", address.getCvId());
 			BcaShippingaddress bcaShippingaddress = new BcaShippingaddress();
@@ -1643,38 +1653,59 @@ public class PurchaseInfo {
 	 */
 
 	public int getLastClientVendorID() {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
 		int CVID = 0;
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
+
 		try {
-			String sqlString = "select ClientVendorID from bca_clientvendor order by ClientVendorID desc ";
-			pstmt = con.prepareStatement(sqlString);
-			Loger.log(sqlString);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				CVID = rs.getInt(1);
+			String jpql = "SELECT c.clientVendorId FROM BcaClientvendor c ORDER BY c.clientVendorId DESC";
+
+			TypedQuery<Integer> query = entityManager.createQuery(jpql, Integer.class);
+			query.setMaxResults(1); // Fetch only the first result
+
+			List<Integer> results = query.getResultList();
+
+			if (!results.isEmpty()) {
+				CVID = results.get(0);
 			}
-		} catch (SQLException ee) {
-			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+		} catch (Exception ex) {
+			// Handle exceptions
+			ex.printStackTrace();
 		}
+
 		return CVID;
 	}
+//	public int getLastClientVendorID() {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		int CVID = 0;
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null;
+//		try {
+//			String sqlString = "select ClientVendorID from bca_clientvendor order by ClientVendorID desc ";
+//			pstmt = con.prepareStatement(sqlString);
+//			Loger.log(sqlString);
+//			rs = pstmt.executeQuery();
+//			if (rs.next()) {
+//				CVID = rs.getInt(1);
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return CVID;
+//	}
 
 	/*
 	 * Get the Id of last credit card.
@@ -2149,7 +2180,7 @@ public class PurchaseInfo {
 //			}
 			for (BcaCvcreditcard bcaCvcreditcard : bcaCvcreditcards) {
 
-				customer.setCcType(bcaCvcreditcard.getCctypeId());
+				customer.setCcType(bcaCvcreditcard.getCctype().getcCTypeID().toString());
 				customer.setCardNo(bcaCvcreditcard.getCardNumber());
 				customer.setExpDate(bcaCvcreditcard.getCardExpMonth() + "/" + bcaCvcreditcard.getCardExpYear());
 				customer.setCw2(bcaCvcreditcard.getCardCw2());

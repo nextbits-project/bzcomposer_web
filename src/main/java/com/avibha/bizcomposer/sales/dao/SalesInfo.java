@@ -351,7 +351,7 @@ public class SalesInfo {
 
 	public ArrayList<SalesForm> getPaymentType(Long compId) {
 		List<BcaPaymenttype> paymentTypes = paymentTypeRepository
-				.findByCompany_CompanyIdAndActiveAndTypeCategory(compId, 1, 1);
+				.findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByName(compId, 1, 1);
 		ArrayList<SalesForm> objList = new ArrayList<>();
 
 		for (BcaPaymenttype paymentType : paymentTypes) {

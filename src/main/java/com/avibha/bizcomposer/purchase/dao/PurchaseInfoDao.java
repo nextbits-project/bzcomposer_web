@@ -47,6 +47,7 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaBsaddress;
+import com.nxsol.bzcomposer.company.domain.BcaCctype;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorfinancecharges;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorservice;
@@ -62,6 +63,7 @@ import com.nxsol.bzcomposer.company.domain.BcaShippingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaTerm;
 import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaBsaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCctypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorfinancechargesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorserviceRepository;
@@ -151,6 +153,9 @@ public class PurchaseInfoDao {
 
 	@Autowired
 	private BcaClientvendorfinancechargesRepository bcaClientvendorfinancechargesRepository;
+
+	@Autowired
+	private BcaCctypeRepository bcaCctypeRepository;
 
 	/*
 	 * The method display all the list of vendors which is useful for the vendors
@@ -252,7 +257,6 @@ public class PurchaseInfoDao {
 		return objList;
 	}
 
-
 	/* vendor contact list */
 	public ArrayList vendorContactList(String datesCombo, String fromDate, String toDate, String sortBy, String cId,
 			HttpServletRequest request, PurchaseBoardDto form) {
@@ -287,8 +291,8 @@ public class PurchaseInfoDao {
 			} else {
 				dateBetween = " AND bcv.dateAdded  BETWEEN Timestamp ('"
 						+ JProjectUtil.getDateFormaterCommon().format(customerInfo.string2date(fromDate))
-						+ "') AND Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(customerInfo.string2date(toDate))
-						+ "')";
+						+ "') AND Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(customerInfo.string2date(toDate)) + "')";
 			}
 		}
 
@@ -296,7 +300,7 @@ public class PurchaseInfoDao {
 			String sqlString = "SELECT bcv from BcaClientvendor bcv where bcv.cvtypeId IN (1,3) and  bcv.status in ('N','U') "
 					+ " and bcv.deleted =0 and bcv.active =1 and bcv.company.companyId = :companyId " + dateBetween
 					+ "ORDER BY bcv.name";
-			
+
 			TypedQuery<BcaClientvendor> typedQuery = this.entityManager.createQuery(sqlString, BcaClientvendor.class);
 			JpaHelper.addParameter(typedQuery, sqlString, "companyId", Long.parseLong(cId));
 			List<BcaClientvendor> clientVendorList = typedQuery.getResultList();
@@ -322,7 +326,7 @@ public class PurchaseInfoDao {
 				vendor.setDateAdded(DateHelper.dateFormatter(cv.getDateAdded()));
 				List<BcaClientvendorservice> cvService = bcaClientvendorserviceRepository
 						.findByClientVendor_ClientVendorId(cv.getClientVendorId());
-				for(BcaClientvendorservice clientvendorservice:cvService) {
+				for (BcaClientvendorservice clientvendorservice : cvService) {
 					VendorDto vendorService = new VendorDto();
 					Optional<BcaServicetype> serviceType = bcaServicetypeRepository
 							.findById(clientvendorservice.getServiceId());
@@ -333,10 +337,10 @@ public class PurchaseInfoDao {
 					serviceList.add(vendorService);
 				}
 				objList.add(vendor);
-				
+
 			});
 
-		request.setAttribute("Services", serviceList);
+			request.setAttribute("Services", serviceList);
 		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
 		}
@@ -877,7 +881,11 @@ public class PurchaseInfoDao {
 			bcaCvcreditcardRepository.updateActiveByClientvendorIdAndActive(cvID, 1);
 
 			BcaCvcreditcard cvcreditcard = new BcaCvcreditcard();
-			cvcreditcard.setCctypeId(cardType);
+//			if(null != cvcreditcard.getCctype())
+//				cvcreditcard.setCctype(String.valueOf(cvcard.getCctype().getcCTypeID()));
+			BcaCctype cctype = bcaCctypeRepository.findById(Integer.parseInt(cardType)).orElse(null);
+			if (null != cctype)
+				cvcreditcard.setCctype(cctype);
 			cvcreditcard.setCreditCardId(ccID);
 			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(cvID);
 			if (clientVendor.isPresent())
@@ -1985,8 +1993,8 @@ public class PurchaseInfoDao {
 						card.setCardID(cvcard.getCreditCardId());
 						if (null != cvcard.getClientVendor())
 							card.setClientVendorID(cvcard.getClientVendor().getClientVendorId());
-
-						card.setCcType(cvcard.getCctypeId());
+						if (null != cvcard.getCctype())
+							card.setCcType(String.valueOf(cvcard.getCctype().getcCTypeID()));
 						card.setCardNo(cvcard.getCardNumber());
 						card.setExpDate(cvcard.getCardExpMonth() + " / " + cvcard.getCardExpYear());
 						card.setCw2(cvcard.getCardCw2());

@@ -14,5 +14,7 @@ public interface BcaCreditcardtypeRepository extends JpaRepository<BcaCreditcard
 
     List<BcaCreditcardtype> findByActiveAndTypeCategoryAndCompany_CompanyId(int active, int typeCategory, Long companyId);
     
+    List<BcaCreditcardtype> findByActiveAndTypeCategoryAndCompany_CompanyIdOrderByName(int active, int typeCategory, Long companyId);
+    
 
 }

@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,8 +56,11 @@ import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
+import com.nxsol.bzcomposer.company.domain.BcaCctype;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendorfinancecharges;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorservice;
+import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
 import com.nxsol.bzcomposer.company.domain.BcaInvoice;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
 import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
@@ -139,6 +145,12 @@ public class InvoiceInfoDao {
 
 	@Autowired
 	private BcaShippingaddressRepository bcaShippingaddressRepository;
+
+	@Autowired
+	private BcaInvoicestyleRepository invoicestyleRepository;
+
+	@Autowired
+	private BcaServicetypeRepository servicetypeRepository;
 
 	public InvoiceDetailsResponse invoiceDetails(int invoiceId, String companyId) {
 		InvoiceDetailsResponse response = new InvoiceDetailsResponse();
@@ -2362,7 +2374,8 @@ public class InvoiceInfoDao {
 		}
 	}
 
-	public ArrayList SearchCustomer(String compId, String cvId, HttpServletRequest request, CustomerDto customer) {
+	public ArrayList SearchCustomerDELETE(String compId, String cvId, HttpServletRequest request,
+			CustomerDto customer) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		ResultSet rs = null, rs3 = null, rs1 = null, rs2 = null, rs22 = null, rs12 = null, rs13 = null;
@@ -2653,8 +2666,462 @@ public class InvoiceInfoDao {
 		return customerList;
 	}
 
+	public ArrayList SearchCustomer(String compId, String cvId, HttpServletRequest request, CustomerDto customer) {
+		ArrayList<CustomerDto> customerList = new ArrayList<>();
+
+		try {
+			StringBuffer jpql = new StringBuffer();
+
+			jpql.append("SELECT DISTINCT cv " + "FROM BcaClientvendor cv ");
+			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaCvcreditcards cc ");
+			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaBillingaddresss ba ");
+			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaClientvendorfinancechargess cf ");
+			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaClientvendorservices cvs ");
+			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa ");
+			jpql.append(
+					"WHERE cv.cvtypeId IN (1, 2) AND cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
+
+			if (cvId != null || cvId != "") {
+				jpql.append(" AND cv.clientVendorId = " + cvId);
+			}
+
+			jpql.append("GROUP BY cv.clientVendorId " + "ORDER BY cv.clientVendorId");
+
+			TypedQuery<BcaClientvendor> query = entityManager.createQuery(jpql.toString(), BcaClientvendor.class)
+					.setParameter("companyId", Long.valueOf(compId));
+
+			List<BcaClientvendor> clientVendors = query.getResultList();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+			Loger.log("SQL: " + jpql.toString());
+			/* General */
+			for (BcaClientvendor cv : clientVendors) {
+				if (!customerList.isEmpty()) {
+					customer = new CustomerDto();
+				}
+				customer.setClientVendorID(cv.getClientVendorId().toString());
+				customer.setCname(cv.getName());
+				customer.setFirstName(cv.getFirstName());
+				customer.setLastName(cv.getLastName());
+				customer.setAddress1(cv.getAddress1());
+				customer.setAddress2(cv.getAddress2());
+				customer.setCity(cv.getCity());
+				customer.setState(cv.getState());
+
+				request.setAttribute("state_gen", cv.getState());
+
+				customer.setProvince(cv.getProvince());
+				customer.setCountry(cv.getCountry());
+				customer.setZipCode(cv.getZipCode());
+				customer.setPhone(cv.getPhone());
+				customer.setCellPhone(cv.getCellPhone());
+				customer.setFax(cv.getFax());
+				customer.setEmail(cv.getEmail());
+				customer.setHomePage(cv.getHomePage());
+				customer.setTitle(cv.getCustomerTitle());
+				customer.setTexID(cv.getResellerTaxId());
+				customer.setOpeningUB(cv.getVendorOpenDebit().toString());
+
+				customer.setExtCredit(cv.getVendorAllowedCredit().toString());
+				customer.setMemo(cv.getDetail());
+				customer.setTaxAble(cv.getTaxable().toString());
+				customer.setIsclient(cv.getCvtypeId().toString()); // cvtypeid
+				customer.setType(cv.getCvcategoryId().toString());
+
+				OffsetDateTime dateAdded = cv.getDateAdded();
+				String formattedDate = dateAdded.format(formatter);
+
+				customer.setDateAdded(formattedDate);
+
+				// Account
+				Set<BcaCvcreditcard> creditCards = cv.getClientVendorBcaCvcreditcards();
+
+				// Assuming you want to handle only the first credit card.
+				// You can iterate through the set if you have multiple cards for a single
+				// customer.
+				if (!creditCards.isEmpty()) {
+					BcaCvcreditcard firstCreditCard = creditCards.iterator().next(); // Retrieve the first credit card
+
+					customer.setCardNo(firstCreditCard.getCardNumber());
+					customer.setExpDate(firstCreditCard.getCardExpMonth() + "/" + firstCreditCard.getCardExpYear());
+					customer.setCw2(firstCreditCard.getCardCw2());
+					customer.setCardHolderName(firstCreditCard.getCardHolderName());
+					customer.setCardBillAddress(firstCreditCard.getCardBillingAddress());
+					customer.setCardZip(firstCreditCard.getCardBillingZipCode());
+				}
+
+				// Finance
+				Set<BcaClientvendorfinancecharges> financeChargesSet = cv
+						.getClientVendorBcaClientvendorfinancechargess();
+				if (financeChargesSet != null && !financeChargesSet.isEmpty()) { // Ensure that there's associated
+																					// finance data
+					BcaClientvendorfinancecharges financeCharges = financeChargesSet.iterator().next();
+
+					customer.setFsUseIndividual(financeCharges.getUseIndividual() ? "true" : "false");
+					customer.setAnnualIntrestRate(financeCharges.getAnnualInterestRate().toString());
+					customer.setMinFCharges(financeCharges.getMinimumFinanceCharge().toString());
+					customer.setGracePrd(financeCharges.getGracePeriod().toString());
+					customer.setFsMarkFinanceCharge(financeCharges.getMarkFinanceCharge().toString());
+					customer.setFsAssessFinanceCharge(financeCharges.getAssessFinanceCharge() ? "true" : "false");
+				}
+
+				customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber());
+				customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber());
+				customer.setMiddleName(cv.getMiddleName());
+				customer.setDateInput(
+						cv.getDateInput() != null ? cv.getDateInput().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
+								: "");
+				// customer.setDateInput(cv.getDateInput().format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
+				// customer.setTerminatedDate(cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
+				customer.setTerminatedDate(cv.getDateTerminated() != null
+						? cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
+						: "");
+				customer.setTerminated(cv.getIsTerminated());
+				customer.setDbaName(cv.getDbaname());
+				customer.setActive(cv.getActive() == 1 ? true : false);
+
+				// Process Billing Addresses
+				Set<BcaBillingaddress> billingAddresses = cv.getClientVendorBcaBillingaddresss();
+				if (!billingAddresses.isEmpty()) {
+					BcaBillingaddress firstBillAddress = billingAddresses.iterator().next(); // Retrieve the first
+																								// credit card
+					// Process or store shipping address information
+					customer.setBscname(firstBillAddress.getName());
+					customer.setBsfirstName(firstBillAddress.getFirstName());
+					customer.setBslastName(firstBillAddress.getLastName());
+					customer.setBsaddress1(firstBillAddress.getAddress1());
+					customer.setBsaddress2(firstBillAddress.getAddress2());
+					customer.setBscity(firstBillAddress.getCity());
+					customer.setBszipCode(firstBillAddress.getZipCode());
+					customer.setBscountry(firstBillAddress.getCountry());
+					customer.setBsstate(firstBillAddress.getState());
+					customer.setBsprovince(firstBillAddress.getProvince());
+					customer.setBsdbaName(firstBillAddress.getDbaname());
+					request.setAttribute("state_bt", customer.getBsstate());
+				}
+
+				// Process Shipping Addresses
+				Set<BcaShippingaddress> shippingAddresses = cv.getClientVendorBcaShippingaddresss();
+				if (!shippingAddresses.isEmpty()) {
+					BcaShippingaddress firstShipAddres = shippingAddresses.iterator().next();
+					// Process or store shipping address information
+					customer.setShcname(firstShipAddres.getName());
+					customer.setShfirstName(firstShipAddres.getFirstName());
+					customer.setShlastName(firstShipAddres.getLastName());
+					customer.setShaddress1(firstShipAddres.getAddress1());
+					customer.setShaddress2(firstShipAddres.getAddress2());
+					customer.setShcity(firstShipAddres.getCity());
+					customer.setShzipCode(firstShipAddres.getZipCode());
+					customer.setShcountry(firstShipAddres.getCountry());
+					customer.setShstate(firstShipAddres.getState());
+					customer.setShprovince(firstShipAddres.getProvince());
+					customer.setShdbaName(firstShipAddres.getDbaname());
+					request.setAttribute("state_st", customer.getShstate());
+				}
+				customer.setRep(cv.getSalesRep().getSalesRepId().toString());
+				customer.setTerm(cv.getTerm().getTermId().toString());
+				customer.setPaymentType(
+						cv.getPaymentType() != null ? cv.getPaymentType().getPaymentTypeId().toString() : null);
+				customer.setShipping(
+						cv.getShipCarrier() != null ? cv.getShipCarrier().getShipCarrierId().toString() : null);
+
+				// Process Credit Card Information
+				List<CreditCardDto> creditCardsList = new ArrayList<>();
+				Set<BcaCvcreditcard> cvCreditCards = cv.getClientVendorBcaCvcreditcards();
+				for (BcaCvcreditcard creditCard : cvCreditCards) {
+					// Store or process other credit card information as needed
+					CreditCardDto card = new CreditCardDto();
+					card.setCardID(creditCard.getCreditCardId());
+					card.setClientVendorID(creditCard.getClientVendor().getClientVendorId());
+					card.setCcType(creditCard.getCctype().getcCTypeID().toString());
+					card.setCardNo(creditCard.getCardNumber());
+					card.setExpDate(creditCard.getCardExpMonth() + " / " + creditCard.getCardExpYear());
+					card.setCw2(creditCard.getCardCw2());
+					card.setCardHolderName(creditCard.getCardHolderName());
+					card.setCardBillAddress(creditCard.getCardBillingAddress());
+					card.setCardZip(creditCard.getCardBillingZipCode());
+					card.setCardDefault(creditCard.getDefaultCard());
+					String ccTypeName = creditCard.getCctype().getName() + "...."
+							+ card.getCardNo().substring(card.getCardNo().length() - 4);
+					card.setCcTypeName(ccTypeName);
+					creditCardsList.add(card);
+				}
+				customer.setCustomerCards(creditCardsList);
+				// Process Client Vendor Services
+				Set<BcaClientvendorservice> clientServices = cv.getClientVendorBcaClientvendorservices();
+				String default_ser = "";
+				int invoiceStyleID = -1;
+				int serviceID = -1;
+				ArrayList<UpdateInvoiceDto> serviceinfo = new ArrayList<>();
+				for (BcaClientvendorservice service : clientServices) {
+					// Process or store service information
+					UpdateInvoiceDto uform1 = new UpdateInvoiceDto();
+					uform1.setServiceBalance((service.getServiceBalance()));
+
+					uform1.setDefaultService(service.getDefaultService() ? 1 : 0);
+					// Loger.log("SERVICE DDDD__________-----------________"+
+					// uform1.getDefaultService());
+
+					serviceID = service.getServiceId();
+					uform1.setServiceID(serviceID);
+					if (uform1.getDefaultService() == 1) {
+						default_ser = String.valueOf(serviceID);
+					}
+					invoiceStyleID = service.getInvoiceStyleId();
+
+					//
+					Optional<BcaInvoicestyle> invoiceStyle = invoicestyleRepository.findById(invoiceStyleID);
+
+					uform1.setInvoiceStyle(invoiceStyle.get().getName());
+
+					Optional<BcaServicetype> serviceType = servicetypeRepository.findById(serviceID);
+
+					uform1.setServiceName(serviceType.get().getServiceName());
+					serviceinfo.add(uform1);
+				}
+				request.setAttribute("ServiceInfo", serviceinfo);
+				Loger.log("deafult_ser________________" + default_ser);
+				if (!(default_ser.equals(""))) {
+					request.setAttribute("DefaultService", default_ser);
+				} else {
+					default_ser = "0";
+					request.setAttribute("DefaultService", default_ser);
+				}
+				customerList.add(customer);
+			}
+
+			request.setAttribute("CustomerDetails", customer);
+		} catch (Exception ee) {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
+
+		}
+		return customerList;
+	}
+
+	public void searchSelectedCustomer(String compId, String cvId, HttpServletRequest request) {
+		ArrayList<UpdateInvoiceDto> serviceinfo = new ArrayList<UpdateInvoiceDto>();
+		UpdateInvoiceDto customer = new UpdateInvoiceDto();
+		try {
+			String jpql = "SELECT DISTINCT cv " + "FROM BcaClientvendor cv "
+					+ "LEFT JOIN FETCH cv.clientVendorBcaCvcreditcards cc "
+					+ "LEFT JOIN FETCH cv.clientVendorBcaBillingaddresss ba "
+					+ "LEFT JOIN FETCH cv.clientVendorBcaClientvendorfinancechargess cf "
+					+ "LEFT JOIN FETCH cv.clientVendorBcaClientvendorservices cvs "
+					+ "LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa "
+					+ "WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId AND cv.clientVendorId = :clientVendorId "
+					+ "GROUP BY cv.clientVendorId " + "ORDER BY cv.clientVendorId";
+
+			TypedQuery<BcaClientvendor> query = entityManager.createQuery(jpql, BcaClientvendor.class)
+					.setParameter("companyId", Long.valueOf(compId))
+					.setParameter("clientVendorId", Integer.valueOf(cvId));
+
+			List<BcaClientvendor> clientVendors = query.getResultList();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+			for (BcaClientvendor cv : clientVendors) {
+				System.out.println("Client Vendor: " + cv.getName());
+				/* General */
+				customer.setClientVendorID(cv.getClientVendorId().toString());
+				customer.setCname(cv.getName());
+				customer.setFirstName(cv.getFirstName());
+				customer.setLastName(cv.getLastName());
+				customer.setAddress1(cv.getAddress1());
+				customer.setAddress2(cv.getAddress2());
+				customer.setCity(cv.getCity());
+				customer.setState(cv.getState());
+
+				request.setAttribute("state_gen", cv.getState());
+
+				customer.setProvince(cv.getProvince());
+				customer.setCountry(cv.getCountry());
+				customer.setZipCode(cv.getZipCode());
+				customer.setPhone(cv.getPhone());
+				customer.setCellPhone(cv.getCellPhone());
+				customer.setFax(cv.getFax());
+				customer.setEmail(cv.getEmail());
+				customer.setHomePage(cv.getHomePage());
+				customer.setTitle(cv.getCustomerTitle());
+				customer.setTexID(cv.getResellerTaxId());
+				customer.setOpeningUB(cv.getVendorOpenDebit().toString());
+
+				customer.setExtCredit(cv.getVendorAllowedCredit().toString());
+				customer.setMemo(cv.getDetail());
+				customer.setTaxAble(cv.getTaxable().toString());
+				customer.setIsclient(cv.getCvtypeId().toString()); // cvtypeid
+				customer.setType(cv.getCvcategoryId().toString());
+
+				OffsetDateTime dateAdded = cv.getDateAdded();
+				String formattedDate = dateAdded.format(formatter);
+
+				customer.setDateAdded(formattedDate);
+
+				// Account
+				Set<BcaCvcreditcard> creditCards = cv.getClientVendorBcaCvcreditcards();
+
+				// Assuming you want to handle only the first credit card.
+				// You can iterate through the set if you have multiple cards for a single
+				// customer.
+				if (creditCards != null && !creditCards.isEmpty()) {
+					BcaCvcreditcard firstCreditCard = creditCards.iterator().next(); // Retrieve the first credit card
+
+					customer.setCardNo(firstCreditCard.getCardNumber());
+					customer.setExpDate(firstCreditCard.getCardExpMonth() + "/" + firstCreditCard.getCardExpYear());
+					customer.setCw2(firstCreditCard.getCardCw2());
+					customer.setCardHolderName(firstCreditCard.getCardHolderName());
+					customer.setCardBillAddress(firstCreditCard.getCardBillingAddress());
+					customer.setCardZip(firstCreditCard.getCardBillingZipCode());
+				}
+
+				// Finance
+				Set<BcaClientvendorfinancecharges> financeChargesSet = cv
+						.getClientVendorBcaClientvendorfinancechargess();
+				if (financeChargesSet != null && !financeChargesSet.isEmpty()) { // Ensure that there's associated
+																					// finance data
+					BcaClientvendorfinancecharges financeCharges = financeChargesSet.iterator().next();
+
+					customer.setFsUseIndividual(financeCharges.getUseIndividual() ? "true" : "false");
+					customer.setAnnualIntrestRate(financeCharges.getAnnualInterestRate().toString());
+					customer.setMinFCharges(financeCharges.getMinimumFinanceCharge().toString());
+					customer.setGracePrd(financeCharges.getGracePeriod().toString());
+					customer.setFsAssessFinanceCharge(financeCharges.getAssessFinanceCharge() ? "true" : "false");
+				}
+
+				customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber());
+				customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber());
+				customer.setMiddleName(cv.getMiddleName());
+				customer.setDateInput(
+						cv.getDateInput() != null ? cv.getDateInput().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
+								: "");
+				// customer.setDateInput(cv.getDateInput().format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
+				// customer.setTerminatedDate(cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
+				customer.setTerminatedDate(cv.getDateTerminated() != null
+						? cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
+						: "");
+				customer.setTerminated(cv.getIsTerminated());
+
+				// Process Credit Card Information
+				List<CreditCardDto> creditCardsList = new ArrayList<>();
+				Set<BcaCvcreditcard> cvCreditCards = cv.getClientVendorBcaCvcreditcards();
+				for (BcaCvcreditcard creditCard : cvCreditCards) {
+					// Store or process other credit card information as needed
+					CreditCardDto card = new CreditCardDto();
+					card.setCardID(creditCard.getCreditCardId());
+					card.setClientVendorID(creditCard.getClientVendor().getClientVendorId());
+					card.setCcType(creditCard.getCctype().getcCTypeID().toString());
+					card.setCardNo(creditCard.getCardNumber());
+					card.setExpDate(creditCard.getCardExpMonth() + " / " + creditCard.getCardExpYear());
+					card.setCw2(creditCard.getCardCw2());
+					card.setCardHolderName(creditCard.getCardHolderName());
+					card.setCardBillAddress(creditCard.getCardBillingAddress());
+					card.setCardZip(creditCard.getCardBillingZipCode());
+					card.setCardDefault(creditCard.getDefaultCard());
+					String ccTypeName = creditCard.getCctype().getName() + "...."
+							+ card.getCardNo().substring(card.getCardNo().length() - 4);
+					card.setCcTypeName(ccTypeName);
+					creditCardsList.add(card);
+				}
+				customer.setCustomerCards(creditCardsList);
+
+				// Process Shipping Addresses
+				Set<BcaShippingaddress> shippingAddresses = cv.getClientVendorBcaShippingaddresss();
+				if (shippingAddresses != null && !shippingAddresses.isEmpty()) {
+					BcaShippingaddress firstShipAddres = shippingAddresses.iterator().next();
+					// Process or store shipping address information
+					customer.setShcname(firstShipAddres.getName());
+					customer.setShfirstName(firstShipAddres.getFirstName());
+					customer.setShlastName(firstShipAddres.getLastName());
+					customer.setShaddress1(firstShipAddres.getAddress1());
+					customer.setShaddress2(firstShipAddres.getAddress2());
+					customer.setShcity(firstShipAddres.getCity());
+					customer.setShzipCode(firstShipAddres.getZipCode());
+					customer.setShcountry(firstShipAddres.getCountry());
+					customer.setShstate(firstShipAddres.getState());
+					customer.setShprovince(firstShipAddres.getProvince());
+
+					request.setAttribute("state_st", customer.getShstate());
+				}
+
+				// Process Billing Addresses
+				Set<BcaBillingaddress> billingAddresses = cv.getClientVendorBcaBillingaddresss();
+				if (billingAddresses != null && !billingAddresses.isEmpty()) {
+					BcaBillingaddress firstBillAddress = billingAddresses.iterator().next(); // Retrieve the first
+																								// credit card
+					// Process or store shipping address information
+					customer.setBscname(firstBillAddress.getName());
+					customer.setBsfirstName(firstBillAddress.getFirstName());
+					customer.setBslastName(firstBillAddress.getLastName());
+					customer.setBsaddress1(firstBillAddress.getAddress1());
+					customer.setBsaddress2(firstBillAddress.getAddress2());
+					customer.setBscity(firstBillAddress.getCity());
+					customer.setBszipCode(firstBillAddress.getZipCode());
+					customer.setBscountry(firstBillAddress.getCountry());
+					customer.setBsstate(firstBillAddress.getState());
+					customer.setBsprovince(firstBillAddress.getProvince());
+
+					request.setAttribute("state_bt", customer.getBsstate());
+				}
+				customer.setRep(cv.getSalesRep().getSalesRepId().toString());
+				customer.setTerm(cv.getTerm().getTermId().toString());
+				customer.setPaymentType(
+						cv.getPaymentType() != null ? cv.getPaymentType().getPaymentTypeId().toString() : null);
+				customer.setShipping(
+						cv.getShipCarrier() != null ? cv.getShipCarrier().getShipCarrierId().toString() : null);
+
+//				customer.setPaymentType(cv.getPaymentType().getPaymentTypeId().toString());
+				// customer.setShipping(cv.getShipCarrier().getShipCarrierId().toString());
+
+				// Process Client Vendor Services
+				Set<BcaClientvendorservice> clientServices = cv.getClientVendorBcaClientvendorservices();
+				String default_ser = "";
+				int invoiceStyleID = -1;
+				int serviceID = -1;
+				for (BcaClientvendorservice service : clientServices) {
+					// Process or store service information
+					UpdateInvoiceDto uform1 = new UpdateInvoiceDto();
+					uform1.setServiceBalance((service.getServiceBalance()));
+
+					uform1.setDefaultService(service.getDefaultService() ? 1 : 0);
+					// Loger.log("SERVICE DDDD__________-----------________"+
+					// uform1.getDefaultService());
+
+					serviceID = service.getServiceId();
+					uform1.setServiceID(serviceID);
+					if (uform1.getDefaultService() == 1) {
+						default_ser = String.valueOf(serviceID);
+					}
+					invoiceStyleID = service.getInvoiceStyleId();
+
+					//
+					Optional<BcaInvoicestyle> invoiceStyle = invoicestyleRepository.findById(invoiceStyleID);
+
+					uform1.setInvoiceStyle(invoiceStyle.get().getName());
+
+					Optional<BcaServicetype> serviceType = servicetypeRepository.findById(serviceID);
+
+					uform1.setServiceName(serviceType.get().getServiceName());
+					serviceinfo.add(uform1);
+				}
+
+				request.setAttribute("ServiceInfo", serviceinfo);
+
+				if (!(default_ser.equals(""))) {
+					request.setAttribute("DefaultService", default_ser);
+				} else {
+					default_ser = "0";
+					request.setAttribute("DefaultService", default_ser);
+				}
+
+			}
+
+			request.setAttribute("CustomerDetails1", customer);
+		} catch (Exception ee) {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
+		}
+	}
+
 	// search selected customer base on custid
-	public void SearchselectedCustomer(String compId, String cvId, HttpServletRequest request) {
+	public void SearchselectedCustomerDELETE(String compId, String cvId, HttpServletRequest request) {
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null, pstmt3 = null, pstmt4 = null, pstmt12 = null,
@@ -2754,7 +3221,6 @@ public class InvoiceInfoDao {
 				while (rs13.next()) {
 					uform1.setServiceName(rs13.getString(1));
 				}
-
 				serviceinfo.add(uform1);
 			}
 			request.setAttribute("ServiceInfo", serviceinfo);
@@ -4260,42 +4726,64 @@ public class InvoiceInfoDao {
 	}
 
 	public boolean isCustomerHasBalance(String cvId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
-		boolean isBalanceFound = false;
-		try {
-			String sql = "SELECT distinct OrderNum, Total, Balance FROM bca_invoice WHERE ClientVendorID=? HAVING Balance>0";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, cvId);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				double balance = rs.getDouble(3);
-				if (balance > 0) {
-					isBalanceFound = true;
-					break;
-				}
-			}
-		} catch (SQLException ee) {
-			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
-		return isBalanceFound;
+	    boolean isBalanceFound = false;
+
+	    try {
+	        String sqlString = "SELECT DISTINCT Balance FROM bca_invoice WHERE ClientVendorID = ? AND Balance > 0";
+	        
+	        Query query = entityManager.createNativeQuery(sqlString);
+	        query.setParameter(1, cvId);  // Parameter binding
+
+	        List<Double> balances = query.getResultList();
+	        
+	        if (!balances.isEmpty()) {
+	            isBalanceFound = true;
+	        }
+	    } catch (Exception ex) {
+	        // Handle exceptions
+	        ex.printStackTrace();
+	    }
+	    
+	    return isBalanceFound;
 	}
+	
+//	public boolean isCustomerHasBalance(String cvId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null;
+//		boolean isBalanceFound = false;
+//		try {
+//			String sql = "SELECT distinct OrderNum, Total, Balance FROM bca_invoice WHERE ClientVendorID=? HAVING Balance>0";
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setString(1, cvId);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				double balance = rs.getDouble(3);
+//				if (balance > 0) {
+//					isBalanceFound = true;
+//					break;
+//				}
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return isBalanceFound;
+//	}
 
 	public String truncate(String num) {
 		String string1 = null;
@@ -4676,9 +5164,9 @@ public class InvoiceInfoDao {
 		request.setAttribute("InvoiceName", invoiceName);
 
 		try {
-
+//select * from bca_clientvendorservice where CompanyID=? and ClientVendorID=?
 			List<BcaClientvendorservice> bcaClientvendorservices = bcaClientvendorserviceRepository
-					.findByCompanyIdAndClientVendorId(Long.parseLong(compId), Integer.parseInt(cvId));
+					.findByCompanyAndClientVendor(Long.parseLong(compId), Integer.parseInt(cvId));
 			for (BcaClientvendorservice clientvendorservice : bcaClientvendorservices) {
 				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 
