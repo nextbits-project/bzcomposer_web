@@ -1,8 +1,8 @@
 package com.nxsol.bzcomposer.company.repos;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,8 +22,6 @@ import com.nxsol.bzcomposer.company.domain.nonmanaged.BcaInvoiceTermClientVendor
 
 @Repository
 public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer> {
-	
-
 
 	@Query(value = "Select a.InvoiceID,a.OrderNum,a.DateAdded,a.TermID,a.Total,a.Balance,b.Firstname,b.LastName,a.clientvendorId from bca_invoice as a, bca_clientvendor as b"
 			+ " where a.ClientVendorId=b.ClientVendorId and b.Status in ('U','N') and b.Active=1 and a.invoicestatus in (0,2) and a.invoicetypeID in (1,7) and b.deleted=0 and a.CompanyID=?", nativeQuery = true)
@@ -44,7 +42,7 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 	@Query(value = "Select a.InvoiceID,a.OrderNum,a.DateAdded,a.TermID,a.Total,a.Balance,b.Firstname,b.LastName,a.clientvendorId from bca_invoice as a, bca_clientvendor as b where a.ClientVendorId=b.ClientVendorId and b.Status in ('U','N') and b.Active=1 and a.invoicestatus in (0,2) and a.invoicetypeID in (1,7) and b.deleted=0 and a.CompanyID=?", nativeQuery = true)
 	ArrayList findByCompanyIdFromInvoiceClientvendor2(String compId);
 
-	List<BcaInvoice> findByInvoiceIdAndCompany(Integer invoiceId, BcaCompany company);
+	Optional<BcaInvoice> findByInvoiceIdAndCompany_CompanyId(Integer invoiceId, Long company);
 
 	@Modifying
 	@Transactional
@@ -204,6 +202,11 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 
 	@Modifying
 	@Transactional
+	@Query("update BcaInvoice bi set bi.shipped = :shipped where bi.ponum = :ponum ")
+	Integer updateShippedByPoNum(@Param("shipped") int shipped, @Param("ponum") int ponum);
+
+	@Modifying
+	@Transactional
 	@Query("update BcaInvoice bi set bi.isInvoice = :isInvoice where bi.orderNum = :orderNum ")
 	Integer updateIsInvoiceByOrderNum(@Param("isInvoice") int isInvoice, @Param("orderNum") int orderNum);
 
@@ -228,5 +231,36 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 	@Query("update BcaInvoice bi set bi.invoiceStatus = :invoiceStatus where bi.estNum = :estNum  and bi.company.companyId = :companyId")
 	Integer updateInvoiceStatusByEstNumAndCompanyId(@Param("invoiceStatus") int invoiceStatus,
 			@Param("estNum") int estNum, @Param("companyId") Long companyId);
+
+	BcaInvoice findByInvoiceIdAndInvoiceStatus(int invoiceId, int invoiceStatus);
+
+	List<BcaInvoice> findByCompany_CompanyIdAndPonumAndInvoiceStatus(Long companyId, int ponum, int invoiceStatus);
+
+	@Query("SELECT bi from BcaInvoice bi WHERE bi.company.companyId =:companyId and bi.invoiceStatus <> :invoiceStatus and bi.invoiceType.invoiceTypeId IN :invoiceTypeId ORDER BY ponum DESC ")
+	List<BcaInvoice> findByCompanyIdAndInvoiceStatusNotAndInvoiceTypeIdIn(@Param("companyId") long companyId,
+			@Param("invoiceStatus") int invoiceStatus, @Param("invoiceTypeId") List<Integer> invoiceTypeId);
+
+	@Query("SELECT bi from BcaInvoice bi where bi.company.companyId =:companyId and bi.invoiceStatus =:invoiceStatus and bi.invoiceType.invoiceTypeId =:invoiceTypeId and bi.ponum > :ponum order by ponum")
+	Optional<List<BcaInvoice>> findByCompanyIdAndInvoiceStatusAndInvoiceTypeIdAndPonumGreaterThan(
+			@Param("companyId") long companyId, @Param("invoiceStatus") int invoiceStatus,
+			@Param("invoiceTypeId") int invoiceTypeId, @Param("ponum") int ponum);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM BcaInvoice i WHERE i.invoiceId = :invoiceId AND i.company.companyId = :companyId")
+	int deleteByInvoiceIdAndCompanyId(@Param("invoiceId") int invoiceId, @Param("companyId") Long companyId);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE BcaInvoice bi set bi.bsaddressId =:bsaddressId WHERE bi.clientVendor.clientVendorId = :clientVendorId ")
+	int updateBsaAddressIdByClientVendorId(@Param("bsaddressId") int bsaddressId,
+			@Param("clientVendorId") int clientVendorId);
+
+	@Query("SELECT bi from BcaInvoice bi where bi.clientVendor.clientVendorId =:clientVendorId and bi.company.companyId =:companyId "
+			+ "and bi.invoiceStatus <> :invoiceStatus and bi.invoiceType.invoiceTypeId =:invoiceTypeId and bi.ponum >:ponum ")
+	List<BcaInvoice> findByCompanyIdAndClientVendorIdAndInvoiceStatusNotAndInvoiceTypeIdAndPonumLessThan(
+			@Param("companyId") long companyId, @Param("clientVendorId") int clientVendorId,
+			@Param("invoiceStatus") int invoiceStatus, @Param("invoiceTypeId") int invoiceTypeid,
+			@Param("ponum") int ponum);
 
 }

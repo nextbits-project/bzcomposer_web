@@ -48,6 +48,11 @@ public interface BcaAccountRepository extends JpaRepository<BcaAccount, Integer>
 	@Query("update BcaAccount ba set ba.active = 0 where ba.accountId = :accountId and ba.company = :company")
 	int updateBankAccount(@Param("accountId") int accountId, @Param("company") BcaCompany company);
 
+	@Modifying
+	@Transactional
+	@Query("update BcaAccount ba set ba.active = 0 where ba.clientVendor.clientVendorId =:clientVendorId")
+	int updateActiveByClientVendorId(@Param("clientVendorId") int clientVendorId);
+
 	List<BcaAccount> findByParentIdNotOrderByNameAsc(int parentId);
 
 	@Query(value = "select ba from BcaAccount ba where ba.company.companyId = :companyId and ba.acctCategory.acctCategoryId in (1,2)")
@@ -70,8 +75,8 @@ public interface BcaAccountRepository extends JpaRepository<BcaAccount, Integer>
 
 	List<BcaAccount> findByCompanyAndAcctTypeAndActiveOrderByAcctTypeAscNameAsc(BcaCompany company,
 			BcaAccttype acctType, Integer active);
-	
-    List<BcaAccount> findByAcctType_acctTypeIdAndActiveAndCompany_CompanyIdAndAcctCategory_AcctCategoryId(Integer acctTypeId, Integer active, Long companyId, Integer acctCategoryId);
 
+	List<BcaAccount> findByAcctType_acctTypeIdAndActiveAndCompany_CompanyIdAndAcctCategory_AcctCategoryId(
+			Integer acctTypeId, Integer active, Long companyId, Integer acctCategoryId);
 
 }

@@ -1,6 +1,7 @@
 package com.nxsol.bzcomposer.company.repos;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -51,5 +52,22 @@ public interface BcaIteminventoryRepository extends JpaRepository<BcaIteminvento
 	
 
     int countByCompany_CompanyIdAndActiveAndItemTypeIdNot(Long companyId, Integer active, Integer itemTypeId);
+    
+
+    
+    Optional<BcaIteminventory> findByInventoryIdAndInventoryBcaCarts_CartId(Integer inventoryId, Integer cartId);
+    Optional<BcaIteminventory> findByInventoryBcaCarts_CartId(Integer cartId);
+    
+    @Modifying
+    @Query("UPDATE BcaIteminventory i SET i.dateReceived = CURRENT_TIMESTAMP WHERE i.inventoryId IN (SELECT c.inventory.inventoryId FROM BcaCart c WHERE c.cartId = ?1 AND c.inventory.inventoryId = i.inventoryId)")
+    int updateDateReceivedByCartIdAndInventoryId(Integer cartId);
+    
+    String sqlString = "select InventoryID,InventoryCode,InventoryDescription,Qty,Weight,SalePrice,isCategory,ItemTypeID,InventoryName,SerialNum"
+			+ " from bca_iteminventory where CompanyID=? and Active=1 and ParentID < 1 ";
+    
+    List<BcaIteminventory> findByCompany_CompanyIdAndActiveAndParentIdLessThan(long companyId,int active,int parentId);
+
+    List<BcaIteminventory> findByItemTypeIdAndActiveAndParentId(int itemTypeId,int active,int parentId);
+
 
 }

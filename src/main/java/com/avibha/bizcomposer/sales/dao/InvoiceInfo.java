@@ -4589,7 +4589,7 @@ public class InvoiceInfo {
 //				+ " WHERE " + cvIdCase + " i.InvoiceTypeID IN(1,7,10) ";
 
 		StringBuffer query = new StringBuffer(
-				"select i from BcaInvoice as i inner join BcaInvoiceType as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
+				"select i from BcaInvoice as i inner join BcaInvoicetype as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
 						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
 //		if (cond.equalsIgnoreCase("ShowAll")) {
 //			Loger.log("The string of showall is " + sqlString);

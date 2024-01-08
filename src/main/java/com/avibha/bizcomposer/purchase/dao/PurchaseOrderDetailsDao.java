@@ -4,31 +4,56 @@
  */
 package com.avibha.bizcomposer.purchase.dao;
 
-import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
-import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
-import com.avibha.bizcomposer.sales.dao.EstimationInfo;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
-import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 
+@Service
 public class PurchaseOrderDetailsDao {
+	@Autowired
+	private PurchaseOrderInfoDao purchaseOrderInfoDao;
+
+	@Autowired
+	private CountryState countryState;
+
+	@Autowired
+	private PurchaseInfo purchaseInfo;
+
+	@Autowired
+	private PayMethod payMethod;
+
+	@Autowired
+	private Term term;
+
+	@Autowired
+	private Shipping shipping;
+
+	@Autowired
+	private ReceivedItemInfo receivedItemInfo;
+
+	@Autowired
+	private InvoiceInfo invoiceInfo;
 
 	/*
 	 * Sets all the information required for the new purchase order. It sets the
 	 * information such as order date,next purchase order no.,etc.
 	 */
 	public void newPurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
-		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
-		form.setOrderNo(purchaseInfo.getNewPONum(compId));
+//		form.setOrderNo(purchaseInfo.getNewPONum(compId));
+		form.setOrderNo(purchaseOrderInfoDao.getNewPONum(compId));
 		request.setAttribute("orderNo", form.getOrderNo());
 
 		DateInfo date = new DateInfo();
@@ -49,7 +74,7 @@ public class PurchaseOrderDetailsDao {
 		form.setOrderDate(da);
 		form.setCustID("0");
 
-		form.setInvoiceStyle(purchaseInfo.getDefaultPOStyle(compId));
+		form.setInvoiceStyle(purchaseOrderInfoDao.getDefaultPOStyle(compId));
 		form.setVia("0");
 		form.setTerm("0");
 		form.setPayMethod("0");
@@ -130,57 +155,57 @@ public class PurchaseOrderDetailsDao {
 
 	public void getInvoiceInfo(HttpServletRequest request) {
 		String compId = (String) request.getSession().getAttribute("CID");
-		ReceivedItemInfo recvInfo = new ReceivedItemInfo();
-		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
-		Shipping ship = new Shipping();
-		Term term = new Term();
-		PayMethod pyMethod = new PayMethod();
+//		ReceivedItemInfo recvInfo = new ReceivedItemInfo();
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+//		Shipping ship = new Shipping();
+//		Term term = new Term();
+//		PayMethod pyMethod = new PayMethod();
 
 		/* Invoice Style */
-		request.setAttribute("InvoiceStyle", recvInfo.getInvoiceStyle());
+		request.setAttribute("InvoiceStyle", receivedItemInfo.getInvoiceStyle());
 		/* Via Information */
-		request.setAttribute("Via", ship.getShipCarrierList(compId));
+		request.setAttribute("Via", shipping.getShipCarrierList(compId));
 		/* Term Information */
 		request.setAttribute("Term", term.getTermList(compId));
 		/* Pay Method Information */
-		request.setAttribute("PayMethod", pyMethod.getPaymentTypeList(compId));
+		request.setAttribute("PayMethod", payMethod.getPaymentTypeList(compId));
 		/* Messages */
-		request.setAttribute("Message", recvInfo.getMessage(compId));
+		request.setAttribute("Message", receivedItemInfo.getMessage(compId));
 		/* Item List */
-		request.setAttribute("ItemList", recvInfo.getItemList(compId));
-		purchaseInfo.getCommonShipAddr(request, compId);
+		request.setAttribute("ItemList", receivedItemInfo.getItemList(compId));
+		purchaseOrderInfoDao.getCommonShipAddr(request, compId);
 		/* Vendor List */
-		request.setAttribute("VendorList", purchaseInfo.getVendorDetails(compId, request));
+		request.setAttribute("VendorList", purchaseOrderInfoDao.getVendorDetails(compId, request));
 
 		/* Billing & Shipping Address List */
-		request.getSession().setAttribute("BillAddr", purchaseInfo.billAddress(compId, null));
-		request.setAttribute("ShAddr", purchaseInfo.shipAddress(compId, null));
+		request.getSession().setAttribute("BillAddr", purchaseOrderInfoDao.billAddress(compId, null));
+		request.setAttribute("ShAddr", purchaseOrderInfoDao.shipAddress(compId, null));
 
 		/* customer list */
-		InvoiceInfo invoice = new InvoiceInfo();
-		request.setAttribute("CDetails", invoice.customerDetails(compId, request));
+//		InvoiceInfo invoice = new InvoiceInfo();
+		request.setAttribute("CDetails", invoiceInfo.customerDetails(compId, request));
 	}
 
 	/*
 	 * Saves or updates the purchase order information to the database.
 	 */
 	public void savePurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
-		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		String isShipUse = request.getParameter("useDropShip");
 		if (form.getOrderNo().contains("-")) {
 			String orderNo = form.getOrderNo();
 			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
 		}
-		boolean exist = purchaseInfo.poNumExist(compId, form.getOrderNo());
+		boolean exist = purchaseOrderInfoDao.poNumExist(compId, form.getOrderNo());
 		if (exist == true) {
 			try {
-				int invoiceID = purchaseInfo.getInvoiceNo(compId, form.getOrderNo());
-				long isShipAddr = purchaseInfo.getShipAddrExist(compId, form.getOrderNo());
+				int invoiceID = purchaseOrderInfoDao.getInvoiceNo(compId, form.getOrderNo());
+				long isShipAddr = purchaseOrderInfoDao.getShipAddrExist(compId, form.getOrderNo());
 				if (isShipAddr == 0) {
-					purchaseInfo.SaveUpdate(compId, form, invoiceID);
+					purchaseOrderInfoDao.SaveUpdate(compId, form, invoiceID);
 				} else {
-					purchaseInfo.Update(compId, form, invoiceID);
+					purchaseOrderInfoDao.Update(compId, form, invoiceID);
 				}
 				request.getSession().setAttribute("SaveStatus", "Purchase Order is successfully updated.");
 			} catch (Exception e) {
@@ -189,7 +214,7 @@ public class PurchaseOrderDetailsDao {
 			}
 		} else {
 			try {
-				purchaseInfo.Save(compId, form);
+				purchaseOrderInfoDao.Save(compId, form);
 				request.getSession().setAttribute("SaveStatus", "Purchase Order is successfully saved.");
 			} catch (Exception e) {
 				Loger.log(e.toString());
@@ -208,10 +233,10 @@ public class PurchaseOrderDetailsDao {
 	 */
 	public PurchaseOrderDto getPurchaseOrderDetailsByBtnName(HttpServletRequest request,
 			PurchaseOrderDto purchaseOrderDto) {
-		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
-		Long orderNo = purchaseInfo.getPONumberByBtnName(compId, request);
-		ArrayList<PurchaseOrderDto> list = purchaseInfo.getRecord(request, purchaseOrderDto, compId, orderNo);
+		Long orderNo = purchaseOrderInfoDao.getPONumberByBtnName(compId, request);
+		ArrayList<PurchaseOrderDto> list = purchaseOrderInfoDao.getRecord(request, purchaseOrderDto, compId, orderNo);
 		if (!list.isEmpty()) {
 			purchaseOrderDto = list.get(0);
 			request.setAttribute("Enable", "true");
@@ -228,13 +253,13 @@ public class PurchaseOrderDetailsDao {
 	 */
 	public boolean deletePurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
 		boolean val = false;
-		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		String orderNo = form.getOrderNo();
-		boolean exist = purchaseInfo.poNumExist(compId, orderNo);
+		boolean exist = purchaseOrderInfoDao.poNumExist(compId, orderNo);
 		if (exist == true) {
 			try {
-				purchaseInfo.Delete(compId, orderNo);
+				purchaseOrderInfoDao.Delete(compId, orderNo);
 				request.getSession().setAttribute("SaveStatus", "Purchase Order is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
@@ -249,13 +274,13 @@ public class PurchaseOrderDetailsDao {
 	 * selected by user.
 	 */
 	public void getConfirmAddress(HttpServletRequest request, VendorDto form, String cType) {
-		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
-		purchaseInfo.showConfirmAddress(form, request, cType);
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+		purchaseOrderInfoDao.showConfirmAddress(form, request, cType);
 
-		CountryState cs = new CountryState();
-		request.setAttribute("countryList", cs.getCountryList());
-		request.setAttribute("stateList", cs.getStateList(form.getCountry()));
-		request.setAttribute("cityList", cs.getCityList(form.getState()));
+//		CountryState cs = new CountryState();
+		request.setAttribute("countryList", countryState.getCountryList());
+		request.setAttribute("stateList", countryState.getStateList(form.getCountry()));
+		request.setAttribute("cityList", countryState.getCityList(form.getState()));
 	}
 
 	/*
@@ -263,21 +288,21 @@ public class PurchaseOrderDetailsDao {
 	 * database
 	 */
 	public void addConfirmAddress(HttpServletRequest request, VendorDto form) {
-		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
 		boolean updated = false;
 		try {
-			updated = purchaseInfo.updateBillingShippingAddress(form, request);
+			updated = purchaseOrderInfoDao.updateBillingShippingAddress(form, request);
 			TblBSAddress2 address = new TblBSAddress2();
-			PurchaseInfo pinfo = new PurchaseInfo();
+//			PurchaseInfo pinfo = new PurchaseInfo();
 			int cvID = Integer.parseInt(request.getParameter("clientVendorID"));
 			address.setAddressWithVendorDto(form, cvID);
-			pinfo.insertBillingShippingAddress(address, form.getAddressType(), true);
+			purchaseInfo.insertBillingShippingAddress(address, form.getAddressType(), true);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
 
-		//updated = purchaseInfo.updateBillingShippingAddress(form, request);
+		// updated = purchaseInfo.updateBillingShippingAddress(form, request);
 		if (updated) {
 			request.getSession().setAttribute("actionMsg", "BzComposer.common.recordUpdated");
 		} else {
@@ -291,10 +316,10 @@ public class PurchaseOrderDetailsDao {
 
 	public void getPurchaseOrder(HttpServletRequest request, PurchaseOrderDto form) {
 		ArrayList list = new ArrayList();
-		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
 		getInvoiceInfo(request);
 		String compId = (String) request.getSession().getAttribute("CID");
-		list = purchaseInfo.getRecord(request, form, compId, Long.parseLong(form.getOrderNo()));
+		list = purchaseOrderInfoDao.getRecord(request, form, compId, Long.parseLong(form.getOrderNo()));
 		if (form.getCompany() == null)
 			form.setCompany("false");
 		else
@@ -308,10 +333,10 @@ public class PurchaseOrderDetailsDao {
 	 * Check the required purchase order number is exist in the database or not.
 	 */
 	public void isPoNumExist(HttpServletRequest request, PurchaseOrderDto form) {
-		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
 		getInvoiceInfo(request);
 		String compId = (String) request.getSession().getAttribute("CID");
-		boolean exists = purchaseInfo.poNumExist(compId, form.getOrderNo());
+		boolean exists = purchaseOrderInfoDao.poNumExist(compId, form.getOrderNo());
 		if (form.getCompany() == null)
 			form.setCompany("false");
 		else

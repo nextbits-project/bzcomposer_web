@@ -16,18 +16,25 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BcaBsaddressRepository extends JpaRepository<BcaBsaddress, Integer> {
 
-	
-	
-	
-	Optional<BcaBsaddress> findByClientVendorIdLikeAndAddressTypeLikeAndStatusIn(Integer clientVendorId, String addressType , List<String> status);
+	Optional<BcaBsaddress> findByClientVendorIdLikeAndAddressTypeLikeAndStatusIn(Integer clientVendorId,
+			String addressType, List<String> status);
+
 	@Query("SELECT MAX(bs.bsaddressId) FROM BcaBsaddress bs")
-    int findLastBsAddressId();
+	int findLastBsAddressId();
 
 	List<BcaBsaddress> findByClientVendorId(Integer clientVendorId);
-	
-	
+
 	@Modifying
 	@Transactional
 	@Query("update BcaBsaddress bs set bs.status = '0' where bs.clientVendorId = :clientVendorId ")
-	int updateStatusByClientVendorId(@Param("clientVendorId")Integer clientVendorId);
+	int updateStatusByClientVendorId(@Param("clientVendorId") Integer clientVendorId);
+
+	@Modifying
+	@Transactional
+	@Query("update BcaBsaddress bs set bs.status = '0' where bs.clientVendorId = :clientVendorId and bs.status = :status ")
+	int updateStatusByClientVendorIdAndStatus(@Param("clientVendorId") Integer clientVendorId,
+			@Param("status") List<String> status);
+
+	BcaBsaddress findByBsaddressIdAndAddressType(int bsaddressId, String addressType);
+
 }

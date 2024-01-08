@@ -3,6 +3,8 @@ package com.nxsol.bzcomposer.company.repos;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -29,27 +31,30 @@ public interface BcaCvcreditcardRepository extends JpaRepository<BcaCvcreditcard
 	List<Integer> findByOrderByCreditCardId();
 
 	@Query(value = "select bcc from BcaCvcreditcard bcc where bcc.clientVendor.clientVendorId = :clientVendorId and bcc.active = :active ", nativeQuery = true)
-	List<BcaCvcreditcard> findByClientVendorIdAndActive(@Param("clientVendorId")Integer clientvendorid, @Param("active")Integer active);
+	List<BcaCvcreditcard> findByClientVendorIdAndActive(@Param("clientVendorId") Integer clientvendorid,
+			@Param("active") Integer active);
 
 	@Query(value = "UPDATE bca_cvcreditcard SET active=0 WHERE clientvendorid=?", nativeQuery = true)
 	void updateByActiveAndClientVendorId(int cvID);
 
-//	List<BcaCvcreditcard> findByDefaultCardAndClientVendorId(int i, Integer clientVendorId);
-
 	@Query("SELECT c FROM BcaCvcreditcard c WHERE c.defaultCard = :defaultCard AND c.clientVendor.clientVendorId = :clientVendorId")
-	List<BcaCvcreditcard> findByDefaultCardAndClientVendorId(@Param("defaultCard") int defaultCard, @Param("clientVendorId") Integer clientVendorId);
+	List<BcaCvcreditcard> findByDefaultCardAndClientVendorId(@Param("defaultCard") int defaultCard,
+			@Param("clientVendorId") Integer clientVendorId);
 
-	
 	@Modifying
 	@Query(value = "update bca_cvcreditcard set DEFAULTCard = :defaultCard where CreditCardID = :ccID", nativeQuery = true)
 	int updateByCreditCardId(int defaultCard, long ccID);
 
-//	List<BcaCvcreditcard> findByClientVendorId(Integer cliendVendorId);
-	
 	@Query("SELECT c FROM BcaCvcreditcard c WHERE c.clientVendor.clientVendorId = :clientVendorId")
 	List<BcaCvcreditcard> findByClientVendorId(@Param("clientVendorId") Integer clientVendorId);
 
+	@Query("SELECT DISTINCT c,t.name as cctypeName  FROM BcaCvcreditcard c " + "INNER JOIN BcaCreditcardtype t ON t.cctypeId = c.cctypeId "
+			+ "WHERE c.clientVendor.clientVendorId = :clientVendorId AND c.active = :active")
+	List<Object[]> findDistinctByClientVendorIdAndActive(@Param("clientVendorId") Integer clientVendorId,@Param("active")Integer active);
 
-//	@Query(value = "update bca_cvcreditcard set Active=0 where ClientVendorID=? and Active=1",nativeQuery=true)
-//	List<BcaCvcreditcard> updateByClientVendorIdActive(int cliendVendorId);
+	@Modifying
+	@Transactional
+	@Query("update BcaCvcreditcard cc set cc.active =0 where cc.clientVendor.clientVendorId= :clientVendorId and cc.active = :active ")
+	void updateActiveByClientvendorIdAndActive(@Param("clientVendorId")Integer clientVendorId,@Param("active")Integer active);
+	
 }

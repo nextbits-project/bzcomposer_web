@@ -32,7 +32,18 @@ import java.util.ArrayList;
 @Controller
 public class PurchaseController {
 	@Autowired
-	private PurchaseDetailsDao pdetails ;
+	private PurchaseDetailsDao purchaseDetailsDao ;
+	
+	@Autowired
+	private InvoiceInfoDao invoiceInfoDao;
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
+	
+	@Autowired
+	private CustomerInfo customerInfo;
+	
+
 	
 
 	@RequestMapping(value = {"/Vendor"}, method = {RequestMethod.GET, RequestMethod.POST})
@@ -44,10 +55,10 @@ public class PurchaseController {
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
 
-			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			pdetails.getVendors(request);
-			pdetails.searchVendor(cvId, request,vendorDto);
-			pdetails.getAllList(request);
+			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
+			purchaseDetailsDao.getVendors(request);
+			purchaseDetailsDao.searchVendor(cvId, request,vendorDto);
+			purchaseDetailsDao.getAllList(request);
 
 			if (rowId != null)
 				vendorDto.setSelectedRowID(rowId);
@@ -64,23 +75,23 @@ public class PurchaseController {
 		}
 
 		else if (action.equalsIgnoreCase("VONODO")) { // for Vendor List
-//			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			pdetails.getVendors(request);
-			pdetails.getAllList(request);
+//			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
+			purchaseDetailsDao.getVendors(request);
+			purchaseDetailsDao.getAllList(request);
 			forward = "/purchase/vendorsNew";
 		}
 
 		else if (action.equalsIgnoreCase("AODOVO")) { // Goto Add-Vendor Page
 			String compId = (String) request.getSession().getAttribute("CID");
 			String cvId = request.getParameter("CustId");
-			InvoiceInfoDao invoice = new InvoiceInfoDao();
+//			InvoiceInfoDao invoice = new InvoiceInfoDao();
 
-			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			pdetails.getAllList(request);
-			invoice.set(cvId, request, updateInvoiceDto, compId);
-			invoice.getServices(request, compId, cvId);
+			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
+			purchaseDetailsDao.getAllList(request);
+			invoiceInfoDao.set(cvId, request, updateInvoiceDto, compId);
+			invoiceInfoDao.getServices(request, compId, cvId);
 
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+//			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			request.setAttribute("defaultCongurationData", configDto);
 			
@@ -89,37 +100,37 @@ public class PurchaseController {
 			vendorDto.setGracePrd(configDto.getGracePeriod()+"");
 			vendorDto.setFsAssessFinanceCharge(configDto.getAssessFinanceCharge());
 			vendorDto.setFsMarkFinanceCharge(configDto.getMarkFinanceCharge());
-			String cdate = invoice.setCurrentDate();
+			String cdate = invoiceInfoDao.setCurrentDate();
 			vendorDto.setDateAdded(cdate);
 			forward = "/purchase/addNewVendor";
 		}
 
 		else if (action.equalsIgnoreCase("AOVODO")) { // to Add/Save Vendor details
-			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
 			String compId = (String) request.getSession().getAttribute("CID");
-			pdetails.AddVendor(request, vendorDto, compId);
+			purchaseDetailsDao.AddVendor(request, vendorDto, compId);
 			forward = "redirect:/Vendor?tabid=AODOVO";
 		}
 
 		else if (action.equalsIgnoreCase("editVendor")) {	//Get Vendor details for EditVendor Page
 			String cvId = request.getParameter("cvId");
 			request.getSession().setAttribute("editedCVID", cvId);
-			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			pdetails.searchVendor(cvId, request, vendorDto);
-			pdetails.getAllList(request);
+			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
+			purchaseDetailsDao.searchVendor(cvId, request, vendorDto);
+			purchaseDetailsDao.getAllList(request);
 			forward = "/purchase/updateVendor";
 		}
 		else if(action.equalsIgnoreCase("updateVendor")){	//Update Vendor Details
 			String cvId = (String) request.getSession().getAttribute("editedCVID");
-			//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			pdetails.UpdateVendor(request, vendorDto);
+			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
+			purchaseDetailsDao.UpdateVendor(request, vendorDto);
 			forward = "redirect:Vendor?tabid=editVendor&cvId="+cvId;
 		}
 		else if (action.equalsIgnoreCase("DeleteVendor")) {	//Delete Vendor details
 			String compId = (String) request.getSession().getAttribute("CID");
 			String cvId = request.getParameter("cvId");
-			CustomerInfo custInfo = new CustomerInfo();
-			if (custInfo.deleteCustomer(cvId, compId)) {
+//			CustomerInfo custInfo = new CustomerInfo();
+			if (customerInfo.deleteCustomer(cvId, compId)) {
 				request.getSession().setAttribute("actionMsg", "Vendor DELETE successfully!");
 			}
 			forward = "redirect:Vendor?tabid=VONODO";
@@ -137,14 +148,14 @@ public class PurchaseController {
 	public Object VendorAjaxCall(VendorDto vendorDto, HttpServletRequest request) throws Exception {
 		String action = request.getParameter("tabid");
 		String status = "Success";
-		//  PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+		//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
 		if(action.equalsIgnoreCase("sortVendors")) {
 			int sortById = Integer.parseInt(request.getParameter("SortBy"));
 			request.setAttribute("sortById", sortById);
-			return pdetails.getVendors(request);
+			return purchaseDetailsDao.getVendors(request);
 		}
 		else if(action.equalsIgnoreCase("searchVendors")) {
-			return pdetails.searchVendors(request);
+			return purchaseDetailsDao.searchVendors(request);
 		}
 		return status;
 	}

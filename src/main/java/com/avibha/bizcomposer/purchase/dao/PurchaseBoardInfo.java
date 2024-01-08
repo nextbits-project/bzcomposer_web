@@ -7,7 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
@@ -16,113 +23,104 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.JProjectUtil;
+import com.nxsol.bzcomposer.company.domain.BcaInvoice;
+import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 
+@Repository
 public class PurchaseBoardInfo {
-	public ArrayList PurchaseRecordSearch(HttpServletRequest request, String compId, String oDate1,
-										  String oDate2, String saleDate1, String saleDate2, String marketID,
-										  String sOption1, String sOption2, String sType, String action, String datesCombo, String fromDate, String toDate, String sortBy, PurchaseBoardDto form) {
 
-		//Loger.log("From PurchaseInfo" + compId);
-		Connection con = null ;
-		Statement stmt = null, stmt1 = null, stmt2 = null,stm3=null;
+	@Autowired
+	private BcaInvoiceRepository bcaInvoiceRepository;
+
+	public ArrayList PurchaseRecordSearch(HttpServletRequest request, String compId, String oDate1, String oDate2,
+			String saleDate1, String saleDate2, String marketID, String sOption1, String sOption2, String sType,
+			String action, String datesCombo, String fromDate, String toDate, String sortBy, PurchaseBoardDto form) {
+
+		// Loger.log("From PurchaseInfo" + compId);
+		Connection con = null;
+		Statement stmt = null, stmt1 = null, stmt2 = null, stm3 = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<PurchaseBoard> objList = new ArrayList<PurchaseBoard>();
-		ResultSet rs = null, rs2 = null, rs3 = null,rs4=null;
+		ResultSet rs = null, rs2 = null, rs3 = null, rs4 = null;
 		con = db.getConnection();
 		String mark = null;
-		double totalBalance=0;
+		double totalBalance = 0;
 		CustomerInfo cinfo = new CustomerInfo();
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
-		
-		if(datesCombo != null && !datesCombo.equals("8"))
-		{	
-			if(datesCombo != null && !datesCombo.equals(""))
-			{
+
+		if (datesCombo != null && !datesCombo.equals("8")) {
+			if (datesCombo != null && !datesCombo.equals("")) {
 				selectedRange = dInfo.selectedIndex(Integer.parseInt(datesCombo));
-				if(!selectedRange.isEmpty() && selectedRange != null)
-				{	
+				if (!selectedRange.isEmpty() && selectedRange != null) {
 					form.setFromDate(cinfo.date2String(selectedRange.get(0)));
 					form.setToDate(cinfo.date2String(selectedRange.get(1)));
 				}
-				if(selectedRange != null && !selectedRange.isEmpty())
-				{
-					dateBetween = " AND DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1))+ "')";
+				if (selectedRange != null && !selectedRange.isEmpty()) {
+					dateBetween = " AND DateAdded BETWEEN Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) + "') AND Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1)) + "')";
 				}
 			}
-		}
-		else if(datesCombo != null && datesCombo.equals("8"))
-		{
-			if(fromDate.equals("") && toDate.equals(""))
-			{
+		} else if (datesCombo != null && datesCombo.equals("8")) {
+			if (fromDate.equals("") && toDate.equals("")) {
 				dateBetween = "";
-			}
-			else if(!fromDate.equals("") && toDate.equals(""))
-			{
-				dateBetween = " AND DateAdded >= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
-			}
-			else if(fromDate.equals("") && !toDate.equals(""))
-			{
-				dateBetween = " AND DateAdded <= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
-			}
-			else 
-			{
-				dateBetween = " AND DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))+ "')";
+			} else if (!fromDate.equals("") && toDate.equals("")) {
+				dateBetween = " AND DateAdded >= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
+			} else if (fromDate.equals("") && !toDate.equals("")) {
+				dateBetween = " AND DateAdded <= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
+			} else {
+				dateBetween = " AND DateAdded BETWEEN Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate))
+						+ "') AND Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))
+						+ "')";
 			}
 		}
-		
+
 		try {
 			stmt = con.createStatement();
 			stmt1 = con.createStatement();
 			stmt2 = con.createStatement();
 			stm3 = con.createStatement();
-			//Loger.log("oDate1:" + oDate1 + " oDate2:" + oDate2);
+			// Loger.log("oDate1:" + oDate1 + " oDate2:" + oDate2);
 
-			String sqlString = "select InvoiceID,OrderNum,PONum,RcvNum,EstNum," +
-					"ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,Total,IsReceived,MessageID,Balance  " +
-					"from bca_invoice as i where CompanyID ='"+compId+"' and invoiceStatus =0 " + dateBetween;// AND
-			if(action.equalsIgnoreCase("ShowListCheckPO") || action.equalsIgnoreCase("UpdateCheckPO")){ //check PO ordes board
-				sqlString +=" and IsReceived like '0' ";
+			String sqlString = "select InvoiceID,OrderNum,PONum,RcvNum,EstNum,"
+					+ "ClientVendorID,BSAddressID,date_format(DateAdded,'%m-%d-%Y') as DateAdded,orderid,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,IsPrinted,Shipped,Total,IsReceived,MessageID,Balance  "
+					+ "from bca_invoice as i where CompanyID ='" + compId + "' and invoiceStatus =0 " + dateBetween;// AND
+			if (action.equalsIgnoreCase("ShowListCheckPO") || action.equalsIgnoreCase("UpdateCheckPO")) { // check PO
+																											// ordes
+																											// board
+				sqlString += " and IsReceived like '0' ";
 			}
-			if(action.equalsIgnoreCase("ShowReceivedItems")){ //Received Item
-				sqlString +=" and IsReceived like '1' ";
+			if (action.equalsIgnoreCase("ShowReceivedItems")) { // Received Item
+				sqlString += " and IsReceived like '1' ";
 			}
-			
-			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1
-					&& oDate2.trim().length() > 1 ) {
-				
-				sqlString += "	and i.DateConfirmed between '"
-						+ cinfo.string2date(oDate1) + "' and '"
+
+			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1 && oDate2.trim().length() > 1) {
+
+				sqlString += "	and i.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
 						+ cinfo.string2date(oDate2) + "' ";
+			} else if (oDate1 != null && oDate1.trim().length() > 1) {
+				sqlString += "	and i.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
+						+ cinfo.string2date("now()") + "' ";
+			} else if (oDate2 != null && oDate2.trim().length() > 1) {
+				sqlString += "	and i.DateConfirmed <= '" + cinfo.string2date(oDate2) + "'  ";
+
 			}
-			else if(oDate1 != null && oDate1.trim().length() > 1){
-				sqlString += "	and i.DateConfirmed between '"
-					+ cinfo.string2date(oDate1) + "' and '"
-					+ cinfo.string2date("now()") + "' ";
-			}
-			else if(oDate2!=null && oDate2.trim().length() > 1){
-				sqlString += "	and i.DateConfirmed <= '"+
-					cinfo.string2date(oDate2) + "'  ";
-				
-			}
-			if (saleDate1 != null && saleDate2 != null
-					&& saleDate1.trim().length() > 1
+			if (saleDate1 != null && saleDate2 != null && saleDate1.trim().length() > 1
 					&& saleDate2.trim().length() > 1) {
-				
-				sqlString += "	and i.DateAdded between '"
-						+ cinfo.string2date(saleDate1) + "' and '"
+
+				sqlString += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
 						+ cinfo.string2date(saleDate2) + "'  ";
-			}
-			else if(saleDate1 != null && saleDate1.trim().length() > 1){
-				sqlString += "	and i.DateAdded between '"
-					+ cinfo.string2date(saleDate1) + "' and '"
-					+ cinfo.string2date("now()") + "' ";
-			}
-			else if(saleDate2!=null && saleDate2.trim().length() > 1){
-				sqlString += "	and i.DateAdded <= '"+
-					cinfo.string2date(saleDate2) + "'  ";
-				
+			} else if (saleDate1 != null && saleDate1.trim().length() > 1) {
+				sqlString += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
+						+ cinfo.string2date("now()") + "' ";
+			} else if (saleDate2 != null && saleDate2.trim().length() > 1) {
+				sqlString += "	and i.DateAdded <= '" + cinfo.string2date(saleDate2) + "'  ";
+
 			}
 
 //			if ("1".equalsIgnoreCase(marketID)) {
@@ -149,14 +147,14 @@ public class PurchaseBoardInfo {
 //				sqlString += "and i.OrderType=9";
 //				mark = "Price Grabber";
 //			}
-			
+
 			// sqlString += "and i.PONum > 0";
-			sqlString += " and i.InvoiceTypeID=2";  //purches Order
+			sqlString += " and i.InvoiceTypeID=2"; // purches Order
 			sqlString += " order by i.PONum";
-			
+
 			stmt = con.createStatement();
-			
-			Loger.log("Query is:"+sqlString);
+
+			Loger.log("Query is:" + sqlString);
 			rs = stmt.executeQuery(sqlString);
 
 			do {
@@ -178,19 +176,16 @@ public class PurchaseBoardInfo {
 				d.setPrinted(rs.getBoolean("IsPrinted"));
 				d.setShipped(rs.getInt("Shipped"));
 				d.setMarketPlaceName(mark);
-				
+
 				d.setTotal(rs.getDouble("Total"));
-				d.setIsReceived(rs.getInt("IsReceived")); //Check PO Order
-				int messageId=rs.getInt("MessageID");
-				d.setMessagebody(getMessageText(messageId,con));
-				d.setBalance(rs.getDouble("Balance"));	
-				totalBalance +=d.getBalance();
-				
-				
+				d.setIsReceived(rs.getInt("IsReceived")); // Check PO Order
+				int messageId = rs.getInt("MessageID");
+				d.setMessagebody(getMessageText(messageId, con));
+				d.setBalance(rs.getDouble("Balance"));
+				totalBalance += d.getBalance();
+
 				String sql2 = " select a.LastName,a.FirstName,a.Email, b.Address1,b.Address2,b.City,b.State,b.Country,b.ZipCode,a.Name,a.SalesRepId  from bca_clientvendor a, bca_bsaddress b  where a.ClientVendorID = "
-						+ d.getCvID()
-						+ " and b.BSAddressID ="
-						+ d.getBsAddressID()
+						+ d.getCvID() + " and b.BSAddressID =" + d.getBsAddressID()
 						+ " and a.Active = 1 and (a.Status = 'N' or a.Status = 'U') and a.Deleted = 0  and b.AddressType = 0 and (b.Status = 'N' or b.Status = 'U') ";
 
 				for (rs2 = stmt1.executeQuery(sql2); rs2.next();) {
@@ -206,15 +201,15 @@ public class PurchaseBoardInfo {
 					d.setCompanyName(rs2.getString("Name"));
 					d.setRep(rs2.getString("SalesRepId"));
 					String rep = rs2.getString("SalesRepId");
-					   if(rep != null){
-						 String sql4="select Name from bca_salesrep where SalesRepID ="+d.getRep();  
-						 rs4 = stm3.executeQuery(sql4);
-						 while(rs4.next()){
-							 d.setRepname(rs4.getString("Name"));
-						 }
-					   }	
+					if (rep != null) {
+						String sql4 = "select Name from bca_salesrep where SalesRepID =" + d.getRep();
+						rs4 = stm3.executeQuery(sql4);
+						while (rs4.next()) {
+							d.setRepname(rs4.getString("Name"));
+						}
+					}
 				}
-				
+
 				String sql3 = " select InventoryName, Qty,InventoryCode  from bca_cart  where InvoiceID ="
 						+ d.getInvoiceID() + " and CompanyID = " + compId;
 
@@ -226,24 +221,22 @@ public class PurchaseBoardInfo {
 					if (++item_c != 1)
 						continue;
 					d.setItemName(rs3.getString("InventoryName"));
-					d.setInventoryCode(rs3.getString("InventoryCode")); //Check Po Order value
+					d.setInventoryCode(rs3.getString("InventoryCode")); // Check Po Order value
 					d.setOrderQty(rs3.getInt("Qty"));
-					//Loger.log("IName=" + rs3.getString("InventoryName"));
+					// Loger.log("IName=" + rs3.getString("InventoryName"));
 					break;
 				} while (true);
-				
+
 				objList.add(d);
 
 			} while (true);
-			request.setAttribute("total",totalBalance);
+			request.setAttribute("total", totalBalance);
 		} catch (SQLException ee) {
-			Loger.log(2,"SQL Error in Class TaxInfo and  method -getFederalTax "+ ee.toString());
+			Loger.log(2, "SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
 		}
 
-		finally 
-		{
-			try 
-			{
+		finally {
+			try {
 				if (rs != null)
 					db.close(rs);
 				if (rs2 != null)
@@ -260,7 +253,7 @@ public class PurchaseBoardInfo {
 					db.close(stmt2);
 				if (stm3 != null)
 					db.close(stm3);
-				if(con != null)
+				if (con != null)
 					db.close(con);
 			} catch (Exception sqlEX) {
 				Loger.log("SQLEX" + sqlEX.toString());
@@ -269,33 +262,59 @@ public class PurchaseBoardInfo {
 		}
 		return objList;
 	}
-	public boolean DeleteReceivedItem(String cID, String InvoiceID){
-		Connection con = null ;
-		SQLExecutor db = new SQLExecutor();
+
+	public boolean DeleteReceivedItem(String cID, String InvoiceID) {
+
 		boolean valid = false;
-		PreparedStatement pstmtInvID = null;
-		PreparedStatement pstmtUpdate = null;
-		ResultSet rs = null;
-		con = db.getConnection();
+
 		try {
-			String sqlString = "Update bca_invoice set invoiceStatus = 1 where InvoiceID="+InvoiceID+" and  CompanyID ="+cID;
-			pstmtUpdate = con.prepareStatement(sqlString);
-			Loger.log(sqlString);
-			int count = pstmtUpdate.executeUpdate();
-		} catch (Exception e) {
+			BcaInvoice invoice = bcaInvoiceRepository.findByInvoiceIdAndCompany_CompanyId(
+		            Integer.parseInt(InvoiceID), Long.parseLong(cID)).orElseThrow(() -> new NoSuchElementException("Invoice not found"));
+			invoice.setInvoiceStatus(1);
+			valid=bcaInvoiceRepository.save(invoice)!=null;
+		    
+
+		  
+		} catch (NoSuchElementException e) {
+		 
+		    Loger.log("Error: " + e.getMessage());
+		}
+
+		catch (Exception e) {
 			Loger.log(e.toString());
 			Loger.log(2, "Error in DeleteReceivedItem() " + e);
-			// TODO: handle exception
+			
 		}
-		return true;
-		
-		
+		return valid;
+
 	}
-	public ArrayList getPurchaseBillLists(HttpServletRequest request,String compId, String oDate1,
-			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action , String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
-	{
-		Connection con = null ;
+
+//	public boolean DeleteReceivedItem(String cID, String InvoiceID){
+//		Connection con = null ;
+//		SQLExecutor db = new SQLExecutor();
+//		boolean valid = false;
+//		PreparedStatement pstmtInvID = null;
+//		PreparedStatement pstmtUpdate = null;
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		try {
+//			String sqlString = "Update bca_invoice set invoiceStatus = 1 where InvoiceID="+InvoiceID+" and  CompanyID ="+cID;
+//			pstmtUpdate = con.prepareStatement(sqlString);
+//			Loger.log(sqlString);
+//			int count = pstmtUpdate.executeUpdate();
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//			Loger.log(2, "Error in DeleteReceivedItem() " + e);
+//			// TODO: handle exception
+//		}
+//		return true;
+//		
+//		
+//	}
+	public ArrayList getPurchaseBillLists(HttpServletRequest request, String compId, String oDate1, String oDate2,
+			String saleDate1, String saleDate2, String marketID, String sOption1, String sOption2, String sType,
+			String action, String datesCombo, String fromDate, String toDate, String sortBy, PurchaseBoardDto form) {
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -304,185 +323,153 @@ public class PurchaseBoardInfo {
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
-		
-		if(datesCombo != null && !datesCombo.equals("8"))
-		{	
-			if(datesCombo != null && !datesCombo.equals(""))
-			{
+
+		if (datesCombo != null && !datesCombo.equals("8")) {
+			if (datesCombo != null && !datesCombo.equals("")) {
 				selectedRange = dInfo.selectedIndex(Integer.parseInt(datesCombo));
-				if(!selectedRange.isEmpty() && selectedRange != null)
-				{	
+				if (!selectedRange.isEmpty() && selectedRange != null) {
 					form.setFromDate(cinfo.date2String(selectedRange.get(0)));
 					form.setToDate(cinfo.date2String(selectedRange.get(1)));
 				}
-				if(selectedRange != null && !selectedRange.isEmpty())
-				{
-					dateBetween = " AND b.DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1))+ "')";
+				if (selectedRange != null && !selectedRange.isEmpty()) {
+					dateBetween = " AND b.DateAdded BETWEEN Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) + "') AND Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1)) + "')";
 				}
 			}
-		}
-		else if(datesCombo != null && datesCombo.equals("8"))
-		{
-			if(fromDate.equals("") && toDate.equals(""))
-			{
+		} else if (datesCombo != null && datesCombo.equals("8")) {
+			if (fromDate.equals("") && toDate.equals("")) {
 				dateBetween = "";
-			}
-			else if(!fromDate.equals("") && toDate.equals(""))
-			{
-				dateBetween = " AND b.DateAdded >= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
-			}
-			else if(fromDate.equals("") && !toDate.equals(""))
-			{
-				dateBetween = " AND b.DateAdded <= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
-			}
-			else 
-			{
-				dateBetween = " AND b.DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))+ "')";
+			} else if (!fromDate.equals("") && toDate.equals("")) {
+				dateBetween = " AND b.DateAdded >= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
+			} else if (fromDate.equals("") && !toDate.equals("")) {
+				dateBetween = " AND b.DateAdded <= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
+			} else {
+				dateBetween = " AND b.DateAdded BETWEEN Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate))
+						+ "') AND Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))
+						+ "')";
 			}
 		}
-		
-		try { 
-					String sql = ""
-					
-					+ "SELECT b.invoiceid, "
-					+ "       b.ordernum, "
-					+ "       b.ponum, "
-					+ "       b.dateadded, "
-					+ "       b.clientvendorid, "
-					+ "       b.salesrepid, "
-					+ "       b.adjustedtotal, "
-					+ "       b.balance, "
-					+ "       b.billid, "
-					+ "       inv.invoicetypeid "
-					+ "FROM   bca_invoice AS inv "
-					+ "       RIGHT JOIN bca_invoice AS b "
-					+ "               ON inv.ponum = b.billid "
-					+ "WHERE  inv.companyid = '"+compId+"' "
-					+ "       AND b.billid <> -1 "
-					+ "       AND inv.invoicetypeid IN ( 2, 9 ) "
-					+ dateBetween
+
+		try {
+			String sql = ""
+
+					+ "SELECT b.invoiceid, " + "       b.ordernum, " + "       b.ponum, " + "       b.dateadded, "
+					+ "       b.clientvendorid, " + "       b.salesrepid, " + "       b.adjustedtotal, "
+					+ "       b.balance, " + "       b.billid, " + "       inv.invoicetypeid "
+					+ "FROM   bca_invoice AS inv " + "       RIGHT JOIN bca_invoice AS b "
+					+ "               ON inv.ponum = b.billid " + "WHERE  inv.companyid = '" + compId + "' "
+					+ "       AND b.billid <> -1 " + "       AND inv.invoicetypeid IN ( 2, 9 ) " + dateBetween
 					+ "ORDER  BY b.invoiceid ASC";
 			con = db.getConnection();
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
-			
-			while(rs.next())
-			{
+
+			while (rs.next()) {
 				PurchaseBoard pb = new PurchaseBoard();
 				objList.add(pb);
 			}
-			
-		}catch(Exception e)
-		{
+
+		} catch (Exception e) {
 			Loger.log(e.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
-	//  vendor symmary  report 
-	public ArrayList VendorSummaryRecordSearch(HttpServletRequest request,String compId, String saleDate1, String saleDate2, String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form) {
-		Connection con = null ;
+
+	// vendor symmary report
+	public ArrayList VendorSummaryRecordSearch(HttpServletRequest request, String compId, String saleDate1,
+			String saleDate2, String action, String datesCombo, String fromDate, String toDate, String sortBy,
+			PurchaseBoardDto form) {
+		Connection con = null;
 		SQLExecutor db = new SQLExecutor();
-		Statement stmt = null,stmt2=null;
+		Statement stmt = null, stmt2 = null;
 		ArrayList<VendorDto> objList = new ArrayList<VendorDto>();
-		double totalbalance=0;
-		ResultSet rs = null,rs2=null;
+		double totalbalance = 0;
+		ResultSet rs = null, rs2 = null;
 		con = db.getConnection();
 		CustomerInfo cinfo = new CustomerInfo();
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
-		
-		if(datesCombo != null && !datesCombo.equals("8"))
-		{	
-			if(datesCombo != null && !datesCombo.equals(""))
-			{
+
+		if (datesCombo != null && !datesCombo.equals("8")) {
+			if (datesCombo != null && !datesCombo.equals("")) {
 				selectedRange = dInfo.selectedIndex(Integer.parseInt(datesCombo));
-				if(!selectedRange.isEmpty() && selectedRange != null)
-				{	
+				if (!selectedRange.isEmpty() && selectedRange != null) {
 					form.setFromDate(cinfo.date2String(selectedRange.get(0)));
 					form.setToDate(cinfo.date2String(selectedRange.get(1)));
 				}
-				if(selectedRange != null && !selectedRange.isEmpty())
-				{
-					dateBetween = " AND DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1))+ "')";
+				if (selectedRange != null && !selectedRange.isEmpty()) {
+					dateBetween = " AND DateAdded BETWEEN Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) + "') AND Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1)) + "')";
 				}
 			}
-		}
-		else if(datesCombo != null && datesCombo.equals("8"))
-		{
-			if(fromDate.equals("") && toDate.equals(""))
-			{
+		} else if (datesCombo != null && datesCombo.equals("8")) {
+			if (fromDate.equals("") && toDate.equals("")) {
 				dateBetween = "";
-			}
-			else if(!fromDate.equals("") && toDate.equals(""))
-			{
-				dateBetween = " AND DateAdded >= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
-			}
-			else if(fromDate.equals("") && !toDate.equals(""))
-			{
-				dateBetween = " AND DateAdded <= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
-			}
-			else 
-			{
-				dateBetween = " AND DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))+ "')";
+			} else if (!fromDate.equals("") && toDate.equals("")) {
+				dateBetween = " AND DateAdded >= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
+			} else if (fromDate.equals("") && !toDate.equals("")) {
+				dateBetween = " AND DateAdded <= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
+			} else {
+				dateBetween = " AND DateAdded BETWEEN Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate))
+						+ "') AND Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))
+						+ "')";
 			}
 		}
-		
-		
+
 		try {
 			stmt = con.createStatement();
-			stmt2=con.createStatement();
+			stmt2 = con.createStatement();
 			String sqlString = "select ClientVendorID,Name from bca_clientvendor as i where (CVTypeID=1 or CVTypeID=3 )and"
-					+ " Status in ('N','U') and Deleted=0 and Active=1 and CompanyID='"+compId+"'" +  dateBetween;
-			
-			sqlString +="order by i.Name";
-			
+					+ " Status in ('N','U') and Deleted=0 and Active=1 and CompanyID='" + compId + "'" + dateBetween;
+
+			sqlString += "order by i.Name";
+
 			Loger.log(sqlString);
 			rs = stmt.executeQuery(sqlString);
-			do
-			{
-			if(!rs.next())
-				break;
+			do {
+				if (!rs.next())
+					break;
 
 				VendorDto vendor = new VendorDto();
 				vendor.setClientVendorID(rs.getString(1));
 				vendor.setCname(rs.getString(2));
-				
-				
 
-				String sql2 = "select  SUM(Balance) as totalBalance,format(DateAdded,'%m-%d-%Y') as DateAdded FROM bca_invoice as i WHERE ClientVendorID = "+ vendor.getClientVendorID()+ "";
-				if (saleDate1 != null && saleDate2 != null
-						&& saleDate1.trim().length() > 1
+				String sql2 = "select  SUM(Balance) as totalBalance,format(DateAdded,'%m-%d-%Y') as DateAdded FROM bca_invoice as i WHERE ClientVendorID = "
+						+ vendor.getClientVendorID() + "";
+				if (saleDate1 != null && saleDate2 != null && saleDate1.trim().length() > 1
 						&& saleDate2.trim().length() > 1) {
-					
-					sql2 += "	and i.DateAdded between '"
-							+ cinfo.string2date(saleDate1) + "' and '"
+
+					sql2 += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
 							+ cinfo.string2date(saleDate2) + "'  ";
-				}
-				else if(saleDate1 != null && saleDate1.trim().length() > 1){
-					sql2 += "	and i.DateAdded between '"
-						+ cinfo.string2date(saleDate1) + "' and '"
-						+ cinfo.string2date("now()") + "' ";
-				}
-				else if(saleDate2!=null && saleDate2.trim().length() > 1){
-					sql2 += "	and i.DateAdded <= '"+
-						cinfo.string2date(saleDate2) + "'  ";
-					
+				} else if (saleDate1 != null && saleDate1.trim().length() > 1) {
+					sql2 += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
+							+ cinfo.string2date("now()") + "' ";
+				} else if (saleDate2 != null && saleDate2.trim().length() > 1) {
+					sql2 += "	and i.DateAdded <= '" + cinfo.string2date(saleDate2) + "'  ";
+
 				}
 				rs2 = stmt2.executeQuery(sql2);
 				Loger.log(sql2);
@@ -490,48 +477,46 @@ public class PurchaseBoardInfo {
 					if (!rs2.next())
 						break;
 					vendor.setTotalBalance(rs2.getDouble("totalBalance"));
-					totalbalance +=vendor.getTotalBalance();
+					totalbalance += vendor.getTotalBalance();
 				} while (true);
-				request.setAttribute("total",totalbalance);
+				request.setAttribute("total", totalbalance);
 				objList.add(vendor);
-			}while(true);
+			} while (true);
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class TaxInfo and  method -getFederalTax "
-							+ " " + ee.toString());
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
 		}
 
 		finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
+				}
 				if (rs2 != null) {
 					db.close(rs2);
-					}
+				}
 				if (stmt2 != null) {
 					db.close(stmt2);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception sqlEX) {
-					Loger.log("SQLEX" + sqlEX.toString());
+				}
+			} catch (Exception sqlEX) {
+				Loger.log("SQLEX" + sqlEX.toString());
 			}
 		}
 
 		return objList;
 	}
-	public ArrayList getCancelledPuBillRefList(HttpServletRequest request,String compId, String oDate1,
-			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
-	{
-		Connection con=null;
-		Statement stmt = null,stmt1 = null;
-		ResultSet rs = null,rs1 = null;
+
+	public ArrayList getCancelledPuBillRefList(HttpServletRequest request, String compId, String oDate1, String oDate2,
+			String saleDate1, String saleDate2, String marketID, String sOption1, String sOption2, String sType,
+			String action, String datesCombo, String fromDate, String toDate, String sortBy, PurchaseBoardDto form) {
+		Connection con = null;
+		Statement stmt = null, stmt1 = null;
+		ResultSet rs = null, rs1 = null;
 		ArrayList<PurchaseBoard> objList = new ArrayList();
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
@@ -539,90 +524,63 @@ public class PurchaseBoardInfo {
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
-		
-		
-		if(datesCombo != null && !datesCombo.equals("8"))
-		{	
-			if(datesCombo != null && !datesCombo.equals(""))
-			{
+
+		if (datesCombo != null && !datesCombo.equals("8")) {
+			if (datesCombo != null && !datesCombo.equals("")) {
 				selectedRange = dInfo.selectedIndex(Integer.parseInt(datesCombo));
-				if(!selectedRange.isEmpty() && selectedRange != null)
-				{	
+				if (!selectedRange.isEmpty() && selectedRange != null) {
 					form.setFromDate(cinfo.date2String(selectedRange.get(0)));
 					form.setToDate(cinfo.date2String(selectedRange.get(1)));
 				}
-				if(selectedRange != null && !selectedRange.isEmpty())
-				{
-					dateBetween = " AND inv.DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1))+ "')";
+				if (selectedRange != null && !selectedRange.isEmpty()) {
+					dateBetween = " AND inv.DateAdded BETWEEN Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) + "') AND Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1)) + "')";
 				}
 			}
-		}
-		else if(datesCombo != null && datesCombo.equals("8"))
-		{
-			if(fromDate.equals("") && toDate.equals(""))
-			{
+		} else if (datesCombo != null && datesCombo.equals("8")) {
+			if (fromDate.equals("") && toDate.equals("")) {
 				dateBetween = "";
-			}
-			else if(!fromDate.equals("") && toDate.equals(""))
-			{
-				dateBetween = " AND inv.DateAdded >= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
-			}
-			else if(fromDate.equals("") && !toDate.equals(""))
-			{
-				dateBetween = " AND inv.DateAdded <= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
-			}
-			else 
-			{
-				dateBetween = " AND inv.DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))+ "')";
+			} else if (!fromDate.equals("") && toDate.equals("")) {
+				dateBetween = " AND inv.DateAdded >= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
+			} else if (fromDate.equals("") && !toDate.equals("")) {
+				dateBetween = " AND inv.DateAdded <= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
+			} else {
+				dateBetween = " AND inv.DateAdded BETWEEN Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate))
+						+ "') AND Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))
+						+ "')";
 			}
 		}
-		
-		try { 
+
+		try {
 			stmt = con.createStatement();
-			String sql = ""
-					+ "SELECT inv.invoiceid, "
-					+ "       inv.ordernum, "
-					+ "       inv.termid, "
-					+ "       date_format(inv.dateadded,'%m-%d-%Y') AS DateFormat, "
-					+ "       inv.clientvendorid, "
-					+ "       inv.salesrepid, "
-					+ "       inv.adjustedtotal, "
-					+ "       inv.balance, "
-					+ "       inv.paidamount, "
-					+ "       inv.adjustedtotal, "
-					+ "       inv.paymenttypeid, "
-					+ "       inv.dateconfirmed, "
-					+ "       inv.jobcategoryid, "
-					+ "       inv.billid, "
-					+ "       cv.NAME, "
-					+ "       cv.firstname, "
-					+ "       cv.lastname "
-					+ "FROM   bca_clientvendor AS cv, "
-					+ "       bca_invoice AS inv "
-					+ "WHERE  inv.companyid = '" + compId + "'"
-					+ "       AND inv.clientvendorid = cv.clientvendorid "
-					+ "       AND ( cv.status = 'U' "
-					+ "              OR cv.status = 'N' ) "
-					+ "       AND paidamount > 0 "
-					+ dateBetween
-					+ "ORDER  BY inv.dateadded ASC";
+			String sql = "" + "SELECT inv.invoiceid, " + "       inv.ordernum, " + "       inv.termid, "
+					+ "       date_format(inv.dateadded,'%m-%d-%Y') AS DateFormat, " + "       inv.clientvendorid, "
+					+ "       inv.salesrepid, " + "       inv.adjustedtotal, " + "       inv.balance, "
+					+ "       inv.paidamount, " + "       inv.adjustedtotal, " + "       inv.paymenttypeid, "
+					+ "       inv.dateconfirmed, " + "       inv.jobcategoryid, " + "       inv.billid, "
+					+ "       cv.NAME, " + "       cv.firstname, " + "       cv.lastname "
+					+ "FROM   bca_clientvendor AS cv, " + "       bca_invoice AS inv " + "WHERE  inv.companyid = '"
+					+ compId + "'" + "       AND inv.clientvendorid = cv.clientvendorid "
+					+ "       AND ( cv.status = 'U' " + "              OR cv.status = 'N' ) "
+					+ "       AND paidamount > 0 " + dateBetween + "ORDER  BY inv.dateadded ASC";
 			rs = stmt.executeQuery(sql);
-			while(rs.next())
-			{
+			while (rs.next()) {
 				PurchaseBoard pb = new PurchaseBoard();
 				pb.setPo_no(rs.getLong("BillId"));
 				pb.setDateAdded(rs.getString("DateFormat"));
 				pb.setCvName(rs.getString("Name"));
-				
-				String sql_rep = "SELECT bca_salesrep.Name from bca_salesrep WHERE bca_salesrep.Active = 1 AND bca_salesrep.SalesRepID = " + rs.getInt("SalesRepID")  + " AND bca_salesrep.CompanyID = '" + compId + "'";
+
+				String sql_rep = "SELECT bca_salesrep.Name from bca_salesrep WHERE bca_salesrep.Active = 1 AND bca_salesrep.SalesRepID = "
+						+ rs.getInt("SalesRepID") + " AND bca_salesrep.CompanyID = '" + compId + "'";
 				stmt1 = con.createStatement();
 				rs1 = stmt1.executeQuery(sql_rep);
-				if(rs1.next())
-				{
+				if (rs1.next()) {
 					pb.setRepname(rs1.getString(1));
-				}
-				else
-				{
+				} else {
 					pb.setRepname("");
 				}
 				pb.setTotal(rs.getDouble("AdjustedTotal"));
@@ -630,41 +588,41 @@ public class PurchaseBoardInfo {
 				pb.setBalance(rs.getDouble("Balance"));
 				objList.add(pb);
 			}
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
-		
-			return objList;	
+
+		return objList;
 	}
-	public ArrayList getVendor1099List(HttpServletRequest request,String compId, String oDate1,
-			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
-	{
-		Connection con=null;
-		Statement stmt = null,stmt1 = null;
-		ResultSet rs = null,rs1 = null;
+
+	public ArrayList getVendor1099List(HttpServletRequest request, String compId, String oDate1, String oDate2,
+			String saleDate1, String saleDate2, String marketID, String sOption1, String sOption2, String sType,
+			String action, String datesCombo, String fromDate, String toDate, String sortBy, PurchaseBoardDto form) {
+		Connection con = null;
+		Statement stmt = null, stmt1 = null;
+		ResultSet rs = null, rs1 = null;
 		ArrayList<PurchaseBoard> objList = new ArrayList();
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
@@ -672,71 +630,47 @@ public class PurchaseBoardInfo {
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
-		
-		String sql = ""
-				+ "SELECT clientvendorid, "
-				+ "       NAME, "
-				+ "       firstname, "
-				+ "       lastname, "
-				+ "       address1, "
-				+ "       phone, "
-				+ "       fax, "
-				+ "       email, "
-				+ "       city, "
-				+ "       state, "
-				+ "       zipcode "
-				+ "FROM   bca_clientvendor "
-				+ "WHERE  companyid = '" + compId + "'"
-				+ "       AND deleted = 0 "
-				+ "       AND cvtypeid IN ( 1, 3, 5 ) "
-				+ "       AND form1099 = 1 "
-				+ "       AND status IN ( 'U', 'N' ) "
-				+ dateBetween
-				+ "ORDER  BY NAME ASC";
-		
-		
-		if(datesCombo != null && !datesCombo.equals("8"))
-		{	
-			if(datesCombo != null && !datesCombo.equals(""))
-			{
+
+		String sql = "" + "SELECT clientvendorid, " + "       NAME, " + "       firstname, " + "       lastname, "
+				+ "       address1, " + "       phone, " + "       fax, " + "       email, " + "       city, "
+				+ "       state, " + "       zipcode " + "FROM   bca_clientvendor " + "WHERE  companyid = '" + compId
+				+ "'" + "       AND deleted = 0 " + "       AND cvtypeid IN ( 1, 3, 5 ) " + "       AND form1099 = 1 "
+				+ "       AND status IN ( 'U', 'N' ) " + dateBetween + "ORDER  BY NAME ASC";
+
+		if (datesCombo != null && !datesCombo.equals("8")) {
+			if (datesCombo != null && !datesCombo.equals("")) {
 				selectedRange = dInfo.selectedIndex(Integer.parseInt(datesCombo));
-				if(!selectedRange.isEmpty() && selectedRange != null)
-				{	
+				if (!selectedRange.isEmpty() && selectedRange != null) {
 					form.setFromDate(cinfo.date2String(selectedRange.get(0)));
 					form.setToDate(cinfo.date2String(selectedRange.get(1)));
 				}
-				if(selectedRange != null && !selectedRange.isEmpty())
-				{
-					dateBetween = " AND DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1))+ "')";
+				if (selectedRange != null && !selectedRange.isEmpty()) {
+					dateBetween = " AND DateAdded BETWEEN Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) + "') AND Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1)) + "')";
 				}
 			}
-		}
-		else if(datesCombo != null && datesCombo.equals("8"))
-		{
-			if(fromDate.equals("") && toDate.equals(""))
-			{
+		} else if (datesCombo != null && datesCombo.equals("8")) {
+			if (fromDate.equals("") && toDate.equals("")) {
 				dateBetween = "";
-			}
-			else if(!fromDate.equals("") && toDate.equals(""))
-			{
-				dateBetween = " AND DateAdded >= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
-			}
-			else if(fromDate.equals("") && !toDate.equals(""))
-			{
-				dateBetween = " AND DateAdded <= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
-			}
-			else 
-			{
-				dateBetween = " AND DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))+ "')";
+			} else if (!fromDate.equals("") && toDate.equals("")) {
+				dateBetween = " AND DateAdded >= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
+			} else if (fromDate.equals("") && !toDate.equals("")) {
+				dateBetween = " AND DateAdded <= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
+			} else {
+				dateBetween = " AND DateAdded BETWEEN Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate))
+						+ "') AND Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))
+						+ "')";
 			}
 		}
-		
-		
+
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
-			while(rs.next())
-			{
+			while (rs.next()) {
 				PurchaseBoard pb = new PurchaseBoard();
 				pb.setCvName(rs.getString(3) + " " + rs.getString(4));
 				pb.setCompanyName(rs.getString(2));
@@ -744,42 +678,42 @@ public class PurchaseBoardInfo {
 				pb.setEmail(rs.getString(8));
 				objList.add(pb);
 			}
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
-	
-	/*getVendor1099TransactionSummary*/
-	public ArrayList getVendor1099TransactionSummary(HttpServletRequest request,String compId, String oDate1,
-			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action,String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form)
-	{
-		Connection con=null;
-		Statement stmt = null,stmt1 = null;
-		ResultSet rs = null,rs1 = null;
+
+	/* getVendor1099TransactionSummary */
+	public ArrayList getVendor1099TransactionSummary(HttpServletRequest request, String compId, String oDate1,
+			String oDate2, String saleDate1, String saleDate2, String marketID, String sOption1, String sOption2,
+			String sType, String action, String datesCombo, String fromDate, String toDate, String sortBy,
+			PurchaseBoardDto form) {
+		Connection con = null;
+		Statement stmt = null, stmt1 = null;
+		ResultSet rs = null, rs1 = null;
 		ArrayList<PurchaseBoard> objList = new ArrayList();
 		SQLExecutor db = new SQLExecutor();
 		con = db.getConnection();
@@ -787,129 +721,116 @@ public class PurchaseBoardInfo {
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
-		
-		if(datesCombo != null && !datesCombo.equals("8"))
-		{	
-			if(datesCombo != null && !datesCombo.equals(""))
-			{
+
+		if (datesCombo != null && !datesCombo.equals("8")) {
+			if (datesCombo != null && !datesCombo.equals("")) {
 				selectedRange = dInfo.selectedIndex(Integer.parseInt(datesCombo));
-				if(!selectedRange.isEmpty() && selectedRange != null)
-				{	
+				if (!selectedRange.isEmpty() && selectedRange != null) {
 					form.setFromDate(cinfo.date2String(selectedRange.get(0)));
 					form.setToDate(cinfo.date2String(selectedRange.get(1)));
 				}
-				if(selectedRange != null && !selectedRange.isEmpty())
-				{
-					dateBetween = " AND DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1))+ "')";
+				if (selectedRange != null && !selectedRange.isEmpty()) {
+					dateBetween = " AND DateAdded BETWEEN Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) + "') AND Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1)) + "')";
 				}
 			}
-		}
-		else if(datesCombo != null && datesCombo.equals("8"))
-		{
-			if(fromDate.equals("") && toDate.equals(""))
-			{
+		} else if (datesCombo != null && datesCombo.equals("8")) {
+			if (fromDate.equals("") && toDate.equals("")) {
 				dateBetween = "";
-			}
-			else if(!fromDate.equals("") && toDate.equals(""))
-			{
-				dateBetween = " AND DateAdded >= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
-			}
-			else if(fromDate.equals("") && !toDate.equals(""))
-			{
-				dateBetween = " AND DateAdded <= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
-			}
-			else 
-			{
-				dateBetween = " AND DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))+ "')";
+			} else if (!fromDate.equals("") && toDate.equals("")) {
+				dateBetween = " AND DateAdded >= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
+			} else if (fromDate.equals("") && !toDate.equals("")) {
+				dateBetween = " AND DateAdded <= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
+			} else {
+				dateBetween = " AND DateAdded BETWEEN Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate))
+						+ "') AND Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))
+						+ "')";
 			}
 		}
-		
-		
+
 		try {
 			stmt = con.createStatement();
-			
-			String sql = ""
-					+ "SELECT * "
-					+ "FROM   bca_clientvendor "
-					+ "WHERE  form1099 = 1 "
-					+ "       AND status = 'N' "
-					+ "       AND deleted = 0 "
-					+ "       AND companyid = "+compId
+
+			String sql = "" + "SELECT * " + "FROM   bca_clientvendor " + "WHERE  form1099 = 1 "
+					+ "       AND status = 'N' " + "       AND deleted = 0 " + "       AND companyid = " + compId
 					+ dateBetween;
-			
+
 			rs = stmt.executeQuery(sql);
-			
-			while(rs.next())
-			{
+
+			while (rs.next()) {
 				PurchaseBoardDto pb = new PurchaseBoardDto();
-				
-				/*pb.setVendorName(rs.getString(3));
-				pb.setTotal(rs.);
-				
-				objList.add(pb);*/
+
+				/*
+				 * pb.setVendorName(rs.getString(3)); pb.setTotal(rs.);
+				 * 
+				 * objList.add(pb);
+				 */
 			}
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			// TODO: handle exception
 			Loger.log(e.toString());
-		}finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
-					}
+				}
 				if (stmt != null) {
 					db.close(stmt);
-					}
+				}
 				if (rs1 != null) {
 					db.close(rs1);
-					}
+				}
 				if (stmt1 != null) {
 					db.close(stmt1);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
 		}
 		return objList;
 	}
 	/**/
-	
-	
-	
-	public String getMessageText(int id,Connection con){
+
+	public String getMessageText(int id, Connection con) {
 		Statement stmt = null;
 		ResultSet rs = null;
-		String messgebody="";
+		String messgebody = "";
 		try {
-			
+
 			stmt = con.createStatement();
-			String sqlString="Select Name from bca_message where Active like '1' and MessageID="+id;
+			String sqlString = "Select Name from bca_message where Active like '1' and MessageID=" + id;
 			rs = stmt.executeQuery(sqlString);
-			while(rs.next()){
-				 messgebody= rs.getString("Name");
+			while (rs.next()) {
+				messgebody = rs.getString("Name");
 			}
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		}finally{
+		} finally {
 			try {
 				if (rs != null)
 					rs.close();
-				
+
 			} catch (SQLException sqlEX) {
 				Loger.log("SQLEX" + sqlEX.toString());
 			}
 		}
 		return messgebody;
-		
+
 	}
+
 	public boolean update(HttpServletRequest request) {
 		boolean result = false;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmtUpdate = null;
 		SQLExecutor db = new SQLExecutor();
 
@@ -945,29 +866,27 @@ public class PurchaseBoardInfo {
 			}
 
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class TaxInfo and  method -getFederalTax "
-							+ " " + ee.toString());
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
 		}
 
-	
 		finally {
 			try {
 				if (pstmtUpdate != null) {
 					db.close(pstmtUpdate);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
-					Loger.log(2, "ParseException" + e.getMessage());
+				}
+			} catch (Exception e) {
+				Loger.log(2, "ParseException" + e.getMessage());
 			}
 		}
 		return result;
 	}
+
 	public boolean updateCheckPO(HttpServletRequest request) {
 		boolean result = false;
-		Connection con = null ;
+		Connection con = null;
 		PreparedStatement pstmtUpdate = null;
 		SQLExecutor db = new SQLExecutor();
 
@@ -1003,208 +922,158 @@ public class PurchaseBoardInfo {
 			}
 
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class TaxInfo and  method -getFederalTax "
-							+ " " + ee.toString());
-		}
-		finally {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
+		} finally {
 			try {
 				if (pstmtUpdate != null) {
 					db.close(pstmtUpdate);
-					}
-					if(con != null){
+				}
+				if (con != null) {
 					db.close(con);
-					}
-				} catch (Exception e) {
-					Loger.log(2, "ParseException" + e.getMessage());
+				}
+			} catch (Exception e) {
+				Loger.log(2, "ParseException" + e.getMessage());
 			}
 		}
 		return result;
 	}
-	
-	
-	/*get all purchse order*/
-	public ArrayList getAllPurchaseOrderList(HttpServletRequest request,String compId, String oDate1,
-			String oDate2, String saleDate1, String saleDate2, String marketID,
-			String sOption1, String sOption2, String sType,String action, String datesCombo,String fromDate,String toDate,String sortBy,PurchaseBoardDto form) {
+
+	/* get all purchse order */
+	public ArrayList getAllPurchaseOrderList(HttpServletRequest request, String compId, String oDate1, String oDate2,
+			String saleDate1, String saleDate2, String marketID, String sOption1, String sOption2, String sType,
+			String action, String datesCombo, String fromDate, String toDate, String sortBy, PurchaseBoardDto form) {
 
 		Loger.log("From PurchaseInfo" + compId);
-		Connection con = null ;
-		Statement stmt = null, stmt1 = null, stmt2 = null,stm3=null;
+		Connection con = null;
+		Statement stmt = null, stmt1 = null, stmt2 = null, stm3 = null;
 		SQLExecutor db = new SQLExecutor();
 		ArrayList<PurchaseBoardDto> objList = new ArrayList<PurchaseBoardDto>();
-		ResultSet rs = null, rs2 = null, rs3 = null,rs4=null;
+		ResultSet rs = null, rs2 = null, rs3 = null, rs4 = null;
 		con = db.getConnection();
 		String mark = null;
-		double totalBalance=0.0;
+		double totalBalance = 0.0;
 		CustomerInfo cinfo = new CustomerInfo();
 		String dateBetween = "";
 		ArrayList<Date> selectedRange = new ArrayList<>();
 		DateInfo dInfo = new DateInfo();
-		
-		if(datesCombo != null && !datesCombo.equals("8"))
-		{	
-			if(datesCombo != null && !datesCombo.equals(""))
-			{
+
+		if (datesCombo != null && !datesCombo.equals("8")) {
+			if (datesCombo != null && !datesCombo.equals("")) {
 				selectedRange = dInfo.selectedIndex(Integer.parseInt(datesCombo));
-				if(!selectedRange.isEmpty() && selectedRange != null)
-				{	
+				if (!selectedRange.isEmpty() && selectedRange != null) {
 					form.setFromDate(cinfo.date2String(selectedRange.get(0)));
 					form.setToDate(cinfo.date2String(selectedRange.get(1)));
 				}
-				if(selectedRange != null && !selectedRange.isEmpty())
-				{
-					dateBetween = " AND inv.DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1))+ "')";
+				if (selectedRange != null && !selectedRange.isEmpty()) {
+					dateBetween = " AND inv.DateAdded BETWEEN Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) + "') AND Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1)) + "')";
 				}
 			}
-		}
-		else if(datesCombo != null && datesCombo.equals("8"))
-		{
-			if(fromDate.equals("") && toDate.equals(""))
-			{
+		} else if (datesCombo != null && datesCombo.equals("8")) {
+			if (fromDate.equals("") && toDate.equals("")) {
 				dateBetween = "";
-			}
-			else if(!fromDate.equals("") && toDate.equals(""))
-			{
-				dateBetween = " AND inv.DateAdded >= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
-			}
-			else if(fromDate.equals("") && !toDate.equals(""))
-			{
-				dateBetween = " AND inv.DateAdded <= Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
-			}
-			else 
-			{
-				dateBetween = " AND inv.DateAdded BETWEEN Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate)) +"') AND Timestamp ('" +JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))+ "')";
+			} else if (!fromDate.equals("") && toDate.equals("")) {
+				dateBetween = " AND inv.DateAdded >= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate) + "')");
+			} else if (fromDate.equals("") && !toDate.equals("")) {
+				dateBetween = " AND inv.DateAdded <= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate) + "')");
+			} else {
+				dateBetween = " AND inv.DateAdded BETWEEN Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(fromDate))
+						+ "') AND Timestamp ('" + JProjectUtil.getDateFormaterCommon().format(cinfo.string2date(toDate))
+						+ "')";
 			}
 		}
-		
-		
-		
+
 		try {
 			stmt = con.createStatement();
 			stmt1 = con.createStatement();
-			
+
 			Loger.log("oDate1:" + oDate1 + " oDate2:" + oDate2);
 
-			String sqlString = ""
-					+ "SELECT inv.invoiceid, "
-					+ "       inv.ordernum, "
-					+ "       inv.ponum, "
-					+ "       date_format(inv.dateadded,'%m-%d-%Y') AS AddedDate, "
-					+ "       inv.clientvendorid, "
-					+ "       inv.salesrepid, "
-					+ "       inv.adjustedtotal, "
-					+ "       inv.balance, "
-					+ "       cv.NAME, "
-					+ "       cv.firstname, "
-					+ "       cv.lastname "
-					+ "FROM   bca_invoice AS inv, "
-					+ "       bca_clientvendor AS cv "
-					+ "WHERE  inv.companyid = '"+compId+"' "
-					+ "       AND inv.invoicetypeid IN ( 2, 4 ) "
-					+ "       AND inv.clientvendorid = cv.clientvendorid "
-					+ "       AND ( cv.status = 'U' "
-					+ "              OR cv.status = 'N' ) "
-					+ "       AND cv.deleted = 0 "
-					+ dateBetween
+			String sqlString = "" + "SELECT inv.invoiceid, " + "       inv.ordernum, " + "       inv.ponum, "
+					+ "       date_format(inv.dateadded,'%m-%d-%Y') AS AddedDate, " + "       inv.clientvendorid, "
+					+ "       inv.salesrepid, " + "       inv.adjustedtotal, " + "       inv.balance, "
+					+ "       cv.NAME, " + "       cv.firstname, " + "       cv.lastname "
+					+ "FROM   bca_invoice AS inv, " + "       bca_clientvendor AS cv " + "WHERE  inv.companyid = '"
+					+ compId + "' " + "       AND inv.invoicetypeid IN ( 2, 4 ) "
+					+ "       AND inv.clientvendorid = cv.clientvendorid " + "       AND ( cv.status = 'U' "
+					+ "              OR cv.status = 'N' ) " + "       AND cv.deleted = 0 " + dateBetween
 					+ " ORDER  BY inv.dateadded";
-			
-			
-			String sql2 = ""
-					+ "SELECT Sum(balance) AS total "
-					+ "FROM   bca_clientvendor AS cv, "
-					+ "       bca_invoice inv "
-					+ "WHERE  inv.companyid = '"+compId+"' "
-					+ "       AND inv.invoicetypeid IN ( 2, 4 ) "
-					+ "       AND inv.clientvendorid = cv.clientvendorid "
-					+ "       AND ( cv.status = 'U' "
-					+ "              OR cv.status = 'N' ) "
-					+ "       AND cv.deleted = 0"
-					+ dateBetween;
-			
+
+			String sql2 = "" + "SELECT Sum(balance) AS total " + "FROM   bca_clientvendor AS cv, "
+					+ "       bca_invoice inv " + "WHERE  inv.companyid = '" + compId + "' "
+					+ "       AND inv.invoicetypeid IN ( 2, 4 ) " + "       AND inv.clientvendorid = cv.clientvendorid "
+					+ "       AND ( cv.status = 'U' " + "              OR cv.status = 'N' ) "
+					+ "       AND cv.deleted = 0" + dateBetween;
+
 			// AND
-			if(action.equalsIgnoreCase("ShowListCheckPO") || action.equalsIgnoreCase("UpdateCheckPO")){ //check PO ordes board
-				sqlString +=" and IsReceived like '0' ";
+			if (action.equalsIgnoreCase("ShowListCheckPO") || action.equalsIgnoreCase("UpdateCheckPO")) { // check PO
+																											// ordes
+																											// board
+				sqlString += " and IsReceived like '0' ";
 			}
-			if(action.equalsIgnoreCase("ShowReceivedItems")){ //Received Item
-				sqlString +=" and IsReceived like '1' ";
-			}
-			
-			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1
-					&& oDate2.trim().length() > 1 ) {
-				
-				sqlString += "	and i.DateConfirmed between '"
-						+ cinfo.string2date(oDate1) + "' and '"
-						+ cinfo.string2date(oDate2) + "' ";
-			}
-			else if(oDate1 != null && oDate1.trim().length() > 1){
-				sqlString += "	and i.DateConfirmed between '"
-					+ cinfo.string2date(oDate1) + "' and '"
-					+ cinfo.string2date("now()") + "' ";
-			}
-			else if(oDate2!=null && oDate2.trim().length() > 1){
-				sqlString += "	and i.DateConfirmed <= '"+
-					cinfo.string2date(oDate2) + "'  ";
-				
-			}
-			if (saleDate1 != null && saleDate2 != null
-					&& saleDate1.trim().length() > 1
-					&& saleDate2.trim().length() > 1) {
-				
-				sqlString += "	and i.DateAdded between '"
-						+ cinfo.string2date(saleDate1) + "' and '"
-						+ cinfo.string2date(saleDate2) + "'  ";
-			}
-			else if(saleDate1 != null && saleDate1.trim().length() > 1){
-				sqlString += "	and i.DateAdded between '"
-					+ cinfo.string2date(saleDate1) + "' and '"
-					+ cinfo.string2date("now()") + "' ";
-			}
-			else if(saleDate2!=null && saleDate2.trim().length() > 1){
-				sqlString += "	and i.DateAdded <= '"+
-					cinfo.string2date(saleDate2) + "'  ";
-				
+			if (action.equalsIgnoreCase("ShowReceivedItems")) { // Received Item
+				sqlString += " and IsReceived like '1' ";
 			}
 
+			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1 && oDate2.trim().length() > 1) {
+
+				sqlString += "	and i.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
+						+ cinfo.string2date(oDate2) + "' ";
+			} else if (oDate1 != null && oDate1.trim().length() > 1) {
+				sqlString += "	and i.DateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
+						+ cinfo.string2date("now()") + "' ";
+			} else if (oDate2 != null && oDate2.trim().length() > 1) {
+				sqlString += "	and i.DateConfirmed <= '" + cinfo.string2date(oDate2) + "'  ";
+
+			}
+			if (saleDate1 != null && saleDate2 != null && saleDate1.trim().length() > 1
+					&& saleDate2.trim().length() > 1) {
+
+				sqlString += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
+						+ cinfo.string2date(saleDate2) + "'  ";
+			} else if (saleDate1 != null && saleDate1.trim().length() > 1) {
+				sqlString += "	and i.DateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
+						+ cinfo.string2date("now()") + "' ";
+			} else if (saleDate2 != null && saleDate2.trim().length() > 1) {
+				sqlString += "	and i.DateAdded <= '" + cinfo.string2date(saleDate2) + "'  ";
+
+			}
 
 			// sqlString += "and i.PONum > 0";
-			//sqlString += " and i.InvoiceTypeID=2";  //purches Order
-		//	sqlString += " order by i.PONum";
-			
-		
-			
+			// sqlString += " and i.InvoiceTypeID=2"; //purches Order
+			// sqlString += " order by i.PONum";
+
 			Loger.log(sqlString);
 			rs = stmt.executeQuery(sqlString);
 			rs2 = stmt1.executeQuery(sql2);
-			
+
 			PurchaseBoardDto pb = null;
-			
-			while(rs.next())
-			{
+
+			while (rs.next()) {
 				pb = new PurchaseBoardDto();
-				
+
 				pb.setDateAdded(rs.getString(4));
 				pb.setClientvendor(rs.getString(9));
 				pb.setAmount(rs.getDouble(7));
 				pb.setBalance(rs.getDouble(8));
-				
+
 				objList.add(pb);
 			}
-			
-			
-			if(rs2.next())
-			{
-				
+
+			if (rs2.next()) {
+
 				totalBalance = rs2.getDouble(1);
 			}
-			
-			request.setAttribute("total",totalBalance);
-			
+
+			request.setAttribute("total", totalBalance);
+
 		} catch (SQLException ee) {
-			Loger.log(2,
-					" SQL Error in Class TaxInfo and  method -getFederalTax "
-							+ " " + ee.toString());
-			
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
+
 		}
 
 		finally {
@@ -1235,9 +1104,7 @@ public class PurchaseBoardInfo {
 		return objList;
 
 	}
-	
-	
+
 	/**/
-	
-	
+
 }

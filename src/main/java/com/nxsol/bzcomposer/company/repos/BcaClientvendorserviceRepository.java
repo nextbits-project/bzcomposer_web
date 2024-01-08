@@ -1,6 +1,7 @@
 package com.nxsol.bzcomposer.company.repos;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,10 +12,13 @@ import com.nxsol.bzcomposer.company.domain.BcaClientvendorservice;
 
 @Repository
 public interface BcaClientvendorserviceRepository extends JpaRepository<BcaClientvendorservice, Long> {
-	 
+
 	@Query("select bc from BcaClientvendorservice bc left join bc.company c  left join  bc.clientVendor cv where c.companyId= :companyId and cv = :clientVendorId ")
-	List<BcaClientvendorservice> findByCompanyIdAndClientVendorId(@Param("companyId")Long companyId,@Param("clientVendorId") Integer clientVendorId);
-	
+	List<BcaClientvendorservice> findByCompanyIdAndClientVendorId(@Param("companyId") Long companyId,
+			@Param("clientVendorId") Integer clientVendorId);
+
 	@Query("delete from BcaClientvendorservice bcvs where bcvs.clientVendor.clientVendorId = :clientVendorId")
-	void deleteByClientVendorId(@Param("clientVendorId")Integer clientVendorId);
+	void deleteByClientVendorId(@Param("clientVendorId") Integer clientVendorId);
+
+	List<BcaClientvendorservice> findByClientVendor_ClientVendorId(Integer clientVendorId);
 }
