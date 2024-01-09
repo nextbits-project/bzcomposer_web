@@ -412,9 +412,9 @@ public class SalesDetails {
 	}
 
 	public void getLabelType(HttpServletRequest request) {
-		CustomerInfo customer = new CustomerInfo();
+//		CustomerInfo customer = new CustomerInfo();
 		ArrayList labelType = new ArrayList();
-		labelType = customer.labelTypeDetails();
+		labelType = customerInfo.labelTypeDetails();
 		request.setAttribute("LabelTypeList", labelType);
 	}
 

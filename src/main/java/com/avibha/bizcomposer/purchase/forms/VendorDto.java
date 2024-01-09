@@ -9,8 +9,12 @@ package com.avibha.bizcomposer.purchase.forms;
 import java.util.List;
 
 import com.avibha.bizcomposer.sales.forms.CreditCardDto;
+
+import lombok.NoArgsConstructor;
+
 import org.apache.struts.action.ActionForm;
 
+@NoArgsConstructor
 public class VendorDto extends ActionForm {
 	
 	private static final long serialVersionUID = 0;
@@ -188,6 +192,47 @@ public class VendorDto extends ActionForm {
 	private double totalOverdueAmt;
 	private String lastOrderDate;
 	private boolean active;
+	private  boolean isPaymentCompleted;
+	private String countryName;
+	private String cityName;
+
+
+	public VendorDto(int clientVendorId, String name, String customerTitle, String firstName, String lastName,
+			String address1, String address2, String city, String state, String zipCode, String country, String email,
+			String phone, String cellPhone, String fax, String dateAdded, boolean isPaymentCompleted,
+			String cvcategoryName, String cityName, String stateName, String countryName, String dbaname,String detail) {
+
+		this.clientVendorID = clientVendorId + "";
+
+		this.cname = name;
+		
+		this.title = customerTitle;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address1 = address1;
+		this.address2 = address2;
+		
+		this.zipCode = zipCode;
+		this.city = cityName != null ? cityName : city;
+		this.stateName = stateName != null ? stateName : state;
+		String country_name = countryName != null ? countryName : country;
+		if (countryName != null && countryName.contains("United States")) {
+			countryName = "USA";
+		}
+		this.country = country_name;
+
+		this.email = email;
+		this.phone = phone;
+		this.cellPhone = cellPhone;
+		this.fax = fax;
+		this.dateAdded = dateAdded;
+		this.fullName = firstName + " " + lastName;
+		this.type = cvcategoryName;
+		this.dbaName = dbaname;
+		this.memo=detail;
+		
+	}
+	
 
 	public double getTotal() {
 		return total;
@@ -1086,5 +1131,35 @@ public class VendorDto extends ActionForm {
 
 	public boolean isActive() { return active; }
 	public void setActive(boolean active) { this.active = active; }
+
+
+	public boolean isPaymentCompleted() {
+		return isPaymentCompleted;
+	}
+
+
+	public void setPaymentCompleted(boolean isPaymentCompleted) {
+		this.isPaymentCompleted = isPaymentCompleted;
+	}
+
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+
+	public String getCityName() {
+		return cityName;
+	}
+
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
 
 }

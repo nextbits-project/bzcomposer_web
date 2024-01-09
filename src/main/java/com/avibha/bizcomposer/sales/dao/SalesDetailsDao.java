@@ -65,6 +65,9 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private PurchaseInfo purchaseInfo;
+	
+	@Autowired
+	private PurchaseOrderInfoDao purchaseOrderInfoDao;
 
 	@Autowired
 	private Title t;
@@ -1300,8 +1303,8 @@ public class SalesDetailsDao {
 	public void getInitializePurchase(String poNo, HttpServletRequest request, PurchaseOrderDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		long purchaseNo = Long.parseLong(poNo);
-		PurchaseOrderInfoDao purchase = new PurchaseOrderInfoDao();
-		purchase.getRecord(request, form, compId, purchaseNo);
+//		PurchaseOrderInfoDao purchase = new PurchaseOrderInfoDao();
+		purchaseOrderInfoDao.getRecord(request, form, compId, purchaseNo);
 	}
 
 	public List<String> getCustomerInvoiceOrderNums(String custID, String compId) {
@@ -1337,14 +1340,14 @@ public class SalesDetailsDao {
 	}
 
 	public List<String> getCustomerPONums(String custID, String compId) {
-		PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
-		return poInfoDao.getCustomerPONums(custID, compId);
+//		PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
+		return purchaseOrderInfoDao.getCustomerPONums(custID, compId);
 	}
 
 	public PurchaseOrderDto getRecordForPO(String compId, String orderNum, PurchaseOrderDto form,
 			HttpServletRequest request) {
-		PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
-		return poInfoDao.getRecordForPO(compId, orderNum, form, request);
+//		PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
+		return purchaseOrderInfoDao.getRecordForPO(compId, orderNum, form, request);
 	}
 
 	public void newSalesOrder(HttpServletRequest request, InvoiceDto form) { // New Sales Order

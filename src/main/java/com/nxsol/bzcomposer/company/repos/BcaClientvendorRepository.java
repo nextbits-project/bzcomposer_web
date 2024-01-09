@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -92,28 +93,51 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 	@Query(value = " select distinct cv from BcaClientvendor as cv , BcaInvoice as iv where iv.clientVendor.clientVendorId = cv.clientVendorId "
 			+ " and iv.company.companyId like :companyId order by cv.firstName ")
 	List<BcaClientvendor> findUserName(@Param("companyId") Long companyId);
-	
-	@Query(value="select distinct bcv from BcaClientvendor as bcv  left join  BcaCvcreditcard as bcc on bcc.clientVendor.clientVendorId = bcv.clientVendorId "
+
+	@Query(value = "select distinct bcv from BcaClientvendor as bcv  left join  BcaCvcreditcard as bcc on bcc.clientVendor.clientVendorId = bcv.clientVendorId "
 			+ "left join BcaBsaddress as bba  on bba.clientVendorId = bcv.clientVendorId left join  BcaClientvendorfinancecharges as bcf on "
 			+ " bcf.clientVendor.clientVendorId = bcv.clientVendorId where (bcv.status like 'N' or bcv.status like 'U') and bcv.deleted = 0 "
-			+ " and bcv.company.companyId = :companyId and bcv.clientVendorId = :clientVendorId group by bcv.clientVendorId order by bcv.clientVendorId" )
-	List<BcaClientvendor> searchCustomer(@Param("companyId")Long companyId, @Param("clientVendorId")Integer clientVendorId);
-	
-	@Query("select bcv from BcaClientvendor  bcv where bcv.company.companyId =:companyId and bcv.clientVendorId = :clientVendorId")
-	BcaClientvendor findByCompanyIdAndClientvendorId(@Param("companyId")Long companyId,@Param("clientVendorId")Integer clientVendorId );
+			+ " and bcv.company.companyId = :companyId and bcv.clientVendorId = :clientVendorId group by bcv.clientVendorId order by bcv.clientVendorId")
+	List<BcaClientvendor> searchCustomer(@Param("companyId") Long companyId,
+			@Param("clientVendorId") Integer clientVendorId);
 
-	
+	@Query("select bcv from BcaClientvendor  bcv where bcv.company.companyId =:companyId and bcv.clientVendorId = :clientVendorId")
+	BcaClientvendor findByCompanyIdAndClientvendorId(@Param("companyId") Long companyId,
+			@Param("clientVendorId") Integer clientVendorId);
+
 	@Modifying
 	@Transactional
 	@Query("update BcaClientvendor bcv set bcv.status = :status where bcv.clientVendorId = :clientVendorId and bcv.status in :statusList")
-	int updateStatusByClientVendorIdAndStatus(@Param("status") String status,@Param("clientVendorId")Integer clientVendorId,@Param("statusList")List<String> statusList);
-	
-	
-//	String sqlString = "select Name,FirstName,LastName from bca_clientvendor "
-//			+ " where  (Status like 'N' or Status like 'U')  and CVTypeID in (1,2,3)"
-//			+ " And Active=1 and ClientVendorID=?"; // CVTypeID = 3 is added on 11-09-2019
-
+	int updateStatusByClientVendorIdAndStatus(@Param("status") String status,
+			@Param("clientVendorId") Integer clientVendorId, @Param("statusList") List<String> statusList);
 
 	@Query("SELECT COUNT(v) FROM BcaClientvendor v WHERE v.company.companyId = :companyId AND v.status IN :statuses AND v.deleted = 0 AND v.active = 1")
-    int countByCompany_CompanyIdAndStatusInAndDeletedIsFalseAndActiveIsTrue(@Param("companyId") Long companyId, @Param("statuses") List<String> statuses);
+	int countByCompany_CompanyIdAndStatusInAndDeletedIsFalseAndActiveIsTrue(@Param("companyId") Long companyId,
+			@Param("statuses") List<String> statuses);
+
+	@Query("select bcv from BcaClientvendor bcv where bcv.company.companyId = :companyId and bcv.active =:active and bcv.deleted =:deleted and bcv.cvtypeId in :cvtypeId and bcv.status in :status")
+	List<BcaClientvendor> findByCompanyIdAndActiveAndDeletedAndCvTypeIdInAndStatusInOrderByName(
+			@Param("companyId") Long companyId, @Param("active") Integer active, @Param("deleted") Integer deleted,
+			@Param("cvtypeId") List<Integer> cvtypeId, @Param("status") List<String> status, Pageable pageable);
+
+	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.cvtypeId IN (1,3) AND bcv.status in ('N','U') and bcv.deleted = 0 and bcv.active =1 and bcv.company.companyId = :companyId and"
+			+ " (bcv.name like '%:vendor%' OR bcv.firstName LIKE '%:vendor%' or bcv.lastName LIKE '%:vendor%') ORDER BY bcv.name")
+	List<BcaClientvendor> searchVendorByCompanyIdAndText(@Param("companyId") Long companyId,
+			@Param("vendor") String venderText);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE BcaClientvendor bcv  SET bcv.active = :active, bcv.status =:status, bcv.deleted =:deleted WHERE bcv.clientVendorId =:clientVendorId and bcv.status IN :statusList and bcv.company.companyId =:companyId")
+	int updateActiveAndStatusAndDeletedByCompanyIdAndClientVendorIdAndStatusIn(@Param("active") Integer active,
+			@Param("status") String status, @Param("deleted") Integer deleted, @Param("companyId") Long companyId,
+			@Param("clientVendorId") Integer clientVendorId, @Param("statusList") List<String> statulist);
+
+	BcaClientvendor findByClientVendorIdAndActiveAndDeletedAndStatusIn(int clientVendorId, int active, int deleted,
+			List<String> status);
+
+	@Query("select bcv from BcaClientvendor bcv where bcv.company.companyId = :companyId and bcv.active =:active and bcv.deleted =:deleted and bcv.cvtypeId in :cvtypeId and bcv.status in :status ORDER BY bcv.lastName")
+	List<BcaClientvendor> findByCompanyIdAndActiveAndDeletedAndCvTypeIdInAndStatusInOrderByLastName(
+			@Param("companyId") Long companyId, @Param("active") Integer active, @Param("deleted") Integer deleted,
+			@Param("cvtypeId") List<Integer> cvtypeId, @Param("status") List<String> status);
+
 }

@@ -16,6 +16,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,6 +29,18 @@ import java.util.ArrayList;
 
 @Controller
 public class PrintLabelController{
+	
+	@Autowired
+	private PurchaseDetailsDao purchaseDetailsDao;
+	
+	@Autowired
+	private Label label;
+	
+	@Autowired
+	private SalesDetails salesDetails;
+	
+	@Autowired
+	private SalesDetailsDao salesDetailsDao;
 
 	@GetMapping("/PrintLBL")
 	public String printLabel(PrintLabelDto printLabelDto, HttpServletRequest request) throws IOException, ServletException {
@@ -39,15 +52,15 @@ public class PrintLabelController{
 		 * their related service types, address label type list.
 		 */
 		if (action.equalsIgnoreCase("PrintLabel")) {
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+//			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			printLabelDto.setStartPage(1);
 			request.getSession().setAttribute("StartPage",String.valueOf(printLabelDto.getStartPage()));
-			pdetails.getPrintLabelInfo(request, printLabelDto);
-			pdetails.getVendors(request);
+			purchaseDetailsDao.getPrintLabelInfo(request, printLabelDto);
+			purchaseDetailsDao.getVendors(request);
 			
 			// to print lables
-			Label lbl = new Label();
-			ArrayList labelList = lbl.getLabelList();
+//			Label lbl = new Label();
+			ArrayList labelList = label.getLabelList();
 			request.setAttribute("Labels", labelList);
 			forward = "/purchase/printLables";
 		}
@@ -58,12 +71,12 @@ public class PrintLabelController{
 		 * service types, address label type list.
 		 */		
 		else if (action.equalsIgnoreCase("PrintLabelList")) { // for Print Label
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			pdetails.getPrintLabelInfo(request,printLabelDto);
+//			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+			purchaseDetailsDao.getPrintLabelInfo(request,printLabelDto);
 			
 			// to print lables
-			Label lbl = new Label();
-			ArrayList labelList = lbl.getLabelList();
+//			Label lbl = new Label();
+			ArrayList labelList = label.getLabelList();
 			request.setAttribute("Labels", labelList);
 			forward = "/purchase/printLables";
 		}
@@ -74,14 +87,14 @@ public class PrintLabelController{
 		 * width,height,etc.
 		 */
 		else if (action.equalsIgnoreCase("UpdateLabel")) { 
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+//			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			request.setAttribute("Vendor","Vendor");
 			Label lbl = new Label();
 			ArrayList labelList = lbl.getLabelList();
 			request.setAttribute("Labels", labelList);
-			SalesDetails sd = new SalesDetails();
-			pdetails.getLabel(request, printLabelDto);
-			sd.getLabelType(request);
+//			SalesDetails sd = new SalesDetails();
+			purchaseDetailsDao.getLabel(request, printLabelDto);
+			salesDetails.getLabelType(request);
 			forward = "/sales/setUpLabel";
 		}
 		
@@ -90,13 +103,13 @@ public class PrintLabelController{
 		 * database.
 		 */
 		else if (action.equalsIgnoreCase("SaveLabel")) { 
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			SalesDetailsDao sd = new SalesDetailsDao();
-			boolean result=pdetails.saveLabel(request, printLabelDto);
+//			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+//			SalesDetailsDao sd = new SalesDetailsDao();
+			boolean result=purchaseDetailsDao.saveLabel(request, printLabelDto);
 			String msg="";
 			request.setAttribute("Vendor","v");
 			if(result){
-				pdetails.addNewLabel(printLabelDto);
+				purchaseDetailsDao.addNewLabel(printLabelDto);
 				msg="Label is saved successfully";
 				
 			}
@@ -104,27 +117,27 @@ public class PrintLabelController{
 				msg="Label is updated successfully";
 				
 			}
-			sd.getLabelType(request);
-			Label lbl = new Label();
-			ArrayList labelList = lbl.getLabelList();
+			salesDetailsDao.getLabelType(request);
+//			Label lbl = new Label();
+			ArrayList labelList = label.getLabelList();
 			request.setAttribute("Labels", labelList);
 			request.setAttribute("Status",msg);
 			forward = "/sales/setUpLabel";
 		}
 		else if (action.equalsIgnoreCase("AddNewLabel")) { 
-			PurchaseDetailsDao sd = new PurchaseDetailsDao();
+//			PurchaseDetailsDao sd = new PurchaseDetailsDao();
 			request.setAttribute("Vendor","V");
-			sd.addNewLabel(printLabelDto);
+			purchaseDetailsDao.addNewLabel(printLabelDto);
 			forward = "/sales/addLabel";
 		}
 		else if (action.equalsIgnoreCase("DeleteLabel")) { 
 			request.setAttribute("Vendor","v");
-			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
-			SalesDetails sd = new SalesDetails();
-			pdetails.deleteLabel(request, printLabelDto);
-			sd.getLabelType(request);
-			Label lbl = new Label();
-			ArrayList labelList = lbl.getLabelList();
+//			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
+//			SalesDetails sd = new SalesDetails();
+			purchaseDetailsDao.deleteLabel(request, printLabelDto);
+			salesDetails.getLabelType(request);
+//			Label lbl = new Label();
+			ArrayList labelList = label.getLabelList();
 			request.setAttribute("Labels", labelList);
 			forward = "/sales/setUpLabel";
 		}

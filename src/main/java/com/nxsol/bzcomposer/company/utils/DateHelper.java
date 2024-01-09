@@ -41,4 +41,10 @@ public class DateHelper {
 		OffsetDateTime convertedDateTime = offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
 		return convertedDateTime;
 	}
+	
+	
+	public static String dateFormatter(OffsetDateTime dateAdded) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+		return dateAdded.format(formatter);
+	}
 }

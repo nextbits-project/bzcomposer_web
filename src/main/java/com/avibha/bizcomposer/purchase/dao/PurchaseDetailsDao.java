@@ -17,6 +17,7 @@ import com.avibha.common.utility.CountryState;
 import com.nxsol.bizcomposer.common.ConstValue;
 import org.apache.struts.action.ActionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,16 +31,48 @@ public class PurchaseDetailsDao {
 	@Autowired
 	private CountryState cs ;
 	
+	@Autowired
+	private PurchaseInfoDao purchaseInfoDao;
+	
+	@Autowired
+	private  PurchaseInfo purchaseInfo;
+	
+	@Autowired private InvoiceInfo invoiceInfo;
+	@Autowired
+	private Title title;
+	
+	
+	
+	@Autowired
+	private Term term;
+	
+	@Autowired
+	private VendorCategory vendorCategory;
+	
+	@Autowired
+	private Rep rep;
+	
+	@Autowired
+	private PayMethod payMethod;
+	
+	@Autowired
+	private Shipping shipping;
+	
+	@Autowired
+	private CreditCard creditCard;
+	
+	
+	
 	/* The method gets the list of all vendor
 	 * with their ids and names & with their services.
 	 */
-	public ArrayList getVendors(HttpServletRequest request) {
+	public List<VendorDto> getVendors(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		String sortByNo = request.getParameter("SortBy");
 		String action = request.getParameter("tabid");
 		String sortBy = null;
-		PurchaseInfo vendor = new PurchaseInfo();
+//	//	// PurchaseInfo vendor = new // PurchaseInfo();
 		if(sortByNo != null) {
 			int sortById = Integer.parseInt(sortByNo);
 			if(sortById == 1) {
@@ -52,9 +85,9 @@ public class PurchaseDetailsDao {
 				sortBy = "LastName";
 			}
 		}
-		ArrayList<VendorDto> VendorDetails = vendor.getVendorsBySort(compId, sortBy);
+		List<VendorDto> VendorDetails = purchaseInfo.getVendorsBySort(compId, sortBy);
 		if (action.equalsIgnoreCase("VONODO")) {
-			InvoiceInfo invoiceInfo = new InvoiceInfo();
+//			InvoiceInfo invoiceInfo = new InvoiceInfo();
 			List<TrHistoryLookUp> hlookupList = invoiceInfo.searchHistory(request, "ShowAll", "", null, null);
 			for (VendorDto cust: VendorDetails){
 				double balance = 0.0;
@@ -77,11 +110,11 @@ public class PurchaseDetailsDao {
 		return VendorDetails;
 	}
 
-	public ArrayList searchVendors(HttpServletRequest request) {
+	public List<VendorDto> searchVendors(HttpServletRequest request) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		String venderText = request.getParameter("venderText");
-		PurchaseInfo vendor = new PurchaseInfo();
-		ArrayList VendorDetails = vendor.searchVendors(compId, venderText);
+	//	// PurchaseInfo vendor = new // PurchaseInfo();
+		List<VendorDto> VendorDetails = purchaseInfo.searchVendors(compId, venderText);
 		request.setAttribute("VendorDetails", VendorDetails);
 		return VendorDetails;
 	}
@@ -89,9 +122,9 @@ public class PurchaseDetailsDao {
 	public void getCountry(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		PurchaseInfo vendor = new PurchaseInfo();
-		ArrayList VendorDetails = new ArrayList();
-		VendorDetails = vendor.getVendorsBySort(compId, null);
+	//	// PurchaseInfo vendor = new // PurchaseInfo();
+		List<VendorDto> VendorDetails = new ArrayList<>();
+		VendorDetails = purchaseInfo.getVendorsBySort(compId, null);
 		request.setAttribute("VendorDetails", VendorDetails);
 		Loger.log("Size of VendorDetails=" + VendorDetails.size());
 	}
@@ -99,9 +132,9 @@ public class PurchaseDetailsDao {
 	public void getState(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		PurchaseInfo vendor = new PurchaseInfo();
-		ArrayList VendorDetails = new ArrayList();
-		VendorDetails = vendor.getVendorsBySort(compId, null);
+	//	// PurchaseInfo vendor = new // PurchaseInfo();
+		List<VendorDto> VendorDetails = new ArrayList<>();
+		VendorDetails = purchaseInfo.getVendorsBySort(compId, null);
 		request.setAttribute("VendorDetails", VendorDetails);
 		Loger.log("Size of VendorDetails=" + VendorDetails.size());
 	}
@@ -109,9 +142,9 @@ public class PurchaseDetailsDao {
 	public void getTitle(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		PurchaseInfo vendor = new PurchaseInfo();
-		ArrayList VendorDetails = new ArrayList();
-		VendorDetails = vendor.getVendorsBySort(compId, null);
+	//	// PurchaseInfo vendor = new // PurchaseInfo();
+		List<VendorDto> VendorDetails = new ArrayList<>();
+		VendorDetails = purchaseInfo.getVendorsBySort(compId, null);
 		request.setAttribute("VendorDetails", VendorDetails);
 		Loger.log("Size of VendorDetails=" + VendorDetails.size());
 	}
@@ -120,7 +153,7 @@ public class PurchaseDetailsDao {
 	 * the database. 
 	 */
 	public void AddVendor(HttpServletRequest request, VendorDto form, String compId) {
-		PurchaseInfoDao purchase = new PurchaseInfoDao();
+		// PurchaseInfoDao purchase = new // PurchaseInfoDao();
 
 		form.setTaxAble( "on".equalsIgnoreCase(request.getParameter("isTaxable"))?"1":"0" );
 		form.setIsclient( "on".equalsIgnoreCase(request.getParameter("isAlsoClient"))?"1":"3" );	// 1: Customer+Vendor, 2: Customer, 3: Vendor
@@ -129,7 +162,7 @@ public class PurchaseDetailsDao {
 		form.setFsMarkFinanceCharge( "on".equalsIgnoreCase(request.getParameter("FChargeInvoiceChk"))?"1":"0" );
 		form.setStateName(request.getParameter("stateName"));
 		try{
-			boolean isAdded = purchase.insertVendor(form, compId);
+			boolean isAdded = purchaseInfoDao.insertVendor(form, compId);
 			if(isAdded){
 				request.setAttribute("SaveStatus",new ActionMessage("Vendor Information is Successfully Added !"));
 				request.setAttribute("Added","true");
@@ -166,33 +199,33 @@ public class PurchaseDetailsDao {
 		request.setAttribute("cityList", cs.getCityList(stateID));
 
 		// Title List
-		Title t = new Title();
-		request.setAttribute("titleList", t.getTitleList(cid));
+//		Title t = new Title();
+		request.setAttribute("titleList", title.getTitleList(cid));
 
 		// Term List
-		Term tr = new Term();
-		request.setAttribute("TermList", tr.getTermList(cid));
+//		Term tr = new Term();
+		request.setAttribute("TermList", term.getTermList(cid));
 
 		// Rep List
-		Rep rap = new Rep();
-		request.setAttribute("RepList", rap.getRepList(cid));
+//		Rep rap = new Rep();
+		request.setAttribute("RepList", rep.getRepList(cid));
 
 		// PayMethod List
-		PayMethod pmethod = new PayMethod();
+//		PayMethod pmethod = new PayMethod();
 		
-		request.setAttribute("PaymentList",pmethod.getPaymentTypeList(cid));
+		request.setAttribute("PaymentList",payMethod.getPaymentTypeList(cid));
 
 		// ShipCarrier List
-		Shipping ship = new Shipping();
-		request.setAttribute("ShipCarrierList",ship.getShipCarrierList(cid));
+//		Shipping ship = new Shipping();
+		request.setAttribute("ShipCarrierList",shipping.getShipCarrierList(cid));
 
 		// CreditCard List
-		CreditCard cc = new CreditCard();
-		request.setAttribute("CreditCardList",cc.getCCTypeList(cid));
+//		CreditCard cc = new CreditCard();
+		request.setAttribute("CreditCardList",creditCard.getCCTypeList(cid));
 
 		// CreditCard List
-		VendorCategory cv = new VendorCategory();
-		request.setAttribute("VendorCategoryList", cv.getCVCategoryList(cid));
+//		VendorCategory cv = new VendorCategory();
+		request.setAttribute("VendorCategoryList", vendorCategory.getCVCategoryList(cid));
 
 	}
 	
@@ -203,9 +236,9 @@ public class PurchaseDetailsDao {
 	public void searchVendor(String cvId, HttpServletRequest request, VendorDto form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		PurchaseInfoDao purchase = new PurchaseInfoDao();
-		purchase.SearchVendor(compId, cvId, request, form);
-		purchase.getServices(request, compId, cvId);
+		// PurchaseInfoDao purchase = new // PurchaseInfoDao();
+		purchaseInfoDao.SearchVendor(compId, cvId, request, form);
+		purchaseInfoDao.getServices(request, compId, cvId);
 		//request.setAttribute("CustomerDetails",CustomerDetails);
 	}
 	
@@ -215,8 +248,8 @@ public class PurchaseDetailsDao {
 	public void UpdateVendor(HttpServletRequest request, VendorDto form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		PurchaseInfo purchase =new  PurchaseInfo();
-		CustomerInfo customer = new CustomerInfo();
+		// PurchaseInfo purchase =new  // PurchaseInfo();
+//		CustomerInfo customer = new CustomerInfo();
 		String cvId = form.getClientVendorID();	//	(String) sess.getAttribute("editedCVID");
 
 		//customer.UpdateCustomer(compId, cvId);
@@ -236,7 +269,7 @@ public class PurchaseDetailsDao {
 		form.setAnnualIntrestRate(request.getParameter("AnualRate"));
 		form.setMinFCharges(request.getParameter("MinFinance"));
 		form.setGracePrd(request.getParameter("GracePeriod"));
-		boolean updated = purchase.updateInsertVendor(cvId, form, compId, istax, isclient, indCharge, aFCharge, fICharge,"U");
+		boolean updated = purchaseInfo.updateInsertVendor(cvId, form, compId, istax, isclient, indCharge, aFCharge, fICharge,"U");
 		
 		if(updated){
 			request.setAttribute("SaveStatus",new ActionMessage("Vendor information is successfully updated."));
@@ -266,7 +299,7 @@ public class PurchaseDetailsDao {
 	 */
 	public void getPrintLabelInfo(HttpServletRequest request, PrintLabelDto pForm){
 		
-		PurchaseInfoDao purchase = new PurchaseInfoDao();
+//		// PurchaseInfoDao purchase = new // PurchaseInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		Pagination page = new Pagination();
 		int total = page.getPages(Long.parseLong(compId));
@@ -275,7 +308,7 @@ public class PurchaseDetailsDao {
 		int limit = 5;         // Limit to no. of records display
 		int pageCount = 3;     // No. of pages to display on page
 		
-		request.setAttribute("PrintList", purchase.getPrintLabelInfo(request,compId,start,limit));
+		request.setAttribute("PrintList", purchaseInfoDao.getPrintLabelInfo(request,compId,start,limit));
 		pForm.setTotalPages(total);
 		request.setAttribute("PageValue",String.valueOf(start));
 		int[] pages = new int[pageCount];
@@ -320,9 +353,9 @@ public class PurchaseDetailsDao {
 	 * the given label id.
 	 */
 	public void getLabel(HttpServletRequest request, PrintLabelDto vform)  {
-		PurchaseInfoDao customer = new PurchaseInfoDao();
+		// PurchaseInfoDao customer = new // PurchaseInfoDao();
 		int labelId = Integer.parseInt(request.getParameter("lblId"));
-		customer.getLabel(labelId, vform);
+		purchaseInfoDao.getLabel(labelId, vform);
 	}
 	
 	/*		Saves or updates the label & related information.
@@ -330,13 +363,13 @@ public class PurchaseDetailsDao {
 	 */
 	public boolean saveLabel(HttpServletRequest request, PrintLabelDto cfrm) {
 		boolean result=false;
-		PurchaseInfoDao purchase = new PurchaseInfoDao();
+		// PurchaseInfoDao purchase = new // PurchaseInfoDao();
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
 		if (labelID == 0) {
-			purchase.saveLabel(cfrm);
+			purchaseInfoDao.saveLabel(cfrm);
 			result=true;
 		} else {
-			purchase.updateLabel(labelID, cfrm);
+			purchaseInfoDao.updateLabel(labelID, cfrm);
 			result=false;
 		}
 		return result;
@@ -353,9 +386,9 @@ public class PurchaseDetailsDao {
 		cform.setLabelWidth("0.0");
 	}
 	public void deleteLabel(HttpServletRequest request, PrintLabelDto form) {
-		PurchaseInfoDao purchase = new PurchaseInfoDao();
+		// PurchaseInfoDao purchase = new // PurchaseInfoDao();
 		int labelID = Integer.parseInt(request.getParameter("LabelID"));
 		Loger.log("LABEL   "+labelID);
-		purchase.deleteLabel(labelID, form);
+		purchaseInfoDao.deleteLabel(labelID, form);
 	}
 }

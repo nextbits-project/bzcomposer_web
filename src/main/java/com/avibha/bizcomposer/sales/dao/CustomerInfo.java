@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,13 +39,19 @@ import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
 import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
+import com.nxsol.bzcomposer.company.domain.BcaLabel;
 import com.nxsol.bzcomposer.company.domain.BcaServicetype;
+import com.nxsol.bzcomposer.company.repos.BcaAccountRepository;
+import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaBsaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLabelRepository;
 import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaShippingaddressRepository;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /*
@@ -64,6 +71,21 @@ public class CustomerInfo {
 
 	@Autowired
 	private BcaClientvendorRepository bcaClientvendorRepository;
+
+	@Autowired
+	private BcaLabelRepository bcaLabelRepository;
+
+	@Autowired
+	private BcaAccountRepository bcaAccountRepository;
+
+	@Autowired
+	private BcaBillingaddressRepository bcaBillingaddressRepository;
+
+	@Autowired
+	private BcaShippingaddressRepository bcaShippingaddressRepository;
+	
+	@Autowired
+	private BcaBsaddressRepository bcaBsaddressRepository;
 
 	public ArrayList customerDetails(String compId) {
 		Connection con = null;
@@ -919,50 +941,74 @@ public class CustomerInfo {
 	}
 
 	public ArrayList labelTypeDetails() {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
 		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
-		ResultSet rs = null;
-		con = db.getConnection();
 
 		try {
-			pstmt = con.prepareStatement(
-					"select ID,LabelType,Mar_Top,Mar_Left,Size_Width,Size_Height,Spacing_Hor,Spacing_Vert from bca_label order by LabelType");
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			List<BcaLabel> bcaLabel = bcaLabelRepository.findAllByOrderByLabelType();
+			for (BcaLabel rs : bcaLabel) {
 				CustomerDto label = new CustomerDto();
-				label.setLabelType(rs.getInt("ID"));
-				label.setLabelName(rs.getString("LabelType"));
-				label.setTopMargin(rs.getString("Mar_Top"));
-				label.setLeftMargin(rs.getString("Mar_Left"));
-				label.setLabelWidth(rs.getString("Size_Width"));
-				label.setLabelHeight(rs.getString("Size_Height"));
-				label.setVertical(rs.getString("Spacing_Vert"));
-				label.setHorizon(rs.getString("Spacing_Hor"));
+
+				label.setLabelType(rs.getId());
+				label.setLabelName(rs.getLabelType());
+				label.setTopMargin(String.valueOf(rs.getMarTop()));
+				label.setLeftMargin(String.valueOf(rs.getMarLeft()));
+				label.setLabelWidth(String.valueOf(rs.getSizeWidth()));
+				label.setLabelHeight(String.valueOf(rs.getSizeHeight()));
+				label.setVertical(String.valueOf(rs.getSpacingVert()));
+				label.setHorizon(String.valueOf(rs.getSpacingHor()));
 				objList.add(label);
-
 			}
 
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 		return objList;
 	}
+//	public ArrayList labelTypeDetails() {
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ArrayList<CustomerDto> objList = new ArrayList<CustomerDto>();
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//
+//		try {
+//			pstmt = con.prepareStatement(
+//					"select ID,LabelType,Mar_Top,Mar_Left,Size_Width,Size_Height,Spacing_Hor,Spacing_Vert from bca_label order by LabelType");
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				CustomerDto label = new CustomerDto();
+//				label.setLabelType(rs.getInt("ID"));
+//				label.setLabelName(rs.getString("LabelType"));
+//				label.setTopMargin(rs.getString("Mar_Top"));
+//				label.setLeftMargin(rs.getString("Mar_Left"));
+//				label.setLabelWidth(rs.getString("Size_Width"));
+//				label.setLabelHeight(rs.getString("Size_Height"));
+//				label.setVertical(rs.getString("Spacing_Vert"));
+//				label.setHorizon(rs.getString("Spacing_Hor"));
+//				objList.add(label);
+//
+//			}
+//
+//		} catch (SQLException ee) {
+//			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return objList;
+//	}
 
 	public void saveLabel(CustomerDto form) {
 		Connection con = null;
@@ -1337,7 +1383,7 @@ public class CustomerInfo {
 			}
 		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class CustomerInfo and  method -UpdateCustomer " + ee.toString());
-		} 
+		}
 //		finally {
 //			try {
 //				if (stmt != null) {
@@ -1768,76 +1814,110 @@ public class CustomerInfo {
 
 	public boolean deleteCustomer(String cvID, String compId) {
 		boolean ret = false;
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = null;
-		String sqlString = null;
+		
 		try {
-			db = new SQLExecutor();
-			con = db.getConnection();
-			sqlString = "UPDATE bca_clientvendor SET active=0, status='0', deleted=1 WHERE clientvendorId=? and status in ('U','N') and CompanyID=?";
-
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, cvID);
-			pstmt.setString(2, compId);
-			pstmt.executeUpdate();
-			pstmt.close();
-
+			
+			bcaClientvendorRepository.updateActiveAndStatusAndDeletedByCompanyIdAndClientVendorIdAndStatusIn(0, "0", 1,
+					Long.parseLong(compId), Integer.parseInt(cvID), Arrays.asList("U", "N"));
+			
 			// update bca_account....
-			sqlString = "UPDATE bca_account SET Active='0' WHERE clientvendorid=?";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, cvID);
-			pstmt.executeUpdate();
-			pstmt.close();
+			bcaAccountRepository.updateActiveByClientVendorId(Integer.parseInt(cvID));
+
+
 
 			// update bca_bsaddress....
-			sqlString = "UPDATE bca_bsaddress SET status='0' WHERE clientvendorid=? and status in ('N','U')";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, cvID);
-			pstmt.executeUpdate();
-			pstmt.close();
+			bcaBsaddressRepository.updateStatusByClientVendorIdAndStatus(Integer.parseInt(cvID), Arrays.asList("N","U"));
+			
 
 			// update bca_billingaddress....
-			sqlString = "UPDATE bca_billingaddress SET status='0' WHERE clientvendorid=? and status in ('N','U')";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, cvID);
-			pstmt.executeUpdate();
-			pstmt.close();
+			bcaBillingaddressRepository.updateStatusByClientVendorIdAndStatusIn("0", Integer.parseInt(cvID), Arrays.asList("N","U"));
+
 
 			// update bca_shippingaddress....
-			sqlString = "UPDATE bca_shippingaddress SET status='0' WHERE clientvendorid=? and status in ('N','U')";
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, cvID);
-			pstmt.executeUpdate();
-			pstmt.close();
+			bcaShippingaddressRepository.updateStatusByClientVendorIdAndStatusIn("0", Integer.parseInt(cvID), Arrays.asList("N","U"));
+			
 
-			// update bca_creditcard....
-//			sqlString = "UPDATE bca_cvcreditcard SET active=0 WHERE clientvendorid=?";
-//
-//			pstmt = con.prepareStatement(sqlString);
-//			pstmt.setString(1, cvID);
-//			pstmt.executeUpdate();
-//			pstmt.close();
 			bcaCvcreditcardRepository.updateByActiveAndClientVendorId(Integer.parseInt(cvID));
 			// set flag to indicate success & return value...
 			ret = true;
 		} catch (Exception e) {
 			Loger.log(2, "Exception... CustomerInfo.deleteCustomer(). --->" + e.getMessage());
 			ret = false;
-		} finally {
-			try {
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		} 
 		return ret;
 	}
+//	public boolean deleteCustomer(String cvID, String compId) {
+//		boolean ret = false;
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = null;
+//		String sqlString = null;
+//		try {
+//			db = new SQLExecutor();
+//			con = db.getConnection();
+//			sqlString = "UPDATE bca_clientvendor SET active=0, status='0', deleted=1 WHERE clientvendorId=? and status in ('U','N') and CompanyID=?";
+//
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, cvID);
+//			pstmt.setString(2, compId);
+//			pstmt.executeUpdate();
+//			pstmt.close();
+//
+//			// update bca_account....
+//			sqlString = "UPDATE bca_account SET Active='0' WHERE clientvendorid=?";
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, cvID);
+//			pstmt.executeUpdate();
+//			pstmt.close();
+//
+//			// update bca_bsaddress....
+//			sqlString = "UPDATE bca_bsaddress SET status='0' WHERE clientvendorid=? and status in ('N','U')";
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, cvID);
+//			pstmt.executeUpdate();
+//			pstmt.close();
+//
+//			// update bca_billingaddress....
+//			sqlString = "UPDATE bca_billingaddress SET status='0' WHERE clientvendorid=? and status in ('N','U')";
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, cvID);
+//			pstmt.executeUpdate();
+//			pstmt.close();
+//
+//			// update bca_shippingaddress....
+//			sqlString = "UPDATE bca_shippingaddress SET status='0' WHERE clientvendorid=? and status in ('N','U')";
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, cvID);
+//			pstmt.executeUpdate();
+//			pstmt.close();
+//
+//			// update bca_creditcard....
+////			sqlString = "UPDATE bca_cvcreditcard SET active=0 WHERE clientvendorid=?";
+////
+////			pstmt = con.prepareStatement(sqlString);
+////			pstmt.setString(1, cvID);
+////			pstmt.executeUpdate();
+////			pstmt.close();
+//			bcaCvcreditcardRepository.updateByActiveAndClientVendorId(Integer.parseInt(cvID));
+//			// set flag to indicate success & return value...
+//			ret = true;
+//		} catch (Exception e) {
+//			Loger.log(2, "Exception... CustomerInfo.deleteCustomer(). --->" + e.getMessage());
+//			ret = false;
+//		} finally {
+//			try {
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return ret;
+//	}
 
 	public void getServices(HttpServletRequest request, String compId) {
 

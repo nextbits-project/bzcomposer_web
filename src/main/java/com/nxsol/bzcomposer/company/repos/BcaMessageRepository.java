@@ -13,9 +13,13 @@ import org.springframework.stereotype.Repository;
 public interface BcaMessageRepository extends JpaRepository<BcaMessage, Integer> {
 
 	List<BcaMessage> findByCompany_CompanyIdAndActive(Long companyId, Integer active);
-	
-    List<BcaMessage> findByCompanyAndActive(BcaCompany company, Integer active);
+
+	List<BcaMessage> findByCompanyAndActive(BcaCompany company, Integer active);
 
 	Optional<BcaMessage> findByMessageIdAndCompany_CompanyId(int id, Long companyId);
+
+	List<BcaMessage> findByCompany_CompanyIdAndActiveOrderByName(Long companyId, Integer active);
+	
+	Optional<BcaMessage>findByMessageIdAndActiveLike(int messageId,int active);
 
 }

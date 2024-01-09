@@ -11,4 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface BcaLabelRepository extends JpaRepository<BcaLabel, Integer> {
 	List<BcaLabel> findAllByOrderByLabelType();
 	
+	
+List<BcaLabel> findByIdGreaterThanOrderByIdAsc(Integer id);
+	
 }

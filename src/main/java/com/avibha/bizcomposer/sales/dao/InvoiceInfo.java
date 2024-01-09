@@ -1178,8 +1178,9 @@ public class InvoiceInfo {
 //			if (rs.next()) {
 //				invStyle = rs.getInt(1);
 //			}
-			Optional<BcaPreference> bcaPreference = bcaPreferenceRepository.findByCompany_CompanyId(Long.valueOf(compId));
-			if ( bcaPreference.isPresent())
+			Optional<BcaPreference> bcaPreference = bcaPreferenceRepository
+					.findByCompany_CompanyId(Long.valueOf(compId));
+			if (bcaPreference.isPresent())
 				invStyle = bcaPreference.get().getInvoiceStyle().getInvoiceStyleId();
 		} catch (Exception ee) {
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getDefaultInvoiceStyleNo " + " " + ee.toString());
@@ -3170,7 +3171,7 @@ public class InvoiceInfo {
 			String defaultser = c.getTable_defaultVal();
 
 			String invStyleID = c.getTable_invId();
-			
+
 			bcaClientvendorserviceRepository.deleteByClientVendorId(cvID);
 //			sql = "delete from bca_clientvendorservice where ClientVendorID = ?";
 //			ps = con.prepareStatement(sql);
@@ -3263,11 +3264,12 @@ public class InvoiceInfo {
 			bcaBsaddress.setCountry(country);
 			bcaBsaddress.setProvince(province);
 			bcaBsaddress.setAddressType(addressType);
-			bcaBsaddress.setDateAdded( purchaseInfo.getdate("now()").toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			bcaBsaddress.setDateAdded(
+					purchaseInfo.getdate("now()").toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 			bcaBsaddress.setStatus("U");
-			
+
 			BcaBsaddress save = bcaBsaddressRepository.save(bcaBsaddress);
-			if(save!=null) {
+			if (save != null) {
 				ret = true;
 			}
 ////			
@@ -3303,7 +3305,7 @@ public class InvoiceInfo {
 
 		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class Employee and  method -insertEmployee " + " " + ee.toString());
-		} 
+		}
 //		finally {
 //			try {
 //				if (pstmt != null) {
@@ -4512,43 +4514,44 @@ public class InvoiceInfo {
 		return result;
 	}
 
-	 public TrHistoryLookUp getCustomerPaymentDetailsForCustomerBoardPage(String cvId) {
-	        TrHistoryLookUp hlookup = new TrHistoryLookUp();
+	public TrHistoryLookUp getCustomerPaymentDetailsForCustomerBoardPage(String cvId) {
+		TrHistoryLookUp hlookup = new TrHistoryLookUp();
 
-	        try {
-	        	String sqlString = "SELECT "
-	    				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-	    				+ " WHERE i.ClientVendorID=" + cvId
-	    				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 3 MONTH GROUP BY i.ClientVendorID) AS Amt3Month,"
-	    				+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-	    				+ " WHERE i.ClientVendorID=" + cvId
-	    				+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 1 YEAR GROUP BY i.ClientVendorID) AS Amt1Year,"
-	    				+ "(SELECT SUM(i.Balance) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-	    				+ " WHERE i.ClientVendorID=" + cvId
-	    				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.ClientVendorID) AS TotalOverdueAmt, "
-	    				+ "(SELECT date_format(i.dateadded,'%m-%d-%Y') as DateAdded FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-	    				+ " WHERE i.ClientVendorID=" + cvId
-	    				+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.InvoiceID ORDER BY InvoiceID DESC LIMIT 1) AS LastOrderDate "
-	    				+ " FROM DUAL;";
+		try {
+			String sqlString = "SELECT "
+					+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+					+ " WHERE i.ClientVendorID=" + cvId
+					+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 3 MONTH GROUP BY i.ClientVendorID) AS Amt3Month,"
+					+ "(SELECT SUM(i.Total) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+					+ " WHERE i.ClientVendorID=" + cvId
+					+ " AND i.InvoiceTypeID IN(1,7,10) AND DateAdded >= NOW()-INTERVAL 1 YEAR GROUP BY i.ClientVendorID) AS Amt1Year,"
+					+ "(SELECT SUM(i.Balance) FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+					+ " WHERE i.ClientVendorID=" + cvId
+					+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.ClientVendorID) AS TotalOverdueAmt, "
+					+ "(SELECT date_format(i.dateadded,'%m-%d-%Y') as DateAdded FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+					+ " WHERE i.ClientVendorID=" + cvId
+					+ " AND i.InvoiceTypeID IN(1,7,10) GROUP BY i.InvoiceID ORDER BY InvoiceID DESC LIMIT 1) AS LastOrderDate "
+					+ " FROM DUAL;";
 
-	            Query query = entityManager.createNativeQuery(sqlString);
-	            //query.setParameter(1, cvId);
+			Query query = entityManager.createNativeQuery(sqlString);
+			// query.setParameter(1, cvId);
 
-	            Object[] result = (Object[]) query.getSingleResult();
+			Object[] result = (Object[]) query.getSingleResult();
 
-	            if (result != null) {
-	            	hlookup.setLast3MonthAmt(result[0] != null ? Double.parseDouble(truncate(result[0].toString())) : 0.0);
-	                hlookup.setLast1YearAmt(result[1] != null ? Double.parseDouble(truncate(result[1].toString())) : 0.0);
-	                hlookup.setTotalOverdueAmt(result[2] != null ? Double.parseDouble(truncate(result[2].toString())) : 0.0);
-	                hlookup.setLastOrderDate(result[3] != null ? result[3].toString() : "");
-	            }
-	        } catch (Exception ex) {
-	            // Handle exceptions
-	            ex.printStackTrace();
-	        }
-	        return hlookup;
-	    }
-	 
+			if (result != null) {
+				hlookup.setLast3MonthAmt(result[0] != null ? Double.parseDouble(truncate(result[0].toString())) : 0.0);
+				hlookup.setLast1YearAmt(result[1] != null ? Double.parseDouble(truncate(result[1].toString())) : 0.0);
+				hlookup.setTotalOverdueAmt(
+						result[2] != null ? Double.parseDouble(truncate(result[2].toString())) : 0.0);
+				hlookup.setLastOrderDate(result[3] != null ? result[3].toString() : "");
+			}
+		} catch (Exception ex) {
+			// Handle exceptions
+			ex.printStackTrace();
+		}
+		return hlookup;
+	}
+
 //	public TrHistoryLookUp getCustomerPaymentDetailsForCustomerBoardPage(String cvId) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -4630,7 +4633,9 @@ public class InvoiceInfo {
 //				"select i from BcaInvoice as i inner join BcaInvoiceType as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
 //						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
 		StringBuffer query = new StringBuffer(
-				"select i from BcaInvoice as i inner join i.invoiceType as it where "
+
+				"select i from BcaInvoice as i inner join BcaInvoicetype as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
+
 						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
 //		if (cond.equalsIgnoreCase("ShowAll")) {
 //			Loger.log("The string of showall is " + sqlString);
