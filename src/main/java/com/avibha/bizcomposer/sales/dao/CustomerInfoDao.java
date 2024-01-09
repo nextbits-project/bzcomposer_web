@@ -1805,12 +1805,12 @@ public class CustomerInfoDao {
 			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(paymentTypeId);
 			if (paymentType.isPresent())
 				scv.setPaymentType(paymentType.get());
-			if (null != c.getCcType()) {
-				Optional<BcaCreditcardtype> creditcardtype = bcaCreditcardtypeRepository
-						.findById(Integer.parseInt(c.getCcType()));
-				if (creditcardtype.isPresent())
-					scv.setCctype(creditcardtype.get());
-			}
+//			if (null != c.getCcType()) {
+//				Optional<BcaCreditcardtype> creditcardtype = bcaCreditcardtypeRepository
+//						.findById(Integer.parseInt(c.getCcType())); 
+//				if (creditcardtype.isPresent())
+//					scv.setCctype(creditcardtype.get());
+//			}
 			if (null != c.getCustomerGroup())
 				scv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
 			scv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
@@ -1899,9 +1899,9 @@ public class CustomerInfoDao {
 
 //	Insert Customer
 	public boolean insertCustomer(CustomerDto c, String compID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement ps = null, pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement ps = null, pstmt = null;
 		boolean ret = false;
 		try {
 			String oBal = "0.0";
@@ -1993,8 +1993,8 @@ public class CustomerInfoDao {
 			if (null != c.getCustomerGroup())
 				bcv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
 
-			BcaClientvendor save = bcaClientvendorRepository.save(bcv);
-			if (null != save) {
+			BcaClientvendor cvSaved = bcaClientvendorRepository.save(bcv);
+			if (null != cvSaved) {
 				ret = true;
 				insertCustomerStorage(c, compID);
 			}
@@ -2131,50 +2131,51 @@ public class CustomerInfoDao {
 				java.sql.Date d = new java.sql.Date(new Date().getTime());
 
 				for (i = 0; i < temp.length; i++) {
-//					BcaClientvendorservice bcvs=new BcaClientvendorservice();
-//					bcvs.setClientVendor(save);
-//					bcvs.setDateAdded(null);
-//					bcvs.setCompany(null);
-//					bcvs.setInvoiceStyleId(null);
-//					bcvs.setDefaultService(null);
-//					bcvs.setServiceId(null);
-//					bcvs.setSalePrice(null);
+					BcaClientvendorservice bcvs=new BcaClientvendorservice();
+					bcvs.setClientVendor(cvSaved);
+					bcvs.setDateAdded(cvSaved.getDateAdded());
+					bcvs.setCompany(cvSaved.getCompany());
+					bcvs.setInvoiceStyleId(Integer.parseInt(temp2[i]));
+//					bcvs.setDefaultService(temp3[i]);
+//					bcvs.setServiceId(temp3[i]);
+					bcvs.setSalePrice(null);
 
-					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
-					ps = con.prepareStatement(sql);
-					ps.setInt(1, cvID);
-					ps.setDate(2, d);
-					ps.setInt(3, Integer.parseInt(compID));
-					ps.setInt(4, Integer.parseInt(temp2[i]));
-					ps.setFloat(5, Float.parseFloat(temp3[i]));
-					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser))
-						ps.setInt(6, 1);
-					else
-						ps.setInt(6, 0);
-					ps.setInt(7, Integer.parseInt(temp[i]));
-
-					ps.executeUpdate();
+//					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
+//					ps = con.prepareStatement(sql);
+//					ps.setInt(1, cvID);
+//					ps.setDate(2, d);
+//					ps.setInt(3, Integer.parseInt(compID));
+//					ps.setInt(4, Integer.parseInt(temp2[i]));
+//					ps.setFloat(5, Float.parseFloat(temp3[i]));
+//					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser))
+//						ps.setInt(6, 1);
+//					else
+//						ps.setInt(6, 0);
+//					ps.setInt(7, Integer.parseInt(temp[i]));
+//
+//					ps.executeUpdate();
 				}
 			}
 			// -------------------Code to save services---END-----------------------
 		} catch (Exception ee) {
 			Loger.log(2, "SQLException in Class CustomerInfo,  method -insertCustomer " + ee.toString());
 
-		} finally {
-			try {
-				if (ps != null) {
-					db.close(ps);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		} 
+//		finally {
+//			try {
+//				if (ps != null) {
+//					db.close(ps);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
 		return ret;
 	}
 

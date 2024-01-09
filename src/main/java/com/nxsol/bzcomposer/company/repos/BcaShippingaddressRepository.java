@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaShippingaddress;
 
 @Repository
@@ -14,10 +15,10 @@ public interface BcaShippingaddressRepository extends JpaRepository<BcaShippinga
 
 	List<BcaShippingaddress> findDistinctByStatusLikeOrStatusLikeAndActiveAndIsDefault(String status1, String status2,
 			Integer active, Integer isDefault);
-	
-	
+
 	@Query("select bi from BcaShippingaddress  bi where bi.clientVendor.clientVendorId = :clientVendorId and bi.addressId = :addressId")
-	BcaShippingaddress findByClientVendorIdAndAddressId(@Param("clientVendorId")Integer clientVendorId ,@Param("addressId") Integer addressId);
+	BcaShippingaddress findByClientVendorIdAndAddressId(@Param("clientVendorId") Integer clientVendorId,
+			@Param("addressId") Integer addressId);
 
-
+	List<BcaShippingaddress> findByClientVendor(BcaClientvendor bcaClientvendor);
 }
