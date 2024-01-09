@@ -1896,7 +1896,8 @@ public class CustomerInfoDao {
 //		}
 		return ret;
 	}
-
+	@Autowired
+	private VendorCategory vc;
 //	Insert Customer
 	public boolean insertCustomer(CustomerDto c, String compID) {
 //		SQLExecutor db = new SQLExecutor();
@@ -1916,7 +1917,7 @@ public class CustomerInfoDao {
 			if (c.getExtCredit() != null && c.getExtCredit().trim().length() > 0)
 				exCredit = c.getExtCredit();
 
-			VendorCategory vc = new VendorCategory();
+			//VendorCategory vc = new VendorCategory();
 			String vcName = vc.CVCategory(c.getType());
 
 			BcaClientvendor bcv = new BcaClientvendor();
