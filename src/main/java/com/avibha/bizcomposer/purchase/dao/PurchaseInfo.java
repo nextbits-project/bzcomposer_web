@@ -1225,9 +1225,9 @@ public class PurchaseInfo {
 			 * @param cvId
 			 */
 
-			if (address.getIsDefault() == 1) {
-				updateClientInfo(address);
-			}
+//			if (address.getIsDefault() == 1) {
+//				updateClientInfo(address);
+//			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1580,6 +1580,32 @@ public class PurchaseInfo {
 		}
 	}
 
+	public void updateClientInfo(int billingAdd, int shippingAdd, int cvID) {
+
+//		int billingAddressId = -1;
+//		int shippingAddressId = -1;
+
+//		try {
+//			billingAddressId = bcaBillingaddressRepository.findFirstByOrderByAddressIdDesc().getAddressId();
+//			shippingAddressId = bcaShippingaddressRepository.findFirstByOrderByAddressIdDesc().getAddressId();
+//
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		}
+
+		try {
+			List<SmdCvinfo> smdCvInfo = smdCvinfoRepository.findByClientVendor_ClientVendorId(cvID);
+			for (SmdCvinfo smd : smdCvInfo) {
+				smd.setBillingAddressId(billingAdd);
+				smd.setShippingAddressId(shippingAdd);
+				smdCvinfoRepository.save(smd);
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
 //	public static void updateClientInfo(TblBSAddress2 address) {
 //		Statement stmt = null;
 //		ResultSet rs = null;
@@ -1662,6 +1688,7 @@ public class PurchaseInfo {
 			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(cvID);
 			if (clientVendor.isPresent())
 				bcvfCharges.setClientVendor(clientVendor.get());
+			bcvfCharges.setClientVendorId(cvID);
 			bcvfCharges.setUseIndividual(useIndividual > 0 ? true : false);
 			if (aIRate == null || aIRate.trim().equals(""))
 				aIRate = "0";
