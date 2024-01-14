@@ -2209,7 +2209,7 @@ public class InvoiceInfo {
 //			Loger.log(sqlString);
 //			rs = pstmt.executeQuery();
 
-			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository.searchCustomer(1L,
+			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository.searchCustomer(Long.valueOf(compId),
 					Integer.valueOf(cvId));
 
 			List<BcaClientvendorservice> bcvServiceList = bcaClientvendorserviceRepository
@@ -2361,8 +2361,11 @@ public class InvoiceInfo {
 				}
 				customer.setIsMobilePhoneNumber(bcv.getIsMobilePhoneNumber());
 				customer.setMiddleName(bcv.getMiddleName());
-				customer.setDateInput(bcv.getDateInput().format(formatter));
-				customer.setTerminatedDate(bcv.getDateTerminated().format(formatter));
+//				customer.setDateInput(bcv.getDateInput().format(formatter));
+//				customer.setTerminatedDate(bcv.getDateTerminated().format(formatter));
+				customer.setDateInput(bcv.getDateInput() != null ? bcv.getDateInput().format(formatter) : null);
+				customer.setTerminatedDate(bcv.getDateTerminated() != null ? bcv.getDateTerminated().format(formatter) : null);
+
 				customer.setTerminated(bcv.getIsTerminated());
 			}
 

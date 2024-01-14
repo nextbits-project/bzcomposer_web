@@ -65,7 +65,7 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private PurchaseInfo purchaseInfo;
-	
+
 	@Autowired
 	private PurchaseOrderInfoDao purchaseOrderInfoDao;
 
@@ -80,16 +80,16 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private PayMethod pmethod;
-	
+
 	@Autowired
 	private Shipping ship;
 
 	@Autowired
 	private CreditCard cc;
-	
+
 	@Autowired
 	private VendorCategory cv;
-	
+
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
@@ -129,9 +129,9 @@ public class SalesDetailsDao {
 				.setFsAssessFinanceCharge("on".equalsIgnoreCase(request.getParameter("AssessFinanceChk")) ? "1" : "0");
 		customerDto
 				.setFsMarkFinanceCharge("on".equalsIgnoreCase(request.getParameter("FChargeInvoiceChk")) ? "1" : "0");
-//		customerDto.setStateName(compId);
-//		customerDto.setCountryName(compId);
-//		customerDto.setCityName(compId);
+//		customerDto.setAnnualIntrestRate(request.getParameter("annualIntrestRate"));
+//		customerDto.setMinFCharges(request.getParameter("minFCharges"));
+//		customerDto.setGracePrd(request.getParameter("gracePrd"));
 		try {
 			boolean addCust = customerInfoDao.insertCustomer(customerDto, compId);
 			if (addCust) {

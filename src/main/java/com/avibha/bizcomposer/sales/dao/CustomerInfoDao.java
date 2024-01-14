@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1608,8 +1609,10 @@ public class CustomerInfoDao {
 		return objList;
 	}
 
+	@Autowired
 	private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 
+	@Transactional
 	public boolean makeCustomerCardDefault(String cvID, String cardID) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -1621,7 +1624,7 @@ public class CustomerInfoDao {
 //			String sqlString = "select * from bca_cvcreditcard where DEFAULTCard=1 AND ClientVendorID=" + cvID;
 //			stmt = con.createStatement();
 //			rs = stmt.executeQuery(sqlString);
-		List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByDefaultCardAndClientVendorId(1,
+		List<BcaCvcreditcard> bcaCvcreditcards = bcaCvcreditcardRepository.findByDefaultCardAndClientVendorId(true,
 				Integer.parseInt(cvID));
 //			if (rs.next()) {
 //				long ccID = rs.getInt("CreditCardID");
@@ -1635,12 +1638,12 @@ public class CustomerInfoDao {
 //				pstmt = con.prepareStatement(sqlString);
 
 //				int count = pstmt.executeUpdate(sqlString);
-			int count = bcaCvcreditcardRepository.updateByCreditCardId(0, ccID);
+			int count = bcaCvcreditcardRepository.updateByCreditCardId(false, ccID);
 		}
 //			sqlString = "update bca_cvcreditcard set DEFAULTCard=1 where CreditCardID = " + cardID;
 //			pstmt2 = con.prepareStatement(sqlString);
 //			int count = pstmt2.executeUpdate(sqlString);
-		int count = bcaCvcreditcardRepository.updateByCreditCardId(1, Long.valueOf(cardID));// JPA Check
+		int count = bcaCvcreditcardRepository.updateByCreditCardId(true, Long.valueOf(cardID));// JPA Check
 		if (count > 0) {
 			valid = true;
 		}
@@ -2125,52 +2128,53 @@ public class CustomerInfoDao {
 					c.getGracePrd(), assFCharge, markFCharge);
 
 			// -----------------------code to save services---START------------------------
-			int i;
-			String sql;
-			String serviceID = c.getTable_serID();
-			String serviceBal = c.getTable_bal();
-			String defaultser = c.getTable_defaultVal();
-			String invStyleID = c.getTable_invId();
+			//Service section is disabled in the GUI
+
+//			int i;
+//			String sql;
+//			String serviceID = c.getTable_serID();
+//			String serviceBal = c.getTable_bal();
+//			String defaultser = c.getTable_defaultVal();
+//			String invStyleID = c.getTable_invId();
 			// Loger.log("SERVICE----------------------->");
+//			String temp[] = null, temp2[] = null, temp3[] = null;
+//			if ((serviceID != "" && serviceID != null)
+//					&& (invStyleID != "" && invStyleID != null) & (serviceBal != "" && serviceBal != null)) {
+//				temp = serviceID.split(";"); // serviceID is in form like
+//				// 3;6;8;
+//				temp2 = invStyleID.split(";");
+//				temp3 = serviceBal.split(";");
+//			}
 
-			String temp[] = null, temp2[] = null, temp3[] = null;
-			if ((serviceID != "" && serviceID != null)
-					&& (invStyleID != "" && invStyleID != null) & (serviceBal != "" && serviceBal != null)) {
-				temp = serviceID.split(";"); // serviceID is in form like
-				// 3;6;8;
-				temp2 = invStyleID.split(";");
-				temp3 = serviceBal.split(";");
-			}
-
-			if ((temp != null) || (temp2 != null) || (temp3 != null)) {
-				java.sql.Date d = new java.sql.Date(new Date().getTime());
-
-				for (i = 0; i < temp.length; i++) {
-					BcaClientvendorservice bcvs = new BcaClientvendorservice();
-					bcvs.setClientVendor(cvSaved);
-					bcvs.setDateAdded(cvSaved.getDateAdded());
-					bcvs.setCompany(cvSaved.getCompany());
-					bcvs.setInvoiceStyleId(Integer.parseInt(temp2[i]));
-//					bcvs.setDefaultService(temp3[i]);
-//					bcvs.setServiceId(temp3[i]);
-					bcvs.setSalePrice(0.00);
-
-//					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
-//					ps = con.prepareStatement(sql);
-//					ps.setInt(1, cvID);
-//					ps.setDate(2, d);
-//					ps.setInt(3, Integer.parseInt(compID));
-//					ps.setInt(4, Integer.parseInt(temp2[i]));
-//					ps.setFloat(5, Float.parseFloat(temp3[i]));
-//					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser))
-//						ps.setInt(6, 1);
-//					else
-//						ps.setInt(6, 0);
-//					ps.setInt(7, Integer.parseInt(temp[i]));
+//			if ((temp != null) || (temp2 != null) || (temp3 != null)) {
+//				java.sql.Date d = new java.sql.Date(new Date().getTime());
 //
-//					ps.executeUpdate();
-				}
-			}
+//				for (i = 0; i < temp.length; i++) {
+//					BcaClientvendorservice bcvs = new BcaClientvendorservice();
+//					bcvs.setClientVendor(cvSaved);
+//					bcvs.setDateAdded(cvSaved.getDateAdded());
+//					bcvs.setCompany(cvSaved.getCompany());
+//					bcvs.setInvoiceStyleId(Integer.parseInt(temp2[i]));
+////					bcvs.setDefaultService(temp3[i]);
+////					bcvs.setServiceId(temp3[i]);
+//					bcvs.setSalePrice(0.00);
+//
+////					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
+////					ps = con.prepareStatement(sql);
+////					ps.setInt(1, cvID);
+////					ps.setDate(2, d);
+////					ps.setInt(3, Integer.parseInt(compID));
+////					ps.setInt(4, Integer.parseInt(temp2[i]));
+////					ps.setFloat(5, Float.parseFloat(temp3[i]));
+////					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser))
+////						ps.setInt(6, 1);
+////					else
+////						ps.setInt(6, 0);
+////					ps.setInt(7, Integer.parseInt(temp[i]));
+////
+////					ps.executeUpdate();
+//				}
+//			}
 			// -------------------Code to save services---END-----------------------
 		} catch (Exception ee) {
 			Loger.log(2, "SQLException in Class CustomerInfo,  method -insertCustomer " + ee.toString());
