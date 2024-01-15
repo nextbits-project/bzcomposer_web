@@ -33,6 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.*;
 import java.util.*;
 
@@ -460,7 +463,13 @@ public class SalesDetailsDao {
 						invoiceID = Integer.parseInt(hlookup.getInvoiceId());
 					}
 				}
-				cust.setTotalOverdueAmt(balance);
+				// Convert the double value to BigDecimal and round it
+				//BigDecimal roundedBalance = new BigDecimal(balance).setScale(2, RoundingMode.HALF_UP);
+				BigDecimal roundedBalance= formatToTwoDecimalPlaces(balance);
+				// If you need it back as a double
+				double roundedBalanceValue = roundedBalance.doubleValue();
+				
+				cust.setTotalOverdueAmt(roundedBalanceValue);
 			}
 		}
 		request.setAttribute("CustomerDetails", customerList);
@@ -471,7 +480,9 @@ public class SalesDetailsDao {
 		}
 		return firstCvID;
 	}
-
+	public static BigDecimal formatToTwoDecimalPlaces(double value) {
+        return new BigDecimal(String.valueOf(value)).setScale(2, RoundingMode.HALF_UP);
+    }
 	public ArrayList<CustomerDto> getCustomerSortByFirstName(HttpServletRequest request, CustomerDto frm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
