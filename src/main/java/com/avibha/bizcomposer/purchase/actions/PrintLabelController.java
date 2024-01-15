@@ -6,24 +6,15 @@
 package com.avibha.bizcomposer.purchase.actions;
 
 import com.avibha.bizcomposer.employee.dao.Label;
-import com.avibha.bizcomposer.purchase.dao.PurchaseDetails;
 import com.avibha.bizcomposer.purchase.dao.PurchaseDetailsDao;
 import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
 import com.avibha.bizcomposer.sales.dao.SalesDetails;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
-import com.avibha.common.utility.Path;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -89,8 +80,8 @@ public class PrintLabelController{
 		else if (action.equalsIgnoreCase("UpdateLabel")) { 
 //			PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 			request.setAttribute("Vendor","Vendor");
-			Label lbl = new Label();
-			ArrayList labelList = lbl.getLabelList();
+//			Label lbl = new Label();
+			ArrayList labelList = label.getLabelList();
 			request.setAttribute("Labels", labelList);
 //			SalesDetails sd = new SalesDetails();
 			purchaseDetailsDao.getLabel(request, printLabelDto);

@@ -169,6 +169,7 @@ public class PurchaseDetailsDao {
 				request.getSession().setAttribute("actionMsg", "Vendor Information is Successfully Added!");
 			}
 		}catch (Exception e) {
+			e.printStackTrace();
 			request.setAttribute("Status",new ActionMessage("Vendor Information is Not Insert !"));
 		}
 	}

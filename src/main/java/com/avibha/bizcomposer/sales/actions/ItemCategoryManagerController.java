@@ -1,22 +1,17 @@
 package com.avibha.bizcomposer.sales.actions;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.avibha.bizcomposer.sales.dao.ItemCategoryManagerDao;
 import com.avibha.bizcomposer.sales.forms.ItemCategoryDto;
 import com.avibha.common.utility.Path;
-import com.nxsol.bzcomposer.company.domain.ItemCategoryDetails;
 
 /**
  * @author sarfrazmalik

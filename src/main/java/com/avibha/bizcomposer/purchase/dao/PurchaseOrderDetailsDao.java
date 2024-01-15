@@ -263,6 +263,7 @@ public class PurchaseOrderDetailsDao {
 				request.getSession().setAttribute("SaveStatus", "Purchase Order is successfully deleted.");
 				val = true;
 			} catch (Exception e) {
+				e.printStackTrace();
 				Loger.log(e.toString());
 			}
 		}
@@ -298,6 +299,7 @@ public class PurchaseOrderDetailsDao {
 			address.setAddressWithVendorDto(form, cvID);
 			purchaseInfo.insertBillingShippingAddress(address, form.getAddressType(), true);
 		} catch (Exception e) {
+			
 			// TODO: handle exception
 			e.printStackTrace();
 		}

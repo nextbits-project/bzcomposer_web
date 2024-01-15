@@ -3,6 +3,8 @@ package com.nxsol.bzcomposer.company.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,6 +15,10 @@ import javax.persistence.Table;
 public class SmdCvinfo {
 
     @Id
+    @Column(name="SmdCvInfoID", nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int smdCvInfoId;
+    
     @Column(name= "Company", nullable = false, updatable = false, length = 100)
     private String company;
 
@@ -80,7 +86,15 @@ public class SmdCvinfo {
     @JoinColumn(name = "ClientVendorID")
     private BcaClientvendor clientVendor;
 
-    public String getCompany() {
+    public int getSmdCvInfoId() {
+		return smdCvInfoId;
+	}
+
+	public void setSmdCvInfoId(int smdCvInfoId) {
+		this.smdCvInfoId = smdCvInfoId;
+	}
+
+	public String getCompany() {
         return company;
     }
 

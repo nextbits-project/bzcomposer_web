@@ -31,7 +31,7 @@ public interface BcaBsaddressRepository extends JpaRepository<BcaBsaddress, Inte
 
 	@Modifying
 	@Transactional
-	@Query("update BcaBsaddress bs set bs.status = '0' where bs.clientVendorId = :clientVendorId and bs.status = :status ")
+	@Query("update BcaBsaddress bs set bs.status = '0' where bs.clientVendorId = :clientVendorId and bs.status IN :status ")
 	int updateStatusByClientVendorIdAndStatus(@Param("clientVendorId") Integer clientVendorId,
 			@Param("status") List<String> status);
 

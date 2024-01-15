@@ -90,6 +90,8 @@ public class SalesDetailsDao {
 	@Autowired
 	private VendorCategory cv;
 	
+	
+	
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
@@ -217,12 +219,12 @@ public class SalesDetailsDao {
 		request.setAttribute("titleList", t.getTitleList(cid));
 
 		// country List
-		CountryState cs = new CountryState();
-		request.setAttribute("cList", cs.getCountry());
+//		CountryState cs = new CountryState();
+		request.setAttribute("cList", countryState.getCountry());
 
 		// state List
-		CountryState cs1 = new CountryState();
-		request.setAttribute("sList", cs1.getStates(cid));
+//		CountryState cs1 = new CountryState();
+		request.setAttribute("sList", countryState.getStates(cid));
 
 		// Term List
 //		Term tr = new Term();
@@ -247,9 +249,9 @@ public class SalesDetailsDao {
 		// CreditTerm List
 		request.setAttribute("CreditTermList", cc.getCreditTermList(cid));
 
-		ItemInfoDao item = new ItemInfoDao();
+//		ItemInfoDao item = new ItemInfoDao();
 		ArrayList accountList = new ArrayList();
-		accountList = item.fillAccountList(cid);
+		accountList = itemInfoDao.fillAccountList(cid);
 		sess.setAttribute("AccountList", accountList);
 
 	}
@@ -475,8 +477,8 @@ public class SalesDetailsDao {
 	public ArrayList<CustomerDto> getCustomerSortByFirstName(HttpServletRequest request, CustomerDto frm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		CustomerInfoDao customer = new CustomerInfoDao();
-		ArrayList<CustomerDto> CustomerDetails = customer.customerDetailsSortByFirstName(compId);
+//		CustomerInfoDao customer = new CustomerInfoDao();
+		ArrayList<CustomerDto> CustomerDetails = customerInfoDao.customerDetailsSortByFirstName(compId);
 		request.setAttribute("CustomerDetails", CustomerDetails);
 		return CustomerDetails;
 	}
@@ -538,8 +540,8 @@ public class SalesDetailsDao {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		sess.setAttribute("CustID", cvId);
-		CustomerInfoDao customer = new CustomerInfoDao();
-		ArrayList CustomerDetails = customer.SearchCustomer(compId, cvId, form);
+//		CustomerInfoDao customer = new CustomerInfoDao();
+		ArrayList CustomerDetails = customerInfoDao.SearchCustomer(compId, cvId, form);
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		invoiceInfoDao.getServices(request, compId, cvId);
 		request.setAttribute("CustomerDetails", CustomerDetails);
@@ -559,9 +561,9 @@ public class SalesDetailsDao {
 	public void UpdateCustomer(HttpServletRequest request, CustomerDto cfrm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		CustomerInfoDao customer = new CustomerInfoDao();
+//		CustomerInfoDao customer = new CustomerInfoDao();
 		String cvId = (String) sess.getAttribute("editedCVID");
-		customer.UpdateCustomer(compId, cvId);
+		customerInfoDao.UpdateCustomer(compId, cvId);
 
 		String istaxable = request.getParameter("isTaxable");
 		String isAlsoClient = request.getParameter("isAlsoClient");
@@ -587,7 +589,7 @@ public class SalesDetailsDao {
 		cfrm.setAnnualIntrestRate(request.getParameter("AnualRate"));
 		cfrm.setMinFCharges(request.getParameter("MinFinance"));
 		cfrm.setGracePrd(request.getParameter("GracePeriod"));
-		boolean updateCust = customer.updateInsertCustomer(cvId, cfrm, compId, istax, isclient, indCharge, aFCharge,
+		boolean updateCust = customerInfoDao.updateInsertCustomer(cvId, cfrm, compId, istax, isclient, indCharge, aFCharge,
 				"U");
 		if (updateCust) {
 			request.setAttribute("SaveStatus", "Customer updated successfully!");
@@ -612,11 +614,11 @@ public class SalesDetailsDao {
 	public void UpdateCustInfo(HttpServletRequest request, CustomerDto uform) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		CustomerInfoDao customer = new CustomerInfoDao();
-		InvoiceInfoDao customer1 = new InvoiceInfoDao();
+//		CustomerInfoDao customer = new CustomerInfoDao();
+//		InvoiceInfoDao customer1 = new InvoiceInfoDao();
 		// String cvId=(String)sess.getAttribute("CustID");
 		String cvId = uform.getCustId();
-		customer.UpdateCustomer(compId, cvId);
+		customerInfoDao.UpdateCustomer(compId, cvId);
 
 		String istaxable = uform.getTaxAble();
 		Loger.log("The value of taxable is " + uform.getTaxAble());
@@ -661,7 +663,7 @@ public class SalesDetailsDao {
 			fICharge = 1;
 		}
 		// UpdateInvoiceForm cfrm= new UpdateInvoiceForm();
-		customer1.insertCustomer(cvId, uform, compId, istax, isclient, indCharge, aFCharge, fICharge, "U");
+		invoiceInfoDao.insertCustomer(cvId, uform, compId, istax, isclient, indCharge, aFCharge, fICharge, "U");
 		getCustomerDetails(cvId, request, uform);
 	}
 
@@ -683,15 +685,15 @@ public class SalesDetailsDao {
 	public void getItemDetails(HttpServletRequest request) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		String inventoryID = request.getParameter("InvId");
-		ItemInfoDao item = new ItemInfoDao();
-		request.setAttribute("ItemDetails", item.getItemDetails(compId, inventoryID));
+//		ItemInfoDao item = new ItemInfoDao();
+		request.setAttribute("ItemDetails", itemInfoDao.getItemDetails(compId, inventoryID));
 	}
 
 	public void getItemNameList(HttpServletRequest request, ItemDto form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
-		ArrayList ItemNameList = item.getItemNameList(compId);
+//		ItemInfoDao item = new ItemInfoDao();
+		ArrayList ItemNameList = itemInfoDao.getItemNameList(compId);
 		sess.setAttribute("ItemNameList", ItemNameList);
 		Loger.log("ItemsList Size:" + ItemNameList.size());
 	}
@@ -699,23 +701,26 @@ public class SalesDetailsDao {
 	public ArrayList ItemsList(HttpServletRequest request, ItemDto form) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
-		ArrayList<ItemDto> itemList = item.getItemList(compId);
+//		ItemInfoDao item = new ItemInfoDao();
+		List<Item> itemCategory = itemInfoDao.getItemCategory(compId);
+		ArrayList<ItemDto> itemList = itemInfoDao.getItemList(compId);
 		sess.setAttribute("ItemDetails", itemList);
+		sess.setAttribute("ItemCategory", itemCategory);
 		Loger.log("ItemsList Size:" + itemList.size());
 		return itemList;
 	}
+	
 
 	public void ItemsDicontinuedList(HttpServletRequest request, ItemDto itemForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
+//		ItemInfoDao item = new ItemInfoDao();
 		ArrayList ItemDetails = new ArrayList();
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
 		String sortBy = itemForm.getSortBy();
-		ItemDetails = item.getDicontinuedItemList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
+		ItemDetails = itemInfoDao.getDicontinuedItemList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
 		sess.setAttribute("ItemDetails", ItemDetails);
 		Loger.log("list Size:" + ItemDetails.size());
 	}
@@ -723,13 +728,13 @@ public class SalesDetailsDao {
 	public void ItemsReportList(HttpServletRequest request, ItemDto itemForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
+//		ItemInfoDao item = new ItemInfoDao();
 		ArrayList ItemDetails = new ArrayList();
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
 		String sortBy = itemForm.getSortBy();
-		ItemDetails = item.getReportItemList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
+		ItemDetails = itemInfoDao.getReportItemList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
 		sess.setAttribute("ItemDetails", ItemDetails);
 		Loger.log("list Size:" + ItemDetails.size());
 	}
@@ -752,13 +757,13 @@ public class SalesDetailsDao {
 	public void DeleteItem(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
+//		ItemInfoDao item = new ItemInfoDao();
 		String invId = request.getParameter("InvId");
-		boolean isChildExists = item.isChildItemExists(invId);
+		boolean isChildExists = itemInfoDao.isChildItemExists(invId);
 		if (isChildExists) {
 			sess.setAttribute("actionMsg", "Selected item has child items!");
 		} else {
-			boolean isDeleted = item.deleteItem(compId, invId);
+			boolean isDeleted = itemInfoDao.deleteItem(compId, invId);
 			if (isDeleted) {
 				sess.setAttribute("actionMsg", "Selected item has deleted successfully!");
 			}
@@ -768,14 +773,14 @@ public class SalesDetailsDao {
 	public void getDamagedInvenotyList(HttpServletRequest request, ItemDto itemForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
+//		ItemInfoDao item = new ItemInfoDao();
 		ArrayList ItemDetails = new ArrayList();
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
 		String sortBy = itemForm.getSortBy();
 		ArrayList damagesItemList = new ArrayList();
-		damagesItemList = item.getDamagedInvList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
+		damagesItemList = itemInfoDao.getDamagedInvList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
 		request.setAttribute("damagesItemList", damagesItemList);
 
 	}
@@ -783,14 +788,14 @@ public class SalesDetailsDao {
 	public void getMissingInventoryList(HttpServletRequest request, ItemDto itemForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
+//		ItemInfoDao item = new ItemInfoDao();
 		ArrayList ItemDetails = new ArrayList();
 		String datesCombo = itemForm.getDatesCombo();
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
 		String sortBy = itemForm.getSortBy();
 		ArrayList missingInventoryList = new ArrayList();
-		missingInventoryList = item.getMissingInventoryList(datesCombo, fromDate, toDate, sortBy, compId, request,
+		missingInventoryList = itemInfoDao.getMissingInventoryList(datesCombo, fromDate, toDate, sortBy, compId, request,
 				itemForm);
 		request.setAttribute("missingInventoryList", missingInventoryList);
 
@@ -799,7 +804,7 @@ public class SalesDetailsDao {
 	public void getReturnInventoryList(HttpServletRequest request, ItemDto itemForm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
+//		ItemInfoDao item = new ItemInfoDao();
 		ArrayList ItemDetails = new ArrayList();
 
 		String datesCombo = itemForm.getDatesCombo();
@@ -808,7 +813,7 @@ public class SalesDetailsDao {
 		String sortBy = itemForm.getSortBy();
 
 		ArrayList returnInventoryList = new ArrayList();
-		returnInventoryList = item.getReturnInventoryList(datesCombo, fromDate, toDate, sortBy, compId, request,
+		returnInventoryList = itemInfoDao.getReturnInventoryList(datesCombo, fromDate, toDate, sortBy, compId, request,
 				itemForm);
 		request.setAttribute("returnInventoryList", returnInventoryList);
 
@@ -817,7 +822,7 @@ public class SalesDetailsDao {
 	public void getInventoryValuationSummary(HttpServletRequest request, ItemDto form1) {
 		HttpSession ss = request.getSession();
 		String compId = (String) ss.getAttribute("CID");
-		ItemInfoDao info = new ItemInfoDao();
+//		ItemInfoDao info = new ItemInfoDao();
 
 		String orderDate1 = form1.getOrderDate1();
 		String orderDate2 = form1.getOrderDate2();
@@ -828,14 +833,14 @@ public class SalesDetailsDao {
 		String sortBy = form1.getSortBy();
 
 		ArrayList invValSummaryList = new ArrayList();
-		invValSummaryList = info.getInventoryValSummary(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
+		invValSummaryList = itemInfoDao.getInventoryValSummary(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
 		request.setAttribute("invValSummaryList", invValSummaryList);
 	}
 
 	public void getInventoryValuationDetail(HttpServletRequest request, ItemDto form1) {
 		HttpSession ss = request.getSession();
 		String compId = (String) ss.getAttribute("CID");
-		ItemInfoDao info = new ItemInfoDao();
+//		ItemInfoDao info = new ItemInfoDao();
 
 		String orderDate1 = form1.getOrderDate1();
 		String orderDate2 = form1.getOrderDate2();
@@ -846,14 +851,14 @@ public class SalesDetailsDao {
 		String sortBy = form1.getSortBy();
 
 		ArrayList getInvValDetail = new ArrayList<>();
-		getInvValDetail = info.getInvValDetail(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
+		getInvValDetail = itemInfoDao.getInvValDetail(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
 		request.setAttribute("getInvValDetail", getInvValDetail);
 	}
 
 	public void getInventoryOrderReport(HttpServletRequest request, ItemDto form1) {
 		HttpSession ss = request.getSession();
 		String compId = (String) ss.getAttribute("CID");
-		ItemInfoDao info = new ItemInfoDao();
+//		ItemInfoDao info = new ItemInfoDao();
 
 		String sortByDay = form1.getSortByDay();
 		String orderDate1 = form1.getOrderDate1();
@@ -865,14 +870,14 @@ public class SalesDetailsDao {
 		String sortBy = form1.getSortBy();
 
 		ArrayList invOrderReport = new ArrayList<>();
-		invOrderReport = info.getInvOrderReport(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
+		invOrderReport = itemInfoDao.getInvOrderReport(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
 		request.setAttribute("invOrderReport", invOrderReport);
 	}
 
 	public void getInventoryStatistics(HttpServletRequest request, ItemDto form1) {
 		HttpSession ss = request.getSession();
 		String compId = (String) ss.getAttribute("CID");
-		ItemInfoDao info = new ItemInfoDao();
+//		ItemInfoDao info = new ItemInfoDao();
 
 		String sortByDay = form1.getSortByDay();
 		String orderDate1 = form1.getOrderDate1();
@@ -884,7 +889,7 @@ public class SalesDetailsDao {
 		String sortBy = form1.getSortBy();
 
 		ArrayList invStatistics = new ArrayList<>();
-		invStatistics = info.getInvStatisticReport(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
+		invStatistics = itemInfoDao.getInvStatisticReport(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
 		request.setAttribute("invStatistics", invStatistics);
 
 	}
@@ -892,7 +897,7 @@ public class SalesDetailsDao {
 	public void getAccountPayableReport(HttpServletRequest request, CustomerDto cform) {
 		HttpSession ss = request.getSession();
 		String compId = (String) ss.getAttribute("CID");
-		CustomerInfoDao info = new CustomerInfoDao();
+//		CustomerInfoDao info = new CustomerInfoDao();
 		String sortByDay = cform.getSortBy();
 		String orderDate1 = cform.getFromDate();
 		String orderDate2 = cform.getToDate();
@@ -901,7 +906,7 @@ public class SalesDetailsDao {
 		String toDate = cform.getToDate();
 		String sortBy = cform.getSortBy();
 
-		ArrayList<CustomerDto> cList = info.getAccountPayableReport(compId, request, datesCombo, fromDate, toDate,
+		ArrayList<CustomerDto> cList = customerInfoDao.getAccountPayableReport(compId, request, datesCombo, fromDate, toDate,
 				sortBy, cform);
 		request.setAttribute("acPayList", cList);
 	}
@@ -909,8 +914,8 @@ public class SalesDetailsDao {
 	public void UpdateItem(HttpServletRequest request, ItemDto itemFrm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
-		item.fillCombo(compId);
+//		ItemInfoDao item = new ItemInfoDao();
+		itemInfoDao.fillCombo(compId);
 		String invId = request.getParameter("InvId");
 		if (invId != null && !invId.isEmpty()) {
 			itemFrm.setInventoryId(invId);
@@ -919,7 +924,7 @@ public class SalesDetailsDao {
 		Loger.log("The Itemsale price is" + itemFrm.getSalePrice());
 		Loger.log("ISCATEGORY____________________________________" + itemFrm.getIscategory());
 
-		boolean status = item.updateItem(compId, itemFrm);
+		boolean status = itemInfoDao.updateItem(compId, itemFrm);
 		if (status) {
 			request.setAttribute("SaveStatus", "Item updated successfully");
 			request.getSession().setAttribute("SaveStatus", "Item updated successfully");
@@ -930,7 +935,7 @@ public class SalesDetailsDao {
 	public void AddItem(HttpServletRequest request, ItemDto itemFrm) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
+//		ItemInfoDao item = new ItemInfoDao();
 		String itemType = request.getParameter("ItemType");
 		if (itemType == null) {
 			itemType = itemFrm.getItemType();
@@ -977,7 +982,7 @@ public class SalesDetailsDao {
 			}
 		}
 		try {
-			boolean status = item.insertItem(compId, str, itemFrm); // Insert new Item
+			boolean status = itemInfoDao.insertItem(compId, str, itemFrm); // Insert new Item
 			itemFrm.setItemCode("");
 			itemFrm.setTectcmd(0);
 			itemFrm.setDiscountAmt("");
@@ -1016,10 +1021,10 @@ public class SalesDetailsDao {
 				}
 			}
 		}
-		ItemInfoDao item = new ItemInfoDao();
-		item.adjustInventory(compId, oldInventory, invSize);
+//		ItemInfoDao item = new ItemInfoDao();
+		itemInfoDao.adjustInventory(compId, oldInventory, invSize);
 		ArrayList ItemDetails = new ArrayList();
-		ItemDetails = item.getItemList(compId);
+		ItemDetails = itemInfoDao.getItemList(compId);
 		sess.removeAttribute("ItemDetails");
 		sess.setAttribute("ItemDetails", ItemDetails);
 		Loger.log("list Size:" + ItemDetails.size());
@@ -1027,31 +1032,31 @@ public class SalesDetailsDao {
 	}
 
 	public void insertItemAsCategory(String compId, ItemDto itemDto) {
-		ItemInfoDao item = new ItemInfoDao();
-		boolean status = item.insertItemAsCategory(compId, itemDto);
+//		ItemInfoDao item = new ItemInfoDao();
+		boolean status = itemInfoDao.insertItemAsCategory(compId, itemDto);
 	}
 
 	public void getAdjustInventoryList(HttpServletRequest request) {
 		String compId = (String) request.getSession().getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
-		ArrayList<ItemDto> ItemList = item.getAdjustInventoryList(compId);
+//		ItemInfoDao item = new ItemInfoDao();
+		ArrayList<ItemDto> ItemList = itemInfoDao.getAdjustInventoryList(compId);
 		request.setAttribute("AdjustInventoryList", ItemList);
 	}
 
 	public void getAdjustInventoryListByDate(HttpServletRequest request) {
 		String invID = request.getParameter("invID");
 		String compId = (String) request.getSession().getAttribute("CID");
-		ItemInfoDao item = new ItemInfoDao();
-		ArrayList<ItemDto> ItemList = item.getAdjustInventoryListByDate(invID, compId);
+//		ItemInfoDao item = new ItemInfoDao();
+		ArrayList<ItemDto> ItemList = itemInfoDao.getAdjustInventoryListByDate(invID, compId);
 		request.setAttribute("AdjustInventoryList", ItemList);
 	}
 
 	public void UpdateInventory(HttpServletRequest request) {
-		ItemInfoDao item = new ItemInfoDao();
+//		ItemInfoDao item = new ItemInfoDao();
 		// if(request.getParameter("createReportFlag").equalsIgnoreCase("true")){
 		// item.AddAdjustInventory(request);
 		// }
-		item.UpdateInventory(request);
+		itemInfoDao.UpdateInventory(request);
 	}
 
 	public void getBillingAddress(InvoiceDto form, HttpServletRequest request) {
@@ -1628,10 +1633,10 @@ public class SalesDetailsDao {
 	}
 
 	public InvoiceDto getInvoiceDetailsByBtnName(HttpServletRequest request, InvoiceDto invoiceDto) {
-		InvoiceInfoDao invoice = new InvoiceInfoDao();
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
-		Long orderNo = invoice.getInvoiceOrderNumberByBtnName(compId, request);
-		ArrayList<InvoiceDto> list = invoice.getRecord(request, invoiceDto, compId, orderNo);
+		Long orderNo = invoiceInfoDao.getInvoiceOrderNumberByBtnName(compId, request);
+		ArrayList<InvoiceDto> list = invoiceInfoDao.getRecord(request, invoiceDto, compId, orderNo);
 		if (!list.isEmpty()) {
 			invoiceDto = list.get(0);
 			request.setAttribute("Enable", "true");

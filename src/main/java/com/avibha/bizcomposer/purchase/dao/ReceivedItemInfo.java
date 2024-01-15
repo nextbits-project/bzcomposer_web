@@ -233,30 +233,36 @@ public class ReceivedItemInfo {
 				item.setInvCode(inventory.getInventoryCode());
 				item.setInvDesc(inventory.getInventoryDescription());
 				item.setQty(inventory.getQty());
-				item.setWeight(inventory.getWeight());
-				item.setSalePrice(BigDecimal.valueOf(inventory.getSalePrice()));
+				if (null != inventory.getWeight())
+					item.setWeight(inventory.getWeight());
+				if (null != inventory.getSalePrice())
+					item.setSalePrice(BigDecimal.valueOf(inventory.getSalePrice()));
 				item.setIsCategory(inventory.getIsCategory() ? 1 : 0);
 				item.setItemTypeID(inventory.getItemTypeId());
 				item.setInventoryName(inventory.getInventoryName());
 				item.setSerialNo(inventory.getSerialNum());
 				list.add(item);
+
 				List<BcaIteminventory> iteminventories = bcaIteminventoryRepository
 						.findByItemTypeIdAndActiveAndParentId(1, 1, invID);
 
 				int ivcode = 0;
 				for (BcaIteminventory inv : iteminventories) {
 					Item item2 = new Item();
-					invID = inv.getInventoryId();
+					ivcode = inv.getInventoryId();
 					item2.setInvID(inv.getInventoryId());
 					item2.setInvCode(inv.getInventoryCode());
 					item2.setInvDesc(inv.getInventoryDescription());
 					item2.setQty(inv.getQty());
-					item2.setWeight(inv.getWeight());
-					item2.setSalePrice(BigDecimal.valueOf(inv.getSalePrice()));
+					if (null != inv.getWeight())
+						item2.setWeight(inv.getWeight());
+					if (null != inv.getSalePrice())
+						item2.setSalePrice(BigDecimal.valueOf(inv.getSalePrice()));
 					item2.setIsCategory(inv.getIsCategory() ? 1 : 0);
 					item2.setInventoryName(inv.getInventoryName());
 					item2.setSerialNo(inv.getSerialNum());
 					list.add(item2);
+
 					List<BcaIteminventory> inventoryList = bcaIteminventoryRepository.findByParentIdAndActive(ivcode,
 							1);
 					for (BcaIteminventory itemInv : inventoryList) {
@@ -266,8 +272,10 @@ public class ReceivedItemInfo {
 						item3.setInvCode(itemInv.getInventoryCode());
 						item3.setInvDesc(itemInv.getInventoryDescription());
 						item3.setQty(itemInv.getQty());
-						item3.setWeight(itemInv.getWeight());
-						item3.setSalePrice(BigDecimal.valueOf(itemInv.getSalePrice()));
+						if (null != itemInv.getWeight())
+							item3.setWeight(itemInv.getWeight());
+						if (null != itemInv.getSalePrice())
+							item3.setSalePrice(BigDecimal.valueOf(itemInv.getSalePrice()));
 						item3.setIsCategory(itemInv.getIsCategory() ? 1 : 0);
 						item3.setInventoryName(itemInv.getInventoryName());
 						item3.setSerialNo(itemInv.getSerialNum());
@@ -278,7 +286,8 @@ public class ReceivedItemInfo {
 			}
 
 		} catch (Exception ee) {
-			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
+			ee.printStackTrace();
+			Loger.log(2, " SQL Error in Class ReceivedItemInfo and  method -getItemList " + " " + ee.toString());
 		}
 		return list;
 	}
@@ -368,7 +377,7 @@ public class ReceivedItemInfo {
 //
 //			}
 //		} catch (SQLException ee) {
-//			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
+//			Loger.log(2, " SQL Error in Class ReceivedItemInfo and  method -getItemList " + " " + ee.toString());
 //		} finally {
 //			try {
 //				if (rs != null) {

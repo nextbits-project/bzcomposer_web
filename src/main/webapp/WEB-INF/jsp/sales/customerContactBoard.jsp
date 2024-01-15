@@ -41,10 +41,10 @@ table.tabla-listados tbody tr td { font-size: 12px; }
         </c:if>
 	</span>
 </div>
-<div style="width:100%;">
+<%-- <div style="width:100%;">
 	<table style="width:100%;">
 		<tr>
-			<td align="left">
+			<td align="center">
                 <input type="button" class="formbutton" onclick="openMailSender();" style="padding:7 15px;" value="<spring:message code='BzComposer.Email.SendMail'/>" />
                 <input type="button" class="formbutton" onclick="openMailTemplates();" style="padding:7 15px;" value="<spring:message code='BzComposer.Email.MailTemplate'/>" />
                 <input type="button" class="formbutton" onclick="openSendThroughOutlook();" style="padding:7 15px;" value="<spring:message code='BzComposer.Email.SendThroughOutlook'/>" />
@@ -59,15 +59,41 @@ table.tabla-listados tbody tr td { font-size: 12px; }
             <td colspan="2">
                 <input type="button" class="formbutton" onclick="customerImport()" style="padding:7 15px;" value="<spring:message code='menu.file.Import'/>" />
                 <input type="button" class="formbutton" onclick="exportCustomer()" style="padding:7 15px;" value="<spring:message code='menu.file.ExportTo'/>" />
+           		<input type="button" class="formbutton" onclick="exportCustomer()" style="padding:7 15px;" value="<spring:message code='BzComposer.Customer.transform.customer'/>" />
+         
             </td>
         </tr>
 	</table>
+</div> --%>
+<div style="width:100%; text-align:center;">
+    <table style="margin: 0 auto;">
+        <tr>
+            <td>
+                <input type="button" class="formbutton" onclick="openMailSender();" style="padding:7px 15px;" value="<spring:message code='BzComposer.Email.SendMail'/>" />
+                <input type="button" class="formbutton" onclick="openMailTemplates();" style="padding:7px 15px;" value="<spring:message code='BzComposer.Email.MailTemplate'/>" />
+                <input type="button" class="formbutton" onclick="openSendThroughOutlook();" style="padding:7px 15px;" value="<spring:message code='BzComposer.Email.SendThroughOutlook'/>" />
+            </td>
+            <td align="right">
+                <input type="button" class="formbutton" onclick="addNewCustomer();" style="padding:7px 15px;" value="<spring:message code='BzComposer.global.new'/>" />
+                <input type="button" class="formbutton" onclick="manageCustomer('EDIT');" style="padding:7px 15px;" value="<spring:message code='BzComposer.global.edit'/>" />
+                <input type="button" class="formbutton" onclick="manageCustomer('DELETE');" style="padding:7px 15px;" value="<spring:message code='BzComposer.global.delete'/>" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="button" class="formbutton" onclick="customerImport()" style="padding:7px 15px;" value="<spring:message code='menu.file.Import'/>" />
+                <input type="button" class="formbutton" onclick="exportCustomer()" style="padding:7px 15px;" value="<spring:message code='menu.file.ExportTo'/>" />
+                <input type="button" class="formbutton" onclick="exportCustomer()" style="padding:7px 15px;" value="<spring:message code='BzComposer.Customer.transform.customer'/>" />
+            </td>
+        </tr>
+    </table>
 </div>
+
 </div>
 <input type="hidden" id="lSize" value='${customerList.size()}' />
 <table id="custTable" class="tabla-listados sortable" cellspacing="0" style="width: 100%; margin-top: 10px; border: 0; padding: 0;height: auto;" align="center">
     <thead>
-        <tr valign="center">
+        <tr align="center">
             <th style="padding-right:30px!important;"><spring:message code="BzComposer.Customer.ID" /></th>
             <th><spring:message code="BzComposer.customerinfo.customer" /></th>
             <th><spring:message code="BzComposer.global.company" /></th>

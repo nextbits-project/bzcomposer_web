@@ -17,8 +17,8 @@ import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
 @Repository
 public interface BcaCvcreditcardRepository extends JpaRepository<BcaCvcreditcard, Integer> {
 
-	@Query(value = "select CreditCardID from bca_cvcreditcard where clientvendorid= cvID and active=1", nativeQuery = true)
-	List<Integer> findByClientVndoridAndActive(int cvID);
+	@Query(value = "select creditCardId from BcaCvcreditcard  cc where cc.clientVendor.clientVendorId= :cvID and active=1")
+	List<Integer> findByClientVndoridAndActive(@Param("cvID")int cvID);
 
 	@Modifying
 	@Query(value = "update  bca_cvcreditcard set  CardNumber = ?, CardExpMonth = ?, CardExpYear = ?, CardCW2 = ?, CardHolderName = ? CardBillingAddress = ?, CardBillingZipCode = ?, Active = 1,"

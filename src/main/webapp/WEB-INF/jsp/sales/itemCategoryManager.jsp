@@ -104,10 +104,23 @@ input:checked + .slider:before {
                     </c:forEach>
                 <tbody>
             </table>
-            <div class="btngroup2-fixed mt-3 text-center" style="position:relative;">
+             <div class="btngroup2-fixed mt-3 text-center" style="position:relative;">
+                <button class="btn btn-info" style="font-size: 14px;" id="AddItemBtn">
+                    <spring:message code="BzComposer.global.add"/>
+                </button>
+                <button class="btn btn-info" style="font-size: 14px;" id="EditItemBtn">
+                    <spring:message code="BzComposer.global.edit"/>
+                </button>
+                <button class="btn btn-info" style="font-size: 14px;" onclick="return deleteCategory()" id="DeleteItemBtn">
+                    <spring:message code="BzComposer.global.delete"/>
+                </button>
+            </div>
+            
+            <!-- REMOVED ADD CATEGORY AND EDIT CATEGORY BUTTON  -->
+           <%--  <div class="btngroup2-fixed mt-3 text-center" style="position:relative;">
                 <a style="color: #fff; font-size: 14px;" class="btn btn-info" id="AddCategoryBtn"><spring:message code="BzComposer.categorymanager.addcategory"/></a>
                 <a style="color: #fff; font-size: 14px;" class="btn btn-info" id="EditCategoryBtn"><spring:message code="BzComposer.categorymanager.tab.editcategory"/></a>
-            </div>
+            </div> --%>
         </div>
         <div style="width:80%;" class="float-right">
             <div class="form-horizontal">
@@ -138,7 +151,7 @@ input:checked + .slider:before {
                         <input type="text" class="form-control" id="categoryDetailsA" />
                     </div>
                 </div> -->
-                <div class="row">
+               <%--  <div class="row">
                     <div class="col-md-2"></div>
                     <label class="col-md-2"><h6><spring:message code="BzComposer.categorymanager.itemlist"/></h6></label>
                 </div>
@@ -174,10 +187,11 @@ input:checked + .slider:before {
                 </tbody>
             </table>
             </div>
-            </div>
+            </div> --%>
         </div>
         </div>
-        <div class="text-center">
+         <!-- REMOVED ADD, EDIT AND DELETE BUTTON ,PLACED IN PLACE OF ADD CATEGORY BUTTON  -->
+       <%--  <div class="text-center">
             <div class="btngroup2-fixed">
                 <button class="btn btn-info" style="font-size: 14px;" id="AddItemBtn">
                     <spring:message code="BzComposer.global.add"/>
@@ -189,7 +203,7 @@ input:checked + .slider:before {
                     <spring:message code="BzComposer.global.delete"/>
                 </button>
             </div>
-        </div>
+        </div> --%>
 	</div>
 </div>
 <div class="btngroup2"></div>

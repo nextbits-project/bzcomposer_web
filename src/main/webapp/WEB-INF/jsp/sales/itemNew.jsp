@@ -93,8 +93,20 @@ table.tabla-listados tbody tr td {
 								</table>
 							</div>
 						</div>
+						
 						<input type="hidden" name="listSize" id="lSize"
 							value='${ItemDetails.size()}' />
+							
+							<select name="selectedOption" id="fruit" onchange="filterOptions()" style="margin-left: 74px">
+							<option value="" selected>Category </option>
+							<c:forEach items="${ItemCategory}" var="objList"
+										varStatus="loop">
+            		
+           					 <option value="${objList.invCode}">${objList.invCode}</option>
+           				
+           				 </c:forEach>
+       					 </select>
+							
 						<table id="custTable" class="tabla-listados sortable devItemList"
 							cellspacing="0"
 							style="width: 100%; margin-top: 10px; border: 0; padding: 0; height: auto;"

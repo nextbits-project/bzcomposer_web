@@ -140,4 +140,5 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 			@Param("companyId") Long companyId, @Param("active") Integer active, @Param("deleted") Integer deleted,
 			@Param("cvtypeId") List<Integer> cvtypeId, @Param("status") List<String> status);
 
+	Optional<BcaClientvendor> findByClientVendorIdAndCvtypeIdIn(int clientvendorId,List<Integer> cvtypeId);
 }

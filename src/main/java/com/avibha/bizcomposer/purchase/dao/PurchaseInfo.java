@@ -110,7 +110,7 @@ public class PurchaseInfo {
 	@Autowired
 	private BcaShippingaddressRepository bcaShippingaddressRepository;
 
-	@PersistenceContext
+	@Autowired
 	private CountryState countryState;
 
 	@Autowired
@@ -939,7 +939,7 @@ public class PurchaseInfo {
 		try {
 			BcaBsaddress bcaBsaddress = new BcaBsaddress();
 
-			bcaBsaddress.setBsaddressId(bsID);
+//			bcaBsaddress.setBsaddressId(bsID);
 			bcaBsaddress.setClientVendorId(cvID);
 			bcaBsaddress.setName(cname);
 			bcaBsaddress.setFirstName(fname);
@@ -1015,6 +1015,7 @@ public class PurchaseInfo {
 		int id = -1;
 //		String sql_update = null;
 //		String sql_insert = null;
+		try {
 		if (address.getAddressName().equalsIgnoreCase("Default")) {
 			address.setAddressName("Default");
 		} else if (address.getAddressName().equals("")) {
@@ -1071,8 +1072,9 @@ public class PurchaseInfo {
 				bcaBillingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
 				bcaBillingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
 				bcaBillingaddress.setStatus(address.getStatus());
-				bcaBillingaddress.setDateAdded(
-						DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
+//				bcaBillingaddress.setDateAdded(
+//						DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
+				bcaBillingaddress.setDateAdded(OffsetDateTime.now());
 				bcaBillingaddress.setPhone(ConstValue.hateNull(address.getPhone()).replaceAll("'", "''"));
 				bcaBillingaddress.setCellPhone(ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''"));
 				bcaBillingaddress.setFax(ConstValue.hateNull(address.getFax()).replaceAll("'", "''"));
@@ -1132,8 +1134,9 @@ public class PurchaseInfo {
 				bcaShippingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
 				bcaShippingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
 				bcaShippingaddress.setStatus(address.getStatus());
-				bcaShippingaddress.setDateAdded(
-						DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
+//				bcaShippingaddress.setDateAdded(
+//						DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
+				bcaShippingaddress.setDateAdded(OffsetDateTime.now());
 				bcaShippingaddress.setPhone(ConstValue.hateNull(address.getPhone()).replaceAll("'", "''"));
 				bcaShippingaddress.setCellPhone(ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''"));
 				bcaShippingaddress.setFax(ConstValue.hateNull(address.getFax()).replaceAll("'", "''"));
@@ -1282,6 +1285,9 @@ public class PurchaseInfo {
 //				stmt.close();
 //			}
 //		}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 
 		return id;
 	}
@@ -2705,7 +2711,7 @@ public class PurchaseInfo {
 			String serviceBal = c.getTable_bal();
 			String defaultser = c.getTable_defaultVal();
 			String invStyleID = c.getTable_invId();
-			bcaClientvendorserviceRepository.deleteByClientVendorId(cvID);
+			bcaClientvendorserviceRepository.deleteByClientVendor_ClientVendorId(cvID);
 
 			if (serviceID != null && !(serviceID.equals("") || invStyleID.equals("") || serviceBal.equals(""))) {
 				String temp[] = null, temp2[] = null, temp3[] = null;
@@ -2747,6 +2753,7 @@ public class PurchaseInfo {
 			// -------------------------------------END-------
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "SQLException in Class PurchaseInfo,  method -updateInsertVendor " + ee.toString());
 		}
 		return ret;

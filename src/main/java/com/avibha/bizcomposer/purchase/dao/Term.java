@@ -75,6 +75,7 @@ public class Term {
 //				arr1.add(trmObj);
 //			}
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in  Class Term and method -getTitleList "
 					+ " " + ee.toString());
 			

@@ -1,10 +1,5 @@
 package com.avibha.bizcomposer.sales.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -20,12 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.sales.forms.ItemCategoryDto;
-import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
 import com.nxsol.bzcomposer.company.domain.ItemCategoryDetails;
 import com.nxsol.bzcomposer.company.domain.ItemDetails;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
 import com.nxsol.bzcomposer.company.repos.ItemCategoryDetailsRepository;
 import com.nxsol.bzcomposer.company.repos.ItemDetailsRepository;
 
@@ -35,14 +31,14 @@ public class ItemCategoryManagerDao {
 	private final ItemCategoryDetailsRepository itemCategoryDetailsRepository;
 	private final BcaCompanyRepository bcaCompanyRepository;
 	private final ItemDetailsRepository itemDetailsRepository;
-
+	private final BcaIteminventoryRepository bcaIteminventoryRepository; 
 	@Autowired
 	public ItemCategoryManagerDao(ItemCategoryDetailsRepository itemCategoryDetailsRepository,
-			ItemDetailsRepository itemDetailsRepository, BcaCompanyRepository bcaCompanyRepository) {
+			ItemDetailsRepository itemDetailsRepository, BcaCompanyRepository bcaCompanyRepository,BcaIteminventoryRepository bcaIteminventoryRepository) {
 		this.itemCategoryDetailsRepository = itemCategoryDetailsRepository;
 		this.itemDetailsRepository = itemDetailsRepository;
 		this.bcaCompanyRepository = bcaCompanyRepository;
-
+		this.bcaIteminventoryRepository=bcaIteminventoryRepository;
 	}
 
 	/**
@@ -86,23 +82,41 @@ public class ItemCategoryManagerDao {
 	public List<ItemCategoryDto> getMainCategoryList(String compId) {
 		List<ItemCategoryDto> objList = new ArrayList<ItemCategoryDto>();
 		try {
-			BcaCompany bcaCompany = new BcaCompany();
-			bcaCompany = bcaCompanyRepository.findByCompanyId(Long.parseLong(compId));
-			List<ItemCategoryDetails> categoryDetails = itemCategoryDetailsRepository
-					.findByDeletedAndParentIdAndCompany(false, "root", bcaCompany);
-			for (ItemCategoryDetails rs : categoryDetails) {
+//			BcaCompany bcaCompany = new BcaCompany();
+//			bcaCompany = bcaCompanyRepository.findByCompanyId(Long.parseLong(compId));
+			List<BcaIteminventory> itemInventory = bcaIteminventoryRepository
+					.findByCompany_CompanyIdAndActiveAndParentIdLessThan(Long.parseLong(compId), 1, 1);
+			for(BcaIteminventory item:itemInventory) {
 				ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
-				itemCategoryDto.setCategoryID(rs.getCategoryId());
-				Long companyIdLong = rs.getCompany().getCompanyId();
+				itemCategoryDto.setCategoryID(item.getInventoryId());
+				Long companyIdLong = item.getCompany().getCompanyId();
 				int companyIdInt = companyIdLong.intValue();
 				itemCategoryDto.setCompanyID(companyIdInt);
-				itemCategoryDto.setParentID(rs.getParentId());
-				itemCategoryDto.setCategoryName(rs.getCategoryName());
-				itemCategoryDto.setDescription(rs.getDescription());
-				itemCategoryDto.setActive(rs.getActive());
-				itemCategoryDto.setDateAdded(rs.getDateAdded().toString());
+				itemCategoryDto.setParentID(String.valueOf(item.getParentId()));
+				if(null!=item.getInventoryCode())
+				itemCategoryDto.setCategoryName(item.getInventoryCode());
+				if(null!=item.getInventoryDescription())
+				itemCategoryDto.setDescription(item.getInventoryDescription());
+				itemCategoryDto.setActive(item.getActive()>0?true:false);
+				itemCategoryDto.setDateAdded(item.getDateAdded().toString());
 				objList.add(itemCategoryDto);
 			}
+			
+//			List<ItemCategoryDetails> categoryDetails = itemCategoryDetailsRepository
+//					.findByDeletedAndParentIdAndCompany(false, "root", bcaCompany);
+//			for (ItemCategoryDetails rs : categoryDetails) {
+//				ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
+//				itemCategoryDto.setCategoryID(rs.getCategoryId());
+//				Long companyIdLong = rs.getCompany().getCompanyId();
+//				int companyIdInt = companyIdLong.intValue();
+//				itemCategoryDto.setCompanyID(companyIdInt);
+//				itemCategoryDto.setParentID(rs.getParentId());
+//				itemCategoryDto.setCategoryName(rs.getCategoryName());
+//				itemCategoryDto.setDescription(rs.getDescription());
+//				itemCategoryDto.setActive(rs.getActive());
+//				itemCategoryDto.setDateAdded(rs.getDateAdded().toString());
+//				objList.add(itemCategoryDto);
+//			}
 
 		} catch (Exception e) {
 			Loger.log(e.toString());

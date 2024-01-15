@@ -149,15 +149,16 @@ public class PurchaseOrderInfoDao {
 	private BcaBsaddressRepository bcaBsaddressRepository;
 	@Autowired
 	private BcaSalesrepRepository bcaSalesrepRepository;
-	
+
 	@Autowired
 	private BcaCountriesRepository bcaCountriesRepository;
-	
+
 	@Autowired
 	private BcaStatesRepository bcaStatesRepository;
-	
+
 	@Autowired
 	private BcaCitiesRepository bcaCitiesRepository;
+
 	/*
 	 * Provide the list of all customers with their ids, last name,etc. The list is
 	 * used for drop ship to.
@@ -289,8 +290,8 @@ public class PurchaseOrderInfoDao {
 
 			TypedQuery<BcaBillingAddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
 					BcaBillingAddressDto.class);
-
-			JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
+			if (null != cvID)
+				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
 			List<BcaBillingAddressDto> billingAddress = typedQuery.getResultList();
 			for (BcaBillingAddressDto address : billingAddress) {
 				PurchaseOrderDto customer = new PurchaseOrderDto();
@@ -318,6 +319,7 @@ public class PurchaseOrderInfoDao {
 			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, " SQL Error in Class PurchaseOrderInfo and  method -billAddress " + ee.toString());
 		}
 		return objList;
@@ -411,8 +413,8 @@ public class PurchaseOrderInfoDao {
 							: " "));
 			TypedQuery<BcaShippingaddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
 					BcaShippingaddressDto.class);
-
-			JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
+			if (null != cvID)
+				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
 			List<BcaShippingaddressDto> ShippingAddress = typedQuery.getResultList();
 			for (BcaShippingaddressDto address : ShippingAddress) {
 				PurchaseOrderDto customer = new PurchaseOrderDto();
@@ -444,6 +446,7 @@ public class PurchaseOrderInfoDao {
 			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, " SQL Error in Class PurchaseOrderInfoDao and  method -shipAddress " + ee.toString());
 		}
 		return objList;
@@ -541,7 +544,7 @@ public class PurchaseOrderInfoDao {
 			}
 
 		} catch (Exception ex) {
-			Loger.log("Exception in the dropShipTo method of PurchaseOrderInfo class " + ex.toString());
+			Loger.log("Exception in the getVendorDetails method of purchaseOrderInfoDao class " + ex.toString());
 		}
 		return objList;
 	}
@@ -830,6 +833,7 @@ public class PurchaseOrderInfoDao {
 			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in  Class purchaseOrderInfoDao and  method -getNewPONum " + ee.toString());
 
 		}
@@ -888,6 +892,7 @@ public class PurchaseOrderInfoDao {
 			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in  Class PurchaseOrderInfo and  method -getDefaultPOStyle " + " " + ee.toString());
 		}
 		return String.valueOf(poStyleID);
@@ -959,6 +964,7 @@ public class PurchaseOrderInfoDao {
 			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + ee.toString());
 
 		}
@@ -1025,6 +1031,7 @@ public class PurchaseOrderInfoDao {
 			shipAddr = typedQuery.getFirstResult();
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in  Class PurchaseOrderInfoDao and  method -shipAddr " + ee.toString());
 
 		}
@@ -1091,6 +1098,7 @@ public class PurchaseOrderInfoDao {
 			invoiceID = typedQuery.getFirstResult();
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
 
 		}
@@ -1154,10 +1162,12 @@ public class PurchaseOrderInfoDao {
 			invoice.setOrderNum(0);
 			invoice.setPonum(Integer.parseInt(form.getOrderNo()));
 			invoice.setRefNum("");
-			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
-					.findById(Integer.parseInt(form.getCustID()));
-			if (clientVendor.isPresent())
-				invoice.setClientVendor(clientVendor.get());// form.getCustID()
+			if (null != form.getCustID()) {
+				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
+						.findById(Integer.parseInt(form.getCustID()));
+				if (clientVendor.isPresent())
+					invoice.setClientVendor(clientVendor.get());
+			} // form.getCustID()
 			invoice.setBsaddressId(Integer.parseInt(form.getBillAddrValue().isEmpty() ? "0" : form.getBillAddrValue()));
 			Optional<BcaInvoicestyle> invoiceStyle = bcaInvoicestyleRepository
 					.findById(Integer.parseInt(form.getInvoiceStyle()));
@@ -1173,33 +1183,43 @@ public class PurchaseOrderInfoDao {
 			invoice.setAdjustedTotal(form.getTotal());
 			invoice.setPaidAmount(0D);
 			invoice.setBalance(form.getTotal());
-			Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(form.getVia()));
-			if (shipCarrier.isPresent())
-				invoice.setShipCarrier(shipCarrier.get());// form.getVia()
-			invoice.setSalesRepId(-1);
-
+			if (null != form.getVia()) {
+				Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository
+						.findById(Integer.parseInt(form.getVia()));
+				if (shipCarrier.isPresent())
+					invoice.setShipCarrier(shipCarrier.get());// form.getVia()
+				invoice.setSalesRepId(-1);
+			}
 			if ("0".equals(form.getMessage())) {
 				invoice.setMessage(null);
 			} else {
-				Optional<BcaMessage> message = bcaMessageRepository.findById(Integer.parseInt(form.getMessage()));
-				if (message.isPresent())
-					invoice.setMessage(message.get());// "0".equals(form.getMessage()) ? null :
+				if (null != form.getMessage()) {
+					Optional<BcaMessage> message = bcaMessageRepository.findById(Integer.parseInt(form.getMessage()));
+					if (message.isPresent())
+						invoice.setMessage(message.get());// "0".equals(form.getMessage()) ? null :
+				}
 			}
-			Optional<BcaTerm> term = bcaTermRepository.findById(Integer.parseInt(form.getTerm()));
-			if (term.isPresent())
-				invoice.setTerm(term.get());// form.getTerm()
+			if (null != form.getTerm()) {
+				Optional<BcaTerm> term = bcaTermRepository.findById(Integer.parseInt(form.getTerm()));
+				if (term.isPresent())
+					invoice.setTerm(term.get());
+			} // form.getTerm(
 			if ("0".equals(form.getPayMethod())) {
 				invoice.setPaymentType(null);
 			} else {
-				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
-						.findById(Integer.parseInt(form.getPayMethod()));
-				if (paymentType.isPresent())
-					invoice.setPaymentType(paymentType.get());// "0".equals(form.getPayMethod()) ? null :
-																// form.getPayMethod()
+				if (null != form.getPayMethod()) {
+					Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+							.findById(Integer.parseInt(form.getPayMethod()));
+					if (paymentType.isPresent())
+						invoice.setPaymentType(paymentType.get());// "0".equals(form.getPayMethod()) ? null :
+																	// form.getPayMethod()
+				}
 			}
-			Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(Integer.parseInt(form.getTaxID()));
-			if (salesTax.isPresent())
-				invoice.setSalesTax(salesTax.get());// form.getTaxID()
+			if (null != form.getTaxID()) {
+				Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(Integer.parseInt(form.getTaxID()));
+				if (salesTax.isPresent())
+					invoice.setSalesTax(salesTax.get());// form.getTaxID()
+			}
 			String tax = form.getTaxable();
 			if (tax != null && tax.equals("on")) {
 				invoice.setTaxable(1);
@@ -1220,10 +1240,12 @@ public class PurchaseOrderInfoDao {
 				AddItem(invoiceID, cid, form);
 				status = true;
 			} catch (IllegalArgumentException iae) {
+				iae.printStackTrace();
 				Loger.log("IllegalArgumentException" + iae.toString());
 			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
 
 		}
@@ -1419,10 +1441,12 @@ public class PurchaseOrderInfoDao {
 				AddItem(invoiceID, cid, form);
 
 			} catch (IllegalArgumentException iae) {
+				iae.printStackTrace();
 				Loger.log("Exception" + iae.toString());
 			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
 
 		}
@@ -1618,10 +1642,12 @@ public class PurchaseOrderInfoDao {
 				AddItem(invoiceID, cid, form);
 
 			} catch (IllegalArgumentException iae) {
+				iae.printStackTrace();
 				Loger.log("Exception" + iae.toString());
 			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
 
 		}
@@ -1950,8 +1976,9 @@ public class PurchaseOrderInfoDao {
 				request.getSession().setAttribute("prevPONo", orderNo);
 			}
 		} catch (Exception ex) {
-			Loger.log("Exception in getPONumberByBtnName Function " + ex.toString());
 			ex.printStackTrace();
+			Loger.log("Exception in getPONumberByBtnName Function " + ex.toString());
+
 		}
 		return orderNo;
 	}
@@ -2048,8 +2075,8 @@ public class PurchaseOrderInfoDao {
 			}
 
 		} catch (Exception ex) {
-			Loger.log("Exception in getCustomerPONums Function " + ex.toString());
 			ex.printStackTrace();
+			Loger.log("Exception in getCustomerPONums Function " + ex.toString());
 		}
 		return poNums;
 	}
@@ -2092,7 +2119,7 @@ public class PurchaseOrderInfoDao {
 
 	public PurchaseOrderDto getRecordForPO(String compId, String poNo, PurchaseOrderDto form,
 			HttpServletRequest request) {
-	
+
 		try {
 			String query = "SELECT bi FROM BcaInvoice bi " + "LEFT JOIN bi.term t " + "LEFT JOIN bi.paymentType p "
 					+ "LEFT JOIN bi.shipCarrier s " + "LEFT JOIN bi.message m " + "WHERE bi.ponum = :ponum "
@@ -2174,7 +2201,6 @@ public class PurchaseOrderInfoDao {
 
 			}
 
-			
 			/* Bill Address */
 			ArrayList<PurchaseOrderDto> billAddresses = billAddress(compId, form.getCustID());
 			if (!billAddresses.isEmpty()) {
@@ -2192,43 +2218,43 @@ public class PurchaseOrderInfoDao {
 				form.setShipTo(shipTo != null ? shipTo.replace("\n", "<br>") : "");
 			}
 			try {
-			BcaClientvendor clientVendor = bcaClientvendorRepository.findById(Integer.parseInt(form.getCustID())).orElseThrow(()->{
-				throw new IllegalStateException("clientVendor does not exist: " + form.getCustID());});
-			form.setCompanyName(clientVendor.getName());
-			form.setFullName(clientVendor.getFirstName() + " " + clientVendor.getLastName());
-			form.setFirstName(clientVendor.getFirstName());
-			form.setLastName(clientVendor.getLastName());
-			form.setAddress1(clientVendor.getAddress1());
-			form.setAddress2(clientVendor.getAddress2());
-			Optional<BcaCountries> country = bcaCountriesRepository.findById(Integer.parseInt(clientVendor.getCountry()));
-			Optional<BcaStates> state = bcaStatesRepository.findById(Integer.parseInt(clientVendor.getState()));
-			Optional<BcaCities> city = bcaCitiesRepository.findById(Integer.parseInt(clientVendor.getCity()));
-			
-			
-			form.setCity(city.get().getName() != null ? city.get().getName() : clientVendor.getCity());
-			form.setState(state.get().getName() != null ? state.get().getName() : clientVendor.getCity());
-			form.setCountry(country.get().getName() != null ? country.get().getName() 
-					: clientVendor.getCountry());
-			form.setZipcode(clientVendor.getZipCode());
-			form.setEmailAddr(clientVendor.getEmail());
-			String phoneNumber = clientVendor.getPhone();
-			if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
-				form.setBillTo(form.getBillTo() + "<br>" + phoneNumber);
-				form.setShipTo(form.getShipTo() + "<br>" + phoneNumber);
+				BcaClientvendor clientVendor = bcaClientvendorRepository.findById(Integer.parseInt(form.getCustID()))
+						.orElseThrow(() -> {
+							throw new IllegalStateException("clientVendor does not exist: " + form.getCustID());
+						});
+				form.setCompanyName(clientVendor.getName());
+				form.setFullName(clientVendor.getFirstName() + " " + clientVendor.getLastName());
+				form.setFirstName(clientVendor.getFirstName());
+				form.setLastName(clientVendor.getLastName());
+				form.setAddress1(clientVendor.getAddress1());
+				form.setAddress2(clientVendor.getAddress2());
+				Optional<BcaCountries> country = bcaCountriesRepository
+						.findById(Integer.parseInt(clientVendor.getCountry()));
+				Optional<BcaStates> state = bcaStatesRepository.findById(Integer.parseInt(clientVendor.getState()));
+				Optional<BcaCities> city = bcaCitiesRepository.findById(Integer.parseInt(clientVendor.getCity()));
+
+				form.setCity(city.get().getName() != null ? city.get().getName() : clientVendor.getCity());
+				form.setState(state.get().getName() != null ? state.get().getName() : clientVendor.getCity());
+				form.setCountry(country.get().getName() != null ? country.get().getName() : clientVendor.getCountry());
+				form.setZipcode(clientVendor.getZipCode());
+				form.setEmailAddr(clientVendor.getEmail());
+				String phoneNumber = clientVendor.getPhone();
+				if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
+					form.setBillTo(form.getBillTo() + "<br>" + phoneNumber);
+					form.setShipTo(form.getShipTo() + "<br>" + phoneNumber);
+				}
+
+			} catch (IllegalArgumentException iae) {
+				Loger.log("Exception in getRecordForPO Function" + iae.toString());
 			}
-			
-			}
-			catch(IllegalArgumentException  iae) {
-				Loger.log("Exception in getRecordForPO Function" + iae.toString());	
-			}
-			
 
 			/* Item List in the cart */
 			itemList(invoiceID, compId, request, form);
 			request.setAttribute("Style", style);
 		} catch (Exception ex) {
-			Loger.log("Exception in getRecordForPO Function" + ex.toString());
 			ex.printStackTrace();
+			Loger.log("Exception in getRecordForPO Function" + ex.toString());
+
 		}
 		return form;
 	}
@@ -2429,11 +2455,13 @@ public class PurchaseOrderInfoDao {
 			}
 
 		} catch (NoSuchElementException ex) {
-			Loger.log("Exception in getRecord Function" + ex.toString());
 			ex.printStackTrace();
+			Loger.log("Exception in getRecord Function" + ex.toString());
+
 		} catch (Exception ex) {
-			Loger.log("Exception in getRecord Function" + ex.toString());
 			ex.printStackTrace();
+			Loger.log("Exception in getRecord Function" + ex.toString());
+
 		}
 		return list;
 	}
@@ -2619,6 +2647,7 @@ public class PurchaseOrderInfoDao {
 
 			}
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
 
 		}
@@ -2743,6 +2772,7 @@ public class PurchaseOrderInfoDao {
 			request.setAttribute("state", vForm.getState());
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
 
 		}
@@ -2871,6 +2901,7 @@ public class PurchaseOrderInfoDao {
 			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
 
 		}
