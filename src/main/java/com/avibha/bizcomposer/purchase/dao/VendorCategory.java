@@ -70,7 +70,7 @@ public class VendorCategory {
 //		Connection con = db.getConnection();
 //		ResultSet rs = null;
 //		PreparedStatement pstmt;
-		try {
+		try { 
 			Optional<BcaClientcategory> category = bcaClientcategoryRepository.findById(Integer.parseInt(CVCategoryID));
 			if(category.isPresent()) {
 				CVCategory = category.get().getName();

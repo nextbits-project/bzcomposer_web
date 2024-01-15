@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.apache.struts.action.ActionForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,21 +38,33 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
 import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
 import com.nxsol.bzcomposer.company.domain.BcaLabel;
+import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
+import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
 import com.nxsol.bzcomposer.company.domain.BcaServicetype;
+import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
+import com.nxsol.bzcomposer.company.domain.BcaTerm;
 import com.nxsol.bzcomposer.company.repos.BcaAccountRepository;
 import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaBsaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcreditcardRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLabelRepository;
+import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaSalesrepRepository;
 import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
+import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /*
@@ -83,7 +96,7 @@ public class CustomerInfo {
 
 	@Autowired
 	private BcaShippingaddressRepository bcaShippingaddressRepository;
-	
+
 	@Autowired
 	private BcaBsaddressRepository bcaBsaddressRepository;
 
@@ -1590,252 +1603,412 @@ public class CustomerInfo {
 		return ret;
 	}
 
-	public boolean updateInsertCustomer(String cvId, CustomerDto c, String compID, int istaxable, int isAlsoClient,
-			int useIndividualFinanceCharges, int AssessFinanceChk, String status) {
-		boolean ret = false;
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		PreparedStatement ps = null;
-		SQLExecutor db = new SQLExecutor();
+	@Autowired
+	private PurchaseInfo pinfo;
 
-		if (db == null)
-			return ret;
-		con = db.getConnection();
-		if (con == null)
-			return ret;
+	@Autowired
+	private BcaClientvendorRepository clientvendorRepository;
+
+	@Autowired
+	private VendorCategory vc;
+
+	@Autowired
+	private BcaCompanyRepository companyRepository;
+
+	@Autowired
+	private BcaShipcarrierRepository shipCarrierRepository;
+
+	@Autowired
+	private BcaPaymenttypeRepository paymentTypeRepository;
+
+	@Autowired
+	private BcaSalesrepRepository salesRepRepository;
+
+	@Autowired
+	private BcaTermRepository termRepository;
+
+	@Transactional
+	public boolean updateInsertCustomer(String cvId, CustomerDto c, String comID, int istaxable, int isAlsoClient,
+			int useIndividualFinanceCharges, int AssessFinanceChk, String status) {
+		BcaClientvendor clientVendor;
+
+		int cvID = Integer.parseInt(cvId);
 
 		try {
-			String oBal = "0";
-			String exCredit = "0";
-			PurchaseInfo pinfo = new PurchaseInfo();
-			Loger.log("istaxable:" + istaxable);
-			Loger.log("isAlsoClient:" + isAlsoClient);
-
-			int cvID = Integer.parseInt(cvId);
-			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
-				oBal = c.getOpeningUB();
-
-			if (c.getExtCredit() != null && c.getExtCredit().trim().length() > 0)
-				exCredit = c.getExtCredit();
-
-			// Loger.log("Type______________________________" + c.getType());
-			if (c.getType() == null || c.getType().equals(""))
-				c.setType("0");
-
-			VendorCategory vc = new VendorCategory();
-			String vcName = vc.CVCategory(c.getType());
-
-			String sqlString = "UPDATE bca_clientvendor SET Name=?,DateAdded=?,CustomerTitle=?, FirstName=?,LastName=?,Address1=?,Address2=?,"
-					+ " City=?,State=?,Province=?,Country=?,ZipCode=?,Phone=?,CellPhone=?, Fax=?,HomePage=?,Email=?,CompanyID=?,"
-					+ " ResellerTaxID=?,VendorOpenDebit=?,VendorAllowedCredit=?,Detail=?, Taxable=?,CVTypeID=?, "
-					+ " CVCategoryID=?,CVCategoryName=?,Active=1,Deleted=0,Status=?,CCTypeID=?,isMobilePhoneNumber=?, "
-					+ " MiddleName=?, DateInput=?, DateTerminated=?, isTerminated=?,DBAName=? "
-					+ " WHERE ClientVendorID=" + cvID;
-
-			pstmt = con.prepareStatement(sqlString);
-			pstmt.setString(1, c.getCname());
-			pstmt.setDate(2, ((c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date("now()")
-					: string2date(c.getDateAdded())));
-			pstmt.setString(3, c.getTitle());
-			pstmt.setString(4, c.getFirstName());
-			pstmt.setString(5, c.getLastName());
-			pstmt.setString(6, c.getAddress1());
-			pstmt.setString(7, c.getAddress2());
-			pstmt.setString(8, c.getCity());
-			pstmt.setString(9, c.getState());
-			pstmt.setString(10, c.getProvince());
-			pstmt.setString(11, c.getCountry());
-			pstmt.setString(12, c.getZipCode());
-			pstmt.setString(13, c.getPhone());
-			pstmt.setString(14, c.getCellPhone());
-			pstmt.setString(15, c.getFax());
-			pstmt.setString(16, c.getHomePage());
-			pstmt.setString(17, c.getEmail());
-			pstmt.setString(18, compID);
-			pstmt.setString(19, c.getTexID());
-			pstmt.setString(20, oBal);
-			pstmt.setString(21, exCredit);
-			pstmt.setString(22, c.getMemo()); // detail
-			pstmt.setInt(23, istaxable); // taxable
-			pstmt.setInt(24, isAlsoClient); // cvtypeid
-			pstmt.setInt(25, Integer.parseInt(c.getType())); // cvcategoryid
-			pstmt.setString(26, vcName); // CVCategoryName
-			pstmt.setString(27, status); // may be {N, U, 0(zero)}
-			int cct = (c.getCcType() == null || c.getCcType().equals("") ? 0 : Integer.parseInt(c.getCcType()));
-			pstmt.setInt(28, cct); // credit card type
-			pstmt.setBoolean(29, c.isIsMobilePhoneNumber());
-			pstmt.setString(30, c.getMiddleName());
-			pstmt.setDate(31, (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
-					: string2date(c.getDateInput()));
-			pstmt.setDate(32, (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
-					: string2date(c.getTerminatedDate()));
-			pstmt.setBoolean(33, c.isTerminated());
-			pstmt.setString(34, c.getDbaName());
-
-			Loger.log(sqlString);
-			int num = pstmt.executeUpdate();
-			if (num > 0) {
-				System.out.println(num + " Record updated!!!");
-				ret = true;
+			BcaCompany company = companyRepository.findByCompanyId(Long.valueOf(comID));
+			// Check if it's an update or insert
+			if (cvId != null && !cvId.isEmpty()) {
+				Integer cvIDInt = Integer.parseInt(cvId);
+				Optional<BcaClientvendor> optionalClientVendor = clientvendorRepository.findById(cvIDInt);
+				if (!optionalClientVendor.isPresent()) {
+					return false; // Return false if no entity is found
+				}
+				clientVendor = optionalClientVendor.get();
+			} else {
+				return false; // Return false since cvId is not provided for a new entity
 			}
-			if (c.getShipping() != null && c.getShipping().trim().length() > 0)
-				pinfo.updateClientVendor("ShipCarrierID", c.getShipping(), cvID);
 
-			if (c.getPaymentType() != null && c.getPaymentType().trim().length() > 0)
-				pinfo.updateClientVendor("PaymentTypeID", c.getPaymentType(), cvID);
+			// Map DTO to Entity
+			clientVendor = mapCustomerDtoToEntity(c, clientVendor, company, istaxable, isAlsoClient, "U");
 
-			if (c.getRep() != null && c.getRep().trim().length() > 0)
-				pinfo.updateClientVendor("SalesRepID", c.getRep(), cvID);
+			// Set additional relationships
+			if (c.getShipping() != null && !c.getShipping().trim().isEmpty()) {
+				BcaShipcarrier shipCarrier = shipCarrierRepository.findById(Integer.valueOf(c.getShipping()))
+						.orElse(null);
+				clientVendor.setShipCarrier(shipCarrier);
+			}
 
-			if (c.getTerm() != null && c.getTerm().trim().length() > 0)
-				pinfo.updateClientVendor("TermID", c.getTerm(), cvID);
+			if (c.getPaymentType() != null && !c.getPaymentType().trim().isEmpty()) {
+				BcaPaymenttype paymentType = paymentTypeRepository.findById(Integer.valueOf(c.getPaymentType()))
+						.orElse(null);
+				clientVendor.setPaymentType(paymentType);
+			}
 
-			// ......updating----billing-shipping------------------------------------------START-------
-			// pinfo.updateVendorCreditCard(cvID, c.getCcType(), c.getCardNo(),
-			// c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(),
-			// c.getCardZip());
+			if (c.getRep() != null && !c.getRep().trim().isEmpty()) {
+				BcaSalesrep salesRep = salesRepRepository.findById(Integer.valueOf(c.getRep())).orElse(null);
+				clientVendor.setSalesRep(salesRep);
+			}
 
-			// change status of old record...........
-			pstmt = con.prepareStatement(
-					"update bca_bsaddress set status='0' where clientvendorid=? and status in ('N','U')");
-			pstmt.setInt(1, cvID);
-			pstmt.executeUpdate();
-			pstmt.close();
-			// ......................status change finished.........
+			if (c.getTerm() != null && !c.getTerm().trim().isEmpty()) {
+				BcaTerm term = termRepository.findById(Integer.valueOf(c.getTerm())).orElse(null);
+				clientVendor.setTerm(term);
+			}
 
-			int bsAddID = pinfo.getLastBsAdd() + 1;
-			boolean addrStatus = pinfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(),
-					c.getBsfirstName(), c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(),
-					c.getBsstate(), c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
+			// Save the entity
+			clientvendorRepository.save(clientVendor);
 
-			System.out.println("bsAddressID:" + bsAddID);
-
-			boolean addrStatus2 = pinfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(),
-					c.getShfirstName(), c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(),
-					c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
-
+			// billing-shipping------------------------------------------Start------
 			TblBSAddress2 address = new TblBSAddress2();
 			address.setAddressWithCustomerDtoBilling(c, cvID);
 			pinfo.insertBillingShippingAddress(address, 1, true);
 			address.setAddressWithCustomerDtoShipping(c, cvID);
 			pinfo.insertBillingShippingAddress(address, 0, true);
-			/*
-			 * Loger.log("ANU RATE___" + c.getAnnualIntrestRate());
-			 * Loger.log("MIN ____________ " + c.getMinFCharges());
-			 * Loger.log("Grace Period ____________ " + c.getGracePrd());
-			 */
+			// billing-shipping------------------------------------------END------
 
 			pinfo.insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(),
 					c.getGracePrd(), AssessFinanceChk, 0);
 
-			// billing-shipping------------------------------------------END------
-
-			// --------code to save services--------------------------START---
-			int i;
-			String sql;
-			String serviceID = c.getTable_serID();
-
-			String serviceBal = c.getTable_bal();
-			String defaultser = c.getTable_defaultVal();
-			if (defaultser == null || defaultser.isEmpty()) {
-				defaultser = "0";
-			}
-			// Loger.log("DEFAULT______________________________________"+ defaultser);
-
-			String invStyleID = c.getTable_invId();
-
-			sql = "delete from bca_clientvendorservice where ClientVendorID = ?";
-			ps = con.prepareStatement(sql);
-			ps.setInt(1, cvID);
-			ps.executeUpdate();
-
-			if (!(serviceID.equals("") || invStyleID.equals("") || serviceBal.equals(""))) {
-				String temp[] = null, temp2[] = null, temp3[] = null;
-				if ((serviceID != "" && serviceID != null)
-						&& (invStyleID != "" && invStyleID != null) & (serviceBal != "" && serviceBal != null)) {
-					temp = serviceID.split(";"); // serviceID is in form like 3;6;8;
-					temp2 = invStyleID.split(";");
-					temp3 = serviceBal.split(";");
-				}
-				java.sql.Date d = new java.sql.Date(new java.util.Date().getTime());
-
-				for (i = 0; i < temp.length; i++) {
-					/*
-					 * commented on 13-05-2020 sql =
-					 * "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
-					 */
-					sql = "insert into bca_clientvendorservice (ClientVendorID,DateAdded,CompanyID,InvoiceStyleID,ServiceBalance,DEFAULTService) "
-							+ "values (?,?,?,?,?,?)";
-					ps = con.prepareStatement(sql);
-					ps.setInt(1, cvID);
-					ps.setDate(2, d);
-					ps.setInt(3, Integer.parseInt(compID));
-					ps.setInt(4, Integer.parseInt(temp2[i]));
-					ps.setFloat(5, java.lang.Float.parseFloat(temp3[i]));
-					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser)) {
-						ps.setInt(6, 1);
-						/* Loger.log("EQUAL-------------------->>"); */
-					} else
-						ps.setInt(6, 0);
-					ps.setInt(7, Integer.parseInt(temp[i]));
-					ps.executeUpdate();
-				}
-			}
-			// --------------------------code to save services
-			// -------------------------------------END-------
-
-		} catch (SQLException ee) {
-			Loger.log(2, "SQLException in Class CustomerInfo," + "method -updateInsertCustomer " + ee.toString());
-
-		} finally {
-			try {
-				if (ps != null) {
-					db.close(ps);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
-		return ret;
+
+		return true;
 	}
+
+	private BcaClientvendor mapCustomerDtoToEntity(CustomerDto dto, BcaClientvendor entity, BcaCompany company,
+			int istaxable, int isAlsoClient, String status) {
+
+		String oBal = "0";
+		String exCredit = "0";
+		if (dto.getOpeningUB() != null && dto.getOpeningUB().trim().length() > 0)
+			oBal = dto.getOpeningUB();
+
+		if (dto.getExtCredit() != null && dto.getExtCredit().trim().length() > 0)
+			exCredit = dto.getExtCredit();
+
+		Loger.log("Type______________________________" + dto.getType());
+		if (dto.getType() == null || dto.getType().equals(""))
+			dto.setType("0");
+
+		String vcName = vc.CVCategory(dto.getType());
+
+		entity.setName(dto.getCname());
+		entity.setCustomerTitle(dto.getTitle());
+		entity.setFirstName(dto.getFirstName());
+		entity.setLastName(dto.getLastName());
+		entity.setAddress1(dto.getAddress1());
+		entity.setAddress2(dto.getAddress2());
+		entity.setCity(dto.getCity());
+		entity.setState(dto.getState());
+		entity.setProvince(dto.getProvince());
+		entity.setCountry(dto.getCountry());
+		entity.setZipCode(dto.getZipCode());
+		entity.setPhone(dto.getPhone());
+		entity.setCellPhone(dto.getCellPhone());
+		entity.setFax(dto.getFax());
+		entity.setHomePage(dto.getHomePage());
+		entity.setEmail(dto.getEmail());
+
+		entity.setCompany(company);
+
+		entity.setResellerTaxId(dto.getTexID());
+		entity.setVendorOpenDebit(Double.valueOf(oBal));// oBal;
+		entity.setVendorAllowedCredit(Double.valueOf(exCredit));// ;
+		entity.setDetail(dto.getMemo());
+		entity.setTaxable(Long.valueOf(istaxable));// istaxable;
+		entity.setCvtypeId(isAlsoClient);// isAlsoClient;
+		entity.setCvcategoryId(Integer.parseInt(dto.getType()));
+		entity.setCvcategoryName(vcName);// vcName;
+		entity.setActive(1);
+		entity.setDeleted(0);
+		entity.setStatus(status); // status;
+
+		int cct = (dto.getCcType() == null || dto.getCcType().equals("") ? 0 : Integer.parseInt(dto.getCcType()));
+		entity.setCctypeId(cct);
+		entity.setIsMobilePhoneNumber(dto.isIsMobilePhoneNumber());
+		entity.setMiddleName(dto.getMiddleName());
+
+		Date dateInput = (dto.getDateInput() == null || dto.getDateInput().trim().equals("")) ? null
+				: string2date(dto.getDateInput());
+		entity.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
+
+		Date dateTerminated = (dto.getTerminatedDate() == null || dto.getTerminatedDate().trim().equals("")) ? null
+				: string2date(dto.getTerminatedDate());
+		entity.setDateTerminated(DateHelper.convertDateToOffsetDateTime(dateTerminated));
+
+		entity.setIsTerminated(dto.isTerminated());
+		entity.setDbaname(dto.getDbaName());
+
+		return entity;
+	}
+
+//	public boolean updateInsertCustomer(String cvId, CustomerDto c, String compID, int istaxable, int isAlsoClient,
+//			int useIndividualFinanceCharges, int AssessFinanceChk, String status) {
+//		boolean ret = false;
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		PreparedStatement ps = null;
+//		SQLExecutor db = new SQLExecutor();
+//
+//		if (db == null)
+//			return ret;
+//		con = db.getConnection();
+//		if (con == null)
+//			return ret;
+//
+//		try {
+//			String oBal = "0";
+//			String exCredit = "0";
+//			PurchaseInfo pinfo = new PurchaseInfo();
+//			Loger.log("istaxable:" + istaxable);
+//			Loger.log("isAlsoClient:" + isAlsoClient);
+//
+//			int cvID = Integer.parseInt(cvId);
+//			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
+//				oBal = c.getOpeningUB();
+//
+//			if (c.getExtCredit() != null && c.getExtCredit().trim().length() > 0)
+//				exCredit = c.getExtCredit();
+//
+//			// Loger.log("Type______________________________" + c.getType());
+//			if (c.getType() == null || c.getType().equals(""))
+//				c.setType("0");
+//
+//			VendorCategory vc = new VendorCategory();
+//			String vcName = vc.CVCategory(c.getType());
+//
+//			String sqlString = "UPDATE bca_clientvendor SET Name=?,DateAdded=?,CustomerTitle=?, FirstName=?,LastName=?,Address1=?,Address2=?,"
+//					+ " City=?,State=?,Province=?,Country=?,ZipCode=?,Phone=?,CellPhone=?, Fax=?,HomePage=?,Email=?,CompanyID=?,"
+//					+ " ResellerTaxID=?,VendorOpenDebit=?,VendorAllowedCredit=?,Detail=?, Taxable=?,CVTypeID=?, "
+//					+ " CVCategoryID=?,CVCategoryName=?,Active=1,Deleted=0,Status=?,CCTypeID=?,isMobilePhoneNumber=?, "
+//					+ " MiddleName=?, DateInput=?, DateTerminated=?, isTerminated=?,DBAName=? "
+//					+ " WHERE ClientVendorID=" + cvID;
+//
+//			pstmt = con.prepareStatement(sqlString);
+//			pstmt.setString(1, c.getCname());
+//			pstmt.setDate(2, ((c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date("now()")
+//					: string2date(c.getDateAdded())));
+//			pstmt.setString(3, c.getTitle());
+//			pstmt.setString(4, c.getFirstName());
+//			pstmt.setString(5, c.getLastName());
+//			pstmt.setString(6, c.getAddress1());
+//			pstmt.setString(7, c.getAddress2());
+//			pstmt.setString(8, c.getCity());
+//			pstmt.setString(9, c.getState());
+//			pstmt.setString(10, c.getProvince());
+//			pstmt.setString(11, c.getCountry());
+//			pstmt.setString(12, c.getZipCode());
+//			pstmt.setString(13, c.getPhone());
+//			pstmt.setString(14, c.getCellPhone());
+//			pstmt.setString(15, c.getFax());
+//			pstmt.setString(16, c.getHomePage());
+//			pstmt.setString(17, c.getEmail());
+//			pstmt.setString(18, compID);
+//			pstmt.setString(19, c.getTexID());
+//			pstmt.setString(20, oBal);
+//			pstmt.setString(21, exCredit);
+//			pstmt.setString(22, c.getMemo()); // detail
+//			pstmt.setInt(23, istaxable); // taxable
+//			pstmt.setInt(24, isAlsoClient); // cvtypeid
+//			pstmt.setInt(25, Integer.parseInt(c.getType())); // cvcategoryid
+//			pstmt.setString(26, vcName); // CVCategoryName
+//			pstmt.setString(27, status); // may be {N, U, 0(zero)}
+//			int cct = (c.getCcType() == null || c.getCcType().equals("") ? 0 : Integer.parseInt(c.getCcType()));
+//			pstmt.setInt(28, cct); // credit card type
+//			pstmt.setBoolean(29, c.isIsMobilePhoneNumber());
+//			pstmt.setString(30, c.getMiddleName());
+//			pstmt.setDate(31, (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
+//					: string2date(c.getDateInput()));
+//			pstmt.setDate(32, (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
+//					: string2date(c.getTerminatedDate()));
+//			pstmt.setBoolean(33, c.isTerminated());
+//			pstmt.setString(34, c.getDbaName());
+//
+//			Loger.log(sqlString);
+//			int num = pstmt.executeUpdate();
+//			if (num > 0) {
+//				System.out.println(num + " Record updated!!!");
+//				ret = true;
+//			}
+//			if (c.getShipping() != null && c.getShipping().trim().length() > 0)
+//				pinfo.updateClientVendor("ShipCarrierID", c.getShipping(), cvID);
+//
+//			if (c.getPaymentType() != null && c.getPaymentType().trim().length() > 0)
+//				pinfo.updateClientVendor("PaymentTypeID", c.getPaymentType(), cvID);
+//
+//			if (c.getRep() != null && c.getRep().trim().length() > 0)
+//				pinfo.updateClientVendor("SalesRepID", c.getRep(), cvID);
+//
+//			if (c.getTerm() != null && c.getTerm().trim().length() > 0)
+//				pinfo.updateClientVendor("TermID", c.getTerm(), cvID);
+//
+//			// ......updating----billing-shipping------------------------------------------START-------
+//			// pinfo.updateVendorCreditCard(cvID, c.getCcType(), c.getCardNo(),
+//			// c.getExpDate(), c.getCw2(), c.getCardHolderName(), c.getCardBillAddress(),
+//			// c.getCardZip());
+//
+//			// change status of old record...........
+//			pstmt = con.prepareStatement(
+//					"update bca_bsaddress set status='0' where clientvendorid=? and status in ('N','U')");
+//			pstmt.setInt(1, cvID);
+//			pstmt.executeUpdate();
+//			pstmt.close();
+//			// ......................status change finished.........
+//
+//			int bsAddID = pinfo.getLastBsAdd() + 1;
+//			boolean addrStatus = pinfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(),
+//					c.getBsfirstName(), c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(),
+//					c.getBsstate(), c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
+//
+//			System.out.println("bsAddressID:" + bsAddID);
+//
+//			boolean addrStatus2 = pinfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(),
+//					c.getShfirstName(), c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(),
+//					c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
+//
+//			TblBSAddress2 address = new TblBSAddress2();
+//			address.setAddressWithCustomerDtoBilling(c, cvID);
+//			pinfo.insertBillingShippingAddress(address, 1, true);
+//			address.setAddressWithCustomerDtoShipping(c, cvID);
+//			pinfo.insertBillingShippingAddress(address, 0, true);
+//			/*
+//			 * Loger.log("ANU RATE___" + c.getAnnualIntrestRate());
+//			 * Loger.log("MIN ____________ " + c.getMinFCharges());
+//			 * Loger.log("Grace Period ____________ " + c.getGracePrd());
+//			 */
+//
+//			pinfo.insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(),
+//					c.getGracePrd(), AssessFinanceChk, 0);
+//
+//			// billing-shipping------------------------------------------END------
+//
+//			// --------code to save services--------------------------START---
+//			int i;
+//			String sql;
+//			String serviceID = c.getTable_serID();
+//
+//			String serviceBal = c.getTable_bal();
+//			String defaultser = c.getTable_defaultVal();
+//			if (defaultser == null || defaultser.isEmpty()) {
+//				defaultser = "0";
+//			}
+//			// Loger.log("DEFAULT______________________________________"+ defaultser);
+//
+//			String invStyleID = c.getTable_invId();
+//
+//			sql = "delete from bca_clientvendorservice where ClientVendorID = ?";
+//			ps = con.prepareStatement(sql);
+//			ps.setInt(1, cvID);
+//			ps.executeUpdate();
+//
+//			if (!(serviceID.equals("") || invStyleID.equals("") || serviceBal.equals(""))) {
+//				String temp[] = null, temp2[] = null, temp3[] = null;
+//				if ((serviceID != "" && serviceID != null)
+//						&& (invStyleID != "" && invStyleID != null) & (serviceBal != "" && serviceBal != null)) {
+//					temp = serviceID.split(";"); // serviceID is in form like 3;6;8;
+//					temp2 = invStyleID.split(";");
+//					temp3 = serviceBal.split(";");
+//				}
+//				java.sql.Date d = new java.sql.Date(new java.util.Date().getTime());
+//
+//				for (i = 0; i < temp.length; i++) {
+//					/*
+//					 * commented on 13-05-2020 sql =
+//					 * "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
+//					 */
+//					sql = "insert into bca_clientvendorservice (ClientVendorID,DateAdded,CompanyID,InvoiceStyleID,ServiceBalance,DEFAULTService) "
+//							+ "values (?,?,?,?,?,?)";
+//					ps = con.prepareStatement(sql);
+//					ps.setInt(1, cvID);
+//					ps.setDate(2, d);
+//					ps.setInt(3, Integer.parseInt(compID));
+//					ps.setInt(4, Integer.parseInt(temp2[i]));
+//					ps.setFloat(5, java.lang.Float.parseFloat(temp3[i]));
+//					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser)) {
+//						ps.setInt(6, 1);
+//						/* Loger.log("EQUAL-------------------->>"); */
+//					} else
+//						ps.setInt(6, 0);
+//					ps.setInt(7, Integer.parseInt(temp[i]));
+//					ps.executeUpdate();
+//				}
+//			}
+//			// --------------------------code to save services
+//			// -------------------------------------END-------
+//
+//		} catch (SQLException ee) {
+//			Loger.log(2, "SQLException in Class CustomerInfo," + "method -updateInsertCustomer " + ee.toString());
+//
+//		} finally {
+//			try {
+//				if (ps != null) {
+//					db.close(ps);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return ret;
+//	}
 
 	/*
 	 * Function to delete the particular Customer Do not actualy DELETE the record;
 	 * just UPDATE the value of deleted attribute to 1
 	 */
 
-	BcaCvcreditcardRepository bcaCvcreditcardRepository;
+	@Autowired
+	private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 
+	@Transactional
 	public boolean deleteCustomer(String cvID, String compId) {
 		boolean ret = false;
-		
+
 		try {
-			
+
 			bcaClientvendorRepository.updateActiveAndStatusAndDeletedByCompanyIdAndClientVendorIdAndStatusIn(0, "0", 1,
 					Long.parseLong(compId), Integer.parseInt(cvID), Arrays.asList("U", "N"));
-			
+
 			// update bca_account....
 			bcaAccountRepository.updateActiveByClientVendorId(Integer.parseInt(cvID));
 
-
-
 			// update bca_bsaddress....
-			bcaBsaddressRepository.updateStatusByClientVendorIdAndStatus(Integer.parseInt(cvID), Arrays.asList("N","U"));
-			
+			bcaBsaddressRepository.updateStatusByClientVendorIdAndStatus(Integer.parseInt(cvID),
+					Arrays.asList("N", "U"));
 
 			// update bca_billingaddress....
-			bcaBillingaddressRepository.updateStatusByClientVendorIdAndStatusIn("0", Integer.parseInt(cvID), Arrays.asList("N","U"));
-
+			bcaBillingaddressRepository.updateStatusByClientVendorIdAndStatusIn("0", Integer.parseInt(cvID),
+					Arrays.asList("N", "U"));
 
 			// update bca_shippingaddress....
-			bcaShippingaddressRepository.updateStatusByClientVendorIdAndStatusIn("0", Integer.parseInt(cvID), Arrays.asList("N","U"));
-			
+			bcaShippingaddressRepository.updateStatusByClientVendorIdAndStatusIn("0", Integer.parseInt(cvID),
+					Arrays.asList("N", "U"));
 
 			bcaCvcreditcardRepository.updateByActiveAndClientVendorId(Integer.parseInt(cvID));
 			// set flag to indicate success & return value...
@@ -1843,7 +2016,7 @@ public class CustomerInfo {
 		} catch (Exception e) {
 			Loger.log(2, "Exception... CustomerInfo.deleteCustomer(). --->" + e.getMessage());
 			ret = false;
-		} 
+		}
 		return ret;
 	}
 //	public boolean deleteCustomer(String cvID, String compId) {

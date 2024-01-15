@@ -12,9 +12,11 @@ import javax.persistence.Table;
 @Table(name= "bca_bsaddress")
 public class BcaBsaddress {
 
-    @Id
-    @Column(name = "BSAddressID", nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @Column(name = "BSAddressID", nullable = false, updatable = false)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@Column(name = "BSAddressID", nullable = false, updatable = false)
     private Integer bsaddressId;
 
     @Column(name = "ClientVendorID", nullable = false)

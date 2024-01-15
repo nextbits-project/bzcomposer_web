@@ -746,16 +746,15 @@ $(function() {
 																	test="${CustomerDetails.fsUseIndividual == true}">
 										&nbsp;<input value="on" type="checkbox"
 																		name="UseIndividualFinanceCharges" checked="checked"
-																		onclick="enableDisableFinanceCharges();" id="chbox">
+																		onclick="toggleFields(this.form);" id="chbox">
 																</c:if> <c:if test="${CustomerDetails.fsUseIndividual != true}">
 										&nbsp;<input value="on" type="checkbox"
 																		name="UseIndividualFinanceCharges"
-																		onclick="enableDisableFinanceCharges();" id="chbox">
+																		onclick="toggleFields(this.form);" id="chbox">
 																</c:if> <font> <spring:message
 																		code="BzComposer.updatecustomer.useindividualfinancecharges" />
 															</font></td>
-															<tr>
-													
+														<tr>
 													</thead>
 													<tbody>
 														<tr>
@@ -777,7 +776,7 @@ $(function() {
 																					</td>
 																					<td colspan="3"><form:input
 																							onkeypress="return numbersonly(event,this.value)"
-																							path="annualIntrestRate" disabled="true" /></td>
+																							path="annualIntrestRate" readonly="true" /></td>
 																				</tr>
 																				<tr>
 																					<td><spring:message
@@ -785,7 +784,7 @@ $(function() {
 																					</td>
 																					<td colspan="3"><form:input
 																							onkeypress="return numbersonly(event,this.value)"
-																							path="minFCharges" disabled="true" /></td>
+																							path="minFCharges" readonly="true" /></td>
 																				</tr>
 																				<tr>
 																					<td><spring:message
@@ -793,7 +792,7 @@ $(function() {
 																					</td>
 																					<td colspan="3"><form:input
 																							onkeypress="return numbersonly(event,this.value)"
-																							path="gracePrd" disabled="true" /></td>
+																							path="gracePrd" readonly="true" /></td>
 																				</tr>
 																			</tbody>
 																		</table>
@@ -814,7 +813,7 @@ $(function() {
 																				</tr>
 																				<tr>
 																					<td colspan="4"><input type="checkbox"
-																						id="chk1" name="AssessFinanceChk" disabled="true"
+																						id="chk1" name="AssessFinanceChk" readonly="true"
 																						value="${CustomerDetails.fsAssessFinanceCharge}"
 																						${CustomerDetails.fsAssessFinanceCharge=='on'?'checked':''} />
 																						<spring:message
@@ -827,7 +826,7 @@ $(function() {
 																				<tr>
 																					<td colspan="4" style="font-size: 12px;"><input
 																						type="checkbox" id="chk2" name="FChargeInvoiceChk"
-																						disabled="true"
+																						readonly="true"
 																						value="${CustomerDetails.fsMarkFinanceCharge}"
 																						${CustomerDetails.fsMarkFinanceCharge=='on'?'checked':''} />
 																						<spring:message
@@ -1034,8 +1033,7 @@ $(function() {
 												<input type="hidden" value="1" id="hidn" />
 												<table class="tabla-listados" cellspacing="0">
 													<tbody>
-													
-																	<thead>
+													<thead>
 														<tr>
 															<th colspan="6" style="font-size: 14px;"><spring:message
 																	code="BzComposer.updatecustomer.defaultservice" /></th>
@@ -1124,31 +1122,29 @@ $(function() {
 																				checked="checked" /> <script type="text/javascript">
 													$('#default_sid').val(${objList.serviceID});
 													document.getElementById("sername").innerHTML = '${objList.serviceName}';
-												</script>
-															
-													</td>
-															</c:if>
+												</script></td>
+																		</c:if>
 
 																		<c:if test="${objList.defaultService != 1}">
 																			<td align="left"><input type="radio"
-																	name=defaultService id="default"
-																	value='${objList.defaultService}'
-																	onclick="setDefault('${objList.serviceID}',this.form);" />
+																				name=defaultService id="default"
+																				value='${objList.defaultService}'
+																				onclick="setDefault('${objList.serviceID}',this.form);" />
 																			</td>
 																		</c:if>
 
 																		<td align="left"><img
-																src="${pageContext.request.contextPath}/images/delete.png"
-																alt="Deletable"
-																onclick="removeFromTable('${objList.serviceID}');" />
+																			src="${pageContext.request.contextPath}/images/delete.png"
+																			alt="Deletable"
+																			onclick="removeFromTable('${objList.serviceID}');" />
 																			<!-- onclick="removeFromTable('${loop.index}');" -->
 																		</td>
 
 
 																		<td align="center"><input type="hidden"
-																value='${objList.serviceID}' id='${loop.index}id' /></td>
+																			value='${objList.serviceID}' id='${loop.index}id' /></td>
 																	</tr>
-														<script>
+																	<script>
 											var temp;
 											flagy = 0;
 											var defService="0";
@@ -1180,7 +1176,7 @@ $(function() {
 														<c:if test="${empty ServiceInfo}">
 															<input type="hidden" id="sIDSize" value="0" />
 														</c:if>
-													
+
 													</table>
 													<div>
 														<table>
@@ -2655,6 +2651,22 @@ function showselectitemdialog()
         }
     });
     return false;
+}
+
+function toggleFields(form) {
+    var chbox = document.getElementById('chbox');
+
+    // Define the fields to be toggled
+    var fieldsToToggle = ['annualIntrestRate', 'minFCharges', 'gracePrd', 'chk1', 'chk2'];
+
+    fieldsToToggle.forEach(function (fieldName) {
+        var field = document.CustomerForm[fieldName];
+        if (chbox.checked) {
+            field.removeAttribute('readonly');
+        } else {
+            field.setAttribute('readonly', 'true');
+        }
+    });
 }
 </script>
 <!-- dialog box used in this page -->

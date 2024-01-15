@@ -50,42 +50,39 @@ public class SalesDetails {
 	private SalesInfo sales;
 	@Autowired
 	private EstimationInfo estimationInfo;
-	
+
 	@Autowired
 	private InvoiceInfo invoiceInfo;
-	
+
 	@Autowired
 	private CustomerInfo customerInfo;
-	
+
 	@Autowired
-	private ItemInfo itemInfo; 
-	
+	private ItemInfo itemInfo;
+
 	@Autowired
 	private Title title;
-	
+
 	@Autowired
 	private CountryState countryState;
-	
+
 	@Autowired
 	private Term term;
-	
+
 	@Autowired
 	private Rep rep;
-	
+
 	@Autowired
 	private PayMethod payMethod;
-	
+
 	@Autowired
 	private Shipping shipping;
-	
+
 	@Autowired
 	private CreditCard creditCard;
-	
+
 	@Autowired
 	private VendorCategory vendorCategory;
-	
-	
-	
 
 	public void getdataManager(HttpServletRequest request, ActionForm form) {
 		HttpSession sess = request.getSession();
@@ -479,13 +476,16 @@ public class SalesDetails {
 		// request.setAttribute("CustomerDetails", CustomerDetails);
 	}
 
+	@Autowired
+	private CustomerInfo customer;
+
 	public void UpdateCustomer(HttpServletRequest request, CustomerDto customerDto) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 
-		CustomerInfo customer = new CustomerInfo();
+//		CustomerInfo customer = new CustomerInfo();
 		String cvId = (String) sess.getAttribute("editedCVID");
-		customer.UpdateCustomer(compId, cvId);
+		//customer.UpdateCustomer(compId, cvId);
 
 		String istaxable = request.getParameter("isTaxable");
 		String isAlsoClient = request.getParameter("isAlsoClient");

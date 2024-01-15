@@ -65,7 +65,7 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private PurchaseInfo purchaseInfo;
-	
+
 	@Autowired
 	private PurchaseOrderInfoDao purchaseOrderInfoDao;
 
@@ -80,18 +80,16 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private PayMethod pmethod;
-	
+
 	@Autowired
 	private Shipping ship;
 
 	@Autowired
 	private CreditCard cc;
-	
+
 	@Autowired
 	private VendorCategory cv;
-	
-	
-	
+
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
@@ -131,9 +129,9 @@ public class SalesDetailsDao {
 				.setFsAssessFinanceCharge("on".equalsIgnoreCase(request.getParameter("AssessFinanceChk")) ? "1" : "0");
 		customerDto
 				.setFsMarkFinanceCharge("on".equalsIgnoreCase(request.getParameter("FChargeInvoiceChk")) ? "1" : "0");
-//		customerDto.setStateName(compId);
-//		customerDto.setCountryName(compId);
-//		customerDto.setCityName(compId);
+//		customerDto.setAnnualIntrestRate(request.getParameter("annualIntrestRate"));
+//		customerDto.setMinFCharges(request.getParameter("minFCharges"));
+//		customerDto.setGracePrd(request.getParameter("gracePrd"));
 		try {
 			boolean addCust = customerInfoDao.insertCustomer(customerDto, compId);
 			if (addCust) {
@@ -589,8 +587,8 @@ public class SalesDetailsDao {
 		cfrm.setAnnualIntrestRate(request.getParameter("AnualRate"));
 		cfrm.setMinFCharges(request.getParameter("MinFinance"));
 		cfrm.setGracePrd(request.getParameter("GracePeriod"));
-		boolean updateCust = customerInfoDao.updateInsertCustomer(cvId, cfrm, compId, istax, isclient, indCharge, aFCharge,
-				"U");
+		boolean updateCust = customerInfoDao.updateInsertCustomer(cvId, cfrm, compId, istax, isclient, indCharge,
+				aFCharge, "U");
 		if (updateCust) {
 			request.setAttribute("SaveStatus", "Customer updated successfully!");
 			sess.setAttribute("actionMsg", "Customer information updated successfully!");
@@ -709,7 +707,6 @@ public class SalesDetailsDao {
 		Loger.log("ItemsList Size:" + itemList.size());
 		return itemList;
 	}
-	
 
 	public void ItemsDicontinuedList(HttpServletRequest request, ItemDto itemForm) {
 		HttpSession sess = request.getSession();
@@ -720,7 +717,8 @@ public class SalesDetailsDao {
 		String fromDate = itemForm.getFromDate();
 		String toDate = itemForm.getToDate();
 		String sortBy = itemForm.getSortBy();
-		ItemDetails = itemInfoDao.getDicontinuedItemList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
+		ItemDetails = itemInfoDao.getDicontinuedItemList(datesCombo, fromDate, toDate, sortBy, compId, request,
+				itemForm);
 		sess.setAttribute("ItemDetails", ItemDetails);
 		Loger.log("list Size:" + ItemDetails.size());
 	}
@@ -780,7 +778,8 @@ public class SalesDetailsDao {
 		String toDate = itemForm.getToDate();
 		String sortBy = itemForm.getSortBy();
 		ArrayList damagesItemList = new ArrayList();
-		damagesItemList = itemInfoDao.getDamagedInvList(datesCombo, fromDate, toDate, sortBy, compId, request, itemForm);
+		damagesItemList = itemInfoDao.getDamagedInvList(datesCombo, fromDate, toDate, sortBy, compId, request,
+				itemForm);
 		request.setAttribute("damagesItemList", damagesItemList);
 
 	}
@@ -795,8 +794,8 @@ public class SalesDetailsDao {
 		String toDate = itemForm.getToDate();
 		String sortBy = itemForm.getSortBy();
 		ArrayList missingInventoryList = new ArrayList();
-		missingInventoryList = itemInfoDao.getMissingInventoryList(datesCombo, fromDate, toDate, sortBy, compId, request,
-				itemForm);
+		missingInventoryList = itemInfoDao.getMissingInventoryList(datesCombo, fromDate, toDate, sortBy, compId,
+				request, itemForm);
 		request.setAttribute("missingInventoryList", missingInventoryList);
 
 	}
@@ -833,7 +832,8 @@ public class SalesDetailsDao {
 		String sortBy = form1.getSortBy();
 
 		ArrayList invValSummaryList = new ArrayList();
-		invValSummaryList = itemInfoDao.getInventoryValSummary(datesCombo, fromDate, toDate, sortBy, compId, request, form1);
+		invValSummaryList = itemInfoDao.getInventoryValSummary(datesCombo, fromDate, toDate, sortBy, compId, request,
+				form1);
 		request.setAttribute("invValSummaryList", invValSummaryList);
 	}
 
@@ -906,8 +906,8 @@ public class SalesDetailsDao {
 		String toDate = cform.getToDate();
 		String sortBy = cform.getSortBy();
 
-		ArrayList<CustomerDto> cList = customerInfoDao.getAccountPayableReport(compId, request, datesCombo, fromDate, toDate,
-				sortBy, cform);
+		ArrayList<CustomerDto> cList = customerInfoDao.getAccountPayableReport(compId, request, datesCombo, fromDate,
+				toDate, sortBy, cform);
 		request.setAttribute("acPayList", cList);
 	}
 

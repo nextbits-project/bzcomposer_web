@@ -13,6 +13,7 @@ import com.nxsol.bzcomposer.company.domain.BcaClientvendorservice;
 @Repository
 public interface BcaClientvendorserviceRepository extends JpaRepository<BcaClientvendorservice, Long> {
 
+
 	@Query("select bc from BcaClientvendorservice bc  where bc.company.companyId= :companyId and bc.clientVendor.clientVendorId = :clientVendorId ")
 	List<BcaClientvendorservice> findByCompanyIdAndClientVendorId(@Param("companyId") Long companyId,
 			@Param("clientVendorId") Integer clientVendorId);

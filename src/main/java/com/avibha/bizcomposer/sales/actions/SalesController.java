@@ -309,7 +309,7 @@ public class SalesController {
 			String firstCvID = sd.getCustomerList(request);
 			sd.getAllList(request);
 
-			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+//			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			customerDto.setPeriodFrom(MyUtility.getDateBeforeGivenMonths(12));
 			customerDto.setPeriodTo(MyUtility.getCurrentDate());
 			request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));

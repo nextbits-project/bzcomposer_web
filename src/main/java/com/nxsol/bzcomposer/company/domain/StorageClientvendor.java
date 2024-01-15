@@ -188,7 +188,7 @@ public class StorageClientvendor {
     private BcaClientvendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cvca")
+    @JoinColumn(name = "CVCategoryID")
     private BcaClientcategory cvcategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -196,7 +196,7 @@ public class StorageClientvendor {
     private BcaCvtype cvtype;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TypeID")
+    @JoinColumn(name = "PaymentTypeID")
     private BcaPaymenttype paymentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
