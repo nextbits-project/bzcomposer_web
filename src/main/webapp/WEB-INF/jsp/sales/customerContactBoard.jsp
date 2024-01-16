@@ -249,38 +249,29 @@ function manageCustomer(cmd){
 	} else {
 		if (cmd=="EDIT") {
 			//window.location = "Customer?tabid=editCustomer&cvId="+itemID+"&itemIndex="+itemIndex;
-			window.open("Customer?tabid=editCustomer&cvId="+itemID, null,"scrollbars=yes,height=620,width=1200,status=yes,toolbar=no,menubar=no,location=no");
+			window.open("Customer?tabid=editContact&cvId="+itemID, null,"scrollbars=yes,height=620,width=1200,status=yes,toolbar=no,menubar=no,location=no");
 		}
 		else if (cmd=="DELETE") {
-			event.preventDefault();
-			$("#deleteCustomer").dialog({
-		    	resizable: false,
-		        height: 200,
-		        width: 500,
-		        modal: true,
-		        buttons: {
-		            "<spring:message code='BzComposer.global.ok'/>": function () {
-		                $(this).dialog("close");
-                        let CustIDs = "";
-                        for(let x=0; x<selectedRowIndexs.length; x++){
-                            CustIDs = CustIDs + selectedRowIndexs[x] +":";
-                        }
-                        CustIDs = CustIDs.substring(0, CustIDs.length-1);
-		                window.location = "Customer?tabid=deleteCustomer&CustIDs="+CustIDs;
-		            },
-		            <spring:message code='BzComposer.global.cancel'/>: function () {
-		                $(this).dialog("close");
-		                return false;
-		            }
-				}
-			});
+			if(confirm("<spring:message code='BzComposer.customerinfo.deleteselectedcustomer'/>")==true) {
+				//window.location = "Customer?tabid=Customer&customerAction=DELETE&cvID="+clientVendorID;
+				$.ajax({
+                    type : "GET",
+                    url : "Customer?tabid=Customer&customerAction=DELETE&cvID="+itemID,
+                    success : function(data) {
+                        location.reload();
+                    },
+                    error : function(error) {
+                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+                    }
+                });
+			}
 			return false;
 		}
 	}
 }
 function addNewCustomer(){
 	//window.location = "Customer?tabid=NewCustomer";
-	window.open("Customer?tabid=NewCustomer", null,"scrollbars=yes,height=620,width=1200,status=yes,toolbar=no,menubar=no,location=no");
+	window.open("Customer?tabid=NewContact", null,"scrollbars=yes,height=620,width=1200,status=yes,toolbar=no,menubar=no,location=no");
 }
 
 function showCustomerValidationDialog(){

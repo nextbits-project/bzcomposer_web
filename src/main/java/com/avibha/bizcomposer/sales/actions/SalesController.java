@@ -87,12 +87,13 @@ public class SalesController {
 
 	@Autowired
 	private CountryState cs;
-	
+
 	@Autowired
 	private PurchaseBoardDetails purchaseBoardDetails;
 
 	@Autowired
 	private TblCategoryDtoLoader categoryDtoLoader;
+
 	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
 			RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
@@ -644,7 +645,7 @@ public class SalesController {
 			forward = "/sales/addTransactionHistory";
 		}
 
-		else if (action.equalsIgnoreCase("NewCustomer")) { // for Vendor category
+		else if (action.equalsIgnoreCase("NewCustomer")) {
 			String cvId = request.getParameter("CustomerID");
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 //			InvoiceInfoDao invoice = new InvoiceInfoDao();
@@ -684,6 +685,46 @@ public class SalesController {
 			} else {
 				forward = "/sales/payHistory";
 			}
+		} else if (action.equalsIgnoreCase("NewContact")) {
+			String cvId = request.getParameter("CustomerID");
+//			SalesDetailsDao sdetails = new SalesDetailsDao();
+//			InvoiceInfoDao invoice = new InvoiceInfoDao();
+
+			invoiceInfoDao.set(cvId, request, updateInvoiceDto, companyID);
+			invoiceInfoDao.getServices(request, companyID, cvId);
+			sd.getInvoiceInfo(request);
+			sd.getAllList(request);
+			// sdetails.getCustomerList(request);
+
+//			ConfigurationDAO dao = new ConfigurationDAO();
+			request.setAttribute("membershipLevel", dao.getmembershipLevel(companyID, request));
+			request.setAttribute("CustomerSize", dao.getNumberOfCustomer(Long.valueOf(companyID)));
+
+			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+			request.setAttribute("defaultCongurationData", configDto);
+			// to set deafult zipcode
+			request.setAttribute("zipcode", "90004");
+			customerDto.setCountry(configDto.getCustDefaultCountryID() + "");
+			customerDto.setState(configDto.getSelectedStateId() + "");
+			customerDto.setTaxAble(configDto.getCustTaxable());
+			customerDto.setTerm(configDto.getSelectedTermId() + "");
+			customerDto.setPaymentType(configDto.getSelectedPaymentId() + "");
+			customerDto.setRep(configDto.getSelectedSalesRepId() + "");
+			customerDto.setShipping(configDto.getCustomerShippingId() + "");
+			customerDto.setAnnualIntrestRate(configDto.getAnnualInterestRate() + "");
+			customerDto.setMinFCharges(configDto.getMinCharge() + "");
+			customerDto.setGracePrd(configDto.getGracePeriod() + "");
+			customerDto.setFsAssessFinanceCharge(configDto.getAssessFinanceCharge());
+			customerDto.setFsMarkFinanceCharge(configDto.getMarkFinanceCharge());
+
+//			PurchaseInfo pinfo = new PurchaseInfo();
+			customerDto.setClientVendorID((pinfo.getLastClientVendorID() + 1) + "");
+			customerDto.setDateAdded(invoiceInfo.setCurrentDate());
+			if (IN_URI.endsWith(CUSTOMER_URI)) {
+				forward = "/sales/addNewContact";
+			} else {
+				forward = "/sales/payHistory";
+			}
 		} else if (action.equalsIgnoreCase("editCustomer")) { // Edit Customer Info
 			String cvId = request.getParameter("cvId");
 			request.getSession().setAttribute("editedCVID", cvId);
@@ -699,6 +740,21 @@ public class SalesController {
 			String CustomerSize = dao.getNumberOfCustomer(Long.valueOf(companyID));
 			request.setAttribute("CustomerSize", CustomerSize);
 			forward = "/sales/updateCustomer";
+		}else if (action.equalsIgnoreCase("editContact")) { // Edit Customer Info
+			String cvId = request.getParameter("cvId");
+			request.getSession().setAttribute("editedCVID", cvId);
+//			SalesDetailsDao sdetails = new SalesDetailsDao();
+			// sdetails.getCustomerList(request);
+			sd.getContactDetails(cvId, request, customerDto);
+			sd.getInvoiceInfo(request);
+			sd.getAllList(request);
+
+//			ConfigurationDAO dao = new ConfigurationDAO();
+			String membershipLevel = dao.getmembershipLevel(companyID, request);
+			request.setAttribute("membershipLevel", membershipLevel);
+			String CustomerSize = dao.getNumberOfCustomer(Long.valueOf(companyID));
+			request.setAttribute("CustomerSize", CustomerSize);
+			forward = "/sales/updateContact";
 		} else if (action.equalsIgnoreCase("deleteCustomer")) { // Delete Customer Info
 			String CustIDs = request.getParameter("CustIDs");
 //			CustomerInfo ci = new CustomerInfo();
@@ -722,9 +778,15 @@ public class SalesController {
 			String cvId = request.getParameter("CustId");
 			// String itemIndex = request.getParameter("itemIndex");
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
+			String contact = request.getParameter("contact");
+			if (contact.equalsIgnoreCase("contact")) {
+				contact = "NewContact";
+			} else {
+				contact = "NewCustomer";
+			}
 			sd.AddCustomer(request, customerDto);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
-				forward = "redirect:/Customer?tabid=NewCustomer";
+				forward = "redirect:/Customer?tabid="+contact;
 			} else {
 				forward = "/sales/payHistory";
 			}
@@ -1407,7 +1469,7 @@ public class SalesController {
 			}
 		} else if (action.equalsIgnoreCase("InventoryList")) { // for Inventory List Report
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
-		sd.ItemsList(request, itemDto);
+			sd.ItemsList(request, itemDto);
 			if (IN_URI.endsWith(ITEM_URI)) {
 				forward = "/reports/inventoryList";
 			} else {
@@ -1467,8 +1529,8 @@ public class SalesController {
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList transactionList = customerInfoDao.getTransactionList(datesCombo, fromDate, toDate, sortBy, companyID,
-					request, customerDto);
+			ArrayList transactionList = customerInfoDao.getTransactionList(datesCombo, fromDate, toDate, sortBy,
+					companyID, request, customerDto);
 			model.addAttribute("customerTransactionList", transactionList);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustomerTransactionList";
@@ -1481,8 +1543,8 @@ public class SalesController {
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList balanceSummanyList = customerInfoDao.getBalanceSummaryList(datesCombo, fromDate, toDate, sortBy, companyID,
-					request, customerDto);
+			ArrayList balanceSummanyList = customerInfoDao.getBalanceSummaryList(datesCombo, fromDate, toDate, sortBy,
+					companyID, request, customerDto);
 			model.addAttribute("balanceSummanyList", balanceSummanyList);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustBalSummary";
@@ -1495,8 +1557,8 @@ public class SalesController {
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList balanceDetail = customerInfoDao.getBalanceDetail(datesCombo, fromDate, toDate, sortBy, companyID, request,
-					customerDto);
+			ArrayList balanceDetail = customerInfoDao.getBalanceDetail(datesCombo, fromDate, toDate, sortBy, companyID,
+					request, customerDto);
 			model.addAttribute("balanceDetail", balanceDetail);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/CustBalDetail";
@@ -1509,8 +1571,8 @@ public class SalesController {
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList getSalesCustomerSummary = customerInfoDao.getSalesByCustomerSummary(datesCombo, fromDate, toDate, sortBy,
-					companyID, request, customerDto);
+			ArrayList getSalesCustomerSummary = customerInfoDao.getSalesByCustomerSummary(datesCombo, fromDate, toDate,
+					sortBy, companyID, request, customerDto);
 			model.addAttribute("getSalesCustomerSummary", getSalesCustomerSummary);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/SalesByCustomerSummary";
@@ -1523,8 +1585,8 @@ public class SalesController {
 			String toDate = customerDto.getToDate();
 			String sortBy = customerDto.getSortBy();
 			String datesCombo = customerDto.getDatesCombo();
-			ArrayList incomeCustomerSummary = customerInfoDao.getIncomeByCustomerSymmary(datesCombo, fromDate, toDate, sortBy,
-					companyID, request, customerDto);
+			ArrayList incomeCustomerSummary = customerInfoDao.getIncomeByCustomerSymmary(datesCombo, fromDate, toDate,
+					sortBy, companyID, request, customerDto);
 			model.addAttribute("incomeCustomerSummary", incomeCustomerSummary);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
 				forward = "reports/IncomeCustomerSummary";
@@ -1711,8 +1773,7 @@ public class SalesController {
 				orderNo = orderNums.get(0);
 			}
 			if (orderNo != null && !orderNo.trim().isEmpty()) {
-				request.setAttribute("PrintOrderDetails",
-						sd.getRecordForInvoice(compId, orderNo, invoiceDto, request));
+				request.setAttribute("PrintOrderDetails", sd.getRecordForInvoice(compId, orderNo, invoiceDto, request));
 			}
 			request.setAttribute("custID", custID);
 			request.setAttribute("templateType", templateType);

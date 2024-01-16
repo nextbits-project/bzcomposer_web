@@ -21,27 +21,31 @@ public class UpdateCustController {
 
 	@Autowired
 	private SalesDetails sdetails;
-	
-    @RequestMapping(value = {"/updateEditedCustomer"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String execute(CustomerDto customerDto, HttpServletRequest request) throws IOException, ServletException {
+
+	@RequestMapping(value = { "/updateEditedCustomer" }, method = { RequestMethod.GET, RequestMethod.POST })
+	public String execute(CustomerDto customerDto, HttpServletRequest request) throws IOException, ServletException {
 //        SalesDetails sdetails = new SalesDetails();
-        String action = request.getParameter("tabid");
-        String cvId = null;
-        if(action==null){
-            cvId = (String) request.getSession().getAttribute("editedCVID");
-            sdetails.updateInvoice(cvId,request);
-        }
-        else if (action.equalsIgnoreCase("edit")) {
-            cvId = (String) request.getSession().getAttribute("editedCVID");
-            sdetails.UpdateCustomer(request, customerDto);
-            sdetails.updateInvoice(cvId,request);
-        }
-        else if (action.equalsIgnoreCase("DHLUP")) {
-            cvId = request.getParameter("CustId");
-            sdetails.updateInvoice(cvId,request);
-            sdetails.getLookup(cvId, request, customerDto);
-        }
-        //return "/sales/updateCustomer";
-        return "redirect:/Customer?tabid=editCustomer&cvId="+cvId;
-    }
+		String action = request.getParameter("tabid");
+		String cvId = null;
+		if (action == null) {
+			cvId = (String) request.getSession().getAttribute("editedCVID");
+			sdetails.updateInvoice(cvId, request);
+		} else if (action.equalsIgnoreCase("edit")) {
+			cvId = (String) request.getSession().getAttribute("editedCVID");
+			sdetails.UpdateCustomer(request, customerDto);
+			sdetails.updateInvoice(cvId, request);
+		} else if (action.equalsIgnoreCase("DHLUP")) {
+			cvId = request.getParameter("CustId");
+			sdetails.updateInvoice(cvId, request);
+			sdetails.getLookup(cvId, request, customerDto);
+		}
+		String contact = request.getParameter("contact");
+		if (contact != null && contact.equalsIgnoreCase("contact")) {
+			contact = "editContact";
+		} else {
+			contact = "editCustomer";
+		}
+		// return "/sales/updateCustomer";
+		return "redirect:/Customer?tabid=" + contact + "&cvId=" + cvId;
+	}
 }

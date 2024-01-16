@@ -42,7 +42,7 @@ $(function() {
 	<!-- add the code for tab here -->
 	<div>
 		<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-			<spring:message code="BzComposer.addnewcustomer.addcustomertitle"/>
+			<spring:message code="BzComposer.addnewcustomer.addcontacttitle"/>
 		</span>
 	</div>
 	<table cellpadding="0" cellspacing="0" border="0" align=center  style="width: 100%;">
@@ -285,9 +285,11 @@ $(function() {
 									<spring:message code="BzComposer.global.istaxable" />
 								</td>
 								<td>
-									<input type="hidden" name="contact" id="contact" value="customer">
+								<div style="display: none">
+									<input type="hidden" name="contact" id="contact" value="contact">
 									<input type="checkbox" name="isAlsoClient" id="chk_alsovendor">
 									<spring:message code="BzComposer.addnewcustomer.isalsovendor" />
+								</div>
 								</td>
 								<td>&nbsp;</td>
 							</tr>

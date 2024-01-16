@@ -332,6 +332,78 @@ public class CustomerInfoDao {
 		return objList;
 	}
 
+	public ArrayList<CustomerDto> contactDetails(String compId) {
+		ArrayList<CustomerDto> objList = new ArrayList<>();
+		Title title = new Title();
+		try {
+			@SuppressWarnings("unchecked")
+			ArrayList<LabelValueBean> titleList = title.getTitleList(compId);
+
+			List<String> status = Arrays.asList("U", "N");
+			List<Integer> cvTypeId = Arrays.asList(7);
+
+			List<BcaClientvendor> cvs = bcaClientvendorRepository
+					.findDistinctByCompany_CompanyIdAndStatusInAndCvtypeIdInAndDeletedAndActiveOrderByName(
+							Long.valueOf(compId), status, cvTypeId, 0, 1);
+
+			DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+			for (BcaClientvendor cv : cvs) {
+				CustomerDto customer = new CustomerDto();
+				customer.setClientVendorID(cv.getClientVendorId().toString());
+				customer.setCompanyName(cv.getName());
+				customer.setCname(cv.getName() + "(" + cv.getFirstName() + " " + cv.getLastName() + ")");
+				customer.setTitle(cv.getCustomerTitle());
+				customer.setFirstName(cv.getFirstName());
+				customer.setLastName(cv.getLastName());
+				customer.setAddress1(cv.getAddress1());
+				customer.setAddress2(cv.getAddress2());
+				customer.setZipCode(cv.getZipCode());
+
+				Optional<BcaCountries> country = countriesRepository.findById(Integer.valueOf(cv.getCountry()));
+				if (country.isPresent())
+					customer.setCountry(country.get().getName());
+
+				Optional<BcaStates> state = stateRepository.findById(Integer.valueOf(cv.getState()));
+				if (state.isPresent())
+					customer.setStateName(state.get().getName());
+
+				Optional<BcaCities> city = cityRepository.findById(Integer.valueOf(cv.getCity()));
+				if (city.isPresent())
+					customer.setCity(city.get().getName());
+
+				customer.setEmail(cv.getEmail());
+				customer.setPhone(cv.getPhone());
+				customer.setCellPhone(cv.getCellPhone());
+				customer.setFax(cv.getFax());
+				customer.setDateAdded(cv.getDateAdded() != null ? outputFormat.format(cv.getDateAdded()) : "");
+//				customer.setDateAdded(outputFormat.format(cv.getDateAdded()));
+				String fullName = cv.getFirstName() + " " + cv.getLastName();
+				customer.setFullName(fullName);
+				customer.setBillTo(fullName);
+
+//				boolean paymentUnpaid = (cv.getString("IsPaymentCompleted") != null
+//						&& cv.getString("IsPaymentCompleted").equals("0")) ? true : false;
+//				customer.setPaymentUnpaid(paymentUnpaid);
+
+				customer.setType(cv.getCvcategoryName());
+				customer.setDbaName(cv.getDbaname());
+				for (LabelValueBean lvBean : titleList) {
+					if (lvBean.getValue().equalsIgnoreCase(customer.getTitle())) {
+						customer.setTitle(lvBean.getLabel());
+						break;
+					}
+				}
+				objList.add(customer);
+			}
+
+		} catch (Exception ee) {
+			Loger.log(2, " SQL Error in Class CustomerInfo and  method -contactDetails " + " " + ee.toString());
+
+		}
+		return objList;
+	}
+
 	public ArrayList<CustomerDto> customerDetailsDELETE(String compId) {
 
 //		Connection con = null;
@@ -1806,7 +1878,7 @@ public class CustomerInfoDao {
 
 				scv.setTaxable(Long.parseLong(c.getTaxAble()));
 
-			Optional<BcaCvtype> cvType = bcaCvtypeRepository.findById(Integer.parseInt(c.getIsclient()));
+			Optional<BcaCvtype> cvType = bcaCvtypeRepository.findById(c.getCvTypeID());
 			if (cvType.isPresent()) {
 				scv.setCvtype(cvType.get());
 			}
@@ -1993,10 +2065,11 @@ public class CustomerInfoDao {
 			bcv.setVendorOpenDebit(Double.parseDouble(oBal));
 			bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
 			bcv.setDetail(c.getMemo());
+			bcv.setCvtypeId(c.getCvTypeID());
 			if (null != c.getTaxAble())
 				bcv.setTaxable(Long.parseLong(c.getTaxAble()));
-			if (null != c.getIsclient())
-				bcv.setCvtypeId(Integer.parseInt(c.getIsclient()));
+//			if (null != c.getIsclient())
+//				bcv.setCvtypeId(Integer.parseInt(c.getIsclient()));
 			if (null != c.getType())
 				bcv.setCvcategoryId(Integer.parseInt(c.getType()));
 			bcv.setCvcategoryName(vcName);
