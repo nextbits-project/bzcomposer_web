@@ -30,16 +30,19 @@ public class DateHelper {
 //	}
 
 	public static OffsetDateTime StringToOffsetDateTime(String date) {
+		String pattern="yyyy-MM-dd HH:mm:ss";
 		// Define the date format that matches your input string
-		DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-
-		// Parse the string into an OffsetDateTime object
-		OffsetDateTime offsetDateTime = OffsetDateTime.parse(date, formatter);
-
-		// If you want to convert it to a specific time zone, you can use
-		// withOffsetSameInstant method
-		OffsetDateTime convertedDateTime = offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
-		return convertedDateTime;
+//		DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+//
+//		// Parse the string into an OffsetDateTime object
+//		OffsetDateTime offsetDateTime = OffsetDateTime.parse(date, formatter);
+//
+//		// If you want to convert it to a specific time zone, you can use
+//		// withOffsetSameInstant method
+//		OffsetDateTime convertedDateTime = offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
+//		return convertedDateTime;
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+	        return OffsetDateTime.parse(date, formatter);
 	}
 	
 	

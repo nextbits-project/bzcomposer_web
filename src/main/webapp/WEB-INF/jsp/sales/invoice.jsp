@@ -2609,9 +2609,11 @@ function getInvoiceDetailsByBtnName(form, url){
     } else {
         if(No.length==0 || No==0) {
             // return showItemOrderNumberDialog();
-        } else {
+        } 
+        
+      /*   else {
         onSave(form);
-        }
+        } */
     }
     //window.location.href="Invoice?tabid=FirstInvoice";
     $.ajax({

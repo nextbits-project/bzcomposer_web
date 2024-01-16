@@ -973,7 +973,7 @@ public class CustomerInfo {
 			}
 
 		} catch (Exception ee) {
-			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
+			Loger.log(2, " SQL Error in Class CustomerInfo and  method -labelTypeDetails " + " " + ee.toString());
 		}
 		return objList;
 	}

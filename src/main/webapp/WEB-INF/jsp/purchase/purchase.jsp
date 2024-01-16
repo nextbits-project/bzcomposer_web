@@ -2156,6 +2156,7 @@ function init() {
 	}
 
 	function Assignment(custID, form){
+		console.log("Hello");
 	    document.PurchaseOrderForm.clientVendorID.value = custID;
 		if(custID==0){
 			form.billTo.value="";
@@ -2164,25 +2165,35 @@ function init() {
 		else if(custID==1111){
             window.location.href = "Customer?tabid=NewCustomer";
         } else{
+        	console.log("Hello678");
 			form.custNm.value = custID;
 			size = document.getElementById("bSize").value;
+			console.log("bsize"+size);
 			shsize = document.getElementById("sSize").value;
+			console.log("bsize"+shsize);
 			for(let i=0;i<size;i++){
 				var field1 = document.getElementById(i+"clvid").value;
+				console.log("bsize field1"+field1);
 				if(custID == field1){
 					document.getElementById('cid').value = custID;
 					//form.companyID.value = document.getElementById(i+"cid").value;
 					form.bsAddressID.value = document.getElementById(i+"bsaddr").value;
 					form.billAddrValue.value = document.getElementById(i+"bsaddr").value;
 					form.billTo.value = document.getElementById(i+"bl").value;
+					console.log("bsize form.billAddrValue.value"+form.billAddrValue.value);
+					console.log("bsize form.billTo.value"+form.billTo.value);
 					break;
 				}
 			}
 			for(i=0;i<shsize;i++){
                 var field2 = document.getElementById(i+"sh_id").value;
+                console.log("bsize field2"+field2);
+				
                 if(custID==field2){
                     form.bsAddressID.value = document.getElementById(i+"shaddr").value;
                     form.shipTo.value = document.getElementById(i+"sh").value;
+                    console.log("bsize  form.shipTo.value"+ form.shipTo.value);
+    				
                     break;
                 }
             }

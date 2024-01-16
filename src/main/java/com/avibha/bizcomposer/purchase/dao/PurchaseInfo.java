@@ -940,7 +940,7 @@ public class PurchaseInfo {
 		try {
 			BcaBsaddress bcaBsaddress = new BcaBsaddress();
 
-			bcaBsaddress.setBsaddressId(bsID);
+//			bcaBsaddress.setBsaddressId(bsID);
 			bcaBsaddress.setClientVendorId(cvID);
 			bcaBsaddress.setName(cname);
 			bcaBsaddress.setFirstName(fname);
@@ -1016,222 +1016,116 @@ public class PurchaseInfo {
 		int id = -1;
 //		String sql_update = null;
 //		String sql_insert = null;
+		try {
 		if (address.getAddressName().equalsIgnoreCase("Default")) {
 			address.setAddressName("Default");
 		} else if (address.getAddressName().equals("")) {
 			address.setAddressName(address.getName() + JProjectUtil.dateFormatLong.format(new Date()));
 		}
-		try {
-			if (addressType == TblBSAddress2.BILLING_ADDR_TYPE) {
-				if (address.getState() == null)
-					address.setState("");
-//			sql_update = "UPDATE bca_billingaddress SET Status = 'U' " + "WHERE ClientVendorID = " + address.getCvId();
-//			sql_insert = "INSERT INTO bca_billingaddress (AddressName,"
-//					+ "ClientVendorID,Name,FirstName,LastName,Address1,"
-//					+ "Address2,City,State,Province,Country,ZipCode,Status,DateAdded,Phone,CellPhone,Fax,isDefault,Active) VALUES ("
-//					+ "'" + ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''") + "'" + ","
-//					+ address.getCvId() + "," + "'" + ConstValue.hateNull(address.getName()).replaceAll("'", "''") + "'"
-//					+ "," + "'" + ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getLastName()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getCity()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getState()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getProvince()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getCountry()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ address.getStatus() + "'" + "," + // (defaultAddress?"'N'":"'U'")+","+
-//					"'" + JProjectUtil.getDateFormater().format(new Date()) + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getPhone()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getFax()).replaceAll("'", "''") + "'" + "," + address.getIsDefault()
-//					+ "," + address.getActive() + ")";
-				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(address.getCvId());
 
-				if (clientVendor.isPresent()) {
-//				BcaClientvendor cv = clientVendor.get();
-					bcaBillingaddressRepository.updateStatusByClientVendorId("U", address.getCvId());
-//				List<BcaBillingaddress> bcaBillingaddresses = bcaBillingaddressRepository.findByClientVendor(cv);
-//
-//				for (BcaBillingaddress bcaBillingaddress : bcaBillingaddresses) {
-//					bcaBillingaddress.setStatus("U");
-//					bcaBillingaddressRepository.save(bcaBillingaddress);
-//				}
+		if (addressType == TblBSAddress2.BILLING_ADDR_TYPE) {
+			if (address.getState() == null)
+				address.setState("");
+		Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(address.getCvId());
 
-					BcaBillingaddress bcaBillingaddress = new BcaBillingaddress();
-					bcaBillingaddress
-							.setAddressName(ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''"));
-					bcaBillingaddress.setClientVendor(clientVendor.get());
-					bcaBillingaddress.setName(ConstValue.hateNull(address.getName()).replaceAll("'", "''"));
-					bcaBillingaddress.setFirstName(ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''"));
-					bcaBillingaddress.setLastName(ConstValue.hateNull(address.getLastName()).replaceAll("'", "''"));
-					bcaBillingaddress.setAddress1(ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''"));
-					bcaBillingaddress.setAddress2(ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''"));
-					bcaBillingaddress.setCity(ConstValue.hateNull(address.getCity()).replaceAll("'", "''"));
-					bcaBillingaddress.setState(ConstValue.hateNull(address.getState()).replaceAll("'", "''"));
-					bcaBillingaddress.setProvince(ConstValue.hateNull(address.getProvince()).replaceAll("'", "''"));
-					bcaBillingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
-					bcaBillingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
-					bcaBillingaddress.setStatus(address.getStatus());
-					Date dateAdded = string2date(" now() ");
-					bcaBillingaddress.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
-					bcaBillingaddress.setPhone(ConstValue.hateNull(address.getPhone()).replaceAll("'", "''"));
-					bcaBillingaddress.setCellPhone(ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''"));
-					bcaBillingaddress.setFax(ConstValue.hateNull(address.getFax()).replaceAll("'", "''"));
-					bcaBillingaddress.setIsDefault(address.getIsDefault());
-					bcaBillingaddress.setActive(Integer.parseInt(address.getActive()));
-					bcaBillingaddress.setAddressType(String.valueOf(addressType));
+			if (clientVendor.isPresent()) {
+				BcaClientvendor cv = clientVendor.get();
 
-					BcaBillingaddress billingaddress = bcaBillingaddressRepository.save(bcaBillingaddress);
-					id = billingaddress.getAddressId();
+				List<BcaBillingaddress> bcaBillingaddresses = bcaBillingaddressRepository.findByClientVendor(cv);
 
+				for (BcaBillingaddress bcaBillingaddress : bcaBillingaddresses) {
+					bcaBillingaddress.setStatus("U");
+					bcaBillingaddressRepository.save(bcaBillingaddress);
 				}
 
-			} else {
-//			sql_update = "UPDATE bca_shippingaddress SET Status = 'U' " + "WHERE ClientVendorID = " + address.getCvId();
-//
-//			sql_insert = "INSERT INTO bca_shippingaddress (AddressName,ClientVendorID,Name,FirstName,LastName,Address1,"
-//					+ "Address2,City,State,Province,Country,ZipCode,Status,DateAdded,Phone,CellPhone,Fax,isDefault,Active) VALUES ("
-//					+ "'" + ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''") + "'" + ","
-//					+ address.getCvId() + "," + "'" + ConstValue.hateNull(address.getName()).replaceAll("'", "''") + "'"
-//					+ "," + "'" + ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getLastName()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getCity()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getState()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getProvince()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getCountry()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ address.getStatus() + "'" + "," + // (defaultAddress?"'N'":"'U'")+","+
-//					"'" + JProjectUtil.getDateFormater().format(new Date()) + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getPhone()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''") + "'" + "," + "'"
-//					+ ConstValue.hateNull(address.getFax()).replaceAll("'", "''") + "'" + "," + address.getIsDefault()
-//					+ "," + address.getActive() + ")";
-				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(address.getCvId());
+				BcaBillingaddress bcaBillingaddress = new BcaBillingaddress();
+				bcaBillingaddress.setAddressName(ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''"));
+				bcaBillingaddress.setClientVendor(clientVendor.get());
+				bcaBillingaddress.setName(ConstValue.hateNull(address.getName()).replaceAll("'", "''"));
+				bcaBillingaddress.setFirstName(ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''"));
+				bcaBillingaddress.setLastName(ConstValue.hateNull(address.getLastName()).replaceAll("'", "''"));
+				bcaBillingaddress.setAddress1(ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''"));
+				bcaBillingaddress.setAddress2(ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''"));
+				bcaBillingaddress.setCity(ConstValue.hateNull(address.getCity()).replaceAll("'", "''"));
+				bcaBillingaddress.setState(ConstValue.hateNull(address.getState()).replaceAll("'", "''"));
+				bcaBillingaddress.setProvince(ConstValue.hateNull(address.getProvince()).replaceAll("'", "''"));
+				bcaBillingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
+				bcaBillingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
+				bcaBillingaddress.setStatus(address.getStatus());
+//				bcaBillingaddress.setDateAdded(
+//						DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
+				bcaBillingaddress.setDateAdded(OffsetDateTime.now());
+				bcaBillingaddress.setPhone(ConstValue.hateNull(address.getPhone()).replaceAll("'", "''"));
+				bcaBillingaddress.setCellPhone(ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''"));
+				bcaBillingaddress.setFax(ConstValue.hateNull(address.getFax()).replaceAll("'", "''"));
+				bcaBillingaddress.setIsDefault(address.getIsDefault());
+				bcaBillingaddress.setActive(Integer.parseInt(address.getActive()));
 
-				if (clientVendor.isPresent()) {
-//				BcaClientvendor cv = clientVendor.get();
-					bcaShippingaddressRepository.updateStatusByClientVendorId("U", address.getCvId());
-//				List<BcaShippingaddress> bcaShippingaddresses = bcaShippingaddressRepository.findByClientVendor(cv);
-//
-//				for (BcaShippingaddress bcaShippingaddress : bcaShippingaddresses) {
-//					bcaShippingaddress.setStatus("U");
-//					bcaShippingaddressRepository.save(bcaShippingaddress);
-//				}
+				bcaBillingaddress = bcaBillingaddressRepository.save(bcaBillingaddress);
+				id = bcaBillingaddress.getAddressId();
 
-					BcaShippingaddress bcaShippingaddress = new BcaShippingaddress();
-					bcaShippingaddress
-							.setAddressName(ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''"));
-					bcaShippingaddress.setClientVendor(clientVendor.get());
-					bcaShippingaddress.setName(ConstValue.hateNull(address.getName()).replaceAll("'", "''"));
-					bcaShippingaddress.setFirstName(ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''"));
-					bcaShippingaddress.setLastName(ConstValue.hateNull(address.getLastName()).replaceAll("'", "''"));
-					bcaShippingaddress.setAddress1(ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''"));
-					bcaShippingaddress.setAddress2(ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''"));
-					bcaShippingaddress.setCity(ConstValue.hateNull(address.getCity()).replaceAll("'", "''"));
-					bcaShippingaddress.setState(ConstValue.hateNull(address.getState()).replaceAll("'", "''"));
-					bcaShippingaddress.setProvince(ConstValue.hateNull(address.getProvince()).replaceAll("'", "''"));
-					bcaShippingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
-					bcaShippingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
-					bcaShippingaddress.setStatus(address.getStatus());
-					Date dateAdded = string2date(" now() ");
-					bcaShippingaddress.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
-					bcaShippingaddress.setPhone(ConstValue.hateNull(address.getPhone()).replaceAll("'", "''"));
-					bcaShippingaddress.setCellPhone(ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''"));
-					bcaShippingaddress.setFax(ConstValue.hateNull(address.getFax()).replaceAll("'", "''"));
-					bcaShippingaddress.setIsDefault(address.getIsDefault());
-					bcaShippingaddress.setActive(Integer.parseInt(address.getActive()));
-					bcaShippingaddress.setAddressType(String.valueOf(addressType));
-
-					bcaShippingaddress = bcaShippingaddressRepository.save(bcaShippingaddress);
-					id = bcaShippingaddress.getAddressId();
-				}
 			}
 
-//			BcaBillingaddress bcaBillingaddress = new BcaBillingaddress();
-//			bcaBillingaddress.setAddressName(ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''"));
-//			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(address.getCvId());
-//			if (clientVendor.isPresent())
-//				bcaBillingaddress.setClientVendor(clientVendor.get());
-//			bcaBillingaddress.setName(ConstValue.hateNull(address.getName()).replaceAll("'", "''"));
-//			bcaBillingaddress.setFirstName(ConstValue.hateNull(address.getLastName()).replaceAll("'", "''"));
-//			bcaBillingaddress.setLastName(ConstValue.hateNull(address.getLastName()).replaceAll("'", "''"));
-//			bcaBillingaddress.setAddress1(ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''"));
-//			bcaBillingaddress.setAddress2(ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''"));
-//			bcaBillingaddress.setCity(ConstValue.hateNull(address.getCity()).replaceAll("'", "''"));
-//			bcaBillingaddress.setState(ConstValue.hateNull(address.getState()).replaceAll("'", "''"));
-//			bcaBillingaddress.setProvince(ConstValue.hateNull(address.getProvince()).replaceAll("'", "''"));
-//			bcaBillingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
-//			bcaBillingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
-//			bcaBillingaddress.setStatus(address.getStatus());
-//			bcaBillingaddress
-//					.setDateAdded(DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
-//			bcaBillingaddress.setPhone(ConstValue.hateNull(address.getPhone()).replaceAll("'", "''"));
-//			bcaBillingaddress.setCellPhone(ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''"));
-//			bcaBillingaddress.setFax(ConstValue.hateNull(address.getFax()).replaceAll("'", "''"));
-//			bcaBillingaddress.setIsDefault(address.getIsDefault());
-//			bcaBillingaddress.setActive(Integer.parseInt(address.getActive()));
-//			bcaBillingaddressRepository.save(bcaBillingaddress);
-//
-//		} else {
-//			bcaShippingaddressRepository.updateStatusByClientVendorId("U", address.getCvId());
-//			BcaShippingaddress bcaShippingaddress = new BcaShippingaddress();
-//			bcaShippingaddress.setAddressName(ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''"));
-//			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(address.getCvId());
-//			if (clientVendor.isPresent())
-//				bcaShippingaddress.setClientVendor(clientVendor.get());
-//			bcaShippingaddress.setName(ConstValue.hateNull(address.getName()).replaceAll("'", "''"));
-//			bcaShippingaddress.setFirstName(ConstValue.hateNull(address.getLastName()).replaceAll("'", "''"));
-//			bcaShippingaddress.setLastName(ConstValue.hateNull(address.getLastName()).replaceAll("'", "''"));
-//			bcaShippingaddress.setAddress1(ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''"));
-//			bcaShippingaddress.setAddress2(ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''"));
-//			bcaShippingaddress.setCity(ConstValue.hateNull(address.getCity()).replaceAll("'", "''"));
-//			bcaShippingaddress.setState(ConstValue.hateNull(address.getState()).replaceAll("'", "''"));
-//			bcaShippingaddress.setProvince(ConstValue.hateNull(address.getProvince()).replaceAll("'", "''"));
-//			bcaShippingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
-//			bcaShippingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
-//			bcaShippingaddress.setStatus(address.getStatus());
-//			bcaShippingaddress
-//					.setDateAdded(DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
-//			bcaShippingaddress.setPhone(ConstValue.hateNull(address.getPhone()).replaceAll("'", "''"));
-//			bcaShippingaddress.setCellPhone(ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''"));
-//			bcaShippingaddress.setFax(ConstValue.hateNull(address.getFax()).replaceAll("'", "''"));
-//			bcaShippingaddress.setIsDefault(address.getIsDefault());
-//			bcaShippingaddress.setActive(Integer.parseInt(address.getActive()));
-//			bcaShippingaddressRepository.save(bcaShippingaddress);
-//		}
-//		int id = -1;
-//		try {
-//			innsertStorageBillingShippingAdd(address, addressType, defaultAddress);
-//			if (addressType == TblBSAddress2.BILLING_ADDR_TYPE) {
-//
-//				BcaBillingaddress lastAddress = bcaBillingaddressRepository.findFirstByOrderByAddressIdDesc();
-//				id = lastAddress.getAddressId();// LastID");
-//			} else {
-//				BcaShippingaddress lastAddress = bcaShippingaddressRepository.findFirstByOrderByAddressIdDesc();
-//				id = lastAddress.getAddressId();
-//
-//			}
+		} else {
+		Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(address.getCvId());
 
-			/**
-			 * This method is used for adding billing address and shipping address id in
-			 * smd_cvinfo table
-			 *
-			 * It is usefull for merging BCA-SMC
-			 * 
-			 * @param cv
-			 * @param cvId
-			 */
+			if (clientVendor.isPresent()) {
+				BcaClientvendor cv = clientVendor.get();
 
-//			if (address.getIsDefault() == 1) {
-//				updateClientInfo(address);
-//			}
+				List<BcaShippingaddress> bcaShippingaddresses = bcaShippingaddressRepository.findByClientVendor(cv);
 
-		} catch (Exception e) {
-			e.printStackTrace();
+				for (BcaShippingaddress bcaShippingaddress : bcaShippingaddresses) {
+					bcaShippingaddress.setStatus("U");
+					bcaShippingaddressRepository.save(bcaShippingaddress);
+				}
+
+				BcaShippingaddress bcaShippingaddress = new BcaShippingaddress();
+				bcaShippingaddress.setAddressName(ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''"));
+				bcaShippingaddress.setClientVendor(clientVendor.get());
+				bcaShippingaddress.setName(ConstValue.hateNull(address.getName()).replaceAll("'", "''"));
+				bcaShippingaddress.setFirstName(ConstValue.hateNull(address.getFirstName()).replaceAll("'", "''"));
+				bcaShippingaddress.setLastName(ConstValue.hateNull(address.getLastName()).replaceAll("'", "''"));
+				bcaShippingaddress.setAddress1(ConstValue.hateNull(address.getAddress1()).replaceAll("'", "''"));
+				bcaShippingaddress.setAddress2(ConstValue.hateNull(address.getAddress2()).replaceAll("'", "''"));
+				bcaShippingaddress.setCity(ConstValue.hateNull(address.getCity()).replaceAll("'", "''"));
+				bcaShippingaddress.setState(ConstValue.hateNull(address.getState()).replaceAll("'", "''"));
+				bcaShippingaddress.setProvince(ConstValue.hateNull(address.getProvince()).replaceAll("'", "''"));
+				bcaShippingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
+				bcaShippingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
+				bcaShippingaddress.setStatus(address.getStatus());
+//				bcaShippingaddress.setDateAdded(
+//						DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
+				bcaShippingaddress.setDateAdded(OffsetDateTime.now());
+				bcaShippingaddress.setPhone(ConstValue.hateNull(address.getPhone()).replaceAll("'", "''"));
+				bcaShippingaddress.setCellPhone(ConstValue.hateNull(address.getCellPhone()).replaceAll("'", "''"));
+				bcaShippingaddress.setFax(ConstValue.hateNull(address.getFax()).replaceAll("'", "''"));
+				bcaShippingaddress.setIsDefault(address.getIsDefault());
+				bcaShippingaddress.setActive(Integer.parseInt(address.getActive()));
+
+				bcaShippingaddress = bcaShippingaddressRepository.save(bcaShippingaddress);
+				id = bcaShippingaddress.getAddressId();
+			}
 		}
+		/**
+		 * This method is used for adding billing address and shipping address id in
+		 * smd_cvinfo table
+		 *
+		 * It is usefull for merging BCA-SMC
+		 * 
+		 * @param cv
+		 * @param cvId
+		 */
+
+		if (address.getIsDefault() == 1) {
+			updateClientInfo(address);
+		}
+
+//	}catch(
+//
+//	Exception e)
+//	{
+//
+//	}
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
 //		Statement stmt = null;
@@ -1282,6 +1176,9 @@ public class PurchaseInfo {
 //				stmt.close();
 //			}
 //		}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 
 		return id;
 	}
@@ -2732,7 +2629,7 @@ public class PurchaseInfo {
 			String serviceBal = c.getTable_bal();
 			String defaultser = c.getTable_defaultVal();
 			String invStyleID = c.getTable_invId();
-			bcaClientvendorserviceRepository.deleteByClientVendorId(cvID);
+			bcaClientvendorserviceRepository.deleteByClientVendor_ClientVendorId(cvID);
 
 			if (serviceID != null && !(serviceID.equals("") || invStyleID.equals("") || serviceBal.equals(""))) {
 				String temp[] = null, temp2[] = null, temp3[] = null;
@@ -2774,6 +2671,7 @@ public class PurchaseInfo {
 			// -------------------------------------END-------
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "SQLException in Class PurchaseInfo,  method -updateInsertVendor " + ee.toString());
 		}
 		return ret;

@@ -139,6 +139,8 @@ public class InvoiceInfo {
 	@Autowired
 	private PurchaseInfo purchaseInfo;
 
+	@Autowired 
+	private CustomerInfo customerInfo;
 	public ArrayList getItemList(String compId) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -1183,6 +1185,7 @@ public class InvoiceInfo {
 			if (bcaPreference.isPresent())
 				invStyle = bcaPreference.get().getInvoiceStyle().getInvoiceStyleId();
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getDefaultInvoiceStyleNo " + " " + ee.toString());
 		}
 //		finally {
@@ -3175,7 +3178,7 @@ public class InvoiceInfo {
 
 			String invStyleID = c.getTable_invId();
 
-			bcaClientvendorserviceRepository.deleteByClientVendorId(cvID);
+			bcaClientvendorserviceRepository.deleteByClientVendor_ClientVendorId(cvID);
 //			sql = "delete from bca_clientvendorservice where ClientVendorID = ?";
 //			ps = con.prepareStatement(sql);
 //			ps.setInt(1, cvID);
@@ -4617,7 +4620,7 @@ public class InvoiceInfo {
 //		PreparedStatement pstmt = null;
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
-		CustomerInfo cinfo = new CustomerInfo();
+//		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<TrHistoryLookUp> objList = new ArrayList<>();
 		BigDecimal finalTotal = new BigDecimal("0"), finalBalance = new BigDecimal("0");
 
@@ -4657,8 +4660,8 @@ public class InvoiceInfo {
 			Loger.log("the String of the By Period is" + query.toString());
 			if (periodFrom != null && periodTo != null && periodFrom.trim().length() > 1
 					&& periodTo.trim().length() > 1) {
-				query = query.append(" and i.dateAdded between '" + cinfo.string2date(periodFrom) + "' and '"
-						+ cinfo.string2date(periodTo) + "'");
+				query = query.append(" and i.dateAdded between '" + customerInfo.string2date(periodFrom) + "' and '"
+						+ customerInfo.string2date(periodTo) + "'");
 			}
 		}
 

@@ -65,6 +65,7 @@ public class Rep {
 //			}
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in  Class Rep and method -getRepList "+ ee.toString());
 		}
 //		finally {

@@ -35,7 +35,7 @@ public class BcaShippingaddress {
     @Column(name="Address1", nullable = false, length = 75)
     private String address1;
 
-    @Column(name="Address2", nullable = false, length = 75)
+    @Column(name="Address2", length = 75)
     private String address2;
 
     @Column(name="City", nullable = false, length = 50)
@@ -68,16 +68,16 @@ public class BcaShippingaddress {
     @Column(name="Fax", length = 20)
     private String fax;
 
-    @Column(name="isDefault", nullable = false)
+    @Column(name="isDefault")
     private Integer isDefault;
 
-    @Column(name="Active", nullable = false)
+    @Column(name="Active")
     private Integer active;
 
     @Column(name="DBAName", length = 45)
     private String dbaname;
 
-    @Column(name="AddressType", nullable = false, length = 25)
+    @Column(name="AddressType", length = 25)
     private String addressType;
 
     @ManyToOne(fetch = FetchType.LAZY)

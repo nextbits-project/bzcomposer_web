@@ -14,10 +14,20 @@ import javax.persistence.Table;
 @Table(name = "smd_cvinfo")
 public class SmdCvinfo {
 
+//<<<<<<< HEAD
+//    @Id
+//    @Column(name="SmdCvInfoID", nullable = false, updatable = false)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int smdCvInfoId;
+//    
+//    @Column(name= "Company", nullable = false, updatable = false, length = 100)
+//    private String company;
+//=======
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "SmdCvinfoID", nullable = false, updatable = false)
 	private Integer smdCvinfoId;
+//>>>>>>> 393c61e35f1e9446da11590b8fb2befcec98ae22
 
 	@Column(name = "Company", length = 100)
 	private String company;
@@ -82,9 +92,23 @@ public class SmdCvinfo {
 	@Column(name = "isPhotoPrivate")
 	private Integer isPhotoPrivate;
 
+//<<<<<<< HEAD
+//    public int getSmdCvInfoId() {
+//		return smdCvInfoId;
+//	}
+//
+//	public void setSmdCvInfoId(int smdCvInfoId) {
+//		this.smdCvInfoId = smdCvInfoId;
+//	}
+//
+//	public String getCompany() {
+//        return company;
+//    }
+//=======
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ClientVendorID")
 	private BcaClientvendor clientVendor;
+//>>>>>>> 393c61e35f1e9446da11590b8fb2befcec98ae22
 
 	public Integer getSmdCvinfoId() {
 		return smdCvinfoId;

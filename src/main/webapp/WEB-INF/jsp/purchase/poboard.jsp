@@ -38,7 +38,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 	<div id="padding">
 	<div>
 		<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-			<spring:message code="BzComposer.purchaseorderboard.poboard" />
+			<%-- <spring:message code="BzComposer.purchaseorderboard.poboard" /> --%>
 			<c:if test="${not empty msg}">
                 <div><span class="msgstyle">*${msg}</span></div>
             </c:if>

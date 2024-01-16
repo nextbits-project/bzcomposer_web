@@ -3804,4 +3804,34 @@ public class ItemInfoDao {
 		}
 		return finalAmount;
 	}
+
+	public List<Item> getItemCategory(String compId) {
+		List<Item> list = new ArrayList<Item>();
+
+		long cid = Long.parseLong(compId);
+		try {
+			int invID;
+			List<BcaIteminventory> itemInventory = bcaIteminventoryRepository
+					.findByCompany_CompanyIdAndActiveAndParentIdLessThan(cid, 1, 1);
+			for (BcaIteminventory inventory : itemInventory) {
+				Item item = new Item();
+				invID = inventory.getInventoryId();
+				item.setInvID(inventory.getInventoryId());
+				item.setInvCode(inventory.getInventoryCode());
+				item.setInvDesc(inventory.getInventoryDescription());
+				item.setQty(inventory.getQty());
+				if (null != inventory.getWeight())
+					item.setWeight(inventory.getWeight());
+				if (null != inventory.getSalePrice())
+					item.setSalePrice(BigDecimal.valueOf(inventory.getSalePrice()));
+				item.setIsCategory(inventory.getIsCategory() ? 1 : 0);
+				item.setItemTypeID(inventory.getItemTypeId());
+				item.setInventoryName(inventory.getInventoryName());
+				item.setSerialNo(inventory.getSerialNum());
+				list.add(item);}
+		}catch (Exception e) {
+			Loger.log(e.toString());
+		}
+		return list;
+	}
 }

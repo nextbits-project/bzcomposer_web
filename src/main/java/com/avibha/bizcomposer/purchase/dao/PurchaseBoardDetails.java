@@ -15,8 +15,6 @@ public class PurchaseBoardDetails {
 	@Autowired
 	private PurchaseBoardInfoDao purchaseBoardInfoDao;
 
-	@Autowired
-	private PurchaseBoardInfo purchaseBoardInfo;
 
 	public ArrayList getPurchaseBoardDetails(HttpServletRequest request, PurchaseBoardDto pform) {
 

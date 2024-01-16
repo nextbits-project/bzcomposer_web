@@ -62,6 +62,7 @@ public class Shipping {
 //						.getString("Name"), rs.getString("ShipCarrierID")));
 //			}
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in  Class Shipping and  method -getShipCarrierList "
 					+ " " + ee.toString());
 		}

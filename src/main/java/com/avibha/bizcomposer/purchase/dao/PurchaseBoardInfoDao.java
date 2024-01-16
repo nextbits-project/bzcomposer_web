@@ -213,9 +213,11 @@ public class PurchaseBoardInfoDao {
 					pb.setPoNumStr(
 							MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.POType, configDto, false));
 				}
+				if (null != invoice.getRcvNum())
 
-				pb.setRcv_no(invoice.getRcvNum());
-				pb.setEst_no(invoice.getEstNum());
+					pb.setRcv_no(invoice.getRcvNum());
+				if (null != invoice.getEstNum())
+					pb.setEst_no(invoice.getEstNum());
 				if (null != invoice.getClientVendor())
 					pb.setCvID(invoice.getClientVendor().getClientVendorId());
 				pb.setBsAddressID(invoice.getBsaddressId());
@@ -226,11 +228,13 @@ public class PurchaseBoardInfoDao {
 					pb.setSaleDate(DateHelper.dateFormatter(invoice.getDateConfirmed()));
 				if (null != invoice.getIsPrinted())
 					pb.setPrinted(invoice.getIsPrinted());
-				pb.setShipped(invoice.getShipped());
+				if (null != invoice.getShipped())
+					pb.setShipped(invoice.getShipped());
 				pb.setMarketPlaceName(mark);
 
 				pb.setTotal(invoice.getTotal());
-				pb.setIsReceived(invoice.getIsReceived() ? 1 : 0); // Check PO Order
+				if (null != invoice.getIsReceived())
+					pb.setIsReceived(invoice.getIsReceived() ? 1 : 0); // Check PO Order
 				if (null != invoice.getMessage()) {
 					int messageId = invoice.getMessage().getMessageId();
 					pb.setMessagebody(getMessageText(messageId));

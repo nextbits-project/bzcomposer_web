@@ -219,6 +219,11 @@ table.cart tbody tr td {
 													style="padding: 8px 10px 8px 10px; font-size: 16px;"
 													value='<spring:message code="BzComposer.global.new" />' />
 													<br> <!-- <input type="button" class="formbutton" id="CustomerBalanceBtn" onclick="paymentHistory(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value='<spring:message code="BzComposer.global.balance" />' /> -->
+													<input type="button" id="transformToInvoice" title="TransForm To Invoice"
+													class="formbutton" onclick=""
+													style="padding: 8px 10px 8px 10px; font-size: 16px;"
+													value='<spring:message code="BzComposer.global.transform.invoice" />' />
+													
 													<c:if test="${not empty Enable}">
 														<input type="button" class="formbutton"
 															title="Send Mail to..." onclick="SendMail(this.form);"

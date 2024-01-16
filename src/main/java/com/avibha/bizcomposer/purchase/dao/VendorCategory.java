@@ -55,6 +55,7 @@ public class VendorCategory {
 //			pstmt.close();
 //			rs.close();
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "Error in  Class VendorCategory and  method -getCVCategoryList " + ee.toString());
 		} 
 //		finally {

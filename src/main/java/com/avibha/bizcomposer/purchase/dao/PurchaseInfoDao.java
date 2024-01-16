@@ -650,6 +650,7 @@ public class PurchaseInfoDao {
 			// code to save services END
 
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, "SQLException in Class PurchaseInfo,  method -insertVendor & exception 1st" + ee.toString());
 
 		}
@@ -1847,19 +1848,20 @@ public class PurchaseInfoDao {
 		ArrayList<VendorDto> vendorList = new ArrayList<>();
 		try {
 
-			StringBuffer query = new StringBuffer("SELECT DISTINCT bcv FROM BcaClientvendor bcv "
-					+ "LEFT JOIN BcaCvcreditcard cc " + "LEFT JOIN BcaClientvendorfinancecharges vfc "
-					+ " LEFT JOIN BcaBsaddress ba "
-					+ "ON cc.clientVendor.clientVendorId = bcv.clientVendorId AND vfc.clientVendor.clientVendorId = bcv.clientVendorId  AND ba.clientVendorId= cc.clientVendorId"
-					+ "WHERE bcv.company.companyId = :companyId " + "AND bcv.cvtypeId IN :cvtypeId "
-					+ "AND bcv.status IN :status " + "AND bcv.deleted = :deleted " + "AND bcv.active = :active"
-					+ (cvId != null ? "AND bcv.clientVendorId = :clientVendorId " : " ")
-					+ "GROUP BY bcv.clientVendorId order by bcv.clientVendorId");
+			StringBuffer query = new StringBuffer(
+					"SELECT DISTINCT bcv FROM BcaClientvendor bcv " + " LEFT JOIN bcv.clientVendorBcaCvcreditcards cc "
+							+ " LEFT JOIN bcv.clientVendorBcaClientvendorfinancechargess vfc "
+							+ " LEFT JOIN bcv.clientVendorBcaBillingaddresss ba "
+
+							+ " WHERE bcv.company.companyId = :companyId " + "AND bcv.cvtypeId IN :cvtypeId "
+							+ " AND bcv.status IN :status " + "AND bcv.deleted = :deleted " + "AND bcv.active = :active"
+							+ (cvId != null ? " AND bcv.clientVendorId = :clientVendorId " : " ")
+							+ " GROUP BY bcv.clientVendorId order by bcv.clientVendorId");
 
 			TypedQuery<BcaClientvendor> typedQuery = this.entityManager.createQuery(query.toString(),
 					BcaClientvendor.class);
-			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", compId);
-			JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", cvId);
+			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.parseLong(compId));
+			JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvId));
 			JpaHelper.addParameter(typedQuery, query.toString(), "cvtypeId", Arrays.asList(1, 3));
 			JpaHelper.addParameter(typedQuery, query.toString(), "status", Arrays.asList("N", "U"));
 			JpaHelper.addParameter(typedQuery, query.toString(), "deleted", 0);
@@ -1924,7 +1926,9 @@ public class PurchaseInfoDao {
 					customer.setFsAssessFinanceCharge(String.valueOf(fin.getAssessFinanceCharge()));
 				}
 				customer.setMiddleName(vendor.getMiddleName());
-				customer.setDateInput(DateHelper.dateFormatter(vendor.getDateInput()));
+				if (null != vendor.getDateInput())
+					customer.setDateInput(DateHelper.dateFormatter(vendor.getDateInput()));
+				if (null != vendor.getDateTerminated())
 				customer.setTerminatedDate(DateHelper.dateFormatter(vendor.getDateTerminated()));
 				customer.setTerminated(vendor.getIsTerminated());
 				customer.setDbaName(vendor.getDbaname());
@@ -2058,6 +2062,7 @@ public class PurchaseInfoDao {
 			request.setAttribute("vendorDetails1", customer);
 			// System.out.println("vendorDetails1:"+customer.toString());
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
 
 		}
@@ -2209,6 +2214,7 @@ public class PurchaseInfoDao {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			// TODO: handle exception
 			Loger.log(e.toString());
 		}
@@ -2226,6 +2232,7 @@ public class PurchaseInfoDao {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			// TODO: handle exception
 			Loger.log(e.toString());
 		}
@@ -2247,6 +2254,7 @@ public class PurchaseInfoDao {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			// TODO: handle exception
 			Loger.log(e.toString());
 		}
