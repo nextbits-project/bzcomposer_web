@@ -2808,7 +2808,7 @@ public class InvoiceInfoDao {
 
 				customer.setExtCredit(cv.getVendorAllowedCredit().toString());
 				customer.setMemo(cv.getDetail());
-				customer.setTaxAble(cv.getTaxable().toString());
+				customer.setTaxAble(cv.getTaxable() != null ? cv.getTaxable().toString() : "0");
 				customer.setIsclient(cv.getCvtypeId().toString()); // cvtypeid
 				customer.setType(cv.getCvcategoryId().toString());
 
@@ -3041,7 +3041,7 @@ public class InvoiceInfoDao {
 
 				customer.setExtCredit(cv.getVendorAllowedCredit().toString());
 				customer.setMemo(cv.getDetail());
-				customer.setTaxAble(cv.getTaxable().toString());
+				customer.setTaxAble(cv.getTaxable() != null ? cv.getTaxable().toString() : "0");
 				customer.setIsclient(cv.getCvtypeId().toString()); // cvtypeid
 				customer.setType(cv.getCvcategoryId().toString());
 
@@ -3263,7 +3263,7 @@ public class InvoiceInfoDao {
 
 				customer.setExtCredit(cv.getVendorAllowedCredit().toString());
 				customer.setMemo(cv.getDetail());
-				customer.setTaxAble(cv.getTaxable().toString());
+				customer.setTaxAble(cv.getTaxable() != null ? cv.getTaxable().toString() : "0");
 				customer.setIsclient(cv.getCvtypeId().toString()); // cvtypeid
 				customer.setType(cv.getCvcategoryId().toString());
 

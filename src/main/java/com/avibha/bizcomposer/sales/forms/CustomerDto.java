@@ -209,6 +209,14 @@ public class CustomerDto {
 	private double totalOverdueAmt;
 	private String lastOrderDate;
 	private boolean active;
+	
+	//lead module
+	private int leadSource; 
+	private int leadId;
+	private int shippingAddressId; 
+	private int billingAddressId; 
+	private int leadCategory;
+	private String product;
 
 	public CustomerDto(int clientVendorId, String name, String customerTitle, String firstName, String lastName,
 			String address1, String address2, String city, String state, String zipCode, String country, String email,
@@ -1946,4 +1954,53 @@ public class CustomerDto {
 		return customerColumns;
 	}
 
+	public int getLeadSource() {
+		return leadSource;
+	}
+
+	public void setLeadSource(int leadSource) {
+		this.leadSource = leadSource;
+	}
+
+	public int getLeadId() {
+		return leadId;
+	}
+
+	public void setLeadId(int leadId) {
+		this.leadId = leadId;
+	}
+
+	public int getShippingAddressId() {
+		return shippingAddressId;
+	}
+
+	public void setShippingAddressId(int shippingAddressId) {
+		this.shippingAddressId = shippingAddressId;
+	}
+
+	public int getBillingAddressId() {
+		return billingAddressId;
+	}
+
+	public void setBillingAddressId(int billingAddressId) {
+		this.billingAddressId = billingAddressId;
+	}
+
+	public int getLeadCategory() {
+		return leadCategory;
+	}
+
+	public void setLeadCategory(int leadCategory) {
+		this.leadCategory = leadCategory;
+	}
+
+	public String getProduct() {
+		return product;
+	}
+
+	public void setProduct(String product) {
+		this.product = product;
+	}
+
+	
 }

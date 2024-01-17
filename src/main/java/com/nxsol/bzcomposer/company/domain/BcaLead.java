@@ -14,7 +14,7 @@ import java.util.Set;
 import javax.persistence.Table;
 
 @Entity
-@Table(name= "bca_label")
+@Table(name= "bca_lead")
 public class BcaLead {
 
     @Id

@@ -44,4 +44,7 @@ public interface BcaShippingaddressRepository extends JpaRepository<BcaShippinga
 	int updateStatusByClientVendorId(@Param("status") String status, @Param("clientVendorId") Integer clientVendorId);
 
 	BcaShippingaddress findFirstByOrderByAddressIdDesc();
+
+	@Query("From BcaShippingaddress Where clientVendor=:clientVendor")
+	BcaShippingaddress findByClintvendorId(BcaClientvendor clientVendor);
 }
