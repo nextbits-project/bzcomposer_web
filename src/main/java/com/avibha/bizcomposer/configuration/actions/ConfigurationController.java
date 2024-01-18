@@ -148,13 +148,14 @@ public class ConfigurationController {
 			int userID = (Integer) request.getSession().getAttribute("userID");
 //			CompanyInfo customer = new CompanyInfo();
 //			AddNewCompanyDAO companyDAO = new AddNewCompanyDAO();
+			
+			ArrayList<CompanyInfoDto> commpanyInfoDtoList= customer.searchCompany(companyIDL, userID, request);
+			companyInfoDto=commpanyInfoDtoList.get(0);
 			companyDAO.getBusinessType(request, companyInfoDto);
-			customer.searchCompany(companyIDL, userID, request);
-
 //			CountryState cs = new CountryState();
 			request.setAttribute("countryList", cs.getCountryList());
-			request.setAttribute("stateList", cs.getStateList(companyInfoDto.getCountryId() + ""));
-			request.setAttribute("cityList", cs.getCityList(companyInfoDto.getStateId() + ""));
+			request.setAttribute("stateList", cs.getStateList(companyInfoDto.getCountry() + ""));
+			request.setAttribute("cityList", cs.getCityList(companyInfoDto.getState() + ""));
 			model.addAttribute("companyInfoDto", companyInfoDto);
 
 			// Admin-Security-Data

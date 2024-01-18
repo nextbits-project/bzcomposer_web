@@ -10,10 +10,15 @@ import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.MyUtility;
+import com.nxsol.bzcomposer.company.domain.BcaBusinesstype;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaPreference;
+import com.nxsol.bzcomposer.company.repos.BcaBusinesstypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,42 +38,42 @@ public class CompanyInfo {
 
 	public ArrayList<CompanyInfoDto> searchCompany(Long compId, int userID, HttpServletRequest request) {
 		ArrayList<CompanyInfoDto> objList = new ArrayList<>();
-		CompanyInfoDto customer = new CompanyInfoDto();
+		CompanyInfoDto comInfo = new CompanyInfoDto();
 		try {
 			Optional<BcaCompany> companyOpt = companyRepository.findById(compId);
 			if (companyOpt.isPresent()) {
 				BcaCompany company = companyOpt.get();
 				// Set properties to customer from company
 
-				customer.setCompanyName(company.getName());
-				customer.setNickName(company.getNickName());
-				customer.setFirstName(company.getFirstName());
-				customer.setLastName(company.getLastName());
-				customer.setAddress1(company.getAddress1());
-				customer.setAddress2(company.getAddress2());
-				customer.setCity(company.getCity());
+				comInfo.setCompanyName(company.getName());
+				comInfo.setNickName(company.getNickName());
+				comInfo.setFirstName(company.getFirstName());
+				comInfo.setLastName(company.getLastName());
+				comInfo.setAddress1(company.getAddress1());
+				comInfo.setAddress2(company.getAddress2());
+				comInfo.setCity(company.getCity());
 //				customer.setStateId(company.getState());
-				customer.setState(company.getState());
+				comInfo.setState(company.getState());
 
-				customer.setZip(company.getState());
-				customer.setProvince(company.getState());
+				comInfo.setZip(company.getZipcode());
+				comInfo.setProvince(company.getProvince());
 
 				request.setAttribute("state_gen", company.getState());
-				customer.setCountry(company.getCountry());
+				comInfo.setCountry(company.getCountry());
 //				customer.setCountryId(company.getCountry());
 
-				customer.setPhone(company.getPhone1());
-				customer.setCellPhone(company.getPhone2());
-				customer.setFax(company.getFax1());
-				customer.setEmail(company.getEmail());
+				comInfo.setPhone(company.getPhone1());
+				comInfo.setCellPhone(company.getPhone2());
+				comInfo.setFax(company.getFax1());
+				comInfo.setEmail(company.getEmail());
 //				customer.setBusinessTypeId(company.getBusinessType());
-				customer.setMembershipLevel(company.getMembershipLevel());
-				customer.setPassword(company.getPassword());
-				customer.setSameAsPhoneNumber(company.getSameAsPhoneNumber());
-				customer.setTaxID(company.getTaxId());
-				customer.setJobPosition(company.getJobPosition());
-				customer.setType(company.getBusinessType().getBusinessName());
-				objList.add(customer);
+				comInfo.setMembershipLevel(company.getMembershipLevel());
+				comInfo.setPassword(company.getPassword());
+				comInfo.setSameAsPhoneNumber(company.getSameAsPhoneNumber());
+				comInfo.setTaxID(company.getTaxId());
+				comInfo.setJobPosition(company.getJobPosition());
+				comInfo.setType(company.getBusinessType().getBusinessName());
+				objList.add(comInfo);
 			}
 		} catch (Exception e) {
 			Loger.log("Exception in searchCompany: " + e.toString());
@@ -447,88 +452,185 @@ public class CompanyInfo {
 		return objItemListList;
 	}
 
-	public boolean updateComapanyinfo(CompanyInfoDto c, int userID, String compId) {
+///	
+	@Autowired
+	private BcaPreferenceRepository preferenceRepository;
 
-		Connection con = null;
-		SQLExecutor db = new SQLExecutor();
-		boolean valid = false;
-		Statement stmt = null, stmt1 = null, stmt2 = null, stmt3 = null;
-		ResultSet rs2 = null;
-		con = db.getConnection();
+	@Autowired
+	private BcaBusinesstypeRepository businesstypeRepository;
+
+	@Transactional
+	public boolean updateComapanyinfo(CompanyInfoDto c, int userID, String companyId) {
+
 		int InvoiceStyleID = 0;
-		int BusinessTypeID = c.getBusinessTypeId();
-		String BusinessTypeName = null;
+		int businessTypeID = c.getBusinessTypeId();
+		String businessTypeName = null;
+		boolean valid = false;
+
+		Long compId = Long.parseLong(companyId); // Convert to Long if necessary
+
+		Optional<BcaPreference> preferenceOpt = preferenceRepository.findByCompany_CompanyId(compId);
+
+		BcaCompany company = companyRepository.findByCompanyId(compId);
+
+		Optional<BcaBusinesstype> businessType = businesstypeRepository.findById(businessTypeID);
+
 		try {
-			stmt2 = con.createStatement();
-			rs2 = stmt2
-					.executeQuery("select businessname from bca_businesstype where BusinessTypeID =" + BusinessTypeID);
-			while (rs2.next()) {
-				BusinessTypeName = rs2.getString(1);
+
+			if (businessType.isPresent()) {
+				businessTypeName = businessType.get().getBusinessName();
 			}
-			if (BusinessTypeName.equals("Manufacturer")) {
+
+			if (businessTypeName.equals("Manufacturer")) {
 				InvoiceStyleID = 3;
 
-			} else if (BusinessTypeName.equals("Finance")) {
+			} else if (businessTypeName.equals("Finance")) {
 				InvoiceStyleID = 6;
 
-			} else if (BusinessTypeName.equals("Retail")) {
+			} else if (businessTypeName.equals("Retail")) {
 				InvoiceStyleID = 4;
 
-			} else if (BusinessTypeName.equals("Wholesale")) {
+			} else if (businessTypeName.equals("Wholesale")) {
 				InvoiceStyleID = 4;
 
-			} else if (BusinessTypeName.equals("Service")) {
+			} else if (businessTypeName.equals("Service")) {
 				InvoiceStyleID = 1;
 
 			} else {
 				InvoiceStyleID = 7;
 			}
-		} catch (Exception e) {
-			Loger.log(e.toString());
-		}
-		try {
-			stmt = con.createStatement();
-			stmt1 = con.createStatement();
-			StringBuffer sqlString = new StringBuffer();
-			sqlString.append("update bca_company set  Name='" + c.getCompanyName() + "',NickName='" + c.getNickName()
-					+ "',FirstName='" + c.getFirstName() + "'," + "LastName='" + c.getLastName() + "',Address1='"
-					+ c.getAddress1() + "',Address2='" + c.getAddress2() + "',City='" + c.getCity() + "'," + "Zipcode='"
-					+ c.getZip() + "',Province='" + c.getProvince() + "',Phone1='" + c.getPhone() + "',Phone2='"
-					+ c.getCellPhone() + "'," + "Fax1='" + c.getFax() + "',Email='" + c.getEmail() + "',State='"
-					+ c.getStateId() + "',Country='" + c.getCountryId() + "'," + "BusinessTypeID='"
-					+ c.getBusinessTypeId() + "',MembershipLevel='" + c.getMembershipLevel() + "',"
-					+ "SameAsPhoneNumber=" + c.isSameAsPhoneNumber() + ",TaxID='" + c.getTaxID() + "',JobPosition='"
-					+ c.getJobPosition() + "'" + " where CompanyID=" + compId);
-			Loger.log(sqlString);
-			int count = stmt.executeUpdate(sqlString.toString());
-			if (count > 0) {
+
+			if (company != null) {
+				company.setName(c.getCompanyName());
+				company.setNickName(c.getNickName());
+				company.setFirstName(c.getFirstName());
+				company.setLastName(c.getLastName());
+				company.setAddress1(c.getAddress1());
+				company.setAddress2(c.getAddress2());
+				company.setCity(c.getCity());
+				company.setZipcode(c.getZip());
+				company.setProvince(c.getProvince());
+				company.setPhone1(c.getPhone());
+				company.setPhone2(c.getCellPhone());
+
+				company.setFax1(c.getFax());
+				company.setEmail(c.getEmail());
+				company.setState(String.valueOf(c.getStateId()));
+				company.setCountry(String.valueOf(c.getCountryId()));
+				company.setBusinessType(businessType.get());
+				company.setMembershipLevel(c.getMembershipLevel());
+				company.setSameAsPhoneNumber(c.isSameAsPhoneNumber());
+				company.setTaxId(c.getTaxID());
+				company.setJobPosition(c.getJobPosition());
+
+				companyRepository.save(company);
 				valid = true;
 				Loger.log("updated successfully");
 			}
-			stmt3 = con.createStatement();
-			stmt3.executeUpdate(
-					"update bca_preference set InvoiceStyleID = " + InvoiceStyleID + " where CompanyID =" + compId);
-			System.out.println(stmt3);
-		} catch (SQLException ee) {
-			Loger.log(2, " SQL Error in Class CompanyInfo and  method -updateComapanyinfo " + ee.toString());
 
-		} finally {
-			try {
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (stmt1 != null) {
-					db.close(stmt1);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+			if (preferenceOpt.isPresent()) {
+				BcaPreference preference = preferenceOpt.get();
+
+				// Set the fields from cForm
+				preference.setInvoiceStyleTypeId(InvoiceStyleID);
+
+				preferenceRepository.save(preference); // This will update the record
+			} else {
+				// Handle the case where the preference does not exist
+				Loger.log("Preference not found for Company ID: " + compId);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Loger.log(2, " SQL Error in Class CompanyInfo and  method -updateComapanyinfo " + e.toString());
+
 		}
+
 		return valid;
+
 	}
+///	
+//	public boolean updateComapanyinfo(CompanyInfoDto c, int userID, String compId) {
+//
+//		Connection con = null;
+//		SQLExecutor db = new SQLExecutor();
+//		boolean valid = false;
+//		Statement stmt = null, stmt1 = null, stmt2 = null, stmt3 = null;
+//		ResultSet rs2 = null;
+//		con = db.getConnection();
+//		int InvoiceStyleID = 0;
+//		int BusinessTypeID = c.getBusinessTypeId();
+//		String BusinessTypeName = null;
+//		try {
+//			stmt2 = con.createStatement();
+//			rs2 = stmt2
+//					.executeQuery("select businessname from bca_businesstype where BusinessTypeID =" + BusinessTypeID);
+//			while (rs2.next()) {
+//				BusinessTypeName = rs2.getString(1);
+//			}
+//			if (BusinessTypeName.equals("Manufacturer")) {
+//				InvoiceStyleID = 3;
+//
+//			} else if (BusinessTypeName.equals("Finance")) {
+//				InvoiceStyleID = 6;
+//
+//			} else if (BusinessTypeName.equals("Retail")) {
+//				InvoiceStyleID = 4;
+//
+//			} else if (BusinessTypeName.equals("Wholesale")) {
+//				InvoiceStyleID = 4;
+//
+//			} else if (BusinessTypeName.equals("Service")) {
+//				InvoiceStyleID = 1;
+//
+//			} else {
+//				InvoiceStyleID = 7;
+//			}
+//		} catch (Exception e) {
+//			Loger.log(e.toString());
+//		}
+//		try {
+//			stmt = con.createStatement();
+//			stmt1 = con.createStatement();
+//			StringBuffer sqlString = new StringBuffer();
+//			sqlString.append("update bca_company set  Name='" + c.getCompanyName() + "',NickName='" + c.getNickName()
+//					+ "',FirstName='" + c.getFirstName() + "'," + "LastName='" + c.getLastName() + "',Address1='"
+//					+ c.getAddress1() + "',Address2='" + c.getAddress2() + "',City='" + c.getCity() + "'," + "Zipcode='"
+//					+ c.getZip() + "',Province='" + c.getProvince() + "',Phone1='" + c.getPhone() + "',Phone2='"
+//					+ c.getCellPhone() + "'," + "Fax1='" + c.getFax() + "',Email='" + c.getEmail() + "',State='"
+//					+ c.getStateId() + "',Country='" + c.getCountryId() + "'," + "BusinessTypeID='"
+//					+ c.getBusinessTypeId() + "',MembershipLevel='" + c.getMembershipLevel() + "',"
+//					+ "SameAsPhoneNumber=" + c.isSameAsPhoneNumber() + ",TaxID='" + c.getTaxID() + "',JobPosition='"
+//					+ c.getJobPosition() + "'" + " where CompanyID=" + compId);
+//			Loger.log(sqlString);
+//			int count = stmt.executeUpdate(sqlString.toString());
+//			if (count > 0) {
+//				valid = true;
+//				Loger.log("updated successfully");
+//			}
+//			stmt3 = con.createStatement();
+//			stmt3.executeUpdate(
+//					"update bca_preference set InvoiceStyleID = " + InvoiceStyleID + " where CompanyID =" + compId);
+//			System.out.println(stmt3);
+//		} catch (SQLException ee) {
+//			Loger.log(2, " SQL Error in Class CompanyInfo and  method -updateComapanyinfo " + ee.toString());
+//
+//		} finally {
+//			try {
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (stmt1 != null) {
+//					db.close(stmt1);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return valid;
+//	}
 
 	public boolean updateComapanySecurity(String password, String compId) {
 		SQLExecutor db = new SQLExecutor();

@@ -54,6 +54,9 @@ public class FileController {
 	private CompanyInfo customer;
 
 	@Autowired
+	private	ConfigurationDAO confgDao;
+	
+	@Autowired
 	private ConfigurationInfo configInfo;
 
 	@Autowired
@@ -363,8 +366,8 @@ public class FileController {
 					Integer.parseInt(request.getParameter("memorizePurchaseOrderDays").toString()));
 			cForm.setServiceBilling(Integer.parseInt(request.getParameter("serviceBilling").toString()));
 			cForm.setServiceBillingDays(Integer.parseInt(request.getParameter("serviceBillingDays").toString()));
-			ConfigurationDAO dao = new ConfigurationDAO();
-			dao.updateRemindersInfo(cForm, compId);
+//			ConfigurationDAO dao = new ConfigurationDAO();
+			confgDao.updateRemindersInfo(cForm, compId);
 			status = "Success";
 		} else if (action.equalsIgnoreCase("editSecurity")) {
 			String compId = (String) request.getSession().getAttribute("CID");
