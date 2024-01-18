@@ -485,7 +485,7 @@ public class SalesDetails {
 
 //		CustomerInfo customer = new CustomerInfo();
 		String cvId = (String) sess.getAttribute("editedCVID");
-		//customer.UpdateCustomer(compId, cvId);
+		// customer.UpdateCustomer(compId, cvId);
 
 		String istaxable = request.getParameter("isTaxable");
 		String isAlsoClient = request.getParameter("isAlsoClient");
@@ -511,6 +511,11 @@ public class SalesDetails {
 			isclient = 1;
 		else
 			isclient = 2;
+
+		String contact = request.getParameter("contact");
+		if (contact != null && contact.equalsIgnoreCase("contact")) {
+		    isclient = 7;
+		}
 
 		if (UseIndividualFinanceCharges == null)
 			indCharge = 0;

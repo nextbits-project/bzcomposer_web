@@ -33,6 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.*;
 import java.util.*;
 
@@ -123,6 +126,10 @@ public class SalesDetailsDao {
 																										// Customer+Vendor,
 																										// 2: Customer,
 																										// 3: Vendor
+		String contact =request.getParameter("contact");
+		if(contact.equalsIgnoreCase("contact")) {
+			customerDto.setCvTypeID(7);
+		}
 		customerDto.setFsUseIndividual(
 				"on".equalsIgnoreCase(request.getParameter("UseIndividualFinanceCharges")) ? "1" : "0");
 		customerDto
@@ -443,7 +450,12 @@ public class SalesDetailsDao {
 		String action = ConstValue.hateNull(request.getParameter("tabid"));
 //		CustomerInfoDao customer = new CustomerInfoDao();
 //		InvoiceInfo invoiceInfo = new InvoiceInfo();
-		ArrayList<CustomerDto> customerList = customerInfoDao.customerDetails(compId);
+		ArrayList<CustomerDto> customerList;
+		if (action.equalsIgnoreCase("ContactBoard")) {
+			customerList = customerInfoDao.contactDetails(compId);
+		} else {
+			customerList = customerInfoDao.customerDetails(compId);
+		}
 		if (action.equalsIgnoreCase("Customer") || action.equalsIgnoreCase("ContactBoard")) {
 
 			@SuppressWarnings("unchecked")
@@ -460,7 +472,14 @@ public class SalesDetailsDao {
 						invoiceID = Integer.parseInt(hlookup.getInvoiceId());
 					}
 				}
-				cust.setTotalOverdueAmt(balance);
+				// Convert the double value to BigDecimal and round it
+				// BigDecimal roundedBalance = new BigDecimal(balance).setScale(2,
+				// RoundingMode.HALF_UP);
+				BigDecimal roundedBalance = formatToTwoDecimalPlaces(balance);
+				// If you need it back as a double
+				double roundedBalanceValue = roundedBalance.doubleValue();
+
+				cust.setTotalOverdueAmt(roundedBalanceValue);
 			}
 		}
 		request.setAttribute("CustomerDetails", customerList);
@@ -470,6 +489,10 @@ public class SalesDetailsDao {
 			firstCvID = customerList.get(0).getClientVendorID();
 		}
 		return firstCvID;
+	}
+
+	public static BigDecimal formatToTwoDecimalPlaces(double value) {
+		return new BigDecimal(String.valueOf(value)).setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public ArrayList<CustomerDto> getCustomerSortByFirstName(HttpServletRequest request, CustomerDto frm) {
@@ -1614,6 +1637,22 @@ public class SalesDetailsDao {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 //		invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
 		ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
+		CustomerDto customerDto2 = customerList.get(0);
+		String cityId = customerDto2.getCity();
+		String stateId = customerDto2.getState();
+		request.setAttribute("selectedCityId", cityId);
+		request.setAttribute("selectedStateId", stateId);
+
+		invoiceInfoDao.getServices(request, compId, cvId);
+		// String itemIndex = request.getParameter("itemIndex");
+		// request.setAttribute("itemIndex", itemIndex);
+	}
+	public void getContactDetails(String cvId, HttpServletRequest request, CustomerDto customerDto) {
+		HttpSession sess = request.getSession();
+		String compId = (String) sess.getAttribute("CID");
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
+//		invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
+		ArrayList<CustomerDto> customerList = invoiceInfoDao.searchContact(compId, cvId, request, customerDto);
 		CustomerDto customerDto2 = customerList.get(0);
 		String cityId = customerDto2.getCity();
 		String stateId = customerDto2.getState();

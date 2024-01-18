@@ -62,14 +62,14 @@ table.tabla-listados tbody tr td { font-size: 12px; }
             <th><spring:message code="BzComposer.Customer.ID" /></th>
             <th><spring:message code="BzComposer.customerinfo.lead" /></th>
             <th><spring:message code="BzComposer.global.company" /></th>
-            <th><spring:message code="BzComposer.Companyinformation.Type" /></th>
+           <%-- <th><spring:message code="BzComposer.Companyinformation.Type" /></th>--%>
             <th><spring:message code="BzComposer.global.address1" /></th>
             <th><spring:message code="BzComposer.global.address2" /></th>
             <th><spring:message code="BzComposer.global.city" /></th>
             <th><spring:message code="BzComposer.global.state" /></th>
             <th><spring:message code="BzComposer.global.zipcode" /></th>
             <th><spring:message code="BzComposer.global.country" /></th>
-            <th><spring:message code="BzComposer.orderimport.lastorderdate" /></th>
+            <%-- <th><spring:message code="BzComposer.orderimport.lastorderdate" /></th>--%>
             <th><spring:message code="BzComposer.global.dateadded" /></th>
             <th><spring:message code="Bizcomposer.active" /></th>
         </tr>
@@ -77,22 +77,20 @@ table.tabla-listados tbody tr td { font-size: 12px; }
     <tbody id="custTableBody">
         <c:if test="${not empty customerList}">
             <c:forEach items="${customerList}" var="objList" varStatus="loop">
-                <tr id='${loop.index}$$' onclick="setRowId(${objList.clientVendorID}, ${loop.index}, true);" ondblclick="goToCustomerBoard(${objList.clientVendorID});">
-                    <td class="${objList.paymentUnpaid?'redColor':''}">
-                        <a href="/Customer?tabid=CustomerBoard&selectedCvID=${objList.clientVendorID}">${objList.clientVendorID}</a>
-                    </td>
+                <tr id='${loop.index}$$' onclick="setRowId(${objList.clientVendorId}, ${loop.index}, true);" ondblclick="goToCustomerBoard(${objList.clientVendorId});">
+                   <td>${objList.clientVendorId}</td>
                     <td>${objList.firstName} ${objList.middleName} ${objList.lastName}</td>
-                    <td>${objList.companyName}</td>
-                    <td>${objList.type}</td>
+                   <td>${objList.company.name}</td>
+                   <%--  <td>${objList.type}</td> --%>
                     <td>${objList.address1}</td>
                     <td>${objList.address2}</td>
                     <td>${objList.city}</td>
-                    <td>${objList.stateName}</td>
+                    <td>${objList.state}</td>
                     <td>${objList.zipCode}</td>
                     <td>${objList.country}</td>
-                    <td>${objList.lastOrderDate}</td>
-                    <td>${objList.dateAdded}</td>
-                    <td>Yes</td>
+                  <%--   <td>${objList.lastOrderDate}</td>--%>
+                    <td>${objList.formattedDateAdded}</td>
+                    <td>Yes</td> 
                 </tr>
             </c:forEach>
         </c:if>
@@ -166,8 +164,7 @@ function manageCustomer(cmd){
 		return showCustomerValidationDialog();
 	} else {
 		if (cmd=="EDIT") {
-			//window.location = "Customer?tabid=editCustomer&cvId="+itemID+"&itemIndex="+itemIndex;
-			window.open("Lead?tabid=editLead&cvId="+itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
+			window.open("/updateLead/" + itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 		}
 		else if (cmd=="DELETE") {
 			event.preventDefault();
@@ -179,7 +176,7 @@ function manageCustomer(cmd){
 		        buttons: {
 		            "<spring:message code='BzComposer.global.ok'/>": function () {
 		                $(this).dialog("close");
-		                window.location = "Lead?leadAction=DELETE&cvID="+itemID;
+		                window.location = "/removeLead/"+itemID;
 		            },
 		            <spring:message code='BzComposer.global.cancel'/>: function () {
 		                $(this).dialog("close");
@@ -197,7 +194,8 @@ function goToCustomerBoard(clientVendorID){
 }
 function addNewCustomer(){
 	//window.location = "Customer?tabid=NewCustomer";
-	window.open("Lead?tabid=NewLead", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
+	//window.open("Lead?tabid=NewLead", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
+	window.open("/newLead", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 }
 
 function showCustomerValidationDialog(){

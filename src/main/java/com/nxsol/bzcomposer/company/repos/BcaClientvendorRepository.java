@@ -76,16 +76,16 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 			+ "  left join BcaInvoice as i on i.clientVendor.clientVendorId = c.clientVendorId and not (i.invoiceStatus =1) and i.isPaymentCompleted = 0 and i.invoiceType.invoiceTypeId in (1,13,17)"
 			+ "  where c.company.companyId =  :companyId and c.cvtypeId in (1,2) and c.status in ('U' , 'N' ) and c.deleted = 0 and c.active =1 order by c.name  ")
 	List<CustomerDto> findCustomerInfo(@Param("companyId") Long companyId);
-	
+
 	@Query(value = "select distinct c.clientVendorId , c.name ,c.customerTitle, c.firstName , c.lastName , c.address1, c.address2, c.city, c.state , c.zipCode , c.country ,"
 			+ " c.email , c.phone , c.cellPhone , c.fax ,date_format(c.dateAdded , '%m-%d-%Y') as dateAdded , i.isPaymentCompleted , c.cvcategoryName, ct.name as cityName , st.name as stateName , cn.name as countryName"
 			+ " , c.dbaname  from BcaClientvendor as c left join BcaCountries as cn on cn.id =c.country left join BcaStates as st on st.id =c.state left join BcaCities as ct on ct.id = c.city "
 			+ "  left join BcaInvoice as i on i.clientVendor.clientVendorId = c.clientVendorId and not (i.invoiceStatus =1) and i.isPaymentCompleted = 0 and i.invoiceType.invoiceTypeId in (1,13,17)"
 			+ "  where c.company.companyId =  :companyId and c.cvtypeId in (1,2) and c.status in ('U' , 'N' ) and c.deleted = 0 and c.active =1 order by c.name  ")
 	List<BcaClientvendor> findCustomerList(@Param("companyId") Long companyId);
-	
-	List<BcaClientvendor> findDistinctByCompany_CompanyIdAndStatusInAndCvtypeIdInAndDeletedAndActiveOrderByName(Long companyId,
-			List<String> status, List<Integer> cvTypeId, Integer deleted, Integer active);
+
+	List<BcaClientvendor> findDistinctByCompany_CompanyIdAndStatusInAndCvtypeIdInAndDeletedAndActiveOrderByName(
+			Long companyId, List<String> status, List<Integer> cvTypeId, Integer deleted, Integer active);
 
 	List<BcaClientvendor> findDistinctByCompany_CompanyIdAndStatusInAndDeletedAndActiveOrderByName(Long companyId,
 			List<String> status, Integer deleted, Integer active);
@@ -140,5 +140,14 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 			@Param("companyId") Long companyId, @Param("active") Integer active, @Param("deleted") Integer deleted,
 			@Param("cvtypeId") List<Integer> cvtypeId, @Param("status") List<String> status);
 
-	Optional<BcaClientvendor> findByClientVendorIdAndCvtypeIdIn(int clientvendorId,List<Integer> cvtypeId);
+	Optional<BcaClientvendor> findByClientVendorIdAndCvtypeIdIn(int clientvendorId, List<Integer> cvtypeId);
+
+	@Query("FROM BcaClientvendor WHERE CVTypeID = :cvtypeId AND company = :companyId AND Active = 1")
+	List<BcaClientvendor> findByCvtypeId(int cvtypeId, BcaCompany companyId);
+
+	@Query("SELECT MAX(id)+ 1 FROM BcaClientvendor")
+	String getMaxId();
+
+	@Query("FROM BcaClientvendor WHERE clientVendorId = :id")
+	BcaClientvendor findByCVId(int id);
 }

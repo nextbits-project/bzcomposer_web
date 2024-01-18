@@ -38,4 +38,8 @@ public interface BcaBillingaddressRepository extends JpaRepository<BcaBillingadd
 
 	BcaBillingaddress findFirstByOrderByAddressIdDesc();
 
+	@Query("From BcaBillingaddress Where clientVendor=:clientVendor")
+	BcaBillingaddress findByClintvendorId(BcaClientvendor clientVendor);
+	
+	
 }

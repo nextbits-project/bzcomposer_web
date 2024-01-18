@@ -19,10 +19,9 @@ public interface BcaSalesrepRepository extends JpaRepository<BcaSalesrep, Intege
 	List<BcaSalesrep> findByCompanyAndActive(BcaCompany company, Integer active);
 
 	Optional<BcaSalesrep> findBySalesRepIdAndCompany_CompanyId(int id, Long companyId);
-	
-	Optional<BcaSalesrep> findBySalesRepIdAndCompany_CompanyIdAndActive(int id, Long companyId,int active);
-	
-	
 
+	Optional<BcaSalesrep> findBySalesRepIdAndCompany_CompanyIdAndActive(int id, Long companyId, int active);
+
+	Optional<BcaSalesrep> getBySalesRepId(int id);
 
 }
