@@ -2524,11 +2524,15 @@ function showItemOrderNumberDialog(){
 }
 
 function getEstimationDetailsByBtnName(form, url){
+	 No = form.orderNo.value;
+	 
+	
     //window.location.href="Estimation?tabid=FirstEstimation";
     console.log("/Estimation?tabid="+url)
+       
     $.ajax({
         type : "GET",
-        url : "/Estimation?tabid="+url,
+        url : "/Estimation?tabid="+url+"&index="+No,
         success : function(data) {
         	
             $(document).find('div#fullPageDetails section').replaceWith($(data).find('div#fullPageDetails').html());

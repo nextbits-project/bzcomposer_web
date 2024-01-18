@@ -28,8 +28,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +44,7 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
+import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
 import com.avibha.bizcomposer.sales.dto.CartItem;
 import com.avibha.bizcomposer.sales.dto.InvoiceDetailsResponse;
 import com.avibha.bizcomposer.sales.dto.SavePrintResponse;
@@ -63,9 +66,11 @@ import com.nxsol.bzcomposer.company.domain.BcaCctype;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorfinancecharges;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorservice;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
 import com.nxsol.bzcomposer.company.domain.BcaInvoice;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
+import com.nxsol.bzcomposer.company.domain.BcaInvoicetype;
 import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
 import com.nxsol.bzcomposer.company.domain.BcaMessage;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
@@ -79,8 +84,10 @@ import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCartRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorserviceRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
+import com.nxsol.bzcomposer.company.repos.BcaInvoicetypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMessageRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
@@ -100,6 +107,8 @@ import com.pritesh.bizcomposer.accounting.bean.BcaShippingaddressDto;
  */
 @Repository
 public class InvoiceInfoDao {
+	@Autowired
+	BcaCompanyRepository bcaCompanyRepository;
 
 	@Autowired
 	private BcaIteminventoryRepository bcaIteminventoryRepository;
@@ -159,6 +168,12 @@ public class InvoiceInfoDao {
 
 	@Autowired
 	private BcaCartRepository bcaCartRepository;
+
+	@Autowired
+	private BcaInvoicetypeRepository bcaInvoicetypeRepository;
+
+	@Autowired
+	private ReceivableLIst receivableLIst;
 
 	public InvoiceDetailsResponse invoiceDetails(int invoiceId, String companyId) {
 		InvoiceDetailsResponse response = new InvoiceDetailsResponse();
@@ -843,7 +858,7 @@ public class InvoiceInfoDao {
 			StringBuffer query = new StringBuffer("select distinct new  "
 					+ BcaShippingaddressDto.class.getCanonicalName()
 					+ "(a.addressId , a.clientVendor.clientVendorId , a.name , a.firstName , a.lastName , a.address1 , a.address2, "
-					+ " a.zipCode ,a.city , ct.name as cityName , a.state , s.name as stateName , a.country , c.name as countryName) from BcaShippingaddress as a left join "
+					+ " a.zipCode ,a.city , ct.name as cityName , a.state , s.name as stateName , a.country , c.name as countryName) from BcaBillingaddress as a left join "
 					+ " BcaCountries as c on c.id=a.country left join  BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N') and "
 					+ " a.active =:active and a.isDefault = :isDefault ");
 
@@ -1502,19 +1517,20 @@ public class InvoiceInfoDao {
 //		PreparedStatement pstmt = null;
 		int lastOrderNo = 0;
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+//			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			List<Integer> invoiceStatus = Arrays.asList(0, 2);
 
 			List<Integer> invoiceStyleId = Arrays.asList(1, 7, 9);
-			List<BcaInvoice> bcaInvoices = bcaInvoiceRepository.findByCompanyIdAndInvoiceStatusAndInvoiceTypeId(
-					Long.valueOf(compId), invoiceStatus, invoiceStyleId);
+			List<BcaInvoice> bcaInvoices = bcaInvoiceRepository
+					.findByCompanyIdAndInvoiceStatusAndInvoiceTypeIdOrderBySonumDesc(Long.valueOf(compId),
+							invoiceStatus, invoiceStyleId);
 			if (bcaInvoices.isEmpty()) {
 				String startNumber = configDto.getStartSalesOrderNum();
 				lastOrderNo = Integer.parseInt(startNumber.substring(startNumber.indexOf("-") + 1));
 			} else {
 				BcaInvoice bcaInvoice = bcaInvoices.get(0);
-				lastOrderNo = bcaInvoice.getSonum();
+				lastOrderNo = bcaInvoice.getSonum() + 1;
 			}
 //			String sqlString = "select SONum from bca_invoice  where CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID IN (1,7,9)  order by SONum desc";
 //			pstmt = con.prepareStatement(sqlString);
@@ -1664,48 +1680,172 @@ public class InvoiceInfoDao {
 	}
 
 	public boolean Save(String compId, InvoiceDto form, String custId) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
-		PreparedStatement pstmt = null, pstmt2 = null;
 		boolean saveStatus = false;
 		try {
-			pstmt = con.prepareStatement("SELECT MAX(InvoiceID) FROM bca_invoice");
-			rs = pstmt.executeQuery();
-			/* Insert into invoice */
-			if (rs.next()) {
-				int invoiceID = rs.getInt(1) + 1;
-				pstmt2 = con.prepareStatement("INSERT INTO bca_invoice (InvoiceID) values (?)");
-				pstmt2.setInt(1, invoiceID);
-				pstmt2.executeUpdate();
-				pstmt2.close();
-				saveStatus = Update(compId, form, invoiceID, custId);
-				ReceivableLIst rl = new ReceivableListImpl();
-				rl.insertIntoBillingStatement(invoiceID);
+			BcaInvoice bcaInvoice = new BcaInvoice();
+			bcaInvoice.setOrderNum(Integer.parseInt(form.getOrderNo()));
+			bcaInvoice.setRefNum(form.getPoNum());
+			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(Integer.parseInt(custId));
+			if (clientVendor.isPresent()) {
+				bcaInvoice.setClientVendor(clientVendor.get());
 			}
-		} catch (SQLException ee) {
+
+			bcaInvoice.setBsaddressId(Integer.parseInt(form.getBsAddressID()));
+			if (null != form.getInvoiceStyle()) {
+				Optional<BcaInvoicestyle> bcaInvoiceStyle = bcaInvoicestyleRepository
+						.findById(Integer.parseInt(form.getInvoiceStyle()));
+				bcaInvoice.setInvoiceStyle(bcaInvoiceStyle.get());
+			}
+
+			Optional<BcaInvoicetype> invoiceType = bcaInvoicetypeRepository.findById(1);
+			if (invoiceType.isPresent())
+				bcaInvoice.setInvoiceType(invoiceType.get());
+			BcaCompany company = bcaCompanyRepository.findById(Long.parseLong(compId)).orElse(null);
+			bcaInvoice.setCompany(company);
+			bcaInvoice.setWeight(form.getWeight());
+			bcaInvoice.setSubTotal(form.getSubtotal());
+			bcaInvoice.setTax(form.getTax());
+			bcaInvoice.setSh(form.getShipping());
+			bcaInvoice.setTotal(form.getTotal());
+			bcaInvoice.setAdjustedTotal(form.getAdjustedtotal());
+			bcaInvoice.setPaidAmount(0D);
+			bcaInvoice.setBalance(form.getAdjustedtotal());
+			if (null != form.getVia()) {
+				Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository
+						.findById(Integer.parseInt(form.getVia()));
+				if (shipCarrier.isPresent())
+					bcaInvoice.setShipCarrier(shipCarrier.get());
+			}
+			if (null != form.getRep())
+				bcaInvoice.setSalesRepId(Integer.parseInt(form.getRep()));
+			if (!"0".equals(form.getMessage())) {
+				Optional<BcaMessage> message = bcaMessageRepository.findById(Integer.parseInt(form.getMessage()));
+				if (message.isPresent())
+					bcaInvoice.setMessage(message.get());
+			}
+			if (null != form.getTerm()) {
+				Optional<BcaTerm> term = bcaTermRepository.findById(Integer.parseInt(form.getTerm()));
+				if (term.isPresent()) {
+					bcaInvoice.setTerm(term.get());
+				}
+			}
+
+			if (!"0".equals(form.getPayMethod())) {
+				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+						.findById(Integer.parseInt(form.getPayMethod()));
+				if (paymentType.isPresent()) {
+					bcaInvoice.setPaymentType(paymentType.get());
+				}
+			}
+
+			if (null != form.getTaxID()) {
+				Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(Integer.parseInt(form.getTaxID()));
+				if (salesTax.isPresent()) {
+					bcaInvoice.setSalesTax(salesTax.get());
+				}
+			}
+			String tax = form.getTaxable();
+			if (tax != null && (tax.equals("on") || tax.equals("true"))) {
+				bcaInvoice.setTaxable(1);
+			} else {
+				bcaInvoice.setTaxable(0);
+			}
+			String shipped = form.getItemShipped();
+			if (shipped != null && (shipped.equals("on") || shipped.equals("true"))) {
+				bcaInvoice.setShipped(1);
+			} else {
+				bcaInvoice.setShipped(0);
+			}
+			bcaInvoice.setMemo(form.getMemo());
+			bcaInvoice.setVendorAddrId(-1);
+			if (null != form.getBsAddressID())
+				bcaInvoice.setBsaddressId(Integer.parseInt(form.getBsAddressID()));
+			OffsetDateTime dateConfirmed = DateHelper.string2OffsetDateTime(form.getShipDate());
+			bcaInvoice.setDateConfirmed(dateConfirmed);
+
+			OffsetDateTime dateAdded = DateHelper.string2OffsetDateTime(form.getOrderDate());
+			bcaInvoice.setDateAdded(dateAdded);
+			bcaInvoice.setInvoiceStatus(0);
+			bcaInvoice.setEstNum(0);
+			bcaInvoice.setOrderType(7);
+
+			String paid = form.getPaid();
+			if (paid != null && (paid.equals("on") || paid.equals("true"))) {
+				bcaInvoice.setIsPaymentCompleted(true);
+			} else {
+				bcaInvoice.setIsPaymentCompleted(false);
+			}
+			if (form.getServiceID() == 0) {
+				bcaInvoice.setServiceId(0);
+			} else {
+				bcaInvoice.setServiceId(form.getServiceID());
+
+			}
+
+			bcaInvoice.setIsInvoice(1);
+			bcaInvoice.setIsSalestype(1);
+			String isPending = form.getIsPending();
+			if (isPending != null && (isPending.equals("on") || isPending.equals("true"))) {
+				bcaInvoice.setIsPending(1);
+			} else {
+				bcaInvoice.setIsPending(0);
+			}
+			BcaInvoice invoice = bcaInvoiceRepository.save(bcaInvoice);
+			if (null != invoice) {
+				receivableLIst.insertIntoBillingStatement(invoice.getInvoiceId());
+				saveStatus = true;
+			}
+
+		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
 
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (pstmt2 != null) {
-					db.close(pstmt2);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 		return saveStatus;
 	}
+//	public boolean Save(String compId, InvoiceDto form, String custId) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null, pstmt2 = null;
+//		boolean saveStatus = false;
+//		try {
+//			pstmt = con.prepareStatement("SELECT MAX(InvoiceID) FROM bca_invoice");
+//			rs = pstmt.executeQuery();
+//			/* Insert into invoice */
+//			if (rs.next()) {
+//				int invoiceID = rs.getInt(1) + 1;
+//				pstmt2 = con.prepareStatement("INSERT INTO bca_invoice (InvoiceID) values (?)");
+//				pstmt2.setInt(1, invoiceID);
+//				pstmt2.executeUpdate();
+//				pstmt2.close();
+//				saveStatus = Update(compId, form, invoiceID, custId);
+//				ReceivableLIst rl = new ReceivableListImpl();
+//				rl.insertIntoBillingStatement(invoiceID);
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log("Exception" + ee.toString());
+//
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (pstmt2 != null) {
+//					db.close(pstmt2);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return saveStatus;
+//	}
 
 	public boolean SaveSalesOrder(String compId, InvoiceDto form, int salesOrderType) {
 		SQLExecutor db = new SQLExecutor();
@@ -1753,10 +1893,6 @@ public class InvoiceInfoDao {
 	}
 
 	public void AddItem(int invoiceID, int cid, InvoiceDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
-		PreparedStatement pstmt = null, pstmt2 = null;
 
 		if (form.getItem() == null || form.getItem().isEmpty())
 			return;
@@ -1773,6 +1909,7 @@ public class InvoiceInfoDao {
 		if (form.getItemShipped() != null && form.getItemShipped().equals("on")) {
 			shippedNow = true;
 		}
+
 		try {
 			for (int i = 0; i < form.getSize(); i++) {
 				int inventoryID = Integer.parseInt(invIDs[i]);
@@ -1790,61 +1927,134 @@ public class InvoiceInfoDao {
 				}
 				String itmTypeID = (invItemIDs[i] != null && invItemIDs[i].length() > 0) ? invItemIDs[i] : "0";
 				String itmOrder = invItemOrders[i];
-
-				pstmt2 = con.prepareStatement("SELECT MAX(CartID) FROM bca_cart");
-				rs = pstmt2.executeQuery();
-				/* Insert into invoice */
-				if (rs.next()) {
-					int cartID = rs.getInt(1) + 1;
-					String insertItem = "INSERT INTO bca_cart (InventoryID,InvoiceID,CompanyID,InventoryCode,InventoryName,Qty,"
-							+ " UnitWeight,Weight,UnitPrice,Taxable,ItemTypeID,ItemOrder,CartID)"
-							+ " VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,? )";
-					pstmt = con.prepareStatement(insertItem);
-					pstmt.setInt(1, inventoryID);
-					pstmt.setInt(2, invoiceID);
-					pstmt.setInt(3, cid);
-					pstmt.setString(4, itemCode);
-					pstmt.setString(5, itemName);
-					pstmt.setInt(6, Integer.parseInt(qty));
-					pstmt.setDouble(7, Double.parseDouble(uweight));
-					pstmt.setDouble(8, 0.0);
-					pstmt.setDouble(9, Double.parseDouble(truncate(uprice)));
-					pstmt.setInt(10, Integer.parseInt(taxable1));
-					pstmt.setInt(11, Integer.parseInt(itmTypeID));
-					pstmt.setInt(12, Integer.parseInt(itmOrder));
-					pstmt.setInt(13, cartID);
-					int updatedRows = pstmt.executeUpdate();
-					if (updatedRows > 0 && shippedNow) {
-						pstmt = con.prepareStatement(
-								"UPDATE bca_iteminventory SET ExpectedQty=ExpectedQty-? WHERE InventoryID=?");
-						pstmt.setInt(1, Integer.parseInt(qty));
-						pstmt.setInt(2, inventoryID);
-						updatedRows = pstmt.executeUpdate();
+				BcaCart bcaCart = new BcaCart();
+				Optional<BcaIteminventory> itemInventory = bcaIteminventoryRepository.findById(inventoryID);
+				if (itemInventory.isPresent())
+					bcaCart.setInventory(itemInventory.get());
+				Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(cid));
+				if (company.isPresent())
+					bcaCart.setCompany(company.get());
+				bcaCart.setInventoryCode(itemCode);
+				bcaCart.setInventoryCode(itemName);
+				bcaCart.setQty(Integer.parseInt(qty));
+				bcaCart.setUnitWeight(Double.parseDouble(uweight));
+				bcaCart.setWeight(0.0);
+				bcaCart.setUnitPrice(Double.parseDouble(truncate(uprice)));
+				bcaCart.setTaxable(Integer.parseInt(taxable1));
+				bcaCart.setItemTypeId(Integer.parseInt(itmTypeID));
+				bcaCart.setItemOrder(Integer.parseInt(itmOrder));
+				BcaCart cart = bcaCartRepository.save(bcaCart);
+				if (null != cart && shippedNow) {
+					Optional<BcaIteminventory> inventory = bcaIteminventoryRepository.findById(inventoryID);
+					if (itemInventory.isPresent()) {
+						BcaIteminventory item = inventory.get();
+						int expectedQty = item.getExpectedQty();
+						item.setExpectedQty(expectedQty - Integer.parseInt(qty));
+						bcaIteminventoryRepository.save(item);
 					}
 				}
+
 			}
-		} catch (SQLException ee) {
+
+		} catch (Exception ee) {
 			Loger.log("Exception" + ee.toString());
 
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (pstmt2 != null) {
-					db.close(pstmt2);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 	}
+
+//	public void AddItem(int invoiceID, int cid, InvoiceDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null, pstmt2 = null;
+//
+//		if (form.getItem() == null || form.getItem().isEmpty())
+//			return;
+//		String invIDs[] = form.getItem().split(";");
+//		String invCodes[] = form.getCode().split(";");
+//		String invNames[] = form.getDesc().split(";");
+//		String invQtys[] = form.getQty().split(";");
+//		String invUWeights[] = form.getUnitWeight().split(";");
+//		String invUPrices[] = form.getUprice().split(";");
+//		String invIsTaxables[] = form.getIsTaxable().split(";");
+//		String invItemIDs[] = form.getItemTypeID().split(";");
+//		String invItemOrders[] = form.getItemOrder().split(";");
+//		boolean shippedNow = false;
+//		if (form.getItemShipped() != null && form.getItemShipped().equals("on")) {
+//			shippedNow = true;
+//		}
+//		try {
+//			for (int i = 0; i < form.getSize(); i++) {
+//				int inventoryID = Integer.parseInt(invIDs[i]);
+//				String itemCode = invCodes[i];
+//				String itemName = invNames[i];
+//				String qty = (invQtys[i] != null && invQtys[i].length() > 0) ? invQtys[i] : "0";
+//				String uweight = (invUWeights[i] != null && invUWeights[i].length() > 0) ? invUWeights[i] : "0.0";
+//				String uprice = (invUPrices[i] != null && invUPrices[i].length() > 0) ? invUPrices[i] : "0.0";
+//				String taxable = (invIsTaxables[i] != null && invIsTaxables[i].length() > 0) ? invIsTaxables[i] : "0";
+//				String taxable1;
+//				if (taxable.equalsIgnoreCase("Yes")) {
+//					taxable1 = "1";
+//				} else {
+//					taxable1 = "0";
+//				}
+//				String itmTypeID = (invItemIDs[i] != null && invItemIDs[i].length() > 0) ? invItemIDs[i] : "0";
+//				String itmOrder = invItemOrders[i];
+//
+//				pstmt2 = con.prepareStatement("SELECT MAX(CartID) FROM bca_cart");
+//				rs = pstmt2.executeQuery();
+//				/* Insert into invoice */
+//				if (rs.next()) {
+//					int cartID = rs.getInt(1) + 1;
+//					String insertItem = "INSERT INTO bca_cart (InventoryID,InvoiceID,CompanyID,InventoryCode,InventoryName,Qty,"
+//							+ " UnitWeight,Weight,UnitPrice,Taxable,ItemTypeID,ItemOrder,CartID)"
+//							+ " VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,? )";
+//					pstmt = con.prepareStatement(insertItem);
+//					pstmt.setInt(1, inventoryID);
+//					pstmt.setInt(2, invoiceID);
+//					pstmt.setInt(3, cid);
+//					pstmt.setString(4, itemCode);
+//					pstmt.setString(5, itemName);
+//					pstmt.setInt(6, Integer.parseInt(qty));
+//					pstmt.setDouble(7, Double.parseDouble(uweight));
+//					pstmt.setDouble(8, 0.0);
+//					pstmt.setDouble(9, Double.parseDouble(truncate(uprice)));
+//					pstmt.setInt(10, Integer.parseInt(taxable1));
+//					pstmt.setInt(11, Integer.parseInt(itmTypeID));
+//					pstmt.setInt(12, Integer.parseInt(itmOrder));
+//					pstmt.setInt(13, cartID);
+//					int updatedRows = pstmt.executeUpdate();
+//					if (updatedRows > 0 && shippedNow) {
+//						pstmt = con.prepareStatement(
+//								"UPDATE bca_iteminventory SET ExpectedQty=ExpectedQty-? WHERE InventoryID=?");
+//						pstmt.setInt(1, Integer.parseInt(qty));
+//						pstmt.setInt(2, inventoryID);
+//						updatedRows = pstmt.executeUpdate();
+//					}
+//				}
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log("Exception" + ee.toString());
+//
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (pstmt2 != null) {
+//					db.close(pstmt2);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 
 	public boolean SalesUpdate(String compId, InvoiceDto form, int salesOrderType, int invoiceID) {
 		PreparedStatement pstmt1 = null;
@@ -2005,161 +2215,318 @@ public class InvoiceInfoDao {
 	}
 
 	public boolean Update(String compId, InvoiceDto form, int invoiceID, String custID) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
-		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null, pstmt3 = null, pstmt4 = null, pstmt5 = null;
 		int cid = Integer.parseInt(compId);
-		CustomerInfo cinfo = new CustomerInfo();
 		boolean updateStatus = false;
 		try {
 			boolean shippedLastTime = false;
-			pstmt = con.prepareStatement(
-					"SELECT Shipped FROM bca_invoice WHERE InvoiceID = " + invoiceID + " and CompanyID = " + cid);
-			rs = pstmt.executeQuery();
-			if (rs.next() && rs.getInt("Shipped") == 1) {
-				shippedLastTime = true;
+			Optional<BcaInvoice> bInvoice = bcaInvoiceRepository.findByInvoiceIdAndCompany_CompanyId(invoiceID,
+					Long.parseLong(compId));
+			if (bInvoice.isPresent()) {
+				if (bInvoice.get().getShipped() == 1)
+					shippedLastTime = true;
 			}
-			String updateStr = "update bca_invoice set  OrderNum =?,RefNum =?,"
-					+ "ClientVendorID =? ,BSAddressID =? ,InvoiceStyleID =? ,InvoiceTypeID =? ,"
-					+ "CompanyID =? ,Weight =? ,Subtotal =? ,Tax =? ,SH = ?  ,Total = ? ,AdjustedTotal = ?  ,"
-					+ "PaidAmount = ?  ,Balance = ? ,ShipCarrierID = ? ,SalesRepID =? ,MessageID = ? ,TermID =? ,"
-					+ "PaymentTypeID =? ,SalesTaxID =?  ,Taxable =? ,Shipped =? , Memo = ? , VendorAddrID = ? , "
-					+ "BSAddressID = ? ,DateConfirmed = ?  ,DateAdded =? ,invoiceStatus = ? ,EstNum=0 ,OrderType = 7 , "
-					+ "IsPaymentCompleted=? , ServiceID=? ,IsInvoice=?,IsSalestype=?,isPending=? where InvoiceID =? ";
-			pstmt1 = con.prepareStatement(updateStr);
 
-			pstmt1.setString(1, form.getOrderNo());
-			pstmt1.setString(2, form.getPoNum());
-			/* pstmt1.setString(2, ""); */
-			pstmt1.setString(3, custID);
-			pstmt1.setString(4, form.getBsAddressID());
-			pstmt1.setString(5, form.getInvoiceStyle());
-			/* pstmt1.setString(6, form.getInvoiceType()); */
-			pstmt1.setString(6, "1");
-			pstmt1.setString(7, compId);
-			pstmt1.setDouble(8, form.getWeight());
-			pstmt1.setDouble(9, form.getSubtotal());
-			pstmt1.setDouble(10, form.getTax());
+			BcaInvoice bcaInvoice = bcaInvoiceRepository.findById(invoiceID)
+					.orElseThrow(() -> new IllegalArgumentException("Invoice Not Present"));
 
-			pstmt1.setDouble(11, form.getShipping());
-			pstmt1.setDouble(12, form.getTotal());
-			pstmt1.setDouble(13, form.getAdjustedtotal());
-			pstmt1.setDouble(14, 0);
-			pstmt1.setDouble(15, form.getAdjustedtotal());
-			pstmt1.setString(16, form.getVia());
-			pstmt1.setString(17, form.getRep());
-//            pstmt1.setString(18, form.getMessage());
-			pstmt1.setString(18, "0".equals(form.getMessage()) ? null : form.getMessage());
-			pstmt1.setString(19, form.getTerm());
-//            pstmt1.setString(20, form.getPayMethod());
-			pstmt1.setString(20, "0".equals(form.getPayMethod()) ? null : form.getPayMethod());
-			pstmt1.setString(21, form.getTaxID());
+			bcaInvoice.setOrderNum(Integer.parseInt(form.getOrderNo()));
+			bcaInvoice.setRefNum(form.getPoNum());
+			if (null != custID) {
+				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(Integer.parseInt(custID));
+				if (clientVendor.isPresent()) {
+					bcaInvoice.setClientVendor(clientVendor.get());
+				}
+			}
+			bcaInvoice.setBsaddressId(Integer.parseInt(form.getBsAddressID()));
+			if (null != form.getInvoiceStyle()) {
+				Optional<BcaInvoicestyle> bcaInvoiceStyle = bcaInvoicestyleRepository
+						.findById(Integer.parseInt(form.getInvoiceStyle()));
+				bcaInvoice.setInvoiceStyle(bcaInvoiceStyle.get());
+			}
 
+			Optional<BcaInvoicetype> invoiceType = bcaInvoicetypeRepository.findById(1);
+			if (invoiceType.isPresent())
+				bcaInvoice.setInvoiceType(invoiceType.get());
+			BcaCompany company = bcaCompanyRepository.findById(Long.parseLong(compId)).orElse(null);
+			bcaInvoice.setCompany(company);
+			bcaInvoice.setWeight(form.getWeight());
+			bcaInvoice.setSubTotal(form.getSubtotal());
+			bcaInvoice.setTax(form.getTax());
+			bcaInvoice.setSh(form.getShipping());
+			bcaInvoice.setTotal(form.getTotal());
+			bcaInvoice.setAdjustedTotal(form.getAdjustedtotal());
+			bcaInvoice.setPaidAmount(0D);
+			bcaInvoice.setBalance(form.getAdjustedtotal());
+			if (null != form.getVia()) {
+				Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository
+						.findById(Integer.parseInt(form.getVia()));
+				if (shipCarrier.isPresent())
+					bcaInvoice.setShipCarrier(shipCarrier.get());
+			}
+			if (null != form.getRep())
+				bcaInvoice.setSalesRepId(Integer.parseInt(form.getRep()));
+			if (!"0".equals(form.getMessage())) {
+				Optional<BcaMessage> message = bcaMessageRepository.findById(Integer.parseInt(form.getMessage()));
+				if (message.isPresent())
+					bcaInvoice.setMessage(message.get());
+			}
+			if (null != form.getTerm()) {
+				Optional<BcaTerm> term = bcaTermRepository.findById(Integer.parseInt(form.getTerm()));
+				if (term.isPresent()) {
+					bcaInvoice.setTerm(term.get());
+				}
+			}
+
+			if (!"0".equals(form.getPayMethod())) {
+				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+						.findById(Integer.parseInt(form.getPayMethod()));
+				if (paymentType.isPresent()) {
+					bcaInvoice.setPaymentType(paymentType.get());
+				}
+			}
+
+			if (null != form.getTaxID()) {
+				Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(Integer.parseInt(form.getTaxID()));
+				if (salesTax.isPresent()) {
+					bcaInvoice.setSalesTax(salesTax.get());
+				}
+			}
 			String tax = form.getTaxable();
 			if (tax != null && (tax.equals("on") || tax.equals("true"))) {
-				pstmt1.setInt(22, 1);
+				bcaInvoice.setTaxable(1);
 			} else {
-				pstmt1.setInt(22, 0);
+				bcaInvoice.setTaxable(0);
 			}
-
 			String shipped = form.getItemShipped();
 			if (shipped != null && (shipped.equals("on") || shipped.equals("true"))) {
-				pstmt1.setInt(23, 1);
+				bcaInvoice.setShipped(1);
 			} else {
-				pstmt1.setInt(23, 0);
+				bcaInvoice.setShipped(0);
 			}
+			bcaInvoice.setMemo(form.getMemo());
+			bcaInvoice.setVendorAddrId(-1);
+			if (null != form.getBsAddressID())
+				bcaInvoice.setBsaddressId(Integer.parseInt(form.getBsAddressID()));
+			OffsetDateTime dateConfirmed = DateHelper.string2OffsetDateTime(form.getShipDate());
+			bcaInvoice.setDateConfirmed(dateConfirmed);
 
-			pstmt1.setString(24, form.getMemo());
-			pstmt1.setInt(25, -1);
-			pstmt1.setString(26, form.getBsAddressID());
-			pstmt1.setDate(27, (form.getShipDate() == null || form.getShipDate().isEmpty()) ? cinfo.string2date("now()")
-					: cinfo.string2date(form.getShipDate()));
-			pstmt1.setDate(28,
-					(form.getOrderDate() == null || form.getOrderDate().isEmpty()) ? cinfo.string2date("now()")
-							: cinfo.string2date(form.getOrderDate()));
-			pstmt1.setInt(29, 0);
+			OffsetDateTime dateAdded = DateHelper.string2OffsetDateTime(form.getOrderDate());
+			bcaInvoice.setDateAdded(dateAdded);
+			bcaInvoice.setInvoiceStatus(0);
+			bcaInvoice.setEstNum(0);
+			bcaInvoice.setOrderType(7);
+
 			String paid = form.getPaid();
 			if (paid != null && (paid.equals("on") || paid.equals("true"))) {
-				pstmt1.setInt(30, 1);
+				bcaInvoice.setIsPaymentCompleted(true);
 			} else {
-				pstmt1.setInt(30, 0);
+				bcaInvoice.setIsPaymentCompleted(false);
 			}
 			if (form.getServiceID() == 0) {
-				pstmt1.setInt(31, 0);
+				bcaInvoice.setServiceId(0);
 			} else {
-				pstmt1.setInt(31, form.getServiceID());
+				bcaInvoice.setServiceId(form.getServiceID());
+
 			}
-			pstmt1.setString(32, "1");
-			pstmt1.setString(33, "1");
+
+			bcaInvoice.setIsInvoice(1);
+			bcaInvoice.setIsSalestype(1);
 			String isPending = form.getIsPending();
 			if (isPending != null && (isPending.equals("on") || isPending.equals("true"))) {
-				pstmt1.setInt(34, 1);// pending
+				bcaInvoice.setIsPending(1);
 			} else {
-				pstmt1.setInt(34, 0);
+				bcaInvoice.setIsPending(0);
 			}
-			pstmt1.setInt(35, invoiceID); // set pending value order
-
-			int rows = pstmt1.executeUpdate();
-			if (rows > 0) {
-				/* Delete Item from Cart */
+			BcaInvoice invoice = bcaInvoiceRepository.save(bcaInvoice);
+			if (null != invoice) {
 				Map<Integer, Integer> oldInvData = new HashMap<>();
-				pstmt2 = con.prepareStatement(
-						"SELECT * FROM bca_cart WHERE InvoiceID = " + invoiceID + " and CompanyID = " + cid);
-				rs = pstmt2.executeQuery();
-				if (rs.next()) {
-					oldInvData.put(rs.getInt("InventoryID"), rs.getInt("Qty"));
+				List<BcaCart> cart = bcaCartRepository.findByInvoiceIdAndCompanyId(invoice.getInvoiceId(),
+						Long.parseLong(compId));
+				if (!cart.isEmpty()) {
+					if (null != cart.get(0).getInventory())
+						oldInvData.put(cart.get(0).getInventory().getInventoryId(), cart.get(0).getQty());
 				}
-				/* Delete Item from Cart */
-				pstmt3 = con.prepareStatement(
-						"DELETE FROM bca_cart WHERE InvoiceID = " + invoiceID + " and CompanyID=" + cid);
-				int updatedRows = pstmt3.executeUpdate();
-				if (updatedRows > 0 && shippedLastTime) {
-					con.setAutoCommit(false);
-					pstmt4 = con.prepareStatement(
-							"UPDATE bca_iteminventory SET ExpectedQty=ExpectedQty+? WHERE InventoryID=?");
+				bcaCartRepository.deleteByInvoice_InvoiceIdAndCompany_CompanyId(invoice.getInvoiceId(),
+						Long.parseLong(compId));
+				if (shippedLastTime) {
 					for (Integer key : oldInvData.keySet()) {
-						pstmt4.setInt(1, oldInvData.get(key));
-						pstmt4.setInt(2, key);
-						pstmt4.addBatch();
+						Optional<BcaIteminventory> itemInventory = bcaIteminventoryRepository.findById(key);
+						if (itemInventory.isPresent()) {
+							BcaIteminventory item = itemInventory.get();
+							int expectedQty = item.getExpectedQty();
+							item.setExpectedQty(expectedQty + oldInvData.get(key));
+							bcaIteminventoryRepository.save(item);
+						}
 					}
-					pstmt4.executeBatch();
-					con.commit();
 				}
-
 				/* Add Item to Cart */
 				AddItem(invoiceID, cid, form);
 			}
-			updateStatus = true;
-		} catch (SQLException ee) {
 
+			updateStatus = true;
+		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
-		} finally {
-			try {
-				if (pstmt1 != null) {
-					db.close(pstmt1);
-				}
-				if (pstmt2 != null) {
-					db.close(pstmt2);
-				}
-				if (pstmt3 != null) {
-					db.close(pstmt3);
-				}
-				if (pstmt4 != null) {
-					db.close(pstmt4);
-				}
-				if (pstmt5 != null) {
-					db.close(pstmt5);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
+
 		return updateStatus;
 	}
+//	public boolean Update(String compId, InvoiceDto form, int invoiceID, String custID) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null, pstmt3 = null, pstmt4 = null, pstmt5 = null;
+//		int cid = Integer.parseInt(compId);
+//		CustomerInfo cinfo = new CustomerInfo();
+//		boolean updateStatus = false;
+//		try {
+//			boolean shippedLastTime = false;
+//			pstmt = con.prepareStatement(
+//					"SELECT Shipped FROM bca_invoice WHERE InvoiceID = " + invoiceID + " and CompanyID = " + cid);
+//			rs = pstmt.executeQuery();
+//			if (rs.next() && rs.getInt("Shipped") == 1) {
+//				shippedLastTime = true;
+//			}
+//			String updateStr = "update bca_invoice set  OrderNum =?,RefNum =?,"
+//					+ "ClientVendorID =? ,BSAddressID =? ,InvoiceStyleID =? ,InvoiceTypeID =? ,"
+//					+ "CompanyID =? ,Weight =? ,Subtotal =? ,Tax =? ,SH = ?  ,Total = ? ,AdjustedTotal = ?  ,"
+//					+ "PaidAmount = ?  ,Balance = ? ,ShipCarrierID = ? ,SalesRepID =? ,MessageID = ? ,TermID =? ,"
+//					+ "PaymentTypeID =? ,SalesTaxID =?  ,Taxable =? ,Shipped =? , Memo = ? , VendorAddrID = ? , "
+//					+ "BSAddressID = ? ,DateConfirmed = ?  ,DateAdded =? ,invoiceStatus = ? ,EstNum=0 ,OrderType = 7 , "
+//					+ "IsPaymentCompleted=? , ServiceID=? ,IsInvoice=?,IsSalestype=?,isPending=? where InvoiceID =? ";
+//			pstmt1 = con.prepareStatement(updateStr);
+//
+//			pstmt1.setString(1, form.getOrderNo());
+//			pstmt1.setString(2, form.getPoNum());
+//			/* pstmt1.setString(2, ""); */
+//			pstmt1.setString(3, custID);
+//			pstmt1.setString(4, form.getBsAddressID());
+//			pstmt1.setString(5, form.getInvoiceStyle());
+//			/* pstmt1.setString(6, form.getInvoiceType()); */
+//			pstmt1.setString(6, "1");
+//			pstmt1.setString(7, compId);
+//			pstmt1.setDouble(8, form.getWeight());
+//			pstmt1.setDouble(9, form.getSubtotal());
+//			pstmt1.setDouble(10, form.getTax());
+//
+//			pstmt1.setDouble(11, form.getShipping());
+//			pstmt1.setDouble(12, form.getTotal());
+//			pstmt1.setDouble(13, form.getAdjustedtotal());
+//			pstmt1.setDouble(14, 0);
+//			pstmt1.setDouble(15, form.getAdjustedtotal());
+//			pstmt1.setString(16, form.getVia());
+//			pstmt1.setString(17, form.getRep());
+////            pstmt1.setString(18, form.getMessage());
+//			pstmt1.setString(18, "0".equals(form.getMessage()) ? null : form.getMessage());
+//			pstmt1.setString(19, form.getTerm());
+////            pstmt1.setString(20, form.getPayMethod());
+//			pstmt1.setString(20, "0".equals(form.getPayMethod()) ? null : form.getPayMethod());
+//			pstmt1.setString(21, form.getTaxID());
+//
+//			String tax = form.getTaxable();
+//			if (tax != null && (tax.equals("on") || tax.equals("true"))) {
+//				pstmt1.setInt(22, 1);
+//			} else {
+//				pstmt1.setInt(22, 0);
+//			}
+//
+//			String shipped = form.getItemShipped();
+//			if (shipped != null && (shipped.equals("on") || shipped.equals("true"))) {
+//				pstmt1.setInt(23, 1);
+//			} else {
+//				pstmt1.setInt(23, 0);
+//			}
+//
+//			pstmt1.setString(24, form.getMemo());
+//			pstmt1.setInt(25, -1);
+//			pstmt1.setString(26, form.getBsAddressID());
+//			pstmt1.setDate(27, (form.getShipDate() == null || form.getShipDate().isEmpty()) ? cinfo.string2date("now()")
+//					: cinfo.string2date(form.getShipDate()));
+//			pstmt1.setDate(28,
+//					(form.getOrderDate() == null || form.getOrderDate().isEmpty()) ? cinfo.string2date("now()")
+//							: cinfo.string2date(form.getOrderDate()));
+//			pstmt1.setInt(29, 0);
+//			String paid = form.getPaid();
+//			if (paid != null && (paid.equals("on") || paid.equals("true"))) {
+//				pstmt1.setInt(30, 1);
+//			} else {
+//				pstmt1.setInt(30, 0);
+//			}
+//			if (form.getServiceID() == 0) {
+//				pstmt1.setInt(31, 0);
+//			} else {
+//				pstmt1.setInt(31, form.getServiceID());
+//			}
+//			pstmt1.setString(32, "1");
+//			pstmt1.setString(33, "1");
+//			String isPending = form.getIsPending();
+//			if (isPending != null && (isPending.equals("on") || isPending.equals("true"))) {
+//				pstmt1.setInt(34, 1);// pending
+//			} else {
+//				pstmt1.setInt(34, 0);
+//			}
+//			pstmt1.setInt(35, invoiceID); // set pending value order
+//
+//			int rows = pstmt1.executeUpdate();
+//			if (rows > 0) {
+//				/* Delete Item from Cart */
+//				Map<Integer, Integer> oldInvData = new HashMap<>();
+//				pstmt2 = con.prepareStatement(
+//						"SELECT * FROM bca_cart WHERE InvoiceID = " + invoiceID + " and CompanyID = " + cid);
+//				rs = pstmt2.executeQuery();
+//				if (rs.next()) {
+//					oldInvData.put(rs.getInt("InventoryID"), rs.getInt("Qty"));
+//				}
+//				/* Delete Item from Cart */
+//				pstmt3 = con.prepareStatement(
+//						"DELETE FROM bca_cart WHERE InvoiceID = " + invoiceID + " and CompanyID=" + cid);
+//				int updatedRows = pstmt3.executeUpdate();
+//				if (updatedRows > 0 && shippedLastTime) {
+//					con.setAutoCommit(false);
+//					pstmt4 = con.prepareStatement(
+//							"UPDATE bca_iteminventory SET ExpectedQty=ExpectedQty+? WHERE InventoryID=?");
+//					for (Integer key : oldInvData.keySet()) {
+//						pstmt4.setInt(1, oldInvData.get(key));
+//						pstmt4.setInt(2, key);
+//						pstmt4.addBatch();
+//					}
+//					pstmt4.executeBatch();
+//					con.commit();
+//				}
+//
+//				/* Add Item to Cart */
+//				AddItem(invoiceID, cid, form);
+//			}
+//			updateStatus = true;
+//		} catch (SQLException ee) {
+//
+//			Loger.log("Exception" + ee.toString());
+//		} finally {
+//			try {
+//				if (pstmt1 != null) {
+//					db.close(pstmt1);
+//				}
+//				if (pstmt2 != null) {
+//					db.close(pstmt2);
+//				}
+//				if (pstmt3 != null) {
+//					db.close(pstmt3);
+//				}
+//				if (pstmt4 != null) {
+//					db.close(pstmt4);
+//				}
+//				if (pstmt5 != null) {
+//					db.close(pstmt5);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return updateStatus;
+//	}
 
 	public int getInvoiceNo(String compId, String no) {
 		int invoiceID = 0;
@@ -4153,13 +4520,13 @@ public class InvoiceInfoDao {
 
 		List<BcaInvoice> bcaInvoice = null;
 		try {
-			if (action.equalsIgnoreCase("IBLU")) { // Send Invoice it
+			if (form.getTabid().equalsIgnoreCase("IBLU")) { // Send Invoice it
 
 				String query = "SELECT bi from BcaInvoice bi where bi.company.companyId= :companyId and bi.invoiceStatus IN :invoiceStatus"
 						+ " and bi.invoiceType.invoiceTypeId IN :invoiceTypeId and bi.sonum =:sonum";
 				TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query, BcaInvoice.class);
 				JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
-				JpaHelper.addParameter(typedQuery, query, "sonum", Long.parseLong(compId));
+				JpaHelper.addParameter(typedQuery, query, "sonum",	(int)OrderNo);
 				JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
 				JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", Arrays.asList(1, 7, 9));
 				bcaInvoice = typedQuery.getResultList();
@@ -4205,8 +4572,9 @@ public class InvoiceInfoDao {
 				}
 				form.setPoNum(invoice.getRefNum()); // purches order
 				form.setOrderNo(String.valueOf(invoice.getOrderNum()));
-				if (action.equalsIgnoreCase("IBLU")) { // Send Invoice it
-					form.setOrderNo(getNewOrderNo(compId)); // Send New Invoice num
+				if (form.getTabid().equalsIgnoreCase("IBLU")) { // Send Invoice it
+//					form.setOrderNo(getNewOrderNo(compId)); // Send New Invoice num
+					form.setOrderNo(String.valueOf(OrderNo));
 				}
 				if (null != invoice.getInvoiceStyle()) {
 					style = String.valueOf(invoice.getInvoiceStyle().getInvoiceStyleId());
@@ -4754,8 +5122,8 @@ public class InvoiceInfoDao {
 
 		Long orderNo = null;
 		try {
-			List<Long> orderNumbers = new ArrayList<>();
 			String action = request.getParameter("tabid");
+			int currentIndex = Integer.valueOf(request.getParameter("index"));
 
 			Long prevInvoiceOrderNo = (Long) request.getSession().getAttribute("prevInvoiceOrderNo");
 			prevInvoiceOrderNo = prevInvoiceOrderNo != null ? prevInvoiceOrderNo : 0l;
@@ -4767,57 +5135,41 @@ public class InvoiceInfoDao {
 			JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
 			JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", 1);
 
-			String sql = "SELECT InvoiceID,OrderNum FROM bca_invoice WHERE CompanyID =? "
-					+ "and invoiceStatus in (0,2) and InvoiceTypeID=1 and OrderNum > 0 ORDER BY OrderNum ";
+
 			if (action.equalsIgnoreCase("PreviousInvoice")) {
-				typedQuery.getResultList().stream().sorted(Comparator.comparing(BcaInvoice::getOrderNum).reversed())
-						.forEach(invoice -> {
-							orderNumbers.add(new Long(invoice.getOrderNum()));
-						});
+				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getOrderNum() < currentIndex)
+						.sorted(Comparator.comparing(BcaInvoice::getOrderNum).reversed()).findFirst()
+						.orElse(typedQuery.getResultList().stream()
+								.sorted(Comparator.comparing(BcaInvoice::getOrderNum).reversed()).findFirst().get());
 
-				sql = sql + "DESC";
-			} else {
-				typedQuery.getResultList().stream().sorted(Comparator.comparing(BcaInvoice::getOrderNum))
-						.forEach(invoice -> {
-							orderNumbers.add(new Long(invoice.getOrderNum()));
-						});
+				orderNo = new Long(invoice.getOrderNum());
 
-				sql = sql + "ASC";
 			}
+			if (action.equalsIgnoreCase("NextInvoice")) {
+				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getOrderNum() > currentIndex)
+						.sorted(Comparator.comparing(BcaInvoice::getOrderNum)).findFirst()
+						.orElse(typedQuery.getResultList().stream()
+								.sorted(Comparator.comparing(BcaInvoice::getOrderNum)).findFirst().get());
 
-			if (!orderNumbers.isEmpty()) {
-				Long firstOrderNo = orderNumbers.get(0);
-				Long lastOrderNo = orderNumbers.get(orderNumbers.size() - 1);
-				orderNo = firstOrderNo;
-				if (action.equalsIgnoreCase("FirstInvoice")) {
-					orderNo = firstOrderNo;
-				} else if (action.equalsIgnoreCase("LastInvoice")) {
-					orderNo = lastOrderNo;
-				} else if (action.equalsIgnoreCase("NextInvoice")) {
-					if (prevInvoiceOrderNo == lastOrderNo) {
-						orderNo = prevInvoiceOrderNo;
-					} else {
-						for (Long currOdrNo : orderNumbers) {
-							if (currOdrNo > prevInvoiceOrderNo) {
-								orderNo = currOdrNo;
-								break;
-							}
-						}
-					}
-				} else if (action.equalsIgnoreCase("PreviousInvoice")) {
-					if (prevInvoiceOrderNo == lastOrderNo) {
-						orderNo = lastOrderNo;
-					} else {
-						for (Long currOdrNo : orderNumbers) {
-							if (currOdrNo < prevInvoiceOrderNo) {
-								orderNo = currOdrNo;
-								break;
-							}
-						}
-					}
+				orderNo = new Long(invoice.getOrderNum());
+
+			}
+			if (action.equalsIgnoreCase("FirstInvoice")) {
+				Optional<BcaInvoice> invoice = typedQuery.getResultList().stream()
+						.sorted(Comparator.comparing(BcaInvoice::getOrderNum)).findFirst();
+				if (invoice.isPresent()) {
+					orderNo = new Long(invoice.get().getOrderNum());
 				}
-				request.getSession().setAttribute("prevInvoiceOrderNo", orderNo);
 			}
+			if (action.equalsIgnoreCase("LastInvoice")) {
+				Optional<BcaInvoice> invoice = typedQuery.getResultList().stream()
+						.sorted(Comparator.comparing(BcaInvoice::getOrderNum).reversed()).findFirst();
+				if (invoice.isPresent()) {
+					orderNo = new Long(invoice.get().getOrderNum());
+				}
+			}
+
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Loger.log("Exception in FirstOrderNo Function" + ex.toString());
@@ -4903,84 +5255,144 @@ public class InvoiceInfoDao {
 //		}
 //		return orderNo;
 //	}
-
+	
 	public Long getSalesOrderNumberByBtnName(String compId, HttpServletRequest request) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		ResultSet rs = null;
-		PreparedStatement pstmt = null;
+		
 		Long orderNo = null;
 		try {
-			List<Long> orderNumbers = new ArrayList<>();
+		
 			String action = request.getParameter("tabid");
+			int currentIndex = Integer.valueOf(request.getParameter("index"));
 			Long prevSOOrderNo = (Long) request.getSession().getAttribute("prevSOOrderNo");
 			prevSOOrderNo = prevSOOrderNo != null ? prevSOOrderNo : 0l;
-			String sql = "SELECT InvoiceID, SONum FROM bca_invoice WHERE CompanyID =? and invoiceStatus in (0,2)"
-					+ " and InvoiceTypeID=7 and SONum>0 ORDER BY SONum ";
+			
+			String query = "SELECT  bi FROM BcaInvoice bi where bi.company.companyId =:companyId "
+					+ "and bi.invoiceStatus IN :invoiceStatus" + " and bi.invoiceType.invoiceTypeId =:invoiceTypeId "
+					+ "and bi.sonum>0 ORDER BY bi.sonum";
+			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query, BcaInvoice.class);
+			JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
+			JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
+			JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", 7);
+
+
 			if (action.equalsIgnoreCase("PreviousSalesOrder")) {
-				sql = sql + "DESC";
-			} else {
-				sql = sql + "ASC";
+				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getSonum() < currentIndex)
+						.sorted(Comparator.comparing(BcaInvoice::getSonum).reversed()).findFirst()
+						.orElse(typedQuery.getResultList().stream()
+								.sorted(Comparator.comparing(BcaInvoice::getSonum).reversed()).findFirst().get());
+
+				orderNo = new Long(invoice.getSonum());
+
 			}
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, compId);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				orderNumbers.add(rs.getLong("SONum"));
+			if (action.equalsIgnoreCase("NextSalesOrder")) {
+				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getSonum() > currentIndex)
+						.sorted(Comparator.comparing(BcaInvoice::getSonum)).findFirst()
+						.orElse(typedQuery.getResultList().stream()
+								.sorted(Comparator.comparing(BcaInvoice::getSonum)).findFirst().get());
+
+				orderNo = new Long(invoice.getSonum());
+
 			}
-			if (!orderNumbers.isEmpty()) {
-				Long firstOrderNo = orderNumbers.get(0);
-				Long lastOrderNo = orderNumbers.get(orderNumbers.size() - 1);
-				orderNo = firstOrderNo;
-				if (action.equalsIgnoreCase("FirstSalesOrder")) {
-					orderNo = firstOrderNo;
-				} else if (action.equalsIgnoreCase("LastSalesOrder")) {
-					orderNo = lastOrderNo;
-				} else if (action.equalsIgnoreCase("NextSalesOrder")) {
-					if (prevSOOrderNo == lastOrderNo) {
-						orderNo = prevSOOrderNo;
-					} else {
-						for (Long currOdrNo : orderNumbers) {
-							if (currOdrNo > prevSOOrderNo) {
-								orderNo = currOdrNo;
-								break;
-							}
-						}
-					}
-				} else if (action.equalsIgnoreCase("PreviousSalesOrder")) {
-					if (prevSOOrderNo == lastOrderNo) {
-						orderNo = lastOrderNo;
-					} else {
-						for (Long currOdrNo : orderNumbers) {
-							if (currOdrNo < prevSOOrderNo) {
-								orderNo = currOdrNo;
-								break;
-							}
-						}
-					}
+			if (action.equalsIgnoreCase("FirstSalesOrder")) {
+				Optional<BcaInvoice> invoice = typedQuery.getResultList().stream()
+						.sorted(Comparator.comparing(BcaInvoice::getSonum)).findFirst();
+				if (invoice.isPresent()) {
+					orderNo = new Long(invoice.get().getSonum());
 				}
-				request.getSession().setAttribute("prevSOOrderNo", orderNo);
 			}
-		} catch (SQLException ex) {
-			Loger.log("Exception in FirstOrderNo Function" + ex.toString());
+			if (action.equalsIgnoreCase("LastSalesOrder")) {
+				Optional<BcaInvoice> invoice = typedQuery.getResultList().stream()
+						.sorted(Comparator.comparing(BcaInvoice::getSonum).reversed()).findFirst();
+				if (invoice.isPresent()) {
+					orderNo = new Long(invoice.get().getSonum());
+				}
+			}
+		
+		} catch (Exception ex) {
+			Loger.log("Exception in getSalesOrderNumberByBtnName Function" + ex.toString());
 			ex.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
-		}
+		} 
 		return orderNo;
 	}
+	
+
+//	public Long getSalesOrderNumberByBtnName(String compId, HttpServletRequest request) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		ResultSet rs = null;
+//		PreparedStatement pstmt = null;
+//		Long orderNo = null;
+//		try {
+//			List<Long> orderNumbers = new ArrayList<>();
+//			String action = request.getParameter("tabid");
+//			Long prevSOOrderNo = (Long) request.getSession().getAttribute("prevSOOrderNo");
+//			prevSOOrderNo = prevSOOrderNo != null ? prevSOOrderNo : 0l;
+//			String sql = "SELECT InvoiceID, SONum FROM bca_invoice WHERE CompanyID =? and invoiceStatus in (0,2)"
+//					+ " and InvoiceTypeID=7 and SONum>0 ORDER BY SONum ";
+//			if (action.equalsIgnoreCase("PreviousSalesOrder")) {
+//				sql = sql + "DESC";
+//			} else {
+//				sql = sql + "ASC";
+//			}
+//			pstmt = con.prepareStatement(sql);
+//			pstmt.setString(1, compId);
+//			rs = pstmt.executeQuery();
+//			while (rs.next()) {
+//				orderNumbers.add(rs.getLong("SONum"));
+//			}
+//			if (!orderNumbers.isEmpty()) {
+//				Long firstOrderNo = orderNumbers.get(0);
+//				Long lastOrderNo = orderNumbers.get(orderNumbers.size() - 1);
+//				orderNo = firstOrderNo;
+//				if (action.equalsIgnoreCase("FirstSalesOrder")) {
+//					orderNo = firstOrderNo;
+//				} else if (action.equalsIgnoreCase("LastSalesOrder")) {
+//					orderNo = lastOrderNo;
+//				} else if (action.equalsIgnoreCase("NextSalesOrder")) {
+//					if (prevSOOrderNo == lastOrderNo) {
+//						orderNo = prevSOOrderNo;
+//					} else {
+//						for (Long currOdrNo : orderNumbers) {
+//							if (currOdrNo > prevSOOrderNo) {
+//								orderNo = currOdrNo;
+//								break;
+//							}
+//						}
+//					}
+//				} else if (action.equalsIgnoreCase("PreviousSalesOrder")) {
+//					if (prevSOOrderNo == lastOrderNo) {
+//						orderNo = lastOrderNo;
+//					} else {
+//						for (Long currOdrNo : orderNumbers) {
+//							if (currOdrNo < prevSOOrderNo) {
+//								orderNo = currOdrNo;
+//								break;
+//							}
+//						}
+//					}
+//				}
+//				request.getSession().setAttribute("prevSOOrderNo", orderNo);
+//			}
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in FirstOrderNo Function" + ex.toString());
+//			ex.printStackTrace();
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return orderNo;
+//	}
 
 	public void paymentHistory(String cvId, String compId, HttpServletRequest request) {
 		SQLExecutor db = new SQLExecutor();

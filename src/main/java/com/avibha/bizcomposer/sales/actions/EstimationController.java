@@ -32,6 +32,9 @@ public class EstimationController {
 	
 	@Autowired
 	private SalesDetails salesDetails;
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
 
     @RequestMapping(value = {"/Estimation"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String execute(EstimationDto estimationDto, InvoiceDto invoiceDto, UpdateInvoiceDto updateInvoiceDto, HttpServletRequest request) throws IOException, ServletException, SQLException {
@@ -58,7 +61,7 @@ public class EstimationController {
         if (action.equalsIgnoreCase("Estimation")) {
 //            SalesDetailsDao sdetails = new SalesDetailsDao();
             sdetailsDao.newEstimation(request, estimationDto);
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+//            ConfigurationInfo configInfo = new ConfigurationInfo();
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
             InvoiceDto invoice = new InvoiceDto();

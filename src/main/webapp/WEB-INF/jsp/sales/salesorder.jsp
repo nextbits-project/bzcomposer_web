@@ -2720,10 +2720,12 @@ function PrintInvoice22(form){
 }
 
 function getSalesOrderDetailsByBtnName(form, url){
+	No=form.orderNo.value;
     //window.location.href="SalesOrder?tabid=FirstSalesOrder";
+   console.log("/SalesOrder?tabid="+url+"&index="+No);
     $.ajax({
         type : "GET",
-        url : "/SalesOrder?tabid="+url,
+        url : "/SalesOrder?tabid="+url+"&index="+No,
         success : function(data) {
             $(document).find('div#fullPageDetails section').replaceWith($(data).find('div#fullPageDetails').html());
             let cvID2 = form.clientVendorID.value;

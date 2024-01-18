@@ -1287,8 +1287,8 @@ public class SalesDetailsDao {
 
 	public void getInitialize(String ordNo, HttpServletRequest request, InvoiceDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
-		InvoiceInfoDao invoice = new InvoiceInfoDao();
-		invoice.getRecord(request, form, compId, Long.parseLong(ordNo));
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
+		invoiceInfoDao.getRecord(request, form, compId, Long.parseLong(ordNo));
 	}
 
 	public void getSalesOrderInitialize(String salesOrderNo, HttpServletRequest request, InvoiceDto form) {
@@ -1521,22 +1521,22 @@ public class SalesDetailsDao {
 	}
 
 	public void saveInvoice(HttpServletRequest request, InvoiceDto form, String custID) {
-		InvoiceInfoDao invoice = new InvoiceInfoDao();
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		System.out.println("CustomerId is:" + custID);
 		if (form.getOrderNo().contains("-")) {
 			String orderNo = form.getOrderNo();
 			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
 		}
-		boolean exist = invoice.invoiceExist(compId, form.getOrderNo());
+		boolean exist = invoiceInfoDao.invoiceExist(compId, form.getOrderNo());
 		// int invoiceTypeId = 1; //INVOICE TYPE ID "INVOICE"
 		if (exist == true) {
-			int invoiceID = invoice.getInvoiceNo(compId, form.getOrderNo());
-			boolean updateStatus = invoice.Update(compId, form, invoiceID, custID);
+			int invoiceID = invoiceInfoDao.getInvoiceNo(compId, form.getOrderNo());
+			boolean updateStatus = invoiceInfoDao.Update(compId, form, invoiceID, custID);
 			request.getSession().setAttribute("SaveStatus",
 					updateStatus ? "Invoice is updated successfully." : "Invoice is not updated successfully.");
 		} else {
-			boolean saveStatus = invoice.Save(compId, form, custID);
+			boolean saveStatus = invoiceInfoDao.Save(compId, form, custID);
 			request.getSession().setAttribute("SaveStatus",
 					saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
 		}
@@ -1649,10 +1649,11 @@ public class SalesDetailsDao {
 
 	public InvoiceDto getSalesOrderDetailsByBtnName(HttpServletRequest request, InvoiceDto invoiceDto)
 			throws SQLException {
-		InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+//		InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		Long orderNo = invoiceInfoDao.getSalesOrderNumberByBtnName(compId, request);
 		invoiceDto.setTabid("IBLU");
+		
 		ArrayList<InvoiceDto> list = invoiceInfoDao.getRecord(request, invoiceDto, compId, orderNo);
 		if (!list.isEmpty()) {
 			invoiceDto = list.get(0);

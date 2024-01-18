@@ -15,6 +15,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,11 +36,13 @@ import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
+import com.nxsol.bzcomposer.company.domain.BcaCart;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaInvoice;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicetype;
+import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
 import com.nxsol.bzcomposer.company.domain.BcaMessage;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
@@ -52,12 +55,14 @@ import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicetypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMessageRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
+import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.nxsol.bzcomposer.company.utils.JpaHelper;
 
 /*
@@ -103,9 +108,12 @@ public class EstimationInfo {
 
 	@Autowired
 	private BcaCartRepository bcaCartRepository;
-	
+
 	@Autowired
 	private BcaPreferenceRepository bcaPreferenceRepository;
+
+	@Autowired
+	private BcaIteminventoryRepository bcaIteminventoryRepository;
 
 	public ArrayList getItemList(String compId) {
 		Connection con = null;
@@ -600,9 +608,10 @@ public class EstimationInfo {
 //				orderNo = rs.getInt(1);
 //			}
 			if (orderNo == 0) {
-				Optional<BcaPreference> bcaPreference = bcaPreferenceRepository.findByCompany_CompanyIdAndActive(Long.valueOf(compId), 1);
-				if(bcaPreference.isPresent())
-					orderNo=bcaPreference.get().getStartingInvoiceNumber();
+				Optional<BcaPreference> bcaPreference = bcaPreferenceRepository
+						.findByCompany_CompanyIdAndActive(Long.valueOf(compId), 1);
+				if (bcaPreference.isPresent())
+					orderNo = bcaPreference.get().getStartingInvoiceNumber();
 //				String defaultOrderNo = "select StartingInvoiceNumber from bca_preference where CompanyID=? and Active=?";
 //		
 //				pstmt = con.prepareStatement(defaultOrderNo);
@@ -617,7 +626,7 @@ public class EstimationInfo {
 			}
 		} catch (Exception ee) {
 			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + " " + ee.toString());
-		} 
+		}
 //		finally {
 //			try {
 //				if (rs != null) {
@@ -694,7 +703,7 @@ public class EstimationInfo {
 //		ResultSet rs = null;
 //		PreparedStatement pstmt = null, pstmt1 = null, pstmt2 = null, pstmt3 = null;
 //		int invoiceID = 0;
-		CustomerInfo cinfo = new CustomerInfo();
+//		CustomerInfo cinfo = new CustomerInfo();
 		int cid = Integer.parseInt(compId);
 //		String invStr = "select max(InvoiceID) from bca_invoice";
 		boolean saveStatus = false;
@@ -706,8 +715,7 @@ public class EstimationInfo {
 					.findById(Integer.parseInt(estimationDto.getCustID()));
 			if (clientVendor.isPresent())
 				bcaInvoice.setClientVendor(clientVendor.get());
-			else
-				bcaInvoice.setClientVendor(null);
+
 			bcaInvoice.setBsaddressId(Integer.valueOf(estimationDto.getBsAddressID()));
 			Optional<BcaInvoicestyle> invoiceStyle = bcaInvoicestyleRepository
 					.findById(Integer.valueOf(estimationDto.getInvoiceStyle()));
@@ -728,25 +736,37 @@ public class EstimationInfo {
 
 			bcaInvoice.setPaidAmount(0D);
 			bcaInvoice.setBalance(estimationDto.getAdjustedtotal());
-			Optional<BcaShipcarrier> bcaShipCarrier = bcaShipcarrierRepository
-					.findById(Integer.valueOf(estimationDto.getVia()));
-			if (bcaShipCarrier.isPresent())
-				bcaInvoice.setShipCarrier(bcaShipCarrier.get());
-			bcaInvoice.setSalesRepId(Integer.parseInt(estimationDto.getRep()));
-			String message = "0".equals(estimationDto.getMessage()) ? null : estimationDto.getMessage();
-			Optional<BcaMessage> bcaMessage = bcaMessageRepository.findById(Integer.valueOf(message));
-			if (bcaMessage.isPresent())
-				bcaInvoice.setMessage(bcaMessage.get());
-			Optional<BcaTerm> term = bcaTermRepository.findById(Integer.parseInt(estimationDto.getTerm()));
-			if (term.isPresent())
-				bcaInvoice.setTerm(term.get());
-			String payment = "0".equals(estimationDto.getPayMethod()) ? null : estimationDto.getPayMethod();
-			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(Integer.valueOf(payment));
-			if (paymentType.isPresent())
-				bcaInvoice.setPaymentType(paymentType.get());
-			Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(Integer.valueOf(estimationDto.getTaxID()));
-			if (salesTax.isPresent())
-				bcaInvoice.setSalesTax(salesTax.get());
+			if (null != estimationDto.getVia()) {
+				Optional<BcaShipcarrier> bcaShipCarrier = bcaShipcarrierRepository
+						.findById(Integer.valueOf(estimationDto.getVia()));
+				if (bcaShipCarrier.isPresent())
+					bcaInvoice.setShipCarrier(bcaShipCarrier.get());
+			}
+			if (null != estimationDto.getRep())
+				bcaInvoice.setSalesRepId(Integer.parseInt(estimationDto.getRep()));
+			if (!"0".equals(estimationDto.getMessage())) {
+				Optional<BcaMessage> bcaMessage = bcaMessageRepository
+						.findById(Integer.valueOf(estimationDto.getMessage()));
+				if (bcaMessage.isPresent())
+					bcaInvoice.setMessage(bcaMessage.get());
+			}
+			if (null != estimationDto.getTerm()) {
+				Optional<BcaTerm> term = bcaTermRepository.findById(Integer.parseInt(estimationDto.getTerm()));
+				if (term.isPresent())
+					bcaInvoice.setTerm(term.get());
+			}
+			if (!"0".equals(estimationDto.getPayMethod())) {
+				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+						.findById(Integer.valueOf(estimationDto.getPayMethod()));
+				if (paymentType.isPresent())
+					bcaInvoice.setPaymentType(paymentType.get());
+			}
+			if (null != estimationDto.getTaxID()) {
+				Optional<BcaSalestax> salesTax = bcaSalestaxRepository
+						.findById(Integer.valueOf(estimationDto.getTaxID()));
+				if (salesTax.isPresent())
+					bcaInvoice.setSalesTax(salesTax.get());
+			}
 			String tax = estimationDto.getTaxable();
 			if (tax != null && (tax.equals("on") || tax.equals("true"))) {
 				bcaInvoice.setTaxable(1);
@@ -758,11 +778,15 @@ public class EstimationInfo {
 			bcaInvoice.setMemo(estimationDto.getMemo());
 			bcaInvoice.setVendorAddrId(-1);
 			bcaInvoice.setShippingAddrId(-1);
-			bcaInvoice.setDateConfirmed(null);
-			bcaInvoice.setDateAdded(null);
+			OffsetDateTime dateConfirmed = DateHelper.string2OffsetDateTime(estimationDto.getShipDate());
+			bcaInvoice.setDateConfirmed(dateConfirmed);
+
+			OffsetDateTime dateAdded = DateHelper.string2OffsetDateTime(estimationDto.getOrderDate());
+			bcaInvoice.setDateAdded(dateAdded);
 			bcaInvoice.setInvoiceStatus(0);
 			bcaInvoice.setOrderNum(0);
-			bcaInvoice.setPonum(Integer.valueOf(estimationDto.getPoNum()));
+			if (null != estimationDto.getPoNum())
+				bcaInvoice.setPonum(Integer.valueOf(estimationDto.getPoNum()));
 			BcaInvoice invoice = bcaInvoiceRepository.save(bcaInvoice);
 			if (null != invoice) {
 				/* Add Item to Cart */
@@ -854,6 +878,7 @@ public class EstimationInfo {
 //				}
 //			}
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
 
 		}
@@ -885,12 +910,6 @@ public class EstimationInfo {
 	}
 
 	public void AddItem(int invoiceID, int cid, EstimationDto form) {
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt = null, pstmt2 = null;
-		ResultSet rs = null;
-		int cartID = 0;
-
 		if (form.getItem() == null || form.getItem().isEmpty())
 			return;
 		int size = form.getSize();
@@ -974,62 +993,183 @@ public class EstimationInfo {
 				invItemID = invItemID.substring(in7 + 1);
 				invItemOrder = invItemOrder.substring(in8 + 1);
 				invuprice = invuprice.substring(in9 + 1);
-				String invStr = "select max(CartID) from bca_cart";
+				BcaCart bcart = new BcaCart();
+				Optional<BcaIteminventory> itemInventory = bcaIteminventoryRepository.findById(inventoryID[i]);
+				if (itemInventory.isPresent()) {
+					bcart.setInventory(itemInventory.get());
+				}
+				Optional<BcaInvoice> invoice = bcaInvoiceRepository.findById(invoiceID);
+				if (invoice.isPresent())
+					bcart.setInvoice(invoice.get());
+				Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(cid));
+				if (company.isPresent()) {
+					bcart.setCompany(company.get());
+				}
+				bcart.setInventoryCode(code[i]);
+				bcart.setInventoryName(name[i]);
+				bcart.setQty(qty[i]);
+				bcart.setUnitWeight(uweight[i]);
+				bcart.setWeight(0.0);
+				bcart.setUnitPrice(uprice[i]);
+				bcart.setTaxable(taxable[i]);
+				bcart.setItemTypeId(itmTypeID[i]);
+				bcart.setItemOrder(itmOrder[i]);
+				bcaCartRepository.save(bcart);
 
-				pstmt2 = con.prepareStatement(invStr);
-				rs = pstmt2.executeQuery();
-				/* Insert into invoice */
-				if (rs.next()) {
-					cartID = rs.getInt(1) + 1;
-
-					String insertItem = "insert into bca_cart (InventoryID,InvoiceID,CompanyID,InventoryCode,InventoryName,Qty, UnitWeight,Weight,UnitPrice,Taxable,ItemTypeID,ItemOrder,CartID)  values ( ?,?,?,\""
-							+ code[i] + "\",\"" + name[i] + "\",?,?,?,?,?,?,?,? )";
-					pstmt = con.prepareStatement(insertItem);
-
-					pstmt.setInt(1, inventoryID[i]);
-					pstmt.setInt(2, invoiceID);
-
-					pstmt.setInt(3, cid);
-
-					pstmt.setInt(4, qty[i]);
-					pstmt.setDouble(5, uweight[i]);
-
-					pstmt.setDouble(6, 0.0);
-					pstmt.setDouble(7, uprice[i]);
-
-					pstmt.setInt(8, taxable[i]);
-
-					pstmt.setInt(9, itmTypeID[i]);
-					pstmt.setInt(10, itmOrder[i]);
-
-					pstmt.setInt(11, cartID);
-					pstmt.executeUpdate();
-				} else
-					return;
 			}
-		} catch (SQLException ee) {
+		} catch (Exception ee) {
 			Loger.log("Exception" + ee.toString());
 
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (pstmt2 != null) {
-					db.close(pstmt2);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 
 	}
+
+//	public void AddItem(int invoiceID, int cid, EstimationDto form) {
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt = null, pstmt2 = null;
+//		ResultSet rs = null;
+//		int cartID = 0;
+//
+//		if (form.getItem() == null || form.getItem().isEmpty())
+//			return;
+//		int size = form.getSize();
+//		int[] inventoryID = new int[size];
+//		String[] code = new String[size];
+//		String[] name = new String[size];
+//		int[] qty = new int[size];
+//		double[] uprice = new double[size];
+//		double[] uweight = new double[size];
+//		int[] taxable = new int[size];
+//		int[] itmTypeID = new int[size];
+//		int[] itmOrder = new int[size];
+//
+//		String invID = form.getItem();
+//		String invCode = form.getCode();
+//		String invName = form.getDesc();
+//		String invQty = form.getQty();
+//		String invuweight = form.getUnitWeight();
+//		String invuprice = form.getUprice();
+//		String invIsTaxable = form.getIsTaxable();
+//		String invItemID = form.getItemTypeID();
+//		String invItemOrder = form.getItemOrder();
+//		try {
+//			for (int i = 0; i < size; i++) {
+//				int in1 = invID.indexOf(";");
+//				String temp1 = invID.substring(0, in1);
+//				inventoryID[i] = Integer.parseInt(temp1);
+//
+//				int in2 = invCode.indexOf(";");
+//				code[i] = invCode.substring(0, in2);
+//
+//				int in3 = invQty.indexOf(";");
+//				String temp2 = invQty.substring(0, in3);
+//
+//				if (("").equals(temp2))
+//					qty[i] = Integer.parseInt("0");
+//				else
+//					qty[i] = Integer.parseInt(temp2);
+//
+//				int in4 = invName.indexOf(";");
+//				name[i] = invName.substring(0, in4);
+//
+//				int in5 = invuweight.indexOf(";");
+//				String temp3 = invuweight.substring(0, in5);
+//				if (("").equals(temp3))
+//					uweight[i] = java.lang.Double.parseDouble("0.0");
+//				else
+//					uweight[i] = java.lang.Double.parseDouble(temp3);
+//
+//				int in6 = invIsTaxable.indexOf(";");
+//				String temp4 = invIsTaxable.substring(0, in6);
+//				if (("").equals(temp4))
+//					taxable[i] = Integer.parseInt("0");
+//				else
+//					taxable[i] = Integer.parseInt(temp4);
+//
+//				int in7 = invItemID.indexOf(";");
+//				String temp5 = invItemID.substring(0, in7);
+//				if (("").equals(temp5))
+//					itmTypeID[i] = Integer.parseInt("0");
+//				else
+//					itmTypeID[i] = Integer.parseInt(temp5);
+//
+//				int in8 = invItemOrder.indexOf(";");
+//				String temp6 = invItemOrder.substring(0, in8);
+//				itmOrder[i] = Integer.parseInt(temp6);
+//
+//				int in9 = invuprice.indexOf(";");
+//				String temp9 = invuprice.substring(0, in9);
+//				if (("").equals(temp9))
+//					uprice[i] = java.lang.Double.parseDouble("0.0");
+//				else
+//					uprice[i] = java.lang.Double.parseDouble(temp9);
+//
+//				invID = invID.substring(in1 + 1);
+//				invCode = invCode.substring(in2 + 1);
+//				invQty = invQty.substring(in3 + 1);
+//				invName = invName.substring(in4 + 1);
+//				invuweight = invuweight.substring(in5 + 1);
+//				invIsTaxable = invIsTaxable.substring(in6 + 1);
+//				invItemID = invItemID.substring(in7 + 1);
+//				invItemOrder = invItemOrder.substring(in8 + 1);
+//				invuprice = invuprice.substring(in9 + 1);
+//				String invStr = "select max(CartID) from bca_cart";
+//
+//				pstmt2 = con.prepareStatement(invStr);
+//				rs = pstmt2.executeQuery();
+//				/* Insert into invoice */
+//				if (rs.next()) {
+//					cartID = rs.getInt(1) + 1;
+//
+//					String insertItem = "insert into bca_cart (InventoryID,InvoiceID,CompanyID,InventoryCode,InventoryName,Qty, UnitWeight,Weight,UnitPrice,Taxable,ItemTypeID,ItemOrder,CartID)  values ( ?,?,?,\""
+//							+ code[i] + "\",\"" + name[i] + "\",?,?,?,?,?,?,?,? )";
+//					pstmt = con.prepareStatement(insertItem);
+//
+//					pstmt.setInt(1, inventoryID[i]);
+//					pstmt.setInt(2, invoiceID);
+//
+//					pstmt.setInt(3, cid);
+//
+//					pstmt.setInt(4, qty[i]);
+//					pstmt.setDouble(5, uweight[i]);
+//
+//					pstmt.setDouble(6, 0.0);
+//					pstmt.setDouble(7, uprice[i]);
+//
+//					pstmt.setInt(8, taxable[i]);
+//
+//					pstmt.setInt(9, itmTypeID[i]);
+//					pstmt.setInt(10, itmOrder[i]);
+//
+//					pstmt.setInt(11, cartID);
+//					pstmt.executeUpdate();
+//				} else
+//					return;
+//			}
+//		} catch (SQLException ee) {
+//			Loger.log("Exception" + ee.toString());
+//
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (pstmt2 != null) {
+//					db.close(pstmt2);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//
+//	}
 
 	public boolean Update(String compId, EstimationDto estimationDto) {
 //		SQLExecutor db = new SQLExecutor();
@@ -1070,26 +1210,43 @@ public class EstimationInfo {
 
 				bcaInvoice.setPaidAmount(0D);
 				bcaInvoice.setBalance(estimationDto.getAdjustedtotal());
-				Optional<BcaShipcarrier> bcaShipCarrier = bcaShipcarrierRepository
-						.findById(Integer.valueOf(estimationDto.getVia()));
-				if (bcaShipCarrier.isPresent())
-					bcaInvoice.setShipCarrier(bcaShipCarrier.get());
-				bcaInvoice.setSalesRepId(Integer.parseInt(estimationDto.getRep()));
-				String message = "0".equals(estimationDto.getMessage()) ? null : estimationDto.getMessage();
-				Optional<BcaMessage> bcaMessage = bcaMessageRepository.findById(Integer.valueOf(message));
-				if (bcaMessage.isPresent())
-					bcaInvoice.setMessage(bcaMessage.get());
-				Optional<BcaTerm> term = bcaTermRepository.findById(Integer.parseInt(estimationDto.getTerm()));
-				if (term.isPresent())
-					bcaInvoice.setTerm(term.get());
-				String payment = "0".equals(estimationDto.getPayMethod()) ? null : estimationDto.getPayMethod();
-				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(Integer.valueOf(payment));
-				if (paymentType.isPresent())
-					bcaInvoice.setPaymentType(paymentType.get());
-				Optional<BcaSalestax> salesTax = bcaSalestaxRepository
-						.findById(Integer.valueOf(estimationDto.getTaxID()));
-				if (salesTax.isPresent())
-					bcaInvoice.setSalesTax(salesTax.get());
+				if (null != estimationDto.getVia()) {
+					Optional<BcaShipcarrier> bcaShipCarrier = bcaShipcarrierRepository
+							.findById(Integer.valueOf(estimationDto.getVia()));
+					if (bcaShipCarrier.isPresent())
+						bcaInvoice.setShipCarrier(bcaShipCarrier.get());
+				}
+				if (null != estimationDto.getRep()) {
+					bcaInvoice.setSalesRepId(Integer.parseInt(estimationDto.getRep()));
+				}
+				if (!"0".equals(estimationDto.getMessage())) {
+					Optional<BcaMessage> bcaMessage = bcaMessageRepository
+							.findById(Integer.valueOf(estimationDto.getMessage()));
+					if (bcaMessage.isPresent())
+						bcaInvoice.setMessage(bcaMessage.get());
+				}
+
+				if (null != estimationDto.getTerm()) {
+					Optional<BcaTerm> term = bcaTermRepository.findById(Integer.parseInt(estimationDto.getTerm()));
+					if (term.isPresent())
+						bcaInvoice.setTerm(term.get());
+				}
+				if (!"0".equals(estimationDto.getPayMethod())) {
+
+				}
+				if (!"0".equals(estimationDto.getPayMethod())) {
+					Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+							.findById(Integer.valueOf(estimationDto.getPayMethod()));
+					if (paymentType.isPresent())
+						bcaInvoice.setPaymentType(paymentType.get());
+				}
+
+				if (null != estimationDto.getTaxID()) {
+					Optional<BcaSalestax> salesTax = bcaSalestaxRepository
+							.findById(Integer.valueOf(estimationDto.getTaxID()));
+					if (salesTax.isPresent())
+						bcaInvoice.setSalesTax(salesTax.get());
+				}
 				String tax = estimationDto.getTaxable();
 				if (tax != null && (tax.equals("on") || tax.equals("true"))) {
 					bcaInvoice.setTaxable(1);
@@ -1101,8 +1258,11 @@ public class EstimationInfo {
 				bcaInvoice.setMemo(estimationDto.getMemo());
 				bcaInvoice.setVendorAddrId(-1);
 				bcaInvoice.setShippingAddrId(-1);
-				bcaInvoice.setDateConfirmed(null);
-				bcaInvoice.setDateAdded(null);
+				OffsetDateTime dateConfirmed = DateHelper.string2OffsetDateTime(estimationDto.getShipDate());
+				bcaInvoice.setDateConfirmed(dateConfirmed);
+
+				OffsetDateTime dateAdded = DateHelper.string2OffsetDateTime(estimationDto.getOrderDate());
+				bcaInvoice.setDateAdded(dateAdded);
 				bcaInvoice.setInvoiceStatus(0);
 				bcaInvoice.setOrderNum(0);
 				bcaInvoice.setPonum(Integer.valueOf(estimationDto.getPoNum()));
@@ -2043,73 +2203,125 @@ public class EstimationInfo {
 	}
 
 	public void itemList(int invoiceID, String compId, HttpServletRequest request) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
+
 		ArrayList<Item> cart = new ArrayList<Item>();
-		if (db == null)
-			return;
-		con = db.getConnection();
-		if (con == null)
-			return;
 
 		try {
-			pstmt = con.prepareStatement("select * from bca_cart where InvoiceID=? and companyID=?");
-			pstmt.setInt(1, invoiceID);
-			pstmt.setString(2, compId);
-			rs = pstmt.executeQuery();
+			List<BcaCart> bcaCart = bcaCartRepository.findByInvoiceIdAndCompanyId(invoiceID, Long.parseLong(compId));
+
 			double weight = 0;
 			double taxTotal = 0;
-			while (rs.next()) {
+			for (BcaCart bcart : bcaCart) {
 				Item inForm = new Item();
-				inForm.setInvCode(rs.getString("InventoryCode"));
-				int qty = rs.getInt("Qty");
-				double uprice = rs.getDouble("UnitPrice");
-				inForm.setQty(qty);
-				inForm.setInvDesc(rs.getString("InventoryName"));
-				inForm.setUprice(uprice);
-				double wt = rs.getDouble("UnitWeight");
+				inForm.setInvCode(bcart.getInventoryCode());
+				if (null != bcart.getQty()) {
+					int qty = bcart.getQty();
+					inForm.setQty(qty);
+					double uprice = bcart.getUnitPrice();
+					inForm.setUprice(uprice);
+					int tax = bcart.getTaxable();
+					if (tax == 1) {
+						inForm.setTax("Yes");
+						taxTotal += (qty * uprice);
+					} else if (tax == 0) {
+						inForm.setTax("No");
+					}
+					double amt = qty * uprice;
+					inForm.setAmount(Double.parseDouble(truncate(String.valueOf(amt))));
+				}
+
+				inForm.setInvDesc(bcart.getInventoryName());
+
+				double wt = bcart.getUnitWeight();
 				weight += wt;
 				inForm.setWeight(wt);
-				int tax = rs.getInt("Taxable");
-				if (tax == 1) {
-					inForm.setTax("Yes");
-					taxTotal += (qty * uprice);
-				} else if (tax == 0) {
-					inForm.setTax("No");
-				}
-				double amt = qty * uprice;
-				inForm.setAmount(Double.parseDouble(truncate(String.valueOf(amt))));
-				inForm.setItemTypeID(rs.getInt("ItemTypeID"));
+
+				inForm.setItemTypeID(bcart.getItemTypeId());
 				Loger.log("ITEMID" + inForm.getItemTypeID());
-				inForm.setInventoryID(rs.getString("InventoryID"));
+				if (null != bcart.getInventory())
+					inForm.setInventoryID(String.valueOf(bcart.getInventory().getInventoryId()));
 				cart.add(inForm);
 			}
+
 			request.setAttribute("Cart", cart);
 			request.setAttribute("Weight", String.valueOf(weight));
 			EstimationDto form = new EstimationDto();
 			form.setTaxValue(Double.parseDouble(truncate(String.valueOf(taxTotal))));
 			request.setAttribute("TaxValue", form);
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			Loger.log("Exception in getRecord Function" + ex.toString());
 			ex.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (pstmt != null) {
-					db.close(pstmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 	}
+
+//	public void itemList(int invoiceID, String compId, HttpServletRequest request) {
+//		Connection con = null;
+//		PreparedStatement pstmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		ArrayList<Item> cart = new ArrayList<Item>();
+//		if (db == null)
+//			return;
+//		con = db.getConnection();
+//		if (con == null)
+//			return;
+//
+//		try {
+//			pstmt = con.prepareStatement("select * from bca_cart where InvoiceID=? and companyID=?");
+//			pstmt.setInt(1, invoiceID);
+//			pstmt.setString(2, compId);
+//			rs = pstmt.executeQuery();
+//			double weight = 0;
+//			double taxTotal = 0;
+//			while (rs.next()) {
+//				Item inForm = new Item();
+//				inForm.setInvCode(rs.getString("InventoryCode"));
+//				int qty = rs.getInt("Qty");
+//				double uprice = rs.getDouble("UnitPrice");
+//				inForm.setQty(qty);
+//				inForm.setInvDesc(rs.getString("InventoryName"));
+//				inForm.setUprice(uprice);
+//				double wt = rs.getDouble("UnitWeight");
+//				weight += wt;
+//				inForm.setWeight(wt);
+//				int tax = rs.getInt("Taxable");
+//				if (tax == 1) {
+//					inForm.setTax("Yes");
+//					taxTotal += (qty * uprice);
+//				} else if (tax == 0) {
+//					inForm.setTax("No");
+//				}
+//				double amt = qty * uprice;
+//				inForm.setAmount(Double.parseDouble(truncate(String.valueOf(amt))));
+//				inForm.setItemTypeID(rs.getInt("ItemTypeID"));
+//				Loger.log("ITEMID" + inForm.getItemTypeID());
+//				inForm.setInventoryID(rs.getString("InventoryID"));
+//				cart.add(inForm);
+//			}
+//			request.setAttribute("Cart", cart);
+//			request.setAttribute("Weight", String.valueOf(weight));
+//			EstimationDto form = new EstimationDto();
+//			form.setTaxValue(Double.parseDouble(truncate(String.valueOf(taxTotal))));
+//			request.setAttribute("TaxValue", form);
+//		} catch (SQLException ex) {
+//			Loger.log("Exception in getRecord Function" + ex.toString());
+//			ex.printStackTrace();
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (pstmt != null) {
+//					db.close(pstmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 
 	public Long getEstimationNumberByBtnName(String compId, HttpServletRequest request) {
 //		SQLExecutor db = new SQLExecutor();
@@ -2118,19 +2330,61 @@ public class EstimationInfo {
 //		PreparedStatement pstmt = null;
 		Long orderNo = null;
 		try {
-			List<Long> orderNumbers = new ArrayList<>();
+//			List<Long> orderNumbers = new ArrayList<>();
 			String action = request.getParameter("tabid");
+			int currentIndex = Integer.valueOf(request.getParameter("index"));
 			Long prevEstOrderNo = (Long) request.getSession().getAttribute("prevEstOrderNo");
 			prevEstOrderNo = prevEstOrderNo != null ? prevEstOrderNo : 0l;
-			StringBuffer query = new StringBuffer(
-					"select bi from BcaInvoice as bi where bi.company.companyId = :companyId and bi.invoiceStatus in (0,2) and "
-							+ " bi.invoiceType.invoiceTypeId = 10 and bi.estNum > 0 order by bi.estNum "
-							+ ((action.equalsIgnoreCase("PreviousEstimation")) ? "desc" : "asc"));
-			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createNamedQuery(query.toString(), BcaInvoice.class);
-			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(compId));
-			List<BcaInvoice> resultList = typedQuery.getResultList();
-			for (BcaInvoice invoice : resultList) {
-				orderNumbers.add(new Long(invoice.getEstNum()));
+//			StringBuffer query = new StringBuffer(
+//					"select bi from BcaInvoice as bi where bi.company.companyId = :companyId and bi.invoiceStatus in (0,2) and "
+//							+ " bi.invoiceType.invoiceTypeId = 10 and bi.estNum > 0 order by bi.estNum "
+//							+ ((action.equalsIgnoreCase("PreviousEstimation")) ? "desc" : "asc"));
+//			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createNamedQuery(query.toString(), BcaInvoice.class);
+//			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(compId));
+//			List<BcaInvoice> resultList = typedQuery.getResultList();
+//			for (BcaInvoice invoice : resultList) {
+//				orderNumbers.add(new Long(invoice.getEstNum()));
+//			}
+
+			String query = "SELECT  bi FROM BcaInvoice bi where bi.company.companyId =:companyId "
+					+ "and bi.invoiceStatus IN :invoiceStatus" + " and bi.invoiceType.invoiceTypeId =:invoiceTypeId "
+					+ "and bi.estNum>0 ORDER BY bi.estNum";
+			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query, BcaInvoice.class);
+			JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
+			JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
+			JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", 10);
+
+			if (action.equalsIgnoreCase("PreviousEstimation")) {
+				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getEstNum() < currentIndex)
+						.sorted(Comparator.comparing(BcaInvoice::getEstNum).reversed()).findFirst()
+						.orElse(typedQuery.getResultList().stream()
+								.sorted(Comparator.comparing(BcaInvoice::getEstNum).reversed()).findFirst().get());
+
+				orderNo = new Long(invoice.getEstNum());
+
+			}
+			if (action.equalsIgnoreCase("NextEstimation")) {
+				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getEstNum() > currentIndex)
+						.sorted(Comparator.comparing(BcaInvoice::getEstNum)).findFirst()
+						.orElse(typedQuery.getResultList().stream().sorted(Comparator.comparing(BcaInvoice::getEstNum))
+								.findFirst().get());
+
+				orderNo = new Long(invoice.getEstNum());
+
+			}
+			if (action.equalsIgnoreCase("FirstEstimation")) {
+				Optional<BcaInvoice> invoice = typedQuery.getResultList().stream()
+						.sorted(Comparator.comparing(BcaInvoice::getEstNum)).findFirst();
+				if (invoice.isPresent()) {
+					orderNo = new Long(invoice.get().getEstNum());
+				}
+			}
+			if (action.equalsIgnoreCase("LastEstimation")) {
+				Optional<BcaInvoice> invoice = typedQuery.getResultList().stream()
+						.sorted(Comparator.comparing(BcaInvoice::getEstNum).reversed()).findFirst();
+				if (invoice.isPresent()) {
+					orderNo = new Long(invoice.get().getEstNum());
+				}
 			}
 
 //			String sql = "SELECT InvoiceID, EstNum FROM bca_invoice WHERE CompanyID =? "
@@ -2147,39 +2401,39 @@ public class EstimationInfo {
 //				orderNumbers.add(rs.getLong("EstNum"));
 //			}
 
-			if (!orderNumbers.isEmpty()) {
-				Long firstOrderNo = orderNumbers.get(0);
-				Long lastOrderNo = orderNumbers.get(orderNumbers.size() - 1);
-				orderNo = firstOrderNo;
-				if (action.equalsIgnoreCase("FirstEstimation")) {
-					orderNo = firstOrderNo;
-				} else if (action.equalsIgnoreCase("LastEstimation")) {
-					orderNo = lastOrderNo;
-				} else if (action.equalsIgnoreCase("NextEstimation")) {
-					if (prevEstOrderNo == lastOrderNo) {
-						orderNo = prevEstOrderNo;
-					} else {
-						for (Long currOdrNo : orderNumbers) {
-							if (currOdrNo > prevEstOrderNo) {
-								orderNo = currOdrNo;
-								break;
-							}
-						}
-					}
-				} else if (action.equalsIgnoreCase("PreviousEstimation")) {
-					if (prevEstOrderNo == lastOrderNo) {
-						orderNo = lastOrderNo;
-					} else {
-						for (Long currOdrNo : orderNumbers) {
-							if (currOdrNo < prevEstOrderNo) {
-								orderNo = currOdrNo;
-								break;
-							}
-						}
-					}
-				}
-				request.getSession().setAttribute("prevEstOrderNo", orderNo);
-			}
+//			if (!orderNumbers.isEmpty()) {
+//				Long firstOrderNo = orderNumbers.get(0);
+//				Long lastOrderNo = orderNumbers.get(orderNumbers.size() - 1);
+//				orderNo = firstOrderNo;
+//				if (action.equalsIgnoreCase("FirstEstimation")) {
+//					orderNo = firstOrderNo;
+//				} else if (action.equalsIgnoreCase("LastEstimation")) {
+//					orderNo = lastOrderNo;
+//				} else if (action.equalsIgnoreCase("NextEstimation")) {
+//					if (prevEstOrderNo == lastOrderNo) {
+//						orderNo = prevEstOrderNo;
+//					} else {
+//						for (Long currOdrNo : orderNumbers) {
+//							if (currOdrNo > prevEstOrderNo) {
+//								orderNo = currOdrNo;
+//								break;
+//							}
+//						}
+//					}
+//				} else if (action.equalsIgnoreCase("PreviousEstimation")) {
+//					if (prevEstOrderNo == lastOrderNo) {
+//						orderNo = lastOrderNo;
+//					} else {
+//						for (Long currOdrNo : orderNumbers) {
+//							if (currOdrNo < prevEstOrderNo) {
+//								orderNo = currOdrNo;
+//								break;
+//							}
+//						}
+//					}
+//				}
+//				request.getSession().setAttribute("prevEstOrderNo", orderNo);
+//			}
 		} catch (Exception ex) {
 			Loger.log("Exception in FirstOrderNo Function" + ex.toString());
 			ex.printStackTrace();

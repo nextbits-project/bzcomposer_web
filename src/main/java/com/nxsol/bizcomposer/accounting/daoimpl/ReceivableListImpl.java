@@ -11564,8 +11564,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 			double amount = Double.parseDouble(new DecimalFormat("#0.00").format(invoice.getTotal() + 103.9));
 
 			BcaBillingstatements billingstatements = new BcaBillingstatements();
+//			billingstatements
+//					.setStatementDate(StringToOffsetDateTime(JProjectUtil.getDateFormaterCommon().format(new Date())));
 			billingstatements
-					.setStatementDate(StringToOffsetDateTime(JProjectUtil.getDateFormaterCommon().format(new Date())));
+			.setStatementDate(OffsetDateTime.now());
+
 			billingstatements.setClientVendor(bcaClientvendorRepository.getOne(invoice.getCvID()));
 			billingstatements.setInvoice(bcaInvoiceRepository.getOne(invoice.getInvoiceID()));
 			billingstatements.setIsCombined(11);

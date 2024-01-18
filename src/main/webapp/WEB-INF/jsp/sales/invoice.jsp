@@ -2618,7 +2618,7 @@ function getInvoiceDetailsByBtnName(form, url){
     //window.location.href="Invoice?tabid=FirstInvoice";
     $.ajax({
         type : "GET",
-        url : "/Invoice?tabid="+url,
+        url : "/Invoice?tabid="+url+"&index="+No,
         success : function(data) {
             $(document).find('div#fullPageDetails section').replaceWith($(data).find('div#fullPageDetails').html());
             let cvID2 = form.clientVendorID.value;

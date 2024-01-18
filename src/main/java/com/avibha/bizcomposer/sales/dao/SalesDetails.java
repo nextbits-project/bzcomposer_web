@@ -1845,10 +1845,10 @@ public class SalesDetails {
 
 	public EstimationDto getEstimationDetailsByBtnName(HttpServletRequest request, EstimationDto estimationDto)
 			throws SQLException {
-		EstimationInfo estInfo = new EstimationInfo();
+//		EstimationInfo estInfo = new EstimationInfo();
 		String compId = (String) request.getSession().getAttribute("CID");
-		Long estNo = estInfo.getEstimationNumberByBtnName(compId, request);
-		ArrayList<EstimationDto> list = estInfo.getRecord(request, estimationDto, compId, estNo);
+		Long estNo = estimationInfo.getEstimationNumberByBtnName(compId, request);
+		ArrayList<EstimationDto> list = estimationInfo.getRecord(request, estimationDto, compId, estNo);
 		if (!list.isEmpty()) {
 			estimationDto = list.get(0);
 			request.setAttribute("Enable", "true");

@@ -74,6 +74,12 @@ public class SalesBoardInfo {
 
 	@Autowired
 	private BcaRmamasterRepository bcaRmamasterRepository;
+	
+	@Autowired 
+	private CustomerInfo customerInfo;
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
 
 	public ArrayList SalesRecordSearch(String compId, String invoiceReportType, SalesBoardDto salesBoardDto) {
 
@@ -93,9 +99,9 @@ public class SalesBoardInfo {
 //		Statement stmt = null, stmt1 = null, stmt2 = null, stmt4 = null;
 		String mark = null;
 //		String sqlString = "";
-		CustomerInfo cinfo = new CustomerInfo();
+//		CustomerInfo cinfo = new CustomerInfo();
 		ArrayList<SalesBoard> objList = new ArrayList<>();
-		ConfigurationInfo configInfo = new ConfigurationInfo();
+//		ConfigurationInfo configInfo = new ConfigurationInfo();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
 //			stmt = con.createStatement();
@@ -113,27 +119,27 @@ public class SalesBoardInfo {
 											: " ")
 							+ (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1
 									&& oDate2.trim().length() > 1
-											? " and bi.dateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
-													+ cinfo.string2date(oDate2) + "' "
+											? " and bi.dateConfirmed between '" + customerInfo.string2date(oDate1) + "' and '"
+													+ customerInfo.string2date(oDate2) + "' "
 											: " ")
 							+ (oDate1 != null && oDate1.trim().length() > 1
-									? " and bi.dateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
-											+ cinfo.string2date("now()") + "' "
+									? " and bi.dateConfirmed between '" + customerInfo.string2date(oDate1) + "' and '"
+											+ customerInfo.string2date("now()") + "' "
 									: " ")
 							+ (oDate2 != null && oDate2.trim().length() > 1
-									? " and bi.dateConfirmed <= '" + cinfo.string2date(oDate2) + "' "
+									? " and bi.dateConfirmed <= '" + customerInfo.string2date(oDate2) + "' "
 									: " ")
 							+ (saleDate1 != null && saleDate2 != null && saleDate1.trim().length() > 1
 									&& saleDate2.trim().length() > 1
-											? " and bi.dateConfirmed between '" + cinfo.string2date(saleDate1)
-													+ "' and '" + cinfo.string2date(saleDate2) + "' "
+											? " and bi.dateConfirmed between '" + customerInfo.string2date(saleDate1)
+													+ "' and '" + customerInfo.string2date(saleDate2) + "' "
 											: " ")
 							+ (saleDate1 != null && saleDate1.trim().length() > 1
-									? " and bi.dateConfirmed between '" + cinfo.string2date(saleDate1) + "' and '"
-											+ cinfo.string2date("now()") + "' "
+									? " and bi.dateConfirmed between '" + customerInfo.string2date(saleDate1) + "' and '"
+											+ customerInfo.string2date("now()") + "' "
 									: "")
 							+ (saleDate2 != null && saleDate2.trim().length() > 1
-									? " and bi.dateConfirmed <= '" + cinfo.string2date(saleDate2) + "' "
+									? " and bi.dateConfirmed <= '" + customerInfo.string2date(saleDate2) + "' "
 									: " ")
 							+ (searchTxt != null && !searchTxt.trim().isEmpty()
 									? (searchType.equals("2") || searchType.equals("3")
@@ -162,7 +168,7 @@ public class SalesBoardInfo {
 				mark = "Price Grabber";
 			}
 			query = query
-					.append(" and bi.orderNum > 0 and bi.invoiceType.invoiceTypeId = 1 order by bi.dateAdded desc ");
+					.append(" and bi.orderNum > 0 and bi.invoiceType.invoiceTypeId = 1 order by bi.orderNum desc ");
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
 			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query.toString(), BcaInvoice.class);
@@ -234,7 +240,7 @@ public class SalesBoardInfo {
 
 				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
 
-					query = query.append((searchType.equals("1")
+					query2 = query2.append((searchType.equals("1")
 							? " and(a.firstName like '%" + searchTxt + "%' or a.lastName like '%" + searchTxt + "%')"
 							: " ")
 							+ (searchType.equals("4")
@@ -462,6 +468,7 @@ public class SalesBoardInfo {
 //				objList.add(d);
 //			}
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
 
 		}

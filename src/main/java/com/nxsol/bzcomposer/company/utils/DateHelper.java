@@ -1,12 +1,17 @@
 package com.nxsol.bzcomposer.company.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import com.avibha.common.log.Loger;
 
 import lombok.NoArgsConstructor;
 
@@ -45,6 +50,28 @@ public class DateHelper {
 	        return OffsetDateTime.parse(date, formatter);
 	}
 	
+	public static OffsetDateTime string2OffsetDateTime(String d) {
+	    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+	    Date date = null;
+	    try {
+	        // Assuming the time is 00:00:00 if not provided
+	        date = sdf.parse(d + " 00:00:00");
+	    } catch (ParseException e) {
+	        Loger.log(2, "ParseException" + e.getMessage());
+	    }
+
+	    if (date != null) {
+	        Instant instant = date.toInstant();
+	        ZoneId zoneId = ZoneId.systemDefault();
+	        return OffsetDateTime.ofInstant(instant, zoneId);
+	    } else {
+	        // Handle the case when parsing fails
+	        return OffsetDateTime.now(); // or throw an exception, or return a default value
+	    }
+	}
+
+	
+
 	
 	public static String dateFormatter(OffsetDateTime dateAdded) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");

@@ -42,6 +42,9 @@ import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 public class EstimationInfoDao {
 	@Autowired
 	private BcaInvoiceRepository bcaInvoiceRepository;
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
 
 	public ArrayList getItemList(String compId) {
 		Connection con = null ;
@@ -634,17 +637,17 @@ public class EstimationInfoDao {
 //		PreparedStatement pstmt = null;
 		int lastOrderNo = 0;
 		try {
-			ConfigurationInfo configInfo = new ConfigurationInfo();
+//			ConfigurationInfo configInfo = new ConfigurationInfo();
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			List<Integer> invoiceStatus=Arrays.asList(0,2);
-			List<Integer> invoiceTypeId=Arrays.asList(0,2);
+			List<Integer> invoiceTypeId=Arrays.asList(10);
 		List<BcaInvoice> bcaInvoices=bcaInvoiceRepository.findByCompanyIdAndInvoiceStatusAndInvoiceTypeId(Long.valueOf(compId), invoiceStatus, invoiceTypeId);
 			if(bcaInvoices.isEmpty()) {
 				String startNumber = configDto.getStartEstimationNum();
 				lastOrderNo = Integer.parseInt(startNumber.substring(startNumber.indexOf("-")+1));
 			}else {
 				BcaInvoice bcaInvoice=bcaInvoices.get(0);
-				lastOrderNo =bcaInvoice.getEstNum();
+				lastOrderNo =bcaInvoice.getEstNum()+1;
 			}
 		
 		

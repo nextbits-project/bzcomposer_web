@@ -190,6 +190,10 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 	List<BcaInvoice> findByCompanyIdAndInvoiceStatusAndInvoiceTypeId(@Param("companyId") Long companyId,
 			@Param("invoiceStatus") List<Integer> invoiceStatus, @Param("invoiceTypeId") List<Integer> invoiceTypeId);
 
+	@Query(value = "select bi  from BcaInvoice bi where bi.company.companyId = :companyId and invoiceStatus in :invoiceStatus and bi.invoiceType.invoiceTypeId in :invoiceTypeId  order by bi.sonum desc ")
+	List<BcaInvoice> findByCompanyIdAndInvoiceStatusAndInvoiceTypeIdOrderBySonumDesc(@Param("companyId") Long companyId,
+			@Param("invoiceStatus") List<Integer> invoiceStatus, @Param("invoiceTypeId") List<Integer> invoiceTypeId);
+
 	@Modifying
 	@Transactional
 	@Query("update BcaInvoice bi set bi.shipped = :shipped where bi.estNum = :estNum ")
