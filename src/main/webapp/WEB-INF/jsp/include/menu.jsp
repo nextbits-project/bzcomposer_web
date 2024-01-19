@@ -201,12 +201,12 @@
                         <span><spring:message code="BzComposer.sales.LeadList" /></span>
 						</a>
 					</li>
-					<%-- <li>
-                        <a href="Leads?tabid=LeadBoard" title="Lead Board">
+						<li>
+                        <a href="LeadBoard?tabid=LeadBoard" title="Lead Board">
                         <span><spring:message code="BzComposer.sales.LeadBoard" /></span>
                         </a>
                     </li>
-					<li>
+				<%-- 	<li>
 						<a href="Leads?tabid=PrintLabels" title="Print AddressLabel">
                         <span><spring:message code="BzComposer.customer.LeadAddressLabels" /></span>
 						</a>

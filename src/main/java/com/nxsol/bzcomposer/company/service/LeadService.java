@@ -3,6 +3,7 @@ package com.nxsol.bzcomposer.company.service;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaCountries;
 import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
+import com.nxsol.bzcomposer.company.domain.BcaLabel;
 import com.nxsol.bzcomposer.company.domain.BcaLead;
 import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
 import com.nxsol.bzcomposer.company.domain.BcaLeadProducts;
@@ -92,7 +94,7 @@ public class LeadService {
 
 //	Get All Lead
 	public List<BcaClientvendor> getAllLead(int cvType, BcaCompany companyId) {
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 		List<BcaClientvendor> clientVendors = clientVendorRepo.findByCvtypeId(cvType, companyId);
 		for (BcaClientvendor clientVendor : clientVendors) {
 			clientVendor.setCity(getCityNameById(Integer.parseInt(clientVendor.getCity())));
@@ -100,9 +102,9 @@ public class LeadService {
 			clientVendor.setCountry(getCountryNameById(Integer.parseInt(clientVendor.getCountry())));
 
 			if (clientVendor.getDateAdded() != null) {
-	            String formattedDate = clientVendor.getDateAdded().format(formatter);
-	            clientVendor.setFormattedDateAdded(formattedDate);
-	        }
+				String formattedDate = clientVendor.getDateAdded().format(formatter);
+				clientVendor.setFormattedDateAdded(formattedDate);
+			}
 //			if (clientVendor.getDateAdded() != null) {
 //				OffsetDateTime offsetDateAdded = clientVendor.getDateAdded();
 //				LocalDate dateAdded = offsetDateAdded.toLocalDate();
@@ -151,10 +153,10 @@ public class LeadService {
 		customerDto.setTitle(clientVendor.getCustomerTitle());
 		customerDto.setTerminated(clientVendor.getIsTerminated());
 		customerDto.setIsPhoneMobileNumber(clientVendor.getIsPhoneMobileNumber());
-		
-		//verify data type String / Boolean
-		//customerDto.setTaxAble(clientVendor.getTaxable() != 0);
-		
+		customerDto.setActive(clientVendor.getActive() == 1 ? true : false);
+		// verify data type String / Boolean
+		// customerDto.setTaxAble(clientVendor.getTaxable() != 0);
+
 		customerDto.setType(String.valueOf(clientVendor.getCvcategoryId()));
 		customerDto.setCustomerGroup(String.valueOf(clientVendor.getCustomerGroupId()));
 		customerDto.setTerm(String.valueOf(clientVendor.getTerm().getTermId()));
@@ -184,6 +186,16 @@ public class LeadService {
 		BcaShippingaddress shippingAddress = shippngAddressRepo.findByClintvendorId(clientVendor);
 		customerDto.setShippingAddressId(shippingAddress.getAddressId());
 
+		List<BcaLeadProducts> leadProducts = leadProductRepo.findByLeadId(lead);
+		List<String> leadSelectedProducts = new ArrayList<>();
+		for (BcaLeadProducts product : leadProducts) {
+			if (product.getInventory() != null) {
+				leadSelectedProducts.add(product.getInventory().getInventoryCode());
+			}
+
+		}
+		
+		customerDto.setLeadSelectedproducts(leadSelectedProducts);
 		System.out.println(customerDto);
 		return customerDto;
 	}
@@ -208,6 +220,20 @@ public class LeadService {
 		}
 
 		return products;
+	}
+
+	public List<String> getOnlySelectedLeadProduct(BcaLead lead) {
+		List<String> leadSelectedProducts = new ArrayList<>();
+		List<BcaLeadProducts> leadProducts = leadProductRepo.findByLeadId(lead);
+
+		for (BcaLeadProducts product : leadProducts) {
+			if (product.getInventory() != null) {
+				leadSelectedProducts.add(product.getInventory().getInventoryCode());
+			}
+
+		}
+
+		return leadSelectedProducts;
 	}
 
 //	Get City Name By Id
@@ -550,22 +576,22 @@ public class LeadService {
 //	}
 	@Transactional
 	public void removeClientVendor(int id) {
-	    BcaClientvendor clientVendor = clientVendorRepo.findById(id).orElse(null);
-	    if (clientVendor != null) {
-	        clientVendor.setActive(0);
-	        clientVendor.setDeleted(1);
-	        clientVendorRepo.save(clientVendor);
+		BcaClientvendor clientVendor = clientVendorRepo.findById(id).orElse(null);
+		if (clientVendor != null) {
+			clientVendor.setActive(0);
+			clientVendor.setDeleted(1);
+			clientVendorRepo.save(clientVendor);
 
-	        BcaLead lead = leadRepo.findByClientvendorId(clientVendor);
-	        if (lead != null) {
-	            lead.setActive(false);
-	            lead.setStatus("Deleted");
-	            leadRepo.save(lead);
-	        } else {
-	        	Loger.log("Lead not Found________________removeClientVendor");
-	        }
-	    } else {
-	    	Loger.log("ClientVendor not Found________________removeClientVendor");
-	    }
+			BcaLead lead = leadRepo.findByClientvendorId(clientVendor);
+			if (lead != null) {
+				lead.setActive(false);
+				lead.setStatus("Deleted");
+				leadRepo.save(lead);
+			} else {
+				Loger.log("Lead not Found________________removeClientVendor");
+			}
+		} else {
+			Loger.log("ClientVendor not Found________________removeClientVendor");
+		}
 	}
 }

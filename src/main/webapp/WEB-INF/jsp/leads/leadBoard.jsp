@@ -81,7 +81,7 @@ $('#custTable').DataTable({
 });
 $("#custTable_length").hide();
 
-$('#sortBy').change(function(){
+/* $('#sortBy').change(function(){
 	var sortBy = $(this).val();
 	$.ajax({
         type: "POST",
@@ -97,7 +97,7 @@ $('#sortBy').change(function(){
         }
         $('#custTableBody').html(custDetails);
     });
-});
+}); */
 
 });
 </script>
@@ -113,7 +113,8 @@ table.tabla-listados tbody tr td {
 	font-size: .8em; padding: 5px 0px 5px 12px; background: #fff; vertical-align: top; }
 </style>
 </head>
-<body onload="initialize();">
+<!-- <body onload="initialize();"> -->
+<body>
 <!-- begin shared/header -->
 <div id="ddcolortabsline">&nbsp;</div>
 <form:form name="CustomerForm"  method="post" modelAttribute="customerDto">
@@ -129,7 +130,7 @@ table.tabla-listados tbody tr td {
 		<spring:message code="BzComposer.sales.LeadBoard" />
 	</span>
 	<br>
-	<table>
+	<%-- <table>
 		<tr>
 			<td><spring:message code="BzComposer.customer.sortby" /></td>
 			<td>
@@ -140,7 +141,7 @@ table.tabla-listados tbody tr td {
 				</select>
 			</td>
 		</tr>
-	</table>
+	</table> --%>
 </div>
 <div style="float: right;">
 	<table>
@@ -174,11 +175,11 @@ table.tabla-listados tbody tr td {
 							</thead>
 							<tbody id="custTableBody">
                                 <c:forEach items="${CustomerDetails}" var="objList" varStatus="loop">
-                                    <tr id='${loop.index}$$' onclick="setCutomerDataById(${objList.clientVendorID}, ${loop.index})">
-                                        <td colspan="2" style="font-size:12px;" class="${objList.paymentUnpaid?'redColor':''}">
-                                            ${objList.clientVendorID} : ${objList.cname}
-                                            <%-- <input type="hidden" id="fName" value="${objList.firstName}"/>
-                                            <input type="hidden" id="lName" value="${objList.lastName}"/> --%>
+                                    <tr id='${loop.index}$$' onclick="setCutomerDataById(${objList.clientVendorId})">
+                                        <td colspan="2" style="font-size:12px;">
+                                             ${objList.clientVendorId} : ${objList.name}(${objList.firstName} ${objList.lastName})
+                                            <input type="hidden" id="fName" value="${objList.firstName}"/>
+                                            <input type="hidden" id="lName" value="${objList.lastName}"/>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -259,10 +260,7 @@ table.tabla-listados tbody tr td {
                                                     <td><strong><spring:message code="BzComposer.global.dateadded" />:</strong></td>
                                                     <td id="dateAdded"></td>
                                                 </tr>
-                                                <tr>
-                                                    <td><strong><spring:message code="BzComposer.orderimport.lastorderdate" />:</strong></td>
-                                                    <td id="lastOrderDate"></td>
-                                                </tr>
+                                               
                                                 <tr>
                                                     <td><strong><spring:message code="BzComposer.global.country" />:</strong></td>
                                                     <td>
@@ -274,6 +272,40 @@ table.tabla-listados tbody tr td {
                                                         </select>
                                                     </td>
                                                 </tr>
+                                                
+                                                <tr>
+                                                	<td><spring:message code="BzComposer.global.representative" /></td>
+													<td><select id="rep" disabled="true" style="width:170px;">
+                                                            <option value="0"><spring:message code="BzComposer.ComboBox.Select" /></option>
+                                                            <c:forEach items="${RepList}" var="item">
+                                                                <option value="${item.value}">${item.label}</option>
+                                                            </c:forEach>
+                                                        </select>
+													</td>
+												</tr>	
+												
+												<tr>
+                                                	<td><spring:message code="BzComposer.lead.LeadSource" /></td>
+													<td><select id="leadSource" disabled="true" style="width:170px;">
+                                                            <option value="0"><spring:message code="BzComposer.ComboBox.Select" /></option>
+                                                            <c:forEach items="${leadSource}" var="item">
+                                                                <option value="${item.leadSourceId}">${item.name}</option>
+                                                            </c:forEach>
+                                                        </select>
+													</td>
+												</tr>		
+													
+												<tr>
+                                                	<td><spring:message code="BzComposer.lead.LeadCategory" /></td>
+													<td><select id="leadCategory" disabled="true" style="width:170px;">
+                                                            <option value="0"><spring:message code="BzComposer.ComboBox.Select" /></option>
+                                                            <c:forEach items="${LeadCategory}" var="item">
+                                                                <option value="${item.leadCategoryId}">${item.name}</option>
+                                                            </c:forEach>
+                                                        </select>
+													</td>
+												</tr>	
+															
                                                 <tr>
                                                     <td><strong><spring:message code="Bizcomposer.active" />:</strong></td>
                                                     <td id="activeCustomer"></td>
@@ -282,34 +314,15 @@ table.tabla-listados tbody tr td {
 								        </td>
 								        <td style="width: 30%;">
 								            <table cellspacing="0" class="tabla-listados">
+                                                <tr><td><spring:message code="BzComposer.products" /></td></tr>
                                                 <tr>
-                                                    <td style="width: 60%;"><strong><spring:message code="BzComposer.sales.SalesAmount" /></strong></td>
-                                                    <td style="width: 40%;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong><spring:message code="BzComposer.common.last3MonthsAmount" />:</strong></td>
-                                                    <td id="last3MonthAmt"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong><spring:message code="BzComposer.common.last1YearAmount" />:</strong></td>
-                                                    <td id="last1YearAmt"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong><spring:message code="BzComposer.common.totalOverdueAmount" />:</strong></td>
-                                                    <td id="totalOverdueAmt"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong><spring:message code="BzComposer.global.oppeningunpaidbalance" />:</strong></td>
-                                                    <td id="openingUB"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong><spring:message code="BzComposer.global.existingcredits" />:</strong></td>
-                                                    <td id="extCredit"></td>
-                                                </tr>
+                                                	<!-- <td id="leadSelectedproducts"></td> -->
+                                                    <td id="leadSelectedproducts">
+                                                    </td>
+                                                                                                       <%--  <strong><spring:message code="BzComposer.common.last3MonthsAmount" />:</strong> --%>
+                                                    
+                                                    <!-- <td id="last3MonthAmt"></td> -->
+                                                </tr>                                              
                                             </table>
 								        </td>
 								    </tr>
@@ -317,8 +330,8 @@ table.tabla-listados tbody tr td {
 							</table>
 
                             <!-- =============== Transaction History ================ -->
-                            <table class="tabla-listados" cellspacing="0" style="margin-top: 0; margin-left: 20px;">
-                                <thead>
+                            <!-- <table class="tabla-listados" cellspacing="0" style="margin-top: 0; margin-left: 20px;">
+                               <thead>
                                     <tr>
                                         <th style="font-size: 14px;">
                                             <spring:message code="BzComposer.updatecustomer.tabs.transactionhistory"/>
@@ -366,7 +379,7 @@ table.tabla-listados tbody tr td {
                                     <div id="t_history" ></div>
                                     </td></tr>
                                 </tbody>
-                            </table>
+                            </table> -->
                         </div>
 					</td>
 				</tr>
@@ -379,7 +392,7 @@ table.tabla-listados tbody tr td {
 	<input type="hidden" name="tabid" id="tabid" value="" />
 	<input type="hidden" id="selectedCvID" value="${selectedCvID}" />
 	<c:forEach items="${CustomerDetails}" var="objList" varStatus="loop">
-        <input type="hidden" id="selectedCvIndex${objList.clientVendorID}" value="${loop.index}" />
+        <input type="hidden" id="selectedCvIndex${objList.clientVendorId}" value="${loop.index}" />
     </c:forEach>
 </div>
 </div>
@@ -398,18 +411,18 @@ let clientVendorID = 0;
 function initialize()
 {
 	
-	document.getElementById("dispay_info1").checked = true;
+/* 	document.getElementById("dispay_info1").checked = true; */
 	let selectedCvID = document.getElementById("selectedCvID").value;
-	let selectedCvIndex = document.getElementById("selectedCvIndex"+selectedCvID).value;
-    setCutomerDataById(selectedCvID, selectedCvIndex)
+/* 	let selectedCvIndex = document.getElementById("selectedCvIndex"+selectedCvID).value; */
+    setCutomerDataById(selectedCvID)
 }
 
-function lookUpHistory(){
+/* function lookUpHistory(){
     let radio_val = $('input[name="dispay_info"]:checked').val();
     var dfrom = document.CustomerForm.periodFrom.value;
     var dto = document.CustomerForm.periodTo.value;
     refreshTransationNow(radio_val, clientVendorID, dfrom, dto);
-}
+} */
 function writeSelectTH(){
    if (oT.readyState != 4 || oT.status != 200) {
      return;
@@ -420,47 +433,71 @@ function refreshTransationNow(radio_val, custid, dfrom, dto){
        oT = c(writeSelectTH);
        oGET(oT,'Customer?tabid=addTransactionHistory&custId=' + custid+'&cond='+radio_val+'&pfrom='+dfrom+'&pto='+dto)
 }
-
-function setCutomerDataById(vendorID, rowId){
-    clientVendorID = vendorID;
+function setCutomerDataById(vendorID){
     $.ajax({
-        type: "POST",
-        url:"CustomerAjax?tabid=getCustomerDetails&cvId="+vendorID,
-        data:{clientVendorID : vendorID},
+        url:"getLeadDetails/"+vendorID,
+        method: "GET",
         success : function(data) {
             $('#customerID').html(data.clientVendorID);
             $('#customerName').html(data.firstName +' '+ data.middleName +' '+ data.lastName);
-            $('#cname').html(data.cname);
+            $('#cname').html(data.companyName);
             $('#dbaName').html(data.dbaName);
             $('#customerType').val(data.type);
             $('#billingAddress').html(data.billTo);
             $('#shippingAddress').html(data.shipTo);
             $('#country').val(data.country);
-            $('#activeCustomer').html(data.active);
+            $('#rep').val(data.rep);
+            $('#leadSource').val(data.leadSource);
+            $('#leadCategory').val(data.leadCategory);
 
+            $('#activeCustomer').html(data.active);
             $('#phone').html(data.phone);
             $('#cellPhone').html(data.cellPhone);
             $('#fax').html(data.fax);
             $('#email').html(data.email);
             $('#dateAdded').html(data.dateAdded);
-            $('#lastOrderDate').html(data.lastOrderDate);
 
             $('#last3MonthAmt').html(data.last3MonthAmt);
             $('#last1YearAmt').html(data.last1YearAmt);
             $('#totalOverdueAmt').html(data.totalOverdueAmt);
             $('#openingUB').html(data.openingUB);
             $('#extCredit').html(data.extCredit);
-
-            let size = document.getElementById("lSize").value;
+            //$('#leadSelectedproducts').html(data.leadSelectedproducts);
+            
+            if (data.leadSelectedproducts && Array.isArray(data.leadSelectedproducts)) {
+		        $('#leadSelectedproducts').html(data.leadSelectedproducts.join(', '));
+		    } else {
+		        $('#leadSelectedproducts').html('No products selected');
+		    }
+            
+            /* let size = document.getElementById("lSize").value;
             for(i=0; i<size; i++){
                 if(document.getElementById(i+"$$"))
                     document.getElementById(i+"$$").classList.remove('draft');
             }
-            document.getElementById(rowId+'$$').classList.add('draft');
-            lookUpHistory();
+             document.getElementById(rowId+'$$').classList.add('draft');
+			lookUpHistory(); */
+			
+			/* setLeadProducts(vendorID);  */
         },
         error : function(error) {
-             alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+             alert(error + "<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+}
+
+function setLeadProducts(clientVendorID){
+    $.ajax({
+        url:"getLeadProducts/"+clientVendorID,
+        method: "GET",
+        success : function(data) {
+        	console.log(data);
+            
+        },
+        error: function (xhr, status, error) {
+            console.error("AJAX error:", status, error);
+            console.log("error");
+            console.log(xhr.responseText); // Log the full response for more details
         }
     });
 }
@@ -471,9 +508,9 @@ function manageCustomer(cmd)
 		return showCustomerValidationDialog();
 	} else {
 		if (cmd=="EDIT") {
-			window.open("Customer?tabid=editCustomer&cvId="+clientVendorID, null,"scrollbars=yes,height=620,width=1580,status=yes,toolbar=no,menubar=no,location=no");
+			window.open("/updateLead/" + clientVendorId, null,"scrollbars=yes,height=620,width=1580,status=yes,toolbar=no,menubar=no,location=no");
 		}
-		else if (cmd=="DELETE") {
+		/* else if (cmd=="DELETE") {
 			if(confirm("<spring:message code='BzComposer.customerinfo.deleteselectedcustomer'/>")==true) {
 				//window.location = "Customer?tabid=Customer&customerAction=DELETE&cvID="+clientVendorID;
 				$.ajax({
@@ -486,13 +523,32 @@ function manageCustomer(cmd)
                          alert("<bean:message key='BzComposer.common.erroroccurred'/>");
                     }
                 });
-			}
+			} */
+			
+		else if (cmd=="DELETE") {
+			event.preventDefault();
+			$("#deleteCustomer").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		            "<spring:message code='BzComposer.global.ok'/>": function () {
+		                $(this).dialog("close");
+		                window.location = "/removeLead/"+clientVendorId;
+		            },
+		            <spring:message code='BzComposer.global.cancel'/>: function () {
+		                $(this).dialog("close");
+		                return false;
+		            }
+				}
+			});
 			return false;
 		}
 	}
 }
 
-function showCustomerValidationDialog(){
+/* function showCustomerValidationDialog(){
 	event.preventDefault();
 	$("#showCustomerValidationDialog").dialog({
     	resizable: false,
@@ -505,8 +561,8 @@ function showCustomerValidationDialog(){
             }
         }
     });
-    return false;
-}
+    return false; 
+}*/
 </script>
 <!-- Dialog box used in sales order page -->
 <div id="showCustomerValidationDialog" style="display:none;">

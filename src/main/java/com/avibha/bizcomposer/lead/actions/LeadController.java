@@ -1,6 +1,7 @@
 package com.avibha.bizcomposer.lead.actions;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -166,149 +167,36 @@ public class LeadController {
 		leadService.removeClientVendor(id);
 		return "redirect:/Leads";
 	}
-//
-//	private CountryState countryState;
-//
-//	private Title title;
-//
-//	@PostConstruct
-//	private void postConstruct() {
-//		countryState = new CountryState();
-//		title = new Title();
-//	}
-//
-//	@GetMapping("/Leadsold")
-//	public String loadLeadsOld(@RequestParam(required = false, name = "tabid") String action, Model model,
-//			HttpSession session) throws Exception {
-//		String forward = "";
-//		// String action = request.getParameter("tabid");
-//		String strCompanyId = (String) session.getAttribute("CID");
-//		if (StringUtils.isEmpty(strCompanyId)) {
-//			return "redirect:Login?tabid=loginPage";
-//		}
-//
-//		int companyId = Integer.parseInt(strCompanyId);
-//
-//		// ConstValue.companyId = companyId;
-//
-//		// ConstValue c = new ConstValue();
-//		// c.setCompanyId(Integer.parseInt(companyID));
-//		model.addAttribute("leadList", leadDAO.loadLeads(strCompanyId));
-//
-//		forward = "/leads/leads";
-//
-//		return forward;
-//	}
-//
-//	
-//	@GetMapping("/Leads")
-//	public String loadLeads(@RequestParam(required = false, name = "tabid") String action, Model model,
-//			HttpSession session) throws Exception {
-//		String forward = "";
-//		// String action = request.getParameter("tabid");
-//		String strCompanyId = (String) session.getAttribute("CID");
-//		if (StringUtils.isEmpty(strCompanyId)) {
-//			return "redirect:Login?tabid=loginPage";
-//		}
-//
-//		model.addAttribute("leadList", leadDAO.loadLeads(strCompanyId));
-// 
-//		forward = "/leads/leads";
-//
-//		return forward;
-//	}
-//
-//	@GetMapping("/Lead/delete")
-//	public String loadLead(@RequestParam(required = true, name = "LeadId") Long leadId, HttpSession session,
-//			Model model) {
-//
-//		String strCompanyId = (String) session.getAttribute("CID");
-//		if (StringUtils.isEmpty(strCompanyId)) {
-//			return "redirect:Login?tabid=loginPage";
-//		}
-//
-//		leadDAO.delete(leadId, strCompanyId);
-//
-//		return "redirect:/Leads?tabid=leads";
-//	}
-//
-//	@GetMapping("/Lead")
-//	public String loadLead(@RequestParam(required = false, name = "LeadId") Long leadId, Model model,
-//			HttpSession session) throws Exception {
-//		String forward = "";
-//		// String action = request.getParameter("tabid");
-//		String strCompanyId = (String) session.getAttribute("CID");
-//		if (StringUtils.isEmpty(strCompanyId)) {
-//			return "redirect:Login?tabid=loginPage";
-//		}
-//
-//		int companyId = Integer.parseInt(strCompanyId);
-//
-//		// ConstValue.companyId = companyId;
-//
-//		// ConstValue c = new ConstValue();
-//		// c.setCompanyId(Integer.parseInt(companyID));
-//
-//		if (leadId == null || leadId <= 0) {
-//
-//			String countryID = ConstValue.countryID;
-//			String stateID = ConstValue.stateID;
-//
-//			// country List
-//			model.addAttribute("cList", countryState.getCountry());
-//			model.addAttribute("countryList", countryState.getCountryList());
-//			model.addAttribute("stateList", countryState.getStateList(countryID));
-//			model.addAttribute("cityList", countryState.getCityList(stateID));
-//
-//			model.addAttribute("titleList", title.getTitleList(strCompanyId));
-//
-//			model.addAttribute("leadDto", new LeadDto());
-//			forward = "/leads/addLead";
-//		} else {
-//			LeadDto dto = leadDAO.loadLead(leadId, strCompanyId);
-//
-//			String countryID = ObjectUtils.isEmpty(dto.getCountry()) ? ConstValue.countryID : dto.getCountry();
-//			String stateID = ObjectUtils.isEmpty(dto.getState()) ? ConstValue.stateID : dto.getState();
-//
-//			// country List
-//			model.addAttribute("cList", countryState.getCountry());
-//			model.addAttribute("countryList", countryState.getCountryList());
-//			model.addAttribute("stateList", countryState.getStateList(countryID));
-//			model.addAttribute("cityList", countryState.getCityList(stateID));
-//
-//			model.addAttribute("titleList", title.getTitleList(strCompanyId));
-//			model.addAttribute("leadDto", dto);
-//			forward = "/leads/addLead";
-//		}
-//		return forward;
-//	}
-//
-//	@PostMapping("/Lead")
-//	public String saveLead(LeadDto leadDto, @RequestParam(required = true, name = "tabid") String action, Model model,
-//			HttpSession session) throws Exception {
-//		String forward = "";
-//		// String action = request.getParameter("tabid");
-//		String strCompanyId = (String) session.getAttribute("CID");
-//		if (StringUtils.isEmpty(strCompanyId)) {
-//			return "redirect:Login?tabid=loginPage";
-//		}
-//
-//		if (leadDto.getLeadId() == null || leadDto.getLeadId() <= 0) {
-//
-//			leadDAO.insert(leadDto, strCompanyId);
-//			/// forward = "/leads/addLead";
-//			model.addAttribute("success", true);
-//			forward = "/leads/addLead";
-//		} else {
-//
-//			leadDAO.update(leadDto, strCompanyId);
-//			/// forward = "/leads/addLead";
-//			model.addAttribute("success", true);
-//			forward = "/leads/addLead";
-//
-//		}
-//
-//		return "redirect:Leads";
-//	}
 
+	@GetMapping("/LeadBoard")
+	public String getLeadBoard(Model model, @ModelAttribute("customerDto") CustomerDto customerDto,
+			HttpServletRequest request) {
+//		SalesDetailsDao sd = new SalesDetailsDao();
+		sd.getAllList(request);
+		int cvType = 6;
+
+		HttpSession session = request.getSession();
+		String companyId = (String) session.getAttribute("CID");
+		BcaCompany company = companyRepo.findById(Long.parseLong(companyId)).orElse(null);
+
+		model.addAttribute("CustomerDetails", leadService.getAllLead(cvType, company));
+		request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
+
+		model.addAttribute("leadSource", leadService.getLeadSources(companyId));
+		model.addAttribute("LeadCategory", leadService.getLeadCategories(companyId));
+		model.addAttribute("product", leadService.getAllProducts(companyId));
+
+		return "leads/leadBoard";
+	}
+
+	// Ajux response for lead Details
+	@GetMapping("/getLeadDetails/{id}")
+	public ResponseEntity<CustomerDto> getLeadDetailsById(@PathVariable("id") int clientvendorId) {
+		CustomerDto customerDto = leadService.getLeadById(clientvendorId);
+		if (customerDto != null) {
+			return ResponseEntity.ok(customerDto);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 }

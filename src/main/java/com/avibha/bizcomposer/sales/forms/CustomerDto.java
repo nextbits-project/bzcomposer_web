@@ -209,14 +209,16 @@ public class CustomerDto {
 	private double totalOverdueAmt;
 	private String lastOrderDate;
 	private boolean active;
-	
-	//lead module
-	private int leadSource; 
+
+	// lead module
+	private int leadSource;
 	private int leadId;
-	private int shippingAddressId; 
-	private int billingAddressId; 
+	private int shippingAddressId;
+	private int billingAddressId;
 	private int leadCategory;
 	private String product;
+
+	private List<String> leadSelectedproducts;
 
 	public CustomerDto(int clientVendorId, String name, String customerTitle, String firstName, String lastName,
 			String address1, String address2, String city, String state, String zipCode, String country, String email,
@@ -2000,6 +2002,14 @@ public class CustomerDto {
 
 	public void setProduct(String product) {
 		this.product = product;
+	}
+
+	public List<String> getLeadSelectedproducts() {
+		return leadSelectedproducts;
+	}
+
+	public void setLeadSelectedproducts(List<String> leadSelectedproducts) {
+		this.leadSelectedproducts = leadSelectedproducts;
 	}
 
 	
