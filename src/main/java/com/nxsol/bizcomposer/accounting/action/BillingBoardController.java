@@ -87,7 +87,7 @@ public class BillingBoardController {
 //		ReceivableLIst rl = new ReceivableListImpl();
 		Date from = null;
 		Date to = null;
-		String columnName = " OrderNum ";
+		String columnName = "orderNum ";
 		int InvoiceType = 113;
 		int overdueDays = 0;
 		String alldata = "Default";

@@ -992,15 +992,20 @@ public class ReceivableListImpl implements ReceivableLIst {
 				TblCategoryDto categoryName = category.getCategoryOf(dto.getCategoryID());
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(dto.getTermID());
-				int cvId = dto.getClientVendorID();
-				ClientVendor cv = getClentVendor(cvId, companyId);
+				if (null != dto.getClientVendorID()) {
+					int cvId = dto.getClientVendorID();
+					ClientVendor cv = getClentVendor(cvId, companyId);
+					rb.setCvID(cvId);
+					rb.setCvName(cv.getFirstName() + " " + cv.getLastName());
+					rb.setCompanyName(cv.getName());
+				}
 				rb.setInvoiceID(dto.getInvoiceID());
 				rb.setOrderNum(dto.getOrderNum());
 				rb.setPoNum(dto.getPONum());
 				rb.setEmployeeId(dto.getEmployeeID());
 				rb.setRefNum(dto.getRefNum());
 				rb.setMemo(dto.getMemo());
-				rb.setCvID(cvId);
+
 				rb.setInvoiceTypeID(dto.getInvoiceTypeID());
 				rb.setTotal(dto.getTotal());
 				rb.setAdjustedTotal(dto.getAdjustedTotal());
@@ -1009,7 +1014,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb.setTermID(dto.getTermID());
 				if (null != dto.getPaymentTypeID())
 					rb.setPaymentTypeID(dto.getPaymentTypeID());
-				rb.setShipCarrierID(dto.getShipCarrierID());
+				if (null != dto.getShipCarrierID())
+					rb.setShipCarrierID(dto.getShipCarrierID());
 				rb.setSh(dto.getSH()); // new changes
 				rb.setSubTotal(dto.getSubTotal());
 				rb.setTax(dto.getTax());
@@ -1026,17 +1032,21 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (null != dto.getCategoryID())
 					rb.setCategoryID(dto.getCategoryID());
 				rb.setInvoiceStatus(dto.getInvoiceStatus());
-				rb.setServiceID(dto.getServiceID());
-				rb.setSalesRepID(dto.getSalesRepID());
+				if (null != dto.getServiceID())
+					rb.setServiceID(dto.getServiceID());
+				if (null != dto.getSalesRepID())
+					rb.setSalesRepID(dto.getSalesRepID());
 				rb.setShipped(dto.getShipped());
-				rb.setJobCategoryID(dto.getJobCategoryID());
-				rb.setBillingAddrID(dto.getBillingAddrID());
-				rb.setShipToAddrID(dto.getShippingAddrID());
+				if (null != dto.getJobCategoryID())
+					rb.setJobCategoryID(dto.getJobCategoryID());
+				if (null != dto.getBillingAddrID())
+					rb.setBillingAddrID(dto.getBillingAddrID());
+				if (null != dto.getShippingAddrID())
+					rb.setShipToAddrID(dto.getShippingAddrID());
 				if (null != dto.getTotalCommission())
 					rb.setCommission(dto.getTotalCommission());
 				rb.setBankAccountID(dto.getBankAccountID());
-				rb.setCvName(cv.getFirstName() + " " + cv.getLastName());
-				rb.setCompanyName(cv.getName());
+
 				rb.setTblcategory(categoryName);
 				rb.setTblterm(tblterm);
 			}
@@ -4745,7 +4755,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 			Optional<BcaInvoicetype> invoiceType = bcaInvoicetypeRepository.findById(ReceivableListDto.LAYAWAYS_TYPE);
 			Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(ConstValue.companyId));
 			if (invoiceType.isPresent() && company.isPresent()) {
-				i = bcaInvoiceRepository.updateInvoiceTypeByCompanyIdAndInvoiceId(invoiceType.get(), company.get(), invoiceID);
+				i = bcaInvoiceRepository.updateInvoiceTypeByCompanyIdAndInvoiceId(invoiceType.get(), company.get(),
+						invoiceID);
 			}
 			System.out.println("update layaways : ------" + i);
 
@@ -5672,16 +5683,21 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb.setInvoiceID(bcaInvoice.getInvoiceId());
 				rb.setPoNum(bcaInvoice.getPonum());
 				rb.setMemo(bcaInvoice.getMemo());
-				rb.setCvID(bcaInvoice.getClientVendor().getClientVendorId());
-				rb.setInvoiceTypeID(bcaInvoice.getInvoiceType().getInvoiceTypeId());
+				if (null != bcaInvoice.getClientVendor())
+					rb.setCvID(bcaInvoice.getClientVendor().getClientVendorId());
+				if (null != bcaInvoice.getInvoiceType())
+					rb.setInvoiceTypeID(bcaInvoice.getInvoiceType().getInvoiceTypeId());
 				rb.setAdjustedTotal(bcaInvoice.getAdjustedTotal());
 				rb.setPaidAmount(bcaInvoice.getPaidAmount());
 				rb.setBalance(bcaInvoice.getBalance());
-				rb.setTermID(bcaInvoice.getTerm().getTermId());
-				rb.setPaymentTypeID(bcaInvoice.getPaymentType().getPaymentTypeId());
+				if (null != bcaInvoice.getTerm())
+					rb.setTermID(bcaInvoice.getTerm().getTermId());
+				if (null != bcaInvoice.getPaymentType())
+					rb.setPaymentTypeID(bcaInvoice.getPaymentType().getPaymentTypeId());
 				rb.setPaymentCompleted(bcaInvoice.getIsPaymentCompleted());
 				rb.setDateAdded(offsetDateTimeToDate(bcaInvoice.getDateAdded()));
-				rb.setCategoryID(bcaInvoice.getCategory().getCategoryId());
+				if (null != bcaInvoice.getCategory())
+					rb.setCategoryID(bcaInvoice.getCategory().getCategoryId());
 				rb.setBankAccountID(bcaInvoice.getBankAccountId());
 				rb.setCvName(
 						bcaInvoice.getClientVendor().getFirstName() + " " + bcaInvoice.getClientVendor().getLastName());
@@ -6359,6 +6375,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	@Override
 	public ArrayList<TblAccount> getBankAccountsTreeForFundTransfer(ArrayList<TblAccountCategory> categoryList) {
+		parent.clear();
+		root.clear();
 		parent.add(new TblAccount());
 		for (TblAccountCategory category : categoryList) {
 			/* parent.add(category); */
@@ -8335,7 +8353,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				unpaidBill.add(vDetail);
 //			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();			// TODO Auto-generated catch block
 			Loger.log(e.toString());
 		} finally {
 			try {
@@ -10180,7 +10198,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 	@Override
 	public ArrayList<TblCategoryType> getCategoryType() {
 
-
 		ArrayList<TblCategoryType> categoryType = new ArrayList<>();
 
 		try {
@@ -10237,7 +10254,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		}
 //		return categoryType;
 //	}
-
 
 	@Override
 	public boolean saveCategory(TblCategoryDto category) {
@@ -11173,23 +11189,23 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				advanceFilter = " AND OrderNum = " + advanceSearchData + " ";
 				advance_Filter.append(" and iv.orderNum = " + advanceSearchData + " ");
 			} else if (advanceSearchCriteria.equals("First Name")) {
-//				advance_Filter.append(" and cv.firstName like ' " + advanceSearchData + "%' ");
-				advanceFilter = " AND FirstName LIKE '" + advanceSearchData + "%' ";
+				advance_Filter.append(" and cv.firstName like '" + advanceSearchData + "%' ");
+//				advanceFilter = " AND FirstName LIKE '" + advanceSearchData + "%' ";
 			} else if (advanceSearchCriteria.equals("Last Name")) {
 //				advanceFilter = " AND LastName LIKE '" + advanceSearchData + "%' ";
-				advance_Filter.append(" and cv.lastName like ' " + advanceSearchData + "%' ");
+				advance_Filter.append(" and cv.lastName like '" + advanceSearchData + "%' ");
 			} else if (advanceSearchCriteria.equals("Address")) {
 //				advanceFilter = " AND Address1 LIKE '" + advanceSearchData + "%' ";
-				advance_Filter.append(" and cv.address1 like ' " + advanceSearchData + "%' ");
+				advance_Filter.append(" and cv.address1 like '" + advanceSearchData + "%' ");
 			} else if (advanceSearchCriteria.equals("ZipCode")) {
 //				advanceFilter = " AND Zipcode LIKE '" + advanceSearchData + "%' ";
 				advance_Filter.append(" and cv.zipCode like ' " + advanceSearchData + "%' ");
 			} else if (advanceSearchCriteria.equals("Email")) {
 //				advanceFilter = " AND Email LIKE '" + advanceSearchData + "%' ";
-				advance_Filter.append(" and cv.email like ' " + advanceSearchData + "%' ");
+				advance_Filter.append(" and cv.email like '" + advanceSearchData + "%' ");
 			} else if (advanceSearchCriteria.equals("Country")) {
 //				advanceFilter = " AND Country LIKE '" + advanceSearchData + "%' ";
-				advance_Filter.append(" and cv.country like ' " + advanceSearchData + "%' ");
+				advance_Filter.append(" and cv.country like '" + advanceSearchData + "%' ");
 			}
 		} else {
 			if (InvoiceType == 113) {
@@ -11218,7 +11234,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					" and (DATEDIFF ( DATE(now()), DATE (DATE _ADD ( DATE ( DATE_ADD ( iv.dateAdded ,INTERVAL , term.days DAY)) ,INTERVAL "
 							+ overdueDays + " DAY))) = 0 ) ");
 		}
-		query.append(advanceFilter);
+		query.append(advance_Filter);
 		query.append(" order by iv." + columnName + ascent);
 //		sql = sql + advanceFilter;
 //		sql = sql + " ORDER BY " + " inv." + columnName + ascent;
@@ -11256,8 +11272,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 				invoice.setTotal(inv.getTotal());
 				if (null != inv.getInvoiceType())
 					invoice.setInvoiceTypeID(inv.getInvoiceType().getInvoiceTypeId());
-
-				invoice.setJobCategoryID(inv.getJobCategoryId());
+				if (null != inv.getJobCategoryId())
+					invoice.setJobCategoryID(inv.getJobCategoryId());
 
 				invoice.setAdjustedTotal(inv.getAdjustedTotal());
 
@@ -11274,8 +11290,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 					invoice.setShippingMethod(inv.getShippingMethod());
 
 				invoice.setDateAdded(offsetDateTimeToDate(inv.getDateAdded()));
-
-				invoice.setServiceID(inv.getServiceId());
+				if (null != inv.getServiceId())
+					invoice.setServiceID(inv.getServiceId());
 				if (null != inv.getClientVendor())
 					invoice.setCvName(inv.getClientVendor().getName() + " ( " + inv.getClientVendor().getFirstName()
 							+ " " + inv.getClientVendor().getLastName() + " )");
@@ -11409,7 +11425,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				list.add(invoice);
 //			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace(); // TODO Auto-generated catch block
 			Loger.log(e.toString());
 		}
 //		finally {
@@ -11477,8 +11493,10 @@ public class ReceivableListImpl implements ReceivableLIst {
 				report.setSalesRep(rs.getSName());
 				report.setBalance(rs.getBalance());
 				report.setItemCode(rs.getInventoryCode());
-				report.setQuantity(rs.getQty());
-				report.setAmount(rs.getUnitPrice());
+				if (null != rs.getQty())
+					report.setQuantity(rs.getQty());
+				if (null != rs.getUnitPrice())
+					report.setAmount(rs.getUnitPrice());
 				report.setAddress(rs.getCompanyName() + "\n" + rs.getCompanyAddress() + "\n" + rs.getCompanyCity() + ","
 						+ rs.getCompanyState() + " " + rs.getCompanyZipCode() + " " + rs.getCompanyCountry() + "\n"
 						+ "Ph.no :- " + rs.getCompanyPhone() + "\n" + rs.getCompanyEmail());
@@ -11516,7 +11534,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //
 //			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace(); // TODO Auto-generated catch block
 			Loger.log(e.toString());
 		}
 //		finally {
@@ -11566,8 +11584,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			BcaBillingstatements billingstatements = new BcaBillingstatements();
 //			billingstatements
 //					.setStatementDate(StringToOffsetDateTime(JProjectUtil.getDateFormaterCommon().format(new Date())));
-			billingstatements
-			.setStatementDate(OffsetDateTime.now());
+			billingstatements.setStatementDate(OffsetDateTime.now());
 
 			billingstatements.setClientVendor(bcaClientvendorRepository.getOne(invoice.getCvID()));
 			billingstatements.setInvoice(bcaInvoiceRepository.getOne(invoice.getInvoiceID()));

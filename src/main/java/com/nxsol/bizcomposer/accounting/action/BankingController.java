@@ -1,17 +1,11 @@
 package com.nxsol.bizcomposer.accounting.action;
 
-import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
-import com.avibha.bizcomposer.sales.forms.CustomerDto;
-import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
-import com.avibha.common.utility.CountryState;
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.JProjectUtil;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
-import com.nxsol.bizcompser.global.table.TblCategory;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
-import com.nxsol.bzcomposer.company.repos.BcaAcctcategoryRepository;
 import com.pritesh.bizcomposer.accounting.bean.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
