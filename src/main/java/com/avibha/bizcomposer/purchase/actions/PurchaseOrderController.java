@@ -58,7 +58,7 @@ public class PurchaseOrderController {
 	@GetMapping("/PurchaseOrder")
 	public String purchaseOrder(VendorDto vendorDto, UpdateInvoiceDto updateInvoiceDto,
 			PurchaseOrderDto purchaseOrderDto, HttpServletRequest request, Model model)
-			throws IOException, ServletException {
+			throws IOException, ServletException, Throwable {
 		String forward = "/purchase/purchase";
 
 		String action = request.getParameter("tabid");

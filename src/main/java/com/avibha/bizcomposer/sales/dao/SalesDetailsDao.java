@@ -1373,7 +1373,7 @@ public class SalesDetailsDao {
 	}
 
 	public PurchaseOrderDto getRecordForPO(String compId, String orderNum, PurchaseOrderDto form,
-			HttpServletRequest request) {
+			HttpServletRequest request) throws Throwable{
 //		PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
 		return purchaseOrderInfoDao.getRecordForPO(compId, orderNum, form, request);
 	}

@@ -2118,7 +2118,7 @@ public class PurchaseOrderInfoDao {
 //	}
 
 	public PurchaseOrderDto getRecordForPO(String compId, String poNo, PurchaseOrderDto form,
-			HttpServletRequest request) {
+			HttpServletRequest request) throws Throwable{
 
 		try {
 			String query = "SELECT bi FROM BcaInvoice bi " + "LEFT JOIN bi.term t " + "LEFT JOIN bi.paymentType p "
