@@ -7,6 +7,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,7 +18,10 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 @Controller
 public class BillingInfoController {
-
+	
+	@Autowired
+	private ReceivableLIst rl ;
+	
 	@GetMapping("/BillingInfo")
 	public ModelAndView BillingInfo( HttpServletRequest request,
 								HttpServletResponse response) throws Exception {
@@ -31,7 +35,7 @@ public class BillingInfoController {
 		{
 			forward = "/accounting/billinginfo";
 			
-			ReceivableLIst rl = new ReceivableListImpl();
+//			ReceivableLIst rl = new ReceivableListImpl();
 			ArrayList<SalesBillingTable> salesBillingList = rl.getSalesBillingList();
 			request.setAttribute("salesBillingList", salesBillingList);
 		}

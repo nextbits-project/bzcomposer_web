@@ -40,7 +40,7 @@ public class CategoryManagerController {
 	@PostMapping("/categoryManagerPost")
 	public String categoryManagerPost(TblCategoryDto tblCategoryDto, HttpServletRequest request) throws Exception {
 		String action = request.getParameter("tabid");
-		ReceivableLIst rl = new ReceivableListImpl();
+//		ReceivableLIst rl = new ReceivableListImpl();
 		if(action.equals("AddNewCategory")) {
 			Gson gson=new Gson();
 			TblCategoryDto category = gson.fromJson(request.getParameter("data"), TblCategoryDto.class);
@@ -63,7 +63,7 @@ public class CategoryManagerController {
 	@GetMapping("/CategoryManagerAJAX")
 	public TblCategoryDto categoryManagerAJAX(HttpServletRequest request) throws Exception {
 		String action = request.getParameter("tabid");
-		ReceivableLIst rl = new ReceivableListImpl();
+//		ReceivableLIst rl = new ReceivableListImpl();
 		TblCategoryDto tblCategory = new TblCategoryDto();
 		if(action.equals("getCategoryDetails")) {
 			String catID = request.getParameter("catID");
@@ -76,7 +76,7 @@ public class CategoryManagerController {
 	@GetMapping("/CategoryManagerAJAX/Exists")
 	public boolean categoryManagerDetailsExists(HttpServletRequest request) throws Exception {
 		String action = request.getParameter("tabid");
-		ReceivableLIst rl = new ReceivableListImpl();
+//		ReceivableLIst rl = new ReceivableListImpl();
 		boolean status = false;
 		if(action.equals("CheckChildCategory")) {
 			String categoryId = request.getParameter("CategoryId");

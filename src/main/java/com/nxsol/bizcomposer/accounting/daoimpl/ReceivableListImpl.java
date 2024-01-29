@@ -183,12 +183,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	@Override
 	public ArrayList<ReceivableListDto> getReceivableList(int companyId) {
-		Connection con;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
+//		Connection con;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
 		ArrayList<ReceivableListDto> rlb = new ArrayList<>();
-		con = db.getConnection();
+//		con = db.getConnection();
 		try {
 			List<Object[]> objList = bcaInvoiceRepository.findRecievableList(new Long(companyId));
 			List<InvoiceDto> dtos = convertInvoiceDtoToInvoice(objList);
@@ -222,19 +222,21 @@ public class ReceivableListImpl implements ReceivableLIst {
 					rb.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(orderNo),
 							AppConstants.InvoiceType, configDto, false));
 				}
+				if (null != dto.getPONum()) {
+					rb.setPoNum(dto.getPONum());
 
-				rb.setPoNum(dto.getPONum());
-
-				int poNo = (dto.getPONum());
-				if (configDto.getIsSalePrefix().equals("on")) {
-					rb.setPoNumStr("PO".concat(yearPart)
-							.concat("-" + MyUtility.getOrderNumberByConfigData(Integer.toString(poNo),
-									AppConstants.POType, configDto, false)));
-				} else {
-					rb.setPoNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(poNo), AppConstants.POType,
-							configDto, false));
+					int poNo = (dto.getPONum());
+					if (configDto.getIsSalePrefix().equals("on")) {
+						rb.setPoNumStr("PO".concat(yearPart)
+								.concat("-" + MyUtility.getOrderNumberByConfigData(Integer.toString(poNo),
+										AppConstants.POType, configDto, false)));
+					} else {
+						rb.setPoNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(poNo), AppConstants.POType,
+								configDto, false));
+					}
 				}
-				rb.setEmployeeId(dto.getEmployeeID());
+				if (null != dto.getEmployeeID())
+					rb.setEmployeeId(dto.getEmployeeID());
 				rb.setRefNum(dto.getRefNum());
 				rb.setMemo(dto.getMemo());
 				rb.setCvID(cvId);
@@ -246,30 +248,41 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb.setTermID(dto.getTermID());
 				if (null != dto.getPaymentTypeID())
 					rb.setPaymentTypeID(dto.getPaymentTypeID());
-				rb.setShipCarrierID(dto.getShipCarrierID());
+				if (null != dto.getShipCarrierID())
+					rb.setShipCarrierID(dto.getShipCarrierID());
 				rb.setSh(dto.getSH()); // new changes
 				rb.setSubTotal(dto.getSubTotal());
 				rb.setTax(dto.getTax());
 				if (null != dto.getShippingMethod())
 					rb.setShippingMethod(dto.getShippingMethod());
-				rb.setSalesTaxID(dto.getSalesTaxID());
+
+				if (null != dto.getSalesTaxID())
+					rb.setSalesTaxID(dto.getSalesTaxID());
 				rb.setTaxable(dto.getTaxable() == 1 ? true : false);
-				rb.setReceived(dto.getIsReceived());
+				if (null != dto.getIsReceived())
+					rb.setReceived(dto.getIsReceived());
 				rb.setPaymentCompleted(dto.getIsPaymentCompleted());
 				rb.setDateConfirmed(offsetDateTimeToDate(dto.getDateConfirmed()));
 				rb.setDateAdded(offsetDateTimeToDate(dto.getDateAdded()));
 				if (null != dto.getCategoryID())
 					rb.setCategoryID(dto.getCategoryID());
 				rb.setInvoiceStatus(dto.getInvoiceStatus());
-				rb.setServiceID(dto.getServiceID());
-				rb.setSalesRepID(dto.getSalesRepID());
+				if (null != dto.getServiceID())
+					rb.setServiceID(dto.getServiceID());
+				if (null != dto.getSalesRepID())
+					rb.setSalesRepID(dto.getSalesRepID());
 				rb.setShipped(dto.getShipped());
-				rb.setJobCategoryID(dto.getJobCategoryID());
-				rb.setBillingAddrID(dto.getBillingAddrID());
-				rb.setShipToAddrID(dto.getShippingAddrID());
+				if (null != dto.getJobCategoryID())
+					rb.setJobCategoryID(dto.getJobCategoryID());
+				if (null != dto.getBillingAddrID())
+					if (null != dto.getBillingAddrID())
+						rb.setBillingAddrID(dto.getBillingAddrID());
+				if (null != dto.getShippingAddrID())
+					rb.setShipToAddrID(dto.getShippingAddrID());
 				if (null != dto.getTotalCommission())
 					rb.setCommission(dto.getTotalCommission());
-				rb.setBankAccountID(dto.getBankAccountID());
+				if (null != dto.getBankAccountID())
+					rb.setBankAccountID(dto.getBankAccountID());
 				rb.setTblcategory(categoryName);
 				rb.setTblterm(tblterm);
 
@@ -375,8 +388,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				rlb.add(rb);
 //			}
 		} catch (Exception e) {
-			System.out.println(e);
-			Loger.log(e.toString());
+					Loger.log(e.toString());
 		}
 //		finally {
 //			try {
@@ -1718,7 +1730,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				company = bcaCompany.get();
 //			}
 			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository
-					.findInvoiceForUnpaidOpeningbal(companyId);
+					.findInvoiceForUnpaidOpeningbal(new Long(companyId));
 			for (BcaClientvendor bcv : bcaClientvendors) {
 				ReceivableListDto rb = new ReceivableListDto();
 				openingBalance = bcv.getCustomerOpenDebit();
@@ -1741,6 +1753,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			Loger.log(e.toString());
 		}
 //		finally {
@@ -1835,7 +1848,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 		try {
 
-			List<Object[]> unpaidCreditAmount = bcaClientvendorRepository.findUnpaidCreditAmount(companyId, cvTypeId,
+			List<Object[]> unpaidCreditAmount = bcaClientvendorRepository.findUnpaidCreditAmount(new Long(companyId), cvTypeId,
 					invoiceType);
 			List<ClientvendorDto> dtos = objectToClienDto(unpaidCreditAmount);
 
@@ -1887,7 +1900,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				rlb.add(uca);
 //			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();			// TODO Auto-generated catch block
 			Loger.log(e.toString());
 		}
 //		finally {
@@ -8353,7 +8366,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				unpaidBill.add(vDetail);
 //			}
 		} catch (SQLException e) {
-			e.printStackTrace();			// TODO Auto-generated catch block
+			e.printStackTrace(); // TODO Auto-generated catch block
 			Loger.log(e.toString());
 		} finally {
 			try {

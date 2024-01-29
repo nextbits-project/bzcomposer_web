@@ -25,15 +25,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Scanner;
 
 @Controller
 public class PoPayableController {
 	
 	@Autowired
-	TblCategoryDtoLoader category;
+	private TblCategoryDtoLoader category;
 	@Autowired
-	ReceivableLIst rl;
+	private ReceivableLIst rl;
 	
 	@GetMapping("/PoPayable")
 	public ModelAndView poPayable(RMADto rmaDto, ReceivableListDto receivableListDto, HttpServletRequest request,
@@ -48,8 +47,8 @@ public class PoPayableController {
 		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<TblPaymentType> paymentTypeForPOcombo = rl.getPaymentTypeForPoPayable();
 		ArrayList<TblAccount> accountForCombo =rl.getAccount();
-		ArrayList<ReceivableListDto> poList = rl.getPoPayableList();
-		
+//		ArrayList<ReceivableListDto> poList = rl.getPoPayableList();
+		ArrayList<ReceivableListDto> poList = rl.getReceivableList(ConstValue.companyId);
 		request.setAttribute("categoryforcombo", categoryforcombo);
 		request.setAttribute("paymentTypeForPOcombo", paymentTypeForPOcombo);
 		request.setAttribute("accountForCombo", accountForCombo);

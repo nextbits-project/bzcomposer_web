@@ -39,8 +39,10 @@ public class CategoryDetailController {
 		//ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
-		request.setAttribute("accountList", rl.getBankAccountsTreeForFundTransfer(categories));
-		request.setAttribute("listOfCategory", rl.getListOfCategoryForCategoryManager());
+		ArrayList<TblAccount> bankAccountsTreeForFundTransfer = rl.getBankAccountsTreeForFundTransfer(categories);
+		request.setAttribute("accountList", bankAccountsTreeForFundTransfer);
+		ArrayList<TblCategoryDto> listOfCategoryForCategoryManager = rl.getListOfCategoryForCategoryManager();
+		request.setAttribute("listOfCategory", listOfCategoryForCategoryManager);
 		if(action.equals("categoryDetail")) {
 
 		}
@@ -66,8 +68,10 @@ public class CategoryDetailController {
 		}else{
 			payment = new TblPaymentDto();
 		}
-		request.setAttribute("listOfPayments", rl.getPaymentsList(payment, fromdate, toDate));
-		request.setAttribute("listOfDepositPayments", rl.getDepositsList(payment, fromdate, toDate));
+		ArrayList<TblPaymentDto> paymentsList = rl.getPaymentsList(payment, fromdate, toDate);
+		request.setAttribute("listOfPayments", paymentsList);
+		ArrayList<TblPaymentDto> depositsList = rl.getDepositsList(payment, fromdate, toDate);
+		request.setAttribute("listOfDepositPayments", depositsList);
 		return forward;
 	}
 

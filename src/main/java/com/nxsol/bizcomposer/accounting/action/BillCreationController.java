@@ -18,6 +18,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,41 +30,45 @@ import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 @Controller
 public class BillCreationController {
+	@Autowired
+	private InvoiceInfoDao invoiceInfoDao;
+	
+	@Autowired
+	private ReceivableLIst rl;
 
 	@GetMapping("/BillCreation")
 	public ModelAndView BillCreation(TblVendorDetail form, TblRecurrentPaymentPlan form1, HttpServletRequest request,
-								HttpServletResponse response) throws Exception {
-		
+			HttpServletResponse response) throws Exception {
+
 		String forward = "/accounting/billCreation";
-		InvoiceInfoDao invoice = new InvoiceInfoDao();
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		int cvID = 0;
 		int checkStatus = 0;
-		HttpSession sess=request.getSession();
+		HttpSession sess = request.getSession();
 		Date payBillsDate = new Date();
 		String action = request.getParameter("tabid");
-		ReceivableLIst rl =  new ReceivableListImpl();
-		/*Iterator<ClientVendor> itr = cvForCombo.iterator();*/
+//		ReceivableLIst rl = new ReceivableListImpl();
+		/* Iterator<ClientVendor> itr = cvForCombo.iterator(); */
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 
 		/* Item List */
-		ArrayList<Item> itemList = invoice.getItemList(compId);
+		ArrayList<Item> itemList = invoiceInfoDao.getItemList(compId);
 		request.setAttribute("ItemList", itemList);
 
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
 		request.setAttribute("accountListForBill", accountListForBill);
 		request.setAttribute("categoryListForCombo", categoryListForCombo);
-		if(action.equals("billpayable"))
-		{
+		if (action.equals("billpayable")) {
 			forward = "/accounting/billCreation";
 		}
 
-		if(action.equals("PaidBillLists"))
-		{	
+		if (action.equals("PaidBillLists")) {
 			ArrayList<TblPaymentDto> paidBillLists = rl.getPaidBillLists();
 			ArrayList<TblPaymentDto> recurrentPaymentList = rl.getRecurrentBillPayment();
 			request.setAttribute("recurrentPaymentList", recurrentPaymentList);
@@ -71,21 +76,18 @@ public class BillCreationController {
 			forward = "success2";
 		}
 
-
 		String vendorId = request.getParameter("VendorId");
-		if(vendorId != null)
-		{
+		if (vendorId != null) {
 			int id = Integer.parseInt(vendorId);
 			cvID = id;
 		}
-		if(action.equals("UpdateRecurrentPayment"))
-		{
+		if (action.equals("UpdateRecurrentPayment")) {
 			TblRecurrentPaymentPlan cFrm = (TblRecurrentPaymentPlan) form1;
-			Gson gson=new Gson();
-			TblRecurrentPaymentPlan paymentPlan = gson.fromJson(request.getParameter("data"), TblRecurrentPaymentPlan.class);
+			Gson gson = new Gson();
+			TblRecurrentPaymentPlan paymentPlan = gson.fromJson(request.getParameter("data"),
+					TblRecurrentPaymentPlan.class);
 			String planID = request.getParameter("PlanID");
-			if(planID != "" && planID !=null)
-			{
+			if (planID != "" && planID != null) {
 				int planid = Integer.parseInt(planID);
 				paymentPlan.setPlanID(planid);
 			}
@@ -108,25 +110,23 @@ public class BillCreationController {
 		ArrayList<TblRecurrentPaymentPlan> recurentPaymentList = new ArrayList<TblRecurrentPaymentPlan>();
 		ArrayList<ClientVendor> cvForCombo = rl.getCvForBill();
 		request.setAttribute("cvForCombo", cvForCombo);
-		for(ClientVendor cv : cvForCombo)
-		{
-			/*ClientVendor cv = itr.next();*/
+		for (ClientVendor cv : cvForCombo) {
+			/* ClientVendor cv = itr.next(); */
 			TblRecurrentPaymentPlan paymentPlan = rl.getPlanOfCvID(cv.getCvID());
-			if(paymentPlan != null)
-			{	
+			if (paymentPlan != null) {
 				recurentPaymentList.add(paymentPlan);
-			}	
+			}
 		}
 		request.setAttribute("recurentPaymentList", recurentPaymentList);
 		int maxBillId = rl.getmaxBill();
 		request.setAttribute("maxBillId", maxBillId);
-		ModelAndView modelAndView =new ModelAndView(forward);
+		ModelAndView modelAndView = new ModelAndView(forward);
 		return modelAndView;
 	}
 
 	@PostMapping("/BillCreationPost")
-	public ModelAndView BillCreationPost(TblVendorDetail form, TblRecurrentPaymentPlan form1, HttpServletRequest request,
-									 HttpServletResponse response) throws Exception {
+	public ModelAndView BillCreationPost(TblVendorDetail form, TblRecurrentPaymentPlan form1,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		String forward = "/accounting/billCreation";
 		int cvID = 0;
@@ -135,26 +135,23 @@ public class BillCreationController {
 		Date payBillsDate = new Date();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-		ReceivableLIst rl = new ReceivableListImpl();
-		/*Iterator<ClientVendor> itr = cvForCombo.iterator();*/
+//		ReceivableLIst rl = new ReceivableListImpl();
+		/* Iterator<ClientVendor> itr = cvForCombo.iterator(); */
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
 		request.setAttribute("accountListForBill", accountListForBill);
 		request.setAttribute("categoryListForCombo", categoryListForCombo);
-		if(action.equals("save"))
-		{
+		if (action.equals("save")) {
 			TblVendorDetail cfrm = (TblVendorDetail) form;
-			Gson gson=new Gson();
-			TblVendorDetail vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
+			Gson gson = new Gson();
+			TblVendorDetail vDetail = gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
 			rl.updateBill(vDetail);
 
-
 		}
-		if(action.equals("AddMemorizedTransaction"))
-		{
-			String billNumberInString  = request.getParameter("BillNumber");
+		if (action.equals("AddMemorizedTransaction")) {
+			String billNumberInString = request.getParameter("BillNumber");
 			int billNo = Integer.parseInt(billNumberInString);
 			System.out.println(billNo);
 			TblVendorDetail oldDetail = rl.getBillById(billNo);
@@ -163,63 +160,59 @@ public class BillCreationController {
 			oldDetail.setAmountPaid(0);
 			String nextDate = JProjectUtil.getDateFormaterCommon().format(oldDetail.getNextDate());
 			String period = oldDetail.getRecurringPeriod();
-			//String nextDate2 = rl.getRecurringDate(period,nextDate);
-			//Date date1=new SimpleDateFormat("d/m/yy").parse(JProjectUtil.getDateLongFormater().format(nextDate2));
-			//oldDetail.setNextDate(date1);
+			// String nextDate2 = rl.getRecurringDate(period,nextDate);
+			// Date date1=new
+			// SimpleDateFormat("d/m/yy").parse(JProjectUtil.getDateLongFormater().format(nextDate2));
+			// oldDetail.setNextDate(date1);
 			rl.insertNewBill(oldDetail);
 			System.out.println(billNo);
 		}
 
-		if(action.equals("MakePayment"))
-		{
+		if (action.equals("MakePayment")) {
 			TblVendorDetail cfrm = (TblVendorDetail) form;
-			Gson gson=new Gson();
-			TblVendorDetail vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
+			Gson gson = new Gson();
+			TblVendorDetail vDetail = gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
 			System.out.println(vDetail);
 			rl.makePayment(vDetail, cvID);
 
 		}
-		if(action.equals("DeleteBill"))
-		{
+		if (action.equals("DeleteBill")) {
 			String billNum = request.getParameter("BillNum");
 			int billno = Integer.parseInt(billNum);
 			rl.deleteSelectedBill(billno);
 		}
-		if(action.equals("MakeScheduleMemorizedTransaction"))
-		{
+		if (action.equals("MakeScheduleMemorizedTransaction")) {
 			TblVendorDetail cfrm = (TblVendorDetail) form;
-			Gson gson=new Gson();
-			TblVendorDetail vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
+			Gson gson = new Gson();
+			TblVendorDetail vDetail = gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
 			Date date = JProjectUtil.getDateForBanking().parse(vDetail.getNextDateString());
 			vDetail.setNextDate(date);
 			rl.updateVendorBills(vDetail);
-			/*System.out.println(vDetail);*/
+			/* System.out.println(vDetail); */
 		}
-		if(action.equals("UpdateMemorizedTransaction"))
-		{
-			String billNumberInString  = request.getParameter("BillNumber");
+		if (action.equals("UpdateMemorizedTransaction")) {
+			String billNumberInString = request.getParameter("BillNumber");
 			int billNo = Integer.parseInt(billNumberInString);
 			rl.deleteBill(billNo);
 		}
-		if(action.equals("CreateBill"))
-		{
+		if (action.equals("CreateBill")) {
 			TblVendorDetail cfrm = (TblVendorDetail) form;
-			Gson gson=new Gson();
-			TblVendorDetail vDetail =  gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
+			Gson gson = new Gson();
+			TblVendorDetail vDetail = gson.fromJson(request.getParameter("data"), TblVendorDetail.class);
 			rl.insertNewBill(vDetail);
 			System.out.println("");
 
 		}
-		if(action.equals("setUpPayment"))
-		{
+		if (action.equals("setUpPayment")) {
 			TblRecurrentPaymentPlan cFrm = (TblRecurrentPaymentPlan) form1;
-			Gson gson=new Gson();
-			TblRecurrentPaymentPlan paymentPlan = gson.fromJson(request.getParameter("data"), TblRecurrentPaymentPlan.class);
+			Gson gson = new Gson();
+			TblRecurrentPaymentPlan paymentPlan = gson.fromJson(request.getParameter("data"),
+					TblRecurrentPaymentPlan.class);
 			rl.insertRecurrentPaymentPlan(paymentPlan, true);
 			System.out.println(paymentPlan);
 
 		}
-		ModelAndView modelAndView =new ModelAndView(forward);
+		ModelAndView modelAndView = new ModelAndView(forward);
 		return modelAndView;
 	}
 }

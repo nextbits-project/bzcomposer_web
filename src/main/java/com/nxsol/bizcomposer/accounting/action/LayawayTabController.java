@@ -8,6 +8,8 @@ import javax.servlet.http.HttpSession;
 
 import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import com.pritesh.bizcomposer.accounting.bean.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,6 +34,11 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 @Controller
 public class LayawayTabController {
+	@Autowired
+	private ReceivableLIst rl ;
+	
+	@Autowired 
+	private TblCategoryDtoLoader category ;
 	@GetMapping("/Layaway")
 	public ModelAndView LayawayTab(ReceivableListDto form, HttpServletRequest request,
 								HttpServletResponse response) throws Exception {
@@ -41,8 +48,8 @@ public class LayawayTabController {
 		HttpSession sess=request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");		
-		ReceivableLIst rl = new ReceivableListImpl();
-		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
+//		ReceivableLIst rl = new ReceivableListImpl();
+//		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
 		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();
