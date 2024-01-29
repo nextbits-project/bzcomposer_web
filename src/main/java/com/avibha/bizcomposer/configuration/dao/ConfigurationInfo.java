@@ -596,6 +596,7 @@ public class ConfigurationInfo {
 			cForm.setSoStyleID(preference.getSostyleId());
 			cForm.setIsSalePrefix(preference.getIsSalePrefix() ? "on" : "off");
 			cForm.setIsPurchasePrefix(preference.getIsPurchasePrefix() ? "on" : "off");
+			cForm.setCustTitleID(preference.getDefaultTitleID());
 
 			request.getSession().setAttribute("DefaultCongurationData", cForm);
 		} else {
@@ -616,7 +617,7 @@ public class ConfigurationInfo {
 					+ "Charge_interest,Charge_minimum,Charge_grace,Charge_reassess,Charge_MarkFinance,ProductCategoryID,LocationID,ReOrderPoint,VendorInvoiceStyleId,"
 					+ "CustomerType,PriceLevelPriority,PriceLevelDealer,PriceLevelCustomer,PriceLevelGeneral,SalesTaxRate,ShowUSAInBillShipAddress,"
 					+ "InvoiceTemplateType,EstimationTemplateType,SalesOrderTemplateType,PurchaseOrderTemplateType,PackingSlipTemplateType,DisplayPeriod,"
-					+ "StartingInvoiceNumber,StartingEstimationNumber,StartingSalesOrderNumber,StartingPONumber,EstimationStyleID,SOStyleID, IsSalePrefix, IsPurchasePrefix"
+					+ "StartingInvoiceNumber,StartingEstimationNumber,StartingSalesOrderNumber,StartingPONumber,EstimationStyleID,SOStyleID, IsSalePrefix, IsPurchasePrefix, DefaultTitleID "
 					+ " FROM bca_preference WHERE Active=1 AND CompanyID=" + companyID;
 			pstmt = con.prepareStatement(recordQuery);
 			rs = pstmt.executeQuery();
@@ -660,6 +661,7 @@ public class ConfigurationInfo {
 				cForm.setSoStyleID(rs.getInt("SOStyleID"));
 				cForm.setIsSalePrefix("1".equals(rs.getString("IsSalePrefix")) ? "on" : "off");
 				cForm.setIsPurchasePrefix("1".equals(rs.getString("IsPurchasePrefix")) ? "on" : "off");
+				cForm.setCustTitleID(rs.getInt("DefaultTitleID"));
 			}
 			pstmt.close();
 			rs.close();

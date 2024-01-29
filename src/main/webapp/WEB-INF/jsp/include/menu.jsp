@@ -206,11 +206,11 @@
                         <span><spring:message code="BzComposer.sales.LeadBoard" /></span>
                         </a>
                     </li>
-				<%-- 	<li>
-						<a href="Leads?tabid=PrintLabels" title="Print AddressLabel">
+					<li>
+						<a href="${pageContext.request.contextPath}/leadAddressLabel" title="Print AddressLabel">
                         <span><spring:message code="BzComposer.customer.LeadAddressLabels" /></span>
 						</a>
-					</li> --%>
+					</li> 
 				</ul>
 			</li>
 			<!-- LEADS END -->

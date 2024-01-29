@@ -1011,7 +1011,7 @@ public class PurchaseInfo {
 	 * O:removed
 	 */
 
-	public int insertBillingShippingAddress(TblBSAddress2 address, int addressType, boolean defaultAddress)
+	public int insertBillingShippingAddress(TblBSAddress2 address, int addressType, boolean defaultAddress, String status)
 			throws SQLException {
 		int id = -1;
 //		String sql_update = null;
@@ -1031,14 +1031,18 @@ public class PurchaseInfo {
 			if (clientVendor.isPresent()) {
 				BcaClientvendor cv = clientVendor.get();
 
-				List<BcaBillingaddress> bcaBillingaddresses = bcaBillingaddressRepository.findByClientVendor(cv);
+//				List<BcaBillingaddress> bcaBillingaddresses = bcaBillingaddressRepository.findByClientVendor(cv);
+//
+//				for (BcaBillingaddress bcaBillingaddress : bcaBillingaddresses) {
+//					bcaBillingaddress.setStatus("U");
+//					bcaBillingaddressRepository.save(bcaBillingaddress);
+//				}
+				Optional<BcaBillingaddress> existingBillAddressOpt = bcaBillingaddressRepository.findByClientVendorAndIsDefaultAndActive(cv, 1, 1);
 
-				for (BcaBillingaddress bcaBillingaddress : bcaBillingaddresses) {
-					bcaBillingaddress.setStatus("U");
-					bcaBillingaddressRepository.save(bcaBillingaddress);
-				}
+				BcaBillingaddress bcaBillingaddress = existingBillAddressOpt.orElse(new BcaBillingaddress());
 
-				BcaBillingaddress bcaBillingaddress = new BcaBillingaddress();
+
+//				BcaBillingaddress bcaBillingaddress = new BcaBillingaddress();
 				bcaBillingaddress.setAddressName(ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''"));
 				bcaBillingaddress.setClientVendor(clientVendor.get());
 				bcaBillingaddress.setName(ConstValue.hateNull(address.getName()).replaceAll("'", "''"));
@@ -1051,7 +1055,7 @@ public class PurchaseInfo {
 				bcaBillingaddress.setProvince(ConstValue.hateNull(address.getProvince()).replaceAll("'", "''"));
 				bcaBillingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
 				bcaBillingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
-				bcaBillingaddress.setStatus(address.getStatus());
+				bcaBillingaddress.setStatus(status);
 //				bcaBillingaddress.setDateAdded(
 //						DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
 				bcaBillingaddress.setDateAdded(OffsetDateTime.now());
@@ -1072,14 +1076,18 @@ public class PurchaseInfo {
 			if (clientVendor.isPresent()) {
 				BcaClientvendor cv = clientVendor.get();
 
-				List<BcaShippingaddress> bcaShippingaddresses = bcaShippingaddressRepository.findByClientVendor(cv);
+//				List<BcaShippingaddress> bcaShippingaddresses = bcaShippingaddressRepository.findByClientVendor(cv);
+//
+//				for (BcaShippingaddress bcaShippingaddress : bcaShippingaddresses) {
+//					bcaShippingaddress.setStatus("U");
+//					bcaShippingaddressRepository.save(bcaShippingaddress);
+//				}
 
-				for (BcaShippingaddress bcaShippingaddress : bcaShippingaddresses) {
-					bcaShippingaddress.setStatus("U");
-					bcaShippingaddressRepository.save(bcaShippingaddress);
-				}
+				Optional<BcaShippingaddress> existingShipAddressOpt = bcaShippingaddressRepository.findByClientVendorAndIsDefaultAndActive(cv, 1, 1);
 
-				BcaShippingaddress bcaShippingaddress = new BcaShippingaddress();
+				BcaShippingaddress bcaShippingaddress = existingShipAddressOpt.orElse(new BcaShippingaddress());
+				
+//				BcaShippingaddress bcaShippingaddress = new BcaShippingaddress();
 				bcaShippingaddress.setAddressName(ConstValue.hateNull(address.getAddressName()).replaceAll("'", "''"));
 				bcaShippingaddress.setClientVendor(clientVendor.get());
 				bcaShippingaddress.setName(ConstValue.hateNull(address.getName()).replaceAll("'", "''"));
@@ -1092,7 +1100,7 @@ public class PurchaseInfo {
 				bcaShippingaddress.setProvince(ConstValue.hateNull(address.getProvince()).replaceAll("'", "''"));
 				bcaShippingaddress.setCountry(ConstValue.hateNull(address.getCountry()).replaceAll("'", "''"));
 				bcaShippingaddress.setZipCode(ConstValue.hateNull(address.getZipCode()).replaceAll("'", "''"));
-				bcaShippingaddress.setStatus(address.getStatus());
+				bcaShippingaddress.setStatus(status);
 //				bcaShippingaddress.setDateAdded(
 //						DateHelper.StringToOffsetDateTime(JProjectUtil.getDateFormater().format(new Date())));
 				bcaShippingaddress.setDateAdded(OffsetDateTime.now());
@@ -2615,9 +2623,9 @@ public class PurchaseInfo {
 					c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 			TblBSAddress2 address = new TblBSAddress2();
 			address.setAddressWithVendorDtoBilling(c, cvID);
-			insertBillingShippingAddress(address, 1, true);
+			insertBillingShippingAddress(address, 1, true, "U");
 			address.setAddressWithVendorDtoShipping(c, cvID);
-			insertBillingShippingAddress(address, 0, true);
+			insertBillingShippingAddress(address, 0, true, "U");
 			insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(),
 					c.getGracePrd(), AssessFinanceChk, fInvoiceCharge);
 

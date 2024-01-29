@@ -654,6 +654,7 @@ public class SalesController {
 			invoiceInfoDao.getServices(request, companyID, cvId);
 			sd.getInvoiceInfo(request);
 			sd.getAllList(request);
+			
 			// sdetails.getCustomerList(request);
 
 //			ConfigurationDAO dao = new ConfigurationDAO();

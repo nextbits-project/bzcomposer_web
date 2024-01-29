@@ -77,13 +77,13 @@ $(function() {
 						<thead>
 							<tr>
 								<th colspan="7">
-									<spring:message code="BzComposer.addnewcustomer.customerinfo" />
+									<spring:message code="BzComposer.addnewcustomer.contactinfo" />
 								</th>
 							</tr>
 						</thead>		
 						<tbody>
 							<tr>
-							    <td><spring:message code="BzComposer.global.customerid" /></td>
+							    <td><spring:message code="BzComposer.global.contactid" /></td>
                                 <td><form:input path="clientVendorID" readonly="true" style="width:100px;" /></td>
 								<td colspan="5">&nbsp;</td>
 							</tr>
@@ -95,9 +95,15 @@ $(function() {
 							        <table style="width:100%;">
 							        <tr>
 							            <td>
-                                            <form:select path="title" style="width:100px;">
+                                            <%-- <form:select path="title" style="width:100px;">
                                                 <form:options items="${titleList}" itemValue="value" itemLabel="label" />
-                                            </form:select>
+                                            </form:select> --%>
+                                            <form:select path="title" style="width:100px;">
+		                                        <option value=""><spring:message code="BzComposer.ComboBox.Select" /></option>
+		                                        <c:forEach items="${titleList}" var="curObject">
+		                                            <option value="${curObject.value}" ${curObject.value==defaultCongurationData.custTitleID?'selected':''}>${curObject.label}</option>
+		                                        </c:forEach>
+		                                    </form:select>	
                                         </td>
                                         <td>
                                             <spring:message code="BzComposer.global.firstname" />

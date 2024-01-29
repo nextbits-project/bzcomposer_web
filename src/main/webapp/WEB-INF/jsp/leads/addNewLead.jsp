@@ -115,10 +115,14 @@ $(function() {
 														<td colspan="5">
 															<table style="width: 100%;">
 																<tr>
-																	<td><form:select path="title" style="width:100px;">
-																			<form:options items="${titleList}" itemValue="value"
-																				itemLabel="label" />
-																		</form:select></td>
+																	<td>
+																	<form:select path="title" style="width:100px;">
+								                                        <option value=""><spring:message code="BzComposer.ComboBox.Select" /></option>
+								                                        <c:forEach items="${titleList}" var="curObject">
+								                                            <option value="${curObject.value}" ${curObject.value==defaultCongurationData.custTitleID?'selected':''}>${curObject.label}</option>
+								                                        </c:forEach>
+								                                    </form:select>
+																	</td>
 																	<td><spring:message
 																			code="BzComposer.global.firstname" /> <span
 																		class="inputHighlighted"><spring:message

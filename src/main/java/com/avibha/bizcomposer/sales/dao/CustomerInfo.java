@@ -1680,9 +1680,9 @@ public class CustomerInfo {
 			// billing-shipping------------------------------------------Start------
 			TblBSAddress2 address = new TblBSAddress2();
 			address.setAddressWithCustomerDtoBilling(c, cvID);
-			pinfo.insertBillingShippingAddress(address, 1, true);
+			pinfo.insertBillingShippingAddress(address, 1, true, "U");
 			address.setAddressWithCustomerDtoShipping(c, cvID);
-			pinfo.insertBillingShippingAddress(address, 0, true);
+			pinfo.insertBillingShippingAddress(address, 0, true, "U");
 			// billing-shipping------------------------------------------END------
 
 			pinfo.insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(),

@@ -2194,9 +2194,9 @@ public class CustomerInfoDao {
 						c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 
 				address.setAddressWithCustomerDtoBilling(c, cvID);
-				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true);
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
 				address.setAddressWithCustomerDtoShipping(c, cvID);
-				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true);
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
 
 				if (billingAddId > 0 && shippingAddId > 0) {
 					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
@@ -2210,8 +2210,8 @@ public class CustomerInfoDao {
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 						c.getCountry(), c.getZipCode(), "0");
 				address.setAddressWithCustomerDto(c, cvID);
-				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true);
-				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true);
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
 
 				if (billingAddId > 0 && shippingAddId > 0) {
 					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);

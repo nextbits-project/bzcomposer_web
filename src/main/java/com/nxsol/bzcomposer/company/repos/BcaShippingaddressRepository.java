@@ -1,6 +1,7 @@
 package com.nxsol.bzcomposer.company.repos;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -25,6 +26,8 @@ public interface BcaShippingaddressRepository extends JpaRepository<BcaShippinga
 
 	List<BcaShippingaddress> findByClientVendor(BcaClientvendor bcaClientvendor);
 
+	Optional <BcaShippingaddress> findByClientVendorAndIsDefaultAndActive(BcaClientvendor bcaClientvendor, int isDefault, int active);
+	
 	// BcaShippingaddress
 	// findByClientVendorIdAndAddressId(@Param("clientVendorId")Integer
 	// clientVendorId ,@Param("addressId") Integer addressId);
