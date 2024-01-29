@@ -9,6 +9,7 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseDetails;
 import com.avibha.bizcomposer.purchase.dao.PurchaseDetailsDao;
+import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
@@ -43,6 +44,8 @@ public class PurchaseController {
 	@Autowired
 	private CustomerInfo customerInfo;
 	
+	@Autowired
+	private PurchaseInfo pinfo;
 
 	
 
@@ -102,6 +105,7 @@ public class PurchaseController {
 			vendorDto.setFsMarkFinanceCharge(configDto.getMarkFinanceCharge());
 			String cdate = invoiceInfoDao.setCurrentDate();
 			vendorDto.setDateAdded(cdate);
+			vendorDto.setClientVendorID((pinfo.getLastClientVendorID() + 1) + "");
 			forward = "/purchase/addNewVendor";
 		}
 

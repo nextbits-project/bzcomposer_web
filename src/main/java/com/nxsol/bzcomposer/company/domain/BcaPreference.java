@@ -825,6 +825,9 @@ public class BcaPreference {
 
     @Column(name="serviceBillName")
     private String serviceBillName;
+    
+    @Column(name="DefaultTitleID")
+    private Integer defaultTitleID;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CompanyID")
@@ -3101,4 +3104,15 @@ public class BcaPreference {
         this.employeeState = employeeState;
     }
 
+	public Integer getDefaultTitleID() {
+		return defaultTitleID;
+	}
+
+	public void setDefaultTitleID(Integer defaultTitleID) {
+		this.defaultTitleID = defaultTitleID;
+	}
+
+	
+
+    
 }

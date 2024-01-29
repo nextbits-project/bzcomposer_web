@@ -297,7 +297,7 @@ public class PurchaseOrderDetailsDao {
 //			PurchaseInfo pinfo = new PurchaseInfo();
 			int cvID = Integer.parseInt(request.getParameter("clientVendorID"));
 			address.setAddressWithVendorDto(form, cvID);
-			purchaseInfo.insertBillingShippingAddress(address, form.getAddressType(), true);
+			purchaseInfo.insertBillingShippingAddress(address, form.getAddressType(), true, "U");
 		} catch (Exception e) {
 			
 			// TODO: handle exception

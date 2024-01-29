@@ -4759,7 +4759,7 @@ public class InvoiceInfoDao {
 						+ " and bi.invoiceType.invoiceTypeId IN :invoiceTypeId and bi.sonum =:sonum";
 				TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query, BcaInvoice.class);
 				JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
-				JpaHelper.addParameter(typedQuery, query, "sonum",	(int)OrderNo);
+				JpaHelper.addParameter(typedQuery, query, "sonum", (int) OrderNo);
 				JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
 				JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", Arrays.asList(1, 7, 9));
 				bcaInvoice = typedQuery.getResultList();
@@ -5368,7 +5368,6 @@ public class InvoiceInfoDao {
 			JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
 			JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", 1);
 
-
 			if (action.equalsIgnoreCase("PreviousInvoice")) {
 				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getOrderNum() < currentIndex)
 						.sorted(Comparator.comparing(BcaInvoice::getOrderNum).reversed()).findFirst()
@@ -5401,7 +5400,6 @@ public class InvoiceInfoDao {
 					orderNo = new Long(invoice.get().getOrderNum());
 				}
 			}
-
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -5488,17 +5486,17 @@ public class InvoiceInfoDao {
 //		}
 //		return orderNo;
 //	}
-	
+
 	public Long getSalesOrderNumberByBtnName(String compId, HttpServletRequest request) {
-		
+
 		Long orderNo = null;
 		try {
-		
+
 			String action = request.getParameter("tabid");
 			int currentIndex = Integer.valueOf(request.getParameter("index"));
 			Long prevSOOrderNo = (Long) request.getSession().getAttribute("prevSOOrderNo");
 			prevSOOrderNo = prevSOOrderNo != null ? prevSOOrderNo : 0l;
-			
+
 			String query = "SELECT  bi FROM BcaInvoice bi where bi.company.companyId =:companyId "
 					+ "and bi.invoiceStatus IN :invoiceStatus" + " and bi.invoiceType.invoiceTypeId =:invoiceTypeId "
 					+ "and bi.sonum>0 ORDER BY bi.sonum";
@@ -5506,7 +5504,6 @@ public class InvoiceInfoDao {
 			JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
 			JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
 			JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", 7);
-
 
 			if (action.equalsIgnoreCase("PreviousSalesOrder")) {
 				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getSonum() < currentIndex)
@@ -5520,8 +5517,8 @@ public class InvoiceInfoDao {
 			if (action.equalsIgnoreCase("NextSalesOrder")) {
 				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getSonum() > currentIndex)
 						.sorted(Comparator.comparing(BcaInvoice::getSonum)).findFirst()
-						.orElse(typedQuery.getResultList().stream()
-								.sorted(Comparator.comparing(BcaInvoice::getSonum)).findFirst().get());
+						.orElse(typedQuery.getResultList().stream().sorted(Comparator.comparing(BcaInvoice::getSonum))
+								.findFirst().get());
 
 				orderNo = new Long(invoice.getSonum());
 
@@ -5540,14 +5537,13 @@ public class InvoiceInfoDao {
 					orderNo = new Long(invoice.get().getSonum());
 				}
 			}
-		
+
 		} catch (Exception ex) {
 			Loger.log("Exception in getSalesOrderNumberByBtnName Function" + ex.toString());
 			ex.printStackTrace();
-		} 
+		}
 		return orderNo;
 	}
-	
 
 //	public Long getSalesOrderNumberByBtnName(String compId, HttpServletRequest request) {
 //		SQLExecutor db = new SQLExecutor();
@@ -6187,22 +6183,24 @@ public class InvoiceInfoDao {
 
 		try {
 //select * from bca_clientvendorservice where CompanyID=? and ClientVendorID=?
-			List<BcaClientvendorservice> bcaClientvendorservices = bcaClientvendorserviceRepository
-					.findByCompanyAndClientVendor(Long.parseLong(compId), Integer.parseInt(cvId));
-			for (BcaClientvendorservice clientvendorservice : bcaClientvendorservices) {
-				UpdateInvoiceDto uform = new UpdateInvoiceDto();
+			if (cvId != null) {
+				List<BcaClientvendorservice> bcaClientvendorservices = bcaClientvendorserviceRepository
+						.findByCompanyAndClientVendor(Long.parseLong(compId), Integer.parseInt(cvId));
+				for (BcaClientvendorservice clientvendorservice : bcaClientvendorservices) {
+					UpdateInvoiceDto uform = new UpdateInvoiceDto();
 
-				uform.setClientVendorID(String.valueOf(clientvendorservice.getClientVendor().getClientVendorId()));
-				uform.setServiceBalance(clientvendorservice.getServiceBalance());
-				// Loger.log("The Service Balence is "+ uform.getServiceBalance());
-				// uform.setInvoiceStyleId(rs1.getInt(1));
+					uform.setClientVendorID(String.valueOf(clientvendorservice.getClientVendor().getClientVendorId()));
+					uform.setServiceBalance(clientvendorservice.getServiceBalance());
+					// Loger.log("The Service Balence is "+ uform.getServiceBalance());
+					// uform.setInvoiceStyleId(rs1.getInt(1));
 
-				uform.setDefaultService(clientvendorservice.getDefaultService() != true ? 0 : 1);
-				// Loger.log("The Default Service is "+ uform.getDefaultService());
+					uform.setDefaultService(clientvendorservice.getDefaultService() != true ? 0 : 1);
+					// Loger.log("The Default Service is "+ uform.getDefaultService());
 
-				uform.setServiceID(clientvendorservice.getServiceId());
-				// Loger.log("The ServiceID is " + uform.getServiceID());
-				balenceDetails.add(uform);
+					uform.setServiceID(clientvendorservice.getServiceId());
+					// Loger.log("The ServiceID is " + uform.getServiceID());
+					balenceDetails.add(uform);
+				}
 			}
 //            pstmt2 = con.prepareStatement(sqlString2);
 //            pstmt2.setString(1, compId);
@@ -6296,33 +6294,35 @@ public class InvoiceInfoDao {
 //			return;
 		// UpdateInvoiceDto customer = new UpdateInvoiceDto();
 		try {
-			List<BcaClientvendorservice> clientVendorServiceList = bcaClientvendorserviceRepository
-					.findByCompanyIdAndClientVendorId(Long.valueOf(compId), Integer.parseInt(cvId));
-			for (BcaClientvendorservice bcvs : clientVendorServiceList) {
-				UpdateInvoiceDto uform1 = new UpdateInvoiceDto();
-//				Loger.log("we r in Search Customer");
-//				Loger.log("The InvoiceStyleID from client vendor  is " + rs22.getString("InvoiceStyleID"));
-//				Loger.log("The ServiceId  from client vendor is " + rs22.getString("ServiceID"));
-				uform1.setServiceBalance((bcvs.getServiceBalance()));
-				Loger.log("The ServiceBalance is from clientvendor " + bcvs.getServiceBalance());
+			if (cvId != null) {
+				List<BcaClientvendorservice> clientVendorServiceList = bcaClientvendorserviceRepository
+						.findByCompanyIdAndClientVendorId(Long.valueOf(compId), Integer.parseInt(cvId));
+				for (BcaClientvendorservice bcvs : clientVendorServiceList) {
+					UpdateInvoiceDto uform1 = new UpdateInvoiceDto();
+//					Loger.log("we r in Search Customer");
+//					Loger.log("The InvoiceStyleID from client vendor  is " + rs22.getString("InvoiceStyleID"));
+//					Loger.log("The ServiceId  from client vendor is " + rs22.getString("ServiceID"));
+					uform1.setServiceBalance((bcvs.getServiceBalance()));
+					Loger.log("The ServiceBalance is from clientvendor " + bcvs.getServiceBalance());
 
-				uform1.setDefaultService(bcvs.getDefaultService() ? 1 : 0);
+					uform1.setDefaultService(bcvs.getDefaultService() ? 1 : 0);
 
-				// uform1.setServiceIdNo(rs22.getInt("ServiceID"));
-				uform1.setServiceID(bcvs.getServiceId());
+					// uform1.setServiceIdNo(rs22.getInt("ServiceID"));
+					uform1.setServiceID(bcvs.getServiceId());
 
-				Loger.log("The  service ID is from clientvendor" + bcvs.getServiceId());
-				Loger.log("33333333The  service ID is from clientvendor33333" + uform1.getServiceID());
-				BcaInvoicestyle invoiceStyle = bcaInvoicestyleRepository
-						.findByInvoiceStyleIdAndActive(bcvs.getInvoiceStyleId(), 1);
-				uform1.setInvoiceStyle(invoiceStyle.getName());
-				Optional<BcaServicetype> serviceType = bcaServicetypeRepository.findById(bcvs.getServiceId());
-				if (serviceType.isPresent()) {
-					uform1.setServiceName(serviceType.get().getServiceName());
+					Loger.log("The  service ID is from clientvendor" + bcvs.getServiceId());
+					Loger.log("33333333The  service ID is from clientvendor33333" + uform1.getServiceID());
+					BcaInvoicestyle invoiceStyle = bcaInvoicestyleRepository
+							.findByInvoiceStyleIdAndActive(bcvs.getInvoiceStyleId(), 1);
+					uform1.setInvoiceStyle(invoiceStyle.getName());
+					Optional<BcaServicetype> serviceType = bcaServicetypeRepository.findById(bcvs.getServiceId());
+					if (serviceType.isPresent()) {
+						uform1.setServiceName(serviceType.get().getServiceName());
+					}
+
+					serviceinfo.add(uform1);
+					Loger.log("Valur @@@@@@@@@@" + uform1.getDefaultService());
 				}
-
-				serviceinfo.add(uform1);
-				Loger.log("Valur @@@@@@@@@@" + uform1.getDefaultService());
 			}
 
 //			String sqlString11 = "select ClientVendorID,ServiceID,DateAdded,InvoiceStyleID,ServiceBalance,DefaultService from bca_clientvendorservice where CompanyID = ? and ClientVendorID = ?";

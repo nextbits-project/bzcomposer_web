@@ -508,7 +508,7 @@ public class PurchaseInfoDao {
 			}
 
 			BcaClientvendor bcv = new BcaClientvendor();
-			bcv.setClientVendorId(null);
+			bcv.setClientVendorId(cvID);
 			bcv.setName(c.getCname());
 			bcv.setDateAdded((c.getDateAdded() == null || c.getDateAdded().equals(""))
 					? DateHelper.convertDateToOffsetDateTime(customerInfo.string2date(" now() "))
@@ -587,9 +587,9 @@ public class PurchaseInfoDao {
 						c.getShfirstName(), c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(),
 						c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 				address.setAddressWithVendorDtoBilling(c, cvID);
-				purchaseInfo.insertBillingShippingAddress(address, 1, true);
+				purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
 				address.setAddressWithVendorDtoShipping(c, cvID);
-				purchaseInfo.insertBillingShippingAddress(address, 0, true);
+				purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
 			} else {
 				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
@@ -599,54 +599,54 @@ public class PurchaseInfoDao {
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 						c.getCountry(), c.getZipCode(), "0");
 				address.setAddressWithVendorDto(c, cvID);
-				purchaseInfo.insertBillingShippingAddress(address, 1, true);
-				purchaseInfo.insertBillingShippingAddress(address, 0, true);
+				purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
+				purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
 			}
 
 			int useIndividual = "1".equals(c.getFsUseIndividual()) ? 1 : 0;
 			int assFCharge = "1".equals(c.getFsAssessFinanceCharge()) ? 1 : 0;
 			int markFCharge = "1".equals(c.getFsMarkFinanceCharge()) ? 1 : 0;
-			purchaseInfoDao.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(),
+			purchaseInfoDao.insertVFCharge(clientVendor, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(),
 					c.getGracePrd(), assFCharge, markFCharge);
 
-			// code to save services START
-			int i;
-			String sql;
-			String serviceID = c.getTable_serID();
-			String serviceBal = c.getTable_bal();
-			String defaultser = c.getTable_defaultVal();
-			String invStyleID = c.getTable_invId();
-
-			String temp[] = null, temp2[] = null, temp3[] = null;
-			if ((serviceID != "" && serviceID != null)
-					&& (invStyleID != "" && invStyleID != null) & (serviceBal != "" && serviceBal != null)) {
-				temp = serviceID.split(";"); // serviceID is in form like
-				temp2 = invStyleID.split(";");
-				temp3 = serviceBal.split(";");
-			}
-
-			if ((temp != null) || (temp2 != null) || (temp3 != null)) {
-				java.sql.Date d = new java.sql.Date(new Date().getTime());
-
-				for (i = 0; i < temp.length; i++) {
-
-					// it confusing which column data it sets
-					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
-					pstmt_services = con.prepareStatement(sql);
-					pstmt_services.setInt(1, cvID);
-					pstmt_services.setDate(2, d);
-					pstmt_services.setInt(3, Integer.parseInt(compID));
-					pstmt_services.setInt(4, Integer.parseInt(temp2[i]));
-					pstmt_services.setFloat(5, Float.parseFloat(temp3[i]));
-					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser))
-						pstmt_services.setInt(6, 1);
-					else
-						pstmt_services.setInt(6, 0);
-					pstmt_services.setInt(7, Integer.parseInt(temp[i]));
-
-					pstmt_services.executeUpdate();
-				}
-			}
+			// code to save services START			Disabled since GUI is hidden
+//			int i;
+//			String sql;
+//			String serviceID = c.getTable_serID();
+//			String serviceBal = c.getTable_bal();
+//			String defaultser = c.getTable_defaultVal();
+//			String invStyleID = c.getTable_invId();
+//
+//			String temp[] = null, temp2[] = null, temp3[] = null;
+//			if ((serviceID != "" && serviceID != null)
+//					&& (invStyleID != "" && invStyleID != null) & (serviceBal != "" && serviceBal != null)) {
+//				temp = serviceID.split(";"); // serviceID is in form like
+//				temp2 = invStyleID.split(";");
+//				temp3 = serviceBal.split(";");
+//			}
+//
+//			if ((temp != null) || (temp2 != null) || (temp3 != null)) {
+//				java.sql.Date d = new java.sql.Date(new Date().getTime());
+//
+//				for (i = 0; i < temp.length; i++) {
+//
+//					// it confusing which column data it sets
+//					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
+//					pstmt_services = con.prepareStatement(sql);
+//					pstmt_services.setInt(1, cvID);
+//					pstmt_services.setDate(2, d);
+//					pstmt_services.setInt(3, Integer.parseInt(compID));
+//					pstmt_services.setInt(4, Integer.parseInt(temp2[i]));
+//					pstmt_services.setFloat(5, Float.parseFloat(temp3[i]));
+//					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser))
+//						pstmt_services.setInt(6, 1);
+//					else
+//						pstmt_services.setInt(6, 0);
+//					pstmt_services.setInt(7, Integer.parseInt(temp[i]));
+//
+//					pstmt_services.executeUpdate();
+//				}
+//			}
 			// code to save services END
 
 		} catch (Exception ee) {
@@ -1124,16 +1124,17 @@ public class PurchaseInfoDao {
 	 * The method inserts the information of the vendor about finance charges.
 	 */
 
-	public boolean insertVFCharge(int cvID, int useIndividual, String aIRate, String mFCharge, String gPeriod,
+	public boolean insertVFCharge(BcaClientvendor cv, int useIndividual, String aIRate, String mFCharge, String gPeriod,
 			int assFCharge, int markFCharge) {
 		boolean ret = false;
 		try {
 			// delete old record
-			bcaClientvendorfinancechargesRepository.deleteByClientVendorId(cvID);
+			bcaClientvendorfinancechargesRepository.deleteByClientVendorId(cv.getClientVendorId());
 
 			// ...............delete old record finished
 			BcaClientvendorfinancecharges cvfc = new BcaClientvendorfinancecharges();
-			cvfc.setClientVendor(null);
+			cvfc.setClientVendor(cv);
+			cvfc.setClientVendorId(cv.getClientVendorId());
 			cvfc.setUseIndividual(useIndividual > 0 ? true : false);
 			if (aIRate == null || aIRate.trim().equals(""))
 				aIRate = "0";
@@ -1929,7 +1930,7 @@ public class PurchaseInfoDao {
 				if (null != vendor.getDateInput())
 					customer.setDateInput(DateHelper.dateFormatter(vendor.getDateInput()));
 				if (null != vendor.getDateTerminated())
-				customer.setTerminatedDate(DateHelper.dateFormatter(vendor.getDateTerminated()));
+					customer.setTerminatedDate(DateHelper.dateFormatter(vendor.getDateTerminated()));
 				customer.setTerminated(vendor.getIsTerminated());
 				customer.setDbaName(vendor.getDbaname());
 				BcaBillingaddress bcaBillingaddress = bcaBillingaddressRepository
@@ -2267,6 +2268,7 @@ public class PurchaseInfoDao {
 	 * 
 	 */
 
+	
 	public boolean updateInsertVendor(String cvId, VendorDto c, String compID, int istaxable, int isAlsoClient,
 			int useIndividualFinanceCharges, int AssessFinanceChk, String status) {
 		boolean ret = false;
@@ -2391,8 +2393,8 @@ public class PurchaseInfoDao {
 					c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(), c.getShstate(),
 					c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 
-			insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(),
-					c.getGracePrd(), AssessFinanceChk, 0);
+//			insertVFCharge(cvID, useIndividualFinanceCharges, c.getAnnualIntrestRate(), c.getMinFCharges(),
+//					c.getGracePrd(), AssessFinanceChk, 0);
 
 			// --------code to save services--------------------------START---
 			int i = 0;

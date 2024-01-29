@@ -1,6 +1,7 @@
 package com.nxsol.bzcomposer.company.repos;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,6 +21,8 @@ public interface BcaBillingaddressRepository extends JpaRepository<BcaBillingadd
 			@Param("addressId") Integer addressId);
 
 	List<BcaBillingaddress> findByClientVendor(BcaClientvendor bcaClientvendor);
+	
+	Optional <BcaBillingaddress> findByClientVendorAndIsDefaultAndActive(BcaClientvendor bcaClientvendor, int isDefault, int active);
 
 	@Query("select bi from BcaBillingaddress bi where bi.clientVendor.clientVendorId = :clientVendorId and bi.status = :status")
 	BcaBillingaddress findByClientVendorIdAndStatus(@Param("clientVendorId") Integer clientVendorId,

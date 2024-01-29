@@ -96,7 +96,7 @@ function showlabelValidationDialog()
 									<tr>
 										<th><spring:message code="BzComposer.printlabels.id"/></th>
 										<th><spring:message code="BzComposer.Invoice.Company"/></th>
-										<th><spring:message code="BzComposer.global.prefix"/></th>
+										<%-- <th><spring:message code="BzComposer.global.prefix"/></th> --%>
                                         <th><spring:message code="BzComposer.global.firstname"/></th>
                                         <th><spring:message code="BzComposer.global.lastname"/></th>
 										<th style="width:200px;"><spring:message code="BzComposer.global.address1"/></th>
@@ -111,11 +111,11 @@ function showlabelValidationDialog()
 									<c:if test="${not empty CustomerDetails}">
                                         <input type="hidden" name="listSize" id="lSize" value='${CustomerDetails.size()}' />
                                         <c:forEach items="${CustomerDetails}" var="objList" varStatus="loop">
-                                            <tr id='${loop.index}$$' onclick="setRowId(${objList.clientVendorID},'${loop.index}$$');"
-                                                ondblclick="setRidOnDblClk(${objList.clientVendorID},'${loop.index}$$');">
-                                                <td>${objList.clientVendorID}</td>
-                                                <td>${objList.companyName}</td>
-                                                <td>${objList.title}</td>
+                                            <tr id='${loop.index}$$' onclick="setRowId(${objList.clientVendorId},'${loop.index}$$');"
+                                                ondblclick="setRidOnDblClk(${objList.clientVendorId},'${loop.index}$$');">
+                                                <td>${objList.clientVendorId}</td>
+                                                <td>${objList.name}</td>
+                                               <%--  <td>${objList.title}</td> --%>
                                                 <td>${objList.firstName}</td>
                                                 <td>${objList.lastName}</td>
                                                 <td>${objList.address1}</td>
