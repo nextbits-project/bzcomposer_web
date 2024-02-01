@@ -861,7 +861,7 @@ input, textarea, select {
 														</td>
 													</tr>
 													<tr>
-														<tdcolspan="3"> <spring:message
+														<td colspan="3"> <spring:message
 															code="BzComposer.addnewcustomer.billingaddress" />
 														</td>
 														<td colspan="3"><form:input path="cardBillAddress"

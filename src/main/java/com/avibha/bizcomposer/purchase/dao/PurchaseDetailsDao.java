@@ -195,7 +195,8 @@ public class PurchaseDetailsDao {
 		}
 		// country List
 		request.setAttribute("cList", cs.getCountry());
-		request.setAttribute("countryList", cs.getCountryList());
+//		request.setAttribute("countryList", cs.getCountryList());
+		request.setAttribute("countryList", cs.getCountry());
 		request.setAttribute("stateList", cs.getStateList(countryID));
 		request.setAttribute("cityList", cs.getCityList(stateID));
 

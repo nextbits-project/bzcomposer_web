@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -28,6 +29,7 @@ import com.nxsol.bzcomposer.company.repos.BcaLeadRepository;
 @SpringBootApplication
 @EntityScan(basePackages = "com.nxsol.bzcomposer.company.domain")
 @EnableJpaRepositories(basePackages = "com.nxsol.bzcomposer.company.repos")
+@EnableCaching
 public class Application extends SpringBootServletInitializer implements WebMvcConfigurer {
 
 

@@ -59,6 +59,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!--  Spring Boot Actuator  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/struts/struts -->
 		<dependency>
 			<groupId>struts</groupId>
@@ -284,8 +289,19 @@
 			<artifactId>commons-pool2</artifactId>
 			<version>2.1</version>
 		</dependency>
-
 		<!--following dependencies are added on 20230929 ends-->
+		
+		<!-- Spring Boot Starter Cache for caching abstraction added on 20240131-->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-cache</artifactId>
+	    </dependency>
+	
+	    <!-- Spring Boot Starter Data Redis for Redis integration added on 20240131-->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-data-redis</artifactId>
+	    </dependency>
 	</dependencies>
 	<build>
 		<!-- ROOT -->

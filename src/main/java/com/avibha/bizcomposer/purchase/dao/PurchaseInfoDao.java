@@ -39,7 +39,9 @@ import com.avibha.bizcomposer.purchase.forms.PrintLabelDto;
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
 import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.CustomerInfo;
+import com.avibha.bizcomposer.sales.dao.CustomerInfoDao;
 import com.avibha.bizcomposer.sales.forms.CreditCardDto;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
@@ -80,6 +82,7 @@ import com.nxsol.bzcomposer.company.repos.BcaShippingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
 import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.nxsol.bzcomposer.company.utils.JpaHelper;
+import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 /* 
@@ -132,6 +135,9 @@ public class PurchaseInfoDao {
 
 	@Autowired
 	private PurchaseInfoDao purchaseInfoDao;
+	
+	@Autowired
+	private CustomerInfoDao customerInfoDao;
 
 	@Autowired
 	private VendorCategory vendorCategory;
@@ -587,9 +593,12 @@ public class PurchaseInfoDao {
 						c.getShfirstName(), c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(),
 						c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 				address.setAddressWithVendorDtoBilling(c, cvID);
-				purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
 				address.setAddressWithVendorDtoShipping(c, cvID);
-				purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
+				if (billingAddId > 0 && shippingAddId > 0) {
+					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
+				}
 			} else {
 				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
@@ -599,10 +608,15 @@ public class PurchaseInfoDao {
 						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 						c.getCountry(), c.getZipCode(), "0");
 				address.setAddressWithVendorDto(c, cvID);
-				purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
-				purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
+				if (billingAddId > 0 && shippingAddId > 0) {
+					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
+				}
 			}
-
+			
+			insertClientVendorAccount(c, cvID);
+			
 			int useIndividual = "1".equals(c.getFsUseIndividual()) ? 1 : 0;
 			int assFCharge = "1".equals(c.getFsAssessFinanceCharge()) ? 1 : 0;
 			int markFCharge = "1".equals(c.getFsMarkFinanceCharge()) ? 1 : 0;
@@ -655,6 +669,71 @@ public class PurchaseInfoDao {
 
 		}
 		return ret;
+	}
+	private void insertClientVendorAccount(VendorDto c, int cvId) {
+
+		String oBal = "0.00";
+		int cvTypeID = Integer.parseInt(c.getIsclient());
+		if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
+			oBal = c.getOpeningUB();
+		Double openingBalance = Double.parseDouble(oBal);
+
+//		Statement stmt = null;
+		TblAccount account = new TblAccount();
+		account.setParentID(0);
+		account.setIsCategory(false);
+		account.setName(c.getLastName() + ", " + c.getFirstName() + " - " + c.getCname());
+		account.setAccountTypeID(3);
+		account.setAccountCategoryID(2);
+		account.setCvID(cvId);
+		account.setDepositPaymentID(0);
+		// 1:both 2: customer 3 :vendor
+		if (cvTypeID == 1) {
+			account.setCustomerStartingBalance(openingBalance);
+			account.setCustomerCurrentBalance(openingBalance);
+			account.setVendorStartingBalance(openingBalance);
+			account.setVendorCurrentBalance(openingBalance);
+			account.setDescription("ClientVendor account.");
+			if (account.getCustomerStartingBalance() == 2.2E-306) {
+				account.setCustomerStartingBalance(0.0);
+			}
+			if (account.getCustomerCurrentBalance() == 2.2E-306) {
+				account.setCustomerCurrentBalance(0.0);
+			}
+			if (account.getVendorCurrentBalance() == 2.2E-306) {
+				account.setVendorCurrentBalance(0.0);
+			}
+			if (account.getVendorStartingBalance() == 2.2E-306) {
+				account.setVendorStartingBalance(0.0);
+			}
+		} else if (cvTypeID == 2) {
+			account.setCustomerStartingBalance(openingBalance);
+			account.setCustomerCurrentBalance(openingBalance);
+			account.setDescription("Client account.");
+			if (account.getCustomerStartingBalance() == 2.2E-306) {
+				account.setCustomerStartingBalance(0.0);
+			}
+			if (account.getCustomerCurrentBalance() == 2.2E-306) {
+				account.setCustomerCurrentBalance(0.0);
+			}
+		} else if (cvTypeID == 3) {
+			account.setVendorStartingBalance(openingBalance);
+			account.setVendorCurrentBalance(openingBalance);
+			account.setDescription("Vendor account.");
+			if (account.getVendorStartingBalance() == 2.2E-306) {
+				account.setVendorStartingBalance(0.0);
+			}
+			if (account.getVendorCurrentBalance() == 2.2E-306) {
+				account.setVendorCurrentBalance(0.0);
+			}
+		}
+		try {
+			int accountId = -1;
+			accountId = customerInfoDao.insertClientVendorAccount(account);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 //	public boolean insertVendor(VendorDto c, String compID) {
@@ -1922,7 +2001,7 @@ public class PurchaseInfoDao {
 				for (BcaClientvendorfinancecharges fin : finance) {
 					customer.setFsUseIndividual(String.valueOf(fin.getUseIndividual()));
 					customer.setAnnualIntrestRate(String.valueOf(fin.getAnnualInterestRate()));
-					customer.setMinFCharges(String.valueOf(fin.getMarkFinanceCharge()));
+					customer.setMinFCharges(String.valueOf(fin.getMinimumFinanceCharge()));
 					customer.setGracePrd(String.valueOf(fin.getGracePeriod()));
 					customer.setFsAssessFinanceCharge(String.valueOf(fin.getAssessFinanceCharge()));
 				}
@@ -2006,7 +2085,7 @@ public class PurchaseInfoDao {
 						card.setCardHolderName(cvcard.getCardHolderName());
 						card.setCardBillAddress(cvcard.getCardBillingAddress());
 						card.setCardZip(cvcard.getCardBillingZipCode());
-						card.setCardDefault(cvcard.getDefaultCard());
+						card.setCardDefault(cvcard.getDefaultCard() != null ? cvcard.getDefaultCard() : false);
 						if (card.getCardNo() != null && card.getCardNo().length() > 4) {
 
 							String ccTypeName = cardTypeName + "...."

@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -152,6 +153,7 @@ public class PurchaseInfo {
 	@Autowired
 	private StorageShippingaddressRepository storageShippingaddressRepository;
 
+	@Cacheable(value = "vendorsCache", key = "{#compId, #sortBy}")
 	public List<VendorDto> getVendorsBySort(String compId, String sortBy) {
 		List<VendorDto> objList = new ArrayList<>();
 		List<VendorDto> serviceList = new ArrayList<>();

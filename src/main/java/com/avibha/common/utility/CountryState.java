@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
@@ -59,6 +60,7 @@ public class CountryState {
 	@Autowired
 	private BcaCountriesRepository countryRepository;
 
+	@Cacheable(value = "countryListCache")
 	public ArrayList<LabelValueBean> getCountry() {
 		List<BcaCountries> countries = countryRepository.findAllByOrderByName();
 		ArrayList<LabelValueBean> cList = new ArrayList<>();
@@ -286,6 +288,7 @@ public class CountryState {
 	}
 
 //	=================================== BCA_RECORDS ====================================
+	@Cacheable(value = "countryListCache")
 	public ArrayList<Country> getCountryList() {
 //		Statement stmt = null;
 //		ResultSet rs = null;
