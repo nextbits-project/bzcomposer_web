@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
@@ -3582,24 +3583,43 @@ public class InvoiceInfoDao {
 		return customerList;
 	}
 
+	@Cacheable(value = "clientVendorDetailsCache", key = "{#compId, #cvId}")
+	public List<BcaClientvendor> fetchClientVendorDetails(String compId, String cvId) {
+	    String jpql = "SELECT DISTINCT cv FROM BcaClientvendor cv "
+	                + "LEFT JOIN FETCH cv.clientVendorBcaCvcreditcards cc "
+	                + "LEFT JOIN FETCH cv.clientVendorBcaBillingaddresss ba "
+	                + "LEFT JOIN FETCH cv.clientVendorBcaClientvendorfinancechargess cf "
+	                + "LEFT JOIN FETCH cv.clientVendorBcaClientvendorservices cvs "
+	                + "LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa "
+	                + "WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId AND cv.clientVendorId = :clientVendorId "
+	                + "GROUP BY cv.clientVendorId ORDER BY cv.clientVendorId";
+
+	    TypedQuery<BcaClientvendor> query = entityManager.createQuery(jpql, BcaClientvendor.class)
+	            .setParameter("companyId", Long.valueOf(compId))
+	            .setParameter("clientVendorId", Integer.valueOf(cvId));
+
+	    return query.getResultList();
+	}
+	
 	public void searchSelectedCustomer(String compId, String cvId, HttpServletRequest request) {
 		ArrayList<UpdateInvoiceDto> serviceinfo = new ArrayList<UpdateInvoiceDto>();
 		UpdateInvoiceDto customer = new UpdateInvoiceDto();
 		try {
-			String jpql = "SELECT DISTINCT cv " + "FROM BcaClientvendor cv "
-					+ "LEFT JOIN FETCH cv.clientVendorBcaCvcreditcards cc "
-					+ "LEFT JOIN FETCH cv.clientVendorBcaBillingaddresss ba "
-					+ "LEFT JOIN FETCH cv.clientVendorBcaClientvendorfinancechargess cf "
-					+ "LEFT JOIN FETCH cv.clientVendorBcaClientvendorservices cvs "
-					+ "LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa "
-					+ "WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId AND cv.clientVendorId = :clientVendorId "
-					+ "GROUP BY cv.clientVendorId " + "ORDER BY cv.clientVendorId";
-
-			TypedQuery<BcaClientvendor> query = entityManager.createQuery(jpql, BcaClientvendor.class)
-					.setParameter("companyId", Long.valueOf(compId))
-					.setParameter("clientVendorId", Integer.valueOf(cvId));
-
-			List<BcaClientvendor> clientVendors = query.getResultList();
+//			String jpql = "SELECT DISTINCT cv " + "FROM BcaClientvendor cv "
+//					+ "LEFT JOIN FETCH cv.clientVendorBcaCvcreditcards cc "
+//					+ "LEFT JOIN FETCH cv.clientVendorBcaBillingaddresss ba "
+//					+ "LEFT JOIN FETCH cv.clientVendorBcaClientvendorfinancechargess cf "
+//					+ "LEFT JOIN FETCH cv.clientVendorBcaClientvendorservices cvs "
+//					+ "LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa "
+//					+ "WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId AND cv.clientVendorId = :clientVendorId "
+//					+ "GROUP BY cv.clientVendorId " + "ORDER BY cv.clientVendorId";
+//
+//			TypedQuery<BcaClientvendor> query = entityManager.createQuery(jpql, BcaClientvendor.class)
+//					.setParameter("companyId", Long.valueOf(compId))
+//					.setParameter("clientVendorId", Integer.valueOf(cvId));
+			
+			List<BcaClientvendor> clientVendors = fetchClientVendorDetails(compId, cvId);
+			
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
 			for (BcaClientvendor cv : clientVendors) {

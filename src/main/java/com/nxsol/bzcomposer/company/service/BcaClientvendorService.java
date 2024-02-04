@@ -18,6 +18,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -89,6 +90,7 @@ public class BcaClientvendorService {
 	@Autowired
 	private CountryState cs;
 
+	@Cacheable(value = "customerDetailsCache", key = "#compId")
 	public ArrayList<CustomerDto> customerDetails(String compId) {
 		BcaCompany company = bcaCompanyRepo.getOne(Long.parseLong(compId));
 		List<Object[]> clientVendors = clientVendorRepo.fetchClientVendorDetails(company);
