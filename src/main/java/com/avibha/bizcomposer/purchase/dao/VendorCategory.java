@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.avibha.common.log.Loger;
@@ -25,12 +26,11 @@ public class VendorCategory {
 
 	@Autowired
 	private BcaMastercustomergroupRepository bcaMastercustomergroupRepository;
-	
+
 	@Autowired
 	private BcaClientcategoryRepository bcaClientcategoryRepository;
-	
 
-
+	@Cacheable(value = "cvCategoryList", key = "#CompanyID")
 	public ArrayList getCVCategoryList(String CompanyID) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -57,7 +57,7 @@ public class VendorCategory {
 		} catch (Exception ee) {
 			ee.printStackTrace();
 			Loger.log(2, "Error in  Class VendorCategory and  method -getCVCategoryList " + ee.toString());
-		} 
+		}
 //		finally {
 //			db.close(con);
 //		}
@@ -70,9 +70,9 @@ public class VendorCategory {
 //		Connection con = db.getConnection();
 //		ResultSet rs = null;
 //		PreparedStatement pstmt;
-		try { 
+		try {
 			Optional<BcaClientcategory> category = bcaClientcategoryRepository.findById(Integer.parseInt(CVCategoryID));
-			if(category.isPresent()) {
+			if (category.isPresent()) {
 				CVCategory = category.get().getName();
 			}
 //			pstmt = con.prepareStatement("select Name from bca_clientcategory where CVCategoryID=? ");
@@ -102,15 +102,15 @@ public class VendorCategory {
 		String sql = null;
 //        vCustGroup = new Vector();
 		try {
-			
-			
-			List<BcaMastercustomergroup> customerGroup = bcaMastercustomergroupRepository.findByCustomerGroupIdNotAndActiveOrderByCustomerGroupId(-1, 1);
-			for(BcaMastercustomergroup mcg:customerGroup) {
-			
-					arr.add(new org.apache.struts.util.LabelValueBean(mcg.getCustomerGroupName(),
-							String.valueOf(mcg.getCustomerGroupId())));
+
+			List<BcaMastercustomergroup> customerGroup = bcaMastercustomergroupRepository
+					.findByCustomerGroupIdNotAndActiveOrderByCustomerGroupId(-1, 1);
+			for (BcaMastercustomergroup mcg : customerGroup) {
+
+				arr.add(new org.apache.struts.util.LabelValueBean(mcg.getCustomerGroupName(),
+						String.valueOf(mcg.getCustomerGroupId())));
 			}
-			
+
 //			sql = "SELECT CustomerGroupID, CustomerGroupName From bca_mastercustomergroup "
 //					+ "WHERE CustomerGroupID <> ? AND Active = ? Order By CustomerGroupID ";
 //			pstmt = con.prepareStatement(sql);
@@ -126,7 +126,7 @@ public class VendorCategory {
 
 		} catch (Exception e) {
 			Loger.log(2, "Error in  VendorCategory and  method -getCustomerGroupList " + e.toString());
-		} 
+		}
 //		finally {
 //			db.close(con);
 //		}

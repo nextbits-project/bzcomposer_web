@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.avibha.common.db.SQLExecutor;
@@ -35,6 +36,7 @@ public class CreditCard {
 	@Autowired
 	private BcaCreditcardtypeRepository bcaCreditcardtypeRepository;
 
+	@Cacheable(value = "ccTypeList", key="#CompanyID")
 	public ArrayList getCCTypeList(String CompanyID) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		// boolean ret = false;

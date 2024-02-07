@@ -19,6 +19,7 @@ import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.avibha.common.db.SQLExecutor;
@@ -36,6 +37,7 @@ public class Term {
 	@Autowired
 	private BcaTermRepository bcaTermRepository;
 	
+	@Cacheable(value = "termList", key="#CompanyID")
 	public ArrayList getTermList(String CompanyID) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		ArrayList<TblTerm> arr1 = new ArrayList<TblTerm>();

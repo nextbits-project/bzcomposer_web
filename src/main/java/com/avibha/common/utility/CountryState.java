@@ -60,7 +60,7 @@ public class CountryState {
 	@Autowired
 	private BcaCountriesRepository countryRepository;
 
-	@Cacheable(value = "countryListCache")
+	@Cacheable(value = "countryCache")
 	public ArrayList<LabelValueBean> getCountry() {
 		List<BcaCountries> countries = countryRepository.findAllByOrderByName();
 		ArrayList<LabelValueBean> cList = new ArrayList<>();
@@ -288,7 +288,7 @@ public class CountryState {
 	}
 
 //	=================================== BCA_RECORDS ====================================
-	@Cacheable(value = "countryListCache")
+	@Cacheable(value = "countryList")
 	public ArrayList<Country> getCountryList() {
 //		Statement stmt = null;
 //		ResultSet rs = null;
@@ -336,6 +336,7 @@ public class CountryState {
 		return countryList;
 	}
 
+	@Cacheable(value = "stateList", key="#country_id")
 	public ArrayList<State> getStateList(String country_id) {
 //		Statement stmt = null;
 //		ResultSet rs = null;
@@ -379,6 +380,7 @@ public class CountryState {
 		return stateList;
 	}
 
+	@Cacheable(value = "cityList", key="#state_id")
 	public ArrayList<City> getCityList(String state_id) {
 //		Statement stmt = null;
 //		ResultSet rs = null;

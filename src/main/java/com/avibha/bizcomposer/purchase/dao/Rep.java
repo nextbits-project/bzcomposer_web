@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.avibha.common.db.SQLExecutor;
@@ -34,6 +35,7 @@ public class Rep {
 	@Autowired
 	private BcaSalesrepRepository bcaSalesrepRepository;
 	
+	@Cacheable(value = "repList", key="#CompanyID")
 	public ArrayList getRepList(String CompanyID) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		// boolean ret = false;

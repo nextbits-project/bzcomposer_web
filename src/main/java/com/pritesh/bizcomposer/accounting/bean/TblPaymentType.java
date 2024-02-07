@@ -1,7 +1,11 @@
 package com.pritesh.bizcomposer.accounting.bean;
 
-public class TblPaymentType {
+import java.io.Serializable;
 
+public class TblPaymentType  implements Serializable{
+
+	 private static final long serialVersionUID = 1L;
+	 
 	 private int id = -1;
 	    
 	    private String typeName = "";

@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.avibha.common.db.SQLExecutor;
@@ -32,6 +33,8 @@ public class Shipping {
 	 */
 	@Autowired 
 	private BcaShipcarrierRepository bcaShipcarrierRepository;
+	
+	@Cacheable(value = "shipCarrierList", key="#CompanyID")
 	public ArrayList getShipCarrierList(String CompanyID) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		// boolean ret = false;

@@ -1,11 +1,14 @@
 package com.avibha.common;
 
-public class State {
-	
+import java.io.Serializable;
+
+public class State implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private long stateId;
 	private String state;
-	
-	
+
 	public State(long stateId, String state) {
 		super();
 		this.stateId = stateId;
@@ -13,7 +16,7 @@ public class State {
 	}
 
 	public State() {
-		
+
 	}
 
 	public long getStateId() {
@@ -31,6 +34,5 @@ public class State {
 	public void setState(String state) {
 		this.state = state;
 	}
-	
 
 }

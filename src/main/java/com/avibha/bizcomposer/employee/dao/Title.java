@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.avibha.common.db.SQLExecutor;
@@ -33,6 +34,7 @@ public class Title {
 	@Autowired
 	private BcaTitleRepository bcaTitleRepository;
 
+	@Cacheable(value = "titleList", key="#CompanyID")
 	public ArrayList getTitleList(String CompanyID) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();

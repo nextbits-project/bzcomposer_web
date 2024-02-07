@@ -29,6 +29,8 @@ import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -135,7 +137,7 @@ public class PurchaseInfoDao {
 
 	@Autowired
 	private PurchaseInfoDao purchaseInfoDao;
-	
+
 	@Autowired
 	private CustomerInfoDao customerInfoDao;
 
@@ -489,7 +491,8 @@ public class PurchaseInfoDao {
 	 * The method insert the new vendor. It insert all the information related to
 	 * that vendor such as finance charges,services,bsaaddress,etc.
 	 */
-
+//	@CachePut(value = "vendorsCache", key = "{#vendor.compId, #sortBy}")
+	@CacheEvict(value = "vendorsCache", allEntries = true)
 	public boolean insertVendor(VendorDto c, String compID) {
 		boolean ret = false;
 		SQLExecutor db = new SQLExecutor();
@@ -614,16 +617,16 @@ public class PurchaseInfoDao {
 					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
 				}
 			}
-			
+
 			insertClientVendorAccount(c, cvID);
-			
+
 			int useIndividual = "1".equals(c.getFsUseIndividual()) ? 1 : 0;
 			int assFCharge = "1".equals(c.getFsAssessFinanceCharge()) ? 1 : 0;
 			int markFCharge = "1".equals(c.getFsMarkFinanceCharge()) ? 1 : 0;
 			purchaseInfoDao.insertVFCharge(clientVendor, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(),
 					c.getGracePrd(), assFCharge, markFCharge);
 
-			// code to save services START			Disabled since GUI is hidden
+			// code to save services START Disabled since GUI is hidden
 //			int i;
 //			String sql;
 //			String serviceID = c.getTable_serID();
@@ -670,6 +673,7 @@ public class PurchaseInfoDao {
 		}
 		return ret;
 	}
+
 	private void insertClientVendorAccount(VendorDto c, int cvId) {
 
 		String oBal = "0.00";
@@ -2347,7 +2351,6 @@ public class PurchaseInfoDao {
 	 * 
 	 */
 
-	
 	public boolean updateInsertVendor(String cvId, VendorDto c, String compID, int istaxable, int isAlsoClient,
 			int useIndividualFinanceCharges, int AssessFinanceChk, String status) {
 		boolean ret = false;
