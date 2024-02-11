@@ -27,6 +27,10 @@ public interface BcaBillingaddressRepository extends JpaRepository<BcaBillingadd
 	@Query("select bi from BcaBillingaddress bi where bi.clientVendor.clientVendorId = :clientVendorId and bi.status = :status")
 	BcaBillingaddress findByClientVendorIdAndStatus(@Param("clientVendorId") Integer clientVendorId,
 			@Param("status") String status);
+	
+	@Query("select bi from BcaBillingaddress bi where bi.clientVendor.clientVendorId = :clientVendorId and bi.status in :statusIn")
+	BcaBillingaddress findByClientVendorIdAndStatusIn(@Param("clientVendorId") Integer clientVendorId,
+			@Param("statusIn") List<String> statusIn);
 
 	@Modifying
 	@Transactional

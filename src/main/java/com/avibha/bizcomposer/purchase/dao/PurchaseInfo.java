@@ -942,7 +942,7 @@ public class PurchaseInfo {
 		try {
 			BcaBsaddress bcaBsaddress = new BcaBsaddress();
 
-//			bcaBsaddress.setBsaddressId(bsID);
+			bcaBsaddress.setBsaddressId(bsID);
 			bcaBsaddress.setClientVendorId(cvID);
 			bcaBsaddress.setName(cname);
 			bcaBsaddress.setFirstName(fname);
@@ -1126,9 +1126,9 @@ public class PurchaseInfo {
 		 * @param cvId
 		 */
 
-		if (address.getIsDefault() == 1) {
-			updateClientInfo(address);
-		}
+//		if (address.getIsDefault() == 1) {
+//			updateClientInfo(address);
+//		}
 
 //	}catch(
 //
@@ -2607,8 +2607,8 @@ public class PurchaseInfo {
 			updateVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(),
 					c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 
-			// change status of old record...........
-			bcaBsaddressRepository.updateStatusByClientVendorIdAndStatus(cvID, Arrays.asList("N", "U"));
+			// change status of old record...........bca_bsaddress is not required
+//			bcaBsaddressRepository.updateStatusByClientVendorIdAndStatus(cvID, Arrays.asList("N", "U"));
 
 			// ......................status change finished.........
 
@@ -2616,13 +2616,14 @@ public class PurchaseInfo {
 
 			System.out.println("c.getSetdefaultbs():" + c.getSetdefaultbs());
 
-			insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(),
-					c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(), c.getBsstate(),
-					c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
-
-			insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(),
-					c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(), c.getShstate(),
-					c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
+//			bca_bsaddress is not required
+//			insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(),
+//					c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(), c.getBsstate(),
+//					c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
+//
+//			insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(),
+//					c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(), c.getShstate(),
+//					c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 			TblBSAddress2 address = new TblBSAddress2();
 			address.setAddressWithVendorDtoBilling(c, cvID);
 			insertBillingShippingAddress(address, 1, true, "U");
@@ -2632,51 +2633,52 @@ public class PurchaseInfo {
 					c.getGracePrd(), AssessFinanceChk, fInvoiceCharge);
 
 			// --------code to save services--------------------------START---
-			int i = 0;
-			String sql;
-			String serviceID = c.getTable_serID();
-
-			String serviceBal = c.getTable_bal();
-			String defaultser = c.getTable_defaultVal();
-			String invStyleID = c.getTable_invId();
-			bcaClientvendorserviceRepository.deleteByClientVendor_ClientVendorId(cvID);
-
-			if (serviceID != null && !(serviceID.equals("") || invStyleID.equals("") || serviceBal.equals(""))) {
-				String temp[] = null, temp2[] = null, temp3[] = null;
-				if ((serviceID != "" && serviceID != null)
-						&& (invStyleID != "" && invStyleID != null) & (serviceBal != "" && serviceBal != null)) {
-					temp = serviceID.split(";"); // serviceID is in form like
-
-					temp2 = invStyleID.split(";");
-					temp3 = serviceBal.split(";");
-				}
-				System.out.println("Length of temp:" + temp.length);
-
-				for (i = 0; i < temp.length; i++) {
-					BcaClientvendorservice clientvendorservice = new BcaClientvendorservice();
-					Optional<BcaClientvendor> vendor = bcaClientvendorRepository.findById(cvID);
-					if (vendor.isPresent())
-						clientvendorservice.setClientVendor(vendor.get());
-					LocalDateTime currentDateTime = LocalDateTime.now();
-					OffsetDateTime dateAdded = OffsetDateTime.of(currentDateTime, ZoneOffset.UTC);
-
-					clientvendorservice.setDateAdded(dateAdded);
-
-					Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
-					if (company.isPresent())
-						clientvendorservice.setCompany(company.get());
-					clientvendorservice.setInvoiceStyleId(Integer.parseInt(temp2[i]));
-					clientvendorservice.setServiceBalance(Double.parseDouble(temp3[i]));
-					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser)) {
-
-						clientvendorservice.setDefaultService(true);
-					} else {
-						clientvendorservice.setDefaultService(false);
-					}
-					bcaClientvendorserviceRepository.save(clientvendorservice);
-
-				}
-			}
+			// code to save services START Disabled since GUI is hidden
+//			int i = 0;
+//			String sql;
+//			String serviceID = c.getTable_serID();
+//
+//			String serviceBal = c.getTable_bal();
+//			String defaultser = c.getTable_defaultVal();
+//			String invStyleID = c.getTable_invId();
+//			bcaClientvendorserviceRepository.deleteByClientVendor_ClientVendorId(cvID);
+//
+//			if (serviceID != null && !(serviceID.equals("") || invStyleID.equals("") || serviceBal.equals(""))) {
+//				String temp[] = null, temp2[] = null, temp3[] = null;
+//				if ((serviceID != "" && serviceID != null)
+//						&& (invStyleID != "" && invStyleID != null) & (serviceBal != "" && serviceBal != null)) {
+//					temp = serviceID.split(";"); // serviceID is in form like
+//
+//					temp2 = invStyleID.split(";");
+//					temp3 = serviceBal.split(";");
+//				}
+//				System.out.println("Length of temp:" + temp.length);
+//
+//				for (i = 0; i < temp.length; i++) {
+//					BcaClientvendorservice clientvendorservice = new BcaClientvendorservice();
+//					Optional<BcaClientvendor> vendor = bcaClientvendorRepository.findById(cvID);
+//					if (vendor.isPresent())
+//						clientvendorservice.setClientVendor(vendor.get());
+//					LocalDateTime currentDateTime = LocalDateTime.now();
+//					OffsetDateTime dateAdded = OffsetDateTime.of(currentDateTime, ZoneOffset.UTC);
+//
+//					clientvendorservice.setDateAdded(dateAdded);
+//
+//					Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
+//					if (company.isPresent())
+//						clientvendorservice.setCompany(company.get());
+//					clientvendorservice.setInvoiceStyleId(Integer.parseInt(temp2[i]));
+//					clientvendorservice.setServiceBalance(Double.parseDouble(temp3[i]));
+//					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser)) {
+//
+//						clientvendorservice.setDefaultService(true);
+//					} else {
+//						clientvendorservice.setDefaultService(false);
+//					}
+//					bcaClientvendorserviceRepository.save(clientvendorservice);
+//
+//				}
+//			}
 			// --------------------------code to save services
 			// -------------------------------------END-------
 

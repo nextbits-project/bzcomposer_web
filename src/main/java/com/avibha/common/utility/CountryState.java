@@ -336,7 +336,7 @@ public class CountryState {
 		return countryList;
 	}
 
-	@Cacheable(value = "stateList", key="#country_id")
+	@Cacheable(value = "stateList", key="#country_id", condition = "#country_id != null")
 	public ArrayList<State> getStateList(String country_id) {
 //		Statement stmt = null;
 //		ResultSet rs = null;

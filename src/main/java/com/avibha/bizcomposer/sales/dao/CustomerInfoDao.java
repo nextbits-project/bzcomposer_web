@@ -2112,7 +2112,7 @@ public class CustomerInfoDao {
 			BcaClientvendor cvSaved = bcaClientvendorRepository.save(bcv);
 			if (null != cvSaved) {
 				ret = true;
-				insertCustomerStorage(c, compID);
+//				insertCustomerStorage(c, compID);
 			}
 //
 //			String sqlString = "insert into bca_clientvendor(ClientVendorID, Name,DateAdded, CustomerTitle, FirstName, LastName, Address1, Address2,"
@@ -2182,16 +2182,17 @@ public class CustomerInfoDao {
 			if (c.getCvTypeID() != 3) {
 				insertClientInfo(c, cvID, compID);
 			}
-			int bsAddID = purchaseInfo.getLastBsAdd() + 1;
+//			int bsAddID = purchaseInfo.getLastBsAdd() + 1;
 			TblBSAddress2 address = new TblBSAddress2();
 			if ("0".equals(c.getSetdefaultbs())) {
-				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(),
-						c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(), c.getBsstate(),
-						c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
-
-				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(),
-						c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(), c.getShstate(),
-						c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
+//				bca_bsaddress is not required
+//				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(), c.getBsfirstName(),
+//						c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(), c.getBsstate(),
+//						c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
+//
+//				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(), c.getShfirstName(),
+//						c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(), c.getShstate(),
+//						c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 
 				address.setAddressWithCustomerDtoBilling(c, cvID);
 				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
@@ -2202,13 +2203,14 @@ public class CustomerInfoDao {
 					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
 				}
 			} else {
-				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
-						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
-						c.getCountry(), c.getZipCode(), "1");
-
-				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
-						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
-						c.getCountry(), c.getZipCode(), "0");
+//				bca_bsaddress is not required
+//				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
+//						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
+//						c.getCountry(), c.getZipCode(), "1");
+//
+//				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
+//						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
+//						c.getCountry(), c.getZipCode(), "0");
 				address.setAddressWithCustomerDto(c, cvID);
 				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
 				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");

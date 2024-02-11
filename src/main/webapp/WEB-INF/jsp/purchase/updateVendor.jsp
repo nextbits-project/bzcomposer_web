@@ -1001,7 +1001,7 @@ $(function() {
                                                 <thead>
                                                     <tr>
                                                         <td>
-                                                            <input type="checkbox" id="chk_useind" name="UseIndividualFinanceCharges" onclick="hideother(this.form);">
+                                                            <input type="checkbox" id="chk_useind" name="UseIndividualFinanceCharges" onclick="toggleFields(this.form);"><!-- hideother(this.form); -->
                                                             <font size="2">
                                                                 <spring:message code="BzComposer.addnewcustomer.useindividualfinancecharges" />
                                                             </font>
@@ -1029,7 +1029,7 @@ $(function() {
                                                                                     <spring:message code="BzComposer.addnewcustomer.annualintrestrate"/>
                                                                                 </td>
                                                                                 <td colspan="3">
-                                                                                    <form:input onkeypress="return numbersonly(event,this.value)" path="annualIntrestRate" disabled="true" />
+                                                                                    <form:input onkeypress="return numbersonly(event,this.value)" path="annualIntrestRate" readonly="true" />
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -1037,7 +1037,7 @@ $(function() {
                                                                                     <spring:message code="BzComposer.addnewcustomer.minimumfinanacecharge" />
                                                                                 </td>
                                                                                 <td colspan="3">
-                                                                                    <form:input onkeypress="return numbersonly(event,this.value)" path="minFCharges" disabled="true" />
+                                                                                    <form:input onkeypress="return numbersonly(event,this.value)" path="minFCharges" readonly="true" />
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -1045,7 +1045,7 @@ $(function() {
                                                                                     <spring:message code="BzComposer.addnewcustomer.graceperiod" />
                                                                                 </td>
                                                                                 <td colspan="3">
-                                                                                    <form:input onkeypress="return numbersonly(event,this.value)" path="gracePrd" disabled="true" />
+                                                                                    <form:input onkeypress="return numbersonly(event,this.value)" path="gracePrd" readonly="true" />
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
@@ -1063,14 +1063,14 @@ $(function() {
                                                                         <tbody>
                                                                             <tr>
                                                                                 <td colspan="4">
-                                                                                    <input type="checkbox" id="chk1" name="AssessFinanceChk" disabled="true" value="${vendorDto.fsAssessFinanceCharge}" ${vendorDto.fsAssessFinanceCharge=='on'?'checked':''} />
+                                                                                    <input type="checkbox" id="chk1" name="AssessFinanceChk" readonly="true" value="${vendorDto.fsAssessFinanceCharge}" ${vendorDto.fsAssessFinanceCharge=='on'?'checked':''} />
                                                                                     <spring:message code="BzComposer.addnewcustomer.assessfinance"/>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr><td colspan="4">&nbsp;</td></tr>
                                                                             <tr>
                                                                                 <td colspan="4">
-                                                                                    <input type="checkbox" id="chk2" name="FChargeInvoiceChk" disabled="true" value="${vendorDto.fsMarkFinanceCharge}" ${vendorDto.fsMarkFinanceCharge=='on'?'checked':''} />
+                                                                                    <input type="checkbox" id="chk2" name="FChargeInvoiceChk" readonly="true" value="${vendorDto.fsMarkFinanceCharge}" ${vendorDto.fsMarkFinanceCharge=='on'?'checked':''} />
                                                                                     <spring:message code="BzComposer.addnewcustomer.markfinanacechargeinvoice"/>
                                                                                 </td>
                                                                             </tr>
@@ -2049,6 +2049,22 @@ function showServiceValidationDialog()
         }
     });
     return false;
+}
+function toggleFields(form) {
+	var chbox = document.getElementById('chk_useind');
+
+	// Define the fields to be toggled
+	var fieldsToToggle = [ 'annualIntrestRate', 'minFCharges', 'gracePrd',
+			'chk1', 'chk2' ];
+
+	fieldsToToggle.forEach(function(fieldName) {
+		var field = document.VendorForm[fieldName];
+		if (chbox.checked) {
+			field.removeAttribute('readonly');
+		} else {
+			field.setAttribute('readonly', 'true');
+		}
+	});
 }
 </script>
 

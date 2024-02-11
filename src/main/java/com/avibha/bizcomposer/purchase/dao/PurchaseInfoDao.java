@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -495,9 +496,9 @@ public class PurchaseInfoDao {
 	@CacheEvict(value = "vendorsCache", allEntries = true)
 	public boolean insertVendor(VendorDto c, String compID) {
 		boolean ret = false;
-		SQLExecutor db = new SQLExecutor();
-		Connection con = db.getConnection();
-		PreparedStatement pstmt_services = null;
+//		SQLExecutor db = new SQLExecutor();
+//		Connection con = db.getConnection();
+//		PreparedStatement pstmt_services = null;
 
 		try {
 			String oBal = "0";
@@ -585,37 +586,40 @@ public class PurchaseInfoDao {
 			purchaseInfoDao.insertVendorCreditCard(c.getCcType(), cvID, c.getCardNo(), c.getExpDate(), c.getCw2(),
 					c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
 
-			int bsAddID = purchaseInfoDao.getLastBsAdd() + 1;
+			
+//			int bsAddID = purchaseInfoDao.getLastBsAdd() + 1; //bca_bsaddress is not required
 			TblBSAddress2 address = new TblBSAddress2();
 			if ("0".equals(c.getSetdefaultbs())) {
-				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(),
-						c.getBsfirstName(), c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(),
-						c.getBsstate(), c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
-
-				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(),
-						c.getShfirstName(), c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(),
-						c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
+//				bca_bsaddress is not required
+//				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(),
+//						c.getBsfirstName(), c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(),
+//						c.getBsstate(), c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
+//
+//				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(),
+//						c.getShfirstName(), c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(),
+//						c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 				address.setAddressWithVendorDtoBilling(c, cvID);
 				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
 				address.setAddressWithVendorDtoShipping(c, cvID);
 				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
-				if (billingAddId > 0 && shippingAddId > 0) {
-					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
-				}
+//				if (billingAddId > 0 && shippingAddId > 0) {
+//					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
+//				}
 			} else {
-				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
-						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
-						c.getCountry(), c.getZipCode(), "1");
-
-				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
-						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
-						c.getCountry(), c.getZipCode(), "0");
-				address.setAddressWithVendorDto(c, cvID);
+//				bca_bsaddress is not required
+//				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
+//						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
+//						c.getCountry(), c.getZipCode(), "1");
+//
+//				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
+//						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
+//						c.getCountry(), c.getZipCode(), "0");
+//				address.setAddressWithVendorDto(c, cvID);
 				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
 				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
-				if (billingAddId > 0 && shippingAddId > 0) {
-					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
-				}
+//				if (billingAddId > 0 && shippingAddId > 0) {
+//					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
+//				}
 			}
 
 			insertClientVendorAccount(c, cvID);
@@ -1927,30 +1931,56 @@ public class PurchaseInfoDao {
 //		return vendorList;
 //	}
 
+	@Cacheable(value = "vendorDetails", key = "{#compId, #cvId}")
+	public List<BcaClientvendor> getVendorDetails(String compId, String cvId) {
+		StringBuffer query = new StringBuffer(
+				"SELECT DISTINCT bcv FROM BcaClientvendor bcv " + " LEFT JOIN bcv.clientVendorBcaCvcreditcards cc "
+						+ " LEFT JOIN bcv.clientVendorBcaClientvendorfinancechargess vfc "
+						+ " LEFT JOIN bcv.clientVendorBcaBillingaddresss ba "
+
+						+ " WHERE bcv.company.companyId = :companyId " + "AND bcv.cvtypeId IN :cvtypeId "
+						+ " AND bcv.status IN :status " + "AND bcv.deleted = :deleted " + "AND bcv.active = :active"
+						+ (cvId != null ? " AND bcv.clientVendorId = :clientVendorId " : " ")
+						+ " GROUP BY bcv.clientVendorId order by bcv.clientVendorId");
+
+		TypedQuery<BcaClientvendor> typedQuery = this.entityManager.createQuery(query.toString(),
+				BcaClientvendor.class);
+		JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.parseLong(compId));
+		JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvId));
+		JpaHelper.addParameter(typedQuery, query.toString(), "cvtypeId", Arrays.asList(1, 3));
+		JpaHelper.addParameter(typedQuery, query.toString(), "status", Arrays.asList("N", "U"));
+		JpaHelper.addParameter(typedQuery, query.toString(), "deleted", 0);
+		JpaHelper.addParameter(typedQuery, query.toString(), "active", 1);
+		List<BcaClientvendor> clientvendors = typedQuery.getResultList();
+
+		return clientvendors;
+	}
+
 	public ArrayList SearchVendor(String compId, String cvId, HttpServletRequest request, VendorDto customer) {
 
 		ArrayList<VendorDto> vendorList = new ArrayList<>();
 		try {
 
-			StringBuffer query = new StringBuffer(
-					"SELECT DISTINCT bcv FROM BcaClientvendor bcv " + " LEFT JOIN bcv.clientVendorBcaCvcreditcards cc "
-							+ " LEFT JOIN bcv.clientVendorBcaClientvendorfinancechargess vfc "
-							+ " LEFT JOIN bcv.clientVendorBcaBillingaddresss ba "
+//			StringBuffer query = new StringBuffer(
+//					"SELECT DISTINCT bcv FROM BcaClientvendor bcv " + " LEFT JOIN bcv.clientVendorBcaCvcreditcards cc "
+//							+ " LEFT JOIN bcv.clientVendorBcaClientvendorfinancechargess vfc "
+//							+ " LEFT JOIN bcv.clientVendorBcaBillingaddresss ba "
+//
+//							+ " WHERE bcv.company.companyId = :companyId " + "AND bcv.cvtypeId IN :cvtypeId "
+//							+ " AND bcv.status IN :status " + "AND bcv.deleted = :deleted " + "AND bcv.active = :active"
+//							+ (cvId != null ? " AND bcv.clientVendorId = :clientVendorId " : " ")
+//							+ " GROUP BY bcv.clientVendorId order by bcv.clientVendorId");
+//
+//			TypedQuery<BcaClientvendor> typedQuery = this.entityManager.createQuery(query.toString(),
+//					BcaClientvendor.class);
+//			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.parseLong(compId));
+//			JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvId));
+//			JpaHelper.addParameter(typedQuery, query.toString(), "cvtypeId", Arrays.asList(1, 3));
+//			JpaHelper.addParameter(typedQuery, query.toString(), "status", Arrays.asList("N", "U"));
+//			JpaHelper.addParameter(typedQuery, query.toString(), "deleted", 0);
+//			JpaHelper.addParameter(typedQuery, query.toString(), "active", 1);
 
-							+ " WHERE bcv.company.companyId = :companyId " + "AND bcv.cvtypeId IN :cvtypeId "
-							+ " AND bcv.status IN :status " + "AND bcv.deleted = :deleted " + "AND bcv.active = :active"
-							+ (cvId != null ? " AND bcv.clientVendorId = :clientVendorId " : " ")
-							+ " GROUP BY bcv.clientVendorId order by bcv.clientVendorId");
-
-			TypedQuery<BcaClientvendor> typedQuery = this.entityManager.createQuery(query.toString(),
-					BcaClientvendor.class);
-			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.parseLong(compId));
-			JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvId));
-			JpaHelper.addParameter(typedQuery, query.toString(), "cvtypeId", Arrays.asList(1, 3));
-			JpaHelper.addParameter(typedQuery, query.toString(), "status", Arrays.asList("N", "U"));
-			JpaHelper.addParameter(typedQuery, query.toString(), "deleted", 0);
-			JpaHelper.addParameter(typedQuery, query.toString(), "active", 1);
-			List<BcaClientvendor> clientvendors = typedQuery.getResultList();
+			List<BcaClientvendor> clientvendors = getVendorDetails(compId, cvId);
 			for (BcaClientvendor vendor : clientvendors) {
 				if (!vendorList.isEmpty()) {
 					customer = new VendorDto();
@@ -2016,8 +2046,9 @@ public class PurchaseInfoDao {
 					customer.setTerminatedDate(DateHelper.dateFormatter(vendor.getDateTerminated()));
 				customer.setTerminated(vendor.getIsTerminated());
 				customer.setDbaName(vendor.getDbaname());
+				List<String> statusIn = Arrays.asList("N", "U");
 				BcaBillingaddress bcaBillingaddress = bcaBillingaddressRepository
-						.findByClientVendorIdAndStatus(Integer.parseInt(cvId), "N");
+						.findByClientVendorIdAndStatusIn(Integer.parseInt(cvId), statusIn);
 				if (bcaBillingaddress != null) {
 					customer.setBscname(bcaBillingaddress.getName());
 					customer.setBsfirstName(bcaBillingaddress.getFirstName());
@@ -2035,7 +2066,7 @@ public class PurchaseInfoDao {
 				}
 
 				BcaShippingaddress shippingAddress = bcaShippingaddressRepository
-						.findByClientVendorIdAndStatus(Integer.parseInt(cvId), "N");
+						.findByClientVendorIdAndStatusIn(Integer.parseInt(cvId), statusIn);
 				if (null != shippingAddress) {
 					customer.setShcname(shippingAddress.getName());
 					customer.setShfirstName(shippingAddress.getFirstName());
