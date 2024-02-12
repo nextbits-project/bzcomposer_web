@@ -201,6 +201,14 @@ public class SalesController {
 				forward = "redirect:Customer?tabid=Customer";
 			}
 			return forward;
+		} else if (vendorAction != null && vendorAction.equalsIgnoreCase("CONVERT")) {
+			cvID = request.getParameter("cvID");
+			if (customerInfo.convertClientVendor(cvID, companyID, 2)) {
+				Loger.log("\nCustomer Convert succeeded, id=" + cvID);
+				sess.setAttribute("actionMsg", "Contact Converted to Customer successfully!");
+			} else {
+				Loger.log("\nContact Convertion to Customer failed, id=" + cvID);
+			}
 		}
 
 		if (action == null || action == "" || action.trim().length() < 1)
@@ -254,7 +262,7 @@ public class SalesController {
 			if (cvId == null) {
 				cvId = firstCvID;
 			}
-			clientVendorService.searchSelectedCustomer(cvId, request, customerDto);
+//			clientVendorService.searchSelectedCustomer(cvId, request, customerDto);
 			clientVendorService.getAllList(request);
 
 			if (rowId != null) {
@@ -654,7 +662,7 @@ public class SalesController {
 			invoiceInfoDao.getServices(request, companyID, cvId);
 			sd.getInvoiceInfo(request);
 			sd.getAllList(request);
-			
+
 			// sdetails.getCustomerList(request);
 
 //			ConfigurationDAO dao = new ConfigurationDAO();
@@ -741,7 +749,7 @@ public class SalesController {
 			String CustomerSize = dao.getNumberOfCustomer(Long.valueOf(companyID));
 			request.setAttribute("CustomerSize", CustomerSize);
 			forward = "/sales/updateCustomer";
-		}else if (action.equalsIgnoreCase("editContact")) { // Edit Customer Info
+		} else if (action.equalsIgnoreCase("editContact")) { // Edit Customer Info
 			String cvId = request.getParameter("cvId");
 			request.getSession().setAttribute("editedCVID", cvId);
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
@@ -787,7 +795,7 @@ public class SalesController {
 			}
 			sd.AddCustomer(request, customerDto);
 			if (IN_URI.endsWith(CUSTOMER_URI)) {
-				forward = "redirect:/Customer?tabid="+contact;
+				forward = "redirect:/Customer?tabid=" + contact;
 			} else {
 				forward = "/sales/payHistory";
 			}

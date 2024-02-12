@@ -28,6 +28,8 @@ import javax.transaction.Transactional;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.employee.dao.Title;
@@ -332,6 +334,7 @@ public class CustomerInfoDao {
 		return objList;
 	}
 
+	@Cacheable(value = "contactDetails", key="#compId")
 	public ArrayList<CustomerDto> contactDetails(String compId) {
 		ArrayList<CustomerDto> objList = new ArrayList<>();
 		Title title = new Title();
@@ -2013,6 +2016,7 @@ public class CustomerInfoDao {
 	private VendorCategory vc;
 
 //	Insert Customer
+	@CacheEvict(value = "contactDetails", allEntries = true)
 	public boolean insertCustomer(CustomerDto c, String compID) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();

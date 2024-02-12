@@ -101,6 +101,10 @@ table.tabla-listados tbody tr td {
 											<input type="button" class="formbutton"
 											onclick="openSendThroughOutlook();" style="padding: 7 15px;"
 											value="<spring:message code='BzComposer.Email.SendThroughOutlook'/>" />
+											<input type="button"
+											class="formbutton" onclick="manageCustomer('CONVERT');"
+											style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Customer.transform.customer'/>" />
 										</td>
 									</tr>
 									<tr>
@@ -267,6 +271,22 @@ function manageCustomer(cmd){
 			}
 			return false;
 		}
+		else if (cmd=="CONVERT") {
+			if(confirm("<spring:message code='BzComposer.customerinfo.converttocustomer'/>")==true) {
+				//window.location = "Customer?tabid=Customer&customerAction=DELETE&cvID="+clientVendorID;
+				$.ajax({
+                    type : "GET",
+                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvID="+itemID,
+                    success : function(data) {
+                        location.reload();
+                    },
+                    error : function(error) {
+                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+                    }
+                });
+			}
+			return false;
+		}
 	}
 }
 function addNewCustomer(){
@@ -320,6 +340,19 @@ function openMailSender(){
         }
         CustIDs = CustIDs.substring(0, CustIDs.length-1);
         window.open("Customer?tabid=ShowEmailOnCustomerBoard&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
+    }
+}
+function transferToCustomer(){
+    if (selectedRowIndexs.length == 0){
+        alert("<spring:message code='BzComposer.printlabels.selectcustomer'/>");
+        return false;
+    }else{
+        let CustIDs = "";
+        for(let x=0; x<selectedRowIndexs.length; x++){
+            CustIDs = CustIDs + selectedRowIndexs[x] +":";
+        }
+        CustIDs = CustIDs.substring(0, CustIDs.length-1);
+        window.open("Customer?tabid=transferToCustomer&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
     }
 }
 function openMailTemplates(){

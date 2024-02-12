@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.nxsol.bzcomposer.company.domain.BcaBsaddress;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorfinancecharges;
@@ -139,8 +141,9 @@ public class InvoiceInfo {
 	@Autowired
 	private PurchaseInfo purchaseInfo;
 
-	@Autowired 
+	@Autowired
 	private CustomerInfo customerInfo;
+
 	public ArrayList getItemList(String compId) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -2367,7 +2370,8 @@ public class InvoiceInfo {
 //				customer.setDateInput(bcv.getDateInput().format(formatter));
 //				customer.setTerminatedDate(bcv.getDateTerminated().format(formatter));
 				customer.setDateInput(bcv.getDateInput() != null ? bcv.getDateInput().format(formatter) : null);
-				customer.setTerminatedDate(bcv.getDateTerminated() != null ? bcv.getDateTerminated().format(formatter) : null);
+				customer.setTerminatedDate(
+						bcv.getDateTerminated() != null ? bcv.getDateTerminated().format(formatter) : null);
 
 				customer.setTerminated(bcv.getIsTerminated());
 			}
@@ -4611,48 +4615,15 @@ public class InvoiceInfo {
 //		return hlookup;
 //	}
 
-	@Transactional
-	public ArrayList searchHistory(HttpServletRequest request, String cond, String cvId, String periodFrom,
-			String periodTo) {
-//		SQLExecutor db = new SQLExecutor();
-//		ResultSet rs = null;
-//		Connection con = db.getConnection();
-//		PreparedStatement pstmt = null;
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-
-//		CustomerInfo cinfo = new CustomerInfo();
-		ArrayList<TrHistoryLookUp> objList = new ArrayList<>();
-		BigDecimal finalTotal = new BigDecimal("0"), finalBalance = new BigDecimal("0");
-
+	@Cacheable(value = "getSearchHistory", key = "{#cond, #cvId, #periodFrom, #periodTo}")
+	public List<BcaInvoice> getSearchHistory(String cond, String cvId, String periodFrom, String periodTo) {
 		String cvIdCase = "";
-//		if(!cvId.isEmpty()){
-//			cvIdCase = "i.ClientVendorID ="+cvId+" AND";
-//		}
 		if (!cvId.isEmpty()) {
 			cvIdCase = "i.clientVendor.clientVendorId =" + cvId + " and";
 		}
-//		String sqlString = "select i.InvoiceID, i.OrderNum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total, i.Balance, i.Shipped, i.IsEmailed, it.Name,i.ClientVendorID "
-//				+ " FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
-//				+ " WHERE " + cvIdCase + " i.InvoiceTypeID IN(1,7,10) ";
-
-//		StringBuffer query = new StringBuffer(
-//				"select i from BcaInvoice as i inner join BcaInvoiceType as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
-//						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
 		StringBuffer query = new StringBuffer(
-
 				"select i from BcaInvoice as i inner join BcaInvoicetype as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
-
 						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
-//		if (cond.equalsIgnoreCase("ShowAll")) {
-//			Loger.log("The string of showall is " + sqlString);
-//		} else {
-//			Loger.log("the String of the By Period is" + sqlString);
-//			if (periodFrom != null && periodTo != null && periodFrom.trim().length() > 1
-//					&& periodTo.trim().length() > 1) {
-//				sqlString = sqlString + " and i.DateAdded between '" + cinfo.string2date(periodFrom) + "' and '"
-//						+ cinfo.string2date(periodTo) + "'";
-//			}
-//		}
 
 		if (cond.equalsIgnoreCase("ShowAll")) {
 			Loger.log("The string of showall is " + query.toString());
@@ -4664,12 +4635,72 @@ public class InvoiceInfo {
 						+ customerInfo.string2date(periodTo) + "'");
 			}
 		}
-
-//		sqlString = sqlString + " GROUP BY i.InvoiceID order by it.name, i.Ordernum";
 		query.append(" group by i.invoiceId order by it.name , i.orderNum");
+		TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query.toString(), BcaInvoice.class);
+		List<BcaInvoice> resultList = typedQuery.getResultList();
+
+		return resultList;
+	}
+
+	@Transactional
+	public ArrayList searchHistory(HttpServletRequest request, String cond, String cvId, String periodFrom,
+			String periodTo) {
+////		SQLExecutor db = new SQLExecutor();
+////		ResultSet rs = null;
+////		Connection con = db.getConnection();
+////		PreparedStatement pstmt = null;
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+//
+////		CustomerInfo cinfo = new CustomerInfo();
+		ArrayList<TrHistoryLookUp> objList = new ArrayList<>();
+		BigDecimal finalTotal = new BigDecimal("0"), finalBalance = new BigDecimal("0");
+//
+//		String cvIdCase = "";
+////		if(!cvId.isEmpty()){
+////			cvIdCase = "i.ClientVendorID ="+cvId+" AND";
+////		}
+//		if (!cvId.isEmpty()) {
+//			cvIdCase = "i.clientVendor.clientVendorId =" + cvId + " and";
+//		}
+////		String sqlString = "select i.InvoiceID, i.OrderNum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total, i.Balance, i.Shipped, i.IsEmailed, it.Name,i.ClientVendorID "
+////				+ " FROM bca_invoice as i INNER JOIN bca_invoicetype as it on i.InvoiceTypeID = it.InvoiceTypeID "
+////				+ " WHERE " + cvIdCase + " i.InvoiceTypeID IN(1,7,10) ";
+//
+////		StringBuffer query = new StringBuffer(
+////				"select i from BcaInvoice as i inner join BcaInvoiceType as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
+////						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
+//		StringBuffer query = new StringBuffer(
+//
+//				"select i from BcaInvoice as i inner join BcaInvoicetype as it on i.invoiceType.invoiceTypeId = it.invoiceTypeId where "
+//
+//						+ cvIdCase + " i.invoiceType.invoiceTypeId in (1,7,10)  ");
+////		if (cond.equalsIgnoreCase("ShowAll")) {
+////			Loger.log("The string of showall is " + sqlString);
+////		} else {
+////			Loger.log("the String of the By Period is" + sqlString);
+////			if (periodFrom != null && periodTo != null && periodFrom.trim().length() > 1
+////					&& periodTo.trim().length() > 1) {
+////				sqlString = sqlString + " and i.DateAdded between '" + cinfo.string2date(periodFrom) + "' and '"
+////						+ cinfo.string2date(periodTo) + "'";
+////			}
+////		}
+//
+//		if (cond.equalsIgnoreCase("ShowAll")) {
+//			Loger.log("The string of showall is " + query.toString());
+//		} else {
+//			Loger.log("the String of the By Period is" + query.toString());
+//			if (periodFrom != null && periodTo != null && periodFrom.trim().length() > 1
+//					&& periodTo.trim().length() > 1) {
+//				query = query.append(" and i.dateAdded between '" + customerInfo.string2date(periodFrom) + "' and '"
+//						+ customerInfo.string2date(periodTo) + "'");
+//			}
+//		}
+//
+////		sqlString = sqlString + " GROUP BY i.InvoiceID order by it.name, i.Ordernum";
+//		query.append(" group by i.invoiceId order by it.name , i.orderNum");
 		try {
-			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query.toString(), BcaInvoice.class);
-			List<BcaInvoice> resultList = typedQuery.getResultList();
+//			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query.toString(), BcaInvoice.class);
+			List<BcaInvoice> resultList = getSearchHistory(cond, cvId, periodFrom, periodTo);
 			for (BcaInvoice bcaInvoice : resultList) {
 				TrHistoryLookUp hlookup = new TrHistoryLookUp();
 				hlookup.setInvoiceId(bcaInvoice.getInvoiceId().toString());

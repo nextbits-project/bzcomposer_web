@@ -6,12 +6,13 @@
 
 package com.avibha.bizcomposer.sales.forms;
 
+import java.io.Serializable;
 import java.util.List;
 
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class CustomerDto {
+public class CustomerDto  implements Serializable{
 
 	private static final long serialVersionUID = 0;
 	public static final String customerColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"

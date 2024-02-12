@@ -24,6 +24,8 @@ import javax.transaction.Transactional;
 
 import org.apache.struts.action.ActionForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
@@ -1979,6 +1981,30 @@ public class CustomerInfo {
 //	}
 
 	/*
+	 * CVTypeID
+	 * 1 CustVenBoth 2 Customer 3 Vendor 4 Dealer 5 DealerVenBoth 6 Lead 7 Contact
+	 */
+	
+	
+	@CacheEvict(value = "contactDetails", allEntries = true)
+	public boolean convertClientVendor(String cvID, String compId, int cvTypeId) {
+		boolean ret = false;
+
+		try {
+			BcaClientvendor clientVendor = bcaClientvendorRepository
+					.findByCompanyIdAndClientvendorId(Long.valueOf(compId), Integer.valueOf(cvID));
+			clientVendor.setCvtypeId(cvTypeId);
+			bcaClientvendorRepository.save(clientVendor);
+
+			ret = true;
+		} catch (Exception e) {
+			Loger.log(2, "Exception... CustomerInfo.convertToCustomer(). --->" + e.getMessage());
+			ret = false;
+		}
+		return ret;
+	}
+
+	/*
 	 * Function to delete the particular Customer Do not actualy DELETE the record;
 	 * just UPDATE the value of deleted attribute to 1
 	 */
@@ -1987,6 +2013,7 @@ public class CustomerInfo {
 	private BcaCvcreditcardRepository bcaCvcreditcardRepository;
 
 	@Transactional
+	@CacheEvict(value = "contactDetails", allEntries = true)
 	public boolean deleteCustomer(String cvID, String compId) {
 		boolean ret = false;
 
@@ -2019,6 +2046,7 @@ public class CustomerInfo {
 		}
 		return ret;
 	}
+
 //	public boolean deleteCustomer(String cvID, String compId) {
 //		boolean ret = false;
 //		Connection con = null;
