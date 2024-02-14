@@ -273,10 +273,9 @@ function manageCustomer(cmd){
 		}
 		else if (cmd=="CONVERT") {
 			if(confirm("<spring:message code='BzComposer.customerinfo.converttocustomer'/>")==true) {
-				//window.location = "Customer?tabid=Customer&customerAction=DELETE&cvID="+clientVendorID;
 				$.ajax({
                     type : "GET",
-                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvID="+itemID,
+                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=2&cvID="+itemID,
                     success : function(data) {
                         location.reload();
                     },

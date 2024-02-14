@@ -203,9 +203,17 @@ public class SalesController {
 			return forward;
 		} else if (vendorAction != null && vendorAction.equalsIgnoreCase("CONVERT")) {
 			cvID = request.getParameter("cvID");
-			if (customerInfo.convertClientVendor(cvID, companyID, 2)) {
+			String cvTypeId = request.getParameter("cvTypeId");
+			String successMsg = "";
+			int cvTypeID = Integer.valueOf(cvTypeId);
+			if (customerInfo.convertClientVendor(cvID, companyID, cvTypeID)) {
 				Loger.log("\nCustomer Convert succeeded, id=" + cvID);
-				sess.setAttribute("actionMsg", "Contact Converted to Customer successfully!");
+				if (cvTypeID == 7) {
+					successMsg = "Converted to Contact successfully!";
+				} else {
+					successMsg = "Converted to Customer successfully!";
+				}
+				sess.setAttribute("actionMsg", successMsg);
 			} else {
 				Loger.log("\nContact Convertion to Customer failed, id=" + cvID);
 			}
