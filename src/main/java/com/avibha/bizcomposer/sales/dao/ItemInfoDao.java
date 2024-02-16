@@ -35,11 +35,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.util.LabelValueBean;
+import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
@@ -1352,19 +1354,45 @@ public class ItemInfoDao {
 //					+ " WHERE a.CompanyID=" + compId
 //					+ " AND a.ParentID<>0 AND a.Active=1 AND a.ItemtypeId<>0 ORDER BY a.ParentID";
 
-			StringBuffer query = new StringBuffer("select new " + BcaIteminventoryDto.class.getCanonicalName()
-					+ " (a.inventoryId , a.parentId , a.isCategory , a.inventoryCode , a.inventoryName , a.salePrice , a.purchasePrice , a.dealerPrice , a.qty , a.weight ,"
-					+ " a.taxable , a.serialNum , a.itemTypeId,date_format(a.dateAdded,'%m-%d-%Y') as dateAdded , l.name  as location , "
-					+ " date_format(a.dateReceived,'%m-%d-%Y') as dateRecieved , a.memo , a.expectedQty , a.inventoryCode as category , a.reorderPoint)  "
-					+ " from BcaIteminventory as a inner join BcaIteminventory as b on a.parentId = b.inventoryId left join BcaLocation as l on "
-					+ " l.locationId = a.location where a.company.companyId = :companyId and a.parentId <> 0 and a.active = :active and "
-					+ " a.itemTypeId <> 0 order by a.parentId  ");
-			TypedQuery<BcaIteminventoryDto> typedQuery = this.entityManager.createQuery(query.toString(),
-					BcaIteminventoryDto.class);
-			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.parseLong(compId));
-			JpaHelper.addParameter(typedQuery, query.toString(), "active", 1);
+			//Testing form here 
+//			StringBuffer query = new StringBuffer("select new " + BcaIteminventoryDto.class.getCanonicalName()
+//					+ " (a.inventoryId , a.parentId , a.isCategory , a.inventoryCode , a.inventoryName , a.salePrice , a.purchasePrice , a.dealerPrice , a.qty , a.weight ,"
+//					+ " a.taxable , a.serialNum , a.itemTypeId,date_format(a.dateAdded,'%m-%d-%Y') as dateAdded , l.name  as location , "
+//					+ " date_format(a.dateReceived,'%m-%d-%Y') as dateRecieved , a.memo , a.expectedQty , a.inventoryCode as category , a.reorderPoint)  "
+//					+ " from BcaIteminventory as a inner join BcaIteminventory as b on a.parentId = b.inventoryId left join BcaLocation as l on "
+//					+ " l.locationId = a.location where a.company.companyId = :companyId and a.parentId <> 0 and a.active = :active and "
+//					+ " a.itemTypeId <> 0 order by a.parentId  ");
+//			TypedQuery<BcaIteminventoryDto> typedQuery = this.entityManager.createQuery(query.toString(),
+//					BcaIteminventoryDto.class);
+//			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.parseLong(compId));
+//			JpaHelper.addParameter(typedQuery, query.toString(), "active", 1);
+//
+//			List<BcaIteminventoryDto> list = null;//typedQuery.getResultList();
+			
+			
+			//testing ends here
+			// Define the raw SQL query string using actual table and column names
+			String sql = "SELECT a.InventoryID AS inventoryId, a.ParentID AS parentId, a.IsCategory AS isCategory, a.InventoryCode AS inventoryCode, a.InventoryName AS inventoryName, "
+			           + "a.SalePrice AS salePrice, a.PurchasePrice AS purchasePrice, a.DealerPrice AS dealerPrice, a.Qty AS qty, a.Weight AS weight, a.Taxable AS taxable, a.SerialNum AS serialNum, "
+			           + "a.ItemTypeID AS itemTypeId, DATE_FORMAT(a.DateAdded, '%m-%d-%Y') AS dateAdded, l.Name AS location, "
+			           + "DATE_FORMAT(a.DateReceived, '%m-%d-%Y') AS dateReceived, a.Memo AS memo, a.ExpectedQty AS expectedQty, "
+			           + "b.InventoryCode AS category, a.ReorderPoint AS reorderPoint "
+			           + "FROM bca_iteminventory AS a "
+			           + "INNER JOIN bca_iteminventory AS b ON a.ParentID = b.InventoryID "
+			           + "LEFT JOIN bca_location AS l ON l.LocationID = a.Location "
+			           + "WHERE a.CompanyID = ?1 AND a.ParentID <> 0 AND a.Active = ?2 AND a.ItemTypeID <> 0 "
+			           + "ORDER BY a.ParentID";
 
-			List<BcaIteminventoryDto> list = typedQuery.getResultList();
+			// Execute the raw SQL query
+			Query nativeQuery = this.entityManager.createNativeQuery(sql);
+			nativeQuery.setParameter(1, Long.parseLong(compId)); // Assuming compId is a String variable holding the company ID
+			nativeQuery.setParameter(2, 1); // Assuming the 'active' flag is always set to 1
+
+			// Get the result list
+//			List<Object[]> results  = nativeQuery.getResultList();
+			List<BcaIteminventoryDto> list = nativeQuery.unwrap(org.hibernate.query.Query.class)
+				    .setResultTransformer(new AliasToBeanResultTransformer(BcaIteminventoryDto.class))
+				    .getResultList();
 			for (BcaIteminventoryDto dto : list) {
 				ItemDto item = new ItemDto();
 				item.setInventoryId(dto.getInventoryId().toString());
@@ -1402,8 +1430,8 @@ public class ItemInfoDao {
 				}
 				item.setItemType(dto.getItemTypeId().toString());
 				item.setDateAdded(dto.getDateAdded());
-				if (null != dto.getDateRecieved())
-					item.setDateReceived(dto.getDateRecieved());
+				if (null != dto.getDateReceived())
+					item.setDateReceived(dto.getDateReceived());
 				if (dto.getExpectedQty() < 0) {
 					item.setExpectedQty("0");
 				} else {

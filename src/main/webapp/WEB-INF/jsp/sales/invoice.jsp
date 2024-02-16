@@ -2348,10 +2348,15 @@ function onSave(form)
                                 for(i=0;i<csize;i++)
                                 {
                                     rowid=document.getElementById(i+'delt').value
+                                    console.log(i + 'delt value:', document.getElementById(i + 'delt').value);
+									alert("All Row IDS: "+rowid);
                                     if(rowid=="del") {
                                         cnt++;
+                                        alert("Deleted Row ID: "+rowid+ document.getElementById(i+"invCode").value);
+                                        continue;  // Skip the rest of the loop iteration for deleted items
                                     }
                                     else if(rowid=="0") {
+                                    	alert("Taken Row ID: "+rowid + document.getElementById(i+"invCode").value);
                                         form.code.value+=document.getElementById(i+"invCode").value+";";
                                         form.qty.value+= document.getElementById(i+"qty").value+";";
                                         form.desc.value+= document.getElementById(i+"invDesc").value+";";
@@ -2377,6 +2382,7 @@ function onSave(form)
                                 }
                                 val = ((((val)/1 - (cnt)/1)));
                                 form.size.value = val;
+                                alert(val);
                             }
                             
                             ShippedItem();

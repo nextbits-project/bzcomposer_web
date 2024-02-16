@@ -723,7 +723,7 @@ public class InvoiceInfoDao {
 					+ BcaShippingaddressDto.class.getCanonicalName()
 					+ "(a.addressId , a.clientVendor.clientVendorId , a.name , a.firstName , a.lastName , a.address1 , a.address2, "
 					+ " a.zipCode ,a.city , ct.name as cityName , a.state , s.name as stateName , a.country , c.name as countryName) from BcaShippingaddress as a left join "
-					+ " BcaCountries as c on c.id=a.country left join  BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N') and "
+					+ " BcaCountries as c on c.id=a.country left join  BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N', 'U') and "
 					+ " a.active =1 and a.isDefault = 1 ");
 			if (cvID != null && !cvID.trim().isEmpty()) {
 				query = query.append(" and a.clientVendor.clientVendorId = :clientVendorId");
@@ -860,7 +860,7 @@ public class InvoiceInfoDao {
 					+ BcaShippingaddressDto.class.getCanonicalName()
 					+ "(a.addressId , a.clientVendor.clientVendorId , a.name , a.firstName , a.lastName , a.address1 , a.address2, "
 					+ " a.zipCode ,a.city , ct.name as cityName , a.state , s.name as stateName , a.country , c.name as countryName) from BcaBillingaddress as a left join "
-					+ " BcaCountries as c on c.id=a.country left join  BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N') and "
+					+ " BcaCountries as c on c.id=a.country left join  BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N', 'U') and "
 					+ " a.active =:active and a.isDefault = :isDefault ");
 
 			if (cvID != null && !cvID.trim().isEmpty()) {
@@ -1682,6 +1682,7 @@ public class InvoiceInfoDao {
 
 	public boolean Save(String compId, InvoiceDto form, String custId) {
 		boolean saveStatus = false;
+		boolean shippedLastTime = false;
 		try {
 			BcaInvoice bcaInvoice = new BcaInvoice();
 			bcaInvoice.setOrderNum(Integer.parseInt(form.getOrderNo()));
@@ -1797,6 +1798,36 @@ public class InvoiceInfoDao {
 				saveStatus = true;
 			}
 
+			if (null != invoice) {
+				Map<Integer, Integer> oldInvData = new HashMap<>();
+				List<BcaCart> cart = bcaCartRepository.findByInvoiceIdAndCompanyId(invoice.getInvoiceId(),
+						Long.parseLong(compId));
+				if (!cart.isEmpty()) {
+					if (null != cart.get(0).getInventory())
+						oldInvData.put(cart.get(0).getInventory().getInventoryId(), cart.get(0).getQty());
+				}
+				bcaCartRepository.deleteByInvoice_InvoiceIdAndCompany_CompanyId(invoice.getInvoiceId(),
+						Long.parseLong(compId));
+				
+
+				if (invoice.getShipped() == 1)
+					shippedLastTime = true;
+
+				if (shippedLastTime) {
+					for (Integer key : oldInvData.keySet()) {
+						Optional<BcaIteminventory> itemInventory = bcaIteminventoryRepository.findById(key);
+						if (itemInventory.isPresent()) {
+							BcaIteminventory item = itemInventory.get();
+							int expectedQty = item.getExpectedQty();
+							item.setExpectedQty(expectedQty + oldInvData.get(key));
+							bcaIteminventoryRepository.save(item);
+						}
+					}
+				}
+				/* Add Item to Cart */
+				AddItem(invoice.getInvoiceId(), Integer.valueOf(compId), form);
+			}
+
 		} catch (Exception ee) {
 			ee.printStackTrace();
 			Loger.log("Exception" + ee.toString());
@@ -1906,6 +1937,7 @@ public class InvoiceInfoDao {
 		String invIsTaxables[] = form.getIsTaxable().split(";");
 		String invItemIDs[] = form.getItemTypeID().split(";");
 		String invItemOrders[] = form.getItemOrder().split(";");
+//		String itemCategoryId[] = form.getCategory().split(";");
 		boolean shippedNow = false;
 		if (form.getItemShipped() != null && form.getItemShipped().equals("on")) {
 			shippedNow = true;
@@ -1935,8 +1967,13 @@ public class InvoiceInfoDao {
 				Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(cid));
 				if (company.isPresent())
 					bcaCart.setCompany(company.get());
+
+				Optional<BcaInvoice> invoice = bcaInvoiceRepository.findById(invoiceID);
+				if (invoice.isPresent())
+					bcaCart.setInvoice(invoice.get());
+
 				bcaCart.setInventoryCode(itemCode);
-				bcaCart.setInventoryCode(itemName);
+				bcaCart.setInventoryName(itemName);
 				bcaCart.setQty(Integer.parseInt(qty));
 				bcaCart.setUnitWeight(Double.parseDouble(uweight));
 				bcaCart.setWeight(0.0);
@@ -1944,6 +1981,10 @@ public class InvoiceInfoDao {
 				bcaCart.setTaxable(Integer.parseInt(taxable1));
 				bcaCart.setItemTypeId(Integer.parseInt(itmTypeID));
 				bcaCart.setItemOrder(Integer.parseInt(itmOrder));
+				Date dateAdded = new Date();
+				bcaCart.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
+//				bcaCart.setCategoryId(Integer.valueOf(itemCategoryId[i]));
+
 				BcaCart cart = bcaCartRepository.save(bcaCart);
 				if (null != cart && shippedNow) {
 					Optional<BcaIteminventory> inventory = bcaIteminventoryRepository.findById(inventoryID);
@@ -3585,22 +3626,21 @@ public class InvoiceInfoDao {
 
 	@Cacheable(value = "clientVendorDetailsCache", key = "{#compId, #cvId}")
 	public List<BcaClientvendor> fetchClientVendorDetails(String compId, String cvId) {
-	    String jpql = "SELECT DISTINCT cv FROM BcaClientvendor cv "
-	                + "LEFT JOIN FETCH cv.clientVendorBcaCvcreditcards cc "
-	                + "LEFT JOIN FETCH cv.clientVendorBcaBillingaddresss ba "
-	                + "LEFT JOIN FETCH cv.clientVendorBcaClientvendorfinancechargess cf "
-	                + "LEFT JOIN FETCH cv.clientVendorBcaClientvendorservices cvs "
-	                + "LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa "
-	                + "WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId AND cv.clientVendorId = :clientVendorId "
-	                + "GROUP BY cv.clientVendorId ORDER BY cv.clientVendorId";
+		String jpql = "SELECT DISTINCT cv FROM BcaClientvendor cv "
+				+ "LEFT JOIN FETCH cv.clientVendorBcaCvcreditcards cc "
+				+ "LEFT JOIN FETCH cv.clientVendorBcaBillingaddresss ba "
+				+ "LEFT JOIN FETCH cv.clientVendorBcaClientvendorfinancechargess cf "
+				+ "LEFT JOIN FETCH cv.clientVendorBcaClientvendorservices cvs "
+				+ "LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa "
+				+ "WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId AND cv.clientVendorId = :clientVendorId "
+				+ "GROUP BY cv.clientVendorId ORDER BY cv.clientVendorId";
 
-	    TypedQuery<BcaClientvendor> query = entityManager.createQuery(jpql, BcaClientvendor.class)
-	            .setParameter("companyId", Long.valueOf(compId))
-	            .setParameter("clientVendorId", Integer.valueOf(cvId));
+		TypedQuery<BcaClientvendor> query = entityManager.createQuery(jpql, BcaClientvendor.class)
+				.setParameter("companyId", Long.valueOf(compId)).setParameter("clientVendorId", Integer.valueOf(cvId));
 
-	    return query.getResultList();
+		return query.getResultList();
 	}
-	
+
 	public void searchSelectedCustomer(String compId, String cvId, HttpServletRequest request) {
 		ArrayList<UpdateInvoiceDto> serviceinfo = new ArrayList<UpdateInvoiceDto>();
 		UpdateInvoiceDto customer = new UpdateInvoiceDto();
@@ -3617,9 +3657,9 @@ public class InvoiceInfoDao {
 //			TypedQuery<BcaClientvendor> query = entityManager.createQuery(jpql, BcaClientvendor.class)
 //					.setParameter("companyId", Long.valueOf(compId))
 //					.setParameter("clientVendorId", Integer.valueOf(cvId));
-			
+
 			List<BcaClientvendor> clientVendors = fetchClientVendorDetails(compId, cvId);
-			
+
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
 			for (BcaClientvendor cv : clientVendors) {

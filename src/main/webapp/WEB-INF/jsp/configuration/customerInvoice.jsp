@@ -70,10 +70,10 @@ $(document).ready(function()
     }
 
     if(countryId==2){
-        $('#customerState').prop('disabled', false);
+        $('#customerState').prop('readonly', false);
     }
     else {
-        $('#customerState').prop('disabled', true);
+        $('#customerState').prop('readonly', true);
     }
 
     $("#isDefaultCreditTerm").change(function()

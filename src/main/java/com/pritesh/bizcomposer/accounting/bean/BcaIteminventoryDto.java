@@ -26,7 +26,7 @@ public class BcaIteminventoryDto {
 	Integer itemTypeId;
 	String dateAdded;
 	String location;
-	String dateRecieved;
+	String dateReceived;
 	String memo;
 	Integer expectedQty;
 	String category;

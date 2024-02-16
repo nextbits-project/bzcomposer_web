@@ -505,11 +505,11 @@ public class ConfigurationController {
 					configDto.getRecurringServiceBill().equals("1") ? "on" : "off");
 
 			setConfigActiveTab(session, "customerInvoiceTab");
-			for (ConfigurationDto conDto : configDto.getListOfExistingCountry()) {
-				if (conDto.getCountryId() == configDto.getCustDefaultCountryID()) {
-					conDto.setCountryName("USA");
-				}
-			}
+//			for (ConfigurationDto conDto : configDto.getListOfExistingCountry()) {
+//				if (conDto.getCountryId() == configDto.getCustDefaultCountryID()) {
+//					conDto.setCountryName("USA");
+//				}
+//			}
 			System.out.println("goes to customerInvoice page......................");
 			forward = "/configuration/customerInvoice";
 		} else if (action.equalsIgnoreCase("config7")) {

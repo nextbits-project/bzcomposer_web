@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nxsol.bzcomposer.company.domain.BcaCart;
 
@@ -27,6 +28,7 @@ public interface BcaCartRepository extends JpaRepository<BcaCart, Integer> {
 			+ "  inv.orderNum like :orderNum and inv.company.companyId like :companyId ")
 	List<BcaCart> findItemDetails(@Param("companyId") Long companyId, @Param("orderNum") Integer orderNum);
 
+	@Transactional
 	void deleteByInvoice_InvoiceIdAndCompany_CompanyId(Integer invoiceId, Long companyId);
 
 	int deleteByInvoice_InvoiceId(int invoiceId);
