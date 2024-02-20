@@ -4611,7 +4611,7 @@ public class ConfigurationDAO {
 	@Transactional
 	public boolean setPrintingTemplates(String companyID, ConfigurationDto form) {
 		try {
-			Optional<BcaPreference> preferenceOpt = preferenceRepository.findById(Integer.valueOf(companyID));
+			Optional<BcaPreference> preferenceOpt = preferenceRepository.findByCompany_CompanyIdAndActive(Long.valueOf(companyID), 1);
 			if (preferenceOpt.isPresent()) {
 				BcaPreference preference = preferenceOpt.get();
 				preference.setInvoiceTemplateType(form.getInvoiceTemplateType());

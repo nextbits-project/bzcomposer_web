@@ -84,6 +84,10 @@ public class BcaShippingaddress {
     @JoinColumn(name = "ClientVendorID", nullable = false)
     private BcaClientvendor clientVendor;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CompanyID", nullable = false)
+    private BcaCompany company;
+    
     public Integer getAddressId() {
         return addressId;
     }
@@ -260,4 +264,11 @@ public class BcaShippingaddress {
         this.clientVendor = clientVendor;
     }
 
+    public BcaCompany getCompany() {
+        return company;
+    }
+
+    public void setCompany(BcaCompany company) {
+        this.company = company;
+    }
 }

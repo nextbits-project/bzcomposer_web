@@ -1692,7 +1692,7 @@ public class InvoiceInfoDao {
 				bcaInvoice.setClientVendor(clientVendor.get());
 			}
 
-			bcaInvoice.setBsaddressId(Integer.parseInt(form.getBsAddressID()));
+			
 			if (null != form.getInvoiceStyle()) {
 				Optional<BcaInvoicestyle> bcaInvoiceStyle = bcaInvoicestyleRepository
 						.findById(Integer.parseInt(form.getInvoiceStyle()));
@@ -2002,7 +2002,6 @@ public class InvoiceInfoDao {
 
 		} catch (Exception ee) {
 			Loger.log("Exception" + ee.toString());
-
 		}
 	}
 
