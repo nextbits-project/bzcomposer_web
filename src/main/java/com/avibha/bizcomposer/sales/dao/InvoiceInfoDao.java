@@ -1708,6 +1708,8 @@ public class InvoiceInfoDao {
 			bcaInvoice.setSubTotal(form.getSubtotal());
 			bcaInvoice.setTax(form.getTax());
 			bcaInvoice.setSh(form.getShipping());
+			bcaInvoice.setBillingAddrId(Integer.valueOf(form.getBsAddressID()));
+			bcaInvoice.setShippingAddrId(Integer.valueOf(form.getShAddressID()));
 			bcaInvoice.setTotal(form.getTotal());
 			bcaInvoice.setAdjustedTotal(form.getAdjustedtotal());
 			bcaInvoice.setPaidAmount(0D);

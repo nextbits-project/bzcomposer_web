@@ -2311,6 +2311,7 @@ function onSave(form)
                                     break;
                                 }
                             }
+                            debugger;
                             subtotal = form.subtotal.value;
                             shipping = form.shipping.value;
                             total = ( (rt/1) + (subtotal/1) + (shipping/1)).toFixed(2);
@@ -2348,16 +2349,35 @@ function onSave(form)
                                 for(i=0;i<csize;i++)
                                 {
                                     rowid=document.getElementById(i+'delt').value
-                                    console.log(i + 'delt value:', document.getElementById(i + 'delt').value);
-									alert("All Row IDS: "+rowid);
                                     if(rowid=="del") {
+                                        /* cnt++;
+                                        continue; */
+                                    	// Get the code of the item to remove
+                                        let codeToRemove = document.getElementById(i + "invCode").value;
+
+                                        // Remove the corresponding item from each field
+                                        form.code.value = removeItem(form.code.value, codeToRemove);
+                                        form.qty.value = removeItem(form.qty.value, document.getElementById(i + "qty").value);
+                                        form.desc.value = removeItem(form.desc.value, document.getElementById(i + "invDesc").value);
+                                        form.uprice.value = removeItem(form.uprice.value, document.getElementById(i + "uprice").value);
+                                        form.unitWeight.value = removeItem(form.unitWeight.value, document.getElementById(i + "weight").value);
+                                        // form.wgt.value doesn't seem to be associated with specific items and might not need to be modified
+                                        form.serialNo.value = removeItem(form.serialNo.value, document.getElementById(i + "serial").value);
+
+                                        // For the item type ID, item value, and taxability, use the same removal logic
+                                        let itidToRemove = document.getElementById(i + 'itId11').value;
+                                        form.itemTypeID.value = removeItem(form.itemTypeID.value, itidToRemove);
+
+                                        let itemValToRemove = document.getElementById(i + 'invID11').value;
+                                        form.item.value = removeItem(form.item.value, itemValToRemove);
+
+                                        // Assuming tax value '1' or '0' corresponds directly to the item and is in the same order
+                                        let taxValToRemove = document.getElementById(i + "tax").value === "Yes" ? "1" : "0";
+                                        form.isTaxable.value = removeItem(form.isTaxable.value, taxValToRemove);
                                         cnt++;
-                                        alert("Deleted Row ID: "+rowid+ document.getElementById(i+"invCode").value);
-                                        continue;  // Skip the rest of the loop iteration for deleted items
                                     }
                                     else if(rowid=="0") {
-                                    	alert("Taken Row ID: "+rowid + document.getElementById(i+"invCode").value);
-                                        form.code.value+=document.getElementById(i+"invCode").value+";";
+                                        /* form.code.value+=document.getElementById(i+"invCode").value+";";
                                         form.qty.value+= document.getElementById(i+"qty").value+";";
                                         form.desc.value+= document.getElementById(i+"invDesc").value+";";
                                         form.uprice.value+= document.getElementById(i+"uprice").value+";";
@@ -2374,15 +2394,14 @@ function onSave(form)
                                             form.isTaxable.value+="1"+";";
                                         } else {
                                             form.isTaxable.value+="0"+";";
-                                        }
+                                        } */
                                         idV++;
-                                        itemVal=document.getElementById(i+'invID11').value;
-                                        form.item.value+=itemVal+";";
+                                        /* itemVal=document.getElementById(i+'invID11').value;
+                                        form.item.value+=itemVal+";"; */
                                     }
                                 }
                                 val = ((((val)/1 - (cnt)/1)));
                                 form.size.value = val;
-                                alert(val);
                             }
                             
                             ShippedItem();
@@ -2405,6 +2424,20 @@ function onSave(form)
         }
     }
 }
+
+//Function to remove an item from a list based on its corresponding code
+function removeItem(list, codeToRemove) {
+    let items = list.split(';');
+    let indexToRemove = items.findIndex(item => item === codeToRemove);
+
+    // If the item was found, remove it from the array
+    if(indexToRemove !== -1) {
+        items.splice(indexToRemove, 1);
+    }
+
+    return items.join(';');
+}
+
 		
 function NewInvoice(){
     window.location.href="Invoice?tabid=NewInvoice";
