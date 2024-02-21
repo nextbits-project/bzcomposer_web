@@ -9,12 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="bca_paymenttype")
-public class BcaPaymenttype {
+public class BcaPaymenttype implements Serializable {
 
     @Id
     @Column(name="PaymentTypeID", nullable = false, updatable = false)

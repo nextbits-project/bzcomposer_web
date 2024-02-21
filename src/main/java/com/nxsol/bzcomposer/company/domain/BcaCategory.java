@@ -9,12 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Table;
 
 @Entity
 @Table(name= "bca_category")
-public class BcaCategory {
+public class BcaCategory implements Serializable{
 
     @Id
     @Column(name= "CategoryID", nullable = false, updatable = false)

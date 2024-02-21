@@ -251,24 +251,25 @@ table.tabla-listados tbody tr td {
 						aria-controls="nav-home" aria-selected="true" onclick="billPayableTab()">
 							<spring:message code="BzComposer.billpayable.tabs.unpaidbilllist"/>
 						</a> 
-						<a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" 
-						role="tab" aria-controls="nav-profile" aria-selected="false" onclick="">
+						<a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" 
+						role="tab" aria-controls="nav-profile" aria-selected="false" onclick="paidBillLists()">
 							<spring:message code="BzComposer.billpayable.tabs.paibilllist"/>
 						</a> 
 						<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" 
 						role="tab" aria-controls="nav-contact" aria-selected="false" onclick="billCreationTab()">
 							<spring:message code="BzComposer.billpayable.tabs.billcreation"/>
+							
 						</a>
-						<a class="nav-item nav-link" id="nav-contact-tab"
+						<a class="nav-item nav-link active" id="nav-contact-tab"
 							data-toggle="tab" href="#nav-contact" role="tab"
 							aria-controls="nav-contact" aria-selected="false"
-							onclick="billCompaniesTab()"> <spring:message
+							onclick=""> <spring:message
 								code="BzComposer.billpayable.tabs.billingcompanies" />
 						</a>
 					</div>
 				</nav>
 				<div class="unpaid">
-					<div class="unpaid-header">
+					<%-- <div class="unpaid-header">
 						<div class="filterbar" onclick="selectedRadio()">
 							<div class="form-check form-check-inline">
 					  			<input class="form-check-input" type="radio" name="inlineRadioOptions" 
@@ -329,39 +330,56 @@ table.tabla-listados tbody tr td {
 								</ul>
 							</div>
 						</div>
-					</div>
+					</div> --%>
 					<div class="tab-content" id="nav-tabContent">
 						<div class="tab-pane fade show active" id="nav-home" role="tabpanel" 
 						aria-labelledby="nav-home-tab">
 							<div class="table1" id="tblForInvoiceOrder">
+							<input type="hidden" id="lSize" value='${VendorList.size()}' />
 								<table class="table table-bordered table-sm devAcRecDataTbl">
 									<thead class="thead-light">
 										<tr>
 											<th scope="col" class="text-right">
-												<spring:message code="BzComposer.billpayable.billnumber"/>
+												<spring:message code="BzComposer.Customer.ID" />
 											</th>
 											<th scope="col" class="text-right">
-												<spring:message code="BzComposer.paidbilllist.payeename"/>
+												<spring:message code="BzComposer.vendorlist.vendor" />
 											</th>
 											<th scope="col" class="text-right">
-												<spring:message code="BzComposer.billpayable.payfrom"/> 
+												<spring:message code="BzComposer.global.company" />
 											</th>
-											<th scope="col" class="text-right"><spring:message code="BzComposer.global.balance"/></th>
+											<th scope="col" class="text-right"><spring:message code="BzComposer.Companyinformation.Type" /></th>
 											<th scope="col" class="text-right">
-												<spring:message code="BzComposer.billpayable.amount"/>
-											</th>
-											<th scope="col" class="text-right">
-												<spring:message code="BzComposer.billpayable.checknumber"/>
+												<spring:message code="BzComposer.global.address1" />
 											</th>
 											<th scope="col" class="text-right">
-												<spring:message code="BzComposer.billpayable.paymentdate"/>
+												<spring:message code="BzComposer.global.address2" />
 											</th>
 											<th scope="col" class="text-right">
-												<spring:message code="BzComposer.billpayable.status"/>
+												<spring:message code="BzComposer.global.city" />
+											</th>
+											<th scope="col" class="text-right">
+												<spring:message code="BzComposer.global.state"/>
+											</th>
+											<th scope="col" class="text-right">
+												<spring:message code="BzComposer.global.zipcode"/>
+											</th>
+											<th scope="col" class="text-right">
+												<spring:message code="BzComposer.global.country"/>
+											</th>
+											<th scope="col" class="text-right">
+												<spring:message code="BzComposer.orderimport.lastorderdate"/>
+											</th>
+											<th scope="col" class="text-right">
+												<spring:message code="BzComposer.global.dateadded" />
+											</th>
+											<th scope="col" class="text-right">
+												<spring:message code="Bizcomposer.active" />
 											</th>
 										</tr>
 									</thead>
-									<tbody>
+									
+									<%-- <tbody>
 									  <%
 											ArrayList<TblPayment> paidBillLists = (ArrayList) request.getAttribute("paidBillLists");
 												int index = 1;
@@ -402,10 +420,61 @@ table.tabla-listados tbody tr td {
 											index++;
 												}
 										%> 
-									</tbody>
+									</tbody> --%>
+									
+								<%-- 	<tbody id="custTableBody">
+								<c:if test="${not empty customerList}">
+									<c:forEach items="${customerList}" var="objList"
+										varStatus="loop">
+										<tr id='${loop.index}$$'
+											onclick="setRowId(${objList.clientVendorID}, ${loop.index}, true);"
+											ondblclick="goToCustomerBoard(${objList.clientVendorID});">
+											<td class="${objList.paymentUnpaid?'redColor':''}"><a
+												href="/Customer?tabid=CustomerBoard&selectedCvID=${objList.clientVendorID}">${objList.clientVendorID}</a>
+											</td>
+											<td>${objList.title} ${objList.firstName}${objList.middleName}
+												${objList.lastName}</td>
+											<td>${objList.companyName}</td>
+											<td>${objList.type}</td>
+											<td style="min-width: 250px;">${objList.address1}</td>
+
+											<td>${objList.address2}</td>
+											<td>${objList.city}</td>
+											<td>${objList.stateName}</td>
+											<td>${objList.zipCode}</td>
+											<td>${objList.country}</td>
+											<td>${objList.lastOrderDate}</td>
+											<td>${objList.dateAdded}</td>
+											<td>Yes</td>
+										</tr>
+									</c:forEach>
+								</c:if>
+							</tbody> --%>
+							
+							 <tbody id="custTableBody">
+            <c:if test="${not empty VendorList}">
+                <c:forEach items="${VendorList}" var="objList" varStatus="loop">
+                    <tr id='${loop.index}$$' onclick="setRowId(${objList.clientVendorID}, ${loop.index}, true);" ondblclick="goToEdit(${objList.clientVendorID})">
+                        <td>${objList.clientVendorID}</td>
+                        <td>${objList.firstName} ${objList.middleName} ${objList.lastName}</td>
+                        <td>${objList.cname}</td>
+                        <td>${objList.type}</td>
+                        <td style="min-width: 250px;">${objList.address1}</td>
+                        <td>${objList.address2}</td>
+                        <td>${objList.city}</td>
+                        <td>${objList.stateName}</td>
+                        <td>${objList.zipCode}</td>
+                        <td>${objList.country}</td>
+                        <td>${objList.lastOrderDate}</td>
+                        <td>${objList.dateAdded}</td>
+                        <td>Yes</td>
+                    </tr>
+                </c:forEach>
+            </c:if>
+        </tbody>
 								</table>
 							</div>
-							 <div class="table1" id="tblRecurrentPayment">
+							 <%-- <div class="table1" id="tblRecurrentPayment">
 								<table class="table table-bordered table-sm devAcRecDataTbl">
 									<thead class="thead-light">
 										<tr>
@@ -473,12 +542,12 @@ table.tabla-listados tbody tr td {
 										%> 
 									</tbody>
 								</table>
-							</div>
-							<div class="footer2">
+							</div> --%>
+							<%-- <div class="footer2">
 								<button class="btn btn-info" onclick="billingInfo()" style="font-size: 14px;">
 									<spring:message code="BzComposer.paidbilllist.printablechecksbtn"/>
 								</button>
-							</div>
+							</div> --%>
 						</div>
 						<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
 							...
@@ -700,7 +769,7 @@ table.tabla-listados tbody tr td {
 	}
 		$(document).ready(
 				function() {
-					
+					console.log("companies");
 					//
 					var day = new Date().getDay();
 					var dName = dayName(day);
@@ -760,6 +829,45 @@ table.tabla-listados tbody tr td {
 			$(document).find('div#totalAmountLabelDiv label').eq(1).text(this.value).replaceWith($(data).find('div#totalAmountLabelDiv label').eq(1).text(this.value));
 			addCss();
 		}
+		
+		function initialize(){
+		    let lSize = document.getElementById("lSize").value;
+		    if(lSize > 0){
+		        document.getElementById('0$$').className = "even";
+		    }
+		}
+
+		function setRowId(rowid, rowIndex, flag){
+		    let lSize = document.getElementById("lSize").value;
+		    for (i=0; i<lSize; i++) {
+		        let currROW = document.getElementById(i+'$$');
+		        if(currROW == null) continue;
+		        if(i%2 == 1){
+		            currROW.className = "odd";
+		        }else{
+		            currROW.className = "even";
+		        }
+		    }
+		    if(flag){
+		        itemID = rowid;
+		        itemIndex = rowIndex;
+		        if(rowIndex%2 == 1){ ;
+		            document.getElementById(rowIndex+"$$").classList.remove('odd');
+		        }
+		        document.getElementById(rowIndex+'$$').classList.add('draft');
+		    }
+		}
+		function hightlightROW(){
+		    let currROW2 = document.getElementById(itemIndex+'$$');
+		    if(currROW2 != null){
+		        currROW2.className = "draft";
+		    }
+		}
+		
+		function paidBillLists()
+		{
+			window.location = "${pageContext.request.contextPath}/BillPayable?tabid=PaidBillLists";
+		}
 		function billPayableTab()
 		{
 			window.location = "${pageContext.request.contextPath}/BillPayable?tabid=billpayable";
@@ -768,12 +876,6 @@ table.tabla-listados tbody tr td {
 		{
 			window.location = "${pageContext.request.contextPath}/BillCreation?tabid=billCreation";
 		}
-		function billCompaniesTab()
-		{
-			window.location = "${pageContext.request.contextPath}/BillPayable?tabid=billCompanies";
-		}
-		
-		
 	</script>
 </body>
 </html>

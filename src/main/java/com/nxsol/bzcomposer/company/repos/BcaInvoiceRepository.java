@@ -116,7 +116,7 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			+ "LEFT JOIN bca_paymenttype PAY ON INV.paymentTypeID = PAY.paymentTypeID "
 			+ "LEFT JOIN bca_account Bank ON INV.bankAccountID = Bank.accountID "
 			+ "LEFT JOIN bca_category Category ON INV.categoryID = Category.categoryID "
-			+ "WHERE INV.companyID = :companyId  " + "      AND INV.isPaymentCompleted = 0 "
+			+ "WHERE INV.companyID = :companyId  "  +  "      AND INV.isPaymentCompleted = 0 "
 			+ "      AND INV.invoiceStatus = 0 " + "      AND INV.invoiceTypeID = 2 "
 			+ "      AND clientVendor.status = 'N' " + "      AND clientVendor.companyID = :companyId "
 			+ "      AND (INV.adjustedTotal > (SELECT SUM(bcaPayment.amount) FROM bca_payment bcaPayment "

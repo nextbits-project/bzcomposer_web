@@ -6223,6 +6223,7 @@ public class InvoiceInfoDao {
 				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 				uform.setInvoiceStyleId(bcaInvoicestyle.getInvoiceStyleId());
 				uform.setInvoiceStyle(bcaInvoicestyle.getName());
+				 invoiceName.add(uform);
 			}
 //            pstmt1 = con.prepareStatement(sqlString1);
 //            rs1 = pstmt1.executeQuery();

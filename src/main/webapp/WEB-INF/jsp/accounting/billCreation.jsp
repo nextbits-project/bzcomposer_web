@@ -275,6 +275,13 @@ table.tabla-listados tbody tr td {
 						<a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" 
 						role="tab" aria-controls="nav-contact" aria-selected="false" onclick="">
 							<spring:message code="BzComposer.billpayable.tabs.billcreation"/>
+							
+						</a>
+						<a class="nav-item nav-link" id="nav-contact-tab"
+							data-toggle="tab" href="#nav-contact" role="tab"
+							aria-controls="nav-contact" aria-selected="false"
+							onclick="billCompaniesTab()"> <spring:message
+								code="BzComposer.billpayable.tabs.billingcompanies" />
 						</a>
 					</div>
 				</nav>
@@ -2077,6 +2084,11 @@ else
 	function billCreationTab()
 	{
 		window.location = "${pageContext.request.contextPath}/BillCreation?tabid=billCreation";
+	}
+	
+	function billCompaniesTab()
+	{
+		window.location = "${pageContext.request.contextPath}/BillPayable?tabid=billCompanies";
 	}
 		$(document).ready(
 				function() {

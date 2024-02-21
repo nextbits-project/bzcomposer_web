@@ -65,6 +65,7 @@ public class VendorDto extends ActionForm {
 
 	private String homePage;
 	private String type;
+	private String category;
 	private String texID;
 	private String openingUB;
 	private String extCredit;
@@ -1160,6 +1161,16 @@ public class VendorDto extends ActionForm {
 
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
+	}
+
+
+	public String getCategory() {
+		return category;
+	}
+
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 }

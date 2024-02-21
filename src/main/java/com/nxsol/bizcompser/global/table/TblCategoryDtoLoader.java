@@ -145,8 +145,8 @@ public class TblCategoryDtoLoader {
 //				+ " and isActive = 1 " + " order by CategoryTypeID,Name ";
 
 		try {
-			BcaCompany bcaCompany=bcaCompanyRepository.findByCompanyId(new Long(ConstValue.companyId));
-			List<BcaCategory>bcaCategories=bcaCategoryRepository.findByCompanyAndIsActiveOrderByCategoryTypeIdAscNameAsc(bcaCompany, true);
+//			BcaCompany bcaCompany=bcaCompanyRepository.findByCompanyId(new Long(ConstValue.companyId));
+			List<BcaCategory>bcaCategories=bcaCategoryRepository.findByCompany_CompanyIdAndIsActiveOrderByCategoryTypeIdAscNameAsc(new Long(ConstValue.companyId), true);
 //			stmt = con.createStatement();
 //			rs = stmt.executeQuery(sql1);
 			for(BcaCategory bcaCategory:bcaCategories) {

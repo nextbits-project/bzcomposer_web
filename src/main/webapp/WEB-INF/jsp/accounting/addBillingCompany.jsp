@@ -6,7 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
-<title><spring:message code="BzComposer.addnewvendortitle" /></title>
+<title><spring:message code="BzComposer.billpayable.addbillingcompany" /></title>
 <link
 	href="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui-tab.css"
 	rel="stylesheet" media="screen" />
@@ -58,7 +58,7 @@ input, textarea, select {
 								<span
 									style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
 									<spring:message
-										code="BzComposer.addnewvendor.addnewvendortitle" />
+										code="BzComposer.billpayable.addbillingcompany" />
 								</span>
 							</div>
 							<table cellpadding="0" cellspacing="0" border="0" align="center"
@@ -111,8 +111,8 @@ input, textarea, select {
 														<td><form:input path="clientVendorID" readonly="true" /></td>
 														<td colspan="5">&nbsp;</td>
 													</tr>
-													<tr>
-														<td><spring:message
+													<!-- <tr> -->
+														<%-- <td><spring:message
 																code="BzComposer.global.titlename" /></td>
 														<td><form:select path="title" style="width:100px;">
 																<option value=""><spring:message
@@ -121,11 +121,11 @@ input, textarea, select {
 																	<option value="${curObject.value}"
 																		${curObject.value==defaultCongurationData.custTitleID?'selected':''}>${curObject.label}</option>
 																</c:forEach>
-															</form:select> <%-- <form:select path="title" style="width:100px;">
+															</form:select> <form:select path="title" style="width:100px;">
 																<form:options items="${titleList}" itemValue="value"
 																	itemLabel="label" />
-															</form:select> --%></td>
-														<td colspan="5">
+															</form:select></td> --%>
+														<%-- <td colspan="5">
 															<table style="width: 100%;">
 																<tr>
 																	<td><spring:message
@@ -146,9 +146,9 @@ input, textarea, select {
 																			size="20" /></td>
 																</tr>
 															</table>
-														</td>
-														<td>&nbsp;</td>
-													</tr>
+														</td> --%>
+													<!-- 	<td>&nbsp;</td>
+													</tr> -->
 													<tr>
 														<td><spring:message code="BzComposer.global.company" />
 															<span class="inputHighlighted"><spring:message
@@ -303,23 +303,23 @@ input, textarea, select {
 																	itemValue="value" itemLabel="label" />
 															</form:select></td>
 															
-															<td><spring:message
+														<td><spring:message
 																code="BzComposer.Companyinformation.Category" /></td>
 															<td><form:select path="category"
 																style="width:150px;">
-																<option value="7400">Inventory</option>
+																<option value="7400">Utilities</option>
 																<c:forEach items="${categoryListForCombo}" var="obj">
 																	<option value="${obj.categoryNumber}"
 																		>${obj.name}</option>
 																</c:forEach>
 															</form:select></td>	
 															<td><input type="checkbox" name="billVendor"
-															id="chkbillvendor" > <spring:message
+															id="chkbillvendor" checked> <spring:message
 																code="BzComposer.global.billvendor" /></td>
 														<td><input type="checkbox" name="purchaseVendor"
-															id="chkpurchasevendor" checked> <spring:message
+															id="chkpurchasevendor" > <spring:message
 																code="BzComposer.global.purchasevendor" /></td>
-																
+															
 														<td><spring:message code="BzComposer.global.taxid" />
 														</td>
 														<td><form:input type="text" path="texID" /></td>
@@ -1113,7 +1113,7 @@ input, textarea, select {
 
 	function SaveVendorData() {
 
-		if (trim(document.getElementById('firstName').value) == "") {
+		/* if (trim(document.getElementById('firstName').value) == "") {
 
 			document.getElementById('firstName').focus();
 			return showblankfirstnamevalidationdialog();
@@ -1121,7 +1121,8 @@ input, textarea, select {
 
 			document.getElementById('lastName').focus();
 			return showblanklastnamevalidationdialog();
-		} else if (trim(document.getElementById('cname').value) == "") {
+		} */ 
+		if (trim(document.getElementById('cname').value) == "") {
 
 			document.getElementById('cname').focus();
 			return showblanknamevalidationdialog();
@@ -1140,7 +1141,7 @@ input, textarea, select {
 			return showblankzipcodevalidationdialog();
 		} else {
 			if (validate()) {
-				document.forms["frmAddVendor"].action = "Vendor?tabid=AOVODO";
+				document.forms["frmAddVendor"].action = "Vendor?tabid=billingcompany";
 				document.forms["frmAddVendor"].submit();
 			}
 		}
@@ -1458,7 +1459,7 @@ input, textarea, select {
 		document.VendorForm.openingUB.value = "";
 		document.VendorForm.extCredit.value = "";
 		document.VendorForm.memo.value = "";
-
+		document.VendorForm.category.value = "";
 		document.VendorForm.cname.value = "";
 		document.VendorForm.chktax.checked = false;
 		document.VendorForm.chk_alsovendor.checked = false;
