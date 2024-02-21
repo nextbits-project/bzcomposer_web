@@ -158,7 +158,7 @@ public class LeadController {
 			@RequestParam(name = "purpose") String purpose, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String companyId = (String) session.getAttribute("CID");
-
+		customerDto.setCompanyID(Integer.valueOf(companyId));
 		leadService.addClientVendor(customerDto, companyId);
 		leadService.addShippingAddress(customerDto);
 		leadService.addBillingAddress(customerDto);

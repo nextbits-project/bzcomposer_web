@@ -189,11 +189,11 @@ public class EstimationController {
         }
         else if (action.equalsIgnoreCase("SBLU")) { // Action For Look up Button From EstimationBorad.jsp
             String estimationNo = request.getParameter("est_no");
-            SalesDetailsDao sdetails = new SalesDetailsDao();
-            sdetails.newEstimation(request, estimationDto);
-            sdetails.getInitializeEstimation(estimationNo, request, estimationDto);
+//            SalesDetailsDao sdetails = new SalesDetailsDao();
+            sdetailsDao.newEstimation(request, estimationDto);
+            sdetailsDao.getInitializeEstimation(estimationNo, request, estimationDto);
 
-            ConfigurationInfo configInfo = new ConfigurationInfo();
+//            ConfigurationInfo configInfo = new ConfigurationInfo();
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
             InvoiceDto invoice = new InvoiceDto();
             invoice.setSalesTaxID("1");

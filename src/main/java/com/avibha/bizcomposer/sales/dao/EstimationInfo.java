@@ -1014,6 +1014,9 @@ public class EstimationInfo {
 				bcart.setTaxable(taxable[i]);
 				bcart.setItemTypeId(itmTypeID[i]);
 				bcart.setItemOrder(itmOrder[i]);
+				Date dateAdded = new Date();
+				bcart.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
+				
 				bcaCartRepository.save(bcart);
 
 			}
@@ -1265,7 +1268,8 @@ public class EstimationInfo {
 				bcaInvoice.setDateAdded(dateAdded);
 				bcaInvoice.setInvoiceStatus(0);
 				bcaInvoice.setOrderNum(0);
-				bcaInvoice.setPonum(Integer.valueOf(estimationDto.getPoNum()));
+//				bcaInvoice.setPonum(Integer.valueOf(estimationDto.getPoNum()));
+				bcaInvoice.setPonum(0);
 				BcaInvoice invoice = bcaInvoiceRepository.save(bcaInvoice);
 				if (null != invoice) {
 					/* Add Item to Cart */

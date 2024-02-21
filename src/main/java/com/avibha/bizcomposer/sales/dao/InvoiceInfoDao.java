@@ -708,7 +708,7 @@ public class InvoiceInfoDao {
 //		return categoryWiseList;
 //	}
 
-	public ArrayList shipAddress(String companyID, String cvID) {
+	public ArrayList shipAddress(String companyId, String cvID) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
 //		ResultSet rs = null;
@@ -717,7 +717,7 @@ public class InvoiceInfoDao {
 //		CountryState conState = new CountryState();
 		try {
 //			ConfigurationInfo configInfo = new ConfigurationInfo();
-			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyID);
+			ConfigurationDto configDto = configInfo.getDefaultCongurationData(companyId);
 
 			StringBuffer query = new StringBuffer("select distinct new  "
 					+ BcaShippingaddressDto.class.getCanonicalName()
@@ -729,10 +729,17 @@ public class InvoiceInfoDao {
 				query = query.append(" and a.clientVendor.clientVendorId = :clientVendorId");
 			}
 
+			if (companyId != null && !companyId.trim().isEmpty()) {
+			    query.append(" and a.company.companyId = :companyId");
+			}
+			
 			TypedQuery<BcaShippingaddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
 					BcaShippingaddressDto.class);
 			if (cvID != null)
 				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
+
+			if (companyId != null)
+				JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(companyId));
 
 			List<BcaShippingaddressDto> list = typedQuery.getResultList();
 			for (BcaShippingaddressDto dto : list) {
@@ -866,6 +873,9 @@ public class InvoiceInfoDao {
 			if (cvID != null && !cvID.trim().isEmpty()) {
 				query = query.append(" and a.clientVendor.clientVendorId= :clientVendorId");
 			}
+			if (companyID != null && !companyID.trim().isEmpty()) {
+			    query.append(" and a.company.companyId = :companyId");
+			}
 
 			TypedQuery<BcaShippingaddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
 					BcaShippingaddressDto.class);
@@ -873,6 +883,10 @@ public class InvoiceInfoDao {
 				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.valueOf(cvID));
 			JpaHelper.addParameter(typedQuery, query.toString(), "active", 1);
 			JpaHelper.addParameter(typedQuery, query.toString(), "isDefault", 1);
+			if (companyID != null)
+				JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(companyID));
+
+			
 			List<BcaShippingaddressDto> list = typedQuery.getResultList();
 
 			for (BcaShippingaddressDto dto : list) {

@@ -432,7 +432,10 @@ public class LeadService {
 			OffsetDateTime formattedDateAdded = convertDateStringToOffset(customerDto.getDateAdded());
 			shippingAddress.setDateAdded(formattedDateAdded);
 		}
-
+		Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.valueOf(customerDto.getCompanyID()));
+		BcaCompany company = optionalCompany.orElse(null);
+		shippingAddress.setCompany(company);
+		
 		shippngAddressRepo.save(shippingAddress);
 	}
 
@@ -475,7 +478,9 @@ public class LeadService {
 			OffsetDateTime formattedDateAdded = convertDateStringToOffset(customerDto.getDateAdded());
 			billingAddress.setDateAdded(formattedDateAdded);
 		}
-
+		Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.valueOf(customerDto.getCompanyID()));
+		BcaCompany company = optionalCompany.orElse(null);
+		billingAddress.setCompany(company);
 		billingAddressRepo.save(billingAddress);
 	}
 

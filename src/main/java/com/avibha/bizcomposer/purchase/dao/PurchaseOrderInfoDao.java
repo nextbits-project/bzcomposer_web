@@ -22,11 +22,15 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
@@ -86,7 +90,7 @@ import com.nxsol.bzcomposer.company.utils.JpaHelper;
 import com.pritesh.bizcomposer.accounting.bean.BcaBillingAddressDto;
 import com.pritesh.bizcomposer.accounting.bean.BcaShippingaddressDto;
 
-@Repository
+@Service
 public class PurchaseOrderInfoDao {
 
 	@Autowired
@@ -100,7 +104,7 @@ public class PurchaseOrderInfoDao {
 	@Autowired
 	private BcaPreferenceRepository bcaPreferenceRepository;
 
-	@Autowired
+	@PersistenceContext
 	private EntityManager entityManager;
 
 	@Autowired
@@ -943,7 +947,7 @@ public class PurchaseOrderInfoDao {
 	 * The method check where the given purchase order number is exist or not in the
 	 * database.
 	 */
-	final public boolean poNumExist(String compId, String orderNo) {
+	public boolean poNumExist(String compId, String orderNo) {
 
 		long cid = Long.parseLong(compId);
 		boolean exist = false;
@@ -956,7 +960,7 @@ public class PurchaseOrderInfoDao {
 			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", cid);
 			JpaHelper.addParameter(typedQuery, query.toString(), "invoiceStatus", 1);
 			JpaHelper.addParameter(typedQuery, query.toString(), "invoiceTypeId", Arrays.asList(2));
-			JpaHelper.addParameter(typedQuery, query.toString(), "ponum", orderNo);
+			JpaHelper.addParameter(typedQuery, query.toString(), "ponum", Integer.parseInt(orderNo));
 
 			Integer ponum = typedQuery.getFirstResult();
 			if (null != ponum) {
@@ -1013,7 +1017,7 @@ public class PurchaseOrderInfoDao {
 	 * purchase order. If not extst then select the user's company address as a ship
 	 * address.
 	 */
-	final public long getShipAddrExist(String compId, String orderNo) {
+	public long getShipAddrExist(String compId, String orderNo) {
 
 		long cid = Long.parseLong(compId);
 		int shipAddr = 0;
@@ -1080,30 +1084,61 @@ public class PurchaseOrderInfoDao {
 	 * 
 	 */
 
-	public int getInvoiceNo(String compId, String no) {
-		int invoiceID = 0;
-		long cid = Long.parseLong(compId);
-		try {
+	public Integer getInvoiceNo(String compId, String no) {
+	    Integer invoiceID = null;
+	    try {
+	        long cid = Long.parseLong(compId);
+	        int ponum = Integer.parseInt(no);
 
-			StringBuffer query = new StringBuffer(
-					"SELECT bi.invoiceId from BcaInvoice bi WHERE bi.company.companyId =:companyId and "
-							+ "bi.invoiceStatus <> :invoiceStatus and bi.invoiceType.invoiceTypeId IN :invoiceTypeId and bi.ponum=:ponum");
+	        // Native SQL query
+	        String sql = "SELECT InvoiceID FROM bca_invoice WHERE CompanyID = ? AND invoiceStatus <> ? AND InvoiceTypeID IN (?) AND PONum = ?";
 
-			TypedQuery<Integer> typedQuery = this.entityManager.createQuery(query.toString(), Integer.class);
-			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", cid);
-			JpaHelper.addParameter(typedQuery, query.toString(), "invoiceStatus", 1);
-			JpaHelper.addParameter(typedQuery, query.toString(), "invoiceTypeId", Arrays.asList(2));
-			JpaHelper.addParameter(typedQuery, query.toString(), "ponum", Integer.parseInt(no));
+	        // Create native query
+	        Query query = entityManager.createNativeQuery(sql);
+	        query.setParameter(1, cid); // Parameters are 1-based in native queries
+	        query.setParameter(2, 1);
+	        query.setParameter(3, 2); // Assuming InvoiceTypeID is a single value here; adjust if it's more complex
+	        query.setParameter(4, ponum);
 
-			invoiceID = typedQuery.getFirstResult();
+	        // Execute the query and get the single result
+	        invoiceID = (Integer) query.getSingleResult(); // Cast to Integer
 
-		} catch (Exception ee) {
-			ee.printStackTrace();
-			Loger.log("Exception" + ee.toString());
-
-		}
-		return invoiceID;
+	    } catch (NoResultException e) {
+	        // Handle case where no result is found
+	        System.out.println("No invoice found for the given criteria.");
+	    } catch (NumberFormatException e) {
+	        // Handle parsing errors
+	        System.out.println("Number format exception: " + e.getMessage());
+	    } catch (Exception e) {
+	        // Handle other exceptions
+	        e.printStackTrace();
+	    }
+	    return invoiceID;
 	}
+//	public int getInvoiceNo(String compId, String no) {
+//		int invoiceID = 0;
+//		long cid = Long.parseLong(compId);
+//		try {
+//
+//			StringBuffer query = new StringBuffer(
+//					"SELECT bi.invoiceId from BcaInvoice bi WHERE bi.company.companyId =:companyId and "
+//							+ "bi.invoiceStatus <> :invoiceStatus and bi.invoiceType.invoiceTypeId IN :invoiceTypeId and bi.ponum=:ponum");
+//
+//			TypedQuery<Integer> typedQuery = this.entityManager.createQuery(query.toString(), Integer.class);
+//			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", cid);
+//			JpaHelper.addParameter(typedQuery, query.toString(), "invoiceStatus", 1);
+//			JpaHelper.addParameter(typedQuery, query.toString(), "invoiceTypeId", Arrays.asList(2));
+//			JpaHelper.addParameter(typedQuery, query.toString(), "ponum", Integer.parseInt(no));
+//
+//			invoiceID = typedQuery.getFirstResult();
+//
+//		} catch (Exception ee) {
+//			ee.printStackTrace();
+//			Loger.log("Exception" + ee.toString());
+//
+//		}
+//		return invoiceID;
+//	}
 
 //	public int getInvoiceNo(String compId, String no) {
 //		int invoiceID = 0;
@@ -1800,7 +1835,10 @@ public class PurchaseOrderInfoDao {
 				bcaCart.setTaxable(Integer.parseInt(taxable));
 				bcaCart.setItemTypeId(Integer.parseInt(itmTypeID));
 				bcaCart.setItemOrder(Integer.parseInt(itmOrder));
-
+				Date dateAdded = new Date();
+				bcaCart.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
+				
+				
 				BcaCart cartSave = bcaCartRepository.save(bcaCart);
 				if (null != cartSave) {
 					BcaIteminventory itemInventory = bcaIteminventoryRepository.findById(inventoryID)

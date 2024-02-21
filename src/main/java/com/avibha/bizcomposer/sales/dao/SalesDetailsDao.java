@@ -92,6 +92,9 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private VendorCategory cv;
+	
+	@Autowired
+	InvoiceInfoDao invoice;
 
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
@@ -1317,7 +1320,7 @@ public class SalesDetailsDao {
 	public void getSalesOrderInitialize(String salesOrderNo, HttpServletRequest request, InvoiceDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
 		long soNo = Long.parseLong(salesOrderNo); // Sales Order Num SO Num
-		InvoiceInfoDao invoice = new InvoiceInfoDao();
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		invoice.getSalesOrderRecord(request, form, compId, soNo);
 	}
 
@@ -1566,7 +1569,7 @@ public class SalesDetailsDao {
 	}
 
 	public void saveOrder(HttpServletRequest request, InvoiceDto form) throws SQLException {
-		InvoiceInfoDao invoice = new InvoiceInfoDao();
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		if (form.getOrderNo().contains("-")) {
 			String orderNo = form.getOrderNo();

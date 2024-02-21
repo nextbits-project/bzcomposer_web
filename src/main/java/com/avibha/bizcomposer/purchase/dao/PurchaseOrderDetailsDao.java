@@ -10,6 +10,8 @@ import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +23,7 @@ import java.util.ArrayList;
 
 @Service
 public class PurchaseOrderDetailsDao {
-	@Autowired
-	private PurchaseOrderInfoDao purchaseOrderInfoDao;
+	
 
 	@Autowired
 	private CountryState countryState;
@@ -45,6 +46,9 @@ public class PurchaseOrderDetailsDao {
 	@Autowired
 	private InvoiceInfo invoiceInfo;
 
+	@Autowired
+	private PurchaseOrderInfoDao purchaseOrderInfoDao;
+	
 	/*
 	 * Sets all the information required for the new purchase order. It sets the
 	 * information such as order date,next purchase order no.,etc.
@@ -288,18 +292,25 @@ public class PurchaseOrderDetailsDao {
 	 * Add the bill or ship address of the perticular vendor selected by user to the
 	 * database
 	 */
+	@Autowired
+	BcaCompanyRepository companyRepository;
+
 	public void addConfirmAddress(HttpServletRequest request, VendorDto form) {
 //		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
 		boolean updated = false;
 		try {
-			updated = purchaseOrderInfoDao.updateBillingShippingAddress(form, request);
+			//updated = purchaseOrderInfoDao.updateBillingShippingAddress(form, request);
 			TblBSAddress2 address = new TblBSAddress2();
 //			PurchaseInfo pinfo = new PurchaseInfo();
 			int cvID = Integer.parseInt(request.getParameter("clientVendorID"));
+			String comId = (String) request.getSession().getAttribute("CID");
+			BcaCompany company = companyRepository.findByCompanyId(Long.valueOf(comId));
+
 			address.setAddressWithVendorDto(form, cvID);
-			purchaseInfo.insertBillingShippingAddress(address, form.getAddressType(), true, "U");
+			purchaseInfo.insertBillingShippingAddress(address, form.getAddressType(), true, "U", company);
+			updated = true;
 		} catch (Exception e) {
-			
+
 			// TODO: handle exception
 			e.printStackTrace();
 		}

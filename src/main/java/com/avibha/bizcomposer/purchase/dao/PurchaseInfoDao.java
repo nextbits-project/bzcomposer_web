@@ -599,9 +599,9 @@ public class PurchaseInfoDao {
 //						c.getShfirstName(), c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(),
 //						c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
 				address.setAddressWithVendorDtoBilling(c, cvID);
-				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N", bcv.getCompany());
 				address.setAddressWithVendorDtoShipping(c, cvID);
-				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N", bcv.getCompany());
 //				if (billingAddId > 0 && shippingAddId > 0) {
 //					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
 //				}
@@ -614,9 +614,9 @@ public class PurchaseInfoDao {
 //				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 //						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 //						c.getCountry(), c.getZipCode(), "0");
-//				address.setAddressWithVendorDto(c, cvID);
-				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N");
-				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N");
+				address.setAddressWithVendorDto(c, cvID);
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N", bcv.getCompany());
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N", bcv.getCompany());
 //				if (billingAddId > 0 && shippingAddId > 0) {
 //					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
 //				}
