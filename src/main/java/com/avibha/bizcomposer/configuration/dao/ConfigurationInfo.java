@@ -596,7 +596,8 @@ public class ConfigurationInfo {
 			cForm.setSoStyleID(preference.getSostyleId());
 			cForm.setIsSalePrefix(preference.getIsSalePrefix() ? "on" : "off");
 			cForm.setIsPurchasePrefix(preference.getIsPurchasePrefix() ? "on" : "off");
-			cForm.setCustTitleID(preference.getDefaultTitleID());
+			if (null != preference.getDefaultTitleID())
+				cForm.setCustTitleID(preference.getDefaultTitleID());
 
 			request.getSession().setAttribute("DefaultCongurationData", cForm);
 		} else {
@@ -605,6 +606,64 @@ public class ConfigurationInfo {
 		}
 		return cForm;
 	}
+
+//	public ConfigurationDto getDefaultCongurationData(String companyID) {
+//		
+//		ConfigurationDto cForm = new ConfigurationDto();
+//		try {
+//			Optional<BcaPreference> preferenceOpt = preferenceRepository.findByCompany_CompanyIdAndActive(Long.parseLong(companyID), 1);
+//			if (preferenceOpt.isPresent()) {
+//				BcaPreference preference = preferenceOpt.get();
+//
+//				// Map fields from preference to cForm
+//				cForm.setPreferenceID(preference.getPreferenceId());
+//				cForm.setAddressSettings(preference.getCopyAddress() ? "on" : "off");
+//				cForm.setCustDefaultCountryID(preference.getCustomerCountry().getId());
+//				cForm.setSelectedStateId(preference.getCustomerState().getId());
+//				cForm.setCustTaxable(preference.getCustomerTaxable() == 1 ? "on" : "off");
+//				cForm.setSelectedTermId(preference.getSalesTermId());
+//				cForm.setSelectedSalesRepId(preference.getSalesRepId());
+//				cForm.setSelectedPaymentId(preference.getSalesPayMethodId());
+//				cForm.setCustomerShippingId(preference.getSalesViaId());
+//				cForm.setAnnualInterestRate(preference.getChargeInterest());
+//				cForm.setMinCharge(preference.getChargeMinimum());
+//				cForm.setGracePeriod(preference.getChargeGrace().intValue());
+//				cForm.setAssessFinanceCharge(preference.getChargeReassess() ? "on" : "off");
+//				cForm.setMarkFinanceCharge(preference.getChargeMarkFinance() ? "on" : "off");
+//				cForm.setProductCategoryID(preference.getProductCategoryId());
+//				cForm.setLocationID(preference.getLocationId());
+//				cForm.setReorderPoint(preference.getReOrderPoint());
+//				cForm.setVendorInvoiceStyleId(preference.getVendorInvoiceStyleId());
+//				cForm.setCustomerType(preference.getCustomerType());
+//				cForm.setPriceLevelPriority(preference.getPriceLevelPriority());
+//				cForm.setPriceLevelDealer(preference.getPriceLevelDealer());
+//				cForm.setPriceLevelCustomer(preference.getPriceLevelCustomer());
+//				cForm.setPriceLevelGeneral(preference.getPriceLevelGeneral());
+//				cForm.setSaleTaxRate(preference.getSalesTaxRate());
+//				cForm.setShowUSAInBillShipAddress(preference.getShowUsainBillShipAddress());
+//				cForm.setInvoiceTemplateType(preference.getInvoiceTemplateType());
+//				cForm.setEstTemplateType(preference.getEstimationTemplateType());
+//				cForm.setSoTemplateType(preference.getSalesOrderTemplateType());
+//				cForm.setPoTemplateType(preference.getPurchaseOrderTemplateType());
+//				cForm.setPsTemplateType(preference.getPackingSlipTemplateType());
+//				cForm.setDisplayPeriod(preference.getDisplayPeriod());
+//				cForm.setStartInvoiceNum(preference.getStartingInvoiceNumber().toString());
+//				cForm.setStartEstimationNum(preference.getStartingEstimationNumber().toString());
+//				cForm.setStartSalesOrderNum(preference.getStartingSalesOrderNumber().toString());
+//				cForm.setStartPONum(preference.getStartingPonumber());
+//				cForm.setEstimationStyleID(preference.getEstimationStyleId());
+//				cForm.setSoStyleID(preference.getSostyleId());
+//				cForm.setIsSalePrefix(preference.getIsSalePrefix() ? "on" : "off");
+//				cForm.setIsPurchasePrefix(preference.getIsPurchasePrefix() ? "on" : "off");
+//				if (null != preference.getDefaultTitleID())
+//					cForm.setCustTitleID(preference.getDefaultTitleID());
+//			}
+//			
+//		} catch (Exception ex) {
+//			Loger.log("Exception in the class ConfigurationInfo and in method getCongurationRecord " + ex.toString());
+//		}
+//		return cForm;
+//	}
 
 	public ConfigurationDto getDefaultCongurationData(String companyID) {
 		SQLExecutor executor = new SQLExecutor();

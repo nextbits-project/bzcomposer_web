@@ -1,6 +1,7 @@
 package com.nxsol.bzcomposer.company.repos;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,9 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bzcomposer.company.domain.BcaAccount;
-import com.nxsol.bzcomposer.company.domain.BcaAcctcategory;
 import com.nxsol.bzcomposer.company.domain.BcaAccttype;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
@@ -32,10 +31,12 @@ public interface BcaAccountRepository extends JpaRepository<BcaAccount, Integer>
 	List<BcaAccount> findByCompanyAndAcctTypeAndActiveOrderByAcctCategoryAscNameAsc(BcaCompany company,
 			BcaAccttype acctType, Integer active);
 
-	List<BcaAccount> findByClientVendorAndActiveAndCompany(BcaClientvendor clientVendor, int active,
-			BcaCompany company);
+	@Query("SELECT a FROM BcaAccount a WHERE a.clientVendor.clientVendorId =:clientVendorId AND "
+			+ "a.company.companyId=:companyId AND a.active=:active ")
+	List<BcaAccount> findByClientVendorAndActiveAndCompany(@Param("clientVendorId")int clientVendorId,@Param("active") int active,
+			@Param("companyId")long companyId);
 
-	List<BcaAccount> findByAccountIdAndCompany(Integer accountId, BcaCompany company);
+	Optional<BcaAccount> findByAccountIdAndCompany_CompanyId(Integer accountId, long companyId);
 
 	List<BcaAccount> findByCompanyAndActiveAndAccountIdOrderByAcctCategoryAscNameAsc(BcaCompany company, int active,
 			int accountId);

@@ -293,6 +293,12 @@ table.tabla-listados tbody tr td {
 							onclick="billCreationTab()"> <spring:message
 								code="BzComposer.billpayable.tabs.billcreation" />
 						</a>
+						<a class="nav-item nav-link" id="nav-contact-tab"
+							data-toggle="tab" href="#nav-contact" role="tab"
+							aria-controls="nav-contact" aria-selected="false"
+							onclick="billCompaniesTab()()"> <spring:message
+								code="BzComposer.billpayable.tabs.billingcompanies" />
+						</a>
 					</div>
 				</nav>
 				<div class="unpaid">
@@ -1357,6 +1363,10 @@ debugger;
 	{
 		window.location = "${pageContext.request.contextPath}/BillCreation?tabid=billCreation";
 	}
+	function billCompaniesTab()
+	{
+		window.location = "${pageContext.request.contextPath}/BillPayable?tabid=billCompanies";
+	}
 		$(document).ready(
 				function() {
 					//
@@ -1683,7 +1693,7 @@ function DeleteMemorizeTransaction()
 function AddPayee()
 {
 	/* window.location = "${pageContext.request.contextPath}/Vendor?tabid=AODOVO"; */
-	window.open("Vendor?tabid=AODOVO",null,"scrollbars=yes,height=700,width=1300,status=yes,toolbar=no,menubar=no,location=no," );
+	window.open("Vendor?tabid=addbillingcompany",null,"scrollbars=yes,height=700,width=1300,status=yes,toolbar=no,menubar=no,location=no," );
 }
 function enterchecknumberdialog()
 {

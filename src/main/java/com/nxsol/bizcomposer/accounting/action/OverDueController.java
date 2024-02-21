@@ -123,7 +123,7 @@ public class OverDueController {
 //		ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<ReceivableListDto> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
 		ArrayList<ReceivableListDto> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);
-		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
+//		TblCategoryDtoLoader category = new TblCategoryDtoLoader();
 		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<ClientVendor> clientVendorForCombo = rl.getClientVendorForCombo();
 		ArrayList<TblPaymentType> paymentType = rl.getPaymentType();

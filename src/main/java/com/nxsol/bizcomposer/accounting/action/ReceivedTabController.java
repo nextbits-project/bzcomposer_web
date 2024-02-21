@@ -38,6 +38,9 @@ public class ReceivedTabController {
 	
 	@Autowired
 	private TblCategoryDtoLoader category;
+	
+	@Autowired
+	private ConfigurationInfo configInfo;
 
 	@GetMapping("/ReceivedTab")
 	public ModelAndView ReceivedTab(TblPaymentDto form, HttpServletRequest request,
@@ -66,7 +69,7 @@ public class ReceivedTabController {
 		request.setAttribute("CategoryCombo", categoryforcombo);
 		request.setAttribute("ClineVendorForCombo", clientVendorForCombo);
 		
-		ConfigurationInfo configInfo = new ConfigurationInfo();
+//		ConfigurationInfo configInfo = new ConfigurationInfo();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		
 		if(action.equals("UpdateRecord"))

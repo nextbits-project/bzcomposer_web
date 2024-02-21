@@ -12,12 +12,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
 @Entity
 @Table(name = "bca_clientvendor")
-public class BcaClientvendor {
+public class BcaClientvendor implements Serializable{
 
 	@Id
 	@Column(name = "ClientVendorID", nullable = false, updatable = false)

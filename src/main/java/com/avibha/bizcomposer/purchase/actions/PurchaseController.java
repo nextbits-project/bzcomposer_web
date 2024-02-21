@@ -18,6 +18,8 @@ import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.utility.Path;
+import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
+import com.nxsol.bizcompser.global.table.TblCategoryDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,12 +50,17 @@ public class PurchaseController {
 	private PurchaseInfo pinfo;
 
 	
-
+	@Autowired
+	private ReceivableLIst rl;
+	
 	@RequestMapping(value = {"/Vendor"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String vendor(VendorDto vendorDto, UpdateInvoiceDto updateInvoiceDto, HttpServletRequest request) throws IOException, ServletException {
 		String forward = "a";
 		String action = request.getParameter("tabid");
 		System.out.println("Action-->"+action);
+		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
+
+		request.setAttribute("categoryListForCombo", categoryListForCombo);
 		if (action == null) {
 			String cvId = request.getParameter("cvId");
 			String rowId = request.getParameter("SelectedRID");
@@ -108,12 +115,42 @@ public class PurchaseController {
 			vendorDto.setClientVendorID((pinfo.getLastClientVendorID() + 1) + "");
 			forward = "/purchase/addNewVendor";
 		}
+		else if (action.equalsIgnoreCase("addbillingcompany")) { // Goto Add-Vendor Page
+			String compId = (String) request.getSession().getAttribute("CID");
+			String cvId = request.getParameter("CustId");
+//			InvoiceInfoDao invoice = new InvoiceInfoDao();
+
+			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
+			purchaseDetailsDao.getAllList(request);
+			invoiceInfoDao.set(cvId, request, updateInvoiceDto, compId);
+			invoiceInfoDao.getServices(request, compId, cvId);
+
+//			ConfigurationInfo configInfo = new ConfigurationInfo();
+			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+			request.setAttribute("defaultCongurationData", configDto);
+			
+			vendorDto.setAnnualIntrestRate(configDto.getAnnualInterestRate()+"");
+			vendorDto.setMinFCharges(configDto.getMinCharge()+"");
+			vendorDto.setGracePrd(configDto.getGracePeriod()+"");
+			vendorDto.setFsAssessFinanceCharge(configDto.getAssessFinanceCharge());
+			vendorDto.setFsMarkFinanceCharge(configDto.getMarkFinanceCharge());
+			String cdate = invoiceInfoDao.setCurrentDate();
+			vendorDto.setDateAdded(cdate);
+			vendorDto.setClientVendorID((pinfo.getLastClientVendorID() + 1) + "");
+			forward = "/accounting/addBillingCompany";
+		}
 
 		else if (action.equalsIgnoreCase("AOVODO")) { // to Add/Save Vendor details
 			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
 			String compId = (String) request.getSession().getAttribute("CID");
 			purchaseDetailsDao.AddVendor(request, vendorDto, compId);
 			forward = "redirect:/Vendor?tabid=AODOVO";
+		}
+		else if (action.equalsIgnoreCase("billingcompany")) { // to Add/Save Vendor details
+			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
+			String compId = (String) request.getSession().getAttribute("CID");
+			purchaseDetailsDao.AddVendor(request, vendorDto, compId);
+			forward = "redirect:/Vendor?tabid=addbillingcompany";
 		}
 
 		else if (action.equalsIgnoreCase("editVendor")) {	//Get Vendor details for EditVendor Page

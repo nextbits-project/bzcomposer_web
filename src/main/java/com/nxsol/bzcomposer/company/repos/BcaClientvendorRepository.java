@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -28,8 +29,9 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 			+ " AND CVTypeID IN (1, 2) AND c.Status IN ('U', 'N') AND c.Deleted = 0 AND c.Active=1 ORDER BY c.Name")
 	List<Object[]> fetchClientVendorDetails(@Param("compId") BcaCompany compId);
 
-	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.company= :compId AND bcv.status IN ('U','N') AND bcv.active =1")
-	List<BcaClientvendor> findListOfClientVendorDetails(@Param("compId") BcaCompany compId);
+	@Cacheable(value="clientVendorDetails" , key="#companyId")
+	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.company.companyId= :companyId AND bcv.status IN ('U','N') AND bcv.active =1")
+	List<BcaClientvendor> findListOfClientVendorDetails(@Param("companyId") long companyId);
 
 	@Query("SELECT bcv FROM BcaClientvendor bcv left join bcv.company c WHERE c.companyId= :compId AND bcv.status IN ('U','N') AND bcv.active IN (0,1) ORDER BY bcv.lastName")
 	List<BcaClientvendor> findAllClientVendorForCombo(@Param("compId") Long compId);
@@ -48,6 +50,7 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 	List<BcaClientvendor> findByCompanyAndStatusInAndClientVendorId(BcaCompany company, List<String> statusList,
 			Integer clientVendorId);
 
+	@Cacheable(value="allClientVendor" ,key="#companyId")
 	@Query(nativeQuery = true, value = "select Name, FirstName, LastName, ClientVendorID from bca_clientvendor where companyID = :companyId "
 			+ "and Status in ('U', 'N') and (Deleted = 0 or Active = 1) and CVTypeID in ( :param1 , :param2, :param3 ) order by name")
 	List<Object[]> findAllClientVendorList(@Param("companyId") Long companyId, @Param("param1") Integer param1,

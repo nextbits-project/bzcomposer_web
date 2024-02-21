@@ -75,6 +75,9 @@ public class AccountingController{
 	private ReceivableLIst rl;
 	@Autowired
 	private TblCategoryDtoLoader category;
+	
+	@Autowired
+	private RMAInfoDao rmaInfo;
 
 	@RequestMapping(value ="/AccountReceiveble", method = {RequestMethod.GET, RequestMethod.POST})
 	//@GetMapping("/AccountReceiveble")
@@ -125,8 +128,8 @@ public class AccountingController{
 			}
 			if(action.equals("CustomerRMARefund"))
 			{
-				RMADetailsDao rd=new RMADetailsDao();
-				RMAInfoDao rmaInfo = new RMAInfoDao();
+//				RMADetailsDao rd=new RMADetailsDao();
+//				RMAInfoDao rmaInfo = new RMAInfoDao();
 				ArrayList CustomerRMAList = new ArrayList();
 				int invoiceTypeID = 2;
 				CustomerRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);
@@ -135,8 +138,8 @@ public class AccountingController{
 			}
 			if(action.equals("vendorRMA"))
 			{
-				RMADetailsDao rd=new RMADetailsDao();
-				RMAInfoDao rmaInfo = new RMAInfoDao();
+//				RMADetailsDao rd=new RMADetailsDao();
+//				RMAInfoDao rmaInfo = new RMAInfoDao();
 				ArrayList vendorRMAList = new ArrayList();
 				int invoiceTypeID = 1;
 				vendorRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);

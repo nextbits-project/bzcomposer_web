@@ -34,6 +34,12 @@ public class PoPayableController {
 	@Autowired
 	private ReceivableLIst rl;
 	
+	@Autowired
+	private RMAInfoDao rmaInfo;
+	
+	
+
+	
 	@GetMapping("/PoPayable")
 	public ModelAndView poPayable(RMADto rmaDto, ReceivableListDto receivableListDto, HttpServletRequest request,
 								  HttpServletResponse response) throws Exception {
@@ -47,8 +53,9 @@ public class PoPayableController {
 		ArrayList<TblCategoryDto> categoryforcombo = category.getCategoryForCombo();
 		ArrayList<TblPaymentType> paymentTypeForPOcombo = rl.getPaymentTypeForPoPayable();
 		ArrayList<TblAccount> accountForCombo =rl.getAccount();
-//		ArrayList<ReceivableListDto> poList = rl.getPoPayableList();
-		ArrayList<ReceivableListDto> poList = rl.getReceivableList(ConstValue.companyId);
+		ArrayList<ReceivableListDto> poList = rl.getPoPayableList();
+	
+//		ArrayList<ReceivableListDto> poList = rl.getReceivableList(ConstValue.companyId);
 		request.setAttribute("categoryforcombo", categoryforcombo);
 		request.setAttribute("paymentTypeForPOcombo", paymentTypeForPOcombo);
 		request.setAttribute("accountForCombo", accountForCombo);
@@ -92,7 +99,7 @@ public class PoPayableController {
 		if(action.equals("vendorRMARefund"))
 		{
 			RMADetailsDao rd=new RMADetailsDao();
-			RMAInfoDao rmaInfo = new RMAInfoDao();
+//			RMAInfoDao rmaInfo = new RMAInfoDao();
 			ArrayList VendorRMAList = new ArrayList();
 			int invoiceTypeID = 1;
 			VendorRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);

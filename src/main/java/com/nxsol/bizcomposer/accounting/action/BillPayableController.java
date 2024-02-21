@@ -1,5 +1,7 @@
 package com.nxsol.bizcomposer.accounting.action;
 
+import com.avibha.bizcomposer.purchase.dao.PurchaseDetailsDao;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.common.JProjectUtil;
@@ -7,6 +9,7 @@ import com.nxsol.bizcomposer.common.TblVendorDetail;
 import com.nxsol.bizcomposer.common.TblVendorDetailDto;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
+import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
 import com.pritesh.bizcomposer.accounting.bean.TblPayment;
@@ -30,6 +33,14 @@ public class BillPayableController {
 
 	@Autowired
 	private ReceivableLIst rl;
+	
+	@Autowired
+	private BcaClientvendorService clientVendorService;
+	
+	@Autowired
+	private PurchaseDetailsDao purchaseDetailsDao ;
+	
+
 
 	@RequestMapping(value = "/BillPayable", method = { RequestMethod.GET, RequestMethod.POST })
 	// @GetMapping("/BillPayable")
@@ -62,6 +73,43 @@ public class BillPayableController {
 			request.setAttribute("recurrentPaymentList", recurrentPaymentList);
 			request.setAttribute("paidBillLists", paidBillLists);
 			forward = "/accounting/paidBillLists";
+		}
+		if (action.equals("billCompanies")) {
+//			ArrayList<TblPayment> paidBillLists = rl.getPaidBillListsPayment();
+//			ArrayList<TblPaymentDto> recurrentPaymentList = rl.getRecurrentBillPayment();
+//			request.setAttribute("recurrentPaymentList", recurrentPaymentList);
+//			request.setAttribute("paidBillLists", paidBillLists);
+//			forward = "/accounting/paidBillLists";
+//			CustomerDto customerDto =new CustomerDto();
+//			String cvId = request.getParameter("cvId");
+//			String rowId = request.getParameter("SelectedRID");
+//			String firstCvID = clientVendorService.getCustomerList(request);
+//
+////			SalesDetailsDao sd = new SalesDetailsDao();
+////			String firstCvID = sd.getCustomerList(request);
+//			if (cvId == null) {
+//				cvId = firstCvID;
+//			}
+//			clientVendorService.searchSelectedCustomer(cvId, request, customerDto);
+//			clientVendorService.getAllList(request);
+//
+//			if (rowId != null) {
+//				customerDto.setSelectedRowID(rowId);
+//			} else {
+//				customerDto.setSelectedRowID("0");
+//			}
+//			if (cvId != null) {
+//				customerDto.setClientVendorID(cvId);
+//			} else {
+//				customerDto.setClientVendorID("0");
+//			}
+//			if (rowId != null) {
+//				request.setAttribute("VendorFrm", customerDto.getSelectedRowID());
+//			}
+			
+			purchaseDetailsDao.getVendors(request);
+			purchaseDetailsDao.getAllList(request);
+			forward = "/accounting/billingCompanies";
 		}
 
 		ArrayList<TblVendorDetail> unpaidBillList = rl.getUnpaidBillList(cvID, checkStatus);

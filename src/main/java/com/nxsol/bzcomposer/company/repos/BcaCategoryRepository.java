@@ -2,6 +2,7 @@ package com.nxsol.bzcomposer.company.repos;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,7 +23,8 @@ public interface BcaCategoryRepository extends JpaRepository<BcaCategory, Intege
 			+ "AND bc.company = :companyId " + "AND bc.categoryId NOT IN (2146772369, 2146772370)")
 	List<BcaCategory> getByCategoryTypeIdAndParentIdAndCompanyId(@Param("companyId") BcaCompany companyId);
 
-	List<BcaCategory> findByCompanyAndIsActive(BcaCompany company, boolean isActive);
+	@Cacheable(value="bcaCategory",key="#companyId")
+	List<BcaCategory> findByCompany_CompanyIdAndIsActive(long companyId, boolean isActive);
 
 	List<BcaCategory> findByCategoryTypeIdAndParentAndCompany(Integer categoryTypeId, String parent,
 			BcaCompany company);
@@ -30,10 +32,10 @@ public interface BcaCategoryRepository extends JpaRepository<BcaCategory, Intege
 	List<BcaCategory> findByParentAndIsActive(String parent, Boolean isActive);
 
 	List<BcaCategory> findByCompanyAndCategoryId(BcaCompany company, Integer categoryId);
-
-	List<BcaCategory> findByCompanyAndIsActiveAndCategoryTypeIdOrderByNameAsc(BcaCompany company, Boolean isActive,
+	@Cacheable(value="categoryListForPayment",key="{#companyId, #categoryTypeId}")
+	List<BcaCategory> findByCompany_CompanyIdAndIsActiveAndCategoryTypeIdOrderByNameAsc(long companyId, Boolean isActive,
 			Integer categoryTypeId);
-
+	
 	List<BcaCategory> findByCompanyAndIsActiveOrderByCategoryTypeIdAscNameAsc(BcaCompany company, boolean isActive);
 
 	List<BcaCategory> findByCompanyAndName(BcaCompany company, String name);
