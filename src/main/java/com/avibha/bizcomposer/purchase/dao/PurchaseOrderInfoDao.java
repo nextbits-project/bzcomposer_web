@@ -1845,7 +1845,7 @@ public class PurchaseOrderInfoDao {
 							.orElseThrow(() -> new EntityNotFoundException("Entity Not FOund"));
 					int expectedQty = itemInventory.getExpectedQty() + Integer.parseInt(qty);
 					itemInventory.setExpectedQty(expectedQty);
-
+					bcaIteminventoryRepository.save(itemInventory);
 				}
 
 			}
