@@ -254,16 +254,22 @@ function init() {
 										id='${loop.index}bsaddr' />
 								</c:forEach>
 
-								<input type="hidden" name="LSize" id="sSize"
+						<input type="hidden" name="LSize" id="sSize" value='${ShAddr.size()}'>
+	                    <c:forEach items="${ShAddr}" var="objList" varStatus="loop">
+	                        <input type="hidden" value='${objList.clientVendorID}' id='${loop.index}sh_id' />
+	                        <input type="hidden" value='${objList.shipTo}' id='${loop.index}sh' />
+	                        <input type="hidden" value='${objList.shAddressID}' id='${loop.index}shaddr' />
+	                    </c:forEach>
+								<%-- <input type="hidden" name="LSize" id="sSize"
 									value='${ShAddr.size()}' />
 								<c:forEach items="${ShAddr}" var="objList" varStatus="loop">
 									<input type="hidden" value='${objList.clientVendorID}'
 										id='${loop.index}sh_id' />
 									<input type="hidden" value='${objList.shipTo}'
 										id='${loop.index}sh' />
-									<input type="hidden" value='${objList.bsAddressID}'
+									<input type="hidden" value='${objList.shAddressID}'
 										id='${loop.index}shaddr' />
-								</c:forEach>
+								</c:forEach> --%>
 							</div>
 							<div>
 								<span
@@ -1085,6 +1091,7 @@ function init() {
 										</tr>
 									</table>
 									<br> <input type="hidden" name="bsAddressID" />
+									<input type="hidden" name="shAddressID" />
 									<div>
 										<input type="hidden" value="0" id="hidn" /> <input
 											type="hidden" value="" id="code11" /> <input type="hidden"
@@ -2156,15 +2163,17 @@ function init() {
 	}
 
 	function Assignment(custID, form){
+		 debugger; 
 		console.log("Hello");
 	    document.PurchaseOrderForm.clientVendorID.value = custID;
 		if(custID==0){
 			form.billTo.value="";
 			form.shipTo.value="";
 		}
-		else if(custID==1111){
+		/* else if(custID==1111){
             window.location.href = "Customer?tabid=NewCustomer";
-        } else{
+        }  */
+		else{
         	console.log("Hello678");
 			form.custNm.value = custID;
 			size = document.getElementById("bSize").value;
@@ -2190,7 +2199,7 @@ function init() {
                 console.log("bsize field2"+field2);
 				
                 if(custID==field2){
-                    form.bsAddressID.value = document.getElementById(i+"shaddr").value;
+                    form.shAddressID.value = document.getElementById(i+"shaddr").value;
                     form.shipTo.value = document.getElementById(i+"sh").value;
                     console.log("bsize  form.shipTo.value"+ form.shipTo.value);
     				
@@ -2762,8 +2771,9 @@ function BillConfirmAddress(form){
     }
 }
 function ShipConfirmAddress(form){
+	debugger;
     let custID = form.custID.value;
-    let addressID = form.bsAddressID.value;
+    let addressID = form.shAddressID.value;
     if(custID != 0){
         window.open("PurchaseOrder?tabid=AddressConfirm&CType=ship&addressID="+addressID+"&custID="+custID, null,"scrollbars=yes,height=600,width=600,status=yes,toolbar=no,menubar=no,location=no");
     }

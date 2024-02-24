@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -276,58 +277,124 @@ public class PurchaseOrderInfoDao {
 		return vList;
 	}
 
-	public ArrayList billAddress(String companyID, String cvID) {
+	public ArrayList<PurchaseOrderDto> billAddress(String companyID, String cvID) {
+	    ArrayList<PurchaseOrderDto> objList = new ArrayList<>();
+	    try {
+	        ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+	        StringBuilder query = new StringBuilder("select distinct new ")
+	                .append(BcaBillingAddressDto.class.getCanonicalName())
+	                .append("(a.addressId, a.clientVendor.clientVendorId, a.name, a.firstName, a.lastName, a.address1, a.address2, a.zipCode, a.city, ct.name as cityName, a.state, s.name as stateName, a.country, c.name as countryName) from BcaBillingaddress as a left join BcaCountries as c on c.id=a.country left join BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N', 'U')");
 
-		ArrayList<PurchaseOrderDto> objList = new ArrayList<>();
+	        if (cvID != null && !cvID.trim().isEmpty()) {
+	            query.append(" and a.clientVendor.clientVendorId = :clientVendorId ");
+	        }
 
-		try {
+	        if (companyID != null && !companyID.trim().isEmpty()) {
+	            query.append(" and a.company.companyId = :companyId");
+	        }
 
-			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+	        TypedQuery<BcaBillingAddressDto> typedQuery = entityManager.createQuery(query.toString(), BcaBillingAddressDto.class);
 
-			StringBuffer query = new StringBuffer("select distinct new  "
-					+ BcaBillingAddressDto.class.getCanonicalName()
-					+ "(a.addressId , a.clientVendor.clientVendorId , a.name , a.firstName , a.lastName , a.address1 , a.address2, "
-					+ " a.zipCode ,a.city , ct.name as cityName , a.state , s.name as stateName , a.country , c.name as countryName) from BcaBillingaddress as a left join "
-					+ " BcaCountries as c on c.id=a.country left join  BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N')"
-					+ ((cvID != null && !cvID.trim().isEmpty()) ? "and a.clientVendor.clientVendorId = :clientVendorId "
-							: " "));
+	        if (cvID != null && !cvID.trim().isEmpty()) {
+	            typedQuery.setParameter("clientVendorId", Integer.parseInt(cvID));
+	        }
 
-			TypedQuery<BcaBillingAddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
-					BcaBillingAddressDto.class);
-			if (null != cvID)
-				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
-			List<BcaBillingAddressDto> billingAddress = typedQuery.getResultList();
-			for (BcaBillingAddressDto address : billingAddress) {
-				PurchaseOrderDto customer = new PurchaseOrderDto();
-				customer.setCompanyID(companyID);
-				customer.setBsAddressID(String.valueOf(address.getAddressId()));
-				customer.setClientVendorID(String.valueOf(address.getClientVendorId()));
-				customer.setFullName(address.getFirstName() + " " + address.getLastName());
-				customer.setCountry(address.getCountry());
-				String ADDRESS_ASD22 = address.getAddress2();
-				if (ADDRESS_ASD22 != null && ADDRESS_ASD22.trim().length() > 0) {
-					ADDRESS_ASD22 = "\n" + ADDRESS_ASD22;
-				} else {
-					ADDRESS_ASD22 = "";
-				}
-				String bill = customer.getFullName() + "\n" + address.getName() + "\n" + address.getAddress1()
-						+ ADDRESS_ASD22 + "\n" + address.getCityName() + ", " + address.getStateName() + " "
-						+ address.getZipCode();
-				if (configDto.isShowUSAInBillShipAddress()) {
-					bill = bill + "\n" + address.getCountryName();
-				} else if (!customer.getCountry().equals("231")) {
-					bill = bill + "\n" + address.getCountryName();
-				}
-				customer.setBillTo(bill);
-				objList.add(customer);
-			}
+	        if (companyID != null && !companyID.trim().isEmpty()) {
+	            typedQuery.setParameter("companyId", Long.parseLong(companyID));
+	        }
 
-		} catch (Exception ee) {
-			ee.printStackTrace();
-			Loger.log(2, " SQL Error in Class PurchaseOrderInfo and  method -billAddress " + ee.toString());
-		}
-		return objList;
+	        List<BcaBillingAddressDto> billingAddress = typedQuery.getResultList();
+	        for (BcaBillingAddressDto address : billingAddress) {
+	            PurchaseOrderDto customer = mapToPurchaseOrderDto(address, configDto, companyID);
+	            objList.add(customer);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        Loger.log(2, " SQL Error in Class PurchaseOrderInfo and  method -billAddress " + e.toString());
+	    }
+	    return objList;
 	}
+
+	private PurchaseOrderDto mapToPurchaseOrderDto(BcaBillingAddressDto address, ConfigurationDto configDto, String companyID) {
+	    PurchaseOrderDto customer = new PurchaseOrderDto();
+	    customer.setCompanyID(companyID);
+	    customer.setBsAddressID(String.valueOf(address.getAddressId()));
+	    customer.setClientVendorID(String.valueOf(address.getClientVendorId()));
+	    customer.setFullName(address.getFirstName() + " " + address.getLastName());
+	    customer.setCountry(address.getCountry());
+
+	    String address2 = Optional.ofNullable(address.getAddress2()).filter(str -> !str.trim().isEmpty()).map(str -> "\n" + str).orElse("");
+	    String bill = customer.getFullName() + "\n" + address.getName() + "\n" + address.getAddress1()
+	            + address2 + "\n" + address.getCityName() + ", " + address.getStateName() + " "
+	            + address.getZipCode();
+	    if (configDto.isShowUSAInBillShipAddress() || !customer.getCountry().equals("231")) {
+	        bill += "\n" + address.getCountryName();
+	    }
+	    customer.setBillTo(bill);
+	    return customer;
+	}
+//	public ArrayList billAddress(String companyID, String cvID) {
+//
+//		ArrayList<PurchaseOrderDto> objList = new ArrayList<>();
+//
+//		try {
+//
+//			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+//
+//			StringBuffer query = new StringBuffer("select distinct new  "
+//					+ BcaBillingAddressDto.class.getCanonicalName()
+//					+ "(a.addressId , a.clientVendor.clientVendorId , a.name , a.firstName , a.lastName , a.address1 , a.address2, "
+//					+ " a.zipCode ,a.city , ct.name as cityName , a.state , s.name as stateName , a.country , c.name as countryName) from BcaBillingaddress as a left join "
+//					+ " BcaCountries as c on c.id=a.country left join  BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N', 'U')"
+//					+ ((cvID != null && !cvID.trim().isEmpty()) ? "and a.clientVendor.clientVendorId = :clientVendorId "
+//							: " "));
+//
+//			
+//			TypedQuery<BcaBillingAddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
+//					BcaBillingAddressDto.class);
+//			if (null != cvID)
+//				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
+//			
+//			if (companyID != null && !companyID.trim().isEmpty()) {
+//			    query.append(" and a.company.companyId = :companyId");
+//			}
+//			
+//			if (companyID != null)
+//				JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(companyID));
+//			
+//			
+//			List<BcaBillingAddressDto> billingAddress = typedQuery.getResultList();
+//			for (BcaBillingAddressDto address : billingAddress) {
+//				PurchaseOrderDto customer = new PurchaseOrderDto();
+//				customer.setCompanyID(companyID);
+//				customer.setBsAddressID(String.valueOf(address.getAddressId()));
+//				customer.setClientVendorID(String.valueOf(address.getClientVendorId()));
+//				customer.setFullName(address.getFirstName() + " " + address.getLastName());
+//				customer.setCountry(address.getCountry());
+//				String ADDRESS_ASD22 = address.getAddress2();
+//				if (ADDRESS_ASD22 != null && ADDRESS_ASD22.trim().length() > 0) {
+//					ADDRESS_ASD22 = "\n" + ADDRESS_ASD22;
+//				} else {
+//					ADDRESS_ASD22 = "";
+//				}
+//				String bill = customer.getFullName() + "\n" + address.getName() + "\n" + address.getAddress1()
+//						+ ADDRESS_ASD22 + "\n" + address.getCityName() + ", " + address.getStateName() + " "
+//						+ address.getZipCode();
+//				if (configDto.isShowUSAInBillShipAddress()) {
+//					bill = bill + "\n" + address.getCountryName();
+//				} else if (!customer.getCountry().equals("231")) {
+//					bill = bill + "\n" + address.getCountryName();
+//				}
+//				customer.setBillTo(bill);
+//				objList.add(customer);
+//			}
+//
+//		} catch (Exception ee) {
+//			ee.printStackTrace();
+//			Loger.log(2, " SQL Error in Class PurchaseOrderInfo and  method -billAddress " + ee.toString());
+//		}
+//		return objList;
+//	}
 //	public ArrayList billAddress(String companyID, String cvID) {
 //		Connection con = null;
 //		SQLExecutor db = new SQLExecutor();
@@ -401,60 +468,126 @@ public class PurchaseOrderInfoDao {
 //		return objList;
 //	}
 
-	public ArrayList shipAddress(String companyID, String cvID) {
-
+	public ArrayList<PurchaseOrderDto> shipAddress(String companyID, String cvID) {
 		ArrayList<PurchaseOrderDto> objList = new ArrayList<>();
 
-		try {
+	    try {
+	    	 ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+	         StringBuilder query = new StringBuilder("select distinct new ")
+	                 .append(BcaShippingaddressDto.class.getCanonicalName())
+	                 .append("(a.addressId, a.clientVendor.clientVendorId, a.name, a.firstName, a.lastName, a.address1, a.address2, ")
+	                 .append("a.zipCode, a.city, ct.name as cityName, a.state, s.name as stateName, a.country, c.name as countryName) ")
+	                 .append("from BcaShippingaddress as a ")
+	                 .append("left join BcaCountries as c on c.id=a.country ")
+	                 .append("left join BcaStates as s on s.id=a.state ")
+	                 .append("left join BcaCities as ct on ct.id = a.city ")
+	                 .append("where a.status in ('N', 'U') ")
+	                 .append(cvID != null && !cvID.trim().isEmpty() ? "and a.clientVendor.clientVendorId = :clientVendorId " : "");
 
-			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
-			StringBuffer query = new StringBuffer("select distinct new  "
-					+ BcaShippingaddressDto.class.getCanonicalName()
-					+ "(a.addressId , a.clientVendor.clientVendorId , a.name , a.firstName , a.lastName , a.address1 , a.address2, "
-					+ " a.zipCode ,a.city , ct.name as cityName , a.state , s.name as stateName , a.country , c.name as countryName) from BcaShippingaddress as a left join "
-					+ " BcaCountries as c on c.id=a.country left join  BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N') "
-					+ ((cvID != null && !cvID.trim().isEmpty()) ? "and a.clientVendor.clientVendorId = :clientVendorId "
-							: " "));
-			TypedQuery<BcaShippingaddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
-					BcaShippingaddressDto.class);
-			if (null != cvID)
-				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
-			List<BcaShippingaddressDto> ShippingAddress = typedQuery.getResultList();
-			for (BcaShippingaddressDto address : ShippingAddress) {
-				PurchaseOrderDto customer = new PurchaseOrderDto();
+	         // Append the condition for companyId before creating the TypedQuery
+	         if (companyID != null && !companyID.trim().isEmpty()) {
+	             query.append(" and a.company.companyId = :companyId");
+	         }
 
-				customer.setBsAddressID(String.valueOf(address.getAddressId()));
-				customer.setClientVendorID(String.valueOf(address.getClientVendorId()));
-				customer.setFullName(address.getFirstName() + " " + address.getLastName());
-				customer.setCountry(address.getCountry());
-				String ADDRESS_ASD22 = address.getAddress2();
-				if (ADDRESS_ASD22 != null && ADDRESS_ASD22.trim().length() > 0) {
-					ADDRESS_ASD22 = "\n" + ADDRESS_ASD22;
-				} else {
-					ADDRESS_ASD22 = "";
-				}
-				String ship = customer.getFullName() + "\n" + address.getName() + "\n" + address.getAddress1()
-						+ ADDRESS_ASD22 + "\n" + address.getCityName() + ", " + address.getStateName() + " "
-						+ address.getZipCode();
-				if (configDto.isShowUSAInBillShipAddress()) {
-					ship = ship + "\n" + address.getCountryName();
-				} else if (!customer.getCountry().equals("231")) {
-					ship = ship + "\n" + address.getCountryName();
-				}
-				if (ship.equals(""))
-					customer.setShipTo("");
-				else {
-					customer.setShipTo(ship);
-				}
-				objList.add(customer);
-			}
+	         TypedQuery<BcaShippingaddressDto> typedQuery = entityManager.createQuery(query.toString(), BcaShippingaddressDto.class);
 
-		} catch (Exception ee) {
-			ee.printStackTrace();
-			Loger.log(2, " SQL Error in Class PurchaseOrderInfoDao and  method -shipAddress " + ee.toString());
-		}
-		return objList;
+	         if (cvID != null) {
+	             typedQuery.setParameter("clientVendorId", Integer.parseInt(cvID));
+	         }
+
+	         if (companyID != null && !companyID.trim().isEmpty()) {
+	             typedQuery.setParameter("companyId", Long.valueOf(companyID));
+	         }
+
+
+	        List<BcaShippingaddressDto> shippingAddresses = typedQuery.getResultList();
+	        shippingAddresses.forEach(address -> {
+	            PurchaseOrderDto customer = new PurchaseOrderDto();
+	            customer.setShAddressID(String.valueOf(address.getAddressId()));
+	            customer.setClientVendorID(String.valueOf(address.getClientVendorId()));
+	            customer.setFullName(address.getFirstName() + " " + address.getLastName());
+	            customer.setCountry(address.getCountry());
+	            String addressLine2 = Optional.ofNullable(address.getAddress2()).filter(str -> !str.trim().isEmpty()).map(str -> "\n" + str).orElse("");
+	            String shipAddress = Stream.of(customer.getFullName(), address.getName(), address.getAddress1() + addressLine2, address.getCityName() + ", " + address.getStateName() + " " + address.getZipCode())
+	                    .collect(Collectors.joining("\n"));
+	            if (configDto.isShowUSAInBillShipAddress() || !"231".equals(customer.getCountry())) {
+	                shipAddress += "\n" + address.getCountryName();
+	            }
+	            customer.setShipTo(shipAddress);
+	            objList.add(customer);
+	        });
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        Loger.log(2, " SQL Error in Class PurchaseOrderInfoDao and method -shipAddress " + e.toString());
+	    }
+	    return objList;
 	}
+//	public ArrayList shipAddress(String companyID, String cvID) {
+//
+//		ArrayList<PurchaseOrderDto> objList = new ArrayList<>();
+//
+//		try {
+//
+//			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+//			StringBuffer query = new StringBuffer("select distinct new  "
+//					+ BcaShippingaddressDto.class.getCanonicalName()
+//					+ "(a.addressId , a.clientVendor.clientVendorId , a.name , a.firstName , a.lastName , a.address1 , a.address2, "
+//					+ " a.zipCode ,a.city , ct.name as cityName , a.state , s.name as stateName , a.country , c.name as countryName) from BcaShippingaddress as a left join "
+//					+ " BcaCountries as c on c.id=a.country left join  BcaStates as s on s.id=a.state left join BcaCities as ct on ct.id = a.city where a.status in ('N', 'U') "
+//					+ ((cvID != null && !cvID.trim().isEmpty()) ? "and a.clientVendor.clientVendorId = :clientVendorId "
+//							: " "));
+//			TypedQuery<BcaShippingaddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
+//					BcaShippingaddressDto.class);
+//			if (null != cvID)
+//				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
+//			
+//			if (companyID != null && !companyID.trim().isEmpty()) {
+//			    query.append(" and a.company.companyId = :companyId");
+//			}
+//			
+//			if (companyID != null)
+//				JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(companyID));
+//
+//			
+//			
+//			
+//			
+//			List<BcaShippingaddressDto> ShippingAddress = typedQuery.getResultList();
+//			for (BcaShippingaddressDto address : ShippingAddress) {
+//				PurchaseOrderDto customer = new PurchaseOrderDto();
+//
+//				customer.setBsAddressID(String.valueOf(address.getAddressId()));
+//				customer.setClientVendorID(String.valueOf(address.getClientVendorId()));
+//				customer.setFullName(address.getFirstName() + " " + address.getLastName());
+//				customer.setCountry(address.getCountry());
+//				String ADDRESS_ASD22 = address.getAddress2();
+//				if (ADDRESS_ASD22 != null && ADDRESS_ASD22.trim().length() > 0) {
+//					ADDRESS_ASD22 = "\n" + ADDRESS_ASD22;
+//				} else {
+//					ADDRESS_ASD22 = "";
+//				}
+//				String ship = customer.getFullName() + "\n" + address.getName() + "\n" + address.getAddress1()
+//						+ ADDRESS_ASD22 + "\n" + address.getCityName() + ", " + address.getStateName() + " "
+//						+ address.getZipCode();
+//				if (configDto.isShowUSAInBillShipAddress()) {
+//					ship = ship + "\n" + address.getCountryName();
+//				} else if (!customer.getCountry().equals("231")) {
+//					ship = ship + "\n" + address.getCountryName();
+//				}
+//				if (ship.equals(""))
+//					customer.setShipTo("");
+//				else {
+//					customer.setShipTo(ship);
+//				}
+//				objList.add(customer);
+//			}
+//
+//		} catch (Exception ee) {
+//			ee.printStackTrace();
+//			Loger.log(2, " SQL Error in Class PurchaseOrderInfoDao and  method -shipAddress " + ee.toString());
+//		}
+//		return objList;
+//	}
 
 //	public ArrayList shipAddress(String companyID, String cvID) {
 //		Connection con = null;
@@ -962,10 +1095,12 @@ public class PurchaseOrderInfoDao {
 			JpaHelper.addParameter(typedQuery, query.toString(), "invoiceTypeId", Arrays.asList(2));
 			JpaHelper.addParameter(typedQuery, query.toString(), "ponum", Integer.parseInt(orderNo));
 
-			Integer ponum = typedQuery.getFirstResult();
-			if (null != ponum) {
-				exist = true;
-			}
+//			Integer ponum = typedQuery.getFirstResult();
+			List<Integer> results = typedQuery.getResultList();
+		    exist = !results.isEmpty(); // The PONum exists if the result list is not empty
+//			if (null != ponum) {
+//				exist = true;
+//			}
 
 		} catch (Exception ee) {
 			ee.printStackTrace();
@@ -1195,8 +1330,11 @@ public class PurchaseOrderInfoDao {
 		try {
 			BcaInvoice invoice = new BcaInvoice();
 			invoice.setOrderNum(0);
+			invoice.setSonum(0);
+			invoice.setRcvNum(0);
+			invoice.setEstNum(0);
 			invoice.setPonum(Integer.parseInt(form.getOrderNo()));
-			invoice.setRefNum("");
+			invoice.setRefNum("0");
 			if (null != form.getCustID()) {
 				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
 						.findById(Integer.parseInt(form.getCustID()));
@@ -1264,14 +1402,21 @@ public class PurchaseOrderInfoDao {
 			invoice.setMemo(form.getMemo());
 			invoice.setVendorAddrId(
 					Integer.parseInt(form.getBillAddrValue().isEmpty() ? "0" : form.getBillAddrValue()));
-			invoice.setShippingAddrId(Integer.parseInt(form.getShipAddr()));
+			//invoice.setShippingAddrId(Integer.parseInt(form.getShipAddr()));
 			Date dateAdded = (form.getOrderDate().equals("")) ? customerInfo.string2date("now()")
 					: customerInfo.string2date(form.getOrderDate());
 			invoice.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
 			invoice.setInvoiceStatus(0);
+			invoice.setBillingAddrId(Integer.parseInt(form.getBsAddressID()));
+			invoice.setShippingAddrId(Integer.parseInt(form.getShAddressID()));
+			invoice.setWeight(form.getWeight());
+			invoice.setSubTotal(form.getSubtotal());
+			invoice.setTax(form.getTax());
+			invoice.setSh(form.getShipping());
 			try {
 				BcaInvoice bcaInvoice = bcaInvoiceRepository.save(invoice);
-				bcaCartRepository.deleteByInvoice_InvoiceIdAndCompany_CompanyId(bcaInvoice.getInvoiceId(), cid);
+				invoiceID=bcaInvoice.getInvoiceId();
+				bcaCartRepository.deleteByInvoice_InvoiceIdAndCompany_CompanyId(invoiceID, cid);
 				AddItem(invoiceID, cid, form);
 				status = true;
 			} catch (IllegalArgumentException iae) {
@@ -1610,6 +1755,8 @@ public class PurchaseOrderInfoDao {
 			if (clientVendor.isPresent())
 				invoice.setClientVendor(clientVendor.get()); // form.getCustID()
 			invoice.setBsaddressId(Integer.parseInt(form.getBillAddrValue()));
+			invoice.setBillingAddrId(Integer.parseInt(form.getBsAddressID()));
+			invoice.setShippingAddrId(Integer.parseInt(form.getShAddressID()));
 			Optional<BcaInvoicestyle> invoiceStyle = bcaInvoicestyleRepository
 					.findById(Integer.parseInt(form.getInvoiceStyle()));
 			if (invoiceStyle.isPresent())
@@ -1820,14 +1967,20 @@ public class PurchaseOrderInfoDao {
 				String itmTypeID = invItemIDs[i] != null && invItemIDs[i].length() > 0 ? invItemIDs[i] : "0";
 				String itmOrder = invItemOrders[i];
 				BcaCart bcaCart = new BcaCart();
-				Optional<BcaInvoice> invoice = bcaInvoiceRepository.findById(inventoryID);
-				if (invoice.isPresent())
-					bcaCart.setInvoice(invoice.get());
+				Optional<BcaIteminventory> itemInventory = bcaIteminventoryRepository.findById(inventoryID);
+				if (itemInventory.isPresent())
+					bcaCart.setInventory(itemInventory.get());
+				
 				Optional<BcaCompany> company = bcaCompanyRepository.findById(cid);
 				if (company.isPresent())
 					bcaCart.setCompany(company.get());
+				
+				Optional<BcaInvoice> invoice = bcaInvoiceRepository.findById(invoiceID);
+				if (invoice.isPresent())
+					bcaCart.setInvoice(invoice.get());
+				
 				bcaCart.setInventoryCode(itemCode);
-				bcaCart.setInventoryCode(itemName);
+				bcaCart.setInventoryName(itemName);
 				bcaCart.setQty(Integer.parseInt(qty));
 				bcaCart.setUnitWeight(Double.parseDouble(uweight));
 				bcaCart.setWeight(0.0);
@@ -1840,12 +1993,21 @@ public class PurchaseOrderInfoDao {
 				
 				
 				BcaCart cartSave = bcaCartRepository.save(bcaCart);
+//				if (null != cartSave) {
+//					BcaIteminventory itemInventory = bcaIteminventoryRepository.findById(inventoryID)
+//							.orElseThrow(() -> new EntityNotFoundException("Entity Not FOund"));
+//					int expectedQty = itemInventory.getExpectedQty() + Integer.parseInt(qty);
+//					itemInventory.setExpectedQty(expectedQty);
+//					bcaIteminventoryRepository.save(itemInventory);
+//				}
 				if (null != cartSave) {
-					BcaIteminventory itemInventory = bcaIteminventoryRepository.findById(inventoryID)
-							.orElseThrow(() -> new EntityNotFoundException("Entity Not FOund"));
-					int expectedQty = itemInventory.getExpectedQty() + Integer.parseInt(qty);
-					itemInventory.setExpectedQty(expectedQty);
-					bcaIteminventoryRepository.save(itemInventory);
+					Optional<BcaIteminventory> inventory = bcaIteminventoryRepository.findById(inventoryID);
+					if (itemInventory.isPresent()) {
+						BcaIteminventory item = inventory.get();
+						int expectedQty = item.getExpectedQty();
+						item.setExpectedQty(expectedQty + Integer.parseInt(qty));
+						bcaIteminventoryRepository.save(item);
+					}
 				}
 
 			}
@@ -2754,12 +2916,13 @@ public class PurchaseOrderInfoDao {
 	 */
 
 	public void showConfirmAddress(VendorDto vForm, HttpServletRequest request, String cType) {
-
+		List<String> statuses = Arrays.asList("N", "U");
 		try {
 			int addressType = (cType != null && cType.equals("bill")) ? 1 : 0;
 			if (addressType == 0) {
+				
 				BcaShippingaddress shippingAddress = bcaShippingaddressRepository
-						.findByClientVendorIdAndStatus(Integer.parseInt(vForm.getClientVendorID()), "N");
+						.findByClientVendorIdAndStatusIn(Integer.parseInt(vForm.getClientVendorID()), statuses);
 				if (null != shippingAddress) {
 					vForm.setClientVendorID(String.valueOf(shippingAddress.getClientVendor().getClientVendorId()));
 					vForm.setBsAddressID(String.valueOf(shippingAddress.getAddressId()));
@@ -2767,13 +2930,14 @@ public class PurchaseOrderInfoDao {
 					vForm.setFirstName(shippingAddress.getFirstName());
 					vForm.setLastName(shippingAddress.getLastName());
 					vForm.setAddress1(shippingAddress.getAddress1());
-					vForm.setAddress2(shippingAddress.getAddress1());
+					vForm.setAddress2(shippingAddress.getAddress2());
 					vForm.setCity(shippingAddress.getCity());
 
 					vForm.setZipCode(shippingAddress.getZipCode());
 					vForm.setState(shippingAddress.getState());
 					vForm.setCountry(shippingAddress.getCountry());
-					vForm.setAddressType(Integer.parseInt(shippingAddress.getAddressType()));
+					vForm.setAddressType(shippingAddress.getAddressType() != null ? Integer.parseInt(shippingAddress.getAddressType()) : 0);
+//					vForm.setAddressType(Integer.parseInt(shippingAddress.getAddressType()));
 					vForm.setBillTo(vForm.getCname() + "\n" + vForm.getFirstName() + " " + vForm.getLastName() + "\n"
 							+ vForm.getAddress1() + "\n" + vForm.getAddress2() + "\n" + vForm.getCity() + "\n"
 							+ countryState.getStatesName(vForm.getState()) + "\n" + vForm.getZipCode() + "\n"
@@ -2782,7 +2946,7 @@ public class PurchaseOrderInfoDao {
 
 			} else {
 				BcaBillingaddress billingAddress = bcaBillingaddressRepository
-						.findByClientVendorIdAndStatus(Integer.parseInt(vForm.getClientVendorID()), "N");
+						.findByClientVendorIdAndStatusIn(Integer.parseInt(vForm.getClientVendorID()), statuses);
 				if (null != billingAddress) {
 					vForm.setClientVendorID(String.valueOf(billingAddress.getClientVendor().getClientVendorId()));
 					vForm.setBsAddressID(String.valueOf(billingAddress.getAddressId()));
@@ -2790,13 +2954,14 @@ public class PurchaseOrderInfoDao {
 					vForm.setFirstName(billingAddress.getFirstName());
 					vForm.setLastName(billingAddress.getLastName());
 					vForm.setAddress1(billingAddress.getAddress1());
-					vForm.setAddress2(billingAddress.getAddress1());
+					vForm.setAddress2(billingAddress.getAddress2());
 					vForm.setCity(billingAddress.getCity());
 
 					vForm.setZipCode(billingAddress.getZipCode());
 					vForm.setState(billingAddress.getState());
 					vForm.setCountry(billingAddress.getCountry());
-					vForm.setAddressType(Integer.parseInt(billingAddress.getAddressType()));
+					vForm.setAddressType(billingAddress.getAddressType() != null ? Integer.parseInt(billingAddress.getAddressType()) : 1);
+//					vForm.setAddressType(Integer.parseInt(billingAddress.getAddressType()));
 					vForm.setBillTo(vForm.getCname() + "\n" + vForm.getFirstName() + " " + vForm.getLastName() + "\n"
 							+ vForm.getAddress1() + "\n" + vForm.getAddress2() + "\n" + vForm.getCity() + "\n"
 							+ countryState.getStatesName(vForm.getState()) + "\n" + vForm.getZipCode() + "\n"
