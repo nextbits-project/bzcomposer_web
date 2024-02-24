@@ -36,8 +36,8 @@ public class CreditCard {
 	@Autowired
 	private BcaCreditcardtypeRepository bcaCreditcardtypeRepository;
 
-	@Cacheable(value = "ccTypeList", key="#CompanyID")
-	public ArrayList getCCTypeList(String CompanyID) {
+	@Cacheable(value = "ccTypeList", key="#compId")
+	public ArrayList getCCTypeList(String compId) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		// boolean ret = false;
 //		Connection con = null ;
@@ -53,7 +53,7 @@ public class CreditCard {
 
 		try {
 			List<BcaCreditcardtype> bcaCreditCardType = bcaCreditcardtypeRepository
-					.findByActiveAndTypeCategoryAndCompany_CompanyIdOrderByName(1, 1, Long.parseLong(CompanyID));
+					.findByActiveAndTypeCategoryAndCompany_CompanyIdOrderByName(1, 1, Long.parseLong(compId));
 			for (BcaCreditcardtype creditcardtype : bcaCreditCardType) {
 				arr.add(new org.apache.struts.util.LabelValueBean(creditcardtype.getName(),
 						String.valueOf(creditcardtype.getCctypeId())));

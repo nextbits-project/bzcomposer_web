@@ -55,7 +55,8 @@ import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTitleRepository;
-
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 /*
  * 
  */
@@ -1000,6 +1001,14 @@ public class SalesInfo {
 		}
 	}
 
+	@Caching(evict = {
+	        @CacheEvict(value = "titleList", key = "#compId"),
+	        @CacheEvict(value = "termList", key = "#compId"),
+	        @CacheEvict(value = "paymentTypeList", key = "#compId"),
+	        @CacheEvict(value = "shipCarrierList", key = "#compId"),
+	        @CacheEvict(value = "ccTypeList", key = "#compId"),
+	        @CacheEvict(value = "cvCategoryList", key = "#compId")
+	    })
 	public boolean insertSalesData(String sNewID, String title, String oldVal, String newVal, String taxRateVal,
 			Long compId) {
 		boolean valid = false;
@@ -1297,6 +1306,14 @@ public class SalesInfo {
 //
 //	}
 
+	@Caching(evict = {
+	        @CacheEvict(value = "titleList", key = "#compId"),
+	        @CacheEvict(value = "termList", key = "#compId"),
+	        @CacheEvict(value = "paymentTypeList", key = "#compId"),
+	        @CacheEvict(value = "shipCarrierList", key = "#compId"),
+	        @CacheEvict(value = "ccTypeList", key = "#compId"),
+	        @CacheEvict(value = "cvCategoryList", key = "#compId")
+	    })
 	public boolean updateSalesData(String sNewID, String title, String oldVal, String newVal, String taxRateVal,
 			String compId) {
 		Connection con = null;
@@ -1377,6 +1394,14 @@ public class SalesInfo {
 		return valid;
 	}
 
+	@Caching(evict = {
+	        @CacheEvict(value = "titleList", key = "#compId"),
+	        @CacheEvict(value = "termList", key = "#compId"),
+	        @CacheEvict(value = "paymentTypeList", key = "#compId"),
+	        @CacheEvict(value = "shipCarrierList", key = "#compId"),
+	        @CacheEvict(value = "ccTypeList", key = "#compId"),
+	        @CacheEvict(value = "cvCategoryList", key = "#compId")
+	    })
 	public boolean DeleteSalesData(String sNewvalID, String title, String compId) {
 
 		Connection con = null;

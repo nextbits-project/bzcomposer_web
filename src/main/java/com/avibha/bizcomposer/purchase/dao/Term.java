@@ -37,8 +37,8 @@ public class Term {
 	@Autowired
 	private BcaTermRepository bcaTermRepository;
 	
-	@Cacheable(value = "termList", key="#CompanyID")
-	public ArrayList getTermList(String CompanyID) {
+	@Cacheable(value = "termList", key="#compId")
+	public ArrayList getTermList(String compId) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		ArrayList<TblTerm> arr1 = new ArrayList<TblTerm>();
 		// boolean ret = false;
@@ -56,7 +56,7 @@ public class Term {
 //			arr1 = null;
 
 		try {
-			List<BcaTerm> bcaTerm = bcaTermRepository.findByCompany_CompanyIdAndActive(Long.parseLong(CompanyID), 1);
+			List<BcaTerm> bcaTerm = bcaTermRepository.findByCompany_CompanyIdAndActive(Long.parseLong(compId), 1);
 			for(BcaTerm term : bcaTerm) {
 				TblTerm trmObj = new TblTerm();
 				trmObj.setTerm(term.getTermId());

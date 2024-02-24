@@ -34,8 +34,8 @@ public class Shipping {
 	@Autowired 
 	private BcaShipcarrierRepository bcaShipcarrierRepository;
 	
-	@Cacheable(value = "shipCarrierList", key="#CompanyID")
-	public ArrayList getShipCarrierList(String CompanyID) {
+	@Cacheable(value = "shipCarrierList", key="#compId")
+	public ArrayList getShipCarrierList(String compId) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		// boolean ret = false;
 //		Connection con = null ;
@@ -50,7 +50,7 @@ public class Shipping {
 //			arr = null;
 
 		try {
-			List<BcaShipcarrier> bcaShipCarrier = bcaShipcarrierRepository.findByCompany_CompanyIdAndActive(Long.valueOf(CompanyID), 1);
+			List<BcaShipcarrier> bcaShipCarrier = bcaShipcarrierRepository.findByCompany_CompanyIdAndActive(Long.valueOf(compId), 1);
 			for(BcaShipcarrier shipcarrier: bcaShipCarrier) {
 				arr.add(new org.apache.struts.util.LabelValueBean(shipcarrier.getName()
 						, String.valueOf(shipcarrier.getShipCarrierId())));

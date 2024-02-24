@@ -34,8 +34,8 @@ public class Title {
 	@Autowired
 	private BcaTitleRepository bcaTitleRepository;
 
-	@Cacheable(value = "titleList", key="#CompanyID")
-	public ArrayList getTitleList(String CompanyID) {
+	@Cacheable(value = "titleList", key="#compId")
+	public ArrayList getTitleList(String compId) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
 //		ResultSet rs = null;
@@ -43,7 +43,7 @@ public class Title {
 		ArrayList<LabelValueBean> arr = new ArrayList<>();
 		try {
 
-			List<BcaTitle> listOfTitle = bcaTitleRepository.findByCompany_CompanyIdAndActive(Long.parseLong(CompanyID),
+			List<BcaTitle> listOfTitle = bcaTitleRepository.findByCompany_CompanyIdAndActive(Long.parseLong(compId),
 					1);
 			for (BcaTitle bcaTitle : listOfTitle) {
 				arr.add(new LabelValueBean(bcaTitle.getTitle(), bcaTitle.getTitleId().toString()));

@@ -35,8 +35,8 @@ public class Rep {
 	@Autowired
 	private BcaSalesrepRepository bcaSalesrepRepository;
 	
-	@Cacheable(value = "repList", key="#CompanyID")
-	public ArrayList getRepList(String CompanyID) {
+	@Cacheable(value = "repList", key="#compId")
+	public ArrayList getRepList(String compId) {
 		ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		// boolean ret = false;
 //		Connection con = null ;
@@ -51,7 +51,7 @@ public class Rep {
 //			arr = null;
 
 		try {
-			List<BcaSalesrep> salesRep = bcaSalesrepRepository.findByCompany_CompanyIdAndActive(Long.valueOf(CompanyID), 1);
+			List<BcaSalesrep> salesRep = bcaSalesrepRepository.findByCompany_CompanyIdAndActive(Long.valueOf(compId), 1);
 			for(BcaSalesrep bcaSalesrep: salesRep) {
 				arr.add(new org.apache.struts.util.LabelValueBean(bcaSalesrep.getName()
 						,String.valueOf(bcaSalesrep.getSalesRepId())));

@@ -30,8 +30,8 @@ public class VendorCategory {
 	@Autowired
 	private BcaClientcategoryRepository bcaClientcategoryRepository;
 
-	@Cacheable(value = "cvCategoryList", key = "#CompanyID")
-	public ArrayList getCVCategoryList(String CompanyID) {
+	@Cacheable(value = "cvCategoryList", key = "#compId")
+	public ArrayList getCVCategoryList(String compId) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
 //		ResultSet rs = null;
@@ -39,7 +39,7 @@ public class VendorCategory {
 		ArrayList<LabelValueBean> arr = new ArrayList<>();
 		try {
 			List<BcaClientcategory> bcaClientcategories = bcaClientcategoryRepository
-					.findByCompany_CompanyIdAndActive(Long.parseLong(CompanyID), 1);
+					.findByCompany_CompanyIdAndActive(Long.parseLong(compId), 1);
 			for (BcaClientcategory bcaClientcategory : bcaClientcategories) {
 				arr.add(new org.apache.struts.util.LabelValueBean(bcaClientcategory.getName(),
 						String.valueOf(bcaClientcategory.getCvcategoryId())));

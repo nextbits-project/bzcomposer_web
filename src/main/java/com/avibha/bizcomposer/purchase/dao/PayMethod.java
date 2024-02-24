@@ -37,8 +37,8 @@ public class PayMethod {
 	@Autowired
 	private BcaPaymenttypeRepository bcaPaymenttypeRepository;
 	
-	@Cacheable(value = "paymentTypeList", key="#CompanyID")
-	public ArrayList getPaymentTypeList(String CompanyID) {
+	@Cacheable(value = "paymentTypeList", key="#compId")
+	public ArrayList getPaymentTypeList(String compId) {
 		//ArrayList<LabelValueBean> arr = new ArrayList<LabelValueBean>();
 		ArrayList<TblPaymentType> arr1 = new ArrayList<TblPaymentType>();
 //		Connection con = null ;
@@ -54,7 +54,7 @@ public class PayMethod {
 //			//arr = null;
 //			arr1 = null;
 		try {
-			List<BcaPaymenttype> bcaPaymenttype = bcaPaymenttypeRepository.findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByName(Long.valueOf(CompanyID), 1, 1);;
+			List<BcaPaymenttype> bcaPaymenttype = bcaPaymenttypeRepository.findByCompany_CompanyIdAndActiveAndTypeCategoryOrderByName(Long.valueOf(compId), 1, 1);;
 			for(BcaPaymenttype paymenttype:bcaPaymenttype) {
 				TblPaymentType tblpaymnt = new TblPaymentType();
 				tblpaymnt.setId(paymenttype.getPaymentTypeId());
