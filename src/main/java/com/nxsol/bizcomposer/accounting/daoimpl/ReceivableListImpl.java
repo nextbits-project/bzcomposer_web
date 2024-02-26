@@ -5323,7 +5323,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ " LEFT JOIN bca_account AS Bank ON INV.BankAccountID = Bank.AccountID"
 				+ " LEFT JOIN bca_category AS Category ON INV.CategoryID = Category.CategoryID"
 				+ " WHERE INV.CompanyID=" + ConstValue.companyId + " AND INV.IsPaymentCompleted = 0"
-				+ " AND INV.InvoiceStatus = 0" + " AND INV.InvoiceTypeID = 2" + " AND bca_clientvendor.Status = 'N'"
+				+ " AND INV.InvoiceStatus = 0" + " AND INV.InvoiceTypeID = 2" + " AND bca_clientvendor.Status IN ('N', 'U')"
 				+ " AND bca_clientvendor.CompanyID =" + ConstValue.companyId
 				+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
 				+ " WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1)"

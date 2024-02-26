@@ -1335,6 +1335,7 @@ public class PurchaseOrderInfoDao {
 			invoice.setEstNum(0);
 			invoice.setPonum(Integer.parseInt(form.getOrderNo()));
 			invoice.setRefNum("0");
+			invoice.setIsPaymentCompleted(false);
 			if (null != form.getCustID()) {
 				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
 						.findById(Integer.parseInt(form.getCustID()));

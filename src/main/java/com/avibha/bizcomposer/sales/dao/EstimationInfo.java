@@ -733,7 +733,7 @@ public class EstimationInfo {
 			bcaInvoice.setSh(estimationDto.getShipping());
 			bcaInvoice.setTotal(estimationDto.getTotal());
 			bcaInvoice.setAdjustedTotal(estimationDto.getAdjustedtotal());
-
+			bcaInvoice.setIsPaymentCompleted(false);
 			bcaInvoice.setPaidAmount(0D);
 			bcaInvoice.setBalance(estimationDto.getAdjustedtotal());
 			if (null != estimationDto.getVia()) {
