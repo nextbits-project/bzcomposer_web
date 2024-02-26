@@ -50,7 +50,7 @@ public class BcaPayment {
     private String checkNumber;
 
     @Column(name= "Deleted")
-    private Boolean deleted;
+    private Boolean deleted =false;
 
     @Column(name= "RmaNo")
     private Integer rmaNo;

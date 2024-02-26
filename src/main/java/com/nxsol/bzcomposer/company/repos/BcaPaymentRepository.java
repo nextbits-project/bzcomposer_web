@@ -73,6 +73,9 @@ public interface BcaPaymentRepository extends JpaRepository<BcaPayment, Integer>
 	Double getSumOfAmount(BcaCompany company, BcaInvoice invoice);
 
 	List<BcaPayment> findByPaymentIdAndCompany(int paymentId, BcaCompany company);
+	
+	BcaPayment findByPaymentIdAndCompany_CompanyId(int paymentId, long companyId);
+	
 
 	@Modifying
 	@Transactional
