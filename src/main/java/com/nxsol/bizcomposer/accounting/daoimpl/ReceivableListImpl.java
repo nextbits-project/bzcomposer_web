@@ -13,6 +13,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -70,6 +71,8 @@ import com.nxsol.bzcomposer.company.domain.BcaInvoice;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicetype;
 import com.nxsol.bzcomposer.company.domain.BcaPayment;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
+import com.nxsol.bzcomposer.company.domain.BcaPreference;
+import com.nxsol.bzcomposer.company.domain.BcaRefundlist;
 import com.nxsol.bzcomposer.company.repos.BcaAccountRepository;
 import com.nxsol.bzcomposer.company.repos.BcaAccountableRepository;
 import com.nxsol.bzcomposer.company.repos.BcaAcctcategoryRepository;
@@ -86,7 +89,9 @@ import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicetypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPaymentRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRecurrentpaymentRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRefundlistRepository;
 import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.nxsol.bzcomposer.company.utils.JpaHelper;
 import com.pritesh.bizcomposer.accounting.bean.BcaBillDto;
@@ -138,6 +143,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 	ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 //	private TblCategoryTypeRepository tblCategoryTypeRepository;
+
+	@Autowired
+	private BcaPreferenceRepository bcaPreferenceRepository;
 	@Autowired
 	private BcaAcctcategoryRepository bcaAcctcategoryRepository;
 	@Autowired
@@ -165,6 +173,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	@Autowired
 	private BcaInvoicetypeRepository bcaInvoicetypeRepository;
+
+	@Autowired
+	private BcaRefundlistRepository bcaRefundlistRepository;
 
 	@Autowired
 	private static BcaAccountableRepository accountableRepository;
@@ -2381,12 +2392,60 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return paymentId;
 	}
 
+//	public void adjustBankBalance(TblAccount account, double amount) throws SQLException {
+//		Connection con;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		con = db.getConnection();
+////		String sql_get = "SELECT CustomerCurrentBalance FROM bca_account WHERE AccountID=" + account.getAccountID()
+////				+ " AND CompanyID=" + ConstValue.companyId;
+//
+//		try {
+////			stmt = con.createStatement();
+////			rs = stmt.executeQuery(sql_get);
+//			double currentBalance = 0.0;
+////			if (rs.next()) {
+////				currentBalance = rs.getDouble("CustomerCurrentBalance");
+////			}
+////			BcaCompany company = bcaCompanyRepository.findByCompanyId(new Long(ConstValue.companyId));
+//			Optional<BcaAccount> accounts = bcaAccountRepository
+//					.findByAccountIdAndCompany_CompanyId(account.getAccountID(), new Long(ConstValue.companyId));
+//			if (accounts.isPresent()) {
+//				currentBalance = accounts.get().getCustomerCurrentBalance();
+//				
+//			}
+//
+//			String sql_put = "UPDATE bca_account SET CustomerCurrentBalance=" + (currentBalance + amount);
+//			if (account.getLastCheckNo() > 0) {
+//				sql_put += ", LastCheck=" + account.getLastCheckNo();
+//			}
+//			sql_put += " WHERE AccountID = " + account.getAccountID();
+//			stmt.executeUpdate(sql_put);
+//			if (amount < 0) {
+//				account.setCustomerCurrentBalance(currentBalance + amount);
+//			} else {
+//				account.setVendorCurrentBalance(currentBalance + amount);
+//			}
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
+
 	public void adjustBankBalance(TblAccount account, double amount) throws SQLException {
-		Connection con;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		con = db.getConnection();
+
 //		String sql_get = "SELECT CustomerCurrentBalance FROM bca_account WHERE AccountID=" + account.getAccountID()
 //				+ " AND CompanyID=" + ConstValue.companyId;
 
@@ -2402,34 +2461,21 @@ public class ReceivableListImpl implements ReceivableLIst {
 					.findByAccountIdAndCompany_CompanyId(account.getAccountID(), new Long(ConstValue.companyId));
 			if (accounts.isPresent()) {
 				currentBalance = accounts.get().getCustomerCurrentBalance();
+				accounts.get().setCustomerCurrentBalance(currentBalance + amount);
+				if (account.getLastCheckNo() > 0)
+					accounts.get().setLastCheck(account.getLastCheckNo());
+				bcaAccountRepository.save(accounts.get());
 			}
 
-			String sql_put = "UPDATE bca_account SET CustomerCurrentBalance=" + (currentBalance + amount);
-			if (account.getLastCheckNo() > 0) {
-				sql_put += ", LastCheck=" + account.getLastCheckNo();
-			}
-			sql_put += " WHERE AccountID = " + account.getAccountID();
-			stmt.executeUpdate(sql_put);
 			if (amount < 0) {
 				account.setCustomerCurrentBalance(currentBalance + amount);
 			} else {
 				account.setVendorCurrentBalance(currentBalance + amount);
 			}
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
+		} catch (Exception e) {
+			Loger.log(e.toString());
 		}
+
 	}
 
 	public static void invoicePaid(ReceivableListDto invoice, boolean b) throws SQLException {
@@ -3794,36 +3840,54 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 
+//	private void updateRefundTransaction(TblPaymentDto payment, double amount) {
+//		Statement stmt = null;
+//		Connection con = null;
+//		ResultSet rs = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//
+//		String Sql = "UPDATE bca_refundlist " + " SET Amount=" + amount + " WHERE PaymentID=" + payment.getId()
+//				+ " AND Status=0";
+//
+//		try {
+//			stmt = con.createStatement();
+//			stmt.executeUpdate(Sql);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 	private void updateRefundTransaction(TblPaymentDto payment, double amount) {
-		Statement stmt = null;
-		Connection con = null;
-		ResultSet rs = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
-
-		String Sql = "UPDATE bca_refundlist " + " SET Amount=" + amount + " WHERE PaymentID=" + payment.getId()
-				+ " AND Status=0";
 
 		try {
-			stmt = con.createStatement();
-			stmt.executeUpdate(Sql);
-		} catch (SQLException e) {
+			List<BcaRefundlist> refundList = bcaRefundlistRepository.findByPayment_PaymentIdAndStatus(payment.getId(),
+					0);
+			refundList.stream().forEach(refund -> {
+				refund.setAmount(amount);
+
+			});
+			bcaRefundlistRepository.saveAll(refundList);
+//		String Sql = "UPDATE bca_refundlist " + " SET Amount=" + amount + " WHERE PaymentID=" + payment.getId()
+//				+ " AND Status=0";
+
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 	}
 
@@ -4127,76 +4191,179 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return flag;
 	}
 
+//	private void updatePaymentTables() {
+//		double amount = 0.0;
+//		String strDate = null;
+//		strDate = JProjectUtil.getDateFormaterCommon().format(paidDate);
+//		amount = receivedAmountForRL;
+//		boolean isCvChanged = checkCvChanged();
+//		Connection con;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//		String sql = "";
+//
+//		if (isCvChanged) {
+//			if (strName.equals("Payment")) {
+//				int payeeId = getAccountForPayer(paymentForReceived.getCvID(), ConstValue.companyId).getAccountID();
+//				sql = " UPDATE bca_payment SET " + // here
+//						" Amount =" + amount + " ,DateAdded ='" + strDate + "'" + ",PaymentTypeID="
+//						+ paymentForReceived.getPaymentTypeID() + "," + " CategoryID="
+//						+ paymentForReceived.getCategoryId() + "" + "," + " AccountCategoryID="
+//						+ paymentForReceived.getAccountCategoryId() + "" + "," + " CheckNumber='"
+//						+ paymentForReceived.getCheckNumber() + "'" + "," + " IsToBePrinted="
+//						+ (paymentForReceived.isToBePrinted() ? 1 : 0) + "," + " ClientVendorID="
+//						+ paymentForReceived.getCvID() + "," + " PayeeID = " + payeeId + "," + " PayerID = "
+//						+ paymentForReceived.getAccountID() + "," + " AccountID = " + paymentForReceived.getAccountID()
+//						+ " WHERE CompanyID = " + ConstValue.companyId + " AND PaymentID = "
+//						+ paymentForReceived.getId();
+//			} else if (strName.equals("Deposit")) {
+//				int payerId = getAccountForPayer(paymentForReceived.getCvID(), ConstValue.companyId).getAccountID();
+//				sql = " UPDATE bca_payment SET " + // here
+//						" Amount =" + amount + " ,DateAdded ='" + strDate + "'" + ",PaymentTypeID="
+//						+ paymentForReceived.getPaymentTypeID() + "," + " CategoryID="
+//						+ paymentForReceived.getCategoryId() + "" + "," + " AccountCategoryID="
+//						+ paymentForReceived.getAccountCategoryId() + "" + "," + " CheckNumber='"
+//						+ paymentForReceived.getCheckNumber() + "'" + "," + " IsToBePrinted="
+//						+ (paymentForReceived.isToBePrinted() ? 1 : 0) + "," + " ClientVendorID="
+//						+ paymentForReceived.getCvID() + "," + " PayeeID = " + paymentForReceived.getAccountID() + ","
+//						+ " PayerID = " + payerId + "," + " AccountID = " + paymentForReceived.getAccountID()
+//						+ " WHERE CompanyID = " + ConstValue.companyId + " AND PaymentID = "
+//						+ paymentForReceived.getId();
+//			}
+//		}
+//
+//		else {
+//			sql = "UPDATE bca_payment SET " + " Amount =" + amount + " ,DateAdded ='" + strDate + "'"
+//					+ ",PaymentTypeID=" + paymentForReceived.getPaymentTypeID() + "," + " CategoryID="
+//					+ paymentForReceived.getCategoryId() + "" + "," + " AccountCategoryID="
+//					+ paymentForReceived.getAccountCategoryId() + "" + "," + " CheckNumber='"
+//					+ paymentForReceived.getCheckNumber() + "'" + "," + " IsToBePrinted="
+//					+ (paymentForReceived.isToBePrinted() ? 1 : 0) + " WHERE CompanyID = " + ConstValue.companyId
+//					+ " AND PaymentID = " + paymentForReceived.getId();
+//
+//		}
+//		try {
+//			stmt = con.createStatement();
+//			stmt.executeUpdate(sql);
+//
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//
+//	}
 	private void updatePaymentTables() {
 		double amount = 0.0;
 		String strDate = null;
 		strDate = JProjectUtil.getDateFormaterCommon().format(paidDate);
 		amount = receivedAmountForRL;
 		boolean isCvChanged = checkCvChanged();
-		Connection con;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
-		String sql = "";
+		
+		try {
+		BcaPayment bcaPayment = bcaPaymentRepository.findByPaymentIdAndCompany_CompanyId(paymentForReceived.getId(),
+				new Long(ConstValue.companyId));
 
 		if (isCvChanged) {
+
 			if (strName.equals("Payment")) {
 				int payeeId = getAccountForPayer(paymentForReceived.getCvID(), ConstValue.companyId).getAccountID();
-				sql = " UPDATE bca_payment SET " + // here
-						" Amount =" + amount + " ,DateAdded ='" + strDate + "'" + ",PaymentTypeID="
-						+ paymentForReceived.getPaymentTypeID() + "," + " CategoryID="
-						+ paymentForReceived.getCategoryId() + "" + "," + " AccountCategoryID="
-						+ paymentForReceived.getAccountCategoryId() + "" + "," + " CheckNumber='"
-						+ paymentForReceived.getCheckNumber() + "'" + "," + " IsToBePrinted="
-						+ (paymentForReceived.isToBePrinted() ? 1 : 0) + "," + " ClientVendorID="
-						+ paymentForReceived.getCvID() + "," + " PayeeID = " + payeeId + "," + " PayerID = "
-						+ paymentForReceived.getAccountID() + "," + " AccountID = " + paymentForReceived.getAccountID()
-						+ " WHERE CompanyID = " + ConstValue.companyId + " AND PaymentID = "
-						+ paymentForReceived.getId();
+
+				bcaPayment.setAmount(amount);
+				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+						.findById(paymentForReceived.getPaymentTypeID());
+				if (paymentType.isPresent())
+					bcaPayment.setPaymentType(paymentType.get());
+
+				bcaPayment.setPayerId(paymentForReceived.getAccountID());
+				bcaPayment.setPayeeId(payeeId);
+				Optional<BcaAccount> bca_account = bcaAccountRepository.findById(paymentForReceived.getAccountID());
+				if (bca_account.isPresent())
+					bcaPayment.setAccount(bca_account.get());
+				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
+						.findById(paymentForReceived.getCvID());
+				if (clientVendor.isPresent())
+					bcaPayment.setClientVendor(clientVendor.get());
+				Optional<BcaCategory> category = bcaCategoryRepository.findById(paymentForReceived.getCategoryId());
+				if (category.isPresent())
+					bcaPayment.setCategory(category.get());
+				bcaPayment.setAccountCategoryId(paymentForReceived.getAccountCategoryId());
+
+				bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(strDate));
+
+				bcaPayment.setIsToBePrinted((paymentForReceived.isToBePrinted() ? true : false));
+				bcaPayment.setCheckNumber(paymentForReceived.getCheckNumber());
+
 			} else if (strName.equals("Deposit")) {
 				int payerId = getAccountForPayer(paymentForReceived.getCvID(), ConstValue.companyId).getAccountID();
-				sql = " UPDATE bca_payment SET " + // here
-						" Amount =" + amount + " ,DateAdded ='" + strDate + "'" + ",PaymentTypeID="
-						+ paymentForReceived.getPaymentTypeID() + "," + " CategoryID="
-						+ paymentForReceived.getCategoryId() + "" + "," + " AccountCategoryID="
-						+ paymentForReceived.getAccountCategoryId() + "" + "," + " CheckNumber='"
-						+ paymentForReceived.getCheckNumber() + "'" + "," + " IsToBePrinted="
-						+ (paymentForReceived.isToBePrinted() ? 1 : 0) + "," + " ClientVendorID="
-						+ paymentForReceived.getCvID() + "," + " PayeeID = " + paymentForReceived.getAccountID() + ","
-						+ " PayerID = " + payerId + "," + " AccountID = " + paymentForReceived.getAccountID()
-						+ " WHERE CompanyID = " + ConstValue.companyId + " AND PaymentID = "
-						+ paymentForReceived.getId();
+
+				bcaPayment.setAmount(amount);
+				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+						.findById(paymentForReceived.getPaymentTypeID());
+				if (paymentType.isPresent())
+					bcaPayment.setPaymentType(paymentType.get());
+
+				bcaPayment.setPayerId(payerId);
+				bcaPayment.setPayeeId(paymentForReceived.getAccountID());
+				Optional<BcaAccount> bca_account = bcaAccountRepository.findById(paymentForReceived.getAccountID());
+				if (bca_account.isPresent())
+					bcaPayment.setAccount(bca_account.get());
+				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
+						.findById(paymentForReceived.getCvID());
+				if (clientVendor.isPresent())
+					bcaPayment.setClientVendor(clientVendor.get());
+
+				Optional<BcaCategory> category = bcaCategoryRepository.findById(paymentForReceived.getCategoryId());
+				if (category.isPresent())
+					bcaPayment.setCategory(category.get());
+				bcaPayment.setAccountCategoryId(paymentForReceived.getAccountCategoryId());
+
+				bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(strDate));
+
+				bcaPayment.setIsToBePrinted((paymentForReceived.isToBePrinted() ? true : false));
+				bcaPayment.setCheckNumber(paymentForReceived.getCheckNumber());
+
 			}
 		}
 
 		else {
-			sql = "UPDATE bca_payment SET " + " Amount =" + amount + " ,DateAdded ='" + strDate + "'"
-					+ ",PaymentTypeID=" + paymentForReceived.getPaymentTypeID() + "," + " CategoryID="
-					+ paymentForReceived.getCategoryId() + "" + "," + " AccountCategoryID="
-					+ paymentForReceived.getAccountCategoryId() + "" + "," + " CheckNumber='"
-					+ paymentForReceived.getCheckNumber() + "'" + "," + " IsToBePrinted="
-					+ (paymentForReceived.isToBePrinted() ? 1 : 0) + " WHERE CompanyID = " + ConstValue.companyId
-					+ " AND PaymentID = " + paymentForReceived.getId();
+
+			bcaPayment.setAmount(amount);
+			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+					.findById(paymentForReceived.getPaymentTypeID());
+			if (paymentType.isPresent())
+				bcaPayment.setPaymentType(paymentType.get());
+
+			Optional<BcaCategory> category = bcaCategoryRepository.findById(paymentForReceived.getCategoryId());
+			if (category.isPresent())
+				bcaPayment.setCategory(category.get());
+			bcaPayment.setAccountCategoryId(paymentForReceived.getAccountCategoryId());
+
+			bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(strDate));
+
+			bcaPayment.setIsToBePrinted((paymentForReceived.isToBePrinted() ? true : false));
+
+			bcaPayment.setCheckNumber(paymentForReceived.getCheckNumber());
 
 		}
-		try {
-			stmt = con.createStatement();
-			stmt.executeUpdate(sql);
+		
+			bcaPaymentRepository.save(bcaPayment);
+			
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 
 	}
@@ -5368,7 +5535,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					if (null != poDto.getCategoryId())
 						rb.setCategoryID(poDto.getCategoryId());
 					if (null != poDto.getBankAccountId())
-					rb.setBankAccountID(poDto.getBankAccountId());
+						rb.setBankAccountID(poDto.getBankAccountId());
 					rb.setCvName(poDto.getFirstName() + " " + poDto.getLastName());
 					rb.setCompanyName(poDto.getCompanyName());
 					if (null != poDto.getCategoryName())
@@ -6691,8 +6858,10 @@ public class ReceivableListImpl implements ReceivableLIst {
 		sql.append(dateAdded);
 		sql.append(" AND pay.CompanyID = " + ConstValue.companyId + " AND pay.DELETED<>1 AND c.Status IN ('U','N')");
 		if (!transType.equals("INVOICE") && !transType.equals("PURCHASE") && !transType.equals("ALLDEPOSITE")) {
+//			sql.append(
+//					" OR ( ( pay.InvoiceID = -1 OR pay.ClientVendorID = -1 OR pay.CategoryID = -1) AND pay.Deleted =0");
 			sql.append(
-					" OR ( ( pay.InvoiceID = -1 OR pay.ClientVendorID = -1 OR pay.CategoryID = -1) AND pay.Deleted =0");
+					" OR ( ( pay.InvoiceID is null OR pay.ClientVendorID is null OR pay.CategoryID is null) AND pay.Deleted =0");
 			sql.append(dateAdded + ")");
 		}
 		sql.append(" GROUP BY pay.PaymentID");
@@ -6880,13 +7049,91 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return types;
 	}
 
+//	@Override
+//	public int bankTransfer(TblPaymentDto payment, double amount, Date transferDate, int priority) {
+//		Connection con;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//		ResultSet rs = null;
+//
+//		int paymentId = -1;
+//		double balance = 0.0;
+//		double ToBalance = 0.0;
+//		String TransactionID = "-1";
+//
+//		/*
+//		 * if (fromAccount.getAccountTypeID() == 3) { balance = amount; } else {
+//		 */
+//		balance = payment.getFromBalance() - amount;
+//		ToBalance = payment.getToBalance() + amount;
+//		if (payment.getCategoryId() < -1 || payment.getCategoryId() > 1) {
+//			payment.setAccountCategoryId(payment.getCategoryId());
+//		}
+//		/* } */
+//
+
+//
+//
+//		String sql = "INSERT INTO bca_payment(Amount,PaymentTypeID,PayerID,PayeeID,AccountID,ClientVendorID,InvoiceID,"
+//				+ "CategoryID,AccountCategoryID,CompanyID,DateAdded,IsToBePrinted,isNeedtoDeposit,"
+//				+ "PayFromBalance,PayToBalance,Priority,CheckNumber,TransactionID)" + " VALUES (" + amount + ","
+//				+ payment.getPaymentTypeID() + ","
+//				// "-1" + "," +//fromAccount.getAccountCategoryID()+","+
+//				+ payment.getPayerID() + "," + payment.getPayeeID() + "," + payment.getAccountID() + "," + "-1," + "-1,"
+//				+ payment.getAccountCategoryId() + "," + payment.getAccountCategoryId() + "," + ConstValue.companyId
+//				+ "," + "'" + JProjectUtil.getDateFormaterCommon().format(transferDate) + "',0,0," + balance + ","
+//				+ ToBalance + "," + (priority + 1) + ",'" + payment.getCheckNumber() + "','" + TransactionID + "')";
+//		try {
+////			BcaPayment bcaPayment =new BcaPayment();
+////			bcaPayment.setAmount(amount);
+////			bcaPayment.setPaymentType(null);
+////			bcaPayment.setPayerId(payment.getPayerID());
+////			bcaPayment.setPayeeId(payment.getPayeeID());
+////			bcaPayment.setAccount(null);
+////			bcaPayment.setClientVendor(null);
+////			bcaPayment.setInvoice(null);
+////			bcaPayment.setCategory(null);
+////			bcaPayment.setAccountCategoryId(payment.getAccountCategoryId());
+////			bcaPayment.setCompany(null);
+////			bcaPayment.set();
+////			
+//			stmt = con.createStatement();
+//			int count = stmt.executeUpdate(sql);
+//			/*
+//			 * adjustBankBalance(fromAccount, - amount);
+//			 * adjustBankBalance(toAccount,amount);
+//			 */
+//
+//			rs = stmt.executeQuery("SELECT MAX(PaymentID) AS LastID FROM bca_payment");
+//			if (rs.next()) {
+//				paymentId = rs.getInt("LastID");
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null)
+//					db.close(rs);
+//				if (stmt != null)
+//					db.close(stmt);
+//				if (con != null)
+//					db.close(con);
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return paymentId;
+//	}
+
 	@Override
 	public int bankTransfer(TblPaymentDto payment, double amount, Date transferDate, int priority) {
-		Connection con;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
-		ResultSet rs = null;
+//		Connection con;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//		ResultSet rs = null;
 
 		int paymentId = -1;
 		double balance = 0.0;
@@ -6903,53 +7150,59 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 		/* } */
 
-		String sql = "INSERT INTO bca_payment(Amount,PaymentTypeID,PayerID,PayeeID,AccountID,ClientVendorID,InvoiceID,"
-				+ "CategoryID,AccountCategoryID,CompanyID,DateAdded,IsToBePrinted,isNeedtoDeposit,"
-				+ "PayFromBalance,PayToBalance,Priority,CheckNumber,TransactionID)" + " VALUES (" + amount + ","
-				+ payment.getPaymentTypeID() + ","
-				// "-1" + "," +//fromAccount.getAccountCategoryID()+","+
-				+ payment.getPayerID() + "," + payment.getPayeeID() + "," + payment.getAccountID() + "," + "-1," + "-1,"
-				+ payment.getAccountCategoryId() + "," + payment.getAccountCategoryId() + "," + ConstValue.companyId
-				+ "," + "'" + JProjectUtil.getDateFormaterCommon().format(transferDate) + "',0,0," + balance + ","
-				+ ToBalance + "," + (priority + 1) + ",'" + payment.getCheckNumber() + "','" + TransactionID + "')";
 		try {
-//			BcaPayment bcaPayment =new BcaPayment();
-//			bcaPayment.setAmount(amount);
-//			bcaPayment.setPaymentType(null);
-//			bcaPayment.setPayerId(payment.getPayerID());
-//			bcaPayment.setPayeeId(payment.getPayeeID());
-//			bcaPayment.setAccount(null);
-//			bcaPayment.setClientVendor(null);
-//			bcaPayment.setInvoice(null);
-//			bcaPayment.setCategory(null);
-//			bcaPayment.setAccountCategoryId(payment.getAccountCategoryId());
-//			bcaPayment.setCompany(null);
-//			bcaPayment.set();
-//			
-			stmt = con.createStatement();
-			int count = stmt.executeUpdate(sql);
+
+			BcaPayment bcaPayment = new BcaPayment();
+			bcaPayment.setAmount(amount);
+			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(payment.getPaymentTypeID());
+			if (paymentType.isPresent())
+				bcaPayment.setPaymentType(null);
+
+			bcaPayment.setPayerId(payment.getPayerID());
+			bcaPayment.setPayeeId(payment.getPayeeID());
+			Optional<BcaAccount> bca_account = bcaAccountRepository.findById(payment.getAccountID());
+			if (bca_account.isPresent())
+				bcaPayment.setAccount(bca_account.get());
+			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(-1);
+			if (clientVendor.isPresent())
+				bcaPayment.setClientVendor(clientVendor.get());
+			Optional<BcaInvoice> invoice = bcaInvoiceRepository.findById(-1);
+			if (invoice.isPresent())
+				bcaPayment.setInvoice(invoice.get());
+			Optional<BcaCategory> category = bcaCategoryRepository.findById(payment.getAccountCategoryId());
+			if (category.isPresent())
+				bcaPayment.setCategory(category.get());
+			bcaPayment.setAccountCategoryId(payment.getAccountCategoryId());
+			Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(ConstValue.companyId));
+			if (company.isPresent())
+				bcaPayment.setCompany(company.get());
+			String date = JProjectUtil.getDateFormaterCommon().format(transferDate);
+
+			bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(date));
+
+			bcaPayment.setIsToBePrinted(false);
+			bcaPayment.setIsNeedtoDeposit(false);
+			bcaPayment.setPayFromBalance(balance);
+			bcaPayment.setPayToBalance(ToBalance);
+			bcaPayment.setPriority((priority + 1));
+			bcaPayment.setCheckNumber(payment.getCheckNumber());
+			bcaPayment.setTransactionId(TransactionID);
+			BcaPayment save = bcaPaymentRepository.save(bcaPayment);
+			paymentId = save.getPaymentId();
+//			stmt = con.createStatement();
+//			int count = stmt.executeUpdate(sql);
 			/*
 			 * adjustBankBalance(fromAccount, - amount);
 			 * adjustBankBalance(toAccount,amount);
 			 */
 
-			rs = stmt.executeQuery("SELECT MAX(PaymentID) AS LastID FROM bca_payment");
-			if (rs.next()) {
-				paymentId = rs.getInt("LastID");
-			}
-		} catch (SQLException e) {
+//			rs = stmt.executeQuery("SELECT MAX(PaymentID) AS LastID FROM bca_payment");
+//			if (rs.next()) {
+//				paymentId = rs.getInt("LastID");
+//			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null)
-					db.close(rs);
-				if (stmt != null)
-					db.close(stmt);
-				if (con != null)
-					db.close(con);
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 		return paymentId;
 	}
@@ -7044,7 +7297,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	}
 
-	
 	@Override
 	public ArrayList<TblCategoryDto> getCategoryListForPayment() {
 		// TODO Auto-generated method stub
@@ -7063,7 +7315,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 //			rs = stmt.executeQuery(sql);
 //			BcaCompany bcaCompany = bcaCompanyRepository.findByCompanyId(new Long(ConstValue.companyId));
 			List<BcaCategory> bcaCategories = bcaCategoryRepository
-					.findByCompany_CompanyIdAndIsActiveAndCategoryTypeIdOrderByNameAsc(new Long(ConstValue.companyId), true, 1841648525);
+					.findByCompany_CompanyIdAndIsActiveAndCategoryTypeIdOrderByNameAsc(new Long(ConstValue.companyId),
+							true, 1841648525);
 			for (BcaCategory bcaCategory : bcaCategories) {
 				TblCategoryDto category = new TblCategoryDto();
 				category.setId(bcaCategory.getCategoryId());
@@ -7207,7 +7460,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return clientList;
 	}
 
-	
 	@Override
 	public ArrayList<TblCategoryDto> getCategoryListForDeposit() {
 		// TODO Auto-generated method stub
@@ -7240,7 +7492,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 //			}
 //			BcaCompany bcaCompany = bcaCompanyRepository.findByCompanyId(new Long(ConstValue.companyId));
 			List<BcaCategory> bcaCategories = bcaCategoryRepository
-					.findByCompany_CompanyIdAndIsActiveAndCategoryTypeIdOrderByNameAsc(new Long(ConstValue.companyId), true, 1973117447);
+					.findByCompany_CompanyIdAndIsActiveAndCategoryTypeIdOrderByNameAsc(new Long(ConstValue.companyId),
+							true, 1973117447);
 			for (BcaCategory bcaCategory : bcaCategories) {
 				TblCategoryDto category = new TblCategoryDto();
 				category.setId(bcaCategory.getCategoryId());
@@ -7276,14 +7529,83 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return categoryList;
 	}
 
+//	@Override
+//	public int bankTransferFromDeposit(TblPaymentDto payment, double amount, Date transferDate, int priority) {
+//		// TODO Auto-generated method stub
+//		Connection con;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//		ResultSet rs = null;
+//
+//		int paymentId = -1;
+//		double balance = 0.0;
+//		double ToBalance = 0.0;
+//		String TransactionID = "-1";
+//
+//		if (payment.getAccountTypeId() == 3) {
+//			balance = amount;
+//			ToBalance = payment.getToBalance() + amount;
+//		} else {
+//			balance = payment.getFromBalance() + amount;
+//			ToBalance = balance;
+//		}
+//		if (payment.getCategoryId() < -1 || payment.getCategoryId() > 1) {
+//			payment.setAccountCategoryId(payment.getCategoryId());
+//		}
+//
+//		/* } */
+//
+//		String sql = "INSERT INTO bca_payment(Amount,"
+//				+ "PaymentTypeID,PayerID,PayeeID,AccountID,ClientVendorID,InvoiceID,"
+//				+ "CategoryID,AccountCategoryID,CompanyID,DateAdded," + "IsToBePrinted,isNeedtoDeposit,"
+//				+ "PayFromBalance,PayToBalance,Priority,CheckNumber,TransactionID) VALUES (" + amount + ","
+//				+ payment.getPaymentTypeID() + ","
+//				// "-1" + "," +//fromAccount.getAccountCategoryID()+","+
+//				+ payment.getPayerID() + "," + payment.getPayeeID() + "," + payment.getPayerID() + "," + "-1" + ","
+//				+ "-1" + "," + payment.getAccountCategoryId() + "," + payment.getAccountCategoryId() + ","
+//				+ ConstValue.companyId + "," + "'" + JProjectUtil.getDateFormaterCommon().format(transferDate) + "'"
+//				+ "," + "0" + "," /* true/false is not supported in derby */
+//				+ "0" + "," + balance + "," + ToBalance + "," + (priority + 1) + "," + "'" + payment.getCheckNumber()
+//				+ "'" + ",'" + TransactionID + "')";
+//		try {
+//
+//			stmt = con.createStatement();
+//			int count = stmt.executeUpdate(sql);
+//			/*
+//			 * adjustBankBalance(fromAccount, - amount);
+//			 * adjustBankBalance(toAccount,amount);
+//			 */
+//
+//			rs = stmt.executeQuery("SELECT MAX(PaymentID) AS LastID FROM bca_payment");
+//
+//			if (rs.next()) {
+//				paymentId = rs.getInt("LastID");
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//		return paymentId;
+//
+//	}
 	@Override
 	public int bankTransferFromDeposit(TblPaymentDto payment, double amount, Date transferDate, int priority) {
 		// TODO Auto-generated method stub
-		Connection con;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
-		ResultSet rs = null;
 
 		int paymentId = -1;
 		double balance = 0.0;
@@ -7300,52 +7622,48 @@ public class ReceivableListImpl implements ReceivableLIst {
 		if (payment.getCategoryId() < -1 || payment.getCategoryId() > 1) {
 			payment.setAccountCategoryId(payment.getCategoryId());
 		}
-
-		/* } */
-
-		String sql = "INSERT INTO bca_payment(Amount,"
-				+ "PaymentTypeID,PayerID,PayeeID,AccountID,ClientVendorID,InvoiceID,"
-				+ "CategoryID,AccountCategoryID,CompanyID,DateAdded," + "IsToBePrinted,isNeedtoDeposit,"
-				+ "PayFromBalance,PayToBalance,Priority,CheckNumber,TransactionID) VALUES (" + amount + ","
-				+ payment.getPaymentTypeID() + ","
-				// "-1" + "," +//fromAccount.getAccountCategoryID()+","+
-				+ payment.getPayerID() + "," + payment.getPayeeID() + "," + payment.getPayerID() + "," + "-1" + ","
-				+ "-1" + "," + payment.getAccountCategoryId() + "," + payment.getAccountCategoryId() + ","
-				+ ConstValue.companyId + "," + "'" + JProjectUtil.getDateFormaterCommon().format(transferDate) + "'"
-				+ "," + "0" + "," /* true/false is not supported in derby */
-				+ "0" + "," + balance + "," + ToBalance + "," + (priority + 1) + "," + "'" + payment.getCheckNumber()
-				+ "'" + ",'" + TransactionID + "')";
 		try {
+			BcaPayment bcaPayment = new BcaPayment();
+			bcaPayment.setAmount(amount);
+			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(payment.getPaymentTypeID());
+			if (paymentType.isPresent())
+				bcaPayment.setPaymentType(paymentType.get());
 
-			stmt = con.createStatement();
-			int count = stmt.executeUpdate(sql);
-			/*
-			 * adjustBankBalance(fromAccount, - amount);
-			 * adjustBankBalance(toAccount,amount);
-			 */
+			bcaPayment.setPayerId(payment.getPayerID());
+			bcaPayment.setPayeeId(payment.getPayeeID());
+			Optional<BcaAccount> bca_account = bcaAccountRepository.findById(payment.getPayerID());
+			if (bca_account.isPresent())
+				bcaPayment.setAccount(bca_account.get());
+			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(-1);
+			if (clientVendor.isPresent())
+				bcaPayment.setClientVendor(clientVendor.get());
+			Optional<BcaInvoice> invoice = bcaInvoiceRepository.findById(-1);
+			if (invoice.isPresent())
+				bcaPayment.setInvoice(invoice.get());
+			Optional<BcaCategory> category = bcaCategoryRepository.findById(payment.getAccountCategoryId());
+			if (category.isPresent())
+				bcaPayment.setCategory(category.get());
+			bcaPayment.setAccountCategoryId(payment.getAccountCategoryId());
+			Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(ConstValue.companyId));
+			if (company.isPresent())
+				bcaPayment.setCompany(company.get());
+			String date = JProjectUtil.getDateFormaterCommon().format(transferDate);
 
-			rs = stmt.executeQuery("SELECT MAX(PaymentID) AS LastID FROM bca_payment");
+			bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(date));
 
-			if (rs.next()) {
-				paymentId = rs.getInt("LastID");
-			}
-		} catch (SQLException e) {
+			bcaPayment.setIsToBePrinted(false);
+			bcaPayment.setIsNeedtoDeposit(false);
+			bcaPayment.setPayFromBalance(balance);
+			bcaPayment.setPayToBalance(ToBalance);
+			bcaPayment.setPriority((priority + 1));
+			bcaPayment.setCheckNumber(payment.getCheckNumber());
+			bcaPayment.setTransactionId(TransactionID);
+			BcaPayment save = bcaPaymentRepository.save(bcaPayment);
+			paymentId = save.getPaymentId();
+
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 		return paymentId;
 
@@ -7416,7 +7734,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ArrayList<ClientVendor> allClientvendor = new ArrayList<ClientVendor>();
 		try {
 //			BcaCompany company = bcaCompanyRepository.getOne(new Long(ConstValue.companyId));
-			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository.findListOfClientVendorDetails(new Long(ConstValue.companyId));
+			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository
+					.findListOfClientVendorDetails(new Long(ConstValue.companyId));
 			for (BcaClientvendor bcaClientvendor : bcaClientvendors) {
 				ClientVendor clientVendor = new ClientVendor();
 
@@ -7483,15 +7802,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		}
 //		return allCategory;
 //	}
-	
-	
+
 	@Override
 	public ArrayList<TblCategoryDto> getAllCategory() {
 
 		ArrayList<TblCategoryDto> allCategory = new ArrayList<TblCategoryDto>();
 		try {
 //			BcaCompany bcaCompany = bcaCompanyRepository.getOne(new Long(ConstValue.companyId));
-			List<BcaCategory> bcaCategories = bcaCategoryRepository.findByCompany_CompanyIdAndIsActive(new Long(ConstValue.companyId), true);
+			List<BcaCategory> bcaCategories = bcaCategoryRepository
+					.findByCompany_CompanyIdAndIsActive(new Long(ConstValue.companyId), true);
 
 			for (BcaCategory rs : bcaCategories) {
 				TblCategoryDto category = new TblCategoryDto();
@@ -7560,7 +7879,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		}
 //		return allPayment;
 //	}
-	
+
 	@Override
 	public ArrayList<TblPaymentType> getAllPaymentList() {
 		// TODO Auto-generated method stub
@@ -7569,7 +7888,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 		try {
 //			BcaCompany bcaCompany = bcaCompanyRepository.getOne(new Long(ConstValue.companyId));
-			List<BcaPaymenttype> bcaPayment = bcaPaymenttypeRepository.findByCompany_CompanyId(new Long(ConstValue.companyId));
+			List<BcaPaymenttype> bcaPayment = bcaPaymenttypeRepository
+					.findByCompany_CompanyId(new Long(ConstValue.companyId));
 			for (BcaPaymenttype rs : bcaPayment) {
 				TblPaymentType tbt = new TblPaymentType();
 				tbt.setId(rs.getPaymentTypeId());
@@ -7604,7 +7924,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 					if (accountInfo.getIsitmainaccount() == 1) {
 						updatedefaultbank(bankID);
 					}
-				} catch (SQLException e) {
+				} catch (Exception e) {
+					e.printStackTrace();
 					Loger.log(e.toString());
 				}
 			} else {
@@ -7616,62 +7937,96 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 
+//	public void editBankAccmodified(TblAccount newAccount, int accountId) {
+//		Connection con = null;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//
+//		String sql = "UPDATE bca_account SET " + " Name =" + "'" + newAccount.getName().replaceAll("'", "''") + "'"
+//				+ "," + " MAINACCOUNT=" + newAccount.getIsitmainaccount() + " WHERE AccountID = " + accountId
+//				+ " AND CompanyID = " + ConstValue.companyId;
+//		try {
+//			stmt = con.createStatement();
+//			stmt.executeUpdate(sql);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 	public void editBankAccmodified(TblAccount newAccount, int accountId) {
-		Connection con = null;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
 
-		String sql = "UPDATE bca_account SET " + " Name =" + "'" + newAccount.getName().replaceAll("'", "''") + "'"
-				+ "," + " MAINACCOUNT=" + newAccount.getIsitmainaccount() + " WHERE AccountID = " + accountId
-				+ " AND CompanyID = " + ConstValue.companyId;
+//		String sql = "UPDATE bca_account SET " + " Name =" + "'" + newAccount.getName().replaceAll("'", "''") + "'"
+//				+ "," + " MAINACCOUNT=" + newAccount.getIsitmainaccount() + " WHERE AccountID = " + accountId
+//				+ " AND CompanyID = " + ConstValue.companyId;
 		try {
-			stmt = con.createStatement();
-			stmt.executeUpdate(sql);
-		} catch (SQLException e) {
+			BcaAccount account = bcaAccountRepository
+					.findByAccountIdAndCompany_CompanyId(accountId, new Long(ConstValue.companyId)).orElse(null);
+			if (null != account) {
+				account.setName(newAccount.getName().replaceAll("'", "''"));
+				account.setMainaccount(new BigDecimal(newAccount.getIsitmainaccount()));
+				bcaAccountRepository.save(account);
+			}
+
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 	}
 
+//	public void updatedefaultbank(int accountId) {
+//		Connection con = null;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		try {
+//			String sql = " UPDATE bca_preference SET DefaultBankTransferAccID=" + accountId + " WHERE companyid="
+//					+ ConstValue.companyId;
+//			stmt = con.createStatement();
+//			stmt.executeUpdate(sql);
+//		} catch (SQLException e) {
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 	public void updatedefaultbank(int accountId) {
-		Connection con = null;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		con = db.getConnection();
+
 		try {
-			String sql = " UPDATE bca_preference SET DefaultBankTransferAccID=" + accountId + " WHERE companyid="
-					+ ConstValue.companyId;
-			stmt = con.createStatement();
-			stmt.executeUpdate(sql);
-		} catch (SQLException e) {
-			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
+			Optional<BcaPreference> preference = bcaPreferenceRepository
+					.findByCompany_CompanyId(new Long(ConstValue.companyId));
+			if (preference.isPresent()) {
+				BcaPreference bcaPreference = preference.get();
+				bcaPreference.setDefaultBankTransferAccId(accountId);
+				bcaPreferenceRepository.save(bcaPreference);
 			}
+
+		} catch (Exception e) {
+			Loger.log(e.toString());
 		}
 	}
 
@@ -7726,13 +8081,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return rowUpdated;
 	}
 
-	public int insertBankAccountmodified(TblAccount account, int depositFrom, TblPaymentDto payment)
-			throws SQLException {
-		Connection con = null;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		con = db.getConnection();
+	public int insertBankAccountmodified(TblAccount account, int depositFrom, TblPaymentDto payment) {
+//		Connection con = null;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		con = db.getConnection();
 
 		int accountId = -1;
 
@@ -7753,36 +8107,57 @@ public class ReceivableListImpl implements ReceivableLIst {
 		bcaAccount.setIsCategory(account.isIsCategory());
 		bcaAccount.setName(account.getName().replaceAll("'", "''"));
 		bcaAccount.setDescription(account.getDescription().replaceAll("'", "''"));
-		BcaAccttype accttype = bcaAccttypeRepository.getOne(account.getAccountTypeID());
-		if (null != accttype)
-			bcaAccount.setAcctType(accttype);
-		BcaAcctcategory acctcategory = bcaAcctcategoryRepository.getOne(account.getAccountCategoryID());
-		if (null != acctcategory)
-			bcaAccount.setAcctCategory(acctcategory);
+		Optional<BcaAccttype> accttype = bcaAccttypeRepository.findById(account.getAccountTypeID());
+		if (accttype.isPresent())
+			bcaAccount.setAcctType(accttype.get());
+		Optional<BcaAcctcategory> acctcategory = bcaAcctcategoryRepository.findById(account.getAccountCategoryID());
+		if (acctcategory.isPresent())
+			bcaAccount.setAcctCategory(acctcategory.get());
 
-		BcaCompany company = bcaCompanyRepository.findByCompanyId(new Long(ConstValue.companyId));
-		if (null != company)
-			bcaAccount.setCompany(company);
+		Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(ConstValue.companyId));
+		if (company.isPresent())
+			bcaAccount.setCompany(company.get());
 
-		BcaClientvendor bcaClientvendor = bcaClientvendorRepository.getOne(account.getCvID());
-		if (null != bcaClientvendor)
-			bcaAccount.setClientVendor(bcaClientvendor);
+		Optional<BcaClientvendor> bcaClientvendor = bcaClientvendorRepository.findById(account.getCvID());
+		if (bcaClientvendor.isPresent())
+			bcaAccount.setClientVendor(bcaClientvendor.get());
 		bcaAccount.setDepositPaymentId(account.getDepositPaymentID());
 		bcaAccount.setCustomerStartingBalance(account.getCustomerStartingBalance());
 		bcaAccount.setCustomerCurrentBalance(account.getCustomerCurrentBalance());
 		bcaAccount.setVendorStartingBalance(account.getVendorStartingBalance());
 		bcaAccount.setVendorCurrentBalance(account.getVendorCurrentBalance());
 		bcaAccount.setActive(1);
-		bcaAccount.setDateAdded(StringToOffsetDateTime(JProjectUtil.dateTimeFormatLong.format(account.getDateAdded())));
+		String format = JProjectUtil.dateTimeFormatLong.format(account.getDateAdded());
+		// Define the format of the input string
+		// Define the format of the input string
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+		try {
+			// Parse the string to create a LocalDateTime
+			LocalDateTime localDateTime = LocalDateTime.parse(format, formatter);
+
+			// Assume a specific offset, for example, UTC+0
+			ZoneOffset offset = ZoneOffset.UTC;
+
+			// Convert LocalDateTime to OffsetDateTime
+			OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime, offset);
+
+			// Output the result
+			System.out.println("Parsed OffsetDateTime: " + offsetDateTime);
+			bcaAccount.setDateAdded(offsetDateTime);
+		} catch (Exception e) {
+			// Handle parsing exception
+			System.err.println("Error parsing date: " + e.getMessage());
+		}
 		bcaAccount.setFirstCheck(account.getFirstCheckNo());
 		bcaAccount.setMainaccount(BigDecimal.valueOf(account.getIsitmainaccount()));
 
-		bcaAccountRepository.save(bcaAccount);
+		BcaAccount bca_account = bcaAccountRepository.save(bcaAccount);
 
 //		stmt = con.createStatement();
 //		stmt.executeUpdate(sql);
-
-		accountId = bcaAccountRepository.findMaxAccountIdByCompany(company);
+		accountId = bca_account.getAccountId();
+		// accountId = bcaAccountRepository.findMaxAccountIdByCompany(company.get());
 
 //		rs = stmt.executeQuery(
 //				"SELECT Max(AccountID) AS LastID from bca_account where companyid=" + ConstValue.companyId);
@@ -7822,166 +8197,203 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	}
 
+//	public void updatebcaAccount(int paymentId, int accountId) {
+//		Connection con = null;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		con = db.getConnection();
+//
+//		try {
+//			stmt = con.createStatement();
+//			stmt.executeUpdate(
+//					" UPDATE bca_account SET DepositPaymentID=" + paymentId + " WHERE AccountID=" + accountId);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 	public void updatebcaAccount(int paymentId, int accountId) {
-		Connection con = null;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		con = db.getConnection();
 
 		try {
-			stmt = con.createStatement();
-			stmt.executeUpdate(
-					" UPDATE bca_account SET DepositPaymentID=" + paymentId + " WHERE AccountID=" + accountId);
-		} catch (SQLException e) {
+			Optional<BcaAccount> bcaAccount = bcaAccountRepository.findById(accountId);
+			if (bcaAccount.isPresent()) {
+				BcaAccount account = bcaAccount.get();
+				account.setDepositPaymentId(paymentId);
+				bcaAccountRepository.save(account);
+			}
+
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 	}
+//
+//	public void updateBankBalance(TblPaymentDto payment) {
+//		Connection con = null;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//		double payFromBalance = 0.0;
+//
+//		String sql_getPayee = "SELECT CustomerCurrentBalance FROM bca_account " + " WHERE AccountID = "
+//				+ payment.getPayerID() + " AND CompanyID = " + ConstValue.companyId;
+//
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(sql_getPayee);
+//
+//			if (rs.next()) {
+//				payFromBalance = rs.getDouble("CustomerCurrentBalance");
+//			}
+//
+//			String sql_put = "UPDATE bca_payment SET PayToBalance=" + (payment.getAmount()) + " ,PayFromBalance="
+//					+ payFromBalance + " WHERE PaymentID = " + payment.getAcID();
+//
+//			stmt.executeUpdate(sql_put);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 
 	public void updateBankBalance(TblPaymentDto payment) {
-		Connection con = null;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		con = db.getConnection();
+
 		double payFromBalance = 0.0;
 
-		String sql_getPayee = "SELECT CustomerCurrentBalance FROM bca_account " + " WHERE AccountID = "
-				+ payment.getPayerID() + " AND CompanyID = " + ConstValue.companyId;
-
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql_getPayee);
+			Optional<BcaAccount> account = bcaAccountRepository
+					.findByAccountIdAndCompany_CompanyId(payment.getPayerID(), new Long(ConstValue.companyId));
+			if (account.isPresent()) {
+				payFromBalance = account.get().getCustomerCurrentBalance();
+			}
+			Optional<BcaPayment> bcapayment = bcaPaymentRepository.findById(payment.getAcID());
+			if (bcapayment.isPresent()) {
+				BcaPayment bca_payment = bcapayment.get();
+				bca_payment.setPayFromBalance(payFromBalance);
+				bca_payment.setPayToBalance(payment.getAmount());
+				bcaPaymentRepository.save(bca_payment);
 
-			if (rs.next()) {
-				payFromBalance = rs.getDouble("CustomerCurrentBalance");
 			}
 
-			String sql_put = "UPDATE bca_payment SET PayToBalance=" + (payment.getAmount()) + " ,PayFromBalance="
-					+ payFromBalance + " WHERE PaymentID = " + payment.getAcID();
-
-			stmt.executeUpdate(sql_put);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 	}
 
 	public int addBankTransaction(TblPaymentDto payment) {
-		Connection con = null;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		con = db.getConnection();
+//		Connection con = null;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		con = db.getConnection();
 
 		int paymentId = -1;
 		double payFromBalance = 0.00;
 		double payToBalance = 0.00;
-
-		TblAccount fromAccount = getAccount(payment.getPayerID());
-
-		if (fromAccount != null) {
-			try {
-				adjustBankBalance(fromAccount, -payment.getAmount());
-				payFromBalance = (fromAccount.getCustomerCurrentBalance());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				Loger.log(e.toString());
-			}
-
-		}
-		TblAccount toAccount = getAccount(payment.getPayeeID());
-		if (toAccount != null) {
-			try {
-				adjustBankBalance(toAccount, payment.getAmount());
-				payToBalance = (toAccount.getVendorCurrentBalance());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				Loger.log(e.toString());
-			}
-		}
-		if (fromAccount != null && fromAccount.getAccountTypeID() == 2) {
-			payToBalance = 0.0;
-		}
-		if (toAccount != null && toAccount.getAccountTypeID() == 2) {
-			toAccount = getAccount(payment.getPayeeID());
-			payToBalance = toAccount.getCustomerCurrentBalance();
-			payFromBalance = 0.0;
-		}
-
-		/* int priority = getPriority() + 1; */
-
-		/*
-		 * String sql = "INSERT INTO bca_payment(Amount,PaymentTypeID,PayerID," +
-		 * "PayeeID,AccountID," + "ClientVendorID,InvoiceID," +
-		 * "CategoryID,AccountCategoryID,CompanyID,DateAdded,IsToBePrinted,isNeedtoDeposit,"
-		 * + "TransactionID,CheckNumber,PayFromBalance,PayToBalance,Priority," +
-		 * "BillNum,TransactionType) VALUES (" + payment.getAmount() + "," +
-		 * payment.getPaymentTypeID() + "," + payment.getPayerID() + "," +
-		 * payment.getPayeeID() + "," + payment.getAccountID() + "," + payment.getCvID()
-		 * + "," + payment.getInvoiceID() + "," + payment.getCategoryId() + "," +
-		 * payment.getAccountCategoryId() + "," + ConstValue.companyId + "," +
-		 * (payment.getDateAdded() == null ? null : ("'" +
-		 * JProjectUtil.getDateFormaterCommon().format(new Date()) + "'")) + "," +
-		 * (payment.isToBePrinted()== true ? 1 : 0) + "," + (payment.isNeedToDeposit()
-		 * == false ? 1 : 0) + ",'" + payment.getTransactionID() + "','" +
-		 * payment.getCheckNumber() + "'" + "," + payFromBalance + "," + payToBalance +
-		 * "," + priorityForAddBank + "," + payment.getBillNum() + "," +
-		 * payment.getInvoiceTypeID() + //ss to get InvoiceTypeID ")";
-		 */
-
-		/* try { */
-		/*
-		 * if(con.isClosed()) { con = db.getConnection();
-		 * 
-		 * } else { stmt = con.createStatement(); } stmt.executeUpdate(sql);
-		 */
-		insertRecord(payment, payFromBalance, payToBalance);
-		paymentId = getmaxPaymentId();
-		/*
-		 * rs = stmt.executeQuery("SELECT MAX(PaymentID) AS LastID FROM  bca_payment");
-		 * if (rs.next()) { paymentId = rs.getInt("LastID");
-		 *//** payment detail *//*
-								 * }
-								 * 
-								 * } catch (SQLException e) { // TODO Auto-generated catch block
-								 * Loger.log(e.toString()); }
-								 */
-		/*
-		 * finally { if (rs != null) { try { rs.close(); } catch (SQLException e) { //
-		 * TODO Auto-generated catch block Loger.log(e.toString()); } } if (stmt !=
-		 * null) { try { stmt.close(); } catch (SQLException e) { // TODO Auto-generated
-		 * catch block Loger.log(e.toString()); } } }
-		 */
 		try {
-			if (con != null) {
-				db.close(con);
+			TblAccount fromAccount = getAccount(payment.getPayerID());
+
+			if (fromAccount != null) {
+				try {
+					adjustBankBalance(fromAccount, -payment.getAmount());
+					payFromBalance = (fromAccount.getCustomerCurrentBalance());
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					Loger.log(e.toString());
+				}
+
 			}
+			TblAccount toAccount = getAccount(payment.getPayeeID());
+			if (toAccount != null) {
+				try {
+					adjustBankBalance(toAccount, payment.getAmount());
+					payToBalance = (toAccount.getVendorCurrentBalance());
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					Loger.log(e.toString());
+				}
+			}
+			if (fromAccount != null && fromAccount.getAccountTypeID() == 2) {
+				payToBalance = 0.0;
+			}
+			if (toAccount != null && toAccount.getAccountTypeID() == 2) {
+				toAccount = getAccount(payment.getPayeeID());
+				payToBalance = toAccount.getCustomerCurrentBalance();
+				payFromBalance = 0.0;
+			}
+
+			/* int priority = getPriority() + 1; */
+
+			/*
+			 * String sql = "INSERT INTO bca_payment(Amount,PaymentTypeID,PayerID," +
+			 * "PayeeID,AccountID," + "ClientVendorID,InvoiceID," +
+			 * "CategoryID,AccountCategoryID,CompanyID,DateAdded,IsToBePrinted,isNeedtoDeposit,"
+			 * + "TransactionID,CheckNumber,PayFromBalance,PayToBalance,Priority," +
+			 * "BillNum,TransactionType) VALUES (" + payment.getAmount() + "," +
+			 * payment.getPaymentTypeID() + "," + payment.getPayerID() + "," +
+			 * payment.getPayeeID() + "," + payment.getAccountID() + "," + payment.getCvID()
+			 * + "," + payment.getInvoiceID() + "," + payment.getCategoryId() + "," +
+			 * payment.getAccountCategoryId() + "," + ConstValue.companyId + "," +
+			 * (payment.getDateAdded() == null ? null : ("'" +
+			 * JProjectUtil.getDateFormaterCommon().format(new Date()) + "'")) + "," +
+			 * (payment.isToBePrinted()== true ? 1 : 0) + "," + (payment.isNeedToDeposit()
+			 * == false ? 1 : 0) + ",'" + payment.getTransactionID() + "','" +
+			 * payment.getCheckNumber() + "'" + "," + payFromBalance + "," + payToBalance +
+			 * "," + priorityForAddBank + "," + payment.getBillNum() + "," +
+			 * payment.getInvoiceTypeID() + //ss to get InvoiceTypeID ")";
+			 */
+
+			/* try { */
+			/*
+			 * if(con.isClosed()) { con = db.getConnection();
+			 * 
+			 * } else { stmt = con.createStatement(); } stmt.executeUpdate(sql);
+			 */
+			insertRecord(payment, payFromBalance, payToBalance);
+			paymentId = getmaxPaymentId();
+			/*
+			 * rs = stmt.executeQuery("SELECT MAX(PaymentID) AS LastID FROM  bca_payment");
+			 * if (rs.next()) { paymentId = rs.getInt("LastID");
+			 *//** payment detail *//*
+									 * }
+									 * 
+									 * } catch (SQLException e) { // TODO Auto-generated catch block
+									 * Loger.log(e.toString()); }
+									 */
+			/*
+			 * finally { if (rs != null) { try { rs.close(); } catch (SQLException e) { //
+			 * TODO Auto-generated catch block Loger.log(e.toString()); } } if (stmt !=
+			 * null) { try { stmt.close(); } catch (SQLException e) { // TODO Auto-generated
+			 * catch block Loger.log(e.toString()); } } }
+			 */
+
 		} catch (Exception e) {
 			Loger.log(e.toString());
 		}
@@ -8027,49 +8439,133 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return paymentId;
 	}
 
+//	public void insertRecord(TblPaymentDto payment, double payFromBalance, double payToBalance) {
+//		Connection con = null;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		con = db.getConnection();
+//
+//		String sql = "INSERT INTO bca_payment(Amount,PaymentTypeID,PayerID," + "PayeeID,AccountID,"
+//				+ "ClientVendorID,InvoiceID,"
+//				+ "CategoryID,AccountCategoryID,CompanyID,DateAdded,IsToBePrinted,isNeedtoDeposit,"
+//				+ "TransactionID,CheckNumber,PayFromBalance,PayToBalance,Priority,"
+//				+ "BillNum,TransactionType) VALUES (" + payment.getAmount() + "," + payment.getPaymentTypeID() + ","
+//				+ payment.getPayerID() + "," + payment.getPayeeID() + "," + payment.getAccountID() + ","
+//				+ payment.getCvID() + "," + payment.getInvoiceID() + "," + payment.getCategoryId() + ","
+//				+ payment.getAccountCategoryId() + "," + ConstValue.companyId + ","
+//				+ (payment.getDateAdded() == null ? null
+//						: ("'" + JProjectUtil.getDateFormaterCommon().format(new Date()) + "'"))
+//				+ "," + (payment.isToBePrinted() == true ? 1 : 0) + "," + (payment.isNeedToDeposit() == false ? 1 : 0)
+//				+ ",'" + payment.getTransactionID() + "','" + payment.getCheckNumber() + "'" + "," + payFromBalance
+//				+ "," + payToBalance + "," + priorityForAddBank + "," + payment.getBillNum() + ","
+//				+ payment.getInvoiceTypeID() + // ss to get InvoiceTypeID
+//				")";
+//
+//		try {
+//			stmt = con.createStatement();
+//			stmt.executeUpdate(sql);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			Loger.log(e.toString());
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					db.close(rs);
+//				}
+//				if (stmt != null) {
+//					db.close(stmt);
+//				}
+//				if (con != null) {
+//					db.close(con);
+//				}
+//			} catch (Exception e) {
+//				Loger.log(e.toString());
+//			}
+//		}
+//	}
 	public void insertRecord(TblPaymentDto payment, double payFromBalance, double payToBalance) {
-		Connection con = null;
-		Statement stmt = null;
-		SQLExecutor db = new SQLExecutor();
-		ResultSet rs = null;
-		con = db.getConnection();
+//		Connection con = null;
+//		Statement stmt = null;
+//		SQLExecutor db = new SQLExecutor();
+//		ResultSet rs = null;
+//		con = db.getConnection();
 
-		String sql = "INSERT INTO bca_payment(Amount,PaymentTypeID,PayerID," + "PayeeID,AccountID,"
-				+ "ClientVendorID,InvoiceID,"
-				+ "CategoryID,AccountCategoryID,CompanyID,DateAdded,IsToBePrinted,isNeedtoDeposit,"
-				+ "TransactionID,CheckNumber,PayFromBalance,PayToBalance,Priority,"
-				+ "BillNum,TransactionType) VALUES (" + payment.getAmount() + "," + payment.getPaymentTypeID() + ","
-				+ payment.getPayerID() + "," + payment.getPayeeID() + "," + payment.getAccountID() + ","
-				+ payment.getCvID() + "," + payment.getInvoiceID() + "," + payment.getCategoryId() + ","
-				+ payment.getAccountCategoryId() + "," + ConstValue.companyId + ","
-				+ (payment.getDateAdded() == null ? null
-						: ("'" + JProjectUtil.getDateFormaterCommon().format(new Date()) + "'"))
-				+ "," + (payment.isToBePrinted() == true ? 1 : 0) + "," + (payment.isNeedToDeposit() == false ? 1 : 0)
-				+ ",'" + payment.getTransactionID() + "','" + payment.getCheckNumber() + "'" + "," + payFromBalance
-				+ "," + payToBalance + "," + priorityForAddBank + "," + payment.getBillNum() + ","
-				+ payment.getInvoiceTypeID() + // ss to get InvoiceTypeID
-				")";
+//		String sql = "INSERT INTO bca_payment(Amount,PaymentTypeID,PayerID," + "PayeeID,AccountID,"
+//				+ "ClientVendorID,InvoiceID,"
+//				+ "CategoryID,AccountCategoryID,CompanyID,DateAdded,IsToBePrinted,isNeedtoDeposit,"
+//				+ "TransactionID,CheckNumber,PayFromBalance,PayToBalance,Priority,"
+//				+ "BillNum,TransactionType) VALUES (" + payment.getAmount() + "," + payment.getPaymentTypeID() + ","
+//				+ payment.getPayerID() + "," + payment.getPayeeID() + "," + payment.getAccountID() + ","
+//				+ payment.getCvID() + "," + payment.getInvoiceID() + "," + payment.getCategoryId() + ","
+//				+ payment.getAccountCategoryId() + "," + ConstValue.companyId + ","
+//				+ (payment.getDateAdded() == null ? null
+//						: ("'" + JProjectUtil.getDateFormaterCommon().format(new Date()) + "'"))
+//				+ "," + (payment.isToBePrinted() == true ? 1 : 0) + "," + (payment.isNeedToDeposit() == false ? 1 : 0)
+//				+ ",'" + payment.getTransactionID() + "','" + payment.getCheckNumber() + "'" + "," + payFromBalance
+//				+ "," + payToBalance + "," + priorityForAddBank + "," + payment.getBillNum() + ","
+//				+ payment.getInvoiceTypeID() + // ss to get InvoiceTypeID
+//				")";
 
 		try {
-			stmt = con.createStatement();
-			stmt.executeUpdate(sql);
-		} catch (SQLException e) {
+			BcaPayment bcaPayment = new BcaPayment();
+			bcaPayment.setAmount(payment.getAmount());
+			Optional<BcaPaymenttype> bcaPaymentType = bcaPaymenttypeRepository.findById(payment.getPaymentTypeID());
+			if (bcaPaymentType.isPresent())
+				bcaPayment.setPaymentType(bcaPaymentType.get());
+			bcaPayment.setPayerId(payment.getPayerID());
+			bcaPayment.setPayeeId(payment.getPayeeID());
+			Optional<BcaAccount> account = bcaAccountRepository.findById(payment.getAccountID());
+			if (account.isPresent())
+				bcaPayment.setAccount(account.get());
+			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(payment.getCvID());
+			if (clientVendor.isPresent())
+				bcaPayment.setClientVendor(clientVendor.get());
+			Optional<BcaInvoice> invoice = bcaInvoiceRepository.findById(payment.getInvoiceID());
+			if (invoice.isPresent())
+				bcaPayment.setInvoice(invoice.get());
+			Optional<BcaCategory> category = bcaCategoryRepository.findById(payment.getCategoryId());
+			if (category.isPresent())
+				bcaPayment.setCategory(category.get());
+			bcaPayment.setAccountCategoryId(payment.getAccountCategoryId());
+			Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(ConstValue.companyId));
+			if (company.isPresent())
+				bcaPayment.setCompany(company.get());
+			String dateAddded = payment.getDateAdded() == null ? null
+					: ("'" + JProjectUtil.getDateFormaterCommon().format(new Date()) + "'");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+			try {
+				// Parse the string to create a LocalDateTime
+				LocalDateTime localDateTime = LocalDateTime.parse(dateAddded, formatter);
+
+				// Assume a specific offset, for example, UTC+0
+				ZoneOffset offset = ZoneOffset.UTC;
+
+				// Convert LocalDateTime to OffsetDateTime
+				OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime, offset);
+
+				// Output the result
+				System.out.println("Parsed OffsetDateTime: " + offsetDateTime);
+				bcaPayment.setDateAdded(offsetDateTime);
+			} catch (Exception e) {
+				// Handle parsing exception
+				System.err.println("Error parsing date: " + e.getMessage());
+			}
+			bcaPayment.setIsToBePrinted((payment.isToBePrinted() == true ? true : false));
+			bcaPayment.setIsNeedtoDeposit((payment.isNeedToDeposit() == false ? true : false));
+			bcaPayment.setTransactionId(payment.getTransactionID());
+			bcaPayment.setCheckNumber(payment.getCheckNumber());
+			bcaPayment.setPayFromBalance(payFromBalance);
+			bcaPayment.setPayToBalance(payToBalance);
+			bcaPayment.setPriority(priorityForAddBank);
+			bcaPayment.setBillNum(payment.getBillNum());
+			bcaPayment.setTransactionType(payment.getInvoiceTypeID());
+			bcaPaymentRepository.save(bcaPayment);
+
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		} finally {
-			try {
-				if (rs != null) {
-					db.close(rs);
-				}
-				if (stmt != null) {
-					db.close(stmt);
-				}
-				if (con != null) {
-					db.close(con);
-				}
-			} catch (Exception e) {
-				Loger.log(e.toString());
-			}
 		}
 	}
 
