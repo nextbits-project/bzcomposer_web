@@ -1650,7 +1650,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 						+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
 						+ receivableListBean.getMemo().trim() + "'" + " Where PONum=" + receivableListBean.getPoNum()
 						+ " AND CompanyID=" + receivableListBean.getCompanyID();
-				bcaInvoiceRepository.updateInvoiceByPonum(paymentType, receivableListBean.getBankAccountID(),
+				i = bcaInvoiceRepository.updateInvoiceByPonum(paymentType, receivableListBean.getBankAccountID(),
 						bcaCategory, paidAmount, balance, clientvendor, receivableListBean.getMemo().trim(),
 						receivableListBean.getPoNum(), company);
 			}
@@ -2504,11 +2504,16 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 		}
 
+//		String sql = " UPDATE bca_invoice SET " + " IsPaymentCompleted=" + (paymentCompleted == true ? 1 : 0) + ","
+//				+ " PaidAmount =" + paidAmount + "," + " Balance=" + invoice.getBalance() + "," + " AdjustedTotal="
+//				+ invoice.getAdjustedTotal() + "," + " CategoryID=" + invoice.getCategoryID() + "," + " ClientVendorID="
+//				+ invoice.getCvID() + "," + " BillingAddrID=" + invoice.getBillingAddrId() + "," + " ShippingAddrID="
+//				+ invoice.getShippingAddrId() + "," + " invoiceStatus = " + invoice.getInvoiceStatus()
+//				+ " WHERE InvoiceID=" + invoice.getInvoiceID() + " AND CompanyID=" + ConstValue.companyId;
 		String sql = " UPDATE bca_invoice SET " + " IsPaymentCompleted=" + (paymentCompleted == true ? 1 : 0) + ","
 				+ " PaidAmount =" + paidAmount + "," + " Balance=" + invoice.getBalance() + "," + " AdjustedTotal="
 				+ invoice.getAdjustedTotal() + "," + " CategoryID=" + invoice.getCategoryID() + "," + " ClientVendorID="
-				+ invoice.getCvID() + "," + " BillingAddrID=" + invoice.getBillingAddrId() + "," + " ShippingAddrID="
-				+ invoice.getShippingAddrId() + "," + " invoiceStatus = " + invoice.getInvoiceStatus()
+				+ invoice.getCvID() + "," + " invoiceStatus = " + invoice.getInvoiceStatus()
 				+ " WHERE InvoiceID=" + invoice.getInvoiceID() + " AND CompanyID=" + ConstValue.companyId;
 		try {
 
@@ -5791,6 +5796,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		ResultSet rs_1 = null;
 		int payableId = -1;
 
+		
 		String sql = "INSERT INTO bca_accountable(InvoiceID,PayeeCvID,PayeeCvServiceID,PayerCvID,PayerCvServiceID,"
 				+ "DateAdded,Amount,Memo,Ref,PayFromID,CategoryID,PaymentCompleted,CompanyID,CreditCardID,PaymentTypeID,"
 				+ "IsPayable,CheckNumber) VALUES " + "(" + accountable.getInvoiceId() + "," + accountable.getPayeeCvId()
@@ -5801,7 +5807,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ "," + accountable.getAmount() + "," + "'" + accountable.getMemo().replaceAll("'", "''") + "'" + ","
 				+ "'" + accountable.getRef().replaceAll("'", "''") + "'" + "," + accountable.getPayFromId() + ","
 				+ accountable.getCategoryId() + "," + (accountable.isPaymentCompleted() == true ? 1 : 0) + ","
-				+ ConstValue.companyId + "," + accountable.getCreditCardId() + "," + accountable.getPaymentTypeId()
+				+ ConstValue.companyId + "," + (accountable.getCreditCardId() == -1 ? "NULL" : accountable.getCreditCardId()) + "," + accountable.getPaymentTypeId()
 				+ "," + (accountable.isPayable() == true ? 1 : 0) + "," + "'" + accountable.getCheckNumber() + "'"
 				+ ")";
 
