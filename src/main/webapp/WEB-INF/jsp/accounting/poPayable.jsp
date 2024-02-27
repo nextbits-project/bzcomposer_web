@@ -592,7 +592,7 @@ table.tabla-listados tbody tr td {
 	selectCategoryAsPurchaseOrder6800FromDropDownList("categoryId");
 
    function selectrow(invoice,index) {
-	    debugger;
+	    //debugger;
 	      $( "#demo" ).empty();  
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
@@ -787,7 +787,7 @@ table.tabla-listados tbody tr td {
    
    function save()
    {
-	   debugger;
+	  // debugger;
 	   var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
 	  if(vendor == null){
 		  alert("<bean:message key='BzComposer.billcreation.selectvendorfirst'/>");
@@ -835,7 +835,7 @@ table.tabla-listados tbody tr td {
 		
 		this.amtToPay = document.getElementById("receivedAmount").value; 
 		var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
-	   debugger;
+	   //debugger;
         var poNumberString = document.getElementById("poNumber").innerHTML;
         var parts = poNumberString.split("-");
      	// Select the second part and convert it to an integer
@@ -858,7 +858,7 @@ table.tabla-listados tbody tr td {
    }
   	}
    function sendMyValue(ReceivableListDto) {
-	   debugger;
+	   //debugger;
 		var obj=JSON.stringify(ReceivableListDto);
    	    $.ajax({
 			type : "POST",
@@ -1034,7 +1034,7 @@ $('tr').click(function () {
 	  var ReceivableListDto={
 
 	   };
-	  debugger;
+	 // debugger;
     var ReceivableListDto = {
              "ReceivableListDto": {
                 "poNum":PoNumber,

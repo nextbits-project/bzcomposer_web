@@ -833,7 +833,8 @@ table.tabla-listados tbody tr td {
 	}
     
     function checkReceivedType(){
-		var receivedType = document.getElementById("receivedType");
+    	debugger;
+    	var receivedType = document.getElementById("receivedType");
 		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
 		
 		if(selectedReceivedType == '452'){
@@ -893,7 +894,8 @@ table.tabla-listados tbody tr td {
 	} */
     
    function selectrow(invoice,index) {
-	    this.indexNumber = index;
+		debugger;
+		this.indexNumber = index;
 	    this.invoiceId = invoice;
 	    var count = 1;
 	    var matchFind = <%=request.getSession().getAttribute("indexNumber")%>;
@@ -920,8 +922,8 @@ table.tabla-listados tbody tr td {
 	    //alert($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value'));
 	    /* $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value'));
 	    $("select.devDeposittypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value')); */
-	    $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(7)').text());
-	    $(".devMemotext").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(14)').text());
+	    $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(7)').text().trim());
+	    $(".devMemotext").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(14)').text().trim());
 		if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value') != 'null'){
 	 		$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value'));
 		}
@@ -929,7 +931,7 @@ table.tabla-listados tbody tr td {
    }  
    function save()
    {
-	   	
+	   debugger;
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
 		receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
@@ -955,7 +957,7 @@ table.tabla-listados tbody tr td {
 		}
 
 		this.amtToPay = document.getElementById("receivedAmount").value;
-		orderNum = document.getElementById("ordernumber").innerHTML;
+		orderNum = document.getElementById("ordernumber").innerHTML.trim();
 		var newON = orderNum.replace('IV2021-0','').replace(/\n/g, '');
 	   var ReceivableListDto = {
 	            "ReceivableListDto": {
@@ -1060,7 +1062,7 @@ table.tabla-listados tbody tr td {
    }
    function received()
    {
-
+	   debugger;
 	   var receivedAmountString = 0.0;
 	   var type = document.getElementById("receivedType");
 	   console.log(document.getElementById("receivedType").options[type.selectedIndex]);

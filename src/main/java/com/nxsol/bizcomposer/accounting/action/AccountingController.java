@@ -223,6 +223,7 @@ public class AccountingController{
 			/*String indexNumber = request.getParameter("index");*/
 			String invoiceId = request.getParameter("invoiceId");
 			String checkNumber = invoice.getCheckNum();
+			invoice.setInvoiceID(Integer.parseInt(invoiceId));
 			invoice.setCompanyID(ConstValue.companyId);
 			int i = rl.updateInvoiceByOrderNum(invoice);
 			HttpSession session = request.getSession();

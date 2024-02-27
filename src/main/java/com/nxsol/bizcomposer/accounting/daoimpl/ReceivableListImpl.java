@@ -1628,7 +1628,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 							+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
 							+ receivableListBean.getMemo().trim() + "'" + " Where OrderNum="
 							+ receivableListBean.getOrderNum() + " AND CompanyID=" + receivableListBean.getCompanyID();
-					bcaInvoiceRepository.updateInvoiceByOrderNum(paymentType, receivableListBean.getBankAccountID(),
+					i = bcaInvoiceRepository.updateInvoiceByOrderNum(paymentType, receivableListBean.getBankAccountID(),
 							bcaCategory, paidAmount, balance, clientvendor, receivableListBean.getMemo().trim(),
 							receivableListBean.getOrderNum(), company);
 				} else {
@@ -1638,7 +1638,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 							+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
 							+ receivableListBean.getMemo().trim() + "'" + " Where InvoiceID="
 							+ receivableListBean.getInvoiceID() + " AND CompanyID=" + receivableListBean.getCompanyID();
-					bcaInvoiceRepository.updateInvoiceByInvoiceId(paymentType, receivableListBean.getBankAccountID(),
+					i = bcaInvoiceRepository.updateInvoiceByInvoiceId(paymentType, receivableListBean.getBankAccountID(),
 							bcaCategory, paidAmount, balance, clientvendor, receivableListBean.getMemo().trim(),
 							receivableListBean.getInvoiceID(), company);
 				}
@@ -2311,7 +2311,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 
 			invoicePaid(bean, true);
-
+			payment.setId(paymentId);
 			con.commit();
 			con.setAutoCommit(true);
 		} catch (SQLException e) {
@@ -2551,10 +2551,10 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		String sql = "SELECT MAX(PaymentID) AS LastID FROM bca_payment";
 
 		try {
-			Optional<Integer> lastId = bcaPaymentRepository.findTopByOrderByPaymentIdDesc();
-			if (lastId.isPresent()) {
-
-				payment.setId(lastId.get());
+			Optional<BcaPayment> lastPaymentOpt = bcaPaymentRepository.findTopByOrderByPaymentIdDesc();
+			if (lastPaymentOpt.isPresent()) {
+				Integer lastId = lastPaymentOpt.get().getPaymentId();
+				payment.setId(lastId);
 			}
 //			stmt = con.createStatement();
 //			rs = stmt.executeQuery(sql);
@@ -2595,18 +2595,33 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		SQLExecutor db = new SQLExecutor();
 //		con = db.getConnection();
 
-		java.util.Date d = Calendar.getInstance().getTime();
-		String date = JProjectUtil.getDateFormater().format(d);
+		java.util.Date date = Calendar.getInstance().getTime();
+		OffsetDateTime dateAdded = DateHelper.convertDateToOffsetDateTime(date);
+//		DateHelper.convertDateToOffsetDateTime(date);
 		/* priority = getPriority() + 1; */
 
 		try {
 //			String sql_working = "UPDATE bca_payment SET " + " isNeedtoDeposit = 0 ," + " PayeeID=?," + " DateAdded=? ,"
 //					+ " AccountID = ?," + " Deleted= 0 ," + " Priority=?" + " WHERE CompanyID =?"
 //					+ " AND PaymentID =?  ";
-			BcaCompany company = bcaCompanyRepository.getOne(new Long(ConstValue.companyId));
+//			BcaCompany company = bcaCompanyRepository.getOne(new Long(ConstValue.companyId));
 			BcaAccount bcaAccount = bcaAccountRepository.getOne(account.getAccountID());
-			int updated = bcaPaymentRepository.depositToBcaPayment(account.getAccountID(), date, bcaAccount,
-					priority + 1, company, payment.getId());
+			
+			
+//			int updated = bcaPaymentRepository.depositToBcaPayment(account.getAccountID(), dateAdded, bcaAccount,
+//					priority + 1, company, payment.getId());
+			
+			
+			BcaPayment bcaPayment = bcaPaymentRepository.findByPaymentIdAndCompany_CompanyId(payment.getId(), Long.valueOf(ConstValue.companyId));
+			bcaPayment.setIsNeedtoDeposit(false);
+			bcaPayment.setPayeeId(account.getAccountID());
+			bcaPayment.setDateAdded(dateAdded);
+			bcaPayment.setAccount(bcaAccount);
+			bcaPayment.setDeleted(false);
+			bcaPayment.setPriority(priority);
+			
+			bcaPaymentRepository.save(bcaPayment);
+			
 //			pstmt = con.prepareStatement(sql_working);
 			payment.setPayeeID(account.getAccountID());
 //			pstmt.setInt(1, account.getAccountID());

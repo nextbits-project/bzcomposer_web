@@ -56,7 +56,7 @@ public interface BcaPaymentRepository extends JpaRepository<BcaPayment, Integer>
 
 	List<BcaPayment> findByCompany(BcaCompany compId);
 
-	Optional<Integer> findTopByOrderByPaymentIdDesc();
+	Optional<BcaPayment> findTopByOrderByPaymentIdDesc();
 
 	Optional<Integer> findTopByOrderByPriorityDesc();
 
@@ -65,7 +65,7 @@ public interface BcaPaymentRepository extends JpaRepository<BcaPayment, Integer>
 	@Query("UPDATE BcaPayment bp SET bp.isNeedtoDeposit =0 ,bp.payeeId = :payeeId , bp.dateAdded = :dateAdded , "
 			+ " bp.account = :account , bp.deleted = 0 , bp.priority = :priority WHERE bp.company = :company"
 			+ " AND bp.paymentId = :paymentId")
-	int depositToBcaPayment(@Param("payeeId") Integer payeeId, @Param("dateAdded") String dateAdded,
+	int depositToBcaPayment(@Param("payeeId") Integer payeeId, @Param("dateAdded") OffsetDateTime  dateAdded,
 			@Param("account") BcaAccount account, @Param("priority") Integer priority,
 			@Param("company") BcaCompany company, @Param("paymentId") Integer paymentId);
 
