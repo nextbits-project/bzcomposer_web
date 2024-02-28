@@ -33,6 +33,7 @@ import javax.persistence.TypedQuery;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -2473,6 +2474,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				account.setVendorCurrentBalance(currentBalance + amount);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			Loger.log(e.toString());
 		}
 
@@ -6967,46 +6969,46 @@ public class ReceivableListImpl implements ReceivableLIst {
 	public int getPriority() {
 		// TODO Auto-generated method stub
 		int priority = 0;
-//		Connection con;
-//		Statement stmt = null;
-//		SQLExecutor db = new SQLExecutor();
-//		con = db.getConnection();
-//		ResultSet rs = null;
-//
-//		String sql = "SELECT MAX(Priority) FROM bca_payment";
+		Connection con;
+		Statement stmt = null;
+		SQLExecutor db = new SQLExecutor();
+		con = db.getConnection();
+		ResultSet rs = null;
+
+		String sql = "SELECT MAX(Priority) FROM bca_payment";
 
 		try {
-//			stmt = con.createStatement();
-//			rs = stmt.executeQuery(sql);
-//
-//			if (rs.next()) {
-//				priority = rs.getInt(1);
-//			}
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
 
-			Optional<Integer> opt = bcaPaymentRepository.findTopByOrderByPriorityDesc();
-			if (opt.isPresent()) {
-				priority = opt.get();
+			if (rs.next()) {
+				priority = rs.getInt(1);
 			}
+
+//			Optional<Integer> opt = bcaPaymentRepository.findTopByOrderByPriorityDesc();
+//			if (opt.isPresent()) {
+//				priority = opt.get();
+//			}
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
 		}
-//		finally {
-//			try {
-//				if (rs != null) {
-//					db.close(rs);
-//				}
-//				if (stmt != null) {
-//					db.close(stmt);
-//				}
-//				if (con != null) {
-//					db.close(con);
-//				}
-//			} catch (Exception e) {
-//				Loger.log(e.toString());
-//			}
-//		}
+		finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (stmt != null) {
+					db.close(stmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
 		return priority;
 	}
 
@@ -7177,14 +7179,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 			bcaPayment.setAmount(amount);
 			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(payment.getPaymentTypeID());
 			if (paymentType.isPresent())
-				bcaPayment.setPaymentType(null);
+				bcaPayment.setPaymentType(paymentType.get());
 
 			bcaPayment.setPayerId(payment.getPayerID());
 			bcaPayment.setPayeeId(payment.getPayeeID());
 			Optional<BcaAccount> bca_account = bcaAccountRepository.findById(payment.getAccountID());
 			if (bca_account.isPresent())
 				bcaPayment.setAccount(bca_account.get());
-			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(-1);
+			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(payment.getPayeeID());
 			if (clientVendor.isPresent())
 				bcaPayment.setClientVendor(clientVendor.get());
 			Optional<BcaInvoice> invoice = bcaInvoiceRepository.findById(-1);
@@ -7248,7 +7250,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	public ArrayList<ClientVendor> getAllClientVendorList() {
 		// TODO Auto-generated method stub
 		ArrayList<ClientVendor> cvList = new ArrayList<ClientVendor>();
-
+		
 //		Connection con;
 //		Statement stmt = null;
 //		SQLExecutor db = new SQLExecutor();
@@ -7287,13 +7289,17 @@ public class ReceivableListImpl implements ReceivableLIst {
 					new Long(ConstValue.companyId), getCustomerTypeId(ConstValue.VENDOR),
 					getCustomerTypeId(ConstValue.CustVenBoth), getCustomerTypeId(ConstValue.DealerVenBoth));
 			for (Object[] obj : bcaclientVendor) {
+				try {
 				ClientVendor clientVendor = new ClientVendor();
 				String name = (String) obj[0];
 				clientVendor.setName(name.equals("") ? name : name.trim());
 				clientVendor.setFirstName(((String) obj[1]).trim());
 				clientVendor.setLastName(((String) obj[2]).trim());
 				clientVendor.setCvID((Integer) obj[3]);
-				cvList.add(clientVendor);
+				cvList.add(clientVendor);}
+				catch(Exception e) {
+					Loger.log(e.toString());
+				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -7317,6 +7323,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return cvList;
 
 	}
+	
 
 	@Override
 	public ArrayList<TblCategoryDto> getCategoryListForPayment() {
@@ -7411,7 +7418,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 		try {
 			adjustBankBalance(fromAccount, -payment.getAmount());
 			adjustBankBalance(toAccount, payment.getAmount());
-		} catch (SQLException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
 		}

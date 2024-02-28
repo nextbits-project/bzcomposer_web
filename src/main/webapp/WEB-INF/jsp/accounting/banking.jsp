@@ -285,8 +285,8 @@ label {
 										<c:if
 											test="${selectedAccount.accountID == curObject.payeeID || selectedAccount.accountID == curObject.payerID}">
 											<tr
-												onclick="return selectRow(${loop.index+1}, ${curObject.id}, ${selectedAccount.accountID})">
-												<td class="text-right"><fmt:formatDate
+												onclick="return selectRow(${loop.index+1}, ${curObject.id}, ${selectedAccount.accountID},${curObject.payeeID},${curObject.paymentTypeID},${curObject.categoryId},${curObject.amount},${curObject.checkNumber},${curObject.toCurrentBalance})">
+												<td class="text-right" id="formatedDate"><fmt:formatDate
 														pattern="MM-dd-yyyy" value="${curObject.dateAdded}" /></td>
 												<td class="text-right"><c:choose>
 														<c:when
@@ -305,14 +305,25 @@ label {
 															</c:if>
 														</c:otherwise>
 													</c:choose></td>
-												<td class="text-right"><c:if
-														test="${selectedAccountId == curObject.payerID}">${curObject.amount}</c:if>
+												<td class="text-right" id="paymentAmount"><c:if
+														test="${selectedAccountId == curObject.payerID}">
+														<fmt:formatNumber type="number"
+														maxFractionDigits="2"  pattern="#,##0.00"
+														value="${curObject.amount}" />
+														</c:if>
 												</td>
-												<td class="text-right"><c:if
-														test="${selectedAccountId != curObject.payerID}">${curObject.toCurrentBalance}</c:if>
-												</td>
+												<%-- <td class="text-right"><c:if
+														test="${selectedAccountId != curObject.payerID}">
+														${curObject.toCurrentBalance}</c:if>
+												</td> --%>
+												<td class="text-right" id="depositAmount"><c:if
+														test="${selectedAccountId != curObject.payerID}">
+														<fmt:formatNumber type="number"
+														maxFractionDigits="2"  pattern="#,##0.00"
+														value="${curObject.toCurrentBalance}" /></c:if>
+												</td> 
 												<td class="text-right"><fmt:formatNumber type="number"
-														maxFractionDigits="2"
+														maxFractionDigits="2"  pattern="#,##0.00"
 														value="${curObject.balanceForBanking}" /></td>
 												<td class="text-right"><c:choose>
 														<c:when
@@ -346,6 +357,17 @@ label {
 												<td class="text-right"></td>
 												<td hidden="oldBankAccount"
 													value="${selectedAccount.accountID}"></td>
+												<%-- <td hidden="payMethodId"
+													value="${curObject.PaymentTypeID}"></td> --%>
+												<%-- <td><input type="hidden" id="payeeBalance" /> <c:if
+																test="${not empty payMentList}">
+																<input type="hidden"
+																	value='${payMentList[0].balanceForBanking}'
+																	id="payerBalance" />
+																	<input type="hidden"
+																	value='${selectedAccount.customerCurrentBalance}'
+																	id="payerBalance" />
+															</c:if>  --%>
 											</tr>
 										</c:if>
 									</c:forEach>
@@ -435,6 +457,8 @@ label {
 														</label></td>
 														<td><select style="width: 100%"
 															onchange="slectedPayMethod()" id="payMethodForDlg">
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
 																<c:forEach items="${simpleTypes}" var="curObject"
 																	varStatus="loop">
 																	<c:if test="${not empty curObject.typeName}">
@@ -470,7 +494,8 @@ label {
 																	code="BzComposer.banking.payeeaccount" /></label></td>
 														<td><select style="width: 100%" id="payeename"
 															onchange="changeBank()">
-																<option></option>
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
 																<c:forEach items="${accountList}" var="curObject"
 																	varStatus="loop">
 																	<c:if
@@ -487,12 +512,17 @@ label {
 														</td>
 														<td><input type="hidden" id="payeeBalance" /> <c:if
 																test="${not empty payMentList}">
-																<input type="hidden"
+																<%-- <input type="hidden"
 																	value='${payMentList[0].balanceForBanking}'
-																	id="payerBalance" />
-															</c:if> <c:if test="${empty payMentList}">
+																	id="payerBalance" /> --%>
+																<%-- <input type="hidden"
+																	value='${selectedAccount.customerCurrentBalance}'
+																	id="payerBalance" /> --%>
+															</c:if> <input type="hidden"
+															value='${selectedAccount.customerCurrentBalance}'
+															id="payerBalance" /> <%-- <c:if test="${empty payMentList}">
 																<input type="hidden" value='0.0' id="payerBalance" />
-															</c:if></td>
+															</c:if> --%></td>
 													</tr>
 
 												</table>
@@ -540,6 +570,8 @@ label {
 														<td><select style="width: 100%"
 															onchange="selectedPaymenthodForPayment()"
 															id="payMethodForDlgForPayment">
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
 																<c:forEach items="${simpleTypes}" var="curObject"
 																	varStatus="loop">
 																	<c:if test="${not empty curObject.typeName}">
@@ -573,8 +605,10 @@ label {
 													<tr>
 														<td><label><spring:message
 																	code="BzComposer.banking.payeeaccount" /></label></td>
-														<td><select style="width: 100%"
+														<td><%-- <select style="width: 100%"
 															id="payeenameForPayment" onchange="selectVendor()">
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
 																<c:forEach items="${cvList}" var="curObject"
 																	varStatus="loop">
 																	<c:forEach items="${accountForClientVendor}"
@@ -582,18 +616,42 @@ label {
 																		<c:if
 																			test="${curObject2 != null && curObject2.cvID == curObject.cvID}">
 																			<option id="${curObject.cvID}"
-																				value="${curObject2.customerCurrentBalance}"
-																				<%-- label="${loop.index}" --%>>${curObject.firstName}
+																				value="${curObject2.customerCurrentBalance}"label="${loop.index}">${curObject.firstName}
 																				${curObject.lastName} (${curObject.name})</option>
 																		</c:if>
 																	</c:forEach>
 																</c:forEach>
-														</select></td>
+														</select>
+														 --%>
+														<select id="payeenameForPayment"
+															onchange="selectVendor()" style="width: 100%;">
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
+																<c:forEach items="${cvList}"
+																	var="curObject" varStatus="loop">
+																	<c:forEach items="${accountForClientVendor}"
+																		var="curObject2">
+																		<c:if
+																			test="${curObject2 != null && curObject2.cvID == curObject.cvID}">
+																			<option value="${curObject2.customerCurrentBalance}"
+																				id="${curObject2.cvID}"<%-- label="${curObject2.accountTypeID} --%> ">
+																				${curObject.firstName} ${curObject.lastName}
+																				(${curObject.name})</option>
+																		</c:if>
+																	</c:forEach>
+																</c:forEach>
+														</select>
+														
+														
+														
+														</td>
 													</tr>
 													<tr>
 														<td><label><spring:message
 																	code="BzComposer.banking.category" /></label></td>
 														<td><select style="width: 100%" id="category">
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
 																<c:forEach items="${categoryListForPayment}"
 																	var="curObject">
 																	<option id="${curObject.id}">${curObject.categoryNumber}
@@ -605,7 +663,7 @@ label {
 														<td>
 															<!-- label><spring:message code="BzComposer.banking.endingbalance"/></label -->
 														</td>
-														<td><input type="hidden" id="payeeBalance2" /> <c:if
+														<%-- <td><input type="hidden" id="payeeBalance2" /> <c:if
 																test="${not empty payMentList}">
 																<input type="hidden"
 																	value='${payMentList[0].balanceForBanking}'
@@ -615,7 +673,20 @@ label {
 															<input type="hidden" value='0.0' id="payerBalance2" />
 															</td>
 														</c:if>
-														</td>
+														</td> --%>
+														<td><input type="hidden" id="payeeBalance2" /> <c:if
+																test="${not empty payMentList}">
+																<%-- <input type="hidden"
+																	value='${payMentList[0].balanceForBanking}'
+																	id="payerBalance" /> --%>
+																<%-- <input type="hidden"
+																	value='${selectedAccount.customerCurrentBalance}'
+																	id="payerBalance" /> --%>
+															</c:if> <input type="hidden"
+															value='${selectedAccount.customerCurrentBalance}'
+															id="payerBalance2" /> <%-- <c:if test="${empty payMentList}">
+																<input type="hidden" value='0.0' id="payerBalance2" />
+															</c:if> --%></td>
 													</tr>
 												</table>
 											</div>
@@ -668,20 +739,19 @@ label {
 														</select></td> --%>
 														<td><select id="payerForDeposit"
 															onchange="selectVendorForDeposit()" style="width: 100%;">
-																
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
 																<c:forEach items="${cleintListForDeposit}"
 																	var="curObject" varStatus="loop">
 																	<c:forEach items="${accountForClientListForDeposit}"
 																		var="curObject2">
-																	<c:if
-																		test="${curObject2 != null && curObject2.cvID == curObject.cvID}">
-																		<option
-																			value="${curObject2.accountTypeID}"
-																			id="${curObject2.accountID}"
-																			<%-- label="${curObject2.accountTypeID} " --%>>
-																			${curObject.firstName} ${curObject.lastName}
-																			(${curObject.name})</option>
-																	</c:if>
+																		<c:if
+																			test="${curObject2 != null && curObject2.cvID == curObject.cvID}">
+																			<option value="${curObject2.accountTypeID}"
+																				id="${curObject2.accountID}"<%-- label="${curObject2.accountTypeID} " --%>>
+																				${curObject.firstName} ${curObject.lastName}
+																				(${curObject.name})</option>
+																		</c:if>
 																	</c:forEach>
 																</c:forEach>
 														</select></td>
@@ -694,6 +764,8 @@ label {
 														<td><select style="width: 100%"
 															onchange="selectedPaymenthodForPayment()"
 															id="payMethodForDeposit">
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
 																<c:forEach items="${simpleTypes}" var="curObject"
 																	varStatus="loop">
 																	<c:if test="${not empty curObject.typeName}">
@@ -730,6 +802,8 @@ label {
 														<td><select style="width: 100%"
 															id="payeenameForDeposit"
 															onchange="changeBankForDeposit()">
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
 																<c:forEach items="${accountList}" var="curObject"
 																	varStatus="loop">
 																	<c:if test="${not empty curObject.name}">
@@ -744,7 +818,8 @@ label {
 																	code="BzComposer.banking.category" /></label></td>
 														<td><select style="width: 100%"
 															id="categoryForDeposit">
-																<!-- <option></option> -->
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
 																<c:forEach items="${categoryListForDeposit}"
 																	var="curObject" varStatus="loop">
 																	<option id="${curObject.id}">${curObject.categoryNumber}
@@ -812,7 +887,6 @@ label {
 													</label></td>
 													<td><select class="payerField" id="payerForEdit"
 														onchange="" style="width: 100%;">
-															<option></option>
 															<c:forEach items="${allClientVendor}" var="curObject"
 																varStatus="loop">
 																<option value="${curObject.cvID}">${curObject.firstName}
@@ -977,7 +1051,8 @@ label {
 
 				<div class="row">
 					<label class="col-sm-3"> <spring:message
-							code="BzComposer.banking.accountname" /> <span class="errorField">*</span>
+							code="BzComposer.banking.accountname" /> <span
+						class="errorField">*</span>
 					</label>
 					<div class="col-sm-9">
 						<input type="text" id="accountName" name="accountName"
@@ -1077,6 +1152,7 @@ label {
 	var paymentMethod = '';
 	var paymentMethodId = -1;
 	var payeeId = -1;
+	var payerrId= -1;
 	var Index = -1;
 	var paymentId = -1;
 	/* var accountId = -1; */
@@ -1087,40 +1163,80 @@ label {
 	var IsItMain = -1;
 	var status;
 	var totalPaymentList = -1;
-	function selectRow(index , payId,accId)
+	function selectRow(index , payId,accId,payeId,payMethodId,catId,amount,checkNumber,toCurrentbalance)
 	{
+		  var formatedDate=document.getElementById("formatedDate").textContent;
+
+		    // console.log("amount: " + amount);
+		    // console.log("toCurrentBalance"+toCurrentbalance);
+		    // console.log("formattedDate: " + formatedDate); 
 		/*   */ 
 		this.Index = index;
+		// console.log("Index "+this.Index);
 		this.paymentId = payId;
 		this.accountId = accId;
-		$("select.payerField").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('value'));
+		/* $("select.payerField").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('value')); */
+		$("select.payerField").val(payeId);
+		// console.log("payerid "+payeId);
 		 var id = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('value'); 
 		 if(id == '-1')
 			{
 			 	id = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('label');
 			}
 		$("select.accountFieldForEdit").val(accountId);
-		$("select.payMethodForEdit").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').attr('value'));
-		var paymentType = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').text();
-		$("select.categoryForEdit").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(8)').attr('value'));
-		if($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').attr('value') == '1' || $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').attr('value') == '192')
+		/* $("select.payMethodForEdit").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').attr('value'));
+		 */
+		 $("select.payMethodForEdit").val(payMethodId);
+		 var paymentType = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').text().trim();
+		// console.log("checknumber : "+paymentType);
+		/* var checkNumber = paymentType.substring(6, 10); */
+		$(".checkNumberForEdit").val(checkNumber);
+		/* $("select.categoryForEdit").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(8)').attr('value')); */
+		$("select.categoryForEdit").val(catId);
+		
+		
+		/* if($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').attr('value') == '1' || $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').attr('value') == '192')
 		{
 			var checkNumber = paymentType.substring(6, 10);
 			$(".checkNumberForEdit").val(checkNumber);
-		}
-		var payAmount = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(3)').text();
-		if(payAmount == '')
+		} */
+		// var payAmount = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(3)').text(); 
+		//var payAmount = $(".amountToEdit").val(amount);
+		
+	/*  if(payAmount == '')
 		{
 			this.tableName = 'Deposit';
-			payAmount = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(4)').text();
+			//payAmount = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(4)').text();
+			payAmount = document.getElementById("depositAmount").textContent.trim();
 		}
 		else
 		{
 			this.tableName = 'Payment';
-		}
-		$(".devAmount").val(payAmount);
-		$(".devDate").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(1)').text());
+		}  */
 		
+		 if(toCurrentbalance == ''|| toCurrentbalance == '0' ||toCurrentbalance ==0)
+			{
+				this.tableName = 'Payment';
+				//payAmount = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(4)').text();
+				payAmount = amount;
+				$(".devAmount").val(amount);
+			}
+			else
+			{
+				this.tableName = 'Deposit';
+				payAmount=toCurrentbalance;
+				$(".devAmount").val(toCurrentbalance);
+			} 
+		
+		// console.log("payamount"+payAmount);
+		// console.log("tableName"+this.tableName);
+		//$(".devDate").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(1)').text());
+		$(".devDate").val(formatedDate);
+	
+		// console.log("this.paymentId "+this.paymentId );
+		// console.log("this.accountId "+this.accountId );
+		// console.log("paymethod "+payMethodId );
+		// console.log("catMethodId "+catId );
 		/* $(".accountFieldForEdit>option").map(function() 
 				{
 					var idv = $(this).val();
@@ -1175,30 +1291,53 @@ function closeEditTransaction(){
 }
 	function editTransaction()
 	{
+		// console.log("inside edit");
 		
 		var oldClientVendorId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('value');
+		// console.log("oldClientVendorId "+oldClientVendorId);
 		var oldAccountId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(10)').attr('value');
+		// console.log("oldAccountId "+oldAccountId);
 		var oldPaymentTypeId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').attr('value');
-		
+		// console.log("oldPaymentTypeId "+oldPaymentTypeId);
 		var customerIdString = document.getElementById("payerForEdit");
+		// console.log("customerIdString "+customerIdString);
 		var customerId = customerIdString.options[customerIdString.selectedIndex].value;
+		// console.log("customerId "+customerId);
 		
 		var paymenttypeIdString = document.getElementById("payMethodForEdit");
+		// console.log("paymenttypeIdString "+paymenttypeIdString);
+		
 		var paymentTypeId = paymenttypeIdString.options[paymenttypeIdString.selectedIndex].value;
 		
+		// console.log("paymentTypeId "+paymentTypeId);
+		
+		
 		var accountIdString = document.getElementById("payeeForEdit");
+		// console.log("accountIdString "+accountIdString);
+		
 		var accountId = accountIdString.options[accountIdString.selectedIndex].value;
+		// console.log("accountId "+accountId);
 		
 		var categoryIdString = document.getElementById("categoryForEdit");
+		// console.log("categoryIdString "+categoryIdString);
+		
 		var categoryId = categoryIdString.options[categoryIdString.selectedIndex].value; 
+		// console.log("categoryId "+categoryId);
 		
 		var paymenTypeNameString = document.getElementById("payMethodForEdit");
+		// console.log("paymenTypeNameString "+paymenTypeNameString);
+		
 		var paymentTypeName = paymenTypeNameString.options[paymenTypeNameString.selectedIndex].text; 
+		// console.log("paymentTypeName "+paymentTypeName);
 		
 		var checkNumber = document.getElementById("checkNumberEdit").value;
+		// console.log("checkNumber "+checkNumber);
+		
 		var amount = document.getElementById("amountToEdit").value;
+		// console.log("amount "+amount);
 		
 		var date = document.getElementById("devDateForEdit").value;
+		// console.log("date "+date);
 		
 		var TblPayment={
 				   "cvID":customerId,
@@ -1222,6 +1361,7 @@ function closeEditTransaction(){
 				/* var html = "" + data.msg; */
 				   
 		    	updatebankingTab(data);
+		    	location.reload();
 			
 			},
 			 error : function(data) {
@@ -1229,6 +1369,7 @@ function closeEditTransaction(){
 				return errorMessageDialog();
 			} 
 		});
+		
 	}
 
 function saveMainCategory(){
@@ -1329,7 +1470,7 @@ function addAccount(){
 	{
 		if(paymentId == '' || paymentId == -1)
 		{
-			console.log("ghhhhhhhhhhhhhhhhh")
+			// console.log("ghhhhhhhhhhhhhhhhh")
 	    return selectTransactionDialog();
 		return false;
 		}
@@ -1632,10 +1773,15 @@ $(document).ready(function () {
         
         $("#paymentTab").hide();
         $("#depositTab").hide();
+        $("#dlgDate").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
+		   $("#dlgDateForPayment").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
+		   $("#dateForDeposit").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
+		   
         $("#popupWindow").dialog({
             modal: true,
             title: 'Transefer Funds'
         });
+        
     });
 
 });
@@ -1698,9 +1844,16 @@ function vendorIndex(index){
 	this.Index = index;
 }
 function changeBank(){
-	
+	// console.log("here");
+	/* var payername = document.getElementById("${selectedAccount.accountID}");
+	var payerbalance = payername.options[payername.selectedIndex].value;
+	// console.log("change bank payerbalance"+payerbalance); */
 	 var payeeName = document.getElementById("payeename");
 	 var balance = payeeName.options[payeeName.selectedIndex].value;
+		// console.log("change bank payeebalance"+balance);
+		var payerbaalance=document.getElementById("payerBalance").value;
+		// console.log("payer balance "+payerbaalance);
+		
 	 this.payeeId = payeeName.options[payeeName.selectedIndex].id;
 	 if(parseInt(payeeId) == parseInt(accountId))
 		 {
@@ -1711,6 +1864,7 @@ function changeBank(){
 		 }
 	 else{
 	 document.getElementById("payeeBalance").value = balance; 
+	 
 	 $('#addButton').attr('disabled',false);
 	 }
 }
@@ -1735,8 +1889,13 @@ function changeBankForDeposit(){
 function selectVendor(){
 	
 	var payeeName = document.getElementById("payeenameForPayment");
+	
 	this.payeeId = payeeName.options[payeeName.selectedIndex].id;
-	this.Index = payeeName.options[payeeName.selectedIndex].label;
+	// console.log("payeeId"+this.payeeId);
+	this.Index = payeeName.options[payeeName.selectedIndex].id;
+	// console.log("Index"+this.Index);
+	var bal=payeeName.options[payeeName.selectedIndex].value;
+	// console.log("bal"+bal);
 }
 function slectedPayMethod(){
 	
@@ -1751,30 +1910,30 @@ function slectedPayMethod(){
 	}
 }
 function selectedPaymenthodForPayment(){
-	var pType = document.getElementById("payMethodForDlgForPayment");
-	this.paymentMethodId = pType.options[pType.selectedIndex].id;
+	 var pType = document.getElementById("payMethodForDlgForPayment");
+	this.paymentMethodId = pType.options[pType.selectedIndex].id; 
 }
 
 function addTransactionFromDialog(){
 	
 	var AccountCategoryId = document.getElementById("categoryIdForPayer").value;
-	console.log("AccountCategoryId " +AccountCategoryId);
+	// console.log("AccountCategoryId " +AccountCategoryId);
 	var payerBalance  = parseFloat(document.getElementById("payerBalance").value);
-	console.log("payerBalance " +payerBalance);
+	// console.log("payerBalance " +payerBalance);
     var payeeBalance = parseFloat(document.getElementById("payeeBalance").value);
-    console.log("payeeBalance " +payeeBalance);
+    // console.log("payeeBalance " +payeeBalance);
     var payAmount = parseFloat(document.getElementById("payAmount").value);
-    console.log("payAmount " +payAmount);
+    // console.log("payAmount " +payAmount);
     var checkNum = document.getElementById("checkNumForDlg").value;
-    console.log("checkNum " +checkNum);
+    // console.log("checkNum " +checkNum);
     var date = document.getElementById("dlgDate").value;
-    console.log("date " +date);
+    // console.log("date " +date);
 	var pType = document.getElementById("payMethodForDlg");
-	console.log("pType " +pType);
+	// console.log("pType " +pType);
 	this.paymentMethod =  pType.options[pType.selectedIndex].value;
-	console.log("paymentMethod " +this.paymentMethod );
+	// console.log("paymentMethod " +this.paymentMethod );
 	payAmount = payAmount != null?payAmount:0;
-	console.log("payAmount " +payAmount  );
+	// console.log("payAmount " +payAmount  );
 	if(paymentMethod == 'Check'){
         if(checkNum == '0' || checkNum == ''){
             return selectValidNumberDialog();
@@ -1785,12 +1944,12 @@ function addTransactionFromDialog(){
         return selectPaymentDialog();
         return false;
     }
-    console.log("paymentMethod" +paymentMethod);
+    // console.log("paymentMethod" +paymentMethod);
     if(payeeId == '' || payeeId == -1){
         return showSelectPayeeAccountFirstDialog();
         return false;
     }
-    console.log("payeeId" +payeeId);
+    // console.log("payeeId" +payeeId);
     var TblPayment = {
         "accountCategoryId":AccountCategoryId,
         "accountID":accountId,
@@ -1803,7 +1962,7 @@ function addTransactionFromDialog(){
         "checkNumber": checkNum
     }
     var obj=JSON.stringify(TblPayment);
-    console.log("obj : "+obj)
+    // console.log("obj : "+obj)
     $('#popupWindow').dialog('close');
     $.ajax({
         type : "POST",
@@ -1812,26 +1971,61 @@ function addTransactionFromDialog(){
         success : function(data) {
             
             updatebankingTab(data);
+            location.reload();
         },
          error : function(data) {
             return errorMessageDialog();
         }
     });
+   
 }
 
 function addTransactionFromDialogForPayment(){
 	
 	var payerBalance  = parseFloat(document.getElementById("payerBalance2").value);
-	var payeeBalance = parseFloat(document.getElementById("payeeBalance2").value);
-    var payeenameForPaymentID = document.getElementById("payeenameForPayment").value;
+	// console.log("payerBalance "+payerBalance);
+	var payeeBalance = parseFloat(document.getElementById("payeenameForPayment").value);
+	// console.log("payeeBalance "+payeeBalance);
+	
+	var payeenameForPaymentSelect = document.getElementById("payeenameForPayment");
+
+    // Get the selected option
+    var selectedOption = payeenameForPaymentSelect.options[payeenameForPaymentSelect.selectedIndex];
+
+    // Get the id attribute of the selected option
+    var payeenameForPaymentID = selectedOption.id;
+    // console.log("payeenameForPaymentID " + payeenameForPaymentID);
+
+	
+    /* var payeenameForPaymentID = document.getElementById("payeenameForPayment").value; */
+  /*   var payeenameForPaymentID = document.getElementById("payeenameForPayment").id;
+    // console.log("payeenameForPaymentID "+payeenameForPaymentID); */
+	
     var payAmount = parseFloat(document.getElementById("payAmountForPayment").value);
+    // console.log("payAmount "+payAmount);
+	
+    
     var checkNum = document.getElementById("checkNumForDlgForPayment").value;
+    // console.log("checkNum "+checkNum);
+
     var date = document.getElementById("dlgDateForPayment").value;
     var AccountCategoryId = document.getElementById("categoryIdForPayerForPayment").value;
+    // console.log("AccountCategoryId "+checkNum);
+
     var categoryIdString =  document.getElementById("category");
+    // console.log("categoryIdString "+checkNum);
+
     var categoryId = categoryIdString.options[categoryIdString.selectedIndex].id;
+    // console.log("categoryId "+categoryId);
+
 	var pType = document.getElementById("payMethodForDlgForPayment");
+	  // console.log("pType "+pType);
+
 	this.paymentMethod =  pType.options[pType.selectedIndex].value;
+	  // console.log("paymentMethod "+paymentMethod);
+	  var paymentMethodId = pType.options[pType.selectedIndex].id;
+		// console.log("paymentMethodId: "+paymentMethodId);
+
     payAmount = payAmount != null?payAmount:0;
     if(paymentMethod == 'Check'){
         if(checkNum == '0' || checkNum == ''){
@@ -1860,46 +2054,48 @@ function addTransactionFromDialogForPayment(){
         success : function(data) {
             
             updatebankingTab(data);
+            location.reload();
         },
          error : function(data) {
             return errorMessageDialog();
         }
     });
+   
 }
 
 function addTrafsactioFromDeposit(){
 	
 	var pType = document.getElementById("payMethodForDeposit");
-	console.log("pType: "+pType);
+	// console.log("pType: "+pType);
 	this.paymentMethod =  pType.options[pType.selectedIndex].value;
-	console.log("paymentMethod: "+paymentMethod);
+	// console.log("paymentMethod: "+paymentMethod);
 	var paymentMethodId = pType.options[pType.selectedIndex].id;
-	console.log("paymentMethodId: "+paymentMethodId);
+	// console.log("paymentMethodId: "+paymentMethodId);
 	var payerBalance  = parseFloat(document.getElementById("payerBalanceForDeposit").value);
-	console.log("payerBalance: "+payerBalance);
+	// console.log("payerBalance: "+payerBalance);
     var payerName = document.getElementById("payerForDeposit");
-	console.log("payerName: "+payerName);
+	// console.log("payerName: "+payerName);
     var payerId = payerName.options[payerName.selectedIndex].id;
-	console.log("payerId: "+payerId);
+	// console.log("payerId: "+payerId);
    /*  var accountTypeId = payerName.options[payerName.selectedIndex].label; */
     var accountTypeId = payerName.options[payerName.selectedIndex].value;
-    console.log("accountTypeId: "+accountTypeId);
+    // console.log("accountTypeId: "+accountTypeId);
     var payeeName = document.getElementById("payeenameForDeposit");
-    console.log("payeeName: "+payeeName);
+    // console.log("payeeName: "+payeeName);
     var payeeId = payeeName.options[payeeName.selectedIndex].id;
-    console.log("payeeId: "+payeeId);
+    // console.log("payeeId: "+payeeId);
     var payeeBalance = parseFloat(document.getElementById("payeeBalanceForDeposit").value);
-    console.log("payeeBalance: "+payeeBalance);
+    // console.log("payeeBalance: "+payeeBalance);
     var payAmount = parseFloat(document.getElementById("payAmountForDeposit").value);
-    console.log("payAmount: "+payAmount);
+    // console.log("payAmount: "+payAmount);
     var checkNum = document.getElementById("checkNumForDeposit").value;
-    console.log("checkNum: "+checkNum);
+    // console.log("checkNum: "+checkNum);
     var date = document.getElementById("dateForDeposit").value;
-    console.log("date: "+date);
+    // console.log("date: "+date);
     var categoryIdString =  document.getElementById("categoryForDeposit");
-    console.log("categoryIdString: "+categoryIdString);
+    // console.log("categoryIdString: "+categoryIdString);
     var categoryId = categoryIdString.options[categoryIdString.selectedIndex].id;
-    console.log("categoryId: "+categoryId);
+    // console.log("categoryId: "+categoryId);
 	if(paymentMethod == 'Check'){
         if(checkNum == '0' || checkNum == ''){
             return selectValidNumberDialog();
@@ -1911,12 +2107,12 @@ function addTrafsactioFromDeposit(){
         return selectPaymentDialog();
         return false;
     }
-	console.log("paymentMethod: "+paymentMethod);
+	// console.log("paymentMethod: "+paymentMethod);
     if(payeeId == '' || payeeId == -1){
         return showSelectPayeeAccountFirstDialog();
         return false;
     }
-    console.log("payeeId: "+payeeId);
+    // console.log("payeeId: "+payeeId);
 	var TblPayment = {
         "fromBalance":payerBalance ,
         "toBalance": payeeBalance,
@@ -1930,20 +2126,22 @@ function addTrafsactioFromDeposit(){
         "accountTypeId":accountTypeId
     }
 	var obj=JSON.stringify(TblPayment);
-	console.log("obj: "+obj);
+	// console.log("obj: "+obj);
 	$('#popupWindow').dialog('close');
 	$.ajax({
 		type : "POST",
 		url : "BankingCategory?tabid=TransferfundFromDeposit",
-		data :"payment=" + obj + "&date=" + date,
+		data :"payment=" + obj + "&date=" + date +"&Ac=" +accountId,
 	    success : function(data) {
 			
 			updatebankingTab(data);
+			location.reload();
 		},
 		 error : function(data) {
 			return errorMessageDialog();
 		} 
 	});
+	
 }
 
 function updatebankingTab(data)

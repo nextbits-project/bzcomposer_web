@@ -50,7 +50,7 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 	List<BcaClientvendor> findByCompanyAndStatusInAndClientVendorId(BcaCompany company, List<String> statusList,
 			Integer clientVendorId);
 
-	@Cacheable(value="allClientVendor" ,key="#companyId")
+	@Cacheable(value="allClientVendor" ,key="{#companyId,#param1,#param2,#param3}")
 	@Query(nativeQuery = true, value = "select Name, FirstName, LastName, ClientVendorID from bca_clientvendor where companyID = :companyId "
 			+ "and Status in ('U', 'N') and (Deleted = 0 or Active = 1) and CVTypeID in ( :param1 , :param2, :param3 ) order by name")
 	List<Object[]> findAllClientVendorList(@Param("companyId") Long companyId, @Param("param1") Integer param1,

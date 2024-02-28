@@ -9,6 +9,7 @@ import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.pritesh.bizcomposer.accounting.bean.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -216,6 +217,7 @@ public class BankingController {
 		ArrayList<TblPaymentDto> payment = null;
 		ArrayList<TblPaymentType> simpleTypes = rl.getOnlySimplePaymentTypes();
 		ArrayList<ClientVendor> cvList = rl.getAllClientVendorList();
+		
 		ArrayList<TblAccount> accountForClientVendor = rl.getCustomerCurrentBalanceForvendor(cvList);
 		ArrayList<TblCategoryDto> categoryListForPayment = rl.getCategoryListForPayment();
 		ArrayList<TblCategoryDto> categoryListForDeposit = rl.getCategoryListForDeposit();
@@ -347,8 +349,8 @@ public class BankingController {
 			int priority = rl.getPriority();
 			int paymentId = rl.bankTransfer(paymentFromAjax, paymentFromAjax.getAmount(), date, priority);
 			rl.adjustBankBalanceForVendor(paymentFromAjax);
-			request.getSession().setAttribute("indexForPayeeVendor", index);
-			request.getSession().setAttribute("vendorID", paymentFromAjax.getPayeeID());
+//			request.getSession().setAttribute("indexForPayeeVendor", index);
+//			request.getSession().setAttribute("vendorID", paymentFromAjax.getPayeeID());
 			System.out.println(date);
 		}
 		if(action.equals("TransferfundFromDeposit")) {
@@ -376,5 +378,6 @@ public class BankingController {
 		}
 		return status;
 	}
+	
 	
 }

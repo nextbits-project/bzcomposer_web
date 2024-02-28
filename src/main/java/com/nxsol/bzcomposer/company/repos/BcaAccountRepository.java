@@ -35,6 +35,11 @@ public interface BcaAccountRepository extends JpaRepository<BcaAccount, Integer>
 			+ "a.company.companyId=:companyId AND a.active=:active ")
 	List<BcaAccount> findByClientVendorAndActiveAndCompany(@Param("clientVendorId")int clientVendorId,@Param("active") int active,
 			@Param("companyId")long companyId);
+	
+	@Query("SELECT a FROM BcaAccount a WHERE a.accountId =:accountId AND "
+			+ "a.company.companyId=:companyId AND a.active=:active ")
+	List<BcaAccount> findByAccountIdAndActiveAndCompany(@Param("accountId")int accountId,@Param("active") int active,
+			@Param("companyId")long companyId);
 
 	Optional<BcaAccount> findByAccountIdAndCompany_CompanyId(Integer accountId, long companyId);
 
