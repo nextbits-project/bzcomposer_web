@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bzc.web</groupId>
 	<artifactId>bzc-web</artifactId>
@@ -59,7 +61,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--  Spring Boot Actuator  -->
+		<!-- Spring Boot Actuator -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -99,17 +101,17 @@
 		<dependency>
 			<groupId>com.paypal.sdk</groupId>
 			<artifactId>paypal-base</artifactId>
-			<!--			<scope>runtime</scope>-->
+			<!-- <scope>runtime</scope> -->
 			<version>1.0</version>
-			<!--		 <systemPath>${pom.basedir}/src/main/webapp/WEB-INF/lib/paypal_stubs.jar</systemPath>-->
+			<!-- <systemPath>${pom.basedir}/src/main/webapp/WEB-INF/lib/paypal_stubs.jar</systemPath> -->
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.paypal.sdk/paypal-core -->
 		<dependency>
 			<groupId>com.paypal.sdk</groupId>
 			<artifactId>core</artifactId>
-			<!--	 		<scope>runtime</scope> -->
+			<!-- <scope>runtime</scope> -->
 			<version>1.0</version>
-			<!--			<systemPath>${pom.basedir}/src/main/webapp/WEB-INF/lib/paypal_base.jar</systemPath> -->
+			<!-- <systemPath>${pom.basedir}/src/main/webapp/WEB-INF/lib/paypal_base.jar</systemPath> -->
 		</dependency>
 		<dependency>
 			<groupId>com.paypal.sdk</groupId>
@@ -157,12 +159,8 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
-		<!--	<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports</artifactId>
-			<version>5.0.1</version>
-		</dependency>
-		 https://mvn-->
+		<!-- <dependency> <groupId>net.sf.jasperreports</groupId> <artifactId>jasperreports</artifactId> 
+			<version>5.0.1</version> </dependency> https://mvn -->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
@@ -208,12 +206,8 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-		<!--<dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <version>2.0.204</version>  
-    <scope>runtime</scope>
-</dependency>-->
+		<!--<dependency> <groupId>com.h2database</groupId> <artifactId>h2</artifactId> 
+			<version>2.0.204</version> <scope>runtime</scope> </dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
@@ -245,16 +239,19 @@
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-		</dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>javax.servlet</groupId> <artifactId>jstl</artifactId> 
+			</dependency> -->
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-		<!--<dependency>
-    <groupId>org.projectlombok</groupId>
-    <artifactId>lombok</artifactId>
-     <scope>provided</scope>
-</dependency>-->
+		<!--<dependency> <groupId>org.projectlombok</groupId> <artifactId>lombok</artifactId> 
+			<scope>provided</scope> </dependency> -->
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -289,15 +286,15 @@
 			<artifactId>commons-pool2</artifactId>
 			<version>2.1</version>
 		</dependency>
-		<!--following dependencies are added on 20230929 ends-->
+		<!--following dependencies are added on 20230929 ends -->
 
-		<!-- Spring Boot Starter Cache for caching abstraction added on 20240131-->
+		<!-- Spring Boot Starter Cache for caching abstraction added on 20240131 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
-		<!-- Spring Boot Starter Data Redis for Redis integration added on 20240131-->
+		<!-- Spring Boot Starter Data Redis for Redis integration added on 20240131 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
@@ -325,13 +322,11 @@
 					<mainClass>com.Application</mainClass>
 				</configuration>
 			</plugin>
-			<!--<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-					<configuration> &lt;!&ndash; Exclude JCL and LOG4J since all logging 
-					should go through SLF4J. Note that we're excluding log4j-<version>.jar but 
-					keeping log4j-over-slf4j-<version>.jar &ndash;&gt; <packagingIncludes> WEB-INF/lib/*.jar 
-					</packagingIncludes> </configuration> 
-			</plugin>-->
+			<!--<plugin> <artifactId>maven-war-plugin</artifactId> <configuration> 
+				&lt;!&ndash; Exclude JCL and LOG4J since all logging should go through SLF4J. 
+				Note that we're excluding log4j-<version>.jar but keeping log4j-over-slf4j-<version>.jar 
+				&ndash;&gt; <packagingIncludes> WEB-INF/lib/*.jar </packagingIncludes> </configuration> 
+				</plugin> -->
 		</plugins>
 	</build>
 </project>

@@ -266,5 +266,12 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			@Param("companyId") long companyId, @Param("clientVendorId") int clientVendorId,
 			@Param("invoiceStatus") int invoiceStatus, @Param("invoiceTypeId") int invoiceTypeid,
 			@Param("ponum") int ponum);
+	
+	
+	 @Query("SELECT MAX(e.orderNum) FROM BcaInvoice e")
+	    Integer findMaxValueOfOrderNum();
+	 
+	 @Query("SELECT MAX(e.invoiceId) FROM BcaInvoice e")
+	    Integer findMaxValueOfInvoiceId();
 
 }
