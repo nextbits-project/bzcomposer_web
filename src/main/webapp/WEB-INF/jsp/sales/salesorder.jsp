@@ -220,7 +220,7 @@ table.cart tbody tr td {
 													value='<spring:message code="BzComposer.global.new" />' />
 													<br> <!-- <input type="button" class="formbutton" id="CustomerBalanceBtn" onclick="paymentHistory(this.form);" style="padding: 8px 20px 8px 20px; font-size: 16px;" value='<spring:message code="BzComposer.global.balance" />' /> -->
 													<input type="button" id="transformToInvoice" title="TransForm To Invoice"
-													class="formbutton" onclick=""
+													class="formbutton" onclick="transformSoToInvoice(this.form, 'TransformToInvoice');"
 													style="padding: 8px 10px 8px 10px; font-size: 16px;"
 													value='<spring:message code="BzComposer.global.transform.invoice" />' />
 													
@@ -2738,6 +2738,37 @@ function getSalesOrderDetailsByBtnName(form, url){
             alert("<bean:message key='BzComposer.categorydetail.erroroccurred'/>");
         }
     });
+}
+
+function transformSoToInvoice(form, url){
+	No=form.orderNo.value;
+    //window.location.href="SalesOrder?tabid=FirstSalesOrder";
+   //console.log("/SalesOrder?tabid="+url+"&index="+No);
+   
+   var newUrl = "/Invoice?tabid="+url+"&index="+No;
+
+   // Perform the redirection
+   window.location.href = newUrl;
+   
+   
+   
+   
+   /*  $.ajax({
+        type : "GET",
+        url : "/SalesOrder?tabid="+url+"&index="+No,
+        success : function(data) {
+            $(document).find('div#fullPageDetails section').replaceWith($(data).find('div#fullPageDetails').html());
+            let cvID2 = form.clientVendorID.value;
+            if(cvID2!=null && cvID2!=''){
+                form.custID.value = cvID2;
+            }
+            Init();
+        },
+        error : function(data) {
+            alert("<bean:message key='BzComposer.categorydetail.erroroccurred'/>");
+        }
+    }); */
+ 
 }
 </script>
 <!-- Dialog box used in sales order page -->

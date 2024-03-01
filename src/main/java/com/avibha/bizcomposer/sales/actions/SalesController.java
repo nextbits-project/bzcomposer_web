@@ -972,7 +972,27 @@ public class SalesController {
 			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(),
 					AppConstants.InvoiceType, configDto, false));
 			forward = "/sales/invoice";
-		} else if (action.equalsIgnoreCase("addSupplier")) {// to add
+		} 
+		else if (action.equalsIgnoreCase("TransformToInvoice")) {
+			// get-Invoice-Details-By-BtnName
+//			SalesDetailsDao sdetails = new SalesDetailsDao();
+			sd.getInvoiceInfo(request);
+			sd.transformSoToInvoice(request, invoiceDto);
+			sd.getAllList(request);
+
+			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+			invoiceDto.setSalesTaxID("1");
+			invoiceDto.setState("Tax " + configDto.getSaleTaxRate() + "%");
+			invoiceDto.setRate(configDto.getSaleTaxRate());
+			List<InvoiceDto> taxRates = new ArrayList<>();
+			taxRates.add(invoiceDto);
+			invoiceDto.setTemplateType(configDto.getInvoiceTemplateType());
+			request.setAttribute("TaxRates", taxRates);
+			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(),
+					AppConstants.InvoiceType, configDto, false));
+			forward = "/sales/invoice";}
+		
+		else if (action.equalsIgnoreCase("addSupplier")) {// to add
 			String addressStatus = request.getParameter("status");
 			String addressName = request.getParameter("addName");
 			String fName = request.getParameter("fName");

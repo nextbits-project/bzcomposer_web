@@ -37,6 +37,7 @@ import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
@@ -730,9 +731,9 @@ public class InvoiceInfoDao {
 			}
 
 			if (companyId != null && !companyId.trim().isEmpty()) {
-			    query.append(" and a.company.companyId = :companyId");
+				query.append(" and a.company.companyId = :companyId");
 			}
-			
+
 			TypedQuery<BcaShippingaddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
 					BcaShippingaddressDto.class);
 			if (cvID != null)
@@ -827,6 +828,7 @@ public class InvoiceInfoDao {
 //				objList.add(invoiceDto);
 //			}
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, " SQL Error in Class InvoiceInfo and  method -shipAddress " + ee.toString());
 
 		}
@@ -874,7 +876,7 @@ public class InvoiceInfoDao {
 				query = query.append(" and a.clientVendor.clientVendorId= :clientVendorId");
 			}
 			if (companyID != null && !companyID.trim().isEmpty()) {
-			    query.append(" and a.company.companyId = :companyId");
+				query.append(" and a.company.companyId = :companyId");
 			}
 
 			TypedQuery<BcaShippingaddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
@@ -886,7 +888,6 @@ public class InvoiceInfoDao {
 			if (companyID != null)
 				JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(companyID));
 
-			
 			List<BcaShippingaddressDto> list = typedQuery.getResultList();
 
 			for (BcaShippingaddressDto dto : list) {
@@ -973,6 +974,7 @@ public class InvoiceInfoDao {
 //				objList.add(invoiceDto);
 //			}
 		} catch (Exception ee) {
+			ee.printStackTrace();
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -billAddress " + ee.toString());
 
 		}
@@ -1706,7 +1708,6 @@ public class InvoiceInfoDao {
 				bcaInvoice.setClientVendor(clientVendor.get());
 			}
 
-			
 			if (null != form.getInvoiceStyle()) {
 				Optional<BcaInvoicestyle> bcaInvoiceStyle = bcaInvoicestyleRepository
 						.findById(Integer.parseInt(form.getInvoiceStyle()));
@@ -1736,7 +1737,7 @@ public class InvoiceInfoDao {
 			}
 			if (null != form.getRep())
 				bcaInvoice.setSalesRepId(Integer.parseInt(form.getRep()));
-			if (!"0".equals(form.getMessage())) {
+			if (!"0".equals(form.getMessage())&& null!=form.getMessage()) {
 				Optional<BcaMessage> message = bcaMessageRepository.findById(Integer.parseInt(form.getMessage()));
 				if (message.isPresent())
 					bcaInvoice.setMessage(message.get());
@@ -1748,7 +1749,7 @@ public class InvoiceInfoDao {
 				}
 			}
 
-			if (!"0".equals(form.getPayMethod())) {
+			if (!"0".equals(form.getPayMethod())&& null!=form.getPayMethod()) {
 				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
 						.findById(Integer.parseInt(form.getPayMethod()));
 				if (paymentType.isPresent()) {
@@ -1824,7 +1825,6 @@ public class InvoiceInfoDao {
 				}
 				bcaCartRepository.deleteByInvoice_InvoiceIdAndCompany_CompanyId(invoice.getInvoiceId(),
 						Long.parseLong(compId));
-				
 
 				if (invoice.getShipped() == 1)
 					shippedLastTime = true;
@@ -1851,6 +1851,7 @@ public class InvoiceInfoDao {
 		}
 		return saveStatus;
 	}
+
 //	public boolean Save(String compId, InvoiceDto form, String custId) {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -4831,12 +4832,13 @@ public class InvoiceInfoDao {
 			if (form.getTabid().equalsIgnoreCase("IBLU")) { // Send Invoice it
 
 				String query = "SELECT bi from BcaInvoice bi where bi.company.companyId= :companyId and bi.invoiceStatus IN :invoiceStatus"
-						+ " and bi.invoiceType.invoiceTypeId IN :invoiceTypeId and bi.sonum =:sonum";
+						+ " and bi.invoiceType.invoiceTypeId IN :invoiceTypeId and bi.sonum =:sonum and bi.deleted = :deleted";
 				TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query, BcaInvoice.class);
 				JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
 				JpaHelper.addParameter(typedQuery, query, "sonum", (int) OrderNo);
 				JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
 				JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", Arrays.asList(1, 7, 9));
+				JpaHelper.addParameter(typedQuery, query, "deleted", 0);
 				bcaInvoice = typedQuery.getResultList();
 
 			} else {
@@ -5562,6 +5564,84 @@ public class InvoiceInfoDao {
 //		return orderNo;
 //	}
 
+	public int getSalesOrderNumberByTransformBtnName(String compId, HttpServletRequest request) {
+
+		int orderNo = 0;
+		int custId = 0;
+		try {
+
+//			String action = request.getParameter("tabid");
+			int currentIndex = Integer.valueOf(request.getParameter("index"));
+
+			String query = "SELECT  bi FROM BcaInvoice bi where bi.company.companyId =:companyId "
+					+ "and bi.invoiceStatus IN :invoiceStatus" + " and bi.invoiceType.invoiceTypeId =:invoiceTypeId "
+					+ "and bi.sonum =:sonum ORDER BY bi.sonum";
+			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query, BcaInvoice.class);
+			JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
+			JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
+			JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", 7);
+			JpaHelper.addParameter(typedQuery, query, "sonum", currentIndex);
+
+			BcaInvoice invoice = typedQuery.getResultList().stream().findFirst()
+					.orElseThrow(() -> new EntityNotFoundException("Sales Order NOt Found"));
+//			orderNo=invoice.getClientVendor().getClientVendorId();
+
+			orderNo = bcaInvoiceRepository.findMaxValueOfOrderNum() + 1;
+			if (null != invoice.getClientVendor())
+				custId = invoice.getClientVendor().getClientVendorId();
+//			ModelMapper modelMapper = new ModelMapper();
+//			BcaInvoice newInvoice = modelMapper.map(invoice, BcaInvoice.class);
+//			newInvoice.setInvoiceId(bcaInvoiceRepository.findMaxValueOfInvoiceId() + 1);
+//			newInvoice.setOrderNum(orderNo);
+//			newInvoice.setSonum(null);
+//			bcaInvoiceRepository.save(newInvoice);
+			InvoiceDto form = new InvoiceDto();
+			form.setOrderNo(String.valueOf(orderNo));
+			form.setPoNum(invoice.getRefNum());
+			if (null != invoice.getInvoiceStyle())
+				form.setInvoiceStyle(String.valueOf(invoice.getInvoiceStyle().getInvoiceStyleId()));
+			form.setWeight(invoice.getWeight());
+			form.setSubtotal(invoice.getSubTotal());
+			form.setTax(invoice.getTax());
+			form.setShipping(invoice.getSh());
+
+			form.setBsAddressID(String.valueOf(invoice.getBsaddressId()));
+			form.setShAddressID(String.valueOf(invoice.getShippingAddrId()));
+			form.setTotal(invoice.getTotal());
+			form.setAdjustedtotal(invoice.getAdjustedTotal());
+			if (null != invoice.getShipCarrier())
+				form.setVia(String.valueOf(invoice.getShipCarrier().getShipCarrierId()));
+			form.setRep(String.valueOf(invoice.getSalesRepId()));
+			if (null != invoice.getMessage())
+				form.setMessage(String.valueOf(invoice.getMessage().getMessageId()));
+			if (null != invoice.getTerm())
+				form.setTerm(String.valueOf(invoice.getTerm().getTermId()));
+			if (null != invoice.getPaymentType())
+				form.setPayMethod(String.valueOf(invoice.getPaymentType().getPaymentTypeId()));
+			if (null != invoice.getSalesTax())
+				form.setTaxID(String.valueOf(invoice.getSalesTax().getSalesTaxId()));
+			form.setTaxable((invoice.getTaxable() > 0 ? "true" : "false"));
+			form.setItemShipped(invoice.getShipped() > 0 ? "true" : "false");
+			form.setMemo(invoice.getMemo());
+			form.setShipDate(invoice.getDateConfirmed().toString());
+			form.setOrderDate(invoice.getDateAdded().toString());
+			form.setPaid(String.valueOf(invoice.getIsPaymentCompleted()));
+			form.setServiceID(invoice.getServiceId());
+			form.setIsPending(invoice.getIsPending() > 0 ? "true" : "false");
+
+			boolean save = Save(compId, form, String.valueOf(custId));
+			if(save) {
+				invoice.setDeleted(1);
+				bcaInvoiceRepository.save(invoice);
+			}
+
+		} catch (Exception ex) {
+			Loger.log("Exception in getSalesOrderNumberByBtnName Function" + ex.toString());
+			ex.printStackTrace();
+		}
+		return orderNo;
+	}
+
 	public Long getSalesOrderNumberByBtnName(String compId, HttpServletRequest request) {
 
 		Long orderNo = null;
@@ -5574,11 +5654,14 @@ public class InvoiceInfoDao {
 
 			String query = "SELECT  bi FROM BcaInvoice bi where bi.company.companyId =:companyId "
 					+ "and bi.invoiceStatus IN :invoiceStatus" + " and bi.invoiceType.invoiceTypeId =:invoiceTypeId "
+//							+ " and bi.deleted = :deleted "
 					+ "and bi.sonum>0 ORDER BY bi.sonum";
 			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query, BcaInvoice.class);
 			JpaHelper.addParameter(typedQuery, query, "companyId", Long.parseLong(compId));
 			JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
 			JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", 7);
+//			JpaHelper.addParameter(typedQuery, query, "deleted", 0);
+
 
 			if (action.equalsIgnoreCase("PreviousSalesOrder")) {
 				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getSonum() < currentIndex)
@@ -6237,7 +6320,7 @@ public class InvoiceInfoDao {
 				UpdateInvoiceDto uform = new UpdateInvoiceDto();
 				uform.setInvoiceStyleId(bcaInvoicestyle.getInvoiceStyleId());
 				uform.setInvoiceStyle(bcaInvoicestyle.getName());
-				 invoiceName.add(uform);
+				invoiceName.add(uform);
 			}
 //            pstmt1 = con.prepareStatement(sqlString1);
 //            rs1 = pstmt1.executeQuery();

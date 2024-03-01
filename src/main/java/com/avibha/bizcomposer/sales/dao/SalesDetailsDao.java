@@ -22,6 +22,8 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
+import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionServlet;
@@ -95,6 +97,9 @@ public class SalesDetailsDao {
 	
 	@Autowired
 	InvoiceInfoDao invoice;
+	
+	@Autowired 
+	private BcaInvoiceRepository bcaInvoiceRepository;
 
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
@@ -1567,6 +1572,29 @@ public class SalesDetailsDao {
 					saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
 		}
 	}
+	public void saveTranformInvoice(HttpServletRequest request, InvoiceDto form, String custID) {
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
+		String compId = (String) request.getSession().getAttribute("CID");
+		System.out.println("CustomerId is:" + custID);
+		String orderNum = String.valueOf(bcaInvoiceRepository.findMaxValueOfOrderNum());
+		form.setOrderNo(orderNum+1);
+//		if (form.getOrderNo().contains("-")) {
+//			String orderNo = form.getOrderNo();
+//			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
+//		}
+//		boolean exist = invoiceInfoDao.invoiceExist(compId, form.getOrderNo());
+//		// int invoiceTypeId = 1; //INVOICE TYPE ID "INVOICE"
+//		if (exist == true) {
+//			int invoiceID = invoiceInfoDao.getInvoiceNo(compId, form.getOrderNo());
+//			boolean updateStatus = invoiceInfoDao.Update(compId, form, invoiceID, custID);
+//			request.getSession().setAttribute("SaveStatus",
+//					updateStatus ? "Invoice is updated successfully." : "Invoice is not updated successfully.");
+//		} else {
+			boolean saveStatus = invoiceInfoDao.Save(compId, form, custID);
+			request.getSession().setAttribute("SaveStatus",
+					saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
+//		}
+	}
 
 	public void saveOrder(HttpServletRequest request, InvoiceDto form) throws SQLException {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
@@ -1678,6 +1706,23 @@ public class SalesDetailsDao {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		Long orderNo = invoiceInfoDao.getInvoiceOrderNumberByBtnName(compId, request);
+		ArrayList<InvoiceDto> list = invoiceInfoDao.getRecord(request, invoiceDto, compId, orderNo);
+		if (!list.isEmpty()) {
+			invoiceDto = list.get(0);
+			request.setAttribute("Enable", "true");
+			request.setAttribute("Status", "");
+		} else {
+			request.setAttribute("Status", "There is no invoice.");
+		}
+		return invoiceDto;
+	}
+	public InvoiceDto transformSoToInvoice(HttpServletRequest request, InvoiceDto invoiceDto) {
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
+		String compId = (String) request.getSession().getAttribute("CID");
+//		Long orderNo = invoiceInfoDao.getInvoiceOrderNumberByBtnName(compId, request);
+		int orderNo = invoiceInfoDao.getSalesOrderNumberByTransformBtnName(compId, request);
+//		String custId=String.valueOf(orderNo);
+//		saveTranformInvoice(request, invoiceDto, custId);
 		ArrayList<InvoiceDto> list = invoiceInfoDao.getRecord(request, invoiceDto, compId, orderNo);
 		if (!list.isEmpty()) {
 			invoiceDto = list.get(0);

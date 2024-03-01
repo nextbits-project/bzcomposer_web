@@ -202,6 +202,9 @@ public class BcaInvoice {
 	@Column(name = "isPending")
 	private Integer isPending;
 
+	@Column(name = "Deleted")
+	private Integer deleted;
+
 	@Column(name = "DateReceived")
 	private OffsetDateTime dateReceived;
 
@@ -800,6 +803,14 @@ public class BcaInvoice {
 
 	public void setIsPending(final Integer isPending) {
 		this.isPending = isPending;
+	}
+
+	public Integer getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Integer deleted) {
+		this.deleted = deleted;
 	}
 
 	public OffsetDateTime getDateReceived() {

@@ -109,11 +109,12 @@ public class SalesOrderBoardInfo {
 											: " ")
 									: " "));
 
-			query = query.append(" and bi.invoiceType.invoiceTypeId = 7 order by bi.sonum desc");
+			query = query.append(" and bi.invoiceType.invoiceTypeId = 7 and bi.deleted = :deleted order by bi.sonum desc");
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
 			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query.toString(), BcaInvoice.class);
 			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(compId));
+			JpaHelper.addParameter(typedQuery, query.toString(), "deleted", 0);
 
 			List<BcaInvoice> lists = typedQuery.getResultList();
 			for (BcaInvoice bcaInvoice : lists) {
