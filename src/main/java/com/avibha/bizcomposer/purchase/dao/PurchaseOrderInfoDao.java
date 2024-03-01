@@ -962,7 +962,7 @@ public class PurchaseOrderInfoDao {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			List<BcaInvoice> invoice = bcaInvoiceRepository
 					.findByCompanyIdAndInvoiceStatusNotAndInvoiceTypeIdIn(Long.parseLong(compId), 1, Arrays.asList(2));
-			if (null != invoice) {
+			if (invoice != null && !invoice.isEmpty()) {
 				lastOrderNo = invoice.get(0).getPonum() + 1;
 			} else {
 				String startNumber = configDto.getStartPONum();

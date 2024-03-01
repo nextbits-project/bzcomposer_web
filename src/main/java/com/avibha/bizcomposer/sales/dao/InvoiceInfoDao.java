@@ -1487,7 +1487,7 @@ public class InvoiceInfoDao {
 			List<Integer> orderNum = bcaInvoiceRepository
 					.findOrderNumByCompanyIdAndInvoiceStatus(Long.parseLong(compId), invoiceStatus);
 
-			if (null != orderNum) {
+			if (orderNum != null && !orderNum.isEmpty()) {
 				lastOrderNo = orderNum.get(0) + 1;
 			} else {
 				String startNumber = configDto.getStartInvoiceNum();
