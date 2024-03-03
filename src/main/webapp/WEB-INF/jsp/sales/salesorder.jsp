@@ -2489,6 +2489,125 @@ function StyleChange(value)
 			}
 		}
 		
+	function transformToInvoice(form){
+			
+			No=form.orderNo.value;
+			cid = form.custID.value;
+			if(cid==0){
+				return showValidationDialog();
+			}
+			else if(isItemExist <=0){
+				return showSelectItemDialog();
+			}
+			else{
+				if(No.length==0 || No==0){
+					return showItemOrderNumberDialog();
+				}
+				else{
+					event.preventDefault();
+					$("#saveSalesOrder").dialog({
+                        resizable: false,
+                        height: 200,
+                        width: 500,
+                        modal: true,
+                        buttons: {
+                            "<spring:message code='BzComposer.global.ok'/>": function () {
+                                $(this).dialog("close");
+                                
+                                subtotal=form.subtotal.value;
+                                value = form.taxID.value;
+                                sze=document.getElementById("tSize").value;
+                                var rt=0;
+                                for(i=0;i<sze;i++){
+                                    var field = document.getElementById(i+"tx_id").value;
+                                    if(value==field){
+                                        rt = document.getElementById(i+"tx_rt").value;
+                                        document.getElementById('tax_field').innerHTML=rt+" %";
+                                        rt = ((((yestax)/1 ) * (rt/1)) / 100 ).toFixed(2);
+                                        document.getElementById('tax_val').value=rt;
+                                        break;
+                                    }
+                                }
+                                subtotal = form.subtotal.value;
+                                shipping = form.shipping.value;
+                                total = ( (rt/1) + (subtotal/1) + (shipping/1)).toFixed(2);
+                                form.total.value=total;
+                                form.tax.value=rt;
+                                val1 = document.getElementById('hidn').value;
+                                val =((val1)/1 - (deleted)/1);
+                                form.size.value=val/1;
+                                var x;
+
+                                var idV=0;
+                                for(x=0;x<val1;x++){
+                                    value = itemArr[x];
+                                    if(value!=-1){
+                                        form.item.value+=itemArr[x]+";";
+                                        form.qty.value+=qtyArr[x]+";";
+                                        form.uprice.value+=upriceArr[x]+";";
+                                        form.code.value+=codeArr[x]+";";
+                                        form.isTaxable.value+=taxArr[x]+";";
+                                        form.desc.value+=descArr[x]+";";
+                                        form.unitWeight.value+=uwghtArr[x]+";";
+                                        form.wgt.value+="0"+";";
+                                        form.serialNo.value+=serialArr[x]+";";
+
+                                        form.itemTypeID.value+=itmIDArr[x]+";";
+                                        form.itemOrder.value+=idV+";";
+                                        idV++;
+                                    }
+                                }
+                                csize = document.getElementById('CartSize').value;
+                                if(csize!=0){
+                                    val=((csize/1) + (val)/1) ;
+                                    var i;
+                                    ordVal = ( ((document.getElementById('hidn').value)/1) + 1 );
+                                    for(i=0;i<csize;i++){
+                                    rowid = document.getElementById(i+'delt').value
+                                    if(rowid=="del"){
+                                        cnt++;
+                                    }
+                                    else if(rowid=="0"){
+                                        form.code.value+=document.getElementById(i+"invCode").value+";";
+                                        form.qty.value+= document.getElementById(i+"qty").value+";";
+                                        form.desc.value+= document.getElementById(i+"invDesc").value+";";
+                                        form.uprice.value+= document.getElementById(i+"uprice").value+";";
+                                        form.unitWeight.value+= document.getElementById(i+"weight").value+";";
+                                        form.wgt.value+="0"+";";
+
+                                        form.serialNo.value+=document.getElementById(i+"serial").value+";";
+                                        itid = document.getElementById(i+'itId11').value;
+                                        form.itemTypeID.value+=itid+";";
+                                        form.itemOrder.value+=idV+";";
+                                        valTax=document.getElementById(i+"tax").value;
+                                        if(valTax=="Yes"){
+                                            form.isTaxable.value+="1"+";";
+                                        }else{
+                                            form.isTaxable.value+="0"+";";
+                                        }
+                                        idV++;
+                                        itemVal=document.getElementById(i+'invID11').value;
+                                        form.item.value+=itemVal+";";
+                                    }
+                                    }
+                                    val=((((val)/1 - (cnt)/1)));
+                                    form.size.value=val;
+                                }
+                                document.getElementById('tabid').value="SaveOrder";
+                                document.forms['salesOrderForm'].action="SalesOrder?tabid=SaveOrder";
+                                document.forms['salesOrderForm'].submit();
+                            },
+                            "<spring:message code='BzComposer.global.cancel'/>": function () {
+                                $(this).dialog("close");
+                                return false;
+                            }
+                        }
+                    });
+                    return false;
+				}
+			}
+		}
+		
 		function NewOrder(){
 			window.location.href="SalesOrder?tabid=SalesOrder";
 		}

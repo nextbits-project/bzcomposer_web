@@ -38,6 +38,12 @@ public class SalesBordController{
 			forward = "/sales/invoiceboard";
 		}
 
+		/*
+		 * if (action.equalsIgnoreCase("deleteInvoice")) { // For Fname and lname
+		 * listing // SalesBoardDetails sd = new SalesBoardDetails();
+		 * salesBoardDetails.getSalesBoardDetails(request, salesBoardDto); forward =
+		 * "/sales/invoiceboard"; }
+		 */
 		else if (action.equalsIgnoreCase("UpdateRecord")) { // For Fname and lname
 			// listing
 //			SalesBoardDetails sd = new SalesBoardDetails();

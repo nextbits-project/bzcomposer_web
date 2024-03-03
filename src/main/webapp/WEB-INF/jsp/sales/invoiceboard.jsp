@@ -324,6 +324,9 @@ table.tabla-listados tbody tr td {
 													&nbsp;&nbsp; <input type="button" class="formbutton"
 													style="padding: 10px;" onclick="SendMail(this.form);"
 													value='<spring:message code="BzComposer.global.sendmail" />' />
+													<%-- &nbsp;&nbsp; <input type="button" class="formbutton"
+													style="padding: 10px;" onclick="deleteInvoice(this.form);"
+													value='<spring:message code="BzComposer.global.sendmail" />' /> --%>
 													<input type="hidden" name="ONum" id="ONumId"> <input
 													type="hidden" name="sEmail" id="sEmailID"> <input
 													type="hidden" name="rNum" id="rowONum"> <input
@@ -461,6 +464,11 @@ function sendToCreateRMA(){
 function SendMail(form){
 	order_no = document.getElementById("ord_value").value;
 	window.open("Invoice?tabid=ShowEmail&OrderType=SO&OrderNo="+order_no,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
+}
+
+function deleteInvoice(form){
+	order_no = document.getElementById("ord_value").value;
+	window.location = "SalesBord?tabid=deleteInvoice&order_no="+order_no;
 }
 function SaleSearch(filterType)
 {
