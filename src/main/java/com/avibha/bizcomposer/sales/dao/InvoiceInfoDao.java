@@ -1737,7 +1737,7 @@ public class InvoiceInfoDao {
 			}
 			if (null != form.getRep())
 				bcaInvoice.setSalesRepId(Integer.parseInt(form.getRep()));
-			if (!"0".equals(form.getMessage())&& null!=form.getMessage()) {
+			if (!"0".equals(form.getMessage()) && null != form.getMessage()) {
 				Optional<BcaMessage> message = bcaMessageRepository.findById(Integer.parseInt(form.getMessage()));
 				if (message.isPresent())
 					bcaInvoice.setMessage(message.get());
@@ -1749,7 +1749,7 @@ public class InvoiceInfoDao {
 				}
 			}
 
-			if (!"0".equals(form.getPayMethod())&& null!=form.getPayMethod()) {
+			if (!"0".equals(form.getPayMethod()) && null != form.getPayMethod()) {
 				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
 						.findById(Integer.parseInt(form.getPayMethod()));
 				if (paymentType.isPresent()) {
@@ -5628,9 +5628,50 @@ public class InvoiceInfoDao {
 			form.setPaid(String.valueOf(invoice.getIsPaymentCompleted()));
 			form.setServiceID(invoice.getServiceId());
 			form.setIsPending(invoice.getIsPending() > 0 ? "true" : "false");
+			String invCodessa = "";
+			String invIDs = "";
+			String invCodes = "";
+			String invNames = "";
+			String invQtys = "";
+			String invUWeights = "";
+			String invUPrices = "";
+			String invIsTaxables = "";
+			String invItemIDs = "";
+			String invItemOrders = "";
+////			String itemCategoryId[] = form.getCategory().split(";");
+//			boolean shippedNow = false;
+//			if (form.getItemShipped() != null && form.getItemShipped().equals("on")) {
+//				shippedNow = true;
+//			}
+			List<BcaCart> bcaCart = bcaCartRepository.findByInvoiceIdAndCompanyId(invoice.getInvoiceId(),
+					Long.parseLong(compId));
+			form.setSize(bcaCart.size());
+			for (BcaCart cart : bcaCart) {
+				invIDs = invIDs + cart.getInventory().getInventoryId() + ";";
 
+				invCodes = invCodes + cart.getInventoryCode() + ";";
+				invNames = invNames + cart.getInventoryName() + ";";
+				invQtys = invQtys + cart.getQty() + ";";
+				invUWeights = invUWeights + cart.getUnitWeight() + ";";
+				invUPrices = invUPrices + cart.getUnitPrice() + ";";
+				invIsTaxables = invIsTaxables + cart.getTaxable() + ";";
+				invItemIDs = invItemIDs + cart.getItemTypeId() + ";";
+				invItemOrders = invItemOrders + cart.getItemOrder() + ";";
+
+			}
+
+			form.setItem(invIDs);
+
+			form.setCode(invCodes);
+			form.setDesc(invNames);
+			form.setQty(invQtys);
+			form.setUnitWeight(invUWeights);
+			form.setUprice(invUPrices);
+			form.setIsTaxable(invIsTaxables);
+			form.setItemTypeID(invItemIDs);
+			form.setItemOrder(invItemOrders);
 			boolean save = Save(compId, form, String.valueOf(custId));
-			if(save) {
+			if (save) {
 				invoice.setDeleted(1);
 				bcaInvoiceRepository.save(invoice);
 			}
@@ -5661,7 +5702,6 @@ public class InvoiceInfoDao {
 			JpaHelper.addParameter(typedQuery, query, "invoiceStatus", Arrays.asList(0, 2));
 			JpaHelper.addParameter(typedQuery, query, "invoiceTypeId", 7);
 //			JpaHelper.addParameter(typedQuery, query, "deleted", 0);
-
 
 			if (action.equalsIgnoreCase("PreviousSalesOrder")) {
 				BcaInvoice invoice = typedQuery.getResultList().stream().filter(x -> x.getSonum() < currentIndex)

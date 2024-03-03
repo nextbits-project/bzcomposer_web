@@ -27,7 +27,8 @@ public class SalesBoardDetails {
         request.setAttribute("Market", salesBoardDto.getFilterMarket());
         return saleDetails;
     }
-
+   
+    
     public void getSalesReportByCustomer(HttpServletRequest request, SalesBoardDto salesBoardDto) {
         String compId = (String) request.getSession().getAttribute("CID");
         String invoiceReportType = request.getParameter("ilist");
