@@ -300,9 +300,10 @@ table.tabla-listados tbody tr td {
 			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="selectedTab()"><spring:message code="BzComposer.accountreceivable.tabs.received"/></a>
 			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" onclick="overDueTab()"><spring:message code="BzComposer.accountreceivable.tabs.overdue"/></a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="cancelledTab()"><spring:message code="BzComposer.accountreceivable.tabs.cancelled"/></a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="vendorRMA()"><spring:message code="BzComposer.accountreceivable.tabs.vendorrma"/></a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="CustomerRMARefund()"> <spring:message code="BzComposer.accountreceivable.tabs.CustomerRMARefund" /></a>
+			    <%-- <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="vendorRMA()"><spring:message code="BzComposer.accountreceivable.tabs.vendorrma"/></a> --%>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()"><spring:message code="BzComposer.accountreceivable.tabs.layaways"/></a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">eSales</a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="eSales()">eSales</a>
 			  </div>
 			</nav>
 			<div class="tab-content">
@@ -983,10 +984,18 @@ table.tabla-listados tbody tr td {
    {
     window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=vendorRMA";
    }
+   function CustomerRMARefund()
+   {
+	   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=CustomerRMARefund";
+   }
    function receivedTab()
    {
 
 	   window.location = "${pageContext.request.contextPath}/ReceivedTab?tabid=receivedTab"; 
+   }
+   function eSales()
+   {
+		window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=eSales";
    }
    function overDueTab()
    {

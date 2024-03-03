@@ -19,6 +19,7 @@ import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.SalesBillingTable;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblAccountCategory;
+import com.pritesh.bizcomposer.accounting.bean.TblAccountable;
 import com.pritesh.bizcomposer.accounting.bean.TblPayment;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentDto;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
@@ -254,4 +255,7 @@ public interface ReceivableLIst {
 	public ArrayList<BillingStatementReport> printBillingStatement(int invoiceId);
 
 	String getRecurringDate(String period, String nextDate);
+	
+	public int insert(TblAccountable accountable, boolean isNeedToPrint) throws SQLException;
+	public void updateBillByBillNumForPaid(String BillNum);
 }

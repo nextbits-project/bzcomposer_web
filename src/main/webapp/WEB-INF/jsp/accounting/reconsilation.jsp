@@ -88,7 +88,7 @@ table.tabla-listados tbody tr td {
 		</label>
 		<select class="form-control ml-1" id="account" onchange="executeQuery()">
 		    <c:forEach items="${accountList}" var="curObject" varStatus="loop">
-			<option value="${curObject.accountID}" label="${curObject.customerCurrentBalance}">${curObject.name}</option>
+			<option value="${curObject.accountID}" id="${curObject.accountID}">${curObject.name}</option><%-- label="${curObject.customerCurrentBalance}" --%>
 			</c:forEach>
 		</select>
 	</div>
@@ -150,7 +150,8 @@ table.tabla-listados tbody tr td {
                 </thead>
                 <tbody>
                     <c:forEach items="${listOfDepositPayments}" var="curObject" varStatus="loop">
-                    <c:if test="${curObject.payerID == selectedAccount}">
+                    <%-- <c:if test="${curObject.payerID == selectedAccount}"> --%>
+                    <c:if test="${curObject.payeeID == selectedAccount}">
                     <tr onclick="getPayments(${loop.index}, ${curObject.id}, ${selectedAccount}, 'Deposit')">
                         <td><input type="checkbox" /></td>
                         <td class="text-center">${curObject.dateAdded}</td>
@@ -188,7 +189,8 @@ table.tabla-listados tbody tr td {
                 <label id="depositCount">
                     <c:set var="count" value="0" scope="page" />
                         <c:forEach items="${listOfDepositPayments}" var="curObject" varStatus="loop">
-                        <c:if test="${curObject.payerID == selectedAccount}">
+                        <%-- <c:if test="${curObject.payerID == selectedAccount}"> --%>
+                        <c:if test="${curObject.payeeID == selectedAccount}">
                             <c:set var="count" value="${count + 1}" scope="page"/>
                         </c:if>
                         </c:forEach>
@@ -202,11 +204,13 @@ table.tabla-listados tbody tr td {
                 <label id="depositTotal">
                     <c:set var="total" value="0" scope="page" />
                         <c:forEach items="${listOfDepositPayments}" var="curObject" varStatus="loop">
-                        <c:if test="${curObject.payerID == selectedAccount}">
+                       <%--  <c:if test="${curObject.payerID == selectedAccount}"> --%>
+                       <c:if test="${curObject.payeeID == selectedAccount}">
                             <c:set var="total" value="${total + curObject.amount}" scope="page"/>
                         </c:if>
                         </c:forEach>
-                    <c:out value="${total}" />
+                    <fmt:formatNumber value="${total}" var="formattedTotal" minFractionDigits="2" maxFractionDigits="2"/>
+                	<c:out value="${formattedTotal}" />
                 </label>
             </div>
         </div>
@@ -279,7 +283,8 @@ table.tabla-listados tbody tr td {
                         <c:set var="total" value="${total + curObject.amount}" scope="page"/>
                     </c:if>
                     </c:forEach>
-                <c:out value="${total}" />
+                <fmt:formatNumber value="${total}" var="formattedTotal" minFractionDigits="2" maxFractionDigits="2"/>
+                <c:out value="${formattedTotal}" />
 				</label>
 			</div>
 		</div>
@@ -1303,7 +1308,7 @@ function editTransaction()
 }
 function executeQuery()
 {
-	
+	debugger;
 	var accountCombo = document.getElementById("account");
 	var accountId = accountCombo.options[accountCombo.selectedIndex].value;
 	

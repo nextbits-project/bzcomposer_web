@@ -592,7 +592,7 @@ table.tabla-listados tbody tr td {
 	selectCategoryAsPurchaseOrder6800FromDropDownList("categoryId");
 
    function selectrow(invoice,index) {
-	    //debugger;
+	    debugger;
 	      $( "#demo" ).empty();  
 	    this.indexNumber = index;
 	    this.invoiceId = invoice;
@@ -617,9 +617,9 @@ table.tabla-listados tbody tr td {
 	    catId = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(12)').attr('value');
 	    AccId = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(6)').attr('value');
 	    payTypeId = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(7)').attr('value');
-	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value') != 'null')
+	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value') != 'null')
 	    {
-	    	checkD = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value');
+	    	checkD = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value');
 	    }
 	    
 	    var data = {
@@ -671,9 +671,9 @@ table.tabla-listados tbody tr td {
 	    $("select.devDeposittypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(6)').attr('value'));
 	    $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(7)').text()); */
 	    $(".devMemotext").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(13)').text().trim());
-	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value') != 'null')
+	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value') != 'null')
 		{
-				$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value'));
+				$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value'));
 		}	
 	
    }  

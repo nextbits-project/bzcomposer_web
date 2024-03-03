@@ -61,7 +61,7 @@ public class BillPayableController {
 		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
 
 		request.setAttribute("cvForCombo", cvForCombo);
-		request.setAttribute("accountListForBill", accountListForBill);
+		request.setAttribute("accountListForBill", accountListForBill);///pay from accounts
 		request.setAttribute("categoryListForCombo", categoryListForCombo);
 		if (action.equals("billpayable")) {
 			forward = "/accounting/billPayable";

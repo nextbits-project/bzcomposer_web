@@ -38,8 +38,16 @@ public class ReconsilationController {
 		//ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<TblCategoryType> categoryType = rl.getCategoryType();
 		ArrayList<TblCategoryDto> subCategoryChrgeListForAsset = null;
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		rl.loadBankAccounts();
+		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 		if(action.equals("reconsilation")) {
-			
+			if (accountList != null && accountList.size() > 1) {
+			    TblAccount secondAccount = accountList.get(1); // Lists are 0-indexed, so the second element is at index 1
+			    if (secondAccount != null) { // Check if the second account is not null
+			        defaultAccountId = secondAccount.getAccountID(); // Call getAccountID() on the second account and assign it to defaultAccountId
+			    }
+			}
 		}
 		Gson gson=new Gson();
 		TblPayment payment = gson.fromJson(request.getParameter("data"), TblPayment.class);
@@ -69,9 +77,9 @@ public class ReconsilationController {
 		ArrayList<TblCategoryDto> getCategoryListForAsset = rl.getCategoryForAsset();
 		ArrayList<TblPaymentDto> listOfPayments = rl.getPaymentOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
 		ArrayList<TblPaymentDto> listOfDepositPayments = rl.getDepositOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
-		rl.loadBankAccounts();
-		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
+//		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+//		rl.loadBankAccounts();
+//		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<ClientVendor> allClientVendor = rl.getAllClientVendor();
 		ArrayList<TblPaymentType> allPaymentList = rl.getAllPaymentList();
 		ArrayList<TblCategoryDto> allCategoryList = rl.getAllCategory();
@@ -137,6 +145,11 @@ public class ReconsilationController {
 		}
 		if(action.equals("SubAssetCategory")) {
 			TblCategoryDto category = gson.fromJson(request.getParameter("data4"), TblCategoryDto.class);
+			defaultAccountId = category.getAccountID();
+			subCategoryChrgeListForAsset = rl.initComboCharge(category);
+		}
+		if(action.equals("Payment")) {
+			TblCategoryDto category = gson.fromJson(request.getParameter("data"), TblCategoryDto.class);
 			defaultAccountId = category.getAccountID();
 			subCategoryChrgeListForAsset = rl.initComboCharge(category);
 		}

@@ -137,7 +137,7 @@ table.tabla-listados tbody tr td {
 											for (int i = 1; i < accountForBill.size(); i++) {
 										%>
 										<option value="<%=accountForBill.get(i).getAccountID()%>"
-											label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
+											id="<%=accountForBill.get(i).getAccountID()%>">
 											<%
 											out.println(accountForBill.get(i).getName());
 											%>
@@ -994,13 +994,14 @@ table.tabla-listados tbody tr td {
 
 	function selectrow(no, indexNumber)
 	{
+		debugger;
 		this.billNo = no;
 		this.index = indexNumber;
 		//alert(indexNumber);
 		 $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
 		 $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value'));
-		 $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text());
-		 $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text());
+		 $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text());
+		 $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
 		 $("#memo").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(9)').text().trim());
 		 $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
 		 $("#orderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
@@ -1187,10 +1188,10 @@ debugger;
 }
 	function makePayment()
 	{
-
+		debugger;
 		var paidAmount;
 		var amountPaid;
-		var billNo = document.getElementById("ordernumber").innerHTML;
+		var billNo = document.getElementById("ordernumber").innerHTML.trim();
 		var payerIdSelect = document.getElementById("receivedType");
 		 var index = document.getElementById("receivedType").selectedIndex
 			if(payerIdSelect.options[payerIdSelect.selectedIndex]==undefined)
@@ -1278,7 +1279,7 @@ debugger;
 			}
 		});
 
-  	$(document.forms[0]).submit(function( event ) {
+  	$(document.forms[1]).submit(function( event ) {
 	    event.preventDefault();
 	});
 	}

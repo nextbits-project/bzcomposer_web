@@ -279,9 +279,9 @@ table.tabla-listados tbody tr td {
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="receivedTab()"><spring:message code="BzComposer.accountreceivable.tabs.received"/></a>
 			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" onclick="overDueTab()"><spring:message code="BzComposer.accountreceivable.tabs.overdue"/></a>
 			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="cancelledTab()"><spring:message code="BzComposer.accountreceivable.tabs.cancelled"/></a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="vendorRMA()"><spring:message code="BzComposer.accountreceivable.tabs.vendorrma"/></a>
-			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()"><spring:message code="BzComposer.accountreceivable.tabs.layaways"/></a>
-			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">eSales</a>
+				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="CustomerRMARefund()"> <spring:message code="BzComposer.accountreceivable.tabs.CustomerRMARefund" /></a>
+			    <%-- <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="vendorRMA()"><spring:message code="BzComposer.accountreceivable.tabs.vendorrma"/></a> --%>			    <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()"><spring:message code="BzComposer.accountreceivable.tabs.layaways"/></a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="eSales()">eSales</a>
 			  </div>
 			</nav>
 			<div class="tab-content" id="nav-tabContent">
@@ -332,7 +332,7 @@ table.tabla-listados tbody tr td {
 				      <% } %>
 				      <td class="text-right"><% out.println(rb.getBalance()); %></td>
 				      <td class="text-right"><% out.println(rb.getAdjustedTotal()); %></td>
-				      <td class="text-right" value=<%=rb.getCategoryID() %>><% out.println(rb.getTblCategoryDto()); %></td>
+				      <td class="text-right" value=<%=rb.getCategoryID() %>><% out.println(rb.getCategoryName()); %></td>
 				      <td class="text-right"><% out.println(rb.getMemo()); %></td>
 				      <% if(request.getSession().getAttribute("balance"+rb.getInvoiceID()) != null) {%>
 				      <td hidden="balnce" value="<%= request.getSession().getAttribute("balance"+rb.getInvoiceID()) %>"></td>
@@ -723,6 +723,10 @@ table.tabla-listados tbody tr td {
    {
     window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=vendorRMA";
    }
+   function CustomerRMARefund()
+   {
+	   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=CustomerRMARefund";
+   }
    function receivedTab()
    {
 
@@ -731,6 +735,10 @@ table.tabla-listados tbody tr td {
    function overDueTab()
    {
 	   window.location = "${pageContext.request.contextPath}/OverDueTab?tabid=overDueTab";
+   }
+   function eSales()
+   {
+		window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=eSales";
    }
    function billingInfo()
    {

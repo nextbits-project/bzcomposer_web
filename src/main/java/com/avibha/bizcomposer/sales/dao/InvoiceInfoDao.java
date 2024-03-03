@@ -1538,10 +1538,10 @@ public class InvoiceInfoDao {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			List<Integer> invoiceStatus = Arrays.asList(0, 2);
 
-			List<Integer> invoiceStyleId = Arrays.asList(1, 7, 9);
+			List<Integer> invoiceTypeID = Arrays.asList(7);
 			List<BcaInvoice> bcaInvoices = bcaInvoiceRepository
 					.findByCompanyIdAndInvoiceStatusAndInvoiceTypeIdOrderBySonumDesc(Long.valueOf(compId),
-							invoiceStatus, invoiceStyleId);
+							invoiceStatus, invoiceTypeID);
 			if (bcaInvoices.isEmpty()) {
 				String startNumber = configDto.getStartSalesOrderNum();
 				lastOrderNo = Integer.parseInt(startNumber.substring(startNumber.indexOf("-") + 1));

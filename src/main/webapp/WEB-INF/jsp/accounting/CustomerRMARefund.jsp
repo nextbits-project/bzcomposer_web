@@ -336,6 +336,7 @@ table.tabla-listados tbody tr td {
 			    aria-controls="nav-contact" aria-selected="false" onclick="layawaysTab()">
 			    	<spring:message code="BzComposer.accountreceivable.tabs.layaways"/>
 		    	</a>
+		    	<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" onclick="eSales()">eSales</a>
 			  </div>
 			</nav>
 			<div class="tab-content" id="nav-tabContent">
@@ -942,6 +943,10 @@ table.tabla-listados tbody tr td {
    function overDueTab()
    {
 	   window.location = "${pageContext.request.contextPath}/OverDueTab?tabid=overDueTab";
+   }
+   function eSales()
+   {
+		window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=eSales";
    }
 
    function ReceivebleList()

@@ -98,6 +98,15 @@ public class CategoryDetailController {
 			ArrayList<TblPayment> listOfDepositPayments = rl.getDepositsList(payment, fromdate, toDate);
 			request.setAttribute("listOfPayments", listOfPayments);
 			request.setAttribute("listOfDepositPayments", listOfDepositPayments);*/
+//			TblPayment cfrm = (TblPayment)form;
+			Gson gson=new Gson();
+			TblPaymentDto payment = gson.fromJson(request.getParameter("data"), TblPaymentDto.class);
+			Date fromdate = new Date(payment.getFromDate());
+			Date toDate = new Date(payment.getToDate());
+			ArrayList<TblPaymentDto> listOfPayments = rl.getPaymentsList(payment, fromdate, toDate);
+			ArrayList<TblPaymentDto> listOfDepositPayments = rl.getDepositsList(payment, fromdate, toDate);
+			request.setAttribute("listOfPayments", listOfPayments);
+			request.setAttribute("listOfDepositPayments", listOfDepositPayments);
 		}
 		return forward;
 	}

@@ -845,7 +845,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 				account.setDateAdded(offsetDateTimeToDate(bca_account.getDateAdded()));
 				account.setFirstCheckNo(bca_account.getFirstCheck());
-				account.setLastCheckNo(bca_account.getLastCheck());
+				account.setLastCheckNo(bca_account.getLastCheck() != null ? bca_account.getLastCheck() : -1);
 
 				accountForCombo.add(account);
 			}
@@ -1639,9 +1639,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 							+ balance + "," + "ClientVendorID=" + receivableListBean.getCvID() + ", Memo='"
 							+ receivableListBean.getMemo().trim() + "'" + " Where InvoiceID="
 							+ receivableListBean.getInvoiceID() + " AND CompanyID=" + receivableListBean.getCompanyID();
-					i = bcaInvoiceRepository.updateInvoiceByInvoiceId(paymentType, receivableListBean.getBankAccountID(),
-							bcaCategory, paidAmount, balance, clientvendor, receivableListBean.getMemo().trim(),
-							receivableListBean.getInvoiceID(), company);
+					i = bcaInvoiceRepository.updateInvoiceByInvoiceId(paymentType,
+							receivableListBean.getBankAccountID(), bcaCategory, paidAmount, balance, clientvendor,
+							receivableListBean.getMemo().trim(), receivableListBean.getInvoiceID(), company);
 				}
 
 			} else {
@@ -2515,8 +2515,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 		String sql = " UPDATE bca_invoice SET " + " IsPaymentCompleted=" + (paymentCompleted == true ? 1 : 0) + ","
 				+ " PaidAmount =" + paidAmount + "," + " Balance=" + invoice.getBalance() + "," + " AdjustedTotal="
 				+ invoice.getAdjustedTotal() + "," + " CategoryID=" + invoice.getCategoryID() + "," + " ClientVendorID="
-				+ invoice.getCvID() + "," + " invoiceStatus = " + invoice.getInvoiceStatus()
-				+ " WHERE InvoiceID=" + invoice.getInvoiceID() + " AND CompanyID=" + ConstValue.companyId;
+				+ invoice.getCvID() + "," + " invoiceStatus = " + invoice.getInvoiceStatus() + " WHERE InvoiceID="
+				+ invoice.getInvoiceID() + " AND CompanyID=" + ConstValue.companyId;
 		try {
 
 			stmt = con.createStatement();
@@ -2608,22 +2608,21 @@ public class ReceivableListImpl implements ReceivableLIst {
 //					+ " AND PaymentID =?  ";
 //			BcaCompany company = bcaCompanyRepository.getOne(new Long(ConstValue.companyId));
 			BcaAccount bcaAccount = bcaAccountRepository.getOne(account.getAccountID());
-			
-			
+
 //			int updated = bcaPaymentRepository.depositToBcaPayment(account.getAccountID(), dateAdded, bcaAccount,
 //					priority + 1, company, payment.getId());
-			
-			
-			BcaPayment bcaPayment = bcaPaymentRepository.findByPaymentIdAndCompany_CompanyId(payment.getId(), Long.valueOf(ConstValue.companyId));
+
+			BcaPayment bcaPayment = bcaPaymentRepository.findByPaymentIdAndCompany_CompanyId(payment.getId(),
+					Long.valueOf(ConstValue.companyId));
 			bcaPayment.setIsNeedtoDeposit(false);
 			bcaPayment.setPayeeId(account.getAccountID());
 			bcaPayment.setDateAdded(dateAdded);
 			bcaPayment.setAccount(bcaAccount);
 			bcaPayment.setDeleted(false);
 			bcaPayment.setPriority(priority);
-			
+
 			bcaPaymentRepository.save(bcaPayment);
-			
+
 //			pstmt = con.prepareStatement(sql_working);
 			payment.setPayeeID(account.getAccountID());
 //			pstmt.setInt(1, account.getAccountID());
@@ -4292,15 +4291,74 @@ public class ReceivableListImpl implements ReceivableLIst {
 		strDate = JProjectUtil.getDateFormaterCommon().format(paidDate);
 		amount = receivedAmountForRL;
 		boolean isCvChanged = checkCvChanged();
-		
+
 		try {
-		BcaPayment bcaPayment = bcaPaymentRepository.findByPaymentIdAndCompany_CompanyId(paymentForReceived.getId(),
-				new Long(ConstValue.companyId));
+			BcaPayment bcaPayment = bcaPaymentRepository.findByPaymentIdAndCompany_CompanyId(paymentForReceived.getId(),
+					new Long(ConstValue.companyId));
 
-		if (isCvChanged) {
+			if (isCvChanged) {
 
-			if (strName.equals("Payment")) {
-				int payeeId = getAccountForPayer(paymentForReceived.getCvID(), ConstValue.companyId).getAccountID();
+				if (strName.equals("Payment")) {
+					int payeeId = getAccountForPayer(paymentForReceived.getCvID(), ConstValue.companyId).getAccountID();
+
+					bcaPayment.setAmount(amount);
+					Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+							.findById(paymentForReceived.getPaymentTypeID());
+					if (paymentType.isPresent())
+						bcaPayment.setPaymentType(paymentType.get());
+
+					bcaPayment.setPayerId(paymentForReceived.getAccountID());
+					bcaPayment.setPayeeId(payeeId);
+					Optional<BcaAccount> bca_account = bcaAccountRepository.findById(paymentForReceived.getAccountID());
+					if (bca_account.isPresent())
+						bcaPayment.setAccount(bca_account.get());
+					Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
+							.findById(paymentForReceived.getCvID());
+					if (clientVendor.isPresent())
+						bcaPayment.setClientVendor(clientVendor.get());
+					Optional<BcaCategory> category = bcaCategoryRepository.findById(paymentForReceived.getCategoryId());
+					if (category.isPresent())
+						bcaPayment.setCategory(category.get());
+					bcaPayment.setAccountCategoryId(paymentForReceived.getAccountCategoryId());
+
+					bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(strDate));
+
+					bcaPayment.setIsToBePrinted((paymentForReceived.isToBePrinted() ? true : false));
+					bcaPayment.setCheckNumber(paymentForReceived.getCheckNumber());
+
+				} else if (strName.equals("Deposit")) {
+					int payerId = getAccountForPayer(paymentForReceived.getCvID(), ConstValue.companyId).getAccountID();
+
+					bcaPayment.setAmount(amount);
+					Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
+							.findById(paymentForReceived.getPaymentTypeID());
+					if (paymentType.isPresent())
+						bcaPayment.setPaymentType(paymentType.get());
+
+					bcaPayment.setPayerId(payerId);
+					bcaPayment.setPayeeId(paymentForReceived.getAccountID());
+					Optional<BcaAccount> bca_account = bcaAccountRepository.findById(paymentForReceived.getAccountID());
+					if (bca_account.isPresent())
+						bcaPayment.setAccount(bca_account.get());
+					Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
+							.findById(paymentForReceived.getCvID());
+					if (clientVendor.isPresent())
+						bcaPayment.setClientVendor(clientVendor.get());
+
+					Optional<BcaCategory> category = bcaCategoryRepository.findById(paymentForReceived.getCategoryId());
+					if (category.isPresent())
+						bcaPayment.setCategory(category.get());
+					bcaPayment.setAccountCategoryId(paymentForReceived.getAccountCategoryId());
+
+					bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(strDate));
+
+					bcaPayment.setIsToBePrinted((paymentForReceived.isToBePrinted() ? true : false));
+					bcaPayment.setCheckNumber(paymentForReceived.getCheckNumber());
+
+				}
+			}
+
+			else {
 
 				bcaPayment.setAmount(amount);
 				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
@@ -4308,15 +4366,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (paymentType.isPresent())
 					bcaPayment.setPaymentType(paymentType.get());
 
-				bcaPayment.setPayerId(paymentForReceived.getAccountID());
-				bcaPayment.setPayeeId(payeeId);
-				Optional<BcaAccount> bca_account = bcaAccountRepository.findById(paymentForReceived.getAccountID());
-				if (bca_account.isPresent())
-					bcaPayment.setAccount(bca_account.get());
-				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
-						.findById(paymentForReceived.getCvID());
-				if (clientVendor.isPresent())
-					bcaPayment.setClientVendor(clientVendor.get());
 				Optional<BcaCategory> category = bcaCategoryRepository.findById(paymentForReceived.getCategoryId());
 				if (category.isPresent())
 					bcaPayment.setCategory(category.get());
@@ -4325,63 +4374,12 @@ public class ReceivableListImpl implements ReceivableLIst {
 				bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(strDate));
 
 				bcaPayment.setIsToBePrinted((paymentForReceived.isToBePrinted() ? true : false));
-				bcaPayment.setCheckNumber(paymentForReceived.getCheckNumber());
 
-			} else if (strName.equals("Deposit")) {
-				int payerId = getAccountForPayer(paymentForReceived.getCvID(), ConstValue.companyId).getAccountID();
-
-				bcaPayment.setAmount(amount);
-				Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
-						.findById(paymentForReceived.getPaymentTypeID());
-				if (paymentType.isPresent())
-					bcaPayment.setPaymentType(paymentType.get());
-
-				bcaPayment.setPayerId(payerId);
-				bcaPayment.setPayeeId(paymentForReceived.getAccountID());
-				Optional<BcaAccount> bca_account = bcaAccountRepository.findById(paymentForReceived.getAccountID());
-				if (bca_account.isPresent())
-					bcaPayment.setAccount(bca_account.get());
-				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository
-						.findById(paymentForReceived.getCvID());
-				if (clientVendor.isPresent())
-					bcaPayment.setClientVendor(clientVendor.get());
-
-				Optional<BcaCategory> category = bcaCategoryRepository.findById(paymentForReceived.getCategoryId());
-				if (category.isPresent())
-					bcaPayment.setCategory(category.get());
-				bcaPayment.setAccountCategoryId(paymentForReceived.getAccountCategoryId());
-
-				bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(strDate));
-
-				bcaPayment.setIsToBePrinted((paymentForReceived.isToBePrinted() ? true : false));
 				bcaPayment.setCheckNumber(paymentForReceived.getCheckNumber());
 
 			}
-		}
 
-		else {
-
-			bcaPayment.setAmount(amount);
-			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
-					.findById(paymentForReceived.getPaymentTypeID());
-			if (paymentType.isPresent())
-				bcaPayment.setPaymentType(paymentType.get());
-
-			Optional<BcaCategory> category = bcaCategoryRepository.findById(paymentForReceived.getCategoryId());
-			if (category.isPresent())
-				bcaPayment.setCategory(category.get());
-			bcaPayment.setAccountCategoryId(paymentForReceived.getAccountCategoryId());
-
-			bcaPayment.setDateAdded(DateHelper.string2OffsetDateTime(strDate));
-
-			bcaPayment.setIsToBePrinted((paymentForReceived.isToBePrinted() ? true : false));
-
-			bcaPayment.setCheckNumber(paymentForReceived.getCheckNumber());
-
-		}
-		
 			bcaPaymentRepository.save(bcaPayment);
-			
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -5512,10 +5510,10 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ " LEFT JOIN bca_account AS Bank ON INV.BankAccountID = Bank.AccountID"
 				+ " LEFT JOIN bca_category AS Category ON INV.CategoryID = Category.CategoryID"
 				+ " WHERE INV.CompanyID=" + ConstValue.companyId + " AND INV.IsPaymentCompleted = 0"
-				+ " AND INV.InvoiceStatus = 0" + " AND INV.InvoiceTypeID = 2" + " AND bca_clientvendor.Status IN ('N', 'U')"
-				+ " AND bca_clientvendor.CompanyID =" + ConstValue.companyId
-				+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
-				+ " WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1)"
+				+ " AND INV.InvoiceStatus = 0" + " AND INV.InvoiceTypeID = 2"
+				+ " AND bca_clientvendor.Status IN ('N', 'U')" + " AND bca_clientvendor.CompanyID ="
+				+ ConstValue.companyId + " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)"
+				+ " FROM   bca_payment" + " WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1)"
 
 				+ "  OR (SELECT Sum(bca_payment.Amount) FROM bca_payment WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1) IS NULL )"
 				+ " ORDER  BY ponum DESC";
@@ -5758,6 +5756,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 
+	@Override
 	public int insert(TblAccountable accountable, boolean isNeedToPrint) throws SQLException {
 		Connection con = null;
 		Statement stmt = null;
@@ -5816,7 +5815,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		
 		String sql = "INSERT INTO bca_accountable(InvoiceID,PayeeCvID,PayeeCvServiceID,PayerCvID,PayerCvServiceID,"
 				+ "DateAdded,Amount,Memo,Ref,PayFromID,CategoryID,PaymentCompleted,CompanyID,CreditCardID,PaymentTypeID,"
-				+ "IsPayable,CheckNumber) VALUES " + "(" + accountable.getInvoiceId() + "," + accountable.getPayeeCvId()
+				+ "IsPayable,CheckNumber) VALUES " + "(" + (accountable.getInvoiceId() <= 0 ? "NULL" : accountable.getInvoiceId()) + "," + accountable.getPayeeCvId()
 				+ "," + accountable.getPayeeCvServiceId() + "," + accountable.getPayerCvId() + ","
 				+ accountable.getPayerCvServiceId() + "," + // (accountable.getDateAdded()==null?null:("'"+JProjectUtil.dateFormatLong.format(accountable.getDateAdded())+"'"))+","+
 				(accountable.getDateAdded() == null ? null
@@ -5824,9 +5823,10 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ "," + accountable.getAmount() + "," + "'" + accountable.getMemo().replaceAll("'", "''") + "'" + ","
 				+ "'" + accountable.getRef().replaceAll("'", "''") + "'" + "," + accountable.getPayFromId() + ","
 				+ accountable.getCategoryId() + "," + (accountable.isPaymentCompleted() == true ? 1 : 0) + ","
-				+ ConstValue.companyId + "," + (accountable.getCreditCardId() == -1 ? "NULL" : accountable.getCreditCardId()) + "," + accountable.getPaymentTypeId()
-				+ "," + (accountable.isPayable() == true ? 1 : 0) + "," + "'" + accountable.getCheckNumber() + "'"
-				+ ")";
+				+ ConstValue.companyId + ","
+				+ (accountable.getCreditCardId() <= 0 ? "NULL" : accountable.getCreditCardId()) + ","
+				+ (accountable.getPaymentTypeId() <= 0 ? "NULL" : accountable.getPaymentTypeId()) + "," + (accountable.isPayable() == true ? 1 : 0) + "," + "'"
+				+ accountable.getCheckNumber() + "'" + ")";
 
 		con = db.getConnection();
 		stmt = con.createStatement();
@@ -5869,9 +5869,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ "CategoryID,AccountCategoryID,CompanyID,DateAdded,CheckNumber,PayableID,"
 				+ "RmaNo,RmaItemID,IsToBePrinted,BillNum,PayFromBalance,"
 				+ "PayToBalance,TransactionType,Priority) VALUES (" + accountable.getAmount() + ","
-				+ accountable.getPaymentTypeId() + "," + accountable.getPayFromId() + "," + // accountable.getPayeeCvId()+","+
+				+ (accountable.getPaymentTypeId() <= 0 ? "NULL" : accountable.getPaymentTypeId()) + "," + accountable.getPayFromId() + "," + // accountable.getPayeeCvId()+","+
 				accountable.getPayeeID() + "," + accountable.getPayFromId() + "," + accountable.getPayeeCvId() + ","
-				+ accountable.getInvoiceId() + "," + accountable.getCategoryId() + ","
+				+ (accountable.getInvoiceId() <= 0 ? "NULL" : accountable.getInvoiceId()) + "," + accountable.getCategoryId() + ","
 				+ accountable.getAccountCategoryId() + "," + ConstValue.companyId + "," + // (accountable.getDateAdded()==null?null:("'"+JProjectUtil.dateFormatLong.format(accountable.getDateAdded())+"'"))+
 																							// ","+
 				(accountable.getDateAdded() == null ? null
@@ -6888,7 +6888,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 			sql.append(dateAdded + ")");
 		}
 		sql.append(" GROUP BY pay.PaymentID");
-		sql.append(" ORDER BY pay.Priority DESC");
+//		sql.append(" ORDER BY pay.Priority DESC"); changed on 20240301
+		sql.append(" ORDER BY pay.PaymentID DESC");
 
 		try {
 			stmt = con.createStatement();
@@ -6993,8 +6994,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					db.close(rs);
@@ -7250,7 +7250,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 	public ArrayList<ClientVendor> getAllClientVendorList() {
 		// TODO Auto-generated method stub
 		ArrayList<ClientVendor> cvList = new ArrayList<ClientVendor>();
-		
+
 //		Connection con;
 //		Statement stmt = null;
 //		SQLExecutor db = new SQLExecutor();
@@ -7290,14 +7290,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 					getCustomerTypeId(ConstValue.CustVenBoth), getCustomerTypeId(ConstValue.DealerVenBoth));
 			for (Object[] obj : bcaclientVendor) {
 				try {
-				ClientVendor clientVendor = new ClientVendor();
-				String name = (String) obj[0];
-				clientVendor.setName(name.equals("") ? name : name.trim());
-				clientVendor.setFirstName(((String) obj[1]).trim());
-				clientVendor.setLastName(((String) obj[2]).trim());
-				clientVendor.setCvID((Integer) obj[3]);
-				cvList.add(clientVendor);}
-				catch(Exception e) {
+					ClientVendor clientVendor = new ClientVendor();
+					String name = (String) obj[0];
+					clientVendor.setName(name.equals("") ? name : name.trim());
+					clientVendor.setFirstName(((String) obj[1]).trim());
+					clientVendor.setLastName(((String) obj[2]).trim());
+					clientVendor.setCvID((Integer) obj[3]);
+					cvList.add(clientVendor);
+				} catch (Exception e) {
 					Loger.log(e.toString());
 				}
 			}
@@ -7323,7 +7323,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return cvList;
 
 	}
-	
 
 	@Override
 	public ArrayList<TblCategoryDto> getCategoryListForPayment() {
@@ -9007,15 +9006,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 				vDetail.setPayerId(dto.getPayerId());
 				vDetail.setBalance(vDetail.getAmountTopay());
 				vDetail.setAmountPaid(dto.getAmountPaid());
-				vDetail.setServiceID(dto.getServiceId());
-				boolean status = dto.getIsMemorized();
+				vDetail.setServiceID(dto.getServiceId() != null ? dto.getServiceId() : 0);
+				boolean status = Boolean.TRUE.equals(dto.getIsMemorized());
 				vDetail.setDateAdded(offsetDateTimeToDate(dto.getDateAdded()));
 				vDetail.setCategoryName(dto.getCatName());
 				String billStatus = "Unpaid"; // "Unpaid";
 				if (status) {
 					billStatus = "Memorized"; // "Memorized";
 				}
-				int bStatus = rs.getInt("Status");
+				int bStatus = Integer.valueOf(dto.getStatus());
 				if (bStatus == 1)
 					billStatus = "Paid";
 				if (bStatus == 2)
@@ -9064,7 +9063,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //
 //				unpaidBill.add(vDetail);
 //			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace(); // TODO Auto-generated catch block
 			Loger.log(e.toString());
 		} finally {
@@ -9286,7 +9285,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ "'" + JProjectUtil.getDateFormater().format(c.getTime()) + "'" + "," + v.getBillNo() + ","
 				+ (v.ischeckPaid == true ? 1 : 0) + "," +
 				// vendorDetail.ischeckPaid + "," +
-				v.getInvoiceId() + "," + v.getPayFromBalance() + "," + v.getPayToBalance() + "," + priority + ",'"
+				(v.getInvoiceId() <= 0 ? "NULL" : v.getInvoiceId()) + "," + v.getPayFromBalance() + "," + v.getPayToBalance() + "," + priority + ",'"
 				+ v.getCheckNo() + "'," + v.getCategoryID() + ")";
 
 		try {
@@ -9465,7 +9464,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				payment.setAmount(dto.getAmount());
 				totaAmount = totalAmount + dto.getAmount();
 				payment.setTotalAmount(totaAmount);
-				payment.setPaymentTypeID(dto.getPaymentTypeId());
+				payment.setPaymentTypeID(dto.getPaymentTypeId() != null ? dto.getPaymentTypeId() : 0);
 				/*
 				 * payment.setPaymentTypeName(tblPaymentLoader.getPaymentTypeName(payment.
 				 * getPaymentTypeID()));
@@ -9480,7 +9479,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				/* payment.setNeedToDeposit(rs_paidUC.getBoolean("isNeedtoDeposit")); */
 				payment.setToBePrinted(dto.getIsToBePrinted());
 				payment.setCheckNumber(dto.getCheckNumber());
-				payment.setServiceId(dto.getServiceId());
+				payment.setServiceId(dto.getServiceId() != null ? dto.getServiceId() : 0);
 				payment.setMemo(dto.getMemo());
 				payment.setAmountDue(dto.getAmountDue());
 				payment.setBillNum(dto.getBillNum());
@@ -9837,6 +9836,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		return vDetail;
 	}
 
+	@Override
 	public void updateBillByBillNumForPaid(String BillNum) {
 		Connection con = null;
 		Statement stmt = null;
@@ -10208,7 +10208,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				+ vDetail.getVendorId() + "," + vDetail.getAccountId() + "," + ConstValue.companyId + "," + "'"
 				+ DATE_FORMAT.format(new Date()) + "'" + "," + "'" + DueDate1 + "'" + "," + vDetail.getAmount() + ","
 				+ 0 + "," + "'" + vDetail.getMemo() + "'" + "," + vDetail.getBillType() + "," + vDetail.getAmount()
-				+ "," + "'" + DueDate1 + "'" + "," + vDetail.getCategoryID() + "," + -1 + ")";
+				+ "," + "'" + DueDate1 + "'" + "," + vDetail.getCategoryID() + "," + null + ")";
 
 		String sql1 = "INSERT into bca_billdetail(BillNum,ExpenseAcctID,ExpenseAmount,ExpenseMemo,ExpenseClientVendorID,CompanyID,DetailType,Billable)"
 				+ "Values(" + vDetail.getBillNo() + "," + vDetail.getExpenseAccountId() + "," + vDetail.getAmount()
@@ -12899,7 +12899,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				dto.setBillNum((Integer) obj[0]);
 				dto.setDuedate((OffsetDateTime) obj[1]);
 				dto.setAmountDue((Double) obj[2]);
-				dto.setStatus((String) obj[3]);
+				dto.setStatus(String.valueOf(obj[3]));
 				dto.setBillType((Integer) obj[4]);
 				dto.setAmountPaid((Double) obj[5]);
 				dto.setCreditUsed((Double) obj[6]);
@@ -12914,7 +12914,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 				dto.setCheckNo((Integer) obj[15]);
 				dto.setName((String) obj[16]);
 				dto.setCatName((String) obj[17]);
-				;
 				dtos.add(dto);
 			}
 

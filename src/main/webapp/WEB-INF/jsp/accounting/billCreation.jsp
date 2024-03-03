@@ -136,7 +136,7 @@ table.tabla-listados tbody tr td {
 										if(accountForBill!=null){
 									for (int i = 1; i < accountForBill.size(); i++) {
 									%>
-										<option value="<%=accountForBill.get(i).getAccountID()%>" label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
+										<option value="<%=accountForBill.get(i).getAccountID()%>" id="<%=accountForBill.get(i).getAccountID()%>"> <%-- label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>" --%>
 											<% out.println(accountForBill.get(i).getName());%>
 										</option>
 										<%
@@ -905,7 +905,7 @@ table.tabla-listados tbody tr td {
 								for (int i = 1; i < accountForBill.size(); i++) {
 							%>
 							<option value="<%=accountForBill.get(i).getAccountID()%>"
-								label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
+								id="<%=accountForBill.get(i).getAccountID()%>">  <%-- label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>" --%>
 								<%
 								out.println(accountForBill.get(i).getName());
 								%>
@@ -1525,7 +1525,7 @@ table.tabla-listados tbody tr td {
 								for (int i = 1; i < accountForBill.size(); i++) {
 							%>
 							<option value="<%=accountForBill.get(i).getAccountID()%>"
-								label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
+								id="<%=accountForBill.get(i).getAccountID()%>">  <%-- label="<%=accountForBill.get(i).getCustomerCurrentBalance()%> --%>
 								<%
 								out.println(accountForBill.get(i).getName());
 								%>
@@ -1825,33 +1825,33 @@ table.tabla-listados tbody tr td {
 
 	function selectrow(no , indexNumber)
 	{
-		
+		debugger;
 		 this.billNo = no;
 		 this.index = indexNumber;
 		 this.paymentStatus = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(10)').attr('value');
 		 $("select.paymentOP").val(paymentStatus);
 		 $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
 		 $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value'));
-		 $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text());
+		 $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text().trim());
 		 $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text());
-		 $("#memo").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
+		 $("#memo").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text().trim());
 		 $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(11)').attr('value'));
-		 $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(4)').text());
+		 $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(4)').text().trim());
 		 if($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value') != 'null' || $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value') != '')
 		{
 			 $(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
 		}
-		 this.vendorName = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').text();
+		 this.vendorName = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').text().trim();
 		 this.vendorId = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value');
 		 document.getElementById("nameOfTransaction").value = vendorName; 
 		 $('#transactionGroup').append('<option value="'+vendorName+'" selected="selected">'+vendorName+'</option>');
 
-	     $("#getBillNo").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
+	     $("#getBillNo").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text().trim());
          $("#getDueDate").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
          $("#getVendorName").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').text());
-         $("#getAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
+         $("#getAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text().trim());
          //$("#getCreditUsed").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
-         $("#getAmountTopay").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
+         $("#getAmountTopay").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text().trim());
          //$("#getBankAccount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
 	}
 	function selectMemorizedTransactionList(memTransListIndex)
@@ -1910,8 +1910,8 @@ function payBill(){
 }
 	function save()
 	{
-		
-		var billNo = document.getElementById("ordernumber").innerHTML;
+		debugger;
+		var billNo = document.getElementById("ordernumber").innerHTML.trim();
 		var payerIdSelect = document.getElementById("receivedType");
 		var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
 		var paidAmount = document.getElementById("receivedAmount").value;
@@ -1923,7 +1923,7 @@ function payBill(){
 		var dueDate = document.getElementById("orderDate").value;
 		var categoryIdString  = document.getElementById("categoryId");
 		var categoryId = categoryIdString.options[categoryIdString.selectedIndex].value;
-		var memo = document.getElementById("memo").value;
+		var memo = document.getElementById("memo").value.trim();
 		
 		if(checkNo == '' || checkNo == '0')
 		{
@@ -1954,24 +1954,24 @@ function payBill(){
 					 alert("<spring:message code='BzComposer.billpayable.someerroroccurred'/>");
 				} 
 			});
-	  	
-	  	$(document.forms[0]).submit(function( event ) {
+		debugger;
+	  	$(document.forms[1]).submit(function( event ) {
 		    event.preventDefault();
 		});
 		
 	}
 	function makePayment()
 	{
-		
+		debugger;
 		var paidAmount;
 		var amountPaid;
-		var billNo = document.getElementById("ordernumber").innerHTML;
+		var billNo = document.getElementById("ordernumber").innerHTML.trim();
 		var payerIdSelect = document.getElementById("receivedType");
 		if(payerIdSelect.options[payerIdSelect.selectedIndex]!=undefined)
 			{
 			var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
 			}
-		var totalAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text();
+		var totalAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text().trim();
 		/*  if(!$('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text() == '')
 		{	
 			paidAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text();
@@ -1999,7 +1999,7 @@ function payBill(){
 		var balance = parseFloat(totalAmount) - parseFloat(amountPaid);
 		var customerName = document.getElementById("customerName");
 		var vendorId = customerName.options[customerName.selectedIndex].value; 
-		var amount = document.getElementById("devAmount").innerHTML;
+		var amount = document.getElementById("devAmount").innerHTML.trim();
 		var dueDate = document.getElementById("orderDate").value;
 		var categoryIdString  = document.getElementById("categoryId");
 		if(categoryIdString.options[categoryIdString.selectedIndex]!=undefined)
@@ -2007,7 +2007,7 @@ function payBill(){
 			var categoryId = categoryIdString.options[categoryIdString.selectedIndex].value;
 		}
 	
-		var memo = document.getElementById("memo").value;
+		var memo = document.getElementById("memo").value.trim();
 		
 		if(checkNo == '' || checkNo == '0')
 		{
@@ -2043,7 +2043,8 @@ function payBill(){
 			} 
 		});
   	
-  	$(document.forms[0]).submit(function( event ) {
+  	$(document.forms[1]).submit(function( event ) {
+  		debugger;
 	    event.preventDefault();
 	});
 	}
@@ -2267,6 +2268,7 @@ else
 			 });
 		 function addCss()
 		   {
+			 debugger;
 			   $(document).ready(function () {
 				    $('tr').click(function () {
 				         var selected = $(this).hasClass("highlight"); 
@@ -2281,7 +2283,10 @@ else
 		   }
 		function updateBillPayableTab(data)
 		{
-			$("#billCreationForm")[0].reset();
+			debugger;
+			//$("#billCreationForm")[1].reset();
+			$("#billCreationForm").trigger("reset");	
+			$(document.forms[1]).trigger('reset');
 			$(document).find('div#tblForInvoiceOrder table').replaceWith($(data).find('div#tblForInvoiceOrder').html());
 			$(document).find('div#totalAmountLabelDiv label').eq(1).text(this.value).replaceWith($(data).find('div#totalAmountLabelDiv label').eq(1).text(this.value));
 			$(document).find('div#recurrentPaymentListForPayee table').replaceWith($(data).find('div#recurrentPaymentListForPayee').html());
@@ -2554,7 +2559,7 @@ function closedialog() {
 }
 function SaveCloseBill()
 {
-	
+	debugger;
 	var billRadio = $("#createBillRadio").prop("checked");
 	var billType = 0;
 	if(billRadio == true)
@@ -2577,10 +2582,10 @@ function SaveCloseBill()
 		alert("<spring:message code='BzComposer.billcreation.choosevalidcategory'/>");
 		return false;
 	}
-	var billNum = $("#BillNumberForCreate").val();
+	var billNum = $("#BillNumberForCreate").val().trim();
 	var dateAdded = $("#billDateCalendarText").val();
-	var dueDate = $("#billDuedateCalendarText").val();
-	var memo = $("#memoForCreateBill").val();
+	var dueDate = $("#billDuedateCalendarText").val().trim();
+	var memo = $("#memoForCreateBill").val().trim();
 	var expenseAccountCombo = document.getElementById("expenseAccountId");
 	var expenseAccount = expenseAccountCombo.options[expenseAccountCombo.selectedIndex].value;
 	var expenseAccountName = expenseAccountCombo.options[expenseAccountCombo.selectedIndex].text;

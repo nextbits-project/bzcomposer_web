@@ -387,7 +387,7 @@ table.tabla-listados tbody tr td {
 				      <td class="text-right"><%= String.format("%.2f", rb.getBalance()) %></td>
 				      <td class="text-right"><%= String.format("%.2f", rb.getCustomercreditline()) %></td>
 				      <td class="text-right"><%= String.format("%.2f", rb.getRemainingcreditamount()) %></td>
-				      <td class="text-right" value=<%=rb.getCategoryID() %>><% out.println(rb.getTblCategoryDto()); %></td>
+				      <td class="text-right" value=<%=rb.getCategoryID() %>><% out.println(rb.getCategoryName()); %></td>
 				      <td class="text-right"><% out.println(rb.getMemo()); %></td>
 				      <td hidden="PaymentTypeID" value="<%=rb.getPaymentTypeID()%>"></td>
 				      <td hidden="BankAccountId" value="<%=rb.getBankAccountID()%>"></td>
@@ -940,7 +940,10 @@ table.tabla-listados tbody tr td {
    {
 	   window.location = "${pageContext.request.contextPath}/OverDueTab?tabid=overDueTab";
    }
-
+   function eSales()
+   {
+		window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=eSales";
+   }
    function CustomerRMARefund()
    {
 	   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=CustomerRMARefund";
