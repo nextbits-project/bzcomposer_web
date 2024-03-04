@@ -236,7 +236,7 @@ public class SalesBoardInfo {
 				StringBuffer query2 = new StringBuffer("select new " + SalesBoard.class.getCanonicalName()
 						+ " (a.lastName, a.firstName, a.email, b.address1 , b.address2, b.city , b.state , b.country, b.zipCode, a.name) "
 						+ " from BcaClientvendor a , BcaBillingaddress b where a.clientVendorId = :clientVendorId and b.addressId = :addressId "
-						+ " and a.active =1 and b.active =1 and a.status in ('N' , 'U') and b.status in ('N') and a.deleted=0 and b.isDefault =1 ");
+						+ " and a.active =1 and b.active =1 and a.status in ('N' , 'U') and b.status in ('N', 'U') and a.deleted=0 and b.isDefault =1 ");
 
 				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
 

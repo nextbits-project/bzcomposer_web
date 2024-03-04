@@ -301,7 +301,7 @@ public class LeadService {
 	@Transactional
 	public void addClientVendor(CustomerDto customerDto, String companyId) {
 		BcaClientvendor clientVendor = new BcaClientvendor();
-		clientVendor.setClientVendorId(Integer.parseInt(customerDto.getClientVendorID()));
+		//clientVendor.setClientVendorId(Integer.parseInt(customerDto.getClientVendorID()));
 		clientVendor.setFirstName(customerDto.getFirstName());
 		clientVendor.setMiddleName(customerDto.getMiddleName());
 		clientVendor.setLastName(customerDto.getLastName());
@@ -389,7 +389,9 @@ public class LeadService {
 		clientVendor.setReferenceCustomerId(0);
 		clientVendor.setBankAccountId(0);
 
-		clientVendorRepo.save(clientVendor);
+		BcaClientvendor savedClientVendor = clientVendorRepo.save(clientVendor);
+
+		customerDto.setClientVendorID(savedClientVendor.getClientVendorId().toString());
 	}
 
 //	Adding Lead Shipping Address

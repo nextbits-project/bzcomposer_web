@@ -464,7 +464,8 @@ public class ConfigurationDAO {
 				ConfigurationDto pojo = new ConfigurationDto();
 				pojo.setPaymentTypeId(receivedType.getPaymentTypeId());
 				pojo.setPaymentName(receivedType.getName());
-				pojo.setDefaultPaymentTypeId(receivedType.getIsDefault());
+//				pojo.setDefaultPaymentTypeId(receivedType.getIsDefault());
+				pojo.setDefaultPaymentTypeId(receivedType.getIsDefault() != null ? receivedType.getIsDefault() : false);
 				paymentType.add(pojo);
 			}
 		} catch (Exception e) {
