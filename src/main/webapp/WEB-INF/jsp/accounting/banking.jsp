@@ -234,10 +234,10 @@ label {
 							id="AddAccount"><spring:message code="BzComposer.global.add" /></a>
 						<a style="color: #fff; font-size: 14px;" class="btn btn-info"
 							id="EditAccount"><spring:message
-								code="BzComposer.global.edit" /></a> <a
-							style="color: #fff; font-size: 14px;" class="btn btn-info"
+								code="BzComposer.global.edit" /></a> 
+						<%-- <a	style="color: #fff; font-size: 14px;" class="btn btn-info"
 							id="TranseferFundsBtn"><spring:message
-								code="BzComposer.banking.transeferfundsbtn" /></a>
+								code="BzComposer.banking.transeferfundsbtn" /></a> --%>
 					</div>
 				</div>
 				<div class="col-md-9 d-flex flex-column full-height">
@@ -799,7 +799,8 @@ label {
 													<tr>
 														<td><label><spring:message
 																	code="BzComposer.banking.payeeaccount" /></label></td>
-														<td><select style="width: 100%"
+														<td>
+														<select style="width: 100%"
 															id="payeenameForDeposit"
 															onchange="changeBankForDeposit()">
 																<option value=""><spring:message
@@ -808,10 +809,11 @@ label {
 																	varStatus="loop">
 																	<c:if test="${not empty curObject.name}">
 																		<option value="${curObject.customerCurrentBalance}"
-																			id="${curObject.accountID}">${curObject.name}</option>
+																			id="${curObject.accountID}" ${curObject.name == 'American Express' ? 'selected' : ''}>${curObject.name}</option>
 																	</c:if>
 																</c:forEach>
-														</select></td>
+														</select>
+														</td>
 													</tr>
 													<tr>
 														<td><label><spring:message
@@ -1403,7 +1405,9 @@ function saveMainCategory(){
     });
 }
 function addAccount(){
-	
+	debugger;
+	var accountCategoryString = document.getElementById("acForAddAccount");
+	var accountCategoryId = accountCategoryString.options[accountCategoryString.selectedIndex].value;
 	var payerIdString = document.getElementById("devAdAccount");
 	var payerId = payerIdString.options[payerIdString.selectedIndex].id;
 	var customerCurrentBalanceString = payerIdString.options[payerIdString.selectedIndex].value; 
@@ -1511,8 +1515,45 @@ function afterCategoryChange()
 	    });
 	});
 } 
-function deleteBankAccount()
+
+ function deleteBankAccount()
+ {
+ 	//debugger; 	
+ 		event.preventDefault();
+ 		$("#deleteaccountdialog").dialog({
+ 		    	resizable: false,
+ 		        height: 200,
+ 		        width: 500,
+ 		        modal: true,
+ 		        buttons: {
+ 		        	"<spring:message code='BzComposer.global.ok'/>": function () {
+ 		            	$.ajax({
+ 		        			type : "POST",
+ 		        			url : "BankingCategory?tabid=DeleteAccount",
+ 		        			data :"AccountId=" +acID,
+ 		        		    success : function(data) {
+ 		        		    	window.location.reload();
+ 		        				/* $(document).find('div#treeView2').replaceWith('<div id="treeView2" class="treeview">'+ $(data).find('div#treeView2').html() + '</div>');
+ 		        		    	updatebankingTab(data);
+ 		        		    	updateTree(); */
+ 		        			},
+ 		        			 error : function(data) {
+ 		        				return errorMessageDialog();
+ 		        			} 
+ 		        		});
+ 		            },
+ 		            "<spring:message code='BzComposer.global.cancel'/>": function () {
+ 		                $(this).dialog("close");
+ 		                return false;
+ 		            }
+ 		        }
+ 		    });
+ 		    return false;
+ }
+ 
+function deleteBankAccountOld()
 {
+	debugger;
 	if(totalPaymentList > 1)
 	{
 
@@ -1693,7 +1734,8 @@ $(document).ready(function () {
 		   else {
 		    $("#popupWindow").dialog({
 	    	   modal: true,
-	    	   title: 'Add Transaction'
+	    	   title: 'Add Transaction',
+	    	   position: { my: "center", at: "center", of: "#transactionTable" }
 	        });
 		   $("#dlgDate").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
 		   $("#dlgDateForPayment").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
@@ -1705,6 +1747,12 @@ $(document).ready(function () {
 		   }      
 	    });
 
+   /*  $("#popupWindow").dialog({
+        modal: true,
+        title: 'Add Transaction',
+        position: { my: "center", at: "center", of: window }
+    }); */
+    
 	   $("#showEditTransactionDialog").on("click", function(){
 		   
 		   if(Index == -1){
@@ -1714,6 +1762,7 @@ $(document).ready(function () {
 		    }
 		   $("#EditTransactionDialog").dialog({
 	    	   modal: true,
+	    	   position: { my: "center", at: "center", of: "#transactionTable" },
 	    	   title: 'Edit Transaction'
 	       });
 	   });
@@ -1734,7 +1783,8 @@ $(document).ready(function () {
 
 		$("#AddAccountDialog").dialog({
 	    	modal: true,
-	        title: 'Add Account'
+	        title: 'Add Account',
+	        position: { my: "center", at: "center", of: "#transactionTable" }
 	    });
 	    $("#acForAddAccount").val(accountCategoryId);
 	    //$("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
@@ -1748,7 +1798,8 @@ $(document).ready(function () {
         document.getElementById("mainCategoryBtnUpdate").style.display = "block";
 		$("#AddAccountDialog").dialog({
 	    	modal: true,
-	        title: 'Edit Bank Account'
+	        title: 'Edit Bank Account',
+	        position: { my: "center", at: "center", of: "#transactionTable" }
 	    });
         $.ajax({
             type : "POST",
@@ -1779,7 +1830,8 @@ $(document).ready(function () {
 		   
         $("#popupWindow").dialog({
             modal: true,
-            title: 'Transefer Funds'
+            title: 'Transefer Funds',
+            position: { my: "center", at: "center", of: "#transactionTable" }
         });
         
     });
@@ -2315,6 +2367,7 @@ function selectPaymentDialog()
         height: 200,
         width: 350,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2332,6 +2385,7 @@ function selectTransactionDialog()
         height: 200,
         width: 300,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2349,6 +2403,7 @@ function selectotherbankdialog()
         height: 200,
         width: 300,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2366,6 +2421,7 @@ function editableaccountcategorydialog()
         height: 200,
         width: 300,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2383,6 +2439,7 @@ function canteditesalesbankaccountdialog()
         height: 200,
         width: 300,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2399,6 +2456,7 @@ function showselectcategorydialog(){
         height: 200,
         width: 300,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2415,6 +2473,7 @@ function showEditableAccountNotSelectedDialog(){
         height: 200,
         width: 500,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2432,6 +2491,7 @@ function shownotdeletedaccountdialog()
         height: 200,
         width: 300,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2449,6 +2509,7 @@ function shostartingaccbalancedialog()
         height: 200,
         width: 300,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2466,6 +2527,7 @@ function showremovetranactiondialog()
         height: 200,
         width: 300,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2505,6 +2567,7 @@ function showSelectPayeeAccountFirstDialog(){
         height: 200,
         width: 400,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");
@@ -2520,6 +2583,7 @@ function showEnterRequiredFieldDialog(){
         height: 200,
         width: 400,
         modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
         buttons: {
             "<spring:message code='BzComposer.global.ok'/>": function () {
                 $(this).dialog("close");

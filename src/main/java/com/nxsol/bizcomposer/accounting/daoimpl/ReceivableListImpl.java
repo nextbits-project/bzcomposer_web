@@ -8001,9 +8001,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 		try {
 			BcaAccount account = bcaAccountRepository
 					.findByAccountIdAndCompany_CompanyId(accountId, new Long(ConstValue.companyId)).orElse(null);
+			BcaAcctcategory acctCat = bcaAcctcategoryRepository.getOne(newAccount.getAccountCategoryID());
 			if (null != account) {
 				account.setName(newAccount.getName().replaceAll("'", "''"));
 				account.setMainaccount(new BigDecimal(newAccount.getIsitmainaccount()));
+				account.setAcctCategory(acctCat);
 				bcaAccountRepository.save(account);
 			}
 
@@ -8559,27 +8561,32 @@ public class ReceivableListImpl implements ReceivableLIst {
 			Optional<BcaCompany> company = bcaCompanyRepository.findById(new Long(ConstValue.companyId));
 			if (company.isPresent())
 				bcaPayment.setCompany(company.get());
-			String dateAddded = payment.getDateAdded() == null ? null
-					: ("'" + JProjectUtil.getDateFormaterCommon().format(new Date()) + "'");
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//			String dateAdded = payment.getDateAdded() == null ? null
+//					: ("'" + JProjectUtil.getDateFormaterCommon().format(new Date()) + "'");
+//	        String dateAddeds = payment.getDateAdded() == null ? null : JProjectUtil.getDateFormaterCommon().format(new Date());
+//			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-			try {
-				// Parse the string to create a LocalDateTime
-				LocalDateTime localDateTime = LocalDateTime.parse(dateAddded, formatter);
+			Date dateAdded = (payment.getDateAdded() == null || payment.getDateAdded().equals("")) ? string2date(" now() ")
+					: payment.getDateAdded();
+			bcaPayment.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
 
-				// Assume a specific offset, for example, UTC+0
-				ZoneOffset offset = ZoneOffset.UTC;
-
-				// Convert LocalDateTime to OffsetDateTime
-				OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime, offset);
-
-				// Output the result
-				System.out.println("Parsed OffsetDateTime: " + offsetDateTime);
-				bcaPayment.setDateAdded(offsetDateTime);
-			} catch (Exception e) {
-				// Handle parsing exception
-				System.err.println("Error parsing date: " + e.getMessage());
-			}
+//			try {
+//				// Parse the string to create a LocalDateTime
+//				LocalDateTime localDateTime = LocalDateTime.parse(dateAdded, formatter);
+//
+//				// Assume a specific offset, for example, UTC+0
+//				ZoneOffset offset = ZoneOffset.UTC;
+//
+//				// Convert LocalDateTime to OffsetDateTime
+//				OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime, offset);
+//
+//				// Output the result
+//				System.out.println("Parsed OffsetDateTime: " + offsetDateTime);
+//				bcaPayment.setDateAdded(offsetDateTime);
+//			} catch (Exception e) {
+//				// Handle parsing exception
+//				System.err.println("Error parsing date: " + e.getMessage());
+//			}
 			bcaPayment.setIsToBePrinted((payment.isToBePrinted() == true ? true : false));
 			bcaPayment.setIsNeedtoDeposit((payment.isNeedToDeposit() == false ? true : false));
 			bcaPayment.setTransactionId(payment.getTransactionID());
@@ -12922,5 +12929,29 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 		return dtos;
 	}
+	
+	public java.sql.Date string2date(String d) {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+
+		Date d1 = null;
+		try {
+
+			d1 = sdf.parse(d);
+
+		} catch (ParseException e) {
+			Loger.log(2, "ParseException" + e.getMessage());
+
+		}
+
+		return (d1 != null ? new java.sql.Date(d1.getTime()) : new java.sql.Date(new Date().getTime()));
+
+	}
+
+	public String date2String(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		String dateString = sdf.format(date);
+		return dateString;
+	}
+
 
 }
