@@ -31,6 +31,9 @@ public class BcaClientcategory {
     @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
+    @Column(name = "IsDefault")
+	private Boolean isDefault;
+    
     @OneToMany(mappedBy = "cvcategory")
     private Set<StorageClientvendor> cvcategoryStorageClientvendors;
 
@@ -75,4 +78,13 @@ public class BcaClientcategory {
         this.cvcategoryStorageClientvendors = cvcategoryStorageClientvendors;
     }
 
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
+
+    
 }

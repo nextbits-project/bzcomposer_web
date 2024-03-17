@@ -13,6 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ * @deprecated This class is deprecated and will be removed in future versions.
+ * Use bca_clientcategory BcaClientcategory instead.
+ */
+@Deprecated
 @Entity
 @Table(name = "bca_cvcategory")
 public class BcaCvcategory {
