@@ -3381,7 +3381,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (null != bcaPayment.getPaymentType())
 					payment.setOldPaymentTypeId(bcaPayment.getPaymentType().getPaymentTypeId());
 				payment.setCheckNumber(bcaPayment.getCheckNumber());
-				payment.setNeedToDeposit(bcaPayment.getIsNeedtoDeposit());
+//				payment.setNeedToDeposit(bcaPayment.getIsNeedtoDeposit());
+				payment.setNeedToDeposit(bcaPayment.getIsNeedtoDeposit() != null ? bcaPayment.getIsNeedtoDeposit() : false);
 				/* payment.setCvID(rs.getInt("ClientVendorID")); */ // changed by pritesh 09-08-2018
 				if (null != bcaPayment.getClientVendor())
 					payment.setOldclientVendorID(bcaPayment.getClientVendor().getClientVendorId());
@@ -7285,22 +7286,42 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				clientVendor.setCvID(rs.getInt("ClientVendorID"));
 //				cvList.add(clientVendor);
 //			}
-			List<Object[]> bcaclientVendor = bcaClientvendorRepository.findAllClientVendorList(
-					new Long(ConstValue.companyId), getCustomerTypeId(ConstValue.VENDOR),
+			List<String> status = Arrays.asList("U", "N");
+			List<Integer> cvTypeId = Arrays.asList(getCustomerTypeId(ConstValue.VENDOR),
 					getCustomerTypeId(ConstValue.CustVenBoth), getCustomerTypeId(ConstValue.DealerVenBoth));
-			for (Object[] obj : bcaclientVendor) {
-				try {
-					ClientVendor clientVendor = new ClientVendor();
-					String name = (String) obj[0];
-					clientVendor.setName(name.equals("") ? name : name.trim());
-					clientVendor.setFirstName(((String) obj[1]).trim());
-					clientVendor.setLastName(((String) obj[2]).trim());
-					clientVendor.setCvID((Integer) obj[3]);
-					cvList.add(clientVendor);
-				} catch (Exception e) {
-					Loger.log(e.toString());
-				}
+//			List<Object[]> bcaclientVendor = bcaClientvendorRepository.findAllClientVendorList(
+//					new Long(ConstValue.companyId), getCustomerTypeId(ConstValue.VENDOR),
+//					getCustomerTypeId(ConstValue.CustVenBoth), getCustomerTypeId(ConstValue.DealerVenBoth));
+			
+			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository.findDistinctByCompany_CompanyIdAndStatusInAndCvtypeIdInAndDeletedAndActiveOrderByName(ConstValue.companyIdLong, status, cvTypeId, 0, 1);
+			
+			for (BcaClientvendor bcaClientvendor : bcaClientvendors) {
+				ClientVendor clientVendor = new ClientVendor();
+
+				String name = bcaClientvendor.getName();
+				clientVendor.setName(name.equals("") ? name : name.trim());
+				clientVendor.setFirstName(bcaClientvendor.getFirstName() != null ? bcaClientvendor.getFirstName().trim() : "");
+				clientVendor.setLastName(bcaClientvendor.getLastName() != null ? bcaClientvendor.getLastName().trim() : "");
+//				clientVendor.setFirstName(bcaClientvendor.getFirstName().trim());
+//				clientVendor.setLastName(bcaClientvendor.getLastName().trim());
+				clientVendor.setCvID(bcaClientvendor.getClientVendorId());
+				cvList.add(clientVendor);
 			}
+//			for (Object[] obj : bcaclientVendor) {
+//				try {
+//					ClientVendor clientVendor = new ClientVendor();
+//					String name = (String) obj[0];
+//					clientVendor.setName(name.equals("") ? name : name.trim());
+////					clientVendor.setFirstName(((String) obj[1]).trim());
+////					clientVendor.setLastName(((String) obj[2]).trim());
+//					clientVendor.setFirstName(Optional.ofNullable(obj[1]).map(Object::toString).map(String::trim).orElse(""));
+//					clientVendor.setLastName(Optional.ofNullable(obj[2]).map(Object::toString).map(String::trim).orElse(""));
+//					clientVendor.setCvID((Integer) obj[3]);
+//					cvList.add(clientVendor);
+//				} catch (Exception e) {
+//					Loger.log(e.toString());
+//				}
+//			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
@@ -7760,18 +7781,22 @@ public class ReceivableListImpl implements ReceivableLIst {
 	public ArrayList<ClientVendor> getAllClientVendor() {
 		// TODO Auto-generated method stub
 		ArrayList<ClientVendor> allClientvendor = new ArrayList<ClientVendor>();
+		List<String> status = Arrays.asList("U", "N");
 		try {
 //			BcaCompany company = bcaCompanyRepository.getOne(new Long(ConstValue.companyId));
-			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository
-					.findListOfClientVendorDetails(new Long(ConstValue.companyId));
+//			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository
+//					.findListOfClientVendorDetails(new Long(ConstValue.companyId));
+			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository.findDistinctByCompany_CompanyIdAndStatusInAndDeletedAndActiveOrderByName(ConstValue.companyIdLong, status, 0, 1);
 			for (BcaClientvendor bcaClientvendor : bcaClientvendors) {
 				ClientVendor clientVendor = new ClientVendor();
 
 				String name = bcaClientvendor.getName();
 
 				clientVendor.setName(name.equals("") ? name : name.trim());
-				clientVendor.setFirstName(bcaClientvendor.getFirstName().trim());
-				clientVendor.setLastName(bcaClientvendor.getLastName().trim());
+				clientVendor.setFirstName(bcaClientvendor.getFirstName() != null ? bcaClientvendor.getFirstName().trim() : "");
+				clientVendor.setLastName(bcaClientvendor.getLastName() != null ? bcaClientvendor.getLastName().trim() : "");
+//				clientVendor.setFirstName(bcaClientvendor.getFirstName().trim());
+//				clientVendor.setLastName(bcaClientvendor.getLastName().trim());
 				clientVendor.setCvID(bcaClientvendor.getClientVendorId());
 				allClientvendor.add(clientVendor);
 			}

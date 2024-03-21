@@ -285,7 +285,7 @@ label {
 										<c:if
 											test="${selectedAccount.accountID == curObject.payeeID || selectedAccount.accountID == curObject.payerID}">
 											<tr
-												onclick="return selectRow(${loop.index+1}, ${curObject.id}, ${selectedAccount.accountID},${curObject.payeeID},${curObject.paymentTypeID},${curObject.categoryId},${curObject.amount},${curObject.checkNumber},${curObject.toCurrentBalance})">
+												onclick="return selectRow(${loop.index+1}, ${curObject.id}, ${selectedAccount.accountID},${curObject.payeeID},${curObject.paymentTypeID},${curObject.categoryId},${curObject.amount},${curObject.checkNumber == '' || curObject.checkNumber == null ? '0' : curObject.checkNumber},${curObject.toCurrentBalance},${curObject.cvID})">
 												<td class="text-right" id="formatedDate"><fmt:formatDate
 														pattern="MM-dd-yyyy" value="${curObject.dateAdded}" /></td>
 												<td class="text-right"><c:choose>
@@ -1165,10 +1165,11 @@ label {
 	var IsItMain = -1;
 	var status;
 	var totalPaymentList = -1;
-	function selectRow(index , payId,accId,payeId,payMethodId,catId,amount,checkNumber,toCurrentbalance)
+	function selectRow(index , payId,accId,payeId,payMethodId,catId,amount,checkNumber,toCurrentbalance, cvID)
 	{
+		debugger;
 		  var formatedDate=document.getElementById("formatedDate").textContent;
-
+		//var cvID =3;
 		    // console.log("amount: " + amount);
 		    // console.log("toCurrentBalance"+toCurrentbalance);
 		    // console.log("formattedDate: " + formatedDate); 
@@ -1185,7 +1186,9 @@ label {
 			{
 			 	id = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('label');
 			}
-		$("select.accountFieldForEdit").val(accountId);
+		 $("select.accountFieldForEdit").val(accountId);
+		 $("select#payerForEdit").val(cvID);
+		
 		/* $("select.payMethodForEdit").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(7)').attr('value'));
 		 */
 		 $("select.payMethodForEdit").val(payMethodId);
@@ -1294,7 +1297,7 @@ function closeEditTransaction(){
 	function editTransaction()
 	{
 		// console.log("inside edit");
-		
+		debugger;
 		var oldClientVendorId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('value');
 		// console.log("oldClientVendorId "+oldClientVendorId);
 		var oldAccountId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(10)').attr('value');
@@ -1754,7 +1757,7 @@ $(document).ready(function () {
     }); */
     
 	   $("#showEditTransactionDialog").on("click", function(){
-		   
+		   debugger;
 		   if(Index == -1){
 
 				return selectPaymentDialog();
