@@ -39,7 +39,13 @@
 	background-color: #DBEAF5;
 	padding: 0px;
 }
-
+.customSearchBtn {
+	color: #fff !important;
+    margin: 5px 10px;
+}
+/* .customSearch{
+	display: none !important;
+} */
 textarea,select,input {
 	font: 10px Verdana, arial, helvetica, sans-serif;
 /* 	background-color: #DBEAF5; */

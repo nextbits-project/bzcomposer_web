@@ -133,6 +133,9 @@ label {
 .errorField {
 	color: red ! important;
 }
+.customSearch{
+	display: none;
+}
 </style>
 </head>
 <body>
@@ -143,18 +146,21 @@ label {
 				<spring:message code="BzComposer.banking.bankingtitle" />
 			</h3>
 			<div class="filterbar filterbar1">
-				<div class="form-inline float-right">
+				<div class="customSearch form-inline float-right ">
 					<label> <spring:message code="BzComposer.banking.datefrom" />
-					</label> <input type="text" readonly="true" class="form-control"
-						id="dateFrom">
+					</label> <input type="text" class="form-control"
+						id="cusDateFrom">
 					<div class="input-group-append">
 						<a class="input-group-text" href="#">&#9662;</a>
 					</div>
 					<label> <spring:message code="BzComposer.banking.dateto" />
-					</label> <input type="text" readonly="true" class="form-control"
-						id="dateTo">
+					</label> <input type="text" class="form-control"
+						id="cusDateTo">
 					<div class="input-group-append">
 						<a class="input-group-text" href="#">&#9662;</a>
+					</div>
+					<div class="">
+						<a class="form-control customSearchBtn btn btn-info">Search</a>
 					</div>
 				</div>
 				<div class="form-inline">
@@ -1475,6 +1481,7 @@ function addAccount(){
 
 	function clearTransaction()
 	{
+		debugger;
 		if(paymentId == '' || paymentId == -1)
 		{
 			// console.log("ghhhhhhhhhhhhhhhhh")
@@ -1648,8 +1655,8 @@ function dayName(date) {
 }
 
 $(function() {
-    $( "#dateFrom" ).datepicker();
-    /* $( "#dateTo" ).datepicker(); */
+    $( "#cusDateFrom" ).datepicker();
+     $( "#cusDateTo" ).datepicker();
 });
 
 function showTransaction(Id, catID, accName){
@@ -1702,8 +1709,10 @@ $(document).ready(function () {
     });
     
     this.dName = dayName(this.day);
-    $("#dateFrom").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
-    $("#dateTo").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
+   /*  $("#cusDateFrom").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
+    $("#cusDateTo").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear()); */
+    $("#cusDateFrom").val(((new Date().getMonth())+1)+"/"+new Date().getDate()+"/"+new Date().getFullYear());
+    $("#cusDateTo").val(((new Date().getMonth())+1)+"/"+new Date().getDate()+"/"+new Date().getFullYear());
     $("#popupWindow").hide();
     $("#EditTransactionDialog").hide();
     $("#AddAccountDialog").hide();
@@ -2201,6 +2210,7 @@ function addTrafsactioFromDeposit(){
 
 function updatebankingTab(data)
 {
+	debugger;
 	$(document).find('div#selectedAccount h4').replaceWith($(data).find('div#selectedAccount').html()); 
 	$(document).find('div#transactionTable table').replaceWith($(data).find('div#transactionTable').html());
 	if($(data).find('div#bottom label').eq(1).text(this.value).text() == ""){
@@ -2220,9 +2230,54 @@ function updatebankingTab(data)
 	/* updateTree(); */ 
 	addCss();
 }
+$(document).ready(function() {
+    // Function to be called on click
+    function onCustomSearchBtnClick() {
+       
+        var rangeType = document.getElementById("rangeId");
+        if(acID == '-1') {
+            acID = '56933';
+        }
+        debugger;
+        var range = rangeType.options[rangeType.selectedIndex].value;
+        var transactionFilterType = document.getElementById("transactionFilterId");
+        var transactionFilterId = transactionFilterType.options[transactionFilterType.selectedIndex].value;
+        var fromDate = document.getElementById('cusDateFrom').value;
+        var toDate = document.getElementById('cusDateTo').value;
+
+        // Check if either date is empty
+        if (!fromDate || !toDate) {
+            alert('Both dates must be selected.');
+            // You can also return false or perform other actions here
+            return;
+        }
+        if(range == 2) {
+            var customSearchElement = document.querySelector('.customSearch');
+            customSearchElement.style.display = 'flex';
+        } else {
+            var customSearchElement = document.querySelector('.customSearch');
+            customSearchElement.style.display = 'none';
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: "BankingCategory?tabid=slectedMenu&SelectedRange=" + range+"&fromDate=" + fromDate +"&toDate=" + toDate,
+            data: "Ac=" + acID + "&TransactionRange=" + transactionFilterId,       
+            success: function(data) {
+                updatebankingTab(data);
+            },
+            error: function(data) {
+                return errorMessageDialog();
+            }
+        });
+    }
+
+    // Attach the click event listener to .customSearchBtn
+    $('.customSearchBtn').click(onCustomSearchBtnClick);
+});
 
 $( ".rangeOP" ).change(function() {
-	     
+	   debugger;
 	   var rangeType = document.getElementById("rangeId");
 	   if(acID == '-1')
 	{
@@ -2231,25 +2286,30 @@ $( ".rangeOP" ).change(function() {
 	   var range = rangeType.options[rangeType.selectedIndex].value;
 	   var transactionFilterType = document.getElementById("transactionFilterId");
 	   var transactionFilterId = transactionFilterType.options[transactionFilterType.selectedIndex].value;
-		  $.ajax({
-				
-				type : "POST",
-			 	url : "BankingCategory?tabid=slectedMenu&SelectedRange=" + range,
-			 	data:"Ac=" +acID + "&TransactionRange=" + transactionFilterId,		
-			    success : function(data)
-			    {
-			
-			    updatebankingTab(data);
-					 
-				},
-				 error : function(data) {
-					return errorMessageDialog();
-				} 
-	  
-	 });
+		
+	   if(range==2){
+		   var customSearchElement = document.querySelector('.customSearch');
+		    customSearchElement.style.display = 'flex';
+	   }else{
+		   var customSearchElement = document.querySelector('.customSearch');
+		    customSearchElement.style.display = 'none';
+			$.ajax({
+					type : "POST",
+					url : "BankingCategory?tabid=slectedMenu&SelectedRange=" + range,
+					data:"Ac=" +acID + "&TransactionRange=" + transactionFilterId,		
+					success : function(data)
+						    {
+						    updatebankingTab(data);
+							},
+							 error : function(data) {
+								return errorMessageDialog();
+							} 
+				  });
+	   		}
+	   
 });
 $( ".transactionFilter" ).change(function() {
-	     
+	   debugger;  
 	   var rangeType = document.getElementById("rangeId");
 	   var transactionFilterType = document.getElementById("transactionFilterId");
 	   var transactionFilterId = transactionFilterType.options[transactionFilterType.selectedIndex].value;
@@ -2523,7 +2583,7 @@ function shostartingaccbalancedialog()
 }
 function showremovetranactiondialog()
 {
-
+	debugger;
 	event.preventDefault();
 	$("#showremovetranactiondialog").dialog({
     	resizable: false,

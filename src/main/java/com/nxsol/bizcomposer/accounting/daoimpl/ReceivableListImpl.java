@@ -3376,8 +3376,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 				if (null != bcaPayment.getPayable())
 					payment.setPayableID(bcaPayment.getPayable().getPayableId());
 				payment.setDateAdded(offsetDateTimeToDate(bcaPayment.getDateAdded()));
-				payment.setRmaNo(bcaPayment.getRmaNo());
-				payment.setRmaUniqueID(bcaPayment.getRmaItemId());
+				payment.setRmaNo(bcaPayment.getRmaNo() != null ? bcaPayment.getRmaNo() : -1);
+				payment.setRmaUniqueID(Optional.ofNullable(bcaPayment.getRmaItemId()).orElse(-1));
 				if (null != bcaPayment.getPaymentType())
 					payment.setOldPaymentTypeId(bcaPayment.getPaymentType().getPaymentTypeId());
 				payment.setCheckNumber(bcaPayment.getCheckNumber());
