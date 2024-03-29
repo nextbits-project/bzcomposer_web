@@ -1173,7 +1173,7 @@ label {
 	var totalPaymentList = -1;
 	function selectRow(index , payId,accId,payeId,payMethodId,catId,amount,checkNumber,toCurrentbalance, cvID)
 	{
-		debugger;
+		 
 		  var formatedDate=document.getElementById("formatedDate").textContent;
 		//var cvID =3;
 		    // console.log("amount: " + amount);
@@ -1303,7 +1303,7 @@ function closeEditTransaction(){
 	function editTransaction()
 	{
 		// console.log("inside edit");
-		debugger;
+		 
 		var oldClientVendorId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('value');
 		// console.log("oldClientVendorId "+oldClientVendorId);
 		var oldAccountId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(10)').attr('value');
@@ -1414,7 +1414,7 @@ function saveMainCategory(){
     });
 }
 function addAccount(){
-	debugger;
+	 
 	var accountCategoryString = document.getElementById("acForAddAccount");
 	var accountCategoryId = accountCategoryString.options[accountCategoryString.selectedIndex].value;
 	var payerIdString = document.getElementById("devAdAccount");
@@ -1481,7 +1481,7 @@ function addAccount(){
 
 	function clearTransaction()
 	{
-		debugger;
+		 
 		if(paymentId == '' || paymentId == -1)
 		{
 			// console.log("ghhhhhhhhhhhhhhhhh")
@@ -1563,7 +1563,7 @@ function afterCategoryChange()
  
 function deleteBankAccountOld()
 {
-	debugger;
+	 
 	if(totalPaymentList > 1)
 	{
 
@@ -1766,7 +1766,7 @@ $(document).ready(function () {
     }); */
     
 	   $("#showEditTransactionDialog").on("click", function(){
-		   debugger;
+		    
 		   if(Index == -1){
 
 				return selectPaymentDialog();
@@ -2210,7 +2210,7 @@ function addTrafsactioFromDeposit(){
 
 function updatebankingTab(data)
 {
-	debugger;
+	 
 	$(document).find('div#selectedAccount h4').replaceWith($(data).find('div#selectedAccount').html()); 
 	$(document).find('div#transactionTable table').replaceWith($(data).find('div#transactionTable').html());
 	if($(data).find('div#bottom label').eq(1).text(this.value).text() == ""){
@@ -2238,7 +2238,7 @@ $(document).ready(function() {
         if(acID == '-1') {
             acID = '56933';
         }
-        debugger;
+         
         var range = rangeType.options[rangeType.selectedIndex].value;
         var transactionFilterType = document.getElementById("transactionFilterId");
         var transactionFilterId = transactionFilterType.options[transactionFilterType.selectedIndex].value;
@@ -2277,7 +2277,7 @@ $(document).ready(function() {
 });
 
 $( ".rangeOP" ).change(function() {
-	   debugger;
+	    
 	   var rangeType = document.getElementById("rangeId");
 	   if(acID == '-1')
 	{
@@ -2309,7 +2309,7 @@ $( ".rangeOP" ).change(function() {
 	   
 });
 $( ".transactionFilter" ).change(function() {
-	   debugger;  
+	      
 	   var rangeType = document.getElementById("rangeId");
 	   var transactionFilterType = document.getElementById("transactionFilterId");
 	   var transactionFilterId = transactionFilterType.options[transactionFilterType.selectedIndex].value;
@@ -2583,7 +2583,7 @@ function shostartingaccbalancedialog()
 }
 function showremovetranactiondialog()
 {
-	debugger;
+	 
 	event.preventDefault();
 	$("#showremovetranactiondialog").dialog({
     	resizable: false,
