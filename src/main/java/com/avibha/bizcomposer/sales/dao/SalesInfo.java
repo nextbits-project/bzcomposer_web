@@ -28,6 +28,7 @@ import com.avibha.bizcomposer.sales.forms.SalesForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.nxsol.bzcomposer.company.domain.BcaCctype;
+import com.nxsol.bzcomposer.company.domain.BcaClientcategory;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaCvcategory;
 import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
@@ -42,6 +43,7 @@ import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
 import com.nxsol.bzcomposer.company.domain.BcaTerm;
 import com.nxsol.bzcomposer.company.domain.BcaTitle;
 import com.nxsol.bzcomposer.company.repos.BcaCctypeRepository;
+import com.nxsol.bzcomposer.company.repos.BcaClientcategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvcategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
@@ -179,13 +181,17 @@ public class SalesInfo {
 	@Autowired
 	private BcaCvcategoryRepository cvcategoryRepository;
 
+	@Autowired
+	private BcaClientcategoryRepository bcaClientcategoryRepository;
+	
 	public ArrayList<SalesForm> getCatType(Long compId) {
-		List<BcaCvcategory> cvcategories = cvcategoryRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		//List<BcaCvcategory> cvcategories = cvcategoryRepository.findByCompany_CompanyIdAndActive(compId, 1);
+		List<BcaClientcategory> bcaClientcategory = bcaClientcategoryRepository.findByCompany_CompanyIdAndActive(compId, 1);
 		ArrayList<SalesForm> objList = new ArrayList<>();
 
-		for (BcaCvcategory cvcategory : cvcategories) {
+		for (BcaClientcategory cvcategory : bcaClientcategory) {
 			SalesForm salesForm = new SalesForm();
-			salesForm.setCvCategoryID(cvcategory.getcVCategoryID().toString());
+			salesForm.setCvCategoryID(cvcategory.getCvcategoryId().toString());
 			salesForm.setCvCategoryName(cvcategory.getName());
 			salesForm.setDefaultItem(cvcategory.getIsDefault() != null ? cvcategory.getIsDefault() : false);
 			objList.add(salesForm);

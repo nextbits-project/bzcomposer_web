@@ -1339,7 +1339,7 @@ public class ItemInfoDao {
 		return objList;
 	}
 
-	public ArrayList getItemList(String compId) {
+	public ArrayList getItemList(String compId, String category) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
 //		SQLExecutor db = new SQLExecutor();
@@ -1380,14 +1380,24 @@ public class ItemInfoDao {
 			           + "FROM bca_iteminventory AS a "
 			           + "INNER JOIN bca_iteminventory AS b ON a.ParentID = b.InventoryID "
 			           + "LEFT JOIN bca_location AS l ON l.LocationID = a.Location "
-			           + "WHERE a.CompanyID = ?1 AND a.ParentID <> 0 AND a.Active = ?2 AND a.ItemTypeID <> 0 "
-			           + "ORDER BY a.ParentID";
-
+			           + "WHERE a.CompanyID = ?1 AND a.ParentID <> 0 AND a.Active = ?2 AND a.ItemTypeID <> 0 ";
+			           
+			
+			if(category != null && !category.isEmpty()) {
+				sql = sql.concat("AND b.InventoryCode =?3 ORDER BY a.ParentID");
+			} else {
+				sql = sql.concat("ORDER BY a.ParentID");
+			}
+			
 			// Execute the raw SQL query
 			Query nativeQuery = this.entityManager.createNativeQuery(sql);
 			nativeQuery.setParameter(1, Long.parseLong(compId)); // Assuming compId is a String variable holding the company ID
 			nativeQuery.setParameter(2, 1); // Assuming the 'active' flag is always set to 1
-
+			
+			if(category != null && !category.isEmpty()) {
+				nativeQuery.setParameter(3, category);
+			}
+			
 			// Get the result list
 //			List<Object[]> results  = nativeQuery.getResultList();
 			List<BcaIteminventoryDto> list = nativeQuery.unwrap(org.hibernate.query.Query.class)

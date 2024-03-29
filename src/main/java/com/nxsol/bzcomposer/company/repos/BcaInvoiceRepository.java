@@ -273,5 +273,9 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 	 
 	 @Query("SELECT MAX(e.invoiceId) FROM BcaInvoice e")
 	    Integer findMaxValueOfInvoiceId();
-
+	 
+	 @Modifying
+	 @Transactional
+	 @Query("UPDATE BcaInvoice bi set bi.invoiceStatus ='1', bi.deleted ='1' WHERE bi.company.companyId = :cid AND bi.invoiceId in(:invoiceids) ")
+	 int updateBcaInvoiceByInvoiceIds(@Param("cid") Long cid, @Param("invoiceids") List<Integer> invoiceids);
 }

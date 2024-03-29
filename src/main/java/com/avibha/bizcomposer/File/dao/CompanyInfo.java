@@ -27,6 +27,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -273,7 +274,7 @@ public class CompanyInfo {
 		return objSalesOrderList;
 	}
 
-	public ArrayList<InvoiceDto> selectInvoiceDetails(String compId, ConfigurationInfo configInfo)
+	public ArrayList<InvoiceDto> selectInvoiceDetails(String compId, ConfigurationInfo configInfo, Date sartYearDate, Date endYearDate)
 			throws ParseException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -287,8 +288,14 @@ public class CompanyInfo {
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID = " + compId
 					+ " AND c.ClientVendorID = i.ClientVendorID "
 					+ "AND c.Active = 1 and c.Status IN('N','U') and c.Deleted = 0 " + "AND c.CompanyID = " + compId
-					+ " AND i.OrderNum > 0 ORDER BY i.OrderNum DESC";
-
+					+ " AND i.OrderNum > 0 ";
+			
+			if(sartYearDate != null && endYearDate != null) {
+				sqlString = sqlString.concat("AND c.DateAdded between "+sartYearDate+" AND "+endYearDate+" ORDER BY i.OrderNum DESC");
+			} else {
+				sqlString = sqlString.concat("ORDER BY i.OrderNum DESC");
+			}
+			
 			pstmt = con.prepareStatement(sqlString.toString());
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
@@ -414,8 +421,8 @@ public class CompanyInfo {
 			 * "FROM bca_company WHERE CompanyId='"+ compId+ "'");
 			 */
 			sqlString.append(
-					"select InventoryCode, ItemTypeID,InventoryName,Qty from bca_iteminventory where CompanyID like '"
-							+ compId + "' and Active like '1' and ItemtypeId not like '0' order by parentid");
+					"select a.InventoryCode, a.ItemTypeID, a.InventoryName, a.Qty, b.InventoryCode AS category from bca_iteminventory AS a INNER JOIN bca_iteminventory AS b ON a.ParentID = b.InventoryID where a.CompanyID like '"
+							+ compId + "' and a.Active like '1' and a.ItemtypeId not like '0' order by a.parentid");
 			String sql = "";
 			pstmt = con.prepareStatement(sqlString.toString());
 			Loger.log(sqlString);
@@ -429,6 +436,7 @@ public class CompanyInfo {
 				itemList.setItemType(rs.getString(2));
 				itemList.setItemName(rs.getString(3));
 				itemList.setQty(rs.getString(4));
+				itemList.setCategory(rs.getString(5));
 				objItemListList.add(itemList);
 			}
 		} catch (SQLException ee) {

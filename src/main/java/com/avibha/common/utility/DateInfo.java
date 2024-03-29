@@ -5,10 +5,16 @@
  */
 package com.avibha.common.utility;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+@Component
 public class DateInfo {
 	
 	/*Returns the day of the month represented by this Date object. 
@@ -295,4 +301,27 @@ public class DateInfo {
 		dateCombo.add(fromDate);
 		dateCombo.add(toDate);
 	}
+	
+	public static Date asDate(LocalDate localDate) {
+		return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+	}
+	
+	public Date lastYearStartDate() {
+		int year = Year.now().getValue();
+		year = year-1;
+		System.out.println("last year: " + year);
+		Year thisYear = Year.of(year);
+		LocalDate localDateStartDate = thisYear.atMonth(Month.JANUARY).atDay(1);
+		return asDate(localDateStartDate);
+	}
+	
+	public Date lastYearEndDate() {
+		int year = Year.now().getValue();
+		year = year-1;
+		System.out.println("last year: " + year);
+		Year thisYear = Year.of(year);
+		LocalDate localDateEndDate = thisYear.atMonth(Month.DECEMBER).atEndOfMonth();
+		return asDate(localDateEndDate);
+	}
+	
 }

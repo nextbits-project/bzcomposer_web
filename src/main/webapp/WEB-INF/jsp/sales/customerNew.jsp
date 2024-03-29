@@ -74,6 +74,35 @@ table.tabla-listados tbody tr td {
 									</c:if>
 								</span>
 							</div>
+							<div style="width: 100%;">
+								<table style="width: 100%;">
+									<tr>
+										<td align="center"><input type="button"
+											class="formbutton" onclick="openCustomerMailSender();"
+											style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Email.SendMail'/>" />
+											<input type="button" class="formbutton"
+											onclick="openCustomerMailTemplates();" style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Email.MailTemplates'/>" />
+											<input type="button" class="formbutton"
+											onclick="manageCustomer('CONVERTCUSTOMERtoLEAD');" style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Customer.transform.lead'/>" />
+											<input type="button" class="formbutton"
+											onclick="manageCustomer('CONVERTCUSTOMERtoCONTACT');" style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Customer.transform.contact'/>" />
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" align="center"><input type="button"
+											class="formbutton" onclick="customerImport()"
+											style="padding: 7 15px;"
+											value="<spring:message code='menu.file.Import'/>" /> <input
+											type="button" class="formbutton" onclick="exportCustomer()"
+											style="padding: 7 15px;"
+											value="<spring:message code='menu.file.ExportTo'/>" /></td>
+									</tr>
+								</table>
+							</div>
 							<div style="float: right;">
 								<table>
 									<tr align="right">
@@ -127,9 +156,11 @@ table.tabla-listados tbody tr td {
 										<tr id='${loop.index}$$'
 											onclick="setRowId(${objList.clientVendorID}, ${loop.index}, true);"
 											ondblclick="goToCustomerBoard(${objList.clientVendorID});">
-											<td class="${objList.paymentUnpaid?'redColor':''}"><a
+											<td class="${objList.paymentUnpaid?'redColor':''}"><input type="checkbox" id="custID${loop.index}" value="${objList.clientVendorID}" onchange="addCustomerRowIndex(${loop.index}, ${objList.clientVendorID})" />
+											<a href="/Customer?tabid=CustomerBoard&selectedCvID=${objList.clientVendorID}">${objList.clientVendorID}</a></td>
+											<%-- <td class="${objList.paymentUnpaid?'redColor':''}"><a
 												href="/Customer?tabid=CustomerBoard&selectedCvID=${objList.clientVendorID}">${objList.clientVendorID}</a>
-											</td>
+											</td> --%>
 											<td>${objList.title} ${objList.firstName}${objList.middleName}
 												${objList.lastName}</td>
 											<td>${objList.companyName}</td>
@@ -167,6 +198,7 @@ table.tabla-listados tbody tr td {
 <script>
 let itemID = 0;
 let itemIndex = 0;
+let selectedRowIndexs = [];
 $(document).ready(function() {
     $('#custTable').DataTable({
         "iDisplayLength": 25,
@@ -242,6 +274,36 @@ function manageCustomer(cmd){
 			});
 			return false;
 		}
+		else if (cmd=="CONVERTCUSTOMERtoLEAD") {
+			if(confirm("<spring:message code='BzComposer.customerinfo.convertltolead'/>")==true) {
+				$.ajax({
+                    type : "GET",
+                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=6&cvID="+itemID,
+                    success : function(data) {
+                        location.reload();
+                    },
+                    error : function(error) {
+                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+                    }
+                });
+			}
+			return false;
+		}
+		else if (cmd=="CONVERTCUSTOMERtoCONTACT") {
+			if(confirm("<spring:message code='BzComposer.customerinfo.convertltocontact'/>")==true) {
+				$.ajax({
+                    type : "GET",
+                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=7&cvID="+itemID,
+                    success : function(data) {
+                        location.reload();
+                    },
+                    error : function(error) {
+                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+                    }
+                });
+			}
+			return false;
+		}
 	}
 }
 
@@ -270,6 +332,44 @@ function showCustomerValidationDialog(){
         }
     });
     return false;
+}
+
+function openCustomerMailSender(){
+    if (selectedRowIndexs.length == 0){
+        alert("<spring:message code='BzComposer.printlabels.selectcustomer'/>");
+        return false;
+    }else{
+        let CustIDs = "";
+        for(let x=0; x<selectedRowIndexs.length; x++){
+            CustIDs = CustIDs + selectedRowIndexs[x] +":";
+        }
+        CustIDs = CustIDs.substring(0, CustIDs.length-1);
+        window.open("Customer?tabid=ShowEmailOnCustomerBoard&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
+    }
+}
+
+function addCustomerRowIndex(rowId, custID){
+    let isFound = false;
+    let isChecked = document.getElementById('custID'+rowId).checked;
+    for(let x=0; x<selectedRowIndexs.length; x++){
+        if(selectedRowIndexs[x] == custID){
+            isFound = true;
+            break;
+        }
+    }
+    if(!isFound){
+        selectedRowIndexs.push(custID);
+    }
+    if(!isChecked){
+        const index = selectedRowIndexs.indexOf(custID);
+        if (index > -1) {
+          selectedRowIndexs.splice(index, 1);
+        }
+    }
+}
+
+function openCustomerMailTemplates(){
+	window.open("MailTemplates?tabid=getMailTemplates", null,"scrollbars=yes,height=500,width=1000,status=yes,toolbar=no,menubar=no,location=no");
 }
 
 </script>

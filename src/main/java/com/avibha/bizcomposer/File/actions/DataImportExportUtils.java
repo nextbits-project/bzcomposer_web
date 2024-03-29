@@ -57,6 +57,9 @@ public class DataImportExportUtils {
 
 	@Autowired
 	private ConfigurationInfo cinfo;
+	
+	@Autowired
+	CustomerInfoDao customerInfoDao;
 
 	private Title titleDAO;
 
@@ -729,7 +732,7 @@ public class DataImportExportUtils {
 		File file = new File(attachedFile.getOriginalFilename());
 		String[] fileName = file.getName().split("\\.");
 		ArrayList al = new ArrayList();
-		CustomerInfoDao customerInfoDao = new CustomerInfoDao();
+		//CustomerInfoDao customerInfoDao = new CustomerInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		try {
 			OutputStream os = new FileOutputStream(file);
@@ -750,7 +753,7 @@ public class DataImportExportUtils {
 						index++;
 						continue;
 					}
-					String[] data = line.split(",");
+					String[] data = line.split(",", -1);
 					CustomerDto customer = new CustomerDto();
 					customer.setCname(data[0]);
 					customer.setDbaName(data[1]);
@@ -770,8 +773,8 @@ public class DataImportExportUtils {
 					customer.setEmail(data[15]);
 					customer.setTexID(data[16]);
 					customer.setTaxAble(data[17]);
+					customer.setType(data[18]);
 					customer.setIsclient(data[18]);
-					customer.setType(data[19]);
 					customer.setOpeningUB(data[20]);
 					customer.setExtCredit(data[21]);
 					customer.setTerm(data[22]);

@@ -21,15 +21,17 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.avibha.bizcomposer.employee.dao.Title;
@@ -2027,6 +2029,7 @@ public class CustomerInfoDao {
 			String exCredit = "0.0";
 			String status = "N";
 //			PurchaseInfo pinfo = new PurchaseInfo();
+			
 			int cvID = purchaseInfo.getLastClientVendorID() + 1;
 
 			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
@@ -2070,11 +2073,11 @@ public class CustomerInfoDao {
 			bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
 			bcv.setDetail(c.getMemo());
 			bcv.setCvtypeId(c.getCvTypeID());
-			if (null != c.getTaxAble())
+			if (null != c.getTaxAble() && !c.getTaxAble().isEmpty())
 				bcv.setTaxable(Long.parseLong(c.getTaxAble()));
 //			if (null != c.getIsclient())
 //				bcv.setCvtypeId(Integer.parseInt(c.getIsclient()));
-			if (null != c.getType())
+			if (null != c.getType() && !c.getType().isEmpty())
 				bcv.setCvcategoryId(Integer.parseInt(c.getType()));
 			bcv.setCvcategoryName(vcName);
 			bcv.setActive(1);

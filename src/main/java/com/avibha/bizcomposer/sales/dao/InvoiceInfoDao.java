@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -37,7 +35,6 @@ import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
@@ -46,7 +43,6 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
 import com.avibha.bizcomposer.sales.dto.CartItem;
 import com.avibha.bizcomposer.sales.dto.InvoiceDetailsResponse;
 import com.avibha.bizcomposer.sales.dto.SavePrintResponse;
@@ -57,14 +53,13 @@ import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
+import com.avibha.common.mail.SmtpMailSend;
 import com.avibha.common.utility.DateInfo;
 import com.avibha.common.utility.MyUtility;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
-import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaCart;
-import com.nxsol.bzcomposer.company.domain.BcaCctype;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorfinancecharges;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorservice;
@@ -6203,9 +6198,13 @@ public class InvoiceInfoDao {
 		boolean result = false;
 		try {
 			EmailSenderDto emailSenderDto = getEmailSenderInfo(compId);
-			MailSend mailSend = new MailSend();
-			result = mailSend.sendMail(form.getEmailAddr(), form.getSubject(), form.getContent(),
-					emailSenderDto.getMailSenderEmail());
+			//MailSend mailSend = new MailSend();
+			/*
+			 * result = mailSend.sendMail(form.getTo(), form.getSubject(),
+			 * form.getMessage(), emailSenderDto.getMailSenderEmail());
+			 */
+			SmtpMailSend smtpMailSend = new SmtpMailSend();
+			result = smtpMailSend.sendMail(form.getTo(), form.getSubject(), form.getMessage(), emailSenderDto);
 		} catch (Exception ex) {
 			Loger.log("Exception in PreviousOrderNo Function" + ex.toString());
 			ex.printStackTrace();
@@ -7048,4 +7047,41 @@ public class InvoiceInfoDao {
 //		}
 		return status;
 	}
+	
+	final public boolean getInvoiceById(String compId, int invoiceId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		SQLExecutor db = new SQLExecutor();
+		ResultSet rs = null;
+		con = db.getConnection();
+		int cid = Integer.parseInt(compId);
+		boolean exist = false;
+		try {
+			pstmt = con.prepareStatement(
+					"select SONum from bca_invoice where InvoiceID = ? and CompanyID = ?");
+			pstmt.setInt(1, invoiceId);
+			pstmt.setInt(2, cid);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+				exist = true;
+		} catch (SQLException ee) {
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + ee.toString());
+		} finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return exist;
+	}
+	
 }

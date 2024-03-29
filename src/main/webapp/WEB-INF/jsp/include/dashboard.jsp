@@ -20,7 +20,17 @@
 	<div>
 		<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px;border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
 			<spring:message code="BzComposer.Dashboard" />
+		</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+			<spring:message code="BzComposer.salesorderboard.daterange"/>
 		</span>
+		<select name="dashrangeId" id="dashrangeName" onchange="filterRangeOptions();" style="margin-left: 20px;">
+			<option value="ALL">ALL</option>
+			<option value="1M">1 month</option>
+			<option value="3M">3 months</option>
+			<option value="6M">6 months</option>
+			<option value="1Y">1 year</option>
+		</select>
 	</div>
 	<div>
 		<table cellspacing="0"  style="width: 100%;overflow-y:scroll;border:0;" class="section-border">
@@ -180,7 +190,7 @@
 						<tbody>
 						    <c:forEach items="${itemListDetails}" var="objList">
                                 <tr>
-                                    <td>${objList.itemCode}</td>
+                                    <td>${objList.category}</td>
                                     <td>${objList.itemCode}</td>
                                     <td>${objList.itemType}</td>
                                     <td>${objList.itemName}</td>
@@ -229,3 +239,18 @@
 </body>
 <%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 </html>
+<script>
+function filterRangeOptions(){
+	var range = document.getElementById("dashrangeName").value;
+	console.log("dashboardrange--"+range);
+	window.location = "Dashboard?tabid=Dashboard&dashrangeName="+range;
+}
+
+var onLoadrange = document.getElementById("dashrangeName").value;
+console.log("onLoadrange--"+onLoadrange);
+var deshrangesession = '<%=session.getAttribute("dashrangeName")%>';
+console.log("deshrangesession-----------"+deshrangesession);
+if(deshrangesession != null){
+	document.getElementById("dashrangeName").value=deshrangesession;
+}
+</script>

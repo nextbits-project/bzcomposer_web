@@ -47,11 +47,11 @@ table.tabla-listados tbody tr td { font-size: 12px; }
                 </tr>
                 <tr>
                     <td><spring:message code="BzComposer.Email.CC" /> :</td>
-                    <td><form:input path="cc" size="80" /></td>
+                    <td><form:input path="cc" size="80" readonly="true" /></td>
                 </tr>
                 <tr>
                     <td><spring:message code="BzComposer.Email.BCC" /> :</td>
-                    <td><form:input path="bcc" size="80" /></td>
+                    <td><form:input path="bcc" size="80" readonly="true" /></td>
                 </tr>
 				<tr>
 					<td><spring:message code="BzComposer.Invoice.emailSubject" /> :</td>

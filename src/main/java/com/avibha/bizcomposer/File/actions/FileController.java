@@ -2,7 +2,11 @@ package com.avibha.bizcomposer.File.actions;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -37,6 +41,7 @@ import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.utility.CountryState;
+import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.TblStore;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
@@ -51,6 +56,9 @@ public class FileController {
 	private DataImportExportUtils importExportUtils;
 
 	@Autowired
+	InvoiceInfoDao invoiceInfoDao;
+	
+	@Autowired
 	private CompanyInfo customer;
 
 	@Autowired
@@ -64,6 +72,9 @@ public class FileController {
 
 	@Autowired
 	private AddNewCompanyDAO dao;
+	
+	@Autowired
+	private DateInfo dateInfo;
 
 	@GetMapping("/changeLocale")
 	public String changeLocale(HttpServletRequest request) throws Exception {
@@ -117,10 +128,37 @@ public class FileController {
 //			CompanyInfo customer = new CompanyInfo();
 //			ConfigurationInfo configInfo = new ConfigurationInfo();
 			System.out.println("CompanyID: " + compId);
-
+			
+			String dashrangeName = request.getParameter("dashrangeName");
+			String dashrangeNameSession = (String) sess.getAttribute("dashrangeName");
+			if(dashrangeName != null && !dashrangeName.isEmpty() && dashrangeName.equalsIgnoreCase("ALL")) {
+				sess.setAttribute("category", dashrangeName);
+				dashrangeName = "";
+			} else if(dashrangeName != null && !dashrangeName.isEmpty()) {
+				sess.setAttribute("category", dashrangeName);
+			} else if(dashrangeNameSession != null && !dashrangeNameSession.isEmpty()) {
+				dashrangeName = dashrangeNameSession;
+			}
+			
+			Date sartYearDate=null;
+			Date endYearDate=null;
+			if(dashrangeName != null && !dashrangeName.isEmpty()) {
+				if(dashrangeName.equals("1M")) {
+					
+				} else if(dashrangeName.equals("3M")) {
+					
+				} else if(dashrangeName.equals("6M")) {
+					
+				} else if(dashrangeName.equals("1Y")) {
+					sartYearDate = dateInfo.lastYearStartDate();
+					endYearDate = dateInfo.lastYearEndDate();
+					System.out.println("sartYearDate--"+sartYearDate+"endYearDate---"+endYearDate);//2024-01-01 2024-12-31
+				}
+			}
+			
 			request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo));
 			request.setAttribute("salesOrderDetails", customer.selectSalesOrders(compId, configInfo));
-			request.setAttribute("invoiceDetails", customer.selectInvoiceDetails(compId, configInfo));
+			request.setAttribute("invoiceDetails", customer.selectInvoiceDetails(compId, configInfo, sartYearDate, endYearDate));
 			request.setAttribute("estimateDetails", customer.selectEstimateDetails(compId, configInfo));
 			request.setAttribute("itemListDetails", customer.getItemListDetails(compId));
 			forward = "/include/dashboard";
@@ -226,7 +264,7 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("ExportCustomer")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+				//InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
 				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request,
 						new CustomerDto());
 				boolean b = importExportUtils.exportCustomerList(customerList, type, response);

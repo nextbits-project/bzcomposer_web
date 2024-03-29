@@ -40,8 +40,6 @@ import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,8 +48,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class SalesController {
@@ -93,6 +93,9 @@ public class SalesController {
 
 	@Autowired
 	private TblCategoryDtoLoader categoryDtoLoader;
+	
+	@Autowired
+	private ItemInfoDao itemInfoDao;
 
 	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
 			RequestMethod.GET, RequestMethod.POST })
@@ -1258,6 +1261,30 @@ public class SalesController {
 			} else {
 				forward = "redirect:/Invoice?tabid=Invoice";
 			}
+		} else if (action.equalsIgnoreCase("deleteSelectedBoard")) {
+			ArrayList<String> invoiceIDs = new ArrayList<String>(Arrays.asList(request.getParameter("invoiceID").split(",")));
+			ArrayList<Integer> invoiceIDsNes = (ArrayList<Integer>) invoiceIDs.stream().map(Integer::parseInt).collect(Collectors.toList());
+			String reqType = request.getParameter("reqType");
+			Loger.log("invoiceIDs--------------"+invoiceIDsNes+"-----reqType--------"+reqType);
+			if (reqType.equalsIgnoreCase("ES")) {
+				forward = "redirect:/EstimationBoard?tabid=ShowList";
+				boolean status = sd.deleteInvoiceById(request, invoiceIDsNes);
+				Loger.log("updateInvoiceById -- status ----"+status);
+			} else if (reqType.equalsIgnoreCase("SO")) {
+				forward = "redirect:/SalesOrderBoard?tabid=ShowList";
+				boolean status = sd.deleteInvoiceById(request, invoiceIDsNes);
+				Loger.log("updateInvoiceById -- status ----"+status);
+			} else if (reqType.equalsIgnoreCase("IO")) {
+				forward = "redirect:/SalesBord?tabid=ShowList";
+				boolean status = sd.deleteInvoiceById(request, invoiceIDsNes);
+				Loger.log("updateInvoiceById -- status ----"+status);
+			} else if (reqType.equalsIgnoreCase("PO")) {
+				forward = "redirect:/PurchaseBoard?tabid=ShowList";
+				boolean status = sd.deleteInvoiceById(request, invoiceIDsNes);
+				Loger.log("updateInvoiceById -- status ----"+status);
+			} else {
+				forward = "redirect:/Invoice?tabid=Invoice";
+			}
 		} else if (action.equalsIgnoreCase("SaveInvoice")) {
 			String custID = request.getParameter("custID");
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
@@ -1955,5 +1982,4 @@ public class SalesController {
 		}
 		return status;
 	}
-
 }
