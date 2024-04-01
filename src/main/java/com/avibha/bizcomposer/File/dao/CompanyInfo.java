@@ -156,7 +156,7 @@ public class CompanyInfo {
 	}
 	// Below methods are added on 18-05-2020
 
-	public ArrayList<InvoiceDto> selectPurchaseOrders(String compId, ConfigurationInfo configInfo)
+	public ArrayList<InvoiceDto> selectPurchaseOrders(String compId, ConfigurationInfo configInfo, String sartYearDate, String endYearDate)
 			throws ParseException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -169,8 +169,15 @@ public class CompanyInfo {
 			String sqlString = "SELECT i.PONum,c.DateAdded,c.FirstName,c.LastName,i.Total "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID = " + compId
 					+ " AND invoiceStatus=0 AND c.status IN('U','N') " + "AND InvoiceTypeID IN (2, 6) "
-					+ "AND c.ClientVendorID = i.ClientVendorID AND c.CompanyID = " + compId + " ORDER BY i.PONum DESC";
-
+					+ "AND c.ClientVendorID = i.ClientVendorID AND c.CompanyID = " + compId;
+			
+			if(sartYearDate != null && !sartYearDate.isEmpty() && endYearDate != null && !endYearDate.isEmpty()) {
+				Loger.log("sartYearDate--"+sartYearDate+"endYearDate---"+endYearDate);//2024-03-31 14:21:08
+				sqlString = sqlString.concat(" AND c.DateAdded between '"+sartYearDate+"' AND '"+endYearDate+"' ORDER BY i.PONum DESC");
+			} else {
+				sqlString = sqlString.concat(" ORDER BY i.PONum DESC");
+			}
+			
 			pstmt = con.prepareStatement(sqlString.toString());
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
@@ -227,7 +234,7 @@ public class CompanyInfo {
 		return objPurchaseList;
 	}
 
-	public ArrayList<InvoiceDto> selectSalesOrders(String compId, ConfigurationInfo configInfo) {
+	public ArrayList<InvoiceDto> selectSalesOrders(String compId, ConfigurationInfo configInfo, String sartYearDate, String endYearDate) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -239,8 +246,15 @@ public class CompanyInfo {
 			String sqlString = "SELECT distinct i.SONum,i.DateAdded,c.FirstName,c.LastName,i.Total "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID=" + compId
 					+ " AND InvoiceTypeID IN (7,18) AND c.status IN('U','N') "
-					+ "AND c.ClientVendorID = i.ClientVendorID AND c.CompanyID = " + compId + " ORDER BY i.SONum DESC";
-
+					+ "AND c.ClientVendorID = i.ClientVendorID AND c.CompanyID = " + compId;
+			
+			if(sartYearDate != null && !sartYearDate.isEmpty() && endYearDate != null && !endYearDate.isEmpty()) {
+				Loger.log("sartYearDate--"+sartYearDate+"endYearDate---"+endYearDate);//2024-03-31 14:21:08
+				sqlString = sqlString.concat(" AND i.DateAdded between '"+sartYearDate+"' AND '"+endYearDate+"' ORDER BY i.SONum DESC");
+			} else {
+				sqlString = sqlString.concat(" ORDER BY i.SONum DESC");
+			}
+			
 			pstmt = con.prepareStatement(sqlString.toString());
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
@@ -274,7 +288,7 @@ public class CompanyInfo {
 		return objSalesOrderList;
 	}
 
-	public ArrayList<InvoiceDto> selectInvoiceDetails(String compId, ConfigurationInfo configInfo, Date sartYearDate, Date endYearDate)
+	public ArrayList<InvoiceDto> selectInvoiceDetails(String compId, ConfigurationInfo configInfo, String sartYearDate, String endYearDate)
 			throws ParseException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -290,8 +304,9 @@ public class CompanyInfo {
 					+ "AND c.Active = 1 and c.Status IN('N','U') and c.Deleted = 0 " + "AND c.CompanyID = " + compId
 					+ " AND i.OrderNum > 0 ";
 			
-			if(sartYearDate != null && endYearDate != null) {
-				sqlString = sqlString.concat("AND c.DateAdded between "+sartYearDate+" AND "+endYearDate+" ORDER BY i.OrderNum DESC");
+			if(sartYearDate != null && !sartYearDate.isEmpty() && endYearDate != null && !endYearDate.isEmpty()) {
+				Loger.log("sartYearDate--"+sartYearDate+"endYearDate---"+endYearDate);//2024-03-31 14:21:08
+				sqlString = sqlString.concat("AND c.DateAdded between '"+sartYearDate+"' AND '"+endYearDate+"' ORDER BY i.OrderNum DESC");
 			} else {
 				sqlString = sqlString.concat("ORDER BY i.OrderNum DESC");
 			}
@@ -354,7 +369,7 @@ public class CompanyInfo {
 		return objSalesOrderList;
 	}
 
-	public ArrayList<InvoiceDto> selectEstimateDetails(String compId, ConfigurationInfo configInfo) {
+	public ArrayList<InvoiceDto> selectEstimateDetails(String compId, ConfigurationInfo configInfo, String sartYearDate, String endYearDate) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		SQLExecutor db = new SQLExecutor();
@@ -366,8 +381,15 @@ public class CompanyInfo {
 			String sqlString = "SELECT distinct i.EstNum,c.DateAdded,c.FirstName,c.LastName,(i.AdjustedTotal) as Total "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID = " + compId
 					+ " AND NOT (invoiceStatus = 1 )  AND c.status IN('U','N')  "
-					+ "AND InvoiceTypeID = 10 AND c.ClientVendorID = i.ClientVendorID " + "AND c.CompanyID = " + compId
-					+ " ORDER BY i.EstNum DESC";
+					+ "AND InvoiceTypeID = 10 AND c.ClientVendorID = i.ClientVendorID " + "AND c.CompanyID = " + compId;
+			
+			if(sartYearDate != null && !sartYearDate.isEmpty() && endYearDate != null && !endYearDate.isEmpty()) {
+				Loger.log("sartYearDate--"+sartYearDate+"endYearDate---"+endYearDate);//2024-03-31 14:21:08
+				sqlString = sqlString.concat(" AND c.DateAdded between '"+sartYearDate+"' AND '"+endYearDate+"' ORDER BY i.EstNum DESC");
+			} else {
+				sqlString = sqlString.concat(" ORDER BY i.EstNum DESC");
+			}
+			
 			pstmt = con.prepareStatement(sqlString.toString());
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
@@ -402,7 +424,7 @@ public class CompanyInfo {
 		return objSalesOrderList;
 	}
 
-	public ArrayList<ItemDto> getItemListDetails(String compId) {
+	public ArrayList<ItemDto> getItemListDetails(String compId, String sartYearDate, String endYearDate) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1, pstmt2;
@@ -421,11 +443,19 @@ public class CompanyInfo {
 			 * "FROM bca_company WHERE CompanyId='"+ compId+ "'");
 			 */
 			sqlString.append(
-					"select a.InventoryCode, a.ItemTypeID, a.InventoryName, a.Qty, b.InventoryCode AS category from bca_iteminventory AS a INNER JOIN bca_iteminventory AS b ON a.ParentID = b.InventoryID where a.CompanyID like '"
-							+ compId + "' and a.Active like '1' and a.ItemtypeId not like '0' order by a.parentid");
+					"select a.InventoryCode, a.ItemTypeID, a.InventoryName, a.Qty, b.InventoryCode AS category, a.DateAdded from bca_iteminventory AS a INNER JOIN bca_iteminventory AS b ON a.ParentID = b.InventoryID where a.CompanyID like '"
+							+ compId + "' and a.Active like '1' and a.ItemtypeId not like '0'");
+			
+			if(sartYearDate != null && !sartYearDate.isEmpty() && endYearDate != null && !endYearDate.isEmpty()) {
+				Loger.log("sartYearDate--"+sartYearDate+"endYearDate---"+endYearDate);//2024-03-31 14:21:08
+				sqlString = sqlString.append(" AND a.DateAdded between '"+sartYearDate+"' AND '"+endYearDate+"' order by a.parentid");
+			} else {
+				sqlString = sqlString.append(" order by a.parentid");
+			}
+			
 			String sql = "";
 			pstmt = con.prepareStatement(sqlString.toString());
-			Loger.log(sqlString);
+			Loger.log("getItemListDetails----"+sqlString);
 			rs = pstmt.executeQuery();
 			/*
 			 * pstmt1=con.prepareStatement(sql); rs1=pstmt1.executeQuery();

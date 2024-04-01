@@ -250,7 +250,9 @@ var onLoadrange = document.getElementById("dashrangeName").value;
 console.log("onLoadrange--"+onLoadrange);
 var deshrangesession = '<%=session.getAttribute("dashrangeName")%>';
 console.log("deshrangesession-----------"+deshrangesession);
-if(deshrangesession != null){
+if(deshrangesession != null && deshrangesession != "null"){
 	document.getElementById("dashrangeName").value=deshrangesession;
+} else if(onLoadrange != null){
+	document.getElementById("dashrangeName").value=onLoadrange;
 }
 </script>

@@ -5,6 +5,8 @@
  */
 package com.avibha.common.utility;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -306,22 +308,60 @@ public class DateInfo {
 		return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 	}
 	
-	public Date lastYearStartDate() {
+	public String lastYearStartDate() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int year = Year.now().getValue();
 		year = year-1;
 		System.out.println("last year: " + year);
 		Year thisYear = Year.of(year);
 		LocalDate localDateStartDate = thisYear.atMonth(Month.JANUARY).atDay(1);
-		return asDate(localDateStartDate);
+		Date date = asDate(localDateStartDate);
+		return dateFormat.format(date);
 	}
 	
-	public Date lastYearEndDate() {
+	public String lastYearEndDate() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
 		int year = Year.now().getValue();
 		year = year-1;
 		System.out.println("last year: " + year);
 		Year thisYear = Year.of(year);
 		LocalDate localDateEndDate = thisYear.atMonth(Month.DECEMBER).atEndOfMonth();
-		return asDate(localDateEndDate);
+		Date date = asDate(localDateEndDate);
+		return dateFormat.format(date);
 	}
+	
+	public String getCurrentDateTime() {
+		Calendar cal = Calendar.getInstance();
+	    Date cdate = cal.getTime();
+		SimpleDateFormat simpleDateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDateTime = simpleDateformat.format(cdate);
+        return currentDateTime;
+	}
+	
+	public String getLast1YearDTByCurrentDT() {
+		Calendar cal = Calendar.getInstance();
+	    //get previous year
+	    cal.add(Calendar.YEAR, -1); 
+	    Date pyear = cal.getTime();
+	    SimpleDateFormat simpleDateformat = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        String lastYearDateTime = simpleDateformat.format(pyear);
+        return lastYearDateTime;
+	}
+	
+	public String getStartDateByMonth(int month) {
+		Calendar cal = Calendar.getInstance();
+	    //get previous year
+	    cal.add(Calendar.MONTH, -month); 
+	    Date pyear = cal.getTime();
+	    SimpleDateFormat simpleDateformat = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        String startDateTime = simpleDateformat.format(pyear);
+        return startDateTime;
+	}
+	
+	/*
+	 * public static void main(String[] args) { DateInfo info = new DateInfo();
+	 * System.out.println("\nCurrent Date : " + info.getCurrentDateTime());
+	 * System.out.println("\nDate before 1 year : " +info.getStartDateByMonth(6)); }
+	 */
 	
 }

@@ -132,35 +132,37 @@ public class FileController {
 			String dashrangeName = request.getParameter("dashrangeName");
 			String dashrangeNameSession = (String) sess.getAttribute("dashrangeName");
 			if(dashrangeName != null && !dashrangeName.isEmpty() && dashrangeName.equalsIgnoreCase("ALL")) {
-				sess.setAttribute("category", dashrangeName);
+				sess.setAttribute("dashrangeName", dashrangeName);
 				dashrangeName = "";
 			} else if(dashrangeName != null && !dashrangeName.isEmpty()) {
-				sess.setAttribute("category", dashrangeName);
+				sess.setAttribute("dashrangeName", dashrangeName);
 			} else if(dashrangeNameSession != null && !dashrangeNameSession.isEmpty()) {
 				dashrangeName = dashrangeNameSession;
 			}
 			
-			Date sartYearDate=null;
-			Date endYearDate=null;
+			String sartYearDate="";
+			String endYearDate="";
 			if(dashrangeName != null && !dashrangeName.isEmpty()) {
 				if(dashrangeName.equals("1M")) {
-					
+					sartYearDate = dateInfo.getStartDateByMonth(1);
+					endYearDate = dateInfo.getCurrentDateTime();
 				} else if(dashrangeName.equals("3M")) {
-					
+					sartYearDate = dateInfo.getStartDateByMonth(3);
+					endYearDate = dateInfo.getCurrentDateTime();
 				} else if(dashrangeName.equals("6M")) {
-					
+					sartYearDate = dateInfo.getStartDateByMonth(6);
+					endYearDate = dateInfo.getCurrentDateTime();
 				} else if(dashrangeName.equals("1Y")) {
-					sartYearDate = dateInfo.lastYearStartDate();
-					endYearDate = dateInfo.lastYearEndDate();
-					System.out.println("sartYearDate--"+sartYearDate+"endYearDate---"+endYearDate);//2024-01-01 2024-12-31
+					sartYearDate = dateInfo.getLast1YearDTByCurrentDT();
+					endYearDate = dateInfo.getCurrentDateTime();
 				}
 			}
 			
-			request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo));
-			request.setAttribute("salesOrderDetails", customer.selectSalesOrders(compId, configInfo));
+			request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo, sartYearDate, endYearDate));
+			request.setAttribute("salesOrderDetails", customer.selectSalesOrders(compId, configInfo, sartYearDate, endYearDate));
 			request.setAttribute("invoiceDetails", customer.selectInvoiceDetails(compId, configInfo, sartYearDate, endYearDate));
-			request.setAttribute("estimateDetails", customer.selectEstimateDetails(compId, configInfo));
-			request.setAttribute("itemListDetails", customer.getItemListDetails(compId));
+			request.setAttribute("estimateDetails", customer.selectEstimateDetails(compId, configInfo, sartYearDate, endYearDate));
+			request.setAttribute("itemListDetails", customer.getItemListDetails(compId, sartYearDate, endYearDate));
 			forward = "/include/dashboard";
 		} else if (action.equalsIgnoreCase("CompanyInfo")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");
