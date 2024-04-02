@@ -1685,7 +1685,7 @@ public class ItemInfoDao {
 		Statement stmt = null;
 		ResultSet rs = null;
 		Employee employee = new Employee();
-		ArrayList<ItemDto> ItemsList = getItemList(compId);
+		ArrayList<ItemDto> ItemsList = getItemList(compId, "");
 		try {
 			String[] dataArray = {};
 			ItemDto itemDto = new ItemDto();
@@ -1773,7 +1773,7 @@ public class ItemInfoDao {
 		boolean valid = false;
 		try {
 			String compId = (String) request.getSession().getAttribute("CID");
-			ArrayList<ItemDto> ItemList = getItemList(compId);
+			ArrayList<ItemDto> ItemList = getItemList(compId, "");
 			StringBuilder data = new StringBuilder();
 			for (ItemDto itemDto : ItemList) {
 				data.append(itemDto.getInventoryId() + ":" + itemDto.getQty() + ":" + itemDto.getExpectedQty() + ",");
