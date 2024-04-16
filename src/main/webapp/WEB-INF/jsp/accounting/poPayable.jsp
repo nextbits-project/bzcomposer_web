@@ -787,10 +787,11 @@ table.tabla-listados tbody tr td {
    
    function save()
    {
-	  // debugger;
+	   debugger;
 	   var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
 	  if(vendor == null){
 		  alert("<bean:message key='BzComposer.billcreation.selectvendorfirst'/>");
+		  return false;
 	  } else{
 		  
 	   	
@@ -858,7 +859,7 @@ table.tabla-listados tbody tr td {
    }
   	}
    function sendMyValue(ReceivableListDto) {
-	   //debugger;
+	   debugger;
 		var obj=JSON.stringify(ReceivableListDto);
    	    $.ajax({
 			type : "POST",
@@ -881,7 +882,7 @@ table.tabla-listados tbody tr td {
 			} 
 		});
    	
-   	$(document.forms[0]).submit(function( event ) {
+   	$(document.forms[1]).submit(function( event ) {
 	    event.preventDefault();
 	});
 	} 

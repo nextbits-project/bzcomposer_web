@@ -684,7 +684,7 @@ table.tabla-listados tbody tr td {
    function save()
    {
 	   	
-
+	debugger;
 	  /*   var customer = document.getElementById("customerName"); */
 	 	var customerId = oldClientVendorId;
 	 	var payTypeString = document.getElementById("paymentType");
@@ -696,12 +696,15 @@ table.tabla-listados tbody tr td {
 		var categoryId = category.options[category.selectedIndex].id;
 		var receivedAmount = document.getElementById("receivedAmount").value;
 		var paidDate = document.getElementById("poDate").value;
+		var memo = document.getElementById("memo").value;
 		if(paymentTypeName == 'Check')
 			{
 					if(document.getElementById("checkNum").value == '' || document.getElementById("checkNum").value == '0')
 						{
 							alert("<spring:message code='BzComposer.popayable.entervalidchecknumber'/>");
 							return false;
+						}else{
+							var checkNum= document.getElementById("checkNum").value;
 						}
 			}
 		
@@ -720,8 +723,8 @@ table.tabla-listados tbody tr td {
 			   "oldAccountID":oldBankAccountId,
 			   "paymentTypeName":paymentTypeName,
 			   "oldPaymentTypeId":oldPaymentTypeId,
-			   "memo":document.getElementById("memo").value,
-			   "checkNumber":document.getElementById("checkNum").value,
+			   "memo":memo,
+			   "checkNumber":checkNum
 	   }
 	   
 	/* 	}	  
@@ -735,7 +738,7 @@ table.tabla-listados tbody tr td {
  
   	}
    function sendMyValue(TblPayment,receivedAmount,paidDate) {
-		
+	   debugger;
 		var obj=JSON.stringify(TblPayment);
    	 $.ajax({
 		
@@ -755,7 +758,7 @@ table.tabla-listados tbody tr td {
 			} 
 		});
    	
-   	$(document.forms[0]).submit(function( event ) {
+   	$(document.forms[1]).submit(function( event ) {
 	    event.preventDefault();
 	});
 	} 

@@ -3349,7 +3349,7 @@ public class InvoiceInfoDao {
 					card.setCardHolderName(creditCard.getCardHolderName());
 					card.setCardBillAddress(creditCard.getCardBillingAddress());
 					card.setCardZip(creditCard.getCardBillingZipCode());
-					card.setCardDefault(creditCard.getDefaultCard());
+					card.setCardDefault(creditCard.getDefaultCard() != null ? creditCard.getDefaultCard() : false);
 					String ccTypeName = creditCard.getCctype().getName() + "...."
 							+ card.getCardNo().substring(card.getCardNo().length() - 4);
 					card.setCcTypeName(ccTypeName);

@@ -47,6 +47,7 @@ public class BankingController {
 		ArrayList<ClientVendor> cvList = rl.getAllClientVendorList();
 		ArrayList<TblAccount> accountForClientVendor = rl.getCustomerCurrentBalanceForvendor(cvList);
 		ArrayList<TblCategoryDto> categoryListForPayment = rl.getCategoryListForPayment();
+		ArrayList<TblCategoryDto> categoryListForAssets = rl.getCategoryListForAssets();
 		ArrayList<TblCategoryDto> categoryListForDeposit = rl.getCategoryListForDeposit();
 		ArrayList<ClientVendor> cleintListForDeposit = rl.getClientForDeposit();
 		ArrayList<TblAccount> accountForClientListForDeposit = rl
@@ -60,6 +61,7 @@ public class BankingController {
 		request.setAttribute("allClientVendor", allClientVendor);
 		request.setAttribute("allCategoryList", allCategoryList);
 		request.setAttribute("categoryListForPayment", categoryListForPayment);
+		request.setAttribute("categoryListForAssets", categoryListForAssets);
 		request.setAttribute("categoryListForDeposit", categoryListForDeposit);
 		request.setAttribute("accountForClientVendor", accountForClientVendor);
 		request.setAttribute("cleintListForDeposit", cleintListForDeposit);
@@ -224,6 +226,7 @@ public class BankingController {
 		ArrayList<TblAccount> accountForClientVendor = rl.getCustomerCurrentBalanceForvendor(cvList);
 		ArrayList<TblCategoryDto> categoryListForPayment = rl.getCategoryListForPayment();
 		ArrayList<TblCategoryDto> categoryListForDeposit = rl.getCategoryListForDeposit();
+		ArrayList<TblCategoryDto> categoryListForAssets = rl.getCategoryListForAssets();
 		ArrayList<ClientVendor> cleintListForDeposit = rl.getClientForDeposit();
 		ArrayList<TblAccount> accountForClientListForDeposit = rl
 				.getCustomerCurrentBalanceForvendor(cleintListForDeposit);
@@ -236,6 +239,7 @@ public class BankingController {
 		request.setAttribute("allClientVendor", allClientVendor);
 		request.setAttribute("allCategoryList", allCategoryList);
 		request.setAttribute("categoryListForPayment", categoryListForPayment);
+		request.setAttribute("categoryListForAssets", categoryListForAssets);
 		request.setAttribute("categoryListForDeposit", categoryListForDeposit);
 		request.setAttribute("accountForClientVendor", accountForClientVendor);
 		request.setAttribute("cleintListForDeposit", cleintListForDeposit);
@@ -303,6 +307,9 @@ public class BankingController {
 			paymentEdit.setPaymentTypeID(paymentFromAjax.getPaymentTypeID());
 			paymentEdit.setAccountID(paymentFromAjax.getAccountID());
 			paymentEdit.setCvID(paymentFromAjax.getCvID());
+			paymentEdit.setCheckNumber(paymentFromAjax.getCheckNumber());
+			paymentEdit.setPaymentTypeID(paymentFromAjax.getPaymentTypeID());			
+			paymentEdit.setPaymentTypeName(paymentFromAjax.getPaymentTypeName());
 			double toBeDeposited = receivedAmount - paymentEdit.getAmount();
 			rl.updateTransaction(paymentEdit, receivedAmount, strName, datePaid);
 			System.out.println("oldAccountId" + paymentId);

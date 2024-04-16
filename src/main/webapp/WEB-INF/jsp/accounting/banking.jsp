@@ -200,9 +200,9 @@ label {
 					</h4>
 					<div id="treeView2" class="treeview">
 						<ul class="list-group">
-							<div style="float: left; width: 100%; margin-bottom: 10px">
+							<%-- <div style="float: left; width: 100%; margin-bottom: 10px">
 								<spring:message code="BzComposer.banking.accountcategory" />
-							</div>
+							</div> --%>
 							<!-- List Bank-Accounts -->
 							<c:forEach items="${AccountCategoryList}" var="curObject"
 								varStatus="loop">
@@ -214,21 +214,34 @@ label {
 										<img
 										src="${pageContext.request.contextPath}/images/folder-lightblue-icon.png"
 										class="iconImg" /> ${curObject.name}
-								</label> <c:forEach items="${accountList}" var="curObject2">
+								</label> 
+									<c:forEach items="${accountList}" var="curObject2">
 										<c:if
 											test="${curObject2.accountCategoryID == curObject.accountCategoryID}">
 											<ul class="nav nav-list tree">
-												<li><label style="font-size: 14px; cursor: pointer;"
+												<li>
+												<label style="font-size: 14px; cursor: pointer;"
 													value="${curObject2.isitmainaccount}"
 													id="${curObject2.accountID}"
-													onclick="showTransaction(${curObject2.accountID}, ${curObject2.accountCategoryID}, '${curObject2.name}')">${curObject2.name}</label>
+													onclick="showTransaction(${curObject2.accountID}, ${curObject2.accountCategoryID}, '${curObject2.name}')">
+													<%-- ${curObject2.name} --%>
+													<c:choose>
+								                        <c:when test="${curObject2.isitmainaccount == 1}">
+								                            ${curObject2.name} (Default)
+								                        </c:when>
+								                        <c:otherwise>
+								                            ${curObject2.name}
+								                        </c:otherwise>
+								                    </c:choose>
+													</label>
 													<input type="hidden" id="IsItMain${curObject2.accountID}"
 													value="${curObject2.isitmainaccount}" /> <input
 													type="hidden" id="Account${curObject2.accountID}"
 													value="${curObject2.customerStartingBalance}" /></li>
 											</ul>
 										</c:if>
-									</c:forEach></li>
+									</c:forEach>
+								</li>
 							</c:forEach>
 							<!-- <li class="list-group-item">	<label class="  node-treeview2 node-selected">Header 2</label></li>
 						    <li class="list-group-item"><label class=" node-treeview2 node-selected">Header 3</label></li> -->
@@ -240,7 +253,7 @@ label {
 							id="AddAccount"><spring:message code="BzComposer.global.add" /></a>
 						<a style="color: #fff; font-size: 14px;" class="btn btn-info"
 							id="EditAccount"><spring:message
-								code="BzComposer.global.edit" /></a> 
+								code="BzComposer.global.editdelete" /></a> 
 						<%-- <a	style="color: #fff; font-size: 14px;" class="btn btn-info"
 							id="TranseferFundsBtn"><spring:message
 								code="BzComposer.banking.transeferfundsbtn" /></a> --%>
@@ -259,11 +272,11 @@ label {
 									<th scope="col" class="text-right"><spring:message
 											code="BzComposer.banking.date" /></th>
 									<th scope="col" class="text-right"><spring:message
-											code="BzComposer.banking.payerorpayee" /></th>
-									<th scope="col" class="text-right"><spring:message
-											code="BzComposer.banking.payment" /></th>
+											code="BzComposer.banking.payerorpayee" /></th>									
 									<th scope="col" class="text-right"><spring:message
 											code="BzComposer.banking.deposit" /></th>
+									<th scope="col" class="text-right"><spring:message
+											code="BzComposer.banking.payment" /></th>											
 									<th scope="col" class="text-right"><spring:message
 											code="BzComposer.banking.balance" /></th>
 									<th scope="col" class="text-right"><spring:message
@@ -291,7 +304,7 @@ label {
 										<c:if
 											test="${selectedAccount.accountID == curObject.payeeID || selectedAccount.accountID == curObject.payerID}">
 											<tr
-												onclick="return selectRow(${loop.index+1}, ${curObject.id}, ${selectedAccount.accountID},${curObject.payeeID},${curObject.paymentTypeID},${curObject.categoryId},${curObject.amount},${curObject.checkNumber == '' || curObject.checkNumber == null ? '0' : curObject.checkNumber},${curObject.toCurrentBalance},${curObject.cvID})">
+												onclick="return selectRow(${loop.index+1}, ${curObject.id}, ${selectedAccount.accountID},${curObject.payeeID},${curObject.paymentTypeID},${curObject.categoryId},${curObject.amount},${curObject.checkNumber == '' || curObject.checkNumber == null ? '0' : curObject.checkNumber},${curObject.toCurrentBalance},${curObject.cvID},'${curObject.dateAdded}' )">
 												<td class="text-right" id="formatedDate"><fmt:formatDate
 														pattern="MM-dd-yyyy" value="${curObject.dateAdded}" /></td>
 												<td class="text-right"><c:choose>
@@ -311,13 +324,7 @@ label {
 															</c:if>
 														</c:otherwise>
 													</c:choose></td>
-												<td class="text-right" id="paymentAmount"><c:if
-														test="${selectedAccountId == curObject.payerID}">
-														<fmt:formatNumber type="number"
-														maxFractionDigits="2"  pattern="#,##0.00"
-														value="${curObject.amount}" />
-														</c:if>
-												</td>
+												
 												<%-- <td class="text-right"><c:if
 														test="${selectedAccountId != curObject.payerID}">
 														${curObject.toCurrentBalance}</c:if>
@@ -328,6 +335,13 @@ label {
 														maxFractionDigits="2"  pattern="#,##0.00"
 														value="${curObject.toCurrentBalance}" /></c:if>
 												</td> 
+												<td class="text-right" id="paymentAmount"><c:if
+														test="${selectedAccountId == curObject.payerID}">
+														<fmt:formatNumber type="number"
+														maxFractionDigits="2"  pattern="#,##0.00"
+														value="${curObject.amount}" />
+														</c:if>
+												</td>
 												<td class="text-right"><fmt:formatNumber type="number"
 														maxFractionDigits="2"  pattern="#,##0.00"
 														value="${curObject.balanceForBanking}" /></td>
@@ -336,9 +350,9 @@ label {
 															test="${curObject.orderNum != 0 && curObject.orderNum > 0}">Order#${curObject.orderNum}</c:when>
 														<c:when
 															test="${curObject.poNum != 0 && curObject.poNum > 0}">PO#${curObject.poNum}</c:when>
-														<c:otherwise>
+														<%-- <c:otherwise>
 															<c:if test="${curObject.billNum != -1}">Bill#${curObject.billNum}</c:if>
-														</c:otherwise>
+														</c:otherwise> --%>
 													</c:choose></td>
 												<td class="text-right"><c:if
 														test="${not empty curObject.checkNumber}">
@@ -412,7 +426,7 @@ label {
 		<input type="hidden" id="tabid" name="tabid" value="" />
 	</form:form>
 	<div class="container" id="popupWindow">
-		<div class="table-responsive" style="padding-top: 20px">
+		<div class="table-responsive" style="">
 			<div class="d-flex flex-column full-height">
 
 				<div class="modal-body1">
@@ -513,6 +527,27 @@ label {
 														</select></td>
 													</tr>
 													<tr>
+														<td><label><spring:message
+																	code="BzComposer.banking.category" /></label></td>
+														<td><select style="width: 100%" id="fundTransCategory">
+																<option value=""><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
+																<c:forEach items="${categoryListForAssets}"
+																	var="curObject">
+																	<c:choose>
+														                <c:when test="${curObject.name eq 'Fund Transfers' or fn:contains(curObject.name, 'Fund Transfers')}">
+														                    <option id="${curObject.id}" selected>${curObject.categoryNumber} ${curObject.name}</option>
+														                </c:when>
+														                <c:otherwise>
+														                    <option id="${curObject.id}">${curObject.categoryNumber} ${curObject.name}</option>
+														                </c:otherwise>
+														            </c:choose>
+																	<%-- <option id="${curObject.id}">${curObject.categoryNumber}
+																		${curObject.name}</option> --%>
+																</c:forEach>
+														</select></td>
+													</tr>
+													<tr>
 														<td>
 															<!-- label><spring:message code="BzComposer.banking.endingbalance"/></label -->
 														</td>
@@ -530,6 +565,7 @@ label {
 																<input type="hidden" value='0.0' id="payerBalance" />
 															</c:if> --%></td>
 													</tr>
+													
 
 												</table>
 											</div>
@@ -815,7 +851,7 @@ label {
 																	varStatus="loop">
 																	<c:if test="${not empty curObject.name}">
 																		<option value="${curObject.customerCurrentBalance}"
-																			id="${curObject.accountID}" ${curObject.name == 'American Express' ? 'selected' : ''}>${curObject.name}</option>
+																			id="${curObject.accountID}" >${curObject.name}</option>
 																	</c:if>
 																</c:forEach>
 														</select>
@@ -881,9 +917,9 @@ label {
 		<div class="table-responsive" style="padding-top: 20px">
 			<div class="d-flex flex-column full-height">
 
-				<div class="modal-body1">
-					<div class=" row">
-						<div class=" col-12">
+				<div class="modal-body1 editTransactionModal">
+					<!-- <div class=" row">
+						<div class=" col-12">  -->
 							<div class="border1  clearfix">
 								<form>
 									<div class="row">
@@ -967,19 +1003,19 @@ label {
 									</div>
 								</form>
 							</div>
-						</div>
-					</div>
+						<!-- </div>
+					</div> -->
 				</div>
 			</div>
 		</div>
 		<div class="bzbtn">
 			<button type="button" class="btn btn-info"
-				style="float: right; font-size: 14px;"
+				style="float: right;  margin: 10px 5px; font-size: 14px;"
 				onclick="closeEditTransaction()">
 				<spring:message code="BzComposer.global.cancel" />
 			</button>
 			<button type="button" class="btn btn-info"
-				style="float: right; margin-right: 10px; font-size: 14px;"
+				style="float: right; margin: 10px 5px; font-size: 14px;"
 				onclick="return editTransaction()" id="addButtonForDeposit">
 				<spring:message code="BzComposer.global.save" />
 			</button>
@@ -999,7 +1035,7 @@ label {
 							code="BzComposer.banking.maincategory" /></label>
 					<div class="col-sm-9">
 						<select class="form-control" id="mainCategoryID"
-							onchange="afterMainCategoryChange()" style="width: 150px;">
+							onchange="afterMainCategoryChange()" style="width: 300px;">
 							<option value=""><spring:message
 									code="BzComposer.ComboBox.Select" /></option>
 							<c:forEach items="${AccountCategoryList}" var="curObject"
@@ -1016,7 +1052,7 @@ label {
 					</label>
 					<div class="col-sm-4">
 						<input type="text" id="mainCategoryName" class="form-control"
-							style="width: 150px;" />
+							style="width: 300px;" />
 					</div>
 					<div class="col-sm-5">
 						<button type="button" class="btn btn-info"
@@ -1042,13 +1078,12 @@ label {
 				<spring:message code="BzComposer.banking.accountinformation" />
 			</h6>
 			<div class="boxborderd">
-
 				<div class="row">
 					<label class="col-sm-3"><spring:message
 							code="BzComposer.banking.accountcategory" /></label>
 					<div class="col-sm-9">
 						<select class="form-control" onchange="afterCategoryChange()"
-							id="acForAddAccount" style="width: 150px;">
+							id="acForAddAccount" style="width: 300px;">
 							<c:forEach items="${AccountCategoryList}" var="curObject"
 								varStatus="loop">
 								<option value="${curObject.accountCategoryID}">${curObject.name}</option>
@@ -1069,12 +1104,15 @@ label {
 					</div>
 				</div>
 
-				<div class="text-right">
-					<div class="inline-form">
-						<label><spring:message
-								code="BzComposer.banking.subaccountof" /></label> <select
-							id="subaccountof" class="form-control"></select>
-					</div>
+				<div class="row d-none">
+					
+						<label class="col-sm-3"><spring:message
+								code="BzComposer.banking.subaccountof" /></label> 
+								<div class="col-sm-9">
+									<select id="subaccountof" class="form-control"  style="width: 300px;"></select>
+								</div>
+								
+					
 				</div>
 
 				<div class="text-left">
@@ -1171,16 +1209,40 @@ label {
 	var IsItMain = -1;
 	var status;
 	var totalPaymentList = -1;
-	function selectRow(index , payId,accId,payeId,payMethodId,catId,amount,checkNumber,toCurrentbalance, cvID)
+	function formatDate(dateString) {
+	    // Extract the parts of the date string
+	    
+	    var parts = dateString.split(' ');
+	    var months = {
+	        Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
+	        Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12'
+	    };
+	    var month = months[parts[1]]; // Convert month name to month number
+	    var day = parts[2].padStart(2, '0'); // Ensure the day has two digits
+	    var year = parts[5]; // Year is in the sixth part
+		var fDate= month + '-' +day + '-'+ year
+	    // Format the date as MM-dd-yyyy
+	    return fDate;
+	} 
+	/* function formatDate(dateString) {
+		debugger;
+	    const date = dateString;//new Date(dateString);
+	    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+	    const day = date.getDate().toString().padStart(2, '0');
+	    const year = date.getFullYear();
+	    return `${month}-${day}-${year}`;
+	} */
+	function selectRow(index,payId,accId,payeId,payMethodId,catId,amount,checkNumber,toCurrentbalance, cvID, dateAdded)
 	{
-		 
-		  var formatedDate=document.getElementById("formatedDate").textContent;
+		 //debugger;
+		  var formattedDate = formatDate(dateAdded);
 		//var cvID =3;
 		    // console.log("amount: " + amount);
 		    // console.log("toCurrentBalance"+toCurrentbalance);
 		    // console.log("formattedDate: " + formatedDate); 
 		/*   */ 
 		this.Index = index;
+		var dateString = $('table.devBankingDatatable tbody tr:nth-child(' + index + ')').find('td:nth-child(1)').text();
 		// console.log("Index "+this.Index);
 		this.paymentId = payId;
 		this.accountId = accId;
@@ -1242,7 +1304,7 @@ label {
 		// console.log("payamount"+payAmount);
 		// console.log("tableName"+this.tableName);
 		//$(".devDate").val($('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(1)').text());
-		$(".devDate").val(formatedDate);
+		$(".devDate").val(formattedDate);
 	
 		// console.log("this.paymentId "+this.paymentId );
 		// console.log("this.accountId "+this.accountId );
@@ -1303,7 +1365,7 @@ function closeEditTransaction(){
 	function editTransaction()
 	{
 		// console.log("inside edit");
-		 
+		debugger; 
 		var oldClientVendorId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(2)').attr('value');
 		// console.log("oldClientVendorId "+oldClientVendorId);
 		var oldAccountId = $('table.devBankingDatatable tbody tr:nth-child('+Index+')').find('td:nth-child(10)').attr('value');
@@ -1803,7 +1865,11 @@ $(document).ready(function () {
 	});
 
 	$("#EditAccount").on("click", function(){
-	    
+		debugger;
+		if(accountId==-1){
+			return showselectaccountdialog();
+			return false;
+		}
 		$('#deleteBank').prop('disabled', false);
 		status = 'Edit';
 		document.getElementById("mainCategoryBtnAdd").style.display = "none";
@@ -1818,12 +1884,15 @@ $(document).ready(function () {
             url : "BankingCategoryAjax?tabid=getBankAccount",
             data :"accountID=" + accountId,
             success : function(data) {
-                $("#acForAddAccount").val(data.accountCategoryID);
+            	$("#acForAddAccount").val(data.accountCategoryID);
+            	$("#mainCategoryID").val(data.accountCategoryID);
+            	var selectedOptionText = $("#mainCategoryID option:selected").text();
+            	$("#mainCategoryName").val(selectedOptionText);
                 document.getElementById("accountName").value = data.name;
                 document.getElementById('mainbankAccount').checked = data.isitmainaccount==1?true:false;
                 document.getElementById("descriptionAd").value = data.description;
-                document.getElementById("devAdAccount").value = data.depositPaymentID;
-                document.getElementById("devAdCheck").value = data.firstCheckNo;
+                /* document.getElementById("devAdAccount").value = data.depositPaymentID;
+                document.getElementById("devAdCheck").value = data.firstCheckNo; */
                 //$("#dateForAddAccount").val(dName+" "+((new Date().getMonth())+1)+"-"+new Date().getDate()+"-"+new Date().getFullYear());
             },
              error : function(data) {
@@ -1885,10 +1954,13 @@ function isCategory(){
 
 function fundTrasferTab(){
 	
-	/* $( "#dialogTabs" ).tabs({ active: "#nav-home1-tab" }); */
+	/* $("#dialogTabs").tabs({ active: "#nav-home-tab" }); */
 	$("#fundTrasferTab").show();
 	$("#paymentTab").hide();
 	$("#depositTab").hide();
+	// Remove 'active' class from all tabs and then add it to the current tab
+    $('.nav-item').removeClass('active');
+    $('#nav-home-tab').addClass('active');
 }
 function paymentTab(){
 	
@@ -1896,11 +1968,17 @@ function paymentTab(){
 	$("#paymentTab").show();
 	$("#fundTrasferTab").hide();
 	$("#depositTab").hide();
+	// Remove 'active' class from all tabs and then add it to the current tab
+    $('.nav-item').removeClass('active');
+    $('#nav-home1-tab').addClass('active');
 }
 function depositTab(){
 	$("#depositTab").show();
 	$("#paymentTab").hide();
 	$("#fundTrasferTab").hide();
+	 // Remove 'active' class from all tabs and then add it to the current tab
+    $('.nav-item').removeClass('active');
+    $('#nav-home2-tab').addClass('active');
 }
 
 function vendorIndex(index){
@@ -1979,7 +2057,7 @@ function selectedPaymenthodForPayment(){
 }
 
 function addTransactionFromDialog(){
-	
+	debugger;
 	var AccountCategoryId = document.getElementById("categoryIdForPayer").value;
 	// console.log("AccountCategoryId " +AccountCategoryId);
 	var payerBalance  = parseFloat(document.getElementById("payerBalance").value);
@@ -1998,6 +2076,10 @@ function addTransactionFromDialog(){
 	// console.log("paymentMethod " +this.paymentMethod );
 	payAmount = payAmount != null?payAmount:0;
 	// console.log("payAmount " +payAmount  );
+	var categoryIdString =  document.getElementById("fundTransCategory");
+    // console.log("categoryIdString: "+categoryIdString);
+    var categoryId = categoryIdString.options[categoryIdString.selectedIndex].id;
+    // console.log("categoryId: "+categoryId);
 	if(paymentMethod == 'Check'){
         if(checkNum == '0' || checkNum == ''){
             return selectValidNumberDialog();
@@ -2023,7 +2105,8 @@ function addTransactionFromDialog(){
         "toBalance": payeeBalance,
         "amount":payAmount,
         "paymentTypeID": paymentMethodId,
-        "checkNumber": checkNum
+        "checkNumber": checkNum,
+        "categoryId": categoryId
     }
     var obj=JSON.stringify(TblPayment);
     // console.log("obj : "+obj)
@@ -2528,6 +2611,23 @@ function showselectcategorydialog(){
     });
     return false;
 }
+function showselectaccountdialog(){
+	
+	event.preventDefault();
+	$("#showselectaccountdialog").dialog({
+    	resizable: false,
+        height: 200,
+        width: 300,
+        modal: true,
+        position: { my: "center", at: "center", of: "#transactionTable" },
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    return false;
+}
 function showEditableAccountNotSelectedDialog(){
 	
 	event.preventDefault();
@@ -2713,6 +2813,11 @@ function showEnterRequiredFieldDialog(){
 <div id="showselectcategorydialog" style="display: none;">
 	<p>
 		<spring:message code='BzComposer.banking.selectcategory' />
+	</p>
+</div>
+<div id="showselectaccountdialog" style="display: none;">
+	<p>
+		<spring:message code='BzComposer.banking.selectbankaccount' />
 	</p>
 </div>
 <div id="shownotdeletedaccountdialog" style="display: none;">
