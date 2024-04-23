@@ -45,6 +45,7 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.TblStore;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
+import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 
 /**
  * @author sarfrazmalik
@@ -75,6 +76,9 @@ public class FileController {
 	
 	@Autowired
 	private DateInfo dateInfo;
+	
+	@Autowired
+	private BcaCvtypeRepository bcaCvtypeRepository;
 
 	@GetMapping("/changeLocale")
 	public String changeLocale(HttpServletRequest request) throws Exception {
@@ -259,6 +263,8 @@ public class FileController {
 			forward = "/file/couponDesign";
 		} else if (action.equalsIgnoreCase("ImportCustomer")) {
 			forward = "/file/customerImport";
+		} else if (action.equalsIgnoreCase("ImportContact")) {
+			forward = "/file/contactImport";
 		} else if (action.equalsIgnoreCase("ImportLeads")) {
 			forward = "/file/leadsImport";
 		} else if (action.equalsIgnoreCase("ImportVendor")) {
@@ -269,7 +275,7 @@ public class FileController {
 				//InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
 				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request,
 						new CustomerDto());
-				boolean b = importExportUtils.exportCustomerList(customerList, type, response);
+				boolean b = importExportUtils.exportCustomerList(customerList, type, response, "");
 				if (b == true) {
 					if (type.equals("csv")) {
 						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
@@ -279,6 +285,24 @@ public class FileController {
 				}
 			} else {
 				forward = "/file/exportCustomer";
+			}
+		} else if (action.equalsIgnoreCase("ExportContact")) {
+			String type = request.getParameter("type");
+			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
+				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Contact");
+				if (typeIDList != null && !typeIDList.isEmpty())
+					request.setAttribute("cvtypeId", typeIDList.get(0));
+				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
+				boolean b = importExportUtils.exportCustomerList(customerList, type, response, "Contact");
+				if (b == true) {
+					if (type.equals("csv")) {
+						request.setAttribute("success", "BzComposer.exportcontact.contactlistincsvdownloaded");
+					} else {
+						request.setAttribute("success", "BzComposer.exportcontact.contactlistinxlsdownloaded");
+					}
+				}
+			} else {
+				forward = "/file/exportContact";
 			}
 		} else if (action.equalsIgnoreCase("ExportLeads")) {
 			String type = request.getParameter("type");
@@ -306,6 +330,14 @@ public class FileController {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
 				importExportUtils.downloadCustomerTemplate(type, response);
+			} else {
+				forward = "redirect:File?tabid=ImportCustomer";
+			}
+		} else if (action.equalsIgnoreCase("DownloadContactTemplate")) {
+			String type = request.getParameter("type");
+			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
+				ArrayList<CustomerDto> leadDtos = new ArrayList<CustomerDto>();
+				importExportUtils.exportCustomerList(leadDtos, type, response, "Contact");
 			} else {
 				forward = "redirect:File?tabid=ImportCustomer";
 			}
@@ -426,14 +458,28 @@ public class FileController {
 		System.out.println("--------------FileController-------FileUpload-------" + action);
 		if (action.equalsIgnoreCase("UploadCustomerFile")) {
 			if (!attachFile.isEmpty()) {
-				boolean b = importExportUtils.uploadCustomerFile(attachFile, request);
+				//boolean b = importExportUtils.uploadCustomerFile(attachFile, request);
+				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Customer");
+				if (typeIDList != null && !typeIDList.isEmpty())
+					request.setAttribute("CVTypeID", typeIDList.get(0));
+				boolean b = importExportUtils.importCustomerFile(attachFile, request);
 				if (b == true) {
 					request.getSession().setAttribute("successMessage", "success");
 				}
 			}
 			forward = "redirect:File?tabid=ImportCustomer";
-		}
-		if (action.equalsIgnoreCase("UploadLeadsFile")) {
+		} else if (action.equalsIgnoreCase("UploadContactFile")) {
+			if (!attachFile.isEmpty()) {
+				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Contact");
+				if (typeIDList != null && !typeIDList.isEmpty())
+					request.setAttribute("CVTypeID", typeIDList.get(0));
+				boolean b = importExportUtils.importCustomerFile(attachFile, request);
+				if (b == true) {
+					request.getSession().setAttribute("successMessage", "success");
+				}
+			}
+			forward = "redirect:File?tabid=ImportContact";
+		} else if (action.equalsIgnoreCase("UploadLeadsFile")) {
 			if (!attachFile.isEmpty()) {
 				boolean b = importExportUtils.uploadLeadsFile(attachFile, request);
 				if (b == true) {

@@ -304,7 +304,7 @@ $(function() {
 														<tr>
 															<td><spring:message
 																	code="BzComposer.Companyinformation.Type" /></td>
-															<td><form:select path="type" style="width:215px;">
+															<td><form:select path="type" id="typeID" style="width:215px;">
 																	<form:option value="0">
 																		<spring:message code="BzComposer.ComboBox.Select" />
 																	</form:option>
@@ -2210,6 +2210,7 @@ function numbersonly(e,val){
 
 flag_state = 0;
 function initialize(){
+	console.log("initialize Call");
 	<c:if test="${CustomerDetails.fsUseIndividual == true}">
     		enableDisableFinanceCharges();
     	</c:if>
@@ -2250,10 +2251,16 @@ function initialize(){
     
     var selectedCityId = '<%= request.getAttribute("selectedCityId")%>';
 	var selectedStateId = '<%=request.getAttribute("selectedStateId")%>';
-	
+	var selectedCountryId = '<%=request.getAttribute("selectedCountryId")%>';
+	var selectedTypeID = '<%=request.getAttribute("selectedTypeID")%>';
+	console.log("selectedCityId--"+selectedCityId);
+	console.log("selectedStateId--"+selectedStateId);
+	console.log("selectedCountryId--"+selectedCountryId);
+	console.log("selectedTypeID--"+selectedTypeID);
 	$('select[id="cityID"]').find('option[value="'+selectedCityId+'"]').attr("selected",true);
 	$('select[id="stateID"]').find('option[value="'+selectedStateId+'"]').attr("selected",true);
-    
+	$('select[id="countryID"]').find('option[value="'+selectedCountryId+'"]').attr("selected",true);
+	$('select[id="typeID"]').find('option[value="'+selectedTypeID+'"]').attr("selected",true);
 
 }
 

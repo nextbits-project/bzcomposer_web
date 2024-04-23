@@ -148,7 +148,7 @@ public class SalesDetailsDao {
 //		customerDto.setMinFCharges(request.getParameter("minFCharges"));
 //		customerDto.setGracePrd(request.getParameter("gracePrd"));
 		try {
-			boolean addCust = customerInfoDao.insertCustomer(customerDto, compId);
+			boolean addCust = customerInfoDao.insertNewCustomer(customerDto, compId);
 			if (addCust) {
 				request.setAttribute("SaveStatus", new ActionMessage("Customer Information is Successfully Added!"));
 				request.getSession().setAttribute("actionMsg", "Customer Information is Successfully Added!");
@@ -164,17 +164,43 @@ public class SalesDetailsDao {
 //		CountryState cs = new CountryState();
 		HttpSession sess = request.getSession();
 		String cid = (String) sess.getAttribute("CID");
-		String countryID = ConstValue.countryID;
-		String stateID = ConstValue.stateID;
+		String countryID = "";
+		String stateID = "";
+		String cityID = "";
+		
+		if (request.getAttribute("selectedCountryId") != null && !request.getAttribute("selectedCountryId").toString().isEmpty())
+			countryID = request.getAttribute("selectedCountryId").toString();
+		else 
+			countryID = ConstValue.countryID;
+		
+		if (request.getAttribute("selectedStateId") != null && !request.getAttribute("selectedStateId").toString().isEmpty())
+			stateID = request.getAttribute("selectedStateId").toString();
+		else 
+			stateID = ConstValue.stateID;
+		
+		if (request.getAttribute("selectedCityId") != null && !request.getAttribute("selectedCityId").toString().isEmpty())
+			cityID = request.getAttribute("selectedCityId").toString();
+		else 
+			cityID = ConstValue.cityID;
+		
 		String action = ConstValue.hateNull(request.getParameter("tabid"));
-		if (action.equalsIgnoreCase("editCustomer")) {
+		if (action.equalsIgnoreCase("editCustomer") || action.equalsIgnoreCase("editContact")) {
 			CustomerDto customer = (CustomerDto) request.getAttribute("CustomerDetails");
-			countryID = customer.getCountry();
-			stateID = customer.getState();
-			request.setAttribute("stateList2", countryState.getStateList(customer.getBscountry()));
-			request.setAttribute("cityList2", countryState.getCityList(customer.getBsstate()));
-			request.setAttribute("stateList3", countryState.getStateList(customer.getShcountry()));
-			request.setAttribute("cityList3", countryState.getCityList(customer.getShstate()));
+			if (customer != null) {
+				//countryID = customer.getCountry();
+				//stateID = customer.getState();
+				if (customer.getBscountry() != null)
+					request.setAttribute("stateList2", countryState.getStateList(customer.getBscountry()));
+				
+				if (customer.getBsstate() != null)
+					request.setAttribute("cityList2", countryState.getCityList(customer.getBsstate()));
+				
+				if (customer.getShcountry() != null)
+					request.setAttribute("stateList3", countryState.getStateList(customer.getShcountry()));
+				
+				if (customer.getShstate() != null)
+					request.setAttribute("cityList3", countryState.getCityList(customer.getShstate()));
+			}
 		}
 		// country List
 		request.setAttribute("cList", countryState.getCountry());
@@ -1688,11 +1714,17 @@ public class SalesDetailsDao {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 //		invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
 		ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
-		CustomerDto customerDto2 = customerList.get(0);
-		String cityId = customerDto2.getCity();
-		String stateId = customerDto2.getState();
-		request.setAttribute("selectedCityId", cityId);
-		request.setAttribute("selectedStateId", stateId);
+		if(!customerList.isEmpty()) {
+			CustomerDto customerDto2 = customerList.get(0);
+			String cityId = customerDto2.getCityID();
+			String stateId = customerDto2.getStateID();
+			String countryId = customerDto2.getCountryID();
+			String typeID = customerDto2.getCvCategoryTypeID();
+			request.setAttribute("selectedCityId", cityId);
+			request.setAttribute("selectedStateId", stateId);
+			request.setAttribute("selectedCountryId", countryId);
+			request.setAttribute("selectedTypeID", typeID);
+		}
 
 		invoiceInfoDao.getServices(request, compId, cvId);
 		// String itemIndex = request.getParameter("itemIndex");
@@ -1707,8 +1739,10 @@ public class SalesDetailsDao {
 		CustomerDto customerDto2 = customerList.get(0);
 		String cityId = customerDto2.getCity();
 		String stateId = customerDto2.getState();
+		String countryId = customerDto2.getCountry();
 		request.setAttribute("selectedCityId", cityId);
 		request.setAttribute("selectedStateId", stateId);
+		request.setAttribute("selectedCountryId", countryId);
 
 		invoiceInfoDao.getServices(request, compId, cvId);
 		// String itemIndex = request.getParameter("itemIndex");

@@ -538,6 +538,7 @@ public class SalesDetails {
 				aFCharge, "U");
 		if (updateCust) {
 			request.setAttribute("SaveStatus", "Customer updated successfully!");
+			request.getSession().setAttribute("SaveStatus", "Customer updated successfully!");
 		}
 		if (customerDto.getDispay_info() != null && customerDto.getDispay_info().equals("ShowAll")) {
 			request.setAttribute("RadioVal", "1");

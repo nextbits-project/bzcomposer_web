@@ -107,10 +107,15 @@ public class SalesController {
 		String ITEM_URI = "/Item";
 		String INVOICE_URI = "/Invoice";
 		String SALES_ORDER_URI = "/SalesOrder";
-
+		
 		String SALES_MANAGER_URI = "/DataManager";
 
 //		ConfigurationInfo configInfo = new ConfigurationInfo();
+		if(request.getSession().getAttribute("SaveStatus") != null) {
+			request.setAttribute("SaveStatus",request.getSession().getAttribute("SaveStatus"));
+			request.getSession().setAttribute("SaveStatus","");	
+		}
+		
 		configInfo.setCurrentRequest(request);
 		String forward = "sales/invoice";
 		if (IN_URI.endsWith(CUSTOMER_URI)) {

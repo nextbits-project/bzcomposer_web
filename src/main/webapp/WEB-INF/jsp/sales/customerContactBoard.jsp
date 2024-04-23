@@ -112,10 +112,10 @@ table.tabla-listados tbody tr td {
 									</tr>
 									<tr>
 										<td colspan="2" align="center"><input type="button"
-											class="formbutton" onclick="customerImport()"
+											class="formbutton" onclick="contactImport()"
 											style="padding: 7 15px;"
 											value="<spring:message code='menu.file.Import'/>" /> <input
-											type="button" class="formbutton" onclick="exportCustomer()"
+											type="button" class="formbutton" onclick="exportContact()"
 											style="padding: 7 15px;"
 											value="<spring:message code='menu.file.ExportTo'/>" /></td>
 									</tr>
@@ -374,6 +374,14 @@ function transferToCustomer(){
 }
 function openMailTemplates(){
 	window.open("MailTemplates?tabid=getMailTemplates", null,"scrollbars=yes,height=500,width=1000,status=yes,toolbar=no,menubar=no,location=no");
+}
+
+function exportContact(){
+	window.open("File?tabid=ExportContact",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+}
+
+function contactImport(){
+	window.open("File?tabid=ImportContact",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 }
 </script>
 <!-- Dialog box used in sales order page -->

@@ -67,6 +67,7 @@ import com.nxsol.bzcomposer.company.domain.BcaServicetype;
 import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
 import com.nxsol.bzcomposer.company.domain.BcaStates;
 import com.nxsol.bzcomposer.company.domain.BcaTerm;
+import com.nxsol.bzcomposer.company.domain.BcaTitle;
 import com.nxsol.bzcomposer.company.domain.SmdCvinfo;
 import com.nxsol.bzcomposer.company.domain.StorageClientvendor;
 import com.nxsol.bzcomposer.company.repos.BcaAccountRepository;
@@ -89,6 +90,7 @@ import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
+import com.nxsol.bzcomposer.company.repos.BcaTitleRepository;
 import com.nxsol.bzcomposer.company.repos.SmdCvinfoRepository;
 import com.nxsol.bzcomposer.company.repos.StorageClientvendorRepository;
 import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
@@ -166,6 +168,9 @@ public class CustomerInfoDao {
 	@Autowired
 	private BcaCitiesRepository cityRepository;
 
+	@Autowired
+	private BcaTitleRepository bcaTitleRepository;
+	
 	public ArrayList<CustomerDto> customerDetails(String compId) {
 		ArrayList<CustomerDto> objList = new ArrayList<>();
 		Title title = new Title();
@@ -336,7 +341,7 @@ public class CustomerInfoDao {
 		return objList;
 	}
 
-	@Cacheable(value = "contactDetails", key="#compId")
+	//@Cacheable(value = "contactDetails", key="#compId")
 	public ArrayList<CustomerDto> contactDetails(String compId) {
 		ArrayList<CustomerDto> objList = new ArrayList<>();
 		Title title = new Title();
@@ -2039,7 +2044,7 @@ public class CustomerInfoDao {
 				exCredit = c.getExtCredit();
 
 			// VendorCategory vc = new VendorCategory();
-			String vcName = vc.CVCategory(c.getType());
+			String vcName = vc.CVCategory(removeLast2Digit(c.getType()));
 
 			BcaClientvendor bcv = new BcaClientvendor();
 			bcv.setClientVendorId(cvID);
@@ -2048,21 +2053,69 @@ public class CustomerInfoDao {
 			Date dateAdded = (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ")
 					: string2date(c.getDateAdded());
 			bcv.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
-			bcv.setCustomerTitle(c.getTitle());
+			if(c.getTitle() != null && !c.getTitle().isEmpty()) {
+				BcaTitle bcaTitle = bcaTitleRepository.findBytitleAndCompany_CompanyIdAndActive(c.getTitle(), Long.valueOf(compID), 1);
+				bcv.setCustomerTitle(String.valueOf(bcaTitle.getTitleId()));
+			}
+			
 			bcv.setFirstName(c.getFirstName());
 			bcv.setLastName(c.getLastName());
 			bcv.setAddress1(c.getAddress1());
-			bcv.setAddress2(c.getAddress2());
-			bcv.setCity(c.getCity());
-			bcv.setState(c.getState());
+			
+			if(c.getAddress2() != null && !c.getAddress2().isEmpty())
+				bcv.setAddress2(c.getAddress2());
+			else 
+				bcv.setAddress2("");
+			
+			if(c.getCity() != null && !c.getCity().isEmpty()) {
+				BcaCities bcaCities = cityRepository.findByname(c.getCity());
+				if(bcaCities != null && bcaCities.getId() != null && bcaCities.getId() > 0)
+					bcv.setCity(String.valueOf(bcaCities.getId()));
+			}
+			
+			if(c.getState() != null && !c.getState().isEmpty()) {
+				BcaStates bcaStates = stateRepository.findByname(c.getState());
+				if(bcaStates != null && bcaStates.getId() != null && bcaStates.getId() > 0)
+					bcv.setState(String.valueOf(bcaStates.getId()));
+			}
+			
 			bcv.setProvince(c.getProvince());
-			bcv.setCountry(c.getCountry());
-			bcv.setZipCode(c.getZipCode());
-			bcv.setPhone(c.getPhone());
-			bcv.setCellPhone(c.getPhone());
-			bcv.setFax(c.getFax());
+			if(c.getCountry() != null && !c.getCountry().isEmpty()) {
+				BcaCountries bcaCountries = countriesRepository.findByname(c.getCountry());
+				if(bcaCountries != null && bcaCountries.getId() != null && bcaCountries.getId() > 0)
+					bcv.setCountry(String.valueOf(bcaCountries.getId()));
+			}
+			
+			if (null != c.getZipCode() && !c.getZipCode().isEmpty()) {
+				if(c.getZipCode().contains(".")) {
+					String zipcode = c.getZipCode().replace(".0", "");
+					bcv.setZipCode(zipcode);
+				} else {
+					bcv.setZipCode(c.getZipCode());
+				}
+			}
+			
+			if(c.getPhone() != null && !c.getPhone().isEmpty())
+				bcv.setPhone(c.getPhone());
+			else 
+				bcv.setPhone("");
+			
+			if(c.getPhone() != null && !c.getPhone().isEmpty())
+				bcv.setCellPhone(c.getPhone());
+			else 
+				bcv.setCellPhone("");
+			
+			if(c.getFax() != null && !c.getFax().isEmpty())
+				bcv.setFax(removeLast2Digit(c.getFax()));
+			else 
+				bcv.setFax("");
+			
 			bcv.setHomePage(c.getHomePage());
-			bcv.setEmail(c.getEmail());
+			if(c.getEmail() != null && !c.getEmail().isEmpty())
+				bcv.setEmail(c.getEmail());
+			else 
+				bcv.setEmail("");
+			
 			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
 			if (company.isPresent()) {
 				bcv.setCompany(company.get());
@@ -2072,13 +2125,16 @@ public class CustomerInfoDao {
 			bcv.setVendorOpenDebit(Double.parseDouble(oBal));
 			bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
 			bcv.setDetail(c.getMemo());
-			bcv.setCvtypeId(c.getCvTypeID());
-			if (null != c.getTaxAble() && !c.getTaxAble().isEmpty())
-				bcv.setTaxable(Long.parseLong(c.getTaxAble()));
-//			if (null != c.getIsclient())
-//				bcv.setCvtypeId(Integer.parseInt(c.getIsclient()));
-			if (null != c.getType() && !c.getType().isEmpty())
-				bcv.setCvcategoryId(Integer.parseInt(c.getType()));
+			if (c.getIsclient() != null && !c.getIsclient().isEmpty())
+				bcv.setCvtypeId(Integer.valueOf(removeLast2Digit(c.getIsclient())));
+			if (null != c.getTaxAble() && !c.getTaxAble().isEmpty()) {
+				bcv.setTaxable(Long.parseLong(removeLast2Digit(c.getTaxAble())));	
+			}
+			if (null != c.getType() && !c.getType().isEmpty()) {
+				bcv.setCvcategoryId(Integer.parseInt(removeLast2Digit(c.getType())));
+				
+			}
+			
 			bcv.setCvcategoryName(vcName);
 			bcv.setActive(1);
 			bcv.setDeleted(0);
@@ -2093,21 +2149,23 @@ public class CustomerInfoDao {
 					: string2date(c.getTerminatedDate());
 			bcv.setDateTerminated(DateHelper.convertDateToOffsetDateTime(dateTerminated));
 			bcv.setIsTerminated(c.isTerminated());
-			int termId = c.getTerm() == null || c.getTerm().trim().equals("") ? 0 : Integer.parseInt(c.getTerm());
+			int termId = c.getTerm() == null || c.getTerm().trim().equals("") ? 0 : Integer.parseInt(removeLast2Digit(c.getTerm()));
 			bcv.setDbaname(c.getDbaName());
 			Optional<BcaTerm> term = bcaTermRepository.findById(termId);
 			if (term.isPresent())
 				bcv.setTerm(term.get());
-			int salesRepId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(c.getRep());
+			int salesRepId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(removeLast2Digit(c.getRep()));
 			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesRepId);
 			if (salesRep.isPresent())
 				bcv.setSalesRep(salesRep.get());
-
-			Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(c.getShipping()));
-			if (shipCarrier.isPresent())
-				bcv.setShipCarrier(shipCarrier.get());
+			if(c.getShipping() != null) {
+				Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(removeLast2Digit(c.getShipping())));	
+				if (shipCarrier.isPresent())
+					bcv.setShipCarrier(shipCarrier.get());
+			}
+			
 			int paymentTypeId = (c.getPaymentType() == null || c.getPaymentType().trim().equals("")) ? 0
-					: Integer.parseInt(c.getPaymentType());
+					: Integer.parseInt(removeLast2Digit(c.getPaymentType()));
 			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(paymentTypeId);
 			if (paymentType.isPresent())
 				bcv.setPaymentType(paymentType.get());
@@ -2115,9 +2173,11 @@ public class CustomerInfoDao {
 				bcv.setCctypeId(Integer.parseInt(c.getCcType()));
 			if (null != c.getCustomerGroup())
 				bcv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
-
+			System.out.println("Client Data ---"+c.toString());
 			BcaClientvendor cvSaved = bcaClientvendorRepository.save(bcv);
 			if (null != cvSaved) {
+				cvID = cvSaved.getClientVendorId();
+				bcv.setClientVendorId(cvID);
 				ret = true;
 //				insertCustomerStorage(c, compID);
 			}
@@ -2218,6 +2278,10 @@ public class CustomerInfoDao {
 //				purchaseInfo.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
 //						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
 //						c.getCountry(), c.getZipCode(), "0");
+				c.setCountry(bcv.getCountry());
+				c.setState(bcv.getState());
+				c.setCity(bcv.getCity());
+				c.setZipCode(bcv.getZipCode());
 				address.setAddressWithCustomerDto(c, cvID);
 				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N", bcv.getCompany());
 				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N", bcv.getCompany());
@@ -2239,7 +2303,7 @@ public class CustomerInfoDao {
 			int assFCharge = "1".equals(c.getFsAssessFinanceCharge()) ? 1 : 0;
 			int markFCharge = "1".equals(c.getFsMarkFinanceCharge()) ? 1 : 0;
 			purchaseInfo.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(),
-					c.getGracePrd(), assFCharge, markFCharge);
+					removeLast2Digit(c.getGracePrd()), assFCharge, markFCharge);
 
 			// -----------------------code to save services---START------------------------
 			// Service section is disabled in the GUI
@@ -2312,6 +2376,149 @@ public class CustomerInfoDao {
 		return ret;
 	}
 
+//	Insert Customer
+	@CacheEvict(value = "contactDetails", allEntries = true)
+	public boolean insertNewCustomer(CustomerDto c, String compID) {
+		boolean ret = false;
+		try {
+			String oBal = "0.0";
+			String exCredit = "0.0";
+			String status = "N";
+//			PurchaseInfo pinfo = new PurchaseInfo();
+			int cvID = purchaseInfo.getLastClientVendorID() + 1;
+
+			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
+				oBal = c.getOpeningUB();
+
+			if (c.getExtCredit() != null && c.getExtCredit().trim().length() > 0)
+				exCredit = c.getExtCredit();
+
+			String vcName = vc.CVCategory(c.getType());
+			BcaClientvendor bcv = new BcaClientvendor();
+			bcv.setClientVendorId(cvID);
+			bcv.setName(c.getCname());
+			Date dateAdded = (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ")
+					: string2date(c.getDateAdded());
+			bcv.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
+			bcv.setCustomerTitle(c.getTitle());
+			bcv.setFirstName(c.getFirstName());
+			bcv.setLastName(c.getLastName());
+			bcv.setAddress1(c.getAddress1());
+			bcv.setAddress2(c.getAddress2());
+			bcv.setCity(c.getCity());
+			bcv.setState(c.getState());
+			bcv.setProvince(c.getProvince());
+			bcv.setCountry(c.getCountry());
+			bcv.setZipCode(c.getZipCode());
+			bcv.setPhone(c.getPhone());
+			bcv.setCellPhone(c.getPhone());
+			bcv.setFax(c.getFax());
+			bcv.setHomePage(c.getHomePage());
+			bcv.setEmail(c.getEmail());
+			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
+			if (company.isPresent()) {
+				bcv.setCompany(company.get());
+			}
+
+			bcv.setResellerTaxId(c.getTexID());
+			bcv.setVendorOpenDebit(Double.parseDouble(oBal));
+			bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
+			bcv.setDetail(c.getMemo());
+			bcv.setCvtypeId(c.getCvTypeID());
+			if (null != c.getTaxAble())
+				bcv.setTaxable(Long.parseLong(c.getTaxAble()));
+//			if (null != c.getIsclient())
+//				bcv.setCvtypeId(Integer.parseInt(c.getIsclient()));
+			if (null != c.getType())
+				bcv.setCvcategoryId(Integer.parseInt(c.getType()));
+			bcv.setCvcategoryName(vcName);
+			bcv.setActive(1);
+			bcv.setDeleted(0);
+			bcv.setStatus(status);
+			bcv.setIsPhoneMobileNumber(c.isIsPhoneMobileNumber());
+			bcv.setIsMobilePhoneNumber(c.isIsMobilePhoneNumber());
+			bcv.setMiddleName(c.getMiddleName());
+			Date dateInput = (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
+					: string2date(c.getDateInput());
+			bcv.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
+			Date dateTerminated = (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
+					: string2date(c.getTerminatedDate());
+			bcv.setDateTerminated(DateHelper.convertDateToOffsetDateTime(dateTerminated));
+			bcv.setIsTerminated(c.isTerminated());
+			int termId = c.getTerm() == null || c.getTerm().trim().equals("") ? 0 : Integer.parseInt(c.getTerm());
+			bcv.setDbaname(c.getDbaName());
+			Optional<BcaTerm> term = bcaTermRepository.findById(termId);
+			if (term.isPresent())
+				bcv.setTerm(term.get());
+			int salesRepId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(c.getRep());
+			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesRepId);
+			if (salesRep.isPresent())
+				bcv.setSalesRep(salesRep.get());
+
+			Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(c.getShipping()));
+			if (shipCarrier.isPresent())
+				bcv.setShipCarrier(shipCarrier.get());
+			int paymentTypeId = (c.getPaymentType() == null || c.getPaymentType().trim().equals("")) ? 0
+					: Integer.parseInt(c.getPaymentType());
+			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(paymentTypeId);
+			if (paymentType.isPresent())
+				bcv.setPaymentType(paymentType.get());
+			if (null != c.getCcType() && !c.getCcType().trim().isEmpty())
+				bcv.setCctypeId(Integer.parseInt(c.getCcType()));
+			if (null != c.getCustomerGroup())
+				bcv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
+
+			BcaClientvendor cvSaved = bcaClientvendorRepository.save(bcv);
+			if (null != cvSaved) {
+				ret = true;
+			}
+
+			purchaseInfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(),
+					c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
+			if (c.getCvTypeID() != 3) {
+				insertClientInfo(c, cvID, compID);
+			}
+			TblBSAddress2 address = new TblBSAddress2();
+			if ("0".equals(c.getSetdefaultbs())) {
+//				bca_bsaddress is not required
+				address.setAddressWithCustomerDtoBilling(c, cvID);
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N", bcv.getCompany());
+				address.setAddressWithCustomerDtoShipping(c, cvID);
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N", bcv.getCompany());
+
+				if (billingAddId > 0 && shippingAddId > 0) {
+					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
+				}
+			} else {
+				address.setAddressWithCustomerDto(c, cvID);
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N", bcv.getCompany());
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N", bcv.getCompany());
+
+				if (billingAddId > 0 && shippingAddId > 0) {
+					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
+				}
+			}
+
+			insertClientVendorAccount(c, cvID);
+//		    bca_account			done
+//		    smd_cvinfo			done
+//		    bca_billingaddress  done
+//		    bca_shippingaddress done
+//		    storage_billingaddress done
+//		    storage_shippingaddress done
+
+			int useIndividual = "1".equals(c.getFsUseIndividual()) ? 1 : 0;
+			int assFCharge = "1".equals(c.getFsAssessFinanceCharge()) ? 1 : 0;
+			int markFCharge = "1".equals(c.getFsMarkFinanceCharge()) ? 1 : 0;
+			purchaseInfo.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(),
+					c.getGracePrd(), assFCharge, markFCharge);
+		} catch (Exception ee) {
+			Loger.log(2, "SQLException in Class CustomerInfo,  method -insertCustomer " + ee.toString());
+
+		}
+		return ret;
+	}
+	
 	/**
 	 * This method is needed because of SMC-BCA merging feature, this method is
 	 * needed for SMC to show the customer which is added from BCA should shows in
@@ -3762,5 +3969,12 @@ public class CustomerInfoDao {
 				Loger.log(2, "SQL Error in Class CustomerInfo and method -setUnitPriceEstimation " + ex.toString());
 			}
 		}
+	}
+	
+	public static String removeLast2Digit(String str) {
+		if (str != null && !str.isEmpty() && str.length() > 2 && str.substring(str.length() - 2).equals(".0")) {
+			str = str.substring(0, str.length() - 2);	
+		}
+		return str;
 	}
 }

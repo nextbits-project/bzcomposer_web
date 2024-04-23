@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface BcaCountriesRepository extends JpaRepository<BcaCountries, Integer> {
 	
     List<BcaCountries> findAllByOrderByName();
+    BcaCountries findByname(String name);
 
 }

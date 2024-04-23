@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface BcaStatesRepository extends JpaRepository<BcaStates, Integer> {
 
 	List<BcaStates> findByCountry_Id(Integer countryId);
-
+	BcaStates findByname(String name);
+	
 }
