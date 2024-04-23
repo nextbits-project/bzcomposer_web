@@ -329,7 +329,7 @@ public class SalesController {
 //			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			customerDto.setPeriodFrom(MyUtility.getDateBeforeGivenMonths(12));
 			customerDto.setPeriodTo(MyUtility.getCurrentDate());
-			request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
+			request.setAttribute("selectedCvID", firstCvID);
 			forward = "/sales/customerBoard";
 		} else if (action.equalsIgnoreCase("ContactBoard")) { // Show ContactBoard page
 //			SalesDetailsDao sd = new SalesDetailsDao();
@@ -1921,6 +1921,30 @@ public class SalesController {
 		if (action.equalsIgnoreCase("searchCustomers")) {
 			return sd.getSearchedCustomers(request);
 		} else if (action.equalsIgnoreCase("getCustomerDetails")) {
+			String cvId = request.getParameter("cvId");
+			sd.getCustomerDetails(cvId, request, customerDto);
+			ArrayList<InvoiceDto> shipAddress = invoiceInfoDao.shipAddress(companyID, cvId);
+			ArrayList<InvoiceDto> billAddress = invoiceInfoDao.billAddress(companyID, cvId);
+			TrHistoryLookUp hlookup = invoiceInfo.getCustomerPaymentDetailsForCustomerBoardPage(cvId);
+			customerDto.setLast3MonthAmt(hlookup.getLast3MonthAmt());
+			customerDto.setLast1YearAmt(hlookup.getLast1YearAmt());
+			customerDto.setTotalOverdueAmt(hlookup.getTotalOverdueAmt());
+			customerDto.setLastOrderDate(hlookup.getLastOrderDate());
+			for (InvoiceDto invoice : shipAddress) {
+				System.out.println("_________________________________________________");
+				System.out.println(invoice.getShipTo());
+				String shipTo = invoice.getShipTo() != null ? invoice.getShipTo().replace("\n", "<br/>") : "";
+				customerDto.setShipTo(shipTo);
+				System.out.println("_________________________________________________");
+
+			}
+			for (InvoiceDto invoice : billAddress) {
+
+				String billTo = invoice.getBillTo() != null ? invoice.getBillTo().replace("\n", "<br/>") : "";
+				customerDto.setBillTo(billTo);
+			}
+			return customerDto;
+		}else if (action.equalsIgnoreCase("getBillingDetails")) {
 			String cvId = request.getParameter("cvId");
 			sd.getCustomerDetails(cvId, request, customerDto);
 			ArrayList<InvoiceDto> shipAddress = invoiceInfoDao.shipAddress(companyID, cvId);

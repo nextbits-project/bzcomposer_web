@@ -106,6 +106,7 @@ table.tabla-listados tbody tr td {
 								</label>
 								<div class="col-md-8">
 									<select class="form-control devCutNameDrp" id="customerName">
+										<option value="0">Please Select</option>
 										<%
 										ArrayList<ClientVendor> cvListForBill = (ArrayList) request.getAttribute("cvForCombo");
 										if (cvListForBill != null) {
@@ -131,13 +132,14 @@ table.tabla-listados tbody tr td {
 								<div class="col-md-8">
 									<select class="form-control devReceivedTypeDrp"
 										id="receivedType" onclick="checkType()">
+										<option value="0">Please Select</option>
 										<%
 										ArrayList<TblAccount> accountForBill = (ArrayList) request.getAttribute("accountListForBill");
 										if (accountForBill != null) {
 											for (int i = 1; i < accountForBill.size(); i++) {
 										%>
 										<option value="<%=accountForBill.get(i).getAccountID()%>"
-											id="<%=accountForBill.get(i).getAccountID()%>">
+											data-label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
 											<%
 											out.println(accountForBill.get(i).getName());
 											%>
@@ -293,12 +295,12 @@ table.tabla-listados tbody tr td {
 							onclick="billCreationTab()"> <spring:message
 								code="BzComposer.billpayable.tabs.billcreation" />
 						</a>
-						<a class="nav-item nav-link" id="nav-contact-tab"
+						<%-- <a class="nav-item nav-link" id="nav-contact-tab"
 							data-toggle="tab" href="#nav-contact" role="tab"
 							aria-controls="nav-contact" aria-selected="false"
-							onclick="billCompaniesTab()()"> <spring:message
+							onclick="billCompaniesTab()"> <spring:message
 								code="BzComposer.billpayable.tabs.billingcompanies" />
-						</a>
+						</a> --%>
 					</div>
 				</nav>
 				<div class="unpaid">

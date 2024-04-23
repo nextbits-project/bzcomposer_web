@@ -334,7 +334,73 @@ public class CustomerInfoDao {
 		return objList;
 	}
 
-	@Cacheable(value = "contactDetails", key="#compId")
+	/* For getting the list of Billing Companies */
+	public ArrayList<CustomerDto> customerDetailsBilling(String compId) {
+		ArrayList<CustomerDto> objList = new ArrayList<>();
+		Title title = new Title();
+		try {
+			@SuppressWarnings("unchecked")
+			ArrayList<LabelValueBean> titleList = title.getTitleList(compId);
+			List<String> status = Arrays.asList("U", "N");
+			List<Integer> cvTypeId = Arrays.asList(8);
+
+			List<BcaClientvendor> cvs = bcaClientvendorRepository
+					.findDistinctByCompany_CompanyIdAndStatusInAndCvtypeIdInAndDeletedAndActiveOrderByName(
+							Long.valueOf(compId), status, cvTypeId, 0, 1);
+
+			DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+			for (BcaClientvendor cv : cvs) {
+				CustomerDto customer = new CustomerDto();
+				customer.setClientVendorID(cv.getClientVendorId().toString());
+				customer.setCompanyName(cv.getName());
+//				customer.setCname(cv.getName() + "(" + cv.getFirstName() + " " + cv.getLastName() + ")");
+				customer.setCname(cv.getName());
+				customer.setTitle(cv.getCustomerTitle());
+				customer.setFirstName(cv.getFirstName());
+				customer.setLastName(cv.getLastName());
+				customer.setAddress1(cv.getAddress1());
+				customer.setAddress2(cv.getAddress2());
+				customer.setZipCode(cv.getZipCode());
+				Optional<BcaCountries> country = countriesRepository.findById(Integer.valueOf(cv.getCountry()));
+				if (country.isPresent())
+					customer.setCountry(country.get().getName());
+
+				Optional<BcaStates> state = stateRepository.findById(Integer.valueOf(cv.getState()));
+				if (state.isPresent())
+					customer.setStateName(state.get().getName());
+
+				Optional<BcaCities> city = cityRepository.findById(Integer.valueOf(cv.getCity()));
+				if (city.isPresent())
+					customer.setCity(city.get().getName());
+
+				customer.setEmail(cv.getEmail());
+				customer.setPhone(cv.getPhone());
+				customer.setCellPhone(cv.getCellPhone());
+				customer.setFax(cv.getFax());
+				customer.setDateAdded(cv.getDateAdded() != null ? outputFormat.format(cv.getDateAdded()) : "");
+				String fullName = cv.getFirstName() + " " + cv.getLastName();
+				customer.setFullName(fullName);
+				customer.setBillTo(fullName);
+				customer.setType(cv.getCvcategoryName());
+				customer.setDbaName(cv.getDbaname());
+				for (LabelValueBean lvBean : titleList) {
+					if (lvBean.getValue().equalsIgnoreCase(customer.getTitle())) {
+						customer.setTitle(lvBean.getLabel());
+						break;
+					}
+				}
+				objList.add(customer);
+			}
+
+		} catch (Exception ee) {
+			Loger.log(2, " SQL Error in Class CustomerInfo and  method -customerDetails " + " " + ee.toString());
+
+		}
+		return objList;
+	}
+
+	@Cacheable(value = "contactDetails", key = "#compId")
 	public ArrayList<CustomerDto> contactDetails(String compId) {
 		ArrayList<CustomerDto> objList = new ArrayList<>();
 		Title title = new Title();

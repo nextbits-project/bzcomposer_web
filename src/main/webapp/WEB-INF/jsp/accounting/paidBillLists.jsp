@@ -92,6 +92,7 @@ table.tabla-listados tbody tr td {
 								</label>
 								<div class="col-md-8">
 									<select class="form-control devCutNameDrp" id="customerName">
+										<option value="0">Please Select</option>
 										<%
 											ArrayList<ClientVendor> cvListForBill = (ArrayList) request.getAttribute("cvForCombo");
 												for (int i = 0; i < cvListForBill.size(); i++) {
@@ -114,11 +115,12 @@ table.tabla-listados tbody tr td {
 								</label>
 								<div class="col-md-8">
 									<select class="form-control devReceivedTypeDrp" id="receivedType" onclick="checkType()">
+										<option value="0">Please Select</option>
 										<%
 											ArrayList<TblAccount> accountForBill = (ArrayList) request.getAttribute("accountListForBill");
 												for (int i = 1; i < accountForBill.size(); i++) {
 										%>
-										<option value="<%=accountForBill.get(i).getAccountID()%>" label="<%=accountForBill.get(i).getCustomerCurrentBalance() %>">
+										<option value="<%=accountForBill.get(i).getAccountID()%>" data-label="<%=accountForBill.get(i).getCustomerCurrentBalance() %>">
 											<%
 												out.println(accountForBill.get(i).getName());
 											%>
@@ -259,12 +261,12 @@ table.tabla-listados tbody tr td {
 						role="tab" aria-controls="nav-contact" aria-selected="false" onclick="billCreationTab()">
 							<spring:message code="BzComposer.billpayable.tabs.billcreation"/>
 						</a>
-						<a class="nav-item nav-link" id="nav-contact-tab"
+						<%-- <a class="nav-item nav-link" id="nav-contact-tab"
 							data-toggle="tab" href="#nav-contact" role="tab"
 							aria-controls="nav-contact" aria-selected="false"
 							onclick="billCompaniesTab()"> <spring:message
 								code="BzComposer.billpayable.tabs.billingcompanies" />
-						</a>
+						</a> --%>
 					</div>
 				</nav>
 				<div class="unpaid">
@@ -343,6 +345,8 @@ table.tabla-listados tbody tr td {
 											<th scope="col" class="text-right">
 												<spring:message code="BzComposer.paidbilllist.payeename"/>
 											</th>
+											<th scope="col" class="text-right"><spring:message
+													code="BzComposer.billpayable.category" /></th>
 											<th scope="col" class="text-right">
 												<spring:message code="BzComposer.billpayable.payfrom"/> 
 											</th>
@@ -355,6 +359,9 @@ table.tabla-listados tbody tr td {
 											</th>
 											<th scope="col" class="text-right">
 												<spring:message code="BzComposer.billpayable.paymentdate"/>
+											</th>
+											<th scope="col" class="text-right">
+												<spring:message code="BzComposer.global.memo"/>
 											</th>
 											<th scope="col" class="text-right">
 												<spring:message code="BzComposer.billpayable.status"/>
@@ -374,12 +381,19 @@ table.tabla-listados tbody tr td {
 												%>
 											</td>
 											<td class="text-right"
-												value="<%=paidBillLists.get(i).getCvName()%>">
+												value="<%=paidBillLists.get(i).getCvID()%>">
 												<%
 													out.println(paidBillLists.get(i).getCvName());
 												%>
 											</td>
-											<td class="text-right">
+											<td class="text-right"
+												value="<%=paidBillLists.get(i).getCategoryId()%>">
+												<%
+													out.println(paidBillLists.get(i).getCategoryName());
+												%>
+											</td>
+											<td class="text-right"
+											 	value="<%=paidBillLists.get(i).getPayerID()%>">
 												<% out.println(paidBillLists.get(i).getAccountNameString()); %>
 											</td>
 											<td class="text-right">
@@ -389,13 +403,27 @@ table.tabla-listados tbody tr td {
                                                 <%= String.format("%.2f", paidBillLists.get(i).getAmount()) %>
                                             </td>
 											<td class="text-right">
-												<% out.println("ToBePrinted");%>
+												<%= paidBillLists.get(i).getCheckNumber() != null ? paidBillLists.get(i).getCheckNumber() : "" %>
 											</td>
 											<td class="text-right">
 												<% out.println(paidBillLists.get(i).getDateAdded());%>
 											</td>
 											<td class="text-right">
-												<% out.println("Processed");%>
+												<%
+												out.println(paidBillLists.get(i).getMemo());
+												%>
+											</td>										
+											
+											<td class="text-right"><%-- <% out.println("Processed");%> --%>
+												<%
+												 // Get the status of the current payment from the list
+										        int status = paidBillLists.get(i).getStatus();
+											        if (status == 1) {
+											            out.println("Paid");
+											        } else {
+											            out.println("Unpaid");
+											        }
+												%>
 											</td>
 										</tr>
 										<%
@@ -497,21 +525,29 @@ table.tabla-listados tbody tr td {
 	var amountToBepaid = 0.00;
 	function selectrow(no , indexNumber)
 	{
-		
+		debugger;
 		this.billNo = no;
 		this.index = indexNumber;
 		
-		 $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text());
-		 $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value'));
-		 $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text());
-		 $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text());
-		 $("#memo").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text());
-		 $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(11)').attr('value'));
-		 $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(4)').text());
-		 if($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value') != 'null' || $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value') != '')
+		 $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text().trim());
+		 $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').attr('value'));
+		 $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value'));
+		 $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(4)').attr('value'));
+		 
+		 $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text().trim());
+		 $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').text().trim());
+		 $(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(7)').text().trim());
+		 $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text().trim());		 
+		 $("#memo").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(9)').text().trim());
+		 
+		 $("select.paymentOP").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(10)').text().trim());
+		 
+		 
+		 
+		/*  if($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').attr('value') != 'null' || $('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').attr('value') != '')
 		{
-			 $(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(12)').attr('value'));
-		}
+			 $(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(6)').attr('value'));
+		} */
 	}
 	
 	   function selectedRadio()

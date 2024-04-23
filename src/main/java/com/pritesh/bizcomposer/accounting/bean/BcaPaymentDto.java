@@ -27,6 +27,9 @@ private String compnayName;
 private String firstName;
 private String lastName;
 private String accountName;
+private Integer accountId;
+private Integer status;
+private String categoryName;
 
 
 }

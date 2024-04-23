@@ -3187,7 +3187,7 @@ public class InvoiceInfoDao {
 			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaClientvendorservices cvs ");
 			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa ");
 			jpql.append(
-					"WHERE cv.cvtypeId IN (1, 2) AND cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
+					"WHERE cv.cvtypeId IN (1, 2, 8) AND cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
 
 			if (cvId != null || cvId != "") {
 				jpql.append(" AND cv.clientVendorId = " + cvId);
@@ -3274,8 +3274,9 @@ public class InvoiceInfoDao {
 					customer.setFsAssessFinanceCharge(financeCharges.getAssessFinanceCharge() ? "true" : "false");
 				}
 
-				customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber());
-				customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber());
+				customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber() != null ? cv.getIsPhoneMobileNumber() : false);
+				customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber() != null ? cv.getIsMobilePhoneNumber() : false);
+
 				customer.setMiddleName(cv.getMiddleName());
 				customer.setDateInput(
 						cv.getDateInput() != null ? cv.getDateInput().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))

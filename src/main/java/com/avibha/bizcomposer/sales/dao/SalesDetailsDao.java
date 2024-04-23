@@ -94,11 +94,11 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private VendorCategory cv;
-	
+
 	@Autowired
 	InvoiceInfoDao invoice;
-	
-	@Autowired 
+
+	@Autowired
 	private BcaInvoiceRepository bcaInvoiceRepository;
 
 	public void getdataManager(HttpServletRequest request) {
@@ -134,8 +134,8 @@ public class SalesDetailsDao {
 																										// Customer+Vendor,
 																										// 2: Customer,
 																										// 3: Vendor
-		String contact =request.getParameter("contact");
-		if(contact.equalsIgnoreCase("contact")) {
+		String contact = request.getParameter("contact");
+		if (contact.equalsIgnoreCase("contact")) {
 			customerDto.setCvTypeID(7);
 		}
 		customerDto.setFsUseIndividual(
@@ -461,6 +461,8 @@ public class SalesDetailsDao {
 		ArrayList<CustomerDto> customerList;
 		if (action.equalsIgnoreCase("ContactBoard")) {
 			customerList = customerInfoDao.contactDetails(compId);
+		} else if (action.equalsIgnoreCase("billingCompaniesBoard")) {
+			customerList = customerInfoDao.customerDetailsBilling(compId);
 		} else {
 			customerList = customerInfoDao.customerDetails(compId);
 		}
@@ -1381,7 +1383,7 @@ public class SalesDetailsDao {
 	}
 
 	public PurchaseOrderDto getRecordForPO(String compId, String orderNum, PurchaseOrderDto form,
-			HttpServletRequest request) throws Throwable{
+			HttpServletRequest request) throws Throwable {
 //		PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
 		return purchaseOrderInfoDao.getRecordForPO(compId, orderNum, form, request);
 	}
@@ -1572,12 +1574,13 @@ public class SalesDetailsDao {
 					saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
 		}
 	}
+
 	public void saveTranformInvoice(HttpServletRequest request, InvoiceDto form, String custID) {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		System.out.println("CustomerId is:" + custID);
 		String orderNum = String.valueOf(bcaInvoiceRepository.findMaxValueOfOrderNum());
-		form.setOrderNo(orderNum+1);
+		form.setOrderNo(orderNum + 1);
 //		if (form.getOrderNo().contains("-")) {
 //			String orderNo = form.getOrderNo();
 //			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
@@ -1590,9 +1593,9 @@ public class SalesDetailsDao {
 //			request.getSession().setAttribute("SaveStatus",
 //					updateStatus ? "Invoice is updated successfully." : "Invoice is not updated successfully.");
 //		} else {
-			boolean saveStatus = invoiceInfoDao.Save(compId, form, custID);
-			request.getSession().setAttribute("SaveStatus",
-					saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
+		boolean saveStatus = invoiceInfoDao.Save(compId, form, custID);
+		request.getSession().setAttribute("SaveStatus",
+				saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
 //		}
 	}
 
@@ -1678,6 +1681,7 @@ public class SalesDetailsDao {
 		// String itemIndex = request.getParameter("itemIndex");
 		// request.setAttribute("itemIndex", itemIndex);
 	}
+
 	public void getContactDetails(String cvId, HttpServletRequest request, CustomerDto customerDto) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -1716,6 +1720,7 @@ public class SalesDetailsDao {
 		}
 		return invoiceDto;
 	}
+
 	public InvoiceDto transformSoToInvoice(HttpServletRequest request, InvoiceDto invoiceDto) {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1740,7 +1745,7 @@ public class SalesDetailsDao {
 		String compId = (String) request.getSession().getAttribute("CID");
 		Long orderNo = invoiceInfoDao.getSalesOrderNumberByBtnName(compId, request);
 		invoiceDto.setTabid("IBLU");
-		
+
 		ArrayList<InvoiceDto> list = invoiceInfoDao.getRecord(request, invoiceDto, compId, orderNo);
 		if (!list.isEmpty()) {
 			invoiceDto = list.get(0);

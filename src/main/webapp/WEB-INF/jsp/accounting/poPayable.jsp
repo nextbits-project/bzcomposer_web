@@ -787,7 +787,7 @@ table.tabla-listados tbody tr td {
    
    function save()
    {
-	   debugger;
+	   //debugger;
 	   var vendor = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value');
 	  if(vendor == null){
 		  alert("<bean:message key='BzComposer.billcreation.selectvendorfirst'/>");

@@ -314,9 +314,10 @@ input, textarea, select {
 																</c:forEach>
 															</form:select></td>	
 															<td><input type="checkbox" name="billVendor"
-															id="chkbillvendor" checked> <spring:message
+															id="chkbillvendor" disabled checked> <spring:message
 																code="BzComposer.global.billvendor" /></td>
-														<td><input type="checkbox" name="purchaseVendor"
+															<td></td>	
+														<td class="d-none"><input type="checkbox" name="purchaseVendor"
 															id="chkpurchasevendor" > <spring:message
 																code="BzComposer.global.purchasevendor" /></td>
 															
@@ -339,7 +340,8 @@ input, textarea, select {
 														<td><input type="checkbox" name="isTaxable"
 															id="chktax" /> <spring:message
 																code="BzComposer.global.istaxable" /></td>
-														<td><input type="checkbox" name="isAlsoClient"
+														<td></td>		
+														<td class="d-none"><input type="checkbox" name="isAlsoClient"
 															id="chk_alsovendor"> <spring:message
 																code="BzComposer.global.isalsoclient" /></td>
 													</tr>

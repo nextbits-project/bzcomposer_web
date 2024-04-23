@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -9501,6 +9504,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		con = db.getConnection();
 //		ResultSet rs_paidUC = null;
 		ArrayList<TblPayment> paidBillLists = new ArrayList<TblPayment>();
+		List<Object[]> lists = new ArrayList<>();
 //		StringBuffer Sql = new StringBuffer();
 		double totaAmount = 0.00;
 //
@@ -9516,11 +9520,29 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				+ ConstValue.companyId);
 //
 //		Sql.append(" ORDER BY Payment.DateAdded  DESC");
+		String sql = "SELECT bill.ServiceID, bill.VendorId, Payment.DateAdded, bill.PayerID, " +
+		        "bill.Memo, Payment.CheckNumber, Payment.Amount, Payment.IsToBePrinted, " +
+		        "bill.BillNum, bill.CategoryID, bill.AmountDue, Payment.PaymentTypeID, " +
+		        "Payment.PaymentID, ClientV.Name AS CompanyName, ClientV.FirstName, ClientV.LastName, " +
+		        "Account.Name AS AccountName, Account.AccountID, bill.Status,cat.Name as CatName FROM bca_payment AS Payment " +
+		        "INNER JOIN bca_bill AS bill ON Payment.BillNum = bill.BillNum " +
+		        "LEFT JOIN bca_clientvendor AS ClientV ON bill.VendorId = ClientV.ClientVendorID " +
+		        "LEFT JOIN bca_account AS Account ON Payment.PayerID = Account.AccountID " +
+		        " LEFT JOIN bca_category AS cat ON cat.CategoryID=bill.CategoryID "+
+		        "WHERE Payment.Deleted <> 1 AND ClientV.Status IN ('N', 'U')  AND bill.CompanyID = :companyId " +
+		        "ORDER BY Payment.DateAdded DESC";
 
 		try {
 //			stmt = con.createStatement();
 //			rs_paidUC = stmt.executeQuery(Sql.toString());
-			List<Object[]> lists = bcaPaymentRepository.findPaidBillListsPayment(new Long(ConstValue.companyId));
+//			List<Object[]> lists = bcaPaymentRepository.findPaidBillListsPayment(new Long(ConstValue.companyId));
+			 Query query = entityManager.createNativeQuery(sql);
+		     query.setParameter("companyId", ConstValue.companyId);
+			
+		  // Collect the results
+		        lists = query.getResultList();
+
+		        
 			List<BcaPaymentDto> objectToBcaPaymentDto = objectToBcaPaymentDto(lists);
 			for (BcaPaymentDto dto : objectToBcaPaymentDto) {
 				TblPayment payment = new TblPayment();
@@ -9540,6 +9562,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 				/* payment.setInvoiceID(rs_paidUC.getInt("InvoiceID")); */
 				payment.setCategoryId(dto.getCategoryId());
 				payment.setDateAdded(offsetDateTimeToDate(dto.getDateAdded()));
+				//payment.setDateAdded(JProjectUtil.getdateFormat().format(offsetDateTimeToDate(dto.getDateAdded())));
 				/* payment.setNeedToDeposit(rs_paidUC.getBoolean("isNeedtoDeposit")); */
 				payment.setToBePrinted(dto.getIsToBePrinted());
 				payment.setCheckNumber(dto.getCheckNumber());
@@ -9549,7 +9572,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 				payment.setBillNum(dto.getBillNum());
 				payment.setAccountNameString(dto.getAccountName());
 				payment.setCvName(dto.getCompnayName() + " (" + dto.getLastName() + " " + dto.getFirstName() + " )");
-
+				payment.setCategoryName(dto.getCategoryName());
+				payment.setAccountID(dto.getAccountId());
+				payment.setStatus(dto.getStatus());
 				paidBillLists.add(payment);
 			}
 //			while (rs_paidUC.next()) {
@@ -9584,7 +9609,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 //
 //				paidBillLists.add(payment);
 //			}
-		} catch (Exception e) {
+		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
 			Loger.log(e.toString());
 		}
@@ -12905,7 +12930,23 @@ public class ReceivableListImpl implements ReceivableLIst {
 				BcaPaymentDto dto = new BcaPaymentDto();
 				dto.setServiceId((Integer) obj[0]);
 				dto.setVendorId((Integer) obj[1]);
-				dto.setDateAdded((OffsetDateTime) obj[2]);
+				
+//				Date dateAdded = (obj[2] == null || obj[2].equals("")) ? string2date(" now() ")
+//						: string2date(obj[2].toString());
+//				
+				// Check if obj[2] is not null and is an instance of Timestamp
+				if (obj[2] != null && obj[2] instanceof java.sql.Timestamp) {
+				    java.sql.Timestamp timestamp = (java.sql.Timestamp) obj[2];
+				    // Convert Timestamp to OffsetDateTime
+				    java.time.OffsetDateTime offsetDateTime = timestamp.toInstant().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+				    dto.setDateAdded(offsetDateTime);
+				} else {
+				    // Handle the case where obj[2] is not a Timestamp or is null
+				    dto.setDateAdded(null);
+				}
+//				dto.setDateAdded((OffsetDateTime) obj[2]);
+//				dto.setDateAdded(JProjectUtil.getdateFormat().format(offsetDateTimeToDate(dateAdded)));
+//				dto.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
 				dto.setPayerId((Integer) obj[3]);
 				dto.setMemo((String) obj[4]);
 				dto.setCheckNumber((String) obj[5]);
@@ -12920,6 +12961,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 				dto.setFirstName((String) obj[14]);
 				dto.setLastName((String) obj[15]);
 				dto.setAccountName((String) obj[16]);
+				dto.setAccountId((Integer)obj[17]);
+				if (obj[18] != null) {
+				    Byte byteValue = (Byte) obj[18];
+				    Integer intValue = Integer.valueOf(byteValue.intValue());
+				    dto.setStatus(intValue);
+				} else {
+				    dto.setStatus(null); // or a default value
+				}
+				dto.setCategoryName((String)obj[19]);
 				list.add(dto);
 			}
 		} catch (Exception e) {

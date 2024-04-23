@@ -440,6 +440,11 @@
                             <span><spring:message code="BzComposer.BillingBoard" /></span>
                         </a>
                     </li>
+                    <li>
+                        <a href="BillingBoard?tabid=billingCompaniesBoard" title="Billing Companies Board">
+                            <span><spring:message code="BzComposer.BillingCompaniesBoard" /></span>
+                        </a>
+                    </li>
 					<li>
 						<a href="PoPayable?tabid=popayable" title="PoPayable">
                             <span><spring:message code="BzComposer.popayable.payabletitle" /></span>

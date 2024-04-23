@@ -9,9 +9,12 @@ package com.avibha.bizcomposer.sales.forms;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@Service
 public class CustomerDto  implements Serializable{
 
 	private static final long serialVersionUID = 0;

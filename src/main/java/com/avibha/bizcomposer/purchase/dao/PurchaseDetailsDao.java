@@ -150,12 +150,20 @@ public class PurchaseDetailsDao {
 	 */
 	public void AddVendor(HttpServletRequest request, VendorDto form, String compId) {
 		// PurchaseInfoDao purchase = new // PurchaseInfoDao();
-
+		String action = request.getParameter("tabid");
+		String actionMsg="Vendor Information is Successfully Added !";
 		form.setTaxAble("on".equalsIgnoreCase(request.getParameter("isTaxable")) ? "1" : "0");
 		form.setIsclient("on".equalsIgnoreCase(request.getParameter("isAlsoClient")) ? "1" : "3"); // 1:
 																									// Customer+Vendor,
-																									// 2: Customer, 3:
-																									// Vendor
+																									// 2: Customer,
+																									// 3: Vendor
+																									// 8:
+																									// ServiceProvider
+
+		if (action.equalsIgnoreCase("billingcompany")) {
+			form.setIsclient("8"); // making CVTypeID 8 for ServiceProviders as for Billing Company
+			actionMsg="Billing Company Information is Successfully Added !";
+		}
 		form.setFsUseIndividual("on".equalsIgnoreCase(request.getParameter("UseIndividualFinanceCharges")) ? "1" : "0");
 		form.setFsAssessFinanceCharge("on".equalsIgnoreCase(request.getParameter("AssessFinanceChk")) ? "1" : "0");
 		form.setFsMarkFinanceCharge("on".equalsIgnoreCase(request.getParameter("FChargeInvoiceChk")) ? "1" : "0");
@@ -163,13 +171,13 @@ public class PurchaseDetailsDao {
 		try {
 			boolean isAdded = purchaseInfoDao.insertVendor(form, compId);
 			if (isAdded) {
-				request.setAttribute("SaveStatus", new ActionMessage("Vendor Information is Successfully Added !"));
+				request.setAttribute("SaveStatus", new ActionMessage(actionMsg));
 				request.setAttribute("Added", "true");
-				request.getSession().setAttribute("actionMsg", "Vendor Information is Successfully Added!");
+				request.getSession().setAttribute("actionMsg", actionMsg);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			request.setAttribute("Status", new ActionMessage("Vendor Information is Not Insert !"));
+			request.setAttribute("Status", new ActionMessage("Information is Not Inserted !"));
 		}
 	}
 

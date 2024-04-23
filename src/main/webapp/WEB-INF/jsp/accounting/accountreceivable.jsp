@@ -118,6 +118,7 @@ table.tabla-listados tbody tr td {
 								</label>
 								<div class="col-md-8">
 									<select class="form-control devCutNameDrp" id="customerName">
+										<option value="0">Please Select</option>
 										<%
 										ArrayList<ClientVendor> cv = (ArrayList) request.getAttribute("ClineVendorForCombo");
 										/* 	Iterator<ClientVendor> itr1 = cv.iterator(); */
@@ -144,6 +145,7 @@ table.tabla-listados tbody tr td {
 										<%-- <%if(payment!=null)
 								{ %>
 								 <option selected="selected"><% out.println(payment.getTypeName()); } else{ %> --%>
+										<option value="0">Please Select</option>
 										<%
 										ArrayList<TblPaymentType> payType = (ArrayList) request.getAttribute("PaymentTypeForCombo");
 										/* Iterator<TblPaymentType> itr3 = payType.iterator(); */
@@ -325,6 +327,8 @@ table.tabla-listados tbody tr td {
 												code="BzComposer.accountreceivable.unpaid" /></option>
 										<option><spring:message
 												code="BzComposer.accountreceivable.paid" /></option>
+										<option><spring:message
+												code="BzComposer.accountreceivable.partiallypaid" /></option>		
 										<option><spring:message
 												code="BzComposer.accountreceivable.layaway" /></option>
 									</select>
