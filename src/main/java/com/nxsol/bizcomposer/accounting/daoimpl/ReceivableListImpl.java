@@ -4072,7 +4072,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					 * "''") + "'" + "," + "ShippingNote2=" + "'" +
 					 * invoice.getEB_shippingNote2().replaceAll("'", "''") + "'" + ","
 					 */
-					+ "StoreTypeID=" + invoice.getStoreTypeId() + "," + "StoreID=" + (invoice.getStoreId() > 0 ? invoice.getStoreId() : null) + ","
+					+ "StoreTypeID=" + invoice.getStoreTypeId() + "," + "StoreID=" + invoice.getStoreId() + ","
 					/*
 					 * + "ShipCarrier=" + "'" + invoice.getEB_shipCarrier().replaceAll("'", "''") +
 					 * "'" + ","
@@ -7412,38 +7412,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				Loger.log(e.toString());
 //			}
 //		}
-		return categoryList;
-	}
-	
-	@Override
-	public ArrayList<TblCategoryDto> getCategoryListForAssets() {
-		
-		ArrayList<TblCategoryDto> categoryList = new ArrayList<TblCategoryDto>();
-
-//		String sql = "SELECT * from bca_category where CompanyID=" + ConstValue.companyId
-//				+ " AND CategoryTypeID IN (-450722500) AND isActive = 1 ORDER BY Name ASC";		-450722500 for Assets
-
-		try {
-			List<BcaCategory> bcaCategories = bcaCategoryRepository
-					.findByCompany_CompanyIdAndIsActiveAndCategoryTypeIdOrderByNameAsc(new Long(ConstValue.companyId),
-							true, -450722500);
-			for (BcaCategory bcaCategory : bcaCategories) {
-				TblCategoryDto category = new TblCategoryDto();
-				category.setId(bcaCategory.getCategoryId());
-				category.setCategoryTypeID(bcaCategory.getCategoryTypeId());
-				category.setParent(bcaCategory.getParent());
-				category.setDescription(bcaCategory.getDescription());
-				category.setName(bcaCategory.getName());
-				category.setCategoryNumber(bcaCategory.getCateNumber());
-				category.setBudgetCategoryID(bcaCategory.getBudgetCategoryId());
-
-				categoryList.add(category);
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			Loger.log(e.toString());
-		}
 		return categoryList;
 	}
 

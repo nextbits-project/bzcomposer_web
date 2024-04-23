@@ -449,10 +449,10 @@ function setCutomerDataById(vendorID, rowId){
 
             $('#cname').html(data.cname);
             $('#dbaName').html(data.dbaName);
-            $('#customerType').val(data.type);
+            $('#customerType').val(data.cvCategoryTypeID);
             $('#billingAddress').html(data.billTo);
             $('#shippingAddress').html(data.shipTo);
-            $('#country').val(data.country);
+            $('#country').val(data.countryID);
             $('#activeCustomer').html(data.active);
 
             $('#phone').html(data.phone);

@@ -141,8 +141,6 @@ public interface ReceivableLIst {
 	
 	public ArrayList<TblCategoryDto> getCategoryListForPayment();
 	
-	public ArrayList<TblCategoryDto> getCategoryListForAssets();
-	
 	public ArrayList<TblAccount> getCustomerCurrentBalanceForvendor(ArrayList<ClientVendor> cvList);
 	
 	public void adjustBankBalanceForVendor(TblPaymentDto payment);

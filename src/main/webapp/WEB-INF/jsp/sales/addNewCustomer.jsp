@@ -232,6 +232,7 @@ $(function() {
                             <tr>
 								<td>
 									<spring:message code="BzComposer.global.email" />
+									<span class="inputHighlighted"><spring:message code="BzComposer.CompulsoryField.Validation" /></span>
 								</td>
 								<td colspan="3">
 									<form:input type="email" path="email" size="40" />
@@ -1062,8 +1063,8 @@ function validate() {
     var mail =String(email);
     var pattern=/^[_0-9a-zA-z]+(\.[_A-Za-z0-9]+)*@[A-Za-z0-9]+(\.[A-Za-z]+)+$/;
     if(email==""){
-        //return enterEmailValidationDialog();
-        return true;
+        return enterEmailValidationDialog();
+        return false;
     }
     else if (!pattern.test(email)) {
         document.CustomerForm.email.focus();

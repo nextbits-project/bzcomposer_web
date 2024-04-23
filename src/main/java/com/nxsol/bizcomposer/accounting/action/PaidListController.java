@@ -156,9 +156,6 @@ public class PaidListController extends Action {
 			payment.setOldAccountID(paymentFromAjax.getOldAccountID());
 			payment.setPaymentTypeID(paymentFromAjax.getPaymentTypeID());
 			payment.setAccountID(paymentFromAjax.getAccountID());
-			payment.setCheckNumber(paymentFromAjax.getCheckNumber());			
-			payment.setPaymentTypeName(paymentFromAjax.getPaymentTypeName());
-			payment.setMemo(paymentFromAjax.getMemo());
 			double toBeDeposited = receivedAmount - payment.getAmount();
 			rl.updateTransaction(payment, receivedAmount, strName, datePaid);
 			System.out.println("oldAccountId" + paymentId);

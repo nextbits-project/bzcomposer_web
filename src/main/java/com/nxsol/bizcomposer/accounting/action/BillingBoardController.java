@@ -87,7 +87,7 @@ public class BillingBoardController {
 //			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			customerDto.setPeriodFrom(MyUtility.getDateBeforeGivenMonths(12));
 			customerDto.setPeriodTo(MyUtility.getCurrentDate());
-			request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
+			//request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
 			request.setAttribute("selectedCvID", firstCvID);
 		}
 

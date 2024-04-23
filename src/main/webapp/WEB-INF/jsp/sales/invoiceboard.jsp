@@ -218,6 +218,8 @@ table.tabla-listados tbody tr td {
 														varStatus="loop">
 														<input type="hidden" id="selectedInvID${loop.index}"
 															value="${currObject.orderNum}" />
+														<input type="hidden" id="selectedSOInvoiceID${loop.index}"
+																value="${currObject.invoiceID}" />
 													</c:forEach>
 													<input type="hidden" name="sListSize" id="lSize"
 														value='${SalesBoardDetails.size()}'>
@@ -256,9 +258,10 @@ table.tabla-listados tbody tr td {
 																varStatus="loop">
 																<tr id='${loop.index}$$' ondblclick="sendToInvoice()"
 																	onclick="setRowId(${objList.orderNum}, '${objList.email}', ${loop.index}, true);">
-																	<td><input type="checkbox" class="allRecordsCLS"
+																	<td><input type="hidden" class="invoiceID"
+																			value="${objList.invoiceID}" /> <input type="checkbox" class="allRecordsCLS"
 																		id="allRecordsChk${loop.index}"
-																		onchange="getRecordID(this, ${loop.index});"
+																		onchange="getRecordID(this, ${loop.index}, ${objList.invoiceID});"
 																		value="${objList.orderNum}" /></td>
 																	<td style="font-size: 14px;">${objList.orderNumStr}</td>
 																	<td style="font-size: 14px;">${objList.dateAdded}</td>
@@ -323,10 +326,10 @@ table.tabla-listados tbody tr td {
 													value='<spring:message code="BzComposer.invoiceboard.lookup" />' />
 													&nbsp;&nbsp; <input type="button" class="formbutton"
 													style="padding: 10px;" onclick="SendMail(this.form);"
-													value='<spring:message code="BzComposer.global.sendmail" />' />
-													<%-- &nbsp;&nbsp; <input type="button" class="formbutton"
-													style="padding: 10px;" onclick="deleteInvoice(this.form);"
-													value='<spring:message code="BzComposer.global.sendmail" />' /> --%>
+													value='<spring:message code="BzComposer.global.sendmail" />' />&nbsp;&nbsp;
+													<input type="button" class="formbutton" id="modi"
+													onclick="DeleteInvoicesOrderBoard('DELETE');" style="padding: 10px;"
+													value='<spring:message code="BzComposer.global.delete" />' />
 													<input type="hidden" name="ONum" id="ONumId"> <input
 													type="hidden" name="sEmail" id="sEmailID"> <input
 													type="hidden" name="rNum" id="rowONum"> <input
@@ -409,13 +412,16 @@ function hightlightROW(){
 }
 
 let selectedRowIDs = [];
+let invoiceRowIDs = [];
 function getAllRecordsIDs() {
     selectedRowIDs = [];
+    invoiceRowIDs = [];
     let isAllSelected = document.getElementById('allRecordsChkHead').checked;
     let size = document.getElementById("lSize").value;
     if(isAllSelected){
         for(i=0; i<size; i++){
             selectedRowIDs.push(document.getElementById("selectedInvID"+i).value);
+            invoiceRowIDs.push(document.getElementById("selectedSOInvoiceID"+i).value);
         }
     }
     getAllRecordsIDs2();
@@ -435,13 +441,19 @@ function getAllRecordsIDs2() {
          }
     }
 }
-function getRecordID(currChkBox, rowIndex) {
+function getRecordID(currChkBox, rowIndex, invoiceID) {
     if(currChkBox.checked){
         selectedRowIDs.push(currChkBox.value);
+        invoiceRowIDs.push(invoiceID);
     }else{
         const index = selectedRowIDs.indexOf(currChkBox.value);
         if (index > -1) {
           selectedRowIDs.splice(index, 1);
+        }
+        
+        const index2 = invoiceRowIDs.indexOf(invoiceID);
+        if (index > -1) {
+          invoiceRowIDs.splice(index2, 1);
         }
     }
     if(document.getElementById("lSize").value == selectedRowIDs.length){
@@ -470,6 +482,51 @@ function deleteInvoice(form){
 	order_no = document.getElementById("ord_value").value;
 	window.location = "SalesBord?tabid=deleteInvoice&order_no="+order_no;
 }
+
+function showBoardValidationDialog(){
+	event.preventDefault();
+	$("#showInvoicesValidationDialog").dialog({
+    	resizable: false,
+        height: 200,
+        width: 400,
+        modal: true,
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    return false;
+}
+
+function DeleteInvoicesOrderBoard(cmd){
+    
+	if (invoiceRowIDs.length == 0) {
+		return showBoardValidationDialog();
+	} else {
+		if (cmd=="DELETE") {
+			event.preventDefault();
+			$("#showDeleteInvoicesValidationDialog").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		            "<spring:message code='BzComposer.global.ok'/>": function () {
+		                $(this).dialog("close");
+		                window.location = "Invoice?tabid=deleteSelectedBoard&reqType=IO&invoiceID="+invoiceRowIDs;
+		            },
+		            <spring:message code='BzComposer.global.cancel'/>: function () {
+		                $(this).dialog("close");
+		                return false;
+		            }
+				}
+			});
+			return false;
+		}
+	}
+}
+
 function SaleSearch(filterType)
 {
 	if(filterType > 1){
@@ -502,3 +559,13 @@ function downloadInvoiceBoardReport(){
     }
 }
 </script>
+<div id="showInvoicesValidationDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesinfo.selectinvoicesfirst" />
+	</p>
+</div>
+<div id="showDeleteInvoicesValidationDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesinfo.deleteselectedinvoices" />
+	</p>
+</div>

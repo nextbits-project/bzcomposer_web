@@ -118,7 +118,16 @@ public class InvoiceDto{
 	private String category;
 	private int templateType;
 	private ArrayList<Item> cart;
+	private String to;
 	
+	public String getTo() {
+		return to;
+	}
+
+	public void setTo(String to) {
+		this.to = to;
+	}
+
 	public String getCountry() {
 		return country;
 	}

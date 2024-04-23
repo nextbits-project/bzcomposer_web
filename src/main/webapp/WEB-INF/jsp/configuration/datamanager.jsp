@@ -764,6 +764,10 @@
 																													style="font-size: 14px;"><spring:message
 																															code="BzComposer.global.update" /></a> <a
 																													name="Delete" class="formbutton"
+																													onclick="callDefault();" tabindex="4"
+																													style="font-size: 14px;"><spring:message
+																															code="BzComposer.global.default" /></a> <a
+																													name="Delete" class="formbutton"
 																													onclick="callDelete();" tabindex="4"
 																													style="font-size: 14px;"><spring:message
 																															code="BzComposer.global.delete" /></a> <a
@@ -1130,6 +1134,44 @@
 		}
 	}
 
+	function callDefault() {
+		sType = document.getElementById("selectedTitle").innerHTML
+		sOld = sOldVal;
+		sNew = document.getElementById("descriptionId").value;
+		newID = document.getElementById("newIDD").value;
+		taxrate = document.getElementById("tax_rate").value;
+		document.getElementById("sTitleId").value = sType;
+		document.getElementById("sOldId").value = sOld;
+		document.getElementById("sNewId").value = sNew;
+		document.getElementById("newIDD").value = newID;
+		if (sNew == "") {
+			document.getElementById("descriptionId").focus();
+			return showBlankDiscriptionDialog();
+		} else {
+			event.preventDefault();
+			$("#defaultSelectedItemDialog")
+					.dialog(
+							{
+								resizable : false,
+								height : 200,
+								width : 400,
+								modal : true,
+								buttons : {
+									"<spring:message code='BzComposer.global.ok'/>" : function() {
+											$(this).dialog("close");
+											document.getElementById("tabid").value = "DM_SaveDefaultValues";
+											document.forms['dmForm'].action = "Configuration?tabid=DM_SaveDefaultValues";
+											document.forms['dmForm'].submit();
+									},
+									"<spring:message code='BzComposer.global.cancel'/>" : function() {
+										$(this).dialog("close");
+										return false;
+									}
+								}
+							});
+		}
+	}
+	
 	function callDelete() {
 		sType = document.getElementById("selectedTitle").innerHTML
 		sOld = sOldVal;
@@ -1365,6 +1407,11 @@
 <div id="deleteSelectedItemDialog" style="display: none;">
 	<p>
 		<spring:message code="BzComposer.datamanager.deleteselecteditem" />
+	</p>
+</div>
+<div id="defaultSelectedItemDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.datamanager.defaultselecteditem" />
 	</p>
 </div>
 <!-- Dialog box used in this page -->

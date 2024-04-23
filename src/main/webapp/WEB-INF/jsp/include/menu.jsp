@@ -237,7 +237,7 @@
                     </li>
                     <li>
                         <a href="Customer?tabid=ContactBoard" title="Contact Board">
-                        <span><spring:message code="BzComposer.sales.ContactBoard" /></span>
+                        <span><spring:message code="BzComposer.sales.ContactList" /></span>
                         </a>
                     </li>
 					<li>
@@ -350,7 +350,7 @@
             </li>
 			<!-- POS END -->
 			<li>
-				<a href="Item?tabid=Item" title="Item" class="uppercaseText">
+				<a href="Item?tabid=Item&category=ALL" title="Item" class="uppercaseText">
                     <span><spring:message code="BzComposer.sales.Item" /></span>
 				</a>
 				<ul>
@@ -361,7 +361,7 @@
 						</a>
 					</li> -->
 					<li>
-						<a href="Item?tabid=Item" title="Item List">
+						<a href="Item?tabid=Item&category=ALL" title="Item List">
 						  <span>
 							 <spring:message code="BzComposer.Item.ItemList" />
 						  </span>

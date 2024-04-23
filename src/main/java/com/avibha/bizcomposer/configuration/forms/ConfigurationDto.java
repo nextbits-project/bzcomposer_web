@@ -723,7 +723,9 @@ public class ConfigurationDto implements Serializable {
 	private int custTitleID;
 	private int shippingViaID;
 	private String backOrderNeeded;
-
+	private int leadSourceID;
+	private int leadCatID;
+	
 	public ConfigurationDto() {
 
 	}
@@ -4640,5 +4642,23 @@ public class ConfigurationDto implements Serializable {
 	public void setShippingViaID(int shippingViaID) {
 		this.shippingViaID = shippingViaID;
 	}
+	
+
+	public int getLeadSourceID() {
+		return leadSourceID;
+	}
+
+	public void setLeadSourceID(int leadSourceID) {
+		this.leadSourceID = leadSourceID;
+	}
+
+	public int getLeadCatID() {
+		return leadCatID;
+	}
+
+	public void setLeadCatID(int leadCatID) {
+		this.leadCatID = leadCatID;
+	}
+	
 
 }
