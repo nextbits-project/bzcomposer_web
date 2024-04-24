@@ -12,4 +12,6 @@ public interface BcaCitiesRepository extends JpaRepository<BcaCities, Integer> {
 
 	
 	List<BcaCities> findByState_Id(Integer stateId);
+	
+	BcaCities findByname(String name);
 }

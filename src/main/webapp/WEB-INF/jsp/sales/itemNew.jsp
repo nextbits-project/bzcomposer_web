@@ -97,8 +97,8 @@ table.tabla-listados tbody tr td {
 						<input type="hidden" name="listSize" id="lSize"
 							value='${ItemDetails.size()}' />
 							
-							<select name="selectedOption" id="fruit" onchange="filterOptions()" style="margin-left: 74px">
-							<option value="" selected>Category </option>
+							<select name="selectedOption" id="fruit" onchange="filterOptions();" style="margin-left: 74px">
+							<option value="ALL">Category </option><%--selected--%>
 							<c:forEach items="${ItemCategory}" var="objList"
 										varStatus="loop">
             		
@@ -289,6 +289,20 @@ function showCustomerValidationDialog() {
         }
     });
     return false;
+}
+
+function filterOptions(){
+	var category = document.getElementById("fruit").value;
+	console.log("Category--"+category);
+	window.location = "Item?tabid=Item&category="+category;
+}
+
+var onLoadcategory = document.getElementById("fruit").value;
+console.log("onLoadcategory--"+onLoadcategory);
+var categorysession = '<%=session.getAttribute("category")%>';
+console.log("categorysession-----------"+categorysession);
+if(categorysession != null){
+	document.getElementById("fruit").value=categorysession;
 }
 </script>
 <!-- Dialog box used in sales order page -->

@@ -188,13 +188,23 @@ public class LeadController {
 		HttpSession session = request.getSession();
 		String companyId = (String) session.getAttribute("CID");
 		BcaCompany company = companyRepo.findById(Long.parseLong(companyId)).orElse(null);
-
-		model.addAttribute("CustomerDetails", leadService.getAllLead(cvType, company));
-		request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
+		
+		List<BcaClientvendor> leadList = leadService.getAllLead(cvType, company);
+		
+		model.addAttribute("CustomerDetails", leadList);
+		
+		int firstCvID = 0;
+		if (!leadList.isEmpty()) {
+			firstCvID = leadList.get(0).getClientVendorId();
+		}
+		
+		
+		request.setAttribute("selectedCvID", firstCvID);
 
 		model.addAttribute("leadSource", leadService.getLeadSources(companyId));
 		model.addAttribute("LeadCategory", leadService.getLeadCategories(companyId));
 		model.addAttribute("product", leadService.getAllProducts(companyId));
+		
 
 		return "leads/leadBoard";
 	}

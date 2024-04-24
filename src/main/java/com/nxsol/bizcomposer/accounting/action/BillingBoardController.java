@@ -1,5 +1,8 @@
 package com.nxsol.bizcomposer.accounting.action;
 
+import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.common.utility.MyUtility;
 import com.google.gson.Gson;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.common.BillingStatement;
@@ -29,12 +32,18 @@ import java.util.Date;
 
 @Controller
 public class BillingBoardController {
-	
+
 	@Autowired
-	private ReceivableLIst rl ;
+	private ReceivableLIst rl;
+
+	@Autowired
+	private SalesDetailsDao sd;
+
+//	@Autowired
+//	CustomerDto customerDto;
 
 	@GetMapping("/BillingBoard")
-	public String billingBoard(HttpServletRequest request) throws Exception {
+	public String billingBoard(CustomerDto customerDto, HttpServletRequest request) throws Exception {
 
 		String forward = "/accounting/billingBoard";
 		HttpSession sess = request.getSession();
@@ -61,15 +70,31 @@ public class BillingBoardController {
 		int width = 900;
 		int height = 725;
 
-		Gson gson = new Gson();
-		ArrayList<ReceivableListDto> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
-		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement, criteriaForBillStatement);
-		request.setAttribute("billingStatementList", billingStatementList); // paid bills
-		request.setAttribute("billingList", billingList);
+		if (action.equalsIgnoreCase("billingBoard")) {
+			Gson gson = new Gson();
+			ArrayList<ReceivableListDto> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to,
+					"DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
+			ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement,
+					criteriaForBillStatement);
+			request.setAttribute("billingStatementList", billingStatementList); // paid bills
+			request.setAttribute("billingList", billingList);
+		} else if (action.equalsIgnoreCase("billingCompaniesBoard")) {
+			forward = "/accounting/billingCompaniesBoard";
+			request.setAttribute("cvTypeID", 3);
+			String firstCvID = sd.getCustomerList(request);
+			sd.getAllList(request);
+
+//			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+			customerDto.setPeriodFrom(MyUtility.getDateBeforeGivenMonths(12));
+			customerDto.setPeriodTo(MyUtility.getCurrentDate());
+			//request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
+			request.setAttribute("selectedCvID", firstCvID);
+		}
+
 		return forward;
 	}
 
-	@RequestMapping(value ="/BillingBoardStatement", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/BillingBoardStatement", method = { RequestMethod.GET, RequestMethod.POST })
 	public String billingBoardStatement(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String forward = "/accounting/billingBoard";
 		HttpSession sess = request.getSession();
@@ -109,14 +134,15 @@ public class BillingBoardController {
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm");
 				LocalDateTime now = LocalDateTime.now();
 				System.out.println();
-				String fileName = invoiceId + "_"+dtf.format(now)+"_billingStatement.pdf";
-				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(), new JRBeanCollectionDataSource(bill));
-				//JasperExportManager.exportReportToPdfFile(jasperPrint, filePath + fileName);
+				String fileName = invoiceId + "_" + dtf.format(now) + "_billingStatement.pdf";
+				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(),
+						new JRBeanCollectionDataSource(bill));
+				// JasperExportManager.exportReportToPdfFile(jasperPrint, filePath + fileName);
 				response.setContentType("application/x-pdf");
-				response.addHeader("Content-Disposition", "inline; filename="+fileName+";");
+				response.addHeader("Content-Disposition", "inline; filename=" + fileName + ";");
 				ServletOutputStream outStream = response.getOutputStream();
 				JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
-			}catch (Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -144,20 +170,22 @@ public class BillingBoardController {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm");
 			LocalDateTime now = LocalDateTime.now();
 			System.out.println();
-			String fileName = invoiceId + "_"+dtf.format(now)+"_PrintBilling.pdf";
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(), new JRBeanCollectionDataSource(bill));
-			//JasperExportManager.exportReportToPdfFile(jasperPrint, filePath + fileName);
+			String fileName = invoiceId + "_" + dtf.format(now) + "_PrintBilling.pdf";
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperreport, rl.getReportParameter(),
+					new JRBeanCollectionDataSource(bill));
+			// JasperExportManager.exportReportToPdfFile(jasperPrint, filePath + fileName);
 			response.setContentType("application/x-pdf");
-			response.addHeader("Content-Disposition", "inline; filename="+fileName+";");
+			response.addHeader("Content-Disposition", "inline; filename=" + fileName + ";");
 			ServletOutputStream outStream = response.getOutputStream();
 			JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
 		}
-		ArrayList<ReceivableListDto> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
-		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement, criteriaForBillStatement);
+		ArrayList<ReceivableListDto> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to, "DESC",
+				columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
+		ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement,
+				criteriaForBillStatement);
 		request.setAttribute("billingStatementList", billingStatementList);
 		request.setAttribute("billingList", billingList);
 		return forward;
 	}
-
 
 }

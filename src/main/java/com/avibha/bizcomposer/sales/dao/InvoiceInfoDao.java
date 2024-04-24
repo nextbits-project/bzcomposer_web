@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -37,7 +35,6 @@ import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
@@ -46,7 +43,6 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
-import com.avibha.bizcomposer.purchase.forms.PurchaseOrderDto;
 import com.avibha.bizcomposer.sales.dto.CartItem;
 import com.avibha.bizcomposer.sales.dto.InvoiceDetailsResponse;
 import com.avibha.bizcomposer.sales.dto.SavePrintResponse;
@@ -57,19 +53,22 @@ import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.mail.MailSend;
+import com.avibha.common.mail.SmtpMailSend;
 import com.avibha.common.utility.DateInfo;
 import com.avibha.common.utility.MyUtility;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
-import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaCart;
-import com.nxsol.bzcomposer.company.domain.BcaCctype;
+import com.nxsol.bzcomposer.company.domain.BcaCities;
+import com.nxsol.bzcomposer.company.domain.BcaClientcategory;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorfinancecharges;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendorservice;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaCountries;
 import com.nxsol.bzcomposer.company.domain.BcaCvcreditcard;
+import com.nxsol.bzcomposer.company.domain.BcaCvtype;
 import com.nxsol.bzcomposer.company.domain.BcaInvoice;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicetype;
@@ -81,12 +80,18 @@ import com.nxsol.bzcomposer.company.domain.BcaSalestax;
 import com.nxsol.bzcomposer.company.domain.BcaServicetype;
 import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
 import com.nxsol.bzcomposer.company.domain.BcaShippingaddress;
+import com.nxsol.bzcomposer.company.domain.BcaStates;
 import com.nxsol.bzcomposer.company.domain.BcaTerm;
+import com.nxsol.bzcomposer.company.domain.BcaTitle;
 import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCartRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCitiesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaClientcategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorserviceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicestyleRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicetypeRepository;
@@ -99,7 +104,9 @@ import com.nxsol.bzcomposer.company.repos.BcaSalestaxRepository;
 import com.nxsol.bzcomposer.company.repos.BcaServicetypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
+import com.nxsol.bzcomposer.company.repos.BcaTitleRepository;
 import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.nxsol.bzcomposer.company.utils.JpaHelper;
 import com.pritesh.bizcomposer.accounting.bean.BcaShippingaddressDto;
@@ -176,7 +183,25 @@ public class InvoiceInfoDao {
 
 	@Autowired
 	private ReceivableLIst receivableLIst;
-
+	
+	@Autowired
+	private BcaTitleRepository bcaTitleRepository;
+	
+	@Autowired
+	private BcaCountriesRepository bcaCountriesRepository;
+	
+	@Autowired
+	private BcaStatesRepository bcaStatesRepository;
+	
+	@Autowired
+	private BcaCitiesRepository bcaCitiesRepository;
+	
+	@Autowired
+	private BcaCvtypeRepository bcaCvtypeRepository;
+	
+	@Autowired
+	private BcaClientcategoryRepository bcaClientcategoryRepository;
+	
 	public InvoiceDetailsResponse invoiceDetails(int invoiceId, String companyId) {
 		InvoiceDetailsResponse response = new InvoiceDetailsResponse();
 
@@ -3198,14 +3223,30 @@ public class InvoiceInfoDao {
 			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaClientvendorfinancechargess cf ");
 			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaClientvendorservices cvs ");
 			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa ");
-			jpql.append(
-					"WHERE cv.cvtypeId IN (1, 2) AND cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
+			jpql.append("WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
 
 			if (cvId != null || cvId != "") {
 				jpql.append(" AND cv.clientVendorId = " + cvId);
 			}
+					//"WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
+			
+			String cvtypeId ="";
+			if (request.getAttribute("cvtypeId") != null) {
+				cvtypeId = request.getAttribute("cvtypeId").toString();	
+			}
+			
+			if (cvtypeId != null && !cvtypeId.isEmpty()) {
+				//contact
+				jpql.append("AND cv.cvtypeId = " + cvtypeId+" ");
+			} else if (cvId != null && cvId != "") {
+				jpql.append("AND cv.clientVendorId = " + cvId+" ");
+			} else {
+				//customer
+				jpql.append("AND cv.cvtypeId IN (1, 2, 8) ");
 
-			jpql.append("GROUP BY cv.clientVendorId " + "ORDER BY cv.clientVendorId");
+			}
+
+			jpql.append("GROUP BY cv.clientVendorId " + "ORDER BY cv.clientVendorId DESC");
 
 			TypedQuery<BcaClientvendor> query = entityManager.createQuery(jpql.toString(), BcaClientvendor.class)
 					.setParameter("companyId", Long.valueOf(compId));
@@ -3226,28 +3267,54 @@ public class InvoiceInfoDao {
 				customer.setLastName(cv.getLastName());
 				customer.setAddress1(cv.getAddress1());
 				customer.setAddress2(cv.getAddress2());
-				customer.setCity(cv.getCity());
-				customer.setState(cv.getState());
+				if(cv.getCity() != null) {
+					Optional<BcaCities> bcaCities = bcaCitiesRepository.findById(Integer.valueOf(cv.getCity()));	
+					customer.setCity(bcaCities.get().getName());
+					customer.setCityID(String.valueOf(bcaCities.get().getId()));
+				}
+				if(cv.getState() != null) {
+					Optional<BcaStates> bcaStates = bcaStatesRepository.findById(Integer.valueOf(cv.getState()));	
+					customer.setState(bcaStates.get().getName());
+					customer.setStateID(String.valueOf(bcaStates.get().getId()));
+				}
 
 				request.setAttribute("state_gen", cv.getState());
 
 				customer.setProvince(cv.getProvince());
-				customer.setCountry(cv.getCountry());
+				if(cv.getCountry() != null) {
+					Optional<BcaCountries> bcaCountries = bcaCountriesRepository.findById(Integer.valueOf(cv.getCountry()));	
+					customer.setCountry(bcaCountries.get().getName());
+					customer.setCountryID(String.valueOf(bcaCountries.get().getId()));
+				}
+				
 				customer.setZipCode(cv.getZipCode());
 				customer.setPhone(cv.getPhone());
 				customer.setCellPhone(cv.getCellPhone());
 				customer.setFax(cv.getFax());
 				customer.setEmail(cv.getEmail());
 				customer.setHomePage(cv.getHomePage());
-				customer.setTitle(cv.getCustomerTitle());
+				if(cv.getCustomerTitle() != null) {
+					Optional<BcaTitle> bcaTitle = bcaTitleRepository.findById(Integer.valueOf(cv.getCustomerTitle()));
+					customer.setTitle(bcaTitle.get().getTitle());
+				}
+				//customer.setTitle(cv.getCustomerTitle());
 				customer.setTexID(cv.getResellerTaxId());
 				customer.setOpeningUB(cv.getVendorOpenDebit().toString());
 
 				customer.setExtCredit(cv.getVendorAllowedCredit().toString());
 				customer.setMemo(cv.getDetail());
 				customer.setTaxAble(cv.getTaxable() != null ? cv.getTaxable().toString() : "0");
-				customer.setIsclient(cv.getCvtypeId().toString()); // cvtypeid
-				customer.setType(cv.getCvcategoryId().toString());
+				if(cv.getCvtypeId() > 0){
+					Optional<BcaCvtype> bcaCvtype = bcaCvtypeRepository.findById(cv.getCvtypeId());
+					customer.setIsclient(bcaCvtype.get().getName()); // cvtypeid
+				}
+				
+				if(cv.getCvcategoryId() != null && cv.getCvcategoryId() > 0) {
+					customer.setCvCategoryTypeID(String.valueOf(cv.getCvcategoryId()));
+					Optional<BcaClientcategory> bcaClientcategory = bcaClientcategoryRepository.findById(cv.getCvcategoryId());
+					if(bcaClientcategory.isPresent())
+						customer.setType(bcaClientcategory.get().getName());
+				}
 
 				OffsetDateTime dateAdded = cv.getDateAdded();
 				String formattedDate = dateAdded.format(formatter);
@@ -3286,8 +3353,9 @@ public class InvoiceInfoDao {
 					customer.setFsAssessFinanceCharge(financeCharges.getAssessFinanceCharge() ? "true" : "false");
 				}
 
-				customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber());
-				customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber());
+				customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber() != null ? cv.getIsPhoneMobileNumber() : false);
+				customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber() != null ? cv.getIsMobilePhoneNumber() : false);
+
 				customer.setMiddleName(cv.getMiddleName());
 				customer.setDateInput(
 						cv.getDateInput() != null ? cv.getDateInput().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
@@ -3339,8 +3407,13 @@ public class InvoiceInfoDao {
 					customer.setShdbaName(firstShipAddres.getDbaname());
 					request.setAttribute("state_st", customer.getShstate());
 				}
-				customer.setRep(cv.getSalesRep().getSalesRepId().toString());
-				customer.setTerm(cv.getTerm().getTermId().toString());
+				
+				if (cv.getSalesRep() != null && cv.getSalesRep().getSalesRepId() > 0)
+					customer.setRep(cv.getSalesRep().getSalesRepId().toString());
+				
+				if (cv.getTerm() != null && cv.getTerm().getTermId() > 0)
+					customer.setTerm(cv.getTerm().getTermId().toString());
+				
 				customer.setPaymentType(
 						cv.getPaymentType() != null ? cv.getPaymentType().getPaymentTypeId().toString() : null);
 				customer.setShipping(
@@ -3361,7 +3434,7 @@ public class InvoiceInfoDao {
 					card.setCardHolderName(creditCard.getCardHolderName());
 					card.setCardBillAddress(creditCard.getCardBillingAddress());
 					card.setCardZip(creditCard.getCardBillingZipCode());
-					card.setCardDefault(creditCard.getDefaultCard());
+					card.setCardDefault(creditCard.getDefaultCard() != null ? creditCard.getDefaultCard() : false);
 					String ccTypeName = creditCard.getCctype().getName() + "...."
 							+ card.getCardNo().substring(card.getCardNo().length() - 4);
 					card.setCcTypeName(ccTypeName);
@@ -3480,7 +3553,8 @@ public class InvoiceInfoDao {
 				customer.setMemo(cv.getDetail());
 				customer.setTaxAble(cv.getTaxable() != null ? cv.getTaxable().toString() : "0");
 				customer.setIsclient(cv.getCvtypeId().toString()); // cvtypeid
-				customer.setType(cv.getCvcategoryId().toString());
+				if (cv.getCvcategoryId() != null && !cv.getCvcategoryId().toString().isEmpty())
+					customer.setType(cv.getCvcategoryId().toString());
 
 				OffsetDateTime dateAdded = cv.getDateAdded();
 				String formattedDate = dateAdded.format(formatter);
@@ -3572,8 +3646,13 @@ public class InvoiceInfoDao {
 					customer.setShdbaName(firstShipAddres.getDbaname());
 					request.setAttribute("state_st", customer.getShstate());
 				}
-				customer.setRep(cv.getSalesRep().getSalesRepId().toString());
-				customer.setTerm(cv.getTerm().getTermId().toString());
+				
+				if (cv.getSalesRep() != null && cv.getSalesRep().getSalesRepId() >0)
+					customer.setRep(cv.getSalesRep().getSalesRepId().toString());
+				
+				if (cv.getTerm() != null && cv.getTerm().getTermId() > 0)
+					customer.setTerm(cv.getTerm().getTermId().toString());
+				
 				customer.setPaymentType(
 						cv.getPaymentType() != null ? cv.getPaymentType().getPaymentTypeId().toString() : null);
 				customer.setShipping(
@@ -3594,7 +3673,11 @@ public class InvoiceInfoDao {
 					card.setCardHolderName(creditCard.getCardHolderName());
 					card.setCardBillAddress(creditCard.getCardBillingAddress());
 					card.setCardZip(creditCard.getCardBillingZipCode());
-					card.setCardDefault(creditCard.getDefaultCard());
+					
+					if (creditCard.getDefaultCard() != null) {
+						card.setCardDefault(creditCard.getDefaultCard());	
+					}
+					
 					String ccTypeName = creditCard.getCctype().getName() + "...."
 							+ card.getCardNo().substring(card.getCardNo().length() - 4);
 					card.setCcTypeName(ccTypeName);
@@ -6225,9 +6308,13 @@ public class InvoiceInfoDao {
 		boolean result = false;
 		try {
 			EmailSenderDto emailSenderDto = getEmailSenderInfo(compId);
-			MailSend mailSend = new MailSend();
-			result = mailSend.sendMail(form.getEmailAddr(), form.getSubject(), form.getContent(),
-					emailSenderDto.getMailSenderEmail());
+			//MailSend mailSend = new MailSend();
+			/*
+			 * result = mailSend.sendMail(form.getTo(), form.getSubject(),
+			 * form.getMessage(), emailSenderDto.getMailSenderEmail());
+			 */
+			SmtpMailSend smtpMailSend = new SmtpMailSend();
+			result = smtpMailSend.sendMail(form.getTo(), form.getSubject(), form.getMessage(), emailSenderDto);
 		} catch (Exception ex) {
 			Loger.log("Exception in PreviousOrderNo Function" + ex.toString());
 			ex.printStackTrace();
@@ -7070,4 +7157,41 @@ public class InvoiceInfoDao {
 //		}
 		return status;
 	}
+	
+	final public boolean getInvoiceById(String compId, int invoiceId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		SQLExecutor db = new SQLExecutor();
+		ResultSet rs = null;
+		con = db.getConnection();
+		int cid = Integer.parseInt(compId);
+		boolean exist = false;
+		try {
+			pstmt = con.prepareStatement(
+					"select SONum from bca_invoice where InvoiceID = ? and CompanyID = ?");
+			pstmt.setInt(1, invoiceId);
+			pstmt.setInt(2, cid);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+				exist = true;
+		} catch (SQLException ee) {
+			Loger.log(2, "Error in  Class InvoiceInfo and  method -getTaxes " + ee.toString());
+		} finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return exist;
+	}
+	
 }

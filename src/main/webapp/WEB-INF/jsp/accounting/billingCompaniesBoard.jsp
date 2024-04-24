@@ -131,10 +131,10 @@ table.tabla-listados tbody tr td {
 <div>
 <div style="float: left;">
 	<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-		<spring:message code="BzComposer.sales.CustomerBoard" />
+		<spring:message code="BzComposer.BillingCompaniesBoard" />
 	</span>
 	<br>
-	<table>
+	<table  class="d-none">
 		<tr>
 			<td><spring:message code="BzComposer.customer.sortby" /></td>
 			<td>
@@ -172,7 +172,7 @@ table.tabla-listados tbody tr td {
 								<tr valign="top">
 									<th class="emblem" style="font-size:12px;">
 										<div align="center">
-											<spring:message code="BzComposer.customerinfo.customer" />
+											<spring:message code="BzComposer.BillingCompanies" />
 										</div>
 									</th>
 								</tr>
@@ -197,7 +197,7 @@ table.tabla-listados tbody tr td {
 								<thead>
 									<tr>
 										<th colspan="3" style="font-size:12px;">
-											<spring:message code="BzComposer.customerinfo.customerinformation"/>
+											<spring:message code="BzComposer.BillingCompanyInfo"/>
 										</th>
 									</tr>
 								</thead>
@@ -206,10 +206,10 @@ table.tabla-listados tbody tr td {
 								        <td style="width: 40%;">
 								            <table cellspacing="0" class="tabla-listados">
 								                <tr>
-                                                    <td style="width: 50%;"><strong><spring:message code="BzComposer.global.customerid" />:</strong></td>
+                                                    <td style="width: 50%;"><strong><spring:message code="BzComposer.BillingCompanyID" />:</strong></td>
                                                     <td style="width: 50%;" id="customerID"></td>
 								                </tr>
-								                <tr>
+								                <tr class="d-none">
                                                     <td><strong><spring:message code="BzComposer.Employee.Name" />:</strong></td>
                                                     <td id="customerName"></td>
                                                 </tr>
@@ -403,6 +403,7 @@ table.tabla-listados tbody tr td {
 let clientVendorID = 0;
 function initialize()
 {
+	debugger;
 	console.log("initialize");
 	document.getElementById("dispay_info1").checked = true;
 	let selectedCvID = document.getElementById("selectedCvID").value;
@@ -411,6 +412,7 @@ function initialize()
 }
 
 function lookUpHistory(){
+	debugger;
 	console.log("lookUpHistory");
     let radio_val = $('input[name="dispay_info"]:checked').val();
     var dfrom = document.CustomerForm.periodFrom.value;
@@ -432,15 +434,19 @@ function refreshTransationNow(radio_val, custid, dfrom, dto){
 }
 
 function setCutomerDataById(vendorID, rowId){
+	debugger;
 	console.log("setCutomerDataById");
     clientVendorID = vendorID;
     $.ajax({
         type: "POST",
-        url:"CustomerAjax?tabid=getCustomerDetails&cvId="+vendorID,
+        url:"CustomerAjax?tabid=getBillingDetails&cvId="+vendorID,
         data:{clientVendorID : vendorID},
         success : function(data) {
             $('#customerID').html(data.clientVendorID);
-            $('#customerName').html(data.firstName +' '+ data.middleName +' '+ data.lastName);
+            /* $('#customerName').html(data.firstName +' '+ data.middleName +' '+ data.lastName); */
+            var fullName = [data.firstName, data.middleName, data.lastName].filter(Boolean).join(' ');
+			$('#customerName').html(fullName);
+
             $('#cname').html(data.cname);
             $('#dbaName').html(data.dbaName);
             $('#customerType').val(data.cvCategoryTypeID);

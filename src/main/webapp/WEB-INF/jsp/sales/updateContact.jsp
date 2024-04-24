@@ -2254,9 +2254,10 @@ function initialize(){
     
     var selectedCityId = '<%= request.getAttribute("selectedCityId")%>';
 	var selectedStateId = '<%=request.getAttribute("selectedStateId")%>';
-	
+	var selectedCountryId = '<%=request.getAttribute("selectedCountryId")%>';
 	$('select[id="cityID"]').find('option[value="'+selectedCityId+'"]').attr("selected",true);
 	$('select[id="stateID"]').find('option[value="'+selectedStateId+'"]').attr("selected",true);
+	$('select[id="countryID"]').find('option[value="'+selectedCountryId+'"]').attr("selected",true);
     
 
 }

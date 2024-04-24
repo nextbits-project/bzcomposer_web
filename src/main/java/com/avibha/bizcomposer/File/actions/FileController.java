@@ -2,7 +2,11 @@ package com.avibha.bizcomposer.File.actions;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -37,9 +41,11 @@ import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.utility.CountryState;
+import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.TblStore;
 import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
+import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 
 /**
  * @author sarfrazmalik
@@ -50,6 +56,9 @@ public class FileController {
 	@Autowired
 	private DataImportExportUtils importExportUtils;
 
+	@Autowired
+	InvoiceInfoDao invoiceInfoDao;
+	
 	@Autowired
 	private CompanyInfo customer;
 
@@ -64,6 +73,12 @@ public class FileController {
 
 	@Autowired
 	private AddNewCompanyDAO dao;
+	
+	@Autowired
+	private DateInfo dateInfo;
+	
+	@Autowired
+	private BcaCvtypeRepository bcaCvtypeRepository;
 
 	@GetMapping("/changeLocale")
 	public String changeLocale(HttpServletRequest request) throws Exception {
@@ -117,12 +132,41 @@ public class FileController {
 //			CompanyInfo customer = new CompanyInfo();
 //			ConfigurationInfo configInfo = new ConfigurationInfo();
 			System.out.println("CompanyID: " + compId);
-
-			request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo));
-			request.setAttribute("salesOrderDetails", customer.selectSalesOrders(compId, configInfo));
-			request.setAttribute("invoiceDetails", customer.selectInvoiceDetails(compId, configInfo));
-			request.setAttribute("estimateDetails", customer.selectEstimateDetails(compId, configInfo));
-			request.setAttribute("itemListDetails", customer.getItemListDetails(compId));
+			
+			String dashrangeName = request.getParameter("dashrangeName");
+			String dashrangeNameSession = (String) sess.getAttribute("dashrangeName");
+			if(dashrangeName != null && !dashrangeName.isEmpty() && dashrangeName.equalsIgnoreCase("ALL")) {
+				sess.setAttribute("dashrangeName", dashrangeName);
+				dashrangeName = "";
+			} else if(dashrangeName != null && !dashrangeName.isEmpty()) {
+				sess.setAttribute("dashrangeName", dashrangeName);
+			} else if(dashrangeNameSession != null && !dashrangeNameSession.isEmpty()) {
+				dashrangeName = dashrangeNameSession;
+			}
+			
+			String sartYearDate="";
+			String endYearDate="";
+			if(dashrangeName != null && !dashrangeName.isEmpty()) {
+				if(dashrangeName.equals("1M")) {
+					sartYearDate = dateInfo.getStartDateByMonth(1);
+					endYearDate = dateInfo.getCurrentDateTime();
+				} else if(dashrangeName.equals("3M")) {
+					sartYearDate = dateInfo.getStartDateByMonth(3);
+					endYearDate = dateInfo.getCurrentDateTime();
+				} else if(dashrangeName.equals("6M")) {
+					sartYearDate = dateInfo.getStartDateByMonth(6);
+					endYearDate = dateInfo.getCurrentDateTime();
+				} else if(dashrangeName.equals("1Y")) {
+					sartYearDate = dateInfo.getLast1YearDTByCurrentDT();
+					endYearDate = dateInfo.getCurrentDateTime();
+				}
+			}
+			
+			request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo, sartYearDate, endYearDate));
+			request.setAttribute("salesOrderDetails", customer.selectSalesOrders(compId, configInfo, sartYearDate, endYearDate));
+			request.setAttribute("invoiceDetails", customer.selectInvoiceDetails(compId, configInfo, sartYearDate, endYearDate));
+			request.setAttribute("estimateDetails", customer.selectEstimateDetails(compId, configInfo, sartYearDate, endYearDate));
+			request.setAttribute("itemListDetails", customer.getItemListDetails(compId, sartYearDate, endYearDate));
 			forward = "/include/dashboard";
 		} else if (action.equalsIgnoreCase("CompanyInfo")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");
@@ -219,6 +263,8 @@ public class FileController {
 			forward = "/file/couponDesign";
 		} else if (action.equalsIgnoreCase("ImportCustomer")) {
 			forward = "/file/customerImport";
+		} else if (action.equalsIgnoreCase("ImportContact")) {
+			forward = "/file/contactImport";
 		} else if (action.equalsIgnoreCase("ImportLeads")) {
 			forward = "/file/leadsImport";
 		} else if (action.equalsIgnoreCase("ImportVendor")) {
@@ -226,10 +272,10 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("ExportCustomer")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+				//InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
 				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request,
 						new CustomerDto());
-				boolean b = importExportUtils.exportCustomerList(customerList, type, response);
+				boolean b = importExportUtils.exportCustomerList(customerList, type, response, "");
 				if (b == true) {
 					if (type.equals("csv")) {
 						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
@@ -239,6 +285,24 @@ public class FileController {
 				}
 			} else {
 				forward = "/file/exportCustomer";
+			}
+		} else if (action.equalsIgnoreCase("ExportContact")) {
+			String type = request.getParameter("type");
+			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
+				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Contact");
+				if (typeIDList != null && !typeIDList.isEmpty())
+					request.setAttribute("cvtypeId", typeIDList.get(0));
+				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
+				boolean b = importExportUtils.exportCustomerList(customerList, type, response, "Contact");
+				if (b == true) {
+					if (type.equals("csv")) {
+						request.setAttribute("success", "BzComposer.exportcontact.contactlistincsvdownloaded");
+					} else {
+						request.setAttribute("success", "BzComposer.exportcontact.contactlistinxlsdownloaded");
+					}
+				}
+			} else {
+				forward = "/file/exportContact";
 			}
 		} else if (action.equalsIgnoreCase("ExportLeads")) {
 			String type = request.getParameter("type");
@@ -266,6 +330,14 @@ public class FileController {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
 				importExportUtils.downloadCustomerTemplate(type, response);
+			} else {
+				forward = "redirect:File?tabid=ImportCustomer";
+			}
+		} else if (action.equalsIgnoreCase("DownloadContactTemplate")) {
+			String type = request.getParameter("type");
+			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
+				ArrayList<CustomerDto> leadDtos = new ArrayList<CustomerDto>();
+				importExportUtils.exportCustomerList(leadDtos, type, response, "Contact");
 			} else {
 				forward = "redirect:File?tabid=ImportCustomer";
 			}
@@ -386,14 +458,28 @@ public class FileController {
 		System.out.println("--------------FileController-------FileUpload-------" + action);
 		if (action.equalsIgnoreCase("UploadCustomerFile")) {
 			if (!attachFile.isEmpty()) {
-				boolean b = importExportUtils.uploadCustomerFile(attachFile, request);
+				//boolean b = importExportUtils.uploadCustomerFile(attachFile, request);
+				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Customer");
+				if (typeIDList != null && !typeIDList.isEmpty())
+					request.setAttribute("CVTypeID", typeIDList.get(0));
+				boolean b = importExportUtils.importCustomerFile(attachFile, request);
 				if (b == true) {
 					request.getSession().setAttribute("successMessage", "success");
 				}
 			}
 			forward = "redirect:File?tabid=ImportCustomer";
-		}
-		if (action.equalsIgnoreCase("UploadLeadsFile")) {
+		} else if (action.equalsIgnoreCase("UploadContactFile")) {
+			if (!attachFile.isEmpty()) {
+				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Contact");
+				if (typeIDList != null && !typeIDList.isEmpty())
+					request.setAttribute("CVTypeID", typeIDList.get(0));
+				boolean b = importExportUtils.importCustomerFile(attachFile, request);
+				if (b == true) {
+					request.getSession().setAttribute("successMessage", "success");
+				}
+			}
+			forward = "redirect:File?tabid=ImportContact";
+		} else if (action.equalsIgnoreCase("UploadLeadsFile")) {
 			if (!attachFile.isEmpty()) {
 				boolean b = importExportUtils.uploadLeadsFile(attachFile, request);
 				if (b == true) {

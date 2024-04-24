@@ -9,6 +9,10 @@
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
 
+<script src="other_lib.js"></script>
+<script src="jquery.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <title><spring:message code="BzComposer.estimationboardtitle" /></title>
 <style type="text/css">
 .fht-tbody {
@@ -279,6 +283,7 @@ table.tabla-listados tbody tr td {
 															var="currObject" varStatus="loop">
 															<input type="hidden" id="selectedEstID${loop.index}"
 																value="${currObject.est_no}" />
+																<input type="hidden" id="selectedESInvoiceID${loop.index}" value="${currObject.invoiceID}" />
 														</c:forEach>
 														<input type="hidden" name="sListSize" id="lSize"
 															value='${EstimationBoardDetails.size()}'>
@@ -320,7 +325,7 @@ table.tabla-listados tbody tr td {
 																			value="${objList.invoiceID}" /> <input
 																			type="checkbox" class="allRecordsCLS"
 																			id="allRecordsChk${loop.index}"
-																			onchange="getRecordID(this, ${loop.index});"
+																			onchange="getRecordID(this, ${loop.index}, ${objList.invoiceID});"
 																			value="${objList.est_no}" /></td>
 																		<td style="font-size: 14px;">${objList.estNumStr}</td>
 																		<td style="font-size: 14px;">${objList.companyName}</td>
@@ -346,7 +351,30 @@ table.tabla-listados tbody tr td {
 												</div>
 											</div>
 										</div>
+<<<<<<< HEAD
 
+=======
+										<table align="center">
+											<tr align="center">
+												<td><input type="button" class="formbutton" id="smail"
+													disabled="disabled" style="padding: 10px;"
+													onclick="sendToEstimation();"
+													value='<spring:message code="BzComposer.estimationboard.lookup" />' />&nbsp;&nbsp;
+													<input type="button" class="formbutton" id="modi"
+													style="padding: 10px;" onclick="InvoiceSelectedRecord();"
+													value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp;
+													<input type="button" class="formbutton" id="modi"
+													onclick="SendMail(this.form);" style="padding: 10px;"
+													value='<spring:message code="BzComposer.global.sendmail" />' />&nbsp;&nbsp;
+													<input type="button" class="formbutton" id="modi" onclick="DeleteEstimationBoard('DELETE');" 
+													style="padding: 10px;" value='<spring:message code="BzComposer.global.delete" />' />
+													<input type="hidden" name="ONum" id="ONumId" /> <input
+													type="hidden" name="sEmail" id="sEmailID" /> <input
+													type="hidden" name="rNum" id="rowONum" /> <input
+													type="hidden" name="senderEmail" id="EID" /></td>
+											</tr>
+										</table>
+>>>>>>> 4b468b8303c66a549da8c0f19f760a18024ad28a
 										<input type="hidden" id="ordId" name="OrderValue" value="" />
 										<input type="hidden" id="statusId" name="StatusValue" value="" />
 										<input type="hidden" id="ordSize" name="Size" value="" />
@@ -371,6 +399,12 @@ table.tabla-listados tbody tr td {
 </body>
 </html>
 <script type="text/javascript">
+$.noConflict();
+jQuery( document ).ready(function( $ ) {
+   $("#opener").click(function() {
+            $("#dialog1").dialog('open');
+    });
+});
 let itemID = 0;
 let itemIndex = 0;
 
@@ -426,13 +460,16 @@ function hightlightROW(){
 }
 
 let selectedRowIDs = [];
+let invoiceRowIDs = [];
 function getAllRecordsIDs() {
     selectedRowIDs = [];
+    invoiceRowIDs = [];
     let isAllSelected = document.getElementById('allRecordsChkHead').checked;
     let size = document.getElementById("lSize").value;
     if(isAllSelected){
         for(i=0; i<size; i++){
             selectedRowIDs.push(document.getElementById("selectedEstID"+i).value);
+            invoiceRowIDs.push(document.getElementById("selectedESInvoiceID"+i).value);
         }
     }
     getAllRecordsIDs2();
@@ -452,13 +489,19 @@ function getAllRecordsIDs2() {
          }
     }
 }
-function getRecordID(currChkBox, rowIndex) {
+function getRecordID(currChkBox, rowIndex, invoiceID) {
     if(currChkBox.checked){
         selectedRowIDs.push(currChkBox.value);
+        invoiceRowIDs.push(invoiceID);
     }else{
         const index = selectedRowIDs.indexOf(currChkBox.value);
         if (index > -1) {
           selectedRowIDs.splice(index, 1);
+        }
+        
+        const index2 = invoiceRowIDs.indexOf(invoiceID);
+        if (index > -1) {
+          invoiceRowIDs.splice(index2, 1);
         }
     }
     if(document.getElementById("lSize").value == selectedRowIDs.length){
@@ -587,4 +630,58 @@ function downloadEstimationBoardReport(){
         window.location = "/PdfReport/downloadEstimationBoardReport?selectedRowIDs="+selectedRowIDs;
     }
 }
+
+function showBoardValidationDialog(){
+	event.preventDefault();
+	$("#showESValidationDialog").dialog({
+    	resizable: false,
+        height: 200,
+        width: 400,
+        modal: true,
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    return false;
+}
+
+function DeleteEstimationBoard(cmd){
+    
+	if (invoiceRowIDs.length == 0) {
+		return showBoardValidationDialog();
+	} else {
+		if (cmd=="DELETE") {
+			event.preventDefault();
+			$("#showDeleteESValidationDialog").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		            "<spring:message code='BzComposer.global.ok'/>": function () {
+		                $(this).dialog("close");
+		                window.location = "Invoice?tabid=deleteSelectedBoard&reqType=ES&invoiceID="+invoiceRowIDs;
+		            },
+		            <spring:message code='BzComposer.global.cancel'/>: function () {
+		                $(this).dialog("close");
+		                return false;
+		            }
+				}
+			});
+			return false;
+		}
+	}
+}
 </script>
+<div id="showESValidationDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesinfo.selectestimationfirst" />
+	</p>
+</div>
+<div id="showDeleteESValidationDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesinfo.deleteselectedestimation" />
+	</p>
+</div>

@@ -66,7 +66,7 @@ table.tabla-listados tbody tr td {
 							<div>
 								<span
 									style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-									<spring:message code="BzComposer.sales.ContactBoard" /> <c:if
+									<spring:message code="BzComposer.sales.ContactList" /> <c:if
 										test="${not empty actionMsg}">
 										<br /> ${actionMsg}
             <%
@@ -98,21 +98,24 @@ table.tabla-listados tbody tr td {
 											<input type="button" class="formbutton"
 											onclick="openMailTemplates();" style="padding: 7 15px;"
 											value="<spring:message code='BzComposer.Email.MailTemplate'/>" />
-											<input type="button" class="formbutton"
+									   <!-- <input type="button" class="formbutton"
 											onclick="openSendThroughOutlook();" style="padding: 7 15px;"
-											value="<spring:message code='BzComposer.Email.SendThroughOutlook'/>" />
+											value="<spring:message code='BzComposer.Email.SendThroughOutlook'/>" /> -->
 											<input type="button"
 											class="formbutton" onclick="manageCustomer('CONVERT');"
 											style="padding: 7 15px;"
 											value="<spring:message code='BzComposer.Customer.transform.customer'/>" />
+											<input type="button" class="formbutton"
+											onclick="manageCustomer('CONVERTCUSTOMERtoLEAD');" style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Customer.transform.lead'/>" />
 										</td>
 									</tr>
 									<tr>
 										<td colspan="2" align="center"><input type="button"
-											class="formbutton" onclick="customerImport()"
+											class="formbutton" onclick="contactImport()"
 											style="padding: 7 15px;"
 											value="<spring:message code='menu.file.Import'/>" /> <input
-											type="button" class="formbutton" onclick="exportCustomer()"
+											type="button" class="formbutton" onclick="exportContact()"
 											style="padding: 7 15px;"
 											value="<spring:message code='menu.file.ExportTo'/>" /></td>
 									</tr>
@@ -286,6 +289,21 @@ function manageCustomer(cmd){
 			}
 			return false;
 		}
+		else if (cmd=="CONVERTCUSTOMERtoLEAD") {
+			if(confirm("<spring:message code='BzComposer.customerinfo.convertltolead'/>")==true) {
+				$.ajax({
+                    type : "GET",
+                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=6&cvID="+itemID,
+                    success : function(data) {
+                        location.reload();
+                    },
+                    error : function(error) {
+                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+                    }
+                });
+			}
+			return false;
+		}
 	}
 }
 function addNewCustomer(){
@@ -356,6 +374,14 @@ function transferToCustomer(){
 }
 function openMailTemplates(){
 	window.open("MailTemplates?tabid=getMailTemplates", null,"scrollbars=yes,height=500,width=1000,status=yes,toolbar=no,menubar=no,location=no");
+}
+
+function exportContact(){
+	window.open("File?tabid=ExportContact",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+}
+
+function contactImport(){
+	window.open("File?tabid=ImportContact",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 }
 </script>
 <!-- Dialog box used in sales order page -->

@@ -115,31 +115,66 @@ public class BcaClientvendorService {
 		CustomerDto cusDto = new CustomerDto();
 
 		// clientVendors[0] is clientVendorId, clientVendors[1] is name, etc.
-		cusDto.setClientVendorID(clientVendors[0].toString());
-		cusDto.setCompanyName(clientVendors[1].toString());
-		cusDto.setTitle(clientVendors[2].toString());
-		cusDto.setFirstName(clientVendors[3].toString());
-		cusDto.setLastName(clientVendors[4].toString());
-		cusDto.setAddress1(clientVendors[5].toString());
-		cusDto.setAddress2(clientVendors[6].toString());
+		if(clientVendors[0] != null)
+			cusDto.setClientVendorID(clientVendors[0].toString());
+		
+		if(clientVendors[1] != null)
+			cusDto.setCompanyName(clientVendors[1].toString());
+		
+		if(clientVendors[2] != null)
+			cusDto.setTitle(clientVendors[2].toString());
+		
+		if(clientVendors[3] != null)
+			cusDto.setFirstName(clientVendors[3].toString());
+		
+		if(clientVendors[4] != null)
+			cusDto.setLastName(clientVendors[4].toString());
+		
+		if(clientVendors[5] != null)
+			cusDto.setAddress1(clientVendors[5].toString());
+		
+		if(clientVendors[6] != null)
+			cusDto.setAddress2(clientVendors[6].toString());
+		
+		if(clientVendors[10] != null)
+			cusDto.setEmail(clientVendors[10].toString());
+		
+		if(clientVendors[11] != null)
+			cusDto.setPhone(clientVendors[11].toString());
+		
+		if(clientVendors[12] != null)
+			cusDto.setCellPhone(clientVendors[12].toString());
+		
+		if(clientVendors[13] != null)
+			cusDto.setFax(clientVendors[13].toString());
+		
+		if(clientVendors[14] != null)
+			cusDto.setDateAdded(clientVendors[14].toString());
 
-		cusDto.setEmail(clientVendors[10].toString());
-		cusDto.setPhone(clientVendors[11].toString());
-		cusDto.setCellPhone(clientVendors[12].toString());
-		cusDto.setFax(clientVendors[13].toString());
-		cusDto.setDateAdded(clientVendors[14].toString());
-
-		cusDto.setPaymentUnpaid(Boolean.valueOf(clientVendors[15] != null ? clientVendors[15].toString() : ""));
+		if(clientVendors[15] != null)
+			cusDto.setPaymentUnpaid(Boolean.valueOf(clientVendors[15] != null ? clientVendors[15].toString() : ""));
 //		cusDto.setType(clientVendors[16].toString());
-		cusDto.setType(clientVendors[16] != null ? clientVendors[16].toString() : "");
+		
+		if(clientVendors[16] != null)
+			cusDto.setType(clientVendors[16] != null ? clientVendors[16].toString() : "");
 
-		cusDto.setZipCode(clientVendors[17].toString());
-		cusDto.setCity(clientVendors[18].toString());
-		cusDto.setStateName(clientVendors[19].toString());
-		cusDto.setCountry(clientVendors[20].toString());
+		if(clientVendors[17] != null)
+			cusDto.setZipCode(clientVendors[17].toString());
+		
+		if(clientVendors[18] != null)
+			cusDto.setCity(clientVendors[18].toString());
+		
+		if(clientVendors[19] != null)
+			cusDto.setStateName(clientVendors[19].toString());
+		
+		if(clientVendors[20] != null)
+			cusDto.setCountry(clientVendors[20].toString());
 
-		cusDto.setDbaName(clientVendors[21].toString());
-		cusDto.setLastOrderDate(clientVendors[22] != null ? clientVendors[22].toString() : "");
+		if(clientVendors[21] != null)
+			cusDto.setDbaName(clientVendors[21].toString());
+		
+		if(clientVendors[22] != null)
+			cusDto.setLastOrderDate(clientVendors[22] != null ? clientVendors[22].toString() : "");
 
 		cusDto.setActive(true);
 

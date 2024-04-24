@@ -309,12 +309,43 @@ input, textarea, select {
 																</c:forEach>
 															</form:select></td>	
 															<td><input type="checkbox" name="billVendor"
-															id="chkbillvendor" checked> <spring:message
+															id="chkbillvendor" disabled checked> <spring:message
 																code="BzComposer.global.billvendor" /></td>
+
 														
 														
 													</tr>
-													
+
+															<td></td>	
+														<td class="d-none"><input type="checkbox" name="purchaseVendor"
+															id="chkpurchasevendor" > <spring:message
+																code="BzComposer.global.purchasevendor" /></td>
+															
+														<td><spring:message code="BzComposer.global.taxid" />
+														</td>
+														<td><form:input type="text" path="texID" /></td>
+														
+													</tr>
+													<tr>
+														<td><spring:message
+																code="BzComposer.global.oppeningunpaidbalance" /></td>
+														<td><form:input type="text" path="openingUB"
+																onkeypress="return numbersonly(event,this.value)" /></td>
+														<td><spring:message
+																code="BzComposer.global.existingcredits" /></td>
+														<td><form:input type="text" path="extCredit"
+																onkeypress="return numbersonly(event,this.value)" /></td>
+														<td colspan="2">&nbsp;</td>
+														
+														<td><input type="checkbox" name="isTaxable"
+															id="chktax" /> <spring:message
+																code="BzComposer.global.istaxable" /></td>
+														<td></td>		
+														<td class="d-none"><input type="checkbox" name="isAlsoClient"
+															id="chk_alsovendor"> <spring:message
+																code="BzComposer.global.isalsoclient" /></td>
+													</tr>
+
 													<tr>
 														<td><spring:message code="BzComposer.global.memo" />
 														</td>

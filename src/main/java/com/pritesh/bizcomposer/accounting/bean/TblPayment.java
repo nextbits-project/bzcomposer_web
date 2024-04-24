@@ -120,6 +120,8 @@ public class TblPayment extends ActionForm {
 
 	private boolean selectedCheckbox = false;
 
+	private int status = 0;
+	
 	public boolean isSelectedCheckbox() {
 		return selectedCheckbox;
 	}
@@ -706,6 +708,14 @@ public class TblPayment extends ActionForm {
 		this.bankAccountID = bankAccountID;
 	}
 
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 //	public String getChecknum() {
 //		return checknum;
 //	}
@@ -713,4 +723,5 @@ public class TblPayment extends ActionForm {
 //	public void setChecknum(String checknum) {
 //		this.checknum = checknum;
 //	}
+	
 }

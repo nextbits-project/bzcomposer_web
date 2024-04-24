@@ -65,7 +65,7 @@ public class VendorCategory {
 	}
 
 	public String CVCategory(String CVCategoryID) {
-		String CVCategory = null;
+		String CVCategory = "";
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
 //		ResultSet rs = null;

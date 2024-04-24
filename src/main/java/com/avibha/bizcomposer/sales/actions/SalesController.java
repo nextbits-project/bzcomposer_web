@@ -32,6 +32,7 @@ import com.avibha.bizcomposer.sales.dao.CustomerInfo;
 import com.avibha.bizcomposer.sales.dao.CustomerInfoDao;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
+import com.avibha.bizcomposer.sales.dao.ItemInfoDao;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.dao.TrHistoryLookUp;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
@@ -55,7 +56,25 @@ import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
+
 import com.nxsol.bizcomposer.common.ConstValue;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class SalesController {
@@ -95,6 +114,9 @@ public class SalesController {
 
 	@Autowired
 	private TblCategoryDtoLoader categoryDtoLoader;
+	
+	@Autowired
+	private ItemInfoDao itemInfoDao;
 
 	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
 			RequestMethod.GET, RequestMethod.POST })
@@ -106,10 +128,15 @@ public class SalesController {
 		String ITEM_URI = "/Item";
 		String INVOICE_URI = "/Invoice";
 		String SALES_ORDER_URI = "/SalesOrder";
-
+		
 		String SALES_MANAGER_URI = "/DataManager";
 
 //		ConfigurationInfo configInfo = new ConfigurationInfo();
+		if(request.getSession().getAttribute("SaveStatus") != null) {
+			request.setAttribute("SaveStatus",request.getSession().getAttribute("SaveStatus"));
+			request.getSession().setAttribute("SaveStatus","");	
+		}
+		
 		configInfo.setCurrentRequest(request);
 		String forward = "sales/invoice";
 		if (IN_URI.endsWith(CUSTOMER_URI)) {
@@ -333,7 +360,7 @@ public class SalesController {
 //			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			customerDto.setPeriodFrom(MyUtility.getDateBeforeGivenMonths(12));
 			customerDto.setPeriodTo(MyUtility.getCurrentDate());
-			request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
+			request.setAttribute("selectedCvID", firstCvID);
 			forward = "/sales/customerBoard";
 		} else if (action.equalsIgnoreCase("ContactBoard")) { // Show ContactBoard page
 //			SalesDetailsDao sd = new SalesDetailsDao();
@@ -1262,6 +1289,30 @@ public class SalesController {
 			} else {
 				forward = "redirect:/Invoice?tabid=Invoice";
 			}
+		} else if (action.equalsIgnoreCase("deleteSelectedBoard")) {
+			ArrayList<String> invoiceIDs = new ArrayList<String>(Arrays.asList(request.getParameter("invoiceID").split(",")));
+			ArrayList<Integer> invoiceIDsNes = (ArrayList<Integer>) invoiceIDs.stream().map(Integer::parseInt).collect(Collectors.toList());
+			String reqType = request.getParameter("reqType");
+			Loger.log("invoiceIDs--------------"+invoiceIDsNes+"-----reqType--------"+reqType);
+			if (reqType.equalsIgnoreCase("ES")) {
+				forward = "redirect:/EstimationBoard?tabid=ShowList";
+				boolean status = sd.deleteInvoiceById(request, invoiceIDsNes);
+				Loger.log("updateInvoiceById -- status ----"+status);
+			} else if (reqType.equalsIgnoreCase("SO")) {
+				forward = "redirect:/SalesOrderBoard?tabid=ShowList";
+				boolean status = sd.deleteInvoiceById(request, invoiceIDsNes);
+				Loger.log("updateInvoiceById -- status ----"+status);
+			} else if (reqType.equalsIgnoreCase("IO")) {
+				forward = "redirect:/SalesBord?tabid=ShowList";
+				boolean status = sd.deleteInvoiceById(request, invoiceIDsNes);
+				Loger.log("updateInvoiceById -- status ----"+status);
+			} else if (reqType.equalsIgnoreCase("PO")) {
+				forward = "redirect:/PurchaseBoard?tabid=ShowList";
+				boolean status = sd.deleteInvoiceById(request, invoiceIDsNes);
+				Loger.log("updateInvoiceById -- status ----"+status);
+			} else {
+				forward = "redirect:/Invoice?tabid=Invoice";
+			}
 		} else if (action.equalsIgnoreCase("SaveInvoice")) {
 			String custID = request.getParameter("custID");
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
@@ -1958,6 +2009,30 @@ public class SalesController {
 				customerDto.setBillTo(billTo);
 			}
 			return customerDto;
+		}else if (action.equalsIgnoreCase("getBillingDetails")) {
+			String cvId = request.getParameter("cvId");
+			sd.getCustomerDetails(cvId, request, customerDto);
+			ArrayList<InvoiceDto> shipAddress = invoiceInfoDao.shipAddress(companyID, cvId);
+			ArrayList<InvoiceDto> billAddress = invoiceInfoDao.billAddress(companyID, cvId);
+			TrHistoryLookUp hlookup = invoiceInfo.getCustomerPaymentDetailsForCustomerBoardPage(cvId);
+			customerDto.setLast3MonthAmt(hlookup.getLast3MonthAmt());
+			customerDto.setLast1YearAmt(hlookup.getLast1YearAmt());
+			customerDto.setTotalOverdueAmt(hlookup.getTotalOverdueAmt());
+			customerDto.setLastOrderDate(hlookup.getLastOrderDate());
+			for (InvoiceDto invoice : shipAddress) {
+				System.out.println("_________________________________________________");
+				System.out.println(invoice.getShipTo());
+				String shipTo = invoice.getShipTo() != null ? invoice.getShipTo().replace("\n", "<br/>") : "";
+				customerDto.setShipTo(shipTo);
+				System.out.println("_________________________________________________");
+
+			}
+			for (InvoiceDto invoice : billAddress) {
+
+				String billTo = invoice.getBillTo() != null ? invoice.getBillTo().replace("\n", "<br/>") : "";
+				customerDto.setBillTo(billTo);
+			}
+			return customerDto;
 		} else if (action.equalsIgnoreCase("zipcode")) {
 			String zipcode = request.getParameter("zipcode");
 //			CountryState cs = new CountryState();
@@ -1971,5 +2046,4 @@ public class SalesController {
 
 		return status;
 	}
-
 }

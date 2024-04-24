@@ -94,11 +94,11 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private VendorCategory cv;
-	
+
 	@Autowired
 	InvoiceInfoDao invoice;
-	
-	@Autowired 
+
+	@Autowired
 	private BcaInvoiceRepository bcaInvoiceRepository;
 
 	public void getdataManager(HttpServletRequest request) {
@@ -134,8 +134,8 @@ public class SalesDetailsDao {
 																										// Customer+Vendor,
 																										// 2: Customer,
 																										// 3: Vendor
-		String contact =request.getParameter("contact");
-		if(contact.equalsIgnoreCase("contact")) {
+		String contact = request.getParameter("contact");
+		if (contact.equalsIgnoreCase("contact")) {
 			customerDto.setCvTypeID(7);
 		}
 		customerDto.setFsUseIndividual(
@@ -148,7 +148,7 @@ public class SalesDetailsDao {
 //		customerDto.setMinFCharges(request.getParameter("minFCharges"));
 //		customerDto.setGracePrd(request.getParameter("gracePrd"));
 		try {
-			boolean addCust = customerInfoDao.insertCustomer(customerDto, compId);
+			boolean addCust = customerInfoDao.insertNewCustomer(customerDto, compId);
 			if (addCust) {
 				request.setAttribute("SaveStatus", new ActionMessage("Customer Information is Successfully Added!"));
 				request.getSession().setAttribute("actionMsg", "Customer Information is Successfully Added!");
@@ -164,17 +164,43 @@ public class SalesDetailsDao {
 //		CountryState cs = new CountryState();
 		HttpSession sess = request.getSession();
 		String cid = (String) sess.getAttribute("CID");
-		String countryID = ConstValue.countryID;
-		String stateID = ConstValue.stateID;
+		String countryID = "";
+		String stateID = "";
+		String cityID = "";
+		
+		if (request.getAttribute("selectedCountryId") != null && !request.getAttribute("selectedCountryId").toString().isEmpty())
+			countryID = request.getAttribute("selectedCountryId").toString();
+		else 
+			countryID = ConstValue.countryID;
+		
+		if (request.getAttribute("selectedStateId") != null && !request.getAttribute("selectedStateId").toString().isEmpty())
+			stateID = request.getAttribute("selectedStateId").toString();
+		else 
+			stateID = ConstValue.stateID;
+		
+		if (request.getAttribute("selectedCityId") != null && !request.getAttribute("selectedCityId").toString().isEmpty())
+			cityID = request.getAttribute("selectedCityId").toString();
+		else 
+			cityID = ConstValue.cityID;
+		
 		String action = ConstValue.hateNull(request.getParameter("tabid"));
-		if (action.equalsIgnoreCase("editCustomer")) {
+		if (action.equalsIgnoreCase("editCustomer") || action.equalsIgnoreCase("editContact")) {
 			CustomerDto customer = (CustomerDto) request.getAttribute("CustomerDetails");
-			countryID = customer.getCountry();
-			stateID = customer.getState();
-			request.setAttribute("stateList2", countryState.getStateList(customer.getBscountry()));
-			request.setAttribute("cityList2", countryState.getCityList(customer.getBsstate()));
-			request.setAttribute("stateList3", countryState.getStateList(customer.getShcountry()));
-			request.setAttribute("cityList3", countryState.getCityList(customer.getShstate()));
+			if (customer != null) {
+				//countryID = customer.getCountry();
+				//stateID = customer.getState();
+				if (customer.getBscountry() != null)
+					request.setAttribute("stateList2", countryState.getStateList(customer.getBscountry()));
+				
+				if (customer.getBsstate() != null)
+					request.setAttribute("cityList2", countryState.getCityList(customer.getBsstate()));
+				
+				if (customer.getShcountry() != null)
+					request.setAttribute("stateList3", countryState.getStateList(customer.getShcountry()));
+				
+				if (customer.getShstate() != null)
+					request.setAttribute("cityList3", countryState.getCityList(customer.getShstate()));
+			}
 		}
 		// country List
 		request.setAttribute("cList", countryState.getCountry());
@@ -327,9 +353,9 @@ public class SalesDetailsDao {
 				stmt.addBatch("UPDATE bca_term SET IsDefault=1 WHERE TermID=" + configDto.getSelectedTermId());
 			}
 			if (configDto.getBusinessTypeId() > 0) {
-				stmt.addBatch("UPDATE bca_cvcategory SET IsDefault=0 WHERE IsDefault=1");
+				stmt.addBatch("UPDATE bca_clientcategory SET IsDefault=0 WHERE IsDefault=1");
 				stmt.addBatch(
-						"UPDATE bca_cvcategory SET IsDefault=1 WHERE CVCategoryID=" + configDto.getBusinessTypeId());
+						"UPDATE bca_clientcategory SET IsDefault=1 WHERE CVCategoryID=" + configDto.getBusinessTypeId());
 			}
 			if (configDto.getPaymentTypeId() > 0) {
 				stmt.addBatch("UPDATE bca_paymenttype SET IsDefault=0 WHERE IsDefault=1");
@@ -352,6 +378,14 @@ public class SalesDetailsDao {
 			if (configDto.getLocationID() > 0) {
 				stmt.addBatch("UPDATE bca_location SET IsDefault=0 WHERE IsDefault=1");
 				stmt.addBatch("UPDATE bca_location SET IsDefault=1 WHERE LocationID=" + configDto.getLocationID());
+			}
+			if (configDto.getLeadSourceID() > 0) {
+				stmt.addBatch("UPDATE bca_lead_source SET IsDefault=0 WHERE IsDefault=1");
+				stmt.addBatch("UPDATE bca_lead_source SET IsDefault=1 WHERE LeadSourceID=" + configDto.getLeadSourceID());
+			}
+			if (configDto.getLeadCatID() > 0) {
+				stmt.addBatch("UPDATE bca_lead_category SET IsDefault=0 WHERE IsDefault=1");
+				stmt.addBatch("UPDATE bca_lead_category SET IsDefault=1 WHERE LeadCategoryID=" + configDto.getLeadCatID());
 			}
 			stmt.executeBatch();
 		} catch (SQLException ee) {
@@ -461,6 +495,8 @@ public class SalesDetailsDao {
 		ArrayList<CustomerDto> customerList;
 		if (action.equalsIgnoreCase("ContactBoard")) {
 			customerList = customerInfoDao.contactDetails(compId);
+		} else if (action.equalsIgnoreCase("billingCompaniesBoard")) {
+			customerList = customerInfoDao.customerDetailsBilling(compId);
 		} else {
 			customerList = customerInfoDao.customerDetails(compId);
 		}
@@ -732,7 +768,19 @@ public class SalesDetailsDao {
 		String compId = (String) sess.getAttribute("CID");
 //		ItemInfoDao item = new ItemInfoDao();
 		List<Item> itemCategory = itemInfoDao.getItemCategory(compId);
-		ArrayList<ItemDto> itemList = itemInfoDao.getItemList(compId);
+		String category = request.getParameter("category");
+		String categorySession = (String) sess.getAttribute("category");
+		if(category != null && !category.isEmpty() && category.equalsIgnoreCase("ALL")) {
+			sess.setAttribute("category", category);
+			category = "";
+		} else if(category != null && !category.isEmpty()) {
+			sess.setAttribute("category", category);
+		} else if(categorySession != null && !categorySession.isEmpty()) {
+			category = categorySession;
+		}
+		
+		
+		ArrayList<ItemDto> itemList = itemInfoDao.getItemList(compId, category);
 		sess.setAttribute("ItemDetails", itemList);
 		sess.setAttribute("ItemCategory", itemCategory);
 		Loger.log("ItemsList Size:" + itemList.size());
@@ -1055,7 +1103,7 @@ public class SalesDetailsDao {
 //		ItemInfoDao item = new ItemInfoDao();
 		itemInfoDao.adjustInventory(compId, oldInventory, invSize);
 		ArrayList ItemDetails = new ArrayList();
-		ItemDetails = itemInfoDao.getItemList(compId);
+		ItemDetails = itemInfoDao.getItemList(compId,"");
 		sess.removeAttribute("ItemDetails");
 		sess.setAttribute("ItemDetails", ItemDetails);
 		Loger.log("list Size:" + ItemDetails.size());
@@ -1220,7 +1268,7 @@ public class SalesDetailsDao {
 		ArrayList itemList = invoiceInfoDao.getItemList(compId);
 		request.setAttribute("ItemList", itemList);
 
-		ArrayList itemDetails = itemInfoDao.getItemList(compId);
+		ArrayList itemDetails = itemInfoDao.getItemList(compId,"");
 		request.setAttribute("ItemDetails", itemList);
 	}
 
@@ -1381,7 +1429,7 @@ public class SalesDetailsDao {
 	}
 
 	public PurchaseOrderDto getRecordForPO(String compId, String orderNum, PurchaseOrderDto form,
-			HttpServletRequest request) throws Throwable{
+			HttpServletRequest request) throws Throwable {
 //		PurchaseOrderInfoDao poInfoDao = new PurchaseOrderInfoDao();
 		return purchaseOrderInfoDao.getRecordForPO(compId, orderNum, form, request);
 	}
@@ -1575,13 +1623,12 @@ public class SalesDetailsDao {
 		}
 	}
 	
-	
 	public void saveTranformInvoice(HttpServletRequest request, InvoiceDto form, String custID) {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		System.out.println("CustomerId is:" + custID);
 		String orderNum = String.valueOf(bcaInvoiceRepository.findMaxValueOfOrderNum());
-		form.setOrderNo(orderNum+1);
+		form.setOrderNo(orderNum + 1);
 //		if (form.getOrderNo().contains("-")) {
 //			String orderNo = form.getOrderNo();
 //			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
@@ -1594,9 +1641,9 @@ public class SalesDetailsDao {
 //			request.getSession().setAttribute("SaveStatus",
 //					updateStatus ? "Invoice is updated successfully." : "Invoice is not updated successfully.");
 //		} else {
-			boolean saveStatus = invoiceInfoDao.Save(compId, form, custID);
-			request.getSession().setAttribute("SaveStatus",
-					saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
+		boolean saveStatus = invoiceInfoDao.Save(compId, form, custID);
+		request.getSession().setAttribute("SaveStatus",
+				saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
 //		}
 	}
 
@@ -1671,22 +1718,38 @@ public class SalesDetailsDao {
 		String compId = (String) sess.getAttribute("CID");
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 //		invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
-		ArrayList<CustomerDto> customerList =   invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
-		
-		System.err.println("customerList"+customerList.size());
-		if(customerList.size()>0)
-		{
-		CustomerDto customerDto2 = customerList.get(0);
-		String cityId = customerDto2.getCity();
-		String stateId = customerDto2.getState();
-		request.setAttribute("selectedCityId", cityId);
-		request.setAttribute("selectedStateId", stateId);
+
+//		bellow part is commented a conflict
+//		ArrayList<CustomerDto> customerList =   invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
+//		
+//		System.err.println("customerList"+customerList.size());
+//		if(customerList.size()>0)
+//		{
+//		CustomerDto customerDto2 = customerList.get(0);
+//		String cityId = customerDto2.getCity();
+//		String stateId = customerDto2.getState();
+//		request.setAttribute("selectedCityId", cityId);
+//		request.setAttribute("selectedStateId", stateId);
+
+		ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
+		if(!customerList.isEmpty()) {
+			CustomerDto customerDto2 = customerList.get(0);
+			String cityId = customerDto2.getCityID();
+			String stateId = customerDto2.getStateID();
+			String countryId = customerDto2.getCountryID();
+			String typeID = customerDto2.getCvCategoryTypeID();
+			request.setAttribute("selectedCityId", cityId);
+			request.setAttribute("selectedStateId", stateId);
+			request.setAttribute("selectedCountryId", countryId);
+			request.setAttribute("selectedTypeID", typeID);
+
 		}
 
 		invoiceInfoDao.getServices(request, compId, cvId);
 		// String itemIndex = request.getParameter("itemIndex");
 		// request.setAttribute("itemIndex", itemIndex);
 	}
+
 	public void getContactDetails(String cvId, HttpServletRequest request, CustomerDto customerDto) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
@@ -1696,8 +1759,10 @@ public class SalesDetailsDao {
 		CustomerDto customerDto2 = customerList.get(0);
 		String cityId = customerDto2.getCity();
 		String stateId = customerDto2.getState();
+		String countryId = customerDto2.getCountry();
 		request.setAttribute("selectedCityId", cityId);
 		request.setAttribute("selectedStateId", stateId);
+		request.setAttribute("selectedCountryId", countryId);
 
 		invoiceInfoDao.getServices(request, compId, cvId);
 		// String itemIndex = request.getParameter("itemIndex");
@@ -1725,6 +1790,7 @@ public class SalesDetailsDao {
 		}
 		return invoiceDto;
 	}
+
 	public InvoiceDto transformSoToInvoice(HttpServletRequest request, InvoiceDto invoiceDto) {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1749,7 +1815,7 @@ public class SalesDetailsDao {
 		String compId = (String) request.getSession().getAttribute("CID");
 		Long orderNo = invoiceInfoDao.getSalesOrderNumberByBtnName(compId, request);
 		invoiceDto.setTabid("IBLU");
-		
+
 		ArrayList<InvoiceDto> list = invoiceInfoDao.getRecord(request, invoiceDto, compId, orderNo);
 		if (!list.isEmpty()) {
 			invoiceDto = list.get(0);
@@ -2136,5 +2202,21 @@ public class SalesDetailsDao {
 		return isFound;
 	}
 	
-	
+
+	public boolean deleteInvoiceById(HttpServletRequest request, List<Integer> invoiceids) throws SQLException {
+		boolean val = false;
+		String compId = (String) request.getSession().getAttribute("CID");
+		try {
+			Long cId = Long.valueOf(compId);
+			int status = bcaInvoiceRepository.updateBcaInvoiceByInvoiceIds(cId, invoiceids);
+			request.setAttribute("SaveStatus", "Sales Order is successfully deleted.");
+			val = true;
+		} catch (Exception e) {
+			Loger.log(e.toString());
+			request.setAttribute("SaveStatus", "Sales Order is not yet deleted.");
+			val = false;
+		}
+		return val;
+	}
+
 }

@@ -328,6 +328,8 @@ table.tabla-listados tbody tr td {
 															var="currObject" varStatus="loop">
 															<input type="hidden" id="selectedSOID${loop.index}"
 																value="${currObject.so_no}" />
+															<input type="hidden" id="selectedSOInvoiceID${loop.index}"
+																value="${currObject.invoiceID}" />
 														</c:forEach>
 														<input type="hidden" name="sListSize" id="lSize"
 															value='${SalesOrderBoardDetails.size()}' />
@@ -370,7 +372,7 @@ table.tabla-listados tbody tr td {
 																			value="${objList.invoiceID}" /> <input
 																			type="checkbox" class="allRecordsCLS"
 																			id="allRecordsChk${loop.index}"
-																			onchange="getRecordID(this, ${loop.index});"
+																			onchange="getRecordID(this, ${loop.index}, ${objList.invoiceID});"
 																			value="${objList.so_no}" /></td>
 																		<td style="font-size: 14px;">${objList.soNumStr}</td>
 																		<td style="font-size: 14px;">${objList.companyName}</td>
@@ -425,7 +427,10 @@ table.tabla-listados tbody tr td {
 													value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp;
 													<input type="button" class="formbutton" id="modi"
 													onclick="SendMail(this.form);" style="padding: 10px;"
-													value='<spring:message code="BzComposer.global.sendmail" />' />
+													value='<spring:message code="BzComposer.global.sendmail" />' />&nbsp;&nbsp;
+													<input type="button" class="formbutton" id="modi"
+													onclick="DeleteSalesOrderBoard('DELETE');" style="padding: 10px;"
+													value='<spring:message code="BzComposer.global.delete" />' />
 													<input type="hidden" name="ONum" id="ONumId"> <input
 													type="hidden" name="sEmail" id="sEmailID"> <input
 													type="hidden" name="rNum" id="rowONum"> <input
@@ -499,13 +504,16 @@ function setRowId(rowId, rowIndex, flag){
 }
 
 let selectedRowIDs = [];
+let invoiceRowIDs = [];
 function getAllRecordsIDs() {
     selectedRowIDs = [];
+    invoiceRowIDs = [];
     let isAllSelected = document.getElementById('allRecordsChkHead').checked;
     let size = document.getElementById("lSize").value;
     if(isAllSelected){
         for(i=0; i<size; i++){
             selectedRowIDs.push(document.getElementById("selectedSOID"+i).value);
+            invoiceRowIDs.push(document.getElementById("selectedSOInvoiceID"+i).value);
         }
     }
     getAllRecordsIDs2();
@@ -525,13 +533,19 @@ function getAllRecordsIDs2() {
          }
     }
 }
-function getRecordID(currChkBox, rowIndex) {
+function getRecordID(currChkBox, rowIndex, invoiceID) {
     if(currChkBox.checked){
         selectedRowIDs.push(currChkBox.value);
+        invoiceRowIDs.push(invoiceID);
     }else{
         const index = selectedRowIDs.indexOf(currChkBox.value);
         if (index > -1) {
           selectedRowIDs.splice(index, 1);
+        }
+        
+        const index2 = invoiceRowIDs.indexOf(invoiceID);
+        if (index > -1) {
+          invoiceRowIDs.splice(index2, 1);
         }
     }
     if(document.getElementById("lSize").value == selectedRowIDs.length){
@@ -625,6 +639,50 @@ function deleteSalesOrderDialog(form){
     return false;
 }
 
+function DeleteSalesOrderBoard(cmd){
+    
+	if (invoiceRowIDs.length == 0) {
+		return showBoardValidationDialog();
+	} else {
+		if (cmd=="DELETE") {
+			event.preventDefault();
+			$("#showDeleteSalesValidationDialog").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		            "<spring:message code='BzComposer.global.ok'/>": function () {
+		                $(this).dialog("close");
+		                window.location = "Invoice?tabid=deleteSelectedBoard&reqType=SO&invoiceID="+invoiceRowIDs;
+		            },
+		            <spring:message code='BzComposer.global.cancel'/>: function () {
+		                $(this).dialog("close");
+		                return false;
+		            }
+				}
+			});
+			return false;
+		}
+	}
+}
+
+function showBoardValidationDialog(){
+	event.preventDefault();
+	$("#showSalesValidationDialog").dialog({
+    	resizable: false,
+        height: 200,
+        width: 400,
+        modal: true,
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    return false;
+}
+
 function SaleSearch(filterType){
 	if(filterType > 1){
 	    location.reload();
@@ -656,3 +714,13 @@ function downloadSOBoardReport(){
     }
 }
 </script>
+<div id="showSalesValidationDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesinfo.selectsalesfirst" />
+	</p>
+</div>
+<div id="showDeleteSalesValidationDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.salesinfo.deleteselectedsales" />
+	</p>
+</div>

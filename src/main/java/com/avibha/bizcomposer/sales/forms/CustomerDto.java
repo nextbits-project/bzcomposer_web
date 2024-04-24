@@ -9,17 +9,29 @@ package com.avibha.bizcomposer.sales.forms;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@Service
 public class CustomerDto  implements Serializable{
 
 	private static final long serialVersionUID = 0;
-	public static final String customerColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
-			+ "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID,Taxable,CVTypeID,CVCategoryID,"
-			+ "VendorOpenDebit,VendorAllowedCredit,TermID,SalesRepID,ShipCarrierID,PaymentTypeID,UseIndividual,"
-			+ "AnnualInterestRate,MinimumFinanceCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge";
+	/*
+	 * public static final String customerColumns =
+	 * "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
+	 * +
+	 * "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID,Taxable,CVTypeID,CVCategoryID,"
+	 * +
+	 * "VendorOpenDebit,VendorAllowedCredit,TermID,SalesRepID,ShipCarrierID,PaymentTypeID,UseIndividual,"
+	 * +
+	 * "AnnualInterestRate,MinimumFinanceCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge";
+	 */
 
+	public static final String customerColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
+			+ "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID";
+	
 	private String custId;
 	private int companyID;
 	private String companyName;
@@ -46,6 +58,7 @@ public class CustomerDto  implements Serializable{
 	private String city;
 	private String cityID;
 	private String state; // stores id of state
+	private String stateID;
 	private String stateName; // stores name of state
 
 	private String zipCode;
@@ -67,9 +80,11 @@ public class CustomerDto  implements Serializable{
 	private int categoryId;
 	private String province;
 	private String country;
+	private String countryID;
 	private String homePage;
 
 	private String type;
+	private String cvCategoryTypeID;
 	private String texID;
 	private String openingUB;
 	private String extCredit;
@@ -2013,5 +2028,27 @@ public class CustomerDto  implements Serializable{
 		this.leadSelectedproducts = leadSelectedproducts;
 	}
 
-	
+	public String getStateID() {
+		return stateID;
+	}
+
+	public void setStateID(String stateID) {
+		this.stateID = stateID;
+	}
+
+	public String getCountryID() {
+		return countryID;
+	}
+
+	public void setCountryID(String countryID) {
+		this.countryID = countryID;
+	}
+
+	public String getCvCategoryTypeID() {
+		return cvCategoryTypeID;
+	}
+
+	public void setCvCategoryTypeID(String cvCategoryTypeID) {
+		this.cvCategoryTypeID = cvCategoryTypeID;
+	}
 }

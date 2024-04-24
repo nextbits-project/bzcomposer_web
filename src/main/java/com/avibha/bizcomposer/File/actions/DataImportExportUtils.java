@@ -4,9 +4,11 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -19,11 +21,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,6 +64,9 @@ public class DataImportExportUtils {
 
 	@Autowired
 	private ConfigurationInfo cinfo;
+	
+	@Autowired
+	CustomerInfoDao customerInfoDao;
 
 	private Title titleDAO;
 
@@ -442,17 +452,165 @@ public class DataImportExportUtils {
 	}
 
 //  =================================== Customer-Import-Export ===================================
-	public boolean exportCustomerList(ArrayList<CustomerDto> customerList, String type, HttpServletResponse response) {
+	public boolean exportCustomerList(ArrayList<CustomerDto> customerList, String type, HttpServletResponse response, String fileName) {
 		boolean b = false;
-		String csvFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.csv";
-		String excelFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.xls";
+		String csvFilePath = "";
+		String excelFilePath = "";
+		if (fileName != null && !fileName.isEmpty() && fileName.equalsIgnoreCase("Contact")) {
+			csvFilePath = System.getProperty("user.home") + "/Test/BCA_ContactList.csv";
+			excelFilePath = System.getProperty("user.home") + "/Test/BCA_ContactList.xls";	
+		} else {
+			csvFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.csv";
+			excelFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.xls";
+		}
+		
 		File sourcefile = null;
-		// FileOutputStream fileOutputStream = null;
+		FileOutputStream fileOutputStream = null;
 		if (type.equals("csv")) {
 			try {
 				sourcefile = new File(csvFilePath);
 				checkFileExistance(sourcefile);
-				// fileOutputStream = new FileOutputStream(csvFilePath);
+				fileOutputStream = new FileOutputStream(csvFilePath);
+
+				FileWriter fileWriter = null;
+				fileWriter = new FileWriter(csvFilePath);
+				fileWriter.append(CustomerDto.customerColumns);
+				for (CustomerDto customer : customerList) {
+					fileWriter.append(NEW_LINE_SEPARATOR);
+					fileWriter.append(customer.getCname()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getDbaName()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getTitle()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getFirstName()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getMiddleName()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getLastName()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getAddress1()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getAddress2()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getCity()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getState()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getCountry()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getZipCode()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getPhone()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getCellPhone()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getFax()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getEmail()).append(COMMA_DELIMITER);
+					fileWriter.append(parseColumnValue(customer.getTexID(), 1)).append(COMMA_DELIMITER);
+					/*
+					 * fileWriter.append(parseColumnValue(customer.getTaxAble(),
+					 * 1)).append(COMMA_DELIMITER);
+					 * fileWriter.append(customer.getIsclient()).append(COMMA_DELIMITER); //
+					 * CVTypeID fileWriter.append(parseColumnValue(customer.getType(),
+					 * 1)).append(COMMA_DELIMITER); // CVCategoryID
+					 * fileWriter.append(parseColumnValue(customer.getOpeningUB(),
+					 * 2)).append(COMMA_DELIMITER);
+					 * fileWriter.append(parseColumnValue(customer.getExtCredit(),
+					 * 2)).append(COMMA_DELIMITER);
+					 * fileWriter.append(parseColumnValue(customer.getTerm(),
+					 * 1)).append(COMMA_DELIMITER);
+					 * fileWriter.append(parseColumnValue(customer.getRep(),
+					 * 1)).append(COMMA_DELIMITER);
+					 * fileWriter.append(parseColumnValue(customer.getShipping(),
+					 * 1)).append(COMMA_DELIMITER);
+					 * fileWriter.append(parseColumnValue(customer.getPaymentType(),
+					 * 1)).append(COMMA_DELIMITER);
+					 * fileWriter.append(parseColumnValue(customer.getFsUseIndividual(),
+					 * 1)).append(COMMA_DELIMITER);
+					 * fileWriter.append(parseColumnValue(customer.getAnnualIntrestRate(),
+					 * 2)).append(COMMA_DELIMITER);
+					 * fileWriter.append(parseColumnValue(customer.getMinFCharges(),
+					 * 2)).append(COMMA_DELIMITER);
+					 * fileWriter.append(parseColumnValue(customer.getGracePrd(),
+					 * 1)).append(COMMA_DELIMITER);
+					 * fileWriter.append(customer.getFsAssessFinanceCharge()).append(COMMA_DELIMITER
+					 * ); fileWriter.append(parseColumnValue(customer.getFsMarkFinanceCharge(),
+					 * 1)).append(COMMA_DELIMITER);
+					 */
+				}
+				fileWriter.flush();
+				fileWriter.close();
+				fileOutputStream.close();
+				b = true;
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		} else {
+			try {
+				sourcefile = new File(excelFilePath);
+				if (!sourcefile.exists()) {
+					sourcefile.createNewFile();
+					fileOutputStream = new FileOutputStream(excelFilePath);
+				} else {
+					fileOutputStream = new FileOutputStream(excelFilePath);
+				}
+				HSSFWorkbook workbook = new HSSFWorkbook();
+				HSSFSheet sheet = workbook.createSheet("CustomerList");
+				setHSSFSheetColumnHeaderWithStyle(sheet, CustomerDto.customerColumns.split(COMMA_DELIMITER), workbook);
+				HSSFRow row = null;
+				int rowIndex = 1;
+				for (CustomerDto customer : customerList) {
+					row = sheet.createRow(rowIndex++);
+					row.createCell(0).setCellValue(customer.getCname());
+					row.createCell(1).setCellValue(customer.getDbaName());
+					row.createCell(2).setCellValue(customer.getTitle());
+					row.createCell(3).setCellValue(customer.getFirstName());
+					row.createCell(4).setCellValue(customer.getMiddleName());
+					row.createCell(5).setCellValue(customer.getLastName());
+					row.createCell(6).setCellValue(customer.getAddress1());
+					row.createCell(7).setCellValue(customer.getAddress2());
+					row.createCell(8).setCellValue(customer.getCity());
+					row.createCell(9).setCellValue(customer.getState());
+					row.createCell(10).setCellValue(customer.getCountry());
+					row.createCell(11).setCellValue(customer.getZipCode());
+					row.createCell(12).setCellValue(customer.getPhone());
+					row.createCell(13).setCellValue(customer.getCellPhone());
+					row.createCell(14).setCellValue(customer.getFax());
+					row.createCell(15).setCellValue(customer.getEmail());
+					row.createCell(16).setCellValue(parseColumnValue(customer.getTexID(), 1));
+					/*
+					 * row.createCell(17).setCellValue(parseColumnValue(customer.getTaxAble(), 1));
+					 * row.createCell(18).setCellValue(parseColumnValue(customer.getIsclient(), 1));
+					 * row.createCell(19).setCellValue(parseColumnValue(customer.getType(), 1));
+					 * row.createCell(20).setCellValue(parseColumnValue(customer.getOpeningUB(),
+					 * 2));
+					 * row.createCell(21).setCellValue(parseColumnValue(customer.getExtCredit(),
+					 * 2)); row.createCell(22).setCellValue(parseColumnValue(customer.getTerm(),
+					 * 1)); row.createCell(23).setCellValue(parseColumnValue(customer.getRep(), 1));
+					 * row.createCell(24).setCellValue(parseColumnValue(customer.getShipping(), 1));
+					 * row.createCell(25).setCellValue(parseColumnValue(customer.getPaymentType(),
+					 * 1));
+					 * row.createCell(26).setCellValue(parseColumnValue(customer.getFsUseIndividual(
+					 * ), 1)); row.createCell(27).setCellValue(parseColumnValue(customer.
+					 * getAnnualIntrestRate(), 2));
+					 * row.createCell(28).setCellValue(parseColumnValue(customer.getMinFCharges(),
+					 * 2)); row.createCell(29).setCellValue(parseColumnValue(customer.getGracePrd(),
+					 * 1)); row.createCell(30).setCellValue(customer.getFsAssessFinanceCharge());
+					 * row.createCell(31).setCellValue(parseColumnValue(customer.
+					 * getFsMarkFinanceCharge(), 1));
+					 */
+				}
+				b = true;
+				workbook.write(fileOutputStream);
+				workbook.close();
+				fileOutputStream.close();
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		writeFileToResponse(response, sourcefile);
+		return b;
+	}
+
+//  =================================== Contact-Import-Export ===================================
+	public boolean exportContactList(ArrayList<CustomerDto> customerList, String type, HttpServletResponse response) {
+		boolean b = false;
+		String csvFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.csv";
+		String excelFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.xls";
+		File sourcefile = null;
+		FileOutputStream fileOutputStream = null;
+		if (type.equals("csv")) {
+			try {
+				sourcefile = new File(csvFilePath);
+				checkFileExistance(sourcefile);
+				fileOutputStream = new FileOutputStream(csvFilePath);
 
 				FileWriter fileWriter = null;
 				fileWriter = new FileWriter(csvFilePath);
@@ -494,7 +652,7 @@ public class DataImportExportUtils {
 				}
 				fileWriter.flush();
 				fileWriter.close();
-				// fileOutputStream.close();
+				fileOutputStream.close();
 				b = true;
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -504,13 +662,13 @@ public class DataImportExportUtils {
 				sourcefile = new File(excelFilePath);
 				if (!sourcefile.exists()) {
 					sourcefile.createNewFile();
-					// fileOutputStream = new FileOutputStream(excelFilePath);
+					fileOutputStream = new FileOutputStream(excelFilePath);
 				} else {
-					// fileOutputStream = new FileOutputStream(excelFilePath);
+					fileOutputStream = new FileOutputStream(excelFilePath);
 				}
 				HSSFWorkbook workbook = new HSSFWorkbook();
 				HSSFSheet sheet = workbook.createSheet("CustomerList");
-				setHSSFSheetColumnHeader(sheet, CustomerDto.customerColumns.split(COMMA_DELIMITER));
+				setHSSFSheetColumnHeaderWithStyle(sheet, CustomerDto.customerColumns.split(COMMA_DELIMITER), workbook);
 				HSSFRow row = null;
 				int rowIndex = 1;
 				for (CustomerDto customer : customerList) {
@@ -549,9 +707,9 @@ public class DataImportExportUtils {
 					row.createCell(31).setCellValue(parseColumnValue(customer.getFsMarkFinanceCharge(), 1));
 				}
 				b = true;
-				// workbook.write(fileOutputStream);
+				workbook.write(fileOutputStream);
 				workbook.close();
-				// fileOutputStream.close();
+				fileOutputStream.close();
 			} catch (Exception e) {
 				Loger.log(e.toString());
 			}
@@ -559,7 +717,7 @@ public class DataImportExportUtils {
 		writeFileToResponse(response, sourcefile);
 		return b;
 	}
-
+	
 	public boolean exportLeadsList(List<LeadDto> leadDtos, String type, HttpServletResponse response) {
 		boolean b = false;
 		String csvFilePath = System.getProperty("user.home") + "/Test/BCA_LeadList.csv";
@@ -672,7 +830,7 @@ public class DataImportExportUtils {
 
 	public boolean downloadCustomerTemplate(String type, HttpServletResponse response) {
 		ArrayList<CustomerDto> leadDtos = new ArrayList<CustomerDto>();
-		return exportCustomerList(leadDtos, type, response);
+		return exportCustomerList(leadDtos, type, response, "");
 
 	}
 
@@ -729,7 +887,7 @@ public class DataImportExportUtils {
 		File file = new File(attachedFile.getOriginalFilename());
 		String[] fileName = file.getName().split("\\.");
 		ArrayList al = new ArrayList();
-		CustomerInfoDao customerInfoDao = new CustomerInfoDao();
+		//CustomerInfoDao customerInfoDao = new CustomerInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
 		try {
 			OutputStream os = new FileOutputStream(file);
@@ -750,7 +908,7 @@ public class DataImportExportUtils {
 						index++;
 						continue;
 					}
-					String[] data = line.split(",");
+					String[] data = line.split(",", -1);
 					CustomerDto customer = new CustomerDto();
 					customer.setCname(data[0]);
 					customer.setDbaName(data[1]);
@@ -770,8 +928,8 @@ public class DataImportExportUtils {
 					customer.setEmail(data[15]);
 					customer.setTexID(data[16]);
 					customer.setTaxAble(data[17]);
+					customer.setType(data[18]);
 					customer.setIsclient(data[18]);
-					customer.setType(data[19]);
 					customer.setOpeningUB(data[20]);
 					customer.setExtCredit(data[21]);
 					customer.setTerm(data[22]);
@@ -810,6 +968,7 @@ public class DataImportExportUtils {
 							continue;
 						}
 						int count2 = 0;
+						
 						CustomerDto customer = new CustomerDto();
 						HSSFRow nextRow = (HSSFRow) iterator.next();
 						Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -1569,6 +1728,28 @@ public class DataImportExportUtils {
 		}
 		return data;
 	}
+	
+	private static String parseColumnValueCell(Cell cell, int dataType) {
+		String data = "";
+		CellType cellType = cell.getCellTypeEnum();
+		if (cellType == CellType.NUMERIC)
+			data = String.valueOf(cell.getNumericCellValue());
+		else if (cellType == CellType.BOOLEAN)
+			data = String.valueOf(cell.getBooleanCellValue());
+		else
+			data = cell.getStringCellValue();
+		if (data == null || data.isEmpty()) { // String: 0, Integer: 1, Double: 2, Boolean: 3
+			if (dataType == 1)
+				data = "0";
+			else if (dataType == 2)
+				data = "0.0";
+			else if (dataType == 3)
+				data = "false";
+			else
+				data = "";
+		}
+		return data;
+	}
 
 	private void setHSSFSheetColumnHeader(HSSFSheet sheet, String columns[]) {
 		HSSFRow row = sheet.createRow(0);
@@ -1577,7 +1758,142 @@ public class DataImportExportUtils {
 			row.createCell(x).setCellValue(columns[x]);
 		}
 	}
-
+	
+	private void setHSSFSheetColumnHeaderWithStyle(HSSFSheet sheet, String columns[], HSSFWorkbook workbook) {
+		HSSFRow row = sheet.createRow(0);
+		
+		for (int x = 0; x < columns.length; x++) {
+			//for background color
+			CellStyle cellStyle = sheet.getColumnStyle(x);
+		    if(cellStyle == null) {
+		        cellStyle = row.getSheet().getWorkbook().createCellStyle();
+		    }
+		    cellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+		    cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		    //END background color
+			//CompanyName,CustomerTitle,FirstName,LastName,Address1,City,State,Country,ZipCode,Email,CVTypeID,CVCategoryID,
+			//TermID,SalesRepID,ShipCarrierID,PaymentTypeID
+			sheet.setColumnWidth(x, 20 * 256);
+			row.createCell(x).setCellValue(getColumnNameWithDetails(columns[x]));
+			
+			if (columns[x].equalsIgnoreCase("CompanyName"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("CustomerTitle"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("FirstName"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("LastName"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("Address1"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("City"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("State"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("Country"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("ZipCode"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("Email"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("CVTypeID"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("CVCategoryID"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("TermID"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("SalesRepID"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("ShipCarrierID"))
+				row.getCell(x).setCellStyle(cellStyle);
+			else if (columns[x].equalsIgnoreCase("PaymentTypeID"))
+				row.getCell(x).setCellStyle(cellStyle);
+		}
+	}
+	
+	private static String getColumnNameWithDetails(String columnName) {
+		if (columnName.equalsIgnoreCase("CompanyName")) {
+			//----Required Field
+		} else if (columnName.equalsIgnoreCase("CustomerTitle")) {
+			columnName = columnName+"(Mrs.\r\n"
+					+ "Miss\r\n"
+					+ "Ms.\r\n"
+					+ "Dr.\r\n"
+					+ "Mr.)";
+		} else if (columnName.equalsIgnoreCase("FirstName")) {
+			//----Required Field
+		} else if (columnName.equalsIgnoreCase("LastName")) {
+			//----Required Field
+		} else if (columnName.equalsIgnoreCase("Address1")) {
+			//----Required Field
+		} else if (columnName.equalsIgnoreCase("City")) {
+			//----Required Field
+			columnName = columnName+"(Please enter City Name)";
+		} else if (columnName.equalsIgnoreCase("State")) {
+			//----Required Field
+			columnName = columnName+"(Please enter State Name)";
+		} else if (columnName.equalsIgnoreCase("Country")) {
+			columnName = columnName+"(Please enter Country Name)";
+		} else if (columnName.equalsIgnoreCase("ZipCode")) {
+			//----Required Field
+		} else if (columnName.equalsIgnoreCase("Email")) {
+			//----Required Field
+		} else if (columnName.equalsIgnoreCase("CVTypeID")) {
+			//----Required Field
+			columnName = columnName+"(1 - CustVenBoth\r\n"
+					+ "2 - Customer\r\n"
+					+ "3 - Vendor\r\n"
+					+ "4 - Dealer\r\n"
+					+ "5 - DealerVenBoth\r\n"
+					+ "6 - Lead\r\n"
+					+ "7 - Contact) Please enter ID";
+		} else if (columnName.equalsIgnoreCase("CVCategoryID")) {
+			columnName = columnName+"(55 - End User\r\n"
+					+ "56 - Wholesaler\r\n"
+					+ "57 - Local Customer)Please enter CategoryID";
+		} else if (columnName.equalsIgnoreCase("TermID")) {
+			columnName = columnName+"(1 - 1 Week,\r\n"
+					+ "2 - 2 Weeks,\r\n"
+					+ "3 - Paid,\r\n"
+					+ "4 - 1 month) Please enter ID";
+		} else if (columnName.equalsIgnoreCase("SalesRepID")) {
+			columnName = columnName+"(1 - Jason,\r\n"
+					+ "2 - Tom) Please enter ID";
+		} else if (columnName.equalsIgnoreCase("ShipCarrierID")) {
+				columnName = columnName+"(1	- UPS 2nd\r\n"
+						+ "4	- USPS Priority\r\n"
+						+ "9	- USPS Express\r\n"
+						+ "95	- Fedex Standard Overnight\r\n"
+						+ "271	- UPS Ground\r\n"
+						+ "274	- USPS Media\r\n"
+						+ "276	- UPS Next Day\r\n"
+						+ "277	- Fedex 2 Day\r\n"
+						+ "286	- User Defined\r\n"
+						+ "288	- UPS) Please enter ID";
+		} else if (columnName.equalsIgnoreCase("PaymentTypeID")) {
+			columnName = columnName+"(1	- Check	Check\r\n"
+					+ "2	- Cash	Cash\r\n"
+					+ "3	- Money Order	Cash\r\n"
+					+ "4	- American Express	Credit Card\r\n"
+					+ "5	- Discover	Credit Card\r\n"
+					+ "6	- Master Card	Credit Card\r\n"
+					+ "7	- Visa	Credit Card\r\n"
+					+ "8	- COD	Cash\r\n"
+					+ "136	- Visa	Credit Card\r\n"
+					+ "150	- Master Card	Credit Card\r\n"
+					+ "164	- Discover	Credit Card\r\n"
+					+ "178	- American Express	Credit Card\r\n"
+					+ "192	- Check	Check\r\n"
+					+ "206	- Cash	Cash\r\n"
+					+ "220	- COD	Cash\r\n"
+					+ "234	- Others	Others\r\n"
+					+ "248	- Others	Others\r\n"
+					+ "267	- Wire	Wire) Please enter ID";
+		}
+		
+		return columnName;
+	}
+	
 	private void checkFileExistance(File outFile) {
 		try {
 			if (!outFile.getParentFile().exists()) {
@@ -1602,4 +1918,200 @@ public class DataImportExportUtils {
 			ex.printStackTrace();
 		}
 	}
+	
+	public boolean importCustomerFile(MultipartFile attachedFile, HttpServletRequest request) {
+		boolean status = false;
+		File file = new File(attachedFile.getOriginalFilename());
+		String[] fileName = file.getName().split("\\.");
+		String compId = (String) request.getSession().getAttribute("CID");
+		try {
+			OutputStream os = new FileOutputStream(file);
+			InputStream is = new BufferedInputStream(attachedFile.getInputStream());
+			int count;
+			byte buf[] = new byte[4096];
+			while ((count = is.read(buf)) > -1) {
+				os.write(buf, 0, count);
+			}
+			is.close();
+			os.close();
+			if (fileName[1].equals("csv")) {
+				BufferedReader bfReader = new BufferedReader(new FileReader(file));
+				String line = "";
+				int index = 0;
+				while ((line = bfReader.readLine()) != null) {
+					if (index == 0) {
+						index++;
+						continue;
+					}
+					String[] data = line.split(",", -1);
+					CustomerDto customer = new CustomerDto();
+					customer.setCname(data[0]);
+					customer.setDbaName(data[1]);
+					customer.setTitle(data[2]);
+					customer.setFirstName(data[3]);
+					customer.setMiddleName(data[4]);
+					customer.setLastName(data[5]);
+					customer.setAddress1(data[6]);
+					customer.setAddress2(data[7]);
+					customer.setCity(data[8]);
+					customer.setState(data[9]);
+					customer.setCountry(data[10]);
+					customer.setZipCode(data[11]);
+					customer.setPhone(data[12]);
+					customer.setCellPhone(data[13]);
+					customer.setFax(data[14]);
+					customer.setEmail(data[15]);
+					customer.setTexID(data[16]);
+					customer.setTaxAble(data[17]);
+					customer.setType(data[18]);
+					customer.setIsclient(data[18]);
+					customer.setOpeningUB(data[20]);
+					customer.setExtCredit(data[21]);
+					customer.setTerm(data[22]);
+					customer.setRep(data[23]);
+					customer.setShipping(data[24]);
+					customer.setPaymentType(data[25]);
+					customer.setFsUseIndividual(data[26]);
+					customer.setAnnualIntrestRate(data[27]);
+					customer.setMinFCharges(data[28]);
+					customer.setGracePrd(data[29]);
+					customer.setFsAssessFinanceCharge(data[30]);
+					customer.setFsMarkFinanceCharge(data[31]);
+
+//                  b = insertdataintodatabase(al, request, type);
+					customerInfoDao.insertCustomer(customer, compId);
+				}
+				bfReader.close();
+			} else {
+				if (fileName[1].equals("xlsx")) {
+					/*
+					 * FileInputStream inputStream=null; XSSFWorkbook workbook=null; inputStream =
+					 * new FileInputStream(file); workbook=new XSSFWorkbook(inputStream); XSSFSheet
+					 * firstSheet = workbook.getSheetAt(0); Iterator<Row> iterator =
+					 * firstSheet.iterator(); //row int count1=0;
+					 */
+				} else {
+					FileInputStream inputStream = new FileInputStream(file);
+					HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+					HSSFSheet firstSheet = workbook.getSheetAt(0);
+					for (Row myrow : firstSheet){
+						if(myrow.getRowNum() == 0) {
+							System.out.println("mycell--false");
+						}else {
+							CustomerDto customer = new CustomerDto();
+							Cell mycell0 = myrow.getCell(0);
+							Cell mycell1 = myrow.getCell(1);
+							Cell mycell2 = myrow.getCell(2);
+							Cell mycell3 = myrow.getCell(3);
+							Cell mycell4 = myrow.getCell(4);
+							Cell mycell5 = myrow.getCell(5);
+							Cell mycell6 = myrow.getCell(6);
+							Cell mycell7 = myrow.getCell(7);
+							Cell mycell8 = myrow.getCell(8);
+							Cell mycell9 = myrow.getCell(9);
+							Cell mycell10 = myrow.getCell(10);
+							Cell mycell11 = myrow.getCell(11);
+							Cell mycell12 = myrow.getCell(12);
+							Cell mycell13 = myrow.getCell(13);
+							Cell mycell14 = myrow.getCell(14);
+							Cell mycell15 = myrow.getCell(15);
+							Cell mycell16 = myrow.getCell(16);
+							/*
+							 * Cell mycell17 = myrow.getCell(17); Cell mycell18 = myrow.getCell(18); Cell
+							 * mycell19 = myrow.getCell(19); Cell mycell20 = myrow.getCell(20); Cell
+							 * mycell21 = myrow.getCell(21); Cell mycell22 = myrow.getCell(22); Cell
+							 * mycell23 = myrow.getCell(23); Cell mycell24 = myrow.getCell(24); Cell
+							 * mycell25 = myrow.getCell(25); Cell mycell26 = myrow.getCell(26); Cell
+							 * mycell27 = myrow.getCell(27); Cell mycell28 = myrow.getCell(28); Cell
+							 * mycell29 = myrow.getCell(29); Cell mycell30 = myrow.getCell(30); Cell
+							 * mycell31 = myrow.getCell(31);
+							 */
+							
+							if (mycell0 != null)
+								customer.setCname(mycell0.toString());
+							if (mycell1 != null)
+								customer.setDbaName(mycell1.toString());
+							if (mycell2 != null)
+								customer.setTitle(mycell2.toString());
+							if (mycell3 != null)
+								customer.setFirstName(mycell3.toString());
+							if (mycell4 != null)
+								customer.setMiddleName(mycell4.toString());
+							if (mycell5 != null)
+								customer.setLastName(mycell5.toString());
+							if (mycell6 != null)
+								customer.setAddress1(mycell6.toString());
+							if (mycell7 != null)
+								customer.setAddress2(mycell7.toString());
+							if (mycell8 != null)
+								customer.setCity(mycell8.toString());
+							if (mycell9 != null)
+								customer.setState(mycell9.toString());
+							if (mycell10 != null)
+								customer.setCountry(mycell10.toString());
+							if (mycell11 != null)
+								customer.setZipCode(mycell11.toString());
+							if (mycell12 != null)
+								customer.setPhone(mycell12.toString());
+							if (mycell13 != null)
+								customer.setCellPhone(mycell13.toString());
+							if (mycell14 != null)
+								customer.setFax(mycell14.toString());
+							if (mycell15 != null)
+								customer.setEmail(mycell15.toString());
+							if (mycell16 != null)
+								customer.setTexID(mycell16.toString());
+							/*
+							 * if (mycell17 != null) customer.setTaxAble(mycell17.toString()); if (mycell18
+							 * != null) customer.setIsclient(mycell18.toString()); if (mycell19 != null)
+							 * customer.setType(mycell19.toString()); if (mycell20 != null)
+							 * customer.setOpeningUB(mycell20.toString()); if (mycell21 != null)
+							 * customer.setExtCredit(mycell21.toString()); if (mycell22 != null)
+							 * customer.setTerm(mycell22.toString()); if (mycell23 != null)
+							 * customer.setRep(mycell23.toString()); if (mycell24 != null)
+							 * customer.setShipping(mycell24.toString()); if (mycell25 != null)
+							 * customer.setPaymentType(mycell25.toString()); if (mycell26 != null)
+							 * customer.setFsUseIndividual(mycell26.toString()); if (mycell27 != null)
+							 * customer.setAnnualIntrestRate(mycell27.toString()); if (mycell28 != null)
+							 * customer.setMinFCharges(mycell28.toString()); if (mycell29 != null)
+							 * customer.setGracePrd(mycell29.toString()); if (mycell30 != null)
+							 * customer.setFsAssessFinanceCharge(mycell30.toString()); if (mycell31 != null)
+							 * customer.setFsMarkFinanceCharge(mycell31.toString());
+							 */
+							if (request.getAttribute("CVTypeID") != null && request.getAttribute("CVTypeID").toString() != null) {
+								customer.setIsclient(request.getAttribute("CVTypeID").toString());
+							}
+							
+							customerInfoDao.insertCustomer(customer, compId);
+						}
+					}
+					workbook.close();
+					inputStream.close();
+				}
+			}
+			status = true;
+		} catch (Exception e) {
+			Loger.log(e.toString());
+		}
+		return status;
+	}
+	
+	/*
+	 * public static void main(String[] args) { //2.0 FileInputStream inputStream;
+	 * try { inputStream = new
+	 * FileInputStream("C://Users/Rohit/Downloads/DXCCustomer.xls"); HSSFWorkbook
+	 * workbook = new HSSFWorkbook(inputStream); HSSFSheet firstSheet =
+	 * workbook.getSheetAt(0); for (Row myrow : firstSheet){ if(myrow.getRowNum() ==
+	 * 0) { System.out.println("mycell--false"); }else { //CustomerDto customer =
+	 * new CustomerDto(); System.out.println("myrow-"+myrow); HSSFRow nextRow =
+	 * (HSSFRow) myrow; System.out.println("nextRow--"+nextRow); Cell mycell0 =
+	 * myrow.getCell(18); Cell mycell1 = myrow.getCell(19); String data =
+	 * parseColumnValueCell(mycell1, 0);
+	 * System.out.println("mycell0--"+mycell0+"--mycell1--"+mycell1+"---data=--"+
+	 * data);
+	 * 
+	 * 
+	 * }} } catch (Exception e) { // TODO Auto-generated catch block
+	 * e.printStackTrace(); } //String data = parseColumnValue2("2.0", 0); }
+	 */
 }

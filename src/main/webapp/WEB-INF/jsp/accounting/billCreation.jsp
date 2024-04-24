@@ -109,6 +109,7 @@ table.tabla-listados tbody tr td {
 								</label>
 								<div class="col-md-8">
 									<select class="form-control devCutNameDrp" id="customerName">
+										<option value="0">Please Select</option>
 										<%
 											ArrayList<ClientVendor> cvListForBill = (ArrayList) request.getAttribute("cvForCombo");
 										if(cvListForBill!=null)
@@ -131,12 +132,14 @@ table.tabla-listados tbody tr td {
 								<div class="col-md-8">
 									<select class="form-control devReceivedTypeDrp" id="receivedType" 
 									onclick="checkType()">
+									<option value="0">Please Select</option>
 									<%
 										ArrayList<TblAccount> accountForBill = (ArrayList) request.getAttribute("accountListForBill");
 										if(accountForBill!=null){
 									for (int i = 1; i < accountForBill.size(); i++) {
 									%>
-										<option value="<%=accountForBill.get(i).getAccountID()%>" id="<%=accountForBill.get(i).getAccountID()%>"> <%-- label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>" --%>
+										<option value="<%=accountForBill.get(i).getAccountID()%>" 
+												data-label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
 											<% out.println(accountForBill.get(i).getName());%>
 										</option>
 										<%
@@ -277,12 +280,12 @@ table.tabla-listados tbody tr td {
 							<spring:message code="BzComposer.billpayable.tabs.billcreation"/>
 							
 						</a>
-						<a class="nav-item nav-link" id="nav-contact-tab"
+						<%-- <a class="nav-item nav-link" id="nav-contact-tab"
 							data-toggle="tab" href="#nav-contact" role="tab"
 							aria-controls="nav-contact" aria-selected="false"
 							onclick="billCompaniesTab()"> <spring:message
 								code="BzComposer.billpayable.tabs.billingcompanies" />
-						</a>
+						</a> --%>
 					</div>
 				</nav>
 				<div class="unpaid">
@@ -567,9 +570,11 @@ table.tabla-listados tbody tr td {
 													<td hidden="bankID" value="<%=allBillLists.get(i).getPayerId()%>">
 													</td>
 													<td hidden="check" value="<%=allBillLists.get(i).getCheckNo()%>">
-													</td>
+													</td>													
 													<td hidden="creditUsed" 
 													value="<%=allBillLists.get(i).getCreditUsed()%>">
+													</td>
+													<td hidden="categoryIdBill" value="<%=allBillLists.get(i).getCategoryID()%>">
 													</td>
 												</tr>
 												<%
@@ -1853,6 +1858,7 @@ table.tabla-listados tbody tr td {
          //$("#getCreditUsed").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
          $("#getAmountTopay").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(8)').text().trim());
          //$("#getBankAccount").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(5)').text());
+         $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(14)').attr('value'));
 	}
 	function selectMemorizedTransactionList(memTransListIndex)
 	{

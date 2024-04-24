@@ -173,20 +173,25 @@ public class LeadService {
 		}
 
 		BcaLead lead = leadRepo.findByClientvendorId(clientVendor);
-
-		customerDto.setLeadSource(lead.getLeadSource().getLeadSourceId());
-		customerDto.setLeadCategory(lead.getLeadCategory().getLeadCategoryId());
-		customerDto.setStatus(lead.getStatus());
-
-		customerDto.setLeadId(lead.getLeadId());
+		List<BcaLeadProducts> leadProducts = new ArrayList<BcaLeadProducts>();
+		if(lead != null) {
+			customerDto.setLeadSource(lead.getLeadSource().getLeadSourceId());
+			customerDto.setLeadCategory(lead.getLeadCategory().getLeadCategoryId());
+			customerDto.setStatus(lead.getStatus());
+			customerDto.setLeadId(lead.getLeadId());
+			leadProducts = leadProductRepo.findByLeadId(lead);
+		}
 
 		BcaBillingaddress billingAddress = billingAddressRepo.findByClintvendorId(clientVendor);
-		customerDto.setBillingAddressId(billingAddress.getAddressId());
+		if(billingAddress != null) {
+			customerDto.setBillingAddressId(billingAddress.getAddressId());	
+		}
 
 		BcaShippingaddress shippingAddress = shippngAddressRepo.findByClintvendorId(clientVendor);
-		customerDto.setShippingAddressId(shippingAddress.getAddressId());
+		if(shippingAddress != null) {
+			customerDto.setShippingAddressId(shippingAddress.getAddressId());	
+		}
 
-		List<BcaLeadProducts> leadProducts = leadProductRepo.findByLeadId(lead);
 		List<String> leadSelectedProducts = new ArrayList<>();
 		for (BcaLeadProducts product : leadProducts) {
 			if (product.getInventory() != null) {
