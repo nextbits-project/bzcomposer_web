@@ -735,6 +735,7 @@ public class EstimationInfo {
 			bcaInvoice.setAdjustedTotal(estimationDto.getAdjustedtotal());
 			bcaInvoice.setIsPaymentCompleted(false);
 			bcaInvoice.setPaidAmount(0D);
+			bcaInvoice.setDeleted(0);
 			bcaInvoice.setBalance(estimationDto.getAdjustedtotal());
 			if (null != estimationDto.getVia()) {
 				Optional<BcaShipcarrier> bcaShipCarrier = bcaShipcarrierRepository
@@ -930,8 +931,12 @@ public class EstimationInfo {
 		String invuweight = form.getUnitWeight();
 		String invuprice = form.getUprice();
 		String invIsTaxable = form.getIsTaxable();
+
 		String invItemID = form.getItemTypeID();
 		String invItemOrder = form.getItemOrder();
+
+
+		String taxableStr[]= invIsTaxable.split(";");
 		try {
 			for (int i = 0; i < size; i++) {
 				int in1 = invID.indexOf(";");
@@ -959,12 +964,14 @@ public class EstimationInfo {
 				else
 					uweight[i] = java.lang.Double.parseDouble(temp3);
 
-				int in6 = invIsTaxable.indexOf(";");
-				String temp4 = invIsTaxable.substring(0, in6);
-				if (("").equals(temp4))
-					taxable[i] = Integer.parseInt("0");
-				else
-					taxable[i] = Integer.parseInt(temp4);
+			   int in6 = invIsTaxable.indexOf(";");
+//				String temp4 = invIsTaxable.substring(0, in6);
+//				if (("").equals(temp4))
+//					taxable[i] = Integer.parseInt("0");
+//				else
+//					taxable[i] = Integer.parseInt(temp4);
+
+				taxable[i] = Integer.parseInt(taxableStr[i]);
 
 				int in7 = invItemID.indexOf(";");
 				String temp5 = invItemID.substring(0, in7);
@@ -1210,7 +1217,7 @@ public class EstimationInfo {
 				bcaInvoice.setSh(estimationDto.getShipping());
 				bcaInvoice.setTotal(estimationDto.getTotal());
 				bcaInvoice.setAdjustedTotal(estimationDto.getAdjustedtotal());
-
+				bcaInvoice.setDeleted(0);
 				bcaInvoice.setPaidAmount(0D);
 				bcaInvoice.setBalance(estimationDto.getAdjustedtotal());
 				if (null != estimationDto.getVia()) {

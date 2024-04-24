@@ -76,6 +76,8 @@ public class EstimationBoardDto {
     private String orderNoFrom;
     private String orderNoTo;
 
+    
+    
     private int sortBy;				//Added on 23-07-2019
 
     public int getSortBy() {

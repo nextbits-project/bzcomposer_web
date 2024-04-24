@@ -5,53 +5,57 @@
  */
 package com.avibha.bizcomposer.sales.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.employee.dao.Label;
 import com.avibha.bizcomposer.purchase.dao.PurchaseBoardDetails;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.forms.PurchaseBoardDto;
-import com.avibha.bizcomposer.sales.dao.*;
-import com.avibha.bizcomposer.sales.forms.*;
+import com.avibha.bizcomposer.sales.dao.CustomerInfo;
+import com.avibha.bizcomposer.sales.dao.CustomerInfoDao;
+import com.avibha.bizcomposer.sales.dao.InvoiceInfo;
+import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
+import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
+import com.avibha.bizcomposer.sales.dao.TrHistoryLookUp;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.avibha.bizcomposer.sales.forms.InvoiceDto;
+import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
+import com.avibha.bizcomposer.sales.forms.SalesOrderBoardForm;
+import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.constants.AppConstants;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.MyUtility;
 import com.avibha.common.utility.Path;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
-import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
-import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
-import com.nxsol.bizcomposer.common.TblCategory;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
-import com.nxsol.bzcomposer.company.domain.BcaCompany;
-import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
-import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
-import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
 import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
-import com.pritesh.bizcomposer.accounting.bean.ReceivableListBean;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
 import com.pritesh.bizcomposer.accounting.bean.TblPaymentType;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.nxsol.bizcomposer.common.ConstValue;
 
 @Controller
 public class SalesController {
@@ -60,17 +64,15 @@ public class SalesController {
 
 	@Autowired
 	private ConfigurationInfo configInfo;
-
+	
+	@Autowired
+	private SalesDetailsDao sd;
 	@Autowired
 	private CustomerInfo customerInfo;
 
 	@Autowired
 	private CustomerInfoDao customerInfoDao;
 
-	@Autowired
-	private SalesDetailsDao sd;
-
-	@Autowired
 	private ReceivableLIst rl;
 
 	@Autowired
@@ -121,6 +123,7 @@ public class SalesController {
 		} else if (IN_URI.endsWith(INVOICE_URI)) {
 			forward = "/sales/invoice";
 			model.addAttribute("invoiceDto", invoiceDto);
+
 		} else if (IN_URI.endsWith(SALES_ORDER_URI)) {
 			forward = "sales/salesorder";
 			model.addAttribute("invoiceDto", invoiceDto);
@@ -137,8 +140,9 @@ public class SalesController {
 		ConstValue.setCompanyName(companyName);
 		String user = (String) sess.getAttribute("username"); // Added on 15-06-2019
 		String userRole = (String) sess.getAttribute("userRole");
-		System.out.println("User is:" + user);
+		System.out.println("p User is:" + user);
 		ConstValue c = new ConstValue();
+		
 		c.setCompanyId(Integer.parseInt(companyID));
 
 		boolean readData;
@@ -523,7 +527,7 @@ public class SalesController {
 			} else if (pageType.equalsIgnoreCase("ES")) {
 				forward = "redirect:Estimation?tabid=Estimation";
 			} else if (pageType.equalsIgnoreCase("SO")) {
-				forward = "redirect:SalesOrder?tabid=SalesOrder";
+				forward = "redirect:SalesOrder?tabid=";
 			} else {
 				forward = "redirect:Invoice?tabid=Invoice";
 			}
@@ -972,8 +976,7 @@ public class SalesController {
 			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(),
 					AppConstants.InvoiceType, configDto, false));
 			forward = "/sales/invoice";
-		} 
-		else if (action.equalsIgnoreCase("TransformToInvoice")) {
+		} else if (action.equalsIgnoreCase("TransformToInvoice")) {
 			// get-Invoice-Details-By-BtnName
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sd.getInvoiceInfo(request);
@@ -989,9 +992,10 @@ public class SalesController {
 			invoiceDto.setTemplateType(configDto.getInvoiceTemplateType());
 			request.setAttribute("TaxRates", taxRates);
 			invoiceDto.setOrderNo(MyUtility.getOrderNumberByConfigData(invoiceDto.getOrderNo(),
-					AppConstants.InvoiceType, configDto, false));
-			forward = "/sales/invoice";}
-		
+			AppConstants.InvoiceType, configDto, false));
+			forward = "/sales/invoice";
+		}
+
 		else if (action.equalsIgnoreCase("addSupplier")) {// to add
 			String addressStatus = request.getParameter("status");
 			String addressName = request.getParameter("addName");
@@ -1302,8 +1306,11 @@ public class SalesController {
 		} else if (action.equalsIgnoreCase("ShowEmail")) {
 			String orderNo = request.getParameter("OrderNo");
 			String orderType = request.getParameter("OrderType");
+
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
+
 			sd.sendEmailInfo(orderNo, request, orderType, invoiceDto);
+
 			forward = "/sales/sendEMail";
 
 		} else if (action.equalsIgnoreCase("SendMail")) {
@@ -1397,6 +1404,8 @@ public class SalesController {
 			request.setAttribute("Enable", "true");
 			forward = "/accounting/test";
 		} else if (action.equalsIgnoreCase("SalesOrder")) {
+			Loger.log("sandip:@ Sales Order ");
+
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sd.newSalesOrder(request, invoiceDto);
 			sd.getInvoiceInfo(request);
@@ -1422,7 +1431,9 @@ public class SalesController {
 			} else {
 				forward = "/sales/invoice";
 			}
-		} else if (action.equalsIgnoreCase("FirstSalesOrder") || action.equalsIgnoreCase("LastSalesOrder")
+		} 
+
+		else if (action.equalsIgnoreCase("FirstSalesOrder") || action.equalsIgnoreCase("LastSalesOrder")
 				|| action.equalsIgnoreCase("NextSalesOrder") || action.equalsIgnoreCase("PreviousSalesOrder")) {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sd.getInvoiceInfo(request);
@@ -1466,7 +1477,9 @@ public class SalesController {
 			forward = "successSalesOrder";
 		} else if (action.equalsIgnoreCase("SaveOrder")) { // save Sales Order
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
+
 			sd.saveOrder(request, invoiceDto);
+			Loger.log("sandip:@after save invoice:");
 			forward = "redirect:SalesOrder?tabid=SalesOrder";
 		} else if (action.equalsIgnoreCase("DeleteSalesOrder")) {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
@@ -1841,6 +1854,7 @@ public class SalesController {
 			request.setAttribute("baseURL", "/SalesOrder?tabid=PrintSO");
 			forward = "/templates/invoiceTemplate" + templateType;
 		}
+
 		return forward;
 	}
 
@@ -1951,8 +1965,10 @@ public class SalesController {
 		} else if (action.equalsIgnoreCase("addPaymentMethod")) {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sd.addCustomerCreditCard(customerDto, request);
+
 			return "Success";
 		}
+
 		return status;
 	}
 

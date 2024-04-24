@@ -31,6 +31,8 @@ import com.avibha.bizcomposer.configuration.dao.TestEmail;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.configuration.forms.DeductionListDto;
 import com.avibha.bizcomposer.configuration.forms.ScheduleDateDto;
+import com.avibha.bizcomposer.email.dao.EmailDetails;
+import com.avibha.bizcomposer.email.forms.EmailForm;
 import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import com.avibha.bizcomposer.employee.forms.CompanyTaxOptionDto;
 import com.avibha.bizcomposer.employee.forms.StateIncomeTaxDto;
@@ -39,6 +41,7 @@ import com.avibha.bizcomposer.login.dao.LoginDAOImpl;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.common.utility.CountryState;
+import com.mysql.cj.Session;
 import com.nxsol.bizcomposer.accounting.action.CategoryManagerController;
 import com.nxsol.bizcomposer.accounting.dao.ReceivableLIst;
 import com.nxsol.bizcomposer.accounting.daoimpl.ReceivableListImpl;
@@ -63,6 +66,11 @@ public class ConfigurationController {
 
 	@Autowired
 	private ConfigurationDAO dao;
+	
+
+	private MailTemplateDto mailTemplateDto;
+	
+	
 
 	@Autowired
 	private SalesDetailsDao sd;
@@ -87,15 +95,23 @@ public class ConfigurationController {
 
 	@Autowired
 	private CountryState cs;
-
+	 EmailDetails emailDetails;
 	@RequestMapping(value = { "/Configuration" }, method = { RequestMethod.GET, RequestMethod.POST })
-	public String execute(ConfigurationDto configDto, CompanyInfoDto companyInfoDto, HttpServletRequest request,
-			Model model) throws IOException, ServletException {
+	public String execute(ConfigurationDto configDto,MailTemplateDto mailTemplateDto ,EmailForm emailForm, CompanyInfoDto companyInfoDto, HttpServletRequest request,
+			Model model) throws IOException, ServletException 
+	{
+		
 		String forward = "/configuration/configuration";
 		String action = request.getParameter("tabid");
+		
+		//changes done by 3-24
+		
+           emailDetails = new EmailDetails();
+	    request.setAttribute("MailTemplates", emailDetails.getMailTemplates(0));
 		System.out.println("-------ConfigurationController---------tabid: " + action);
 
 		HttpSession session = request.getSession();
+	
 		// line added from this
 		String companyID = (String) session.getAttribute("CID");
 		Long companyIDL = Long.valueOf(companyID);
@@ -123,6 +139,7 @@ public class ConfigurationController {
 
 //			ReceivableLIst rl = new ReceivableListImpl();
 			request.setAttribute("PaymentTypeForCombo", rl.getPaymentType());
+			
 
 			// ConfigurationDAO dao = new ConfigurationDAO();
 			// test call starts
@@ -138,6 +155,13 @@ public class ConfigurationController {
 			dao.getPaymentType(companyIDL, configDto);
 			dao.getActiveTemplates(1, request, configDto);
 			ArrayList<MailTemplateDto> mailTemplateDtoArrayList = dao.getEmailActiveTemplates(0);
+			
+			
+			  
+		
+			
+			emailDetails.getMailTemplates(0);
+			
 			request.setAttribute("mailTemplateDtoArrayList", mailTemplateDtoArrayList);
 			request.setAttribute("isSOBChecked", configDto.getSalesOrderBoard());
 			request.setAttribute("isIRBChecked", configDto.getItemReceivedBoard());
@@ -148,7 +172,7 @@ public class ConfigurationController {
 			int userID = (Integer) request.getSession().getAttribute("userID");
 //			CompanyInfo customer = new CompanyInfo();
 //			AddNewCompanyDAO companyDAO = new AddNewCompanyDAO();
-			
+//			
 			ArrayList<CompanyInfoDto> commpanyInfoDtoList= customer.searchCompany(companyIDL, userID, request);
 			companyInfoDto=commpanyInfoDtoList.get(0);
 			companyDAO.getBusinessType(request, companyInfoDto);
@@ -1224,7 +1248,25 @@ public class ConfigurationController {
 			configDao.deleteCustomerType(ID);
 			forward = "redirect:Configuration?tabid=config10&tab=tr10";
 		}
+		else if (action.equalsIgnoreCase("deleteTabEmailTemplate"))
+		{
+			int templateID = Integer.parseInt(request.getParameter("templateID"));
+			
+			emailDetails.deleteMailTemplate(templateID, request);
+		   
+		   	session.setAttribute(pageActiveTab,"viewMailTemplate");
+		    return "redirect:Configuration?tabid=config6&&tab=tr6";
+	    }
+		else if (action.equalsIgnoreCase("saveTabmailTemplate"))
+		{
+				
+			
+      	   emailDetails.saveMailTemplate(mailTemplateDto, request);
+		   session.setAttribute(pageActiveTab,"viewMailTemplate");
+		  return "redirect:Configuration?tabid=config6&&tab=tr6";
+		} 
 		model.addAttribute("configDto", configDto);
+	   model.addAttribute("mailTemplateDto", mailTemplateDto);
 		return forward;
 	}
 
@@ -1310,7 +1352,11 @@ public class ConfigurationController {
 			// ConfigurationDAO dao = new ConfigurationDAO();
 			String selectedTemplateId = request.getParameter("selectedTemplateId");
 			dao.deleteUserTemplate(selectedTemplateId);
-		} else if (action.equalsIgnoreCase("saveVendorPurchaseValues")) {
+		} 
+		
+		
+		
+		else if (action.equalsIgnoreCase("saveVendorPurchaseValues")) {
 			configDto.setSortBy(Integer.parseInt(request.getParameter("sortBy")));
 			configDto.setSelectedStateId1(Integer.parseInt(request.getParameter("selectedStateId1")));
 			configDto.setSelectedCountryId1(Integer.parseInt(request.getParameter("selectedCountryId1")));

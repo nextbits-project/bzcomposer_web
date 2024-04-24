@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
@@ -48,7 +48,7 @@
 										<spring:message code="BzCompoer.report.customercontract.fullname" />
 									</th>
 									<th style="font-size:12px;">
-										<spring:message code="BzComposer.Invoice.Amt" />
+										<spring:message code="BzComposer.Dashboard.AdjustedTotal" />
 									</th>
 								</tr>
 							</thead>
@@ -58,7 +58,7 @@
 										<td>${objList.poNum}</td>
 										<td>${objList.dateAdded}</td>
 										<td>${objList.firstName} ${objList.lastName}</td>
-										<td>${objList.total}</td>
+										<td>${objList.adjustedtotal}</td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -73,7 +73,7 @@
 								<th style="font-size:12px;"><spring:message code="BzComposer.salesorder.soNum" /></th>
 								<th style="font-size:12px;"><spring:message code="BzComposer.global.dateadded" /></th>
 								<th style="font-size:12px;"><spring:message code="BzCompoer.report.customercontract.fullname" /></th>
-								<th style="font-size:12px;"><spring:message code="BzComposer.Invoice.AdjTotal" /></th>
+								<th style="font-size:12px;"><spring:message code="BzComposer.Dashboard.AdjustedTotal" /></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -82,7 +82,7 @@
                                     <td>${objList.orderNo}</td>
                                     <td>${objList.dateAdded}</td>
                                     <td>${objList.firstName} ${objList.lastName}</td>
-                                    <td>${objList.total}</td>
+                                    <td>${objList.adjustedtotal}</td>
                                 </tr>
                             </c:forEach>
 						</tbody>
@@ -111,7 +111,7 @@
 								<th style="font-size:12px;"> <spring:message code="BzComposer.sales.Order" /></th>
 								<th style="font-size:12px;"> <spring:message code="BzComposer.global.dateadded" /></th>
 								<th style="font-size:12px;"> <spring:message code="BzCompoer.report.customercontract.fullname" /></th>
-								<th style="font-size:12px;"> <spring:message code="BzComposer.Invoice.Amt" /></th>
+								<th style="font-size:12px;"> <spring:message code="BzComposer.Dashboard.AdjustedTotal" /></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -120,7 +120,7 @@
                                     <td>${objList.orderNo}</td>
                                     <td>${objList.dateAdded}</td>
                                     <td>${objList.firstName} ${objList.lastName}</td>
-                                    <td>${objList.total}</td>
+                                    <td>${objList.adjustedtotal}</td>
                                 </tr>
                             </c:forEach>
 						</tbody>
@@ -135,7 +135,7 @@
 								<th style="font-size:12px;"> <spring:message code="BzComposer.Estimaion.EstNum" /></th>
 								<th style="font-size:12px;"> <spring:message code="BzComposer.global.dateadded" /></th>
 								<th style="font-size:12px;"> <spring:message code="BzCompoer.report.customercontract.fullname" /></th>
-								<th style="font-size:12px;"> <spring:message code="BzComposer.Invoice.AdjTotal" /></th>
+								<th style="font-size:12px;"> <spring:message code="BzComposer.Dashboard.AdjustedTotal" /></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -144,7 +144,7 @@
                                     <td>${objList.orderNo}</td>
                                     <td>${objList.dateAdded}</td>
                                     <td>${objList.firstName} ${objList.lastName}</td>
-                                    <td>${objList.total}</td>
+                                    <td>${objList.adjustedtotal}</td>
                                 </tr>
                             </c:forEach>
 						</tbody>

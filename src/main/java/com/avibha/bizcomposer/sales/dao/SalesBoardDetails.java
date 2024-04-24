@@ -28,6 +28,23 @@ public class SalesBoardDetails {
         return saleDetails;
     }
    
+    public int  deleteInvoicesFromList(HttpServletRequest request)
+    {
+    	
+   int deletecount=saleInfo.updatedInvoices(request);
+    	
+        String msg = "";
+        if (deletecount>0) {
+            msg = "**delete is sucessfully completed";
+            Loger.log("Updated " + msg);
+        } else {
+            msg = "**delete  is  not completed";
+        }
+        request.setAttribute("IsUpdated", msg);
+    	
+        return deletecount;
+    	
+    }
     
     public void getSalesReportByCustomer(HttpServletRequest request, SalesBoardDto salesBoardDto) {
         String compId = (String) request.getSession().getAttribute("CID");
@@ -56,6 +73,12 @@ public class SalesBoardDetails {
         request.setAttribute("Market", salesBoardDto.getFilterMarket());
     }
 
+    
+    public String deleteRecord(HttpServletRequest request,SalesBoardDto salesBoardDto)
+	{
+	return  salesBoardDto.getDeletedRecords();
+		
+	}
     public void updateRecord(HttpServletRequest request) {
 //        SalesBoardInfo salesInfo = new SalesBoardInfo();
         boolean result = saleInfo.update(request);

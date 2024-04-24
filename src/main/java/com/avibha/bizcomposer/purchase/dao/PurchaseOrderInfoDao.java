@@ -1356,6 +1356,7 @@ public class PurchaseOrderInfoDao {
 			invoice.setTotal(form.getTotal());
 			invoice.setAdjustedTotal(form.getTotal());
 			invoice.setPaidAmount(0D);
+			invoice.setDeleted(0);
 			invoice.setBalance(form.getTotal());
 			if (null != form.getVia()) {
 				Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository

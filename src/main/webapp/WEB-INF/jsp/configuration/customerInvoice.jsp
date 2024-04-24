@@ -13,7 +13,21 @@
 <title><spring:message code="BzComposer.customerinvoicetitle" /></title>
 <link href="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui-tab.css" rel="stylesheet" media="screen" />
 <script src="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui.js"></script>
+
+
+
 <jsp:include page="customerInvoiceFunctionPage.jsp"></jsp:include>
+<style>
+.dataTables_length{ display:none; }
+.dataTables_info{ display:none; }
+.dataTables_filter{ font-size:14px; }
+.dataTables_paginate{ font-size:14px; }
+
+table.sortable thead { background-color: #eee; color: #666666; font-weight: bold; cursor: default; }
+table.tabla-listados { width: 100%; border: 1px solid rgb(207, 207, 207); margin: 0px 0px 0px 0px; }
+table.tabla-listados thead tr th { font-size: 14px; }
+table.tabla-listados tbody tr td { font-size: 12px; }
+</style>
 
 <script type="text/javascript">
 function toggleFunction() {
@@ -373,7 +387,8 @@ $(document).ready(function()
                 
                 $.ajax({
                     type: "POST",
-                    url:"Configuration?tabid=addDescription&Description="+text,
+
+
                     data:  { location : text }
                     }).done(function(data){
                     
@@ -397,7 +412,10 @@ $(document).ready(function()
 
 });
 
+
 </script>
+
+
 </head>
 <!-- <body onload="init1();"> -->
 <body onload="init();">
@@ -458,6 +476,7 @@ $(document).ready(function()
     								<li style="font-size:12px;"><a href="#TaxTab"><spring:message code="BizComposer.Configuration.Tax" /></a></li>
     								<li style="font-size:12px;"><a href="#RefundSettings" id="RefundSettings0"><spring:message code="BzComposer.configuration.tab.refundsetting" /></a></li>
     								<li style="font-size:12px;"><a href="#CustomerJob" id="Customer&Job0"><spring:message code="BzComposer.configuration.tab.customerjob" /></a></li>
+									<li style="font-size:12px;"><a href="#mailTemplate" id="viewMailTemplate"><spring:message code="BzComposer.addnewcustomer.tabs.mailTemplate"/></a></li>
     								<!-- <li style="font-size:12px;"><a href="#Rma"><spring:message code="BzComposer.RMA"/></a></li> -->
     								<li style="font-size:12px;"><a href="#financeCharges"><spring:message code="BzComposer.addnewcustomer.tabs.financecharges"/></a></li>
   								</ul>
@@ -874,6 +893,103 @@ $(document).ready(function()
  					</div>
 				</div>
 
+	<!-- ======================== mailTemplate ========================= -->   
+  
+  <form:form name="mailTemplateForm" method="post" modelAttribute="mailTemplateDto">
+<div id="mailTemplate">
+<div id="content1" class="tabPage">
+
+	<div>
+	<table style="padding: 0;width: 60%; margin-top: 10px;" >
+	<tr>
+	
+             <td align="left">
+               
+             <span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+             <spring:message code="BzComposer.Email.MailTemplates" />
+		   </span>
+		     <td>
+		     <td align="right">
+	
+		<span style="font-size: 1em; color:green font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+		   
+		    <c:if test="${not empty actionMsg}">
+                  ${actionMsg}
+                <% session.removeAttribute("actionMsg"); %>
+                <br/>   
+            </c:if>
+               </span>
+             </td>
+		     </tr>
+		</table>
+	</div>
+	
+	
+	<table style="padding: 0;width: 60%; margin-top: 10px;" >
+            <tr>
+              <td valign="top" colspan="1" style="width: 350px; padding: 0; border: 1px solid #ccc;">
+                    <input type="hidden" name="listSize" id="lSize" value='${MailTemplates.size()}' />
+                    <table id="mailTemplateTable" class="tabla-listados" cellspacing="3" style=" border: 0; padding: 0;margin: 0; height: auto; width:auto">
+                        <thead>
+                            <tr>
+                                <th><spring:message code="BzComposer.Email.MailTemplates" /></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${MailTemplates}" var="objList" varStatus="loop">
+                                <tr height="20px" align="center" id='${loop.index}$$' onclick="getMailTemplateDataById(${objList.templateID}, ${loop.index})">
+                                    <td style="font-size:11px;">${objList.templateName}</td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </td>
+                <td style="vertical-align: 0;">
+                    <div id="table-negotiations" style="height:auto;">
+                        <table cellspacing="0" class="tabla-listados" style="margin-top: 0; margin-left: 20px;">
+                            <thead>
+                                <tr>
+                                    <th colspan="2"><spring:message code="BzComposer.Email.MailTemplateInformation" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&nbsp;<spring:message code="BzComposer.Email.Name" /> : </td>
+                                    <td><form:input path="templateName" size="50" /></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;<spring:message code="BzComposer.Invoice.emailSubject" /> : </td>
+                                    <td><form:input path="subject" size="50" /></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;<spring:message code="BzComposer.Invoice.emailContent" /> : </td>
+                                    <td><form:textarea path="content" rows="15" cols="80" /></td>
+                                </tr>
+                                <tr align="center">
+                                    <td colspan="2">
+                                        <input type="button" class="formbutton" onclick="newMailTemplate()" value='<spring:message code="BzComposer.global.new"/>' />  &nbsp;&nbsp;
+                                        <input type="button" class="formbutton" onclick="saveMailTemplate()" value='<spring:message code="BzComposer.global.save"/>' />  &nbsp;&nbsp;
+                                        <input type="button" class="formbutton" onclick="deleteMailTemplate()" value='<spring:message code="BzComposer.global.delete"/>' />  &nbsp;&nbsp;
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                             <form:hidden path="templateID" />
+                        </div>
+                        </td>
+                        </tr>
+                        
+             
+                
+          </table>
+        
+			</div>
+			</div>
+			
+		</form:form>
+			
+		
 				<!-- ======================== TaxTab========================= -->
                 <div id="TaxTab">
                     <table class="table-notifications">
@@ -1322,6 +1438,70 @@ if(pageActiveTabID != undefined && pageActiveTabID != ''){
     document.getElementById(pageActiveTabID).click()
 }
 
+$(document).ready(function()
+		 {
+		    $('#mailTemplateTable').DataTable({
+		        "iDisplayLength": 10,
+		        "ordering": false
+		    });
+		});
+
+function getMailTemplateDataById(tempID, rowId){
+    templateID = tempID;
+    rowIndex = rowId;
+    $.ajax({
+        type: "POST",
+        url:"MailTemplatesAjax?tabid=getMailTemplateDetails&templateID="+templateID,
+        data:{templateID : templateID},
+        success : function(data) {
+            $('#templateID').val(data.templateID);
+            $('#templateName').val(data.templateName);
+            $('#subject').val(data.subject);
+            $('#content').val(data.content);
+
+            let size = document.getElementById("lSize").value;
+            for(i=0; i<size; i++){
+                if(document.getElementById(i+"$$"))
+                    document.getElementById(i+"$$").classList.remove('draft');
+            }
+            document.getElementById(rowId+'$$').classList.add('draft');
+        },
+        error : function(error) {
+             alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+}
+
+function newMailTemplate(){
+    $('#templateID').val('0');
+    $('#templateName').val('');
+    $('#subject').val('');
+    $('#content').val('');
+}
+function saveMailTemplate(){
+	if(document.getElementById('templateName').value.trim()==""){
+		alert("<bean:message key='BzComposer.common.enterTemplateName'/>");
+	}
+	else if(document.getElementById('subject').value.trim()==""){
+        alert("<bean:message key='BzComposer.common.enterSubject'/>");
+    }
+    else if(document.getElementById('content').value.trim()==""){
+        alert("<bean:message key='BzComposer.common.enterContent'/>");
+    }
+	else{
+		document.forms[1].action = "Configuration?tabid=saveTabmailTemplate";
+		document.forms[1].submit();
+	    }
+}
+function deleteMailTemplate(){
+    if (templateID == 0){
+        alert("<spring:message code='BzComposer.categorymanager.selectitemrow'/>");
+    }
+    else if(confirm("<spring:message code='BzComposer.common.wantToDelete'/>") == true) {
+        window.location = "/Configuration?tabid=deleteTabEmailTemplate&templateID="+templateID;
+       
+    }
+}
 function SaveValues()
 {
 	event.preventDefault();
@@ -1421,6 +1601,8 @@ function SaveValues()
     });
     return false;
 }
+
+
 function setDescription()
 {
 	var text = $('#location :selected').text();
@@ -1438,6 +1620,7 @@ function setDescription2()
 	var text = $('#rep :selected').text();
 	document.getElementById("description").value = text;
 }
+
 
 function setDescription3()
 {

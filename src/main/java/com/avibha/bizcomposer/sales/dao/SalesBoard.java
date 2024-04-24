@@ -784,6 +784,8 @@ public class SalesBoard {
 		this.email = email;
 		this.companyName =companyName;
 	}
+
+	
 		
 	
 }

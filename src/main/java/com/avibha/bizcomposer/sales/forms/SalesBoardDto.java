@@ -82,10 +82,22 @@ public class SalesBoardDto {
 
     private String orderNoFrom;
     private String orderNoTo;
+    private String  sortBy;
+    
+    //new added 6/04/2024
+     private String deletedRecords;
 
-    private String sortBy;
 
-    public String getFromDate() {
+	
+	public String getDeletedRecords() {
+		return deletedRecords;
+	}
+
+	public void setDeletedRecords(String deletedRecords) {
+		this.deletedRecords = deletedRecords;
+	}
+
+	public String getFromDate() {
         return fromDate;
     }
 
@@ -686,5 +698,6 @@ public class SalesBoardDto {
         saleDate1 = null;
         saleDate2 = null;
         searchTxt = null;
+        
     }
 }

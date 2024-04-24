@@ -194,7 +194,11 @@ public class PurchaseBoardInfoDao {
 			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(sqlString, BcaInvoice.class);
 			JpaHelper.addParameter(typedQuery, sqlString, "companyId", Long.parseLong(compId));
 			List<BcaInvoice> invoiceList = typedQuery.getResultList();
-			for (BcaInvoice invoice : invoiceList) {
+			for (BcaInvoice invoice : invoiceList) 
+			{
+			   if(invoice.getDeleted()!=null&&invoice.getDeleted()==1)
+				   continue;
+			 
 				PurchaseBoard pb = new PurchaseBoard();
 				pb.setInvoiceID(invoice.getInvoiceId());
 				if (null != invoice.getOrderid()) {
@@ -380,7 +384,25 @@ public class PurchaseBoardInfoDao {
 		}
 		return objList;
 	}
-
+	public boolean updatePurchaseOrder(HttpServletRequest request)
+	{
+		 int count=0;
+		
+		String orderID[]=request.getParameter("deletedPurchaseOrders").split(",");
+		for (String orderid_str: orderID) {
+			int PONum=Integer.parseInt(orderid_str);
+			
+		  count+= bcaInvoiceRepository.updateIsDeletedByPONum(1, PONum);
+		}
+		if(count>0)
+			return true;
+		else {
+			 return false;
+		}
+		
+	}
+	
+	
 	public ArrayList<PurchaseBoard> purchaseOrderList(HttpServletRequest request, String compId) {
 
 		ArrayList<PurchaseBoard> objList = new ArrayList<>();

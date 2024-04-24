@@ -24,6 +24,10 @@ table.tabla-listados { width: 100%; border: 1px solid rgb(207, 207, 207); margin
 table.tabla-listados tbody tr.odd td { background: #e1e5e9; }
 table.tabla-listados thead tr th { font-size: 14px; }
 table.tabla-listados tbody tr td { font-size: 12px; }
+.errorMsg {
+	color: #D8000C;
+	background-color: #FFD2D2;
+}
 </style>
 </head>
 <body onload="Init();">
@@ -37,6 +41,11 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 	<div id="blanquito">
 	<div id="padding">
 	<div>
+	<div id="errorDiv" class="bg-danger" align="center">
+										<div align="center" class="errorMsg">
+											<FONT COLOR="Green"> ${successMsg} </FONT COLOR="Green">
+										</div>
+									</div>
 		<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
 			<%-- <spring:message code="BzComposer.purchaseorderboard.poboard" /> --%>
 			<c:if test="${not empty msg}">
@@ -142,9 +151,47 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 			</table>
 		<div>
 			<br/>
-			<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-				<spring:message code="BzComposer.purchaseorderboard.purchaseorderlist"/>
-			</span>	
+		<table style="width:100% ">
+			<tr >
+			<td style="width:40%" align="left">
+				<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+					<spring:message code="BzComposer.purchaseorderboard.purchaseorderlist"/>
+				</span>
+			</td>
+				<td style="width:60%" align="left">
+					<input type="button" class="formbutton" name="smailbtn" id="smail" disabled="disabled" style="padding: 10px;" onclick="sendToPurchase();"
+					    value='<spring:message code="BzComposer.purchaseorderboard.lookup" />' />&nbsp;&nbsp;
+                    <input type="button" class="formbutton" id="sendMailEnabled" style="padding: 10px;" title="Send Mail to..." onclick="SendMail();"
+                                        	value="<spring:message code='BzComposer.Invoice.SendMail' />" />
+
+                                        	<div id="warningDialog" title="Warning.."  style="display: none;">
+															<p><spring:message
+																	code="BzComposer.purchaseorderboard.warningdeletePurchaseOrderListRecord" />
+															</p>
+														</div> 
+                                        	
+														<div id="deletePurchaseOrderDialog" title="Delete Purchase Order"  style="display: none;">
+															<p><spring:message
+																	code="BzComposer.purchaseorderboard.deletePurchaseOrderListRecord" />
+															</p>
+														</div> 
+                                        	       <input type="button" class="formbutton"
+													style="padding: 10px;" onclick="deletePurchaseOrderDialog();"
+													value='<spring:message code="BzComposer.global.delete" />' />
+													
+													
+                    <!-- <input type="button" class="formbutton" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
+                        value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp; -->
+                    <!-- <input type="button" class="formbutton" disabled="disabled" id="modi" style="padding: 10px;" onclick="makeUpdateReceivedInList();"
+                    	value='<spring:message code="BzComposer.checkpurchaseorder.checkpoorders" />' /> -->
+					<input type="hidden" name="ONum" id="ONumId"> 
+					<input type="hidden" name="sEmail" id="sEmailID"> 
+					<input type="hidden" name="rNum" id="rowONum"> 
+					<input type="hidden" name="senderEmail" id="EID">
+				</td>
+			</tr>
+		</table>
+			
 			<div>	
      			<div class="grid_8 tabla-listados" id="purchaseOrderList" >
      			<section>
@@ -197,24 +244,7 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 				</div>
 			</div>
 		</div>
-		<table align="center">
-			<tr align="center">
-				<td style="font-size:14px;">
-					<input type="button" class="formbutton" name="smailbtn" id="smail" disabled="disabled" style="padding: 10px;" onclick="sendToPurchase();"
-					    value='<spring:message code="BzComposer.purchaseorderboard.lookup" />' />&nbsp;&nbsp;
-                    <input type="button" class="formbutton" id="sendMailEnabled" style="padding: 10px;" title="Send Mail to..." onclick="SendMail();"
-                                        	value="<spring:message code='BzComposer.Invoice.SendMail' />" />
-                    <!-- <input type="button" class="formbutton" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
-                        value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp; -->
-                    <!-- <input type="button" class="formbutton" disabled="disabled" id="modi" style="padding: 10px;" onclick="makeUpdateReceivedInList();"
-                    	value='<spring:message code="BzComposer.checkpurchaseorder.checkpoorders" />' /> -->
-					<input type="hidden" name="ONum" id="ONumId"> 
-					<input type="hidden" name="sEmail" id="sEmailID"> 
-					<input type="hidden" name="rNum" id="rowONum"> 
-					<input type="hidden" name="senderEmail" id="EID">
-				</td>
-			</tr>
-		</table>
+		3
 		<input type="hidden" id="ordId" name="OrderValue" value="" />
 		<input type="hidden" id="statusId" name="StatusValue" value="" />
 		<input type="hidden" id="cartIDs" name="cartIDs" value="" />
@@ -250,6 +280,68 @@ $(document).ready(function() {
         }
     });
 });
+
+
+function deletePurchaseOrder()
+{
+
+   
+    $.ajax({
+        type : "POST",
+        url : "PurchaseBoard?tabid=DeleteListOrders",
+        data:"deletedPurchaseOrders="+selectedRowIDs,
+        success : function(data){
+        	 window.location ="PurchaseBoard?tabid=ShowList&status=1"
+        },
+         error : function(data) {
+             alert("<spring:message code='BzComposer.billingboard.someerroroccurred'/>");
+        }
+    });
+}
+function deletePurchaseOrderDialog()
+{
+	event.preventDefault();
+	  if(selectedRowIDs.length == 0)
+		{
+	            
+					$("#warningDialog").dialog({
+				    	resizable: false,
+				        height: 200,
+				        width: 500,
+				        modal: true,
+				        buttons: {
+				            "<spring:message code='BzComposer.global.ok'/>": function () 
+				            {
+				            	 $(this).dialog("close");
+				            	 return true;
+				            	
+				            }
+				        }
+				    });
+	     }
+	else
+		{
+	$("#deletePurchaseOrderDialog").dialog({
+    	resizable: false,
+        height: 200,
+        width: 500,
+        modal: true,
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () 
+            {
+            	  deletePurchaseOrder(); 
+            	  $(this).dialog("close");
+            },
+            <spring:message code='BzComposer.global.cancel'/>: function () {
+                $(this).dialog("close");
+                return false;
+            }
+        }
+    });
+		}
+    return false;
+	
+}
 function Init(){
     setTimeout(function () {
         document.getElementById("0$$").click();
@@ -259,7 +351,7 @@ function Init(){
 function SendMail(){
     debugger;
     cid=document.getElementById("po_value").value;
-    window.open("Invoice?tabid=ShowEmail&OrderType=invoice&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
+    window.open("Invoice?tabid=ShowEmail&OrderType=PO&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }
 function setIsEmail()
 {

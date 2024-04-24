@@ -1050,7 +1050,11 @@ public class EmailInfo {
 				sql = "INSERT INTO bca_mailtemplate(TemplateName,Subject,TemplateContent,Active) VALUES(?,?,?,1)";
 			}
 			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, form.getTemplateName());
+			String templateName=form.getTemplateName();
+			String str[]= templateName.split(",");
+			pstmt.setString(1, str[0]);
+			
+			
 			pstmt.setString(2, form.getSubject());
 			pstmt.setString(3, form.getContent());
 			if(form.getTemplateID() > 0) {

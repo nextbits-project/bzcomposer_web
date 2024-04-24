@@ -424,6 +424,57 @@ public class ConfigurationDto implements Serializable {
 
 	private int containerId;
 	private int selectedContainerId;
+	/* Mail template parameter*/
+	
+	    private int templateID;
+	    private String mailTemplateName;
+	    private String subject;
+	    private String content;
+	    private int    mailTemplateIsActive;
+
+	public int getTemplateID() {
+			return templateID;
+		}
+
+		public void setTemplateID(int templateID) {
+			this.templateID = templateID;
+		}
+
+		public String getMailTemplateName() {
+			return mailTemplateName;
+		}
+
+		public void setMailTemplateName(String mailTemplateName) {
+			this.mailTemplateName = mailTemplateName;
+		}
+
+		public String getSubject() {
+			return subject;
+		}
+
+		public void setSubject(String subject) {
+			this.subject = subject;
+		}
+
+		public int getMailTemplateIsActive() {
+			return mailTemplateIsActive;
+		}
+
+		public String getContent() {
+			return content;
+		}
+
+		public void setContent(String content) {
+			this.content = content;
+		}
+
+		public void setMailTemplateIsActive(int mailTemplateIsActive) {
+			this.mailTemplateIsActive = mailTemplateIsActive;
+		}
+
+		public void setActive(boolean isActive) {
+			this.isActive = isActive;
+		}
 
 	public int getSpecialHandlingfee1() {
 		return specialHandlingfee1;

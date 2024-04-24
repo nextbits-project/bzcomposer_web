@@ -1,6 +1,7 @@
 package com.avibha.bizcomposer.email.actions;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import com.avibha.bizcomposer.email.dao.EmailDetails;
@@ -64,15 +65,23 @@ public class EmailController {
             emailDetails.saveMailTemplate(mailTemplateDto, request);
             forward = "redirect:/MailTemplates?tabid=getMailTemplates";
         }
-        else if(action.equals("DeleteMailTemplate")) {
+          
+        else if(action.equals("DeleteMailTemplate"))
+        {
             int templateID = Integer.parseInt(request.getParameter("templateID"));
             emailDetails.deleteMailTemplate(templateID, request);
-            forward = "redirect:/MailTemplates?tabid=getMailTemplates";
+           forward = "redirect:/MailTemplates?tabid=getMailTemplates";
         }
+      
         model.addAttribute("mailTemplateDto", mailTemplateDto);
         return forward;
     }
 
+    
+   
+    
+    
+    
     @ResponseBody
     @PostMapping("/MailTemplatesAjax")
     public Object MailTemplatesAjaxCall(MailTemplateDto mailTemplateDto, HttpServletRequest request) throws Exception {

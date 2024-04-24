@@ -7,6 +7,8 @@ import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class PurchaseBoardController {
@@ -30,18 +33,25 @@ public class PurchaseBoardController {
 
 	@Autowired
 	private PurchaseInfoDao purchaseInfoDao;
-
+	@Autowired
+	private MessageSource messageSource;
+	
 	@RequestMapping(value = { "/PurchaseBoard", "/CheckPO" }, method = { RequestMethod.GET, RequestMethod.POST })
 	public String purchaseBoard(PurchaseBoardDto purchaseBoardDto, HttpServletRequest request, Model model)
 			throws IOException, ServletException {
 		String forward = "/purchase/poboard";
 		String IN_URI = request.getRequestURI();
+		  Locale locale = LocaleContextHolder.getLocale();
 		model.addAttribute("purchaseBoardDto", purchaseBoardDto);
 		model.addAttribute("emailSenderDto", new EmailSenderDto());
 		String action = request.getParameter("tabid");
 		if (action.equalsIgnoreCase("ShowList")) { // For Fname and lname listing
 //			PurchaseBoardDetails pd = new PurchaseBoardDetails();
 //			pd.getPurchaseBoardDetails(request, purchaseBoardDto);
+			if(request.getParameter("status")!=null)
+			{
+				request.setAttribute("successMsg",messageSource.getMessage("BzComposer.global.recordDelete", new Object[] {}, locale));
+			}
 			purchaseBoardDetails.getPurchaseBoardDetails(request, purchaseBoardDto);
 			forward = "/purchase/poboard";
 		} else if (action.equalsIgnoreCase("UpdateRecord")) { // UpdateRecord
@@ -182,6 +192,14 @@ public class PurchaseBoardController {
 //			pd.updateCheckPORecord(request);
 			purchaseBoardDetails.updateCheckPORecord(request);
 			forward = "redirect:PurchaseBoard?tabid=ShowList";
+		}
+		else if(action.equalsIgnoreCase("DeleteListOrders"))
+		{
+			
+			purchaseBoardDetails.deletePurchaseOrderFromList(request);
+			purchaseBoardDetails.getPurchaseBoardDetails(request, purchaseBoardDto);
+			forward = "redirect:/PurchaseBoard?tabid=ShowList";
+			
 		}
 		return forward;
 	}

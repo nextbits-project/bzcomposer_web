@@ -116,7 +116,7 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			+ "LEFT JOIN bca_paymenttype PAY ON INV.paymentTypeID = PAY.paymentTypeID "
 			+ "LEFT JOIN bca_account Bank ON INV.bankAccountID = Bank.accountID "
 			+ "LEFT JOIN bca_category Category ON INV.categoryID = Category.categoryID "
-			+ "WHERE INV.companyID = :companyId  "  +  "      AND INV.isPaymentCompleted = 0 "
+			+ "WHERE INV.companyID = :companyId  " + "      AND INV.isPaymentCompleted = 0 "
 			+ "      AND INV.invoiceStatus = 0 " + "      AND INV.invoiceTypeID = 2 "
 			+ "      AND clientVendor.status IN( 'N', 'U' )" + "      AND clientVendor.companyID = :companyId "
 			+ "      AND (INV.adjustedTotal > (SELECT SUM(bcaPayment.amount) FROM bca_payment bcaPayment "
@@ -214,6 +214,28 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 	@Query("update BcaInvoice bi set bi.isInvoice = :isInvoice where bi.orderNum = :orderNum ")
 	Integer updateIsInvoiceByOrderNum(@Param("isInvoice") int isInvoice, @Param("orderNum") int orderNum);
 
+	// new added on 4-4-24
+	@Modifying
+	@Transactional
+	@Query("update BcaInvoice bi set bi.deleted = :Deleted where bi.orderNum = :orderNum ")
+	Integer updateIsDeletedByOrderNum(@Param("Deleted") int Deleted, @Param("orderNum") int orderNum);
+
+	// new added on 4-4-24 
+	@Modifying
+	@Transactional
+	@Query("update BcaInvoice bi set bi.deleted = :Deleted where bi.estNum = :orderNum ")
+	Integer updateIsDeletedByEstNum(@Param("Deleted") int Deleted, @Param("orderNum") int orderNum);
+
+	@Modifying
+	@Transactional
+	@Query("update BcaInvoice bi set bi.deleted = :Deleted where bi.sonum = :orderNum ")
+	Integer updateIsDeletedBySONum(@Param("Deleted") int Deleted, @Param("orderNum") int orderNum);
+
+	@Modifying
+	@Transactional
+	@Query("update BcaInvoice bi set bi.deleted = :Deleted where bi.ponum = :orderNum ")
+	Integer updateIsDeletedByPONum(@Param("Deleted") int Deleted, @Param("orderNum") int orderNum);
+
 	@Query("select SUM(inv.adjustedTotal) AS salesTotal " + "FROM BcaInvoice inv "
 			+ "WHERE inv.clientVendor.clientVendorId = :cvId " + "AND inv.company.companyId = :comId "
 			+ "AND inv.invoiceType.invoiceTypeId = 1 " + "AND inv.invoiceStatus <> 1")
@@ -266,12 +288,11 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			@Param("companyId") long companyId, @Param("clientVendorId") int clientVendorId,
 			@Param("invoiceStatus") int invoiceStatus, @Param("invoiceTypeId") int invoiceTypeid,
 			@Param("ponum") int ponum);
-	
-	
-	 @Query("SELECT MAX(e.orderNum) FROM BcaInvoice e")
-	    Integer findMaxValueOfOrderNum();
-	 
-	 @Query("SELECT MAX(e.invoiceId) FROM BcaInvoice e")
-	    Integer findMaxValueOfInvoiceId();
+
+	@Query("SELECT MAX(e.orderNum) FROM BcaInvoice e")
+	Integer findMaxValueOfOrderNum();
+
+	@Query("SELECT MAX(e.invoiceId) FROM BcaInvoice e")
+	Integer findMaxValueOfInvoiceId();
 
 }

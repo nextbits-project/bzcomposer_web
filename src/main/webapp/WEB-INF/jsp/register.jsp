@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8"%>
+T<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
@@ -162,6 +162,10 @@ hr {
 		var lang = document.getElementById("locale").value;
 		window.location = "/changeLocale?requestPage=RegisterPage&lang=" + lang;
 	}
+	
+	$(document).ready(function(){
+		loadAddressDetailsByZipcode("${zip}", 1)
+	} );
 </script>
 </head>
 <body class="register" onload="loadPageDate();">
@@ -294,7 +298,7 @@ hr {
 			</div>
 		</header>
 		<section>
-			<form:form action="/addUserMember" method="post" name="MultiUserForm"
+			<form:form action="/addUserMembers" method="post" name="MultiUserForm"
 				modelAttribute="multiUserForm"
 				onsubmit="return validateRegisterForm();">
 				<div class="container">
@@ -501,7 +505,7 @@ hr {
 								<td class="lblZipcodeShow">&nbsp;&nbsp;<spring:message
 										code="BzComposer.register.zipcode" /> <span
 									class="inputHighlighted"><spring:message
-											code="BzComposer.CompulsoryField.Validation" /></span>
+									code="BzComposer.CompulsoryField.Validation" /></span>
 								</td>
 								<td class="lblPostalcodeShow">&nbsp;&nbsp;<spring:message
 										code="BzComposer.global.postalcodes" />: <span
@@ -521,11 +525,16 @@ hr {
 									class="inputHighlighted"><spring:message
 											code="BzComposer.CompulsoryField.Validation" /></span>
 								</td>
-								<td class="select_option"><form:select path="city"
-										id="cityID">
-										<option><spring:message
-												code="BzComposer.register.selectcity" /></option>
-									</form:select></td>
+								<td class="select_option">
+									
+									<form:select path="city" id="cityID">
+                                        <form:option value="0"><spring:message code="BzComposer.register.selectcity" /></form:option>
+                                        <c:forEach items="${cityList}" var="currObject">
+                                            <form:option value="${currObject.cityId}">${currObject.cityName}</form:option>
+                                        </c:forEach>
+                                    </form:select>
+									
+									</td>
 								<td>&nbsp;</td>
 							</tr>
 							<tr>
@@ -539,12 +548,14 @@ hr {
 									class="inputHighlighted"><spring:message
 											code="BzComposer.CompulsoryField.Validation" /></span>
 								</td>
-								<td class="select_option"><form:select path="state"
-										id="stateID" onchange="loadCitiesByStateID(this.value, 1);">
-										<option><spring:message
-												code="BzComposer.register.selectstate" /></option>
-										<option>state Id</option>
-									</form:select> <form:hidden path="province" /></td>
+								<td class="select_option">
+									<form:select path="state" id="stateID" onchange="loadCitiesByStateID(this.value, 1);" style="width:200px;">
+                                        <form:option value="0"><spring:message code="BzComposer.register.selectstate" /></form:option>
+                                        <c:forEach items="${stateList}" var="currObject">
+                                            <form:option value="${currObject.stateId}">${currObject.state}</form:option>
+                                        </c:forEach>
+                                    </form:select>
+									<form:hidden path="province" /></td>
 								<td>&nbsp;</td>
 							</tr>
 							<tr>
@@ -553,18 +564,15 @@ hr {
 									class="inputHighlighted"><spring:message
 											code="BzComposer.CompulsoryField.Validation" /></span>
 								</td>
-								<td class="select_option"><form:select path="country"
-										id="countryID" required="true">
-										<form:option value="0">
-											<spring:message code="BzComposer.register.selectcounry" />
-										</form:option>
-										<c:forEach items="${countryList}" var="curObject">
-											<form:option data-code="${curObject.phoneCode}"
-												value="${curObject.countryId}">
-												<b>${curObject.countryName}</b>
-											</form:option>
-										</c:forEach>
-									</form:select></td>
+								<td class="select_option">
+									 <form:select path="country" id="countryID" onchange="loadStatesByCountryID(this.value, 1);" style="width:200px">
+                                        <form:option value="0"><spring:message  code="BzComposer.register.selectcounry"/></form:option>
+                                        <c:forEach items="${countryList}" var="currObject">
+                                            <form:option data-code="${currObject.phoneCode}" value="${currObject.countryId}">${currObject.countryName}</form:option>
+                                        </c:forEach>
+                                    </form:select>
+									
+									</td>
 								<td>&nbsp;</td>
 							</tr>
 							<tr>
@@ -577,7 +585,7 @@ hr {
 									<div class="join_us_phone">
 										<form:select path="phonecode">
 											<c:forEach items="${countryList}" var="curObject">
-												<option value="${curObject.phoneCode}"><b>${curObject.phoneCode}</b>
+												<option value="${curObject.phoneCode}"><br>${curObject.phoneCode} </b>
 												</option>
 											</c:forEach>
 										</form:select>

@@ -62,7 +62,7 @@
 											<bean:write name="objList" property="firstName"/> <bean:write name="objList" property="lastName"/>
 										</td>
 										<td>
-											<bean:write name="objList" property="total"/>
+											<bean:write name="objList" property="AdjustedTotal"/>
 										</td>
 									</tr>
 								</logic:iterate>
@@ -102,7 +102,7 @@
 										<bean:write name="objList1" property="firstName"/> <bean:write name="objList1" property="lastName"/>
 									</td>
 									<td>
-										<bean:write name="objList1" property="total"/>
+										<bean:write name="objList1" property="AdjustedTotal"/>
 									</td>
 								</tr>
 							</logic:iterate>
@@ -192,7 +192,7 @@
 										<bean:write name="objList" property="firstName"/> <bean:write name="objList" property="lastName"/>
 									</td>
 									<td>
-										<bean:write name="objList" property="total"/>
+										<bean:write name="objList" property="AdjustedTotal"/>
 									</td>
 								</tr>
 							</logic:iterate>

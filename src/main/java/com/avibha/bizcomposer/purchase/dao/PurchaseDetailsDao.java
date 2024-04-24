@@ -151,8 +151,8 @@ public class PurchaseDetailsDao {
 	public void AddVendor(HttpServletRequest request, VendorDto form, String compId) {
 		// PurchaseInfoDao purchase = new // PurchaseInfoDao();
 
-		form.setTaxAble("on".equalsIgnoreCase(request.getParameter("isTaxable")) ? "1" : "0");
-		form.setIsclient("on".equalsIgnoreCase(request.getParameter("isAlsoClient")) ? "1" : "3"); // 1:
+		//form.setTaxAble("on".equalsIgnoreCase(request.getParameter("isTaxable")) ? "1" : "0");
+		//form.setIsclient("on".equalsIgnoreCase(request.getParameter("isAlsoClient")) ? "1" : "3"); // 1:
 																									// Customer+Vendor,
 																									// 2: Customer, 3:
 																									// Vendor
@@ -170,6 +170,25 @@ public class PurchaseDetailsDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 			request.setAttribute("Status", new ActionMessage("Vendor Information is Not Insert !"));
+		}
+	}
+	
+	
+	public void AddBillingVendor(HttpServletRequest request, VendorDto form, String compId) {
+		
+		
+		
+		
+		try {
+			boolean isAdded = purchaseInfoDao.insertBillingVendor(form, compId);
+			if (isAdded) {
+				request.setAttribute("SaveStatus", new ActionMessage(" Billing Vendor Information is Successfully Added !"));
+				request.setAttribute("Added", "true");
+				request.getSession().setAttribute("actionMsg", "Billing Vendor Information is Successfully Added!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("Status", new ActionMessage("Billing Vendor Information is Not Insert !"));
 		}
 	}
 

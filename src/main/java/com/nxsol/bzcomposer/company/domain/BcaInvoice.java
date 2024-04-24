@@ -17,6 +17,8 @@ import javax.persistence.Table;
 @Table(name = "bca_invoice")
 public class BcaInvoice {
 
+	
+
 	@Id
 	@Column(name = "InvoiceID", nullable = false, updatable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,13 +62,17 @@ public class BcaInvoice {
 
 	@Column(name = "SubTotal")
 	private Double subTotal;
+	
 
 	@Column(name = "Tax")
 	private Double tax;
 
+	@Column(name = "discount")
+	private Double discount;
+	
 	@Column(name = "SH")
 	private Double sh;
-
+	
 	@Column(name = "Total")
 	private Double total;
 
@@ -365,6 +371,13 @@ public class BcaInvoice {
 		this.estNum = estNum;
 	}
 
+	public Double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Double discount) {
+		this.discount = discount;
+	}
 	public Integer getEmployeeId() {
 		return employeeId;
 	}

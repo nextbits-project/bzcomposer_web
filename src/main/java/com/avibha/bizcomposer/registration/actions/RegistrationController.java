@@ -1,29 +1,31 @@
 package com.avibha.bizcomposer.registration.actions;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
-import com.avibha.bizcomposer.login.forms.MultiUserForm;
-import com.avibha.bizcomposer.login.forms.MultiUserFormValidator;
-import com.avibha.common.utility.CountryState;
-import com.avibha.bizcomposer.registration.dao.RegistrationDAO;
-import com.avibha.bizcomposer.registration.dao.RegistrationDAOImpl;
-import com.avibha.common.Country;
-import com.avibha.common.utility.MyUtility;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-import com.nxsol.bizcomposer.common.ConstValue;
-import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avibha.bizcomposer.File.forms.CompanyInfoDto;
+import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.login.forms.MultiUserForm;
+import com.avibha.bizcomposer.login.forms.MultiUserFormValidator;
+import com.avibha.bizcomposer.registration.dao.RegistrationDAO;
+import com.avibha.bizcomposer.registration.dao.RegistrationDAOImpl;
+import com.avibha.common.utility.CountryState;
+import com.nxsol.bizcomposer.common.ConstValue;
+import com.nxsol.bzcomposer.company.AddNewCompanyDAO;
+
 
 @Controller
 public class RegistrationController {
@@ -32,26 +34,47 @@ public class RegistrationController {
 	private MessageSource messageSource;
 	
 	@Autowired
+	private ConfigurationInfo configInfo;
+	
+	@Autowired
 	private CountryState cs;
+	
+
+	@Autowired
+	private CountryState countryState;
 
 	@GetMapping("/Register")
-	public String register(MultiUserForm mform, Model model) {
-		CountryState cs = new CountryState();
-		model.addAttribute("countryList", cs.getCountryList());
+	public String register(MultiUserForm mform, Model model,HttpServletRequest request) {
+		//CountryState cs = new CountryState();
+		//model.addAttribute("countryList", cs.getCountryList());
+		model.addAttribute("multiUserForm", mform);
+		
+		String countryID = ConstValue.countryID;
+		String stateID = ConstValue.stateID;
 		AddNewCompanyDAO newComDao = new AddNewCompanyDAO();
 		model.addAttribute("businessType", newComDao.getBusinessType());
+		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+		request.setAttribute("defaultCongurationData", configDto);
+		request.setAttribute("countryList", countryState.getCountryList());
+		request.setAttribute("stateList", countryState.getStateList(countryID));
+		request.setAttribute("cityList", countryState.getCityList(stateID));
+		// to set deafult zipcode
+		   request.setAttribute("zip", "90004");
+	 mform.setCountry(configDto.getCustDefaultCountryID() + "");
+		 mform.setState(configDto.getSelectedStateId() + "");
+		  // sd.getAllList(request);
 		
-		model.addAttribute("multiUserForm", mform);
 		return "register";
 	}
 
-	@RequestMapping(value = { "/addUserMember", "/administer/addUserMember" }, method = { RequestMethod.GET,
+	@RequestMapping(value = { "/addUserMembers", "/administer/addUserMember" }, method = { RequestMethod.GET,
 			RequestMethod.POST })
 	public String addUser(MultiUserForm mform, HttpServletRequest request, Model model) {
 		String forward = "register";
 		Locale locale = LocaleContextHolder.getLocale();
 		String URI = request.getRequestURI();
-		if (request.getMethod().equalsIgnoreCase("GET")) {
+		if (request.getMethod().equalsIgnoreCase("GET"))
+		{
 			if (URI.contains("administer")) {
 				return "redirect:/administer?tabid=AddVisitor";
 			} else {
@@ -60,13 +83,24 @@ public class RegistrationController {
 		}
 		RegistrationDAO regisDAO = new RegistrationDAOImpl();
 		MultiUserFormValidator validator = new MultiUserFormValidator();
-		CountryState cs = new CountryState();
-		ArrayList<Country> countryList = cs.getCountryList();
-		model.addAttribute("countryList", countryList);
+		String countryID = ConstValue.countryID;
+		String stateID = ConstValue.stateID;
+//		
 		mform.setUserName(mform.getEmailAddress().substring(0, mform.getEmailAddress().indexOf("@")));
-		if (validator.isMultiUserValidValue(mform, messageSource, request) || checkEmailExists(mform, request)
-				|| checkLoginIdExists(mform, request)) {
-			model.addAttribute("mform", mform);
+		if ( validator.isMultiUserValidValue(mform, messageSource, request)||checkEmailExists(mform, request)|| checkLoginIdExists(mform, request)) {
+			
+			
+			System.out.println("........................................................here ");
+		//	ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+			//request.setAttribute("defaultCongurationData", configDto);
+			request.setAttribute("countryList", countryState.getCountryList());
+			request.setAttribute("stateList", countryState.getStateList(countryID));
+			request.setAttribute("cityList", countryState.getCityList(stateID));
+			AddNewCompanyDAO newComDao = new AddNewCompanyDAO();
+			model.addAttribute("businessType", newComDao.getBusinessType());
+			 request.setAttribute("zip", mform.getZip());
+        		model.addAttribute("mform", mform);
+			forward= "register";
 		} else {
 			// adding Company information
 			AddNewCompanyDAO newCompany = new AddNewCompanyDAO();
@@ -78,19 +112,32 @@ public class RegistrationController {
 			newCompany.addCompany(newCompanyDto);
 			mform.setCompanyID(ConstValue.companyId);
 
+	
+			
 			// adding user information
 			int updateCount = mform.getUserID() > 0 ? regisDAO.updateUserInformation(mform)
 					: regisDAO.addUserInformation(mform);
+			
 			if (updateCount <= 0) {
 				request.setAttribute("errorMsg",
 						messageSource.getMessage("err.registration.error", new Object[] {}, locale));
+				
 				model.addAttribute("mform", mform);
+				
+				 request.setAttribute("zip", mform.getZip());
+				 request.setAttribute("countryList", countryState.getCountryList());
+					request.setAttribute("stateList", countryState.getStateList(countryID));
+					request.setAttribute("cityList", countryState.getCityList(stateID));
+					AddNewCompanyDAO newComDao = new AddNewCompanyDAO();
+					model.addAttribute("businessType", newComDao.getBusinessType());
+				
+				
 			} else {
 				//Save Company Profile
 				newCompany.saveCompanyProfile(newCompanyDto);
 				//set success message
 				request.setAttribute("successMsg",
-						messageSource.getMessage("err.registration.success", new Object[] {}, locale));
+						messageSource.getMessage("BzComposer.global.recordDelete", new Object[] {}, locale));
 				forward = "loginPage1";
 			}
 		}

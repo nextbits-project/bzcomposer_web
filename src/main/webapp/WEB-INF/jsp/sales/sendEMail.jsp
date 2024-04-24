@@ -50,6 +50,7 @@
 				<tr>
 					<td colspan="2"><strong><spring:message code="BzComposer.Invoice.emailContent" /></strong></td>
 				</tr>
+				
 				<tr>
 					<td colspan="2"><spring:message code="BzComposer.Invoice.emailSubject" /> :
 					    <form:input path="subject" size="60" />

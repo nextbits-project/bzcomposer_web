@@ -165,9 +165,9 @@ public class CompanyInfo {
 		con = db.getConnection();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
-			String sqlString = "SELECT i.PONum,c.DateAdded,c.FirstName,c.LastName,i.Total "
+			String sqlString = "SELECT i.PONum,c.DateAdded,c.FirstName,c.LastName,i.AdjustedTotal "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID = " + compId
-					+ " AND invoiceStatus=0 AND c.status IN('U','N') " + "AND InvoiceTypeID IN (2, 6) "
+					+ " AND invoiceStatus=0 AND i.deleted =0 AND c.status IN('U','N') " + "AND InvoiceTypeID IN (2, 6) "
 					+ "AND c.ClientVendorID = i.ClientVendorID AND c.CompanyID = " + compId + " ORDER BY i.PONum DESC";
 
 			pstmt = con.prepareStatement(sqlString.toString());
@@ -203,7 +203,7 @@ public class CompanyInfo {
 				purchaseOrder.setDateAdded(rs.getString(2));
 				purchaseOrder.setFirstName(rs.getString(3));
 				purchaseOrder.setLastName(rs.getString(4));
-				purchaseOrder.setTotal(rs.getDouble("Total"));
+				purchaseOrder.setAdjustedtotal(rs.getDouble(5));
 				objPurchaseList.add(purchaseOrder);
 			}
 		} catch (SQLException ee) {
@@ -235,9 +235,9 @@ public class CompanyInfo {
 		con = db.getConnection();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
-			String sqlString = "SELECT distinct i.SONum,i.DateAdded,c.FirstName,c.LastName,i.Total "
+			String sqlString = "SELECT distinct i.SONum,i.DateAdded,c.FirstName,c.LastName,i.AdjustedTotal "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID=" + compId
-					+ " AND InvoiceTypeID IN (7,18) AND c.status IN('U','N') "
+					+ " AND i.deleted=0 AND InvoiceTypeID IN (7,18) AND c.status IN('U','N') "
 					+ "AND c.ClientVendorID = i.ClientVendorID AND c.CompanyID = " + compId + " ORDER BY i.SONum DESC";
 
 			pstmt = con.prepareStatement(sqlString.toString());
@@ -250,7 +250,7 @@ public class CompanyInfo {
 				salesOrder.setDateAdded(rs.getString(2));
 				salesOrder.setFirstName(rs.getString(3));
 				salesOrder.setLastName(rs.getString(4));
-				salesOrder.setTotal(rs.getDouble("Total"));
+				salesOrder.setAdjustedtotal(rs.getDouble(5));
 				objSalesOrderList.add(salesOrder);
 			}
 		} catch (SQLException ee) {
@@ -283,16 +283,17 @@ public class CompanyInfo {
 		con = db.getConnection();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
-			String sqlString = "SELECT distinct i.OrderNum,c.DateAdded,c.FirstName,c.LastName,i.Total "
+			String sqlString = "SELECT distinct i.OrderNum,c.DateAdded,c.FirstName,c.LastName,i.AdjustedTotal "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID = " + compId
-					+ " AND c.ClientVendorID = i.ClientVendorID "
-					+ "AND c.Active = 1 and c.Status IN('N','U') and c.Deleted = 0 " + "AND c.CompanyID = " + compId
+					+ " AND i.deleted=0 AND c.ClientVendorID = i.ClientVendorID "
+					+ " AND c.Active= 1 AND c.Status IN ('N','U') AND c.Deleted = 0 " + "AND c.CompanyID = " + compId
 					+ " AND i.OrderNum > 0 ORDER BY i.OrderNum DESC";
 
 			pstmt = con.prepareStatement(sqlString.toString());
 			Loger.log(sqlString);
 			rs = pstmt.executeQuery();
-			while (rs.next()) {
+			while (rs.next()) 
+			{
 				InvoiceDto salesOrder = new InvoiceDto();
 
 				/*
@@ -323,10 +324,14 @@ public class CompanyInfo {
 				salesOrder.setDateAdded(rs.getString(2));
 				salesOrder.setFirstName(rs.getString(3));
 				salesOrder.setLastName(rs.getString(4));
-				salesOrder.setTotal(rs.getDouble(5));
+				salesOrder.setAdjustedtotal(rs.getDouble(5));
+				
+				//System.out.println("sandip:"+rs.getDouble(5));
+				
 				objSalesOrderList.add(salesOrder);
 			}
 		} catch (SQLException ee) {
+			
 			Loger.log(2, " SQL Error in Class CompanyInfo and  method -selectSalesOrders " + ee.toString());
 
 		} finally {
@@ -356,9 +361,9 @@ public class CompanyInfo {
 		con = db.getConnection();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		try {
-			String sqlString = "SELECT distinct i.EstNum,c.DateAdded,c.FirstName,c.LastName,(i.AdjustedTotal) as Total "
+			String sqlString = "SELECT distinct i.EstNum,c.DateAdded,c.FirstName,c.LastName,i.AdjustedTotal "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID = " + compId
-					+ " AND NOT (invoiceStatus = 1 )  AND c.status IN('U','N')  "
+					+ " AND i.deleted=0 AND NOT (invoiceStatus = 1 )  AND c.status IN('U','N')  "
 					+ "AND InvoiceTypeID = 10 AND c.ClientVendorID = i.ClientVendorID " + "AND c.CompanyID = " + compId
 					+ " ORDER BY i.EstNum DESC";
 			pstmt = con.prepareStatement(sqlString.toString());
@@ -371,10 +376,11 @@ public class CompanyInfo {
 				salesOrder.setDateAdded(rs.getString(2));
 				salesOrder.setFirstName(rs.getString(3));
 				salesOrder.setLastName(rs.getString(4));
-				salesOrder.setTotal(rs.getDouble(5));
+				salesOrder.setAdjustedtotal(rs.getDouble(5));
 				objSalesOrderList.add(salesOrder);
 			}
 		} catch (SQLException ee) {
+			System.out.println("sandip:"+ee.toString());
 			Loger.log(2, " SQL Error in Class CompanyInfo and  method -selectEstimateDetails " + ee.toString());
 
 		} finally {

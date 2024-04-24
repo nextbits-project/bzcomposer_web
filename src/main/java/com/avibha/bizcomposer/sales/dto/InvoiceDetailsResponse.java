@@ -11,7 +11,16 @@ public class InvoiceDetailsResponse {
     private String taxTotal;
     private String discount;
     private String grandTotal;
-    private String grandTotalWithTax;
+    private String adjustedTotal;
+    public String getAdjustedTotal() {
+		return adjustedTotal;
+	}
+
+	public void setAdjustedTotal(String adjustedTotal) {
+		this.adjustedTotal = adjustedTotal;
+	}
+
+	private String grandTotalWithTax;
     private String paymentMethod;
     private String customerId;
     private String customerName;

@@ -8,8 +8,7 @@
 <%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <title><spring:message code="BzComposer.estimationboardtitle" /></title>
 <style type="text/css">
 .fht-tbody {
@@ -21,6 +20,10 @@
 	font-size: 14px;
 }
 
+.errorMsg {
+	color: #D8000C;
+	background-color: #FFD2D2;
+}
 .dataTables_filter {
 	font-size: 14px;
 }
@@ -65,6 +68,11 @@ table.tabla-listados tbody tr td {
 						<div id="blanquito">
 							<div id="padding">
 								<div>
+								<div id="errorDiv" class="bg-danger" align="center">
+										<div align="center" class="errorMsg">
+											<FONT COLOR="Green"> ${successMsg} </FONT COLOR="Green">
+										</div>
+									</div>
 									<span
 										style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
 										<spring:message
@@ -217,11 +225,53 @@ table.tabla-listados tbody tr td {
 											</tr>
 										</table>
 										<div>
-											<br /> <span
-												style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-												<spring:message
-													code="BzComposer.estimationboard.estimaionlist" />
-											</span> <br />
+											<br />
+
+											<table style="width: 100%">
+												<tr align="center">
+
+													<td style="width: 40%" align="left"><span
+														style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+															<spring:message
+																code="BzComposer.estimationboard.estimaionlist" />
+													</span></td>
+													<td style="width: 60%" align="left"><input
+														type="button" class="formbutton" id="smail"
+														disabled="disabled" style="padding: 10px;"
+														onclick="sendToEstimation();"
+														value='<spring:message code="BzComposer.estimationboard.lookup" />' />&nbsp;&nbsp;
+														<input type="button" class="formbutton" id="modi"
+														style="padding: 10px;" onclick="InvoiceSelectedRecord();"
+														value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp;
+														<input type="button" class="formbutton" id="modi"
+														onclick="SendMail(this.form);" style="padding: 10px;"
+														value='<spring:message code="BzComposer.global.sendmail" />' />
+
+														<div id="deleteEstimationDialog" title="Delete Estimation Dialog"  style="display: none;">
+															<p><spring:message
+																	code="BzComposer.estimationboard.deleteEstimationListRecord" />
+															</p>
+														</div> 
+														
+														 <div id="warningDialog" title="Warning .." style="display: none;">
+														<p><spring:message	code="BzComposer.estimationboard.warningdeleteEstimationListRecord" />
+														</p>
+											        	</div>
+
+														<input type="button" class="formbutton" id="deletebtn"
+														style="padding: 10px;" onclick="deleteEstimations();"
+														value='<spring:message code="BzComposer.global.delete" />' />
+
+                                                    
+														<input type="hidden" name="ONum" id="ONumId" /> <input
+														type="hidden" name="sEmail" id="sEmailID" /> <input
+														type="hidden" name="rNum" id="rowONum" /> <input
+														type="hidden" name="senderEmail" id="EID" />
+														</td>
+												</tr>
+											</table>
+											<br />
+
 											<div>
 												<div class="grid_8 tabla-listados" id="estimationList">
 													<section>
@@ -249,7 +299,7 @@ table.tabla-listados tbody tr td {
 																	<th style="font-size: 14px;"><spring:message
 																			code="BzComposer.estimationboard.emailid" /></th>
 																	<th style="font-size: 14px;"><spring:message
-																			code="BzComposer.sales.SalesAmount" /></th>
+																			code="BzComposer.sales.AdjustedSalesAmount" /></th>
 																	<th style="font-size: 14px;"><spring:message
 																			code="BzComposer.estimationboard.estimationdate" /></th>
 																	<th style="font-size: 14px;"><spring:message
@@ -296,27 +346,11 @@ table.tabla-listados tbody tr td {
 												</div>
 											</div>
 										</div>
-										<table align="center">
-											<tr align="center">
-												<td><input type="button" class="formbutton" id="smail"
-													disabled="disabled" style="padding: 10px;"
-													onclick="sendToEstimation();"
-													value='<spring:message code="BzComposer.estimationboard.lookup" />' />&nbsp;&nbsp;
-													<input type="button" class="formbutton" id="modi"
-													style="padding: 10px;" onclick="InvoiceSelectedRecord();"
-													value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp;
-													<input type="button" class="formbutton" id="modi"
-													onclick="SendMail(this.form);" style="padding: 10px;"
-													value='<spring:message code="BzComposer.global.sendmail" />' />
-													<input type="hidden" name="ONum" id="ONumId" /> <input
-													type="hidden" name="sEmail" id="sEmailID" /> <input
-													type="hidden" name="rNum" id="rowONum" /> <input
-													type="hidden" name="senderEmail" id="EID" /></td>
-											</tr>
-										</table>
+
 										<input type="hidden" id="ordId" name="OrderValue" value="" />
 										<input type="hidden" id="statusId" name="StatusValue" value="" />
 										<input type="hidden" id="ordSize" name="Size" value="" />
+										
 										<!-- end Contents -->
 									</div>
 								</div>
@@ -339,16 +373,19 @@ table.tabla-listados tbody tr td {
 <script type="text/javascript">
 let itemID = 0;
 let itemIndex = 0;
+
 $(document).ready(function() {
-    $('#estiboardList').DataTable({
+    $('#salesboardList').DataTable({
         "iDisplayLength": 20,
         "ordering": false,
         "fnDrawCallback": function( oSettings ) {
             setRowId(0, 0, false);
-            hightlightROW();
+            getAllRecordsIDs2();
         }
     });
 });
+
+
 function Init(){
     setTimeout(function () {
         document.getElementById("0$$").click();
@@ -425,6 +462,7 @@ function getRecordID(currChkBox, rowIndex) {
         }
     }
     if(document.getElementById("lSize").value == selectedRowIDs.length){
+       
         document.getElementById('allRecordsChkHead').checked = true;
     }else{
         document.getElementById('allRecordsChkHead').checked = false;
@@ -432,14 +470,17 @@ function getRecordID(currChkBox, rowIndex) {
 }
 
 function sendToEstimation(){
-	est_no = document.getElementById("est_value").value;
-	window.location = "Estimation?tabid=SBLU&est_no="+est_no;
+	
+	order_no = document.getElementById("est_value").value;
+	window.location = "Estimation?tabid=SBLU&est_no="+order_no;
 }
 
 function SendMail(form){
 	
-	//order_no = document.getElementById("ord_value").value;
-	window.open("Invoice?tabid=ShowEmail",null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
+	est_value = document.getElementById("est_value").value;
+	  window.open("Invoice?tabid=ShowEmail&OrderType=estimation&OrderNo="+est_value,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
+
+
 }
 function InvoiceSelectedRecord(){
     let ItemCells = $("#estiboardList tr.draft")[0].cells;
@@ -473,6 +514,71 @@ function SaleSearch(filterType){
              alert("<spring:message code='BzComposer.billingboard.someerroroccurred'/>");
         }
     });
+}
+
+
+function deleteEstimation()
+{
+
+   
+    $.ajax({
+        type : "POST",
+        url : "EstimationBoard?tabid=DeleteListOrders",
+        data:"deletedEstimation="+selectedRowIDs,
+        success : function(data){
+        	 window.location="EstimationBoard?tabid=ShowList&status=1";
+           
+        },
+         error : function(data) {
+             alert("<spring:message code='BzComposer.billingboard.someerroroccurred'/>");
+        }
+    });
+}
+function deleteEstimations()
+{
+	event.preventDefault();
+    if(selectedRowIDs.length == 0)
+	{
+            
+				$("#warningDialog").dialog({
+			    	resizable: false,
+			        height: 200,
+			        width: 500,
+			        modal: true,
+			        buttons: {
+			            "<spring:message code='BzComposer.global.ok'/>": function () 
+			            {
+			            	 $(this).dialog("close");
+			            	 return true;
+			            	
+			            }
+			        }
+			    });
+     }
+else
+	{
+		
+	$("#deleteEstimationDialog").dialog({
+    	resizable: false,
+        height: 200,
+        width: 500,
+        modal: true,
+        buttons: {
+            "<spring:message code='BzComposer.global.ok'/>": function () 
+            {
+            	  deleteEstimation(); 
+            	  $(this).dialog("close");
+            },
+            <spring:message code='BzComposer.global.cancel'/>: function () {
+                $(this).dialog("close");
+                window.location="EstimationBoard?tabid=ShowList";
+                return false;
+            }
+        }
+    });
+	}
+    return false;
+	
 }
 function downloadEstimationBoardReport(){
     if(selectedRowIDs.length == 0){

@@ -46,11 +46,35 @@ background: #e1e5e9;
 <div id="padding">
 <!-- begin Contents --> 
 <!-- 	<div class="dhtmlgoodies_question"> -->
+
+<div align="center">
+	<table style="width:100%">
+		<tr>
+		<td style="width:40%">
+		<span
+		style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+			<spring:message code="BzComposer.rmalist.rmalist" /></span>
+		</td>
+		<td style="width:60%">
+		<input type="button" style="padding: 10px;"
+		 class="formbutton" id="smail" onclick="sendToCreateRMA();"
+		value='<spring:message code="BzComposer.invoiceboard.createRMA" />' />
+		&nbsp;&nbsp; 
+													
+			<input disabled="disabled" type="button"style="padding: 10px; id="modifyRMA"
+				class="formButton" onclick="getRMA();" name="RMABtn"
+				title='<spring:message code="BzComposer.rmalist.modifyrmatooltip"/>'
+				value='<spring:message code="BzComposer.rmalist.modifyrmabutton"/>'></td>
+		</tr>
+	</table>
+	</div>
+	<br/>
+	<!--  
 	<div><span
 		style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
 			<spring:message code="BzComposer.rmalist.rmalist" /></span>
 		</div>
-		
+		-->
 <!-- 	<div class="dhtmlgoodies_answer"> -->
 <div>
 	<div>
@@ -150,16 +174,24 @@ background: #e1e5e9;
 	</table>
 	
 	</div>
+	<!--  
 	<div align="center">
 	<table>
 		<tr>
-			<td><input disabled="disabled" type="button" id="modifyRMA"
+		<td>
+		<input type="button" style="padding: 10px;"
+		 class="formbutton" id="smail" onclick="sendToCreateRMA();"
+		value='<spring:message code="BzComposer.invoiceboard.createRMA" />' />
+		&nbsp;&nbsp; </td>
+													
+			<td><input disabled="disabled" type="button"style="padding: 10px; id="modifyRMA"
 				class="formButton" onclick="getRMA();" name="RMABtn"
 				title='<spring:message code="BzComposer.rmalist.modifyrmatooltip"/>'
 				value='<spring:message code="BzComposer.rmalist.modifyrmabutton"/>'></td>
 		</tr>
 	</table>
 	</div>
+	-->
 	</div>
 	</div>
 	</div>
@@ -176,6 +208,11 @@ background: #e1e5e9;
 </body>
 </html>
 <script>
+
+function sendToCreateRMA(){
+    order_no = document.getElementById("ord_value").value;
+    window.location = "RMA?tabid=CreateRMA&orderNumber="+order_no;
+}
 	function getPrintLabelRecord(no){
 		document.getElementById('tab').value="R0L0S0List";
 		document.RMAForm.startPage.value=no;

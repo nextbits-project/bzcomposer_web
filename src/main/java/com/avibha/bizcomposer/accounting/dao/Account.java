@@ -49,7 +49,6 @@ public class Account {
         Connection con=db.getConnection();
         PreparedStatement pstmt=null;
         ArrayList<AccountPayDto> vendorList=new ArrayList<AccountPayDto>();
-
         try
         {
             String sqlString="Select Name,CVTypeID from bca_clientvendor where CVTypeID='1' or CVTypeID='2'";

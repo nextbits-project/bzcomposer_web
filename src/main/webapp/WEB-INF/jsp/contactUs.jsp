@@ -3,9 +3,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@taglib uri="http://www.springframework.org/tags"  prefix="spring"%>
 <%@ page isELIgnored="false"%>
 <%@ page import="java.util.*"%>
+
 <style>
 .error
 {
@@ -14,7 +15,7 @@
     font-weight: normal;
 }
 </style>
-<script type="text/javascript">
+<script type="text/javascript ">
 function redirectToLogin()
 {
 	window.location = "Login?tabid=loginPage";
@@ -22,6 +23,7 @@ function redirectToLogin()
 function openRegisterPage()
 {
 	window.location = "Login?tabid=register";
+	
 }
 var a, b;
 function getRandom() 
@@ -37,6 +39,7 @@ function getRandom()
     document.getElementById("secondNumber").innerHTML = b;
 
 }
+
 function ValidCaptcha()
 {
 	var result = document.getElementById("CaptchaInput").value;

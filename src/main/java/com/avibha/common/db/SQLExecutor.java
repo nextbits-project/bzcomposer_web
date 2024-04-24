@@ -151,8 +151,8 @@ public class SQLExecutor {
 			// getting connection manually
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
-					"root", "123");
+					"jdbc:mysql://localhost:3306/bizcomposer?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+					"root", "admin");
 //			connection = DriverManager.getConnection(
 //					"jdbc:mysql://localhost:3306/bcacom_bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
 //					"bcacom_bzc_demo", "!passw0rd#12!");

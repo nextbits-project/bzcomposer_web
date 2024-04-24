@@ -88,10 +88,12 @@ table.tabla-listados tbody tr td {
 											onclick="openSendThroughOutlook();" style="padding: 7 15px;"
 											value="<spring:message code='BzComposer.Email.SendThroughOutlook'/>" />
 											<input type="button" class="formbutton"
-											onclick="manageCustomer('CONVERTLEADtoCUSTOMER');" style="padding: 7 15px;"
+											onclick="manageCustomer('CONVERTLEADtoCUSTOMER');"
+											style="padding: 7 15px;"
 											value="<spring:message code='BzComposer.Customer.transform.customer'/>" />
 											<input type="button" class="formbutton"
-											onclick="manageCustomer('CONVERTLEADtoCONTACT');" style="padding: 7 15px;"
+											onclick="manageCustomer('CONVERTLEADtoCONTACT');"
+											style="padding: 7 15px;"
 											value="<spring:message code='BzComposer.Customer.transform.contact'/>" />
 										</td>
 									</tr>
@@ -157,9 +159,8 @@ table.tabla-listados tbody tr td {
 											onclick="setRowId(${objList.clientVendorId}, ${loop.index}, true);"
 											ondblclick="goToCustomerBoard(${objList.clientVendorId});">
 											<%-- <td>${objList.clientVendorId}</td> --%>
-											<td class=""><input
-												type="checkbox" id="custID${loop.index}"
-												value="${objList.clientVendorId}"
+											<td class=""><input type="checkbox"
+												id="custID${loop.index}" value="${objList.clientVendorId}"
 												onchange="addRowIndex(${loop.index}, ${objList.clientVendorId})" />
 												${objList.clientVendorId}</td>
 											<td>${objList.firstName}${objList.middleName}

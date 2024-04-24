@@ -5,38 +5,65 @@
  */
 package com.avibha.bizcomposer.sales.actions;
 
-import com.avibha.bizcomposer.sales.dao.SalesBoardDetails;
-import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
-import com.nxsol.bizcomposer.common.EmailSenderDto;
-import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import com.avibha.bizcomposer.sales.dao.SalesBoardDetails;
+import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
+import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
+import com.nxsol.bizcomposer.common.EmailSenderDto;
+
 
 @Controller
 public class SalesBordController{
 	@Autowired
 	SalesBoardDetails salesBoardDetails;
-
+	@Autowired
+	private SalesDetailsDao sd;
+	 
+	 @Autowired
+     private MessageSource messageSource;
+	  
+	
+	
+	SalesDetailsDao dao=new SalesDetailsDao();
 	@RequestMapping(value = {"/SalesBord"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String SalesBord(SalesBoardDto salesBoardDto, HttpServletRequest request, Model model) throws IOException, ServletException {
 		String forward = "/sales/invoiceboard";
 		String action = request.getParameter("tabid");
 		model.addAttribute("salesBoardDto", salesBoardDto);
 		model.addAttribute("emailSenderDto", new EmailSenderDto());
+		  Locale locale = LocaleContextHolder.getLocale();
 
 		if (action.equalsIgnoreCase("ShowList")) { // For Fname and lname listing
-//			SalesBoardDetails sd = new SalesBoardDetails();
-			salesBoardDetails.getSalesBoardDetails(request, salesBoardDto);
+		
+			salesBoardDetails.getSalesBoardDetails(request, salesBoardDto); 
+			if(request.getParameter("status")!=null)
+			{
+				request.setAttribute("successMsg",messageSource.getMessage("BzComposer.global.recordDelete", new Object[] {}, locale));
+			}
 			forward = "/sales/invoiceboard";
 		}
+		else if (action.equalsIgnoreCase("DeleteInvoiceBoardRecord")) 
+		{
+			int deleteCount=salesBoardDetails.deleteInvoicesFromList(request);
+			 request.removeAttribute("SalesBoardDetails");
+			 salesBoardDetails.getSalesBoardDetails(request, salesBoardDto);	
+		  }
+		
+		
+		
 
 		/*
 		 * if (action.equalsIgnoreCase("deleteInvoice")) { // For Fname and lname

@@ -42,6 +42,11 @@ table.tabla-listados tbody tr.odd td {
 	background: #e1e5e9;
 }
 
+.errorMsg {
+	color: #D8000C;
+	background-color: #FFD2D2;
+}
+
 table.tabla-listados thead tr th {
 	font-size: 14px;
 }
@@ -64,15 +69,21 @@ table.tabla-listados tbody tr td {
 					<div id="blanquito">
 						<div id="padding">
 							<div>
+							   <div id="errorDiv" class="bg-danger" align="center">
+										<div align="center" class="errorMsg">
+											<FONT COLOR="Green"> ${successMsg} </FONT COLOR="Green">
+										</div>
+									</div>
 								<span
 									style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
 									<spring:message
-										code="BzComposer.invoiceboard.invoiceboardtitle" /> <c:if
-										test="${not empty msg}">
+										code="BzComposer.invoiceboard.invoiceboardtitle" /> 
+										<c:if test="${not empty msg}">
 										<div>
 											<span class="msgstyle">*${msg}</span>
 										</div>
 									</c:if>
+									
 								</span>
 							</div>
 							<div>
@@ -207,10 +218,56 @@ table.tabla-listados tbody tr td {
 										</tr>
 									</table>
 									<div>
-										<br /> <span
-											style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-											<spring:message code="BzComposer.invoiceboard.invoicelist" />
-										</span> <br />
+										<br />
+
+										<table style="width: 100%">
+											<tr align="center">
+
+												<td style="width: 40%" align="left"><span
+													style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+														<spring:message code="BzComposer.invoiceboard.invoicelist" />
+												</span></td>
+												<td style="width: 60%" align="left"><input
+													type="button" style="padding: 10px;" class="formbutton"
+													id="smail" onclick="sendToCreateRMA();"
+													value='<spring:message code="BzComposer.invoiceboard.createRMA" />' />
+													&nbsp;&nbsp;
+													
+														<form:hidden path="deletedRecords" value="value" />
+									            	<input type="hidden" id="deleteRecordsID" name="deletedIDS" value="">
+													
+													 <input type="button" style="padding: 10px;"
+													class="formbutton" id="smail" onclick="sendToInvoice()"
+													value='<spring:message code="BzComposer.invoiceboard.lookup" />' />
+													&nbsp;&nbsp; <input type="button" class="formbutton"
+													style="padding: 10px;" onclick="SendMail(this.form);"
+													value='<spring:message code="BzComposer.global.sendmail" />' />
+
+                                                    <div id="deleteInvoiceRecord" title="Delete Invoice" style="display: none;">
+														<p><spring:message	code="BzComposer.invoiceboard.deleteInvoiceListRecord" />
+														</p>
+											        	</div>
+											        	
+											        	 <div id="warningDialog" title="Warning .." style="display: none;">
+														<p><spring:message	code="BzComposer.invoiceboard.warningdeleteInvoiceListRecord" />
+														</p>
+											        	</div>
+														
+													<input type="button" class="formbutton"
+													style="padding: 10px;"
+													onclick="deleteInvoiceDialog(this.form);"
+													value='<spring:message code="BzComposer.global.delete" />' />
+
+
+													<%-- &nbsp;&nbsp; <input type="button" class="formbutton"
+													style="padding: 10px;" onclick="deleteInvoice(this.form);"
+													value='<spring:message code="BzComposer.global.sendmail" />' /> --%>
+													<input type="hidden" name="ONum" id="ONumId"> <input
+													type="hidden" name="sEmail" id="sEmailID"> <input
+													type="hidden" name="rNum" id="rowONum"> <input
+													type="hidden" name="senderEmail" id="EID"></td>
+											</tr>
+										</table>
 										<div>
 											<div class="grid_8 tabla-listados" id="invoiceOrderList">
 												<section>
@@ -238,7 +295,7 @@ table.tabla-listados tbody tr td {
 																<th style="font-size: 14px;"><spring:message
 																		code="BzComposer.invoiceboard.name" /></th>
 																<th style="font-size: 14px;"><spring:message
-																		code="BzComposer.invoiceboard.salesamount" /></th>
+																		code="BzComposer.invoiceboard.adjustedsalesamount" /></th>
 																<th style="font-size: 14px;"><spring:message
 																		code="BzComposer.invoiceboard.paid" /></th>
 																<th style="font-size: 14px;"><spring:message
@@ -313,29 +370,12 @@ table.tabla-listados tbody tr td {
 												</section>
 											</div>
 										</div>
-										<table align="center">
-											<tr align="center">
-												<td><input type="button" style="padding: 10px;"
-													class="formbutton" id="smail" onclick="sendToCreateRMA();"
-													value='<spring:message code="BzComposer.invoiceboard.createRMA" />' />
-													&nbsp;&nbsp; <input type="button" style="padding: 10px;"
-													class="formbutton" id="smail" onclick="sendToInvoice()"
-													value='<spring:message code="BzComposer.invoiceboard.lookup" />' />
-													&nbsp;&nbsp; <input type="button" class="formbutton"
-													style="padding: 10px;" onclick="SendMail(this.form);"
-													value='<spring:message code="BzComposer.global.sendmail" />' />
-													<%-- &nbsp;&nbsp; <input type="button" class="formbutton"
-													style="padding: 10px;" onclick="deleteInvoice(this.form);"
-													value='<spring:message code="BzComposer.global.sendmail" />' /> --%>
-													<input type="hidden" name="ONum" id="ONumId"> <input
-													type="hidden" name="sEmail" id="sEmailID"> <input
-													type="hidden" name="rNum" id="rowONum"> <input
-													type="hidden" name="senderEmail" id="EID"></td>
-											</tr>
-										</table>
-										<input type="hidden" id="ordId" name="OrderValue" value="">
-										<input type="hidden" id="statusId" name="StatusValue" value="">
-										<input type="hidden" id="ordSize" name="Size" value="">
+
+										
+										    <input type="hidden" id="ordId"
+											name="OrderValue" value=""> <input type="hidden"
+											id="statusId" name="StatusValue" value=""> <input
+											type="hidden" id="ordSize" name="Size" value="">
 										<!-- end Contents -->
 									</div>
 								</div>
@@ -346,6 +386,7 @@ table.tabla-listados tbody tr td {
 			</div>
 		</div>
 		<input type="hidden" id="ord_value" />
+
 	</form:form>
 	<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 	<link rel="stylesheet"
@@ -463,7 +504,77 @@ function sendToCreateRMA(){
 }
 function SendMail(form){
 	order_no = document.getElementById("ord_value").value;
-	window.open("Invoice?tabid=ShowEmail&OrderType=SO&OrderNo="+order_no,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
+	window.open("Invoice?tabid=ShowEmail&OrderType=invoice&OrderNo="+order_no,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
+}
+
+
+function deleteInvoices()
+{
+
+    $.ajax({
+        type : "POST",
+        url : "SalesBord?tabid=DeleteInvoiceBoardRecord",
+        data:"deletedInvoices="+selectedRowIDs,
+        success : function(data)
+        {
+               
+        	window.location="SalesBord?tabid=ShowList&status=1";
+           
+        },
+         error : function(data) {
+           alert("<spring:message code='BzComposer.billingboard.someerroroccurred'/>");
+        }
+    });
+}
+
+function deleteInvoiceDialog(form)
+{
+	//event.preventDefault();
+	
+        if(selectedRowIDs.length == 0)
+		{
+	            
+					$("#warningDialog").dialog({
+				    	resizable: false,
+				        height: 200,
+				        width: 500,
+				        modal: true,
+				        buttons: {
+				            "<spring:message code='BzComposer.global.ok'/>": function () 
+				            {
+				            	 $(this).dialog("close");
+				            	 return true;
+				            	
+				            }
+				        }
+				    });
+         }
+	else
+		{
+									$("#deleteInvoiceRecord").dialog({
+								    	resizable: false,
+								        height: 200,
+								        width: 500,
+								        modal: true,
+								        buttons: {
+								            "<spring:message code='BzComposer.global.ok'/>": function () 
+								            {
+								
+								            	  $(this).dialog("close");
+								                   deleteInvoices();
+								            },
+								            <spring:message code='BzComposer.global.cancel'/>: function () {
+								            	 $(this).dialog("close");
+								            	window.location="SalesBord?tabid=ShowList";
+								               
+								                
+								                
+								                return false;
+								            }
+								        }
+								    });
+		}
+    return false;
 }
 
 function deleteInvoice(form){

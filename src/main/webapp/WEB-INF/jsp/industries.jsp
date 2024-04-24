@@ -17,6 +17,7 @@
 </style>
 <%@ include file="templateHeader.jsp"%>
 <script type="text/javascript">
+
 function redirectToLogin()
 {
 	window.location = "Login.do?tabid=loginPage";	

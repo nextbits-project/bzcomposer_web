@@ -26,6 +26,11 @@ td { padding: 10px; }
 .password-container{
 position:relative;
 }
+
+.errorMsg {
+	color: #D8000C;
+	background-color: #FFD2D2;
+}
 @media (max-width: 1200px) {
            .show-password {
     position: absolute;
@@ -161,9 +166,16 @@ position:relative;
         <form action="/LoginValidate?tabid=chkLoginDetails" name="LoginForm" method="post" onsubmit="return validateLoginForm();">
         	<div class="container">
         		<div style="width:70%;margin: 0px auto; margin-top:30px;float:left;">
+        		
+        		                 <div id="errorDiv" class="bg-danger" align="center">
+										<div align="center" class="errorMsg">
+											<FONT COLOR="Green"> ${successMsg} </FONT COLOR="Green">
+										</div>
+									</div>
         		    <h2>
                         <spring:message code="BzComposer.login"/>
                     </h2>
+                   
         			<table style="width:85%;border: 1px solid lightgray;padding: 20px;" cellspacing="20">
         			    <tr>
                             <td colspan="3" align="center" style="color:red;">
@@ -172,7 +184,10 @@ position:relative;
                                         <spring:message code="err.user.username.wrong"/>
                                     </c:if>
                                 </c:if>
+                                
+								
                             </td>
+                             
         				</tr>
         				<tr>
                             <td>&nbsp;&nbsp;&nbsp; <spring:message code="MultiUserForm.emailAddress" /></td>

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import com.avibha.bizcomposer.email.forms.MailTemplateDto;
 import org.apache.struts.action.ActionForm;
 
+import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.email.forms.EmailForm;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
@@ -129,6 +130,9 @@ public class EmailDetails {
 	}
 
 	public boolean saveMailTemplate(MailTemplateDto form, HttpServletRequest request){
+		
+		
+		
 		EmailInfo emailInfo = new EmailInfo();
 		boolean status = emailInfo.saveMailTemplate(form);
 		if(status){
@@ -138,8 +142,28 @@ public class EmailDetails {
 		}
 		return status;
 	}
+	
+public boolean saveTabMailTemplate( ConfigurationDto  form, HttpServletRequest request){
+		
+		
+	MailTemplateDto template=new MailTemplateDto();
+	  template.setTemplateName(form.getMailTemplateName());
+	  template.setTemplateID(form.getTemplateID());
+	  template.setContent(form.getContent());
+	 
+		EmailInfo emailInfo = new EmailInfo();
+		boolean status = emailInfo.saveMailTemplate(template);
+		if(status){
+			request.getSession().setAttribute("actionMsg", "Mail Template Saved successfully");
+		}else{
+			request.getSession().setAttribute("actionMsg", "Mail Template not Saved successfully");
+		}
+		return status;
+	}
 
 	public boolean deleteMailTemplate(int templateID, HttpServletRequest request){
+		
+		System.err.println("delete mail template .................................................................");
 		EmailInfo emailInfo = new EmailInfo();
 		boolean status = emailInfo.deleteMailTemplate(templateID);
 		if(status){

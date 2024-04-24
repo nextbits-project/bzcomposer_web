@@ -9,12 +9,21 @@ public class CartItem {
     private String qty;
     private String price;
     private String amount;
+    private String taxable;
 
     public int getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(int invoiceId) {
+    public String getTaxable() {
+		return taxable;
+	}
+
+	public void setTaxable(String taxable) {
+		this.taxable = taxable;
+	}
+
+	public void setInvoiceId(int invoiceId) {
         this.invoiceId = invoiceId;
     }
 

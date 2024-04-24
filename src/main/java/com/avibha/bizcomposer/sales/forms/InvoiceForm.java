@@ -226,6 +226,19 @@ public class InvoiceForm extends ActionForm {
 	private double shipping;
 
 	private double total;
+	
+	private double discount;
+
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
+
+
+
 
 	private double adjustedtotal;
 	

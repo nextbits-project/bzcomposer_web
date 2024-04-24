@@ -207,15 +207,15 @@ public class CompanyInfoDto {
     private String Description = "";
     private String specialHanding = "";
     private String message = "";
-    private int qty = 0;
-    private double weight = 0.00;
+    private String qty ="0";
+    private String weight = "0.00";
     private String inventoryBarCode;
     private String SKU;
     private double salePrice = 0.00;
     private double purchasePrice = 0.00;
     private long reorderPoint = 0;
     private long OrderUnit = 0;
-    private int taxable = 0;
+    private String taxable = "0";
     private boolean dropShip = false;
     private boolean discontinued = false;
     private long defaultARCategoryID = -1L;
@@ -2635,19 +2635,19 @@ public class CompanyInfoDto {
         this.message = message;
     }
 
-    public int getQty() {
+    public String getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(String qty) {
         this.qty = qty;
     }
 
-    public double getWeight() {
+    public String getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(String weight) {
         this.weight = weight;
     }
 
@@ -2699,11 +2699,11 @@ public class CompanyInfoDto {
         OrderUnit = orderUnit;
     }
 
-    public int getTaxable() {
+    public String getTaxable() {
         return taxable;
     }
 
-    public void setTaxable(int taxable) {
+    public void setTaxable(String  taxable) {
         this.taxable = taxable;
     }
 

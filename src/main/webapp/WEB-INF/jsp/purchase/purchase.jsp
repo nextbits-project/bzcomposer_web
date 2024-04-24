@@ -240,6 +240,8 @@ function init() {
 							name="PurchaseOrderForm" modelAttribute="purchaseOrderDto">
 							<input type="hidden" name="isInvoice" value="" />
 							<input type="hidden" name="isSalestype" value="" />
+							<input type="hidden" id="oldValue" value="0">
+	                        <input type="hidden" id="holdUnitWeight" value="0">
 
 							<div id="BillShipAddrDetails">
 								<input type="hidden" name="BLSize" id="bSize"
@@ -854,6 +856,7 @@ function init() {
 													<td style="font-size: 14px;">
 														<div style="padding-top: 0px;" id="td12">
 															<input type="text" size="10" id="unitPrice_id"
+															       onclick="saveOldValue();"
 																onchange="return saveNewUnitPrice();"
 																onkeypress="return numbersOnlyFloat(event,this.value);" />
 														</div>
@@ -869,6 +872,7 @@ function init() {
 														<div style="padding-top: 0px;" style="display:block;"
 															id="td5">
 															<input type="text" size="10" id="qty_id"
+															oninput="Multiplication();"
 																onkeypress="return numbersonly(event,this.value)" />
 														</div>
 													</td>
@@ -881,7 +885,7 @@ function init() {
 													<td style="font-size: 14px;">
 														<div id="td14" style="display: block;">
 															<input type="text" size="10" readonly="true"
-																id="amount_id" onfocus="Multiplication();"
+																id="amount_id" 
 																onkeypress="return numbersOnlyFloat(event,this.value);" />
 														</div>
 													</td>
@@ -1345,6 +1349,13 @@ function init() {
 			}
 		});
 		return false;
+	}
+	
+	function saveOldValue()
+	{
+
+		document.getElementById('oldValue').value = document.getElementById('unitPrice_id').value;
+
 	}
 	function showValidationDialog()
 	{
@@ -2422,6 +2433,7 @@ function init() {
 					amt=((qty/1)*(uprice/1)).toFixed(2);;
 					document.getElementById('amount_id').value=amt;
 					document.getElementById('weight_id').value=document.getElementById(count+'wt').value;
+					document.getElementById("holdUnitWeight").value=document.getElementById(count+'wt').value;
 					document.getElementById('code11').value=document.getElementById(count+'code').value;
 					document.getElementById('itmId').value=document.getElementById(count+'itmId').value;
 					document.getElementById('itmVal').value=value;
@@ -2603,7 +2615,7 @@ function init() {
 		}
 		setFlag();
 	}
-
+/*
 	function Multiplication(){
 		if(document.getElementById('qty_id').value==""){
 			document.getElementById('qty_id').value=1;
@@ -2614,7 +2626,7 @@ function init() {
 		var amount=qty*uprice;
 		document.getElementById('amount_id').value=amount.toFixed(2);;
 	}
-
+*/
 	function SaveConfirm(form)
 	{
 		shipinfo();
@@ -2835,6 +2847,16 @@ function saveItemName()
     });
     return false;
 }
+function Multiplication(){
+    var qty=document.getElementById('qty_id').value;
+    var uprice = document.getElementById('unitPrice_id').value;
+    var uweight= document.getElementById('holdUnitWeight').value
+
+    var amount=qty*uprice;
+    document.getElementById('amount_id').value=amount.toFixed(2);
+    document.getElementById('weight_id').value=uweight*qty;
+    return updateQuantityOfSelectedItem();
+}
 function saveNewUnitPrice()
 {
 	event.preventDefault();
@@ -2851,7 +2873,9 @@ function saveNewUnitPrice()
 				var itemId = item.options[item.selectedIndex].value;
 				window.location.href = "Invoice?pageType=PO&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
             },
-            <spring:message code='BzComposer.global.cancel'/>: function () {
+            <spring:message code='BzComposer.global.cancel'/>: function () 
+            {
+            	 document.getElementById('unitPrice_id').value=document.getElementById('oldValue').value ;
                 $(this).dialog("close");
                 return false;
             }

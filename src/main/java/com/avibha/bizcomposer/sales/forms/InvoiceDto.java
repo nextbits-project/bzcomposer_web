@@ -215,6 +215,7 @@ public class InvoiceDto{
 	/* values for total */
 	private double subtotal;
 	private double shipping;
+	private double discount;// changes made  by  20-3 by  sandip
 	private double total;
 	private double adjustedtotal;
 	private double taxValue;
@@ -1177,10 +1178,18 @@ public class InvoiceDto{
 	/**
 	 * @return the wgt
 	 */
+	
 	public String getWgt() {
 		return wgt;
 	}
 
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
 	/**
 	 * @param wgt
 	 *            the wgt to set
@@ -1196,6 +1205,7 @@ public class InvoiceDto{
 		return serviceID;
 	}
 
+	
 	/**
 	 * @param serviceID The serviceID to set.
 	 */

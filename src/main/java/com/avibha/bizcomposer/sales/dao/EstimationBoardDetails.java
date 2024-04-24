@@ -23,6 +23,7 @@ public class EstimationBoardDetails {
         ArrayList estBoardList = estimationBoardInfo.EstimationRecordSearch(compId, eform);
         request.setAttribute("EstimationBoardDetails", estBoardList);
         request.setAttribute("Market", eform.getFilterMarket());
+        
         return estBoardList;
     }
 
@@ -38,5 +39,22 @@ public class EstimationBoardDetails {
             msg = "**Record is not updated";
         }
         request.setAttribute("IsUpdated", msg);
+    }
+    
+    public void deleteEstimationFromList(HttpServletRequest request)
+    {
+    	
+    	boolean result=estimationBoardInfo.updateEstimation(request);
+    	
+        String msg = "";
+        if (result) {
+            msg = "**delete is sucessfully completed";
+            Loger.log("Updated " + msg);
+        } else {
+            msg = "**delete  is  not completed";
+        }
+        request.setAttribute("msg", msg);
+    	
+    	
     }
 }

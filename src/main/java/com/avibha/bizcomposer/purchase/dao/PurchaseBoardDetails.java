@@ -177,6 +177,23 @@ public class PurchaseBoardDetails {
 				marketID, sOption1, sOption2, sType, action, datesCombo, fromDate, toDate, sortBy, pform);
 		request.setAttribute("vendorList1099", vendorList1099);
 	}
+	
+	 public void deletePurchaseOrderFromList(HttpServletRequest request)
+	    {
+	    	
+	    	boolean result=purchaseBoardInfoDao.updatePurchaseOrder(request);
+	    	
+	        String msg = "";
+	        if (result) {
+	            msg = "**delete is sucessfully completed";
+	            Loger.log("Updated " + msg);
+	        } else {
+	            msg = "**delete  is  not completed";
+	        }
+	        request.setAttribute("IsUpdated", msg);
+	    	
+	    	
+	    }
 
 	public void getVendor1099TransactionSummary(HttpServletRequest request, PurchaseBoardDto pform) {
 		HttpSession sess = request.getSession();

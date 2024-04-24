@@ -1419,12 +1419,13 @@ public class SalesDetailsDao {
 		form.setMessage("0");
 		form.setTaxID("0");
 		form.setIsPending("false");
-		form.setBalance(0.0);
-		form.setWeight(0.0);
-		form.setAdjustedtotal(0.0);
-		form.setSubtotal(0.0);
-		form.setShipping(0.0);
-		form.setTotal(0.0);
+		form.setBalance(0.00);
+		form.setWeight(0.00);
+		form.setDiscount(0.00);
+		form.setAdjustedtotal(0.00);
+		form.setSubtotal(0.00);
+		form.setShipping(0.00);
+		form.setTotal(0.00);
 		form.setItemShipped("false");
 		form.setTaxable("false");
 		form.setIsPending("false");
@@ -1433,8 +1434,9 @@ public class SalesDetailsDao {
 		form.setShipTo("");
 		form.setMemo("");
 		form.setShipDate(da);
-		form.setTax(0.0);
+		form.setTax(0.00);
 		form.setItemID("0");
+		
 		request.setAttribute("IsDisplay", "false");
 	}
 
@@ -1572,6 +1574,8 @@ public class SalesDetailsDao {
 					saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
 		}
 	}
+	
+	
 	public void saveTranformInvoice(HttpServletRequest request, InvoiceDto form, String custID) {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -1667,12 +1671,17 @@ public class SalesDetailsDao {
 		String compId = (String) sess.getAttribute("CID");
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 //		invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
-		ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
+		ArrayList<CustomerDto> customerList =   invoiceInfoDao.SearchCustomer(compId, cvId, request, customerDto);
+		
+		System.err.println("customerList"+customerList.size());
+		if(customerList.size()>0)
+		{
 		CustomerDto customerDto2 = customerList.get(0);
 		String cityId = customerDto2.getCity();
 		String stateId = customerDto2.getState();
 		request.setAttribute("selectedCityId", cityId);
 		request.setAttribute("selectedStateId", stateId);
+		}
 
 		invoiceInfoDao.getServices(request, compId, cvId);
 		// String itemIndex = request.getParameter("itemIndex");
@@ -1761,8 +1770,10 @@ public class SalesDetailsDao {
 	public boolean sendEmailInfo(String ordNo, HttpServletRequest request, String orderType, InvoiceDto invoiceDto) {
 		boolean result = false;
 		String compId = (String) request.getSession().getAttribute("CID");
-		InvoiceInfoDao invoice = new InvoiceInfoDao();
+		
 		long invoiceID = invoice.getInvoiceID(compId, ordNo, orderType);
+		
+		
 		invoice.emailInfo(request, invoiceID, compId, ordNo, invoiceDto);
 		return result;
 	}
@@ -2124,4 +2135,6 @@ public class SalesDetailsDao {
 		}
 		return isFound;
 	}
+	
+	
 }

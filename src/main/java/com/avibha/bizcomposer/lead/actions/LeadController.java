@@ -51,7 +51,7 @@ public class LeadController {
 
 	@Autowired
 	private ConfigurationInfo configInfo;
-	
+
 	@Autowired
 	private BcaClientvendorRepository clientVendorRepo;
 
@@ -68,7 +68,7 @@ public class LeadController {
 	private CountryState cs;
 
 	private int cvType = 6; // default for Leads
-	
+
 	@GetMapping("/Leads")
 	public String getleads(Model model, HttpServletRequest request) {
 
@@ -111,7 +111,7 @@ public class LeadController {
 
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 		request.setAttribute("defaultCongurationData", configDto);
-		
+
 		model.addAttribute("customerDto", customerDto);
 		model.addAttribute("leadSource", leadService.getLeadSources(companyId));
 		model.addAttribute("LeadCategory", leadService.getLeadCategories(companyId));
@@ -209,19 +209,19 @@ public class LeadController {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
+
 	@GetMapping("/leadAddressLabel")
-	public String getLeadAddressLabel(Model model, HttpServletRequest request) {	
+	public String getLeadAddressLabel(Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String companyId = (String) session.getAttribute("CID");
 		BcaCompany company = companyRepo.findById(Long.parseLong(companyId)).orElse(null);
-		
+
 		Label lbl = new Label();
 		ArrayList labelList = lbl.getLabelList();
 		model.addAttribute("Labels", labelList);
-		model.addAttribute("CustomerDetails", leadService.getAllLead(cvType, company)); 
-		
+		model.addAttribute("CustomerDetails", leadService.getAllLead(cvType, company));
+
 		return "leads/printLabels";
 	}
-	
+
 }

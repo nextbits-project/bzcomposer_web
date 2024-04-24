@@ -37,4 +37,20 @@ public class SalesOrderBoardDetails {
         }
         request.setAttribute("IsUpdated", msg);
     }
+    
+    
+    public void deleteSalesOrderFromList(HttpServletRequest request)
+    {
+    	boolean result=salesOrderBoardInfo.updateSalesOrder(request);	
+        String msg = "";
+        if (result) {
+            msg = "**delete is sucessfully completed";
+            Loger.log("Updated " + msg);
+        } else {
+            msg = "**delete  is  not completed";
+        }
+        request.setAttribute("IsUpdated", msg);
+    	
+    	
+    }
 }

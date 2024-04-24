@@ -128,6 +128,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			pstmt.setInt(24, user.getCompanyID());
 			pstmt.executeUpdate();
 
+			System.out.println("pstmt1=====result"+pstmt.executeUpdate());
 			ResultSet generatedKeys = pstmt.getGeneratedKeys();
 			if (generatedKeys.next()) {
 				userID = generatedKeys.getInt(1);
@@ -153,8 +154,10 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 							+ "',1,0)");
 			
 			pstmt3.executeUpdate();
+			System.out.println("pstmt2=====result2"+pstmt3.executeUpdate());
 		} catch (SQLException e) {
 			Loger.log(e.toString());
+			System.out.println(e.toString());
 		} finally {
 			try {
 				if (rs != null) {

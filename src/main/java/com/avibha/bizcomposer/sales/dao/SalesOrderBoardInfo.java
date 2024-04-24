@@ -121,7 +121,7 @@ public class SalesOrderBoardInfo {
 				SalesBoard d = new SalesBoard();
 				d.setInvoiceID(bcaInvoice.getInvoiceId());
 				if (null != bcaInvoice.getTotal())
-					d.setTotal(new BigDecimal(bcaInvoice.getTotal()).setScale(2, BigDecimal.ROUND_HALF_UP));
+					d.setTotal(new BigDecimal(bcaInvoice.getAdjustedTotal()).setScale(2, BigDecimal.ROUND_HALF_UP));
 				if (null != bcaInvoice.getOrderid()) {
 					d.setOrderid(Integer.parseInt(bcaInvoice.getOrderid().getOrderId()));
 					d.setTransactionID(bcaInvoice.getOrderid().getOrderId());
@@ -374,6 +374,25 @@ public class SalesOrderBoardInfo {
 //			}
 //		}
 		return objList;
+	}
+	
+	
+	public boolean updateSalesOrder(HttpServletRequest request)
+	{
+		 int count=0;
+		
+		String orderID[]=request.getParameter("DeletedSalesOrders").split(",");
+		for (String orderid_str: orderID) {
+			int SONum=Integer.parseInt(orderid_str);
+			
+		  count+= bcaInvoiceRepository.updateIsDeletedBySONum(1, SONum);
+		}
+		if(count>0)
+			return true;
+		else {
+			 return false;
+		}
+		
 	}
 
 	public java.sql.Date getdate(String d) {

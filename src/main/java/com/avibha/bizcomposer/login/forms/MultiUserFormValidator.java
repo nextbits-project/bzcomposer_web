@@ -77,13 +77,13 @@ public class MultiUserFormValidator {
 			return true;
 		} else if (mform.getZip() == null || mform.getZip().equals("")) {
 			logger.info("inside empty zip");
-			request.setAttribute("errorMsg",
-					messageSource.getMessage("AddEmployeeForm.zip.problem", new Object[] {}, locale));
+//			request.setAttribute("errorMsg",
+//					messageSource.getMessage("AddEmployeeForm.zip.problem", new Object[] {}, locale));
 			return true;
 		} else if (!zipcodeValidator(mform.getZip())) {
 			logger.info("inside zip validation");
-			request.setAttribute("errorMsg",
-					messageSource.getMessage("err.registration.invalidzip", new Object[] {}, locale));
+//			request.setAttribute("errorMsg",
+//					messageSource.getMessage("err.registration.invalidzip", new Object[] {}, locale));
 			return true;
 		} else if (mform.getPhone() == null || mform.getPhone().equals("")) {
 			logger.info("inside phone null check ");
@@ -99,6 +99,12 @@ public class MultiUserFormValidator {
 			logger.info("inside getuser name password confirm password match");
 			request.setAttribute("errorMsg",
 					messageSource.getMessage("err.registration.password.mismatch", new Object[] {}, locale));
+		}
+
+		else if (mform.getBusinessTypeID().equalsIgnoreCase("Business Type")) {
+			logger.info("inside getuser business Type not selected");
+			request.setAttribute("errorMsg",
+					messageSource.getMessage("AddEmployeeForm.BusinessType.problem", new Object[] {}, locale));
 			return true;
 		}
 		/*
@@ -129,7 +135,7 @@ public class MultiUserFormValidator {
 			request.setAttribute("errorMsg",
 					messageSource.getMessage("err.registration.invalidphone", new Object[] {}, locale));
 			return true;
-		} 
+		}
 //		Commented for company creation test. 
 //		else if (mform.getDateExpiry() == null || mform.getDateExpiry().equals("")) {
 //			logger.info("inside DateExpiry null check ");

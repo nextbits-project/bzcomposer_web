@@ -28,9 +28,12 @@ table.cart tbody tr td {
 <div id="blanquito">
 <div id="padding">
 <form:form name="EstimationForm" id="estimationForm" method="post" modelAttribute="estimationDto">
+    <input type="hidden" id="oldValue" value="0">
+	<input type="hidden" id="holdUnitWeight" value="0">
 	<input type="hidden" name="isInvoice" value="">
 	<input type="hidden" name="isSalestype" value="">
 	<form:errors />
+
 	<div>
 		<span style="font-size: 1.2em; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
 			<spring:message code="BzComposer.estimation.estimationtitle" />
@@ -55,6 +58,7 @@ table.cart tbody tr td {
 	</div>
 
 	<div id="BillShipAddrDetails">
+	
 		<input type="hidden" name="BLSize" id="bSize" value='${BillAddr.size()}'>
 		<c:forEach items="${BillAddr}" var="objList" varStatus="loop">
 			<input type="hidden" value='${objList.clientVendorID}' id='${loop.index}id' />
@@ -68,8 +72,8 @@ table.cart tbody tr td {
             <input type="hidden" value='${objList.shipTo}' id='${loop.index}sh' />
             <input type="hidden" value='${objList.shAddressID}' id='${loop.index}shaddr' />
         </c:forEach>
+	
 	</div>
-
 	<div id="ItemDetails">
 		<input type="hidden" name="ItemSize" id="itemSize" value='${ItemList.size()}'> 
 		<c:forEach items="${ItemList}" var="objList" varStatus="loop">
@@ -304,7 +308,7 @@ table.cart tbody tr td {
 							</form:select>
 						</td>
 						<td id="via_id" style="font-size:14px;">
-							<form:select path="via" style="width:220px;">
+							<form:select path="via" style="width:220px;" onchange="calShippingCharges(this.form);">
 								<form:option value="0">
 									<spring:message code="BzComposer.ComboBox.Select" />
 								</form:option>
@@ -403,7 +407,7 @@ table.cart tbody tr td {
                 </div>
             </td>
 			<td style="font-size: 14px;">	
-				<div style="padding-top: 0px;" id="td12"><input type="text" style="text-align: right;" size="10"  readonly="readonly" id="unitPrice_id" onkeypress="return numbersOnlyFloat(event,this.value);" onchange="return saveNewUnitPrice();"/>
+				<div style="padding-top: 0px;" id="td12"><input type="text" style="text-align: right;" size="10"  readonly="readonly" id="unitPrice_id" onclick="saveOldValue();" onkeypress="return numbersOnlyFloat(event,this.value);" onchange="return saveNewUnitPrice();"/>
 				</div>	
 				<div id="SaveUnitPrice" style="display:none;">
     				<p><spring:message code="BzComposer.estimation.saveitemunitprice"/></p>
@@ -411,7 +415,7 @@ table.cart tbody tr td {
 			</td>
 			<td style="font-size: 14px;">
                 <div style="padding-top: 0px;display:block;font-size:14px;" id="td5">
-                    <input class="minutesInput" min="1" style="text-align: right;" type="text" size="10" id="qty_id" onkeypress="return numbersonly(event,this.value);" />
+                    <input class="minutesInput" min="1" style="text-align: right;" type="text" size="10" id="qty_id" oninput="Multiplication();" onkeypress="return numbersonly(event,this.value);" />
                 </div>
             </td>
 <!-- 			<td><div id="td9"  > -->
@@ -427,7 +431,7 @@ table.cart tbody tr td {
 			</td>
 			<td style="font-size: 14px;">				
 				<div id="td14" style="display:block;font-size: 14px;">
-					<input type="text" style="text-align: right;" size="10" readonly="true" id="amount_id" onfocus="Multiplication();" onkeypress="return numbersOnlyFloat(event,this.value);" />
+					<input type="text" style="text-align: right;" size="10" readonly="true" id="amount_id" onkeypress="return numbersOnlyFloat(event,this.value);" />
 				</div>
 			</td>
 			<td style="font-size: 14px;">
@@ -673,7 +677,7 @@ table.cart tbody tr td {
 							<spring:message code="BzComposer.estimation.weight" />
 						</td>
 						<td align="left" style="font-size:14px;">
-							<form:input path="weight" size="13" style="width: 120px; text-align: right;"  readonly="true" onkeypress="return numbersOnlyFloat(event,this.value);" />
+							<form:input path="weight" size="13" style="width: 120px; text-align: right;"  readonly="true" onchange="calShippingCharges(this.form);" onkeypress="return numbersOnlyFloat(event,this.value);" />
 						</td>
 					</tr>
 				</table>
@@ -722,10 +726,10 @@ table.cart tbody tr td {
 					</tr>
 					<tr>
 						<td align="right" style="font-size: 14px;">
-							<spring:message code="BzComposer.estimation.shipping" />
+							<spring:message code="BzComposer.estimation.ShippingCharges" />
 						</td>
 						<td style="font-size:14px;">
-							<form:input path="shipping" onclick="clearShippingCol()" onchange="sumShippingTotal()" style="width: 170px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
+								<form:input path="shipping" onclick="clearShippingCol()" oninput="sumShippingTotal()" style="width: 167px; text-align: right;" onkeypress="return numbersOnlyFloat(event,this.value);" />
 						</td>
 					</tr>
 					<tr>
@@ -852,16 +856,59 @@ $(function() {
 
 //This function clear Shipping input value, If Shipping input have value then this value reduce from total
 function clearShippingCol(){
-	var convertSubData  =  parseFloat(document.EstimationForm.total.value) -  parseFloat(document.EstimationForm.shipping.value);
-	document.EstimationForm.total.value = parseFloat(convertSubData).toFixed(2);
-	document.EstimationForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
-	document.EstimationForm.shipping.value = 0;
+document.EstimationForm.shipping.value ="0.00";
+
+sumShippingTotal();
+}
+
+
+function calShippingCharges(form)
+{
+	// alert("bignning  cal calcuating shipping function .........."+document.InvoiceForm.via.value);
+	 
+	$.ajax({
+        type: "GET",
+        url:"/ConfigurationAjaxTest?tabid=getUserDefinedShippingWeightAndPrice&shippingCarrierId="+document.EstimationForm.via.value,
+        success:function(data)
+        {
+        	// alert("at sucess  ..........result="+document.InvoiceForm.shipping.value);
+         	
+        	var weight= document.EstimationForm.weight.value;
+        	var shippingCharges=0;
+        	
+        	       var intweight= Math.floor(weight);
+        	       
+        	       var decimalweight=weight-intweight;
+        	 for(var i=0;i<data.length;i++)
+        	 {
+
+        		 if( intweight==data[i].userDefinedShippingWeight)
+        			 {
+        			 shippingCharges=data[i].userDefinedShippingPrice;
+        			 break;
+                     }
+        	 }
+        	 
+        	  if(decimalweight>0)
+        		  shippingCharges+=shippingCharges+(data[0].userDefinedShippingPrice*decimalweight)
+        		  
+        		 document.EstimationForm.shipping.value=shippingCharges.toFixed(2);
+        	     sumShippingTotal();
+        	   // alert("at end  calcuating shipping function ..........result="+document.InvoiceForm.shipping.value);
+        	
+        },
+        error:function(){
+            alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+        }
+    });
+
 }
 //myFunction() - this function sum Shipping value in total
-function sumShippingTotal() {
-	var convertSubData  =  parseFloat(document.EstimationForm.total.value) +  parseFloat(document.EstimationForm.shipping.value);
+function sumShippingTotal() 
+{
+	var convertSubData  =  parseFloat(document.EstimationForm.subtotal.value) + parseFloat(document.EstimationForm.tax.value)+ parseFloat(document.EstimationForm.shipping.value);
 	document.EstimationForm.total.value = parseFloat(convertSubData).toFixed(2);
-	document.EstimationForm.adjustedtotal.value = parseFloat(convertSubData).toFixed(2);
+	document.EstimationForm.adjustedtotal.value = document.EstimationForm.total.value;
 }
 
 /* //this function clear input value, 
@@ -1565,7 +1612,7 @@ function StyleChange(value){
 					var field = document.getElementById(i+"tx_id").value;
 					if(value==field){
 						rt = document.getElementById(i+"tx_rt").value;
-						document.getElementById('tax_field').innerHTML=rt+" %";
+						document.getElementById('tax_field').innerHTML="Tax ("+rt+" %)";
 						rate = ( ((yestax/1 ) * (rt/1)) / 100 ).toFixed(2);	
 						document.getElementById('tax_val').value=rate;		
 						tax_rate=rt;
@@ -1591,7 +1638,7 @@ function StyleChange(value){
 					var field = document.getElementById(i+"tx_id").value;
 					if(value==field){
 						rt = document.getElementById(i+"tx_rt").value;
-						document.getElementById('tax_field').innerHTML=rt+" %";
+						document.getElementById('tax_field').innerHTML="Tax ("+rt+" %)";
 						rate = ( ((yestax/1 ) * (rt/1)) / 100 ).toFixed(2);	
 						document.getElementById('tax_val').value=rate;		
 						tax_rate=rt;
@@ -1743,6 +1790,9 @@ function StyleChange(value){
 			
 				form.weight.value=val;
 				form.wt.value=val;
+				
+				 calShippingCharges(document.EstimationForm);//calculate shipping charge 
+				 
 				if(style==0 || style==4){//Product/select
 					
 					productItem(hidn_val);
@@ -1998,6 +2048,7 @@ function ItemChange(value)
 				document.getElementById('pname_id').value=document.getElementById(count+'pname').value;
 				document.getElementById('unitPrice_id').value=uprice;
 				document.getElementById('amount_id').value=qty*uprice;
+				document.getElementById("holdUnitWeight").value=document.getElementById(count+'wt').value;
 				document.getElementById('weight_id').value=document.getElementById(count+'wt').value;
 				document.getElementById('code11').value=document.getElementById(count+'code').value;
 				document.getElementById('itmId').value=document.getElementById(count+'itmId').value;
@@ -2006,11 +2057,31 @@ function ItemChange(value)
 		}				
 	}
 }
+
+function saveOldValue()
+{
+
+	document.getElementById('oldValue').value = document.getElementById('unitPrice_id').value;
+
+}
+
+function calTotalDiscount()
+{
+	if( parseFloat(document.InvoiceForm.adjustedtotal.value)>0)
+	{
+		var convertSubData=parseFloat(document.InvoiceForm.total.value)-parseFloat(document.InvoiceForm.adjustedtotal.value);
+		document.InvoiceForm.discount.value=parseFloat(convertSubData);
+	}
+}
+
 function Multiplication(){
 	var qty=document.getElementById('qty_id').value;
 	var uprice = document.getElementById('unitPrice_id').value;
+	 var uweight= document.getElementById('holdUnitWeight').value;
 	var amount=qty*uprice;
-	document.getElementById('amount_id').value=amount.toFixed(2);				
+	
+	document.getElementById('amount_id').value=amount.toFixed(2);
+	document.getElementById('weight_id').value=uweight*qty;
 }
 function saveNewUnitPrice(){
 	$("#SaveUnitPrice").dialog({
@@ -2027,6 +2098,8 @@ function saveNewUnitPrice(){
 				window.location.href = "Invoice?pageType=ES&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
+
+            	document.getElementById('unitPrice_id').value=document.getElementById('oldValue').value;
                 $(this).dialog("close");
                 return false;
             }
@@ -2434,6 +2507,10 @@ function DeleteRow1(d,form)
 	    						wg=( (w)/1 - (wegt)/1);
 	    						document.EstimationForm.weight.value=wg.toFixed(2);
 	    						
+	    						
+	    						document.EstimationForm
+	    						   calShippingCharges(document.EstimationForm); // shipping charge cal 
+	    						   
 	    						subtotal= document.EstimationForm.subtotal.value;
 	    					
 	    						subtotal = ((subtotal/1) - (amt/1));

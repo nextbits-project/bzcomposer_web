@@ -126,6 +126,11 @@ public class EstimationBoardInfo {
 
 			List<BcaInvoice> lists = typedQuery.getResultList();
 			for (BcaInvoice bcaInvoice : lists) {
+				
+				 if(bcaInvoice.getDeleted()!=null&& bcaInvoice.getDeleted()==1)
+			          continue;
+				 
+					
 				EstimationBoard d = new EstimationBoard();
 				d.setInvoiceID(bcaInvoice.getInvoiceId());
 				if (null != bcaInvoice.getTotal())
@@ -403,6 +408,27 @@ public class EstimationBoardInfo {
 		return objList;
 	}
 
+	
+	//to delete estimation from board list 
+	public boolean updateEstimation(HttpServletRequest request)
+	{
+		 int count=0;
+		
+		String orderID[]=request.getParameter("deletedEstimation").split(",");
+		for (String orderid_str: orderID) {
+			int estNum=Integer.parseInt(orderid_str);
+			
+		  count+= bcaInvoiceRepository.updateIsDeletedByEstNum(1, estNum);
+		}
+		if(count>0)
+			return true;
+		else 
+			 return false;
+		
+		
+	}
+	
+	
 	public java.sql.Date getdate(String d) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Date d1 = null;

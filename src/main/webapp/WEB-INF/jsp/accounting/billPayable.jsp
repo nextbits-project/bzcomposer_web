@@ -41,6 +41,10 @@ div#pie { /* 	color:#05A9C5;; */
 	padding: 10px 0px 20px 0px;
 }
 
+div#pie {
+	padding: 10px 0px 20px 0px;
+}
+
 table.tabla-listados {
 	width: 100%;
 	border: 1px solid rgb(207, 207, 207);
@@ -51,18 +55,14 @@ table.tabla-listados thead tr th {
 	font-size: .7em;
 	text-align: left;
 	padding: 5px 10px;
-	/* 	background: rgba(5, 169, 197, 0.11); */
 	border-bottom: 1px solid rgba(5, 169, 197, 0.2);
-	/* 	color: #333; */
 	text-shadow: #999 0px 1px 1px;
 	white-space: nowrap;
 }
 
 table.tabla-listados tbody tr td {
 	font-size: .8em;
-	/* 	color: #666; */
-	padding: 5px 0px 5px 14px;
-	/* 	border-bottom: 1px solid rgb(207, 207, 207); */
+	padding: 5px 0px 5px 12px;
 	background: #fff;
 	vertical-align: top;
 }
@@ -76,183 +76,198 @@ table.tabla-listados tbody tr td {
 	display: block;
 	z-index: 101;
 }
-
-#highlight {
-	background-color: blue;
-}
-
-.highlight {
-	background-color: #00CED1 !important;
-	color: #fff
-}
 </style>
 </head>
 <body>
 	<div id="ddcolortabsline">&nbsp;</div>
-	<form:form action="/BillPayable" method="post" id="billPayableForm">
-		<div class="content1 clearfix">
-			<h3 class="title1">
-				<spring:message code="BzComposer.billpayable.billpayabletitle" />
-			</h3>
-			<div class="border1  clearfix">
-				<form>
-					<div class="row">
-						<div class="col-md-4">
-							<label> <spring:message code="BzComposer.billpayable.billnumber" /></label>
-							<label id="ordernumber"></label>
-							<div class="form-group row">
-								<label class="col-md-4  col-form-label"> <spring:message
-										code="BzComposer.billpayable.payee" />
-								</label>
-								<div class="col-md-8">
-									<select class="form-control devCutNameDrp" id="customerName">
-										<%
-										ArrayList<ClientVendor> cvListForBill = (ArrayList) request.getAttribute("cvForCombo");
-										if (cvListForBill != null) {
-											for (int i = 0; i < cvListForBill.size(); i++) {
-										%>
-										<option value="<%=cvListForBill.get(i).getCvID()%>">
-											<%
-											out.println(cvListForBill.get(i).getLastName() + " " + cvListForBill.get(i).getFirstName() + "("
-													+ cvListForBill.get(i).getName() + ")");
-											%>
-										</option>
-										<%
-										}
-										}
-										%>
-									</select>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-md-4  col-form-label"> <spring:message
-										code="BzComposer.billpayable.payfrom" />
-								</label>
-								<div class="col-md-8">
-									<select class="form-control devReceivedTypeDrp"
-										id="receivedType" onclick="checkType()">
-										<%
-										ArrayList<TblAccount> accountForBill = (ArrayList) request.getAttribute("accountListForBill");
-										if (accountForBill != null) {
-											for (int i = 1; i < accountForBill.size(); i++) {
-										%>
-										<option value="<%=accountForBill.get(i).getAccountID()%>"
-											id="<%=accountForBill.get(i).getAccountID()%>">
-											<%
-											out.println(accountForBill.get(i).getName());
-											%>
-										</option>
-										<%
-										}
-										}
-										%>
-									</select>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-md-4  col-form-label"> <spring:message
-										code="BzComposer.billpayable.amount" />
-								</label>
-								<div class="col-md-8">
-									<div class="input-group">
-										<div class="input-group-prepend">
-											<span class="input-group-text" id="basic-addon1"> <spring:message
-													code="BzComposer.billpayable.dollersign" />
-											</span>
-										</div>
-										<label style="padding-left: 10px" id="devAmount"
-											class="form-control"></label>
-									</div>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-md-4  col-form-label"> <spring:message
-										code="BzComposer.billpayable.paymentamount" />
-								</label>
-								<div class="col-md-8">
-									<div class="input-group">
-										<div class="input-group-prepend">
-											<span class="input-group-text" id="basic-addon1"> <spring:message
-													code="BzComposer.billpayable.dollersign" />
-											</span>
-										</div>
-										<input type="text" class="form-control devReceiveAmount"
-											value="" width="20px" id="receivedAmount">
-									</div>
-								</div>
-							</div>
-							<div class="form-group row" id="Check">
-								<label class="col-md-4  col-form-label"> <spring:message
-										code="BzComposer.billpayable.checknumber" />
-								</label>
-								<div class="col-md-8">
-									<input type="text" class="form-control devCheck" id="checkNum"
-										name="checkNum" />
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<label>&nbsp;</label>
-							<div class="form-group row">
-								<label class="col-md-4  col-form-label"> <spring:message
-										code="BzComposer.billpayable.date" />
-								</label>
-								  <!-- <html:text property="orderDate" readonly="false"></html:text> -->
-								<div class="col-md-8 calendar-img">
-									<input type="text" class="form-control devOrderDate" value=""
-										style="width: 275px" name="orderDate" id="orderDate">
-									<img src="${pageContext.request.contextPath}/images/cal.gif"
-										class="img-fluid" alt="Responsive image"
-										onclick="displayCalendar(document.ReceivableListForm.orderDate,'mm-dd-yyyy',this);">
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-md-4  col-form-label"> <spring:message
-										code="BzComposer.billpayable.category" />
-								</label>
-								<div class="col-md-8">
-									<select class="form-control devCategoryDrp" size="1"
-										id="categoryId">
-										<%
-										ArrayList<TblCategoryDto> categoryList = (ArrayList) request.getAttribute("categoryListForCombo");
-										if (categoryList != null) {
-											for (int i = 1; i < categoryList.size(); i++) {
-										%>
-										<option value="<%=categoryList.get(i).getId()%>">
-											<%
-											out.println(categoryList.get(i).getName() + " " + categoryList.get(i).getCategoryNumber());
-											%>
-										</option>
-										<%
-										}
-										}
-										%>
 
-									</select>
+	<form:form action="/BillPayable" method="post" id="billPayableForm">
+		
+		<div id="cos">
+			<div class="statusquo ok">
+				<div id="hoja">
+					<div id="blanquito">
+						<div id="padding">
+
+							<!-- begin Contents -->
+							<div>
+								<div style="float: left;">
+									<span
+										style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+										<spring:message code="BzComposer.billpayable.billpayabletitle" />
+									</span> <br>
+									<table>
+										<tr>
+											<td><spring:message code="BzComposer.billpayable.sortby" /></td>
+											<td><select id="sortBy">
+													<option value="1"><spring:message
+															code="BzComposer.customerinfo.companyname" /></option>
+													<option value="2"><spring:message
+															code="BzComposer.global.firstname" /></option>
+													<option value="3"><spring:message
+															code="BzComposer.global.lastname" /></option>
+											</select>
+											  </td>
+										</tr>
+									</table>
+								</div>
+								<div style="float: right;">
+									<table>
+										<tr align="right">
+											<td colspan="12">
+												<div>
+													<input type="button" class="formbutton"
+														onclick="AddPayee();" style="padding: 7 15px;"
+														value="<spring:message code='BzComposer.global.add'/>" />
+													<input type="button" class="formbutton"
+														onclick="editPayee('EDIT');" style="padding: 7 15px;"
+														value="<spring:message code='BzComposer.global.edit'/>" />
+													<input type="button" class="formbutton"
+														onclick="deletePayee('DELETE');" style="padding: 7 15px;"
+														value="<spring:message code='BzComposer.global.delete'/>" />
+												</div>
+											</td>
+										</tr>
+									</table>
 								</div>
 							</div>
-							<div class="form-group row">
-								<label class="col-md-4  col-form-label"> <spring:message
-										code="BzComposer.billpayable.paymentstatus" />
-								</label>
-								<div class="col-md-8">
-									<select class="form-control paymentOP" size="1" id="payStatus">
-										<option value="Unpaid"><spring:message
-												code="BzComposer.billpayable.unpaid" /></option>
-										<option value="Paid"><spring:message
-												code="BzComposer.billpayable.paid" /></option>
-									</select>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-md-4  col-form-label"><spring:message
-										code="BzComposer.global.memo" /></label>
-								<div class="col-md-8">
-									<input type="text" class="form-control devMemotext" id="memo">
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4" style="top: 35px;">
+							<br><br>
+
+
+							<table style="width: 100%; apdding: 0;">
+								<tr>
+									<td>
+										<table style="padding: 0; width: 100%; margin-top: 10px;"
+											align="center">
+											<tr>
+												<td valign="top" colspan="1"
+													style="width: 350px; padding: 0; height: 40vh; border: 1px solid #ccc;">
+													<input type="hidden" name="listSize" id="lSize"
+													value='${CustomerDetails.size()}' />
+													<table id="custTable" class="tabla-listados"
+														cellspacing="0"
+														style="border: 0; padding: 0; margin: 0; height: auto;">
+														<thead>
+															<tr valign="top">
+																<th class="emblem" style="font-size: 12px;">
+																	<div align="center">
+																		<spring:message
+																			code="BzComposer.paidbilllist.payeename" />
+																	</div>
+																</th>
+															</tr>
+														</thead>
+														<tbody id="custTableBody">
+															<c:forEach items="${cvForCombo}" var="objList1"
+																varStatus="loop">
+																<tr id='${loop.index}$$'>
+
+																	<td colspan="2" style="font-size: 12px;" align="left">
+																		${objList1.lastName} ${objList1.firstName}
+																		(${objList1.name})</td>
+																</tr>
+															</c:forEach>
+														</tbody>
+													</table>
+												</td>
+												<!-- Added on 26-04-2019 -->
+												<td colspan="10" style="vertical-align: 0;">
+													<!-- ================== Billing  Information =============== -->
+
+
+
+
+													<div id="table-negotiations" style="height: auto;">
+														<table cellspacing="0" class="tabla-listados"
+															style="margin-top: 0; margin-left: 20px;">
+															<thead>
+																<tr>
+																	<th colspan="3" style="font-size: 12px;"><spring:message
+																			code="BzComposer.billcreation.billDetails" /></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td style="width: 40%;">
+																		<table cellspacing="0" class="tabla-listados">
+																			<tr>
+																				<td style="width: 50%;"><strong><spring:message
+																							code="BzComposer.billpayable.billno" />:</strong></td>
+																				<td style="width: 50%;" id="customerID"></td>
+																			</tr>
+
+																			<tr>
+																				<td><strong><spring:message
+																							code="BzComposer.billpayable.payee" />:</strong></td>
+																				<td id="cname"></td>
+																			</tr>
+																			<tr>
+																				<td><strong><spring:message
+																							code="BzComposer.billpayable.duedate" />:</strong></td>
+																				<td id="dbaName"></td>
+																			</tr>
+																			<tr>
+																				<td><strong><spring:message
+																							code="BzComposer.billpayable.payfrom" />:</strong></td>
+																				<td><select
+																					class="form-control devReceivedTypeDrp"
+																					id="receivedType" onclick="checkType()">
+																						<%
+																						ArrayList<TblAccount> accountForBill1 = (ArrayList) request.getAttribute("accountListForBill");
+																						if (accountForBill1 != null) {
+																							for (int i = 1; i < accountForBill1.size(); i++) {
+																						%>
+																						<option
+																							value="<%=accountForBill1.get(i).getAccountID()%>"
+																							id="<%=accountForBill1.get(i).getAccountID()%>">
+																							<%
+																							out.println(accountForBill1.get(i).getName());
+																							%>
+																						</option>
+																						<%
+																						}
+																						}
+																						%>
+																				</select></td>
+																			</tr>
+																			<tr>
+																				<td><strong><spring:message
+																							code="BzComposer.billpayable.paidamount" />:</strong></td>
+																				<td id="billingAddress"></td>
+																			</tr>
+																			<tr>
+																				<td><strong><spring:message
+																							code="BzComposer.global.balance" />:</strong></td>
+																				<td id="shippingAddress"></td>
+																			</tr>
+																		</table>
+																	</td>
+
+
+
+																	<td style="width: 30%;">
+																		<table cellspacing="0" class="tabla-listados">
+																			<tr>
+																				<td style="width: 50%;"><strong><spring:message
+																							code="BzComposer.global.memo" />:</strong></td>
+																				<td style="width: 50%;" id="phone"></td>
+																			</tr>
+																			<tr>
+																				<td><strong><spring:message
+																							code="BzComposer.global.type" />:</strong></td>
+																				<td id="cellPhone"></td>
+																			</tr>
+																			<tr>
+																				<td><strong><spring:message
+																							code="BzComposer.billpayable.status" />:</strong></td>
+																				<td id="fax"></td>
+																			</tr>
+
+																		</table>
+																	</td>
+																	<td style="width: 30%;">
+																		<table cellspacing="0" class="tabla-listados">
+<div class="col-md-4" style="top: 35px;">
 							<div class="form-group">
 								<a class="btn btn-info" onclick="return save()"
 									style="color: white; width: 120px; font-size: 14px;"> <spring:message
@@ -272,613 +287,694 @@ table.tabla-listados tbody tr td {
 								</a>
 							</div>
 						</div>
-					</div>
-				</form>
-			</div>
-			<div class="content-tabs">
-				<nav>
-					<div class="nav nav-tabs" id="tabId" role="tablist">
-						<a class="nav-item nav-link active" id="nav-home-tab"
-							data-toggle="tab" href="#nav-home" role="tab"
-							aria-controls="nav-home" aria-selected="true"> <spring:message
-								code="BzComposer.billpayable.tabs.unpaidbilllist" />
-						</a> <a class="nav-item nav-link" id="nav-profile-tab"
-							data-toggle="tab" href="#nav-profile" role="tab"
-							aria-controls="nav-profile" aria-selected="false"
-							onclick="paidBillLists()"> <spring:message
-								code="BzComposer.billpayable.tabs.paibilllist" />
-						</a> <a class="nav-item nav-link" id="nav-contact-tab"
-							data-toggle="tab" href="#nav-contact" role="tab"
-							aria-controls="nav-contact" aria-selected="false"
-							onclick="billCreationTab()"> <spring:message
-								code="BzComposer.billpayable.tabs.billcreation" />
-						</a>
-						<a class="nav-item nav-link" id="nav-contact-tab"
-							data-toggle="tab" href="#nav-contact" role="tab"
-							aria-controls="nav-contact" aria-selected="false"
-							onclick="billCompaniesTab()()"> <spring:message
-								code="BzComposer.billpayable.tabs.billingcompanies" />
-						</a>
-					</div>
-				</nav>
-				<div class="unpaid">
-					<div class="unpaid-header">
-						<h5 class="unpaid-header-title">
-							<spring:message code="BzComposer.billpayable.findpayees" />
-						</h5>
-						<div class="unpaid-right" id="totalAmountLabelDiv">
-							<ul>
-								<li><label> <spring:message
-											code="BzComposer.billpayable.total" />
-								</label> <%
+
+																		</table>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</td>
+											</tr>
+										</table>
+
+
+
+
+
+
+										<div class="content-tabs">
+											<nav>
+												<div class="nav nav-tabs" id="tabId" role="tablist">
+													<a class="nav-item nav-link active" id="nav-home-tab"
+														data-toggle="tab" href="#nav-home" role="tab"
+														aria-controls="nav-home" aria-selected="true"> <spring:message
+															code="BzComposer.billpayable.tabs.unpaidbilllist" />
+													</a> <a class="nav-item nav-link" id="nav-profile-tab"
+														data-toggle="tab" href="#nav-profile" role="tab"
+														aria-controls="nav-profile" aria-selected="false"
+														onclick="paidBillLists()"> <spring:message
+															code="BzComposer.billpayable.tabs.paibilllist" />
+													</a> <a class="nav-item nav-link" id="nav-contact-tab"
+														data-toggle="tab" href="#nav-contact" role="tab"
+														aria-controls="nav-contact" aria-selected="false"
+														onclick="billCreationTab()"> <spring:message
+															code="BzComposer.billpayable.tabs.billcreation" />
+													</a> <a class="nav-item nav-link" id="nav-contact-tab"
+														data-toggle="tab" href="#nav-contact" role="tab"
+														aria-controls="nav-contact" aria-selected="false"
+														onclick="billCompaniesTab()()"> <spring:message
+															code="BzComposer.billpayable.tabs.billingcompanies" />
+													</a>
+												</div>
+											</nav>
+											<div class="unpaid">
+												<div class="unpaid-header">
+													<h5 class="unpaid-header-title">
+														<spring:message code="BzComposer.billpayable.findpayees" />
+													</h5>
+													<div class="unpaid-right" id="totalAmountLabelDiv">
+														<ul>
+															<li><label> <spring:message
+																		code="BzComposer.billpayable.total" />
+															</label> <%
  ArrayList<TblVendorDetail> unpaidBillList1 = (ArrayList) request.getAttribute("unpaidBillList");
- %>
-									<label> <%-- <% out.println(unpaidBillList1.get(unpaidBillList1.size() - 1).getTotalBillAmount()); %> --%>
-								</label></li>
-							</ul>
-						</div>
-					</div>
-					<div class="tab-content" id="nav-tabContent">
-						<div class="tab-pane fade show active" id="nav-home"
-							role="tabpanel" aria-labelledby="nav-home-tab">
-							<div class="table1" id="tblForInvoiceOrder">
-								<table class="table table-bordered table-sm devAcRecDataTbl">
-									<thead class="thead-light">
-										<tr>
-											<th scope="col"><spring:message
-													code="BzComposer.ComboBox.Select" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.billpayable.billno" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.billpayable.payee" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.billpayable.category" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.billpayable.duedate" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.billpayable.paidamount" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.global.balance" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.billpayable.amount" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.global.memo" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.global.type" /></th>
-											<th scope="col" class="text-right"><spring:message
-													code="BzComposer.billpayable.status" /></th>
-										</tr>
-									</thead>
-									<tbody>
-										<%
-										ArrayList<TblVendorDetail> unpaidBillList = (ArrayList) request.getAttribute("unpaidBillList");
-										int index = 1;
-										if (unpaidBillList != null) {
-											for (int i = 0; i < unpaidBillList.size(); i++) {
-										%>
-										<tr
-											onclick="selectrow(<%=unpaidBillList.get(i).getBillNo() + "," + index%>)">
-											<td class="text-right"><input type="checkbox"
-                                                id="unpaidBillList"></td>
-											<td class="text-right">
-												<%
-												out.println(unpaidBillList.get(i).getBillNo());
-												%>
-											</td>
-											<td class="text-right"
-												value="<%=unpaidBillList.get(i).getVendorId()%>"><%out.println(unpaidBillList.get(i).getVendorName());%></td>
-											<td class="text-right"><%=unpaidBillList.get(i).getCategoryName() != null ? unpaidBillList.get(i).getCategoryName() : ""%></td>
-											<td class="text-right"><%=unpaidBillList.get(i).getDueDate()%></td>
-											<td class="text-right"><%=String.format("%.2f", unpaidBillList.get(i).getAmountPaid())%></td>
-											<td class="text-right"><%=String.format("%.2f", unpaidBillList.get(i).getAmountTopay())%></td>
-											<td class="text-right"><%=String.format("%.2f", unpaidBillList.get(i).getAmount())%></td>
-											<td class="text-right">
-												<%
-												out.println(unpaidBillList.get(i).getMemo());
-												%>
-											</td>
-											<td class="text-right">
-												<%
-												out.println("Bill");
-												%>
-											</td>
-											<td class="text-right"><%=unpaidBillList.get(i).getStatus()%></td>
-											<td hidden="bankID" id="receivedType2<%=index%>"
-												value="<%=unpaidBillList.get(i).getPayerId()%>"></td>
-											<td hidden="check"
-												value="<%=unpaidBillList.get(i).getCheckNo()%>"></td>
-											<td hidden="creditUsed"
-												value="<%=unpaidBillList.get(i).getCreditUsed()%>"></td>
-											<input type="hidden" id="categoryID2<%=index%>"
-												value="<%=unpaidBillList.get(i).getCategoryID()%>" />
-										</tr>
-										<%
-										index++;
-										}
-										}
-										%>
-									</tbody>
-								</table>
-							</div>
-							<%-- <div class="footerForCreatingRecurrent">
+ %> <label> <%-- <% out.println(unpaidBillList1.get(unpaidBillList1.size() - 1).getTotalBillAmount()); %> --%>
+															</label></li>
+														</ul>
+													</div>
+												</div>
+												<div class="tab-content" id="nav-tabContent">
+													<div class="tab-pane fade show active" id="nav-home"
+														role="tabpanel" aria-labelledby="nav-home-tab">
+														<div class="table1" id="tblForInvoiceOrder">
+															<table
+																class="table table-bordered table-sm devAcRecDataTbl">
+																<thead class="thead-light">
+																	<tr>
+																		<th scope="col"><spring:message
+																				code="BzComposer.ComboBox.Select" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.billpayable.billno" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.billpayable.payee" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.billpayable.category" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.billpayable.duedate" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.billpayable.paidamount" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.global.balance" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.billpayable.amount" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.global.memo" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.global.type" /></th>
+																		<th scope="col" class="text-right"><spring:message
+																				code="BzComposer.billpayable.status" /></th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<%
+																	ArrayList<TblVendorDetail> unpaidBillList = (ArrayList) request.getAttribute("unpaidBillList");
+																	int index = 1;
+																	if (unpaidBillList != null) {
+																		for (int i = 0; i < unpaidBillList.size(); i++) {
+																	%>
+																	<tr
+																		onclick="selectrow(<%=unpaidBillList.get(i).getBillNo() + "," + index%>)">
+																		<td class="text-right"><input type="checkbox"
+																			id="unpaidBillList"></td>
+																		<td class="text-right">
+																			<%
+																			out.println(unpaidBillList.get(i).getBillNo());
+																			%>
+																		</td>
+																		<td class="text-right"
+																			value="<%=unpaidBillList.get(i).getVendorId()%>">
+																			<%
+																			out.println(unpaidBillList.get(i).getVendorName());
+																			%>
+																		</td>
+																		<td class="text-right"><%=unpaidBillList.get(i).getCategoryName() != null ? unpaidBillList.get(i).getCategoryName() : ""%></td>
+																		<td class="text-right"><%=unpaidBillList.get(i).getDueDate()%></td>
+																		<td class="text-right"><%=String.format("%.2f", unpaidBillList.get(i).getAmountPaid())%></td>
+																		<td class="text-right"><%=String.format("%.2f", unpaidBillList.get(i).getAmountTopay())%></td>
+																		<td class="text-right"><%=String.format("%.2f", unpaidBillList.get(i).getAmount())%></td>
+																		<td class="text-right">
+																			<%
+																			out.println(unpaidBillList.get(i).getMemo());
+																			%>
+																		</td>
+																		<td class="text-right">
+																			<%
+																			out.println("Bill");
+																			%>
+																		</td>
+																		<td class="text-right"><%=unpaidBillList.get(i).getStatus()%></td>
+																		<td hidden="bankID" id="receivedType2<%=index%>"
+																			value="<%=unpaidBillList.get(i).getPayerId()%>"></td>
+																		<td hidden="check"
+																			value="<%=unpaidBillList.get(i).getCheckNo()%>"></td>
+																		<td hidden="creditUsed"
+																			value="<%=unpaidBillList.get(i).getCreditUsed()%>">
+																		</td>
+																		
+																		<input type="hidden" id="categoryID2<%=index%>"
+																			value="<%=unpaidBillList.get(i).getCategoryID()%>" />
+																			
+																	</tr>
+																	<%
+																	index++;
+																	}
+																	}
+																	%>
+																</tbody>
+															</table>
+														</div>
+														<%-- <div class="footerForCreatingRecurrent">
 								<a class="btn btn-info" id="CreatingEditingRecurrentPaymentId"
 									style="color: white; font-size: 14px;"> <spring:message
 										code="BzComposer.billpayable.creatinrecurringpaymentbtn" />
 								</a>
 							</div> --%>
-							<div class="footer1">
-								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="checkbox"
-                                     id="inlineCheckbox2" onclick="checkAll()" value="option1">
-									<label class="form-check-label" for="inlineCheckbox2">
-										<spring:message code="BzComposer.billpayable.selectall" />
+														<div class="footer1">
+															<div class="form-check form-check-inline">
+																<input class="form-check-input" type="checkbox"
+																	id="inlineCheckbox2" onclick="checkAll()"
+																	value="option1"> <label
+																	class="form-check-label" for="inlineCheckbox2">
+																	<spring:message code="BzComposer.billpayable.selectall" />
 
-									</label>
-								</div>
-								<button type="button" class="btn btn-info"
-									style="font-size: 14px;">
-									<spring:message code="BzComposer.billpayable.payandprintbtn" />
-								</button>
-								<button type="button" onclick="AddPayee()" class="btn btn-info"
-									style="font-size: 14px;">
-									<spring:message code="BzComposer.billpayable.addpayeebtn" />
-								</button>
-								<%-- <button type="button" class="btn btn-info"
+																</label>
+															</div>
+															<button type="button" class="btn btn-info"
+																style="font-size: 14px;">
+																<spring:message
+																	code="BzComposer.billpayable.payandprintbtn" />
+															</button>
+
+															<%-- <button type="button" class="btn btn-info"
 									onclick="billingInfo()" style="font-size: 14px;">
 									<spring:message code="BzComposer.billpayable.createbillbtn" />
 								</button> --%>
-								<button type="button" class="btn btn-info"
-									onclick="return deleteBill()" style="font-size: 14px;">
-									<spring:message code="BzComposer.billpayable.deletebillbtn" />
-								</button>
-								<button type="button" class="btn btn-info" id="PaybillId"
-									style="font-size: 14px;">
-									<spring:message code="BzComposer.billpayable.paybillsbtn" />
-								</button>
-								<button type="button" class="btn btn-info" id="MemorizeBillId"
-									style="font-size: 14px;">
-									<spring:message code="BzComposer.billpayable.memorizebillbtn" />
-								</button>
-								<button type="button" class="btn btn-info"
-									id="MemorizeTransactionListId" style="font-size: 14px;">
-									<spring:message
-										code="BzComposer.billpayable.memorizetransactionlistbtn" />
-								</button>
-							</div>
-						</div>
-						<div class="tab-pane fade" id="nav-profile" role="tabpanel"
-							aria-labelledby="nav-profile-tab">...</div>
-						<div class="tab-pane fade" id="nav-contact" role="tabpanel"
-							aria-labelledby="nav-contact-tab">...</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="container-fluid" id="ScheduleMemorizedTransaction"
-			class="">
-			<!--    Here is the AddAccount dialog started -->
-			<div class="table-responsive memorized-popup" style="padding: 0 15px">
-				<div class="row form-group">
-					<div class="col-md-12 form-inline">
-						<div class="form-group">
-							<label> <spring:message
-									code="BzComposer.billpayable.nameoftransaction" /> &nbsp;
-							</label> <input class="form-control" type="text" id="nameOfTransaction" />
-						</div>
-					</div>
-				</div>
-				<div class="row form-group">
-					<div class="col-md-4">
-						<div class="form-check col-form-label">
-							<input class="form-check-input" type="radio" name="exampleRadios"
-								id="remindMe" value="0" checked="checked" onclick="remindMe()">
-							<label class="form-check-label" for="exampleRadios1"> <spring:message
-									code="BzComposer.billpayable.remindme" />
-							</label>
-						</div>
-					</div>
-					<div class="col-md-8 ">
-						<div class="row">
-							<label class="col-sm-5 col-form-label"> <spring:message
-									code="BzComposer.billpayable.howoften" />&nbsp;
-							</label>
-							<div class="col-sm-6">
-								<select class="form-control howOften" id="howOften">
-									<option value="Never">Never</option>
-									<option value="Daily">Daily</option>
-									<option value="Weekly">Weekly</option>
-									<option value="Monthly">Monthly</option>
-									<option value="Quarterly">Quarterly</option>
-									<option value="Annualy">Annualy</option>
-								</select>
-							</div>
-						</div>
-					</div>
-				</div>
+															<button type="button" class="btn btn-info"
+																onclick="return deleteBill()" style="font-size: 14px;">
+																<spring:message
+																	code="BzComposer.billpayable.deletebillbtn" />
+															</button>
+															<button type="button" class="btn btn-info" id="PaybillId"
+																style="font-size: 14px;">
+																<spring:message
+																	code="BzComposer.billpayable.paybillsbtn" />
+															</button>
+															<button type="button" class="btn btn-info"
+																id="MemorizeBillId" style="font-size: 14px;">
+																<spring:message
+																	code="BzComposer.billpayable.memorizebillbtn" />
+															</button>
+															<button type="button" class="btn btn-info"
+																id="MemorizeTransactionListId" style="font-size: 14px;">
+																<spring:message
+																	code="BzComposer.billpayable.memorizetransactionlistbtn" />
+															</button>
+														</div>
+													</div>
+													<div class="tab-pane fade" id="nav-profile" role="tabpanel"
+														aria-labelledby="nav-profile-tab">...</div>
+													<div class="tab-pane fade" id="nav-contact" role="tabpanel"
+														aria-labelledby="nav-contact-tab">...</div>
+												</div>
+											</div>
+										</div>
+										</div>
+										<div class="container-fluid" id="ScheduleMemorizedTransaction"
+											class="">
+											<!--    Here is the AddAccount dialog started -->
+											<div class="table-responsive memorized-popup"
+												style="padding: 0 15px">
+												<div class="row form-group">
+													<div class="col-md-12 form-inline">
+														<div class="form-group">
+															<label> <spring:message
+																	code="BzComposer.billpayable.nameoftransaction" />
+																&nbsp;
+															</label> <input class="form-control" type="text"
+																id="nameOfTransaction" />
+														</div>
+													</div>
+												</div>
+												<div class="row form-group">
+													<div class="col-md-4">
+														<div class="form-check col-form-label">
+															<input class="form-check-input" type="radio"
+																name="exampleRadios" id="remindMe" value="0"
+																checked="checked" onclick="remindMe()"> <label
+																class="form-check-label" for="exampleRadios1"> <spring:message
+																	code="BzComposer.billpayable.remindme" />
+															</label>
+														</div>
+													</div>
+													<div class="col-md-8 ">
+														<div class="row">
+															<label class="col-sm-5 col-form-label"> <spring:message
+																	code="BzComposer.billpayable.howoften" />&nbsp;
+															</label>
+															<div class="col-sm-6">
+																<select class="form-control howOften" id="howOften">
+																	<option value="Never">Never</option>
+																	<option value="Daily">Daily</option>
+																	<option value="Weekly">Weekly</option>
+																	<option value="Monthly">Monthly</option>
+																	<option value="Quarterly">Quarterly</option>
+																	<option value="Annualy">Annualy</option>
+																</select>
+															</div>
+														</div>
+													</div>
+												</div>
 
-				<div class="row form-group">
-					<div class="col-md-4">
-						<div class="form-check col-form-label">
-							<input class="form-check-input" type="radio" name="exampleRadios"
-								id="dontRemindMe" value="1" onclick="dontRemindMe()"> <label
-								class="form-check-label" for="exampleRadios2"> <spring:message
-									code="BzComposer.billpayable.dontremindme" />
-							</label>
-						</div>
-					</div>
-					<div class="col-md-8 ">
-						<div class="row">
-							<label class="col-sm-5 col-form-label"> <spring:message
-									code="BzComposer.billpayable.nextdate" />&nbsp;
-							</label>
-							<div class="col-sm-6 d-flex">
-								<input type="text"
-									class="form-control schrduleMemorizedTransactionDate"
-									id="schrduleMemorizedTransactionDate">
-								<div class="input-group-append input-group-append1">
-									<a class="input-group-text" href="#">&#9662;</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+												<div class="row form-group">
+													<div class="col-md-4">
+														<div class="form-check col-form-label">
+															<input class="form-check-input" type="radio"
+																name="exampleRadios" id="dontRemindMe" value="1"
+																onclick="dontRemindMe()"> <label
+																class="form-check-label" for="exampleRadios2"> <spring:message
+																	code="BzComposer.billpayable.dontremindme" />
+															</label>
+														</div>
+													</div>
+													<div class="col-md-8 ">
+														<div class="row">
+															<label class="col-sm-5 col-form-label"> <spring:message
+																	code="BzComposer.billpayable.nextdate" />&nbsp;
+															</label>
+															<div class="col-sm-6 d-flex">
+																<input type="text"
+																	class="form-control schrduleMemorizedTransactionDate"
+																	id="schrduleMemorizedTransactionDate">
+																<div class="input-group-append input-group-append1">
+																	<a class="input-group-text" href="#">&#9662;</a>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
 
-				<div class="row form-group">
-					<div class="col-md-4">
-						<div class="form-check col-form-label">
-							<input class="form-check-input" type="radio" name="exampleRadios"
-								id="automaticEnter" value="2" onclick="automaticEnter()">
-							<label class="form-check-label" for="exampleRadios3"> <spring:message
-									code="BzComposer.billpayable.automaticallyenter" />
-							</label>
-						</div>
-					</div>
-					<div class="col-md-8">
-						<div class=" row">
-							<label class="col-sm-5  col-form-label"> <spring:message
-									code="BzComposer.billpayable.numberremaining" />&nbsp;
-							</label>
-							<div class="col-sm-6">
-								<input type="text" class="form-control" id="numberRemaining">
-							</div>
-						</div>
-					</div>
-				</div>
+												<div class="row form-group">
+													<div class="col-md-4">
+														<div class="form-check col-form-label">
+															<input class="form-check-input" type="radio"
+																name="exampleRadios" id="automaticEnter" value="2"
+																onclick="automaticEnter()"> <label
+																class="form-check-label" for="exampleRadios3"> <spring:message
+																	code="BzComposer.billpayable.automaticallyenter" />
+															</label>
+														</div>
+													</div>
+													<div class="col-md-8">
+														<div class=" row">
+															<label class="col-sm-5  col-form-label"> <spring:message
+																	code="BzComposer.billpayable.numberremaining" />&nbsp;
+															</label>
+															<div class="col-sm-6">
+																<input type="text" class="form-control"
+																	id="numberRemaining">
+															</div>
+														</div>
+													</div>
+												</div>
 
-				<div class="row form-group">
-					<div class="col-md-4">
-						<div class="form-check col-form-label">
-							<input class="form-check-input" type="radio" name="exampleRadios"
-								id="withTransactionGroup" value="3"
-								onclick="withTransactionGroup()"> <label
-								class="form-check-label" for="exampleRadios3"> <spring:message
-									code="BzComposer.billpayable.withtransactioningroup" />
-							</label>
-						</div>
-					</div>
-					<div class="col-md-8 ">
-						<div class=" row">
-							<label class="col-sm-5 col-form-label"> <spring:message
-									code="BzComposer.billpayable.daysinadvancetoenter" />&nbsp;
-							</label>
-							<div class="col-sm-6">
-								<input type="text" class="form-control"
-									id="daysInAdvanceToEnter">
-							</div>
-						</div>
-					</div>
-				</div>
+												<div class="row form-group">
+													<div class="col-md-4">
+														<div class="form-check col-form-label">
+															<input class="form-check-input" type="radio"
+																name="exampleRadios" id="withTransactionGroup" value="3"
+																onclick="withTransactionGroup()"> <label
+																class="form-check-label" for="exampleRadios3"> <spring:message
+																	code="BzComposer.billpayable.withtransactioningroup" />
+															</label>
+														</div>
+													</div>
+													<div class="col-md-8 ">
+														<div class=" row">
+															<label class="col-sm-5 col-form-label"> <spring:message
+																	code="BzComposer.billpayable.daysinadvancetoenter" />&nbsp;
+															</label>
+															<div class="col-sm-6">
+																<input type="text" class="form-control"
+																	id="daysInAdvanceToEnter">
+															</div>
+														</div>
+													</div>
+												</div>
 
-				<div class="row">
-					<div class="col-md-4"></div>
-					<div class="col-md-8 ">
-						<div class="row">
-							<label class="col-sm-5 col-form-label"> <spring:message
-									code="BzComposer.billpayable.transactiongroup" />&nbsp;
-							</label>
-							<div class="col-sm-6">
-								<select class="form-control" id="transactionGroup">
-								</select>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="bzbtn text-right mt-4">
-					<button type="button" style="font-size: 14px;" class="btn btn-info"
-						onclick="return ScheduleMemorizedTransactionOkay()"
-						id="deleteBank">
-						<spring:message code="BzComposer.global.ok" />
-					</button>
-					<button type="button" style="font-size: 14px;" class="btn btn-info"
-						onclick="return closeMemorized()" id="addButtonForDeposit">
-						<spring:message code="BzComposer.global.cancel" />
-					</button>
-				</div>
-			</div>
-		</div>
-		<div class="container-fluid" id="PayBills">
-			<!--    Here is the AddAccount dialog started -->
-			<div class="table-responsive PayBills-popup" style="padding: 0 15px">
-				<h4 class="popup-title1">
-					<spring:message code="BzComposer.billpayable.selectbilltopay" />
-				</h4>
-				<div class="row">
-					<div class="col-md-8">
-						<div class="row ">
-							<label class="col-md-2 col-form-label"> <spring:message
-									code="BzComposer.billpayable.showbills" />
-							</label>
-							<div class="col-md-4">
-								<div class="form-check col-form-label">
-									<input class="form-check-input" type="radio"
-										name="exampleRadios2" id="exampleRadios2" value="option1"
-										checked> <label class="form-check-label"
-										for="exampleRadios2"> <spring:message
-											code="BzComposer.billpayable.dueonorbefore" />
-									</label>
-								</div>
-							</div>
-							<div class="col-md-5">
-								<div class="d-flex">
-									<input type="text" class="form-control" id="payBillsDate">
-									<div class="input-group-append input-group-append1">
-										<a class="input-group-text" href="#">&#9662;</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row form-group">
-							<label class="col-md-2 col-form-label"></label>
-							<div class="col-md-4">
-								<div class="form-check col-form-label">
-									<input class="form-check-input" type="radio"
-										name="exampleRadios2" id="exampleRadios3" value="option1">
-									<label class="form-check-label" for="exampleRadios3"> <spring:message
-											code="BzComposer.billpayable.showallbills" />
-									</label>
-								</div>
-							</div>
-							<div class="col-md-5"></div>
-						</div>
-					</div>
-					<div class="col-md-4 form-inline align-items-start">
-						<label class="col-form-label"> <spring:message
-								code="BzComposer.billpayable.sortbillsby" /> &nbsp;
-						</label> <select class="form-control">
-							<option value="Due Date"><spring:message
-									code="BzComposer.billpayable.duedate" /></option>
-							<option value="Vendor"><spring:message
-									code="BzComposer.billpayable.vendor" /></option>
-							<option value="Amount Due"><spring:message
-									code="BzComposer.billpayable.amountdue" /></option>
-						</select>
-					</div>
-				</div>
-				<div class="table1 popup-table1 mb-2 ">
-					<table class="table table-bordered table-sm payBillsTableDiv">
-						<thead class="thead-light">
-							<tr>
-								<th><spring:message code="BzComposer.ComboBox.Select" /></th>
-								<th><spring:message
-										code="BzComposer.billpayable.billnumber" /></th>
-								<th><spring:message code="BzComposer.billpayable.duedate" /></th>
-								<th><spring:message code="BzComposer.billpayable.vendor" /></th>
-								<th><spring:message code="BzComposer.billpayable.amtdue" /></th>
-								<th><spring:message
-										code="BzComposer.billpayable.creditused" /></th>
-								<th><spring:message code="BzComposer.billpayable.amttopay" /></th>
-								<th><spring:message code="BzComposer.billpayable.payfrom" /></th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td><input type="checkbox" id="payBillList"></td>
-								<td><span id="getBillNo"></span></td>
-								<td><span id="getDueDate"></span></td>
-								<td><span id="getVendorName"></span></td>
-								<td><span id="getAmount"></span></td>
-								<td><span id="getCreditUsed">0.0</span></td>
-								<td><span id="getAmountTopay"></span></td>
-								<td><span id="getBankAccount">null</span></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="mb-3">
-					<button type="button" onclick="selectallbillsbtn1()"
-						style="font-size: 14px;" class="btn btn-info">
-						<spring:message code="BzComposer.billpayable.selectallbillsbtn" />
-					</button>
-				</div>
-				<h4 class="popup-title1">
-					<spring:message code="BzComposer.billpayable.creditinformation" />
-				</h4>
+												<div class="row">
+													<div class="col-md-4"></div>
+													<div class="col-md-8 ">
+														<div class="row">
+															<label class="col-sm-5 col-form-label"> <spring:message
+																	code="BzComposer.billpayable.transactiongroup" />&nbsp;
+															</label>
+															<div class="col-sm-6">
+																<select class="form-control" id="transactionGroup">
+																</select>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="bzbtn text-right mt-4">
+													<button type="button" style="font-size: 14px;"
+														class="btn btn-info"
+														onclick="return ScheduleMemorizedTransactionOkay()"
+														id="deleteBank">
+														<spring:message code="BzComposer.global.ok" />
+													</button>
+													<button type="button" style="font-size: 14px;"
+														class="btn btn-info" onclick="return closeMemorized()"
+														id="addButtonForDeposit">
+														<spring:message code="BzComposer.global.cancel" />
+													</button>
+												</div>
+											</div>
+										</div>
+										<div class="container-fluid" id="PayBills">
+											<!--    Here is the AddAccount dialog started -->
+											<div class="table-responsive PayBills-popup"
+												style="padding: 0 15px">
+												<h4 class="popup-title1">
+													<spring:message
+														code="BzComposer.billpayable.selectbilltopay" />
+												</h4>
+												<div class="row">
+													<div class="col-md-8">
+														<div class="row ">
+															<label class="col-md-2 col-form-label"> <spring:message
+																	code="BzComposer.billpayable.showbills" />
+															</label>
+															<div class="col-md-4">
+																<div class="form-check col-form-label">
+																	<input class="form-check-input" type="radio"
+																		name="exampleRadios2" id="exampleRadios2"
+																		value="option1" checked> <label
+																		class="form-check-label" for="exampleRadios2">
+																		<spring:message
+																			code="BzComposer.billpayable.dueonorbefore" />
+																	</label>
+																</div>
+															</div>
+															<div class="col-md-5">
+																<div class="d-flex">
+																	<input type="text" class="form-control"
+																		id="payBillsDate">
+																	<div class="input-group-append input-group-append1">
+																		<a class="input-group-text" href="#">&#9662;</a>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="row form-group">
+															<label class="col-md-2 col-form-label"></label>
+															<div class="col-md-4">
+																<div class="form-check col-form-label">
+																	<input class="form-check-input" type="radio"
+																		name="exampleRadios2" id="exampleRadios3"
+																		value="option1"> <label
+																		class="form-check-label" for="exampleRadios3">
+																		<spring:message
+																			code="BzComposer.billpayable.showallbills" />
+																	</label>
+																</div>
+															</div>
+															<div class="col-md-5"></div>
+														</div>
+													</div>
+													<div class="col-md-4 form-inline align-items-start">
+														<label class="col-form-label"> <spring:message
+																code="BzComposer.billpayable.sortbillsby" /> &nbsp;
+														</label> <select class="form-control">
+															<option value="Due Date"><spring:message
+																	code="BzComposer.billpayable.duedate" /></option>
+															<option value="Vendor"><spring:message
+																	code="BzComposer.billpayable.vendor" /></option>
+															<option value="Amount Due"><spring:message
+																	code="BzComposer.billpayable.amountdue" /></option>
+														</select>
+													</div>
+												</div>
+												<div class="table1 popup-table1 mb-2 ">
+													<table
+														class="table table-bordered table-sm payBillsTableDiv">
+														<thead class="thead-light">
+															<tr>
+																<th><spring:message
+																		code="BzComposer.ComboBox.Select" /></th>
+																<th><spring:message
+																		code="BzComposer.billpayable.billnumber" /></th>
+																<th><spring:message
+																		code="BzComposer.billpayable.duedate" /></th>
+																<th><spring:message
+																		code="BzComposer.billpayable.vendor" /></th>
+																<th><spring:message
+																		code="BzComposer.billpayable.amtdue" /></th>
+																<th><spring:message
+																		code="BzComposer.billpayable.creditused" /></th>
+																<th><spring:message
+																		code="BzComposer.billpayable.amttopay" /></th>
+																<th><spring:message
+																		code="BzComposer.billpayable.payfrom" /></th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td><input type="checkbox" id="payBillList"></td>
+																<td><span id="getBillNo"></span></td>
+																<td><span id="getDueDate"></span></td>
+																<td><span id="getVendorName"></span></td>
+																<td><span id="getAmount"></span></td>
+																<td><span id="getCreditUsed">0.0</span></td>
+																<td><span id="getAmountTopay"></span></td>
+																<td><span id="getBankAccount">null</span></td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<div class="mb-3">
+													<button type="button" onclick="selectallbillsbtn1()"
+														style="font-size: 14px;" class="btn btn-info">
+														<spring:message
+															code="BzComposer.billpayable.selectallbillsbtn" />
+													</button>
+												</div>
+												<h4 class="popup-title1">
+													<spring:message
+														code="BzComposer.billpayable.creditinformation" />
+												</h4>
 
-				<div class=" row">
-					<label for="staticEmail" class="col-sm-3 col-form-label"> <spring:message
-							code="BzComposer.billpayable.numberofcredits" />
-					</label>
-					<div class="col-sm-3">
-						<input type="text" readonly
-							class="form-control-plaintext  text-right" id="staticEmail"
-							value="0">
-					</div>
-				</div>
+												<div class=" row">
+													<label for="staticEmail" class="col-sm-3 col-form-label">
+														<spring:message
+															code="BzComposer.billpayable.numberofcredits" />
+													</label>
+													<div class="col-sm-3">
+														<input type="text" readonly
+															class="form-control-plaintext  text-right"
+															id="staticEmail" value="0">
+													</div>
+												</div>
 
-				<div class="form-group row">
-					<label for="staticEmail" class="col-sm-3 col-form-label"> <spring:message
-							code="BzComposer.billpayable.totalcreditsavailable" />
-					</label>
-					<div class="col-sm-3">
-						<input type="text" readonly
-							class="form-control-plaintext text-right" id="staticEmail"
-							value="0.00">
-					</div>
-					<div class="col-sm-3">
-						<button type="button" style="font-size: 14px;"
-							class="btn btn-info">
-							<spring:message code="BzComposer.billpayable.setcreditsbtn" />
-						</button>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<label> <spring:message
-								code="BzComposer.billpayable.paymentaccount" />
-						</label> <select class="form-control devReceivedTypeDrp"
-							id="paymentAccountType" onclick="checkType()">
-							<%
-							/* ArrayList<TblAccount> accountForBill = (ArrayList) request.getAttribute("accountListForBill"); */
-							if (accountForBill != null) {
-								for (int i = 1; i < accountForBill.size(); i++) {
-							%>
-							<option value="<%=accountForBill.get(i).getAccountID()%>"
-								label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
-								<%
-								out.println(accountForBill.get(i).getName());
-								%>
-							</option>
-							<%
-							}
-							}
-							%>
-						</select>
-						<div class="form-group row">
-							<label for="staticEmail" class="col-sm-6 col-form-label">
-								<spring:message code="BzComposer.billpayable.endingbalance" />
-							</label>
-							<div class="col-sm-6">
-								<input type="text" readonly
-									class="form-control-plaintext text-right" id="staticEmail"
-									value="1177.23">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<label> <spring:message
-								code="BzComposer.billpayable.paymentmethod" />
-						</label> <select class="form-control mb-2">
-							<option value=""><spring:message
-									code="BzComposer.ComboBox.Select" /></option>
-							<option value="<spring:message code="BzComposer.payroll.Cash"/>"><spring:message
-									code="BzComposer.payroll.Cash" /></option>
-							<option
-								value="<spring:message code="BzComposer.payroll.Cheque"/>"><spring:message
-									code="BzComposer.payroll.Cheque" /></option>
-						</select>
-					</div>
-					<div class="col-md-4">
-						<label> <spring:message
-								code="BzComposer.billpayable.paymentdate" />
-						</label>
-						<div class="d-flex">
-							<input type="text" class="form-control" id="paymentdate">
-							<div class="input-group-append input-group-append1">
-								<a class="input-group-text" href="#">&#9662;</a>
-							</div>
-						</div>
+												<div class="form-group row">
+													<label for="staticEmail" class="col-sm-3 col-form-label">
+														<spring:message
+															code="BzComposer.billpayable.totalcreditsavailable" />
+													</label>
+													<div class="col-sm-3">
+														<input type="text" readonly
+															class="form-control-plaintext text-right"
+															id="staticEmail" value="0.00">
+													</div>
+													<div class="col-sm-3">
+														<button type="button" style="font-size: 14px;"
+															class="btn btn-info">
+															<spring:message
+																code="BzComposer.billpayable.setcreditsbtn" />
+														</button>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-4">
+														<label> <spring:message
+																code="BzComposer.billpayable.paymentaccount" />
+														</label> <select class="form-control devReceivedTypeDrp"
+															id="paymentAccountType" onclick="checkType()">
+															<%
+															ArrayList<TblAccount> accountForBill = (ArrayList) request.getAttribute("accountListForBill");
+															if (accountForBill != null) {
+																for (int i = 1; i < accountForBill.size(); i++) {
+															%>
+															<option value="<%=accountForBill.get(i).getAccountID()%>"
+																label="<%=accountForBill.get(i).getCustomerCurrentBalance()%>">
+																<%
+																out.println(accountForBill.get(i).getName());
+																%>
+															</option>
+															<%
+															}
+															}
+															%>
+														</select>
+														<div class="form-group row">
+															<label for="staticEmail" class="col-sm-6 col-form-label">
+																<spring:message
+																	code="BzComposer.billpayable.endingbalance" />
+															</label>
+															<div class="col-sm-6">
+																<input type="text" readonly
+																	class="form-control-plaintext text-right"
+																	id="staticEmail" value="1177.23">
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<label> <spring:message
+																code="BzComposer.billpayable.paymentmethod" />
+														</label> <select class="form-control mb-2">
+															<option value=""><spring:message
+																	code="BzComposer.ComboBox.Select" /></option>
+															<option
+																value="<spring:message code="BzComposer.payroll.Cash"/>"><spring:message
+																	code="BzComposer.payroll.Cash" /></option>
+															<option
+																value="<spring:message code="BzComposer.payroll.Cheque"/>"><spring:message
+																	code="BzComposer.payroll.Cheque" /></option>
+														</select>
+													</div>
+													<div class="col-md-4">
+														<label> <spring:message
+																code="BzComposer.billpayable.paymentdate" />
+														</label>
+														<div class="d-flex">
+															<input type="text" class="form-control" id="paymentdate">
+															<div class="input-group-append input-group-append1">
+																<a class="input-group-text" href="#">&#9662;</a>
+															</div>
+														</div>
 
-					</div>
-				</div>
+													</div>
+												</div>
 
-				<div class="bzbtn text-right">
-					<button type="button" style="font-size: 14px;" class="btn btn-info"
-						onclick="return payBill()" id="deleteBank">
-						<spring:message code="BzComposer.billpayable.payselectedbillsbtn" />
-					</button>
-					<button type="button" style="font-size: 14px;" class="btn btn-info"
-						onclick="return closePayBill()" id="addButtonForDeposit">
-						<spring:message code="BzComposer.global.cancel" />
-					</button>
-				</div>
-			</div>
-		</div>
-		<div class="container-fluid" id="MemorizeTransactionList">
-			<!--    Here is the AddAccount dialog started -->
-			<div class="table-responsive" style="padding: 0 15px" id="MemTraList">
-				<table class="table" id="MemorizetranId">
-					<thead>
-						<tr>
-							<th></th>
-							<th><spring:message
-									code="BzComposer.billpayable.transactionname" /></th>
-							<th><spring:message
-									code="BzComposer.billpayable.sourceaccount" /></th>
-							<th><spring:message code="BzComposer.billpayable.amount" /></th>
-							<th><spring:message code="BzComposer.billpayable.frequency" /></th>
-							<th><spring:message code="BzComposer.billpayable.auto" /></th>
-							<th><spring:message code="BzComposer.billpayable.nextdate" /></th>
-						</tr>
-					</thead>
-					<tbody>
-						<%
-						ArrayList<TblVendorDetail> getMemorizeTransactionList = (ArrayList) request.getAttribute("getMemorizeTransactionList");
-						int memTransIndex = 1;
-						if (getMemorizeTransactionList != null) {
-							for (int i = 0; i < getMemorizeTransactionList.size(); i++) {
-						%>
-						<tr onclick="selectMemorizedTransactionList(<%=memTransIndex%>)">
-							<td><input type="checkbox"></td>
-							<td
-							hidden="billNo"><%out.println(getMemorizeTransactionList.get(i).getBillNo());%></td>
-							<td><%out.println(getMemorizeTransactionList.get(i).getTransactionName());%></td>
-							<td><%out.println(getMemorizeTransactionList.get(i).getBankAccount());%></td>
-							<td><%out.println(getMemorizeTransactionList.get(i).getAmount());%></td>
-							<td
-							value="<%=getMemorizeTransactionList.get(i).getRecurringPeriod()%>"><%out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());%></td>
-							<%
-							if (getMemorizeTransactionList.get(i).getRemindOption() == 2) {
-							%>
-							<td
-								value="<%=getMemorizeTransactionList.get(i).getRemindOption()%>">
-								<% out.println("Yes");%></td>
-							<%
-							} else {
-							%>
-							<td
-								value="<%=getMemorizeTransactionList.get(i).getRemindOption()%>">
-								<%
-								out.println("No");
-								%>
-							</td>
-							<%
-							}
-							%>
-							<td>
-								<%
-								out.println(JProjectUtil.getdateFormat().format(getMemorizeTransactionList.get(i).getNextDate()));
-								%>
-							</td>
-							<td hidden="howOften">
-								<%
-								out.println(getMemorizeTransactionList.get(i).getHowOften());
-								%>
-							</td>
-							<td hidden="recurringPeriod">
-								<%
-								out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());
-								%>
-							</td>
-							<td hidden="recurringNumber">
-								<%
-								out.println(getMemorizeTransactionList.get(i).getRecurringNumber());
-								%>
-							</td>
-							<td hidden="dayInAdvance">
-								<%
-								out.println(getMemorizeTransactionList.get(i).getDaysInAdvanceToEnter());
-								%>
-							</td>
-						</tr>
-						<%
-						memTransIndex++;
-						}
-						}
-						%>
-					</tbody>
-				</table>
+												<div class="bzbtn text-right">
+													<button type="button" style="font-size: 14px;"
+														class="btn btn-info" onclick="return payBill()"
+														id="deleteBank">
+														<spring:message
+															code="BzComposer.billpayable.payselectedbillsbtn" />
+													</button>
+													<button type="button" style="font-size: 14px;"
+														class="btn btn-info" onclick="return closePayBill()"
+														id="addButtonForDeposit">
+														<spring:message code="BzComposer.global.cancel" />
+													</button>
+												</div>
+											</div>
+										</div>
+										<div class="container-fluid" id="MemorizeTransactionList">
+											<!--    Here is the AddAccount dialog started -->
+											<div class="table-responsive" style="padding: 0 15px"
+												id="MemTraList">
+												<table class="table" id="MemorizetranId">
+													<thead>
+														<tr>
+															<th></th>
+															<th><spring:message
+																	code="BzComposer.billpayable.transactionname" /></th>
+															<th><spring:message
+																	code="BzComposer.billpayable.sourceaccount" /></th>
+															<th><spring:message
+																	code="BzComposer.billpayable.amount" /></th>
+															<th><spring:message
+																	code="BzComposer.billpayable.frequency" /></th>
+															<th><spring:message
+																	code="BzComposer.billpayable.auto" /></th>
+															<th><spring:message
+																	code="BzComposer.billpayable.nextdate" /></th>
+														</tr>
+													</thead>
+													<tbody>
+														<%
+														ArrayList<TblVendorDetail> getMemorizeTransactionList = (ArrayList) request.getAttribute("getMemorizeTransactionList");
+														int memTransIndex = 1;
+														if (getMemorizeTransactionList != null) {
+															for (int i = 0; i < getMemorizeTransactionList.size(); i++) {
+														%>
+														<tr
+															onclick="selectMemorizedTransactionList(<%=memTransIndex%>)">
+															<td><input type="checkbox"></td>
+															<td hidden="billNo">
+																<%
+																out.println(getMemorizeTransactionList.get(i).getBillNo());
+																%>
+															</td>
+															<td>
+																<%
+																out.println(getMemorizeTransactionList.get(i).getTransactionName());
+																%>
+															</td>
+															<td>
+																<%
+																out.println(getMemorizeTransactionList.get(i).getBankAccount());
+																%>
+															</td>
+															<td>
+																<%
+																out.println(getMemorizeTransactionList.get(i).getAmount());
+																%>
+															</td>
+															<td
+																value="<%=getMemorizeTransactionList.get(i).getRecurringPeriod()%>">
+																<%
+																out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());
+																%>
+															</td>
+															<%
+															if (getMemorizeTransactionList.get(i).getRemindOption() == 2) {
+															%>
+															<td
+																value="<%=getMemorizeTransactionList.get(i).getRemindOption()%>">
+																<%
+																out.println("Yes");
+																%>
+															</td>
+															<%
+															} else {
+															%>
+															<td
+																value="<%=getMemorizeTransactionList.get(i).getRemindOption()%>">
+																<%
+																out.println("No");
+																%>
+															</td>
+															<%
+															}
+															%>
+															<td>
+																<%
+																out.println(JProjectUtil.getdateFormat().format(getMemorizeTransactionList.get(i).getNextDate()));
+																%>
+															</td>
+															<td hidden="howOften">
+																<%
+																out.println(getMemorizeTransactionList.get(i).getHowOften());
+																%>
+															</td>
+															<td hidden="recurringPeriod">
+																<%
+																out.println(getMemorizeTransactionList.get(i).getRecurringPeriod());
+																%>
+															</td>
+															<td hidden="recurringNumber">
+																<%
+																out.println(getMemorizeTransactionList.get(i).getRecurringNumber());
+																%>
+															</td>
+															<td hidden="dayInAdvance">
+																<%
+																out.println(getMemorizeTransactionList.get(i).getDaysInAdvanceToEnter());
+																%>
+															</td>
+														</tr>
+														<%
+														memTransIndex++;
+														}
+														}
+														%>
+													</tbody>
+												</table>
 
-				<!-- <div class="memorizedbutton">
+												<!-- <div class="memorizedbutton">
   <ul>
   <li><button style="font-size: 14px;">Add</button></li>
   <li><button style="font-size: 14px;" onclick="EditMemorizedTransactionList()">Edit</button></li>
@@ -888,72 +984,81 @@ table.tabla-listados tbody tr td {
   </ul>
     </div> -->
 
-			</div>
-			<div class="memorizedbutton">
-				<ul>
-					<li><button style="font-size: 14px;" onclick="AddMemorizedTransaction()">
-							<spring:message code="BzComposer.global.add" />
-						</button></li>
-					<li><button style="font-size: 14px;"
-							onclick="EditMemorizedTransactionList()">
-							<spring:message code="BzComposer.global.edit" />
-						</button></li>
-					<li><button style="font-size: 14px;"
-							onclick="DeleteMemorizeTransaction()">
-							<spring:message code="BzComposer.global.delete" />
-						</button></li>
-					<li><button style="font-size: 14px;"
-							onclick="closeMomorizedTransactionList()">
-							<spring:message code="BzComposer.global.close" />
-						</button></li>
+											</div>
+											<div class="memorizedbutton">
+												<ul>
+													<li><button style="font-size: 14px;"
+															onclick="AddMemorizedTransaction()">
+															<spring:message code="BzComposer.global.add" />
+														</button></li>
+													<li><button style="font-size: 14px;"
+															onclick="EditMemorizedTransactionList()">
+															<spring:message code="BzComposer.global.edit" />
+														</button></li>
+													<li><button style="font-size: 14px;"
+															onclick="DeleteMemorizeTransaction()">
+															<spring:message code="BzComposer.global.delete" />
+														</button></li>
+													<li><button style="font-size: 14px;"
+															onclick="closeMomorizedTransactionList()">
+															<spring:message code="BzComposer.global.close" />
+														</button></li>
 
-				</ul>
-			</div>
-		</div>
-		<div class="container-fluid" id="CreatingEditingRecurrentPaymentDlgId">
-			<!--    Here is the AddAccount dialog started -->
-			<div class="table-responsive" style="padding: 0 15px">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="inline-form">
-							<label> <spring:message
-									code="BzComposer.billpayable.nameoftransaction" />
-							</label>
-							<div>
-								<input type="text" />
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio"
-						name="inlineRadioOptions" id="rdoInvoiceOrder" value="option1"
-						checked="checked"> <label class="form-check-label"
-						for="inlineRadio1"> <spring:message
-							code="BzComposer.billpayable.invoiceorder" />
-					</label>
-				</div>
+												</ul>
+											</div>
+										</div>
+										<div class="container-fluid"
+											id="CreatingEditingRecurrentPaymentDlgId">
+											<!--    Here is the AddAccount dialog started -->
+											<div class="table-responsive" style="padding: 0 15px">
+												<div class="row">
+													<div class="col-md-12">
+														<div class="inline-form">
+															<label> <spring:message
+																	code="BzComposer.billpayable.nameoftransaction" />
+															</label>
+															<div>
+																<input type="text" />
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="form-check form-check-inline">
+													<input class="form-check-input" type="radio"
+														name="inlineRadioOptions" id="rdoInvoiceOrder"
+														value="option1" checked="checked"> <label
+														class="form-check-label" for="inlineRadio1"> <spring:message
+															code="BzComposer.billpayable.invoiceorder" />
+													</label>
+												</div>
 
-				<div class="bzbtn text-center">
-					<button type="button" style="font-size: 14px;" class="btn btn-info"
-                        onclick="return deleteBill()" id="deleteBank">
-						<spring:message code="BzComposer.global.delete" />
-					</button>
-					<button type="button" style="font-size: 14px;" class="btn btn-info"
-						onclick="return addAccount()" id="addButtonForDeposit">
-						<spring:message code="BzComposer.global.save" />
-					</button>
-					<!-- <button type="button" style="font-size: 14px;" class="btn btn-info" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> -->
-					<button type="button" style="font-size: 14px;" class="btn btn-info"
-						onclick="closeCreatingEditingRecurrentPaymentDlgId()"
-						id="addButtonForDeposit">
-						<spring:message code="BzComposer.global.cancel" />
-					</button>
-				</div>
-			</div>
-		</div>
-	</form:form>
-	<script type="text/javascript">
+												<div class="bzbtn text-center">
+													<button type="button" style="font-size: 14px;"
+														class="btn btn-info" onclick="return deleteBill()"
+														id="deleteBank">
+														<spring:message code="BzComposer.global.delete" />
+													</button>
+													<button type="button" style="font-size: 14px;"
+														class="btn btn-info" onclick="return addAccount()"
+														id="addButtonForDeposit">
+														<spring:message code="BzComposer.global.save" />
+													</button>
+													<!-- <button type="button" style="font-size: 14px;" class="btn btn-info" onclick="return addAccount()" id="EditButtonForDeposit">Save</button> -->
+													<button type="button" style="font-size: 14px;"
+														class="btn btn-info"
+														onclick="closeCreatingEditingRecurrentPaymentDlgId()"
+														id="addButtonForDeposit">
+														<spring:message code="BzComposer.global.cancel" />
+													</button>
+												</div>
+											</div>
+
+										</div>
+										</div>
+										</div>
+										</div>
+										</div> </form:form>
+ <script type="text/javascript">
 
 	var billNo = -1;
 	var index = -1;

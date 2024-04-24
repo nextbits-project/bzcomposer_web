@@ -37,6 +37,7 @@ import com.avibha.common.constants.AppConstants;
 import com.avibha.common.db.SQLExecutor;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.MyUtility;
+import com.itextpdf.text.log.SysoLogger;
 import com.nxsol.bzcomposer.company.domain.BcaCart;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaInvoice;
@@ -167,17 +168,25 @@ public class SalesBoardInfo {
 				query = query.append(" and bi.orderType=9 ");
 				mark = "Price Grabber";
 			}
+			
+			
+			
 			query = query
-					.append(" and bi.orderNum > 0 and bi.invoiceType.invoiceTypeId = 1 order by bi.orderNum desc ");
+					.append(" and bi.orderNum > 0 and bi.invoiceType.invoiceTypeId = 1  order by bi.orderNum desc ");
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
 			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query.toString(), BcaInvoice.class);
 			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(compId));
 
 			List<BcaInvoice> lists = typedQuery.getResultList();
-			for (BcaInvoice bcaInvoice : lists) {
+			for (BcaInvoice bcaInvoice : lists) 
+			{
+			 if(bcaInvoice.getDeleted()!=null&& bcaInvoice.getDeleted()==1)
+			          continue;
+				 
 
-				SalesBoard d = new SalesBoard();
+
+				SalesBoard d = new  SalesBoard();
 				d.setInvoiceID(bcaInvoice.getInvoiceId());
 				if (null != bcaInvoice.getIsPaymentCompleted())
 					d.setPaymentCompleted(bcaInvoice.getIsPaymentCompleted());
@@ -218,8 +227,8 @@ public class SalesBoardInfo {
 				if (null != bcaInvoice.getIsEmailed())
 					d.setEmailed(bcaInvoice.getIsEmailed() ? 1 : 0);
 				d.setMarketPlaceName(mark);
-				if (null != bcaInvoice.getTotal()) {
-					BigDecimal number = new BigDecimal(String.valueOf(bcaInvoice.getTotal()));
+				if (null != bcaInvoice.getAdjustedTotal()) {
+					BigDecimal number = new BigDecimal(String.valueOf(bcaInvoice.getAdjustedTotal()));  //changes 
 					BigDecimal total = number.setScale(2, RoundingMode.HALF_UP);
 					d.setTotal(total);
 				}
@@ -860,6 +869,8 @@ public class SalesBoardInfo {
 		return objList;
 
 	}
+	
+
 
 	public double getBalanceForReportForCustoemr(long cvId, String comId) {
 //		Connection con = null;
@@ -1133,6 +1144,20 @@ public class SalesBoardInfo {
 
 	}
 
+	
+	public int updatedInvoices(HttpServletRequest request)
+	{
+		 int count=0;
+		
+		String orderID[]=request.getParameter("deletedInvoices").split(",");
+		for (String orderid_str: orderID) {
+			int orderid=Integer.parseInt(orderid_str);
+		  count+= bcaInvoiceRepository.updateIsDeletedByOrderNum(1, orderid);
+		}
+		
+		return count;
+		
+	}
 	public boolean update(HttpServletRequest request) {
 		boolean result = false;
 //		Connection con = null;
@@ -1191,6 +1216,9 @@ public class SalesBoardInfo {
 		return result;
 	}
 
+	
+	
+	
 	public ArrayList getRefundInvoiceReport(String compId, String oDate1, String oDate2) {
 //		Connection con = null;
 //		Statement stmt1 = null;

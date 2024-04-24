@@ -46,7 +46,7 @@ public class BillPayableController {
 	// @GetMapping("/BillPayable")
 	public ModelAndView billPayable(TblVendorDetailDto tblVendorDetailDto, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String forward = "/accounting/billPayable";
+		String forward = "/accounting/newBillPayable";
 		int cvID = 0;
 		int checkStatus = 0;
 		HttpSession sess = request.getSession();
@@ -63,6 +63,7 @@ public class BillPayableController {
 		request.setAttribute("cvForCombo", cvForCombo);
 		request.setAttribute("accountListForBill", accountListForBill);///pay from accounts
 		request.setAttribute("categoryListForCombo", categoryListForCombo);
+		
 		if (action.equals("billpayable")) {
 			forward = "/accounting/billPayable";
 		}

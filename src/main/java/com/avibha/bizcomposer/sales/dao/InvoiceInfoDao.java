@@ -185,7 +185,7 @@ public class InvoiceInfoDao {
 		PreparedStatement invStmt, cartStmt;
 		ResultSet invResultSet, cartResultSet;
 
-		String invStr = "SELECT inv.InvoiceID, inv.OrderNum, inv.ClientVendorID, inv.Subtotal, inv.Tax, inv.Balance, inv.Total, inv.PaidAmount, inv.DateConfirmed, company.Name, cus.FirstName, cus.LastName  FROM bca_invoice inv LEFT JOIN bca_clientvendor cus ON inv.ClientVendorID=cus.ClientVendorID LEFT JOIN bca_company company ON inv.CompanyID=company.CompanyID where inv.IsPaymentCompleted='1' and inv.InvoiceID='"
+		String invStr = "SELECT inv.InvoiceID, inv.OrderNum, inv.ClientVendorID, inv.Subtotal, inv.Tax, inv.Balance, inv.Total,inv.AdjustedTotal, inv.PaidAmount, inv.DateConfirmed,inv.discount, company.Name, cus.FirstName, cus.LastName  FROM bca_invoice inv LEFT JOIN bca_clientvendor cus ON inv.ClientVendorID=cus.ClientVendorID LEFT JOIN bca_company company ON inv.CompanyID=company.CompanyID where inv.IsPaymentCompleted='1' and inv.InvoiceID='"
 				+ invoiceId + "' and inv.CompanyID='" + companyId + "' ";
 
 		try {
@@ -200,7 +200,7 @@ public class InvoiceInfoDao {
 				response.setCustomerId(String.valueOf(invResultSet.getInt("ClientVendorID")));
 				response.setSubTotal(String.valueOf(invResultSet.getDouble("Subtotal")));
 				response.setTaxTotal(String.valueOf(invResultSet.getDouble("Tax")));
-				response.setDiscount(String.valueOf(invResultSet.getDouble("Balance")));
+				response.setDiscount(String.valueOf(invResultSet.getDouble("discount")));
 				response.setGrandTotalWithTax(String.valueOf(invResultSet.getDouble("Total")));
 				response.setGrandTotal(String.valueOf(invResultSet.getDouble("PaidAmount")));
 				// datetime add here
@@ -222,7 +222,7 @@ public class InvoiceInfoDao {
 
 			List<CartItem> cartItems = new ArrayList<>();
 
-			String cartStr = "SELECT cart.CartID, cart.InventoryID, cart.InventoryName, cart.InventoryCode, cart.Qty, cart.UnitPrice FROM bca_cart cart INNER JOIN bca_invoice inv ON cart.InvoiceID=inv.InvoiceID where cart.InvoiceID='"
+			String cartStr = "SELECT cart.CartID, cart.InventoryID, cart.InventoryName, cart.InventoryCode, cart.Qty, cart.UnitPrice,cart.Taxable FROM bca_cart cart INNER JOIN bca_invoice inv ON cart.InvoiceID=inv.InvoiceID where cart.InvoiceID='"
 					+ invoiceId + "' and inv.CompanyID='" + companyId + "' order by CartID ASC";
 
 			cartStmt = con.prepareStatement(cartStr);
@@ -235,6 +235,7 @@ public class InvoiceInfoDao {
 				String inventoryCode = cartResultSet.getString("InventoryCode");
 				int qty = cartResultSet.getInt("Qty");
 				double unitPrice = cartResultSet.getDouble("UnitPrice");
+				String taxable=cartResultSet.getString("Taxable");
 
 				// Create a new CartItem instance
 				CartItem cartItem = new CartItem();
@@ -250,6 +251,7 @@ public class InvoiceInfoDao {
 				cartItem.setAmount(String.valueOf(amount));
 
 				// Add the CartItem to the list
+				cartItem.setTaxable(taxable);
 				cartItems.add(cartItem);
 			}
 
@@ -1723,11 +1725,13 @@ public class InvoiceInfoDao {
 			bcaInvoice.setSubTotal(form.getSubtotal());
 			bcaInvoice.setTax(form.getTax());
 			bcaInvoice.setSh(form.getShipping());
+			bcaInvoice.setDiscount(form.getDiscount());
 			bcaInvoice.setBillingAddrId(Integer.valueOf(form.getBsAddressID()));
 			bcaInvoice.setShippingAddrId(Integer.valueOf(form.getShAddressID()));
 			bcaInvoice.setTotal(form.getTotal());
 			bcaInvoice.setAdjustedTotal(form.getAdjustedtotal());
 			bcaInvoice.setPaidAmount(0D);
+			bcaInvoice.setDeleted(0);
 			bcaInvoice.setBalance(form.getAdjustedtotal());
 			if (null != form.getVia()) {
 				Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository
@@ -1897,6 +1901,7 @@ public class InvoiceInfoDao {
 //	}
 
 	public boolean SaveSalesOrder(String compId, InvoiceDto form, int salesOrderType) {
+		System.out.println("\nsandip::saveSalesOrder");
 		SQLExecutor db = new SQLExecutor();
 		Connection con = db.getConnection();
 		PreparedStatement pstmt = null, pstmt2 = null;
@@ -1916,9 +1921,13 @@ public class InvoiceInfoDao {
 				pstmt2.executeUpdate();
 				pstmt2.close();
 				saveStatus = SalesUpdate(compId, form, salesOrderType, invoiceID);
+				
+				System.out.println("\nsandip::"+saveStatus);
 			}
-		} catch (SQLException ee) {
+		} catch (SQLException ee)
+		{
 			Loger.log("Exception" + ee.toString());
+			System.out.println("\nsandip:exception");
 
 		} finally {
 			try {
@@ -1969,12 +1978,7 @@ public class InvoiceInfoDao {
 				String uweight = (invUWeights[i] != null && invUWeights[i].length() > 0) ? invUWeights[i] : "0.0";
 				String uprice = (invUPrices[i] != null && invUPrices[i].length() > 0) ? invUPrices[i] : "0.0";
 				String taxable = (invIsTaxables[i] != null && invIsTaxables[i].length() > 0) ? invIsTaxables[i] : "0";
-				String taxable1;
-				if (taxable.equalsIgnoreCase("Yes")) {
-					taxable1 = "1";
-				} else {
-					taxable1 = "0";
-				}
+				
 				String itmTypeID = (invItemIDs[i] != null && invItemIDs[i].length() > 0) ? invItemIDs[i] : "0";
 				String itmOrder = invItemOrders[i];
 				BcaCart bcaCart = new BcaCart();
@@ -1992,10 +1996,10 @@ public class InvoiceInfoDao {
 				bcaCart.setInventoryCode(itemCode);
 				bcaCart.setInventoryName(itemName);
 				bcaCart.setQty(Integer.parseInt(qty));
-				bcaCart.setUnitWeight(Double.parseDouble(uweight));
-				bcaCart.setWeight(0.0);
+				bcaCart.setUnitWeight(Double.parseDouble(uweight)/Integer.parseInt(qty));
+				bcaCart.setWeight(Double.parseDouble(uweight));
 				bcaCart.setUnitPrice(Double.parseDouble(truncate(uprice)));
-				bcaCart.setTaxable(Integer.parseInt(taxable1));
+				bcaCart.setTaxable(Integer.parseInt(taxable));
 				bcaCart.setItemTypeId(Integer.parseInt(itmTypeID));
 				bcaCart.setItemOrder(Integer.parseInt(itmOrder));
 				Date dateAdded = new Date();
@@ -2115,6 +2119,8 @@ public class InvoiceInfoDao {
 //	}
 
 	public boolean SalesUpdate(String compId, InvoiceDto form, int salesOrderType, int invoiceID) {
+		
+		System.out.println("sandip:sales-update");
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
 		SQLExecutor db = new SQLExecutor();
@@ -2129,7 +2135,7 @@ public class InvoiceInfoDao {
 					+ "PaidAmount = ?  ,Balance = ? ,ShipCarrierID = ? ,SalesRepID =? ,MessageID = ? ,TermID =? ,"
 					+ "PaymentTypeID =? ,SalesTaxID =?  ,Taxable =? ,Shipped =? , Memo = ? , VendorAddrID = ? , "
 					+ "ShippingAddrID = ? ,DateConfirmed = ?  ,DateAdded =? ,invoiceStatus = ? ,EstNum=0 ,OrderType = 7 , "
-					+ "IsPaymentCompleted=? , ServiceID=? , PONum=?,IsInvoice=?,IsSalestype=?,isPending=?  where InvoiceID =? ";
+					+ "IsPaymentCompleted=? , ServiceID=? , PONum=?,IsInvoice=?,IsSalestype=?,isPending=?,discount=?,Deleted=? where InvoiceID =? ";
 
 			pstmt1 = con.prepareStatement(updateStr);
 			pstmt1.setString(1, form.getOrderNo());
@@ -2203,8 +2209,12 @@ public class InvoiceInfoDao {
 			} else {
 				pstmt1.setInt(35, 0);
 			}
-			pstmt1.setInt(36, invoiceID);
+			pstmt1.setDouble(36,form.getDiscount());
+			pstmt1.setInt(37,0);
+			pstmt1.setInt(38, invoiceID);
 			int rows = pstmt1.executeUpdate();
+			
+			
 			if (rows > 0) {
 				/* Delete Item from Cart */
 				String cartDelete = "delete from bca_cart  where  InvoiceID = ? and CompanyID = ?";
@@ -2311,9 +2321,11 @@ public class InvoiceInfoDao {
 			bcaInvoice.setSubTotal(form.getSubtotal());
 			bcaInvoice.setTax(form.getTax());
 			bcaInvoice.setSh(form.getShipping());
+			bcaInvoice.setDiscount(form.getDiscount());
 			bcaInvoice.setTotal(form.getTotal());
 			bcaInvoice.setAdjustedTotal(form.getAdjustedtotal());
 			bcaInvoice.setPaidAmount(0D);
+			bcaInvoice.setDeleted(0);
 			bcaInvoice.setBalance(form.getAdjustedtotal());
 			if (null != form.getVia()) {
 				Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository
@@ -4913,6 +4925,8 @@ public class InvoiceInfoDao {
 					form.setTax(invoice.getTax());
 				if (null != invoice.getSh())
 					form.setShipping(invoice.getSh());
+				if (null != invoice.getDiscount())
+					form.setDiscount(invoice.getDiscount());
 				form.setTotal(invoice.getTotal());
 				form.setAdjustedtotal(invoice.getAdjustedTotal());
 				if (null != invoice.getBsaddressId())
@@ -5293,8 +5307,8 @@ public class InvoiceInfoDao {
 				double uprice = bcacart.getUnitPrice();
 				inForm.setQty(qty);
 				inForm.setUprice(uprice);
-				if (null != bcacart.getUnitWeight())
-					inForm.setWeight(bcacart.getUnitWeight());
+				if (null != bcacart.getWeight())
+					inForm.setWeight(bcacart.getWeight());
 				int tax = bcacart.getTaxable();
 				inForm.setAmount(Double.parseDouble(truncate(String.valueOf(qty * uprice))));
 				if (tax == 1) {
@@ -6021,13 +6035,14 @@ public class InvoiceInfoDao {
 		long orderNo = 0;
 		try {
 			String sql = "";
-			if (("invoice").equals(orderType))
+			System.out.println("orderType="+orderType);
+			if (("invoice").equalsIgnoreCase(orderType))
 				sql = " select InvoiceID from bca_invoice where OrderNum = ? and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (1,7,9) ";
-			else if (("estimation").equals(orderType))
+			else if (("estimation").equalsIgnoreCase(orderType))
 				sql = " select InvoiceID from bca_invoice where EstNum = ? and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID=10 ";
-			else if (("SO").equals(orderType))
+			else if (("SO").equalsIgnoreCase(orderType))
 				sql = " select InvoiceID from bca_invoice where SONum = ? and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID IN (1,7,9)";
-			else if (("PO").equals(orderType))
+			else if (("PO").equalsIgnoreCase(orderType))
 				sql = " select InvoiceID from bca_invoice where PONum = ? and CompanyID = ? and not(invoiceStatus=1) and InvoiceTypeID IN (2)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, ordNo);
@@ -6062,6 +6077,8 @@ public class InvoiceInfoDao {
 		Connection con = db.getConnection();
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
+		
+		System.out.println("sandip invoice info DAO: ");
 		try {
 			String sql = "select * from bca_invoice where InvoiceID = ? and CompanyID = ?";
 			pstmt = con.prepareStatement(sql);
@@ -6077,11 +6094,16 @@ public class InvoiceInfoDao {
 				orderDate = rs.getString("DateAdded");
 			}
 			String sql1 = "select Email from bca_clientvendor where ClientVendorID=? and Status in ('U','N')";
+			
 			pstmt = con.prepareStatement(sql1);
 			pstmt.setLong(1, cvId);
 			rs = pstmt.executeQuery();
+			
 			if (rs.next()) {
+			
 				form.setEmailAddr(rs.getString(1));
+				System.out.println("sandip : "+rs.getString(1));
+				
 				Loger.log("SS" + form.getEmailAddr());
 				if (isEmail == 1) {
 					form.setIsEmailSent("true");

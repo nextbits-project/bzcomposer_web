@@ -91,8 +91,7 @@ input, textarea, select {
 									<!-- <li><a href="#service-2"><spring:message code="BzComposer.updatevendor.tabs.service" /></a></li> -->
 									<li><a href="#payment-2"><spring:message
 												code="BzComposer.addnewcustomer.tabs.paymentInformation" /></a></li>
-									<li><a href="#finance-4"><spring:message
-												code="BzComposer.updatevendor.tabs.financecharges" /></a></li>
+									
 								</ul>
 								<div id="General-1">
 									<div id="content1" class="tabPage">
@@ -260,12 +259,8 @@ input, textarea, select {
 														<td>&nbsp;</td>
 													</tr>
 													<tr>
-														<td><spring:message code="BzComposer.global.email" />
-															<span class="inputHighlighted"> <spring:message
-																	code="BzComposer.CompulsoryField.Validation" />
-														</span></td>
-														<td colspan="3"><form:input type="text" path="email"
-																maxlength="45" size="40" /></td>
+														
+														
 														<td><spring:message code="BzComposer.global.homepage" />
 														</td>
 														<td><form:input type="text" path="homePage" size="40" />
@@ -316,390 +311,21 @@ input, textarea, select {
 															<td><input type="checkbox" name="billVendor"
 															id="chkbillvendor" checked> <spring:message
 																code="BzComposer.global.billvendor" /></td>
-														<td><input type="checkbox" name="purchaseVendor"
-															id="chkpurchasevendor" > <spring:message
-																code="BzComposer.global.purchasevendor" /></td>
-															
-														<td><spring:message code="BzComposer.global.taxid" />
-														</td>
-														<td><form:input type="text" path="texID" /></td>
+														
 														
 													</tr>
-													<tr>
-														<td><spring:message
-																code="BzComposer.global.oppeningunpaidbalance" /></td>
-														<td><form:input type="text" path="openingUB"
-																onkeypress="return numbersonly(event,this.value)" /></td>
-														<td><spring:message
-																code="BzComposer.global.existingcredits" /></td>
-														<td><form:input type="text" path="extCredit"
-																onkeypress="return numbersonly(event,this.value)" /></td>
-														<td colspan="2">&nbsp;</td>
-														
-														<td><input type="checkbox" name="isTaxable"
-															id="chktax" /> <spring:message
-																code="BzComposer.global.istaxable" /></td>
-														<td><input type="checkbox" name="isAlsoClient"
-															id="chk_alsovendor"> <spring:message
-																code="BzComposer.global.isalsoclient" /></td>
-													</tr>
+													
 													<tr>
 														<td><spring:message code="BzComposer.global.memo" />
 														</td>
 														<td colspan="5"><form:textarea path="memo"
-																style="width:90%;" /></td>
+																style="width:60%;" /></td>
 													</tr>
 												</tbody>
 											</table>
 										</div>
-										<!-- Account info Start here -->
-										<div id="table-negotiations" style="width: 100%">
-											<table class="tabla-listados" cellspacing="0">
-												<thead>
-													<tr>
-														<th colspan="8"><spring:message
-																code="BzComposer.updatevendor.prefrenceinformation" />
-														</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td><spring:message code="BzComposer.global.term" />
-														</td>
-														<td colspan="3"><form:select path="term"
-																style="width:150px;">
-																<option value="0"><spring:message
-																		code="BzComposer.ComboBox.Select" /></option>
-																<c:forEach items="${TermList}" var="obj">
-																	<option value="${obj.term}"
-																		${obj.term==defaultCongurationData.selectedTermId?'selected':''}>${obj.name}</option>
-																</c:forEach>
-															</form:select></td>
-														<td><spring:message
-																code="BzComposer.global.paymentmethod" /></td>
-														<td><form:select path="paymentType"
-																style="width:150px;">
-																<option value="0"><spring:message
-																		code="BzComposer.ComboBox.Select" /></option>
-																<c:forEach items="${PaymentList}" var="obj">
-																	<option value="${obj.id}"
-																		${obj.id==defaultCongurationData.selectedPaymentId?'selected':''}>${obj.typeName}</option>
-																</c:forEach>
-															</form:select></td>
-														<td colspan="2"></td>
-													</tr>
-													<tr>
-														<td><spring:message
-																code="BzComposer.global.representative" /></td>
-														<td colspan="3"><form:select path="rep"
-																style="width:150px;">
-																<option value="0"><spring:message
-																		code="BzComposer.ComboBox.Select" /></option>
-																<c:forEach items="${RepList}" var="obj">
-																	<option value="${obj.value}"
-																		${obj.value==defaultCongurationData.selectedSalesRepId?'selected':''}>${obj.label}</option>
-																</c:forEach>
-															</form:select></td>
-														<td><spring:message
-																code="BzComposer.global.shippingvia" /></td>
-														<td><form:select path="shipping" style="width:150px;">
-																<option value="0"><spring:message
-																		code="BzComposer.ComboBox.Select" /></option>
-																<c:forEach items="${ShipCarrierList}" var="obj">
-																	<option value="${obj.value}"
-																		${obj.value==defaultCongurationData.customerShippingId?'selected':''}>${obj.label}</option>
-																</c:forEach>
-															</form:select></td>
-														<td colspan="2"></td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<!-- Account info END here -->
-										<!-- Manage Address Start here -->
-										<div id="table-negotiations">
-											<table align="center" style="width: 100%"
-												class="tabla-listados">
-												<thead>
-													<tr>
-														<th colspan="5"><spring:message
-																code="BzComposer.updatevendor.manageaddresses" /></th>
-													</tr>
-												</thead>
-												<thead>
-													<tr>
-														<td colspan="5">&nbsp;<input type="checkbox"
-															id="chk_setaddress" name="setdefaultaddress"
-															onclick="hidebsaddress(this.form);"
-															value="${defaultCongurationData.addressSettings}"
-															${defaultCongurationData.addressSettings=='on'?'checked':''} />
-															<input type="hidden" name="setdefaultbs" value="" /> <font
-															size="2"> <spring:message
-																	code="BzComposer.addnewvendor.sameaddresslabeltext" />
-														</font>
-														</td>
-													<tr>
-												</thead>
-												<tr>
-													<td>
-														<table class="tabla-listados" cellspacing="0" width="450"
-															align="left">
-															<thead>
-																<tr>
-																	<th colspan="5"><spring:message
-																			code="BzComposer.updatevendor.billingaddress" /></th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.global.company" /></td>
-																	<td colspan="2"><form:input path="bscname"
-																			disabled="true" style="width:90%;" /></td>
-																	<td colspan="2"></td>
-																</tr>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.register.dbaName" /></td>
-																	<td><form:input path="bsdbaName" disabled="true" />
-																	</td>
-																	<td colspan="3">&nbsp;</td>
-																</tr>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.global.firstname" /></td>
-																	<td><form:input path="bsfirstName" disabled="true" />
-																	</td>
-																	<td><spring:message
-																			code="BzComposer.global.lastname" /></td>
-																	<td><form:input path="bslastName" disabled="true" />
-																	</td>
-																	<td></td>
-																</tr>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.global.address1" /></td>
-																	<td colspan="2"><form:input path="bsaddress1"
-																			disabled="true" style="width:90%;" /></td>
-																	<td colspan="2"></td>
-																</tr>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.global.address2" /></td>
-																	<td colspan="2"><form:input path="bsaddress2"
-																			disabled="true" style="width:90%;" /></td>
-																	<td colspan="2"></td>
-																</tr>
-																<tr>
-																	<td>
-																		<div class="lblZipcodeShow">
-																			<spring:message code="BzComposer.global.zipcode" />
-																		</div>
-																		<div class="lblPostalcodeShow">
-																			<spring:message code="BzComposer.global.postalcodes" />
-																		</div>
-																	</td>
-																	<td><form:input path="bszipCode" disabled="true"
-																			onfocusout="loadAddressDetailsByZipcode(this.value, 2)"
-																			onkeypress="return numbersonly(event,this.value)" />
-																	</td>
-																	<td><spring:message code="BzComposer.global.city" />
-																	</td>
-																	<td><form:select path="bscity" id="cityID2"
-																			style="width:200px;" disabled="true">
-																			<form:option value="0">
-																				<spring:message
-																					code="BzComposer.register.selectcity" />
-																			</form:option>
-																			<c:forEach items="${cityList}" var="currObject">
-																				<form:option value="${currObject.cityId}">${currObject.cityName}</form:option>
-																			</c:forEach>
-																		</form:select></td>
-																	<td></td>
-																</tr>
-																<tr>
-																	<td>
-																		<div class="lblStateShow">
-																			<spring:message code="BzComposer.global.state" />
-																		</div>
-																		<div class="lblProvinceShow">
-																			<spring:message code="BzComposer.global.province" />
-																		</div>
-																	</td>
-																	<td><form:select path="bsstate" id="stateID2"
-																			onchange="loadCitiesByStateID(this.value, 2);"
-																			style="width:200px;" disabled="true">
-																			<form:option value="0">
-																				<spring:message
-																					code="BzComposer.register.selectstate" />
-																			</form:option>
-																			<c:forEach items="${stateList}" var="currObject">
-																				<form:option value="${currObject.stateId}">${currObject.state}</form:option>
-																			</c:forEach>
-																		</form:select> <form:hidden path="bsprovince" /></td>
-																	<td id="t_country"><spring:message
-																			code="BzComposer.global.country" /></td>
-																	<td><form:select path="bscountry" id="countryID2"
-																			onchange="loadStatesByCountryID(this.value, 2);"
-																			style="width:200px;" disabled="true">
-																			<form:option value="0">
-																				<spring:message
-																					code="BzComposer.register.selectcounry" />
-																			</form:option>
-																			<c:forEach items="${countryList}" var="currObject">
-																				<form:option value="${currObject.countryId}">${currObject.countryName}</form:option>
-																			</c:forEach>
-																		</form:select></td>
-																	<td></td>
-																</tr>
-																<tr>
-																	<td colspan="5" align="center">
-																		<button type="button" class="formbutton"
-																			name="ClearBillingBtn" onclick="clearBillingAdd();">
-																			<spring:message
-																				code="BzComposer.updatevendor.clearbillingaddress" />
-																		</button>
-																	</td>
-																</tr>
-															</tbody>
-														</table>
-													</td>
-													<td style="vertical-align: inherit;"><input
-														type="button" name="CopyBtn" class="formbutton"
-														onclick="CopyBilladdToShipAdd();"
-														value="<spring:message code='BzComposer.updatevendor.copyto'/>"
-														title="Copy Address"></td>
-													<td>
-														<table class="tabla-listados" cellspacing="0" width="450"
-															align="left">
-															<thead>
-																<tr>
-																	<th colspan="5"><spring:message
-																			code="BzComposer.updatevendor.shippingaddress" /></th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.global.company" /></td>
-																	<td colspan="2"><form:input path="shcname"
-																			disabled="true" style="width:90%;" /></td>
-																	<td colspan="2"></td>
-																</tr>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.register.dbaName" /></td>
-																	<td><form:input path="shdbaName" disabled="true" />
-																	</td>
-																	<td colspan="3">&nbsp;</td>
-																</tr>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.global.firstname" /></td>
-																	<td><form:input path="shfirstName" disabled="true" />
-																	</td>
-																	<td><spring:message
-																			code="BzComposer.global.lastname" /></td>
-																	<td><form:input path="shlastName" disabled="true" />
-																	</td>
-																	<td></td>
-																</tr>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.global.address1" /></td>
-																	<td colspan="2"><form:input path="shaddress1"
-																			disabled="true" style="width:90%;" /></td>
-																	<td colspan="2"></td>
-																</tr>
-																<tr>
-																	<td><spring:message
-																			code="BzComposer.global.address2" /></td>
-																	<td colspan="2"><form:input path="shaddress2"
-																			disabled="true" style="width:90%;" /></td>
-																	<td colspan="2"></td>
-																</tr>
-																<tr>
-																	<td>
-																		<div class="lblZipcodeShow">
-																			<spring:message code="BzComposer.global.zipcode" />
-																		</div>
-																		<div class="lblPostalcodeShow">
-																			<spring:message code="BzComposer.global.postalcodes" />
-																		</div>
-																	</td>
-																	<td><form:input path="shzipCode" disabled="true"
-																			onfocusout="loadAddressDetailsByZipcode(this.value, 3)"
-																			onkeypress="return numbersonly(event,this.value)" />
-																	</td>
-																	<td><spring:message code="BzComposer.global.city" />
-																	</td>
-																	<td><form:select path="shcity" id="cityID3"
-																			style="width:200px;" disabled="true">
-																			<form:option value="0">
-																				<spring:message
-																					code="BzComposer.register.selectcity" />
-																			</form:option>
-																			<c:forEach items="${cityList}" var="currObject">
-																				<form:option value="${currObject.cityId}">${currObject.cityName}</form:option>
-																			</c:forEach>
-																		</form:select></td>
-																	<td></td>
-																</tr>
-																<tr>
-																	<td>
-																		<div class="lblStateShow">
-																			<spring:message code="BzComposer.global.state" />
-																		</div>
-																		<div class="lblProvinceShow">
-																			<spring:message code="BzComposer.global.province" />
-																		</div>
-																	</td>
-																	<td><form:select path="shstate" id="stateID3"
-																			onchange="loadCitiesByStateID(this.value, 3);"
-																			style="width:200px;" disabled="true">
-																			<form:option value="0">
-																				<spring:message
-																					code="BzComposer.register.selectstate" />
-																			</form:option>
-																			<c:forEach items="${stateList}" var="currObject">
-																				<form:option value="${currObject.stateId}">${currObject.state}</form:option>
-																			</c:forEach>
-																		</form:select> <form:hidden path="shprovince" /></td>
-																	<td id="t_country"><spring:message
-																			code="BzComposer.global.country" /></td>
-																	<td><form:select path="shcountry" id="countryID3"
-																			onchange="loadStatesByCountryID(this.value, 3);"
-																			style="width:200px;" disabled="true">
-																			<form:option value="0">
-																				<spring:message
-																					code="BzComposer.register.selectcounry" />
-																			</form:option>
-																			<c:forEach items="${countryList}" var="currObject">
-																				<form:option value="${currObject.countryId}">${currObject.countryName}</form:option>
-																			</c:forEach>
-																		</form:select></td>
-																	<td></td>
-																</tr>
-																<tr>
-																	<td colspan="5" align="center">
-																		<button type="button" class="formbutton"
-																			name="ClearShippingBtn" onclick="clearShippingAdd();">
-																			<spring:message
-																				code='BzComposer.updatevendor.clearshippingaddress' />
-																		</button>
-																	</td>
-																</tr>
-															</tbody>
-														</table>
-													</td>
-													<td colspan="2">&nbsp;</td>
-												</tr>
-												<tr>
-													<td colspan="5">&nbsp;</td>
-												</tr>
-											</table>
-										</div>
-										<!-- Manage Address END here -->
+									
+										
 									</div>
 								</div>
 
@@ -900,122 +526,7 @@ input, textarea, select {
 									</div>
 								</div>
 
-								<!-- Finance information tab -->
-								<div id="finance-4">
-									<div id="content4" class="tabPage">
-										<!-- add here the content of fifth tab -->
-										<div id="table-negotiations" style="width: 100%">
-											<table class="tabla-listados" cellspacing="0">
-												<thead>
-													<tr>
-														<th colspan="4"><spring:message
-																code="BzComposer.addnewcustomer.financemsg" /></th>
-													</tr>
-												</thead>
-												<thead>
-													<tr>
-														<td><input type="checkbox" id="chk_useind"
-															name="UseIndividualFinanceCharges"
-															onclick="toggleFields(this.form);"> <font
-															size="2"> <!-- hideother(this.form); --> <spring:message
-																	code="BzComposer.addnewcustomer.useindividualfinancecharges" />
-														</font></td>
-														<td colspan="3"></td>
-													</tr>
-													<!-- <tr> -->
-												</thead>
-												<tbody>
-													<tr>
-														<td>
-															<div>
-																<div id="table-negotiations"
-																	style="width: 48%; float: left;">
-																	<table class="tabla-listados" cellspacing="0">
-																		<thead>
-																			<tr>
-																				<th colspan="4"><spring:message
-																						code="BzComposer.addnewcustomer.chargerate" /></th>
-																			</tr>
-																		</thead>
-																		<tbody>
-																			<tr>
-																				<td><spring:message
-																						code="BzComposer.addnewcustomer.annualintrestrate" />
-																				</td>
-																				<td colspan="3"><form:input
-																						onkeypress="return numbersonly(event,this.value)"
-																						path="annualIntrestRate" readonly="true" /></td>
-																			</tr>
-																			<tr>
-																				<td><spring:message
-																						code="BzComposer.addnewcustomer.minimumfinanacecharge" />
-																				</td>
-																				<td colspan="3"><form:input
-																						onkeypress="return numbersonly(event,this.value)"
-																						path="minFCharges" readonly="true" /></td>
-																			</tr>
-																			<tr>
-																				<td><spring:message
-																						code="BzComposer.addnewcustomer.graceperiod" /></td>
-																				<td colspan="3"><form:input
-																						onkeypress="return numbersonly(event,this.value)"
-																						path="gracePrd" readonly="true" /></td>
-																			</tr>
-																		</tbody>
-																	</table>
-																</div>
-																<div id="table-negotiations"
-																	style="width: 48%; float: right;">
-																	<table class="tabla-listados" cellspacing="0">
-																		<thead>
-																			<tr>
-																				<th colspan="4"><spring:message
-																						code="BzComposer.addnewcustomer.applyingcharges" />
-																				</th>
-																			</tr>
-																		</thead>
-																		<tbody>
-																			<tr>
-																				<td colspan="4"><input type="checkbox"
-																					id="chk1" name="AssessFinanceChk" readonly="true"
-																					value="${vendorDto.fsAssessFinanceCharge}"
-																					${vendorDto.fsAssessFinanceCharge=='on'?'checked':''} />
-																					<spring:message
-																						code="BzComposer.addnewcustomer.assessfinance" />
-																				</td>
-																			</tr>
-																			<tr>
-																				<td colspan="4">&nbsp;</td>
-																			</tr>
-																			<tr>
-																				<td colspan="4"><input type="checkbox"
-																					id="chk2" name="FChargeInvoiceChk" readonly="true"
-																					value="${vendorDto.fsMarkFinanceCharge}"
-																					${vendorDto.fsMarkFinanceCharge=='on'?'checked':''} />
-																					<spring:message
-																						code="BzComposer.addnewcustomer.markfinanacechargeinvoice" />
-																				</td>
-																			</tr>
-																			<tr>
-																				<td colspan="4">&nbsp;</td>
-																			</tr>
-																			<tr>
-																				<td colspan="4">&nbsp;</td>
-																			</tr>
-																		</tbody>
-																	</table>
-																</div>
-															</div>
-														</td>
-														<td colspan="3">&nbsp;</td>
-													</tr>
-													<tr>
-														<td colspan="4">&nbsp;</td>
-													</tr>
-											</table>
-										</div>
-									</div>
-								</div>
+						
 
 							</div>
 						</div>
@@ -1126,7 +637,9 @@ input, textarea, select {
 
 			document.getElementById('cname').focus();
 			return showblanknamevalidationdialog();
-		} else if (trim(document.getElementById('address1').value) == "") {
+			
+		} 
+		else if (trim(document.getElementById('address1').value) == "") {
 
 			document.getElementById('address1').focus();
 			return showblankaddress1validationdialog();
