@@ -315,8 +315,9 @@ input, textarea, select {
 														
 														
 													</tr>
-
-															<td></td>	
+													
+                                                 <tr class="d-none">
+															<td> </td>	
 														<td class="d-none"><input type="checkbox" name="purchaseVendor"
 															id="chkpurchasevendor" > <spring:message
 																code="BzComposer.global.purchasevendor" /></td>
@@ -326,7 +327,7 @@ input, textarea, select {
 														<td><form:input type="text" path="texID" /></td>
 														
 													</tr>
-													<tr>
+													<tr class="d-none">
 														<td><spring:message
 																code="BzComposer.global.oppeningunpaidbalance" /></td>
 														<td><form:input type="text" path="openingUB"
@@ -653,7 +654,9 @@ input, textarea, select {
 		return retValue;
 	}
 
-	function SaveVendorData() {
+	function SaveVendorData() 
+	{
+		
 
 		/* if (trim(document.getElementById('firstName').value) == "") {
 
@@ -683,11 +686,13 @@ input, textarea, select {
 
 			document.getElementById('zipCode').focus();
 			return showblankzipcodevalidationdialog();
-		} else {
-			if (validate()) {
-				document.forms["frmAddVendor"].action = "Vendor?tabid=billingcompany";
+		} 
+		else {
+			
+				 
+				document.forms["frmAddVendor"].action ="Vendor?tabid=billingcompany";
 				document.forms["frmAddVendor"].submit();
-			}
+			
 		}
 	}
 

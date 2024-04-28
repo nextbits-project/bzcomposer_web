@@ -28,6 +28,7 @@
 	color: #D8000C;
 	background-color: #FFD2D2;
 }
+
 .dataTables_filter {
 	font-size: 14px;
 }
@@ -72,7 +73,7 @@ table.tabla-listados tbody tr td {
 						<div id="blanquito">
 							<div id="padding">
 								<div>
-								<div id="errorDiv" class="bg-danger" align="center">
+									<div id="errorDiv" class="bg-danger" align="center">
 										<div align="center" class="errorMsg">
 											<FONT COLOR="Green"> ${successMsg} </FONT COLOR="Green">
 										</div>
@@ -251,27 +252,19 @@ table.tabla-listados tbody tr td {
 														onclick="SendMail(this.form);" style="padding: 10px;"
 														value='<spring:message code="BzComposer.global.sendmail" />' />
 
-														<div id="deleteEstimationDialog" title="Delete Estimation Dialog"  style="display: none;">
-															<p><spring:message
-																	code="BzComposer.estimationboard.deleteEstimationListRecord" />
-															</p>
-														</div> 
-														
-														 <div id="warningDialog" title="Warning .." style="display: none;">
-														<p><spring:message	code="BzComposer.estimationboard.warningdeleteEstimationListRecord" />
-														</p>
-											        	</div>
 
-														<input type="button" class="formbutton" id="deletebtn"
-														style="padding: 10px;" onclick="deleteEstimations();"
+														<!--  below code added by sandip  --> <input type="button"
+														class="formbutton" id="deletebtn" style="padding: 10px;"
+														onclick="deleteEstimations();"
 														value='<spring:message code="BzComposer.global.delete" />' />
 
-                                                    
+
+
+
 														<input type="hidden" name="ONum" id="ONumId" /> <input
 														type="hidden" name="sEmail" id="sEmailID" /> <input
 														type="hidden" name="rNum" id="rowONum" /> <input
-														type="hidden" name="senderEmail" id="EID" />
-														</td>
+														type="hidden" name="senderEmail" id="EID" /></td>
 												</tr>
 											</table>
 											<br />
@@ -283,7 +276,9 @@ table.tabla-listados tbody tr td {
 															var="currObject" varStatus="loop">
 															<input type="hidden" id="selectedEstID${loop.index}"
 																value="${currObject.est_no}" />
-																<input type="hidden" id="selectedESInvoiceID${loop.index}" value="${currObject.invoiceID}" />
+															<input type="hidden"
+																id="selectedESInvoiceID${loop.index}"
+																value="${currObject.invoiceID}" />
 														</c:forEach>
 														<input type="hidden" name="sListSize" id="lSize"
 															value='${EstimationBoardDetails.size()}'>
@@ -351,10 +346,8 @@ table.tabla-listados tbody tr td {
 												</div>
 											</div>
 										</div>
-<<<<<<< HEAD
-
-=======
-										<table align="center">
+										<!--  conflicts  -->
+										<table align="center" class="d-none">
 											<tr align="center">
 												<td><input type="button" class="formbutton" id="smail"
 													disabled="disabled" style="padding: 10px;"
@@ -366,19 +359,22 @@ table.tabla-listados tbody tr td {
 													<input type="button" class="formbutton" id="modi"
 													onclick="SendMail(this.form);" style="padding: 10px;"
 													value='<spring:message code="BzComposer.global.sendmail" />' />&nbsp;&nbsp;
-													<input type="button" class="formbutton" id="modi" onclick="DeleteEstimationBoard('DELETE');" 
-													style="padding: 10px;" value='<spring:message code="BzComposer.global.delete" />' />
+													<input type="button" class="formbutton" id="modi"
+													onclick="DeleteEstimationBoard('DELETE');"
+													style="padding: 10px;"
+													value='<spring:message code="BzComposer.global.delete" />' />
 													<input type="hidden" name="ONum" id="ONumId" /> <input
 													type="hidden" name="sEmail" id="sEmailID" /> <input
 													type="hidden" name="rNum" id="rowONum" /> <input
 													type="hidden" name="senderEmail" id="EID" /></td>
 											</tr>
 										</table>
->>>>>>> 4b468b8303c66a549da8c0f19f760a18024ad28a
+										<!--  conflicts  -->
+
 										<input type="hidden" id="ordId" name="OrderValue" value="" />
 										<input type="hidden" id="statusId" name="StatusValue" value="" />
 										<input type="hidden" id="ordSize" name="Size" value="" />
-										
+
 										<!-- end Contents -->
 									</div>
 								</div>
@@ -519,10 +515,29 @@ function sendToEstimation(){
 }
 
 function SendMail(form){
+	 if(selectedRowIDs.length !=1)
+		{
+		 $("#warningDialogSendmail").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		            "<spring:message code='BzComposer.global.ok'/>": function () 
+		            {
+		            	 $(this).dialog("close");
+		            	 return true;
+		            	
+		            }
+		        }
+		    });
+		}
+	 else
+		 {
 	
 	est_value = document.getElementById("est_value").value;
 	  window.open("Invoice?tabid=ShowEmail&OrderType=estimation&OrderNo="+est_value,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
-
+		 }
 
 }
 function InvoiceSelectedRecord(){
@@ -685,3 +700,27 @@ function DeleteEstimationBoard(cmd){
 		<spring:message code="BzComposer.salesinfo.deleteselectedestimation" />
 	</p>
 </div>
+<div id="warningDialogSendmail" title="Warning .."
+	style="display: none;">
+	<p>
+		<spring:message code="BzComposer.global.selectone" />
+	</p>
+</div>
+
+<div id="deleteEstimationDialog" title="Delete Estimation Dialog"
+	style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.estimationboard.deleteEstimationListRecord" />
+	</p>
+</div>
+
+<div id="warningDialog" title="Warning .." style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.estimationboard.warningdeleteEstimationListRecord" />
+	</p>
+
+</div>
+
+

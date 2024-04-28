@@ -8,7 +8,6 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,13 +57,13 @@ public class FileController {
 
 	@Autowired
 	InvoiceInfoDao invoiceInfoDao;
-	
+
 	@Autowired
 	private CompanyInfo customer;
 
 	@Autowired
-	private	ConfigurationDAO confgDao;
-	
+	private ConfigurationDAO confgDao;
+
 	@Autowired
 	private ConfigurationInfo configInfo;
 
@@ -73,10 +72,10 @@ public class FileController {
 
 	@Autowired
 	private AddNewCompanyDAO dao;
-	
+
 	@Autowired
 	private DateInfo dateInfo;
-	
+
 	@Autowired
 	private BcaCvtypeRepository bcaCvtypeRepository;
 
@@ -132,40 +131,44 @@ public class FileController {
 //			CompanyInfo customer = new CompanyInfo();
 //			ConfigurationInfo configInfo = new ConfigurationInfo();
 			System.out.println("CompanyID: " + compId);
-			
+
 			String dashrangeName = request.getParameter("dashrangeName");
 			String dashrangeNameSession = (String) sess.getAttribute("dashrangeName");
-			if(dashrangeName != null && !dashrangeName.isEmpty() && dashrangeName.equalsIgnoreCase("ALL")) {
+			if (dashrangeName != null && !dashrangeName.isEmpty() && dashrangeName.equalsIgnoreCase("ALL")) {
 				sess.setAttribute("dashrangeName", dashrangeName);
 				dashrangeName = "";
-			} else if(dashrangeName != null && !dashrangeName.isEmpty()) {
+			} else if (dashrangeName != null && !dashrangeName.isEmpty()) {
 				sess.setAttribute("dashrangeName", dashrangeName);
-			} else if(dashrangeNameSession != null && !dashrangeNameSession.isEmpty()) {
+			} else if (dashrangeNameSession != null && !dashrangeNameSession.isEmpty()) {
 				dashrangeName = dashrangeNameSession;
 			}
-			
-			String sartYearDate="";
-			String endYearDate="";
-			if(dashrangeName != null && !dashrangeName.isEmpty()) {
-				if(dashrangeName.equals("1M")) {
+
+			String sartYearDate = "";
+			String endYearDate = "";
+			if (dashrangeName != null && !dashrangeName.isEmpty()) {
+				if (dashrangeName.equals("1M")) {
 					sartYearDate = dateInfo.getStartDateByMonth(1);
 					endYearDate = dateInfo.getCurrentDateTime();
-				} else if(dashrangeName.equals("3M")) {
+				} else if (dashrangeName.equals("3M")) {
 					sartYearDate = dateInfo.getStartDateByMonth(3);
 					endYearDate = dateInfo.getCurrentDateTime();
-				} else if(dashrangeName.equals("6M")) {
+				} else if (dashrangeName.equals("6M")) {
 					sartYearDate = dateInfo.getStartDateByMonth(6);
 					endYearDate = dateInfo.getCurrentDateTime();
-				} else if(dashrangeName.equals("1Y")) {
+				} else if (dashrangeName.equals("1Y")) {
 					sartYearDate = dateInfo.getLast1YearDTByCurrentDT();
 					endYearDate = dateInfo.getCurrentDateTime();
 				}
 			}
-			
-			request.setAttribute("purchaseDetails", customer.selectPurchaseOrders(compId, configInfo, sartYearDate, endYearDate));
-			request.setAttribute("salesOrderDetails", customer.selectSalesOrders(compId, configInfo, sartYearDate, endYearDate));
-			request.setAttribute("invoiceDetails", customer.selectInvoiceDetails(compId, configInfo, sartYearDate, endYearDate));
-			request.setAttribute("estimateDetails", customer.selectEstimateDetails(compId, configInfo, sartYearDate, endYearDate));
+
+			request.setAttribute("purchaseDetails",
+					customer.selectPurchaseOrders(compId, configInfo, sartYearDate, endYearDate));
+			request.setAttribute("salesOrderDetails",
+					customer.selectSalesOrders(compId, configInfo, sartYearDate, endYearDate));
+			request.setAttribute("invoiceDetails",
+					customer.selectInvoiceDetails(compId, configInfo, sartYearDate, endYearDate));
+			request.setAttribute("estimateDetails",
+					customer.selectEstimateDetails(compId, configInfo, sartYearDate, endYearDate));
 			request.setAttribute("itemListDetails", customer.getItemListDetails(compId, sartYearDate, endYearDate));
 			forward = "/include/dashboard";
 		} else if (action.equalsIgnoreCase("CompanyInfo")) {
@@ -272,7 +275,7 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("ExportCustomer")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				//InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
+				// InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
 				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request,
 						new CustomerDto());
 				boolean b = importExportUtils.exportCustomerList(customerList, type, response, "");
@@ -292,7 +295,8 @@ public class FileController {
 				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Contact");
 				if (typeIDList != null && !typeIDList.isEmpty())
 					request.setAttribute("cvtypeId", typeIDList.get(0));
-				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
+				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request,
+						new CustomerDto());
 				boolean b = importExportUtils.exportCustomerList(customerList, type, response, "Contact");
 				if (b == true) {
 					if (type.equals("csv")) {
@@ -458,7 +462,7 @@ public class FileController {
 		System.out.println("--------------FileController-------FileUpload-------" + action);
 		if (action.equalsIgnoreCase("UploadCustomerFile")) {
 			if (!attachFile.isEmpty()) {
-				//boolean b = importExportUtils.uploadCustomerFile(attachFile, request);
+				// boolean b = importExportUtils.uploadCustomerFile(attachFile, request);
 				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Customer");
 				if (typeIDList != null && !typeIDList.isEmpty())
 					request.setAttribute("CVTypeID", typeIDList.get(0));

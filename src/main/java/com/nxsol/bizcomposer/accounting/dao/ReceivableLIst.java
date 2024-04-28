@@ -154,6 +154,7 @@ public interface ReceivableLIst {
 	public void adjustBankAfterDeposit(TblPaymentDto payment);
 	
 	public ArrayList<ClientVendor> getAllClientVendor();
+	public ArrayList<ClientVendor> getServiceProviderClientVendor();
 	
 	public ArrayList<TblCategoryDto> getAllCategory();
 	

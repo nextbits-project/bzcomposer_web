@@ -27,6 +27,7 @@
 	color: #D8000C;
 	background-color: #FFD2D2;
 }
+
 .dataTables_info {
 	font-size: 14px;
 }
@@ -67,7 +68,7 @@ table.tabla-listados tbody tr td {
 						<div id="blanquito">
 							<div id="padding">
 								<div>
-								<div id="errorDiv" class="bg-danger" align="center">
+									<div id="errorDiv" class="bg-danger" align="center">
 										<div align="center" class="errorMsg">
 											<FONT COLOR="Green"> ${successMsg} </FONT COLOR="Green">
 										</div>
@@ -272,55 +273,41 @@ table.tabla-listados tbody tr td {
 											</tr>
 										</table>
 										<div>
-											<br /> 
-											
-											<table  style="width:100%">
-											<tr >
-											
-											<td style="width:40%" align="left"> 
-											<span
-												style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-												<spring:message
-													code="BzComposer.salesorderboard.salesorderlist" />
-											</span></td>
-											
-												<td style="width:60%" align="left" >
-												 <input type="button" class="formbutton"
-													name="smailbtn" id="smail" disabled="disabled"
-													style="padding: 10px;" onclick="sendToOrder();"
-													value='<spring:message code="BzComposer.salesorderboard.lookup" />' />&nbsp;&nbsp;
-													
-													<input type="button" class="formbutton" id="modi"
-													style="padding: 10px;" onclick="InvoiceSelectedRecord();"
-													value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp;
-													<input type="button" class="formbutton" id="modi"
-													onclick="SendMail(this.form);" style="padding: 10px;"
-													value='<spring:message code="BzComposer.global.sendmail" />' />
-													
-													  <div id="deleteSalesOrder" title="Delete Sales Order" style="display: none;">
-														<p>
+											<br />
+
+											<table style="width: 100%">
+												<tr>
+
+													<td style="width: 40%" align="left"><span
+														style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
 															<spring:message
-																code="BzComposer.salesorderboard.deleteSalesOrderListRecord" />
-														</p>
-														
-											        	</div>
-											        	 <div id="warningDialog" title="Warning !" style="display: none;">
-														<p>
-															<spring:message
-																code="BzComposer.salesorderboard.warningdeleteSalesOrderListRecord" />
-														</p>
-														
-											        	</div>
-													<input type="button" class="formbutton"
-													style="padding: 10px;" onclick="deleteSalesOrderDialog(this.form);"
-													value='<spring:message code="BzComposer.global.delete" />' />
-													
-													<input type="hidden" name="ONum" id="ONumId"> <input
-													type="hidden" name="sEmail" id="sEmailID"> <input
-													type="hidden" name="rNum" id="rowONum"> <input
-													type="hidden" name="senderEmail" id="EID"></td>
-											</tr>
-										</table>
+																code="BzComposer.salesorderboard.salesorderlist" />
+													</span></td>
+
+													<td style="width: 60%" align="left"><input
+														type="button" class="formbutton" name="smailbtn"
+														id="smail" disabled="disabled" style="padding: 10px;"
+														onclick="sendToOrder();"
+														value='<spring:message code="BzComposer.salesorderboard.lookup" />' />&nbsp;&nbsp;
+
+														<input type="button" class="formbutton" id="modi"
+														style="padding: 10px;" onclick="InvoiceSelectedRecord();"
+														value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp;
+														<input type="button" class="formbutton" id="modi"
+														onclick="SendMail(this.form);" style="padding: 10px;"
+														value='<spring:message code="BzComposer.global.sendmail" />' />
+
+														<input type="button" class="formbutton"
+														style="padding: 10px;"
+														onclick="deleteSalesOrderDialog(this.form);"
+														value='<spring:message code="BzComposer.global.delete" />' />
+
+														<input type="hidden" name="ONum" id="ONumId"> <input
+														type="hidden" name="sEmail" id="sEmailID"> <input
+														type="hidden" name="rNum" id="rowONum"> <input
+														type="hidden" name="senderEmail" id="EID"></td>
+												</tr>
+											</table>
 											<div>
 												<div class="grid_8 tabla-listados" id="salesOrderList">
 													<section>
@@ -328,7 +315,8 @@ table.tabla-listados tbody tr td {
 															var="currObject" varStatus="loop">
 															<input type="hidden" id="selectedSOID${loop.index}"
 																value="${currObject.so_no}" />
-															<input type="hidden" id="selectedSOInvoiceID${loop.index}"
+															<input type="hidden"
+																id="selectedSOInvoiceID${loop.index}"
 																value="${currObject.invoiceID}" />
 														</c:forEach>
 														<input type="hidden" name="sListSize" id="lSize"
@@ -416,7 +404,8 @@ table.tabla-listados tbody tr td {
 												</div>
 											</div>
 										</div>
-										<!--  <table align="center">
+										<!--              this table removed -->
+										<table align="center" class="d-none">
 											<tr align="center">
 												<td><input type="button" class="formbutton"
 													name="smailbtn" id="smail" disabled="disabled"
@@ -429,14 +418,15 @@ table.tabla-listados tbody tr td {
 													onclick="SendMail(this.form);" style="padding: 10px;"
 													value='<spring:message code="BzComposer.global.sendmail" />' />&nbsp;&nbsp;
 													<input type="button" class="formbutton" id="modi"
-													onclick="DeleteSalesOrderBoard('DELETE');" style="padding: 10px;"
+													onclick="DeleteSalesOrderBoard('DELETE');"
+													style="padding: 10px;"
 													value='<spring:message code="BzComposer.global.delete" />' />
 													<input type="hidden" name="ONum" id="ONumId"> <input
 													type="hidden" name="sEmail" id="sEmailID"> <input
 													type="hidden" name="rNum" id="rowONum"> <input
 													type="hidden" name="senderEmail" id="EID"></td>
 											</tr>
-										</table>-->
+										</table>
 										<input type="hidden" id="ordId" name="OrderValue" value="">
 										<input type="hidden" id="statusId" name="StatusValue" value="">
 										<input type="hidden" id="ordSize" name="Size" value="">
@@ -572,9 +562,30 @@ function InvoiceSelectedRecord(){
 
 function SendMail(form)
 {
+
+	 if(selectedRowIDs.length !=1)
+		{
+		 $("#warningDialogSendmail").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		            "<spring:message code='BzComposer.global.ok'/>": function () 
+		            {
+		            	 $(this).dialog("close");
+		            	 return true;
+		            	
+		            }
+		        }
+		    });
+		}
+	 else{
 	order_no = document.getElementById("ord_value").value;
 	window.open("Invoice?tabid=ShowEmail&OrderType=SO&OrderNo="+order_no,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
-}
+
+	 }
+	 }
 
 
 function   deleteSalesOrders()
@@ -723,4 +734,25 @@ function downloadSOBoardReport(){
 	<p>
 		<spring:message code="BzComposer.salesinfo.deleteselectedsales" />
 	</p>
+</div>
+<div id="deleteSalesOrder" title="Delete Sales Order"
+	style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.salesorderboard.deleteSalesOrderListRecord" />
+	</p>
+
+</div>
+<div id="warningDialogSendmail" title="Warning .."
+	style="display: none;">
+	<p>
+		<spring:message code="BzComposer.global.selectone" />
+	</p>
+</div>
+<div id="warningDialog" title="Warning !" style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.salesorderboard.warningdeleteSalesOrderListRecord" />
+	</p>
+
 </div>

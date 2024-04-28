@@ -54,7 +54,8 @@ public class BillPayableController {
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
 //		ReceivableLIst rl = new ReceivableListImpl();
-		ArrayList<ClientVendor> cvForCombo = rl.getCvForBill();
+		//ArrayList<ClientVendor> cvForCombo = rl.getCvForBill();
+	   ArrayList<ClientVendor> cvForCombo= rl.getServiceProviderClientVendor();
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
@@ -120,7 +121,6 @@ public class BillPayableController {
 		ArrayList<TblVendorDetail> payBillList = rl.getPayBillsLists(payBillsDate);
 		request.setAttribute("payBillList", payBillList);
 		ModelAndView modelAndView = new ModelAndView(forward);
-
 		return modelAndView;
 	}
 

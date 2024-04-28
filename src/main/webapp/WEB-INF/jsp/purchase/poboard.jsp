@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -9,21 +9,47 @@
 <%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
-<title><spring:message code="BzComposer.purchaseorderboardtitle"/></title>
+<title><spring:message code="BzComposer.purchaseorderboardtitle" /></title>
 <style type="text/css">
-.fht-tbody{
-    height: 180px !important; /*  change table height*/
-    border-bottom: 1px solid rgb(207, 207, 207);
+.fht-tbody {
+	height: 180px !important; /*  change table height*/
+	border-bottom: 1px solid rgb(207, 207, 207);
 }
-.dataTables_length{ font-size:14px; }
-.dataTables_filter{ font-size:14px; }
-.dataTables_info{ font-size:14px; }
-.dataTables_paginate{ font-size:14px; }
 
-table.tabla-listados { width: 100%; border: 1px solid rgb(207, 207, 207); margin: 0px 0px 0px 0px; }
-table.tabla-listados tbody tr.odd td { background: #e1e5e9; }
-table.tabla-listados thead tr th { font-size: 14px; }
-table.tabla-listados tbody tr td { font-size: 12px; }
+.dataTables_length {
+	font-size: 14px;
+}
+
+.dataTables_filter {
+	font-size: 14px;
+}
+
+.dataTables_info {
+	font-size: 14px;
+}
+
+.dataTables_paginate {
+	font-size: 14px;
+}
+
+table.tabla-listados {
+	width: 100%;
+	border: 1px solid rgb(207, 207, 207);
+	margin: 0px 0px 0px 0px;
+}
+
+table.tabla-listados tbody tr.odd td {
+	background: #e1e5e9;
+}
+
+table.tabla-listados thead tr th {
+	font-size: 14px;
+}
+
+table.tabla-listados tbody tr td {
+	font-size: 12px;
+}
+
 .errorMsg {
 	color: #D8000C;
 	background-color: #FFD2D2;
@@ -31,264 +57,347 @@ table.tabla-listados tbody tr td { font-size: 12px; }
 </style>
 </head>
 <body onload="Init();">
-<!-- begin shared/header -->
-<form:form action="PurchaseBoard?tabid=ShowList" method="post" id="frmpoboard" name="PurchaseBoardForm" modelAttribute="purchaseBoardDto">
-	<div id="">
-	<div id="ddcolortabsline">&nbsp;</div>
-	<div id="cos">
-	<div class="statusquo ok">
-	<div id="hoja">
-	<div id="blanquito">
-	<div id="padding">
-	<div>
-	<div id="errorDiv" class="bg-danger" align="center">
+	<!-- begin shared/header -->
+	<form:form action="PurchaseBoard?tabid=ShowList" method="post"
+		id="frmpoboard" name="PurchaseBoardForm"
+		modelAttribute="purchaseBoardDto">
+		<div id="">
+			<div id="ddcolortabsline">&nbsp;</div>
+			<div id="cos">
+				<div class="statusquo ok">
+					<div id="hoja">
+						<div id="blanquito">
+							<div id="padding">
+								<div>
+									<div id="errorDiv" class="bg-danger" align="center">
 										<div align="center" class="errorMsg">
 											<FONT COLOR="Green"> ${successMsg} </FONT COLOR="Green">
 										</div>
 									</div>
-		<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-			<%-- <spring:message code="BzComposer.purchaseorderboard.poboard" /> --%>
-			<c:if test="${not empty msg}">
-                <div><span class="msgstyle">*${msg}</span></div>
-            </c:if>
-            <c:if test="${not empty SaveStatus}">
-                <div>
-                    <span class="msgstyle">*${SaveStatus}</span>
-                    <% session.removeAttribute("SaveStatus"); %>
-                </div>
-            </c:if>
-		</span>
-	</div>
-	<div>
-		<div id="table-negotiations">
-		    <table cellspacing="0" align="center" style="width: 100%;">
-                <tr align="left">
-                    <td style="font-size:14px;">
-                        <c:if test="${not empty IsUpdated}">
-                            <strong><span class="msgstyle">${IsUpdated}</span></strong>
-                        </c:if>
-                    </td>
-                </tr>
-            </table>
-			<table cellspacing="0" align="center" class="section-border" style="width: 100%;">
-				<tr>
-					<td style="width:30%;padding:10px;">
-						<table style="width: 100%;font-size:14px;border-right:2px solid #dddddd;" cellpadding="5">
-                            <tr>
-                                <th colspan="2"><spring:message code="BzComposer.estimationboard.filteroption" /></th>
-                            </tr>
-                            <tr>
-                                <td colspan="2"><spring:message code="BzComposer.salesorderboard.daterange" /></td>
-                            </tr>
-                            <tr>
-                                <td><spring:message code="BzComposer.purchaseorderboard.purchaseorderdate" /> <spring:message code="BzComposer.sales.FromDate" /> :</td>
-                                <td><spring:message code="BzComposer.purchaseorderboard.purchaseorderdate" /> <spring:message code="BzComposer.purchaseorderboard.to" /> :</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    <form:input path="orderDate1" size="20" style="width: 120px;" />
-                                    <img style="margin: 5;"src="${pageContext.request.contextPath}/images/cal.gif" onclick="displayCalendar(document.PurchaseBoardForm.orderDate1,'mm-dd-yyyy',this);" />
-                                </td>
-                                <td>
-                                    <form:input path="orderDate2" size="20" style="width: 120px;" />
-                                    <img style="margin: 5;" src="${pageContext.request.contextPath}/images/cal.gif" onclick="displayCalendar(document.PurchaseBoardForm.orderDate2,'mm-dd-yyyy',this);">
-                                </td>
-                            </tr>
-                        </table>
-					</td>
-					<td style="width:25%;padding:10px;">
-                        <table style="width: 100%;font-size:14px;border-right:2px solid #dddddd;" cellpadding="5">
-                            <tr><th colspan="2">&nbsp;</th></tr>
-                            <tr>
-                                <td colspan="2"><spring:message code="BzComposer.purchaseorderboard.PONum" />#</td>
-                            </tr>
-                            <tr>
-                                <td><spring:message code="menu.quickbook.from" /> :</td>
-                                <td><spring:message code="menu.quickbook.to" /> :</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    <form:input path="orderNoFrom" style="width: 120px;" onkeypress="return numbersonly(event, this.value)" />
-                                </td>
-                                <td>
-                                    <form:input path="orderNoTo" style="width: 120px;" onkeypress="return numbersonly(event, this.value)" />
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-					<td style="width:25%;">
-						<table style="width: 100%;font-size:14px;" cellpadding="5">
-                            <tr><th colspan="2">&nbsp;</th></tr>
-                            <tr>
-                                <td><spring:message code="BzComposer.estimationboard.column" /></td>
-                                <td>
-                                    <form:select path="searchType" style="width: 150px;">
-                                        <option value="1"><spring:message code="BzComposer.estimationboard.name" /></option>
-                                        <option value="2"><spring:message code="BzComposer.estimationboard.order" /></option>
-                                        <option value="3"><spring:message code="BzComposer.estimationboard.orderid" /></option>
-                                        <option value="4"><spring:message code="BzComposer.estimationboard.address" /></option>
-                                        <option value="5"><spring:message code="BzComposer.estimationboard.productname" /></option>
-                                        <option value="6"><spring:message code="BzComposer.estimationboard.email" /></option>
-                                    </form:select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><spring:message code="BzComposer.estimationboard.text" /></td>
-                                <td><form:input type="text" path="searchTxt" style="width: 150px;" /></td>
-                            </tr>
-                            <tr><td colspan="2"><spring:message code="BzComposer.salesorderboard.dateformat" /> : (MM-DD-YYYY)</td></tr>
-                        </table>
-					</td>
-					<td style="width:20%;">
-                        <div><button type="button" class="formbutton" onclick="SaleSearch(1);" style="width: 70px;"><spring:message code='BzComposer.estimationboard.search'/></button></div>
-                        <div><button type="button" class="formbutton" onclick="SaleSearch(2);" style="width: 70px;margin-top:10px;"><spring:message code='BzComposer.estimationboard.refresh'/></button></div>
-                        <div>
-                            <button type="button" class="formbutton" onclick="SaleSearch(3);" style="width: 70px;margin-top:10px;margin-right:20px;"><spring:message code='BzComposer.estimationboard.clear'/></button>
-                            <button type="button" class="formbutton" onclick="downloadPOBoardReport();" style="width: 110px;margin-top:10px;"><spring:message code='BzComposer.global.MultiPrint'/></button>
-                        </div>
-                    </td>
-				</tr>
-			</table>
-		<div>
-			<br/>
-		<table style="width:100% ">
-			<tr >
-			<td style="width:40%" align="left">
-				<span style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-					<spring:message code="BzComposer.purchaseorderboard.purchaseorderlist"/>
-				</span>
-			</td>
-				<td style="width:60%" align="left">
-					<input type="button" class="formbutton" name="smailbtn" id="smail" disabled="disabled" style="padding: 10px;" onclick="sendToPurchase();"
-					    value='<spring:message code="BzComposer.purchaseorderboard.lookup" />' />&nbsp;&nbsp;
-                    <input type="button" class="formbutton" id="sendMailEnabled" style="padding: 10px;" title="Send Mail to..." onclick="SendMail();"
-                                        	value="<spring:message code='BzComposer.Invoice.SendMail' />" />
+									<span
+										style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+										<%-- <spring:message code="BzComposer.purchaseorderboard.poboard" /> --%>
+										<c:if test="${not empty msg}">
+											<div>
+												<span class="msgstyle">*${msg}</span>
+											</div>
+										</c:if> <c:if test="${not empty SaveStatus}">
+											<div>
+												<span class="msgstyle">*${SaveStatus}</span>
+												<%
+												session.removeAttribute("SaveStatus");
+												%>
+											</div>
+										</c:if>
+									</span>
+								</div>
+								<div>
+									<div id="table-negotiations">
+										<table cellspacing="0" align="center" style="width: 100%;">
+											<tr align="left">
+												<td style="font-size: 14px;"><c:if
+														test="${not empty IsUpdated}">
+														<strong><span class="msgstyle">${IsUpdated}</span></strong>
+													</c:if></td>
+											</tr>
+										</table>
+										<table cellspacing="0" align="center" class="section-border"
+											style="width: 100%;">
+											<tr>
+												<td style="width: 30%; padding: 10px;">
+													<table
+														style="width: 100%; font-size: 14px; border-right: 2px solid #dddddd;"
+														cellpadding="5">
+														<tr>
+															<th colspan="2"><spring:message
+																	code="BzComposer.estimationboard.filteroption" /></th>
+														</tr>
+														<tr>
+															<td colspan="2"><spring:message
+																	code="BzComposer.salesorderboard.daterange" /></td>
+														</tr>
+														<tr>
+															<td><spring:message
+																	code="BzComposer.purchaseorderboard.purchaseorderdate" />
+																<spring:message code="BzComposer.sales.FromDate" /> :</td>
+															<td><spring:message
+																	code="BzComposer.purchaseorderboard.purchaseorderdate" />
+																<spring:message code="BzComposer.purchaseorderboard.to" />
+																:</td>
+														</tr>
+														<tr>
+															<td style="width: 50%;"><form:input
+																	path="orderDate1" size="20" style="width: 120px;" /> <img
+																style="margin: 5;"
+																src="${pageContext.request.contextPath}/images/cal.gif"
+																onclick="displayCalendar(document.PurchaseBoardForm.orderDate1,'mm-dd-yyyy',this);" />
+															</td>
+															<td><form:input path="orderDate2" size="20"
+																	style="width: 120px;" /> <img style="margin: 5;"
+																src="${pageContext.request.contextPath}/images/cal.gif"
+																onclick="displayCalendar(document.PurchaseBoardForm.orderDate2,'mm-dd-yyyy',this);">
+															</td>
+														</tr>
+													</table>
+												</td>
+												<td style="width: 25%; padding: 10px;">
+													<table
+														style="width: 100%; font-size: 14px; border-right: 2px solid #dddddd;"
+														cellpadding="5">
+														<tr>
+															<th colspan="2">&nbsp;</th>
+														</tr>
+														<tr>
+															<td colspan="2"><spring:message
+																	code="BzComposer.purchaseorderboard.PONum" />#</td>
+														</tr>
+														<tr>
+															<td><spring:message code="menu.quickbook.from" /> :</td>
+															<td><spring:message code="menu.quickbook.to" /> :</td>
+														</tr>
+														<tr>
+															<td style="width: 50%;"><form:input
+																	path="orderNoFrom" style="width: 120px;"
+																	onkeypress="return numbersonly(event, this.value)" />
+															</td>
+															<td><form:input path="orderNoTo"
+																	style="width: 120px;"
+																	onkeypress="return numbersonly(event, this.value)" />
+															</td>
+														</tr>
+													</table>
+												</td>
+												<td style="width: 25%;">
+													<table style="width: 100%; font-size: 14px;"
+														cellpadding="5">
+														<tr>
+															<th colspan="2">&nbsp;</th>
+														</tr>
+														<tr>
+															<td><spring:message
+																	code="BzComposer.estimationboard.column" /></td>
+															<td><form:select path="searchType"
+																	style="width: 150px;">
+																	<option value="1"><spring:message
+																			code="BzComposer.estimationboard.name" /></option>
+																	<option value="2"><spring:message
+																			code="BzComposer.estimationboard.order" /></option>
+																	<option value="3"><spring:message
+																			code="BzComposer.estimationboard.orderid" /></option>
+																	<option value="4"><spring:message
+																			code="BzComposer.estimationboard.address" /></option>
+																	<option value="5"><spring:message
+																			code="BzComposer.estimationboard.productname" /></option>
+																	<option value="6"><spring:message
+																			code="BzComposer.estimationboard.email" /></option>
+																</form:select></td>
+														</tr>
+														<tr>
+															<td><spring:message
+																	code="BzComposer.estimationboard.text" /></td>
+															<td><form:input type="text" path="searchTxt"
+																	style="width: 150px;" /></td>
+														</tr>
+														<tr>
+															<td colspan="2"><spring:message
+																	code="BzComposer.salesorderboard.dateformat" /> :
+																(MM-DD-YYYY)</td>
+														</tr>
+													</table>
+												</td>
+												<td style="width: 20%;">
+													<div>
+														<button type="button" class="formbutton"
+															onclick="SaleSearch(1);" style="width: 70px;">
+															<spring:message code='BzComposer.estimationboard.search' />
+														</button>
+													</div>
+													<div>
+														<button type="button" class="formbutton"
+															onclick="SaleSearch(2);"
+															style="width: 70px; margin-top: 10px;">
+															<spring:message code='BzComposer.estimationboard.refresh' />
+														</button>
+													</div>
+													<div>
+														<button type="button" class="formbutton"
+															onclick="SaleSearch(3);"
+															style="width: 70px; margin-top: 10px; margin-right: 20px;">
+															<spring:message code='BzComposer.estimationboard.clear' />
+														</button>
+														<button type="button" class="formbutton"
+															onclick="downloadPOBoardReport();"
+															style="width: 110px; margin-top: 10px;">
+															<spring:message code='BzComposer.global.MultiPrint' />
+														</button>
+													</div>
+												</td>
+											</tr>
+										</table>
+										<div>
+											<br />
+											<table style="width: 100%">
+												<tr>
+													<td style="width: 40%" align="left"><span
+														style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
+															<spring:message
+																code="BzComposer.purchaseorderboard.purchaseorderlist" />
+													</span></td>
+													<td style="width: 60%" align="left"><input
+														type="button" class="formbutton" name="smailbtn"
+														id="smail" disabled="disabled" style="padding: 10px;"
+														onclick="sendToPurchase();"
+														value='<spring:message code="BzComposer.purchaseorderboard.lookup" />' />&nbsp;&nbsp;
+														<input type="button" class="formbutton"
+														id="sendMailEnabled" style="padding: 10px;"
+														title="Send Mail to..." onclick="SendMail();"
+														value="<spring:message code='BzComposer.Invoice.SendMail' />" />
 
-                                        	<div id="warningDialog" title="Warning.."  style="display: none;">
-															<p><spring:message
-																	code="BzComposer.purchaseorderboard.warningdeletePurchaseOrderListRecord" />
-															</p>
-														</div> 
-                                        	
-														<div id="deletePurchaseOrderDialog" title="Delete Purchase Order"  style="display: none;">
-															<p><spring:message
-																	code="BzComposer.purchaseorderboard.deletePurchaseOrderListRecord" />
-															</p>
-														</div> 
-                                        	       <input type="button" class="formbutton"
-													style="padding: 10px;" onclick="deletePurchaseOrderDialog();"
-													value='<spring:message code="BzComposer.global.delete" />' />
-													
-													
-                    <!-- <input type="button" class="formbutton" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
+														<!--  below code added by sandip                    --> <input
+														type="button" class="formbutton" style="padding: 10px;"
+														onclick="deletePurchaseOrderDialog();"
+														value='<spring:message code="BzComposer.global.delete" />' />
+
+
+
+
+														<!--                      --> <!-- <input type="button" class="formbutton" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
                         value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp; -->
-                    <!-- <input type="button" class="formbutton" disabled="disabled" id="modi" style="padding: 10px;" onclick="makeUpdateReceivedInList();"
+														<!-- <input type="button" class="formbutton" disabled="disabled" id="modi" style="padding: 10px;" onclick="makeUpdateReceivedInList();"
                     	value='<spring:message code="BzComposer.checkpurchaseorder.checkpoorders" />' /> -->
-					<input type="hidden" name="ONum" id="ONumId"> 
-					<input type="hidden" name="sEmail" id="sEmailID"> 
-					<input type="hidden" name="rNum" id="rowONum"> 
-					<input type="hidden" name="senderEmail" id="EID">
-				</td>
-			</tr>
-		</table>
-			
-			<div>	
-     			<div class="grid_8 tabla-listados" id="purchaseOrderList" >
-     			<section>
-                    <c:forEach items="${PurchaseBoardDetails}" var="currObject" varStatus="loop">
-                        <input type="hidden" id="selectedPOID${loop.index}" value="${currObject.po_no}" />
-                        <input type="hidden" id="selectedPOInvoiceID${loop.index}" value="${currObject.invoiceID}" />
-                    </c:forEach>
-     			    <input type="hidden" name="sListSize" id="lSize" value='${PurchaseBoardDetails.size()}'>
-      				<table id="puboardList" class="tabla-listados" cellpadding="0" cellspacing="0">
-						<thead style="font-weight: bold;">
-							<tr>
-							    <th style="font-size: 14px;"><input type="checkbox" id="allRecordsChkHead" onchange="getAllRecordsIDs(this)" /> <spring:message code="eSalesInvoiceDetails.All" /></th>
-								<th><spring:message code="BzComposer.purchaseorderboard.PONum"/></th>
-								<th><spring:message code="BzComposer.purchaseorderboard.purchaseorderdate" /></th>
-								<th><spring:message code="BzComposer.purchaseorderboard.companyname" /></th>
-								<th><spring:message code="BzComposer.purchaseorderboard.name" /></th>
-								<th><spring:message code="BzComposer.purchaseorderboard.poamount" /></th>
-								<th><spring:message code="BzComposer.purchaseorderboard.emailid" /></th>
-								<th><spring:message code="BzComposer.purchaseorderboard.isemailed" /></th>
-								<th><spring:message code="BzComposer.purchaseorderboard.poreceived" /></th>
-								<th><spring:message code="BzComposer.purchaseorderboard.receiveddate" /></th>
-							</tr>
-						</thead>
-						<tbody>
-                            <c:forEach items="${PurchaseBoardDetails}" var="objList" varStatus="loop">
-                                <tr id='${loop.index}$$' ondblclick="sendToPurchase()" onclick="setRowId(${objList.po_no}, ${loop.index}, true);">
-                                    <td>
-                                        <input type="hidden" class="invoiceID" value="${objList.invoiceID}" />
-                                        <input type="checkbox" class="allRecordsCLS" id="allRecordsChk${loop.index}" onchange="getRecordID(this, ${loop.index}, ${objList.invoiceID});" value="${objList.po_no}" />
-                                    </td>
-                                    <td>${objList.poNumStr}</td>
-                                    <td>${objList.dateAdded}</td>
-                                    <td>${objList.companyName}</td>
-                                    <td>${objList.lastName}, ${objList.firstName}</td>
-                                    <td>${objList.total}</td>
-                                    <td>${objList.email}</td>
-                                    <td align="center">
-                                        <input type="checkbox" name="isEmailValCHK" id="isEmailId" title="isEmailed"
-                                            ${objList.emailed == '1'?"checked='true'":""} />
-                                    </td>
-                                    <td align="center">
-                                        <input type="checkbox" name="isReceived${loop.index}" id="isReceived${loop.index}" value="${objList.po_no}" title="isReceived"
-                                            onclick="makeUpdate(${objList.po_no}, ${objList.cartID}, this);" ${objList.isReceived == '1'?"checked='true'":""} />
-                                    </td>
-                                    <td>${objList.dateReceived}</td>
-                                </tr>
-                            </c:forEach>
-						</tbody>
-					</table>
-				<section>
+														<input type="hidden" name="ONum" id="ONumId"> <input
+														type="hidden" name="sEmail" id="sEmailID"> <input
+														type="hidden" name="rNum" id="rowONum"> <input
+														type="hidden" name="senderEmail" id="EID"></td>
+												</tr>
+											</table>
+
+											<div>
+												<div class="grid_8 tabla-listados" id="purchaseOrderList">
+													<section>
+														<c:forEach items="${PurchaseBoardDetails}"
+															var="currObject" varStatus="loop">
+															<input type="hidden" id="selectedPOID${loop.index}"
+																value="${currObject.po_no}" />
+															<input type="hidden"
+																id="selectedPOInvoiceID${loop.index}"
+																value="${currObject.invoiceID}" />
+														</c:forEach>
+														<input type="hidden" name="sListSize" id="lSize"
+															value='${PurchaseBoardDetails.size()}'>
+														<table id="puboardList" class="tabla-listados"
+															cellpadding="0" cellspacing="0">
+															<thead style="font-weight: bold;">
+																<tr>
+																	<th style="font-size: 14px;"><input
+																		type="checkbox" id="allRecordsChkHead"
+																		onchange="getAllRecordsIDs(this)" /> <spring:message
+																			code="eSalesInvoiceDetails.All" /></th>
+																	<th><spring:message
+																			code="BzComposer.purchaseorderboard.PONum" /></th>
+																	<th><spring:message
+																			code="BzComposer.purchaseorderboard.purchaseorderdate" /></th>
+																	<th><spring:message
+																			code="BzComposer.purchaseorderboard.companyname" /></th>
+																	<th><spring:message
+																			code="BzComposer.purchaseorderboard.name" /></th>
+																	<th><spring:message
+																			code="BzComposer.purchaseorderboard.poamount" /></th>
+																	<th><spring:message
+																			code="BzComposer.purchaseorderboard.emailid" /></th>
+																	<th><spring:message
+																			code="BzComposer.purchaseorderboard.isemailed" /></th>
+																	<th><spring:message
+																			code="BzComposer.purchaseorderboard.poreceived" /></th>
+																	<th><spring:message
+																			code="BzComposer.purchaseorderboard.receiveddate" /></th>
+																</tr>
+															</thead>
+															<tbody>
+																<c:forEach items="${PurchaseBoardDetails}" var="objList"
+																	varStatus="loop">
+																	<tr id='${loop.index}$$' ondblclick="sendToPurchase()"
+																		onclick="setRowId(${objList.po_no}, ${loop.index}, true);">
+																		<td><input type="hidden" class="invoiceID"
+																			value="${objList.invoiceID}" /> <input
+																			type="checkbox" class="allRecordsCLS"
+																			id="allRecordsChk${loop.index}"
+																			onchange="getRecordID(this, ${loop.index}, ${objList.invoiceID});"
+																			value="${objList.po_no}" /></td>
+																		<td>${objList.poNumStr}</td>
+																		<td>${objList.dateAdded}</td>
+																		<td>${objList.companyName}</td>
+																		<td>${objList.lastName},${objList.firstName}</td>
+																		<td>${objList.total}</td>
+																		<td>${objList.email}</td>
+																		<td align="center"><input type="checkbox"
+																			name="isEmailValCHK" id="isEmailId" title="isEmailed"
+																			${objList.emailed == '1'?"checked='true'":""} /></td>
+																		<td align="center"><input type="checkbox"
+																			name="isReceived${loop.index}"
+																			id="isReceived${loop.index}" value="${objList.po_no}"
+																			title="isReceived"
+																			onclick="makeUpdate(${objList.po_no}, ${objList.cartID}, this);"
+																			${objList.isReceived == '1'?"checked='true'":""} />
+																		</td>
+																		<td>${objList.dateReceived}</td>
+																	</tr>
+																</c:forEach>
+															</tbody>
+														</table>
+														<section>
+												</div>
+											</div>
+										</div>
+
+										<table align="center" class="d-none">
+											<tr align="center">
+												<td style="font-size: 14px;"><input type="button"
+													class="formbutton" name="smailbtn" id="smail"
+													disabled="disabled" style="padding: 10px;"
+													onclick="sendToPurchase();"
+													value='<spring:message code="BzComposer.purchaseorderboard.lookup" />' />&nbsp;&nbsp;
+													<input type="button" class="formbutton"
+													id="sendMailEnabled" style="padding: 10px;"
+													title="Send Mail to..." onclick="SendMail();"
+													value="<spring:message code='BzComposer.Invoice.SendMail' />" />&nbsp;&nbsp;
+													<!-- <input type="button" class="formbutton" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
+                        value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp; -->
+													<!-- <input type="button" class="formbutton" disabled="disabled" id="modi" style="padding: 10px;" onclick="makeUpdateReceivedInList();"
+                    	value='<spring:message code="BzComposer.checkpurchaseorder.checkpoorders" />' /> -->
+													<input type="button" class="formbutton" id="modi"
+													onclick="DeletePOOrderBoard('DELETE');"
+													style="padding: 10px;"
+													value='<spring:message code="BzComposer.global.delete" />' />
+													<input type="hidden" name="ONum" id="ONumId"> <input
+													type="hidden" name="sEmail" id="sEmailID"> <input
+													type="hidden" name="rNum" id="rowONum"> <input
+													type="hidden" name="senderEmail" id="EID"></td>
+											</tr>
+										</table>
+
+										<input type="hidden" id="ordId" name="OrderValue" value="" />
+										<input type="hidden" id="statusId" name="StatusValue" value="" />
+										<input type="hidden" id="cartIDs" name="cartIDs" value="" />
+										<input type="hidden" id="ordSize" name="Size" value="" /> <input
+											type="hidden" id="tabid" name="tabid" />
+										<!-- end Contents -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-<<<<<<< HEAD
-		3
-=======
-		<table align="center">
-			<tr align="center">
-				<td style="font-size:14px;">
-					<input type="button" class="formbutton" name="smailbtn" id="smail" disabled="disabled" style="padding: 10px;" onclick="sendToPurchase();"
-					    value='<spring:message code="BzComposer.purchaseorderboard.lookup" />' />&nbsp;&nbsp;
-                    <input type="button" class="formbutton" id="sendMailEnabled" style="padding: 10px;" title="Send Mail to..." onclick="SendMail();"
-                                        	value="<spring:message code='BzComposer.Invoice.SendMail' />" />&nbsp;&nbsp;
-                    <!-- <input type="button" class="formbutton" style="padding: 10px;" onclick="InvoiceSelectedRecord();"
-                        value='<spring:message code="BzComposer.global.InvoiceIt" />' />&nbsp;&nbsp; -->
-                    <!-- <input type="button" class="formbutton" disabled="disabled" id="modi" style="padding: 10px;" onclick="makeUpdateReceivedInList();"
-                    	value='<spring:message code="BzComposer.checkpurchaseorder.checkpoorders" />' /> -->
-                    <input type="button" class="formbutton" id="modi" onclick="DeletePOOrderBoard('DELETE');" 
-                    	style="padding: 10px;" value='<spring:message code="BzComposer.global.delete" />' />
-					<input type="hidden" name="ONum" id="ONumId"> 
-					<input type="hidden" name="sEmail" id="sEmailID"> 
-					<input type="hidden" name="rNum" id="rowONum"> 
-					<input type="hidden" name="senderEmail" id="EID">
-				</td>
-			</tr>
-		</table>
->>>>>>> 4b468b8303c66a549da8c0f19f760a18024ad28a
-		<input type="hidden" id="ordId" name="OrderValue" value="" />
-		<input type="hidden" id="statusId" name="StatusValue" value="" />
-		<input type="hidden" id="cartIDs" name="cartIDs" value="" />
-		<input type="hidden" id="ordSize" name="Size" value="" />
-		<input type="hidden" id="tabid" name="tabid" />
-		<!-- end Contents -->
-	</div>
-	</div>
-	</div>
-	</div>
-	</div>
-	</div>
-	</div>
-	</div>
-	<input type="hidden" id="ord_value" />
+		<input type="hidden" id="ord_value" />
 		<input type="hidden" id="po_value" />
-</form:form>
-<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+	</form:form>
+	<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
+	<link rel="stylesheet"
+		href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
+	<script type="text/javascript"
+		src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 </body>
 </html>
 <script type="text/javascript">
@@ -374,9 +483,30 @@ function Init(){
 
 function SendMail(){
     debugger;
+    
+	 if(selectedRowIDs.length !=1)
+		{
+		 $("#warningDialogSendmail").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		            "<spring:message code='BzComposer.global.ok'/>": function () 
+		            {
+		            	 $(this).dialog("close");
+		            	 return true;
+		            	
+		            }
+		        }
+		    });
+		}
+	 else
+		 {
     cid=document.getElementById("po_value").value;
     window.open("Invoice?tabid=ShowEmail&OrderType=PO&OrderNo="+cid,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
 }
+	 }
 function setIsEmail()
 {
 
@@ -772,23 +902,38 @@ function DeletePOOrderBoard(cmd){
 }
 </script>
 <!-- Dialog box used in this page. -->
-<div id="showNameDialog" style="display:none;">
-	<p><spring:message code="BzComposer.purchaseorderboard.enterfirstorlastname"/></p>
+<div id="showNameDialog" style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.purchaseorderboard.enterfirstorlastname" />
+	</p>
 </div>
-<div id="updateRecord" style="display:none;">
-	<p><spring:message code="BzComposer.purchaseorderboard.updaterecordmessage"/></p>
+<div id="updateRecord" style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.purchaseorderboard.updaterecordmessage" />
+	</p>
 </div>
-<div id="showErrorTextDialog" style="display:none;">
-	<p><spring:message code="BzComposer.purchaseorderboard.entertexttosearch"/></p>
+<div id="showErrorTextDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.purchaseorderboard.entertexttosearch" />
+	</p>
 </div>
-<div id="showSortTypeDialog" style="display:none;">
-	<p><spring:message code="BzComposer.purchaseorderboard.selectsorttype"/></p>
+<div id="showSortTypeDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.purchaseorderboard.selectsorttype" />
+	</p>
 </div>
-<div id="showpurchaseorderdialog" style="display:none;">
-	<p><spring:message code="BzComposer.common.selectpurchaseorderfirst"/></p>
+<div id="showpurchaseorderdialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.common.selectpurchaseorderfirst" />
+	</p>
 </div>
-<div id="showUpdateDialog" style="display:none;">
-	<p><spring:message code="BzComposer.checkpurchaseorder.updaterecordmessage"/></p>
+<div id="showUpdateDialog" style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.checkpurchaseorder.updaterecordmessage" />
+	</p>
 </div>
 <div id="showPOValidationDialog" style="display: none;">
 	<p>
@@ -800,3 +945,24 @@ function DeletePOOrderBoard(cmd){
 		<spring:message code="BzComposer.salesinfo.deleteselectedpo" />
 	</p>
 </div>
+<div id="warningDialog" title="Warning.." style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.purchaseorderboard.warningdeletePurchaseOrderListRecord" />
+	</p>
+</div>
+
+<div id="deletePurchaseOrderDialog" title="Delete Purchase Order"
+	style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.purchaseorderboard.deletePurchaseOrderListRecord" />
+	</p>
+</div>
+<div id="warningDialogSendmail" title="Warning .."
+	style="display: none;">
+	<p>
+		<spring:message code="BzComposer.global.selectone" />
+	</p>
+</div>
+

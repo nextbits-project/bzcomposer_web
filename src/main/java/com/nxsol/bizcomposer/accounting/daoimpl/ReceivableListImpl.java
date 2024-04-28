@@ -1,5 +1,4 @@
 package com.nxsol.bizcomposer.accounting.daoimpl;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,8 +35,6 @@ import javax.persistence.TypedQuery;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,7 +84,6 @@ import com.nxsol.bzcomposer.company.repos.BcaCategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCategorytypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
-import com.nxsol.bzcomposer.company.repos.BcaCreditcardtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoicetypeRepository;
@@ -7780,6 +7776,33 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		}
 //		return allClientvendor;
 //	}
+	
+	@Override
+	public ArrayList<ClientVendor> getServiceProviderClientVendor()
+	{
+		ArrayList<ClientVendor> ServiceProviderClientvendor = new ArrayList<ClientVendor>();
+		List<String> status = Arrays.asList("N");
+		try {
+		
+			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository.findDistinctByCompany_CompanyIdAndStatusInAndDeletedAndActiveOrderByName(ConstValue.companyIdLong, status, 0, 1);
+			for (BcaClientvendor bcaClientvendor : bcaClientvendors)
+			 {
+				if(bcaClientvendor.getCvtypeId()==8)
+				{
+				ClientVendor clientVendor = new ClientVendor();
+				String name = bcaClientvendor.getName();
+				clientVendor.setName(name.equals("") ? name : name.trim());
+				
+				clientVendor.setCvID(bcaClientvendor.getClientVendorId());
+				ServiceProviderClientvendor.add(clientVendor);
+				}
+			}
+
+		} catch (Exception e) {
+			Loger.log(e.toString());
+		}
+		return ServiceProviderClientvendor;
+	}
 	@Override
 	public ArrayList<ClientVendor> getAllClientVendor() {
 		// TODO Auto-generated method stub
@@ -8898,6 +8921,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 			List<BcaClientvendor> bcaClientvendors = bcaClientvendorRepository
 					.findByCompanyAndStatusAndDeletedAndActiveAndCvtypeIdNotInOrderByLastName(company, "N", 0, 1,
 							cvTypeIdsToExclude);
+			
+			System.out.println("size of list at function ="+bcaClientvendors.size()+"----------------------------------------");
 //			while (resultSet.next()) {
 //				ClientVendor cv = new ClientVendor();
 //

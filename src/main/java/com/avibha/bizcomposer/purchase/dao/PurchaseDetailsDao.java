@@ -181,12 +181,10 @@ public class PurchaseDetailsDao {
 		}
 	}
 	
-	public void AddBillingVendor(HttpServletRequest request, VendorDto form, String compId) {
-		
-		
-		
+	public void addBillingVendor(HttpServletRequest request, VendorDto form, String compId) {
 		
 		try {
+			System.out.println("............Purchase Details ................");
 			boolean isAdded = purchaseInfoDao.insertBillingVendor(form, compId);
 			if (isAdded) {
 				request.setAttribute("SaveStatus", new ActionMessage(" Billing Vendor Information is Successfully Added !"));

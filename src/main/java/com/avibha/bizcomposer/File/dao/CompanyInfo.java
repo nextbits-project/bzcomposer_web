@@ -165,10 +165,10 @@ public class CompanyInfo {
 		ResultSet rs = null;
 		con = db.getConnection();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
-		try {
-			String sqlString = "SELECT i.PONum,c.DateAdded,c.FirstName,c.LastName,i.Total "
+		try {                                           //(Deleted = 0 )  added by sandip on 25-04-24
+			String sqlString = "SELECT i.PONum,c.DateAdded,c.FirstName,c.LastName,i.AdjustedTotal "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID = " + compId
-					+ " AND invoiceStatus=0 AND c.status IN('U','N') " + "AND InvoiceTypeID IN (2, 6) "
+					+ " AND invoiceStatus=0 AND  i.Deleted=0  AND c.status IN('U','N') " + "AND InvoiceTypeID IN (2, 6) "
 					+ "AND c.ClientVendorID = i.ClientVendorID AND c.CompanyID = " + compId;
 			
 			if(sartYearDate != null && !sartYearDate.isEmpty() && endYearDate != null && !endYearDate.isEmpty()) {
@@ -211,7 +211,7 @@ public class CompanyInfo {
 				purchaseOrder.setDateAdded(rs.getString(2));
 				purchaseOrder.setFirstName(rs.getString(3));
 				purchaseOrder.setLastName(rs.getString(4));
-				purchaseOrder.setTotal(rs.getDouble("Total"));
+				purchaseOrder.setAdjustedtotal(rs.getDouble(5));
 				objPurchaseList.add(purchaseOrder);
 			}
 		} catch (SQLException ee) {
@@ -242,10 +242,10 @@ public class CompanyInfo {
 		ResultSet rs = null;
 		con = db.getConnection();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
-		try {
-			String sqlString = "SELECT distinct i.SONum,i.DateAdded,c.FirstName,c.LastName,i.Total "
+		try {                                                         //(Deleted = 0 )  added by sandip on 25-04-24
+			String sqlString = "SELECT distinct i.SONum,i.DateAdded,c.FirstName,c.LastName,i.AdjustedTotal "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID=" + compId
-					+ " AND InvoiceTypeID IN (7,18) AND c.status IN('U','N') "
+					+ " AND InvoiceTypeID IN (7,18) AND c.status IN('U','N') AND (i.Deleted=0) "
 					+ "AND c.ClientVendorID = i.ClientVendorID AND c.CompanyID = " + compId;
 			
 			if(sartYearDate != null && !sartYearDate.isEmpty() && endYearDate != null && !endYearDate.isEmpty()) {
@@ -265,7 +265,7 @@ public class CompanyInfo {
 				salesOrder.setDateAdded(rs.getString(2));
 				salesOrder.setFirstName(rs.getString(3));
 				salesOrder.setLastName(rs.getString(4));
-				salesOrder.setTotal(rs.getDouble("Total"));
+				salesOrder.setAdjustedtotal(rs.getDouble(5));
 				objSalesOrderList.add(salesOrder);
 			}
 		} catch (SQLException ee) {
@@ -297,11 +297,11 @@ public class CompanyInfo {
 		ResultSet rs = null;
 		con = db.getConnection();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
-		try {
-			String sqlString = "SELECT distinct i.OrderNum,c.DateAdded,c.FirstName,c.LastName,i.Total "
+		try {   // (Deleted = 0 )  added by sandip on 25-04-24
+			String sqlString = "SELECT distinct i.OrderNum,c.DateAdded,c.FirstName,c.LastName,i.AdjustedTotal "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID = " + compId
 					+ " AND c.ClientVendorID = i.ClientVendorID "
-					+ "AND c.Active = 1 and c.Status IN('N','U') and c.Deleted = 0 " + "AND c.CompanyID = " + compId
+					+ "AND c.Active = 1 and c.Status IN('N','U') AND (i.Deleted = 0) " + " AND c.CompanyID = " + compId
 					+ " AND i.OrderNum > 0 ";
 			
 			if(sartYearDate != null && !sartYearDate.isEmpty() && endYearDate != null && !endYearDate.isEmpty()) {
@@ -345,7 +345,7 @@ public class CompanyInfo {
 				salesOrder.setDateAdded(rs.getString(2));
 				salesOrder.setFirstName(rs.getString(3));
 				salesOrder.setLastName(rs.getString(4));
-				salesOrder.setTotal(rs.getDouble(5));
+				salesOrder.setAdjustedtotal(rs.getDouble(5));
 				objSalesOrderList.add(salesOrder);
 			}
 		} catch (SQLException ee) {
@@ -377,10 +377,10 @@ public class CompanyInfo {
 		ResultSet rs = null;
 		con = db.getConnection();
 		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
-		try {
-			String sqlString = "SELECT distinct i.EstNum,c.DateAdded,c.FirstName,c.LastName,(i.AdjustedTotal) as Total "
+		try {            // (Deleted = 0 )  added by sandip on 25-04-24
+			String sqlString = "SELECT distinct i.EstNum,c.DateAdded,c.FirstName,c.LastName,i.AdjustedTotal "
 					+ "FROM bca_invoice AS i, bca_clientvendor AS c " + "WHERE i.CompanyID = " + compId
-					+ " AND NOT (invoiceStatus = 1 )  AND c.status IN('U','N')  "
+					+ " AND NOT (invoiceStatus = 1 ) AND  (i.Deleted = 0 ) AND c.status IN('U','N')  "
 					+ "AND InvoiceTypeID = 10 AND c.ClientVendorID = i.ClientVendorID " + "AND c.CompanyID = " + compId;
 			
 			if(sartYearDate != null && !sartYearDate.isEmpty() && endYearDate != null && !endYearDate.isEmpty()) {
@@ -400,7 +400,7 @@ public class CompanyInfo {
 				salesOrder.setDateAdded(rs.getString(2));
 				salesOrder.setFirstName(rs.getString(3));
 				salesOrder.setLastName(rs.getString(4));
-				salesOrder.setTotal(rs.getDouble(5));
+				salesOrder.setAdjustedtotal(rs.getDouble(5));
 				objSalesOrderList.add(salesOrder);
 			}
 		} catch (SQLException ee) {

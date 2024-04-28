@@ -243,16 +243,9 @@ table.tabla-listados tbody tr td {
 													style="padding: 10px;" onclick="SendMail(this.form);"
 													value='<spring:message code="BzComposer.global.sendmail" />' />
 
-                                                    <div id="deleteInvoiceRecord" title="Delete Invoice" style="display: none;">
-														<p><spring:message	code="BzComposer.invoiceboard.deleteInvoiceListRecord" />
-														</p>
-											        	</div>
+                                                    
 											        	
-											        	 <div id="warningDialog" title="Warning .." style="display: none;">
-														<p><spring:message	code="BzComposer.invoiceboard.warningdeleteInvoiceListRecord" />
-														</p>
-											        	</div>
-														
+											        	
 													<input type="button" class="formbutton"
 													style="padding: 10px;"
 													onclick="deleteInvoiceDialog(this.form);"
@@ -373,15 +366,16 @@ table.tabla-listados tbody tr td {
 												</section>
 											</div>
 										</div>
-<<<<<<< HEAD
+                                  <!-- added by sandip   -->
 
 										
 										    <input type="hidden" id="ordId"
 											name="OrderValue" value=""> <input type="hidden"
 											id="statusId" name="StatusValue" value=""> <input
 											type="hidden" id="ordSize" name="Size" value="">
-=======
-										<table align="center">
+                                      
+                                      <!--              this table removed -->
+										<table align="center" class="d-none">
 											<tr align="center">
 												<td><input type="button" style="padding: 10px;"
 													class="formbutton" id="smail" onclick="sendToCreateRMA();"
@@ -404,7 +398,7 @@ table.tabla-listados tbody tr td {
 										<input type="hidden" id="ordId" name="OrderValue" value="">
 										<input type="hidden" id="statusId" name="StatusValue" value="">
 										<input type="hidden" id="ordSize" name="Size" value="">
->>>>>>> 4b468b8303c66a549da8c0f19f760a18024ad28a
+
 										<!-- end Contents -->
 									</div>
 								</div>
@@ -541,9 +535,31 @@ function sendToCreateRMA(){
     window.location = "RMA?tabid=CreateRMA&orderNumber="+order_no;
 }
 function SendMail(form){
+	 if(selectedRowIDs.length !=1)
+		{
+		 $("#warningDialogSendmail").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		            "<spring:message code='BzComposer.global.ok'/>": function () 
+		            {
+		            	 $(this).dialog("close");
+		            	 return true;
+		            	
+		            }
+		        }
+		    });
+		}
+	 else
+		 {
 	order_no = document.getElementById("ord_value").value;
 	window.open("Invoice?tabid=ShowEmail&OrderType=invoice&OrderNo="+order_no,null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no" );
-}
+		 }
+	 
+	 
+		 }
 
 
 function deleteInvoices()
@@ -589,7 +605,7 @@ function deleteInvoiceDialog(form)
          }
 	else
 		{
-									$("#deleteInvoiceRecord").dialog({
+									$("#deleteInvoiceRecordDialog").dialog({
 								    	resizable: false,
 								        height: 200,
 								        width: 500,
@@ -705,4 +721,25 @@ function downloadInvoiceBoardReport(){
 	<p>
 		<spring:message code="BzComposer.salesinfo.deleteselectedinvoices" />
 	</p>
+</div>
+<div id="warningDialog" title="Warning .." style="display: none;">
+	<p>
+		<spring:message
+			code="BzComposer.invoiceboard.warningdeleteInvoiceListRecord" />
+	</p>
+</div>
+
+<div id="warningDialogSendmail" title="Warning .."
+	style="display: none;">
+	<p>
+		<spring:message code="BzComposer.global.selectone" />
+	</p>
+</div>
+<div id="deleteInvoiceRecordDialog" title="Delete Invoice"
+	style="display: none;">
+	<p>
+		<spring:message code="BzComposer.invoiceboard.deleteInvoiceListRecord" />
+	</p>
+
+
 </div>

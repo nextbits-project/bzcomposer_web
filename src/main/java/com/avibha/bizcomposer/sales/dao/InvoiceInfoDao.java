@@ -133,6 +133,7 @@ public class InvoiceInfoDao {
 
 	@Autowired
 	private BcaInvoiceRepository bcaInvoiceRepository;
+	
 	@Autowired
 	private ConfigurationInfo configInfo;
 
@@ -1788,7 +1789,8 @@ public class InvoiceInfoDao {
 
 			if (null != form.getTaxID()) {
 				Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(Integer.parseInt(form.getTaxID()));
-				if (salesTax.isPresent()) {
+				if (salesTax.isPresent()) 
+				{
 					bcaInvoice.setSalesTax(salesTax.get());
 				}
 			}
@@ -1816,35 +1818,47 @@ public class InvoiceInfoDao {
 			bcaInvoice.setInvoiceStatus(0);
 			bcaInvoice.setEstNum(0);
 			bcaInvoice.setOrderType(7);
-
 			String paid = form.getPaid();
-			if (paid != null && (paid.equals("on") || paid.equals("true"))) {
+			
+			if (paid != null && (paid.equals("on") || paid.equals("true"))) 
+			{
 				bcaInvoice.setIsPaymentCompleted(true);
-			} else {
+			}
+			else
+			{
 				bcaInvoice.setIsPaymentCompleted(false);
 			}
-			if (form.getServiceID() == 0) {
+			if (form.getServiceID() == 0)
+			{
 				bcaInvoice.setServiceId(0);
-			} else {
+			}
+			else
+			{
 				bcaInvoice.setServiceId(form.getServiceID());
-
+			
 			}
 
 			bcaInvoice.setIsInvoice(1);
 			bcaInvoice.setIsSalestype(1);
 			String isPending = form.getIsPending();
-			if (isPending != null && (isPending.equals("on") || isPending.equals("true"))) {
+			
+			if (isPending != null && (isPending.equals("on") || isPending.equals("true"))) 
+			{
 				bcaInvoice.setIsPending(1);
-			} else {
+			} 
+			else 
+			{
 				bcaInvoice.setIsPending(0);
+			
 			}
 			BcaInvoice invoice = bcaInvoiceRepository.save(bcaInvoice);
-			if (null != invoice) {
-				receivableLIst.insertIntoBillingStatement(invoice.getInvoiceId());
-				saveStatus = true;
+			if (null != invoice)
+			{	
+				 receivableLIst.insertIntoBillingStatement(invoice.getInvoiceId());
+				 saveStatus = true;
 			}
-
-			if (null != invoice) {
+			if (null != invoice) 
+			{
 				Map<Integer, Integer> oldInvData = new HashMap<>();
 				List<BcaCart> cart = bcaCartRepository.findByInvoiceIdAndCompanyId(invoice.getInvoiceId(),
 						Long.parseLong(compId));

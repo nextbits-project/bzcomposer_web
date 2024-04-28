@@ -149,7 +149,7 @@ public class PurchaseController {
 		else if (action.equalsIgnoreCase("billingcompany")) { // to Add/Save Vendor details
 			//  PurchaseDetailsDao purchaseDetailsDao = new PurchaseDetailsDao();
 			String compId = (String) request.getSession().getAttribute("CID");
-			purchaseDetailsDao.AddBillingVendor(request, vendorDto, compId);
+			purchaseDetailsDao.addBillingVendor(request, vendorDto, compId);
 			forward = "redirect:/Vendor?tabid=addbillingcompany";
 		}
 

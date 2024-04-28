@@ -682,6 +682,8 @@ public class PurchaseInfoDao {
 	
 	@CacheEvict(value = "vendorsCache", allEntries = true)
 	public boolean insertBillingVendor(VendorDto c, String compID) {
+		
+		System.out.println("saving billing vendor  .........................");
 		boolean ret = false;
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -694,163 +696,61 @@ public class PurchaseInfoDao {
 
 			int cvID = purchaseInfo.getLastClientVendorID() + 1;
 
-			String vcName = vendorCategory.CVCategory(c.getType());
-			if (vcName == null) {
-				vcName = "";
-			}
-
+			
 			BcaClientvendor bcv = new BcaClientvendor();
 			bcv.setClientVendorId(cvID);
+		
 			bcv.setName(c.getCname());
+			bcv.setDbaname(c.getDbaName());
+			bcv.setAddress1(c.getAddress1());
+			bcv.setAddress2(c.getAddress2());
+			bcv.setCity(c.getCity().toString());
+			bcv.setProvince(c.getProvince());
+			bcv.setCountry(c.getCountry());
+			bcv.setState(c.getState());
+			bcv.setZipCode(c.getZipCode());
 			bcv.setDateAdded((c.getDateAdded() == null || c.getDateAdded().equals(""))
 					? DateHelper.convertDateToOffsetDateTime(customerInfo.string2date(" now() "))
 					: DateHelper.convertDateToOffsetDateTime(customerInfo.string2date(c.getDateAdded())));
 
-			bcv.setCustomerTitle(c.getTitle());
-			//bcv.setFirstName(c.getFirstName());
-			//bcv.setLastName(c.getLastName());
-			bcv.setAddress1(c.getAddress1());
-			bcv.setAddress2(c.getAddress2());
-			bcv.setCity(c.getCity().toString());
-
-			bcv.setState(c.getState());
-			bcv.setProvince(c.getProvince());
-			bcv.setCountry(c.getCountry());
-			bcv.setZipCode(c.getZipCode());
+			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
+			if (company.isPresent())
+				bcv.setCompany(company.get());
 			bcv.setPhone(c.getPhone());
 			bcv.setCellPhone(c.getCellPhone());
 			bcv.setFax(c.getFax());
 			bcv.setHomePage(c.getHomePage());
-			//bcv.setEmail(c.getEmail());
-			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
-			if (company.isPresent())
-				bcv.setCompany(company.get());
-			bcv.setResellerTaxId(c.getTexID());
-			//bcv.setVendorOpenDebit(Double.parseDouble(oBal));
-			//bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
-
+			//category
+			
 			bcv.setDetail(c.getMemo());
-			//bcv.setTaxable(Long.parseLong(c.getTaxAble()));
-			//bcv.setCvtypeId(Integer.parseInt(c.getIsclient()));
-			bcv.setCvcategoryId(Integer.parseInt(c.getType()));
-			bcv.setCvcategoryName(vcName);
+			
+			bcv.setCvtypeId(8);
+			
 			bcv.setActive(1);
 			bcv.setDeleted(0);
 			bcv.setStatus("N");
-			bcv.setMiddleName(c.getMiddleName());
-			Date dateInput = c.getDateInput() == null || c.getDateInput().trim().equals("") ? null
-					: customerInfo.string2date(c.getDateInput());
-			bcv.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
+			bcv.setCvcategoryId(Integer.parseInt(c.getType()));
+			bcv.setCvcategoryName(c.getCategory());
+		
+//			Date dateInput = c.getDateInput() == null || c.getDateInput().trim().equals("") ? null
+//					: customerInfo.string2date(c.getDateInput());
+//			bcv.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
 			Date dateTerminated = (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
 					: customerInfo.string2date(c.getTerminatedDate());
 			bcv.setDateTerminated(DateHelper.convertDateToOffsetDateTime(dateTerminated));
 			bcv.setIsTerminated(c.isTerminated());
-			bcv.setDbaname(c.getDbaName());
-			Optional<BcaTerm> term = bcaTermRepository.findById(Integer.parseInt(c.getTerm()));
-			if (term.isPresent())
-				bcv.setTerm(term.get());
-			BcaSalesrep salesRep = bcaSalesrepRepository.findBySalesRepId(Integer.parseInt(c.getRep()));
-			if (null != salesRep)
-				bcv.setSalesRep(salesRep);
-			Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(c.getShipping()));
-			if (shipCarrier.isPresent())
-				bcv.setShipCarrier(shipCarrier.get());
-			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository
-					.findById(Integer.parseInt(c.getPaymentType()));
-			if (paymentType.isPresent())
-				bcv.setPaymentType(paymentType.get());
-			bcv.setCctypeId((c.getCcType() == "" ? 0 : Integer.valueOf(c.getCcType())));
+			
+
+			
+			
 			BcaClientvendor clientVendor = bcaClientvendorRepository.save(bcv);
+			System.out.println(" after  saving billing vendor  .........................");
 			if (null != clientVendor) {
 				ret = true;
 			}
-
-			purchaseInfoDao.insertVendorCreditCard(c.getCcType(), cvID, c.getCardNo(), c.getExpDate(), c.getCw2(),
-					c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
-
 			
-//			int bsAddID = purchaseInfoDao.getLastBsAdd() + 1; //bca_bsaddress is not required
-			TblBSAddress2 address = new TblBSAddress2();
-			if ("0".equals(c.getSetdefaultbs())) {
-//				bca_bsaddress is not required
-//				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getBscname(), c.getBsdbaName(),
-//						c.getBsfirstName(), c.getBslastName(), c.getBsaddress1(), c.getBsaddress2(), c.getBscity(),
-//						c.getBsstate(), c.getBsprovince(), c.getBscountry(), c.getBszipCode(), "1");
-//
-//				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getShcname(), c.getShdbaName(),
-//						c.getShfirstName(), c.getShlastName(), c.getShaddress1(), c.getShaddress2(), c.getShcity(),
-//						c.getShstate(), c.getShprovince(), c.getShcountry(), c.getShzipCode(), "0");
-				address.setAddressWithVendorDtoBilling(c, cvID);
-				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N", bcv.getCompany());
-				address.setAddressWithVendorDtoShipping(c, cvID);
-				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N", bcv.getCompany());
-//				if (billingAddId > 0 && shippingAddId > 0) {
-//					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
-//				}
-			} else {
-//				bca_bsaddress is not required
-//				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
-//						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
-//						c.getCountry(), c.getZipCode(), "1");
-//
-//				purchaseInfoDao.insertVendorBSAddress(cvID, bsAddID, c.getCname(), c.getDbaName(), c.getFirstName(),
-//						c.getLastName(), c.getAddress1(), c.getAddress2(), c.getCity(), c.getState(), c.getProvince(),
-//						c.getCountry(), c.getZipCode(), "0");
-				address.setAddressWithVendorDto(c, cvID);
-				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N", bcv.getCompany());
-				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N", bcv.getCompany());
-//				if (billingAddId > 0 && shippingAddId > 0) {
-//					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
-//				}
-			}
-
-			insertClientVendorAccount(c, cvID);
-
-			int useIndividual = "1".equals(c.getFsUseIndividual()) ? 1 : 0;
-			int assFCharge = "1".equals(c.getFsAssessFinanceCharge()) ? 1 : 0;
-			int markFCharge = "1".equals(c.getFsMarkFinanceCharge()) ? 1 : 0;
-			purchaseInfoDao.insertVFCharge(clientVendor, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(),
-					c.getGracePrd(), assFCharge, markFCharge);
-
-			// code to save services START Disabled since GUI is hidden
-//			int i;
-//			String sql;
-//			String serviceID = c.getTable_serID();
-//			String serviceBal = c.getTable_bal();
-//			String defaultser = c.getTable_defaultVal();
-//			String invStyleID = c.getTable_invId();
-//
-//			String temp[] = null, temp2[] = null, temp3[] = null;
-//			if ((serviceID != "" && serviceID != null)
-//					&& (invStyleID != "" && invStyleID != null) & (serviceBal != "" && serviceBal != null)) {
-//				temp = serviceID.split(";"); // serviceID is in form like
-//				temp2 = invStyleID.split(";");
-//				temp3 = serviceBal.split(";");
-//			}
-//
-//			if ((temp != null) || (temp2 != null) || (temp3 != null)) {
-//				java.sql.Date d = new java.sql.Date(new Date().getTime());
-//
-//				for (i = 0; i < temp.length; i++) {
-//
-//					// it confusing which column data it sets
-//					sql = "insert into bca_clientvendorservice values (?,?,?,?,?,?,?)";
-//					pstmt_services = con.prepareStatement(sql);
-//					pstmt_services.setInt(1, cvID);
-//					pstmt_services.setDate(2, d);
-//					pstmt_services.setInt(3, Integer.parseInt(compID));
-//					pstmt_services.setInt(4, Integer.parseInt(temp2[i]));
-//					pstmt_services.setFloat(5, Float.parseFloat(temp3[i]));
-//					if (Integer.parseInt(temp[i]) == Integer.parseInt(defaultser))
-//						pstmt_services.setInt(6, 1);
-//					else
-//						pstmt_services.setInt(6, 0);
-//					pstmt_services.setInt(7, Integer.parseInt(temp[i]));
-//
-//					pstmt_services.executeUpdate();
-//				}
-//			}
-			// code to save services END
+		
+		//	insertClientVendorAccount(c, cvID);
 
 		} catch (Exception ee) {
 			ee.printStackTrace();
