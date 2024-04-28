@@ -155,8 +155,8 @@ public class SQLExecutor {
 //					"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
 //					"root", "123");
 			connection = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/bizcomposer?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
-					"root", "admin");
+					"jdbc:mysql://localhost:3306/bcacom_bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+					"bcacom_bzc_demo", "!passw0rd#12!");
 
 //			 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","db","myserverkonnect");
 		} catch (Exception ex) {
