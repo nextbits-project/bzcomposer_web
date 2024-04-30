@@ -755,7 +755,7 @@ table.tabla-listados tbody tr td {
 			} 
 		});
    	
-   	$(document.forms[0]).submit(function( event ) {
+   	$(document.forms[1]).submit(function( event ) {
 	    event.preventDefault();
 	});
 	} 

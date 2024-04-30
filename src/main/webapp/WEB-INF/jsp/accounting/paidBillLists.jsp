@@ -831,7 +831,7 @@ table.tabla-listados tbody tr td {
 		this.billNo = no;
 		this.index = indexNumber;
 		
-		 $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').text().trim());
+		 $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(1)').text().trim());
 		 $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(2)').attr('value'));
 		 $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(3)').attr('value'));
 		 $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+index+')').find('td:nth-child(4)').attr('value'));
@@ -891,12 +891,12 @@ table.tabla-listados tbody tr td {
 	
 	function save()
 	{
-		
+		debugger;
 		var billNo = document.getElementById("ordernumber").innerHTML;
 		var payerIdSelect = document.getElementById("receivedType");
 		var payerID = payerIdSelect.options[payerIdSelect.selectedIndex].value;
 		var paidAmount = document.getElementById("receivedAmount").value;
-		amountToBepaid  = document.getElementById("receivedAmount").value;
+		var amountToBepaid  = document.getElementById("receivedAmount").value;
 		var checkNo = document.getElementById("checkNum").value;
 		var customerName = document.getElementById("customerName");
 		var vendorId = customerName.options[customerName.selectedIndex].value; 
@@ -919,7 +919,7 @@ table.tabla-listados tbody tr td {
 				"checkNo" : checkNo,
 				"dueDate": dueDate,
 				"categoryID": categoryId,
-				"memo": memo,
+				"memo": memo
 		};
 		var obj=JSON.stringify(TblVendorDetail);
 		$.ajax({

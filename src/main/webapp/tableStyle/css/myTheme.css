@@ -239,3 +239,13 @@
 	z-index: 1;
 	position: relative;
 	}
+	
+	
+	.nav-tabs .nav-link.active {
+    color: #fff;
+    background-color: #05A9C5;
+}
+
+.editTransactionModal{
+	min-height: auto !important;
+}	

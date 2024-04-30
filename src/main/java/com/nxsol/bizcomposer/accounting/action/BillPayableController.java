@@ -153,14 +153,14 @@ public class BillPayableController {
 				e.printStackTrace();
 			}
 			TblVendorDetail vDetail = new TblVendorDetail();
-			vDetail.setBillNo(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("billNo")));
-			vDetail.setVendorId(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("vendorID")));
-			vDetail.setPayerId(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("payerId")));
-			vDetail.setAmount(Double.parseDouble(newObj.getJSONObject("TblVendorDetail").getString("amount")));
-			vDetail.setCheckNo(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("checkNo")));
-			vDetail.setDueDate(newObj.getJSONObject("TblVendorDetail").getString("dueDate"));
-			vDetail.setCategoryID(Integer.parseInt(newObj.getJSONObject("TblVendorDetail").getString("categoryID")));
-			vDetail.setMemo(newObj.getJSONObject("TblVendorDetail").getString("memo"));
+			vDetail.setBillNo(Integer.parseInt(newObj.getString("billNo")));
+			vDetail.setVendorId(Integer.parseInt(newObj.getString("vendorID")));
+			vDetail.setPayerId(Integer.parseInt(newObj.getString("payerId")));
+			vDetail.setAmount(Double.parseDouble(newObj.getString("amount")));
+			vDetail.setCheckNo(Integer.parseInt(newObj.getString("checkNo")));
+			vDetail.setDueDate(newObj.getString("dueDate"));
+			vDetail.setCategoryID(Integer.parseInt(newObj.getString("categoryID")));
+			vDetail.setMemo(newObj.getString("memo"));
 			rl.updateBill(vDetail);
 
 		}

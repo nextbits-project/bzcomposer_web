@@ -247,7 +247,7 @@ select.form-control:not([size]):not([multiple]) {
 	min-height: 100%
 }
 .modal-body1 {
-    min-height: 440px;
+    min-height: 360px;
 }
 
 
@@ -405,4 +405,8 @@ label.tree-toggler .iconImg{
 }
 .form2 {
 	font-size: 13px
+}
+
+.bz_dialogTable{
+	width: 100%;
 }
