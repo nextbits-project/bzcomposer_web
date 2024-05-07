@@ -76,6 +76,8 @@ public interface BcaPaymentRepository extends JpaRepository<BcaPayment, Integer>
 	
 	BcaPayment findByPaymentIdAndCompany_CompanyId(int paymentId, long companyId);
 	
+	List<BcaPayment> findByInvoice_InvoiceIdAndCompany_CompanyId(int invoiceId, long companyId);
+	
 
 	@Modifying
 	@Transactional

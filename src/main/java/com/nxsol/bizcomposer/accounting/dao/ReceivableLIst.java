@@ -57,6 +57,8 @@ public interface ReceivableLIst {
 	
 	public TblPaymentDto setPayment(ReceivableListDto bean,int InvoiceID,int CompanyID);
 	
+	public double getPreviousPaidAmount(int invoiceID,int companyID);
+	
 	public void insertAccount(TblPaymentDto payment,ReceivableListDto bean) throws SQLException;
 	
 	public void getLastId(TblPaymentDto payment);

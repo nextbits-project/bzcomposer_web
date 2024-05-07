@@ -841,7 +841,7 @@ table.tabla-listados tbody tr td {
     	var receivedType = document.getElementById("receivedType");
 		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
 		
-		if(selectedReceivedType == '452'){
+		if(selectedReceivedType == '192'){
 		 	$("#Check").show();
 		 }else{ 
 		 	$("#Check").hide();
@@ -916,8 +916,12 @@ table.tabla-listados tbody tr td {
 	    $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text());
 	    $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text()); 
 	    /* $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(13)').attr('value')); */
-	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == 639
-	        || $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == '1'){
+	    
+	    $("select#receivedType").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value'));
+	    $("select.devDeposittypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value'));
+	    
+	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == 192
+	        || $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == '192'){
 	    	$("#Check").show();
 	    }else{
 	    		$("#Check").hide();
@@ -983,8 +987,8 @@ table.tabla-listados tbody tr td {
 			data : "row=" + obj1 + "&invoiceId="+invoiceId,
 		    success : function(data) {
 
-				updateAccountReceivableTab(data);
-			 /*  window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; */
+				//updateAccountReceivableTab(data);
+			   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; 
 
 			},
 			 error : function(data) {
@@ -1072,6 +1076,7 @@ table.tabla-listados tbody tr td {
 	   console.log(document.getElementById("receivedType").options[type.selectedIndex]);
 	   if(!type.options[type.selectedIndex]){
     	   alert("please select Received Type")
+    	   return false;
        }
        var ctype = type.options[type.selectedIndex].label.trim();
 	   var paymentTypeIdString = type.options[type.selectedIndex].id;
@@ -1132,7 +1137,7 @@ table.tabla-listados tbody tr td {
 	  	var receivedType = document.getElementById("receivedType");
 		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
 		
-		if(selectedReceivedType == '452'){
+		if(selectedReceivedType == '192'){
 			checkNum = document.getElementById("checkNum").value;
 		 }else{ 
 			 checkNum = "0";
@@ -1404,6 +1409,7 @@ table.tabla-listados tbody tr td {
    }
    function updateAccountReceivableTab(data)
    {
+	   debugger;
 	   document.getElementById("devAmount").innerHTML = "";
 	   $("#receivableForm")[0].reset();
 	   $(document).find('div#tblForInvoiceOrder table').replaceWith($(data).find('div#tblForInvoiceOrder').html());

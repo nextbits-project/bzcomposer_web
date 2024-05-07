@@ -99,7 +99,6 @@ public class AccountingController{
 		request.setAttribute("arCatId", configDto.getArCategory());
 		request.setAttribute("arReceiveType", configDto.getArReceivedType());
 		request.setAttribute("arDepositTo", configDto.getArDepositTo());
-
 		request.setAttribute("AccountForCombo", account);
 		request.setAttribute("PaymentTypeForCombo", paymentType);
 		request.setAttribute("CategoryCombo", categoryforcombo);
@@ -265,10 +264,11 @@ public class AccountingController{
 			int invoiceId = rb.getInvoiceID();
 			TblPaymentDto payment = rl.setPayment(invoice,invoiceId,ConstValue.companyId);
 			payment.setInvoiceTypeID(1);
-			int balance = (int) (invoice.getAdjustedTotal() - (rl.getSum(invoiceId) + invoice.getPaidAmount()));
+			double balance = (invoice.getAdjustedTotal() - (rl.getSum(invoiceId) + invoice.getPaidAmount()));
 //	    ReceivableListBean invoice = new ReceivableListBean();
 			invoice.setBalance(balance);
 			invoice.setInvoiceID(invoiceId);
+			
 			rl.insertAccount(payment, invoice);
 			rl.getLastId(payment);
 			TblAccount account1 = rl.getAccountById(invoice.getBankAccountID());
