@@ -23,10 +23,10 @@
     <div style="margin: 20px 10px 0px 40px;">
 	<table>
 		<tr>
-			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportleads.downloadleadsincsv'/>" onclick="downloadCustomerList('csv')"/></td>
+			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportleads.downloadleadsincsv'/>" onclick="downloadLeadsList('csv')"/></td>
 	    </tr>
 	    <tr>
-			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportleads.downloadleadsinxls'/>" onclick="downloadCustomerList('xls')"/></td>
+			<td><input type="button" class="formbutton" value="<spring:message code='BzComposer.exportleads.downloadleadsinxls'/>" onclick="downloadLeadsList('xls')"/></td>
 		</tr>
 		<tr><td>&nbsp;</td></tr>
         <tr>
@@ -45,7 +45,7 @@
 </div>
 <script type="text/javascript">
 var progress;
-function downloadCustomerList(type){
+function downloadLeadsList(type){
 	
 	document.forms[0].action = "File?tabid=ExportLeads&type="+type;
 	document.forms[0].submit();

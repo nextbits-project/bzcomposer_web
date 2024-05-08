@@ -99,10 +99,10 @@ table.tabla-listados tbody tr td {
 									</tr>
 									<tr>
 										<td colspan="2" align="center"><input type="button"
-											class="formbutton" onclick="customerImport()"
+											class="formbutton" onclick="leadsImport()"
 											style="padding: 7 15px;"
 											value="<spring:message code='menu.file.Import'/>" /> <input
-											type="button" class="formbutton" onclick="exportCustomer()"
+											type="button" class="formbutton" onclick="exportLead()"
 											style="padding: 7 15px;"
 											value="<spring:message code='menu.file.ExportTo'/>" /></td>
 									</tr>

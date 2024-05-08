@@ -159,10 +159,18 @@ public class LeadService {
 
 		customerDto.setType(String.valueOf(clientVendor.getCvcategoryId()));
 		customerDto.setCustomerGroup(String.valueOf(clientVendor.getCustomerGroupId()));
-		customerDto.setTerm(String.valueOf(clientVendor.getTerm().getTermId()));
-		customerDto.setPaymentType(String.valueOf(clientVendor.getPaymentType().getPaymentTypeId()));
-		customerDto.setRep(String.valueOf(clientVendor.getSalesRep().getSalesRepId()));
-		customerDto.setShipping(String.valueOf(clientVendor.getShipCarrier().getShipCarrierId()));
+		
+		if (clientVendor.getTerm() != null)
+			customerDto.setTerm(String.valueOf(clientVendor.getTerm().getTermId()));
+		
+		if (clientVendor.getPaymentType() != null)
+			customerDto.setPaymentType(String.valueOf(clientVendor.getPaymentType().getPaymentTypeId()));
+		
+		if (clientVendor.getSalesRep() != null)
+			customerDto.setRep(String.valueOf(clientVendor.getSalesRep().getSalesRepId()));
+		
+		if (clientVendor.getShipCarrier() != null)
+			customerDto.setShipping(String.valueOf(clientVendor.getShipCarrier().getShipCarrierId()));
 
 		if (clientVendor.getDateAdded() != null) {
 			customerDto.setDateAdded(convertDateOffsetToString(clientVendor.getDateAdded()));
@@ -304,8 +312,11 @@ public class LeadService {
 
 //	Insert Lead Data
 	@Transactional
-	public void addClientVendor(CustomerDto customerDto, String companyId) {
+	public void addClientVendor(CustomerDto customerDto, String companyId, Integer clientVendorID) {
 		BcaClientvendor clientVendor = new BcaClientvendor();
+		if (clientVendorID != null && clientVendorID > 0) {
+			clientVendor.setClientVendorId(clientVendorID);
+		}
 		//clientVendor.setClientVendorId(Integer.parseInt(customerDto.getClientVendorID()));
 		clientVendor.setFirstName(customerDto.getFirstName());
 		clientVendor.setMiddleName(customerDto.getMiddleName());
@@ -348,27 +359,35 @@ public class LeadService {
 		clientVendor.setCvcategoryId(cvCategoryId);
 		clientVendor.setCvcategoryName(clienCategoryRepo.findNameByCvcategoryId(cvCategoryId));
 
-		Optional<BcaPaymenttype> optionalPaymentType = PaymenttypeRepo
-				.findById(Integer.parseInt(customerDto.getPaymentType()));
-		BcaPaymenttype paymentType = optionalPaymentType.orElse(null);
-		clientVendor.setPaymentType(paymentType);
-
-		Optional<BcaSalesrep> optionalSalesRep = salesRepRepo.findById(Integer.parseInt(customerDto.getRep()));
-		BcaSalesrep salesRep = optionalSalesRep.orElse(null);
-		clientVendor.setSalesRep(salesRep);
-
-		Optional<BcaShipcarrier> optionalShipcarrier = shipcarrierRepRepo
-				.findById(Integer.parseInt(customerDto.getShipping()));
-		BcaShipcarrier Shipcarrier = optionalShipcarrier.orElse(null);
-		clientVendor.setShipCarrier(Shipcarrier);
-
-		Optional<BcaTerm> optionalTerm = termRepo.findById(Integer.parseInt(customerDto.getTerm()));
-		BcaTerm term = optionalTerm.orElse(null);
-		clientVendor.setTerm(term);
-
-		Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.parseLong(companyId));
-		BcaCompany company = optionalCompany.orElse(null);
-		clientVendor.setCompany(company);
+		if (customerDto.getPaymentType() != null && !customerDto.getPaymentType().isEmpty()) {
+			Optional<BcaPaymenttype> optionalPaymentType = PaymenttypeRepo.findById(Integer.parseInt(customerDto.getPaymentType()));
+			BcaPaymenttype paymentType = optionalPaymentType.orElse(null);
+			clientVendor.setPaymentType(paymentType);
+		}
+		
+		if (customerDto.getRep() != null && !customerDto.getRep().isEmpty()) {
+			Optional<BcaSalesrep> optionalSalesRep = salesRepRepo.findById(Integer.parseInt(customerDto.getRep()));
+			BcaSalesrep salesRep = optionalSalesRep.orElse(null);
+			clientVendor.setSalesRep(salesRep);	
+		}
+		
+		if (customerDto.getShipping() != null && !customerDto.getShipping().isEmpty()) {
+			Optional<BcaShipcarrier> optionalShipcarrier = shipcarrierRepRepo.findById(Integer.parseInt(customerDto.getShipping()));
+			BcaShipcarrier Shipcarrier = optionalShipcarrier.orElse(null);
+			clientVendor.setShipCarrier(Shipcarrier);	
+		}
+		
+		if (customerDto.getTerm() != null && !customerDto.getTerm().isEmpty()) {
+			Optional<BcaTerm> optionalTerm = termRepo.findById(Integer.parseInt(customerDto.getTerm()));
+			BcaTerm term = optionalTerm.orElse(null);
+			clientVendor.setTerm(term);	
+		}
+		
+		if (companyId != null && !companyId.isEmpty()) {
+			Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.parseLong(companyId));
+			BcaCompany company = optionalCompany.orElse(null);
+			clientVendor.setCompany(company);	
+		}
 
 //		BcaCategory myCategory = new BcaCategory(); 
 //		myCategory.setCategoryId(0);

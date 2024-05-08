@@ -276,8 +276,7 @@ public class FileController {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
 				// InvoiceInfoDao invoiceInfoDao = new InvoiceInfoDao();
-				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request,
-						new CustomerDto());
+				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
 				boolean b = importExportUtils.exportCustomerList(customerList, type, response, "");
 				if (b == true) {
 					if (type.equals("csv")) {
@@ -295,8 +294,7 @@ public class FileController {
 				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Contact");
 				if (typeIDList != null && !typeIDList.isEmpty())
 					request.setAttribute("cvtypeId", typeIDList.get(0));
-				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request,
-						new CustomerDto());
+				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
 				boolean b = importExportUtils.exportCustomerList(customerList, type, response, "Contact");
 				if (b == true) {
 					if (type.equals("csv")) {
@@ -311,13 +309,18 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("ExportLeads")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				List<LeadDto> customerList = leadDAO.loadLeads(compId);
-				boolean b = importExportUtils.exportLeadsList(customerList, type, response);
+				//List<LeadDto> customerList = leadDAO.loadLeads(compId);
+				//boolean b = importExportUtils.exportLeadsList(customerList, type, response);
+				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Lead");
+				if (typeIDList != null && !typeIDList.isEmpty())
+					request.setAttribute("cvtypeId", typeIDList.get(0));
+				ArrayList<CustomerDto> leadList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
+				boolean b = importExportUtils.exportCustomerList(leadList, type, response, "Lead");
 				if (b == true) {
 					if (type.equals("csv")) {
-						request.setAttribute("success", "BzComposer.exportcustomer.customerlistincsvdownloaded");
+						request.setAttribute("success", "BzComposer.exportleads.leadslistincsvdownloaded");
 					} else {
-						request.setAttribute("success", "BzComposer.exportcustomer.customerlistinxlsdownloaded");
+						request.setAttribute("success", "BzComposer.exportleads.leadslistinxlsdownloaded");
 					}
 				}
 			} else {
@@ -326,7 +329,8 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("DownloadLeadTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				importExportUtils.downloadLeadTemplate(type, response);
+				//importExportUtils.downloadLeadTemplate(type, response);
+				importExportUtils.downloadTemplateLead(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportLeads";
 			}
@@ -340,8 +344,9 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("DownloadContactTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				ArrayList<CustomerDto> leadDtos = new ArrayList<CustomerDto>();
-				importExportUtils.exportCustomerList(leadDtos, type, response, "Contact");
+				//ArrayList<CustomerDto> leadDtos = new ArrayList<CustomerDto>();
+				//importExportUtils.exportCustomerList(leadDtos, type, response, "Contact");
+				importExportUtils.downloadContactTemplate(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportCustomer";
 			}
@@ -485,7 +490,11 @@ public class FileController {
 			forward = "redirect:File?tabid=ImportContact";
 		} else if (action.equalsIgnoreCase("UploadLeadsFile")) {
 			if (!attachFile.isEmpty()) {
-				boolean b = importExportUtils.uploadLeadsFile(attachFile, request);
+				//boolean b = importExportUtils.uploadLeadsFile(attachFile, request);
+				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Lead");
+				if (typeIDList != null && !typeIDList.isEmpty())
+					request.setAttribute("CVTypeID", typeIDList.get(0));
+				boolean b = importExportUtils.importCustomerFile(attachFile, request);
 				if (b == true) {
 					request.getSession().setAttribute("successMessage", "success");
 				}

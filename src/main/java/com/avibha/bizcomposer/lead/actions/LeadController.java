@@ -131,7 +131,7 @@ public class LeadController {
 	public String getUpdateLead(@PathVariable("id") int id, Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String companyId = (String) session.getAttribute("CID");
-
+		request.getSession().setAttribute("editedLeadID", id);
 		CustomerDto customerDto = leadService.getLeadById(id);
 		System.out.println(customerDto);
 
@@ -149,9 +149,31 @@ public class LeadController {
 		model.addAttribute("pageHeading", "Edit Lead");
 		model.addAttribute("purpose", "editPage");
 
-		return "leads/addNewLead";
+		//return "leads/addNewLead";
+		return "leads/editLead";
 	}
-
+	
+	@PostMapping("/updatesLead")
+	public String updatesLead(@ModelAttribute("customerDto") CustomerDto customerDto, 
+			@RequestParam(name = "product", required = false) List<String> products, 
+			@RequestParam(name = "purpose") String purpose, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		Integer leadId = (Integer) request.getSession().getAttribute("editedLeadID");
+		String companyId = (String) session.getAttribute("CID");
+		customerDto.setCompanyID(Integer.valueOf(companyId));
+		leadService.addClientVendor(customerDto, companyId, leadId);
+		customerDto.setClientVendorID(String.valueOf(leadId));
+		leadService.addShippingAddress(customerDto);
+		leadService.addBillingAddress(customerDto);
+		/*
+		 * int lastInsertedLeadId = leadService.addLead(customerDto, companyId); if
+		 * (products != null) { leadService.addLeadProduct(products, companyId,
+		 * lastInsertedLeadId, purpose); }
+		 */
+	 
+		return "redirect:/Leads";
+	}
+	
 	@PostMapping("/postNewLead")
 	public String postNewLead(@ModelAttribute("customerDto") CustomerDto customerDto,
 			@RequestParam(name = "product", required = false) List<String> products,
@@ -159,7 +181,7 @@ public class LeadController {
 		HttpSession session = request.getSession();
 		String companyId = (String) session.getAttribute("CID");
 		customerDto.setCompanyID(Integer.valueOf(companyId));
-		leadService.addClientVendor(customerDto, companyId);
+		leadService.addClientVendor(customerDto, companyId, 0);
 		leadService.addShippingAddress(customerDto);
 		leadService.addBillingAddress(customerDto);
 

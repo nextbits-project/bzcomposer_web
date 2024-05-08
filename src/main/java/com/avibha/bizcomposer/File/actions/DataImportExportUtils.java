@@ -456,9 +456,13 @@ public class DataImportExportUtils {
 		boolean b = false;
 		String csvFilePath = "";
 		String excelFilePath = "";
+		//common for customer, contact and lead Download Template and Download list data
 		if (fileName != null && !fileName.isEmpty() && fileName.equalsIgnoreCase("Contact")) {
 			csvFilePath = System.getProperty("user.home") + "/Test/BCA_ContactList.csv";
 			excelFilePath = System.getProperty("user.home") + "/Test/BCA_ContactList.xls";	
+		} else if (fileName != null && !fileName.isEmpty() && fileName.equalsIgnoreCase("Lead")) {
+			csvFilePath = System.getProperty("user.home") + "/Test/BCA_LeadList.csv";
+			excelFilePath = System.getProperty("user.home") + "/Test/BCA_LeadList.xls";	
 		} else {
 			csvFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.csv";
 			excelFilePath = System.getProperty("user.home") + "/Test/BCA_CustomerList.xls";
@@ -493,7 +497,9 @@ public class DataImportExportUtils {
 					fileWriter.append(customer.getCellPhone()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getFax()).append(COMMA_DELIMITER);
 					fileWriter.append(customer.getEmail()).append(COMMA_DELIMITER);
-					fileWriter.append(parseColumnValue(customer.getTexID(), 1)).append(COMMA_DELIMITER);
+					//fileWriter.append(parseColumnValue(customer.getTexID(), 1)).append(COMMA_DELIMITER);
+					fileWriter.append(parseColumnValue(customer.getTexID(), 0)).append(COMMA_DELIMITER);
+					
 					/*
 					 * fileWriter.append(parseColumnValue(customer.getTaxAble(),
 					 * 1)).append(COMMA_DELIMITER);
@@ -564,7 +570,8 @@ public class DataImportExportUtils {
 					row.createCell(13).setCellValue(customer.getCellPhone());
 					row.createCell(14).setCellValue(customer.getFax());
 					row.createCell(15).setCellValue(customer.getEmail());
-					row.createCell(16).setCellValue(parseColumnValue(customer.getTexID(), 1));
+					//row.createCell(16).setCellValue(parseColumnValue(customer.getTexID(), 1));
+					row.createCell(16).setCellValue(parseColumnValue(customer.getTexID(), 0));
 					/*
 					 * row.createCell(17).setCellValue(parseColumnValue(customer.getTaxAble(), 1));
 					 * row.createCell(18).setCellValue(parseColumnValue(customer.getIsclient(), 1));
@@ -830,10 +837,25 @@ public class DataImportExportUtils {
 
 	public boolean downloadCustomerTemplate(String type, HttpServletResponse response) {
 		ArrayList<CustomerDto> leadDtos = new ArrayList<CustomerDto>();
+		leadDtos = getSampleData(leadDtos);
 		return exportCustomerList(leadDtos, type, response, "");
 
 	}
 
+	public boolean downloadContactTemplate(String type, HttpServletResponse response) {
+		ArrayList<CustomerDto> contactDtos = new ArrayList<CustomerDto>();
+		contactDtos = getSampleData(contactDtos);
+		return exportCustomerList(contactDtos, type, response, "Contact");
+
+	}
+	
+	public boolean downloadTemplateLead(String type, HttpServletResponse response) {
+		ArrayList<CustomerDto> leadDtos = new ArrayList<CustomerDto>();
+		leadDtos = getSampleData(leadDtos);
+		return exportCustomerList(leadDtos, type, response, "Lead");
+
+	}
+	
 	public boolean downloadVendorTemplate(String type, HttpServletResponse response) {
 		ArrayList<VendorDto> leadDtos = new ArrayList<VendorDto>();
 		return exportVendorList(leadDtos, type, response);
@@ -844,7 +866,28 @@ public class DataImportExportUtils {
 		ArrayList<ItemDto> leadDtos = new ArrayList<ItemDto>();
 		return exportItemList(leadDtos, type, response);
 	}
-
+	
+	public ArrayList<CustomerDto> getSampleData(ArrayList<CustomerDto> contactDtos) {
+		CustomerDto customerDto = new CustomerDto();
+		customerDto.setCname("Company1");
+		customerDto.setDbaName("");
+		customerDto.setTitle("Mr.");
+		customerDto.setFirstName("Jason");
+		customerDto.setMiddleName("");
+		customerDto.setLastName("Lee");
+		customerDto.setAddress1("address1");
+		customerDto.setAddress2("");
+		customerDto.setCity("Alabaster");
+		customerDto.setState("Alabama");
+		customerDto.setCountry("United States");
+		customerDto.setZipCode("35007");
+		customerDto.setPhone("1(111) 111-1111");
+		customerDto.setCellPhone("");
+		customerDto.setEmail("nextbits.jason@gmail.com");
+		contactDtos.add(customerDto);
+		return contactDtos;
+	}
+	
 	public boolean downloadLeadTemplate(String type, HttpServletResponse response) {
 		List<LeadDto> leadDtos = new ArrayList<LeadDto>();
 
@@ -1920,6 +1963,7 @@ public class DataImportExportUtils {
 	}
 	
 	public boolean importCustomerFile(MultipartFile attachedFile, HttpServletRequest request) {
+		//common for customer, contact and lead upload data
 		boolean status = false;
 		File file = new File(attachedFile.getOriginalFilename());
 		String[] fileName = file.getName().split("\\.");
@@ -1962,22 +2006,21 @@ public class DataImportExportUtils {
 					customer.setFax(data[14]);
 					customer.setEmail(data[15]);
 					customer.setTexID(data[16]);
-					customer.setTaxAble(data[17]);
-					customer.setType(data[18]);
-					customer.setIsclient(data[18]);
-					customer.setOpeningUB(data[20]);
-					customer.setExtCredit(data[21]);
-					customer.setTerm(data[22]);
-					customer.setRep(data[23]);
-					customer.setShipping(data[24]);
-					customer.setPaymentType(data[25]);
-					customer.setFsUseIndividual(data[26]);
-					customer.setAnnualIntrestRate(data[27]);
-					customer.setMinFCharges(data[28]);
-					customer.setGracePrd(data[29]);
-					customer.setFsAssessFinanceCharge(data[30]);
-					customer.setFsMarkFinanceCharge(data[31]);
-
+					/*
+					 * customer.setTaxAble(data[17]); customer.setType(data[18]);
+					 * customer.setIsclient(data[18]); customer.setOpeningUB(data[20]);
+					 * customer.setExtCredit(data[21]); customer.setTerm(data[22]);
+					 * customer.setRep(data[23]); customer.setShipping(data[24]);
+					 * customer.setPaymentType(data[25]); customer.setFsUseIndividual(data[26]);
+					 * customer.setAnnualIntrestRate(data[27]); customer.setMinFCharges(data[28]);
+					 * customer.setGracePrd(data[29]); customer.setFsAssessFinanceCharge(data[30]);
+					 * customer.setFsMarkFinanceCharge(data[31]);
+					 */
+					
+					if (request.getAttribute("CVTypeID") != null && request.getAttribute("CVTypeID").toString() != null) {
+						customer.setIsclient(request.getAttribute("CVTypeID").toString());
+					}
+					
 //                  b = insertdataintodatabase(al, request, type);
 					customerInfoDao.insertCustomer(customer, compId);
 				}
