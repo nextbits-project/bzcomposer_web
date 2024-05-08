@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+//@NoArgsConstructor
 @Service
 public class CustomerDto  implements Serializable{
 
@@ -235,7 +235,11 @@ public class CustomerDto  implements Serializable{
 	private String product;
 
 	private List<String> leadSelectedproducts;
-
+	
+	public CustomerDto() {
+		//adding for object creation
+	}
+	
 	public CustomerDto(int clientVendorId, String name, String customerTitle, String firstName, String lastName,
 			String address1, String address2, String city, String state, String zipCode, String country, String email,
 			String phone, String cellPhone, String fax, String dateAdded, boolean isPaymentCompleted,

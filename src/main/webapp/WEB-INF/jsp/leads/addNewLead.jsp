@@ -119,7 +119,7 @@ $(function() {
 																	<form:select path="title" style="width:100px;">
 								                                        <option value=""><spring:message code="BzComposer.ComboBox.Select" /></option>
 								                                        <c:forEach items="${titleList}" var="curObject">
-								                                            <option value="${curObject.value}" ${curObject.value==defaultCongurationData.custTitleID?'selected':''}>${curObject.label}</option>
+								                                           <option value="${curObject.value}" ${curObject.value==customerDto.title?'selected':''}>${curObject.label}</option>
 								                                        </c:forEach>
 								                                    </form:select>
 																	</td>

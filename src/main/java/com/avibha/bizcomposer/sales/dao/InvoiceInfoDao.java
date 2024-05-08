@@ -3239,7 +3239,7 @@ public class InvoiceInfoDao {
 			jpql.append("LEFT JOIN FETCH cv.clientVendorBcaShippingaddresss sa ");
 			jpql.append("WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
 
-			if (cvId != null || cvId != "") {
+			if (cvId != null && !cvId.isEmpty()) {
 				jpql.append(" AND cv.clientVendorId = " + cvId);
 			}
 					//"WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
@@ -3281,12 +3281,12 @@ public class InvoiceInfoDao {
 				customer.setLastName(cv.getLastName());
 				customer.setAddress1(cv.getAddress1());
 				customer.setAddress2(cv.getAddress2());
-				if(cv.getCity() != null) {
+				if(cv.getCity() != null && !cv.getCity().isEmpty()) {
 					Optional<BcaCities> bcaCities = bcaCitiesRepository.findById(Integer.valueOf(cv.getCity()));	
 					customer.setCity(bcaCities.get().getName());
 					customer.setCityID(String.valueOf(bcaCities.get().getId()));
 				}
-				if(cv.getState() != null) {
+				if(cv.getState() != null && !cv.getState().isEmpty()) {
 					Optional<BcaStates> bcaStates = bcaStatesRepository.findById(Integer.valueOf(cv.getState()));	
 					customer.setState(bcaStates.get().getName());
 					customer.setStateID(String.valueOf(bcaStates.get().getId()));
@@ -3295,7 +3295,7 @@ public class InvoiceInfoDao {
 				request.setAttribute("state_gen", cv.getState());
 
 				customer.setProvince(cv.getProvince());
-				if(cv.getCountry() != null) {
+				if(cv.getCountry() != null && !cv.getCustomerTitle().isEmpty()) {
 					Optional<BcaCountries> bcaCountries = bcaCountriesRepository.findById(Integer.valueOf(cv.getCountry()));	
 					customer.setCountry(bcaCountries.get().getName());
 					customer.setCountryID(String.valueOf(bcaCountries.get().getId()));
@@ -3307,7 +3307,7 @@ public class InvoiceInfoDao {
 				customer.setFax(cv.getFax());
 				customer.setEmail(cv.getEmail());
 				customer.setHomePage(cv.getHomePage());
-				if(cv.getCustomerTitle() != null) {
+				if(cv.getCustomerTitle() != null && !cv.getCustomerTitle().isEmpty()) {
 					Optional<BcaTitle> bcaTitle = bcaTitleRepository.findById(Integer.valueOf(cv.getCustomerTitle()));
 					customer.setTitle(bcaTitle.get().getTitle());
 				}
