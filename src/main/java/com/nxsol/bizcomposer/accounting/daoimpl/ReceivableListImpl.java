@@ -7321,7 +7321,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 					.findDistinctByCompany_CompanyIdAndStatusInAndCvtypeIdInAndDeletedAndActiveOrderByName(
 							ConstValue.companyIdLong, status, cvTypeId, 0, 1);
 
-			for (BcaClientvendor bcaClientvendor : bcaClientvendors) {
+			for (BcaClientvendor bcaClientvendor : bcaClientvendors)
+{
 				ClientVendor clientVendor = new ClientVendor();
 
 				String name = bcaClientvendor.getName();
@@ -7849,11 +7850,17 @@ public class ReceivableListImpl implements ReceivableLIst {
 							status, 0, 1);
 			for (BcaClientvendor bcaClientvendor : bcaClientvendors) {
 				if (bcaClientvendor.getCvtypeId() == 8) {
-					ClientVendor clientVendor = new ClientVendor();
-					String name = bcaClientvendor.getName();
-					clientVendor.setName(name.equals("") ? name : name.trim());
+					
+					//ClientVendor clientVendor = new ClientVendor();
+					//String name = bcaClientvendor.getName();
+					//clientVendor.setName(name.equals("") ? name : name.trim());
 
+					//clientVendor.setCvID(bcaClientvendor.getClientVendorId());
+					//ServiceProviderClientvendor.add(clientVendor);
+					
+					ClientVendor clientVendor = new ClientVendor();
 					clientVendor.setCvID(bcaClientvendor.getClientVendorId());
+					clientVendor.setName(bcaClientvendor.getName());
 					ServiceProviderClientvendor.add(clientVendor);
 				}
 			}

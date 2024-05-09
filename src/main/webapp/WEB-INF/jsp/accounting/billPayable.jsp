@@ -159,8 +159,7 @@ table.tabla-listados tbody tr td {
 												 <tr  id='${loop.index}$$' onclick="setBillDataById(${objList.cvID}, ${loop.index})">
 
 													<td colspan="2" style="font-size: 12px;" align="left">
-														
-														${objList.name}</td>
+										                   ${objList.name}</td>
 												</tr>
 											</c:forEach>
 											

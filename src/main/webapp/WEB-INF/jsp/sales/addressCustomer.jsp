@@ -47,7 +47,7 @@ table.tabla-listados tr td {
 	    </span>
 	</div>
 	<div align="center">
-	<table>
+	<table style="width:60%">
 		<tr>
 			<td>
 			<fieldset>
@@ -55,23 +55,23 @@ table.tabla-listados tr td {
 			<table class="tabla-listados">
 				<tr>
 					<td style="width:30%;"><spring:message code="BzComposer.Purchase.PurchaseOrder.ConfirmAddress.CompanyName" /></td>
-					<td style="width:70%;"><form:input type="text" path="companyName" style="width:90%;" /></td>
+					<td style="width:70%;"><form:input type="text" readonly="true"   path="companyName"  style="width:70%;" /></td>
 				</tr>
 				<tr>
 					<td><spring:message code="BzComposer.Purchase.PurchaseOrder.ConfirmAddress.FirstName" /></td>
-					<td><form:input type="text" path="firstName" /></td>
+					<td><form:input type="text"  readonly="true"   path="firstName" /></td>
 				</tr>
 				<tr>
 					<td><spring:message code="BzComposer.Purchase.PurchaseOrder.ConfirmAddress.LastName" /></td>
-					<td><form:input type="text" path="lastName" /></td>
+					<td><form:input type="text"  readonly="true"  path="lastName" /></td>
 				</tr>
 				<tr>
 					<td><spring:message code="BzComposer.Purchase.PurchaseOrder.ConfirmAddress.Address1" /></td>
-					<td><form:input type="text" path="address1" style="width:90%;" /></td>
+					<td><form:input type="text"  path="address1" style="width:70%;" /></td>
 				</tr>
 				<tr>
 					<td><spring:message code="BzComposer.Purchase.PurchaseOrder.ConfirmAddress.Address2" /></td>
-					<td><form:input type="text" path="address2" style="width:90%;" /></td>
+					<td><form:input type="text" path="address2" style="width:70%;" /></td>
 				</tr>
 				<tr>
                     <td>
@@ -87,6 +87,7 @@ table.tabla-listados tr td {
                             <form:option value="0"><spring:message code="BzComposer.register.selectcity" /></form:option>
                             <c:forEach items="${cityList}" var="currObject">
                                 <form:option value="${currObject.cityId}">${currObject.cityName}</form:option>
+                                 
                             </c:forEach>
                         </form:select>
 					</td>
@@ -102,6 +103,7 @@ table.tabla-listados tr td {
                             <form:option value="0"><spring:message code="BzComposer.register.selectstate" /></form:option>
                             <c:forEach items="${stateList}" var="currObject">
                                 <form:option value="${currObject.stateId}">${currObject.state}</form:option>
+                                 
                             </c:forEach>
                         </form:select>
 					</td>
@@ -113,16 +115,37 @@ table.tabla-listados tr td {
 						    <form:option value="0"><spring:message  code="BzComposer.register.selectcounry"/></form:option>
 						    <c:forEach items="${countryList}" var="currObject">
                         		<form:option value="${currObject.countryId}">${currObject.countryName}</form:option>
+                        		 
                             </c:forEach>
 					    </form:select>
                     </td>
 				</tr>
+				
+				 <tr>
+		    <td><input type="checkbox"  align="center" name="isDefaultAddress" onclick="setDefaultAddress(this.form);" id="isDefaultAddress" value="off"> </td>
+						
+				<td>			
+			 <c:choose>
+            <c:when test="${addressType=='bill'}">
+                <spring:message code="BzComposer.invoice.defaultBillingAddress" />
+            </c:when>
+            <c:when test="${addressType=='ship'}">
+                <spring:message code="BzComposer.invoice.defaultShippingAddress" />
+            </c:when>
+            <c:otherwise>
+                <spring:message code="BzComposer.invoice.defaultAddress" />
+            </c:otherwise>
+            </c:choose>
+                  </td>
+		     </tr>
+		
 			</table>
 			</div>
 			</fieldset>
 			</td>
 
 		</tr>
+		      
 		<tr>
 			<td style="font-size: 14px !important;padding: 5px 0px 5px 10px;">
 			    <spring:message code="BzComposer.Purchase.PurchaseOrder.ConfirmAddress.SureMessage" />
@@ -131,7 +154,7 @@ table.tabla-listados tr td {
 		<tr><td>&nbsp;</td></tr>
 		<tr align="center">
 			<td>
-			    <button type="submit" class="formbutton"><spring:message code="BzComposer.Purchase.PurchaseOrder.ConfirmAddress.OkButton" /></button>
+			    <button type="submit" class="formbutton"><spring:message code="BzComposer.Purchase.PurchaseOrder.ConfirmAddress.updateButton" /></button>
 				<button type="button" class="formbutton" onclick="cancel();"><spring:message code="BzComposer.Purchase.PurchaseOrder.ConfirmAddress.CloseButton" /></button>
 			</td>
 		</tr>
@@ -145,6 +168,7 @@ table.tabla-listados tr td {
 	</div>
 	<div>
 	    <form:hidden path="clientVendorID" />
+	   
 	    <form:hidden path="addressID" />
 	    <input type="hidden" id="stateID" name="stateID" value="${invoiceDto.state}" />
 	</div>
@@ -172,8 +196,22 @@ function loadPageData(){
         $('.lblZipcodeShow').show();
     }
 }
+function setDefaultAddress(form)
+{
+    if(form.isDefaultAddress.checked==true)
+    {
+        form.isDefaultAddress.value="on";
+    }
+    else 
+    {
+        form.isDefaultAddress.value="off";
+    }
+}
+
 function cancel(){
-	window.opener.location.reload();
+
+	//window.opener.location="Invoice?tabid=Invoice";
+  window.opener.location.reload();
 	window.close();
 	
 }

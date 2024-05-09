@@ -1,4 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%@page import="com.nxsol.bzcomposer.company.domain.BcaShippingaddress"%>
+<%@page import="com.nxsol.bzcomposer.company.domain.BcaBillingaddress"%>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -61,7 +64,18 @@ function setLastPO() {
 	setIds();
 }
 
+function removeSessionData()
+{
+<%
+   session.removeAttribute("BillingAddress");
+   session.removeAttribute("ShippingAddress");
+   session.removeAttribute("lastLineoFSAddress");
+   session.removeAttribute("lastLineoFBAddress");
+ %>
+}
 function onSave(form) {
+	
+	removeSessionData();
 	shipinfo();
 	No = form.orderNo.value;
 	custnm = trim(document.getElementById('custNm').value);
@@ -168,6 +182,7 @@ function onSave(form) {
 	}
 }
 
+
 function shipinfo(){
 	/* <c:if test="${Enable}">
 		if(document.getElementById('dropship').checked==false){
@@ -223,7 +238,7 @@ function init() {
 	<c:if test="${Flag}">
 		setFlag();
 	</c:if>
-	Assignment(document.PurchaseOrderForm.custID.value, document.PurchaseOrderForm);
+	//Assignment(document.PurchaseOrderForm.custID.value, document.PurchaseOrderForm);
 }
 </script>
 </head>
@@ -243,25 +258,6 @@ function init() {
 							<input type="hidden" id="oldValue" value="0">
 	                        <input type="hidden" id="holdUnitWeight" value="0">
 
-							<div id="BillShipAddrDetails">
-								<input type="hidden" name="BLSize" id="bSize"
-									value='${BillAddr.size()}' />
-								<c:forEach items="${BillAddr}" var="objList" varStatus="loop">
-									<input type="hidden" value='${objList.clientVendorID}'
-										id='${loop.index}clvid' />
-									<input type="hidden" value='${objList.billTo}'
-										id='${loop.index}bl' />
-									<input type="hidden" value='${CID}' id='${loop.index}cid' />
-									<input type="hidden" value='${objList.bsAddressID}'
-										id='${loop.index}bsaddr' />
-								</c:forEach>
-
-						<input type="hidden" name="LSize" id="sSize" value='${ShAddr.size()}'>
-	                    <c:forEach items="${ShAddr}" var="objList" varStatus="loop">
-	                        <input type="hidden" value='${objList.clientVendorID}' id='${loop.index}sh_id' />
-	                        <input type="hidden" value='${objList.shipTo}' id='${loop.index}sh' />
-	                        <input type="hidden" value='${objList.shAddressID}' id='${loop.index}shaddr' />
-	                    </c:forEach>
 								<%-- <input type="hidden" name="LSize" id="sSize"
 									value='${ShAddr.size()}' />
 								<c:forEach items="${ShAddr}" var="objList" varStatus="loop">
@@ -844,9 +840,10 @@ function init() {
 													<td style="font-size: 14px; width: 50%;">
 														<div>
 															<input type="text" onchange="return saveItemName();"
+															onclick="saveItemNameOldValue();"
 																id="pname_id" style="width: 95%;" />
 														</div>
-														<div id="SaveItemName" title="Update item name"
+														<div id="SaveItemName" title="Confirm the  Item Name Update"
 															style="display: none;">
 															<p>
 																<spring:message code="BzComposer.invoice.saveItemName" />
@@ -1109,7 +1106,8 @@ function init() {
 										<input type="hidden" name="shipAddr" value="0" />
 									</div>
 									<div>
-										<input type="hidden" name="size" value="0" /> <input
+										<input type="hidden" name="size" value="0" /> 
+										<input
 											type="hidden" name="item" value="" /> <input type="hidden"
 											name="qty" value="" /> <input type="hidden" name="serialNo"
 											value="" /> <input type="hidden" name="desc" value="" /> <input
@@ -1124,6 +1122,34 @@ function init() {
 											name="fullName" /> <input type="hidden" name="previousPoNum" />
 										<form:hidden path="clientVendorID" />
 									</div>
+									
+									
+									<div id="BillShipAddrDetails">
+											<input type="hidden" name="BLSize" id="bSize"
+												value='${BillAddr.size()}'>
+											<c:forEach items="${BillAddr}" var="objList" varStatus="loop">
+												<input type="hidden" value='${objList.clientVendorID}'
+													id='${loop.index}clvid' />
+												<input type="hidden" value='${objList.billTo}'
+													id='${loop.index}bl' />
+												<input type="hidden" value='${CID}' id='${loop.index}cid' />
+												<input type="hidden" value='${objList.bsAddressID}'
+													id='${loop.index}bsaddr' />
+											</c:forEach>
+
+											<input type="hidden" name="LSize" id="sSize"
+												value='${ShAddr.size()}'>
+											<c:forEach items="${ShAddr}" var="objList" varStatus="loop">
+												<input type="hidden" value='${objList.clientVendorID}'
+													id='${loop.index}sh_id' />
+												<input type="hidden" value='${objList.shipTo}'
+													id='${loop.index}sh' />
+												<input type="hidden" value='${objList.shAddressID}'
+													id='${loop.index}shaddr' />
+											</c:forEach>
+										</div>
+									
+									
 									<!-- end Contents -->
 								</section>
 							</div>
@@ -1155,7 +1181,126 @@ function init() {
 	<%@ include file="/WEB-INF/jsp/include/footer.jsp"%>
 
 	<script>
+	
+	$(function()
+			{
 
+		//alert("welcome ");
+			<!-- address update  --> 
+
+			<%  
+			BcaBillingaddress bcaBillingaddress=(BcaBillingaddress)session.getAttribute("BillingAddress");
+			BcaShippingaddress bcaShippingaddress=(BcaShippingaddress)request.getSession().getAttribute("ShippingAddress"); 
+			if(bcaShippingaddress==null&bcaBillingaddress==null)
+				%>
+			// alert("both null  null");
+			  <%
+			  if(bcaShippingaddress!=null)
+					{
+					%>
+					//alert("Shippingaddress not null");
+					var lastline='<%=session.getAttribute("lastLineoFSAddress")%>';
+					let cvID='<%=(bcaShippingaddress.getClientVendor()).getClientVendorId()%>';
+					document.PurchaseOrderForm.shAddressID.value='<%=bcaShippingaddress.getAddressId()%>';
+					let firstname='<%= bcaShippingaddress.getFirstName() %>';
+					let lastname= '<%= bcaShippingaddress.getLastName() %>';
+					let company= '<%= bcaShippingaddress.getName()%>';
+					let addressLine1='<%=bcaShippingaddress.getAddress1()%>';
+					let addressLine2='<%=bcaShippingaddress.getAddress2()%>';
+					  
+					  document.PurchaseOrderForm.companyID.value='<%=bcaShippingaddress.getCompany().getCompanyId()%>';
+					  
+					  alert(cvID);
+					  alert(addressLine1);
+					  alert(document.PurchaseOrderForm.shAddressID.value);
+					  alert(lastline);
+					  
+					document.PurchaseOrderForm.shipTo.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
+					
+					  document.PurchaseOrderForm.shipAddr.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
+					  document.PurchaseOrderForm.custID.value=cvID;
+					<%
+					if(bcaBillingaddress==null) // if billing address not updated then set default 
+						{
+						%>			
+					var size = document.getElementById("bSize").value;
+			        var shsize = document.getElementById("sSize").value;
+			        var i;
+			        for(i=0;i<size;i++)
+			        {
+			            var field1 = document.getElementById(i+"clvid").value;
+			            if(cvID==field1)
+			            	{
+			            document.PurchaseOrderForm.companyID.value = document.getElementById(i+"cid").value;
+			            document.PurchaseOrderForm.bsAddressID.value = document.getElementById(i+"bsaddr").value;
+			            document.PurchaseOrderForm.billTo.value = document.getElementById(i+"bl").value;
+			            document.PurchaseOrderForm.billAddrValue.value=document.getElementById(i+"bl").value;
+			            	}
+			              
+			            }
+			       
+			            <%
+						}
+					  }
+					
+			          %>
+			          //updated Billling address Setting 
+			          
+			      
+			          
+	                    
+	                    
+	         
+	                    
+	                    
+			             <%
+			    	      if(bcaBillingaddress!=null)
+			    			{
+			    			%>
+			    			 alert("@billinging not null ");
+			    				var lastline='<%=session.getAttribute("lastLineoFBAddress")%>';
+			    				let cvID='<%=(bcaBillingaddress.getClientVendor()).getClientVendorId()%>';
+			    				document.PurchaseOrderForm.bsAddressID.value='<%=bcaBillingaddress.getAddressId()%>';
+			    				let firstname= '<%= bcaBillingaddress.getFirstName() %>';
+			    				let lastname= '<%= bcaBillingaddress.getLastName() %>';
+			    				let company= '<%= bcaBillingaddress.getName()%>';
+			    				let addressLine1='<%=bcaBillingaddress.getAddress1()%>';
+			    				let addressLine2='<%=bcaBillingaddress.getAddress2()%>'
+			    			  document.PurchaseOrderForm.companyID.value='<%=bcaBillingaddress.getCompany().getCompanyId()%>';
+			    				document.PurchaseOrderForm.billTo.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
+			    				 document.PurchaseOrderForm.billAddrValue.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
+			    				document.PurchaseOrderForm.custID.value=cvID;
+			    	     <%
+			    			if(bcaShippingaddress==null)
+			    			{
+			    			%>	
+			    			var size = document.getElementById("bSize").value;
+			    	        var shsize = document.getElementById("sSize").value;
+			    	        var i;
+			    	        for(i=0;i<shsize;i++)
+			    			        {
+			    			            var field1 = document.getElementById(i+"sh_id").value;
+			    			            if(cvID==field1)
+			    			            	{
+			    			            document.PurchaseOrderForm.companyID.value = document.getElementById(i+"cid").value;
+			    			            document.PurchaseOrderForm.shAddressID.value = document.getElementById(i+"shaddr").value;
+			    			            document.PurchaseOrderForm.shipTo.value = document.getElementById(i+"sh").value;
+			    			            document.PurchaseOrderForm.shipAddr.value=document.getElementById(i+"sh").value;
+			    			            	}
+			    			              
+			    			            }
+			    			        
+			    						            <%
+			    						              }
+			    								    }
+			    						            %>
+
+						   
+			});
+
+			<!-- address update  end --> 
+	
+	
 
 	function c(r) {
 
@@ -1351,6 +1496,12 @@ function init() {
 		return false;
 	}
 	
+	function saveItemNameOldValue()
+	{
+
+			document.getElementById('oldValue').value = document.getElementById('pname_id').value;
+
+	}
 	function saveOldValue()
 	{
 
@@ -2197,9 +2348,13 @@ function init() {
 				if(custID == field1){
 					document.getElementById('cid').value = custID;
 					//form.companyID.value = document.getElementById(i+"cid").value;
+					
 					form.bsAddressID.value = document.getElementById(i+"bsaddr").value;
 					form.billAddrValue.value = document.getElementById(i+"bsaddr").value;
 					form.billTo.value = document.getElementById(i+"bl").value;
+					
+					
+	                
 					console.log("bsize form.billAddrValue.value"+form.billAddrValue.value);
 					console.log("bsize form.billTo.value"+form.billTo.value);
 					break;
@@ -2778,8 +2933,10 @@ function showEditVendorPage(form){
 function BillConfirmAddress(form){
     let custID = form.custID.value;
     let addressID = form.bsAddressID.value;
-    if(custID != 0){
-        window.open("PurchaseOrder?tabid=AddressConfirm&CType=bill&addressID="+addressID+"&custID="+custID, null,"scrollbars=yes,height=600,width=600,status=no,toolbar=no,menubar=no,location=no");
+    if(custID != 0)
+    {
+       // window.open("PurchaseOrder?tabid=AddressConfirm&CType=bill&addressID="+addressID+"&custID="+custID, null,"scrollbars=yes,height=600,width=600,status=no,toolbar=no,menubar=no,location=no");
+        window.open("Invoice?tabid=getBillingAddress&addressType=bill&cvID="+custID+"&addressID="+addressID, null,"scrollbars=yes,height=600,width=600,status=yes,toolbar=no,menubar=no,location=no");
     }
 }
 function ShipConfirmAddress(form){
@@ -2787,7 +2944,8 @@ function ShipConfirmAddress(form){
     let custID = form.custID.value;
     let addressID = form.shAddressID.value;
     if(custID != 0){
-        window.open("PurchaseOrder?tabid=AddressConfirm&CType=ship&addressID="+addressID+"&custID="+custID, null,"scrollbars=yes,height=600,width=600,status=yes,toolbar=no,menubar=no,location=no");
+       // window.open("PurchaseOrder?tabid=AddressConfirm&CType=ship&addressID="+addressID+"&custID="+custID, null,"scrollbars=yes,height=600,width=600,status=yes,toolbar=no,menubar=no,location=no");
+    	 window.open("Invoice?tabid=getBillingAddress&addressType=ship&cvID="+custID+"&addressID="+addressID, null,"scrollbars=yes,height=600,width=600,status=yes,toolbar=no,menubar=no,location=no");
     }
 }
 
@@ -2832,14 +2990,15 @@ function saveItemName()
         width: 500,
         modal: true,
         buttons: {
-            "<spring:message code='BzComposer.global.ok'/>": function () {
+            "<spring:message code='BzComposer.global.yes'/>": function () {
                 $(this).dialog("close");
-                var itemName = $.trim(document.getElementById('pname_id').value);
-            	var item = document.getElementById('itemID');
-            	var itemId = item.options[item.selectedIndex].value;
-            	window.location.href = "Invoice?pageType=PO&tabid=saveItemName&itemName="+itemName+"&itemID="+itemId;
+                //var itemName = $.trim(document.getElementById('pname_id').value);
+            	//var item = document.getElementById('itemID');
+            	//var itemId = item.options[item.selectedIndex].value;
+            	//window.location.href = "Invoice?pageType=PO&tabid=saveItemName&itemName="+itemName+"&itemID="+itemId;
             },
-            "<spring:message code='BzComposer.global.cancel'/>": function () {
+            "<spring:message code='BzComposer.global.no'/>": function () {
+            	document.getElementById('pname_id').value=document.getElementById('oldValue').value; 
                 $(this).dialog("close");
                 return false;
             }

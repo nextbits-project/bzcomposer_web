@@ -680,7 +680,7 @@ public class PurchaseInfoDao {
 
 	
 	
-	@CacheEvict(value = "vendorsCache", allEntries = true)
+	//@CacheEvict(value = "vendorsCache", allEntries = true)
 	public boolean insertBillingVendor(VendorDto c, String compID) {
 		
 		System.out.println("saving billing vendor  .........................");
@@ -688,70 +688,69 @@ public class PurchaseInfoDao {
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
 //		PreparedStatement pstmt_services = null;
-
 		try {
-			String oBal = "0";
-			String exCredit = "0";
+			
 			// generating new cvId
 
-			int cvID = purchaseInfo.getLastClientVendorID() + 1;
-
-			
-			BcaClientvendor bcv = new BcaClientvendor();
-			bcv.setClientVendorId(cvID);
-		
-			bcv.setName(c.getCname());
+			   int cvID = purchaseInfo.getLastClientVendorID() + 1;
+			  BcaClientvendor bcv = new BcaClientvendor();
+			 
+			  bcv.setClientVendorId(cvID);
+			  bcv.setName(c.getCname());
+			  System.out.println("company id ===================" +compID);
+			  bcv.setCvtypeId(8);
+			  Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
+				if (company.isPresent())
+					bcv.setCompany(company.get());
+				
+				
 			bcv.setDbaname(c.getDbaName());
 			bcv.setAddress1(c.getAddress1());
 			bcv.setAddress2(c.getAddress2());
 			bcv.setCity(c.getCity().toString());
-			bcv.setProvince(c.getProvince());
 			bcv.setCountry(c.getCountry());
 			bcv.setState(c.getState());
 			bcv.setZipCode(c.getZipCode());
-			bcv.setDateAdded((c.getDateAdded() == null || c.getDateAdded().equals(""))
-					? DateHelper.convertDateToOffsetDateTime(customerInfo.string2date(" now() "))
-					: DateHelper.convertDateToOffsetDateTime(customerInfo.string2date(c.getDateAdded())));
+//			bcv.setDateAdded((c.getDateAdded() == null || c.getDateAdded().equals(""))
+//					? DateHelper.convertDateToOffsetDateTime(customerInfo.string2date(" now() "))
+//					: DateHelper.convertDateToOffsetDateTime(customerInfo.string2date(c.getDateAdded())));
 
-			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
-			if (company.isPresent())
-				bcv.setCompany(company.get());
 			bcv.setPhone(c.getPhone());
 			bcv.setCellPhone(c.getCellPhone());
 			bcv.setFax(c.getFax());
 			bcv.setHomePage(c.getHomePage());
 			//category
-			
+			String vcName = vendorCategory.CVCategory(c.getType());
+			if(vcName==null)
+				vcName="";
 			bcv.setDetail(c.getMemo());
-			
 			bcv.setCvtypeId(8);
-			
 			bcv.setActive(1);
 			bcv.setDeleted(0);
 			bcv.setStatus("N");
-			bcv.setCvcategoryId(Integer.parseInt(c.getType()));
-			bcv.setCvcategoryName(c.getCategory());
-		
-//			Date dateInput = c.getDateInput() == null || c.getDateInput().trim().equals("") ? null
-//					: customerInfo.string2date(c.getDateInput());
-//			bcv.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
+			if(c.getType()!=null||(c.getType().trim().equals(""))==false)
+		    bcv.setCvcategoryId(Integer.parseInt(c.getType()));
+			
+			
+			//bcv.setCvcategoryName(c.getCategory());
+			bcv.setCvcategoryName(vcName);
+			Date dateInput = c.getDateInput() == null || c.getDateInput().trim().equals("") ? null
+					: customerInfo.string2date(c.getDateInput());
+			bcv.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
 			Date dateTerminated = (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
 					: customerInfo.string2date(c.getTerminatedDate());
 			bcv.setDateTerminated(DateHelper.convertDateToOffsetDateTime(dateTerminated));
 			bcv.setIsTerminated(c.isTerminated());
 			
-
-			
-			
 			BcaClientvendor clientVendor = bcaClientvendorRepository.save(bcv);
-			System.out.println(" after  saving billing vendor  .........................");
-			if (null != clientVendor) {
+			System.out.println("after  saving billing vendor  .........................");
+			
+			if (null != clientVendor) 
+			{
 				ret = true;
 			}
-			
 		
 		//	insertClientVendorAccount(c, cvID);
-
 		} catch (Exception ee) {
 			ee.printStackTrace();
 			Loger.log(2, "SQLException in Class PurchaseInfo,  method -insertVendor & exception 1st" + ee.toString());
@@ -759,10 +758,6 @@ public class PurchaseInfoDao {
 		}
 		return ret;
 	}
-
-	
-	
-	
 	
 	private void insertClientVendorAccount(VendorDto c, int cvId) {
 

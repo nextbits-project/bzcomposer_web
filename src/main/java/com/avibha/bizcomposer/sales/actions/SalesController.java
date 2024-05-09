@@ -38,6 +38,7 @@ import com.avibha.bizcomposer.sales.dao.TrHistoryLookUp;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
+import com.avibha.bizcomposer.sales.forms.OpportunityDto;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
 import com.avibha.bizcomposer.sales.forms.SalesOrderBoardForm;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
@@ -121,7 +122,7 @@ public class SalesController {
 	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
 			RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
-			UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto, Model model, HttpServletRequest request,
+			UpdateInvoiceDto updateInvoiceDto,OpportunityDto opportunityDto, EmailSenderDto emailSenderDto, Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String IN_URI = request.getRequestURI();
 		String CUSTOMER_URI = "/Customer";
@@ -142,13 +143,16 @@ public class SalesController {
 		if (IN_URI.endsWith(CUSTOMER_URI)) {
 			forward = "/sales/customerNew";
 			model.addAttribute("customerDto", customerDto);
+			
 			model.addAttribute("emailSenderDto", emailSenderDto);
 		} else if (IN_URI.endsWith(ITEM_URI)) {
 			forward = "/sales/itemNew";
 			model.addAttribute("itemDto", itemDto);
 			model.addAttribute("emailSenderDto", emailSenderDto);
 		} else if (IN_URI.endsWith(INVOICE_URI)) {
+			
 			forward = "/sales/invoice";
+		  
 			model.addAttribute("invoiceDto", invoiceDto);
 
 		} else if (IN_URI.endsWith(SALES_ORDER_URI)) {
@@ -211,10 +215,12 @@ public class SalesController {
 		request.getSession().setAttribute("CID", companyID);
 		String vendorAction = request.getParameter("customerAction");
 		String cvID = null;
-		if (vendorAction != null && vendorAction.equalsIgnoreCase("DELETE")) {
+		if (vendorAction != null && vendorAction.equalsIgnoreCase("DELETE")) 
+		{
 			cvID = request.getParameter("cvID");
 //			CustomerInfo ci = new CustomerInfo();
-			if (customerInfo.deleteCustomer(cvID, companyID)) {
+			if (customerInfo.deleteCustomer(cvID, companyID)) 
+			{
 				Loger.log("\nCustomer DELETE succeeded, id=" + cvID);
 				sess.setAttribute("actionMsg", "Customer DELETE successfully!");
 			} else {
@@ -367,6 +373,29 @@ public class SalesController {
 			String firstCvID = sd.getCustomerList(request);
 			sd.getAllList(request);
 			forward = "/sales/customerContactBoard";
+		}
+		else if (action.equalsIgnoreCase("opportunityBoard")) {    // Show ContactBoard page
+//			SalesDetailsDao sd = new SalesDetailsDao();
+			//String firstCvID = sd.getCustomerList(request);
+			//sd.getAllList(request);
+			
+			
+			forward = "/sales/customerOpportunityBoard";
+			//forward = "/sales/addOpportunity";
+		}
+		else if (action.equalsIgnoreCase("addOpportunity")) {   // addOpportunity
+//			SalesDetailsDao sd = new SalesDetailsDao();
+			//String firstCvID = sd.getCustomerList(request);
+			//sd.getAllList(request);
+			model.addAttribute("opportunityDto", opportunityDto);
+			forward = "/sales/addOpportunity";
+		}
+		else if (action.equalsIgnoreCase("updateOpportunity")) {   // addOpportunity
+//			SalesDetailsDao sd = new SalesDetailsDao();
+			//String firstCvID = sd.getCustomerList(request);
+			//sd.getAllList(request);
+			model.addAttribute("opportunityDto", opportunityDto);
+			forward = "/sales/updateOpportunity";
 		}
 
 		else if (action.equalsIgnoreCase("makeCustomerCardDefault")) { // set customer credit card as default, From
@@ -554,7 +583,7 @@ public class SalesController {
 			} else if (pageType.equalsIgnoreCase("ES")) {
 				forward = "redirect:Estimation?tabid=Estimation";
 			} else if (pageType.equalsIgnoreCase("SO")) {
-				forward = "redirect:SalesOrder?tabid=";
+				forward = "redirect:SalesOrder?tabid=SalesOrder";
 			} else {
 				forward = "redirect:Invoice?tabid=Invoice";
 			}
@@ -563,29 +592,39 @@ public class SalesController {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sd.getBillingAddress(invoiceDto, request);
 			String targetURL = "/Invoice";
-			if (IN_URI.endsWith(SALES_ORDER_URI)) {
+		
+			if (IN_URI.endsWith(SALES_ORDER_URI))
+			{
 				targetURL = SALES_ORDER_URI;
 			}
-			if (request.getParameter("addressType").equalsIgnoreCase("bill")) {
-				request.setAttribute("URL", targetURL + "?tabid=updateBillingAddress");
+			if (request.getParameter("addressType").equalsIgnoreCase("bill"))
+			{
+				String addressID=request.getParameter("addressID");
+				request.setAttribute("URL", targetURL + "?tabid=updateBillingAddress&addressID="+addressID);
 				request.setAttribute("addressType", "bill");
-			} else {
-				request.setAttribute("URL", targetURL + "?tabid=updateShippingAddress");
+			}
+			else
+			{   String addressID=request.getParameter("addressID");
+				request.setAttribute("URL", targetURL + "?tabid=updateShippingAddress&addressID="+addressID);
 				request.setAttribute("addressType", "ship");
 			}
 			forward = "/sales/addressCustomer";
-		} else if (action.equalsIgnoreCase("updateBillingAddress")) {
+		} 
+		else if (action.equalsIgnoreCase("updateBillingAddress")) {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
-			sd.updateBillingAddress(invoiceDto, request);
+			//sd.updateBillingAddress(invoiceDto, request);
+			 sd.updateNewbillAddress(invoiceDto, request);
 			String targetURL = "/Invoice";
 			if (IN_URI.endsWith(SALES_ORDER_URI)) {
 				targetURL = SALES_ORDER_URI;
 			}
 			forward = "redirect:" + targetURL + "?tabid=getBillingAddress&addressType=bill&cvID="
 					+ invoiceDto.getClientVendorID() + "&addressID=" + invoiceDto.getAddressID();
-		} else if (action.equalsIgnoreCase("updateShippingAddress")) {
+		} 
+		else if (action.equalsIgnoreCase("updateShippingAddress")) {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
-			sd.updateShippingAddress(invoiceDto, request);
+			//sd.updateShippingAddress(invoiceDto, request);
+			 sd.updateNewShippingAddress(invoiceDto, request);
 			String targetURL = "/Invoice";
 			if (IN_URI.endsWith(SALES_ORDER_URI)) {
 				targetURL = SALES_ORDER_URI;
@@ -594,7 +633,9 @@ public class SalesController {
 					+ invoiceDto.getClientVendorID() + "&addressID=" + invoiceDto.getAddressID();
 		}
 
-		else if (action.equalsIgnoreCase("AccountReceiveble")) {
+		else if (action.equalsIgnoreCase("AccountReceiveble")) 
+		{
+			
 //			ReceivableLIst rl = new ReceivableListImpl();
 			ArrayList<ReceivableListDto> ReceivableList = rl.getReceivableList(Integer.parseInt(companyID));
 //			TblCategoryDtoLoader category = new TblCategoryDtoLoader();
@@ -608,12 +649,15 @@ public class SalesController {
 			request.setAttribute("ReceivableList", ReceivableList);
 			request.setAttribute("ClineVendorForCombo", clientVendorForCombo);
 			forward = "/sales/invoice";
-		} else if (action.equals("SetInfoForAccountReceiveble")) {
+		}
+		else if (action.equals("SetInfoForAccountReceiveble")) {
 			request.setAttribute("OrderNum", ordernum);
 			forward = "/sales/invoice";
 		}
 
-		else if (action.equalsIgnoreCase("PrintLabels")) { // for Vendor category
+		else if (action.equalsIgnoreCase("PrintLabels"))
+		{
+			// for Vendor category
 //			SalesDetailsDao sd = new SalesDetailsDao();
 			sd.getCustomerList(request); // to print lables
 			Label lbl = new Label();
@@ -742,6 +786,7 @@ public class SalesController {
 			invoiceInfoDao.getServices(request, companyID, cvId);
 			sd.getInvoiceInfo(request);
 			sd.getAllList(request);
+			
 			// sdetails.getCustomerList(request);
 
 //			ConfigurationDAO dao = new ConfigurationDAO();
@@ -773,7 +818,8 @@ public class SalesController {
 			} else {
 				forward = "/sales/payHistory";
 			}
-		} else if (action.equalsIgnoreCase("editCustomer")) { // Edit Customer Info
+		} 
+		else if (action.equalsIgnoreCase("editCustomer")) { // Edit Customer Info
 			String cvId = request.getParameter("cvId");
 			request.getSession().setAttribute("editedCVID", cvId);
 //			SalesDetailsDao sdetails = new SalesDetailsDao();

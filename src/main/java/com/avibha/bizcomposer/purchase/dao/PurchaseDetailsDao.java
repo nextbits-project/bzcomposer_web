@@ -160,7 +160,8 @@ public class PurchaseDetailsDao {
 																									// 8:
 																									// ServiceProvider
 
-		if (action.equalsIgnoreCase("billingcompany")) {
+		if (action.equalsIgnoreCase("billingcompany")) 
+		{
 			form.setIsclient("8"); // making CVTypeID 8 for ServiceProviders as for Billing Company
 			actionMsg="Billing Company Information is Successfully Added !";
 		}
@@ -184,7 +185,8 @@ public class PurchaseDetailsDao {
 	public void addBillingVendor(HttpServletRequest request, VendorDto form, String compId) {
 		
 		try {
-			System.out.println("............Purchase Details ................");
+			System.out.println("............Purchase Details  ................"+compId);
+			
 			boolean isAdded = purchaseInfoDao.insertBillingVendor(form, compId);
 			if (isAdded) {
 				request.setAttribute("SaveStatus", new ActionMessage(" Billing Vendor Information is Successfully Added !"));

@@ -309,7 +309,7 @@ input, textarea, select {
 																</c:forEach>
 															</form:select></td>	
 															<td><input type="checkbox" name="billVendor"
-															id="chkbillvendor" disabled checked> <spring:message
+															id="chkbillvendor"  checked> <spring:message
 																code="BzComposer.global.billvendor" /></td>
 
 														
