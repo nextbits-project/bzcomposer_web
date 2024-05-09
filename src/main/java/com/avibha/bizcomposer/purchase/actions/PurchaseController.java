@@ -136,6 +136,7 @@ public class PurchaseController {
 			vendorDto.setFsMarkFinanceCharge(configDto.getMarkFinanceCharge());
 			String cdate = invoiceInfoDao.setCurrentDate();
 			vendorDto.setDateAdded(cdate);
+			vendorDto.setTerminatedDate(cdate);
 			vendorDto.setClientVendorID((pinfo.getLastClientVendorID() + 1) + "");
 			forward = "/accounting/addBillingCompany";
 		}

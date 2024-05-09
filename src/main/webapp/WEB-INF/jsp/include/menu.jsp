@@ -240,6 +240,13 @@
                         <span><spring:message code="BzComposer.sales.ContactList" /></span>
                         </a>
                     </li>
+                    
+                    <li>
+                        <a href="Customer?tabid=opportunityBoard" title="Opportunities">
+                        <span><spring:message code="BzComposer.Customer.opportunities" /></span>
+                        </a>
+                    </li>
+                    
 					<li>
 						<a href="Customer?tabid=PrintLabels" title="Print AddressLabel">
                         <span><spring:message code="BzComposer.customer.CustomerAddressLabels" /></span>

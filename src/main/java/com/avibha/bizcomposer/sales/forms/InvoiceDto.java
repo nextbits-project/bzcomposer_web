@@ -104,7 +104,7 @@ public class InvoiceDto{
 	private String message;
 	private String itemShipped;
 	private String isPending;
-	private double tax;
+		private double tax;
 	private String datesCombo;
 	private String sortBy;
 
@@ -119,7 +119,18 @@ public class InvoiceDto{
 	private int templateType;
 	private ArrayList<Item> cart;
 	private String to;
+	//new added  4/05/24
+	private String isDefaultAddress;
+
 	
+	public String getIsDefaultAddress() {
+		return isDefaultAddress;
+	}
+
+	public void setIsDefaultAddress(String isDefaultAddress) {
+		this.isDefaultAddress = isDefaultAddress;
+	}
+
 	public String getTo() {
 		return to;
 	}

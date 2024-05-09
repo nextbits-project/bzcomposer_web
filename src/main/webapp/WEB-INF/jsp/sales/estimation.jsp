@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@page import="com.nxsol.bzcomposer.company.domain.BcaShippingaddress"%>
+<%@page import="com.nxsol.bzcomposer.company.domain.BcaBillingaddress"%>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -29,6 +31,7 @@ table.cart tbody tr td {
 <div id="padding">
 <form:form name="EstimationForm" id="estimationForm" method="post" modelAttribute="estimationDto">
     <input type="hidden" id="oldValue" value="0">
+    <input type="hidden" id="oldpname_id" value="">
 	<input type="hidden" id="holdUnitWeight" value="0">
 	<input type="hidden" name="isInvoice" value="">
 	<input type="hidden" name="isSalestype" value="">
@@ -399,10 +402,10 @@ table.cart tbody tr td {
 				</div>
 			</td>
 			<td style="font-size: 14px;width:50%;">
-                <div style="font-size: 14px;">
-                    <input type="text" readonly="readonly" id="pname_id" onchange="return saveNewItemName();" style="width:95%;"/>
+                <div style="font-size: 14px;"> 
+                    <input type="text" readonly="readonly" id="pname_id"  onchange="return saveNewItemName();" style="width:95%;"/>
                 </div>
-                <div id="SaveItemName" style="display:none;">
+                <div id="SaveItemName" style="display:none;" title="Confirm the  Item Name Update">
                     <p><spring:message code="BzComposer.estimation.saveitemname"/></p>
                 </div>
             </td>
@@ -828,6 +831,110 @@ yestax=0;
 tax_rate=0;
 
 $(function() {
+
+	<!--          address update  --> 
+	
+    // alert("welcome");
+	<%  
+	BcaBillingaddress bcaBillingaddress=(BcaBillingaddress)session.getAttribute("BillingAddress");
+	BcaShippingaddress bcaShippingaddress=(BcaShippingaddress)request.getSession().getAttribute("ShippingAddress"); 
+	if(bcaShippingaddress==null&bcaBillingaddress==null)
+		%>
+	//alert("both null  null");
+	  <%
+	  if(bcaShippingaddress!=null)
+			{
+			%>
+			//alert("Shippingaddress not null");
+			var lastline='<%=session.getAttribute("lastLineoFSAddress")%>';
+			let cvID='<%=(bcaShippingaddress.getClientVendor()).getClientVendorId()%>';
+			document.EstimationForm.shAddressID.value='<%=bcaShippingaddress.getAddressId()%>';
+			let firstname='<%= bcaShippingaddress.getFirstName() %>';
+			let lastname= '<%= bcaShippingaddress.getLastName() %>';
+			let company= '<%= bcaShippingaddress.getName()%>';
+			let addressLine1='<%=bcaShippingaddress.getAddress1()%>';
+			let addressLine2='<%=bcaShippingaddress.getAddress2()%>';
+			  document.EstimationForm.custID.value=cvID;
+			  document.EstimationForm.companyID.value='<%=bcaShippingaddress.getCompany().getCompanyId()%>';
+			  
+			document.EstimationForm.shipTo.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
+			
+			<%
+			if(bcaBillingaddress==null) // if billing address not updated then set default 
+				{
+				%>		
+				
+				
+			var size = document.getElementById("bSize").value;
+	        var shsize = document.getElementById("sSize").value;
+	        var i;
+	        for(i=0;i<size;i++)
+	        {
+	            var field1 = document.getElementById(i+"id").value;
+	            if(cvID==field1)
+	            	{
+	            document.EstimationForm.companyID.value = document.getElementById(i+"cid").value;
+	            document.EstimationForm.bsAddressID.value = document.getElementById(i+"bsaddr").value;
+	            document.EstimationForm.billTo.value = document.getElementById(i+"bl").value;
+	            	}
+	              
+	            }
+	       
+	            <%
+				}
+			  }
+			
+	          %>
+	          //updated Billling address Setting 
+	             <%
+	    	      if(bcaBillingaddress!=null)
+	    			{
+	    			%>
+	    			 //alert("@billinging not null ");
+	    				var lastline='<%=session.getAttribute("lastLineoFBAddress")%>';
+	    				let cvID='<%=(bcaBillingaddress.getClientVendor()).getClientVendorId()%>';
+	    				document.EstimationForm.bsAddressID.value='<%=bcaBillingaddress.getAddressId()%>';
+	    				let firstname= '<%= bcaBillingaddress.getFirstName() %>';
+	    				let lastname= '<%= bcaBillingaddress.getLastName() %>';
+	    				let company= '<%= bcaBillingaddress.getName()%>';
+	    				let addressLine1='<%=bcaBillingaddress.getAddress1()%>';
+	    				let addressLine2='<%=bcaBillingaddress.getAddress2()%>'
+	    			  document.EstimationForm.companyID.value='<%=bcaBillingaddress.getCompany().getCompanyId()%>';
+	    				document.EstimationForm.billTo.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
+	    				document.EstimationForm.custID.value=cvID;
+	    	     <%
+	    			if(bcaShippingaddress==null)
+	    			{
+	    			%>	
+	    			var size = document.getElementById("bSize").value;
+	    	        var shsize = document.getElementById("sSize").value;
+	    	        var i;
+	    	        for(i=0;i<shsize;i++)
+	    			        {
+	    			            var field1 = document.getElementById(i+"id").value;
+	    			            if(cvID==field1)
+	    			            	{
+	    			            document.EstimationForm.companyID.value = document.getElementById(i+"cid").value;
+	    			            document.EstimationForm.shAddressID.value = document.getElementById(i+"shaddr").value;
+	    			            document.EstimationForm.shipTo.value = document.getElementById(i+"sh").value;
+	    			            	}
+	    			              
+	    			            }
+	    			        
+	    						            <%
+	    						              }
+	    								    }
+	    						            %>
+	
+				   
+	
+	
+	<!--          address update  --> 
+	
+	
+	
+	
+	
 	var locale = "<%= request.getAttribute("selectedLocale")%>";
 
 	$('select[id="locale"]').find('option[value="'+locale+'"]').attr("selected",true);
@@ -871,26 +978,36 @@ function calShippingCharges(form)
         url:"/ConfigurationAjaxTest?tabid=getUserDefinedShippingWeightAndPrice&shippingCarrierId="+document.EstimationForm.via.value,
         success:function(data)
         {
-        	// alert("at sucess  ..........result="+document.InvoiceForm.shipping.value);
-         	
+
         	var weight= document.EstimationForm.weight.value;
         	var shippingCharges=0;
         	
         	       var intweight= Math.floor(weight);
         	       
         	       var decimalweight=weight-intweight;
+        	       if(intweight>0)
+        	    	   {
+        	       shippingCharges=data[intweight-1].userDefinedShippingPrice;
+        	    	   }
+        	       
+        	      
+        	       
+        	       /*
         	 for(var i=0;i<data.length;i++)
         	 {
 
         		 if( intweight==data[i].userDefinedShippingWeight)
         			 {
+        			
         			 shippingCharges=data[i].userDefinedShippingPrice;
-        			 break;
+        			       			 break;
                      }
         	 }
+        	 */
+        	 
         	 
         	  if(decimalweight>0)
-        		  shippingCharges+=shippingCharges+(data[0].userDefinedShippingPrice*decimalweight)
+        		  shippingCharges=shippingCharges+(data[0].userDefinedShippingPrice*decimalweight)
         		  
         		 document.EstimationForm.shipping.value=shippingCharges.toFixed(2);
         	     sumShippingTotal();
@@ -2046,6 +2163,7 @@ function ItemChange(value)
 				document.getElementById('qty_id').value=qty;
 				//document.getElementById('desc_id').value=document.getElementById(count+'desc').value;
 				document.getElementById('pname_id').value=document.getElementById(count+'pname').value;
+				document.getElementById('oldpname_id').value=document.getElementById(count+'pname').value;
 				document.getElementById('unitPrice_id').value=uprice;
 				document.getElementById('amount_id').value=qty*uprice;
 				document.getElementById("holdUnitWeight").value=document.getElementById(count+'wt').value;
@@ -2057,6 +2175,7 @@ function ItemChange(value)
 		}				
 	}
 }
+
 
 function saveOldValue()
 {
@@ -2116,13 +2235,14 @@ function saveNewItemName()
         width: 500,
         modal: true,
         buttons: {
-            "<spring:message code='BzComposer.global.ok'/>": function () {
+            "<spring:message code='BzComposer.global.yes'/>": function ()
+            {
                 $(this).dialog("close");
                 //var price = document.getElementById('unitPrice_id').value;
-            	var item = document.getElementById('itemID');
-            	var itemId = item.options[item.selectedIndex].value;
-            	var itemName = $.trim(document.getElementById('pname_id').value);
-            	window.location.href = "Invoice?pageType=ES&tabid=saveItemName&itemName="+itemName+"&itemID="+itemId;
+            	//var item = document.getElementById('itemID');
+            	//var itemId = item.options[item.selectedIndex].value;
+            	//var itemName = $.trim(document.getElementById('pname_id').value);
+            	//window.location.href = "Invoice?pageType=ES&tabid=saveItemName&itemName="+itemName+"&itemID="+itemId;
 //            	window.location = "Estimation?tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
             	/* $.ajax({
            			type: "POST",
@@ -2134,7 +2254,8 @@ function saveNewItemName()
            			
            			}); */
             },
-            "<spring:message code='BzComposer.global.cancel'/>": function () {
+            "<spring:message code='BzComposer.global.no'/>": function () {
+            	 document.getElementById('pname_id').value=document.getElementById('oldpname_id').value;
                 $(this).dialog("close");
                 return false;
             }
@@ -2224,7 +2345,8 @@ function Init(){
 
 function onSave(form)
 {
-    
+	removeSessionData();
+	
 	No=form.orderNo.value;
 	cid = form.custID.value;
 	if(cid==0){
@@ -2527,6 +2649,7 @@ function DeleteRow1(d,form)
 	    						total = ((tot/1) + (subtotal/1) + (tx/1));
 	    						document.EstimationForm.total.value=total.toFixed(2);
 	    						document.EstimationForm.adjustedtotal.value=total.toFixed(2);
+	    						document.EstimationForm.tax.value.toFixed(2);
 	    						deleted++;
 	    					}
 	    				}
@@ -2598,6 +2721,15 @@ function showItemOrderNumberDialog(){
         }
     });
     return false;
+}
+function removeSessionData()
+{
+<%
+   session.removeAttribute("BillingAddress");
+   session.removeAttribute("ShippingAddress");
+   session.removeAttribute("lastLineoFSAddress");
+   session.removeAttribute("lastLineoFBAddress");
+ %>
 }
 
 function getEstimationDetailsByBtnName(form, url){

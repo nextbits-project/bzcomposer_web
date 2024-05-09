@@ -59,7 +59,7 @@ public class BcaShippingaddress {
     @Column(name="DateAdded", nullable = false)
     private OffsetDateTime dateAdded;
 
-    @Column(name="Phone", nullable = false, length = 20)
+    @Column(name="Phone", length = 20)
     private String phone;
 
     @Column(name="CellPhone", length = 20)

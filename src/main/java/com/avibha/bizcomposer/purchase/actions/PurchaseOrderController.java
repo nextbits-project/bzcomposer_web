@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @Controller
@@ -87,6 +88,9 @@ public class PurchaseOrderController {
 			} else if (action.equalsIgnoreCase("PurchaseOrder")) {
 //				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 //				pdetails.newPurchaseOrder(request, purchaseOrderDto);
+				String compId = (String) request.getSession().getAttribute("CID");
+				request.setAttribute("ShAddr", invoiceInfoDao.shipAddress(compId, null));
+				request.setAttribute("BillAddr", invoiceInfoDao.billAddress(compId, null));
 				purchaseOrderDetailsDao.newPurchaseOrder(request, purchaseOrderDto);
 //				ConfigurationInfo configInfo = new ConfigurationInfo();
 				ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
@@ -144,6 +148,7 @@ public class PurchaseOrderController {
 				invoiceInfoDao.set(cvId, request, updateInvoiceDto, compId);
 				invoiceInfoDao.getServices(request, compId, cvId);
 				forward = "/purchase/addNewUser";
+
 			} else if (action.equalsIgnoreCase("AddNewUser")) {
 //				PurchaseDetailsDao pdetails = new PurchaseDetailsDao();
 				String compId = (String) request.getSession().getAttribute("CID");
@@ -251,7 +256,7 @@ public class PurchaseOrderController {
 
 	@PostMapping("/PurchaseOrderPost")
 	public String purchaseOrderpost(VendorDto vendorDto, PurchaseOrderDto purchaseOrderDto, HttpServletRequest request,
-			Model model) throws IOException, ServletException {
+			Model model) throws IOException, ServletException, SQLException {
 		String forward = "/purchase/purchase";
 		String action = request.getParameter("tabid");
 		String companyID = (String) request.getSession().getAttribute("CID");
@@ -265,6 +270,7 @@ public class PurchaseOrderController {
 			purchaseOrderDetailsDao.newPurchaseOrder(request, purchaseOrderDto);
 //			InvoiceInfo info = new InvoiceInfo();
 			String Invoicestyleid = invoiceInfo.getDefaultInvoiceStyleNo(companyID);
+
 			request.setAttribute("Invoicestyleid", Invoicestyleid);
 			forward = "/purchase/purchase";
 		} else if (action.equalsIgnoreCase("PBLU")) {

@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%@page import="com.nxsol.bzcomposer.company.domain.BcaShippingaddress"%>
+<%@page import="com.nxsol.bzcomposer.company.domain.BcaBillingaddress"%>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -38,6 +40,7 @@ table.cart tbody tr td {
 							<input type="hidden" name="isInvoice" value="0">
 							<input type="hidden" name="isSalestype" value="0">
 							<input type="hidden" id="oldValue" value="0">
+							<input type="hidden" id="oldpname_id" value="">
 	                        <input type="hidden" id="holdUnitWeight" value="0">
 							<input type="hidden" name="serviceName" value="">
 							<form:hidden path="clientVendorID" />
@@ -480,7 +483,7 @@ table.cart tbody tr td {
 															<input type="text" id="pname_id"
 																onchange="return ConfirmDelete();" style="width: 95%;" />
 														</div>
-														<div id="SaveItemName" title="Update item name"
+														<div id="SaveItemName" title="Confirm the  Item Name Update"
 															style="display: none;">
 															<p>
 																<spring:message
@@ -945,7 +948,107 @@ count=0;
 yestax=0;
 tax_rate=0;
 
-$(function() {
+$(function()
+{
+<!-- address update  --> 
+
+<%  
+BcaBillingaddress bcaBillingaddress=(BcaBillingaddress)session.getAttribute("BillingAddress");
+BcaShippingaddress bcaShippingaddress=(BcaShippingaddress)request.getSession().getAttribute("ShippingAddress"); 
+if(bcaShippingaddress==null&bcaBillingaddress==null)
+	%>
+//alert("both null  null");
+  <%
+  if(bcaShippingaddress!=null)
+		{
+		%>
+		//alert("Shippingaddress not null");
+		var lastline='<%=session.getAttribute("lastLineoFSAddress")%>';
+		let cvID='<%=(bcaShippingaddress.getClientVendor()).getClientVendorId()%>';
+		document.InvoiceForm.shAddressID.value='<%=bcaShippingaddress.getAddressId()%>';
+		let firstname='<%= bcaShippingaddress.getFirstName() %>';
+		let lastname= '<%= bcaShippingaddress.getLastName() %>';
+		let company= '<%= bcaShippingaddress.getName()%>';
+		let addressLine1='<%=bcaShippingaddress.getAddress1()%>';
+		let addressLine2='<%=bcaShippingaddress.getAddress2()%>';
+		  document.InvoiceForm.custID.value=cvID;
+		  document.InvoiceForm.companyID.value='<%=bcaShippingaddress.getCompany().getCompanyId()%>';
+		  
+		document.InvoiceForm.shipTo.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
+		
+		<%
+		if(bcaBillingaddress==null) // if billing address not updated then set default 
+			{
+			%>			
+		var size = document.getElementById("bSize").value;
+        var shsize = document.getElementById("sSize").value;
+        var i;
+        for(i=0;i<size;i++)
+        {
+            var field1 = document.getElementById(i+"clvid").value;
+            if(cvID==field1)
+            	{
+            document.InvoiceForm.companyID.value = document.getElementById(i+"cid").value;
+            document.InvoiceForm.bsAddressID.value = document.getElementById(i+"bsaddr").value;
+            document.InvoiceForm.billTo.value = document.getElementById(i+"bl").value;
+            	}
+              
+            }
+       
+            <%
+			}
+		  }
+		
+          %>
+          //updated Billling address Setting 
+             <%
+    	      if(bcaBillingaddress!=null)
+    			{
+    			%>
+    			 //alert("@billinging not null ");
+    				var lastline='<%=session.getAttribute("lastLineoFBAddress")%>';
+    				let cvID='<%=(bcaBillingaddress.getClientVendor()).getClientVendorId()%>';
+    				document.InvoiceForm.bsAddressID.value='<%=bcaBillingaddress.getAddressId()%>';
+    				let firstname= '<%= bcaBillingaddress.getFirstName() %>';
+    				let lastname= '<%= bcaBillingaddress.getLastName() %>';
+    				let company= '<%= bcaBillingaddress.getName()%>';
+    				let addressLine1='<%=bcaBillingaddress.getAddress1()%>';
+    				let addressLine2='<%=bcaBillingaddress.getAddress2()%>'
+    			  document.InvoiceForm.companyID.value='<%=bcaBillingaddress.getCompany().getCompanyId()%>';
+    				document.InvoiceForm.billTo.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
+    				document.InvoiceForm.custID.value=cvID;
+    	     <%
+    			if(bcaShippingaddress==null)
+    			{
+    			%>	
+    			var size = document.getElementById("bSize").value;
+    	        var shsize = document.getElementById("sSize").value;
+    	        var i;
+    	        for(i=0;i<shsize;i++)
+    			        {
+    			            var field1 = document.getElementById(i+"clvid").value;
+    			            if(cvID==field1)
+    			            	{
+    			            document.InvoiceForm.companyID.value = document.getElementById(i+"cid").value;
+    			            document.InvoiceForm.shAddressID.value = document.getElementById(i+"shaddr").value;
+    			            document.InvoiceForm.shipTo.value = document.getElementById(i+"sh").value;
+    			            	}
+    			              
+    			            }
+    			        
+    						            <%
+    						              }
+    								    }
+    						            %>
+
+			   
+
+
+<!-- address update  end --> 
+	
+	
+	
+	
 	$("#sortByLastName").change(function(){
 		
 		var checked = $("#sortByLastName").prop('checked');
@@ -989,18 +1092,20 @@ function ConfirmDelete() {
         width: 500,
         modal: true,
         buttons: {
-        	"<spring:message code='BzComposer.global.ok'/>": function () {
+        	"<spring:message code='BzComposer.global.yes'/>": function () {
                 $(this).dialog("close");
                 //$('form').submit();
                 
-                var itemName = $.trim(document.getElementById('pname_id').value);            	
-            	var item = document.getElementById('itemID');            	
-            	var itemId = item.options[item.selectedIndex].value;
+                 // var itemName = $.trim(document.getElementById('pname_id').value);            	
+            	//var item = document.getElementById('itemID');            	
+            	//var itemId = item.options[item.selectedIndex].value;
             	
-            	window.location.href = "Invoice?pageType=SO&tabid=saveItemName&itemName="+itemName+"&itemID="+itemId;
+            	//window.location.href = "Invoice?pageType=SO&tabid=saveItemName&itemName="+itemName+"&itemID="+itemId;
+            	//window.location.href = "Invoice?tabid=saveItemName&itemName="+itemName+"&itemID="+itemId;
             	//window.location.href = "SalesOrder?tabid=saveItemNameForSalesOrder&itemName="+itemName+"&itemID="+itemId;
             },
-            "<spring:message code='BzComposer.global.cancel'/>": function () {
+            "<spring:message code='BzComposer.global.no'/>": function () {
+            	 document.getElementById('pname_id').value=document.getElementById('oldpname_id').value ;
                 $(this).dialog("close");
                 return false;
             }
@@ -1072,11 +1177,32 @@ function calShippingCharges(form)
         	 for(var i=0;i<data.length;i++)
         	 {
 
-        		 if( intweight==data[i].userDefinedShippingWeight)
-        			 {
-        			 shippingCharges=data[i].userDefinedShippingPrice;
-        			 break;
-                     }
+        			
+             	var weight= document.InvoiceForm.weight.value;
+             	var shippingCharges=0;
+             	
+             	       var intweight= Math.floor(weight);
+             	       
+             	       var decimalweight=weight-intweight;
+             	       if(intweight>0)
+             	    	   {
+             	       shippingCharges=data[intweight-1].userDefinedShippingPrice;
+             	    	   }
+             	       
+             	      
+             	       
+             	       /*
+             	 for(var i=0;i<data.length;i++)
+             	 {
+
+             		 if( intweight==data[i].userDefinedShippingWeight)
+             			 {
+             			
+             			 shippingCharges=data[i].userDefinedShippingPrice;
+             			       			 break;
+                          }
+             	 }
+             	 */
         	 }
         	 
         	  if(decimalweight>0)
@@ -1179,6 +1305,7 @@ function clearDiscountCol(){
 	document.InvoiceForm.discount.value = "0.00";
 	
 }
+
 
 function saveOldValue()
 {
@@ -2346,6 +2473,7 @@ function StyleChange(value)
 						document.getElementById('qty_id').value=qty;
 // 						document.getElementById('desc_id').value=document.getElementById(count+'desc').value;
 						document.getElementById('pname_id').value=document.getElementById(count+'pname').value;
+						document.getElementById('oldpname_id').value=document.getElementById(count+'pname').value;
 						document.getElementById('unitPrice_id').value=uprice;
 						amt=((qty/1)*(uprice/1)).toFixed(2);;
 						document.getElementById('amount_id').value=amt;
@@ -2453,9 +2581,19 @@ function StyleChange(value)
 			}
 		}
 
+		function removeSessionData()
+		{
+		<%
+		   session.removeAttribute("BillingAddress");
+		   session.removeAttribute("ShippingAddress");
+		   session.removeAttribute("lastLineoFSAddress");
+		   session.removeAttribute("lastLineoFBAddress");
+		 %>
+		}
 
 		function onSave(form){
 			
+			 removeSessionData();
 			No=form.orderNo.value;
 			cid = form.custID.value;
 			if(cid==0){
@@ -2869,17 +3007,20 @@ function DeleteRow1(d,form)
 	        				document.InvoiceForm.subtotal.value=subtotal.toFixed(2);
 	        				tot=(document.InvoiceForm.shipping.value);
 	        				tx = document.InvoiceForm.tax.value;
-	        			if(t==1){
+	        			 if(t==1)
+	        			 {
 	        				yestax = (yestax - amt).toFixed(2);
 	        				tx=(yestax * tax_rate)/100;
 	        				document.InvoiceForm.tax.value=tx;
 	        			}
-	        						
-	        			total = ((tot/1) + (subtotal/1) + (tx/1));
-	        			document.InvoiceForm.total.value=total.toFixed(2);
-	        			document.InvoiceForm.adjustedtotal.value=total.toFixed(2);
-	        			deleted++;	
-	        			}		
+		        			total = ((tot/1) + (subtotal/1) + (tx/1));
+		        			document.InvoiceForm.total.value=total.toFixed(2);
+		        			document.InvoiceForm.tax.value.toFixed(2);
+		        			document.InvoiceForm.adjustedtotal.value=total.toFixed(2);
+		        			
+		        			 deleted++;	
+		        			
+	        		  }		
 	        		}
 	            },
 	            "<spring:message code='BzComposer.global.cancel'/>": function () {

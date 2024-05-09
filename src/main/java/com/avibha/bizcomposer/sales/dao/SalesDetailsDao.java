@@ -22,13 +22,35 @@ import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
+import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
+import com.nxsol.bzcomposer.company.domain.BcaBillingstatements;
+import com.nxsol.bzcomposer.company.domain.BcaCities;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaCountries;
+import com.nxsol.bzcomposer.company.domain.BcaInvoice;
+import com.nxsol.bzcomposer.company.domain.BcaShippingaddress;
+import com.nxsol.bzcomposer.company.domain.BcaStates;
+import com.nxsol.bzcomposer.company.domain.SmdCvinfo;
+import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaShippingaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCitiesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
+
+import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
+import com.nxsol.bzcomposer.company.repos.SmdCvinfoRepository;
+import com.nxsol.bzcomposer.company.utils.DateHelper;
+import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.util.LabelValueBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +61,7 @@ import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.*;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Service
@@ -55,6 +78,8 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private CountryState countryState;
+	@Autowired
+	private BcaClientvendorRepository bcaClientvendorRepository;
 
 	@Autowired
 	private ItemInfoDao itemInfoDao;
@@ -70,9 +95,24 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private PurchaseInfo purchaseInfo;
+	
+	@Autowired
+	private SmdCvinfoRepository smdCvinfoRepository;
+	@Autowired
+	private BcaCountriesRepository countriesRepository;
+	@Autowired
+	private BcaStatesRepository stateRepository;
+	@Autowired
+	private BcaCitiesRepository cityRepository;
 
 	@Autowired
 	private PurchaseOrderInfoDao purchaseOrderInfoDao;
+	@Autowired
+	private BcaCompanyRepository bcaCompanyRepository;
+	@Autowired
+	BcaShippingaddressRepository bcaShippingaddressRepository;
+	@Autowired
+	BcaBillingaddressRepository bcaBillingaddressRepository;
 
 	@Autowired
 	private Title t;
@@ -1188,7 +1228,178 @@ public class SalesDetailsDao {
 			request.getSession().setAttribute("actionMsg", "BzComposer.common.recordNotUpdated");
 		}
 	}
+	
+	public int  updateNewShippingAddress(InvoiceDto invoiceDto, HttpServletRequest request)throws SQLException
+	{
+		try {
+		
+				boolean status=false;
+				String  isDefaultAddress=request.getParameter("isDefaultAddress");
+				String  addressID=request.getParameter("addressID");
+				
+				BcaShippingaddress bcaShippingaddress=new  BcaShippingaddress();
+				
+				String compId = (String) request.getSession().getAttribute("CID");
+				
+				Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compId));
+				
+				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(Integer.parseInt(invoiceDto.getClientVendorID()));
+				if(isDefaultAddress!=null&&isDefaultAddress.equalsIgnoreCase("on"))
+				{
+							bcaShippingaddress.setAddressName("Default");
+							bcaShippingaddress.setIsDefault(1);
+							BcaShippingaddress oldDefaultshippingAdrdress=	bcaShippingaddressRepository.findByClientVendorIdAndAddressId(Integer.parseInt(invoiceDto.getClientVendorID()), Integer.parseInt(addressID));
+							 oldDefaultshippingAdrdress.setAddressName("");
+							 oldDefaultshippingAdrdress.setIsDefault(0);
+							 oldDefaultshippingAdrdress.setStatus("U");
+							 bcaShippingaddressRepository.save( oldDefaultshippingAdrdress);
+				}
+				else
+				{
+					bcaShippingaddress.setAddressName("");
+					bcaShippingaddress.setIsDefault(0);
+					
+				}
+		bcaShippingaddress.setClientVendor(clientVendor.get());
+		bcaShippingaddress.setName(ConstValue.hateNull(company.get().getName()).replaceAll("'", "''"));
+		bcaShippingaddress.setFirstName(ConstValue.hateNull(invoiceDto.getFirstName()).replaceAll("'", "''"));
+		bcaShippingaddress.setLastName(ConstValue.hateNull(invoiceDto.getLastName()).replaceAll("'", "''"));
+		bcaShippingaddress.setAddress1(ConstValue.hateNull(invoiceDto.getAddress1()).replaceAll("'", "''"));
+		bcaShippingaddress.setAddress2(ConstValue.hateNull(invoiceDto.getAddress2()).replaceAll("'", "''"));
+		bcaShippingaddress.setCity(ConstValue.hateNull(invoiceDto.getCity()).replaceAll("'", "''"));
+		bcaShippingaddress.setState(ConstValue.hateNull(invoiceDto.getState()).replaceAll("'", "''"));
+		bcaShippingaddress.setProvince(ConstValue.hateNull(clientVendor.get().getProvince()).replaceAll("'", "''"));
+		bcaShippingaddress.setCountry(ConstValue.hateNull(invoiceDto.getCountry()).replaceAll("'", "''"));
+		bcaShippingaddress.setZipCode(ConstValue.hateNull(invoiceDto.getZipcode()).replaceAll("'", "''"));
+		bcaShippingaddress.setStatus("N");
+		
+		bcaShippingaddress.setDateAdded(OffsetDateTime.now());
+		bcaShippingaddress.setPhone(ConstValue.hateNull(clientVendor.get().getPhone()).replaceAll("'", "''"));
+	
+		bcaShippingaddress.setActive(1);
+		bcaShippingaddress.setCompany(company.get());
+		bcaShippingaddress = bcaShippingaddressRepository.save(bcaShippingaddress);
+		
+		  System.out.println("bcaShippingaddress..............Zipcode="+bcaShippingaddress.getZipCode());
+		
+							if(	bcaShippingaddress!=null)
+							{
+								request.getSession().setAttribute("actionMsg", "BzComposer.common.recordUpdated");
+								invoiceDto.setAddressID(""+bcaShippingaddress.getAddressId());
+								invoiceDto.setShAddressID(""+bcaShippingaddress.getAddressId());	
+								
+								//request.getSession().setAttribute("cvID",(bcaShippingaddress.getClientVendor()).getClientVendorId());
+								//.getSession().setAttribute("addressID",bcaShippingaddress.getAddressId());
+								
+								//request.getSession().setAttribute("ShippingAddressID",""+bcaShippingaddress.getAddressId());
+								
+								System.out.println("BillingAddressID............"+request.getSession().getAttribute("BillingAddressID"));
+								
+								request.getSession().setAttribute("ShippingAddress",bcaShippingaddress);
+								
+								Optional<BcaStates> state = stateRepository.findById(Integer.valueOf(bcaShippingaddress.getState()));
+								Optional<BcaCities> city = cityRepository.findById(Integer.valueOf(bcaShippingaddress.getCity()));
+//								
+						     request.getSession().setAttribute("lastLineoFSAddress",city.get().getName() + ", " + state.get().getName() +" "+ bcaShippingaddress.getZipCode());
+							   }
+							else 
+							{
+						            request.getSession().setAttribute("actionMsg", "BzComposer.common.recordNotUpdated");
+							}             
+                                
+		}
+		catch(Exception e) 
+		{		
+	e.printStackTrace();
+		System.out.println(""+e);	
+		}	  				
+	  return 0;
+		
+	}
+	
+	public int  updateNewbillAddress(InvoiceDto invoiceDto, HttpServletRequest request)throws SQLException
+	{
+		
+		try {
+			
+			boolean status=false;
+			String  isDefaultAddress=request.getParameter("isDefaultAddress");
+			String  addressID=request.getParameter("addressID");
+			
+			BcaBillingaddress bcaBillingaddress=new  BcaBillingaddress();
+			
+			String compId = (String) request.getSession().getAttribute("CID");
+			
+			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compId));
+			
+			Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(Integer.parseInt(invoiceDto.getClientVendorID()));
+			if(isDefaultAddress!=null&&isDefaultAddress.equalsIgnoreCase("on"))
+			{
+				bcaBillingaddress.setAddressName("Default");
+				bcaBillingaddress.setIsDefault(1);
+				BcaBillingaddress oldDefaultBillingAdrdress=	bcaBillingaddressRepository.findByClientVendorIdAndAddressId(Integer.parseInt(invoiceDto.getClientVendorID()), Integer.parseInt(addressID));
+				oldDefaultBillingAdrdress.setAddressName("");
+				oldDefaultBillingAdrdress.setIsDefault(0);
+				oldDefaultBillingAdrdress.setStatus("U");
+				bcaBillingaddressRepository.save( oldDefaultBillingAdrdress);
+			}
+			else
+			{
+				bcaBillingaddress.setAddressName("");
+				bcaBillingaddress.setIsDefault(0);
+				
+			}
+			bcaBillingaddress.setClientVendor(clientVendor.get());
+			bcaBillingaddress.setName(ConstValue.hateNull(company.get().getName()).replaceAll("'", "''"));
+			bcaBillingaddress.setFirstName(ConstValue.hateNull(invoiceDto.getFirstName()).replaceAll("'", "''"));
+			bcaBillingaddress.setLastName(ConstValue.hateNull(invoiceDto.getLastName()).replaceAll("'", "''"));
+			bcaBillingaddress.setAddress1(ConstValue.hateNull(invoiceDto.getAddress1()).replaceAll("'", "''"));
+			bcaBillingaddress.setAddress2(ConstValue.hateNull(invoiceDto.getAddress2()).replaceAll("'", "''"));
+			bcaBillingaddress.setCity(ConstValue.hateNull(invoiceDto.getCity()).replaceAll("'", "''"));
+			bcaBillingaddress.setState(ConstValue.hateNull(invoiceDto.getState()).replaceAll("'", "''"));
+			bcaBillingaddress.setProvince(ConstValue.hateNull(clientVendor.get().getProvince()).replaceAll("'", "''"));
+			bcaBillingaddress.setCountry(ConstValue.hateNull(invoiceDto.getCountry()).replaceAll("'", "''"));
+			bcaBillingaddress.setZipCode(ConstValue.hateNull(invoiceDto.getZipcode()).replaceAll("'", "''"));
+			bcaBillingaddress.setStatus("N");
+	
+			bcaBillingaddress.setDateAdded(OffsetDateTime.now());
+			bcaBillingaddress.setPhone(ConstValue.hateNull(clientVendor.get().getPhone()).replaceAll("'", "''"));
 
+			bcaBillingaddress.setActive(1);
+			bcaBillingaddress.setCompany(company.get());
+			bcaBillingaddress = bcaBillingaddressRepository.save(bcaBillingaddress);
+	
+						if(	bcaBillingaddress!=null)
+						{
+							request.getSession().setAttribute("actionMsg", "BzComposer.common.recordUpdated");
+							invoiceDto.setAddressID(""+bcaBillingaddress.getAddressId());
+							//request.getSession().setAttribute("BillingAddressID",""+bcaBillingaddress.getAddressId());
+							 System.out.println("BillingAddressID............"+request.getSession().getAttribute("ShippingAddressID"));
+							request.getSession().setAttribute("BillingAddress",bcaBillingaddress);
+							
+							Optional<BcaStates> state = stateRepository.findById(Integer.valueOf(bcaBillingaddress.getState()));
+							Optional<BcaCities> city = cityRepository.findById(Integer.valueOf(bcaBillingaddress.getCity()));
+//							
+					   request.getSession().setAttribute("lastLineoFBAddress",city.get().getName() + ", " + state.get().getName()+" "+ bcaBillingaddress.getZipCode());
+							
+						   }
+						else 
+						{
+					            request.getSession().setAttribute("actionMsg", "BzComposer.common.recordNotUpdated");
+						}             
+       
+	}
+	catch(Exception e) 
+	{		
+e.printStackTrace();
+	System.out.println(""+e);	
+	}	  				
+  return 0;
+		
+	}
+		
+		
+	
 	public void updateShippingAddress(InvoiceDto invoiceDto, HttpServletRequest request) {
 		String cvId = request.getParameter("customerID");
 		String addressID = request.getParameter("shipAddressId");
@@ -1987,7 +2198,6 @@ public class SalesDetailsDao {
 		}
 
 	}
-
 	public EstimationDto getEstimationDetailsByBtnName(HttpServletRequest request, EstimationDto estimationDto)
 			throws SQLException {
 //		EstimationInfo estInfo = new EstimationInfo();

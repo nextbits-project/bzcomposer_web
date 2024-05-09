@@ -1030,7 +1030,8 @@ public class PurchaseInfo {
 					address.setState("");
 				Optional<BcaClientvendor> clientVendor = bcaClientvendorRepository.findById(address.getCvId());
 
-				if (clientVendor.isPresent()) {
+				if (clientVendor.isPresent())
+				{
 					BcaClientvendor cv = clientVendor.get();
 
 //				List<BcaBillingaddress> bcaBillingaddresses = bcaBillingaddressRepository.findByClientVendor(cv);
