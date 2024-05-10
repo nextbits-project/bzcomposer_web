@@ -266,6 +266,7 @@ table.tabla-listados tbody tr td {
 								<select class="form-control paidunpaid">
 								    <option value="Unpaid"><spring:message code="BzComposer.accountreceivable.unpaid"/></option>
 									<option value="Paid"><spring:message code="BzComposer.accountreceivable.paid"/></option></option>
+								    <option value="Partially Paid"><spring:message code="BzComposer.accountreceivable.partiallypaid"/></option>
 								</select>
 							</div>
 						</div>
@@ -570,7 +571,7 @@ table.tabla-listados tbody tr td {
 	selectChaseBankFromDropDownList("depositId");
 
    function selectrow(invoice,index,payId) {
-	    
+	    debugger;
 	 if(document.getElementById("rdoReceivedInvoiceOrder").checked)
 	 {   	
 	    this.indexNumber = index;

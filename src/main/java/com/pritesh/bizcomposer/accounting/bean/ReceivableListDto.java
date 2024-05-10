@@ -238,6 +238,8 @@ public class ReceivableListDto{
     private String vendorName = "";
     
     private String poNumStr = "";
+    
+    private String paymentStatus="";
 
     private TblAccountable accountable = null;
 
@@ -1451,6 +1453,14 @@ public class ReceivableListDto{
 
 	public void setPoNumStr(String poNumStr) {
 		this.poNumStr = poNumStr;
+	}
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
 	}
 	
 	

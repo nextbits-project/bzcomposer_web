@@ -217,6 +217,21 @@ table.tabla-listados tbody tr td {
 									</div>
 								</div>
 							</div>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"> <spring:message
+										code="BzComposer.accountreceivable.balanceamount" />
+								</label>
+
+								<div class="col-md-8">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<span class="input-group-text" id="basic-addon1">$</span>
+										</div>
+										<input type="text" class="form-control devBalanceAmount"
+											value="" width="20px" id="balanceAmount" disabled>
+									</div>
+								</div>
+							</div>
 
 							<%
 							if (SelcetedPaymentForCheck != null) {
@@ -323,13 +338,13 @@ table.tabla-listados tbody tr td {
 								</label>
 								<div class="col-md-8">
 									<select class="form-control paymentOP" size="1" id="payStatus">
-										<option><spring:message
+										<option value="Unpaid"><spring:message
 												code="BzComposer.accountreceivable.unpaid" /></option>
-										<option><spring:message
+										<option value="Paid"><spring:message
 												code="BzComposer.accountreceivable.paid" /></option>
-										<option><spring:message
+										<option value="Partially Paid"><spring:message
 												code="BzComposer.accountreceivable.partiallypaid" /></option>		
-										<option><spring:message
+										<option value="Layaway"><spring:message
 												code="BzComposer.accountreceivable.layaway" /></option>
 									</select>
 								</div>
@@ -488,16 +503,20 @@ table.tabla-listados tbody tr td {
 												code="BzComposer.accountreceivable.received" /></th>
 										<th scope="col" class="text-right"><spring:message
 												code="BzComposer.accountreceivable.balance" /></th>
-										<th scope="col" class="text-right"><spring:message
+										<%-- <th scope="col" class="text-right"><spring:message
 												code="BzComposer.accountreceivable.lineofcredit" /></th>
 										<th scope="col" class="text-right"><spring:message
-												code="BzComposer.accountreceivable.availablecredit" /></th>
+												code="BzComposer.accountreceivable.availablecredit" /></th> --%>
 										<th scope="col" class="text-right"><spring:message
-												code="BzComposer.accountreceivable.category" /></th>
+												code="BzComposer.accountreceivable.receivedtype" /></th>
+										<th scope="col" class="text-right"><spring:message
+												code="BzComposer.accountreceivable.paymentstatus" /></th>
+										<th scope="col" class="text-right"><spring:message
+												code="BzComposer.accountreceivable.category" /></th>				
 										<th scope="col"><spring:message
 												code="BzComposer.global.memo" /></th>
-										<th scope="col"><spring:message
-												code="BzComposer.accountreceivable.consigned" /></th>
+										<%-- <th scope="col"><spring:message
+												code="BzComposer.accountreceivable.consigned" /></th> --%>
 									</tr>
 								</thead>
 								<tbody>
@@ -544,8 +563,18 @@ table.tabla-listados tbody tr td {
 										<td class="text-right"><%=String.format("%.2f", rb.getAdjustedTotal())%></td>
 										<td class="text-right"><%=String.format("%.2f", rb.getPaidAmount())%></td>
 										<td class="text-right"><%=String.format("%.2f", rb.getBalance())%></td>
-										<td class="text-right"><%=String.format("%.2f", rb.getCustomercreditline())%></td>
-										<td class="text-right"><%=String.format("%.2f", rb.getRemainingcreditamount())%></td>
+										<td class="text-right">
+											<%
+											out.println(rb.getPaymentTypeName());
+											%>
+										</td>
+										<td class="text-right">
+											<%
+											out.println(rb.getPaymentStatus());
+											%>
+										</td>
+										<%-- <td class="text-right"><%=String.format("%.2f", rb.getCustomercreditline())%></td>
+										<td class="text-right"><%=String.format("%.2f", rb.getRemainingcreditamount())%></td> --%>
 										<td class="text-right" value=<%=rb.getCategoryID()%>>
 											<%
 											out.println(rb.getCategoryName());
@@ -597,7 +626,7 @@ table.tabla-listados tbody tr td {
 										<%
 										}
 										%>
-										<td><input type="checkbox"></td>
+										<!-- <td><input type="checkbox"></td> -->
 									</tr> 
 									<%
 									index++;
@@ -839,9 +868,9 @@ table.tabla-listados tbody tr td {
     function checkReceivedType(){
     	debugger;
     	var receivedType = document.getElementById("receivedType");
-		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;
+		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].text.trim();
 		
-		if(selectedReceivedType == '192'){
+		if(selectedReceivedType == 'Check'){
 		 	$("#Check").show();
 		 }else{ 
 		 	$("#Check").hide();
@@ -914,17 +943,18 @@ table.tabla-listados tbody tr td {
 	    var amount = parseInt(amountString);
 	    var balance = parseInt(balanceString);
 	    $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text());
-	    $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text()); 
+	    $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text());
+	    $(".devBalanceAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text());
 	    /* $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(13)').attr('value')); */
 	    
 	    $("select#receivedType").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value'));
 	    $("select.devDeposittypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value'));
+	    $("select.paymentOP").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(12)').text().trim());
 	    
-	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == 192
-	        || $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == '192'){
+	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(11)').text().trim() == 'Check'){
 	    	$("#Check").show();
 	    }else{
-	    		$("#Check").hide();
+	    	$("#Check").hide();
 	    }
 	    //alert($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text());
 	    //alert($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value'));
@@ -988,7 +1018,8 @@ table.tabla-listados tbody tr td {
 		    success : function(data) {
 
 				//updateAccountReceivableTab(data);
-			   window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; 
+				window.location.reload(true);
+			   //window.location = "${pageContext.request.contextPath}/AccountReceiveble?tabid=AccountReceiveble"; 
 
 			},
 			 error : function(data) {

@@ -40,7 +40,7 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 			String status, Integer deleted, Integer active, List<Integer> cvTypeIds);
 
 	@Query("SELECT bcv FROM BcaClientvendor bcv left join bcv.company c WHERE bcv.deleted = 0 AND c.companyId = :companyId AND"
-			+ " bcv.customerOpenDebit > 0 AND bcv.status = 'N' AND bcv.cvtypeId IN (2,1) ORDER BY bcv.dateAdded DESC")
+			+ " bcv.customerOpenDebit > 0 AND bcv.status in ('N', 'U') AND bcv.cvtypeId IN (2,1) ORDER BY bcv.dateAdded DESC")
 	List<BcaClientvendor> findInvoiceForUnpaidOpeningbal(@Param("companyId") long companyId);
 
 	@Query("SELECT bcv FROM BcaClientvendor bcv WHERE bcv.company = :company AND bcv.status IN ('U', 'N')"

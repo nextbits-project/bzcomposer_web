@@ -199,17 +199,37 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		Statement stmt = null;
 //		SQLExecutor db = new SQLExecutor();
 //		ResultSet rs = null;
+//		String sql = "SELECT I.InvoiceID,I.OrderNum,I.PONum,I.SubTotal,I.Tax,I.EmployeeID,I.RefNum,I.Memo,I.ShipCarrierID,I.ShippingMethod,"
+//				+ " I.SH,I.ClientVendorID,I.InvoiceTypeID,I.Total,I.AdjustedTotal,I.PaidAmount,I.Balance,"
+//				+ "(SELECT Sum(bca_payment.Amount) AS AB FROM bca_payment WHERE bca_payment.InvoiceID=I.InvoiceID AND bca_payment.Deleted != 1) AS PaidAmount12,"
+//				+ "I.IsReceived,I.TermID,I.IsPaymentCompleted,I.DateConfirmed,I.DateAdded,I.invoiceStatus,I.PaymentTypeID,"
+//				+ "I.CategoryID,I.ServiceID,I.SalesTaxID,I.SalesRepID,I.Taxable,I.Shipped,I.JobCategoryID,t.Days,I.BillingAddrID,"
+//				+ "I.ShippingAddrID,I.TotalCommission,I.BankAccountID "
+//				+ "FROM bca_invoice AS I LEFT JOIN  bca_term AS t ON I.TermID = t.TermID"
+//				+ " WHERE ( ( ( InvoiceTypeID ) IN ( 1, 12 ) AND I.TermID <> 3 ) OR I.InvoiceTypeID = 11 )"
+//				+ " AND I.AdjustedTotal > 0 AND I.IsPaymentCompleted = 0 AND I.invoiceStatus = 0 AND I.CompanyID ="
+//				+ companyId
+//				+ " AND ( I.AdjustedTotal > (SELECT Sum(bca_payment.Amount) FROM bca_payment WHERE bca_payment.InvoiceID=I.InvoiceID AND bca_payment.Deleted != 1)"
+//				+ " OR (SELECT Sum(bca_payment.Amount) FROM bca_payment WHERE bca_payment.InvoiceID = I.InvoiceID AND bca_payment.Deleted != 1) IS NULL )"
+//				+ "ORDER  BY OrderNum DESC  ";
 		ArrayList<ReceivableListDto> rlb = new ArrayList<>();
 //		con = db.getConnection();
 		try {
 			List<Object[]> objList = bcaInvoiceRepository.findRecievableList(new Long(companyId));
 			List<InvoiceDto> dtos = convertInvoiceDtoToInvoice(objList);
 			for (InvoiceDto dto : dtos) {
+				Double paidAmount = 0.0;
 				TblCategoryDtoLoader category = new TblCategoryDtoLoader();
 				ReceivableListDto rb = new ReceivableListDto();
 				TblCategoryDto categoryName = null;
 				if (null != dto.getCategoryID())
 					categoryName = category.getCategoryOf(dto.getCategoryID());
+
+				if (categoryName != null) {
+					rb.setCategoryName(categoryName.toString());
+				} else {
+					rb.setCategoryName("Not Selected"); // or set to null, based on your requirement
+				}
 				TblTermLoader termloader = new TblTermLoader();
 				TblTerm tblterm = termloader.getObjectOfID(dto.getTermID());
 				int cvId = dto.getClientVendorID();
@@ -255,11 +275,30 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb.setInvoiceTypeID(dto.getInvoiceTypeID());
 				rb.setTotal(dto.getTotal());
 				rb.setAdjustedTotal(dto.getAdjustedTotal());
-				rb.setPaidAmount(dto.getPaidAmount());
+				paidAmount = dto.getPaidAmount();
+//				rb.setPaidAmount(dto.getPaidAmount());
+				rb.setPaidAmount(paidAmount);
+
+				// setting payment status based on paid amount and adjusted total
+				if (paidAmount == 0) {
+					rb.setPaymentStatus("Unpaid");
+				} else if (paidAmount > 0 && paidAmount < dto.getAdjustedTotal()) {
+					rb.setPaymentStatus("Partially Paid");
+				} else if (paidAmount == dto.getAdjustedTotal()) {
+					rb.setPaymentStatus("Paid");
+				}
 				rb.setBalance(dto.getBalance());
 				rb.setTermID(dto.getTermID());
-				if (null != dto.getPaymentTypeID())
+				if (null != dto.getPaymentTypeID()) {
 					rb.setPaymentTypeID(dto.getPaymentTypeID());
+					// get payment type name )
+//					Optional<BcaPaymenttype> opPaymentType = bcaPaymenttypeRepository.findById(dto.getPaymentTypeID());
+//					BcaPaymenttype  paymentType = opPaymentType.get();
+					rb.setPaymentTypeName(getPaymentTypeName(dto.getPaymentTypeID()));
+				} else {
+					rb.setPaymentTypeName("Not Selected");
+				}
+
 				if (null != dto.getShipCarrierID())
 					rb.setShipCarrierID(dto.getShipCarrierID());
 				rb.setSh(dto.getSH()); // new changes
@@ -1707,8 +1746,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		con = db.getConnection();
 		ArrayList<ReceivableListDto> rlb = new ArrayList<ReceivableListDto>();
 
-//		String sql = "SELECT * " + " FROM bca_clientvendor  WHERE Deleted=0 AND CompanyID =" + copanyId
-//				+ " AND CustomerOpenDebit > 0 AND Status = 'N' " + " AND CVTypeID IN(2,1)  ORDER BY   DateAdded DESC";
+//		String sql = "SELECT * " + " FROM bca_clientvendor  WHERE Deleted=0 AND CompanyID =" + companyId
+//				+ " AND CustomerOpenDebit > 0 AND Status IN ('N', 'U') " + " AND CVTypeID IN(2,1)  ORDER BY   DateAdded DESC";
 
 		try {
 //			if (!con.isClosed()) {
@@ -1846,14 +1885,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 		 * = getCustomerTypeId(ConstValue.DealerVenBoth); int cvTypeIdForDealerVendor =
 		 * getCustomerTypeId(ConstValue.DealerVenBoth);
 		 */
-//		String sql = "SELECT a.RemainingCredit,a.CustomerCreditLine,a.Name,a.FirstName,a.LastName,a.DateAdded,b.DateAdded,"
-//				+ " a.ClientVendorID,a.CategoryID,b.InvoiceID,b.Credit,b.Total_Credit ,a.TermID,b.Memo"
-//				+ " FROM bca_clientvendor AS a  INNER JOIN bca_invoicecredit AS b ON b.cvId = a.ClientVendorID "
-//				+ " WHERE a.Deleted=0 AND b.Deleted = 0 AND b.Credit > 0 " + " AND b.InvoiceTypeID NOT IN("
-//				+ ReceivableListDto.PURCHASE_ORDER_INVOICE_TYPE + ") AND CompanyID =" + companyId + " AND Status = 'N'"
-//				+ " AND CVTypeID IN(" + getCustomerTypeId(ConstValue.CUSTOMER) + ","
-//				+ getCustomerTypeId(ConstValue.DEALER) + "," + getCustomerTypeId(ConstValue.CustVenBoth) + ","
-//				+ getCustomerTypeId(ConstValue.DealerVenBoth) + ") ORDER BY b.DateAdded DESC";
+		String sql = "SELECT a.RemainingCredit,a.CustomerCreditLine,a.Name,a.FirstName,a.LastName,a.DateAdded,b.DateAdded,"
+				+ " a.ClientVendorID,a.CategoryID,b.InvoiceID,b.Credit,b.Total_Credit ,a.TermID,b.Memo"
+				+ " FROM bca_clientvendor AS a  INNER JOIN bca_invoicecredit AS b ON b.cvId = a.ClientVendorID "
+				+ " WHERE a.Deleted=0 AND b.Deleted = 0 AND b.Credit > 0 " + " AND b.InvoiceTypeID NOT IN("
+				+ ReceivableListDto.PURCHASE_ORDER_INVOICE_TYPE + ") AND CompanyID =" + companyId + " AND Status = 'N'"
+				+ " AND CVTypeID IN(" + getCustomerTypeId(ConstValue.CUSTOMER) + ","
+				+ getCustomerTypeId(ConstValue.DEALER) + "," + getCustomerTypeId(ConstValue.CustVenBoth) + ","
+				+ getCustomerTypeId(ConstValue.DealerVenBoth) + ") ORDER BY b.DateAdded DESC";
 		/*
 		 * + " AND CVTypeID IN("+cvTypeIdForCustomer+","+cvTypeIdForDealer+","+
 		 * cvTypeIdForBoth+","+cvTypeIdForDealerVendor+") ORDER BY b.DateAdded DESC";
@@ -2024,7 +2063,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 	@Override
 	public double getPreviousPaidAmount(int invoiceID, int companyID) {
 		double previousPaidAmount = 0;
-		List<BcaPayment> bcaPayment = bcaPaymentRepository.findByInvoice_InvoiceIdAndCompany_CompanyId(invoiceID, Long.valueOf(companyID));
+		List<BcaPayment> bcaPayment = bcaPaymentRepository.findByInvoice_InvoiceIdAndCompany_CompanyId(invoiceID,
+				Long.valueOf(companyID));
 
 		for (BcaPayment payment : bcaPayment) {
 
@@ -3222,6 +3262,8 @@ public class ReceivableListImpl implements ReceivableLIst {
 			}
 			if (total == adTotal) {
 				PaidOrUnpaid = "Paid";
+			} else if (total > 0 & total < adTotal) {
+				PaidOrUnpaid = "Partially Paid";
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -7321,8 +7363,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					.findDistinctByCompany_CompanyIdAndStatusInAndCvtypeIdInAndDeletedAndActiveOrderByName(
 							ConstValue.companyIdLong, status, cvTypeId, 0, 1);
 
-			for (BcaClientvendor bcaClientvendor : bcaClientvendors)
-{
+			for (BcaClientvendor bcaClientvendor : bcaClientvendors) {
 				ClientVendor clientVendor = new ClientVendor();
 
 				String name = bcaClientvendor.getName();
@@ -7850,14 +7891,14 @@ public class ReceivableListImpl implements ReceivableLIst {
 							status, 0, 1);
 			for (BcaClientvendor bcaClientvendor : bcaClientvendors) {
 				if (bcaClientvendor.getCvtypeId() == 8) {
-					
-					//ClientVendor clientVendor = new ClientVendor();
-					//String name = bcaClientvendor.getName();
-					//clientVendor.setName(name.equals("") ? name : name.trim());
 
-					//clientVendor.setCvID(bcaClientvendor.getClientVendorId());
-					//ServiceProviderClientvendor.add(clientVendor);
-					
+					// ClientVendor clientVendor = new ClientVendor();
+					// String name = bcaClientvendor.getName();
+					// clientVendor.setName(name.equals("") ? name : name.trim());
+
+					// clientVendor.setCvID(bcaClientvendor.getClientVendorId());
+					// ServiceProviderClientvendor.add(clientVendor);
+
 					ClientVendor clientVendor = new ClientVendor();
 					clientVendor.setCvID(bcaClientvendor.getClientVendorId());
 					clientVendor.setName(bcaClientvendor.getName());
