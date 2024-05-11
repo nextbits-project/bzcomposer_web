@@ -302,6 +302,17 @@ public class AccountingController{
 			request.getSession().setAttribute("path", p);
 			forward = "/accounting/accountreceivable";
 		}
+		
+//		added for null pointer exception in Saving Payment And Receiving Payment from here starts
+		ArrayList<ReceivableListDto> ReceivableList = rl.getReceivableList(ConstValue.companyId);
+	   	request.setAttribute("ReceivableList", ReceivableList);
+	   	ArrayList<ReceivableListDto> listForUnpaidOpeningBal = rl.getInvoiceForUnpaidOpeningbal(ConstValue.companyId);
+	   	ArrayList<ReceivableListDto> listForUnpaidCreditAmount = rl.getUnpaidCreditAmount(ConstValue.companyId);
+	   	request.setAttribute("listForUnpaidCreditAmount", listForUnpaidCreditAmount);
+	   	request.setAttribute("listForUnpaidOpeningBal", listForUnpaidOpeningBal);
+//	   	added for null pointer exception in Saving Payment And Receiving Payment from here ends
+	   	
+	   	
 		return forward;
 	}
 

@@ -593,7 +593,10 @@ table.tabla-listados tbody tr td {
 	    		var checkReceived = <%= request.getSession().getAttribute("checkReceived"+) %>;
 	    		$(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text());
 	    	} --%>
-	    $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child(1)').find('td:nth-child(12)').attr('value'));
+	    /* alert($('table.devAcRecDataTbl tbody tr:nth-child(1)').find('td:nth-child(12)').attr('value'));
+	    alert("hi");
+	    alert($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(12)').attr('value')); */
+	    $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(12)').attr('value'));
 	    $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(7)').text()); 
 	    $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').attr('value'));
 	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(6)').attr('value') == '192' || $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value') == '1')
