@@ -1,10 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@page import="com.nxsol.bzcomposer.company.domain.BcaShippingaddress"%>
-<%@page import="com.nxsol.bzcomposer.company.domain.BcaBillingaddress"%>
-
-
 <%@page import="org.springframework.beans.factory.annotation.Autowired"%>
-
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -62,105 +57,18 @@ function isRealValue(obj)
  return obj && obj !== 'null' && obj !== 'undefined';
 }
 
-
-
+function removeSessionData()
+{
+<%
+ request.getSession().removeAttribute("BillingAddress");
+request.getSession().removeAttribute("ShippingAddress");
+request.getSession().removeAttribute("lastLineoFSAddress");  
+request.getSession().removeAttribute("lastLineoFBAddress");
+%>
+}
 
 $(function()
 	{
-	     //  alert("welcome");
-	<%  
-	BcaBillingaddress bcaBillingaddress=(BcaBillingaddress)session.getAttribute("BillingAddress");
-	BcaShippingaddress bcaShippingaddress=(BcaShippingaddress)request.getSession().getAttribute("ShippingAddress"); 
-	if(bcaShippingaddress==null&bcaBillingaddress==null)
-		%>
-	//alert("both null  null");
-	  <%
-	  if(bcaShippingaddress!=null)
-			{
-			%>
-			//alert("Shippingaddress not null");
-			var lastline='<%=session.getAttribute("lastLineoFSAddress")%>';
-			let cvID='<%=(bcaShippingaddress.getClientVendor()).getClientVendorId()%>';
-			document.InvoiceForm.shAddressID.value='<%=bcaShippingaddress.getAddressId()%>';
-			let firstname='<%= bcaShippingaddress.getFirstName() %>';
-			let lastname= '<%= bcaShippingaddress.getLastName() %>';
-			let company= '<%= bcaShippingaddress.getName()%>';
-			let addressLine1='<%=bcaShippingaddress.getAddress1()%>';
-			let addressLine2='<%=bcaShippingaddress.getAddress2()%>';
-			  document.InvoiceForm.custID.value=cvID;
-			  document.InvoiceForm.companyID.value='<%=bcaShippingaddress.getCompany().getCompanyId()%>';
-			  
-			document.InvoiceForm.shipTo.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
-			
-			<%
-			if(bcaBillingaddress==null) // if billing address not updated then set default 
-				{
-				%>			
-			var size = document.getElementById("bSize").value;
-	        var shsize = document.getElementById("sSize").value;
-	        var i;
-	        for(i=0;i<size;i++)
-	        {
-	            var field1 = document.getElementById(i+"clvid").value;
-	            if(cvID==field1)
-	            	{
-	            document.InvoiceForm.custID.value =cvID;
-	            document.InvoiceForm.companyID.value = document.getElementById(i+"cid").value;
-	            document.InvoiceForm.bsAddressID.value = document.getElementById(i+"bsaddr").value;
-	            document.InvoiceForm.billTo.value = document.getElementById(i+"bl").value;
-	            	}
-	            }
-	       
-	            <%
-				}
-			  }
-			
-	          %>
-	          //updated Billling address Setting 
-	             <%
-	    	      if(bcaBillingaddress!=null)
-	    			{
-	    			%>
-	    			 //alert("@billinging not null ");
-	    				var lastline='<%=session.getAttribute("lastLineoFBAddress")%>';
-	    				let cvID='<%=(bcaBillingaddress.getClientVendor()).getClientVendorId()%>';
-	    				document.InvoiceForm.bsAddressID.value='<%=bcaBillingaddress.getAddressId()%>';
-	    				let firstname= '<%= bcaBillingaddress.getFirstName() %>';
-	    				let lastname= '<%= bcaBillingaddress.getLastName() %>';
-	    				let company= '<%= bcaBillingaddress.getName()%>';
-	    				let addressLine1='<%=bcaBillingaddress.getAddress1()%>';
-	    				let addressLine2='<%=bcaBillingaddress.getAddress2()%>'
-	    			  document.InvoiceForm.companyID.value='<%=bcaBillingaddress.getCompany().getCompanyId()%>';
-	    				document.InvoiceForm.billTo.value=firstname +" "+lastname+"\n"+company+"\n"+addressLine1+" "+addressLine2+"\n"+lastline;
-	    				document.InvoiceForm.custID.value=cvID;
-	    	     <%
-	    			if(bcaShippingaddress==null)
-	    			{
-	    			%>	
-	    			var size = document.getElementById("bSize").value;
-	    	        var shsize = document.getElementById("sSize").value;
-	    	        var i;
-	    	        for(i=0;i<shsize;i++)
-	    			        {
-	    			            var field1 = document.getElementById(i+"clvid").value;
-	    			            if(cvID==field1)
-	    			            	{
-	    			            document.InvoiceForm.custID.value =cvID;
-	    			            document.InvoiceForm.companyID.value = document.getElementById(i+"cid").value;
-	    			            document.InvoiceForm.shAddressID.value = document.getElementById(i+"shaddr").value;
-	    			            document.InvoiceForm.shipTo.value = document.getElementById(i+"sh").value;
-	    			            	}
-	    			              
-	    			            }
-	    			        
-	    						            <%
-	    						              }
-	    								    }
-	    						            %>
-	
-				   
-	
-
 	var locale = "<%= request.getAttribute("selectedLocale")%>";
 	$('select[id="locale"]').find('option[value="'+locale+'"]').attr("selected",true);
 	$("#sortByLastName").change(function(){
@@ -408,13 +316,13 @@ function deleteInvoiceDialog(){
 function ShowBillingAddressPage(form){
     custID = form.custID.value;
     let addressID = form.bsAddressID.value;
-    window.open("Invoice?tabid=getBillingAddress&addressType=bill&cvID="+custID+"&addressID="+addressID, null,"scrollbars=yes,height=600,width=600,status=yes,toolbar=no,menubar=no,location=no");
+    window.open("Invoice?tabid=getBillingAddress&addressType=bill&cvID="+custID+"&addressID="+addressID, null,"scrollbars=yes,height=600,width=700,status=yes,toolbar=no,menubar=no,location=no");
 }
 
 function ShowShippingAddressPage(form){
     custID = form.custID.value;
     let addressID = form.shAddressID.value;
-    window.open("Invoice?tabid=getBillingAddress&addressType=ship&cvID="+custID+"&addressID="+addressID, null,"scrollbars=yes,height=600,width=600,status=yes,toolbar=no,menubar=no,location=no");
+    window.open("Invoice?tabid=getBillingAddress&addressType=ship&cvID="+custID+"&addressID="+addressID, null,"scrollbars=yes,height=600,width=700,status=yes,toolbar=no,menubar=no,location=no");
 }
 </script>
 </head>
@@ -741,7 +649,6 @@ function ShowShippingAddressPage(form){
 																	style="resize: none; width: 370px;" />
 
 															</td>
-
 
 														</tr>
 													</table>
@@ -2671,6 +2578,8 @@ function Init(){
 function onSave(form)
 {
     
+	removeSessionData();
+	
     No = form.orderNo.value;
     var bill = form.billTo.value;
     if(form.custID.value==0){

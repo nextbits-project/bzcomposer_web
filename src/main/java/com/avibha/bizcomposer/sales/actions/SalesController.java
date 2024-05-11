@@ -53,6 +53,15 @@ import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
 import com.nxsol.bizcompser.global.table.TblCategoryDto;
 import com.nxsol.bizcompser.global.table.TblCategoryDtoLoader;
 import com.nxsol.bzcomposer.company.ConfigurationDAO;
+import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
+import com.nxsol.bzcomposer.company.domain.BcaCities;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
+import com.nxsol.bzcomposer.company.domain.BcaShippingaddress;
+import com.nxsol.bzcomposer.company.domain.BcaStates;
+import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCitiesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaShippingaddressRepository;
+import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
 import com.pritesh.bizcomposer.accounting.bean.ReceivableListDto;
 import com.pritesh.bizcomposer.accounting.bean.TblAccount;
@@ -98,6 +107,7 @@ public class SalesController {
 	@Autowired
 	private InvoiceInfo invoiceInfo;
 
+	
 	@Autowired
 	private ConfigurationDAO dao;
 
@@ -113,6 +123,8 @@ public class SalesController {
 	@Autowired
 	private PurchaseBoardDetails purchaseBoardDetails;
 
+	
+	
 	@Autowired
 	private TblCategoryDtoLoader categoryDtoLoader;
 	
@@ -1011,11 +1023,22 @@ public class SalesController {
 			forward = "redirect:Item?tabid=Item";
 		} else if (action.equalsIgnoreCase("Invoice") || action.equalsIgnoreCase("NewInvoice")) {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
+			
+			
+			
+			
 			sd.newInvoice(request, invoiceDto);
 			sd.getInvoiceInfo(request);
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			InvoiceDto invoice = new InvoiceDto();
+			//............................9-05-2024 .....................................
+			
+			 // setting updated address on  page 
+			  sd.setUpdatedInvoiceAddress(invoiceDto,request);
+			
+			//---------------------------------------------------------------------------------
+			
 			invoice.setSalesTaxID("1");
 			invoice.setState("Tax " + configDto.getSaleTaxRate() + "%");
 			invoice.setRate(configDto.getSaleTaxRate());
@@ -1504,11 +1527,14 @@ public class SalesController {
 			Loger.log("sandip:@ Sales Order ");
 
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
+			
+			
 			sd.newSalesOrder(request, invoiceDto);
 			sd.getInvoiceInfo(request);
 
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			InvoiceDto invoice = new InvoiceDto();
+			sd.setUpdatedInvoiceAddress(invoiceDto, request);
 			invoice.setSalesTaxID("1");
 			invoice.setState("Tax " + configDto.getSaleTaxRate() + "%");
 			invoice.setRate(configDto.getSaleTaxRate());

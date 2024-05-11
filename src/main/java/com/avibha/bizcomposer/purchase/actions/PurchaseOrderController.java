@@ -89,14 +89,19 @@ public class PurchaseOrderController {
 //				PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 //				pdetails.newPurchaseOrder(request, purchaseOrderDto);
 				String compId = (String) request.getSession().getAttribute("CID");
-				request.setAttribute("ShAddr", invoiceInfoDao.shipAddress(compId, null));
-				request.setAttribute("BillAddr", invoiceInfoDao.billAddress(compId, null));
+
 				purchaseOrderDetailsDao.newPurchaseOrder(request, purchaseOrderDto);
 //				ConfigurationInfo configInfo = new ConfigurationInfo();
 				ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
 //				InvoiceInfo info = new InvoiceInfo();
 //				request.setAttribute("Invoicestyleid", info.getDefaultInvoiceStyleNo(companyID));
+				
+				request.setAttribute("ShAddr", invoiceInfoDao.shipAddress(compId, null));
+				request.setAttribute("BillAddr", invoiceInfoDao.billAddress(compId, null));
+				SalesDetailsDao sd = new SalesDetailsDao();
+				sd.setUpdatPurchaseAddress(purchaseOrderDto, request);
+
 				request.setAttribute("Invoicestyleid", invoiceInfo.getDefaultInvoiceStyleNo(companyID));
 				purchaseOrderDto.setInvoiceStyle(configDto.getVendorInvoiceStyleId() + "");
 				purchaseOrderDto.setTerm(configDto.getSelectedTermId() + "");
@@ -105,6 +110,7 @@ public class PurchaseOrderController {
 				purchaseOrderDto.setTemplateType(configDto.getPoTemplateType());
 				purchaseOrderDto.setOrderNo(MyUtility.getOrderNumberByConfigData(purchaseOrderDto.getOrderNo(),
 						AppConstants.POType, configDto, false));
+
 				forward = "/purchase/purchase";
 			} else if (action.equalsIgnoreCase("FirstPurchaseOrder") || action.equalsIgnoreCase("LastPurchaseOrder")
 					|| action.equalsIgnoreCase("NextPurchaseOrder")
@@ -251,6 +257,7 @@ public class PurchaseOrderController {
 		}
 		model.addAttribute("vendorDto", vendorDto);
 		model.addAttribute("purchaseOrderDto", purchaseOrderDto);
+
 		return forward;
 	}
 
@@ -285,6 +292,9 @@ public class PurchaseOrderController {
 		} else if (action.equalsIgnoreCase("SavePurchaseOrder")) {
 //			PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 			purchaseOrderDetailsDao.savePurchaseOrder(request, purchaseOrderDto);
+			purchaseOrderDetailsDao.removeSessionAddressData(request);
+			
+			
 			forward = "redirect:PurchaseOrder?tabid=PurchaseOrder";
 		} else if (action.equalsIgnoreCase("Confirm")) {
 //            PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
@@ -295,6 +305,7 @@ public class PurchaseOrderController {
 		}
 		model.addAttribute("vendorDto", vendorDto);
 		model.addAttribute("purchaseOrderDto", purchaseOrderDto);
+
 		return forward;
 	}
 

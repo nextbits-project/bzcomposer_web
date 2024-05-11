@@ -341,6 +341,14 @@ public class PurchaseOrderDetailsDao {
 		request.setAttribute("Enable", "true");
 		form.setItemID("0");
 	}
+	
+	public void removeSessionAddressData(HttpServletRequest request)
+	{
+		request.getSession().removeAttribute("BillingAddress");
+		request.getSession().removeAttribute("ShippingAddress");
+		request.getSession().removeAttribute("lastLineoFSAddress");  
+		request.getSession().removeAttribute("lastLineoFBAddress");
+	}
 
 	/*
 	 * Check the required purchase order number is exist in the database or not.

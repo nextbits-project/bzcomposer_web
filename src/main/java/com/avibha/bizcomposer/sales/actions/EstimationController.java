@@ -59,12 +59,18 @@ public class EstimationController {
         }
 
         if (action.equalsIgnoreCase("Estimation")) {
-//            SalesDetailsDao sdetails = new SalesDetailsDao();
+           SalesDetailsDao sd = new SalesDetailsDao();
             sdetailsDao.newEstimation(request, estimationDto);
 //            ConfigurationInfo configInfo = new ConfigurationInfo();
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
             InvoiceDto invoice = new InvoiceDto();
+            
+            sd.setUpdatEstimationAddress(estimationDto,request);
+            
+            
+            
+            
             invoice.setSalesTaxID("1");
             invoice.setState("Tax "+configDto.getSaleTaxRate()+"%");
             invoice.setRate(configDto.getSaleTaxRate());

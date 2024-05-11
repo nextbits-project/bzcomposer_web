@@ -764,11 +764,15 @@ public class InvoiceInfoDao {
 
 			TypedQuery<BcaShippingaddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
 					BcaShippingaddressDto.class);
+			
 			if (cvID != null)
 				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
 
 			if (companyId != null)
 				JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(companyId));
+			
+		
+			  
 
 			List<BcaShippingaddressDto> list = typedQuery.getResultList();
 			for (BcaShippingaddressDto dto : list) {
