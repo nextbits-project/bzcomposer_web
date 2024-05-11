@@ -305,7 +305,7 @@ color: red;
 									<th scope="col"><spring:message code="BzComposer.billingboard.duedate"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.amount"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.paidamount"/></th>
-									<th scope="col"><spring:message code="BzComposer.billingboard.lastpayment"/></th>
+									<%-- <th scope="col"><spring:message code="BzComposer.billingboard.lastpayment"/></th> --%>
 									<th scope="col"><spring:message code="BzComposer.billingboard.balance"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.billed"/></th>
 									<th scope="col"><spring:message code="BzComposer.billingboard.scheduledbillingdate"/></th>
@@ -322,12 +322,22 @@ color: red;
 									<td class="text-right">${objList.cvName}</td>
 									<!-- <td>&nbsp;</td> -->
 									<td>&nbsp;</td>
-									<td class="text-right">${objList.dateAdded}</td>
+									<td class="text-right">
+										<fmt:formatDate value="${objList.dateAdded}" pattern="EEE MMM dd, yyyy" />
+									</td>
 									<td class="text-right">${objList.overDueDate}</td>
-									<td class="text-right">${objList.adjustedTotal}</td>
-									<td class="text-right">${objList.paidAmount}</td>
-									<td></td>
-									<td class="text-right">${objList.balance}</td>
+									<td class="text-right">
+										<fmt:formatNumber value="${objList.adjustedTotal}" pattern="#,##0.00" />
+									</td>
+									
+									<%-- <td class="text-right">${objList.adjustedTotal}</td> --%>
+									<td class="text-right">
+									<fmt:formatNumber value="${objList.paidAmount}" pattern="#,##0.00" />
+									</td>
+									<!-- <td></td> last payment-->
+									<td class="text-right">
+										<fmt:formatNumber value="${objList.balance}" pattern="#,##0.00" />
+									</td>
 									<td><input type="checkbox"/></td>
 									<td ></td>
 									<th><input type="checkbox"></th>
@@ -364,14 +374,23 @@ color: red;
 							%>
 								<tr>
 									<th><input type="checkbox" name="checkbox"></th>
-									<td><% out.println(billingStatementList.get(i).getStatementNo());%></td>
+									<td>
+										<%-- <% out.println(billingStatementList.get(i).getStatementNo());%>- --%>
+										<% out.println(billingStatementList.get(i).getOrderNum());%>
+									</td>
 									<%-- <td class="text-right"><%= billingStatementList.get(i).getStatementFor()%></td> --%>
 									<td class="text-right"><%= billingStatementList.get(i).getCustomerName()%></td>
 									<td class="text-right"><%= JProjectUtil.getdateFormat().format(billingStatementList.get(i).getStatementDate())%></td>
 									<td class="text-right"><%= String.format("%.2f", billingStatementList.get(i).getAmount())%></td>
-									<td class="text-right"><%= billingStatementList.get(i).getPaidAmount()%></td>
-									<td class="text-right"><%= billingStatementList.get(i).getPaidDate()%></td>
-									<td class="text-right"><%= billingStatementList.get(i).getBalance()%></td>
+									<td class="text-right">
+										<fmt:formatNumber value="<%= billingStatementList.get(i).getPaidAmount()%>" pattern="#,##0.00" />									
+									</td>
+									<td class="text-right">
+										<fmt:formatDate value="<%= billingStatementList.get(i).getPaidDate()%>" pattern="EEE MMM dd, yyyy" />									
+									</td>
+									<td class="text-right">
+										<fmt:formatNumber value="<%= billingStatementList.get(i).getBalance()%>" pattern="#,##0.00" />										
+									</td>
 									
 								</tr>
 								<% } %>

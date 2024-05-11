@@ -12064,89 +12064,89 @@ public class ReceivableListImpl implements ReceivableLIst {
 			columnName = billingBoard_table + ".orderNum";
 		}
 //
-//		String sql = "SELECT OrderNum,Total,inv.TermID,Memo,Note,InvoiceID,ServiceID, InvoiceTypeID, JobCategoryID, inv.DateAdded, AdjustedTotal,"
-//				+ "inv.PaymentTypeID, IsEmailed, Shipped, Balance, PaidAmount, inv.SalesRepID,BillDate, ShippingMethod,inv.ClientVendorID, "
-//				+ "cv.FirstName,cv.LastName,cv.Name,Email, cv.State,cv.Address1,cv.Country,cv.City,cv.Province,cv.ZipCode,term.Days "
-//				+ "FROM (" + billingBoard_table + " as inv "
-//				+ "LEFT JOIN bca_term AS term ON (inv.TermID=term.TermID)) " + "INNER JOIN " + table_ClientVendor
-//				+ " as cv ON cv.ClientVendorID = inv.ClientVendorID " + "WHERE inv.CompanyID = " + ConstValue.companyId
-//				+ " AND NOT (invoiceStatus = 1 ) AND inv.IsPaymentCompleted = 0 AND Status='N' ";
+		String sql = "SELECT OrderNum,Total,inv.TermID,Memo,Note,InvoiceID,ServiceID, InvoiceTypeID, JobCategoryID, inv.DateAdded, AdjustedTotal,"
+				+ "inv.PaymentTypeID, IsEmailed, Shipped, Balance, PaidAmount, inv.SalesRepID,BillDate, ShippingMethod,inv.ClientVendorID, "
+				+ "cv.FirstName,cv.LastName,cv.Name,Email, cv.State,cv.Address1,cv.Country,cv.City,cv.Province,cv.ZipCode,term.Days "
+				+ "FROM (" + billingBoard_table + " as inv "
+				+ "LEFT JOIN bca_term AS term ON (inv.TermID=term.TermID)) " + "INNER JOIN " + table_ClientVendor
+				+ " as cv ON cv.ClientVendorID = inv.ClientVendorID " + "WHERE inv.CompanyID = " + ConstValue.companyId
+				+ " AND NOT (invoiceStatus = 1 ) AND inv.IsPaymentCompleted = 0 AND cv.Status IN ('U','N') ";
 
 		StringBuffer query = new StringBuffer("select iv from " + billingBoard_table + " as iv "
 				+ " left join iv.term as term on ( iv.term.termId = term.termId) inner join  iv." + table_ClientVendor
 				+ " as cv on cv.clientVendorId = iv.clientVendor.clientVendorId "
-				+ "where iv.company.companyId = :companyId and not (invoiceStatus =1 ) and iv.isPaymentCompleted =0 and status ='N' ");
+				+ "where iv.company.companyId = :companyId and not (invoiceStatus =1 ) and iv.isPaymentCompleted =0 AND cv.status IN ('U','N') ");
 
 		StringBuffer advance_Filter = new StringBuffer();
 
 		if (!advanceSearchCriteria.equals("") && !advanceSearchData.equals("")) {
 			if (advanceSearchCriteria.equals("Bill#") && !advanceSearchData.equals("")) {
 				query.append(" and iv.iv.invoiceType.invoiceTypeId in (13) ");
-//				sql = sql + " AND InvoiceTypeID IN (13)  ";
+				sql = sql + " AND InvoiceTypeID IN (13)  ";
 			} else if (advanceSearchCriteria.equals("Invoice#") && !advanceSearchData.equals("")) {
-//				sql = sql + " AND InvoiceTypeID IN (1)  ";
+				sql = sql + " AND InvoiceTypeID IN (1)  ";
 				query.append(" and iv.invoiceType.invoiceTypeId in (1) ");
 			} else {
 				query.append(" and iv.invoiceType.invoiceTypeId in (1,13) ");
-//				sql = sql + " AND InvoiceTypeID IN (1,13)  ";
+				sql = sql + " AND InvoiceTypeID IN (1,13)  ";
 			}
 
 			if (advanceSearchCriteria.equals("Invoice#")) {
-//				advanceFilter = " AND OrderNum = " + advanceSearchData + " ";
+				advanceFilter = " AND OrderNum = " + advanceSearchData + " ";
 				advance_Filter.append(" and iv.orderNum = " + advanceSearchData + " ");
 			} else if (advanceSearchCriteria.equals("Bill#")) {
-//				advanceFilter = " AND OrderNum = " + advanceSearchData + " ";
+				advanceFilter = " AND OrderNum = " + advanceSearchData + " ";
 				advance_Filter.append(" and iv.orderNum = " + advanceSearchData + " ");
 			} else if (advanceSearchCriteria.equals("First Name")) {
 				advance_Filter.append(" and cv.firstName like '" + advanceSearchData + "%' ");
-//				advanceFilter = " AND FirstName LIKE '" + advanceSearchData + "%' ";
+				advanceFilter = " AND FirstName LIKE '" + advanceSearchData + "%' ";
 			} else if (advanceSearchCriteria.equals("Last Name")) {
-//				advanceFilter = " AND LastName LIKE '" + advanceSearchData + "%' ";
+				advanceFilter = " AND LastName LIKE '" + advanceSearchData + "%' ";
 				advance_Filter.append(" and cv.lastName like '" + advanceSearchData + "%' ");
 			} else if (advanceSearchCriteria.equals("Address")) {
-//				advanceFilter = " AND Address1 LIKE '" + advanceSearchData + "%' ";
+				advanceFilter = " AND Address1 LIKE '" + advanceSearchData + "%' ";
 				advance_Filter.append(" and cv.address1 like '" + advanceSearchData + "%' ");
 			} else if (advanceSearchCriteria.equals("ZipCode")) {
-//				advanceFilter = " AND Zipcode LIKE '" + advanceSearchData + "%' ";
+				advanceFilter = " AND Zipcode LIKE '" + advanceSearchData + "%' ";
 				advance_Filter.append(" and cv.zipCode like ' " + advanceSearchData + "%' ");
 			} else if (advanceSearchCriteria.equals("Email")) {
-//				advanceFilter = " AND Email LIKE '" + advanceSearchData + "%' ";
+				advanceFilter = " AND Email LIKE '" + advanceSearchData + "%' ";
 				advance_Filter.append(" and cv.email like '" + advanceSearchData + "%' ");
 			} else if (advanceSearchCriteria.equals("Country")) {
-//				advanceFilter = " AND Country LIKE '" + advanceSearchData + "%' ";
+				advanceFilter = " AND Country LIKE '" + advanceSearchData + "%' ";
 				advance_Filter.append(" and cv.country like '" + advanceSearchData + "%' ");
 			}
 		} else {
 			if (InvoiceType == 113) {
 				// Both Invoices & Recurring Billings
-//				sql = sql + " AND InvoiceTypeID IN (1,13,17) ";
+				sql = sql + " AND InvoiceTypeID IN (1,13,17) ";
 				query.append(" and iv.invoiceType.invoiceTypeId in  (1,13,17)");
 			} else if (InvoiceType == 13) {
-//				sql = sql + " AND InvoiceTypeID IN (13) ";
+				sql = sql + " AND InvoiceTypeID IN (13) ";
 				query.append(" and iv.invoiceType.invoiceTypeId in (13) ");
 			} else if (InvoiceType == 1) {
-//				sql = sql + " AND InvoiceTypeID IN (1) ";
+				sql = sql + " AND InvoiceTypeID IN (1) ";
 				query.append(" and iv.invoiceType.invoiceTypeId in (1) ");
 			}
 		}
 
 		if (!dateStr.trim().equals("")) {
-//			sql = sql + " And " + billingBoard_table + ".DateAdded " + dateStr;
+			sql = sql + " And " + billingBoard_table + ".DateAdded " + dateStr;
 			query.append(" and " + billingBoard_table + ".dateAddeed" + dateStr);
 		}
 
 		if (overdueDays > 0) {
-//			sql = sql
-//					+ " AND (DATEDIFF(Date(now()),DATE(DATE_ADD(DATE(DATE_ADD(inv.DateAdded,INTERVAL ,term.Days  Day)), INTERVAL "
-//					+ overdueDays + " Day)))=0) ";
+			sql = sql
+					+ " AND (DATEDIFF(Date(now()),DATE(DATE_ADD(DATE(DATE_ADD(inv.DateAdded,INTERVAL ,term.Days  Day)), INTERVAL "
+					+ overdueDays + " Day)))=0) ";
 			query.append(
 					" and (DATEDIFF ( DATE(now()), DATE (DATE _ADD ( DATE ( DATE_ADD ( iv.dateAdded ,INTERVAL , term.days DAY)) ,INTERVAL "
 							+ overdueDays + " DAY))) = 0 ) ");
 		}
 		query.append(advance_Filter);
 		query.append(" order by iv." + columnName + ascent);
-//		sql = sql + advanceFilter;
-//		sql = sql + " ORDER BY " + " inv." + columnName + ascent;
+		sql = sql + advanceFilter;
+		sql = sql + " ORDER BY " + " inv." + columnName + ascent;
 		String _query = query.toString();
 		int length = query.length();
 		try {
@@ -12551,34 +12551,34 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		ResultSet rs = null;
 		ArrayList<BillingStatement> billingList = new ArrayList<BillingStatement>();
 
-//		String sql = "SELECT inv.Balance, inv.DateAdded, inv.PaidAmount, bill.statementno, bill.statementdate,bill.clientvendorid,bill.invoiceid,bill.iscombined,bill.type,bill.amount,"
-//				+ "bill.overdueamount,bill.overdueservicecharge,c.Name AS CompanyName,c.FirstName,c.LastName,inv.OrderNum"
-//				+ " FROM   bca_billingstatements AS bill"
-//				+ " LEFT JOIN bca_clientvendor AS c on bill.ClientVendorID = c.ClientVendorID"
-//				+ " JOIN bca_invoice AS inv ON bill.InvoiceID = inv.InvoiceID" + " WHERE   c.Status IN ('U','N') "
-//				+ " AND c.CompanyID = " + ConstValue.companyId;
+		String sql = "SELECT inv.Balance, inv.DateAdded, inv.PaidAmount, bill.statementno, bill.statementdate,bill.clientvendorid,bill.invoiceid,bill.iscombined,bill.type,bill.amount,"
+				+ "bill.overdueamount,bill.overdueservicecharge,c.Name AS CompanyName,c.FirstName,c.LastName,inv.OrderNum"
+				+ " FROM   bca_billingstatements AS bill"
+				+ " LEFT JOIN bca_clientvendor AS c on bill.ClientVendorID = c.ClientVendorID"
+				+ " JOIN bca_invoice AS inv ON bill.InvoiceID = inv.InvoiceID" + " WHERE   c.Status IN ('U','N') "
+				+ " AND c.CompanyID = " + ConstValue.companyId;
 
 		StringBuffer query = new StringBuffer(
 				" select new com.pritesh.bizcomposer.accounting.bean.BcaBillingstatementsDto( inv.balance , inv. dateAdded , inv.paidAmount, bill.statementNo ,"
 						+ "	bill.statementDate , bill.clientVendor.clientVendorId, bill.invoice.invoiceId , bill.isCombined	,"
-						+ "bill.type, bill.amount, bill.overdueAmount,bill.overDueServiceCharge , c.name as companyName , c.firstName , c.lastName ,"
+						+ "bill.type, inv.adjustedTotal as amount, bill.overdueAmount,bill.overDueServiceCharge , c.name as companyName , c.firstName , c.lastName ,"
 						+ " inv.orderNum) from BcaBillingstatements as bill left join BcaClientvendor as c on bill.clientVendor.clientVendorId = "
 						+ " c.clientVendorId  join  BcaInvoice as inv on bill.invoice.invoiceId = inv.invoiceId where c.status in ('U' , 'N' )"
-						+ " and c.company.companyId = :companyId");
+						+ " and c.company.companyId = :companyId AND inv.isPaymentCompleted = 1 ");
 
 		int statementNo = 0;
 		if (criteriaForBillStatement.equals("Statement#")) {
 			statementNo = Integer.parseInt(dataForBillStatement);
 			query.append(" and bill.statementNo = :statementNo");
-//			sql = sql + " AND bill.StatementNo = " + statementNo;
+			sql = sql + " AND bill.StatementNo = " + statementNo;
 		}
 		if (criteriaForBillStatement.equals("FirstName")) {
 			query.append(" and c.firstName = :dataForBillStatement");
-//			sql = sql + " AND c.FirstName = '" + dataForBillStatement + "'";
+			sql = sql + " AND c.FirstName = '" + dataForBillStatement + "'";
 		}
 		if (criteriaForBillStatement.equals("LastName")) {
 			query.append(" and c.lastName = :dataForBillStatement");
-//			sql = sql + " AND c.LastName = '" + dataForBillStatement + "'";
+			sql = sql + " AND c.LastName = '" + dataForBillStatement + "'";
 		}
 		try {
 
@@ -12619,7 +12619,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 				bs.setAmount(dto.getAmount());
 				bs.setPaidAmount(dto.getPaidAmount());
 				bs.setPaidDate(offsetDateTimeToDate(dto.getDateAdded()));
-
+				//added newly
+				bs.setOrderNum(dto.getOrderNum());				
+				bs.setBalance(dto.getBalance());
+				bs.setCopmanyName(dto.getCompanyName());
+				bs.setCvID(dto.getClientVendorId());
+				bs.setFirstName(dto.getFirstName());
+				bs.setLastName(dto.getLastName());
+				bs.setInvoiceID(dto.getInvoiceId());
+				
 				billingList.add(bs);
 			}
 
