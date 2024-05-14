@@ -483,7 +483,7 @@ table.tabla-listados tbody tr td {
 							<table class="table table-bordered table-sm devAcRecDataTbl">
 								<thead class="thead-light">
 									<tr>
-										<th scope="col"><spring:message
+										<th scope="col" class="d-none"><spring:message
 												code="BzComposer.accountreceivable.select" /></th>
 										<th scope="col" class="text-right"><spring:message
 												code="Bizcomposer.invoice" />#</th>
@@ -528,7 +528,7 @@ table.tabla-listados tbody tr td {
 										ReceivableListDto rb = itr.next();
 									%>
 									<tr onclick="selectrow(<%=rb.getInvoiceID() + "," + index%>)">
-										<td class="text-right"><input type="checkbox"
+										<td class="text-right d-none" ><input type="checkbox"
 											id="Checkbox1"></td>
 										<td class="text-right">
 											<%
@@ -684,10 +684,8 @@ table.tabla-listados tbody tr td {
 											%>
 										</td>
 										<td class="text-right">
-											<%
-											out.println(rb1.getDateAdded());
-											%>
-										</td>
+								            <fmt:formatDate value="<%= rb1.getDateAdded() %>" pattern="EEE MMM dd, yyyy" />
+								        </td>
 										<td class="text-right"></td>
 										<td class="text-right"></td>
 										<td class="text-right"></td>
@@ -711,7 +709,7 @@ table.tabla-listados tbody tr td {
 									<%
 									}
 									%>
-								
+								</tbody>
 							</table>
 						</div>
 						<div class="table1" id="tblForUnpaidCreditAmount">

@@ -368,17 +368,41 @@ color: red;
 								</tr>
 							</thead>
 							<tbody>
-							<% ArrayList<BillingStatement> billingStatementList = (ArrayList)request.getAttribute("billingStatementList"); 
+							<c:forEach items="${billingListPaid}" var="objList" varStatus="loop">
+								<tr onclick="selctRow(${objList.invoiceID}, ${loop.index})">
+									<th><input type="checkbox" name="checkbox"></th>
+									<!-- <td>&nbsp;</td> -->
+									<td class="text-right">${objList.orderNumStr}</td>
+									<td class="text-right">${objList.cvName}</td>
+									<td class="text-right">
+										<fmt:formatDate value="${objList.dateAdded}" pattern="EEE MMM dd, yyyy" />
+									</td>
+									<td class="text-right">
+										<fmt:formatNumber value="${objList.adjustedTotal}" pattern="#,##0.00" />
+									</td>
+									<td class="text-right">
+									<fmt:formatNumber value="${objList.paidAmount}" pattern="#,##0.00" />
+									</td>
+									<td class="text-right">
+										<fmt:formatDate value="${objList.paymentDate}" pattern="EEE MMM dd, yyyy" />
+									</td>
+									<td class="text-right">
+										<fmt:formatNumber value="${objList.balance}" pattern="#,##0.00" />
+									</td>
+								</tr>
+								</c:forEach>
+							<%-- <% 
+							ArrayList<BillingStatement> billingStatementList = (ArrayList)request.getAttribute("billingStatementList"); 
 							   for(int i=0;i<billingStatementList.size();i++)
 							   {   
 							%>
 								<tr>
 									<th><input type="checkbox" name="checkbox"></th>
 									<td>
-										<%-- <% out.println(billingStatementList.get(i).getStatementNo());%>- --%>
+										<% out.println(billingStatementList.get(i).getStatementNo());%>-
 										<% out.println(billingStatementList.get(i).getOrderNum());%>
 									</td>
-									<%-- <td class="text-right"><%= billingStatementList.get(i).getStatementFor()%></td> --%>
+									<td class="text-right"><%= billingStatementList.get(i).getStatementFor()%></td>
 									<td class="text-right"><%= billingStatementList.get(i).getCustomerName()%></td>
 									<td class="text-right"><%= JProjectUtil.getdateFormat().format(billingStatementList.get(i).getStatementDate())%></td>
 									<td class="text-right"><%= String.format("%.2f", billingStatementList.get(i).getAmount())%></td>
@@ -394,7 +418,7 @@ color: red;
 									
 								</tr>
 								<% } %>
-							</tbody>
+							</tbody> --%>
 						</table>
 					</div>
 				</div>

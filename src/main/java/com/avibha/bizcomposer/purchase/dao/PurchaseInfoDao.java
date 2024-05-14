@@ -525,8 +525,8 @@ public class PurchaseInfoDao {
 					: DateHelper.convertDateToOffsetDateTime(customerInfo.string2date(c.getDateAdded())));
 
 			bcv.setCustomerTitle(c.getTitle());
-			//bcv.setFirstName(c.getFirstName());
-			//bcv.setLastName(c.getLastName());
+			bcv.setFirstName(c.getFirstName());
+			bcv.setLastName(c.getLastName());
 			bcv.setAddress1(c.getAddress1());
 			bcv.setAddress2(c.getAddress2());
 			bcv.setCity(c.getCity().toString());
@@ -539,17 +539,17 @@ public class PurchaseInfoDao {
 			bcv.setCellPhone(c.getCellPhone());
 			bcv.setFax(c.getFax());
 			bcv.setHomePage(c.getHomePage());
-			//bcv.setEmail(c.getEmail());
+			bcv.setEmail(c.getEmail());
 			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
 			if (company.isPresent())
 				bcv.setCompany(company.get());
 			bcv.setResellerTaxId(c.getTexID());
-			//bcv.setVendorOpenDebit(Double.parseDouble(oBal));
-			//bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
+			bcv.setVendorOpenDebit(Double.parseDouble(oBal));
+			bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
 
 			bcv.setDetail(c.getMemo());
-			//bcv.setTaxable(Long.parseLong(c.getTaxAble()));
-			//bcv.setCvtypeId(Integer.parseInt(c.getIsclient()));
+			bcv.setTaxable(Long.parseLong(c.getTaxAble()));
+			bcv.setCvtypeId(Integer.parseInt(c.getIsclient()));
 			bcv.setCvcategoryId(Integer.parseInt(c.getType()));
 			bcv.setCvcategoryName(vcName);
 			bcv.setActive(1);

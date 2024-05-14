@@ -2488,8 +2488,8 @@ public class CustomerInfoDao {
 			}
 
 			bcv.setResellerTaxId(c.getTexID());
-			bcv.setVendorOpenDebit(Double.parseDouble(oBal));
-			bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
+			bcv.setCustomerOpenDebit(Double.parseDouble(oBal));
+			bcv.setCustomerCreditLine(Double.parseDouble(exCredit));
 			bcv.setDetail(c.getMemo());
 			bcv.setCvtypeId(c.getCvTypeID());
 			if (null != c.getTaxAble())

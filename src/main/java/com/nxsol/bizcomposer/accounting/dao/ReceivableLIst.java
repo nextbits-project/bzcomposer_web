@@ -249,6 +249,8 @@ public interface ReceivableLIst {
 	
 	public ArrayList<ReceivableListDto> getAllInvoicesForBillingBoardWithSearchOption(Date from, Date to, String ascent, String columnName, int InvoiceType, int overdueDays, String alldata,String advanceSearchCriteria,String advanceSearchData);
 	
+	public ArrayList<ReceivableListDto> getAllInvoicesForBillingBoardPaidListWithSearchOption(Date from, Date to, String ascent, String columnName, int InvoiceType, int overdueDays, String alldata,String advanceSearchCriteria,String advanceSearchData);
+	
 	public ArrayList<BillingBoardReport> getBillForPrint(int invoiceId);
 	
 	public Map getReportParameter();

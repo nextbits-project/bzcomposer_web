@@ -74,9 +74,12 @@ public class BillingBoardController {
 			Gson gson = new Gson();
 			ArrayList<ReceivableListDto> billingList = rl.getAllInvoicesForBillingBoardWithSearchOption(from, to,
 					"DESC", columnName, InvoiceType, overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
-			ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement,
-					criteriaForBillStatement);
-			request.setAttribute("billingStatementList", billingStatementList); // paid bills
+//			ArrayList<BillingStatement> billingStatementList = rl.getBillStatementList(dataForBillStatement,
+//					criteriaForBillStatement);getAllInvoicesForBillingBoardPaidListWithSearchOption
+			ArrayList<ReceivableListDto> billingListPaid = rl
+					.getAllInvoicesForBillingBoardPaidListWithSearchOption(from, to, "DESC", columnName, InvoiceType,
+							overdueDays, alldata, advanceSearchCriteria, advanceSearchData);
+			request.setAttribute("billingListPaid", billingListPaid); // paid bills
 			request.setAttribute("billingList", billingList);
 		} else if (action.equalsIgnoreCase("billingCompaniesBoard")) {
 			forward = "/accounting/billingCompaniesBoard";
@@ -87,7 +90,7 @@ public class BillingBoardController {
 //			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			customerDto.setPeriodFrom(MyUtility.getDateBeforeGivenMonths(12));
 			customerDto.setPeriodTo(MyUtility.getCurrentDate());
-			//request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
+			// request.setAttribute("selectedCvID", request.getParameter("selectedCvID"));
 			request.setAttribute("selectedCvID", firstCvID);
 		}
 

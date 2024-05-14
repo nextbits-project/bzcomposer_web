@@ -143,7 +143,21 @@ public class ReceivableListDto{
     //date added
     private Date dateAdded= new Date();
     private String overDueDate= "";
-    public String getOverDueDate() {
+    
+    private Date paymentDate = new Date();
+    
+    
+    
+
+	public Date getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(Date paymentDate) {
+		this.paymentDate = paymentDate;
+	}
+
+	public String getOverDueDate() {
 		return overDueDate;
 	}
 
