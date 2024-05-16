@@ -167,13 +167,14 @@ public interface BcaInvoiceRepository extends JpaRepository<BcaInvoice, Integer>
 			+ " and bp.deleted !=1 ) as PaidAmount12,i.balance, i.isReceived, i.term.termId, i.isPaymentCompleted ,"
 			+ " i.dateConfirmed , i.dateAdded , i.invoiceStatus, i.paymentType.paymentTypeId,i.category.categoryId ,"
 			+ " i.serviceId, i.salesTax.salesTaxId, i.salesRepId , i.taxable, i.shipped , i.jobCategoryId,t.days ,"
-			+ "i.billingAddrId , i.shippingAddrId,i.totalCommission , i.bankAccountId "
-			+ "from BcaInvoice i left join BcaTerm t on i.term.termId =t.termId where "
-			+ "((( i.invoiceType.invoiceTypeId) in (1,12 ) and i.term.termId<>3) or i.invoiceType.invoiceTypeId =11 ) "
-			+ "and i.adjustedTotal > 0 and i.isPaymentCompleted =0 and i.invoiceStatus = 0 and i.company.companyId = :companyId "
-			+ "and (i.adjustedTotal>(select sum(bp.amount) from BcaPayment bp where  bp.invoice.invoiceId=i.invoiceId "
-			+ "and bp.deleted !=1 ) or (select sum(bp.amount) from BcaPayment bp where bp.invoice.invoiceId = i.invoiceId "
-			+ "and bp.deleted !=1 ) is null) order by orderNum desc")
+			+ " i.billingAddrId , i.shippingAddrId,i.totalCommission , i.bankAccountId, "
+			+" (select MAX(p.dateAdded) from BcaPayment p  where p.invoice.invoiceId = i.invoiceId and p.deleted !=1 ) as LastPaymentDate "
+			+ " from BcaInvoice i left join BcaTerm t on i.term.termId =t.termId where "
+			+ " ((( i.invoiceType.invoiceTypeId) in (1,12 ) and i.term.termId<>3) or i.invoiceType.invoiceTypeId =11 ) "
+			+ " and i.adjustedTotal > 0 and i.isPaymentCompleted =0 and i.invoiceStatus = 0 and i.company.companyId = :companyId "
+			+ " and (i.adjustedTotal>(select sum(bp.amount) from BcaPayment bp where  bp.invoice.invoiceId=i.invoiceId "
+			+ " and bp.deleted !=1 ) or (select sum(bp.amount) from BcaPayment bp where bp.invoice.invoiceId = i.invoiceId "
+			+ " and bp.deleted !=1 ) is null) order by orderNum desc")
 	List<Object[]> findRecievableList(@Param("companyId") Long companyId);
 
 //	String sqlString = "select i.InvoiceID, i.OrderNum, date_format(i.dateadded,'%m-%d-%Y') as DateAdded, i.Total, i.Balance, i.Shipped, i.IsEmailed, it.Name,i.ClientVendorID "

@@ -44,5 +44,6 @@ public class InvoiceDto {
 	private Integer shippingAddrID;
 	private Double totalCommission;
 	private Integer bankAccountID;
+	private OffsetDateTime paymentDate;
 	
 }

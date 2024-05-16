@@ -242,10 +242,17 @@ public class AccountingController{
 		    }
 			ReceivableListDto invoice = new ReceivableListDto();
 			String orderNumberStr = newObj.getJSONObject("ReceivableListDto").getString("orderNumStr");
-			String [] ordStrParts = orderNumberStr.split("-");
-			String strOrderNum = ordStrParts[1].trim();
-			System.out.println(Integer.parseInt(strOrderNum));
-			invoice.setOrderNum(Integer.parseInt(strOrderNum));
+			String strOrderNum="";
+			if (orderNumberStr.contains("-")) {
+				String [] ordStrParts = orderNumberStr.split("-");
+				strOrderNum = ordStrParts[1].trim();
+				System.out.println(Integer.parseInt(strOrderNum));
+				invoice.setOrderNum(Integer.parseInt(strOrderNum));
+			}else {
+				System.out.println(Integer.parseInt(orderNumberStr));
+				invoice.setOrderNum(Integer.parseInt(orderNumberStr));
+			}
+			
 			//invoice.setOrderNum(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("orderNumStr")));
 			invoice.setCvID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("cvID")));
 			invoice.setPaymentTypeID(Integer.parseInt(newObj.getJSONObject("ReceivableListDto").getString("paymentTypeID")));

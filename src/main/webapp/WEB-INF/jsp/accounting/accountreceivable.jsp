@@ -163,30 +163,7 @@ table.tabla-listados tbody tr td {
 									</select>
 								</div>
 							</div>
-							<div class="form-group row">
-								<label class="col-md-4  col-form-label"> <spring:message
-										code="BzComposer.accountreceivable.depositto" />
-								</label>
-								<div class="col-md-8">
-									<select class="form-control devDeposittypeDrp" id="depositId">
-
-										<%
-										ArrayList<TblAccount> account = (ArrayList) request.getAttribute("AccountForCombo");
-										for (int i = 0; i < account.size(); i++) {
-										%>
-										<option value="<%=account.get(i).getAccountID()%>"
-											id="<%=account.get(i).getAccountID()%>">
-											<%
-											out.println(account.get(i).getName());
-											%>
-										</option>
-										<%
-										}
-										%>
-
-									</select>
-								</div>
-							</div>
+							
 							<div class="form-group row">
 								<label class="col-md-4  col-form-label"> <spring:message
 										code="BzComposer.accountreceivable.amount" />
@@ -290,6 +267,22 @@ table.tabla-listados tbody tr td {
 								</div>
 
 							</div>
+							
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"> <spring:message
+										code="BzComposer.popayable.paiddate" />
+								</label>
+								<%--  <html:text property="orderDate" readonly="false"></html:text>  --%>
+								<div class="col-md-8 calendar-img">
+									<input type="text" class="form-control devPaidDate" value=""
+										style="width: 275px" name="paidDate" readonly="true"
+										id="paidDate"> <img
+										src="${pageContext.request.contextPath}/images/cal.gif"
+										class="img-fluid" alt="Responsive image"
+										onclick="displayCalendar(document.ReceivableListForm.orderDate,'mm-dd-yyyy',this);">
+								</div>
+
+							</div>
 
 							<%-- <div class="form-group row">
 							<label class="col-md-4  col-form-label">
@@ -329,6 +322,30 @@ table.tabla-listados tbody tr td {
 										<%
 										}
 										%>
+									</select>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-4  col-form-label"> <spring:message
+										code="BzComposer.accountreceivable.depositto" />
+								</label>
+								<div class="col-md-8">
+									<select class="form-control devDeposittypeDrp" id="depositId">
+
+										<%
+										ArrayList<TblAccount> account = (ArrayList) request.getAttribute("AccountForCombo");
+										for (int i = 0; i < account.size(); i++) {
+										%>
+										<option value="<%=account.get(i).getAccountID()%>"
+											id="<%=account.get(i).getAccountID()%>">
+											<%
+											out.println(account.get(i).getName());
+											%>
+										</option>
+										<%
+										}
+										%>
+
 									</select>
 								</div>
 							</div>
@@ -498,7 +515,9 @@ table.tabla-listados tbody tr td {
 										<th scope="col" class="text-right"><spring:message
 												code="BzComposer.accountreceivable.duedate" /></th>
 										<th scope="col" class="text-right"><spring:message
-												code="BzComposer.accountreceivable.amount" /></th>
+												code="BzComposer.popayable.paiddate" /></th>												
+										<th scope="col" class="text-right"><spring:message
+												code="BzComposer.accountreceivable.amount" /></th>																
 										<th scope="col" class="text-right"><spring:message
 												code="BzComposer.accountreceivable.received" /></th>
 										<th scope="col" class="text-right"><spring:message
@@ -558,6 +577,11 @@ table.tabla-listados tbody tr td {
 										<td class="text-right">
 											<%
 											out.println(JProjectUtil.dateFormat.format(rb.getDateAdded()));
+											%>
+										</td>
+										<td class="text-right">
+											<%
+											out.println(JProjectUtil.dateFormat.format(rb.getPaymentDate()));
 											%>
 										</td>
 										<td class="text-right"><%=String.format("%.2f", rb.getAdjustedTotal())%></td>
@@ -936,20 +960,20 @@ table.tabla-listados tbody tr td {
 	   	$("#checkNum").val(''); 
 	    $("#ordernumber").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text());
 	    $("select.devCutNameDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(4)').attr('value'));
-	    var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text();
+	    var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
 	    var balanceString  = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
 	    var amount = parseInt(amountString);
 	    var balance = parseInt(balanceString);
-	    $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text());
-	    $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text());
-	    $(".devBalanceAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text());
+	    $("#devAmount").text($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text());
+	    $(".devReceiveAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text());
+	    $(".devBalanceAmount").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(11)').text());
 	    /* $("select.devCategoryDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(13)').attr('value')); */
 	    
-	    $("select#receivedType").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value'));
-	    $("select.devDeposittypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value'));
-	    $("select.paymentOP").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(12)').text().trim());
+	    $("select#receivedType").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value'));
+	    $("select.devDeposittypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value'));
+	    $("select.paymentOP").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(13)').text().trim());
 	    
-	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(11)').text().trim() == 'Check'){
+	    if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(12)').text().trim() == 'Check'){
 	    	$("#Check").show();
 	    }else{
 	    	$("#Check").hide();
@@ -959,9 +983,10 @@ table.tabla-listados tbody tr td {
 	    /* $("select.devReceivedTypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').attr('value'));
 	    $("select.devDeposittypeDrp").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(16)').attr('value')); */
 	    $(".devOrderDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(7)').text().trim());
-	    $(".devMemotext").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(14)').text().trim());
-		if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value') != 'null'){
-	 		$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(17)').attr('value'));
+	    $(".devPaidDate").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text().trim());
+	    $(".devMemotext").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(15)').text().trim());
+		if($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value') != 'null'){
+	 		$(".devCheck").val($('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value'));
 		}
 		checkReceivedType();
    }  
@@ -970,7 +995,7 @@ table.tabla-listados tbody tr td {
 	   debugger;
 	   var receivedAmount;
 	    var adjustTotal = document.getElementById("devAmount").innerHTML;
-		receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
+		receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
 		if(parseFloat(receivedAmount) == 0.0)
 			{
 				receivedAmount=document.getElementById("receivedAmount").value;
@@ -982,7 +1007,7 @@ table.tabla-listados tbody tr td {
 					}
 			}
 		else{
-				receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
+				receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
 				var balance = document.getElementById("receivedAmount").value;
 				if(parseFloat(receivedAmount)+parseFloat(balance) > parseFloat(adjustTotal) )
 				   {
@@ -1120,21 +1145,21 @@ table.tabla-listados tbody tr td {
 			return false;
 		} */
 	   }
-	   var memo = document.getElementById("memo").value;
+	   var memo = document.getElementById("memo").value.trim();
 	   var depositBank = document.getElementById("depositId");
-	   var selectedBank = depositBank.options[depositBank.selectedIndex].innerText;
+	   var selectedBank = depositBank.options[depositBank.selectedIndex].innerText.trim();
 	   var accountId = depositBank.options[depositBank.selectedIndex].id;
 	   var category = document.getElementById("categoryId");
 	   var customer = document.getElementById("customerName");
 	   var selectedCustomer = customer.options[customer.selectedIndex].value;
 	   var selectedCategoryString = category.options[category.selectedIndex].value;
 	   var categoryId = parseInt(selectedCategoryString);
-	   var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(8)').text();
-	   var balaceString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
+	   var amountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
+	   var balaceString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(11)').text();
 	    var amount = parseFloat(amountString);
 	   var balance = parseInt(balaceString);
 	   <%-- var receivedAmount = <%= request.getSession().getAttribute("amtToPay")%>; --%>
-	     var receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(18)').attr('value');
+	     var receivedAmount = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(19)').attr('value');
 	   /*   var total = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(19)').attr('value'); */
 	    /* var receivedAmountInt = parseInt(receivedAmount);
 	    var totalInt = parseInt(total);  */
@@ -1150,18 +1175,19 @@ table.tabla-listados tbody tr td {
 	    	} */
 	   if(amount == balance)
 		   {
-		  		 receivedAmountString =  $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
+		  		 receivedAmountString =  $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(11)').text();
 		  		//alert(receivedAmountString);
 		   }
 	   else
 		   {
-		  		 receivedAmountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(9)').text();
+		  		 receivedAmountString = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(10)').text();
 		  		 //alert(receivedAmountString);
 		   }
 
 	  /*  	var receivedAmount = parseInt(receivedAmountString); */
-	    var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text();
-	  	var newON = orderNum.replace('IV2021-0','').replace(/\n/g, '');
+	    var orderNum = $('table.devAcRecDataTbl tbody tr:nth-child('+indexNumber+')').find('td:nth-child(2)').text().trim();
+	  	//var newON = orderNum.replace('IV2021-0','').replace(/\n/g, '');
+	  	var newON = orderNum.split('-')[1].replace(/\n/g, '');
 	  	
 	  	var receivedType = document.getElementById("receivedType");
 		var selectedReceivedType = receivedType.options[receivedType.selectedIndex].value;

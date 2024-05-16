@@ -476,7 +476,7 @@ $(document).ready(function()
 												<form:select path="arReceivedType" id="arReceivedType">
 												    <c:if test="${not empty configDto.listOfExistingPayment}">
                                                         <c:forEach items="${configDto.listOfExistingPayment}" var="objList1">
-                                                            <option value="${objList1.arReceivedType}">${objList1.paymentName}</option>
+                                                            <option value="${objList1.paymentTypeId}">${objList1.paymentName}</option>
                                                         </c:forEach>
                                                     </c:if>
 												</form:select>

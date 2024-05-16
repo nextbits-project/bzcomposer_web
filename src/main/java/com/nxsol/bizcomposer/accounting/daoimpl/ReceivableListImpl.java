@@ -337,6 +337,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 					rb.setBankAccountID(dto.getBankAccountID());
 				rb.setTblcategory(categoryName);
 				rb.setTblterm(tblterm);
+				if (null != dto.getPaymentDate())
+					rb.setPaymentDate(offsetDateTimeToDate(dto.getPaymentDate()));
+				
 
 				totalAmount = totalAmount + dto.getBalance();
 				rb.setTotalAmountLabel(totalAmount);
@@ -13130,6 +13133,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 			dto.setShippingAddrID((Integer) obj[34]);
 			dto.setTotalCommission((Double) obj[35]);
 			dto.setBankAccountID((Integer) obj[36]);
+			dto.setPaymentDate((OffsetDateTime) obj[37]);
 			invoiceDtos.add(dto);
 		}
 

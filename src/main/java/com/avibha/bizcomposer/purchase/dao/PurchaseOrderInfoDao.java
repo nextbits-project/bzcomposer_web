@@ -2618,9 +2618,11 @@ public class PurchaseOrderInfoDao {
 				form.setOrderNo(String.valueOf(PONum));
 				form.setInvoiceStyle(String.valueOf(invoice.getInvoiceStyle().getInvoiceStyleId()));
 				form.setTerm(String.valueOf(invoice.getTerm().getTermId()));
-				form.setPayMethod(String.valueOf(invoice.getPaymentType().getPaymentTypeId()));
+//				form.setPayMethod(String.valueOf(invoice.getPaymentType().getPaymentTypeId()));
+				form.setPayMethod(invoice.getPaymentType() != null ? String.valueOf(invoice.getPaymentType().getPaymentTypeId()) : "0");
 				form.setVia(String.valueOf(invoice.getShipCarrier().getShipCarrierId()));
-				form.setMessage(String.valueOf(invoice.getMessage().getMessageId()));
+//				form.setMessage(String.valueOf(invoice.getMessage().getMessageId()));
+				form.setMessage(invoice.getMessage() != null ? String.valueOf(invoice.getMessage().getMessageId()) : "0");
 				form.setTotal(Double.parseDouble(truncate(String.valueOf(invoice.getTotal()))));
 				form.setOrderDate(DateHelper.dateFormatter(invoice.getDateAdded()));
 				form.setTaxable(invoice.getTaxable() == 1 ? "true" : "false");
