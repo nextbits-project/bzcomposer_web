@@ -195,14 +195,67 @@ label {
 			</div>
 			<div class="row">
 				<div class="col-md-3 d-flex flex-column full-height">
+				    <h4 class="title2">
+				        <spring:message code="BzComposer.banking.accountcategory" />
+				    </h4>
+				    <div id="treeView2" class="treeview">
+				        <ul class="list-group">
+				            <c:forEach items="${AccountCategoryList}" var="category" varStatus="loop">
+				                <li class="list-group-item">
+				                    <label class="tree-toggler node-treeview2 node-selected"
+				                           value="${category.accountCategoryID}"
+				                           id="${category.accountCategoryID}"
+				                           onclick="getAccountCategoryId(${category.accountCategoryID})">
+				                        <img src="${pageContext.request.contextPath}/images/folder-lightblue-icon.png"
+				                             class="iconImg" /> ${category.name}
+				                    </label> 
+				                    <c:forEach items="${category.accounts}" var="account">
+				                        <ul class="nav nav-list tree">
+				                            <li>
+				                                <label style="font-size: 14px; cursor: pointer;"
+				                                       value="${account.isitmainaccount}"
+				                                       id="${account.accountID}"
+				                                       onclick="showTransaction(${account.accountID}, ${account.accountCategoryID}, '${account.name}')">
+				                                    <c:choose>
+				                                        <c:when test="${account.isitmainaccount == 1}">
+				                                            ${account.name} (Default)
+				                                        </c:when>
+				                                        <c:otherwise>
+				                                            ${account.name}
+				                                        </c:otherwise>
+				                                    </c:choose>
+				                                </label>
+				                                <input type="hidden" id="IsItMain${account.accountID}"
+				                                       value="${account.isitmainaccount}" /> 
+				                                <input type="hidden" id="Account${account.accountID}"
+				                                       value="${account.customerStartingBalance}" />
+				                            </li>
+				                        </ul>
+				                    </c:forEach>
+				                </li>
+				            </c:forEach>
+				        </ul>
+				    </div>
+				    <div class="mb-auto"></div>
+				    <div class="filterbar filterbar1 text-center mb-0">
+				        <a style="color: #fff; font-size: 14px;" class="btn btn-info" id="AddAccount">
+				            <spring:message code="BzComposer.global.add" />
+				        </a>
+				        <a style="color: #fff; font-size: 14px;" class="btn btn-info" id="EditAccount">
+				            <spring:message code="BzComposer.global.editdelete" />
+				        </a>
+				    </div>
+				</div>
+				
+				<%-- <div class="col-md-3 d-flex flex-column full-height">  old bank account tree replaced on 202450522
 					<h4 class="title2">
 						<spring:message code="BzComposer.banking.accountcategory" />
 					</h4>
 					<div id="treeView2" class="treeview">
 						<ul class="list-group">
-							<%-- <div style="float: left; width: 100%; margin-bottom: 10px">
+							<div style="float: left; width: 100%; margin-bottom: 10px">
 								<spring:message code="BzComposer.banking.accountcategory" />
-							</div> --%>
+							</div>
 							<!-- List Bank-Accounts -->
 							<c:forEach items="${AccountCategoryList}" var="curObject"
 								varStatus="loop">
@@ -224,7 +277,7 @@ label {
 													value="${curObject2.isitmainaccount}"
 													id="${curObject2.accountID}"
 													onclick="showTransaction(${curObject2.accountID}, ${curObject2.accountCategoryID}, '${curObject2.name}')">
-													<%-- ${curObject2.name} --%>
+													${curObject2.name}
 													<c:choose>
 								                        <c:when test="${curObject2.isitmainaccount == 1}">
 								                            ${curObject2.name} (Default)
@@ -254,11 +307,11 @@ label {
 						<a style="color: #fff; font-size: 14px;" class="btn btn-info"
 							id="EditAccount"><spring:message
 								code="BzComposer.global.editdelete" /></a> 
-						<%-- <a	style="color: #fff; font-size: 14px;" class="btn btn-info"
+						<a	style="color: #fff; font-size: 14px;" class="btn btn-info"
 							id="TranseferFundsBtn"><spring:message
-								code="BzComposer.banking.transeferfundsbtn" /></a> --%>
+								code="BzComposer.banking.transeferfundsbtn" /></a>
 					</div>
-				</div>
+				</div> --%>
 				<div class="col-md-9 d-flex flex-column full-height">
 					<div id="selectedAccount">
 						<h4 class="title2">${selectedAccount.name}</h4>
@@ -1476,7 +1529,7 @@ function saveMainCategory(){
     });
 }
 function addAccount(){
-	 
+	 debugger;
 	var accountCategoryString = document.getElementById("acForAddAccount");
 	var accountCategoryId = accountCategoryString.options[accountCategoryString.selectedIndex].value;
 	var payerIdString = document.getElementById("devAdAccount");

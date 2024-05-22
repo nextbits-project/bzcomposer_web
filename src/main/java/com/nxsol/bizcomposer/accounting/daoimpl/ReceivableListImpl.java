@@ -339,7 +339,6 @@ public class ReceivableListImpl implements ReceivableLIst {
 				rb.setTblterm(tblterm);
 				if (null != dto.getPaymentDate())
 					rb.setPaymentDate(offsetDateTimeToDate(dto.getPaymentDate()));
-				
 
 				totalAmount = totalAmount + dto.getBalance();
 				rb.setTotalAmountLabel(totalAmount);
@@ -6814,6 +6813,44 @@ public class ReceivableListImpl implements ReceivableLIst {
 
 	}
 
+//	New Functions for Banking Page Bank Account Tree starts from here 20240522
+	@Override
+	public ArrayList<TblAccountCategory> getBankAccountsTree(ArrayList<TblAccountCategory> categoryList) {
+		for (TblAccountCategory category : categoryList) {
+			ArrayList<TblAccount> accounts = getBankAccountsOfCategory(category.getAccountCategoryID());
+			category.setAccounts(accounts);
+		}
+
+		return categoryList;
+	}
+
+	private ArrayList<TblAccount> getBankAccountsOfCategory(int accountCategoryId) {
+		ArrayList<TblAccount> tempBankAccounts = new ArrayList<>();
+
+		for (TblAccount bankAccount : bankAccountsInFundTransfer) {
+			if (accountCategoryId == bankAccount.getAccountCategoryID() && bankAccount.getParentID() <= 0) {
+				tempBankAccounts.add(bankAccount);
+			}
+		}
+
+		return tempBankAccounts;
+	}
+
+	@Override
+	public ArrayList<TblAccount> getAllAccountsFromBankAccountsTree(ArrayList<TblAccountCategory> bankAccountTreeWithCat) {
+	    ArrayList<TblAccount> allAccounts = new ArrayList<>();
+
+	    for (TblAccountCategory category : bankAccountTreeWithCat) {
+	        if (category.getAccounts() != null) {
+	            allAccounts.addAll(category.getAccounts());
+	        }
+	    }
+
+	    return allAccounts;
+	}
+	
+//	New Functions for Banking Page Bank Account Tree ends here 20240522
+
 	@Override
 	public ArrayList<TblAccount> getBankAccountsTreeForFundTransfer(ArrayList<TblAccountCategory> categoryList) {
 		parent.clear();
@@ -12358,132 +12395,128 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		}
 		return list;
 	}
-	
-	
+
 	@Override
-	public ArrayList<ReceivableListDto> getAllInvoicesForBillingBoardPaidListWithSearchOption(Date from, Date to, String ascent,
-            String columnName, int InvoiceType, int overdueDays, String alldata, String advanceSearchCriteria,
-            String advanceSearchData) {
+	public ArrayList<ReceivableListDto> getAllInvoicesForBillingBoardPaidListWithSearchOption(Date from, Date to,
+			String ascent, String columnName, int InvoiceType, int overdueDays, String alldata,
+			String advanceSearchCriteria, String advanceSearchData) {
 
-        ArrayList<ReceivableListDto> list = new ArrayList<>();
-        String dateStr = getSQL4Date(from, to);
-        String advanceFilter = "";
-        String table_ClientVendor = "bca_clientvendor";
-        int ordNo;
+		ArrayList<ReceivableListDto> list = new ArrayList<>();
+		String dateStr = getSQL4Date(from, to);
+		String advanceFilter = "";
+		String table_ClientVendor = "bca_clientvendor";
+		int ordNo;
 
-        String billingBoard_table = "bca_invoice";
+		String billingBoard_table = "bca_invoice";
 
-        if (columnName.trim().equals("DateAdded")) {
-            columnName = billingBoard_table + ".DateAdded";
-        } else if (columnName.trim().equals("Name")) {
-            columnName = table_ClientVendor + ".Name";
-        } else if (columnName.isEmpty()) {
-            columnName = billingBoard_table + ".OrderNum";
-        }
+		if (columnName.trim().equals("DateAdded")) {
+			columnName = billingBoard_table + ".DateAdded";
+		} else if (columnName.trim().equals("Name")) {
+			columnName = table_ClientVendor + ".Name";
+		} else if (columnName.isEmpty()) {
+			columnName = billingBoard_table + ".OrderNum";
+		}
 
-        String sql = "SELECT OrderNum, Total, inv.TermID, Memo, Note, inv.InvoiceID, ServiceID, InvoiceTypeID, JobCategoryID, " +
-                "inv.DateAdded, AdjustedTotal, inv.PaymentTypeID, IsEmailed, Shipped, Balance, PaidAmount, inv.SalesRepID, " +
-                "BillDate, ShippingMethod, inv.ClientVendorID, cv.FirstName, cv.LastName, cv.Name, Email, cv.State, " +
-                "cv.Address1, cv.Country, cv.City, cv.Province, cv.ZipCode, term.Days, p.LastPaymentDate AS PaymentDate " +
-                "FROM " + billingBoard_table + " as inv " +
-                "LEFT JOIN bca_term AS term ON inv.TermID = term.TermID " +
-                "INNER JOIN " + table_ClientVendor + " as cv ON cv.ClientVendorID = inv.ClientVendorID " +
-                "INNER JOIN (SELECT InvoiceID, MAX(DateAdded) AS LastPaymentDate FROM bca_payment GROUP BY InvoiceID) AS p " +
-                "ON inv.InvoiceID = p.InvoiceID " +
-                "WHERE inv.CompanyID = " + ConstValue.companyId + " " +
-                "AND NOT (invoiceStatus = 1) " +
-                "AND inv.IsPaymentCompleted = 1 " +
-                "AND cv.Status IN ('U','N')";
+		String sql = "SELECT OrderNum, Total, inv.TermID, Memo, Note, inv.InvoiceID, ServiceID, InvoiceTypeID, JobCategoryID, "
+				+ "inv.DateAdded, AdjustedTotal, inv.PaymentTypeID, IsEmailed, Shipped, Balance, PaidAmount, inv.SalesRepID, "
+				+ "BillDate, ShippingMethod, inv.ClientVendorID, cv.FirstName, cv.LastName, cv.Name, Email, cv.State, "
+				+ "cv.Address1, cv.Country, cv.City, cv.Province, cv.ZipCode, term.Days, p.LastPaymentDate AS PaymentDate "
+				+ "FROM " + billingBoard_table + " as inv " + "LEFT JOIN bca_term AS term ON inv.TermID = term.TermID "
+				+ "INNER JOIN " + table_ClientVendor + " as cv ON cv.ClientVendorID = inv.ClientVendorID "
+				+ "INNER JOIN (SELECT InvoiceID, MAX(DateAdded) AS LastPaymentDate FROM bca_payment GROUP BY InvoiceID) AS p "
+				+ "ON inv.InvoiceID = p.InvoiceID " + "WHERE inv.CompanyID = " + ConstValue.companyId + " "
+				+ "AND NOT (invoiceStatus = 1) " + "AND inv.IsPaymentCompleted = 1 " + "AND cv.Status IN ('U','N')";
 
-        if (!advanceSearchCriteria.isEmpty() && !advanceSearchData.isEmpty()) {
-            if (advanceSearchCriteria.equals("Bill#")) {
-                sql += " AND InvoiceTypeID IN (13)";
-            } else if (advanceSearchCriteria.equals("Invoice#")) {
-                sql += " AND InvoiceTypeID IN (1)";
-            } else {
-                sql += " AND InvoiceTypeID IN (1, 13)";
-            }
+		if (!advanceSearchCriteria.isEmpty() && !advanceSearchData.isEmpty()) {
+			if (advanceSearchCriteria.equals("Bill#")) {
+				sql += " AND InvoiceTypeID IN (13)";
+			} else if (advanceSearchCriteria.equals("Invoice#")) {
+				sql += " AND InvoiceTypeID IN (1)";
+			} else {
+				sql += " AND InvoiceTypeID IN (1, 13)";
+			}
 
-            switch (advanceSearchCriteria) {
-                case "Invoice#":
-                case "Bill#":
-                    advanceFilter = " AND OrderNum = " + advanceSearchData + " ";
-                    break;
-                case "First Name":
-                    advanceFilter = " AND FirstName LIKE '" + advanceSearchData + "%' ";
-                    break;
-                case "Last Name":
-                    advanceFilter = " AND LastName LIKE '" + advanceSearchData + "%' ";
-                    break;
-                case "Address":
-                    advanceFilter = " AND Address1 LIKE '" + advanceSearchData + "%' ";
-                    break;
-                case "ZipCode":
-                    advanceFilter = " AND ZipCode LIKE '" + advanceSearchData + "%' ";
-                    break;
-                case "Email":
-                    advanceFilter = " AND Email LIKE '" + advanceSearchData + "%' ";
-                    break;
-                case "Country":
-                    advanceFilter = " AND Country LIKE '" + advanceSearchData + "%' ";
-                    break;
-            }
-        } else {
-            switch (InvoiceType) {
-                case 113:
-                    sql += " AND InvoiceTypeID IN (1, 13, 17)";
-                    break;
-                case 13:
-                    sql += " AND InvoiceTypeID IN (13)";
-                    break;
-                case 1:
-                    sql += " AND InvoiceTypeID IN (1)";
-                    break;
-            }
-        }
+			switch (advanceSearchCriteria) {
+			case "Invoice#":
+			case "Bill#":
+				advanceFilter = " AND OrderNum = " + advanceSearchData + " ";
+				break;
+			case "First Name":
+				advanceFilter = " AND FirstName LIKE '" + advanceSearchData + "%' ";
+				break;
+			case "Last Name":
+				advanceFilter = " AND LastName LIKE '" + advanceSearchData + "%' ";
+				break;
+			case "Address":
+				advanceFilter = " AND Address1 LIKE '" + advanceSearchData + "%' ";
+				break;
+			case "ZipCode":
+				advanceFilter = " AND ZipCode LIKE '" + advanceSearchData + "%' ";
+				break;
+			case "Email":
+				advanceFilter = " AND Email LIKE '" + advanceSearchData + "%' ";
+				break;
+			case "Country":
+				advanceFilter = " AND Country LIKE '" + advanceSearchData + "%' ";
+				break;
+			}
+		} else {
+			switch (InvoiceType) {
+			case 113:
+				sql += " AND InvoiceTypeID IN (1, 13, 17)";
+				break;
+			case 13:
+				sql += " AND InvoiceTypeID IN (13)";
+				break;
+			case 1:
+				sql += " AND InvoiceTypeID IN (1)";
+				break;
+			}
+		}
 
-        if (!dateStr.trim().isEmpty()) {
-            sql += " AND " + billingBoard_table + ".DateAdded " + dateStr;
-        }
+		if (!dateStr.trim().isEmpty()) {
+			sql += " AND " + billingBoard_table + ".DateAdded " + dateStr;
+		}
 
-        if (overdueDays > 0) {
-            sql += " AND (DATEDIFF(CURDATE(), DATE_ADD(inv.DateAdded, INTERVAL term.Days + " + overdueDays + " DAY)) = 0)";
-        }
+		if (overdueDays > 0) {
+			sql += " AND (DATEDIFF(CURDATE(), DATE_ADD(inv.DateAdded, INTERVAL term.Days + " + overdueDays
+					+ " DAY)) = 0)";
+		}
 
-        sql += advanceFilter;
-        sql += " ORDER BY " + columnName + " " + ascent;
+		sql += advanceFilter;
+		sql += " ORDER BY " + columnName + " " + ascent;
 
-        Query query = entityManager.createNativeQuery(sql);
-        List<Object[]> resultList = query.getResultList();
+		Query query = entityManager.createNativeQuery(sql);
+		List<Object[]> resultList = query.getResultList();
 
-        for (Object[] row : resultList) {
-            ReceivableListDto invoice = new ReceivableListDto();
-            ordNo = (int) row[0];
-            invoice.setOrderNum(ordNo);
-            invoice.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(ordNo),
-                    AppConstants.InvoiceType, configDto, false));
-            invoice.setMemo((String) row[3]);
-            invoice.setNote((String) row[4]);
-            invoice.setInvoiceID((int) row[5]);
-            invoice.setServiceID((int) row[6]);
+		for (Object[] row : resultList) {
+			ReceivableListDto invoice = new ReceivableListDto();
+			ordNo = (int) row[0];
+			invoice.setOrderNum(ordNo);
+			invoice.setOrderNumStr(MyUtility.getOrderNumberByConfigData(Integer.toString(ordNo),
+					AppConstants.InvoiceType, configDto, false));
+			invoice.setMemo((String) row[3]);
+			invoice.setNote((String) row[4]);
+			invoice.setInvoiceID((int) row[5]);
+			invoice.setServiceID((int) row[6]);
 //            invoice.setInvoiceTypeID((int) row[7]);
 //            invoice.setJobCategoryID((int) row[8]);
-            invoice.setDateAdded((Date) row[9]);
-            invoice.setAdjustedTotal((Double) row[10]);
-            invoice.setPaidAmount((Double) row[15]);
-            invoice.setBalance((Double) row[14]);
+			invoice.setDateAdded((Date) row[9]);
+			invoice.setAdjustedTotal((Double) row[10]);
+			invoice.setPaidAmount((Double) row[15]);
+			invoice.setBalance((Double) row[14]);
 //            invoice.setBillType((String) row[15]);
 //            invoice.setShippingMethod((String) row[18]);
-            invoice.setCvID((int) row[19]);
-            invoice.setCvName((String) row[22] + " (" + row[20] + " " + row[21] + ")");
-            invoice.setPaymentDate((Date) row[31]);
+			invoice.setCvID((int) row[19]);
+			invoice.setCvName((String) row[22] + " (" + row[20] + " " + row[21] + ")");
+			invoice.setPaymentDate((Date) row[31]);
 //            invoice.setOverDueDate(calculateOverdueDate((Date) row[9], (int) row[21], (int) row[22]));
 
-            list.add(invoice);
-        }
+			list.add(invoice);
+		}
 
-        return list;
-    }
+		return list;
+	}
 
 	@Override
 	public ArrayList<BillingBoardReport> getBillForPrint(int invoiceId) {
@@ -12749,15 +12782,15 @@ public class ReceivableListImpl implements ReceivableLIst {
 				bs.setAmount(dto.getAmount());
 				bs.setPaidAmount(dto.getPaidAmount());
 				bs.setPaidDate(offsetDateTimeToDate(dto.getDateAdded()));
-				//added newly
-				bs.setOrderNum(dto.getOrderNum());				
+				// added newly
+				bs.setOrderNum(dto.getOrderNum());
 				bs.setBalance(dto.getBalance());
 				bs.setCopmanyName(dto.getCompanyName());
 				bs.setCvID(dto.getClientVendorId());
 				bs.setFirstName(dto.getFirstName());
 				bs.setLastName(dto.getLastName());
 				bs.setInvoiceID(dto.getInvoiceId());
-				
+
 				billingList.add(bs);
 			}
 

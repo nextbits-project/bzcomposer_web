@@ -129,6 +129,10 @@ public interface ReceivableLIst {
 	
 	public ArrayList<TblAccountCategory> getAccountCategoriesList();
 	
+	public ArrayList<TblAccountCategory> getBankAccountsTree(ArrayList<TblAccountCategory> categoryList);
+	
+	public ArrayList<TblAccount> getAllAccountsFromBankAccountsTree(ArrayList<TblAccountCategory> bankAccountTreeWithCat);
+	
 	public ArrayList<TblAccount> getBankAccountsTreeForFundTransfer(ArrayList<TblAccountCategory> categoryList);
 	
 	public ArrayList<TblPaymentDto> getPaymentsForBanking(TblAccount account , Date from , Date to ,String transType , Boolean useFilter);

@@ -183,10 +183,15 @@ public class BankingController {
 		}
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
-		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
-
+//		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
+		
+		// Get simplified bank accounts tree
+	    ArrayList<TblAccountCategory> bankAccountTreeWithCat = rl.getBankAccountsTree(categories);
+	    ArrayList<TblAccount> accountList = rl.getAllAccountsFromBankAccountsTree(bankAccountTreeWithCat);
+	    
 		request.setAttribute("selectedAccount", account);
-		request.setAttribute("AccountCategoryList", categories);
+//		request.setAttribute("AccountCategoryList", categories);
+		request.setAttribute("AccountCategoryList", bankAccountTreeWithCat);
 		request.setAttribute("accountList", accountList);
 		if (selectedRange != null) {
 			int selectedrangeInt = Integer.parseInt(selectedRange);
@@ -199,8 +204,9 @@ public class BankingController {
 			payment = rl.getPaymentsForBanking(account, fromDate, toDate, transactionType, true);
 			request.setAttribute("payMentList", payment);
 		} else {
-			payment = rl.getPaymentsForBanking(account, fromDate, toDate, transactionType, true);
-			request.setAttribute("payMentList", payment);
+//			not required as payment list is called by ajax
+//			payment = rl.getPaymentsForBanking(account, fromDate, toDate, transactionType, true);
+//			request.setAttribute("payMentList", payment);
 		}
 		return forward;
 	}
@@ -261,11 +267,15 @@ public class BankingController {
 		 */
 		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
 		rl.loadBankAccounts();
-		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
+//		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 
+		ArrayList<TblAccountCategory> bankAccountTreeWithCat = rl.getBankAccountsTree(categories);
+		ArrayList<TblAccount> accountList = rl.getAllAccountsFromBankAccountsTree(bankAccountTreeWithCat);
+		
 		request.setAttribute("selectedAccount", account);
-		request.setAttribute("AccountCategoryList", categories);
+		request.setAttribute("AccountCategoryList", bankAccountTreeWithCat);
 		request.setAttribute("accountList", accountList);
+		
 		if (selectedRange != null) {
 			int selectedrangeInt = Integer.parseInt(selectedRange);
 			if (selectedrangeInt == 2) {
