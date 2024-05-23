@@ -4092,6 +4092,9 @@ public class ReceivableListImpl implements ReceivableLIst {
 			} else {
 				invoice.setPaymentCompleted(!(invoice.getBalance() > 0.0));
 			}
+			String storeIdValue = (invoice.getStoreId() != 0) ? String.valueOf(invoice.getStoreId()) : "NULL";
+			String messageIdValue = (invoice.getMessageID() != 0) ? String.valueOf(invoice.getMessageID()) : "NULL";
+
 			String sql = "UPDATE bca_invoice SET " + "OrderNum=" + invoice.getOrderNum() + "," + // OrderNum
 					"PONum=" + invoice.getPoNum() + "," + "RefNum=" + "'" + invoice.getRefNum().replaceAll("'", "''")
 					+ "'" + "," + ///
@@ -4107,7 +4110,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					+ invoice.getAdjustedTotal() + "," + "PaidAmount="
 					+ JProjectUtil.currFormat.format(invoice.getPaidAmount()) + "," + "Balance=" + invoice.getBalance()
 					+ "," + "TermID=" + invoice.getTermID() + "," + "PaymentTypeID=" + invoice.getPaymentTypeID() + ","
-					+ "ShipCarrierID=" + invoice.getShipCarrierID() + "," + "MessageID=" + invoice.getMessageID() + ","
+					+ "ShipCarrierID=" + invoice.getShipCarrierID() + "," + "MessageID=" + messageIdValue + ","
 					+ "SalesTaxID=" + invoice.getSalesTaxID() + "," + "Taxable=" + (invoice.isTaxable() ? 1 : 0) + ","
 					+ "Shipped=" + invoice.getShipped() + "," + "ShippingMethod=" + "'" + invoice.getShippingMethod()
 					+ "'" + "," + "TrackingCode=" + "'" + invoice.getTrackingCode() + "'" + "," + "IsReceived="
@@ -4136,7 +4139,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 					 * "''") + "'" + "," + "ShippingNote2=" + "'" +
 					 * invoice.getEB_shippingNote2().replaceAll("'", "''") + "'" + ","
 					 */
-					+ "StoreTypeID=" + invoice.getStoreTypeId() + "," + "StoreID=" + invoice.getStoreId() + ","
+					+ "StoreTypeID=" + invoice.getStoreTypeId() + "," + "StoreID=" + storeIdValue  + ","
 					/*
 					 * + "ShipCarrier=" + "'" + invoice.getEB_shipCarrier().replaceAll("'", "''") +
 					 * "'" + ","

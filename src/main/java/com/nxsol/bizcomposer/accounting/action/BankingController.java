@@ -265,16 +265,17 @@ public class BankingController {
 		 * request.setAttribute("payMentList", payment);
 		 * request.setAttribute("selectedAccount", account);
 		 */
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
-		rl.loadBankAccounts();
-//		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
-
-		ArrayList<TblAccountCategory> bankAccountTreeWithCat = rl.getBankAccountsTree(categories);
-		ArrayList<TblAccount> accountList = rl.getAllAccountsFromBankAccountsTree(bankAccountTreeWithCat);
+		
+//		commented to reduce load time of Ajax Call Starts 20240523
+//		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
+//		rl.loadBankAccounts();
+//		ArrayList<TblAccountCategory> bankAccountTreeWithCat = rl.getBankAccountsTree(categories);
+//		ArrayList<TblAccount> accountList = rl.getAllAccountsFromBankAccountsTree(bankAccountTreeWithCat);
+//		commented to reduce load time of Ajax Call Ends 20240523
 		
 		request.setAttribute("selectedAccount", account);
-		request.setAttribute("AccountCategoryList", bankAccountTreeWithCat);
-		request.setAttribute("accountList", accountList);
+//		request.setAttribute("AccountCategoryList", bankAccountTreeWithCat);
+//		request.setAttribute("accountList", accountList);
 		
 		if (selectedRange != null) {
 			int selectedrangeInt = Integer.parseInt(selectedRange);
