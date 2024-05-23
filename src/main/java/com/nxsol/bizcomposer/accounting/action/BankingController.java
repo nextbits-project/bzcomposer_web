@@ -181,7 +181,7 @@ public class BankingController {
 		if (action.equals("Banking")) {
 			forward = "/accounting/banking";
 		}
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(Long.valueOf(companyID));
 		rl.loadBankAccounts();
 //		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 		
@@ -224,7 +224,7 @@ public class BankingController {
 		HttpSession sess = request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
-
+		Long companyIDL= Long.valueOf(companyID);
 		ArrayList<TblPaymentDto> payment = null;
 		ArrayList<TblPaymentType> simpleTypes = rl.getOnlySimplePaymentTypes();
 		ArrayList<ClientVendor> cvList = rl.getAllClientVendorList();
@@ -265,7 +265,7 @@ public class BankingController {
 		 * request.setAttribute("payMentList", payment);
 		 * request.setAttribute("selectedAccount", account);
 		 */
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 		rl.loadBankAccounts();
 //		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 
@@ -326,7 +326,7 @@ public class BankingController {
 		}
 		if (action.equals("SaveAccountMainCategory")) {
 			String status = request.getParameter("Status");
-			rl.saveAccountCategory(paymentDto, status);
+			rl.saveAccountCategory(paymentDto, status, companyIDL);
 		}
 		if (action.equals("AddAccount")) {
 			Gson gson = new Gson();

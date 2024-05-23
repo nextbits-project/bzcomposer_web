@@ -38,9 +38,14 @@ public interface BcaPaymenttypeRepository extends JpaRepository<BcaPaymenttype, 
 			+ " where CCTypeID = -1  and Active = 1 and TypeCategory = 0 and CompanyID = :companyID")
 	List<Object[]> findOnlySimplePaymentTypes(@Param("companyID") Long companyID);
 
+//	@Modifying
+//	@Transactional
+//	@Query("update BcaPaymenttype bpt set bpt.bankAcctId =0 , bpt.active = 0 where bpt.bankAcctId = :bankAcctId and bpt.company = :company ")
+//	int updateBankPaymenttype(@Param("bankAcctId") int bankAcctId, @Param("company") BcaCompany company);
+	
 	@Modifying
 	@Transactional
-	@Query("update BcaPaymenttype bpt set bpt.bankAcctId =0 , bpt.active = 0 where bpt.bankAcctId = :bankAcctId and bpt.company = :company ")
+	@Query("update BcaPaymenttype bpt set bpt.active = 0 where bpt.bankAcctId = :bankAcctId and bpt.company = :company ")
 	int updateBankPaymenttype(@Param("bankAcctId") int bankAcctId, @Param("company") BcaCompany company);
 
 	List<BcaPaymenttype> findByPaymentTypeIdAndCompanyAndActiveAndTypeCategory(Integer paymentTypeId,

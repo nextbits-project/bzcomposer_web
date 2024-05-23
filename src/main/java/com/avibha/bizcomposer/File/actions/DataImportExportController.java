@@ -48,6 +48,7 @@ public class DataImportExportController {
 	@GetMapping("/dataExportAction")
 	public String dataExportAction(HttpServletRequest request, HttpServletResponse response) {
 		String compId = (String) request.getSession().getAttribute("CID");
+		Long companyIDL = Long.valueOf(compId);
 		String action = request.getParameter("tabid");
 		ConfigurationInfo configInfo = new ConfigurationInfo();
 		String forward = null;
@@ -116,7 +117,7 @@ public class DataImportExportController {
 				System.out.println("BCA_PurchaseOrderList Exported...");
 			} else if (action.equalsIgnoreCase("AccountCategory")) {
 				ReceivableLIst rl = new ReceivableListImpl();
-				ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+				ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 
 				ObjectMapper mapper = new ObjectMapper();
 				ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
@@ -127,7 +128,7 @@ public class DataImportExportController {
 				System.out.println("BCA_AccountCategoryList Exported...");
 			} else if (action.equalsIgnoreCase("AccountSubCategory")) {
 				ReceivableLIst rl = new ReceivableListImpl();
-				ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+				ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 				ArrayList<TblAccount> accountSubCatList = rl.getBankAccountsTreeForFundTransfer(categories);
 
 				ObjectMapper mapper = new ObjectMapper();

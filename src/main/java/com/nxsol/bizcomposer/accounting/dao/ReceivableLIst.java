@@ -129,6 +129,8 @@ public interface ReceivableLIst {
 	
 	public ArrayList<TblAccountCategory> getAccountCategoriesList();
 	
+	public ArrayList<TblAccountCategory> getAccountCategoriesList(Long companyID);
+	
 	public ArrayList<TblAccountCategory> getBankAccountsTree(ArrayList<TblAccountCategory> categoryList);
 	
 	public ArrayList<TblAccount> getAllAccountsFromBankAccountsTree(ArrayList<TblAccountCategory> bankAccountTreeWithCat);
@@ -168,7 +170,7 @@ public interface ReceivableLIst {
 	
 	public ArrayList<TblPaymentType> getAllPaymentList();
 	
-	public int saveAccountCategory(TblPaymentDto paymentDto, String status);
+	public int saveAccountCategory(TblPaymentDto paymentDto, String status, Long companyID);
 
 	public void addAccount(TblPaymentDto payment,int priority,String status , int AccountId);
 	

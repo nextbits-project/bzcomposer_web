@@ -53,10 +53,11 @@ public class BillPayableController {
 		Date payBillsDate = new Date();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
+		Long companyIDL = Long.valueOf(companyID);
 //		ReceivableLIst rl = new ReceivableListImpl();
 		//ArrayList<ClientVendor> cvForCombo = rl.getCvForBill();
 	   ArrayList<ClientVendor> cvForCombo= rl.getServiceProviderClientVendor();
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();
@@ -135,9 +136,10 @@ public class BillPayableController {
 		Date payBillsDate = new Date();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
+		Long companyIDL = Long.valueOf(companyID);
 //		ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<ClientVendor> cvForCombo = rl.getCvForBill();
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();

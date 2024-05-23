@@ -1,8 +1,10 @@
 package com.nxsol.bzcomposer.company.domain;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -611,6 +613,9 @@ public class BcaCompany {
 
 	@OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
 	private Set<BcaShippingaddress> shippingAddresses;
+	
+	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BcaAcctcategory> acctCategories = new HashSet<>();
 
 	public Long getCompanyId() {
 		return companyId;

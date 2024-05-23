@@ -46,6 +46,7 @@ public class BillCreationController {
 		String forward = "/accounting/billCreation";
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		String compId = (String) request.getSession().getAttribute("CID");
+		Long companyIDL = Long.valueOf(compId);
 		int cvID = 0;
 		int checkStatus = 0;
 		HttpSession sess = request.getSession();
@@ -53,7 +54,7 @@ public class BillCreationController {
 		String action = request.getParameter("tabid");
 //		ReceivableLIst rl = new ReceivableListImpl();
 		/* Iterator<ClientVendor> itr = cvForCombo.iterator(); */
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 		rl.loadBankAccounts();
 
 		/* Item List */
@@ -135,9 +136,10 @@ public class BillCreationController {
 		Date payBillsDate = new Date();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
+		Long companyIDL = Long.valueOf(companyID);
 //		ReceivableLIst rl = new ReceivableListImpl();
 		/* Iterator<ClientVendor> itr = cvForCombo.iterator(); */
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountListForBill = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<TblCategoryDto> categoryListForCombo = rl.getCategoryListForPayment();

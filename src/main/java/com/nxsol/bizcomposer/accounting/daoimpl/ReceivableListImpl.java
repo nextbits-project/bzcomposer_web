@@ -6636,6 +6636,27 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 		return categories;
 	}
+	
+	@Override
+	public ArrayList<TblAccountCategory> getAccountCategoriesList(Long companyID) {
+
+		ArrayList<TblAccountCategory> categories = new ArrayList<>();
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Account Category");
+		try {
+			List<BcaAcctcategory> acctcategory = bcaAcctcategoryRepository.findByCompanyCompanyIdAndActive(companyID, true);
+			for (BcaAcctcategory bca_acc_cat : acctcategory) {
+				TblAccountCategory category = new TblAccountCategory();
+				category.setAccountCategoryID(bca_acc_cat.getAcctCategoryId());
+				category.setName(bca_acc_cat.getName());
+				categories.add(category);
+			}
+
+		} catch (Exception e) {
+			System.out.println(e);
+			Loger.log(e.toString());
+		}
+		return categories;
+	}
 
 //	 @Override
 //	public void loadBankAccounts() {
@@ -8265,7 +8286,7 @@ public class ReceivableListImpl implements ReceivableLIst {
 		}
 	}
 
-	public int saveAccountCategory(TblPaymentDto paymentDto, String status) {
+	public int saveAccountCategory(TblPaymentDto paymentDto, String status, Long companyID) {
 //		Statement stmt = null;
 //		SQLExecutor db = new SQLExecutor();
 //		Connection con = db.getConnection();
@@ -8276,8 +8297,11 @@ public class ReceivableListImpl implements ReceivableLIst {
 //				String sql = " INSERT INTO bca_acctcategory (Name) VALUES ('" + paymentDto.getCategoryName() + "')";
 //				stmt = con.createStatement();
 //				rowUpdated = stmt.executeUpdate(sql);
+				BcaCompany company = bcaCompanyRepository.findByCompanyId(companyID);
 				BcaAcctcategory acctcategory = new BcaAcctcategory();
 				acctcategory.setName(paymentDto.getCategoryName());
+				acctcategory.setActive(true);
+				acctcategory.setCompany(company);;
 				BcaAcctcategory save = bcaAcctcategoryRepository.save(acctcategory);
 				rowUpdated = null != save ? 1 : 0;
 			} else {

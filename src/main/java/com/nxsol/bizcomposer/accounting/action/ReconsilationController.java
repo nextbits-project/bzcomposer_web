@@ -30,6 +30,7 @@ public class ReconsilationController {
 		String action = request.getParameter("tabid");
 		String strName = "Deposit";
 		String companyID = (String) sess.getAttribute("CID");
+		Long companyIDL = Long.valueOf(companyID);
 		Date defaultToDate = new Date();
 		Date defaultFromDate = new Date("11/14/2007");
 		int defaultAccountId = 56933;
@@ -38,7 +39,7 @@ public class ReconsilationController {
 		//ReceivableLIst rl = new ReceivableListImpl();
 		ArrayList<TblCategoryType> categoryType = rl.getCategoryType();
 		ArrayList<TblCategoryDto> subCategoryChrgeListForAsset = null;
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 		if(action.equals("reconsilation")) {
@@ -106,6 +107,7 @@ public class ReconsilationController {
 		String action = request.getParameter("tabid");
 		String strName = "Deposit";
 		String companyID = (String) sess.getAttribute("CID");
+		Long companyIDL = Long.valueOf(companyID);
 		Date defaultToDate = new Date();
 		Date defaultFromDate = new Date("11/14/2007");
 		int defaultAccountId = 56933;
@@ -157,7 +159,7 @@ public class ReconsilationController {
 		ArrayList<TblCategoryDto> getCategoryListForAsset = rl.getCategoryForAsset();
 		ArrayList<TblPaymentDto> listOfPayments = rl.getPaymentOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
 		ArrayList<TblPaymentDto> listOfDepositPayments = rl.getDepositOfReconciliation(defaultAccountId, defaultFromDate, defaultToDate);
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 		ArrayList<ClientVendor> allClientVendor = rl.getAllClientVendor();

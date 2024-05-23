@@ -36,8 +36,9 @@ public class CategoryDetailController {
 		HttpSession sess = request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
+		Long companyIDL = Long.valueOf(companyID);
 		//ReceivableLIst rl = new ReceivableListImpl();
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> bankAccountsTreeForFundTransfer = rl.getBankAccountsTreeForFundTransfer(categories);
 		request.setAttribute("accountList", bankAccountsTreeForFundTransfer);
@@ -81,8 +82,9 @@ public class CategoryDetailController {
 		HttpSession sess = request.getSession();
 		String action = request.getParameter("tabid");
 		String companyID = (String) sess.getAttribute("CID");
+		Long companyIDL = Long.valueOf(companyID);
 //		ReceivableLIst rl = new ReceivableListImpl();
-		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList();
+		ArrayList<TblAccountCategory> categories = rl.getAccountCategoriesList(companyIDL);
 		rl.loadBankAccounts();
 		ArrayList<TblAccount> accountList = rl.getBankAccountsTreeForFundTransfer(categories);
 		request.setAttribute("accountList", accountList);

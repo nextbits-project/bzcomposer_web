@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
 import javax.persistence.Table;
@@ -21,9 +23,16 @@ public class BcaAcctcategory {
     @Column(name = "Name", nullable = false, length = 50)
     private String name;
 
+    @Column(name = "Active", nullable = false)
+    private Boolean active;
+    
     @OneToMany(mappedBy = "acctCategory")
     private Set<BcaAccount> acctCategoryBcaAccounts;
 
+    @ManyToOne
+    @JoinColumn(name = "CompanyID", nullable = false)
+    private BcaCompany company;
+    
     public Integer getAcctCategoryId() {
         return acctCategoryId;
     }
@@ -48,4 +57,21 @@ public class BcaAcctcategory {
         this.acctCategoryBcaAccounts = acctCategoryBcaAccounts;
     }
 
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public BcaCompany getCompany() {
+		return company;
+	}
+
+	public void setCompany(BcaCompany company) {
+		this.company = company;
+	}
+
+    
 }
