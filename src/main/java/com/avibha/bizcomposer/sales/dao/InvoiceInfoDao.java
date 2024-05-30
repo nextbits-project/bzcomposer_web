@@ -41,6 +41,7 @@ import org.springframework.stereotype.Repository;
 
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.lead.dto.LeadDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
 import com.avibha.bizcomposer.sales.dto.CartItem;
@@ -73,6 +74,7 @@ import com.nxsol.bzcomposer.company.domain.BcaInvoice;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicestyle;
 import com.nxsol.bzcomposer.company.domain.BcaInvoicetype;
 import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
+import com.nxsol.bzcomposer.company.domain.BcaLeadNew;
 import com.nxsol.bzcomposer.company.domain.BcaMessage;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
 import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
@@ -3388,7 +3390,8 @@ public class InvoiceInfoDao {
 				customer.setTerminatedDate(cv.getDateTerminated() != null
 						? cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
 						: "");
-				customer.setTerminated(cv.getIsTerminated());
+				if(cv.getIsTerminated() != null)
+					customer.setTerminated(cv.getIsTerminated());
 				customer.setDbaName(cv.getDbaname());
 				customer.setActive(cv.getActive() == 1 ? true : false);
 
@@ -3616,8 +3619,10 @@ public class InvoiceInfoDao {
 					customer.setFsAssessFinanceCharge(financeCharges.getAssessFinanceCharge() ? "true" : "false");
 				}
 
-				customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber());
-				customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber());
+				if (cv.getIsPhoneMobileNumber() != null)
+					customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber());
+				if (cv.getIsMobilePhoneNumber() != null)
+					customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber());
 				customer.setMiddleName(cv.getMiddleName());
 				customer.setDateInput(
 						cv.getDateInput() != null ? cv.getDateInput().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
@@ -3627,7 +3632,8 @@ public class InvoiceInfoDao {
 				customer.setTerminatedDate(cv.getDateTerminated() != null
 						? cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
 						: "");
-				customer.setTerminated(cv.getIsTerminated());
+				if(cv.getIsTerminated() != null)
+					customer.setTerminated(cv.getIsTerminated());
 				customer.setDbaName(cv.getDbaname());
 				customer.setActive(cv.getActive() == 1 ? true : false);
 
@@ -3864,8 +3870,10 @@ public class InvoiceInfoDao {
 					customer.setFsAssessFinanceCharge(financeCharges.getAssessFinanceCharge() ? "true" : "false");
 				}
 
-				customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber());
-				customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber());
+				if (cv.getIsPhoneMobileNumber() != null)
+					customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber());
+				if (cv.getIsMobilePhoneNumber() != null)
+					customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber());
 				customer.setMiddleName(cv.getMiddleName());
 				customer.setDateInput(
 						cv.getDateInput() != null ? cv.getDateInput().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
@@ -3875,7 +3883,8 @@ public class InvoiceInfoDao {
 				customer.setTerminatedDate(cv.getDateTerminated() != null
 						? cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
 						: "");
-				customer.setTerminated(cv.getIsTerminated());
+				if(cv.getIsTerminated() != null)
+					customer.setTerminated(cv.getIsTerminated());
 
 				// Process Credit Card Information
 				List<CreditCardDto> creditCardsList = new ArrayList<>();
@@ -7217,4 +7226,82 @@ public class InvoiceInfoDao {
 		return exist;
 	}
 	
+	public ArrayList<LeadDto> SearchLeadList(String compId, String cvId, HttpServletRequest request, LeadDto customer) {
+		ArrayList<LeadDto> customerList = new ArrayList<>();
+
+		try {
+			StringBuffer jpql = new StringBuffer();
+			jpql.append("SELECT DISTINCT cv " + "FROM BcaLeadNew cv ");
+			jpql.append("WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
+
+			if (cvId != null && !cvId.isEmpty())
+				jpql.append(" AND cv.leadID = " + cvId);
+			
+			String cvtypeId ="";
+			if (request.getAttribute("cvtypeId") != null)
+				cvtypeId = request.getAttribute("cvtypeId").toString();	
+			
+			if (cvtypeId != null && !cvtypeId.isEmpty())
+				jpql.append("AND cv.cvtypeId = " + cvtypeId+" ");
+			else if (cvId != null && cvId != "")
+				jpql.append("AND cv.leadID = " + cvId+" ");
+
+			jpql.append("GROUP BY cv.leadID " + "ORDER BY cv.leadID DESC");
+			TypedQuery<BcaLeadNew> query = entityManager.createQuery(jpql.toString(), BcaLeadNew.class)
+					.setParameter("companyId", Long.valueOf(compId));
+
+			List<BcaLeadNew> clientVendors = query.getResultList();
+			Loger.log("SQL: " + jpql.toString());
+			/* General */
+			for (BcaLeadNew cv : clientVendors) {
+				if (!customerList.isEmpty()) {
+					customer = new LeadDto();
+				}
+				customer.setLeadId(Long.valueOf(cv.getLeadID()));
+				customer.setCname(cv.getName());
+				customer.setFirstName(cv.getFirstName());
+				customer.setLastName(cv.getLastName());
+				customer.setAddress1(cv.getAddress1());
+				customer.setAddress2(cv.getAddress2());
+				if(cv.getCity() != null && !cv.getCity().isEmpty()) {
+					Optional<BcaCities> bcaCities = bcaCitiesRepository.findById(Integer.valueOf(cv.getCity()));	
+					customer.setCity(bcaCities.get().getName());
+					customer.setCityID(String.valueOf(bcaCities.get().getId()));
+				}
+				if(cv.getState() != null && !cv.getState().isEmpty()) {
+					Optional<BcaStates> bcaStates = bcaStatesRepository.findById(Integer.valueOf(cv.getState()));	
+					customer.setState(bcaStates.get().getName());
+					customer.setStateID(String.valueOf(bcaStates.get().getId()));
+				}
+
+				//request.setAttribute("state_gen", cv.getState());
+				if(cv.getCountry() != null && !cv.getCustomerTitle().isEmpty()) {
+					Optional<BcaCountries> bcaCountries = bcaCountriesRepository.findById(Integer.valueOf(cv.getCountry()));	
+					customer.setCountry(bcaCountries.get().getName());
+					customer.setCountryID(String.valueOf(bcaCountries.get().getId()));
+				}
+				
+				customer.setZipCode(cv.getZipCode());
+				customer.setPhone(cv.getPhone());
+				customer.setCellPhone(cv.getCellPhone());
+				customer.setFax(cv.getFax());
+				customer.setEmail(cv.getEmail());
+				if(cv.getCustomerTitle() != null && !cv.getCustomerTitle().isEmpty()) {
+					Optional<BcaTitle> bcaTitle = bcaTitleRepository.findById(Integer.valueOf(cv.getCustomerTitle()));
+					customer.setTitle(bcaTitle.get().getTitle());
+				}
+				
+				customer.setTexID(cv.getResellerTaxId());
+				customer.setMiddleName(cv.getMiddleName());
+				customer.setDbaName(cv.getDbaname());
+				customerList.add(customer);
+			}
+			//request.setAttribute("CustomerDetails", customer);
+		} catch (Exception ee) {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
+			ee.printStackTrace();
+
+		}
+		return customerList;
+	}
 }

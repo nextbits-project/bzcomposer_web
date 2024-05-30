@@ -347,7 +347,7 @@ $(function() {
 											</table>
 										</div>
 
-										<div id="table-negotiations" style="width: 100%">
+										<!-- <div id="table-negotiations" style="width: 100%">
 											<table class="tabla-listados" cellspacing="0">
 												<thead>
 													<tr>
@@ -376,8 +376,6 @@ $(function() {
 																	<option value="${curObject.id}" ${curObject.id==customerDto.paymentType?'selected':''}>${curObject.typeName}</option>
 																</c:forEach>
 															</form:select></td>
-														<!-- 	<td colspan="2">&nbsp;</td> -->
-
 														<td><spring:message code="BzComposer.lead.LeadSource" /></td>
 														<td><form:select path="leadSource"
 																style="width:150px;">
@@ -387,8 +385,6 @@ $(function() {
 																	<option value="${curObject.leadSourceId}" ${curObject.leadSourceId==customerDto.leadSource?'selected':''}>${curObject.name}</option>
 																</c:forEach>
 															</form:select></td>
-
-														
 														<td><spring:message code="BizComposer.Configuration.Networking.Status" /></td>
 														<td><form:select path="status" style="width:150px;">
 																<option value="pending"  ${"pending"==customerDto.status?'selected':''}><spring:message
@@ -396,7 +392,6 @@ $(function() {
 																<option value="inProcess"  ${"inProcess"==customerDto.status?'selected':''}>In Process</option>
 																<option value="done"  ${"done"==customerDto.status?'selected':''}>Done</option>
 															</form:select></td>
-															
 													</tr>
 													<tr>
 														<td><spring:message
@@ -418,8 +413,6 @@ $(function() {
 																	<option value="${curObject.value}" ${curObject.value==customerDto.shipping?'selected':''}>${curObject.label}</option>
 																</c:forEach>
 															</form:select></td>
-														<!-- <td colspan="2">&nbsp;</td> -->
-
 														<td><spring:message
 																code="BzComposer.lead.LeadCategory" /></td>
 														<td><form:select path="leadCategory"
@@ -430,7 +423,6 @@ $(function() {
 																	<option value="${curObject.leadCategoryId}" ${curObject.leadCategoryId==customerDto.leadCategory?'selected':''}>${curObject.name}</option>
 																</c:forEach>
 															</form:select></td>
-
 														<td><spring:message code="BzComposer.products" /></td>
 														<td><form:select path="product" style="width:100%; height:150px;"
 																id="product" multiple="multiple">
@@ -440,11 +432,10 @@ $(function() {
 																	<option value="${curObject.inventoryId}">${curObject.inventoryCode}</option>
 																</c:forEach>
 															</form:select></td>
-
 													</tr>
 												</tbody>
 											</table>
-										</div>
+										</div> -->
 
 										<!-- Manage Address Start here -->
 										<!--<div id="table-negotiations">
@@ -1110,7 +1101,7 @@ $(function() {
 											<spring:message code='BzComposer.global.new' />
 										</button>
 										<button type="button" class="formbutton" title="Save Customer"
-											onclick="AddCustomer();">
+											onclick="AddLead();">
 											<spring:message code='BzComposer.global.save' />
 										</button>
 										<button type="button" class="formbutton" title="Close"
@@ -1230,19 +1221,19 @@ function CheckMambership() {
 			if (size >= 1000) {
 				return maxnumberofuserdialog();
 			} else {
-				return AddCustomer();
+				return AddLead();
 			}
 		} else if (membershipLevel.toLowerCase() == pf.toLowerCase()) {
 			if (size >= 10000) {
 
 				return maxnumberofuserdialog();
 			} else {
-				return AddCustomer();
+				return AddLead();
 			}
 		}
 	}
 
-	function AddCustomer() {
+	function AddLead() {
 		event.preventDefault();
 		if (document.CustomerForm.companyName.value == "") {
 			document.CustomerForm.cname.focus();
@@ -1280,11 +1271,11 @@ function CheckMambership() {
 										"<spring:message code='BzComposer.global.ok'/>" : function() {
 
 											$(this).dialog("close");
-											document.getElementById('tabid').value = "AddCustomer";
+											//document.getElementById('tabid').value = "AddCustomer";
 											// document.forms["frmNewCustomer"].action = "Customer?tabid=AddCustomer" ;
-											document.forms["frmNewCustomer"].action = "/postNewLead";
-											document.forms["frmNewCustomer"]
-													.submit();
+											//document.forms["frmNewCustomer"].action = "/postNewLead";
+											document.forms["frmNewCustomer"].action = "/createLead";
+											document.forms["frmNewCustomer"].submit();
 										},
 										"<spring:message code='BzComposer.global.cancel'/>" : function() {
 											$(this).dialog("close");

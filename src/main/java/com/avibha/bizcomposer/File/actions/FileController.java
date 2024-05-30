@@ -291,9 +291,9 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("ExportContact")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Contact");
-				if (typeIDList != null && !typeIDList.isEmpty())
-					request.setAttribute("cvtypeId", typeIDList.get(0));
+				Integer typeIDList = bcaCvtypeRepository.findByName("Contact");
+				if (typeIDList > 0)
+					request.setAttribute("cvtypeId", typeIDList);
 				ArrayList<CustomerDto> customerList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
 				boolean b = importExportUtils.exportCustomerList(customerList, type, response, "Contact");
 				if (b == true) {
@@ -311,11 +311,11 @@ public class FileController {
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
 				//List<LeadDto> customerList = leadDAO.loadLeads(compId);
 				//boolean b = importExportUtils.exportLeadsList(customerList, type, response);
-				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Lead");
-				if (typeIDList != null && !typeIDList.isEmpty())
-					request.setAttribute("cvtypeId", typeIDList.get(0));
-				ArrayList<CustomerDto> leadList = invoiceInfoDao.SearchCustomer(compId, null, request, new CustomerDto());
-				boolean b = importExportUtils.exportCustomerList(leadList, type, response, "Lead");
+				Integer typeIDList = bcaCvtypeRepository.findByName("Lead");
+				if (typeIDList > 0)
+					request.setAttribute("cvtypeId", typeIDList);
+				ArrayList<LeadDto> leadList = invoiceInfoDao.SearchLeadList(compId, null, request, new LeadDto());
+				boolean b = importExportUtils.exportLeadList(leadList, type, response, "Lead");
 				if (b == true) {
 					if (type.equals("csv")) {
 						request.setAttribute("success", "BzComposer.exportleads.leadslistincsvdownloaded");
@@ -468,9 +468,9 @@ public class FileController {
 		if (action.equalsIgnoreCase("UploadCustomerFile")) {
 			if (!attachFile.isEmpty()) {
 				// boolean b = importExportUtils.uploadCustomerFile(attachFile, request);
-				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Customer");
-				if (typeIDList != null && !typeIDList.isEmpty())
-					request.setAttribute("CVTypeID", typeIDList.get(0));
+				Integer typeIDList = bcaCvtypeRepository.findByName("Customer");
+				if (typeIDList > 0)
+					request.setAttribute("CVTypeID", typeIDList);
 				boolean b = importExportUtils.importCustomerFile(attachFile, request);
 				if (b == true) {
 					request.getSession().setAttribute("successMessage", "success");
@@ -479,9 +479,9 @@ public class FileController {
 			forward = "redirect:File?tabid=ImportCustomer";
 		} else if (action.equalsIgnoreCase("UploadContactFile")) {
 			if (!attachFile.isEmpty()) {
-				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Contact");
-				if (typeIDList != null && !typeIDList.isEmpty())
-					request.setAttribute("CVTypeID", typeIDList.get(0));
+				Integer typeIDList = bcaCvtypeRepository.findByName("Contact");
+				if (typeIDList > 0)
+					request.setAttribute("CVTypeID", typeIDList);
 				boolean b = importExportUtils.importCustomerFile(attachFile, request);
 				if (b == true) {
 					request.getSession().setAttribute("successMessage", "success");
@@ -491,10 +491,10 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("UploadLeadsFile")) {
 			if (!attachFile.isEmpty()) {
 				//boolean b = importExportUtils.uploadLeadsFile(attachFile, request);
-				List<Integer> typeIDList = bcaCvtypeRepository.findByName("Lead");
-				if (typeIDList != null && !typeIDList.isEmpty())
-					request.setAttribute("CVTypeID", typeIDList.get(0));
-				boolean b = importExportUtils.importCustomerFile(attachFile, request);
+				Integer typeIDList = bcaCvtypeRepository.findByName("Lead");
+				if (typeIDList > 0)
+					request.setAttribute("CVTypeID", typeIDList);
+				boolean b = importExportUtils.importLeadFile(attachFile, request);
 				if (b == true) {
 					request.getSession().setAttribute("successMessage", "success");
 				}

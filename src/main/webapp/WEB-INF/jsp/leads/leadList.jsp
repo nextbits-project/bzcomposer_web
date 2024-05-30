@@ -84,9 +84,9 @@ table.tabla-listados tbody tr td {
 											<input type="button" class="formbutton"
 											onclick="openMailTemplates();" style="padding: 7 15px;"
 											value="<spring:message code='BzComposer.Email.MailTemplate'/>" />
-											<input type="button" class="formbutton"
+											<!-- <input type="button" class="formbutton"
 											onclick="openSendThroughOutlook();" style="padding: 7 15px;"
-											value="<spring:message code='BzComposer.Email.SendThroughOutlook'/>" />
+											value="<spring:message code='BzComposer.Email.SendThroughOutlook'/>" /> -->
 											<input type="button" class="formbutton"
 											onclick="manageCustomer('CONVERTLEADtoCUSTOMER');"
 											style="padding: 7 15px;"
@@ -114,13 +114,13 @@ table.tabla-listados tbody tr td {
 										<td colspan="6">
 											<div>
 												<input type="button" class="formbutton"
-													onclick="addNewCustomer();" style="padding: 7 15px;"
+													onclick="addNewLead();" style="padding: 7 15px;"
 													value="<spring:message code='BzComposer.global.new'/>" />
 												<input type="button" class="formbutton"
 													onclick="manageCustomer('EDIT');" style="padding: 7 15px;"
 													value="<spring:message code='BzComposer.global.edit'/>" />
 												<input type="button" class="formbutton"
-													onclick="manageCustomer('DELETE');"
+													onclick="manageeCustomer('DELETE');"
 													style="padding: 7 15px;"
 													value="<spring:message code='BzComposer.global.delete'/>" />
 											</div>
@@ -156,13 +156,13 @@ table.tabla-listados tbody tr td {
 									<c:forEach items="${customerList}" var="objList"
 										varStatus="loop">
 										<tr id='${loop.index}$$'
-											onclick="setRowId(${objList.clientVendorId}, ${loop.index}, true);"
-											ondblclick="goToCustomerBoard(${objList.clientVendorId});">
-											<%-- <td>${objList.clientVendorId}</td> --%>
+											onclick="setRowId(${objList.leadID}, ${loop.index}, true);"
+											ondblclick="goToCustomerBoard(${objList.leadID});">
+											<%-- <td>${objList.leadID}</td> --%>
 											<td class=""><input type="checkbox"
-												id="custID${loop.index}" value="${objList.clientVendorId}"
-												onchange="addRowIndex(${loop.index}, ${objList.clientVendorId})" />
-												${objList.clientVendorId}</td>
+												id="custID${loop.index}" value="${objList.leadID}"
+												onchange="addRowIndex(${loop.index}, ${objList.leadID})" />
+												${objList.leadID}</td>
 											<td>${objList.firstName}${objList.middleName}
 												${objList.lastName}</td>
 											<td>${objList.company.name}</td>
@@ -253,7 +253,7 @@ function manageCustomer(cmd){
 		return showCustomerValidationDialog();
 	} else {
 		if (cmd=="EDIT") {
-			window.open("/updateLead/" + itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
+			window.open("/editLeadDetails/" + itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 		}
 		else if (cmd=="DELETE") {
 			event.preventDefault();
@@ -279,7 +279,7 @@ function manageCustomer(cmd){
 			if(confirm("<spring:message code='BzComposer.customerinfo.convertltocustomer'/>")==true) {
 				$.ajax({
                     type : "GET",
-                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=2&cvID="+itemID,
+                    url : "LeadConvert?customerAction=CONVERT&cvTypeId=Customer&cvID="+itemID,
                     success : function(data) {
                         location.reload();
                     },
@@ -294,7 +294,7 @@ function manageCustomer(cmd){
 			if(confirm("<spring:message code='BzComposer.customerinfo.convertltocontact'/>")==true) {
 				$.ajax({
                     type : "GET",
-                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=7&cvID="+itemID,
+                    url : "LeadConvert?customerAction=CONVERT&cvTypeId=Contact&cvID="+itemID,
                     success : function(data) {
                         location.reload();
                     },
@@ -311,7 +311,8 @@ function manageCustomer(cmd){
 function goToCustomerBoard(clientVendorID){
     window.location = "/Customer?tabid=CustomerBoard&selectedCvID="+clientVendorID;
 }
-function addNewCustomer(){
+
+function addNewLead(){
 	//window.location = "Customer?tabid=NewCustomer";
 	//window.open("Lead?tabid=NewLead", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 	window.open("/newLead", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");

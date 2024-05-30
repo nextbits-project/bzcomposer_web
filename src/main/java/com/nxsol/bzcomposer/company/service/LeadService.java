@@ -28,6 +28,8 @@ import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
 import com.nxsol.bzcomposer.company.domain.BcaLabel;
 import com.nxsol.bzcomposer.company.domain.BcaLead;
 import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
+import com.nxsol.bzcomposer.company.domain.BcaLeadNew;
+import com.nxsol.bzcomposer.company.domain.BcaLeadNewProducts;
 import com.nxsol.bzcomposer.company.domain.BcaLeadProducts;
 import com.nxsol.bzcomposer.company.domain.BcaLeadSource;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
@@ -42,8 +44,11 @@ import com.nxsol.bzcomposer.company.repos.BcaClientcategoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaIteminventoryRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadCategoryRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLeadNewRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLeadProductsNewRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadProductsRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadSourceRepository;
@@ -53,6 +58,7 @@ import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
+import com.nxsol.bzcomposer.company.utils.DateHelper;
 
 @Service
 public class LeadService {
@@ -92,6 +98,15 @@ public class LeadService {
 	@Autowired
 	private BcaCountriesRepository countryRepo;
 
+	@Autowired
+	BcaCvtypeRepository bcaCvtypeRepository;
+	
+	@Autowired
+	BcaLeadNewRepository bcaLeadNewRepository;
+	
+	@Autowired
+	BcaLeadProductsNewRepository bcaLeadProductsNewRepository;
+	
 //	Get All Lead
 	public List<BcaClientvendor> getAllLead(int cvType, BcaCompany companyId) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -183,8 +198,12 @@ public class LeadService {
 		BcaLead lead = leadRepo.findByClientvendorId(clientVendor);
 		List<BcaLeadProducts> leadProducts = new ArrayList<BcaLeadProducts>();
 		if(lead != null) {
-			customerDto.setLeadSource(lead.getLeadSource().getLeadSourceId());
-			customerDto.setLeadCategory(lead.getLeadCategory().getLeadCategoryId());
+			if (lead.getLeadSource() != null && lead.getLeadSource().getLeadSourceId() != null)
+				customerDto.setLeadSource(lead.getLeadSource().getLeadSourceId());
+			
+			if (lead.getLeadCategory() != null && lead.getLeadCategory().getLeadCategoryId() != null)
+				customerDto.setLeadCategory(lead.getLeadCategory().getLeadCategoryId());
+			
 			customerDto.setStatus(lead.getStatus());
 			customerDto.setLeadId(lead.getLeadId());
 			leadProducts = leadProductRepo.findByLeadId(lead);
@@ -417,7 +436,7 @@ public class LeadService {
 
 		customerDto.setClientVendorID(savedClientVendor.getClientVendorId().toString());
 	}
-
+	
 //	Adding Lead Shipping Address
 	public void addShippingAddress(CustomerDto customerDto) {
 		BcaShippingaddress shippingAddress = new BcaShippingaddress();
@@ -625,4 +644,467 @@ public class LeadService {
 			Loger.log("ClientVendor not Found________________removeClientVendor");
 		}
 	}
+	
+	//------------------------------------------below New APIs--------------------------------------------------------------
+	public List<BcaLeadNew> getAllLeadsList(BcaCompany companyId) {
+		int cvType = 0;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+		Integer typeIDList = bcaCvtypeRepository.findByName("Lead");
+		if (typeIDList > 0)
+			cvType = typeIDList;
+		List<BcaLeadNew> bcaLeadList = bcaLeadNewRepository.findByCvtypeId(cvType, companyId);
+		for (BcaLeadNew bcaLead : bcaLeadList) {
+			bcaLead.setCity(getCityNameById(Integer.parseInt(bcaLead.getCity())));
+			bcaLead.setState(getStateNameById(Integer.parseInt(bcaLead.getState())));
+			bcaLead.setCountry(getCountryNameById(Integer.parseInt(bcaLead.getCountry())));
+
+			if (bcaLead.getDateAdded() != null) {
+				String formattedDate = bcaLead.getDateAdded().format(formatter);
+				bcaLead.setFormattedDateAdded(formattedDate);
+			}
+		}
+		return bcaLeadList;
+	}
+	
+	@Transactional
+	public BcaLeadNew addLead(CustomerDto customerDto, String companyId, Integer leadID) {
+		//insert lead
+		BcaLeadNew bcaLead = new BcaLeadNew();
+		if (leadID != null && leadID > 0) {
+			bcaLead.setLeadID(leadID);
+		}
+		bcaLead.setFirstName(customerDto.getFirstName());
+		bcaLead.setMiddleName(customerDto.getMiddleName());
+		bcaLead.setLastName(customerDto.getLastName());
+		bcaLead.setAddress1(customerDto.getAddress1());
+		bcaLead.setAddress2(customerDto.getAddress2());
+		bcaLead.setCity(customerDto.getCity());
+		bcaLead.setCountry(customerDto.getCountry());
+		bcaLead.setState(customerDto.getState());
+		bcaLead.setZipCode(customerDto.getZipCode());
+		bcaLead.setPhone(customerDto.getPhone());
+		bcaLead.setCellPhone(customerDto.getCellPhone());
+		bcaLead.setEmail(customerDto.getEmail());
+		bcaLead.setName(customerDto.getCompanyName());
+		bcaLead.setEmail(customerDto.getEmail());
+
+		if (customerDto.getDateAdded() != null) {
+			OffsetDateTime formattedDateAdded = convertDateStringToOffset(customerDto.getDateAdded());
+			bcaLead.setDateAdded(formattedDateAdded);
+		}
+
+		bcaLead.setDbaname(customerDto.getDbaName());
+		bcaLead.setFax(customerDto.getFax());
+		bcaLead.setHomePage(customerDto.getHomePage());
+		bcaLead.setDetail(customerDto.getMemo());
+		bcaLead.setStatus("N");
+		bcaLead.setResellerTaxId(customerDto.getTexID());
+		bcaLead.setCustomerTitle(customerDto.getTitle());
+		bcaLead.setTaxable(Long.parseLong("0"));
+		int cvCategoryId = Integer.parseInt(customerDto.getType());
+		bcaLead.setCvcategoryId(cvCategoryId);
+		bcaLead.setCvcategoryName(clienCategoryRepo.findNameByCvcategoryId(cvCategoryId));
+
+		if (customerDto.getPaymentType() != null && !customerDto.getPaymentType().isEmpty()) {
+			Optional<BcaPaymenttype> optionalPaymentType = PaymenttypeRepo.findById(Integer.parseInt(customerDto.getPaymentType()));
+			BcaPaymenttype paymentType = optionalPaymentType.orElse(null);
+			bcaLead.setPaymentType(paymentType);
+		}
+		
+		if (customerDto.getRep() != null && !customerDto.getRep().isEmpty()) {
+			Optional<BcaSalesrep> optionalSalesRep = salesRepRepo.findById(Integer.parseInt(customerDto.getRep()));
+			BcaSalesrep salesRep = optionalSalesRep.orElse(null);
+			bcaLead.setSalesRep(salesRep);	
+		}
+		
+		if (customerDto.getShipping() != null && !customerDto.getShipping().isEmpty()) {
+			Optional<BcaShipcarrier> optionalShipcarrier = shipcarrierRepRepo.findById(Integer.parseInt(customerDto.getShipping()));
+			BcaShipcarrier Shipcarrier = optionalShipcarrier.orElse(null);
+			bcaLead.setShipCarrier(Shipcarrier);	
+		}
+		
+		if (customerDto.getTerm() != null && !customerDto.getTerm().isEmpty()) {
+			Optional<BcaTerm> optionalTerm = termRepo.findById(Integer.parseInt(customerDto.getTerm()));
+			BcaTerm term = optionalTerm.orElse(null);
+			bcaLead.setTerm(term);	
+		}
+		
+		if (companyId != null && !companyId.isEmpty()) {
+			Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.parseLong(companyId));
+			BcaCompany company = optionalCompany.orElse(null);
+			bcaLead.setCompany(company);	
+		}
+		
+		Integer typeIDList = bcaCvtypeRepository.findByName("Lead");
+		if (typeIDList > 0)
+			bcaLead.setCvtypeId(typeIDList);
+		
+		Optional<BcaLeadSource> optionalLeadSource = leadSourceRepo.getLeadById(customerDto.getLeadSource());
+		BcaLeadSource leadSource = optionalLeadSource.orElse(null);
+		bcaLead.setLeadSource(leadSource);
+		Optional<BcaLeadCategory> optionalLeadCategory = leadCategoryRepo.getLeadCategoryById(customerDto.getLeadCategory());
+		BcaLeadCategory leadCategory = optionalLeadCategory.orElse(null);
+		bcaLead.setLeadCategory(leadCategory);
+		
+		bcaLead.setActive(1);
+		bcaLead.setDeleted(0);
+		bcaLead.setCctypeId(0);
+		bcaLead.setCustomerOpenDebit((double) 0);
+		bcaLead.setCustomerCreditLine((double) 0);
+		bcaLead.setVendorOpenDebit((double) 0);
+		bcaLead.setVendorAllowedCredit((double) 0);
+		BcaLeadNew bcaLeadNew = bcaLeadNewRepository.save(bcaLead);
+		Loger.log("bcaLeadNew -------------- Created ID-------------"+bcaLeadNew.getLeadID());
+		//customerDto.setClientVendorID(savedClientVendor.getClientVendorId().toString());
+		return bcaLeadNew;
+	}
+	
+	public CustomerDto getNewLeadById(int id) {
+		BcaLeadNew clientVendor = bcaLeadNewRepository.findById(id).orElse(null);
+		CustomerDto customerDto = new CustomerDto();
+		customerDto.setClientVendorID(String.valueOf(clientVendor.getLeadID()));
+		customerDto.setFirstName(clientVendor.getFirstName());
+		customerDto.setMiddleName(clientVendor.getMiddleName());
+		customerDto.setLastName(clientVendor.getLastName());
+		customerDto.setAddress1(clientVendor.getAddress1());
+		customerDto.setAddress2(clientVendor.getAddress2());
+		customerDto.setCity(clientVendor.getCity());
+		customerDto.setCountry(clientVendor.getCountry());
+		customerDto.setState(clientVendor.getState());
+		customerDto.setZipCode(clientVendor.getZipCode());
+		customerDto.setPhone(clientVendor.getPhone());
+		customerDto.setCellPhone(clientVendor.getCellPhone());
+		customerDto.setEmail(clientVendor.getEmail());
+		customerDto.setCompanyName(clientVendor.getName());
+		customerDto.setEmail(clientVendor.getEmail());
+		customerDto.setDbaName(clientVendor.getDbaname());
+		customerDto.setFax(clientVendor.getFax());
+		customerDto.setHomePage(clientVendor.getHomePage());
+		customerDto.setMemo(clientVendor.getDetail());
+		customerDto.setTexID(clientVendor.getResellerTaxId());
+		customerDto.setTitle(clientVendor.getCustomerTitle());
+		customerDto.setActive(clientVendor.getActive() == 1 ? true : false);
+		customerDto.setType(String.valueOf(clientVendor.getCvcategoryId()));
+		if (clientVendor.getTerm() != null)
+			customerDto.setTerm(String.valueOf(clientVendor.getTerm().getTermId()));
+		
+		if (clientVendor.getPaymentType() != null)
+			customerDto.setPaymentType(String.valueOf(clientVendor.getPaymentType().getPaymentTypeId()));
+		
+		if (clientVendor.getSalesRep() != null)
+			customerDto.setRep(String.valueOf(clientVendor.getSalesRep().getSalesRepId()));
+		
+		if (clientVendor.getShipCarrier() != null)
+			customerDto.setShipping(String.valueOf(clientVendor.getShipCarrier().getShipCarrierId()));
+
+		if (clientVendor.getDateAdded() != null) {
+			customerDto.setDateAdded(convertDateOffsetToString(clientVendor.getDateAdded()));
+		}
+		
+		customerDto.setStatus(clientVendor.getStatus());
+		customerDto.setLeadId(clientVendor.getLeadID());
+		if (clientVendor.getLeadSource() != null && clientVendor.getLeadSource().getLeadSourceId() != null)
+			customerDto.setLeadSource(clientVendor.getLeadSource().getLeadSourceId());
+		
+		if (clientVendor.getLeadCategory() != null && clientVendor.getLeadCategory().getLeadCategoryId() != null)
+			customerDto.setLeadCategory(clientVendor.getLeadCategory().getLeadCategoryId());
+		
+		List<BcaLeadNewProducts> leadProducts = new ArrayList<BcaLeadNewProducts>();
+		leadProducts = bcaLeadProductsNewRepository.findByLeadId(clientVendor);
+		List<String> leadSelectedProducts = new ArrayList<>();
+		for (BcaLeadNewProducts product : leadProducts) {
+			if (product.getInventory() != null) {
+				leadSelectedProducts.add(product.getInventory().getInventoryCode());
+			}
+		}
+		
+		customerDto.setLeadSelectedproducts(leadSelectedProducts);
+		System.out.println(customerDto);
+		return customerDto;
+	}
+	
+	public void addLeadNewProduct(List<String> products, String companyId, int lastInsertedLeadId, String purpose) {
+		Optional<BcaLeadNew> optionalLead = bcaLeadNewRepository.findById(lastInsertedLeadId);
+		BcaLeadNew lead = optionalLead.orElse(null);
+		if ("editPage".equals(purpose)) {
+			bcaLeadProductsNewRepository.removeByLead(lead);
+		}
+		
+		Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.parseLong(companyId));
+		BcaCompany company = optionalCompany.orElse(null);
+		for (String inventoryId : products) {
+			BcaLeadNewProducts leadProduct = new BcaLeadNewProducts();
+			leadProduct.setLead(lead);
+			leadProduct.setCompany(company);
+			Optional<BcaIteminventory> optionalInventroy = iteminventoryRepo.getByInventoryId(Integer.parseInt(inventoryId));
+			BcaIteminventory inventory = optionalInventroy.orElse(null);
+			leadProduct.setInventory(inventory);
+			bcaLeadProductsNewRepository.save(leadProduct);
+		}
+	}
+	
+	public List<BcaIteminventory> getSelectedLeadNewProduct(String companyId, int clientVendorId) {
+		List<BcaIteminventory> products = getAllProducts(companyId);
+		BcaLeadNew bcaLeadNew = bcaLeadNewRepository.findById(clientVendorId).orElse(null);
+		List<BcaLeadNewProducts> leadProducts = bcaLeadProductsNewRepository.findByLeadId(bcaLeadNew);
+		for (BcaIteminventory product : products) {
+			System.out.println(product.getInventoryId());
+			for (BcaLeadNewProducts leadProduct : leadProducts) {
+				System.out.println(leadProduct.getInventory().getInventoryId());
+				if (product.getInventoryId() == leadProduct.getInventory().getInventoryId()) {
+					product.setInventoryCode(product.getInventoryCode() + "&nbsp&nbsp&nbsp" + "✔(Selected)");
+				}
+			}
+		}
+		return products;
+	}
+	
+	public boolean convertLeadTo(String leadId, String compId, String cvTypeName) {
+		boolean ret = false;
+		try {
+			//convert lead to customer
+			Integer typeID = bcaCvtypeRepository.findByName(cvTypeName);
+			BcaLeadNew bcaLead = bcaLeadNewRepository.findByCompanyIdAndleadID(Long.valueOf(compId), Integer.valueOf(leadId));
+			bcaLead.setCvtypeId(typeID);
+			BcaClientvendor bcaClientvendor = addBcaClientVendor(bcaLead, compId, 0);
+			if (cvTypeName != null && cvTypeName.equalsIgnoreCase("Customer")) {
+				addBcaShippingAddress(bcaClientvendor);
+				addBcaBillingAddress(bcaClientvendor);	
+			}
+			//then need to remove lead in lead table
+			bcaLeadNewRepository.deleteById(Integer.valueOf(leadId));
+			ret = true;
+		} catch (Exception e) {
+			Loger.log(2, "Exception... LEADInfo.convertToCustomer(). --->" + e.getMessage());
+			ret = false;
+		}
+		return ret;
+	}
+	
+	@Transactional
+	public BcaClientvendor addBcaClientVendor(BcaLeadNew bcaLead, String companyId, Integer clientVendorID) {
+		BcaClientvendor clientVendor = new BcaClientvendor();
+		if (clientVendorID != null && clientVendorID > 0) {
+			clientVendor.setClientVendorId(clientVendorID);
+		}
+		clientVendor.setFirstName(bcaLead.getFirstName());
+		clientVendor.setMiddleName(bcaLead.getMiddleName());
+		clientVendor.setLastName(bcaLead.getLastName());
+		clientVendor.setAddress1(bcaLead.getAddress1());
+		clientVendor.setAddress2(bcaLead.getAddress2());
+		clientVendor.setCity(bcaLead.getCity());
+		clientVendor.setCountry(bcaLead.getCountry());
+		clientVendor.setState(bcaLead.getState());
+		clientVendor.setZipCode(bcaLead.getZipCode());
+		clientVendor.setPhone(bcaLead.getPhone());
+		clientVendor.setCellPhone(bcaLead.getCellPhone());
+		clientVendor.setEmail(bcaLead.getEmail());
+		clientVendor.setName(bcaLead.getName());
+		clientVendor.setEmail(bcaLead.getEmail());
+		if (bcaLead.getDateAdded() != null) {
+			OffsetDateTime formattedDateAdded = convertDateStringToOffset(DateHelper.dateFormatter(bcaLead.getDateAdded()));
+			clientVendor.setDateAdded(formattedDateAdded);
+		}
+
+		clientVendor.setDbaname(bcaLead.getDbaname());
+		clientVendor.setFax(bcaLead.getFax());
+		clientVendor.setHomePage(bcaLead.getHomePage());
+		//clientVendor.setDetail(bcaLead.getMemo());
+		clientVendor.setStatus("N");
+		clientVendor.setResellerTaxId(bcaLead.getResellerTaxId());
+		clientVendor.setCustomerTitle(bcaLead.getCustomerTitle());
+		clientVendor.setTaxable(Long.parseLong("0"));
+		clientVendor.setCvcategoryId(bcaLead.getCvcategoryId());
+		clientVendor.setCvcategoryName(bcaLead.getCvcategoryName());
+		if (companyId != null && !companyId.isEmpty()) {
+			Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.parseLong(companyId));
+			BcaCompany company = optionalCompany.orElse(null);
+			clientVendor.setCompany(company);	
+		}
+		clientVendor.setIsMobilePhoneNumber(false);
+		clientVendor.setCvtypeId(bcaLead.getCvtypeId());
+		clientVendor.setActive(1);
+		clientVendor.setDeleted(0);
+		clientVendor.setCctypeId(0);
+		clientVendor.setCustomerOpenDebit((double) 0);
+		clientVendor.setCustomerCreditLine((double) 0);
+		clientVendor.setVendorOpenDebit((double) 0);
+		clientVendor.setVendorAllowedCredit((double) 0);
+		clientVendor.setPriority(0);
+		clientVendor.setItemPriceLevel(0);
+		clientVendor.setVendorOpenDebit((double) 0);
+		clientVendor.setPayFromId(0);
+		clientVendor.setPriceLevelId(0);
+		clientVendor.setUseSpecialMessage(false);
+		clientVendor.setLineofCreditTermId(0);
+		clientVendor.setForm1099(0);
+		clientVendor.setReferenceCustomerId(0);
+		clientVendor.setBankAccountId(0);
+		clientVendor = clientVendorRepo.save(clientVendor);
+		return clientVendor;
+	}
+	
+	public void addBcaShippingAddress(BcaClientvendor customerDto) {
+		BcaShippingaddress shippingAddress = new BcaShippingaddress();
+		shippingAddress.setAddressName("Default");
+		Optional<BcaClientvendor> optionalClient = clientVendorRepo.findById(customerDto.getClientVendorId());
+		if (optionalClient.isPresent()) {
+			BcaClientvendor clientVendor = optionalClient.get();
+			shippingAddress.setClientVendor(clientVendor);
+		}
+		shippingAddress.setName(customerDto.getName());
+		shippingAddress.setFirstName(customerDto.getFirstName());
+		shippingAddress.setLastName(customerDto.getLastName());
+		shippingAddress.setAddress1(customerDto.getAddress1());
+		shippingAddress.setAddress2(customerDto.getAddress2());
+		shippingAddress.setCity(customerDto.getCity());
+		shippingAddress.setState(customerDto.getState());
+		shippingAddress.setCountry(customerDto.getCountry());
+		shippingAddress.setZipCode(customerDto.getZipCode());
+		shippingAddress.setPhone(customerDto.getPhone());
+		shippingAddress.setCellPhone(customerDto.getCellPhone());
+		shippingAddress.setFax(customerDto.getFax());
+		shippingAddress.setActive(1);
+		shippingAddress.setIsDefault(1);
+		shippingAddress.setAddressType("0");
+		shippingAddress.setStatus("N");
+		shippingAddress.setProvince("");
+		if (customerDto.getDateAdded() != null) {
+			OffsetDateTime formattedDateAdded = convertDateStringToOffset(DateHelper.dateFormatter(customerDto.getDateAdded()));
+			shippingAddress.setDateAdded(formattedDateAdded);
+		}
+		
+		if(customerDto.getCompany() != null && customerDto.getCompany().getCompanyId() > 0) {
+			Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.valueOf(customerDto.getCompany().getCompanyId()));
+			BcaCompany company = optionalCompany.orElse(null);
+			shippingAddress.setCompany(company);	
+		}
+		
+		shippngAddressRepo.save(shippingAddress);
+	}
+	
+	public void addBcaBillingAddress(BcaClientvendor customerDto) {
+		BcaBillingaddress billingAddress = new BcaBillingaddress();
+		billingAddress.setAddressName("Default");
+		Optional<BcaClientvendor> optionalClient = clientVendorRepo.findById(customerDto.getClientVendorId());
+		if (optionalClient.isPresent()) {
+			BcaClientvendor clientVendor = optionalClient.get();
+			billingAddress.setClientVendor(clientVendor);
+		}
+
+		billingAddress.setName(customerDto.getName());
+		billingAddress.setFirstName(customerDto.getFirstName());
+		billingAddress.setLastName(customerDto.getLastName());
+		billingAddress.setAddress1(customerDto.getAddress1());
+		billingAddress.setAddress2(customerDto.getAddress2());
+		billingAddress.setCity(customerDto.getCity());
+		billingAddress.setState(customerDto.getState());
+		billingAddress.setCountry(customerDto.getCountry());
+		billingAddress.setZipCode(customerDto.getZipCode());
+		billingAddress.setPhone(customerDto.getPhone());
+		billingAddress.setCellPhone(customerDto.getCellPhone());
+		billingAddress.setFax(customerDto.getFax());
+		billingAddress.setActive(1);
+		billingAddress.setIsDefault(1);
+		billingAddress.setAddressType("1");
+		billingAddress.setStatus("N");
+		billingAddress.setProvince("");
+		if (customerDto.getDateAdded() != null) {
+			OffsetDateTime formattedDateAdded = convertDateStringToOffset(DateHelper.dateFormatter(customerDto.getDateAdded()));
+			billingAddress.setDateAdded(formattedDateAdded);
+		}
+		if (customerDto.getCompany() != null && customerDto.getCompany().getCompanyId() > 0) {
+			Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.valueOf(customerDto.getCompany().getCompanyId()));
+			BcaCompany company = optionalCompany.orElse(null);
+			billingAddress.setCompany(company);	
+		}
+		
+		billingAddressRepo.save(billingAddress);
+	}
+	
+	public boolean convertToLead(String clientVendorID, String compId, String cvTypeName) {
+		boolean ret = false;
+		try {
+			//convert customer or contact to lead
+			Integer typeID = bcaCvtypeRepository.findByName(cvTypeName);
+			BcaClientvendor clientVendor = clientVendorRepo.findByCompanyIdAndClientvendorId(Long.valueOf(compId), Integer.valueOf(clientVendorID));
+			clientVendor.setCvtypeId(typeID);
+			BcaLeadNew bcaLeadNew = clientVendorToaddLead(clientVendor, compId, typeID);
+			if (cvTypeName != null && cvTypeName.equalsIgnoreCase("Customer")) {
+				BcaShippingaddress bcaShippingaddress = shippngAddressRepo.findByClintvendorId(clientVendor);
+				if(bcaShippingaddress != null && bcaShippingaddress.getAddressId() > 0){
+					shippngAddressRepo.deleteById(bcaShippingaddress.getAddressId());
+				}
+				
+				BcaBillingaddress bcaBillingaddress = billingAddressRepo.findByClintvendorId(clientVendor);
+				if(bcaBillingaddress != null && bcaBillingaddress.getAddressId() > 0){
+					billingAddressRepo.deleteById(bcaBillingaddress.getAddressId());
+				}
+			}
+			//then need to remove vendor in client vendor table
+			clientVendorRepo.deleteById(Integer.valueOf(clientVendorID));
+			ret = true;
+		} catch (Exception e) {
+			Loger.log(2, "Exception... LEADInfo.convertToCustomer(). --->" + e.getMessage());
+			ret = false;
+		}
+		return ret;
+	}
+	
+	@Transactional
+	public BcaLeadNew clientVendorToaddLead(BcaClientvendor bcaClientvendor, String companyId, Integer leadID) {
+		//insert lead
+		BcaLeadNew bcaLead = new BcaLeadNew();
+		if (leadID != null && leadID > 0) {
+			bcaLead.setLeadID(leadID);
+		}
+		bcaLead.setFirstName(bcaClientvendor.getFirstName());
+		bcaLead.setMiddleName(bcaClientvendor.getMiddleName());
+		bcaLead.setLastName(bcaClientvendor.getLastName());
+		bcaLead.setAddress1(bcaClientvendor.getAddress1());
+		bcaLead.setAddress2(bcaClientvendor.getAddress2());
+		bcaLead.setCity(bcaClientvendor.getCity());
+		bcaLead.setCountry(bcaClientvendor.getCountry());
+		bcaLead.setState(bcaClientvendor.getState());
+		bcaLead.setZipCode(bcaClientvendor.getZipCode());
+		bcaLead.setPhone(bcaClientvendor.getPhone());
+		bcaLead.setCellPhone(bcaClientvendor.getCellPhone());
+		bcaLead.setEmail(bcaClientvendor.getEmail());
+		bcaLead.setName(bcaClientvendor.getName());
+		bcaLead.setEmail(bcaClientvendor.getEmail());
+		bcaLead.setDateAdded(bcaClientvendor.getDateAdded());
+		bcaLead.setDbaname(bcaClientvendor.getDbaname());
+		bcaLead.setFax(bcaClientvendor.getFax());
+		bcaLead.setHomePage(bcaClientvendor.getHomePage());
+		bcaLead.setDetail(bcaClientvendor.getMessage());
+		bcaLead.setStatus("N");
+		bcaLead.setResellerTaxId(bcaClientvendor.getResellerTaxId());
+		bcaLead.setCustomerTitle(bcaClientvendor.getCustomerTitle());
+		bcaLead.setTaxable(Long.parseLong("0"));
+		bcaLead.setCvcategoryId(bcaClientvendor.getCvcategoryId());
+		bcaLead.setCvcategoryName(bcaClientvendor.getCvcategoryName());
+
+		if (bcaClientvendor.getPaymentType() != null) {
+			bcaLead.setPaymentType(bcaClientvendor.getPaymentType());
+		}
+		
+		if (companyId != null && !companyId.isEmpty()) {
+			Optional<BcaCompany> optionalCompany = companyRepo.findById(Long.parseLong(companyId));
+			BcaCompany company = optionalCompany.orElse(null);
+			bcaLead.setCompany(company);	
+		}
+		
+		bcaLead.setCvtypeId(bcaClientvendor.getCvtypeId());
+		bcaLead.setActive(1);
+		bcaLead.setDeleted(0);
+		bcaLead.setCctypeId(0);
+		bcaLead.setCustomerOpenDebit((double) 0);
+		bcaLead.setCustomerCreditLine((double) 0);
+		bcaLead.setVendorOpenDebit((double) 0);
+		bcaLead.setVendorAllowedCredit((double) 0);
+		BcaLeadNew bcaLeadNew = bcaLeadNewRepository.save(bcaLead);
+		Loger.log("bcaLeadNew ----Convert---------- Created ID-------------"+bcaLeadNew.getLeadID());
+		return bcaLeadNew;
+	}
+	
 }

@@ -89,7 +89,7 @@ $(function() {
 								<span
 									style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
 									<spring:message
-										code="BzComposer.updatecustomer.editcustomerinformation" />
+										code="BzComposer.updatecontact.editcontactinformation" />
 								</span>
 							</div>
 							<div>
@@ -416,6 +416,7 @@ $(function() {
 											</div>
 
 											<!-- Manage Address Start here -->
+											<!--
 											<div id="table-negotiations">
 												<table align="center" style="width: 100%"
 													class="tabla-listados">
@@ -425,18 +426,6 @@ $(function() {
 																	code="BzComposer.updatecustomer.manageaddresses" /></th>
 														</tr>
 													</thead>
-													<!-- <thead>
-                    <tr>
-                    <td>
-                            <input value="on"  checked="checked" type="checkbox" id="chk_setaddress"
-                            name="setdefaultaddress" onclick="hidebsaddress(this.form);">
-                            <input type="hidden" name="setdefaultbs" value="">
-                            <font size="2">
-                                Billing And Shipping Address should be the same as the Customer Information Address
-                            </font>
-                        </td>
-                    <tr>
-                </thead> -->
 													<tr>
 														<td>
 															<table class="tabla-listados" cellspacing="0" width="200"
@@ -726,6 +715,7 @@ $(function() {
 													</tr>
 												</table>
 											</div>
+											-->
 											<!-- Manage Address END here -->
 										</div>
 									</div>
@@ -1504,7 +1494,7 @@ $(function() {
 							<tr>
 								<td align="center">
 									<button type="button" class="formbutton"
-										title="Update Customer" onclick="UpdateCust();">
+										title="Update Customer" onclick="UpdateContact();">
 										<spring:message code='BzComposer.global.update' />
 									</button>
 									<button type="button" class="formbutton" title="Close"
@@ -1611,7 +1601,7 @@ function validate() {
    	return true;
 }
 
-function UpdateCust(){
+function UpdateContact(){
 	if(document.CustomerForm.cname.value==""){
 
 		return showNameDialog();
@@ -1652,7 +1642,7 @@ function UpdateCust(){
 		if(validate())
 		{
 			event.preventDefault();
-			$("#updateCustomerDialog").dialog({
+			$("#updateContactDialog").dialog({
                 resizable: false,
                 height: 200,
                 width: 500,
@@ -2720,10 +2710,10 @@ function toggleFields(form) {
 		<spring:message code="BzComposer.updatecustomer.entervalidemaillength" />
 	</p>
 </div>
-<div id="updateCustomerDialog" style="display: none;">
+<div id="updateContactDialog" style="display: none;">
 	<p>
 		<spring:message
-			code="BzComposer.updatecustomer.updatecustomerinformation" />
+			code="BzComposer.updatecontact.updatecontactinformation" />
 	</p>
 </div>
 <div id="showCellPhoneDialog" style="display: none;">

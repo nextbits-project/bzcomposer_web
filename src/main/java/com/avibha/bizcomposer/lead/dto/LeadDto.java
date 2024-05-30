@@ -6,7 +6,6 @@
 
 package com.avibha.bizcomposer.lead.dto;
 
-import java.util.Date;
 
 public class LeadDto {
 
@@ -16,6 +15,9 @@ public class LeadDto {
 			+ "FirstName,LastName,Address1,Address2,Title,Email,State,Website,Country,"
 			+ "Phone,ZipCode,LeadValue,Company,Description,LeadPublic,ContactToday,ContactDate,Tags";
 
+	public static final String customerColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
+			+ "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID";
+	
 	private Long leadId;
 	private Long assignedId;
 	private String status;
@@ -48,7 +50,16 @@ public class LeadDto {
 	private String contactDate;
 	private String createdAT;
 	private String updatedAT;
-
+	private String cname;
+	private String cityID;
+	private String stateID;
+	private String countryID;
+	private String dbaName;
+	private String middleName;
+	private String cellPhone;
+	private String fax;
+	private String texID;
+	
 	public Long getLeadId() {
 		return leadId;
 	}
@@ -283,6 +294,78 @@ public class LeadDto {
 	
 	public String getProvince() {
 		return province;
+	}
+
+	public String getCname() {
+		return cname;
+	}
+
+	public void setCname(String cname) {
+		this.cname = cname;
+	}
+
+	public String getCityID() {
+		return cityID;
+	}
+
+	public void setCityID(String cityID) {
+		this.cityID = cityID;
+	}
+
+	public String getStateID() {
+		return stateID;
+	}
+
+	public void setStateID(String stateID) {
+		this.stateID = stateID;
+	}
+
+	public String getCountryID() {
+		return countryID;
+	}
+
+	public void setCountryID(String countryID) {
+		this.countryID = countryID;
+	}
+
+	public String getDbaName() {
+		return dbaName;
+	}
+
+	public void setDbaName(String dbaName) {
+		this.dbaName = dbaName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getCellPhone() {
+		return cellPhone;
+	}
+
+	public void setCellPhone(String cellPhone) {
+		this.cellPhone = cellPhone;
+	}
+
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
+
+	public String getTexID() {
+		return texID;
+	}
+
+	public void setTexID(String texID) {
+		this.texID = texID;
 	}
 
 }

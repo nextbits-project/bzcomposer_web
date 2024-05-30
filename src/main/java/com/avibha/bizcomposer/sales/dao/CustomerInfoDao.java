@@ -408,7 +408,7 @@ public class CustomerInfoDao {
 		return objList;
 	}
 
-	@Cacheable(value = "contactDetails", key = "#compId")
+	//@Cacheable(value = "contactDetails", key = "#compId")
 	public ArrayList<CustomerDto> contactDetails(String compId) {
 		ArrayList<CustomerDto> objList = new ArrayList<>();
 		Title title = new Title();
@@ -906,13 +906,13 @@ public class CustomerInfoDao {
 //			String strSql = "SELECT CVTypeID from bca_cvtype " + "WHERE name='" + customerType + "'";
 //			stmt = con.createStatement();
 //			rst = stmt.executeQuery(strSql);
-		List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
+		Integer CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
 //			if (rst.next()) {
 //				cvTypeId = rst.getInt("CVTypeID");
 //			}
 
-		if (CVTypeIDs.size() > 0) {
-			cvTypeId = CVTypeIDs.get(0);
+		if (CVTypeIDs > 0) {
+			cvTypeId = CVTypeIDs;
 		}
 
 //		} catch (Exception e) {
@@ -2193,7 +2193,7 @@ public class CustomerInfoDao {
 			bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
 			bcv.setDetail(c.getMemo());
 			if (c.getIsclient() != null && !c.getIsclient().isEmpty())
-				bcv.setCvtypeId(Integer.valueOf(removeLast2Digit(c.getIsclient())));
+				bcv.setCvtypeId(Integer.valueOf(c.getIsclient()));
 			if (null != c.getTaxAble() && !c.getTaxAble().isEmpty()) {
 				bcv.setTaxable(Long.parseLong(removeLast2Digit(c.getTaxAble())));	
 			}

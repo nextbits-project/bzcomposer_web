@@ -400,6 +400,7 @@ $(function() {
                 </div>
 
                 <!-- Manage Address Start here -->
+                <!--
                 <div id="table-negotiations">
                     <table align="center" style="width: 100%" class="tabla-listados"  cellspacing="0" >
                         <thead>
@@ -661,6 +662,7 @@ $(function() {
                             </tr>
                         </table>
                     </div>
+                    -->
                     <!-- Manage Address END here -->
 			</div>
 		</div>
@@ -1202,7 +1204,7 @@ function AddCustomer()
 		{
 			
 			event.preventDefault();
-			$("#addNewCustomerDialog").dialog({
+			$("#addNewContactDialog").dialog({
                 resizable: false,
                 height: 200,
                 width: 500,
@@ -1806,8 +1808,8 @@ $(document).ready(function(){
 <div id="showphoneemptydialog" style="display:none;">
 	<p>Please Enter Phone First</p>
 </div>
-<div id="addNewCustomerDialog" style="display:none;">
-	<p><spring:message code="BzComposer.addnewcustomer.insertnewcustomer"/></p>
+<div id="addNewContactDialog" style="display:none;">
+	<p><spring:message code="BzComposer.addnewcontact.insertnewcontact"/></p>
 </div>
 <div id="showServiceValidationDialog" style="display:none;">
 	<p><spring:message code="BzComposer.addnewcustomer.serviceexist" /></p>

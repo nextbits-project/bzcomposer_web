@@ -278,7 +278,7 @@ function manageCustomer(cmd){
 			if(confirm("<spring:message code='BzComposer.customerinfo.convertltolead'/>")==true) {
 				$.ajax({
                     type : "GET",
-                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=6&cvID="+itemID,
+                    url : "CustomerConvertToLead?tabid=Customer&customerAction=CONVERT&cvTypeId=Lead&cvID="+itemID,
                     success : function(data) {
                         location.reload();
                     },

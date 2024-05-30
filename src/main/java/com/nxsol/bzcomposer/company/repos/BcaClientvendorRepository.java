@@ -163,4 +163,7 @@ public interface BcaClientvendorRepository extends JpaRepository<BcaClientvendor
 
 	@Query("FROM BcaClientvendor WHERE clientVendorId = :id")
 	BcaClientvendor findByCVId(int id);
+	
+	@Query("FROM BcaClientvendor WHERE Email = :emailID AND Phone = :phoneNumber AND CVTypeID = :cvtypeId AND Active = 1")
+	BcaClientvendor findByEmailAndPhoneAndCvtypeId(String emailID, String phoneNumber, int cvtypeId);
 }

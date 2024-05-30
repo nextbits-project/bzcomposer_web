@@ -347,7 +347,7 @@ $(function() {
 											</table>
 										</div>
 
-										<div id="table-negotiations" style="width: 100%">
+										<!-- <div id="table-negotiations" style="width: 100%">
 											<table class="tabla-listados" cellspacing="0">
 												<thead>
 													<tr>
@@ -376,7 +376,6 @@ $(function() {
 																	<option value="${curObject.id}" ${curObject.id==customerDto.paymentType?'selected':''}>${curObject.typeName}</option>
 																</c:forEach>
 															</form:select></td>
-														<!-- 	<td colspan="2">&nbsp;</td> -->
 
 														<td><spring:message code="BzComposer.lead.LeadSource" /></td>
 														<td><form:select path="leadSource"
@@ -418,8 +417,6 @@ $(function() {
 																	<option value="${curObject.value}" ${curObject.value==customerDto.shipping?'selected':''}>${curObject.label}</option>
 																</c:forEach>
 															</form:select></td>
-														<!-- <td colspan="2">&nbsp;</td> -->
-
 														<td><spring:message
 																code="BzComposer.lead.LeadCategory" /></td>
 														<td><form:select path="leadCategory"
@@ -430,7 +427,6 @@ $(function() {
 																	<option value="${curObject.leadCategoryId}" ${curObject.leadCategoryId==customerDto.leadCategory?'selected':''}>${curObject.name}</option>
 																</c:forEach>
 															</form:select></td>
-
 														<td><spring:message code="BzComposer.products" /></td>
 														<td><form:select path="product" style="width:100%; height:150px;"
 																id="product" multiple="multiple">
@@ -440,11 +436,10 @@ $(function() {
 																	<option value="${curObject.inventoryId}">${curObject.inventoryCode}</option>
 																</c:forEach>
 															</form:select></td>
-
 													</tr>
 												</tbody>
 											</table>
-										</div>
+										</div> -->
 
 										<!-- Manage Address Start here -->
 										<!--<div id="table-negotiations">
@@ -1280,7 +1275,7 @@ function CheckMambership() {
 										"<spring:message code='BzComposer.global.ok'/>" : function() {
 											$(this).dialog("close");
 											document.getElementById('tabid').value = "AddCustomer";
-											document.forms["frmNewCustomer"].action = "/updatesLead";
+											document.forms["frmNewCustomer"].action = "/updateLeadDetails";
 											document.forms["frmNewCustomer"]
 													.submit();
 										},

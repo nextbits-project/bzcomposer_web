@@ -293,7 +293,7 @@ function manageCustomer(cmd){
 			if(confirm("<spring:message code='BzComposer.customerinfo.convertltolead'/>")==true) {
 				$.ajax({
                     type : "GET",
-                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=6&cvID="+itemID,
+                    url : "CustomerConvertToLead?tabid=Customer&customerAction=CONVERT&cvTypeId=Lead&cvID="+itemID,
                     success : function(data) {
                         location.reload();
                     },
@@ -380,9 +380,6 @@ function exportContact(){
 	window.open("File?tabid=ExportContact",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 }
 
-function contactImport(){
-	window.open("File?tabid=ImportContact",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
-}
 </script>
 <!-- Dialog box used in sales order page -->
 <div id="showCustomerValidationDialog" style="display: none;">

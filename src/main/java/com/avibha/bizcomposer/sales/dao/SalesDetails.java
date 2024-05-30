@@ -42,6 +42,7 @@ import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
 import com.avibha.common.utility.DateInfo;
 import com.nxsol.bizcomposer.reportcenter.eSales.EsalesPOJO;
+import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 
 @Service
 public class SalesDetails {
@@ -84,6 +85,9 @@ public class SalesDetails {
 	@Autowired
 	private VendorCategory vendorCategory;
 
+	@Autowired
+	BcaCvtypeRepository bcaCvtypeRepository;
+	
 	public void getdataManager(HttpServletRequest request, ActionForm form) {
 		HttpSession sess = request.getSession();
 		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
@@ -514,7 +518,9 @@ public class SalesDetails {
 
 		String contact = request.getParameter("contact");
 		if (contact != null && contact.equalsIgnoreCase("contact")) {
-		    isclient = 7;
+			Integer typeIDList = bcaCvtypeRepository.findByName("Contact");
+			if (typeIDList > 0)
+				isclient = typeIDList;
 		}
 
 		if (UseIndividualFinanceCharges == null)
@@ -536,10 +542,15 @@ public class SalesDetails {
 		customerDto.setGracePrd(request.getParameter("GracePeriod"));
 		boolean updateCust = customer.updateInsertCustomer(cvId, customerDto, compId, istax, isclient, indCharge,
 				aFCharge, "U");
-		if (updateCust) {
+		
+		if (updateCust && contact != null && contact.equalsIgnoreCase("contact")) {
+			request.setAttribute("SaveStatus", "Contact updated successfully!");
+			request.getSession().setAttribute("SaveStatus", "Contact updated successfully!");
+		} else if (updateCust) {
 			request.setAttribute("SaveStatus", "Customer updated successfully!");
 			request.getSession().setAttribute("SaveStatus", "Customer updated successfully!");
 		}
+		
 		if (customerDto.getDispay_info() != null && customerDto.getDispay_info().equals("ShowAll")) {
 			request.setAttribute("RadioVal", "1");
 		} else
