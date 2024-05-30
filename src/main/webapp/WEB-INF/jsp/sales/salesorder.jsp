@@ -1026,8 +1026,9 @@ function saveNewUnitPrice(){
                 var price = document.getElementById('unitPrice_id').value;				
 				var item = document.getElementById('itemID');				
 				var itemId = item.options[item.selectedIndex].value;
-				window.location.href = "Invoice?pageType=SO&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
-//				window.location.href = "SalesOrder?tabid=saveUnitPriceForSalesOrder&price="+price+"&itemID="+itemId;
+				                                                          // item unit price not updated permanently
+	//			window.location.href = "Invoice?pageType=SO&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
+//			window.location.href = "SalesOrder?tabid=saveUnitPriceForSalesOrder&price="+price+"&itemID="+itemId;
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () 
             {
@@ -2480,20 +2481,12 @@ function StyleChange(value)
 			}
 		}
 
-		function removeSessionData()
-		{
-		<%
-		   session.removeAttribute("BillingAddress");
-		   session.removeAttribute("ShippingAddress");
-		   session.removeAttribute("lastLineoFSAddress");
-		   session.removeAttribute("lastLineoFBAddress");
-		 %>
-		}
+
 
 		function onSave(form){
 			  
 			
-			 removeSessionData();
+			// removeSessionData();
 			No=form.orderNo.value;
 			cid = form.custID.value;
 			if(cid==0){

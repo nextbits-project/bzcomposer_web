@@ -47,6 +47,8 @@ import com.nxsol.bzcomposer.company.domain.BcaMasterrmareason;
 import com.nxsol.bzcomposer.company.domain.BcaMessage;
 import com.nxsol.bzcomposer.company.domain.BcaPostyle;
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
+import com.nxsol.bzcomposer.company.domain.BcaPreferenceHubs;
+
 import com.nxsol.bzcomposer.company.domain.BcaRefundreason;
 import com.nxsol.bzcomposer.company.domain.BcaRmareason;
 import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
@@ -68,6 +70,7 @@ import com.nxsol.bzcomposer.company.repos.BcaLocationRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMasterrmareasonRepository;
 import com.nxsol.bzcomposer.company.repos.BcaMessageRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPostyleRepository;
+import com.nxsol.bzcomposer.company.repos.BcaPreferenceHubsRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRefundreasonRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRmareasonRepository;
@@ -97,6 +100,8 @@ public class ConfigurationInfo {
 
 	@Autowired
 	private BcpJobcodeRepository bcpJobcodeRepository;
+	@Autowired
+	private  BcaPreferenceHubsRepository bcaPreferenceHubsRepository; 
 
 	@Autowired
 	private BcaSalestaxRepository bcaSalestaxRepository;
@@ -548,6 +553,9 @@ public class ConfigurationInfo {
 
 	@Autowired
 	private BcaPreferenceRepository preferenceRepository;
+	
+	@Autowired
+	private BcaPreferenceHubsRepository preferencehubsRepository;
 
 	public ConfigurationDto getDefaultCongurationData(Long companyId, HttpServletRequest request) {
 		Optional<BcaPreference> preferenceOpt = preferenceRepository.findByCompany_CompanyIdAndActive(companyId, 1);
@@ -739,6 +747,7 @@ public class ConfigurationInfo {
 	 */
 	@Autowired
 	private BcaPreferenceRepository bcaPreferenceRepository;
+	
 
 	public void getCongurationRecord(String companyID, ConfigurationDto cForm, HttpServletRequest request) {
 		Optional<BcaPreference> preferenceOpt = bcaPreferenceRepository
@@ -963,7 +972,26 @@ public class ConfigurationInfo {
 			cForm.setBackOrderNeeded(preference.getIsBackOrderNeeded() ? "on" : "off");
 			cForm.setRecurringServiceBill(preference.getIsRecurringServiceBill() ? "on" : "off");
 			cForm.setServiceBillName(preference.getServiceBillName());
-
+			
+			
+			//version tab configration 
+			
+			Optional<BcaPreferenceHubs> preferencehubsOpt = bcaPreferenceHubsRepository.findByCompany_CompanyIdAndActive(Long.parseLong(companyID), 1);
+			//marketting 		
+			BcaPreferenceHubs preferenceHubs= preferencehubsOpt.get();
+			cForm.setLeadsIsActive(preferenceHubs.getIsLeadsEnable());
+			//sales
+			cForm.setInvoiceIsActive(preferenceHubs.getIsInvoiceEnable());
+			cForm.setEstimationIsActive(preferenceHubs.getIsEstimationEnable());
+			cForm.setSalesOrderIsActive(preferenceHubs.getIsSalesOrderEnable());
+			cForm.setRmaIsActive(preferenceHubs.getIsRmaEnable());
+			cForm.setDataManagarIsActive(preferenceHubs.getIsDataManagarEnable());
+			//crm
+			cForm.setContactIsActive(preferenceHubs.getIsContactEnable());
+			cForm.setEventsIsActive(preferenceHubs.getIsEventsEnable());
+			cForm.setCalendarIsActive(preferenceHubs.getIsCalendarEnable());
+			cForm.setOpportunitiesIsActive(preferenceHubs.getIsOpportunitiesEnable());
+			request.getSession().setAttribute("versionConfigDetails", preferenceHubs);
 		}
 	}
 
@@ -1638,6 +1666,47 @@ public class ConfigurationInfo {
 			pref.setMultimode(cForm.getMultiUserConnection());
 		}
 		preferenceRepository.save(pref);
+		
+		
+		//version tab configuration 
+		BcaPreferenceHubs	preferenceHubs;
+		Optional<BcaPreferenceHubs> prefHubs = preferencehubsRepository.findByCompany_CompanyIdAndActive(companyId, 1);
+		if (prefHubs.isPresent()) {
+				preferenceHubs = prefHubs .get();
+			preferenceHubs.setIsLeadsEnable(cForm.getLeadsIsActive());
+			preferenceHubs.setIsInvoiceEnable(cForm.getInvoiceIsActive());
+			preferenceHubs.setIsEstimationEnable(cForm.getEstimationIsActive());
+			preferenceHubs.setIsSalesOrderEnable(cForm.getSalesOrderIsActive());
+			preferenceHubs.setIsRmaEnable(cForm.getRmaIsActive());
+			preferenceHubs.setIsDataManagarEnable(cForm.getDataManagarIsActive());
+			preferenceHubs.setIsContactEnable(cForm.getContactIsActive());
+			preferenceHubs.setIsOpportunitiesEnable(cForm.getOpportunitiesIsActive());
+			preferenceHubs.setIsCalendarEnable(cForm.getCalendarIsActive());
+			preferenceHubs.setIsEventsEnable(cForm.getEventsIsActive());
+				
+		}
+		else
+		{
+			preferenceHubs = new BcaPreferenceHubs();
+			company=bcaCompanyRepository.findById(companyId);
+			preferenceHubs.setCompany(company.get());
+			preferenceHubs.setIsLeadsEnable(cForm.getLeadsIsActive());
+			preferenceHubs.setIsInvoiceEnable(cForm.getInvoiceIsActive());
+			preferenceHubs.setIsEstimationEnable(cForm.getEstimationIsActive());
+			preferenceHubs.setIsSalesOrderEnable(cForm.getSalesOrderIsActive());
+			
+			preferenceHubs.setIsRmaEnable(cForm.getRmaIsActive());
+			preferenceHubs.setIsDataManagarEnable(cForm.getDataManagarIsActive());
+			
+			preferenceHubs.setIsContactEnable(cForm.getContactIsActive());
+			preferenceHubs.setIsOpportunitiesEnable(cForm.getOpportunitiesIsActive());
+			preferenceHubs.setIsCalendarEnable(cForm.getCalendarIsActive());
+			preferenceHubs.setIsEventsEnable(cForm.getEventsIsActive());
+			preferenceHubs.setActive(1);
+			
+		}
+		preferencehubsRepository.save(preferenceHubs);
+		
 
 		// Delete business modules
 		// businessModuleRepository.deleteByCompanyId(companyId);

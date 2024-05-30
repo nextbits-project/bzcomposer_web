@@ -144,6 +144,7 @@ public class LeadService {
 		customerDto.setCellPhone(clientVendor.getCellPhone());
 		customerDto.setEmail(clientVendor.getEmail());
 		customerDto.setCompanyName(clientVendor.getName());
+		customerDto.setCompanyID(Integer.parseInt(""+(clientVendor.getCompany().getCompanyId())));
 		customerDto.setEmail(clientVendor.getEmail());
 		customerDto.setDbaName(clientVendor.getDbaname());
 		customerDto.setFax(clientVendor.getFax());

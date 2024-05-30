@@ -75,7 +75,7 @@ $(function() {
 </head>
 <body onload="initialize();">
 	<form:form name="CustomerForm" method="post"
-		onsubmit="return validate();" modelAttribute="CustomerDetails">
+		onsubmit="return validate();" modelAttribute="customerDto">
 		<form:hidden path="custId" value='<%= request.getParameter("cvId")%>' />
 		<div id="cos">
 			<div class="statusquo ok">

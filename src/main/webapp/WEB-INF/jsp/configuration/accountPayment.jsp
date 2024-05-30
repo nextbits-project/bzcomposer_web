@@ -6,9 +6,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<jsp:include page="/WEB-INF/jsp/include/headlogo.jsp" />
-<jsp:include page="/WEB-INF/jsp/include/header.jsp" />
-<jsp:include page="/WEB-INF/jsp/include/menu.jsp" />
+<%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
+<%@include file="/WEB-INF/jsp/include/header.jsp"%>
+<%@include file="/WEB-INF/jsp/include/menu.jsp"%>
 <title><spring:message code="BzComposer.accountingtitle" /></title>
 <script type="text/javascript" src="${pageContext.request.contextPath}/dist/js/custom.js"></script>
 <script src="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui.js"></script>
@@ -45,8 +45,8 @@ $(function() {
         }
     }, 1000);
 });
-function toggleFunction() {
-	
+function toggleFunction()
+{	
   var x = document.getElementById("divtoggle");
   var lftmenu = document.getElementById("leftMenu");
   if (x.style.display === "none") {
@@ -199,6 +199,7 @@ $(document).ready(function()
  			return false; //disable key press
  	}
  }
+ 
  
  /* Added on 04-05-2020 */
  function setDiv()
@@ -1159,6 +1160,7 @@ function SaveValues()
     });
     return false;
 }
+
 </script>
 </html>
 <!-- Dialog box used in this page -->
@@ -1288,6 +1290,7 @@ function SaveValues()
                     </select>
                 </div>
             </div>
+            
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">
                     <spring:message code="BzComposer.categorymanager.accountnumber"/>
@@ -1309,6 +1312,7 @@ function SaveValues()
                     </select>
                 </div>
             </div>
+            
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">
                     <spring:message code="BzComposer.categorymanager.description"/>
@@ -1317,7 +1321,9 @@ function SaveValues()
                     <input type="text" class="form-control" id="DescriptionForUpdate">
                 </div>
             </div>
+            
         </div>
+        
         <div class="text-center row pb-2">
             <label class="col-md-3">&nbsp;</label>
             <div class="col-md-6" style="font-size: 14px;">

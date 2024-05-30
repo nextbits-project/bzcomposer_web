@@ -431,6 +431,104 @@ public class ConfigurationDto implements Serializable {
 	    private String subject;
 	    private String content;
 	    private int    mailTemplateIsActive;
+	    
+	    //version tab parameters 
+	    
+	    private int   leadsIsActive;
+	    private int   invoiceIsActive;
+	    private int   estimationIsActive;
+	    private int   salesOrderIsActive;
+	    private int   rmaIsActive;
+	    private int   dataManagarIsActive;
+	    private int   contactIsActive;
+	    private int   calendarIsActive;
+	    private int   opportunitiesIsActive;
+	    private int   eventsIsActive;
+	    public int getOpportunitiesIsActive() {
+			return opportunitiesIsActive;
+		}
+		public void setOpportunitiesIsActive(int opportunitiesIsActive) {
+			this.opportunitiesIsActive = opportunitiesIsActive;
+		}
+
+		
+	    
+	    public int getLeadsIsActive() {
+			return leadsIsActive;
+		}
+
+		public void setLeadsIsActive(int leadsIsActive) {
+			this.leadsIsActive = leadsIsActive;
+		}
+
+		public int getInvoiceIsActive() {
+			return invoiceIsActive;
+		}
+
+		public void setInvoiceIsActive(int invoiceIsActive) {
+			this.invoiceIsActive = invoiceIsActive;
+		}
+
+		public int getEstimationIsActive() {
+			return estimationIsActive;
+		}
+
+		public void setEstimationIsActive(int estimationIsActive) {
+			this.estimationIsActive = estimationIsActive;
+		}
+
+		public int getSalesOrderIsActive() {
+			return salesOrderIsActive;
+		}
+
+		public void setSalesOrderIsActive(int salesOrderIsActive) {
+			this.salesOrderIsActive = salesOrderIsActive;
+		}
+
+		public int getRmaIsActive() {
+			return rmaIsActive;
+		}
+
+		public void setRmaIsActive(int rmaIsActive) {
+			this.rmaIsActive = rmaIsActive;
+		}
+
+		public int getDataManagarIsActive() {
+			return dataManagarIsActive;
+		}
+
+		public void setDataManagarIsActive(int dataManagarIsActive) {
+			this.dataManagarIsActive = dataManagarIsActive;
+		}
+
+		public int getContactIsActive() {
+			return contactIsActive;
+		}
+
+		public void setContactIsActive(int contactIsActive) {
+			this.contactIsActive = contactIsActive;
+		}
+
+		public int getCalendarIsActive() {
+			return calendarIsActive;
+		}
+
+		public void setCalendarIsActive(int calendarIsActive) {
+			this.calendarIsActive = calendarIsActive;
+		}
+
+		public int getEventsIsActive() {
+			return eventsIsActive;
+		}
+
+		public void setEventsIsActive(int eventsIsActive) {
+			this.eventsIsActive = eventsIsActive;
+		}
+
+		
+	    
+	    
+	    
 
 	public int getTemplateID() {
 			return templateID;

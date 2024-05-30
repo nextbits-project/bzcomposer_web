@@ -57,16 +57,6 @@ function isRealValue(obj)
  return obj && obj !== 'null' && obj !== 'undefined';
 }
 
-function removeSessionData()
-{
-<%
- request.getSession().removeAttribute("BillingAddress");
-request.getSession().removeAttribute("ShippingAddress");
-request.getSession().removeAttribute("lastLineoFSAddress");  
-request.getSession().removeAttribute("lastLineoFBAddress");
-%>
-}
-
 $(function()
 	{
 	var locale = "<%= request.getAttribute("selectedLocale")%>";
@@ -203,7 +193,8 @@ function saveNewUnitPrice()
                 var price = document.getElementById('unitPrice_id').value;
 				var item = document.getElementById('itemID');
 				var itemId = item.options[item.selectedIndex].value;
-				window.location.href = "Invoice?tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
+				                                                        //item unit price update Permently Not required 
+				//window.location.href = "Invoice?tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
             },
             <spring:message code='BzComposer.global.cancel'/>: function ()
             {
@@ -211,7 +202,7 @@ function saveNewUnitPrice()
             	 document.getElementById('oldValue').value="0";
                 $(this).dialog("close");
                 
-               
+            
                 return false;
             }
         }
@@ -629,7 +620,8 @@ function ShowShippingAddressPage(form){
 													<table>
 														<tr>
 															<td id="bill_id" style="font-size: 14px;"><spring:message
-																	code="BzComposer.Invoice.BillTo" /> <br /> <form:textarea
+																	code="BzComposer.Invoice.BillTo" /> <br />
+																	 <form:textarea
 																	path="billTo" rows="6" cols="25"
 																	onclick="ShowBillingAddressPage(this.form);"
 																	style="resize: none; width: 300px;" /></td>
@@ -672,7 +664,8 @@ function ShowShippingAddressPage(form){
 														</tr>
 														<tr>
 															<td id="sh_date_id" style="font-size: 14px;"><form:hidden
-																	path="poNum" style="text-align: right;" /> <form:input
+																	path="poNum" style="text-align: right;" /> 
+																	<form:input
 																	path="shipDate" readonly="true" size="15" /> <img
 																src="${pageContext.request.contextPath}/images/cal.gif"
 																onclick="displayCalendar(document.InvoiceForm.shipDate,'mm-dd-yyyy',this);">
@@ -2578,7 +2571,7 @@ function Init(){
 function onSave(form)
 {
     
-	removeSessionData();
+	//removeSessionData();
 	
     No = form.orderNo.value;
     var bill = form.billTo.value;

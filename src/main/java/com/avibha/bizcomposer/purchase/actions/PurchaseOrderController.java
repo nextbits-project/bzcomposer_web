@@ -99,8 +99,8 @@ public class PurchaseOrderController {
 				
 				request.setAttribute("ShAddr", invoiceInfoDao.shipAddress(compId, null));
 				request.setAttribute("BillAddr", invoiceInfoDao.billAddress(compId, null));
-				SalesDetailsDao sd = new SalesDetailsDao();
-				sd.setUpdatPurchaseAddress(purchaseOrderDto, request);
+				//SalesDetailsDao sd = new SalesDetailsDao();
+				salesDetailsDao.setUpdatPurchaseAddress(purchaseOrderDto, request);
 
 				request.setAttribute("Invoicestyleid", invoiceInfo.getDefaultInvoiceStyleNo(companyID));
 				purchaseOrderDto.setInvoiceStyle(configDto.getVendorInvoiceStyleId() + "");

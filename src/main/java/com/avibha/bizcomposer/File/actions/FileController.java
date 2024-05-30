@@ -170,6 +170,8 @@ public class FileController {
 			request.setAttribute("estimateDetails",
 					customer.selectEstimateDetails(compId, configInfo, sartYearDate, endYearDate));
 			request.setAttribute("itemListDetails", customer.getItemListDetails(compId, sartYearDate, endYearDate));
+			customer.getVesionConfigDetails(compId, request);
+			
 			forward = "/include/dashboard";
 		} else if (action.equalsIgnoreCase("CompanyInfo")) {
 			int userID = (Integer) request.getSession().getAttribute("userID");

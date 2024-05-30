@@ -7,9 +7,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<jsp:include page="/WEB-INF/jsp/include/headlogo.jsp" />
-<jsp:include page="/WEB-INF/jsp/include/header.jsp" />
-<jsp:include page="/WEB-INF/jsp/include/menu.jsp" />
+<%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
+<%@include file="/WEB-INF/jsp/include/header.jsp"%>
+<%@include file="/WEB-INF/jsp/include/menu.jsp"%>
 <title><spring:message code="BzComposer.datamanagertitle" /></title>
 <jsp:include page="customerInvoiceFunctionPage.jsp"></jsp:include>
 </head>

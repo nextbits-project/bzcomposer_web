@@ -1930,7 +1930,13 @@ public class SalesDetails {
 
 		graphDetail = acd.getAccountPayableGraph(compId, request);
 	}
-
+	public void removeSessionAddressUpdateData(HttpServletRequest request)
+	{	
+		 request.getSession().removeAttribute("BillingAddress");
+		 request.getSession().removeAttribute("ShippingAddress");
+		 request.getSession().removeAttribute("lastLineoFSAddress");  
+		 request.getSession().removeAttribute("lastLineoFBAddress");
+	}
 	public void getBudgetVsActual(HttpServletRequest request, InvoiceDto form) {
 		int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
 		System.out.println("Current Year for budget vs actual is:" + year);

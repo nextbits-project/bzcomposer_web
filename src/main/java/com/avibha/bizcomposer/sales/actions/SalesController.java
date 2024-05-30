@@ -56,10 +56,14 @@ import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaCities;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
+import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaOpportunity;
 import com.nxsol.bzcomposer.company.domain.BcaShippingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaStates;
 import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCitiesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaOpportunityRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
@@ -95,7 +99,7 @@ public class SalesController {
 	private ConfigurationInfo configInfo;
 	
 	@Autowired
-	private SalesDetailsDao sd;
+	private SalesDetailsDao salesDetailsDao;
 	@Autowired
 	private CustomerInfo customerInfo;
 
@@ -106,7 +110,12 @@ public class SalesController {
 
 	@Autowired
 	private InvoiceInfo invoiceInfo;
+	
 
+	
+	
+	@Autowired
+	SalesDetailsDao sd;
 	
 	@Autowired
 	private ConfigurationDAO dao;
@@ -123,7 +132,7 @@ public class SalesController {
 	@Autowired
 	private PurchaseBoardDetails purchaseBoardDetails;
 
-	
+
 	
 	@Autowired
 	private TblCategoryDtoLoader categoryDtoLoader;
@@ -387,12 +396,22 @@ public class SalesController {
 			forward = "/sales/customerContactBoard";
 		}
 		else if (action.equalsIgnoreCase("opportunityBoard")) {    // Show ContactBoard page
-//			SalesDetailsDao sd = new SalesDetailsDao();
-			//String firstCvID = sd.getCustomerList(request);
-			//sd.getAllList(request);
+			//SalesDetailsDao sd = new SalesDetailsDao();
 			
-			
+			 salesDetailsDao.getAllOpportunityList(request);
+			   
+				//Long compId = Long.valueOf(sess.getAttribute("CID").toString());
+				
+				//  BcaCompany company = bcaCompanyRepository.findById(Long.parseLong(""+compId)).orElse(null);
+				 
+				//List<BcaOpportunity> opportunityList=bcaOpportunityRepository.findByCompany(company);
+				//request.setAttribute("opportunityList", opportunityList);	
+			 
 			forward = "/sales/customerOpportunityBoard";
+			
+			
+			
+			
 			//forward = "/sales/addOpportunity";
 		}
 		else if (action.equalsIgnoreCase("addOpportunity")) {   // addOpportunity
@@ -403,7 +422,7 @@ public class SalesController {
 			forward = "/sales/addOpportunity";
 		}
 		else if (action.equalsIgnoreCase("updateOpportunity")) {   // addOpportunity
-//			SalesDetailsDao sd = new SalesDetailsDao();
+   //			SalesDetailsDao sd = new SalesDetailsDao();
 			//String firstCvID = sd.getCustomerList(request);
 			//sd.getAllList(request);
 			model.addAttribute("opportunityDto", opportunityDto);
@@ -1386,6 +1405,7 @@ public class SalesController {
 			String custID = request.getParameter("custID");
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sd.saveInvoice(request, invoiceDto, custID);
+			sd.removeSessionAddressUpdateData(request);
 			forward = "redirect:Invoice?tabid=Invoice";
 		} else if (action.equalsIgnoreCase("DeleteInvoice")) {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
@@ -1602,6 +1622,7 @@ public class SalesController {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 
 			sd.saveOrder(request, invoiceDto);
+			sd.removeSessionAddressUpdateData(request);
 			Loger.log("sandip:@after save invoice:");
 			forward = "redirect:SalesOrder?tabid=SalesOrder";
 		} else if (action.equalsIgnoreCase("DeleteSalesOrder")) {

@@ -57,6 +57,9 @@ public class ConfigurationDetails {
 		configInfo.getCongurationRecord(compId, configDto, request);
 
 	}
+	
+	
+	
 
 	/*
 	 * Invoke the existing footnotes information (i.e:- footnot list & description).
@@ -157,7 +160,22 @@ public class ConfigurationDetails {
 		configDto.setMailPassword(request.getParameter("mailPassword"));
 		configDto.setShowUSAInBillShipAddress(Boolean.parseBoolean(request.getParameter("showUSAInBillShipAddress")));
 		configDto.setMultiUserConnection(Integer.parseInt(request.getParameter("multiUserConnection")));
+		
+		configDto.setLeadsIsActive("on".equals(request.getParameter("leads")) ? 1 : 0);
+		
+		configDto.setInvoiceIsActive("on".equals(request.getParameter("invoice")) ? 1 : 0);
+		configDto.setEstimationIsActive("on".equals(request.getParameter("estimation")) ? 1 : 0);
+		configDto.setSalesOrderIsActive("on".equals(request.getParameter("salesOrder")) ? 1 : 0);
+		configDto.setRmaIsActive("on".equals(request.getParameter("rma")) ? 1 : 0);
+		configDto.setDataManagarIsActive("on".equals(request.getParameter("dataManagar")) ? 1 : 0);
+		
+		configDto.setContactIsActive("on".equals(request.getParameter("contact")) ? 1 : 0);
+		configDto.setOpportunitiesIsActive("on".equals(request.getParameter("opportunities")) ? 1 : 0);
+		configDto.setCalendarIsActive("on".equals(request.getParameter("calendar")) ? 1 : 0);
+		configDto.setEventsIsActive("on".equals(request.getParameter("events")) ? 1 : 0);
+	
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
+		
 		cinfo.saveConfigurationRecordGeneral(configDto, request);
 	}
 
