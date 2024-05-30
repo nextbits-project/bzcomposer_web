@@ -130,7 +130,7 @@ public class AccountingController{
 //				RMADetailsDao rd=new RMADetailsDao();
 //				RMAInfoDao rmaInfo = new RMAInfoDao();
 				ArrayList CustomerRMAList = new ArrayList();
-				int invoiceTypeID = 2;
+				int invoiceTypeID = 1; // 1 for Invoice 2 for Purchase Order
 				CustomerRMAList=rmaInfo.getVendorRMAList(companyID,invoiceTypeID);
 				request.setAttribute("CustomerRMAList",CustomerRMAList);
 				forward = "/accounting/CustomerRMARefund";

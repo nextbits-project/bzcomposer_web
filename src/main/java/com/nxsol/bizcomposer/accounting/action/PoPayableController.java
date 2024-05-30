@@ -95,7 +95,7 @@ public class PoPayableController {
 			RMADetailsDao rd = new RMADetailsDao();
 //			RMAInfoDao rmaInfo = new RMAInfoDao();
 			ArrayList VendorRMAList = new ArrayList();
-			int invoiceTypeID = 1;
+			int invoiceTypeID = 2; // 1 for Invoice 2 for Purchase Order
 			VendorRMAList = rmaInfo.getVendorRMAList(companyID, invoiceTypeID);
 			request.setAttribute("VendorRMAList", VendorRMAList);
 			forward = "/accounting/vendorRMARefund";

@@ -59,9 +59,8 @@ background: #e1e5e9;
 		<input type="button" style="padding: 10px;"
 		 class="formbutton" id="smail" onclick="sendToCreateRMA();"
 		value='<spring:message code="BzComposer.invoiceboard.createRMA" />' />
-		&nbsp;&nbsp; 
-													
-			<input disabled="disabled" type="button"style="padding: 10px; id="modifyRMA"
+		&nbsp;&nbsp; 													
+			<input type="button"style="padding: 10px; id="modifyRMA"
 				class="formButton" onclick="getRMA();" name="RMABtn"
 				title='<spring:message code="BzComposer.rmalist.modifyrmatooltip"/>'
 				value='<spring:message code="BzComposer.rmalist.modifyrmabutton"/>'></td>

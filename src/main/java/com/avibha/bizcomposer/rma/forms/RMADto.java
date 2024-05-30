@@ -234,6 +234,7 @@ public class RMADto {
 	public RMADto(Integer rmaNo, String firstName , String lastName ,String inventoryCode, String inventoryName, String rmaReason 
 			, Integer rmaQty ,Double unitPrice , Double unitWeight , String dateAdded, Integer orderNum ) {
 		this.Rma=Integer.toString(rmaNo);
+//		this.Rma = rmaNo != null ? Integer.toString(rmaNo) : "0";
 		this.fname=firstName;
 		this.lname=lastName;
 		this.itemCode=inventoryCode;

@@ -18,13 +18,15 @@ import lombok.Data;
 @Table(name = "bca_rma")
 @Data
 public class BcaRma {
-	@Id
-	@Column(name = "RMA_ID", nullable = false, updatable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer rmaId;
 	
-	@Column(name= "RMA_No")
+	@Id
+	@Column(name = "RMA_No", nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer rmaNo;
+	
+	@Deprecated
+	@Column(name = "RMA_ID")
+	private Integer rmaId;
 
 	@Column(name = "RMA_qty")
 	private Integer rmaQty;
@@ -38,6 +40,7 @@ public class BcaRma {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CartID")
 	private BcaCart cart;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "InvoiceID")
 	private BcaInvoice invoice;

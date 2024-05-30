@@ -527,6 +527,13 @@ public class RMAInfoDao {
 //		ResultSet rs = null;
 //		int start = ((startValue - 1) * limit);
 		try {
+//			String sqlString = "Select distinct rma.RMA_no, clientvendor. FirstName, clientvendor. LastName,"
+//					+ " cart.InventoryCode, cart.InventoryName, rma.RMA_reason, rma.RMA_qty ,cart.UnitPrice ,"
+//					+ "cart.UnitWeight, date_format(rma.DateAdded,'%m/%d/%Y') as DateAdded,invoice.OrderNum"
+//					+ " From  bca_clientvendor clientvendor, bca_invoice invoice, bca_cart cart,"
+//					+ " bca_rma rma Where invoice.ClientVendorID= clientvendor.ClientVendorID and  clientvendor.status in ('N','U')   and clientvendor.Active = 1  and "
+//					+ "rma.InvoiceID = invoice. InvoiceID and   rma.CartID =  cart.CartID "
+//					+ " and invoice.CompanyID like ? order by rma.RMA_no asc limit ?,?";
 
 			StringBuffer query = new StringBuffer(" select distinct new " + RMADto.class.getCanonicalName()
 					+ " (rm.rmaNo , cv.firstName , cv.lastName , cart.inventoryCode , "
@@ -542,13 +549,7 @@ public class RMAInfoDao {
 			objList.addAll(typedQuery.getResultList());
 
 //			con = db.getConnection();
-//			String sqlString = "Select distinct rma.RMA_no, clientvendor. FirstName, clientvendor. LastName,"
-//					+ " cart.InventoryCode, cart.InventoryName, rma.RMA_reason, rma.RMA_qty ,cart.UnitPrice ,"
-//					+ "cart.UnitWeight, date_format(rma.DateAdded,'%m/%d/%Y') as DateAdded,invoice.OrderNum"
-//					+ " From  bca_clientvendor clientvendor, bca_invoice invoice, bca_cart cart,"
-//					+ " bca_rma rma Where invoice.ClientVendorID= clientvendor.ClientVendorID and  clientvendor.status in ('N','U')   and clientvendor.Active = 1  and "
-//					+ "rma.InvoiceID = invoice. InvoiceID and   rma.CartID =  cart.CartID "
-//					+ " and invoice.CompanyID like ? order by rma.RMA_no asc limit ?,?";
+			
 //
 //			pstmt = con.prepareStatement(sqlString);
 //			pstmt.setString(1, compId);
@@ -806,7 +807,6 @@ public class RMAInfoDao {
 			if (bcaCart.isPresent()) {
 				bcaRma.setCart(bcaCart.get());
 				bcaRma.setInvoice(bcaCart.get().getInvoice());
-				;
 			}
 
 			BcaRma save = bcaRmaRepository.save(bcaRma);
@@ -857,11 +857,11 @@ public class RMAInfoDao {
 			bcaRma.setRmaQty(qty);
 			bcaRma.setRmaReason(Reason);
 			bcaRma.setDateAdded(OffsetDateTime.now());
+			bcaRma.setRmaId(0);// it should be deleted
 			BcaCart bcaCart = bcaCartRepository.getOne(cartId);
 			if (null != bcaCart) {
 				bcaRma.setCart(bcaCart);
 				bcaRma.setInvoice(bcaCart.getInvoice());
-				;
 			}
 
 			BcaRma save = bcaRmaRepository.save(bcaRma);
@@ -991,49 +991,49 @@ public class RMAInfoDao {
 //		Connection con = null;
 //		PreparedStatement pstmt = null, pstmt2 = null;
 //		SQLExecutor db = new SQLExecutor();
-		SalesBoard d = new SalesBoard();
+		SalesBoard salesBoard = new SalesBoard();
 //		ResultSet rs = null, rs2 = null;
 		try {
 //			con = db.getConnection();
 			Optional<BcaInvoice> bcaInvoice = bcaInvoiceRepository.findById(invoiceId);
 			if (bcaInvoice.isPresent()) {
 				BcaInvoice invoice = bcaInvoice.get();
-				d.setInvoiceID(invoice.getInvoiceId());
-				d.setPaymentCompleted(invoice.getIsPaymentCompleted());
+				salesBoard.setInvoiceID(invoice.getInvoiceId());
+				salesBoard.setPaymentCompleted(invoice.getIsPaymentCompleted());
 				if (null != invoice.getOrderid()) {
-					d.setOrderid(Integer.parseInt(invoice.getOrderid().getOrderId()));
-					d.setTransactionID(invoice.getOrderid().getOrderId());
+					salesBoard.setOrderid(Integer.parseInt(invoice.getOrderid().getOrderId()));
+					salesBoard.setTransactionID(invoice.getOrderid().getOrderId());
 				}
 				if (null != invoice.getOrderNum())
-					d.setOrderNum(invoice.getOrderNum());
+					salesBoard.setOrderNum(invoice.getOrderNum());
 //				String orderNo = (invoice.getOrderNum().toString());
 //				d.setOrderNum(Long.parseLong(orderNo));
 				if (null != invoice.getPonum())
-					d.setPo_no(invoice.getPonum());
+					salesBoard.setPo_no(invoice.getPonum());
 				if (null != invoice.getRcvNum())
-					d.setRcv_no(invoice.getRcvNum());
+					salesBoard.setRcv_no(invoice.getRcvNum());
 				if (null != invoice.getEstNum())
-					d.setEst_no(invoice.getEstNum());
+					salesBoard.setEst_no(invoice.getEstNum());
 				if (null != invoice.getClientVendor())
-					d.setCvID(invoice.getClientVendor().getClientVendorId());
+					salesBoard.setCvID(invoice.getClientVendor().getClientVendorId());
 				if (null != invoice.getBsaddressId())
-					d.setBsAddressID(invoice.getBsaddressId());
+					salesBoard.setBsAddressID(invoice.getBsaddressId());
 				if (null != invoice.getDateAdded())
-					d.setDateAdded(dateFormatter(invoice.getDateAdded()));
+					salesBoard.setDateAdded(dateFormatter(invoice.getDateAdded()));
 				if (null != invoice.getDateConfirmed())
-					d.setSaleDate(dateFormatter(invoice.getDateConfirmed()));
+					salesBoard.setSaleDate(dateFormatter(invoice.getDateConfirmed()));
 				if (null != invoice.getIsPrinted())
-					d.setPrinted(invoice.getIsPrinted());
+					salesBoard.setPrinted(invoice.getIsPrinted());
 				if (null != invoice.getShipped())
-					d.setShipped(invoice.getShipped());
+					salesBoard.setShipped(invoice.getShipped());
 				if (null != invoice.getIsEmailed())
-					d.setEmailed(invoice.getIsEmailed() ? 1 : 0);
+					salesBoard.setEmailed(invoice.getIsEmailed() ? 1 : 0);
 				List<BcaCart> bcaCart = bcaCartRepository.findByInvoiceIdAndCompanyId(invoiceId, Long.valueOf(compId));
 				if (!bcaCart.isEmpty()) {
 					BcaCart cart = bcaCart.get(0);
-					d.setInventoryId(cart.getCartId());
-					d.setItemName(cart.getInventoryName());
-					d.setInventoryQty(cart.getQty());
+					salesBoard.setInventoryId(cart.getCartId());
+					salesBoard.setItemName(cart.getInventoryName());
+					salesBoard.setInventoryQty(cart.getQty());
 				}
 
 			}
@@ -1093,7 +1093,7 @@ public class RMAInfoDao {
 //				Loger.log(e.toString());
 //			}
 //		}
-		return d;
+		return salesBoard;
 	}
 
 	public int getCartId(int invoiceId, String compId) {

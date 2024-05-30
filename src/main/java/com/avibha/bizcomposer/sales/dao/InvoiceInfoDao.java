@@ -2042,7 +2042,12 @@ public class InvoiceInfoDao {
 				bcaCart.setUnitWeight(Double.parseDouble(uweight)/Integer.parseInt(qty));
 				bcaCart.setWeight(Double.parseDouble(uweight));
 				bcaCart.setUnitPrice(Double.parseDouble(truncate(uprice)));
-				bcaCart.setTaxable(Integer.parseInt(taxable));
+				if (taxable != null && (taxable.equals("on") || taxable.equals("true"))) {
+					bcaCart.setTaxable(1);
+				} else {
+					bcaCart.setTaxable(0);
+				}
+//				bcaCart.setTaxable(Integer.parseInt(taxable));
 				bcaCart.setItemTypeId(Integer.parseInt(itmTypeID));
 				bcaCart.setItemOrder(Integer.parseInt(itmOrder));
 				Date dateAdded = new Date();
@@ -2367,7 +2372,7 @@ public class InvoiceInfoDao {
 			bcaInvoice.setDiscount(form.getDiscount());
 			bcaInvoice.setTotal(form.getTotal());
 			bcaInvoice.setAdjustedTotal(form.getAdjustedtotal());
-			bcaInvoice.setPaidAmount(0D);
+//			bcaInvoice.setPaidAmount(0D);		Paid amount not require to update. 
 			bcaInvoice.setDeleted(0);
 			bcaInvoice.setBalance(form.getAdjustedtotal());
 			if (null != form.getVia()) {
