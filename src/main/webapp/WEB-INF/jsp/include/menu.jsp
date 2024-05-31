@@ -79,6 +79,9 @@
 							<li>
                                 <a href="#" onclick="exportCustomer()" style="cursor: pointer;"><spring:message code="BzComposer.customer.Customers" /></a>
                             </li>
+                            <li>
+                            	<a href="#" onclick="exportContact()" style="cursor: pointer;"><spring:message code="BzComposer.contact.contacts" /></a>
+                            </li>
 							<li>
                                 <a href="#" onclick="exportLead()" style="cursor: pointer;"><spring:message code="BzComposer.lead.leads" /></a>
                             </li>
@@ -192,12 +195,12 @@
 				</a>
 			</li> --%>
 			<li>
-				<a href="Leads?tabid=leadList" title="Lead" class="uppercaseText">
+				<a href="AllLeads?tabid=leadList" title="Lead" class="uppercaseText">
                     <span><spring:message code="BzComposer.sales.Lead" /></span>
 				</a>
 				<ul>
 					<li>
-						<a href="Leads?tabid=leadList" title="Lead">
+						<a href="AllLeads?tabid=leadList" title="Lead">
                         <span><spring:message code="BzComposer.sales.LeadList" /></span>
 						</a>
 					</li>
@@ -1468,11 +1471,17 @@
     }
 	function customerImport()
 	{
-		window.open("File?tabid=ImportCustomer",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+		window.open("File?tabid=ImportCustomer",null,"scrollbars=no,height=500,width=1000,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	function leadsImport()
 	{
-		window.open("File?tabid=ImportLeads",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+		window.open("File?tabid=ImportLeads",null,"scrollbars=no,height=500,width=1000,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+	}
+	function contactImport(){
+		window.open("File?tabid=ImportContact",null,"scrollbars=no,height=500,width=1000,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+ 	}
+ 	function exportContact(){
+		window.open("File?tabid=ExportContact",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	function vendorImport()
 	{

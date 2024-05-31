@@ -490,14 +490,14 @@ public class CustomerInfo {
 //			String strSql = "SELECT CVTypeID from bca_cvtype " + "WHERE name='" + customerType + "'";
 //			stmt = con.createStatement();
 //			rst = stmt.executeQuery(strSql);
-		List<Integer> CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
+		Integer CVTypeIDs = bcaCvtypeRepository.findByName(customerType);
 
 //			if (rst.next()) {
 //				cvTypeId = rst.getInt("CVTypeID");
 //			}
 
-		if (CVTypeIDs.size() > 0) {
-			cvTypeId = CVTypeIDs.get(0);
+		if (CVTypeIDs > 0) {
+			cvTypeId = CVTypeIDs;
 		}
 //
 //		} catch (Exception e) {

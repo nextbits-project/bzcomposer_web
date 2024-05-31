@@ -50,6 +50,10 @@ import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.common.log.Loger;
+import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
+import com.nxsol.bzcomposer.company.domain.BcaLeadNew;
+import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLeadNewRepository;
 
 import javax.annotation.PostConstruct;
 
@@ -67,7 +71,13 @@ public class DataImportExportUtils {
 	
 	@Autowired
 	CustomerInfoDao customerInfoDao;
+	
+	@Autowired
+	BcaClientvendorRepository bcaClientvendorRepository;
 
+	@Autowired
+	BcaLeadNewRepository bcaLeadNewRepository;
+	
 	private Title titleDAO;
 
 	@PostConstruct
@@ -1963,7 +1973,7 @@ public class DataImportExportUtils {
 	}
 	
 	public boolean importCustomerFile(MultipartFile attachedFile, HttpServletRequest request) {
-		//common for customer, contact and lead upload data
+		//common for customer and contact upload data
 		boolean status = false;
 		File file = new File(attachedFile.getOriginalFilename());
 		String[] fileName = file.getName().split("\\.");
@@ -2022,7 +2032,31 @@ public class DataImportExportUtils {
 					}
 					
 //                  b = insertdataintodatabase(al, request, type);
-					customerInfoDao.insertCustomer(customer, compId);
+					Boolean b = true;
+					String emailID = customer.getEmail();
+					String phoneNumber = customer.getPhone();
+					Integer cvtypeId = 0;
+					if (customer.getIsclient() != null && !customer.getIsclient().isEmpty())
+						cvtypeId = Integer.valueOf(customerInfoDao.removeLast2Digit(customer.getIsclient()));
+					
+					if (emailID != null && !emailID.isEmpty() && phoneNumber != null && !emailID.isEmpty() && cvtypeId > 0) {
+						Loger.log("Checking existing Email ID and Phone Number");
+						BcaClientvendor bcaClientvendor = bcaClientvendorRepository.findByEmailAndPhoneAndCvtypeId(emailID, phoneNumber, cvtypeId);
+						if (bcaClientvendor != null && bcaClientvendor.getClientVendorId() != null && bcaClientvendor.getClientVendorId() > 0) {
+							Loger.log("Checking existing Email ID and Phone Number--True------ID--"+bcaClientvendor.getClientVendorId());
+							b = false;
+						} else {
+							Loger.log("Checking existing Email ID and Phone Number--False");
+							b = true;
+						}
+					} else {
+						Loger.log("Email ID or Phone Number is Empthy");
+						b = true;
+					}
+					
+					if (b)
+						customerInfoDao.insertCustomer(customer, compId);
+					
 				}
 				bfReader.close();
 			} else {
@@ -2125,7 +2159,31 @@ public class DataImportExportUtils {
 								customer.setIsclient(request.getAttribute("CVTypeID").toString());
 							}
 							
-							customerInfoDao.insertCustomer(customer, compId);
+							Boolean b = true;
+							String emailID = customer.getEmail();
+							String phoneNumber = customer.getPhone();
+							Integer cvtypeId = 0;
+							if (customer.getIsclient() != null && !customer.getIsclient().isEmpty())
+								cvtypeId = Integer.valueOf(customerInfoDao.removeLast2Digit(customer.getIsclient()));
+							
+							if (emailID != null && !emailID.isEmpty() && phoneNumber != null && !emailID.isEmpty() && cvtypeId > 0) {
+								Loger.log("Checking existing Email ID and Phone Number");
+								BcaClientvendor bcaClientvendor = bcaClientvendorRepository.findByEmailAndPhoneAndCvtypeId(emailID, phoneNumber, cvtypeId);
+								if (bcaClientvendor != null && bcaClientvendor.getClientVendorId() != null && bcaClientvendor.getClientVendorId() > 0) {
+									Loger.log("Checking existing Email ID and Phone Number--True------ID--"+bcaClientvendor.getClientVendorId());
+									b = false;
+								} else {
+									Loger.log("Checking existing Email ID and Phone Number--False");
+									b = true;
+								}
+							} else {
+								Loger.log("Email ID or Phone Number is Empthy");
+								b = true;
+							}
+							
+							if (b)
+								customerInfoDao.insertCustomer(customer, compId);
+							
 						}
 					}
 					workbook.close();
@@ -2137,6 +2195,282 @@ public class DataImportExportUtils {
 			Loger.log(e.toString());
 		}
 		return status;
+	}
+	
+	
+	public boolean importLeadFile(MultipartFile attachedFile, HttpServletRequest request) {
+		boolean status = false;
+		File file = new File(attachedFile.getOriginalFilename());
+		String[] fileName = file.getName().split("\\.");
+		String compId = (String) request.getSession().getAttribute("CID");
+		try {
+			OutputStream os = new FileOutputStream(file);
+			InputStream is = new BufferedInputStream(attachedFile.getInputStream());
+			int count;
+			byte buf[] = new byte[4096];
+			while ((count = is.read(buf)) > -1) {
+				os.write(buf, 0, count);
+			}
+			is.close();
+			os.close();
+			if (fileName[1].equals("csv")) {
+				BufferedReader bfReader = new BufferedReader(new FileReader(file));
+				String line = "";
+				int index = 0;
+				while ((line = bfReader.readLine()) != null) {
+					if (index == 0) {
+						index++;
+						continue;
+					}
+					String[] data = line.split(",", -1);
+					CustomerDto customer = new CustomerDto();
+					customer.setCname(data[0]);
+					customer.setDbaName(data[1]);
+					customer.setTitle(data[2]);
+					customer.setFirstName(data[3]);
+					customer.setMiddleName(data[4]);
+					customer.setLastName(data[5]);
+					customer.setAddress1(data[6]);
+					customer.setAddress2(data[7]);
+					customer.setCity(data[8]);
+					customer.setState(data[9]);
+					customer.setCountry(data[10]);
+					customer.setZipCode(data[11]);
+					customer.setPhone(data[12]);
+					customer.setCellPhone(data[13]);
+					customer.setFax(data[14]);
+					customer.setEmail(data[15]);
+					customer.setTexID(data[16]);
+					if (request.getAttribute("CVTypeID") != null && request.getAttribute("CVTypeID").toString() != null) {
+						customer.setIsclient(request.getAttribute("CVTypeID").toString());
+					}
+					Boolean b = true;
+					String emailID = customer.getEmail();
+					String phoneNumber = customer.getPhone();
+					Integer cvtypeId = 0;
+					if (customer.getIsclient() != null && !customer.getIsclient().isEmpty())
+						cvtypeId = Integer.valueOf(customerInfoDao.removeLast2Digit(customer.getIsclient()));
+					
+					if (emailID != null && !emailID.isEmpty() && phoneNumber != null && !emailID.isEmpty() && cvtypeId > 0) {
+						Loger.log("Checking existing Email ID and Phone Number");
+						BcaLeadNew bcaClientvendor = bcaLeadNewRepository.findByEmailAndPhoneAndCvtypeId(emailID, phoneNumber, cvtypeId);
+						if (bcaClientvendor != null && bcaClientvendor.getLeadID() != null && bcaClientvendor.getLeadID() > 0) {
+							Loger.log("Checking existing Email ID and Phone Number--True------ID--"+bcaClientvendor.getLeadID());
+							b = false;
+						} else {
+							Loger.log("Checking existing Email ID and Phone Number--False");
+							b = true;
+						}
+					} else {
+						Loger.log("Email ID or Phone Number is Empthy");
+						b = true;
+					}
+					
+					if (b)
+						leadDAO.insertLead(customer, compId);
+					
+				}
+				bfReader.close();
+			} else {
+				if (fileName[1].equals("xlsx")) {
+					/*
+					 * FileInputStream inputStream=null; XSSFWorkbook workbook=null; inputStream =
+					 * new FileInputStream(file); workbook=new XSSFWorkbook(inputStream); XSSFSheet
+					 * firstSheet = workbook.getSheetAt(0); Iterator<Row> iterator =
+					 * firstSheet.iterator(); //row int count1=0;
+					 */
+				} else {
+					FileInputStream inputStream = new FileInputStream(file);
+					HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+					HSSFSheet firstSheet = workbook.getSheetAt(0);
+					for (Row myrow : firstSheet){
+						if(myrow.getRowNum() == 0) {
+							System.out.println("mycell--false");
+						}else {
+							CustomerDto customer = new CustomerDto();
+							Cell mycell0 = myrow.getCell(0);
+							Cell mycell1 = myrow.getCell(1);
+							Cell mycell2 = myrow.getCell(2);
+							Cell mycell3 = myrow.getCell(3);
+							Cell mycell4 = myrow.getCell(4);
+							Cell mycell5 = myrow.getCell(5);
+							Cell mycell6 = myrow.getCell(6);
+							Cell mycell7 = myrow.getCell(7);
+							Cell mycell8 = myrow.getCell(8);
+							Cell mycell9 = myrow.getCell(9);
+							Cell mycell10 = myrow.getCell(10);
+							Cell mycell11 = myrow.getCell(11);
+							Cell mycell12 = myrow.getCell(12);
+							Cell mycell13 = myrow.getCell(13);
+							Cell mycell14 = myrow.getCell(14);
+							Cell mycell15 = myrow.getCell(15);
+							Cell mycell16 = myrow.getCell(16);
+							
+							if (mycell0 != null)
+								customer.setCname(mycell0.toString());
+							if (mycell1 != null)
+								customer.setDbaName(mycell1.toString());
+							if (mycell2 != null)
+								customer.setTitle(mycell2.toString());
+							if (mycell3 != null)
+								customer.setFirstName(mycell3.toString());
+							if (mycell4 != null)
+								customer.setMiddleName(mycell4.toString());
+							if (mycell5 != null)
+								customer.setLastName(mycell5.toString());
+							if (mycell6 != null)
+								customer.setAddress1(mycell6.toString());
+							if (mycell7 != null)
+								customer.setAddress2(mycell7.toString());
+							if (mycell8 != null)
+								customer.setCity(mycell8.toString());
+							if (mycell9 != null)
+								customer.setState(mycell9.toString());
+							if (mycell10 != null)
+								customer.setCountry(mycell10.toString());
+							if (mycell11 != null)
+								customer.setZipCode(mycell11.toString());
+							if (mycell12 != null)
+								customer.setPhone(mycell12.toString());
+							if (mycell13 != null)
+								customer.setCellPhone(mycell13.toString());
+							if (mycell14 != null)
+								customer.setFax(mycell14.toString());
+							if (mycell15 != null)
+								customer.setEmail(mycell15.toString());
+							if (mycell16 != null)
+								customer.setTexID(mycell16.toString());
+							
+							if (request.getAttribute("CVTypeID") != null && request.getAttribute("CVTypeID").toString() != null) {
+								customer.setIsclient(request.getAttribute("CVTypeID").toString());
+							}
+							
+							Boolean b = true;
+							String emailID = customer.getEmail();
+							String phoneNumber = customer.getPhone();
+							Integer cvtypeId = 0;
+							if (customer.getIsclient() != null && !customer.getIsclient().isEmpty())
+								cvtypeId = Integer.valueOf(customerInfoDao.removeLast2Digit(customer.getIsclient()));
+							
+							if (emailID != null && !emailID.isEmpty() && phoneNumber != null && !emailID.isEmpty() && cvtypeId > 0) {
+								Loger.log("Checking existing Email ID and Phone Number");
+								BcaLeadNew bcaClientvendor = bcaLeadNewRepository.findByEmailAndPhoneAndCvtypeId(emailID, phoneNumber, cvtypeId);
+								if (bcaClientvendor != null && bcaClientvendor.getLeadID() != null && bcaClientvendor.getLeadID() > 0) {
+									Loger.log("Checking existing Email ID and Phone Number--True------ID--"+bcaClientvendor.getLeadID());
+									b = false;
+								} else {
+									Loger.log("Checking existing Email ID and Phone Number--False");
+									b = true;
+								}
+							} else {
+								Loger.log("Email ID or Phone Number is Empthy");
+								b = true;
+							}
+							
+							if (b)
+								leadDAO.insertLead(customer, compId);
+							
+						}
+					}
+					workbook.close();
+					inputStream.close();
+				}
+			}
+			status = true;
+		} catch (Exception e) {
+			Loger.log(e.toString());
+		}
+		return status;
+	}
+	
+	public boolean exportLeadList(ArrayList<LeadDto> customerList, String type, HttpServletResponse response, String fileName) {
+		//latest method
+		boolean b = false;
+		String csvFilePath = "";
+		String excelFilePath = "";
+		csvFilePath = System.getProperty("user.home") + "/Test/BCA_LeadList.csv";
+		excelFilePath = System.getProperty("user.home") + "/Test/BCA_LeadList.xls";
+		File sourcefile = null;
+		FileOutputStream fileOutputStream = null;
+		if (type.equals("csv")) {
+			try {
+				sourcefile = new File(csvFilePath);
+				checkFileExistance(sourcefile);
+				fileOutputStream = new FileOutputStream(csvFilePath);
+				FileWriter fileWriter = null;
+				fileWriter = new FileWriter(csvFilePath);
+				fileWriter.append(LeadDto.customerColumns);
+				for (LeadDto customer : customerList) {
+					fileWriter.append(NEW_LINE_SEPARATOR);
+					fileWriter.append(customer.getCname()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getDbaName()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getTitle()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getFirstName()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getMiddleName()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getLastName()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getAddress1()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getAddress2()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getCity()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getState()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getCountry()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getZipCode()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getPhone()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getCellPhone()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getFax()).append(COMMA_DELIMITER);
+					fileWriter.append(customer.getEmail()).append(COMMA_DELIMITER);
+					fileWriter.append(parseColumnValue(customer.getTexID(), 0)).append(COMMA_DELIMITER);
+				}
+				fileWriter.flush();
+				fileWriter.close();
+				fileOutputStream.close();
+				b = true;
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		} else {
+			try {
+				sourcefile = new File(excelFilePath);
+				if (!sourcefile.exists()) {
+					sourcefile.createNewFile();
+					fileOutputStream = new FileOutputStream(excelFilePath);
+				} else {
+					fileOutputStream = new FileOutputStream(excelFilePath);
+				}
+				HSSFWorkbook workbook = new HSSFWorkbook();
+				HSSFSheet sheet = workbook.createSheet("CustomerList");
+				setHSSFSheetColumnHeaderWithStyle(sheet, LeadDto.customerColumns.split(COMMA_DELIMITER), workbook);
+				HSSFRow row = null;
+				int rowIndex = 1;
+				for (LeadDto customer : customerList) {
+					row = sheet.createRow(rowIndex++);
+					row.createCell(0).setCellValue(customer.getCname());
+					row.createCell(1).setCellValue(customer.getDbaName());
+					row.createCell(2).setCellValue(customer.getTitle());
+					row.createCell(3).setCellValue(customer.getFirstName());
+					row.createCell(4).setCellValue(customer.getMiddleName());
+					row.createCell(5).setCellValue(customer.getLastName());
+					row.createCell(6).setCellValue(customer.getAddress1());
+					row.createCell(7).setCellValue(customer.getAddress2());
+					row.createCell(8).setCellValue(customer.getCity());
+					row.createCell(9).setCellValue(customer.getState());
+					row.createCell(10).setCellValue(customer.getCountry());
+					row.createCell(11).setCellValue(customer.getZipCode());
+					row.createCell(12).setCellValue(customer.getPhone());
+					row.createCell(13).setCellValue(customer.getCellPhone());
+					row.createCell(14).setCellValue(customer.getFax());
+					row.createCell(15).setCellValue(customer.getEmail());
+					row.createCell(16).setCellValue(parseColumnValue(customer.getTexID(), 0));
+				}
+				b = true;
+				workbook.write(fileOutputStream);
+				workbook.close();
+				fileOutputStream.close();
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		writeFileToResponse(response, sourcefile);
+		return b;
 	}
 	
 	/*

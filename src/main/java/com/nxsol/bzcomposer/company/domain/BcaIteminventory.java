@@ -264,7 +264,7 @@ public class BcaIteminventory {
     private BcaStoretype storeType;
 
     @OneToMany(mappedBy = "inventory")
-    private Set<BcaLeadProducts> inventoryBcaLeadProductss;
+    private Set<BcaLeadNewProducts> inventoryBcaLeadProductss;
 
     @OneToMany(mappedBy = "inventory")
     private Set<BcaPeritempricelevel> inventoryBcaPeritempricelevels;
@@ -934,11 +934,11 @@ public class BcaIteminventory {
         this.storeType = storeType;
     }
 
-    public Set<BcaLeadProducts> getInventoryBcaLeadProductss() {
+    public Set<BcaLeadNewProducts> getInventoryBcaLeadProductss() {
         return inventoryBcaLeadProductss;
     }
 
-    public void setInventoryBcaLeadProductss(final Set<BcaLeadProducts> inventoryBcaLeadProductss) {
+    public void setInventoryBcaLeadProductss(final Set<BcaLeadNewProducts> inventoryBcaLeadProductss) {
         this.inventoryBcaLeadProductss = inventoryBcaLeadProductss;
     }
 

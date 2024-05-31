@@ -1,6 +1,5 @@
 package com.nxsol.bzcomposer.company.repos;
 
-import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,9 +12,6 @@ import com.nxsol.bzcomposer.company.domain.BcaCvtype;
 public interface BcaCvtypeRepository extends JpaRepository<BcaCvtype, Integer> {
 
 	@Query("SELECT cvType.cvtypeId FROM BcaCvtype cvType WHERE cvType.name = :name")
-	List<Integer> findByName(@Param("name") String name);
-
-//	@Query( value = "SELECT cvType.CVTypeID FROM bca_cvtype cvType WHERE cvType.name = :name")
-//	List<Integer> findByName(@Param("name") String name);
+	Integer findByName(@Param("name") String name);
 	
 }

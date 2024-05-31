@@ -3,6 +3,7 @@ package com.avibha.bizcomposer.lead.dao;
 import java.util.List;
 
 import com.avibha.bizcomposer.lead.dto.LeadDto;
+import com.avibha.bizcomposer.sales.forms.CustomerDto;
 
 public interface LeadDAO {
 
@@ -15,5 +16,6 @@ public interface LeadDAO {
 	boolean update(LeadDto dto, String companyId);
 
 	boolean delete(Long leadId, String companyId);
-
+	
+	boolean insertLead(CustomerDto c, String compID);
 }

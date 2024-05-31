@@ -23,9 +23,6 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import com.nxsol.bzcomposer.company.domain.BcaLead;
-import com.nxsol.bzcomposer.company.repos.BcaLeadRepository;
-
 @SpringBootApplication
 @EntityScan(basePackages = "com.nxsol.bzcomposer.company.domain")
 @EnableJpaRepositories(basePackages = "com.nxsol.bzcomposer.company.repos")

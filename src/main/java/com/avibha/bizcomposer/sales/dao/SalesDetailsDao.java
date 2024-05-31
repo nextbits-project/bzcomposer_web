@@ -38,6 +38,7 @@ import com.nxsol.bzcomposer.company.repos.BcaCitiesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
+import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
 
 import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
@@ -142,7 +143,10 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private BcaBillingaddressRepository bcaBillingaddressRepository;
-
+	
+	@Autowired
+	private BcaCvtypeRepository bcaCvtypeRepository;
+	
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
@@ -178,7 +182,9 @@ public class SalesDetailsDao {
 																										// 3: Vendor
 		String contact = request.getParameter("contact");
 		if (contact.equalsIgnoreCase("contact")) {
-			customerDto.setCvTypeID(7);
+			Integer typeIDList = bcaCvtypeRepository.findByName("Contact");
+			if (typeIDList > 0)
+				customerDto.setCvTypeID(typeIDList);
 		}
 		customerDto.setFsUseIndividual(
 				"on".equalsIgnoreCase(request.getParameter("UseIndividualFinanceCharges")) ? "1" : "0");
@@ -191,10 +197,13 @@ public class SalesDetailsDao {
 //		customerDto.setGracePrd(request.getParameter("gracePrd"));
 		try {
 			boolean addCust = customerInfoDao.insertNewCustomer(customerDto, compId);
-			if (addCust) {
-				request.setAttribute("SaveStatus", new ActionMessage("Customer Information is Successfully Added!"));
-				request.getSession().setAttribute("actionMsg", "Customer Information is Successfully Added!");
-			}
+			if (addCust && contact.equalsIgnoreCase("contact")) {
+				request.setAttribute("SaveStatus", new ActionMessage("Contact Information is Successfully Added!"));
+				request.getSession().setAttribute("actionMsg", "Contact Information is Successfully Added!");
+			} else if (addCust) {
+ 				request.setAttribute("SaveStatus", new ActionMessage("Customer Information is Successfully Added!"));
+ 				request.getSession().setAttribute("actionMsg", "Customer Information is Successfully Added!");
+ 			}
 		} catch (Exception e) {
 			request.setAttribute("SaveStatus", new ActionMessage("Customer Information is Not Insert !."));
 			request.getSession().setAttribute("actionMsg", "Customer Information is Not Insert!");
