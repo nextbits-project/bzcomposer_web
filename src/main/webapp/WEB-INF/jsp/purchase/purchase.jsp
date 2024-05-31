@@ -1170,77 +1170,6 @@ function init() {
 
 	<script>
 	
-	$(function() {
-
-		<!--          address update  --> 
-		 document.PurchaseOrderForm.custNm.value = document.getElementById("custID").value;
-		 document.PurchaseOrderForm.clientVendorID.value = document.getElementById("custID").value;
-		 
-	
-	<%  
-	
-	BcaBillingaddress bcaBillingaddress=(BcaBillingaddress)session.getAttribute("BillingAddress");
-	BcaShippingaddress bcaShippingaddress=(BcaShippingaddress)request.getSession().getAttribute("ShippingAddress"); 
-			if(bcaBillingaddress==null) // if billing address not updated then set default 
-				{
-				%>		
-			var size = document.getElementById("bSize").value;
-	        
-	        var cvID=document.getElementById("custID").value;
-	        var i;
-	      
-	       
-	        for(i=0;i<size;i++)
-	        {
-	            var field1 = document.getElementById(i+"clvid").value;
-	            if(cvID==field1)
-	            	{
-	            	document.PurchaseOrderForm.custNm.value = custID;
-	            document.PurchaseOrderForm.companyID.value = document.getElementById(i+"cid").value;
-	            document.PurchaseOrderForm.bsAddressID.value = document.getElementById(i+"bsaddr").value;
-	            document.PurchaseOrderForm.billTo.value = document.getElementById(i+"bl").value;
-	            	}
-	            }
-	       
-	            <%
-				
-			  }
-			
-	          %>
-	                
-	    	     <%
-	    			if(bcaShippingaddress==null)
-	    			{
-	    			%>	
-	    			
-	    			
-	    	        var shsize = document.getElementById("sSize").value;
-	    	        var cvID=document.getElementById("custID").value;
-	    	    
-	    	      
-	    	        var i;
-	    	        for(i=0;i<shsize;i++)
-	    			        {
-                       
-	    			            var field1 = document.getElementById(i+"sh_id").value;
-	    			            if(cvID==field1)
-	    			            	{   
-	    			            document.PurchaseOrderForm.custNm.value = custID;
-	    			            document.PurchaseOrderForm.companyID.value = document.getElementById(i+"cid").value;
-	    			            document.PurchaseOrderForm.shAddressID.value = document.getElementById(i+"shaddr").value;
-	    			            document.PurchaseOrderForm.shipTo.value = document.getElementById(i+"sh").value;
-	    			            	}
-	    			              
-	    			            }
-	    						            <%
-	    						              
-	    								    }
-	    						  %>
-	
-	
-	<!--          address update  --> 
-	
-	});
 
 	function c(r) {
 
@@ -2977,7 +2906,8 @@ function saveNewUnitPrice()
                 var price = document.getElementById('unitPrice_id').value;
 				var item = document.getElementById('itemID');
 				var itemId = item.options[item.selectedIndex].value;
-				window.location.href = "Invoice?pageType=PO&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
+				                                                  //item unit price update Permently Not required 
+				//window.location.href = "Invoice?pageType=PO&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
             },
             <spring:message code='BzComposer.global.cancel'/>: function () 
             {

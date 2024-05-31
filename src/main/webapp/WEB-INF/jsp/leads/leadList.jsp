@@ -95,6 +95,10 @@ table.tabla-listados tbody tr td {
 											onclick="manageCustomer('CONVERTLEADtoCONTACT');"
 											style="padding: 7 15px;"
 											value="<spring:message code='BzComposer.Customer.transform.contact'/>" />
+											<input type="button" class="formbutton"
+											onclick="manageCustomer('CONVERTLEADtoOPPORTUNITY');"
+											style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Customer.transform.opportunity'/>" />
 										</td>
 									</tr>
 									<tr>
@@ -290,7 +294,8 @@ function manageCustomer(cmd){
 			}
 			return false;
 		}
-		else if (cmd=="CONVERTLEADtoCONTACT") {
+		else if (cmd=="CONVERTLEADtoCONTACT")
+		{
 			if(confirm("<spring:message code='BzComposer.customerinfo.convertltocontact'/>")==true) {
 				$.ajax({
                     type : "GET",
@@ -305,6 +310,30 @@ function manageCustomer(cmd){
 			}
 			return false;
 		}
+		else if (cmd=="CONVERTLEADtoOPPORTUNITY")
+		{
+			window.open("leadToOpportunity?tabid=newOpportunity&cvID="+itemID, null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no");
+			
+
+			<!-- 
+			if(confirm("<spring:message code='BzComposer.customerinfo.convertltoopportunity'/>")==true) 
+			
+			
+			{
+				$.ajax({
+                    type : "GET",
+                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=7&cvID="+itemID,
+                    success : function(data) {
+                        location.reload();
+                    },
+                    error : function(error) {
+                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+                    }
+                });
+			}
+			return false;
+		}
+		--> 
 	}
 }
 

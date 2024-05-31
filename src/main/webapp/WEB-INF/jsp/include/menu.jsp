@@ -194,6 +194,7 @@
                     <span><spring:message code="BzComposer.leads" /></span>
 				</a>
 			</li> --%>
+			  <c:if test="${versionConfigDetails.isLeadsEnable==1}" >
 			<li>
 				<a href="AllLeads?tabid=leadList" title="Lead" class="uppercaseText">
                     <span><spring:message code="BzComposer.sales.Lead" /></span>
@@ -214,8 +215,10 @@
                         <span><spring:message code="BzComposer.customer.LeadAddressLabels" /></span>
 						</a>
 					</li> 
+					
 				</ul>
 			</li>
+		</c:if>
 			<!-- LEADS END -->
 			
 			<li>
@@ -238,17 +241,20 @@
                         <span><spring:message code="BzComposer.sales.CustomerBoard" /></span>
                         </a>
                     </li>
+                     <c:if test="${versionConfigDetails.isContactEnable==1}">
                     <li>
                         <a href="Customer?tabid=ContactBoard" title="Contact Board">
                         <span><spring:message code="BzComposer.sales.ContactList" /></span>
                         </a>
                     </li>
-                    
+                    </c:if>
+                    <c:if test="${versionConfigDetails.isOpportunitiesEnable==1}">
                     <li>
                         <a href="Customer?tabid=opportunityBoard" title="Opportunities">
                         <span><spring:message code="BzComposer.Customer.opportunities" /></span>
                         </a>
                     </li>
+                    </c:if>
                     
 					<li>
 						<a href="Customer?tabid=PrintLabels" title="Print AddressLabel">
@@ -262,11 +268,18 @@
 					<spring:message code="BzComposer.Sales" />
 				</a>
 				<ul>
-					<li>
+				
+				<c:if test="${versionConfigDetails.isInvoiceEnable==1}">
+                  <li>
 						<a href="Invoice?tabid=Invoice" title="">
                     <span><spring:message code="BzComposer.sales.Invoice" /></span>
 						</a>
 					</li>
+					
+                  </c:if>
+                  
+                  
+					<c:if test="${versionConfigDetails.isEstimationEnable==1}" >
 					<li>
 						<a href="Estimation?tabid=Estimation" title="Estimation">
                      <span>
@@ -274,6 +287,10 @@
                      </span>
 						</a>
 					</li>
+					
+					 </c:if>
+					 
+					 <c:if test="${versionConfigDetails.isSalesOrderEnable==1}" >
 					<li>
 						<a href="SalesOrder?tabid=SalesOrder" title="salesorder">
                      <span>
@@ -281,6 +298,7 @@
                      </span>
 						</a>
 					</li>
+					 </c:if>
 					<li>
 						<a href="SalesBord?tabid=ShowList" title="invoiceboard">
                      <span>
@@ -302,6 +320,7 @@
                      </span>
 						</a>
 					</li>
+					 <c:if test="${versionConfigDetails.isRmaEnable==1}" >
 					<li class="current">
 						<a href="javascript: void(0)" title="RMA">
                             <span><spring:message code="BzComposer.RMA" /></span>
@@ -324,11 +343,14 @@
                             </li>
 						</ul>
 					</li>
+					</c:if>
+					 <c:if test="${versionConfigDetails.isDataManagarEnable==1}" >
 					<li>
 						<a href="DataManager?tabid=datamanager" title="DataManager">
                             <span><spring:message code="BzComposer.sales.DataManager" /></span>
 						</a>
 					</li>
+					</c:if>
 				</ul>
 			</li>
 			<!-- POS START -->
@@ -1073,6 +1095,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$("#menubar2").show();
+		
 	});
 	var screenHeight = $(window).height()/2;
 	var screenWidth = $(window).width()/2;
@@ -1715,6 +1738,10 @@
 	</center>
 </div>
 <script type="text/javascript">
+
+
+
+
 	function ShowCustomerList()
 	{
 		window.open("Customer?tabid=CustomerList",null,"scrollbars=yes,height=800,width=1200,status=yes,toolbar=no,menubar=no,location=no" );

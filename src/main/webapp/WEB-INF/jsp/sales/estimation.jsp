@@ -954,73 +954,7 @@ tax_rate=0;
 
 $(function()
 		{
-	<%  
-	BcaBillingaddress bcaBillingaddress=(BcaBillingaddress)session.getAttribute("BillingAddress");
-	BcaShippingaddress bcaShippingaddress=(BcaShippingaddress)request.getSession().getAttribute("ShippingAddress"); 
-			if(bcaBillingaddress==null) // if billing address not updated then set default 
-				{
-				%>		
-			var size = document.getElementById("bSize").value;
-	        var shsize = document.getElementById("sSize").value;
-	        var cvID=document.getElementById("custID").value;
-	        var i;
-	       
-	        for(i=0;i<size;i++)
-	        {
-	            var field1 = document.getElementById(i+"id").value;
-	            if(cvID==field1)
-	            	{
-	            	
-	            document.EstimationForm.companyID.value = document.getElementById(i+"cid").value;
-	            document.EstimationForm.bsAddressID.value = document.getElementById(i+"bsaddr").value;
-	            document.EstimationForm.billTo.value = document.getElementById(i+"bl").value;
-	            	}
-	              
-	            }
-	       
-	            <%
-				
-			  }
-			
-	          %>
-	                
-	    	    
-	          <%
-  			if(bcaShippingaddress==null)
-  			{
-  			%>	
-  			
-  			
-  	        var shsize = document.getElementById("sSize").value;
-  	      var cvID=document.getElementById("custID").value;
-  	        var i;
-  	        for(i=0;i<shsize;i++)
-  			        {
-  			       var field1 = document.getElementById(i+"sh_id").value;
-  			            
-  			            
-  			           if(cvID==field1)
-  			            	{
-                     
-  			            document.EstimationForm.custID.value=cvID;
-  			            document.EstimationForm.companyID.value = document.getElementById(i+"cid").value;
-  			            document.EstimationForm.shAddressID.value = document.getElementById(i+"shaddr").value;
-  			            document.EstimationForm.shipTo.value = document.getElementById(i+"sh").value;
-  			            	}
-  			              
-  			            }
-  						            <%
-  						              
-  								    }
-  						  %> 
-	
-	
-	<!--          address update  --> 
-	
-	
-	
-	
-	
+
 	var locale = "<%= request.getAttribute("selectedLocale")%>";
 
 	$('select[id="locale"]').find('option[value="'+locale+'"]').attr("selected",true);
@@ -2300,7 +2234,8 @@ function saveNewUnitPrice(){
                 var price = document.getElementById('unitPrice_id').value;
 				var item = document.getElementById('itemID');
 				var itemId = item.options[item.selectedIndex].value;
-				window.location.href = "Invoice?pageType=ES&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
+				                                                     // item unit price not updated Permently 
+				//window.location.href = "Invoice?pageType=ES&tabid=saveUnitPrice&price="+price+"&itemID="+itemId;
             },
             "<spring:message code='BzComposer.global.cancel'/>": function () {
 
@@ -2429,19 +2364,9 @@ function Init(){
 	}
 }
 
-
-function removeSessionData()
-{
-<%
- request.getSession().removeAttribute("BillingAddress");
-request.getSession().removeAttribute("ShippingAddress");
-request.getSession().removeAttribute("lastLineoFSAddress");  
-request.getSession().removeAttribute("lastLineoFBAddress");
-%>
-}
 function onSave(form)
 {
-	removeSessionData();
+	//removeSessionData();
 	
 	No=form.orderNo.value;
 	cid = form.custID.value;
@@ -2818,15 +2743,7 @@ function showItemOrderNumberDialog(){
     });
     return false;
 }
-function removeSessionData()
-{
-<%
-   session.removeAttribute("BillingAddress");
-   session.removeAttribute("ShippingAddress");
-   session.removeAttribute("lastLineoFSAddress");
-   session.removeAttribute("lastLineoFBAddress");
- %>
-}
+
 
 function getEstimationDetailsByBtnName(form, url){
 	 No = form.orderNo.value;

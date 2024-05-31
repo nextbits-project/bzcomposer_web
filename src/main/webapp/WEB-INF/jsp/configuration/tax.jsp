@@ -6,9 +6,9 @@
  <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<jsp:include page="/WEB-INF/jsp/include/headlogo.jsp" />
-<jsp:include page="/WEB-INF/jsp/include/header.jsp" />
-<jsp:include page="/WEB-INF/jsp/include/menu.jsp" />
+<%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
+<%@include file="/WEB-INF/jsp/include/header.jsp"%>
+<%@include file="/WEB-INF/jsp/include/menu.jsp"%>
 <title><spring:message code="BzComposer.taxinfotitle" /></title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
     integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">

@@ -13,8 +13,10 @@ import com.avibha.common.utility.MyUtility;
 import com.nxsol.bzcomposer.company.domain.BcaBusinesstype;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaPreference;
+import com.nxsol.bzcomposer.company.domain.BcaPreferenceHubs;
 import com.nxsol.bzcomposer.company.repos.BcaBusinesstypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaPreferenceHubsRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPreferenceRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +38,9 @@ public class CompanyInfo {
 
 	@Autowired
 	private BcaCompanyRepository companyRepository;
+	
+	@Autowired
+	BcaPreferenceHubsRepository bcaPreferenceHubsRepository;
 
 	public ArrayList<CompanyInfoDto> searchCompany(Long compId, int userID, HttpServletRequest request) {
 		ArrayList<CompanyInfoDto> objList = new ArrayList<>();
@@ -422,6 +427,15 @@ public class CompanyInfo {
 			}
 		}
 		return objSalesOrderList;
+	}
+	
+	public void getVesionConfigDetails(String compId,HttpServletRequest request)
+	{
+		Optional<BcaPreferenceHubs> preferencehubsOpt = bcaPreferenceHubsRepository.findByCompany_CompanyIdAndActive(Long.parseLong(compId), 1);
+		//marketting 		
+		BcaPreferenceHubs preferenceHubs= preferencehubsOpt.get();
+		request.getSession().setAttribute("versionConfigDetails", preferenceHubs);
+				
 	}
 
 	public ArrayList<ItemDto> getItemListDetails(String compId, String sartYearDate, String endYearDate) {

@@ -137,37 +137,31 @@ table.tabla-listados tbody tr td {
 											code="BzComposer.Customer.opportunities.amount" /></th>
 									<th><spring:message
 											code="BzComposer.Customer.opportunities.closedate" /></th>
+											<th><spring:message
+											code="BzComposer.customer.opportunity.active" /></th>
 
 							
 								</tr>
 							</thead>
 							<tbody id="custTableBody">
-								<c:if test="${not empty customerList}">
-									<c:forEach items="${customerList}" var="objList"
+								<c:if test="${not empty opportunityList}">
+									<c:forEach items="${opportunityList}" var="objList"
 										varStatus="loop">
-										<tr class="d-none" id='${loop.index}$$'
-											onclick="setRowId(${objList.clientVendorID}, ${loop.index}, true);">
-											<td class="${objList.paymentUnpaid?'redColor':''}"><input
-												type="checkbox" id="custID${loop.index}"
-												value="${objList.clientVendorID}"
-												onchange="addRowIndex(${loop.index}, ${objList.clientVendorID})" />
-												${objList.clientVendorID}</td>
-											<td>${objList.firstName}${objList.middleName}
-												${objList.lastName}</td>
-											<td>${objList.companyName}</td>
-											<td>${objList.type}</td>
-											<td>${objList.email}</td>
-											<td>${objList.phone}</td>
-											<td>${objList.cellPhone}</td>
-											<td>${objList.fax}</td>
-											<td>${objList.address1}</td>
-											<td>${objList.address2}</td>
-											<td>${objList.city}</td>
-											<td>${objList.zipCode}</td>
-											<td>${objList.country}</td>
-											<td>${objList.totalOverdueAmt}</td>
-											<td>${objList.lastOrderDate}</td>
-											<td>${objList.dateAdded}</td>
+										<tr  id='${loop.index}$$'
+											onclick="setRowId(${objList.opportunityId}, ${loop.index}, true);">
+											<td> <input type="checkbox" id="opportunityId${loop.index}"
+												value="${objList.opportunityId}"
+												onchange="addRowIndex(${loop.index}, ${objList.opportunityId})" />
+												${objList.opportunityId}
+											   </td>
+											     <td>${objList.name} </td>
+											     
+											     <td>${objList.stage} </td>
+											     <td>${objList.amount} </td>
+											     <td>${objList.closeDate} </td>
+											     	<td>Yes</td>
+											     
+												
 										</tr>
 									</c:forEach>
 								</c:if>

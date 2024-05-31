@@ -29,6 +29,7 @@ import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaCountries;
 import com.nxsol.bzcomposer.company.domain.BcaInvoice;
+import com.nxsol.bzcomposer.company.domain.BcaOpportunity;
 import com.nxsol.bzcomposer.company.domain.BcaShippingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaStates;
 import com.nxsol.bzcomposer.company.domain.SmdCvinfo;
@@ -40,7 +41,7 @@ import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCvtypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
-
+import com.nxsol.bzcomposer.company.repos.BcaOpportunityRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.repos.SmdCvinfoRepository;
 import com.nxsol.bzcomposer.company.utils.DateHelper;
@@ -106,6 +107,9 @@ public class SalesDetailsDao {
 	private BcaStatesRepository stateRepository;
 	@Autowired
 	private BcaCitiesRepository cityRepository;
+	
+	@Autowired
+	private BcaOpportunityRepository bcaOpportunityRepository;
 
 	@Autowired
 	private Title t;
@@ -210,6 +214,25 @@ public class SalesDetailsDao {
 			Loger.log(e.toString());
 		}
 	}
+	
+	public void removeSessionAddressUpdateData(HttpServletRequest request)
+	{	
+		 request.getSession().removeAttribute("BillingAddress");
+		 request.getSession().removeAttribute("ShippingAddress");
+		 request.getSession().removeAttribute("lastLineoFSAddress");  
+		 request.getSession().removeAttribute("lastLineoFBAddress");
+	}
+	public void getAllOpportunityList(HttpServletRequest request)
+	{
+	HttpSession sess = request.getSession();
+	Long compId = Long.valueOf(sess.getAttribute("CID").toString());
+	 System.out.println("bca compny resp DAO ........"+bcaCompanyRepository);
+	  BcaCompany company = bcaCompanyRepository.findById(Long.parseLong(""+compId)).orElse(null);
+	  System.out.println("bca opp resp DAO ........"+bcaOpportunityRepository);
+	List<BcaOpportunity> opportunityList=bcaOpportunityRepository.findByCompany(company);
+	request.setAttribute("opportunityList", opportunityList);	
+	}
+	
 
 	public void getAllList(HttpServletRequest request) {
 //		CountryState cs = new CountryState();
@@ -1584,14 +1607,19 @@ public class SalesDetailsDao {
 		BcaShippingaddress bcaShippingaddress = (BcaShippingaddress) request.getSession()
 				.getAttribute("ShippingAddress");
 
+		System.out.println("bcaBillingaddress ->>>>>>>>>>>>>"+bcaBillingaddress);
+		System.out.println("ShippingAddress ->>>>>>>>>>>>>"+bcaShippingaddress);
+		
 		BcaClientvendor clientVendor = null;
 		if (bcaShippingaddress != null)
 			clientVendor = bcaShippingaddress.getClientVendor();
 		if (bcaBillingaddress != null)
 			clientVendor = bcaBillingaddress.getClientVendor();
 
-		if (clientVendor != null) {
-			if (bcaShippingaddress != null) {
+		if (clientVendor != null)
+		{
+			if (bcaShippingaddress != null)
+			{
 				String lastLine = (String) request.getSession().getAttribute("lastLineoFSAddress");
 				invoiceDto.setCustID("" + (bcaShippingaddress.getClientVendor()).getClientVendorId());
 				invoiceDto.setShAddressID("" + bcaShippingaddress.getAddressId());
@@ -1600,7 +1628,9 @@ public class SalesDetailsDao {
 						+ bcaShippingaddress.getAddress2() + "\n" + lastLine;
 				invoiceDto.setShipTo(shippingAddress);
 
-			} else {
+			}
+			else 
+			{
 				Optional<BcaShippingaddress> defaultShippingaddress = bcaShippingaddressRepository
 						.findByClientVendorAndIsDefaultAndActive(clientVendor, 1, 1);
 				Optional<BcaStates> state = stateRepository
@@ -2083,6 +2113,8 @@ public class SalesDetailsDao {
 					saveStatus ? "Invoice is saved successfully." : "Invoice is not saved successfully.");
 		}
 	}
+	
+	
 
 	public void saveTranformInvoice(HttpServletRequest request, InvoiceDto form, String custID) {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();

@@ -18,6 +18,8 @@ import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.lead.dto.LeadDto;
+import com.avibha.bizcomposer.opportunity.dao.OpportunityDao;
+import com.avibha.bizcomposer.opportunity.form.OpportunityDto;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.sales.dao.InvoiceInfoDao;
 import com.avibha.bizcomposer.sales.dao.SalesDetailsDao;
@@ -27,6 +29,7 @@ import com.avibha.bizcomposer.sales.forms.ItemDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.CountryState;
+
 import com.nxsol.bizcomposer.common.ConstValue;
 import com.nxsol.bizcomposer.common.EmailSenderDto;
 import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
@@ -42,13 +45,14 @@ import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadNewRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadSourceRepository;
+
 import com.nxsol.bzcomposer.company.repos.BcaTitleRepository;
-import com.nxsol.bzcomposer.company.service.BcaClientvendorService;
 import com.nxsol.bzcomposer.company.service.LeadService;
+
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -80,6 +84,9 @@ public class LeadController {
 	
 	@Autowired
 	private CountryState cs;
+	
+	@Autowired
+	OpportunityDao opportunityDao;
 
 	private int cvType = 6; // default for Leads
 
@@ -98,14 +105,51 @@ public class LeadController {
 //		    System.out.println("Customer Name: " + customer.getCountry());
 //		    // ... Other operations
 //		}
+		
 		int cvType = 6;// 6 for Lead
-
 		HttpSession session = request.getSession();
 		String companyId = (String) session.getAttribute("CID");
 		BcaCompany company = companyRepo.findById(Long.parseLong(companyId)).orElse(null);
 		model.addAttribute("customerList", leadService.getAllLead(cvType, company));
 		return "leads/leadList";
 	}
+
+
+	
+
+//	@GetMapping("/newLead")
+//	public String getNewLead(Model model, HttpServletRequest request) {
+//		CustomerDto customerDto = new CustomerDto();
+//		String leadId = clientVendorRepo.getMaxId();
+//		HttpSession session = request.getSession();
+//		String companyId = (String) session.getAttribute("CID");
+//		customerDto.setClientVendorID(leadId);
+//		customerDto.setZipCode("90004");
+//
+//		customerDto.setDateAdded(invoice.setCurrentDate());
+//		customerDto.setLeadId(0);
+//		customerDto.setBillingAddressId(0);
+//		customerDto.setShippingAddressId(0);
+//		sd.getAllList(request);
+//
+//		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+//		request.setAttribute("defaultCongurationData", configDto);
+//
+//		model.addAttribute("customerDto", customerDto);
+//		model.addAttribute("leadSource", leadService.getLeadSources(companyId));
+//		model.addAttribute("LeadCategory", leadService.getLeadCategories(companyId));
+//		model.addAttribute("product", leadService.getAllProducts(companyId));
+//
+//		model.addAttribute("pageTitle", "BzComposer - Add New Lead");
+//		model.addAttribute("pageHeading", "Add New Lead");
+//		model.addAttribute("purpose", "newPage");
+//		model.addAttribute("leadId", null);
+//		model.addAttribute("shippingAddressId", null);
+//		model.addAttribute("billingAddressId", null);
+//
+//		return "leads/addNewLead";
+//	}
+
 
 	@GetMapping("/updateLead/{id}")
 	public String getUpdateLead(@PathVariable("id") int id, Model model, HttpServletRequest request) {
@@ -186,11 +230,12 @@ public class LeadController {
 		leadService.removeClientVendor(id);
 		return "redirect:/Leads";
 	}
-
+ 
 	@GetMapping("/LeadBoard")
 	public String getLeadBoard(Model model, @ModelAttribute("customerDto") CustomerDto customerDto,
-			HttpServletRequest request) {
-//		SalesDetailsDao sd = new SalesDetailsDao();
+			HttpServletRequest request) 
+	{
+   // SalesDetailsDao sd = new SalesDetailsDao();
 		sd.getAllList(request);
 		int cvType = 6;
 
@@ -209,12 +254,9 @@ public class LeadController {
 		
 		
 		request.setAttribute("selectedCvID", firstCvID);
-
-		model.addAttribute("leadSource", leadService.getLeadSources(companyId));
+    	model.addAttribute("leadSource", leadService.getLeadSources(companyId));
 		model.addAttribute("LeadCategory", leadService.getLeadCategories(companyId));
 		model.addAttribute("product", leadService.getAllProducts(companyId));
-		
-
 		return "leads/leadBoard";
 	}
 
@@ -229,18 +271,67 @@ public class LeadController {
 		}
 	}
 
+	/*
+	@GetMapping("/leadToOpportunity/{id}")
+	public String covertToOpportunity(@PathVariable("id") int clientvendorId,Model model, HttpServletRequest request)
+	{
+	
+		
+		CustomerDto customerDto=leadService.getLeadById(clientvendorId);
+		
+		OpportunityDto opportunityDto=new OpportunityDto();
+		opportunityDto.setClientVendorID(""+ customerDto.getClientVendorID());
+		opportunityDto.setCompanyName(customerDto.getCompanyName());
+		opportunityDto.setFullName(customerDto.getFirstName()+" "+customerDto.getLastName());
+		
+		
+		model.addAttribute("opportunityDto", opportunityDto);
+		return "opportunity/leadConvertOpportunity";
+	}
+	*/
+
+
+	@RequestMapping(value = { "/leadToOpportunity"}, method = {
+			RequestMethod.GET, RequestMethod.POST })
+	public String OpportunityConverion(OpportunityDto opportunityDto,Model model, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		System.out.println("at leadToOpportunity");
+		String action = request.getParameter("tabid");
+		System.out.println("At leadToOpportunity"+action);
+		if(action.equalsIgnoreCase("newOpportunity"))
+		{
+		String cvID=request.getParameter("cvID");
+	    CustomerDto customerDto=leadService.getLeadById(Integer.parseInt(cvID)); 
+		opportunityDto.setClientVendorID(""+ customerDto.getClientVendorID());
+		opportunityDto.setCompanyName(customerDto.getCompanyName());
+	    opportunityDto.setCompanyID(""+customerDto.getCompanyID());
+		opportunityDto.setFullName(customerDto.getFirstName()+" "+customerDto.getLastName());
+		model.addAttribute("opportunityDto",opportunityDto);
+		return "opportunity/leadConvertOpportunity";
+		}
+		if(action.equalsIgnoreCase("conversion"))
+		{
+	       model.addAttribute("opportunityDto",opportunityDto);
+	       CustomerDto customerDto=leadService.getLeadById(Integer.parseInt(opportunityDto.getClientVendorID()));
+	        request.setAttribute("customerDetails",customerDto);
+			opportunityDao.save(opportunityDto,request);
+			return "opportunity/showOpportunityConversion";
+		}
+		return "leadToOpportunity";
+	}
+	
 	@GetMapping("/leadAddressLabel")
-	public String getLeadAddressLabel(Model model, HttpServletRequest request) {
+	public String getLeadAddressLabel(Model model, HttpServletRequest request)
+	{
 		HttpSession session = request.getSession();
 		String companyId = (String) session.getAttribute("CID");
 		BcaCompany company = companyRepo.findById(Long.parseLong(companyId)).orElse(null);
-
 		Label lbl = new Label();
 		ArrayList labelList = lbl.getLabelList();
 		model.addAttribute("Labels", labelList);
 		model.addAttribute("CustomerDetails", leadService.getAllLead(cvType, company));
-
-		return "leads/printLabels";
+        return "leads/printLabels";
 	}
 	
 	//###################################### below New APIs ###############################################################

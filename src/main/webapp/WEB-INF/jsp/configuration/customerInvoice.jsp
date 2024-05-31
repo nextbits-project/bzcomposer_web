@@ -7,9 +7,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<jsp:include page="/WEB-INF/jsp/include/headlogo.jsp" />
-<jsp:include page="/WEB-INF/jsp/include/header.jsp" />
-<jsp:include page="/WEB-INF/jsp/include/menu.jsp" />
+<%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
+<%@include file="/WEB-INF/jsp/include/header.jsp"%>
+<%@include file="/WEB-INF/jsp/include/menu.jsp"%>
 <title><spring:message code="BzComposer.customerinvoicetitle" /></title>
 <link href="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui-tab.css" rel="stylesheet" media="screen" />
 <script src="${pageContext.request.contextPath}/tableStyle/tab/jquery-ui.js"></script>

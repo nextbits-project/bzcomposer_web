@@ -59,14 +59,14 @@ public class EstimationController {
         }
 
         if (action.equalsIgnoreCase("Estimation")) {
-           SalesDetailsDao sd = new SalesDetailsDao();
+          // SalesDetailsDao sd = new SalesDetailsDao();
             sdetailsDao.newEstimation(request, estimationDto);
 //            ConfigurationInfo configInfo = new ConfigurationInfo();
             ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 
             InvoiceDto invoice = new InvoiceDto();
             
-            sd.setUpdatEstimationAddress(estimationDto,request);
+            sdetailsDao.setUpdatEstimationAddress(estimationDto,request);
             
             
             
@@ -107,6 +107,8 @@ public class EstimationController {
         else if (action.equalsIgnoreCase("SaveEstimation")) {
 //            SalesDetails sdetails = new SalesDetails();
         	salesDetails.saveEstimation(request, estimationDto);
+        	
+        	salesDetails.removeSessionAddressUpdateData(request);
             forward = "redirect:Estimation?tabid=Estimation";
         }
         else if(action.equalsIgnoreCase("sortEstimation")) {
