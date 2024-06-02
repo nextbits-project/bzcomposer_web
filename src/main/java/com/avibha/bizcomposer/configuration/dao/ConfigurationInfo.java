@@ -977,21 +977,25 @@ public class ConfigurationInfo {
 			//version tab configration 
 			
 			Optional<BcaPreferenceHubs> preferencehubsOpt = bcaPreferenceHubsRepository.findByCompany_CompanyIdAndActive(Long.parseLong(companyID), 1);
-			//marketting 		
-			BcaPreferenceHubs preferenceHubs= preferencehubsOpt.get();
-			cForm.setLeadsIsActive(preferenceHubs.getIsLeadsEnable());
-			//sales
-			cForm.setInvoiceIsActive(preferenceHubs.getIsInvoiceEnable());
-			cForm.setEstimationIsActive(preferenceHubs.getIsEstimationEnable());
-			cForm.setSalesOrderIsActive(preferenceHubs.getIsSalesOrderEnable());
-			cForm.setRmaIsActive(preferenceHubs.getIsRmaEnable());
-			cForm.setDataManagarIsActive(preferenceHubs.getIsDataManagarEnable());
-			//crm
-			cForm.setContactIsActive(preferenceHubs.getIsContactEnable());
-			cForm.setEventsIsActive(preferenceHubs.getIsEventsEnable());
-			cForm.setCalendarIsActive(preferenceHubs.getIsCalendarEnable());
-			cForm.setOpportunitiesIsActive(preferenceHubs.getIsOpportunitiesEnable());
-			request.getSession().setAttribute("versionConfigDetails", preferenceHubs);
+			
+			if(preferencehubsOpt.isPresent())
+			{
+				BcaPreferenceHubs preferenceHubs= preferencehubsOpt.get();
+				//marketting 
+				cForm.setLeadsIsActive(preferenceHubs.getIsLeadsEnable());
+				//sales
+				cForm.setInvoiceIsActive(preferenceHubs.getIsInvoiceEnable());
+				cForm.setEstimationIsActive(preferenceHubs.getIsEstimationEnable());
+				cForm.setSalesOrderIsActive(preferenceHubs.getIsSalesOrderEnable());
+				cForm.setRmaIsActive(preferenceHubs.getIsRmaEnable());
+				cForm.setDataManagarIsActive(preferenceHubs.getIsDataManagarEnable());
+				//crm
+				cForm.setContactIsActive(preferenceHubs.getIsContactEnable());
+				cForm.setEventsIsActive(preferenceHubs.getIsEventsEnable());
+				cForm.setCalendarIsActive(preferenceHubs.getIsCalendarEnable());
+				cForm.setOpportunitiesIsActive(preferenceHubs.getIsOpportunitiesEnable());
+				request.getSession().setAttribute("versionConfigDetails", preferenceHubs);
+			}
 		}
 	}
 
