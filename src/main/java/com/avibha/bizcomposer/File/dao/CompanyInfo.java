@@ -433,8 +433,11 @@ public class CompanyInfo {
 	{
 		Optional<BcaPreferenceHubs> preferencehubsOpt = bcaPreferenceHubsRepository.findByCompany_CompanyIdAndActive(Long.parseLong(compId), 1);
 		//marketting 		
+		if(preferencehubsOpt.isPresent())
+		{
 		BcaPreferenceHubs preferenceHubs= preferencehubsOpt.get();
 		request.getSession().setAttribute("versionConfigDetails", preferenceHubs);
+		}
 				
 	}
 

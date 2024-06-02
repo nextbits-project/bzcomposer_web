@@ -1954,7 +1954,6 @@ EnableDisableFields2();
 
 function updateComapany()
 {
-   alert(" Update Company Details ............");
    
     var showReminder = document.getElementById('showReminder').value;
     
@@ -2110,7 +2109,6 @@ function updateComapany()
 
 function SaveValues()
 {
-	alert("SaveValues Details ............");
 	
 	event.preventDefault();
 	$("#showsaverecorddialog").dialog({
