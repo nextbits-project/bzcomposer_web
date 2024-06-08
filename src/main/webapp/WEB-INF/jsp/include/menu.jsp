@@ -335,7 +335,7 @@
 							<li>
 								<!-- <a href="<%= session.getAttribute("path")%>/RMA?tabid=R0L0S0"> -->
 								<a href="RMA?tabid=R0L0S0">
-									<spring:message code="BzComposer.RMA.RMAList" />
+									<spring:message code="BzComposer.RMA.CustomerRMAList" />
 								</a>
 							</li>
 							<li>
@@ -442,6 +442,25 @@
 					</li> -->
 					<%-- <li><a href="ReceivedItems?tabid=ShowReceivedItems"  >
 					        <spring:message code="BzComposer.Purchase.ReceivedItem" /></a></li> --%>
+					<c:if test="${versionConfigDetails.isRmaEnable==1}" >
+					<li class="current">
+						<a href="javascript: void(0)" title="RMA">
+                            <span><spring:message code="BzComposer.RMA" /></span>
+						</a>
+						<ul>
+							<li class="current">								
+								<a href="PurchaseBoard?tabid=ShowList">
+									<spring:message code="BzComposer.RMA.CreateRma" />
+								</a>
+							</li>
+							<li>
+								<a href="RMA?tabid=RMAVendor">
+									<spring:message code="BzComposer.RMA.VendorRMAList" />
+								</a>
+							</li>							
+						</ul>
+					</li>
+					</c:if>        
 				</ul>
 			</li>
 			<!-- 	<li><a	href="javascript: void(0)" title="Accounting" ><spring:message code="BzComposer.Accounting" /></a></li> -->

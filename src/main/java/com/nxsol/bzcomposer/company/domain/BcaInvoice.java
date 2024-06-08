@@ -323,6 +323,10 @@ public class BcaInvoice {
 	@OneToMany(mappedBy = "invoice")
 	private Set<StorageCart> invoiceStorageCarts;
 
+	@OneToMany(mappedBy = "invoice", fetch = FetchType.LAZY)
+    private Set<BcaRma> rma;
+	
+	
 	public Integer getInvoiceId() {
 		return invoiceId;
 	}
@@ -1091,4 +1095,13 @@ public class BcaInvoice {
 		this.invoiceBcaRma = invoiceBcaRma;
 	}
 
+	public Set<BcaRma> getRma() {
+		return rma;
+	}
+
+	public void setRma(Set<BcaRma> rma) {
+		this.rma = rma;
+	}
+	
+	
 }

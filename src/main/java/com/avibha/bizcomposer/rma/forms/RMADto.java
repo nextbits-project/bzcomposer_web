@@ -14,20 +14,23 @@ import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 
 import javax.servlet.http.HttpServletRequest;
+
 @NoArgsConstructor
 public class RMADto {
-	
+
 	private static final long serialVersionUID = 0;
 
 	private int startPage;
-	
+
 	private int totalPages;
-	
+
 	private String Rma;
 
 	private String fname;
 
 	private String lname;
+
+	private String companyName;
 
 	private String order;
 
@@ -163,38 +166,40 @@ public class RMADto {
 		this.cartID = cartID;
 	}
 
-	/*public void reset(ActionMapping mapping, HttpServletRequest request) {
-		super.reset(mapping, request);
-
-		Rma = null;
-
-		fname = null;
-
-		lname = null;
-
-		order = null;
-
-		orderDate = null;
-
-		sentDate = null;
-
-		cusName = null;
-
-		itemCode = null;
-
-		itemDesc = null;
-
-		Qty = null;
-
-		Reason = null;
-
-		unitPrice = null;
-
-		unitWeight = null;
-
-		cartID = null;
-
-	}*/
+	/*
+	 * public void reset(ActionMapping mapping, HttpServletRequest request) {
+	 * super.reset(mapping, request);
+	 * 
+	 * Rma = null;
+	 * 
+	 * fname = null;
+	 * 
+	 * lname = null;
+	 * 
+	 * order = null;
+	 * 
+	 * orderDate = null;
+	 * 
+	 * sentDate = null;
+	 * 
+	 * cusName = null;
+	 * 
+	 * itemCode = null;
+	 * 
+	 * itemDesc = null;
+	 * 
+	 * Qty = null;
+	 * 
+	 * Reason = null;
+	 * 
+	 * unitPrice = null;
+	 * 
+	 * unitWeight = null;
+	 * 
+	 * cartID = null;
+	 * 
+	 * }
+	 */
 
 	public int getStartPage() {
 		return startPage;
@@ -211,6 +216,7 @@ public class RMADto {
 	public void setTotalPages(int totalPages) {
 		this.totalPages = totalPages;
 	}
+
 	public RMADto(String firstName, String lastName, Integer orderNum, String dateAdded, String dateConfirmed) {
 		this.fname = firstName;
 		this.lname = lastName;
@@ -218,34 +224,46 @@ public class RMADto {
 		this.orderDate = dateAdded;
 		this.sentDate = dateConfirmed;
 	}
-	public RMADto(Integer rmaNo, String firstName , String lastName ,String inventoryCode, String inventoryName, String rmaReason 
-			, Integer rmaQty ,Double unitPrice , Double unitWeight , OffsetDateTime dateAdded ) {
-		this.Rma=Integer.toString(rmaNo);
-		this.fname=firstName;
-		this.lname=lastName;
-		this.itemCode=inventoryCode;
-		this.itemDesc=inventoryName;
-		this.Reason=rmaReason;
-		this.Qty=Double.toString(rmaQty);
-		this.unitPrice=Double.toString(unitPrice);
-		this.unitWeight=Double.toString(unitWeight);
-		this.sentDate=dateAdded.toString();
+
+	public RMADto(Integer rmaNo, String firstName, String lastName, String inventoryCode, String inventoryName,
+			String rmaReason, Integer rmaQty, Double unitPrice, Double unitWeight, OffsetDateTime dateAdded) {
+		this.Rma = Integer.toString(rmaNo);
+		this.fname = firstName;
+		this.lname = lastName;
+		this.itemCode = inventoryCode;
+		this.itemDesc = inventoryName;
+		this.Reason = rmaReason;
+		this.Qty = Double.toString(rmaQty);
+		this.unitPrice = Double.toString(unitPrice);
+		this.unitWeight = Double.toString(unitWeight);
+		this.sentDate = dateAdded.toString();
 	}
-	public RMADto(Integer rmaNo, String firstName , String lastName ,String inventoryCode, String inventoryName, String rmaReason 
-			, Integer rmaQty ,Double unitPrice , Double unitWeight , String dateAdded, Integer orderNum ) {
-		this.Rma=Integer.toString(rmaNo);
-//		this.Rma = rmaNo != null ? Integer.toString(rmaNo) : "0";
-		this.fname=firstName;
-		this.lname=lastName;
-		this.itemCode=inventoryCode;
-		this.itemDesc=inventoryName;
-		this.Reason=rmaReason;
-		this.Qty=Double.toString(rmaQty);
-		this.unitPrice=Double.toString(unitPrice);
-		this.unitWeight=Double.toString(unitWeight);
-		this.sentDate=dateAdded;
-		this.order=orderNum.toString();
+
+	public RMADto(Integer rmaNo, String firstName, String lastName, String companyName, String inventoryCode,
+			String inventoryName, String rmaReason, Integer rmaQty, Double unitPrice, Double unitWeight,
+			String dateAdded, Integer orderNum) {
+		this.Rma = Integer.toString(rmaNo);
+		this.fname = firstName;
+		this.lname = lastName;
+		this.companyName = companyName;
+		this.itemCode = inventoryCode;
+		this.itemDesc = inventoryName;
+		this.Reason = rmaReason;
+		this.Qty = Double.toString(rmaQty);
+		this.unitPrice = Double.toString(unitPrice);
+		this.unitWeight = Double.toString(unitWeight);
+		this.sentDate = dateAdded;
+		this.order = orderNum.toString();
 	}
+
 	
-	
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
 }

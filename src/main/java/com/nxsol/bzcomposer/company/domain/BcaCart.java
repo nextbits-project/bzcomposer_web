@@ -132,10 +132,10 @@ public class BcaCart {
     @OneToMany(mappedBy = "cart")
     private Set<BcaRmaitem> cartBcaRmaitems;
     
-    @OneToMany(mappedBy = "cart")
-    private Set<BcaRma> cartBcaRma;
+//    @OneToMany(mappedBy = "cart")
+//    private Set<BcaRma> cartBcaRma;
 
-
+    
     public Integer getCartId() {
         return cartId;
     }
@@ -424,12 +424,6 @@ public class BcaCart {
         this.cartBcaRmaitems = cartBcaRmaitems;
     }
 
-	public Set<BcaRma> getCartBcaRma() {
-		return cartBcaRma;
-	}
-
-	public void setCartBcaRma(Set<BcaRma> cartBcaRma) {
-		this.cartBcaRma = cartBcaRma;
-	}
+	
 
 }

@@ -2,6 +2,7 @@ package com.nxsol.bzcomposer.company.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -57,6 +58,9 @@ public class BcaInvoicetype {
     @OneToMany(mappedBy = "invoiceType")
     private Set<StorageInvoice> invoiceTypeStorageInvoices;
 
+    @OneToMany(mappedBy = "invoiceType", fetch = FetchType.LAZY)
+    private Set<BcaRma> rma;
+    
     public Integer getInvoiceTypeId() {
         return invoiceTypeId;
     }
@@ -174,4 +178,13 @@ public class BcaInvoicetype {
         this.invoiceTypeStorageInvoices = invoiceTypeStorageInvoices;
     }
 
+	public Set<BcaRma> getRma() {
+		return rma;
+	}
+
+	public void setRma(Set<BcaRma> rma) {
+		this.rma = rma;
+	}
+    
+    
 }

@@ -613,9 +613,12 @@ public class BcaCompany {
 
 	@OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
 	private Set<BcaShippingaddress> shippingAddresses;
-	
+
 	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<BcaAcctcategory> acctCategories = new HashSet<>();
+	private Set<BcaAcctcategory> acctCategories = new HashSet<>();
+
+	@OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+	private Set<BcaRma> rma;
 
 	public Long getCompanyId() {
 		return companyId;
@@ -2189,6 +2192,22 @@ public class BcaCompany {
 
 	public void setShippingAddresses(Set<BcaShippingaddress> shippingAddresses) {
 		this.shippingAddresses = shippingAddresses;
+	}
+
+	public Set<BcaRma> getRma() {
+		return rma;
+	}
+
+	public void setRma(Set<BcaRma> rma) {
+		this.rma = rma;
+	}
+
+	public Set<BcaAcctcategory> getAcctCategories() {
+		return acctCategories;
+	}
+
+	public void setAcctCategories(Set<BcaAcctcategory> acctCategories) {
+		this.acctCategories = acctCategories;
 	}
 
 }

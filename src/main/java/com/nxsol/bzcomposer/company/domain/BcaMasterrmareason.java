@@ -24,10 +24,7 @@ public class BcaMasterrmareason {
     @Column(name= "Active")
     private Integer active;
 
-    @OneToMany(mappedBy = "parentReason")
-    private Set<BcaRmaitem> parentReasonBcaRmaitems;
-
-    @OneToMany(mappedBy = "parentReason")
+        @OneToMany(mappedBy = "parentReason")
     private Set<BcaRmareason> parentReasonBcaRmareasons;
 
     public Integer getRmaReasonId() {
@@ -54,13 +51,7 @@ public class BcaMasterrmareason {
         this.active = active;
     }
 
-    public Set<BcaRmaitem> getParentReasonBcaRmaitems() {
-        return parentReasonBcaRmaitems;
-    }
-
-    public void setParentReasonBcaRmaitems(final Set<BcaRmaitem> parentReasonBcaRmaitems) {
-        this.parentReasonBcaRmaitems = parentReasonBcaRmaitems;
-    }
+    
 
     public Set<BcaRmareason> getParentReasonBcaRmareasons() {
         return parentReasonBcaRmareasons;

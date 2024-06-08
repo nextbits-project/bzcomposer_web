@@ -286,6 +286,9 @@ public class BcaIteminventory {
 
     @OneToMany(mappedBy = "inventory")
     private Set<StorageCart> inventoryStorageCarts;
+    
+    @OneToMany(mappedBy = "inventory", fetch = FetchType.LAZY)
+    private Set<BcaRmaitem> rmaItem;
 
     public Integer getInventoryId() {
         return inventoryId;
@@ -1000,5 +1003,13 @@ public class BcaIteminventory {
     public void setInventoryStorageCarts(final Set<StorageCart> inventoryStorageCarts) {
         this.inventoryStorageCarts = inventoryStorageCarts;
     }
+
+	public Set<BcaRmaitem> getRmaItem() {
+		return rmaItem;
+	}
+
+	public void setRmaItem(Set<BcaRmaitem> rmaItem) {
+		this.rmaItem = rmaItem;
+	}
 
 }

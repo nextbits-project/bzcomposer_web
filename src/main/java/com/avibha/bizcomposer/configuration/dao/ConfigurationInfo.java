@@ -2535,7 +2535,7 @@ public class ConfigurationInfo {
 
 			BcaRmareason newRmaReason = new BcaRmareason();
 			newRmaReason.setRmaReason(cForm.getReason());
-			newRmaReason.setParentReason(parentReason);
+//			newRmaReason.setParentReason(parentReason);
 			newRmaReason.setCompany(company);
 			newRmaReason.setActive(1); // Assuming active status is set to 1
 
@@ -2616,9 +2616,9 @@ public class ConfigurationInfo {
 				rmaReason.setRmaReason(cForm.getReason());
 
 				// Assuming parentReasonId corresponds to an entity like BcaMasterrmareason
-				BcaMasterrmareason parentReason = masterRmaReasonRepository.findById(cForm.getParentReasonId())
-						.orElse(null); // Handling if parent reason is optional
-				rmaReason.setParentReason(parentReason);
+//				BcaMasterrmareason parentReason = masterRmaReasonRepository.findById(cForm.getParentReasonId())
+//						.orElse(null); // Handling if parent reason is optional
+//				rmaReason.setParentReason(parentReason);
 
 				rmaReasonRepository.save(rmaReason);
 				return true;

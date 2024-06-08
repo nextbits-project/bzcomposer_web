@@ -34,8 +34,7 @@ public class BcaRefundreason {
     @JoinColumn(name = "CompanyID")
     private BcaCompany company;
 
-    @OneToMany(mappedBy = "reason")
-    private Set<BcaRmareason> reasonBcaRmareasons;
+   
 
     public Integer getReasonId() {
         return reasonId;
@@ -77,12 +76,6 @@ public class BcaRefundreason {
         this.company = company;
     }
 
-    public Set<BcaRmareason> getReasonBcaRmareasons() {
-        return reasonBcaRmareasons;
-    }
-
-    public void setReasonBcaRmareasons(final Set<BcaRmareason> reasonBcaRmareasons) {
-        this.reasonBcaRmareasons = reasonBcaRmareasons;
-    }
+    
 
 }

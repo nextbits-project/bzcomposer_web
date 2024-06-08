@@ -98,17 +98,17 @@ public class RMADetailsDao {
 		}
 	
 	
-	public void getRAMList(HttpServletRequest request, RMADto rForm) {
+	public void getRAMList(HttpServletRequest request, RMADto rForm, int invoiceTypeID) {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 	//	RMAInfoDao rmaInfo = new RMAInfoDao();
 		ArrayList RMAList = new ArrayList();
 		int limit = 10;         // Limit to no. of records display
-		int total = rmaInfoDao.calculatePages(Long.parseLong(compId),limit);
+		int total = rmaInfoDao.calculatePages(Long.parseLong(compId),limit, invoiceTypeID);
 		
 		int pageCount = 3; 
 		int start = rForm.getStartPage();
-		RMAList=rmaInfoDao.getRMAList(compId,start,limit);
+		RMAList=rmaInfoDao.getRMAListNew(compId, invoiceTypeID, start,limit);
 		rForm.setTotalPages(total);
 		request.setAttribute("PageValue",String.valueOf(start));
 		request.setAttribute("RMAList",RMAList);

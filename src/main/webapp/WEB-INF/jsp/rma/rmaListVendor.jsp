@@ -62,7 +62,7 @@ padding: 8px 10px;
 		<td style="width:40%">
 		<span
 		style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-			<spring:message code="BzComposer.rmalist.customerrmalist" /></span>
+			<spring:message code="BzComposer.rmalist.vendorrmalist" /></span>
 		</td>
 		<td style="width:60%">
 		<input type="button" style="padding: 10px;"
@@ -96,7 +96,7 @@ padding: 8px 10px;
 					<spring:message code="BzComposer.rmalist.rmanumber" />
 				</th>
 				<th class="emblem" align="left" nowrap="nowrap" style="font-size: 14px;">
-					<spring:message code="BzComposer.rmalist.orderno" />
+					<spring:message code="BzComposer.rmalist.pono" />
 				</th>
 				<th class="emblem" align="left" nowrap="nowrap" style="font-size: 14px;">
 					<spring:message code="BzComposer.rmalist.companyName" />

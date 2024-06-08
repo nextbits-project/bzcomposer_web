@@ -1,74 +1,103 @@
 package com.nxsol.bzcomposer.company.domain;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="bca_rmareason")
+@Table(name = "bca_rmareason")
 public class BcaRmareason {
 
-    @Id
-    @Column(name="rmaReason", nullable = false, updatable = false, length = 50)
-    private String rmaReason;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ReasonID", nullable = false, updatable = false)
+	private int reasonId;
 
-    @Column(name="Active")
-    private Integer active;
+	@Column(name = "rmaReason")
+	private String rmaReason;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CompanyID")
-    private BcaCompany company;
+	@Column(name = "Active")
+	private Integer active;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentReasonID")
-    private BcaMasterrmareason parentReason;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CompanyID")
+	private BcaCompany company;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ReasonID", nullable = false)
-    private BcaRefundreason reason;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parentReasonID")
+	private BcaRmareason parentReason;
 
-    public String getRmaReason() {
-        return rmaReason;
-    }
+	@OneToMany(mappedBy = "reason", fetch = FetchType.LAZY)
+	private Set<BcaRma> rma;
 
-    public void setRmaReason(final String rmaReason) {
-        this.rmaReason = rmaReason;
-    }
+	@OneToMany(mappedBy = "reason", fetch = FetchType.LAZY)
+	private Set<BcaRmaitem> rmaItem;
 
-    public Integer getActive() {
-        return active;
-    }
+	public int getReasonId() {
+		return reasonId;
+	}
 
-    public void setActive(final Integer active) {
-        this.active = active;
-    }
+	public void setReasonId(int reasonId) {
+		this.reasonId = reasonId;
+	}
 
-    public BcaCompany getCompany() {
-        return company;
-    }
+	public String getRmaReason() {
+		return rmaReason;
+	}
 
-    public void setCompany(final BcaCompany company) {
-        this.company = company;
-    }
+	public void setRmaReason(String rmaReason) {
+		this.rmaReason = rmaReason;
+	}
 
-    public BcaMasterrmareason getParentReason() {
-        return parentReason;
-    }
+	public Integer getActive() {
+		return active;
+	}
 
-    public void setParentReason(final BcaMasterrmareason parentReason) {
-        this.parentReason = parentReason;
-    }
+	public void setActive(Integer active) {
+		this.active = active;
+	}
 
-    public BcaRefundreason getReason() {
-        return reason;
-    }
+	public BcaCompany getCompany() {
+		return company;
+	}
 
-    public void setReason(final BcaRefundreason reason) {
-        this.reason = reason;
-    }
+	public void setCompany(BcaCompany company) {
+		this.company = company;
+	}
+
+	public BcaRmareason getParentReason() {
+		return parentReason;
+	}
+
+	public void setParentReason(BcaRmareason parentReason) {
+		this.parentReason = parentReason;
+	}
+
+	public Set<BcaRma> getRma() {
+		return rma;
+	}
+
+	public void setRma(Set<BcaRma> rma) {
+		this.rma = rma;
+	}
+
+	public Set<BcaRmaitem> getRmaItem() {
+		return rmaItem;
+	}
+
+	public void setRmaItem(Set<BcaRmaitem> rmaItem) {
+		this.rmaItem = rmaItem;
+	}
+
+	
 
 }

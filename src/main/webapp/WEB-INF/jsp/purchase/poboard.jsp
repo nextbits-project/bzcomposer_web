@@ -243,7 +243,13 @@ table.tabla-listados tbody tr td {
 															<spring:message
 																code="BzComposer.purchaseorderboard.purchaseorderlist" />
 													</span></td>
-													<td style="width: 60%" align="left"><input
+													<td style="width: 60%" align="left">
+													<input
+													type="button" style="padding: 10px;" class="formbutton"
+													id="smail" onclick="sendToCreateRMA();"
+													value='<spring:message code="BzComposer.invoiceboard.createRMA" />' />
+													&nbsp;&nbsp;
+													<input
 														type="button" class="formbutton" name="smailbtn"
 														id="smail" disabled="disabled" style="padding: 10px;"
 														onclick="sendToPurchase();"
@@ -871,6 +877,11 @@ function showBoardValidationDialog(){
         }
     });
     return false;
+}
+function sendToCreateRMA(){
+	debugger;
+    po_no = document.getElementById("po_value").value;
+    window.location = "RMA?tabid=CreateRMApo&poNumber="+po_no;
 }
 
 function DeletePOOrderBoard(cmd){

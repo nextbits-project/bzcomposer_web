@@ -14,218 +14,209 @@ import javax.persistence.Table;
 @Table(name="bca_rmaitem")
 public class BcaRmaitem {
 
-    @Id
-    @Column(name="RmaUniqueID", nullable = false, updatable = false)
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer rmaUniqueId;
+    @Column(name = "RmaItemID")
+    private int rmaItemId;
 
-    @Column(name="RmaNo")
-    private Integer rmaNo;
+    @ManyToOne
+    @JoinColumn(name = "Rma_No")
+    private BcaRma rmaNo;
 
-    @Column(name="InvName", length = 50)
-    private String invName;
-
-    @Column(name="UnitPrice")
-    private Double unitPrice;
-
-    @Column(name="RmaItemQty")
-    private Integer rmaItemQty;
-
-    @Column(name="Total")
-    private Double total;
-
-    @Column(name="Reason", length = 50)
-    private String reason;
-
-    @Column(name="Action", length = 50)
-    private String action;
-
-    @Column(name="SubstituteInvoiceOrderNumber")
-    private Integer substituteInvoiceOrderNumber;
-
-    @Column(name="IsPaymentCompleted")
-    private Boolean isPaymentCompleted;
-
-    @Column(name="PaidAmount")
-    private Double paidAmount;
-
-    @Column(name="Balance")
-    private Double balance;
-
-    @Column(name="RmaItemID")
-    private Integer rmaItemId;
-
-    @Column(name="isAdjusted")
-    private Boolean isAdjusted;
-
-    @Column(name="TotalAdjustedQty")
-    private Integer totalAdjustedQty;
-
-    @Column(name="isDeleted")
-    private Integer isDeleted;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "CartID")
     private BcaCart cart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentReasonID")
-    private BcaMasterrmareason parentReason;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "InventoryID", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "InventoryID")
     private BcaIteminventory inventory;
 
-    public Integer getRmaUniqueId() {
-        return rmaUniqueId;
-    }
+    @Column(name = "InvName")
+    private String invName;
 
-    public void setRmaUniqueId(final Integer rmaUniqueId) {
-        this.rmaUniqueId = rmaUniqueId;
-    }
+    @Column(name = "UnitPrice")
+    private Double unitPrice;
 
-    public Integer getRmaNo() {
-        return rmaNo;
-    }
+    @Column(name = "RmaItemQty")
+    private int rmaItemQty;
 
-    public void setRmaNo(final Integer rmaNo) {
-        this.rmaNo = rmaNo;
-    }
+    @Column(name = "Total")
+    private Double total;
 
-    public String getInvName() {
-        return invName;
-    }
+    @ManyToOne
+    @JoinColumn(name = "ReasonID")
+    private BcaRmareason reason;
 
-    public void setInvName(final String invName) {
-        this.invName = invName;
-    }
+    @Column(name = "Reason")
+    private String reasonText;
 
-    public Double getUnitPrice() {
-        return unitPrice;
-    }
+    @Column(name = "Action")
+    private String action;
 
-    public void setUnitPrice(final Double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
+    @Column(name = "SubstituteInvoiceOrderNumber")
+    private String substituteInvoiceOrderNumber;
 
-    public Integer getRmaItemQty() {
-        return rmaItemQty;
-    }
+    @Column(name = "IsPaymentCompleted")
+    private boolean isPaymentCompleted;
 
-    public void setRmaItemQty(final Integer rmaItemQty) {
-        this.rmaItemQty = rmaItemQty;
-    }
+    @Column(name = "PaidAmount")
+    private Double paidAmount;
 
-    public Double getTotal() {
-        return total;
-    }
+    @Column(name = "Balance")
+    private Double balance;
 
-    public void setTotal(final Double total) {
-        this.total = total;
-    }
+    @Column(name = "isAdjusted")
+    private boolean isAdjusted;
 
-    public String getReason() {
-        return reason;
-    }
+    @Column(name = "TotalAdjustedQty")
+    private int totalAdjustedQty;
 
-    public void setReason(final String reason) {
-        this.reason = reason;
-    }
+    @Column(name = "isDeleted")
+    private boolean isDeleted;
 
-    public String getAction() {
-        return action;
-    }
+	public int getRmaItemId() {
+		return rmaItemId;
+	}
 
-    public void setAction(final String action) {
-        this.action = action;
-    }
+	public void setRmaItemId(int rmaItemId) {
+		this.rmaItemId = rmaItemId;
+	}
 
-    public Integer getSubstituteInvoiceOrderNumber() {
-        return substituteInvoiceOrderNumber;
-    }
+	public BcaRma getRma() {
+		return rmaNo;
+	}
 
-    public void setSubstituteInvoiceOrderNumber(final Integer substituteInvoiceOrderNumber) {
-        this.substituteInvoiceOrderNumber = substituteInvoiceOrderNumber;
-    }
+	public void setRma(BcaRma rmaNo) {
+		this.rmaNo = rmaNo;
+	}
 
-    public Boolean getIsPaymentCompleted() {
-        return isPaymentCompleted;
-    }
+	public BcaCart getCart() {
+		return cart;
+	}
 
-    public void setIsPaymentCompleted(final Boolean isPaymentCompleted) {
-        this.isPaymentCompleted = isPaymentCompleted;
-    }
+	public void setCart(BcaCart cart) {
+		this.cart = cart;
+	}
 
-    public Double getPaidAmount() {
-        return paidAmount;
-    }
+	public BcaIteminventory getInventory() {
+		return inventory;
+	}
 
-    public void setPaidAmount(final Double paidAmount) {
-        this.paidAmount = paidAmount;
-    }
+	public void setInventory(BcaIteminventory inventory) {
+		this.inventory = inventory;
+	}
 
-    public Double getBalance() {
-        return balance;
-    }
+	public String getInvName() {
+		return invName;
+	}
 
-    public void setBalance(final Double balance) {
-        this.balance = balance;
-    }
+	public void setInvName(String invName) {
+		this.invName = invName;
+	}
 
-    public Integer getRmaItemId() {
-        return rmaItemId;
-    }
+	public Double getUnitPrice() {
+		return unitPrice;
+	}
 
-    public void setRmaItemId(final Integer rmaItemId) {
-        this.rmaItemId = rmaItemId;
-    }
+	public void setUnitPrice(Double unitPrice) {
+		this.unitPrice = unitPrice;
+	}
 
-    public Boolean getIsAdjusted() {
-        return isAdjusted;
-    }
+	public int getRmaItemQty() {
+		return rmaItemQty;
+	}
 
-    public void setIsAdjusted(final Boolean isAdjusted) {
-        this.isAdjusted = isAdjusted;
-    }
+	public void setRmaItemQty(int rmaItemQty) {
+		this.rmaItemQty = rmaItemQty;
+	}
 
-    public Integer getTotalAdjustedQty() {
-        return totalAdjustedQty;
-    }
+	public Double getTotal() {
+		return total;
+	}
 
-    public void setTotalAdjustedQty(final Integer totalAdjustedQty) {
-        this.totalAdjustedQty = totalAdjustedQty;
-    }
+	public void setTotal(Double total) {
+		this.total = total;
+	}
 
-    public Integer getIsDeleted() {
-        return isDeleted;
-    }
+	public BcaRmareason getReason() {
+		return reason;
+	}
 
-    public void setIsDeleted(final Integer isDeleted) {
-        this.isDeleted = isDeleted;
-    }
+	public void setReason(BcaRmareason reason) {
+		this.reason = reason;
+	}
 
-    public BcaCart getCart() {
-        return cart;
-    }
+	public String getReasonText() {
+		return reasonText;
+	}
 
-    public void setCart(final BcaCart cart) {
-        this.cart = cart;
-    }
+	public void setReasonText(String reasonText) {
+		this.reasonText = reasonText;
+	}
 
-    public BcaMasterrmareason getParentReason() {
-        return parentReason;
-    }
+	public String getAction() {
+		return action;
+	}
 
-    public void setParentReason(final BcaMasterrmareason parentReason) {
-        this.parentReason = parentReason;
-    }
+	public void setAction(String action) {
+		this.action = action;
+	}
 
-    public BcaIteminventory getInventory() {
-        return inventory;
-    }
+	public String getSubstituteInvoiceOrderNumber() {
+		return substituteInvoiceOrderNumber;
+	}
 
-    public void setInventory(final BcaIteminventory inventory) {
-        this.inventory = inventory;
-    }
+	public void setSubstituteInvoiceOrderNumber(String substituteInvoiceOrderNumber) {
+		this.substituteInvoiceOrderNumber = substituteInvoiceOrderNumber;
+	}
+
+	public boolean isPaymentCompleted() {
+		return isPaymentCompleted;
+	}
+
+	public void setPaymentCompleted(boolean isPaymentCompleted) {
+		this.isPaymentCompleted = isPaymentCompleted;
+	}
+
+	public Double getPaidAmount() {
+		return paidAmount;
+	}
+
+	public void setPaidAmount(Double paidAmount) {
+		this.paidAmount = paidAmount;
+	}
+
+	public Double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Double balance) {
+		this.balance = balance;
+	}
+
+	public boolean isAdjusted() {
+		return isAdjusted;
+	}
+
+	public void setAdjusted(boolean isAdjusted) {
+		this.isAdjusted = isAdjusted;
+	}
+
+	public int getTotalAdjustedQty() {
+		return totalAdjustedQty;
+	}
+
+	public void setTotalAdjustedQty(int totalAdjustedQty) {
+		this.totalAdjustedQty = totalAdjustedQty;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
 
 }

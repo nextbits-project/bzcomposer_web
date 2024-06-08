@@ -2824,8 +2824,8 @@ public class ConfigurationDAO {
 							.findByCompanyAndParentReasonAndActive(companyOpt.get(), masterReason, 1);
 					for (BcaRmareason childReason : childReasons) {
 						pojo = new ConfigurationDto();
-						pojo.setParentReasonId(childReason.getParentReason().getRmaReasonId());
-						pojo.setReasonId(childReason.getReason().getReasonId());
+						pojo.setParentReasonId(childReason.getParentReason().getReasonId());
+						pojo.setReasonId(childReason.getReasonId());
 						pojo.setReason(childReason.getRmaReason());
 						pojo.setActive(childReason.getActive());
 						listPOJOs.add(pojo);

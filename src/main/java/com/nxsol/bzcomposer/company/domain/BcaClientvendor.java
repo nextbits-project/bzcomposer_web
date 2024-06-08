@@ -280,6 +280,9 @@ public class BcaClientvendor implements Serializable{
 	@OneToMany(mappedBy = "clientVendor")
 	private Set<StorageShippingaddress> clientVendorStorageShippingaddresss;
 
+	@OneToMany(mappedBy = "clientVendor", fetch = FetchType.LAZY)
+    private Set<BcaRma> rma;
+	
 	public Integer getClientVendorId() {
 		return clientVendorId;
 	}
@@ -956,6 +959,14 @@ public class BcaClientvendor implements Serializable{
 
 	public void setFormattedDateAdded(String formattedDateAdded) {
 		this.formattedDateAdded = formattedDateAdded;
+	}
+
+	public Set<BcaRma> getRma() {
+		return rma;
+	}
+
+	public void setRma(Set<BcaRma> rma) {
+		this.rma = rma;
 	}
 
 }
