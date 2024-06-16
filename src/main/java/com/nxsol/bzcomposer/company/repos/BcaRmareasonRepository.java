@@ -13,4 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface BcaRmareasonRepository extends JpaRepository<BcaRmareason, String> {
     List<BcaRmareason> findByCompanyAndParentReasonAndActive(BcaCompany company, BcaMasterrmareason parentReason, Integer active);
 
+    List<BcaRmareason> findByCompany_CompanyIdAndActiveAndParentReason_rmaReasonId(Long companyID, Integer active, int parentReasonId);
+    
+    List<BcaRmareason> findByCompany_CompanyIdAndParentReason_rmaReasonIdAndActive(Long companyID, int masterReasonId, Integer active);
+    BcaRmareason findByReasonId(Integer reasonId);
 }

@@ -25,8 +25,8 @@ public interface BcaCartRepository extends JpaRepository<BcaCart, Integer> {
 			@Param("companyId") Long companyId);
 
 	@Query(value = "select cart from BcaCart as cart join BcaInvoice as inv on cart.invoice.invoiceId = inv.invoiceId  where"
-			+ "  inv.orderNum like :orderNum and inv.company.companyId like :companyId ")
-	List<BcaCart> findItemDetails(@Param("companyId") Long companyId, @Param("orderNum") Integer orderNum);
+			+ "  inv.invoiceId like :invoiceId and inv.company.companyId like :companyId ")
+	List<BcaCart> findItemDetails(@Param("companyId") Long companyId, @Param("invoiceId") Integer invoiceId);
 
 	@Transactional
 	void deleteByInvoice_InvoiceIdAndCompany_CompanyId(Integer invoiceId, Long companyId);

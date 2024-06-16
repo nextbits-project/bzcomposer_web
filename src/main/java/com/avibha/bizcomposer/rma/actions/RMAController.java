@@ -12,17 +12,28 @@ import com.avibha.bizcomposer.sales.dao.SalesBoard;
 import com.avibha.common.log.Loger;
 import com.avibha.common.utility.Path;
 import com.nxsol.bzcomposer.company.domain.BcaInvoice;
+import com.nxsol.bzcomposer.company.domain.BcaRma;
+import com.nxsol.bzcomposer.company.domain.BcaRmaitem;
+import com.nxsol.bzcomposer.company.domain.BcaRmareason;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRmaRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRmaitemRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRmareasonRepository;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
@@ -30,6 +41,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 @Controller
 public class RMAController {
@@ -49,7 +64,10 @@ public class RMAController {
 	private RMAInfoDao rmaInfoDao;
 	
 	@Autowired
-	BcaInvoiceRepository bcaInvoiceRepository;
+	private BcaInvoiceRepository bcaInvoiceRepository;
+	
+	
+	
 	
 	@RequestMapping(value = {"/RMA"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView RMA(RMADto rmaDto, HttpServletRequest request) throws IOException, ServletException {
@@ -86,7 +104,7 @@ public class RMAController {
 	                } else {
 	                    System.out.println("RMA is created only for paid and shipped invoice.");
 	                }
-	                rmaDetailsDao.getRAMDetails(request, rmaDto);
+//	                rmaDetailsDao.getRAMList(request, rmaDto, 1); // 1 = InvoiceTypeID for Invoice
 	                forward = "redirect:/RMA?tabid=R0L0S0";
 	                break;
 
@@ -112,7 +130,7 @@ public class RMAController {
 //	                }
 //	                rmaDetailsDao.getRAMDetails(request, rmaDto);
 //	                forward = "redirect:/rma/rmaListVendor";
-	                rmaDetailsDao.getRAMList(request, rmaDto, 2); // 2 = InvoiceTypeID for PO
+//	                rmaDetailsDao.getRAMList(request, rmaDto, 2); // 2 = InvoiceTypeID for PO
 	                forward = "redirect:/RMA?tabid=RMAVendor";
 	                break;
 	                
@@ -176,6 +194,59 @@ public class RMAController {
 	    return new ModelAndView(forward);
 	}
 
+	@RequestMapping(value = "/getRmaReasons", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ArrayList<RMADto> getRmaReasons(@RequestParam("masterReasonId") int masterReasonId, HttpServletRequest request) {
+		HttpSession sess = request.getSession();
+	    String compId = (String) sess.getAttribute("CID");
+	    
+        return rmaInfoDao.getRmaReasonsByMasterReasonId(masterReasonId, compId);
+    }
+	
+	@RequestMapping(value = "RMA/approveRma", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> approveRma(@RequestBody RMADto rmaDto, HttpServletRequest request) {
+	    Map<String, Object> response = new HashMap<>();
+	    HttpSession sess = request.getSession();
+	    String compId = (String) sess.getAttribute("CID");
+	    Logger logger = LoggerFactory.getLogger(getClass());
+	    logger.info("Received RMA DTO: {}", rmaDto);
+
+	    try {
+	        if (rmaDto == null) {
+	            throw new IllegalArgumentException("RMA DTO is null");
+	        }
+	    	rmaInfoDao.approveRma(rmaDto);
+	        response.put("success", true);
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", e.getMessage());
+	    }
+
+	    return response;
+	}
+	@RequestMapping(value = "RMA/cancelRma", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> cancelRma(@RequestBody RMADto rmaDto, HttpServletRequest request) {
+	    Map<String, Object> response = new HashMap<>();
+	    HttpSession sess = request.getSession();
+	    String compId = (String) sess.getAttribute("CID");
+	    Logger logger = LoggerFactory.getLogger(getClass());
+	    logger.info("Received RMA DTO: {}", rmaDto);
+
+	    try {
+	        if (rmaDto == null) {
+	            throw new IllegalArgumentException("RMA DTO is null");
+	        }
+	    	rmaInfoDao.cancelRma(rmaDto);
+	        response.put("success", true);
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", e.getMessage());
+	    }
+
+	    return response;
+	}
 //	@RequestMapping(value = {"/RMA"}, method = {RequestMethod.GET, RequestMethod.POST})
 //	public ModelAndView RMA(RMADto rmaDto, HttpServletRequest request) throws IOException, ServletException {
 //		String forward = "/rma/rma";

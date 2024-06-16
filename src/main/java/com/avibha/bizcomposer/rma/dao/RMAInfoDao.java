@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -34,13 +36,18 @@ import com.avibha.common.log.Loger;
 import com.nxsol.bzcomposer.company.domain.BcaCart;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaInvoice;
+import com.nxsol.bzcomposer.company.domain.BcaMasterrmareason;
 import com.nxsol.bzcomposer.company.domain.BcaRma;
 import com.nxsol.bzcomposer.company.domain.BcaRmaitem;
+import com.nxsol.bzcomposer.company.domain.BcaRmamaster;
+import com.nxsol.bzcomposer.company.domain.BcaRmareason;
 import com.nxsol.bzcomposer.company.repos.BcaCartRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
+import com.nxsol.bzcomposer.company.repos.BcaMasterrmareasonRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRmaRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRmaitemRepository;
+import com.nxsol.bzcomposer.company.repos.BcaRmareasonRepository;
 import com.nxsol.bzcomposer.company.utils.JpaHelper;
 
 /*
@@ -123,26 +130,72 @@ public class RMAInfoDao {
 		ArrayList<RMADto> objList = new ArrayList<RMADto>();
 		ResultSet rs = null;
 		try {
-//			con = db.getConnection();
+//			con = db.getConnection();						
 			CustomerInfo cinfo = new CustomerInfo();
-			StringBuffer query = new StringBuffer("select  distinct new " + RMADto.class.getCanonicalName()
-					+ " (cv.firstName , cv.lastName , inv.orderNum ,  date_format(invoice.dateAdded,'%m/%d/%Y') as dateAdded , "
-					+ " date_format(invoice.dateConfirmed,'%m/%d/%Y') as dateConfirmed  from BcaClientvendor as  cv join  BcaInvoice as inv on  inv.clientVendor.clientVendorId = "
-					+ "  cv.clientVendorId where cv.status in ('N' ,'U') and cv.active =1 and inv.invoiceType.invoiceTypeId in (1,7) and inv.invoiceStatus =1 "
-					+ " and inv.orderNum > 0 and inv.company.companyId like :companyId and inv.shipped =1  "
-					+ ((fname != null && fname.trim().length() > 0) ? " and cv.firstName like '" + fname + "'" : "")
-					+ ((lname != null && lname.trim().length() > 0) ? " and cv.lastName like '" + lname + "'" : " ")
-					+ ((orderNo != null && orderNo.trim().length() > 0) ? " and in.orderNum like '" + orderNo + "'"
-							: " ")
-					+ ((orderDate != null && orderDate.trim().length() > 1)
-							? " and in.dateAdded = '" + cinfo.string2date(orderDate) + "' "
-							: " ")
-					+ " order by clientvendor.firstName");
+			StringBuilder query = new StringBuilder("select distinct new " + RMADto.class.getCanonicalName()
+					+ " (cv.firstName, cv.lastName, inv.orderNum, date_format(inv.dateAdded, '%m/%d/%Y') as dateAdded, "
+					+ " date_format(inv.dateConfirmed, '%m/%d/%Y') as dateConfirmed) " + " from BcaClientvendor as cv "
+					+ " join BcaInvoice as inv on inv.clientVendor.clientVendorId = cv.clientVendorId "
+					+ " where cv.status in ('N', 'U') and cv.active = 1 "
+					+ " and inv.invoiceType.invoiceTypeId in (1, 7) and inv.invoiceStatus = 1 "
+					+ " and inv.orderNum > 0 and inv.company.companyId = :companyId " + " and inv.shipped = 1 ");
 
-			TypedQuery<RMADto> typedQuery = this.entityManager.createQuery(query.toString(), RMADto.class);
-			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(compId));
-			List<RMADto> dtos = typedQuery.getResultList();
-			objList.addAll(dtos);
+			if (fname != null && !fname.trim().isEmpty()) {
+				query.append(" and cv.firstName like :fname ");
+			}
+			if (lname != null && !lname.trim().isEmpty()) {
+				query.append(" and cv.lastName like :lname ");
+			}
+			if (orderNo != null && !orderNo.trim().isEmpty()) {
+				query.append(" and inv.orderNum like :orderNo ");
+			}
+			if (orderDate != null && !orderDate.trim().isEmpty()) {
+				query.append(" and inv.dateAdded = :orderDate ");
+			}
+
+			query.append(" order by cv.firstName");
+
+			// Create the query
+			Query hqlQuery = entityManager.createQuery(query.toString());
+
+			// Set the named parameters
+			hqlQuery.setParameter("companyId", Long.valueOf(compId));
+
+			if (fname != null && !fname.trim().isEmpty()) {
+				hqlQuery.setParameter("fname", "%" + fname + "%");
+			}
+			if (lname != null && !lname.trim().isEmpty()) {
+				hqlQuery.setParameter("lname", "%" + lname + "%");
+			}
+			if (orderNo != null && !orderNo.trim().isEmpty()) {
+				hqlQuery.setParameter("orderNo", "%" + orderNo + "%");
+			}
+			if (orderDate != null && !orderDate.trim().isEmpty()) {
+				hqlQuery.setParameter("orderDate", cinfo.string2date(orderDate));
+			}
+
+			// Execute the query
+			List<RMADto> results = hqlQuery.getResultList();
+			// here
+//			StringBuffer query = new StringBuffer("select  distinct new " + RMADto.class.getCanonicalName()
+//					+ " (cv.firstName , cv.lastName , inv.orderNum ,  date_format(inv.dateAdded,'%m/%d/%Y') as dateAdded , "
+//					+ " date_format(inv.dateConfirmed,'%m/%d/%Y') as dateConfirmed  from BcaClientvendor as  cv join  BcaInvoice as inv on  inv.clientVendor.clientVendorId = "
+//					+ "  cv.clientVendorId where cv.status in ('N' ,'U') and cv.active =1 and inv.invoiceType.invoiceTypeId in (1,7) and inv.invoiceStatus =1 "
+//					+ " and inv.orderNum > 0 and inv.company.companyId like :companyId and inv.shipped =1  "
+//					+ ((fname != null && fname.trim().length() > 0) ? " and cv.firstName like '" + fname + "'" : "")
+//					+ ((lname != null && lname.trim().length() > 0) ? " and cv.lastName like '" + lname + "'" : " ")
+//					+ ((orderNo != null && orderNo.trim().length() > 0) ? " and in.orderNum like '" + orderNo + "'"
+//							: " ")
+//					+ ((orderDate != null && orderDate.trim().length() > 1)
+//							? " and in.dateAdded = '" + cinfo.string2date(orderDate) + "' "
+//							: " ")
+//					+ " order by clientvendor.firstName");
+//
+//			TypedQuery<RMADto> typedQuery = this.entityManager.createQuery(query.toString(), RMADto.class);
+//			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(compId));
+//			List<RMADto> dtos = typedQuery.getResultList();
+			// here
+			objList.addAll(results);
 
 //			
 //			String sqlString = "Select distinct clientvendor.FirstName,clientvendor.LastName , invoice.ordernum, date_format(invoice.DateAdded,'%m/%d/%Y') as DateAdded, \r\n" + 
@@ -448,6 +501,169 @@ public class RMAInfoDao {
 		return objList;
 	}
 
+	@Autowired
+	BcaRmareasonRepository bcaRmareasonRepository;
+	@Autowired
+	BcaMasterrmareasonRepository bcaMasterrmareasonRepository;
+
+	@Transactional
+    public void approveRma(RMADto rmaDto) {
+        BcaRma rma = bcaRmaRepository.findById(Integer.valueOf(rmaDto.getRma())).orElseThrow(() -> new RuntimeException("RMA not found"));
+        rma.setStatus("Approved");
+     // Fetch the reason by its ID
+        int reasonID = rmaDto.getReasonId();
+        BcaRmareason bcaRmareason = bcaRmareasonRepository.findByReasonId(reasonID);
+        rma.setReason(bcaRmareason);
+        rma.setReasonText(rmaDto.getReason());
+//        if (bcaRmareason.isPresent()) {
+//            rma.setReason(bcaRmareason.get());
+//        } else {
+//            throw new RuntimeException("Reason not found");
+//        }
+        
+        if (rmaDto.getDeletedItemIds() != null) {
+            for (String itemId : rmaDto.getDeletedItemIds()) {
+                BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemId)).orElseThrow(() -> new RuntimeException("RMA Item not found"));
+                bcaRmaitemRepository.delete(rmaItem);
+            }
+        }
+        
+        for (RMADto.RmaItems itemDto : rmaDto.getRmaItems()) {
+            BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemDto.getRmaItemID())).orElseThrow(() -> new RuntimeException("RMA Item not found"));
+            rmaItem.setAction("Approved");
+            rmaItem.setReason(rma.getReason());
+            bcaRmaitemRepository.save(rmaItem);
+        }
+
+        bcaRmaRepository.save(rma);
+    }
+	
+	@Transactional
+    public void cancelRma(RMADto rmaDto) {
+        BcaRma rma = bcaRmaRepository.findById(Integer.valueOf(rmaDto.getRma())).orElseThrow(() -> new RuntimeException("RMA not found"));
+        rma.setStatus("Canelled");
+     // Fetch the reason by its ID
+        int reasonID = rmaDto.getReasonId();
+        BcaRmareason bcaRmareason = bcaRmareasonRepository.findByReasonId(reasonID);
+        rma.setReason(bcaRmareason);
+        rma.setReasonText(rmaDto.getReason());
+        
+        if (rmaDto.getDeletedItemIds() != null) {
+            for (String itemId : rmaDto.getDeletedItemIds()) {
+                BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemId)).orElseThrow(() -> new RuntimeException("RMA Item not found"));
+                bcaRmaitemRepository.delete(rmaItem);
+            }
+        }
+        
+        for (RMADto.RmaItems itemDto : rmaDto.getRmaItems()) {
+            BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemDto.getRmaItemID())).orElseThrow(() -> new RuntimeException("RMA Item not found"));
+            rmaItem.setAction("Canelled");
+            rmaItem.setReason(rma.getReason());
+            bcaRmaitemRepository.save(rmaItem);
+        }
+
+        bcaRmaRepository.save(rma);
+    }
+	
+	public ArrayList getrmaReasonList(String compId, int rmaParentReasonId) {
+		ArrayList<RMADto> rmaReasonsList = new ArrayList<RMADto>();
+		List<BcaRmareason> bcaRmareasons;
+		bcaRmareasons = bcaRmareasonRepository.findByCompany_CompanyIdAndActiveAndParentReason_rmaReasonId(Long.valueOf(compId), 1, rmaParentReasonId);
+		for (BcaRmareason bcaRmareason : bcaRmareasons) {
+			RMADto rmaDto = new RMADto();
+			rmaDto.setReasonId(bcaRmareason.getReasonId());
+			rmaDto.setRmaReason(bcaRmareason.getRmaReason());
+			rmaDto.setParentReasonID(bcaRmareason.getParentReason().getRmaReasonId());
+			rmaReasonsList.add(rmaDto);
+		}
+
+		return rmaReasonsList;
+	}
+
+	public ArrayList<RMADto> getRmaReasonsByMasterReasonId(int masterReasonId, String companyID) {
+		ArrayList<RMADto> rmaReasonsList = new ArrayList<RMADto>();
+		List<BcaRmareason> bcaRmareasons;
+		bcaRmareasons =  bcaRmareasonRepository.findByCompany_CompanyIdAndParentReason_rmaReasonIdAndActive(Long.valueOf(companyID), masterReasonId, 1);
+		for (BcaRmareason bcaRmareason : bcaRmareasons) {
+			RMADto rmaDto = new RMADto();
+			rmaDto.setReasonId(bcaRmareason.getReasonId());
+			rmaDto.setRmaReason(bcaRmareason.getRmaReason());
+			rmaDto.setParentReasonID(bcaRmareason.getParentReason().getRmaReasonId());
+			rmaReasonsList.add(rmaDto);
+		}
+		return rmaReasonsList;
+	}
+
+	public ArrayList getmasterRmaReasonList() {
+		ArrayList<RMADto> rmaMasterReasonsList = new ArrayList<RMADto>();
+		List<BcaMasterrmareason> bcaMasterrmareasons = bcaMasterrmareasonRepository.findAll();
+
+		for (BcaMasterrmareason bcaMasterrmareason : bcaMasterrmareasons) {
+			RMADto rmaDto = new RMADto();
+			rmaDto.setReasonId(bcaMasterrmareason.getRmaReasonId());
+			rmaDto.setRmaReason(bcaMasterrmareason.getName());
+			rmaMasterReasonsList.add(rmaDto);
+		}
+
+		return rmaMasterReasonsList;
+	}
+
+	public ArrayList getRmaItemDetails(int rmaNo) {
+		ArrayList<RMADto> rmaDtoList = new ArrayList<RMADto>();
+		List<BcaRmaitem> bcaRmaItemList = bcaRmaitemRepository.findByIsDeletedAndRmaNo_RmaNo(false, rmaNo);
+
+		for (BcaRmaitem bcaRmaItem : bcaRmaItemList) {
+			RMADto rmaDto = new RMADto();
+			rmaDto.setRma(String.valueOf(bcaRmaItem.getRma().getRmaNo()));
+			rmaDto.setRmaItemID(bcaRmaItem.getRmaItemId());
+			rmaDto.setItemCode(bcaRmaItem.getCart().getInventoryCode()); // Assuming getItemCode() exists
+			rmaDto.setItemDesc(bcaRmaItem.getCart().getInventoryName()); // Assuming getItemDesc() exists
+			rmaDto.setReason(bcaRmaItem.getReasonText());
+			rmaDto.setQty(String.valueOf(bcaRmaItem.getRmaItemQty())); // Assuming getQty() exists
+			rmaDto.setUnitPrice(String.valueOf(bcaRmaItem.getUnitPrice())); // Assuming getUnitPrice() exists
+			rmaDto.setUnitWeight(String.valueOf(bcaRmaItem.getCart().getUnitWeight())); // Assuming getUnitWeight()
+																						// exists
+			rmaDto.setSentDate(dateFormatter(bcaRmaItem.getRma().getDateAdded()));
+			rmaDtoList.add(rmaDto);
+		}
+		return rmaDtoList;
+	}
+
+	public RMADto getRMADetailsJpa(Long compId, int invoiceID) {
+		RMADto rmaDto = new RMADto();
+		BcaRma bcaRma = bcaRmaRepository.findByActiveAndInvoice_InvoiceIdAndCompany_CompanyId(true, invoiceID, compId);
+		if (bcaRma != null) {
+
+			rmaDto.setInvoiceID(bcaRma.getInvoice().getInvoiceId());
+			rmaDto.setRma(String.valueOf(bcaRma.getRmaNo()));
+			rmaDto.setFname(bcaRma.getClientVendor().getFirstName());
+			rmaDto.setLname(bcaRma.getClientVendor().getLastName());
+			rmaDto.setCompanyName(bcaRma.getClientVendor().getName());
+			rmaDto.setOrder(bcaRma.getOrderNo());
+//			rmaDto.setItemCode(OrderID);
+//			rmaDto.setItemDesc(OrderID);
+			rmaDto.setReason(bcaRma.getReasonText());
+//			rmaDto.setQty(OrderID);
+//			rmaDto.setUnitPrice(OrderID);
+//			rmaDto.setUnitWeight(bcaRma.getun);
+			rmaDto.setSentDate(dateFormatter(bcaRma.getDateAdded()));
+			rmaDto.setStatus(bcaRma.getStatus());
+			rmaDto.setOrderDate(dateFormatter(bcaRma.getInvoice().getDateAdded()));
+			rmaDto.setEmail(bcaRma.getClientVendor().getEmail());
+			rmaDto.setPhone(bcaRma.getClientVendor().getPhone());
+			rmaDto.setMobile(bcaRma.getClientVendor().getCellPhone());
+//			rmaDto.setReasonId(bcaRma.getReason().getReasonId());
+//			rmaDto.setParentReasonID(bcaRma.getReason().getParentReason().getRmaReasonId());
+			rmaDto.setReasonId(bcaRma.getReason() != null ? bcaRma.getReason().getReasonId() : 0);
+			rmaDto.setParentReasonID(
+			    bcaRma.getReason() != null && bcaRma.getReason().getParentReason() != null ? 
+			    bcaRma.getReason().getParentReason().getRmaReasonId() : 
+			    0
+			);
+		}
+		return rmaDto;
+	}
+
 	public ArrayList getRMADetails(String compId, String OrderID) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
@@ -457,6 +673,14 @@ public class RMAInfoDao {
 		try {
 //			con = db.getConnection();
 
+			String sqlString = "Select distinct rma.RMA_no, clientvendor. FirstName, clientvendor. LastName,"
+					+ " cart.InventoryCode, cart.InventoryName, rma.RMA_reason, rma.RMA_qty,cart.UnitPrice ,cart.UnitWeight,  rma.DateAdded"
+					+ " From  bca_clientvendor clientvendor, bca_invoice invoice, bca_cart cart, bca_rma rma "
+					+ " Where invoice.ClientVendorID= clientvendor.ClientVendorID "
+					+ " and clientvendor.status in ('N','U') " + "  and clientvendor.Active = 1 "
+					+ "and rma.InvoiceID = invoice. InvoiceID and   rma.CartID =  cart.CartID "
+					+ " and cart.InvoiceID=invoice.InvoiceID and invoice.OrderNum like ?  "
+					+ "and invoice.CompanyID like ? order by RMA_no asc";
 			StringBuffer query = new StringBuffer("select distinct new " + RMADto.class.getCanonicalName()
 					+ " (rma.rmaNo , cv.firstName ,cv.lastName "
 					+ " cart.inventoryCode , cart .inventoryName , rma.rmaReason , rma.rmaQty , cart.unitPrice"
@@ -523,7 +747,7 @@ public class RMAInfoDao {
 		return objList;
 	}
 
-	public ArrayList getRMAListNew(String compId, int invoiceTypeId, int startValue, int limit) {
+	public ArrayList getRMAList(String compId, int invoiceTypeId, int startValue, int limit) {
 		ArrayList<RMADto> rmaDtoList = new ArrayList<RMADto>();
 		if (startValue > 0) {
 			startValue -= 1;
@@ -545,7 +769,10 @@ public class RMAInfoDao {
 						(Double) result[8], // unitPrice
 						(Double) result[9], // unitWeight
 						(String) result[10], // dateAdded
-						(Integer) result[11] // orderNum/POnum
+						(Integer) result[11], // orderNum/POnum
+						(String) result[12], // RMA Status
+						(Integer) result[13], // invoiceID
+						(String) result[14] // RMA Reason
 				);
 				rmaDtoList.add(rmaDto);
 			}
@@ -556,80 +783,80 @@ public class RMAInfoDao {
 		return rmaDtoList;
 	}
 
-	public ArrayList getRMAList(String compId, int startValue, int limit) {
-//		Connection con = null;
-//		PreparedStatement pstmt = null;
-//		SQLExecutor db = new SQLExecutor();
-		ArrayList<RMADto> objList = new ArrayList<RMADto>();
-//		ResultSet rs = null;
-//		int start = ((startValue - 1) * limit);
-		try {
-//			String sqlString = "Select distinct rma.RMA_no, clientvendor. FirstName, clientvendor. LastName,"
-//					+ " cart.InventoryCode, cart.InventoryName, rma.RMA_reason, rma.RMA_qty ,cart.UnitPrice ,"
-//					+ "cart.UnitWeight, date_format(rma.DateAdded,'%m/%d/%Y') as DateAdded,invoice.OrderNum"
-//					+ " From  bca_clientvendor clientvendor, bca_invoice invoice, bca_cart cart,"
-//					+ " bca_rma rma Where invoice.ClientVendorID= clientvendor.ClientVendorID and  clientvendor.status in ('N','U')   and clientvendor.Active = 1  and "
-//					+ "rma.InvoiceID = invoice. InvoiceID and   rma.CartID =  cart.CartID "
-//					+ " and invoice.CompanyID like ? order by rma.RMA_no asc limit ?,?";
-
-			StringBuffer query = new StringBuffer(" select distinct new " + RMADto.class.getCanonicalName()
-					+ " (rm.rmaNo , cv.firstName , cv.lastName , cv.name, cart.inventoryCode , "
-					+ " cart.inventoryName , rm.rmaReason , rm.rmaQty , cart.unitPrice , cart.unitWeight ,  date_format(rm.dateAdded,'%m/%d/%Y') as dateAdded  , "
-					+ "inv.orderNum) from BcaClientvendor cv , BcaInvoice inv , BcaCart cart , BcaRma rm where inv.clientVendor.clientVendorId = cv.clientVendorId and"
-					+ " cv.status in ('N','U') and  cv.active = 1 and  "
-					+ " rm.invoice.invoiceId = inv.invoiceId and rm.cart.cartId = cart.cartId and inv.company.companyId = :companyId order by rm.rmaNo asc  ");
-
-			TypedQuery<RMADto> typedQuery = this.entityManager.createQuery(query.toString(), RMADto.class);
-			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(compId));
-			typedQuery.setFirstResult((startValue - 1) * limit);
-			typedQuery.setMaxResults(limit);
-			objList.addAll(typedQuery.getResultList());
-
-//			con = db.getConnection();
-
+//	public ArrayList getRMAList(String compId, int startValue, int limit) {
+////		Connection con = null;
+////		PreparedStatement pstmt = null;
+////		SQLExecutor db = new SQLExecutor();
+//		ArrayList<RMADto> objList = new ArrayList<RMADto>();
+////		ResultSet rs = null;
+////		int start = ((startValue - 1) * limit);
+//		try {
+////			String sqlString = "Select distinct rma.RMA_no, clientvendor. FirstName, clientvendor. LastName,"
+////					+ " cart.InventoryCode, cart.InventoryName, rma.RMA_reason, rma.RMA_qty ,cart.UnitPrice ,"
+////					+ "cart.UnitWeight, date_format(rma.DateAdded,'%m/%d/%Y') as DateAdded,invoice.OrderNum"
+////					+ " From  bca_clientvendor clientvendor, bca_invoice invoice, bca_cart cart,"
+////					+ " bca_rma rma Where invoice.ClientVendorID= clientvendor.ClientVendorID and  clientvendor.status in ('N','U')   and clientvendor.Active = 1  and "
+////					+ "rma.InvoiceID = invoice. InvoiceID and   rma.CartID =  cart.CartID "
+////					+ " and invoice.CompanyID like ? order by rma.RMA_no asc limit ?,?";
 //
-//			pstmt = con.prepareStatement(sqlString);
-//			pstmt.setString(1, compId);
-//			pstmt.setInt(2, start);
-//			pstmt.setInt(3, limit);
-//			rs = pstmt.executeQuery();
-//			while (rs.next()) {
-//				RMADto rma = new RMADto();
-//				rma.setRma(rs.getString(1));
-//				rma.setFname(rs.getString(2));
-//				rma.setLname(rs.getString(3));
-//				rma.setItemCode(rs.getString(4));
-//				rma.setItemDesc(rs.getString(5));
-//				rma.setReason(rs.getString(6));
-//				rma.setQty(rs.getString(7));
-//				rma.setUnitPrice(rs.getString(8));
-//				rma.setUnitWeight(rs.getString(9));
-//				String sentdate = rs.getString(10);
-//				sentdate = sentdate.substring(0, 10);
-//				rma.setSentDate(sentdate);
-//				rma.setOrder(rs.getString(11));
-//				objList.add(rma);
-//			}
-		} catch (Exception ee) {
-			Loger.log(2, " SQL Error in Class RMAInfo and  method -getRMAList " + " " + ee.toString());
-		}
-//		finally {
-//			try {
-//				if (rs != null) {
-//					db.close(rs);
-//				}
-//				if (pstmt != null) {
-//					db.close(pstmt);
-//				}
-//				if (con != null) {
-//					db.close(con);
-//				}
-//			} catch (Exception e) {
-//				Loger.log(e.toString());
-//			}
+//			StringBuffer query = new StringBuffer(" select distinct new " + RMADto.class.getCanonicalName()
+//					+ " (rm.rmaNo , cv.firstName , cv.lastName , cv.name, cart.inventoryCode , "
+//					+ " cart.inventoryName , rm.rmaReason , rm.rmaQty , cart.unitPrice , cart.unitWeight ,  date_format(rm.dateAdded,'%m/%d/%Y') as dateAdded  , "
+//					+ "inv.orderNum) from BcaClientvendor cv , BcaInvoice inv , BcaCart cart , BcaRma rm where inv.clientVendor.clientVendorId = cv.clientVendorId and"
+//					+ " cv.status in ('N','U') and  cv.active = 1 and  "
+//					+ " rm.invoice.invoiceId = inv.invoiceId and rm.cart.cartId = cart.cartId and inv.company.companyId = :companyId order by rm.rmaNo asc  ");
+//
+//			TypedQuery<RMADto> typedQuery = this.entityManager.createQuery(query.toString(), RMADto.class);
+//			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(compId));
+//			typedQuery.setFirstResult((startValue - 1) * limit);
+//			typedQuery.setMaxResults(limit);
+//			objList.addAll(typedQuery.getResultList());
+//
+////			con = db.getConnection();
+//
+////
+////			pstmt = con.prepareStatement(sqlString);
+////			pstmt.setString(1, compId);
+////			pstmt.setInt(2, start);
+////			pstmt.setInt(3, limit);
+////			rs = pstmt.executeQuery();
+////			while (rs.next()) {
+////				RMADto rma = new RMADto();
+////				rma.setRma(rs.getString(1));
+////				rma.setFname(rs.getString(2));
+////				rma.setLname(rs.getString(3));
+////				rma.setItemCode(rs.getString(4));
+////				rma.setItemDesc(rs.getString(5));
+////				rma.setReason(rs.getString(6));
+////				rma.setQty(rs.getString(7));
+////				rma.setUnitPrice(rs.getString(8));
+////				rma.setUnitWeight(rs.getString(9));
+////				String sentdate = rs.getString(10);
+////				sentdate = sentdate.substring(0, 10);
+////				rma.setSentDate(sentdate);
+////				rma.setOrder(rs.getString(11));
+////				objList.add(rma);
+////			}
+//		} catch (Exception ee) {
+//			Loger.log(2, " SQL Error in Class RMAInfo and  method -getRMAList " + " " + ee.toString());
 //		}
-		return objList;
-	}
+////		finally {
+////			try {
+////				if (rs != null) {
+////					db.close(rs);
+////				}
+////				if (pstmt != null) {
+////					db.close(pstmt);
+////				}
+////				if (con != null) {
+////					db.close(con);
+////				}
+////			} catch (Exception e) {
+////				Loger.log(e.toString());
+////			}
+////		}
+//		return objList;
+//	}
 
 	public ArrayList getVendorRMAList(String compId, int invoiceTypeID) {
 		Connection con = null;

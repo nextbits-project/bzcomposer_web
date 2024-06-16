@@ -34,7 +34,7 @@ public class BcaRmareason {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parentReasonID")
-	private BcaRmareason parentReason;
+	private BcaMasterrmareason parentReason;
 
 	@OneToMany(mappedBy = "reason", fetch = FetchType.LAZY)
 	private Set<BcaRma> rma;
@@ -74,11 +74,11 @@ public class BcaRmareason {
 		this.company = company;
 	}
 
-	public BcaRmareason getParentReason() {
+	public BcaMasterrmareason getParentReason() {
 		return parentReason;
 	}
 
-	public void setParentReason(BcaRmareason parentReason) {
+	public void setParentReason(BcaMasterrmareason parentReason) {
 		this.parentReason = parentReason;
 	}
 

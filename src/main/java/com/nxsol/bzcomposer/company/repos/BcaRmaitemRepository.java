@@ -15,4 +15,5 @@ public interface BcaRmaitemRepository extends JpaRepository<BcaRmaitem, Integer>
 	@Query("select a from BcaRmaitem as a  inner join BcaRmamaster as b on a.rmaNo = b.rmaId where a.cart.cartId  = :cartId and not (b.status = 'Canceled')")
 	List<BcaRmaitem> findRmaItemByCardtId(@Param("cartId") int cartId);
 
+	List<BcaRmaitem> findByIsDeletedAndRmaNo_RmaNo(boolean isDeleted, int rmaNo);
 }

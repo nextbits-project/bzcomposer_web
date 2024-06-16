@@ -125,6 +125,9 @@ padding: 8px 10px;
 				<th class="emblem" align="left" nowrap="nowrap" style="font-size: 14px;">
 					<spring:message code="BzComposer.rmalist.reason" />
 				</th>
+				<th class="emblem" align="left" nowrap="nowrap" style="font-size: 14px;">
+					<spring:message code="BzComposer.rmalist.status" />
+				</th>
 			</tr>
 		</thead>
 		<tbody style="font-size: 14px;">
@@ -144,6 +147,7 @@ padding: 8px 10px;
                         <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.unitWeight}</td>
                         <td nowrap="nowrap" style="font-size: 14px;">${RobjList.sentDate}</td>
                         <td nowrap="nowrap" width="400" style="font-size: 14px;">${RobjList.reason}</td>
+                        <td nowrap="nowrap" style="font-size: 14px;">${RobjList.status}</td>
                     </tr>
                 </c:forEach>
 			</c:if>

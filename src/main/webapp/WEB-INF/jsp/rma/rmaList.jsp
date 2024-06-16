@@ -65,12 +65,14 @@ padding: 8px 10px;
 			<spring:message code="BzComposer.rmalist.customerrmalist" /></span>
 		</td>
 		<td style="width:60%">
-		<input type="button" style="padding: 10px;"
+		<a href="SalesBord?tabid=ShowList" class="formButton">
+			<spring:message code="BzComposer.RMA.CreateRma" />
+		</a>
+		<%-- <input type="button" style="padding: 10px;"
 		 class="formbutton" id="smail" onclick="sendToCreateRMA();"
-		value='<spring:message code="BzComposer.invoiceboard.createRMA" />' />
+		value='<spring:message code="BzComposer.invoiceboard.createRMA" />' /> --%>
 		&nbsp;&nbsp; 													
-			<input type="button"style="padding: 10px; id="modifyRMA"
-				class="formButton" onclick="getRMA();" name="RMABtn"
+			<input type="button"style="padding: 10px; id="modifyRMA" class="formButton" onclick="getRMA();" name="RMABtn"
 				title='<spring:message code="BzComposer.rmalist.modifyrmatooltip"/>'
 				value='<spring:message code="BzComposer.rmalist.modifyrmabutton"/>'></td>
 		</tr>
@@ -125,13 +127,19 @@ padding: 8px 10px;
 				<th class="emblem" align="left" nowrap="nowrap" style="font-size: 14px;">
 					<spring:message code="BzComposer.rmalist.reason" />
 				</th>
+				<th class="emblem" align="left" nowrap="nowrap" style="font-size: 14px;">
+					<spring:message code="BzComposer.rmalist.reasonDetails" />
+				</th>
+				<th class="emblem" align="left" nowrap="nowrap" style="font-size: 14px;">
+					<spring:message code="BzComposer.rmalist.status" />
+				</th>
 			</tr>
 		</thead>
 		<tbody style="font-size: 14px;">
 			<c:if test="${not empty RMAList}">
                 <input type="hidden" name="RMALID" id="lSize" value='${RMAList.size()}'>
                 <c:forEach items="${RMAList}" var="RobjList" varStatus="loop">
-                    <tr id="${loop.index}$$" onclick="setRMA('${RobjList.order}','${RobjList.fname}','${RobjList.lname}','${loop.index}$$');" class="" >
+                    <tr id="${loop.index}$$" onclick="setRMA('${RobjList.rma}','${RobjList.fname}','${RobjList.lname}','${loop.index}$$','${RobjList.invoiceID}');" class="" >
                         <td nowrap="nowrap" style="font-size: 14px;">${RobjList.rma}</td>
                         <td nowrap="nowrap" style="font-size: 14px;">${RobjList.order}</td>
                         <td nowrap="nowrap" style="font-size: 14px;" >${RobjList.companyName}</td>
@@ -143,7 +151,9 @@ padding: 8px 10px;
                         <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.unitPrice}</td>
                         <td nowrap="nowrap" align="right" style="font-size: 14px;">${RobjList.unitWeight}</td>
                         <td nowrap="nowrap" style="font-size: 14px;">${RobjList.sentDate}</td>
+                        <td nowrap="nowrap" style="font-size: 14px;">${RobjList.rmaReason}</td>
                         <td nowrap="nowrap" width="400" style="font-size: 14px;">${RobjList.reason}</td>
+                        <td nowrap="nowrap" style="font-size: 14px;">${RobjList.status}</td>
                     </tr>
                 </c:forEach>
 			</c:if>
@@ -151,6 +161,7 @@ padding: 8px 10px;
 		</tbody>
 	</table>
 	<div>
+				<input type="hidden" name="invoiceID" id="invoiceID">
 				<input type="hidden" name="RMAval" id="RMAnum"> 
 				<input type="hidden" name="Fnameval" id="RMAfname"> 
 				<input type="hidden" name="Lnameval" id="RMAlname">
@@ -254,7 +265,7 @@ function sendToCreateRMA(){
 		document.forms[0].action = "RMA";
 		document.forms[0].submit();
 	}
-function setRMA(rno,fnm,lnm,rid)
+function setRMA(rno,fnm,lnm,rid,invoiceID)
 {
 	//debugger;
 size=document.getElementById("lSize").value;
@@ -280,6 +291,7 @@ if((rowValue-1)%2==0){
 var rd = document.getElementById(rowValue+"$$").classList.add('draft');
 
 document.getElementById("RMAnum").value=rno;
+document.getElementById("invoiceID").value=invoiceID;
 document.getElementById("RMAfname").value=fnm;
 document.getElementById("RMAlname").value=lnm;
 document.getElementById("modifyRMA").disabled=false;
@@ -287,10 +299,10 @@ document.getElementById("modifyRMA").disabled=false;
 
 function getRMA()
 {
+	debugger;
+	invoiceID=rnum=document.getElementById("invoiceID").value;
 	rnum=document.getElementById("RMAnum").value;
-	rFnm=document.getElementById("RMAfname").value;
-	rLnm=document.getElementById("RMAlname").value;
-	rmawindow=window.open("RMA?tabid=RmaInfo&OrderID="+rnum+"&Fname="+rFnm+"&Lname="+rLnm,null,"scrollbars=yes,height=600,width=850,status=yes,toolbar=no,menubar=no,location=no" );
+	rmawindow=window.open("RMA?tabid=RmaInfo&invoiceID="+invoiceID+"&rmaNo="+rnum,null,"scrollbars=yes,height=700,width=1400,status=yes,toolbar=no,menubar=no,location=no" );
 	rmawindow.moveTo(50,20);
 
 }

@@ -338,9 +338,9 @@
 									<spring:message code="BzComposer.RMA.CustomerRMAList" />
 								</a>
 							</li>
-							<li>
+							<%-- <li>
                                 <a href="RMA?tabid=CreditMemo"><spring:message code="BzComposer.common.creditMemo"/></a>
-                            </li>
+                            </li> --%>
 						</ul>
 					</li>
 					</c:if>
