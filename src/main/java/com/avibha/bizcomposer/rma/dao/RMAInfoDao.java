@@ -41,6 +41,7 @@ import com.nxsol.bzcomposer.company.domain.BcaRma;
 import com.nxsol.bzcomposer.company.domain.BcaRmaitem;
 import com.nxsol.bzcomposer.company.domain.BcaRmamaster;
 import com.nxsol.bzcomposer.company.domain.BcaRmareason;
+import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
 import com.nxsol.bzcomposer.company.repos.BcaCartRepository;
 import com.nxsol.bzcomposer.company.repos.BcaClientvendorRepository;
 import com.nxsol.bzcomposer.company.repos.BcaInvoiceRepository;
@@ -48,6 +49,7 @@ import com.nxsol.bzcomposer.company.repos.BcaMasterrmareasonRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRmaRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRmaitemRepository;
 import com.nxsol.bzcomposer.company.repos.BcaRmareasonRepository;
+import com.nxsol.bzcomposer.company.repos.BcaSalesrepRepository;
 import com.nxsol.bzcomposer.company.utils.JpaHelper;
 
 /*
@@ -507,68 +509,75 @@ public class RMAInfoDao {
 	BcaMasterrmareasonRepository bcaMasterrmareasonRepository;
 
 	@Transactional
-    public void approveRma(RMADto rmaDto) {
-        BcaRma rma = bcaRmaRepository.findById(Integer.valueOf(rmaDto.getRma())).orElseThrow(() -> new RuntimeException("RMA not found"));
-        rma.setStatus("Approved");
-     // Fetch the reason by its ID
-        int reasonID = rmaDto.getReasonId();
-        BcaRmareason bcaRmareason = bcaRmareasonRepository.findByReasonId(reasonID);
-        rma.setReason(bcaRmareason);
-        rma.setReasonText(rmaDto.getReason());
+	public void approveRma(RMADto rmaDto) {
+		BcaRma rma = bcaRmaRepository.findById(Integer.valueOf(rmaDto.getRma()))
+				.orElseThrow(() -> new RuntimeException("RMA not found"));
+		rma.setStatus("Approved");
+		// Fetch the reason by its ID
+		int reasonID = rmaDto.getReasonId();
+		BcaRmareason bcaRmareason = bcaRmareasonRepository.findByReasonId(reasonID);
+		rma.setReason(bcaRmareason);
+		rma.setReasonText(rmaDto.getReason());
 //        if (bcaRmareason.isPresent()) {
 //            rma.setReason(bcaRmareason.get());
 //        } else {
 //            throw new RuntimeException("Reason not found");
 //        }
-        
-        if (rmaDto.getDeletedItemIds() != null) {
-            for (String itemId : rmaDto.getDeletedItemIds()) {
-                BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemId)).orElseThrow(() -> new RuntimeException("RMA Item not found"));
-                bcaRmaitemRepository.delete(rmaItem);
-            }
-        }
-        
-        for (RMADto.RmaItems itemDto : rmaDto.getRmaItems()) {
-            BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemDto.getRmaItemID())).orElseThrow(() -> new RuntimeException("RMA Item not found"));
-            rmaItem.setAction("Approved");
-            rmaItem.setReason(rma.getReason());
-            bcaRmaitemRepository.save(rmaItem);
-        }
 
-        bcaRmaRepository.save(rma);
-    }
-	
+		if (rmaDto.getDeletedItemIds() != null) {
+			for (String itemId : rmaDto.getDeletedItemIds()) {
+				BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemId))
+						.orElseThrow(() -> new RuntimeException("RMA Item not found"));
+				bcaRmaitemRepository.delete(rmaItem);
+			}
+		}
+
+		for (RMADto.RmaItems itemDto : rmaDto.getRmaItems()) {
+			BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemDto.getRmaItemID()))
+					.orElseThrow(() -> new RuntimeException("RMA Item not found"));
+			rmaItem.setAction("Approved");
+			rmaItem.setReason(rma.getReason());
+			bcaRmaitemRepository.save(rmaItem);
+		}
+
+		bcaRmaRepository.save(rma);
+	}
+
 	@Transactional
-    public void cancelRma(RMADto rmaDto) {
-        BcaRma rma = bcaRmaRepository.findById(Integer.valueOf(rmaDto.getRma())).orElseThrow(() -> new RuntimeException("RMA not found"));
-        rma.setStatus("Canelled");
-     // Fetch the reason by its ID
-        int reasonID = rmaDto.getReasonId();
-        BcaRmareason bcaRmareason = bcaRmareasonRepository.findByReasonId(reasonID);
-        rma.setReason(bcaRmareason);
-        rma.setReasonText(rmaDto.getReason());
-        
-        if (rmaDto.getDeletedItemIds() != null) {
-            for (String itemId : rmaDto.getDeletedItemIds()) {
-                BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemId)).orElseThrow(() -> new RuntimeException("RMA Item not found"));
-                bcaRmaitemRepository.delete(rmaItem);
-            }
-        }
-        
-        for (RMADto.RmaItems itemDto : rmaDto.getRmaItems()) {
-            BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemDto.getRmaItemID())).orElseThrow(() -> new RuntimeException("RMA Item not found"));
-            rmaItem.setAction("Canelled");
-            rmaItem.setReason(rma.getReason());
-            bcaRmaitemRepository.save(rmaItem);
-        }
+	public void cancelRma(RMADto rmaDto) {
+		BcaRma rma = bcaRmaRepository.findById(Integer.valueOf(rmaDto.getRma()))
+				.orElseThrow(() -> new RuntimeException("RMA not found"));
+		rma.setStatus("Canelled");
+		// Fetch the reason by its ID
+		int reasonID = rmaDto.getReasonId();
+		BcaRmareason bcaRmareason = bcaRmareasonRepository.findByReasonId(reasonID);
+		rma.setReason(bcaRmareason);
+		rma.setReasonText(rmaDto.getReason());
 
-        bcaRmaRepository.save(rma);
-    }
-	
+		if (rmaDto.getDeletedItemIds() != null) {
+			for (String itemId : rmaDto.getDeletedItemIds()) {
+				BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemId))
+						.orElseThrow(() -> new RuntimeException("RMA Item not found"));
+				bcaRmaitemRepository.delete(rmaItem);
+			}
+		}
+
+		for (RMADto.RmaItems itemDto : rmaDto.getRmaItems()) {
+			BcaRmaitem rmaItem = bcaRmaitemRepository.findById(Integer.valueOf(itemDto.getRmaItemID()))
+					.orElseThrow(() -> new RuntimeException("RMA Item not found"));
+			rmaItem.setAction("Canelled");
+			rmaItem.setReason(rma.getReason());
+			bcaRmaitemRepository.save(rmaItem);
+		}
+
+		bcaRmaRepository.save(rma);
+	}
+
 	public ArrayList getrmaReasonList(String compId, int rmaParentReasonId) {
 		ArrayList<RMADto> rmaReasonsList = new ArrayList<RMADto>();
 		List<BcaRmareason> bcaRmareasons;
-		bcaRmareasons = bcaRmareasonRepository.findByCompany_CompanyIdAndActiveAndParentReason_rmaReasonId(Long.valueOf(compId), 1, rmaParentReasonId);
+		bcaRmareasons = bcaRmareasonRepository.findByCompany_CompanyIdAndActiveAndParentReason_rmaReasonId(
+				Long.valueOf(compId), 1, rmaParentReasonId);
 		for (BcaRmareason bcaRmareason : bcaRmareasons) {
 			RMADto rmaDto = new RMADto();
 			rmaDto.setReasonId(bcaRmareason.getReasonId());
@@ -583,7 +592,8 @@ public class RMAInfoDao {
 	public ArrayList<RMADto> getRmaReasonsByMasterReasonId(int masterReasonId, String companyID) {
 		ArrayList<RMADto> rmaReasonsList = new ArrayList<RMADto>();
 		List<BcaRmareason> bcaRmareasons;
-		bcaRmareasons =  bcaRmareasonRepository.findByCompany_CompanyIdAndParentReason_rmaReasonIdAndActive(Long.valueOf(companyID), masterReasonId, 1);
+		bcaRmareasons = bcaRmareasonRepository.findByCompany_CompanyIdAndParentReason_rmaReasonIdAndActive(
+				Long.valueOf(companyID), masterReasonId, 1);
 		for (BcaRmareason bcaRmareason : bcaRmareasons) {
 			RMADto rmaDto = new RMADto();
 			rmaDto.setReasonId(bcaRmareason.getReasonId());
@@ -629,6 +639,9 @@ public class RMAInfoDao {
 		return rmaDtoList;
 	}
 
+	@Autowired
+	BcaSalesrepRepository bcaSalesrepRepository;
+
 	public RMADto getRMADetailsJpa(Long compId, int invoiceID) {
 		RMADto rmaDto = new RMADto();
 		BcaRma bcaRma = bcaRmaRepository.findByActiveAndInvoice_InvoiceIdAndCompany_CompanyId(true, invoiceID, compId);
@@ -655,11 +668,25 @@ public class RMAInfoDao {
 //			rmaDto.setReasonId(bcaRma.getReason().getReasonId());
 //			rmaDto.setParentReasonID(bcaRma.getReason().getParentReason().getRmaReasonId());
 			rmaDto.setReasonId(bcaRma.getReason() != null ? bcaRma.getReason().getReasonId() : 0);
-			rmaDto.setParentReasonID(
-			    bcaRma.getReason() != null && bcaRma.getReason().getParentReason() != null ? 
-			    bcaRma.getReason().getParentReason().getRmaReasonId() : 
-			    0
-			);
+			rmaDto.setParentReasonID(bcaRma.getReason() != null && bcaRma.getReason().getParentReason() != null
+					? bcaRma.getReason().getParentReason().getRmaReasonId()
+					: 0);
+			if (bcaRma.getInvoice().getSalesRepId() > 0) {
+			    Optional<BcaSalesrep> optBcaSalesrep = bcaSalesrepRepository.findById(bcaRma.getInvoice().getSalesRepId());
+			    if (optBcaSalesrep.isPresent()) {
+			        BcaSalesrep bcaSalesrep = optBcaSalesrep.get();
+			        rmaDto.setSalesRep(bcaSalesrep.getName());
+			    } else {
+			        // Handle the case where SalesRepId is not found
+			        rmaDto.setSalesRep("Unknown Sales Rep");
+			        // Optionally, log a warning or throw an exception
+			        // log.warn("SalesRepId {} not found", bcaRma.getInvoice().getSalesRepId());
+			    }
+			}else {
+				rmaDto.setSalesRep("N/A");
+			}
+			rmaDto.setTotal(bcaRma.getInvoice().getAdjustedTotal());
+
 		}
 		return rmaDto;
 	}

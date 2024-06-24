@@ -80,6 +80,10 @@ public class RMADto implements Serializable{
 
 	private List<RmaItems> rmaItems;
 	private List<String> deletedItemIds;
+	
+	private String salesRep;
+	
+	private double total;
 
 	public static class RmaItems {
 		private String rmaItemID;
@@ -423,6 +427,22 @@ public class RMADto implements Serializable{
 
 	public void setDeletedItemIds(List<String> deletedItemIds) {
 		this.deletedItemIds = deletedItemIds;
+	}
+
+	public String getSalesRep() {
+		return salesRep;
+	}
+
+	public void setSalesRep(String salesRep) {
+		this.salesRep = salesRep;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
 	}
 
 }

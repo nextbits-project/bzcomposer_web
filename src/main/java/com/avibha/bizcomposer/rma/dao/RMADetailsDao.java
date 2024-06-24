@@ -41,7 +41,7 @@ public class RMADetailsDao {
 		HttpSession sess = request.getSession();
 		String compId = (String) sess.getAttribute("CID");
 		String invoiceID = request.getParameter("invoiceID");
-		String LastRMA = rmaInfoDao.getLastRMA();
+//		String LastRMA = rmaInfoDao.getLastRMA();
 		String rmaNo = request.getParameter("rmaNo");
 
 		RMADto rmaDetails = new RMADto();
@@ -67,7 +67,7 @@ public class RMADetailsDao {
 		request.setAttribute("RMAItemDetails", rmaItemDetails);
 		request.setAttribute("rmaReasonsList", rmaReasonsList);
 		request.setAttribute("masterRmaReasonsList", masterRmaReasonsList);
-		request.setAttribute("LastRMA", LastRMA);
+//		request.setAttribute("LastRMA", LastRMA);
 	}
 
 	public void getRAMSearch(HttpServletRequest request, RMADto rFrm) {

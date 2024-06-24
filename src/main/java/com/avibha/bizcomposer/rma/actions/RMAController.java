@@ -143,6 +143,11 @@ public class RMAController {
 	                rmaDetailsDao.getRAMInfo(request, rmaDto);
 	                forward = "/rma/rmaDetails";
 	                break;
+	           
+	            case "RmaInfoPO": // for RMA Details
+	                rmaDetailsDao.getRAMInfo(request, rmaDto);
+	                forward = "/rma/rmaDetailsPO";
+	                break;     
 
 	            case "R0A0D0": // to insert or approve RMA
 	                rmaDetailsDao.insertRAM(request, rmaDto);

@@ -123,12 +123,12 @@
 												<thead>
 													<tr>
 														<th class="emblem" colspan="4"><spring:message
-																code="BzComposer.rma.InvoiceInfo" /></th>
+																code="BzComposer.rma.POInfo" /></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td><spring:message code="BzComposer.RMA.Invoice" /></td>
+														<td><spring:message code="BzComposer.RMA.PO" /></td>
 														<td>: <spring:bind path="order">
 																<c:out value="${status.value}" />
 															</spring:bind></td>
@@ -146,7 +146,7 @@
 																<c:out value="${status.value}" />
 															</spring:bind>
 															</td>
-														<td><spring:message code="BzComposer.RMA.invoiceTotal" /></td>
+														<td><spring:message code="BzComposer.RMA.poTotal" /></td>
 														<td>: <spring:bind path="total">
 																<fmt:formatNumber value="${status.value}" type="number" minFractionDigits="2" maxFractionDigits="2" />
 															</spring:bind></td>
@@ -177,7 +177,7 @@
 												<thead>
 													<tr>
 														<th class="emblem" colspan="5"><spring:message
-																code="BzComposer.rma.InvoiceItem" /></th>
+																code="BzComposer.rma.POItem" /></th>
 													</tr>
 													<tr>
 														<th><spring:message code="BzComposer.RMA.ItemCode" /></th>
