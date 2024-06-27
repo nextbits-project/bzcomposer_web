@@ -16,6 +16,7 @@ import java.time.format.DateTimeParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.avibha.bizcomposer.lead.dto.LeadDirectoryDto;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.common.log.Loger;
 import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
@@ -28,6 +29,7 @@ import com.nxsol.bzcomposer.company.domain.BcaIteminventory;
 import com.nxsol.bzcomposer.company.domain.BcaLabel;
 import com.nxsol.bzcomposer.company.domain.BcaLead;
 import com.nxsol.bzcomposer.company.domain.BcaLeadCategory;
+import com.nxsol.bzcomposer.company.domain.BcaLeadDirectory;
 import com.nxsol.bzcomposer.company.domain.BcaLeadNew;
 import com.nxsol.bzcomposer.company.domain.BcaLeadNewProducts;
 import com.nxsol.bzcomposer.company.domain.BcaLeadProducts;
@@ -1108,4 +1110,93 @@ public class LeadService {
 		return bcaLeadNew;
 	}
 	
+	@Transactional
+	public void removeLead(int id) {
+		BcaLeadNew bcaLeadNew = bcaLeadNewRepository.findById(id).orElse(null);
+		if (bcaLeadNew != null) {
+			bcaLeadNew.setActive(0);
+			bcaLeadNew.setDeleted(1);
+			bcaLeadNew.setStatus("Deleted");
+			bcaLeadNewRepository.save(bcaLeadNew);
+		} else {
+			Loger.log("ClientVendor not Found________________removeClientVendor");
+		}
+	}
+	
+	public List<LeadDirectoryDto> getAllLeadByDirectoryId(int directoryId) {
+		List<Object[]> bcaLeadList = bcaLeadNewRepository.findAllLeadByDirectoryId(directoryId);
+		List<LeadDirectoryDto> leadListDirectoryDto = transformToDto(bcaLeadList);
+		return leadListDirectoryDto;
+	}
+	
+	private List<LeadDirectoryDto> transformToDto(List<Object[]> bcaLeadList) {
+		List<LeadDirectoryDto> leadListDirectoryDto = new ArrayList<LeadDirectoryDto>();
+		for (Object[] leadObject: bcaLeadList) {
+			LeadDirectoryDto leadDirectoryDto = new LeadDirectoryDto();
+			String firstName = ""; 
+			String middleName = "";
+			String lastName = "";
+			if (leadObject[0] != null)
+				leadDirectoryDto.setLeadID(Integer.valueOf(leadObject[0].toString()));
+			
+			if (leadObject[1] != null)
+				firstName = leadObject[1].toString();
+			
+			if (leadObject[2] != null)
+				middleName = leadObject[2].toString();
+			
+			if (leadObject[3] != null)
+				lastName = leadObject[3].toString();
+			
+			if (lastName != null && !lastName.isEmpty())
+				leadDirectoryDto.setFullName(firstName+" "+middleName+" "+lastName);
+			else 
+				leadDirectoryDto.setFullName(firstName+" "+lastName);	
+			
+			if (leadObject[4] != null)
+				leadDirectoryDto.setCompanyName(leadObject[4].toString());
+			
+			if (leadObject[5] != null)
+				leadDirectoryDto.setAddress1(leadObject[5].toString());
+			
+			if (leadObject[6] != null)
+				leadDirectoryDto.setAddress2(leadObject[6].toString());
+			
+			if (leadObject[7] != null)
+				leadDirectoryDto.setCity(leadObject[7].toString());
+			
+			if (leadObject[8] != null)
+				leadDirectoryDto.setState(leadObject[8].toString());
+			
+			if (leadObject[9] != null)
+				leadDirectoryDto.setCountry(leadObject[9].toString());
+			
+			if (leadObject[10] != null)
+				leadDirectoryDto.setZipCode(leadObject[10].toString());
+			
+			if (leadObject[11] != null)
+				leadDirectoryDto.setDateAdded(leadObject[11].toString());
+			
+			if (leadObject[12] != null)
+				leadDirectoryDto.setPhone(leadObject[12].toString());
+			
+			if (leadObject[13] != null)
+				leadDirectoryDto.setCellPhone(leadObject[13].toString());
+			
+			if (leadObject[14] != null)
+				leadDirectoryDto.setFax(leadObject[14].toString());
+			
+			if (leadObject[15] != null)
+				leadDirectoryDto.setEmail(leadObject[15].toString());
+			
+			leadListDirectoryDto.add(leadDirectoryDto);
+		}
+		return leadListDirectoryDto;
+	}
+	
+	public List<LeadDirectoryDto> getAllLeadDirectoryByCompanyId(Long companyID) {
+		List<Object[]> bcaLeadList = bcaLeadNewRepository.getAllLeadDirectoryByCompanyId(companyID);
+		List<LeadDirectoryDto> leadListDirectoryDto = transformToDto(bcaLeadList);
+		return leadListDirectoryDto;
+	}
 }

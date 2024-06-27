@@ -17,6 +17,7 @@ import com.avibha.bizcomposer.employee.dao.Label;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.employee.dao.Title;
+import com.avibha.bizcomposer.lead.dto.LeadDirectoryDto;
 import com.avibha.bizcomposer.lead.dto.LeadDto;
 import com.avibha.bizcomposer.opportunity.dao.OpportunityDao;
 import com.avibha.bizcomposer.opportunity.form.OpportunityDto;
@@ -37,6 +38,7 @@ import com.nxsol.bzcomposer.company.ConfigurationDAO;
 import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaLeadDirectory;
 import com.nxsol.bzcomposer.company.domain.BcaLeadNew;
 import com.nxsol.bzcomposer.company.domain.BcaLeadSource;
 import com.nxsol.bzcomposer.company.domain.BcaShippingaddress;
@@ -47,6 +49,7 @@ import com.nxsol.bzcomposer.company.repos.BcaLeadNewRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadSourceRepository;
 
 import com.nxsol.bzcomposer.company.repos.BcaTitleRepository;
+import com.nxsol.bzcomposer.company.service.LeadDirectoryService;
 import com.nxsol.bzcomposer.company.service.LeadService;
 
 
@@ -95,6 +98,9 @@ public class LeadController {
 
 	@Autowired
 	private InvoiceInfoDao invoice;
+	
+	@Autowired
+	private LeadDirectoryService leadDirectoryService;
 	
 	@GetMapping("/Leads")
 	public String getleads(Model model, HttpServletRequest request) {
@@ -222,12 +228,6 @@ public class LeadController {
 		request.setAttribute("SaveStatus", new ActionMessage("Lead Information is Successfully Added!"));
 		request.getSession().setAttribute("actionMsg", "Lead Information is Successfully Added!");
 		
-		return "redirect:/Leads";
-	}
-
-	@GetMapping("/removeLead/{id}")
-	public String removeLead(@PathVariable("id") int id) {
-		leadService.removeClientVendor(id);
 		return "redirect:/Leads";
 	}
  
@@ -367,7 +367,12 @@ public class LeadController {
 		model.addAttribute("leadId", null);
 		model.addAttribute("shippingAddressId", null);
 		model.addAttribute("billingAddressId", null);
-
+		
+		if(request.getSession().getAttribute("SaveStatus") != null) {
+			request.setAttribute("actionMsg",request.getSession().getAttribute("SaveStatus"));
+			request.getSession().setAttribute("SaveStatus","");	
+		}
+		
 		return "leads/addNewLead";
 	}
 	
@@ -377,9 +382,9 @@ public class LeadController {
 		String companyId = (String) session.getAttribute("CID");
 		BcaCompany company = companyRepo.findById(Long.parseLong(companyId)).orElse(null);
 		model.addAttribute("customerList", leadService.getAllLeadsList(company));
-		if(request.getSession().getAttribute("SaveStatus") != null) {
-			request.setAttribute("actionMsg",request.getSession().getAttribute("SaveStatus"));
-			request.getSession().setAttribute("SaveStatus","");	
+		if(request.getSession().getAttribute("actionMsg") != null) {
+			request.setAttribute("actionMsg",request.getSession().getAttribute("actionMsg"));
+			request.getSession().setAttribute("SaveStatus","");
 		}
 		return "leads/leadList";
 	}
@@ -401,7 +406,7 @@ public class LeadController {
 		}
 		request.setAttribute("SaveStatus", new ActionMessage("Lead Information is Successfully Added!"));
 		request.getSession().setAttribute("actionMsg", "Lead Information is Successfully Added!");
-		return "redirect:/AllLeads";
+		return "redirect:/newLead";
 	}
 	
 	@GetMapping("/editLeadDetails/{id}")
@@ -504,6 +509,38 @@ public class LeadController {
 		}
 		
 		return "redirect:/Customer?tabid=Customer";
+	}
+	
+	@GetMapping("/removeLead/{id}")
+	public String removeLead(@PathVariable("id") int id, HttpServletRequest request) {
+		leadService.removeLead(id);
+		request.setAttribute("SaveStatus", new ActionMessage("Lead Delete successfully!"));
+		request.getSession().setAttribute("actionMsg", "Lead Delete successfully!");
+		return "redirect:/AllLeads";
+	}
+	
+	@GetMapping("/LeadDirectory")
+	public String getLeadDirectory(Model model, @ModelAttribute("customerDto") CustomerDto customerDto,
+			HttpServletRequest request) 
+	{
+		HttpSession session = request.getSession();
+		String companyId = (String) session.getAttribute("CID");
+		BcaCompany company = companyRepo.findById(Long.parseLong(companyId)).orElse(null);
+		List<LeadDirectoryDto> leadList = leadService.getAllLeadDirectoryByCompanyId(Long.valueOf(companyId));
+		List<BcaLeadDirectory> bcaLeadDirectorylist = leadDirectoryService.getAllDirectory(company);
+		model.addAttribute("LeadDirectorys", bcaLeadDirectorylist);
+		model.addAttribute("LeadDetails", leadList);
+		return "leads/leadDirectory";
+	}
+	
+	@GetMapping("/getLeadDirectoryDetailsById/{id}")
+	public ResponseEntity<List<LeadDirectoryDto>> getLeadDirectoryDetailsById(Model model, @PathVariable("id") int directoryId) {
+		List<LeadDirectoryDto> bcaLeadList = leadService.getAllLeadByDirectoryId(directoryId);
+		if (bcaLeadList != null) {
+			return ResponseEntity.ok(bcaLeadList);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 }

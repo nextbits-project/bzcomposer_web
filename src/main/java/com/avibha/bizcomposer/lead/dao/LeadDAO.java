@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.avibha.bizcomposer.lead.dto.LeadDto;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
+import com.nxsol.bzcomposer.company.domain.BcaLeadDirectory;
 
 public interface LeadDAO {
 
@@ -17,5 +18,5 @@ public interface LeadDAO {
 
 	boolean delete(Long leadId, String companyId);
 	
-	boolean insertLead(CustomerDto c, String compID);
+	boolean insertLead(BcaLeadDirectory bcaLeadDirectory, CustomerDto c, String compID);
 }

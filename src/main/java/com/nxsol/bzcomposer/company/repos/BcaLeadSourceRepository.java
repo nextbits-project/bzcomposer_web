@@ -19,4 +19,7 @@ public interface BcaLeadSourceRepository extends JpaRepository<BcaLeadSource, In
 
 	@Query("FROM BcaLeadSource Where leadSourceId =:id")
 	Optional<BcaLeadSource> getLeadById(int id);
+	
+	@Query("FROM BcaLeadSource Where Name =:name")
+	Optional<BcaLeadSource> getLeadSourceByName(String name);
 }

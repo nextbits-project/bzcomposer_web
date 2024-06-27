@@ -86,7 +86,7 @@ function pleaseWait(){
 	<div>
 	    <span style="color: green;display:none;" id="pleaseWait"><spring:message code="BzComposer.configuration.pleaseWait"/></span>
 		<c:if test="${not empty successMessage}">
-		  <span style="color: green"><spring:message code="BzComposer.FileUpload"/></span>
+		  <span style="color: green"><%= session.getAttribute("successMessage") %></span>
 		  <% session.removeAttribute("successMessage"); %>
 		</c:if>
 	</div>

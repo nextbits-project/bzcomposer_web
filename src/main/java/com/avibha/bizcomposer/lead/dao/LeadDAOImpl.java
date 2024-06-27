@@ -28,7 +28,9 @@ import com.nxsol.bzcomposer.company.domain.BcaCities;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 import com.nxsol.bzcomposer.company.domain.BcaCountries;
+import com.nxsol.bzcomposer.company.domain.BcaLeadDirectory;
 import com.nxsol.bzcomposer.company.domain.BcaLeadNew;
+import com.nxsol.bzcomposer.company.domain.BcaLeadSource;
 import com.nxsol.bzcomposer.company.domain.BcaPaymenttype;
 import com.nxsol.bzcomposer.company.domain.BcaSalesrep;
 import com.nxsol.bzcomposer.company.domain.BcaShipcarrier;
@@ -39,12 +41,14 @@ import com.nxsol.bzcomposer.company.repos.BcaCitiesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCountriesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaLeadNewRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLeadSourceRepository;
 import com.nxsol.bzcomposer.company.repos.BcaPaymenttypeRepository;
 import com.nxsol.bzcomposer.company.repos.BcaSalesrepRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShipcarrierRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTitleRepository;
+import com.nxsol.bzcomposer.company.service.LeadSourceService;
 import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
 
@@ -87,6 +91,12 @@ public class LeadDAOImpl implements LeadDAO {
 	
 	@Autowired
 	private BcaPaymenttypeRepository bcaPaymenttypeRepository;
+	
+	@Autowired
+	private BcaLeadSourceRepository bcaLeadSourceRepository;
+	
+	@Autowired
+	private LeadSourceService leadSourceService;
 	
 	@PostConstruct
 	private void postConstruct() {
@@ -457,9 +467,8 @@ public class LeadDAOImpl implements LeadDAO {
 		return ret;
 	}
 	
-	//@CacheEvict(value = "contactDetails", allEntries = true)
 	@Override
-	public boolean insertLead(CustomerDto c, String compID) {
+	public boolean insertLead(BcaLeadDirectory bcaLeadDirectory, CustomerDto c, String compID) {
 		boolean ret = false;
 		try {
 			String oBal = "0.0";
@@ -565,7 +574,6 @@ public class LeadDAOImpl implements LeadDAO {
 			bcv.setMiddleName(c.getMiddleName());
 			Date dateInput = (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null : string2date(c.getDateInput());
 			bcv.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
-			Date dateTerminated = (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null : string2date(c.getTerminatedDate());
 			int termId = c.getTerm() == null || c.getTerm().trim().equals("") ? 0 : Integer.parseInt(removeLast2Digit(c.getTerm()));
 			bcv.setDbaname(c.getDbaName());
 			Optional<BcaTerm> term = bcaTermRepository.findById(termId);
@@ -575,7 +583,7 @@ public class LeadDAOImpl implements LeadDAO {
 			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesRepId);
 			if (salesRep.isPresent())
 				bcv.setSalesRep(salesRep.get());
-			if(c.getShipping() != null) {
+			if (c.getShipping() != null) {
 				Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(removeLast2Digit(c.getShipping())));	
 				if (shipCarrier.isPresent())
 					bcv.setShipCarrier(shipCarrier.get());
@@ -588,10 +596,17 @@ public class LeadDAOImpl implements LeadDAO {
 				bcv.setPaymentType(paymentType.get());
 			if (null != c.getCcType() && !c.getCcType().trim().isEmpty())
 				bcv.setCctypeId(Integer.parseInt(c.getCcType()));
-			/*
-			 * if (null != c.getCustomerGroup())
-			 * bcv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
-			 */
+			bcv.setLeadDirectory(bcaLeadDirectory);
+			
+			if (c.getSourceName() != null && !c.getSourceName().isEmpty()) {
+				Optional<BcaLeadSource> bcaLeadSource = bcaLeadSourceRepository.getLeadSourceByName(removeLast2Digit(c.getSourceName()));	
+				if (bcaLeadSource.isPresent()) {
+					bcv.setLeadSource(bcaLeadSource.get());
+				} else {
+					BcaLeadSource saveLeadSource = leadSourceService.insertLeadSource(removeLast2Digit(c.getSourceName()), bcv.getCompany());
+					bcv.setLeadSource(saveLeadSource);	
+				}
+			}
 			
 			BcaLeadNew cvSaved = bcaLeadNewRepository.save(bcv);
 			if (null != cvSaved) {

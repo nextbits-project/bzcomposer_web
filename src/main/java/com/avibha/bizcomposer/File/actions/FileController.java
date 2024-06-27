@@ -331,7 +331,6 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("DownloadLeadTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				//importExportUtils.downloadLeadTemplate(type, response);
 				importExportUtils.downloadTemplateLead(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportLeads";
@@ -492,13 +491,12 @@ public class FileController {
 			forward = "redirect:File?tabid=ImportContact";
 		} else if (action.equalsIgnoreCase("UploadLeadsFile")) {
 			if (!attachFile.isEmpty()) {
-				//boolean b = importExportUtils.uploadLeadsFile(attachFile, request);
 				Integer typeIDList = bcaCvtypeRepository.findByName("Lead");
 				if (typeIDList > 0)
 					request.setAttribute("CVTypeID", typeIDList);
 				boolean b = importExportUtils.importLeadFile(attachFile, request);
 				if (b == true) {
-					request.getSession().setAttribute("successMessage", "success");
+					request.getSession().setAttribute("successMessage", "File successfully uploaded");
 				}
 			}
 			forward = "redirect:File?tabid=ImportLeads";
