@@ -206,7 +206,7 @@
 						</a>
 					</li>
 						<li>
-                        <a href="LeadBoard?tabid=LeadBoard" title="Lead Directory">
+                        <a href="LeadDirectory?tabid=LeadDirectory" title="Lead Directory">
                         <span><spring:message code="BzComposer.sales.LeadDirectory" /></span>
                         </a>
                     </li>
