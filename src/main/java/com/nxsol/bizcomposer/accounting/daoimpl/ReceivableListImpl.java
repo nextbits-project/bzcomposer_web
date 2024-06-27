@@ -6068,27 +6068,27 @@ public class ReceivableListImpl implements ReceivableLIst {
 //		SQLExecutor db = new SQLExecutor();
 //		ResultSet rs = null;
 //
-//		String sql = "SELECT INV.InvoiceID, INV.PONum, INV.ClientVendorID , INV.CompanyID,INV.InvoiceTypeID "
-//				+ " ,INV.AdjustedTotal" + " ,INV.paidamount" + " ,INV.BankAccountID"
-//				+ " ,(SELECT Sum(bca_payment.Amount) AS AB FROM bca_payment WHERE bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1) AS PaidAmount12"
-//				+ " ,INV.Balance" + " ,INV.TermID" + " ,INV.PaymentTypeID" + " ,INV.IsPaymentCompleted"
-//				+ " ,INV.DateAdded AS DateAdded" + " ,INV.CategoryId" + " ,INV.Memo" + " ,PAY.Name AS PaymentTypeName"
-//				+ " ,Bank.Name AS AccountName" + " ,Category.Name As CategoryName" + " ,Category.CateNumber"
-//				+ " ,bca_clientvendor.Name AS CompanyName" + " ,bca_clientvendor.FirstName"
-//				+ " ,bca_clientvendor.LastName" + " FROM bca_invoice AS INV"
-//				+ " INNER JOIN bca_clientvendor ON INV.ClientVendorID = bca_clientvendor.ClientVendorID"
-//				+ " LEFT JOIN bca_paymenttype as PAY ON INV.PaymentTypeID = PAY.PaymentTypeID"
-//				+ " LEFT JOIN bca_account AS Bank ON INV.BankAccountID = Bank.AccountID"
-//				+ " LEFT JOIN bca_category AS category ON INV.CategoryID = Category.CategoryID"
-//				+ " WHERE INV.CompanyID=" + ConstValue.companyId + " AND INV.IsPaymentCompleted = 0"
-//				+ " AND INV.InvoiceStatus = 0" + " AND INV.InvoiceTypeID =" + ReceivableListDto.CONSIGNMENT_SALE_TYPE
-//				+ " AND bca_clientvendor.Status = 'N'" + " AND bca_clientvendor.CompanyID = 1"
-//				+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
-//				+ " WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1)"
-//
-//				+ "  OR (SELECT Sum(bca_payment.Amount) FROM bca_payment WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1) IS NULL )"
-//				+ " ORDER  BY ponum DESC";
+		String sql = "SELECT INV.InvoiceID, INV.PONum, INV.ClientVendorID , INV.CompanyID,INV.InvoiceTypeID "
+				+ " ,INV.AdjustedTotal" + " ,INV.paidamount" + " ,INV.BankAccountID"
+				+ " ,(SELECT Sum(bca_payment.Amount) AS AB FROM bca_payment WHERE bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1) AS PaidAmount12"
+				+ " ,INV.Balance" + " ,INV.TermID" + " ,INV.PaymentTypeID" + " ,INV.IsPaymentCompleted"
+				+ " ,INV.DateAdded AS DateAdded" + " ,INV.CategoryId" + " ,INV.Memo" + " ,PAY.Name AS PaymentTypeName"
+				+ " ,Bank.Name AS AccountName" + " ,Category.Name As CategoryName" + " ,Category.CateNumber"
+				+ " ,bca_clientvendor.Name AS CompanyName" + " ,bca_clientvendor.FirstName"
+				+ " ,bca_clientvendor.LastName" + " FROM bca_invoice AS INV"
+				+ " INNER JOIN bca_clientvendor ON INV.ClientVendorID = bca_clientvendor.ClientVendorID"
+				+ " LEFT JOIN bca_paymenttype as PAY ON INV.PaymentTypeID = PAY.PaymentTypeID"
+				+ " LEFT JOIN bca_account AS Bank ON INV.BankAccountID = Bank.AccountID"
+				+ " LEFT JOIN bca_category AS category ON INV.CategoryID = Category.CategoryID"
+				+ " WHERE INV.CompanyID=" + ConstValue.companyId + " AND INV.IsPaymentCompleted = 0"
+				+ " AND INV.InvoiceStatus = 0" + " AND INV.InvoiceTypeID =" + ReceivableListDto.CONSIGNMENT_SALE_TYPE
+				+ " AND bca_clientvendor.Status = 'N'" + " AND bca_clientvendor.CompanyID = 1"
+				+ " AND ( INV.AdjustedTotal > (SELECT Sum(bca_payment.Amount)" + " FROM   bca_payment"
+				+ " WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1)"
 
+				+ "  OR (SELECT Sum(bca_payment.Amount) FROM bca_payment WHERE  bca_payment.InvoiceID = INV.InvoiceID AND bca_payment.Deleted <> 1) IS NULL )"
+				+ " ORDER  BY ponum DESC";
+		sql +="";
 		StringBuffer query = new StringBuffer(
 				"select inv from  BcaInvoice as inv inner join BcaClientvendor as cv on inv.clientVendor.clientVendorId = cv.clientVendorId "
 						+ " left join BcaPaymenttype as pay on inv.paymentType.paymentTypeId = pay.paymentTypeId left join BcaAccount as bank on inv.bankAccountId = bank.accountId "
