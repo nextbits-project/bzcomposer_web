@@ -57,12 +57,14 @@ import com.nxsol.bzcomposer.company.domain.BcaBillingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaCities;
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
+import com.nxsol.bzcomposer.company.domain.BcaLeadNew;
 import com.nxsol.bzcomposer.company.domain.BcaOpportunity;
 import com.nxsol.bzcomposer.company.domain.BcaShippingaddress;
 import com.nxsol.bzcomposer.company.domain.BcaStates;
 import com.nxsol.bzcomposer.company.repos.BcaBillingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCitiesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaCompanyRepository;
+import com.nxsol.bzcomposer.company.repos.BcaLeadNewRepository;
 import com.nxsol.bzcomposer.company.repos.BcaOpportunityRepository;
 import com.nxsol.bzcomposer.company.repos.BcaShippingaddressRepository;
 import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
@@ -140,6 +142,9 @@ public class SalesController {
 	@Autowired
 	private ItemInfoDao itemInfoDao;
 
+	@Autowired
+	private BcaLeadNewRepository bcaLeadNewRepository;
+	
 	@RequestMapping(value = { "/Invoice", "/Customer", "/Item", "/SalesOrder", "/DataManager" }, method = {
 			RequestMethod.GET, RequestMethod.POST })
 	public String executeSalesController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
@@ -1463,8 +1468,21 @@ public class SalesController {
 			} else {
 //				SalesDetailsDao sdetails = new SalesDetailsDao();
 				sd.sendEmail(request, invoiceDto);
+				forward = "redirect:/Customer?tabid=Customer";
+			}
+		} else if (action.equalsIgnoreCase("SendMailToContact")) {
+			String orderNo = request.getParameter("OrderNo");
+			if (null != orderNo) {
+				sd.sendEmail(request, invoiceDto);
+				sd.sendEmailInfo(orderNo, request, "invoice", invoiceDto);
+				forward = "/sales/sendEMail";
+			} else {
+				sd.sendEmail(request, invoiceDto);
 				forward = "redirect:/Customer?tabid=ContactBoard";
 			}
+		} else if (action.equalsIgnoreCase("SendMailToLead")) {
+			sd.sendEmail(request, invoiceDto);
+			forward = "redirect:/AllLeads";
 		} else if (action.equalsIgnoreCase("ShowEmailOnCustomerBoard")) {
 			String CustIDs = request.getParameter("CustIDs");
 //			InvoiceInfoDao invoice = new InvoiceInfoDao();
@@ -1484,6 +1502,55 @@ public class SalesController {
 			emailSenderDto.setTo(emails);
 			emailSenderDto.setFrom(emsDto.getMailSenderEmail());
 			forward = "/sales/customerBoardSendEmail";
+		} else if (action.equalsIgnoreCase("ShowEmailOnContactBoard")) {
+			String CustIDs = request.getParameter("CustIDs");
+			EmailSenderDto emsDto = invoiceInfoDao.getEmailSenderInfo(companyID);
+			ArrayList<CustomerDto> custList = customerInfoDao.contactDetails(companyID);
+			String emails = "";
+			for (String custID : CustIDs.split(":")) {
+				for (CustomerDto cust : custList) {
+					if (!custID.isEmpty() && custID.equals(cust.getClientVendorID())) {
+						emails = emails + cust.getEmail() + ",";
+						break;
+					}
+				}
+			}
+			emails = emails.substring(0, emails.length() - 1);
+			emailSenderDto.setTo(emails);
+			emailSenderDto.setFrom(emsDto.getMailSenderEmail());
+			forward = "/sales/contactBoardSendEmail";
+		} else if (action.equalsIgnoreCase("ShowEmailOnLeadList")) {
+			String CustIDs = request.getParameter("CustIDs");
+			EmailSenderDto emsDto = invoiceInfoDao.getEmailSenderInfo(companyID);
+			/*Optional<BcaLeadNew> bcaLeadNew = bcaLeadNewRepository.findByLeadId(Integer.valueOf(CustIDs));
+			String emails = "";
+			if (bcaLeadNew.isPresent()) {
+				if (bcaLeadNew.get().getEmail() != null && !bcaLeadNew.get().getEmail().isEmpty()) {
+					emails = emails + bcaLeadNew.get().getEmail() + ",";
+					emails = emails.substring(0, emails.length() - 1);
+				}
+			}*/
+			
+			ArrayList<Integer> list = new ArrayList<Integer>();
+			for(String leadID : CustIDs.split(":")){
+				if(!leadID.isEmpty())
+					list.add(Integer.valueOf(leadID));
+			}
+			
+			List<BcaLeadNew> bcaLeadList = bcaLeadNewRepository.findByLeadIds(list);
+			String emails = "";
+			for (String custID : CustIDs.split(":")) {
+				for (BcaLeadNew cust : bcaLeadList) {
+					if (!custID.isEmpty() && custID.equals(String.valueOf(cust.getLeadID()))) {
+						emails = emails + cust.getEmail() + ",";
+						break;
+					}
+				}
+			}
+			emails = emails.substring(0, emails.length() - 1);
+			emailSenderDto.setTo(emails);
+			emailSenderDto.setFrom(emsDto.getMailSenderEmail());
+			forward = "/sales/leadListSendEmail";
 		} else if (action.equalsIgnoreCase("SendMailOnCustomerBoard")) {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();
 			sd.sendEmailOnCustomerBoard(request, emailSenderDto);

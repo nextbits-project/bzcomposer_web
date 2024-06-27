@@ -341,7 +341,6 @@ public class CustomerInfoDao {
 		return objList;
 	}
 
-
 	/* For getting the list of Billing Companies */
 	public ArrayList<CustomerDto> customerDetailsBilling(String compId) {
 		ArrayList<CustomerDto> objList = new ArrayList<>();

@@ -326,6 +326,15 @@ $(function() {
 																</c:forEach>
 															</form:select>																
 														</td>
+														<td><spring:message code="BzComposer.lead.LeadSource" /></td>
+														<td><form:select path="leadSource"
+																style="width:150px;">
+																<option value="0"><spring:message
+																		code="BzComposer.ComboBox.Select" /></option>
+																<c:forEach items="${leadSource}" var="curObject">
+																	<option value="${curObject.leadSourceId}" ${curObject.leadSourceId==customerDto.leadSource?'selected':''}>${curObject.name}</option>
+																</c:forEach>
+															</form:select></td>
 														<%-- <td><spring:message
 																code="BzComposer.global.oppeningunpaidbalance" /></td>
 														<td><form:input path="openingUB"

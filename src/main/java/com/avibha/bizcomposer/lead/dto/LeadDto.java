@@ -15,7 +15,7 @@ public class LeadDto {
 			+ "FirstName,LastName,Address1,Address2,Title,Email,State,Website,Country,"
 			+ "Phone,ZipCode,LeadValue,Company,Description,LeadPublic,ContactToday,ContactDate,Tags";
 
-	public static final String customerColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
+	public static final String leadColumns = "SourceName,CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
 			+ "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID";
 	
 	private Long leadId;

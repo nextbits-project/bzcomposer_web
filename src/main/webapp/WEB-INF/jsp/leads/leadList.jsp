@@ -10,9 +10,6 @@
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
 <title><spring:message code="BzComposer.leadinfotitle" /></title>
 <style>
-.dataTables_length {
-	font-size: 14px;
-}
 
 .dataTables_filter {
 	font-size: 14px;
@@ -65,7 +62,7 @@ table.tabla-listados tbody tr td {
 							<div style="float: left;">
 								<span
 									style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-									<spring:message code="BzComposer.lead.Lead" /> <c:if
+									<spring:message code="BzComposer.sales.LeadBoard" /> <c:if
 										test="${not empty actionMsg}">
 										<br /> ${actionMsg}
             <%
@@ -74,6 +71,77 @@ table.tabla-listados tbody tr td {
 									</c:if>
 								</span>
 							</div>
+							
+							<table cellspacing="0" align="center" class="section-border" style="width: 100%;">
+										<tbody><tr>
+											<td style="width: 30%; padding: 10px;">
+												<table style="width: 100%; font-size: 14px; border-right: 2px solid #dddddd;" cellpadding="5">
+													<tbody><tr>
+														<th colspan="2">Filter Option</th>
+													</tr>
+													<tr>
+														<td colspan="2">Date Range</td>
+													</tr>
+													<tr>
+														<td>Date Added From :</td>
+														<td>Date Added To :</td>
+													</tr>
+													<tr>
+														<td style="width: 50%;"><input id="orderDate1" name="orderDate1" style="width: 120px;" type="text" value="" size="20"> <img style="margin: 5;" src="/images/cal.gif" onclick="displayCalendar(document.orderDate1,'mm-dd-yyyy',this);">
+														</td>
+														<td><input id="orderDate2" name="orderDate2" style="width: 120px;" type="text" value="" size="20"> <img style="margin: 5;" src="/images/cal.gif" onclick="displayCalendar(document.orderDate2,'mm-dd-yyyy',this);">
+														</td>
+													</tr>
+												</tbody></table>
+											</td>
+											<td style="width: 25%;">
+												<table style="width: 100%; font-size: 14px;" cellpadding="5">
+													<tbody><tr>
+														<th colspan="2">&nbsp;</th>
+													</tr>
+													<tr>
+														<td>Column</td>
+														<td><select id="searchType" name="searchType" style="width: 150px;">
+																<option value="1">Lead Source</option>
+																<option value="2">Name</option>
+																<option value="3">Company</option>
+																<option value="4">Address1</option>
+																<option value="5">Email</option>
+															</select></td>
+													</tr>
+													<tr>
+														<td>Text</td>
+														<td><input id="searchTxt" name="searchTxt" style="width: 150px;" type="text" value=""></td>
+													</tr>
+													<tr>
+														<td colspan="2">Date format :
+															(MM-DD-YYYY)</td>
+													</tr>
+												</tbody></table>
+											</td>
+											<td style="width: 20%;">
+												<div>
+													<button type="button" class="formbutton" onclick="SaleSearch(1);" style="width: 70px;">
+														Search
+													</button>
+												</div>
+												<div>
+													<button type="button" class="formbutton" onclick="SaleSearch(2);" style="width: 70px; margin-top: 10px;">
+														Refresh
+													</button>
+												</div>
+												<div>
+													<button type="button" class="formbutton" onclick="SaleSearch(3);" style="width: 70px; margin-top: 10px; margin-right: 20px;">
+														Clear
+													</button>
+													<button type="button" class="formbutton" onclick="downloadInvoiceBoardReport();" style="width: 110px; margin-top: 10px;">
+														Multi-Print
+													</button>
+												</div>
+											</td>
+										</tr>
+									</tbody></table></br>
+									
 							<div style="width: 100%;">
 								<table style="width: 100%;">
 									<tr>
@@ -101,7 +169,7 @@ table.tabla-listados tbody tr td {
 											value="<spring:message code='BzComposer.Customer.transform.opportunity'/>" />
 										</td>
 									</tr>
-									<tr>
+									<!-- <tr>
 										<td colspan="2" align="center"><input type="button"
 											class="formbutton" onclick="leadsImport()"
 											style="padding: 7 15px;"
@@ -109,7 +177,7 @@ table.tabla-listados tbody tr td {
 											type="button" class="formbutton" onclick="exportLead()"
 											style="padding: 7 15px;"
 											value="<spring:message code='menu.file.ExportTo'/>" /></td>
-									</tr>
+									</tr> -->
 								</table>
 							</div>
 							<div style="float: right;">
@@ -124,7 +192,7 @@ table.tabla-listados tbody tr td {
 													onclick="manageCustomer('EDIT');" style="padding: 7 15px;"
 													value="<spring:message code='BzComposer.global.edit'/>" />
 												<input type="button" class="formbutton"
-													onclick="manageeCustomer('DELETE');"
+													onclick="manageCustomer('DELETE');"
 													style="padding: 7 15px;"
 													value="<spring:message code='BzComposer.global.delete'/>" />
 											</div>
@@ -141,18 +209,26 @@ table.tabla-listados tbody tr td {
 							<thead>
 								<tr valign="center">
 									<th><spring:message code="BzComposer.Customer.ID" /></th>
-									<th><spring:message code="BzComposer.customerinfo.lead" /></th>
+									<th>Lead Source</th>
+									<th><spring:message code="BzComposer.global.name" /></th>
 									<th><spring:message code="BzComposer.global.company" /></th>
 									<%-- <th><spring:message code="BzComposer.Companyinformation.Type" /></th>--%>
 									<th><spring:message code="BzComposer.global.address1" /></th>
 									<th><spring:message code="BzComposer.global.address2" /></th>
 									<th><spring:message code="BzComposer.global.city" /></th>
 									<th><spring:message code="BzComposer.global.state" /></th>
-									<th><spring:message code="BzComposer.global.zipcode" /></th>
+									<th><spring:message code="BzComposer.global.zip" /></th>
 									<th><spring:message code="BzComposer.global.country" /></th>
 									<%-- <th><spring:message code="BzComposer.orderimport.lastorderdate" /></th>--%>
 									<th><spring:message code="BzComposer.global.dateadded" /></th>
-									<th><spring:message code="Bizcomposer.active" /></th>
+									<th><spring:message code="BzComposer.global.phone" /></th>
+									<th><spring:message code="BzComposer.global.mobile" /></th>
+									<th><spring:message code="BzComposer.global.fax" /></th>
+									<th><spring:message code="BzComposer.global.emailaddress" /></th>
+									<th>eMailed</th>
+									<th>Phoned</th>
+									<th>Texted</th>
+									<th>Active</th>
 								</tr>
 							</thead>
 							<tbody id="custTableBody">
@@ -160,16 +236,22 @@ table.tabla-listados tbody tr td {
 									<c:forEach items="${customerList}" var="objList"
 										varStatus="loop">
 										<tr id='${loop.index}$$'
-											onclick="setRowId(${objList.leadID}, ${loop.index}, true);"
-											ondblclick="goToCustomerBoard(${objList.leadID});">
+											onclick="setRowId(${objList.leadID}, ${loop.index}, true);">
 											<%-- <td>${objList.leadID}</td> --%>
 											<td class=""><input type="checkbox"
 												id="custID${loop.index}" value="${objList.leadID}"
 												onchange="addRowIndex(${loop.index}, ${objList.leadID})" />
 												${objList.leadID}</td>
+											<c:if test="${(not empty objList.leadSource) && (not empty objList.leadSource.name)}">
+												<td>${objList.leadSource.name}</td>
+											</c:if>
+											<c:if test="${(empty objList.leadSource) && (empty objList.leadSource.name)}">
+												<td>Not Specified</td>
+											</c:if>
 											<td>${objList.firstName}${objList.middleName}
 												${objList.lastName}</td>
-											<td>${objList.company.name}</td>
+											<%--  <td>${objList.company.name}</td> --%>
+											<td>${objList.name}</td>
 											<%--  <td>${objList.type}</td> --%>
 											<td>${objList.address1}</td>
 											<td>${objList.address2}</td>
@@ -179,7 +261,32 @@ table.tabla-listados tbody tr td {
 											<td>${objList.country}</td>
 											<%--   <td>${objList.lastOrderDate}</td>--%>
 											<td>${objList.formattedDateAdded}</td>
-											<td>Yes</td>
+											<td>${objList.phone}</td>
+											<td>${objList.cellPhone}</td>
+											<td>${objList.fax}</td>
+											<td>${objList.email}</td>
+											
+							<td align="center"><logic:equal name="objList"
+								property="printed" value="true">
+								<input type="checkbox" name="isPrintedCHK" id="isPrintedId"
+									title="isPrinted" checked="true">
+							</logic:equal></td>
+							
+							<td align="center"><logic:equal name="objList"
+								property="printed" value="true">
+								<input type="checkbox" name="isPrintedCHK" id="isPhoned"
+									title="isPhoned" checked="true">
+							</logic:equal></td>
+							<td align="center"><logic:equal name="objList"
+								property="printed" value="true">
+								<input type="checkbox" name="isPrintedCHK" id="isPrintedId"
+									title="isPrinted" checked="true">
+							</logic:equal></td>
+							<td align="center"><logic:equal name="objList"
+								property="printed" value="true">
+								<input type="checkbox" name="isPrintedCHK" id="isPrintedId"
+									title="isPrinted" checked="true">
+							</logic:equal></td>
 										</tr>
 									</c:forEach>
 								</c:if>
@@ -220,7 +327,9 @@ $(document).ready(function() {
 function initialize(){
     let lSize = document.getElementById("lSize").value;
     if(lSize > 0){
-        document.getElementById('0$$').className = "even";
+    	if(document.getElementById('0$$') != null){
+    		document.getElementById('0$$').className = "even";
+    	}
     }
 }
 
@@ -260,23 +369,9 @@ function manageCustomer(cmd){
 			window.open("/editLeadDetails/" + itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 		}
 		else if (cmd=="DELETE") {
-			event.preventDefault();
-			$("#deleteCustomer").dialog({
-		    	resizable: false,
-		        height: 200,
-		        width: 500,
-		        modal: true,
-		        buttons: {
-		            "<spring:message code='BzComposer.global.ok'/>": function () {
-		                $(this).dialog("close");
-		                window.location = "/removeLead/"+itemID;
-		            },
-		            <spring:message code='BzComposer.global.cancel'/>: function () {
-		                $(this).dialog("close");
-		                return false;
-		            }
-				}
-			});
+			if(confirm("<spring:message code='BzComposer.lead.deleteselecteddelete'/>")==true) {
+				window.location = "/removeLead/"+itemID;
+			}
 			return false;
 		}
 		else if (cmd=="CONVERTLEADtoCUSTOMER") {
@@ -386,6 +481,30 @@ function addRowIndex(rowId, custID){
         }
     }
 }
+
+function SaleSearch(filterType)
+{
+	if(filterType > 1){
+        location.reload();
+    }
+    let searchType = $("#searchType").val();
+    let searchTxt = $("#searchTxt").val();
+    let orderDate1 = $("#orderDate1").val();
+    let orderDate2 = $("#orderDate2").val();
+    $.ajax({
+        type : "POST",
+        url : "SalesBord?tabid=ShowList",
+        data:"searchType=" + searchType + "&searchTxt=" +searchTxt+ "&orderDate1=" +orderDate1+ "&orderDate2=" +orderDate2,
+        success : function(data){
+            $(document).find('div#invoiceOrderList section').replaceWith($(data).find('div#invoiceOrderList').html());
+            selectedRowIDs = [];
+        },
+         error : function(data) {
+             alert("<spring:message code='BzComposer.billingboard.someerroroccurred'/>");
+        }
+    });
+}
+
 function openMailSender(){
     if (selectedRowIndexs.length == 0){
         alert("<spring:message code='BzComposer.printlabels.selectcustomer'/>");
@@ -396,7 +515,7 @@ function openMailSender(){
             CustIDs = CustIDs + selectedRowIndexs[x] +":";
         }
         CustIDs = CustIDs.substring(0, CustIDs.length-1);
-        window.open("Customer?tabid=ShowEmailOnCustomerBoard&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
+        window.open("Customer?tabid=ShowEmailOnLeadList&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
     }
 }
 function transferToCustomer(){

@@ -233,7 +233,8 @@ public class CustomerDto  implements Serializable{
 	private int billingAddressId;
 	private int leadCategory;
 	private String product;
-
+	private String sourceName;
+	
 	private List<String> leadSelectedproducts;
 	
 	public CustomerDto() {
@@ -2055,4 +2056,13 @@ public class CustomerDto  implements Serializable{
 	public void setCvCategoryTypeID(String cvCategoryTypeID) {
 		this.cvCategoryTypeID = cvCategoryTypeID;
 	}
+
+	public String getSourceName() {
+		return sourceName;
+	}
+
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
+	}
+	
 }

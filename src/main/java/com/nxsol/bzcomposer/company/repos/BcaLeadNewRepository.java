@@ -32,4 +32,23 @@ public interface BcaLeadNewRepository extends JpaRepository<BcaLeadNew, Integer>
 	@Query("select bcv from BcaLeadNew bcv where bcv.company.companyId =:companyId and bcv.leadID = :leadID")
 	BcaLeadNew findByCompanyIdAndleadID(@Param("companyId") Long companyId,
 			@Param("leadID") Integer leadID);
+	
+	@Query("From BcaLeadNew Where LeadID IN :leadIds")
+	List<BcaLeadNew> findByLeadIds(List<Integer> leadIds);
+	
+	@Query(nativeQuery = true, value = "select bcv.LeadID, bcv.FirstName, bcv.MiddleName, bcv.LastName, bcv.Name, bcv.Address1, bcv.Address2, "
+			+ "ct.Name AS City, st.Name AS State, cn.Name AS Country, bcv.ZipCode, date_format(bcv.DateAdded,'%d-%m-%Y') as DateAdded, bcv.Phone, bcv.CellPhone, bcv.Fax, bcv.Email "
+			+ "from bca_lead AS bcv "
+			+ "LEFT JOIN bca_countries as cn ON cn.ID=bcv.Country "
+			+ "LEFT JOIN bca_states as st ON st.ID=bcv.State "
+			+ "LEFT JOIN bca_cities as ct ON ct.ID=bcv.City where bcv.LeadDirectoryID =:directoryID")
+	List<Object[]> findAllLeadByDirectoryId(@Param("directoryID") Integer directoryID);
+	
+	@Query(nativeQuery = true, value = "select bcv.LeadID, bcv.FirstName, bcv.MiddleName, bcv.LastName, bcv.Name, bcv.Address1, bcv.Address2, "
+			+ "ct.Name AS City, st.Name AS State, cn.Name AS Country, bcv.ZipCode, date_format(bcv.DateAdded,'%d-%m-%Y') as DateAdded, bcv.Phone, bcv.CellPhone, bcv.Fax, bcv.Email "
+			+ "from bca_lead AS bcv "
+			+ "LEFT JOIN bca_countries as cn ON cn.ID=bcv.Country "
+			+ "LEFT JOIN bca_states as st ON st.ID=bcv.State "
+			+ "LEFT JOIN bca_cities as ct ON ct.ID=bcv.City where CompanyID =:companyID and LeadDirectoryID is not null")
+	List<Object[]> getAllLeadDirectoryByCompanyId(@Param("companyID") Long companyID);
 }

@@ -201,13 +201,13 @@
 				</a>
 				<ul>
 					<li>
-						<a href="AllLeads?tabid=leadList" title="Lead">
-                        <span><spring:message code="BzComposer.sales.LeadList" /></span>
+						<a href="AllLeads?tabid=leadList" title="Lead Board">
+                        <span><spring:message code="BzComposer.sales.LeadBoard" /></span>
 						</a>
 					</li>
 						<li>
-                        <a href="LeadBoard?tabid=LeadBoard" title="Lead Board">
-                        <span><spring:message code="BzComposer.sales.LeadBoard" /></span>
+                        <a href="LeadBoard?tabid=LeadBoard" title="Lead Directory">
+                        <span><spring:message code="BzComposer.sales.LeadDirectory" /></span>
                         </a>
                     </li>
 					<li>

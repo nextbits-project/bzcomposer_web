@@ -155,6 +155,14 @@ public class BcaLeadNew implements Serializable{
     @OneToMany(mappedBy = "lead")
     private Set<BcaLeadProducts> leadBcaLeadProductss;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LeadDirectoryID")
+	private BcaLeadDirectory leadDirectory;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "City", referencedColumnName = "id", insertable = false, updatable = false)
+	private BcaCities cityObj;
+    
 	@Transient
 	private String formattedDateAdded;
 	
@@ -500,6 +508,14 @@ public class BcaLeadNew implements Serializable{
 
 	public void setLeadBcaLeadProductss(Set<BcaLeadProducts> leadBcaLeadProductss) {
 		this.leadBcaLeadProductss = leadBcaLeadProductss;
+	}
+
+	public BcaLeadDirectory getLeadDirectory() {
+		return leadDirectory;
+	}
+
+	public void setLeadDirectory(BcaLeadDirectory leadDirectory) {
+		this.leadDirectory = leadDirectory;
 	}
 	
 }

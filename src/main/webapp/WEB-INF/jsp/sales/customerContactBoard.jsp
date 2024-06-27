@@ -356,7 +356,7 @@ function openMailSender(){
             CustIDs = CustIDs + selectedRowIndexs[x] +":";
         }
         CustIDs = CustIDs.substring(0, CustIDs.length-1);
-        window.open("Customer?tabid=ShowEmailOnCustomerBoard&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
+        window.open("Customer?tabid=ShowEmailOnContactBoard&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
     }
 }
 function transferToCustomer(){

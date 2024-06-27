@@ -3324,9 +3324,12 @@ public class InvoiceInfoDao {
 				}
 				//customer.setTitle(cv.getCustomerTitle());
 				customer.setTexID(cv.getResellerTaxId());
-				customer.setOpeningUB(cv.getVendorOpenDebit().toString());
-
-				customer.setExtCredit(cv.getVendorAllowedCredit().toString());
+				if (cv.getVendorOpenDebit() != null)
+					customer.setOpeningUB(cv.getVendorOpenDebit().toString());
+				
+				if (cv.getVendorAllowedCredit() != null)
+					customer.setExtCredit(cv.getVendorAllowedCredit().toString());
+				
 				customer.setMemo(cv.getDetail());
 				customer.setTaxAble(cv.getTaxable() != null ? cv.getTaxable().toString() : "0");
 				if(cv.getCvtypeId() > 0){
@@ -7274,7 +7277,6 @@ public class InvoiceInfoDao {
 					customer.setStateID(String.valueOf(bcaStates.get().getId()));
 				}
 
-				//request.setAttribute("state_gen", cv.getState());
 				if(cv.getCountry() != null && !cv.getCustomerTitle().isEmpty()) {
 					Optional<BcaCountries> bcaCountries = bcaCountriesRepository.findById(Integer.valueOf(cv.getCountry()));	
 					customer.setCountry(bcaCountries.get().getName());
@@ -7292,8 +7294,20 @@ public class InvoiceInfoDao {
 				}
 				
 				customer.setTexID(cv.getResellerTaxId());
-				customer.setMiddleName(cv.getMiddleName());
-				customer.setDbaName(cv.getDbaname());
+				if (cv.getMiddleName() != null && !cv.getMiddleName().isEmpty())
+					customer.setMiddleName(cv.getMiddleName());
+				else 
+					customer.setMiddleName("");
+				
+				if (cv.getDbaname() != null && !cv.getDbaname().isEmpty())
+					customer.setDbaName(cv.getDbaname());
+				else 
+					customer.setDbaName("");
+				
+				if (cv.getLeadSource() != null && cv.getLeadSource().getName() != null && !cv.getLeadSource().getName().isEmpty())
+					customer.setSource(cv.getLeadSource().getName());
+				else 
+					customer.setSource("Not Specified");
 				customerList.add(customer);
 			}
 			//request.setAttribute("CustomerDetails", customer);
