@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -1547,22 +1548,48 @@ public class ConfigurationInfo {
 //	}
 
 	public void saveformCustomization(ConfigurationDto cForm) {
-		// Activating styles
-		for (String styleId : cForm.getListOfActiveInvoiceStyle()) {
-			invoiceStyleRepository.findById(Integer.parseInt(styleId)).ifPresent(style -> {
-				style.setActive(1);
-				invoiceStyleRepository.save(style);
-			});
-		}
+	    // Activating styles
+	    String[] activeInvoiceStyleArray = cForm.getListOfActiveInvoiceStyle();
+	    if (activeInvoiceStyleArray != null && activeInvoiceStyleArray.length > 0) {
+	        List<String> activeInvoiceStyleList = Arrays.asList(activeInvoiceStyleArray);
+	        for (String styleId : activeInvoiceStyleList) {
+	            invoiceStyleRepository.findById(Integer.parseInt(styleId)).ifPresent(style -> {
+	                style.setActive(1);
+	                invoiceStyleRepository.save(style);
+	            });
+	        }
+	    }
 
-		// Deactivating styles
-		for (String styleId : cForm.getListOfDeActiveInvoiceStyle()) {
-			invoiceStyleRepository.findById(Integer.parseInt(styleId)).ifPresent(style -> {
-				style.setActive(0);
-				invoiceStyleRepository.save(style);
-			});
-		}
+	    // Deactivating styles
+	    String[] deActiveInvoiceStyleArray = cForm.getListOfDeActiveInvoiceStyle();
+	    if (deActiveInvoiceStyleArray != null && deActiveInvoiceStyleArray.length > 0) {
+	        List<String> deActiveInvoiceStyleList = Arrays.asList(deActiveInvoiceStyleArray);
+	        for (String styleId : deActiveInvoiceStyleList) {
+	            invoiceStyleRepository.findById(Integer.parseInt(styleId)).ifPresent(style -> {
+	                style.setActive(0);
+	                invoiceStyleRepository.save(style);
+	            });
+	        }
+	    }
 	}
+
+//	public void saveformCustomization(ConfigurationDto cForm) {
+//		// Activating styles
+//		for (String styleId : cForm.getListOfActiveInvoiceStyle()) {
+//			invoiceStyleRepository.findById(Integer.parseInt(styleId)).ifPresent(style -> {
+//				style.setActive(1);
+//				invoiceStyleRepository.save(style);
+//			});
+//		}
+//
+//		// Deactivating styles
+//		for (String styleId : cForm.getListOfDeActiveInvoiceStyle()) {
+//			invoiceStyleRepository.findById(Integer.parseInt(styleId)).ifPresent(style -> {
+//				style.setActive(0);
+//				invoiceStyleRepository.save(style);
+//			});
+//		}
+//	}
 
 //	public void saveformCustomization(ConfigurationDto cForm) {
 //		Connection con = null;

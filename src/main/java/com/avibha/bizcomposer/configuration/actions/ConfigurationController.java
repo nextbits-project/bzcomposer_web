@@ -201,7 +201,7 @@ public class ConfigurationController {
 			dao.getInvoiceStyle(configDto);
 			dao.getInvoiceStyle1(configDto);
 			dao.getModules(companyID, request, configDto);
-
+			dao.getSelectedModules(companyIDL, configDto);
 			setConfigActiveTab(session, "moduleTab");
 			System.out.println("goes to configModule page......................");
 			forward = "/configuration/modules";
@@ -1388,10 +1388,16 @@ public class ConfigurationController {
 			String ActiveInvoiceStylelist = request.getParameter("ActiveInvoiceStylelist");
 			String[] ActiveInvoiceStylelists = ActiveInvoiceStylelist.split(",");
 
-			String DeActiveInvoiceStylelist = request.getParameter("DeActiveInvoiceStylelist");
-			String[] DeActiveInvoiceStylelists = DeActiveInvoiceStylelist.split(",");
+//			String DeActiveInvoiceStylelist = request.getParameter("DeActiveInvoiceStylelist");
+//			String[] DeActiveInvoiceStylelists = DeActiveInvoiceStylelist.split(",");
+			String deActiveInvoiceStylelist = request.getParameter("DeActiveInvoiceStylelist");
+			String[] deActiveInvoiceStylelists = null;
+
+			if (deActiveInvoiceStylelist != null && !deActiveInvoiceStylelist.isEmpty()) {
+			    deActiveInvoiceStylelists = deActiveInvoiceStylelist.split(",");
+			}
 			// ConfigurationDetails cDetails = new ConfigurationDetails();
-			cDetails.saveInvoiceStyle(configDto, ActiveInvoiceStylelists, DeActiveInvoiceStylelists);
+			cDetails.saveInvoiceStyle(configDto, ActiveInvoiceStylelists, deActiveInvoiceStylelists);
 		}
 		/* Save all the configuration records (i.e:- inventory,sales,purchase,etc). */
 		else if (action.equalsIgnoreCase("SaveConfiguration")) {

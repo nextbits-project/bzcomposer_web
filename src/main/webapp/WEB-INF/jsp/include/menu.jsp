@@ -299,6 +299,17 @@
 						</a>
 					</li>
 					 </c:if>
+					 
+					 <c:if test="${versionConfigDetails.isSalesOrderEnable==1}" >
+					<li>
+						<a href="Layaways?tabid=Layaways" title="layaways">
+                     <span>
+                        <spring:message code="BzComposer.sales.Layaways" />
+                     </span>
+						</a>
+					</li>
+					 </c:if>
+					 
 					<li>
 						<a href="SalesBord?tabid=ShowList" title="invoiceboard">
                      <span>
@@ -320,6 +331,15 @@
                      </span>
 						</a>
 					</li>
+					<c:if test="${versionConfigDetails.isSalesOrderEnable==1}" >
+					<li>
+						<a href="Layaways?tabid=ShowList" title="layaways">
+                     <span>
+                        <spring:message code="BzComposer.layawaysboard.layawaysboard" />
+                     </span>
+						</a>
+					</li>
+					 </c:if>
 					 <c:if test="${versionConfigDetails.isRmaEnable==1}" >
 					<li class="current">
 						<a href="javascript: void(0)" title="RMA">

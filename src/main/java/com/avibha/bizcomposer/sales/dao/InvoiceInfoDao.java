@@ -135,7 +135,7 @@ public class InvoiceInfoDao {
 
 	@Autowired
 	private BcaInvoiceRepository bcaInvoiceRepository;
-	
+
 	@Autowired
 	private ConfigurationInfo configInfo;
 
@@ -186,25 +186,25 @@ public class InvoiceInfoDao {
 
 	@Autowired
 	private ReceivableLIst receivableLIst;
-	
+
 	@Autowired
 	private BcaTitleRepository bcaTitleRepository;
-	
+
 	@Autowired
 	private BcaCountriesRepository bcaCountriesRepository;
-	
+
 	@Autowired
 	private BcaStatesRepository bcaStatesRepository;
-	
+
 	@Autowired
 	private BcaCitiesRepository bcaCitiesRepository;
-	
+
 	@Autowired
 	private BcaCvtypeRepository bcaCvtypeRepository;
-	
+
 	@Autowired
 	private BcaClientcategoryRepository bcaClientcategoryRepository;
-	
+
 	public InvoiceDetailsResponse invoiceDetails(int invoiceId, String companyId) {
 		InvoiceDetailsResponse response = new InvoiceDetailsResponse();
 
@@ -263,7 +263,7 @@ public class InvoiceInfoDao {
 				String inventoryCode = cartResultSet.getString("InventoryCode");
 				int qty = cartResultSet.getInt("Qty");
 				double unitPrice = cartResultSet.getDouble("UnitPrice");
-				String taxable=cartResultSet.getString("Taxable");
+				String taxable = cartResultSet.getString("Taxable");
 
 				// Create a new CartItem instance
 				CartItem cartItem = new CartItem();
@@ -766,15 +766,12 @@ public class InvoiceInfoDao {
 
 			TypedQuery<BcaShippingaddressDto> typedQuery = this.entityManager.createQuery(query.toString(),
 					BcaShippingaddressDto.class);
-			
+
 			if (cvID != null)
 				JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvID));
 
 			if (companyId != null)
 				JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(companyId));
-			
-		
-			  
 
 			List<BcaShippingaddressDto> list = typedQuery.getResultList();
 			for (BcaShippingaddressDto dto : list) {
@@ -1572,7 +1569,7 @@ public class InvoiceInfoDao {
 			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
 			List<Integer> invoiceStatus = Arrays.asList(0, 2);
 
-			List<Integer> invoiceTypeID = Arrays.asList(7);
+			List<Integer> invoiceTypeID = Arrays.asList(7, 18);// 7 for sales order, 18 for layaways
 			List<BcaInvoice> bcaInvoices = bcaInvoiceRepository
 					.findByCompanyIdAndInvoiceStatusAndInvoiceTypeIdOrderBySonumDesc(Long.valueOf(compId),
 							invoiceStatus, invoiceTypeID);
@@ -1704,7 +1701,7 @@ public class InvoiceInfoDao {
 		boolean exist = false;
 		try {
 			pstmt = con.prepareStatement(
-					"select SONum from bca_invoice where SONum = ? and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (7)");
+					"select SONum from bca_invoice where SONum = ? and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (7,18)");
 			pstmt.setString(1, orderNo);
 			pstmt.setInt(2, cid);
 			rs = pstmt.executeQuery();
@@ -1795,8 +1792,7 @@ public class InvoiceInfoDao {
 
 			if (null != form.getTaxID()) {
 				Optional<BcaSalestax> salesTax = bcaSalestaxRepository.findById(Integer.parseInt(form.getTaxID()));
-				if (salesTax.isPresent()) 
-				{
+				if (salesTax.isPresent()) {
 					bcaInvoice.setSalesTax(salesTax.get());
 				}
 			}
@@ -1825,46 +1821,35 @@ public class InvoiceInfoDao {
 			bcaInvoice.setEstNum(0);
 			bcaInvoice.setOrderType(7);
 			String paid = form.getPaid();
-			
-			if (paid != null && (paid.equals("on") || paid.equals("true"))) 
-			{
+
+			if (paid != null && (paid.equals("on") || paid.equals("true"))) {
 				bcaInvoice.setIsPaymentCompleted(true);
-			}
-			else
-			{
+			} else {
 				bcaInvoice.setIsPaymentCompleted(false);
 			}
-			if (form.getServiceID() == 0)
-			{
+			if (form.getServiceID() == 0) {
 				bcaInvoice.setServiceId(0);
-			}
-			else
-			{
+			} else {
 				bcaInvoice.setServiceId(form.getServiceID());
-			
+
 			}
 
 			bcaInvoice.setIsInvoice(1);
 			bcaInvoice.setIsSalestype(1);
 			String isPending = form.getIsPending();
-			
-			if (isPending != null && (isPending.equals("on") || isPending.equals("true"))) 
-			{
+
+			if (isPending != null && (isPending.equals("on") || isPending.equals("true"))) {
 				bcaInvoice.setIsPending(1);
-			} 
-			else 
-			{
+			} else {
 				bcaInvoice.setIsPending(0);
-			
+
 			}
 			BcaInvoice invoice = bcaInvoiceRepository.save(bcaInvoice);
-			if (null != invoice)
-			{	
-				 receivableLIst.insertIntoBillingStatement(invoice.getInvoiceId());
-				 saveStatus = true;
+			if (null != invoice) {
+				receivableLIst.insertIntoBillingStatement(invoice.getInvoiceId());
+				saveStatus = true;
 			}
-			if (null != invoice) 
-			{
+			if (null != invoice) {
 				Map<Integer, Integer> oldInvData = new HashMap<>();
 				List<BcaCart> cart = bcaCartRepository.findByInvoiceIdAndCompanyId(invoice.getInvoiceId(),
 						Long.parseLong(compId));
@@ -1966,11 +1951,10 @@ public class InvoiceInfoDao {
 				pstmt2.executeUpdate();
 				pstmt2.close();
 				saveStatus = SalesUpdate(compId, form, salesOrderType, invoiceID);
-				
-				System.out.println("\nsandip::"+saveStatus);
+
+				System.out.println("\nsandip::" + saveStatus);
 			}
-		} catch (SQLException ee)
-		{
+		} catch (SQLException ee) {
 			Loger.log("Exception" + ee.toString());
 			System.out.println("\nsandip:exception");
 
@@ -2023,7 +2007,7 @@ public class InvoiceInfoDao {
 				String uweight = (invUWeights[i] != null && invUWeights[i].length() > 0) ? invUWeights[i] : "0.0";
 				String uprice = (invUPrices[i] != null && invUPrices[i].length() > 0) ? invUPrices[i] : "0.0";
 				String taxable = (invIsTaxables[i] != null && invIsTaxables[i].length() > 0) ? invIsTaxables[i] : "0";
-				
+
 				String itmTypeID = (invItemIDs[i] != null && invItemIDs[i].length() > 0) ? invItemIDs[i] : "0";
 				String itmOrder = invItemOrders[i];
 				BcaCart bcaCart = new BcaCart();
@@ -2041,7 +2025,7 @@ public class InvoiceInfoDao {
 				bcaCart.setInventoryCode(itemCode);
 				bcaCart.setInventoryName(itemName);
 				bcaCart.setQty(Integer.parseInt(qty));
-				bcaCart.setUnitWeight(Double.parseDouble(uweight)/Integer.parseInt(qty));
+				bcaCart.setUnitWeight(Double.parseDouble(uweight) / Integer.parseInt(qty));
 				bcaCart.setWeight(Double.parseDouble(uweight));
 				bcaCart.setUnitPrice(Double.parseDouble(truncate(uprice)));
 				if (taxable != null && (taxable.equals("on") || taxable.equals("true"))) {
@@ -2169,7 +2153,7 @@ public class InvoiceInfoDao {
 //	}
 
 	public boolean SalesUpdate(String compId, InvoiceDto form, int salesOrderType, int invoiceID) {
-		
+
 		System.out.println("sandip:sales-update");
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt3 = null;
@@ -2259,12 +2243,11 @@ public class InvoiceInfoDao {
 			} else {
 				pstmt1.setInt(35, 0);
 			}
-			pstmt1.setDouble(36,form.getDiscount());
-			pstmt1.setInt(37,0);
+			pstmt1.setDouble(36, form.getDiscount());
+			pstmt1.setInt(37, 0);
 			pstmt1.setInt(38, invoiceID);
 			int rows = pstmt1.executeUpdate();
-			
-			
+
 			if (rows > 0) {
 				/* Delete Item from Cart */
 				String cartDelete = "delete from bca_cart  where  InvoiceID = ? and CompanyID = ?";
@@ -2698,7 +2681,7 @@ public class InvoiceInfoDao {
 		int cid = Integer.parseInt(compId);
 		int invoiceID = 0;
 		try {
-			String sql = "SELECT InvoiceID from bca_invoice where SONum=? and CompanyID = ? and invoiceStatus IN (0,2) and InvoiceTypeID IN (7)";
+			String sql = "SELECT InvoiceID from bca_invoice where SONum=? and CompanyID = ? and invoiceStatus IN (0,2) and InvoiceTypeID IN (7,18)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, no);
 			pstmt.setInt(2, cid);
@@ -3253,20 +3236,21 @@ public class InvoiceInfoDao {
 			if (cvId != null && !cvId.isEmpty()) {
 				jpql.append(" AND cv.clientVendorId = " + cvId);
 			}
-					//"WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId = :companyId ");
-			
-			String cvtypeId ="";
+			// "WHERE cv.status IN ('N', 'U') AND cv.deleted = 0 AND cv.company.companyId =
+			// :companyId ");
+
+			String cvtypeId = "";
 			if (request.getAttribute("cvtypeId") != null) {
-				cvtypeId = request.getAttribute("cvtypeId").toString();	
+				cvtypeId = request.getAttribute("cvtypeId").toString();
 			}
-			
+
 			if (cvtypeId != null && !cvtypeId.isEmpty()) {
-				//contact
-				jpql.append("AND cv.cvtypeId = " + cvtypeId+" ");
+				// contact
+				jpql.append("AND cv.cvtypeId = " + cvtypeId + " ");
 			} else if (cvId != null && cvId != "") {
-				jpql.append("AND cv.clientVendorId = " + cvId+" ");
+				jpql.append("AND cv.clientVendorId = " + cvId + " ");
 			} else {
-				//customer
+				// customer
 				jpql.append("AND cv.cvtypeId IN (1, 2, 8) ");
 
 			}
@@ -3292,13 +3276,13 @@ public class InvoiceInfoDao {
 				customer.setLastName(cv.getLastName());
 				customer.setAddress1(cv.getAddress1());
 				customer.setAddress2(cv.getAddress2());
-				if(cv.getCity() != null && !cv.getCity().isEmpty()) {
-					Optional<BcaCities> bcaCities = bcaCitiesRepository.findById(Integer.valueOf(cv.getCity()));	
+				if (cv.getCity() != null && !cv.getCity().isEmpty()) {
+					Optional<BcaCities> bcaCities = bcaCitiesRepository.findById(Integer.valueOf(cv.getCity()));
 					customer.setCity(bcaCities.get().getName());
 					customer.setCityID(String.valueOf(bcaCities.get().getId()));
 				}
-				if(cv.getState() != null && !cv.getState().isEmpty()) {
-					Optional<BcaStates> bcaStates = bcaStatesRepository.findById(Integer.valueOf(cv.getState()));	
+				if (cv.getState() != null && !cv.getState().isEmpty()) {
+					Optional<BcaStates> bcaStates = bcaStatesRepository.findById(Integer.valueOf(cv.getState()));
 					customer.setState(bcaStates.get().getName());
 					customer.setStateID(String.valueOf(bcaStates.get().getId()));
 				}
@@ -3306,41 +3290,43 @@ public class InvoiceInfoDao {
 				request.setAttribute("state_gen", cv.getState());
 
 				customer.setProvince(cv.getProvince());
-				if(cv.getCountry() != null && !cv.getCustomerTitle().isEmpty()) {
-					Optional<BcaCountries> bcaCountries = bcaCountriesRepository.findById(Integer.valueOf(cv.getCountry()));	
+				if (cv.getCountry() != null && !cv.getCustomerTitle().isEmpty()) {
+					Optional<BcaCountries> bcaCountries = bcaCountriesRepository
+							.findById(Integer.valueOf(cv.getCountry()));
 					customer.setCountry(bcaCountries.get().getName());
 					customer.setCountryID(String.valueOf(bcaCountries.get().getId()));
 				}
-				
+
 				customer.setZipCode(cv.getZipCode());
 				customer.setPhone(cv.getPhone());
 				customer.setCellPhone(cv.getCellPhone());
 				customer.setFax(cv.getFax());
 				customer.setEmail(cv.getEmail());
 				customer.setHomePage(cv.getHomePage());
-				if(cv.getCustomerTitle() != null && !cv.getCustomerTitle().isEmpty()) {
+				if (cv.getCustomerTitle() != null && !cv.getCustomerTitle().isEmpty()) {
 					Optional<BcaTitle> bcaTitle = bcaTitleRepository.findById(Integer.valueOf(cv.getCustomerTitle()));
 					customer.setTitle(bcaTitle.get().getTitle());
 				}
-				//customer.setTitle(cv.getCustomerTitle());
+				// customer.setTitle(cv.getCustomerTitle());
 				customer.setTexID(cv.getResellerTaxId());
 				if (cv.getVendorOpenDebit() != null)
 					customer.setOpeningUB(cv.getVendorOpenDebit().toString());
-				
+
 				if (cv.getVendorAllowedCredit() != null)
 					customer.setExtCredit(cv.getVendorAllowedCredit().toString());
-				
+
 				customer.setMemo(cv.getDetail());
 				customer.setTaxAble(cv.getTaxable() != null ? cv.getTaxable().toString() : "0");
-				if(cv.getCvtypeId() > 0){
+				if (cv.getCvtypeId() > 0) {
 					Optional<BcaCvtype> bcaCvtype = bcaCvtypeRepository.findById(cv.getCvtypeId());
 					customer.setIsclient(bcaCvtype.get().getName()); // cvtypeid
 				}
-				
-				if(cv.getCvcategoryId() != null && cv.getCvcategoryId() > 0) {
+
+				if (cv.getCvcategoryId() != null && cv.getCvcategoryId() > 0) {
 					customer.setCvCategoryTypeID(String.valueOf(cv.getCvcategoryId()));
-					Optional<BcaClientcategory> bcaClientcategory = bcaClientcategoryRepository.findById(cv.getCvcategoryId());
-					if(bcaClientcategory.isPresent())
+					Optional<BcaClientcategory> bcaClientcategory = bcaClientcategoryRepository
+							.findById(cv.getCvcategoryId());
+					if (bcaClientcategory.isPresent())
 						customer.setType(bcaClientcategory.get().getName());
 				}
 
@@ -3381,8 +3367,10 @@ public class InvoiceInfoDao {
 					customer.setFsAssessFinanceCharge(financeCharges.getAssessFinanceCharge() ? "true" : "false");
 				}
 
-				customer.setIsPhoneMobileNumber(cv.getIsPhoneMobileNumber() != null ? cv.getIsPhoneMobileNumber() : false);
-				customer.setIsMobilePhoneNumber(cv.getIsMobilePhoneNumber() != null ? cv.getIsMobilePhoneNumber() : false);
+				customer.setIsPhoneMobileNumber(
+						cv.getIsPhoneMobileNumber() != null ? cv.getIsPhoneMobileNumber() : false);
+				customer.setIsMobilePhoneNumber(
+						cv.getIsMobilePhoneNumber() != null ? cv.getIsMobilePhoneNumber() : false);
 
 				customer.setMiddleName(cv.getMiddleName());
 				customer.setDateInput(
@@ -3393,7 +3381,7 @@ public class InvoiceInfoDao {
 				customer.setTerminatedDate(cv.getDateTerminated() != null
 						? cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
 						: "");
-				if(cv.getIsTerminated() != null)
+				if (cv.getIsTerminated() != null)
 					customer.setTerminated(cv.getIsTerminated());
 				customer.setDbaName(cv.getDbaname());
 				customer.setActive(cv.getActive() == 1 ? true : false);
@@ -3436,13 +3424,13 @@ public class InvoiceInfoDao {
 					customer.setShdbaName(firstShipAddres.getDbaname());
 					request.setAttribute("state_st", customer.getShstate());
 				}
-				
+
 				if (cv.getSalesRep() != null && cv.getSalesRep().getSalesRepId() > 0)
 					customer.setRep(cv.getSalesRep().getSalesRepId().toString());
-				
+
 				if (cv.getTerm() != null && cv.getTerm().getTermId() > 0)
 					customer.setTerm(cv.getTerm().getTermId().toString());
-				
+
 				customer.setPaymentType(
 						cv.getPaymentType() != null ? cv.getPaymentType().getPaymentTypeId().toString() : null);
 				customer.setShipping(
@@ -3635,7 +3623,7 @@ public class InvoiceInfoDao {
 				customer.setTerminatedDate(cv.getDateTerminated() != null
 						? cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
 						: "");
-				if(cv.getIsTerminated() != null)
+				if (cv.getIsTerminated() != null)
 					customer.setTerminated(cv.getIsTerminated());
 				customer.setDbaName(cv.getDbaname());
 				customer.setActive(cv.getActive() == 1 ? true : false);
@@ -3678,13 +3666,13 @@ public class InvoiceInfoDao {
 					customer.setShdbaName(firstShipAddres.getDbaname());
 					request.setAttribute("state_st", customer.getShstate());
 				}
-				
-				if (cv.getSalesRep() != null && cv.getSalesRep().getSalesRepId() >0)
+
+				if (cv.getSalesRep() != null && cv.getSalesRep().getSalesRepId() > 0)
 					customer.setRep(cv.getSalesRep().getSalesRepId().toString());
-				
+
 				if (cv.getTerm() != null && cv.getTerm().getTermId() > 0)
 					customer.setTerm(cv.getTerm().getTermId().toString());
-				
+
 				customer.setPaymentType(
 						cv.getPaymentType() != null ? cv.getPaymentType().getPaymentTypeId().toString() : null);
 				customer.setShipping(
@@ -3705,11 +3693,11 @@ public class InvoiceInfoDao {
 					card.setCardHolderName(creditCard.getCardHolderName());
 					card.setCardBillAddress(creditCard.getCardBillingAddress());
 					card.setCardZip(creditCard.getCardBillingZipCode());
-					
+
 					if (creditCard.getDefaultCard() != null) {
-						card.setCardDefault(creditCard.getDefaultCard());	
+						card.setCardDefault(creditCard.getDefaultCard());
 					}
-					
+
 					String ccTypeName = creditCard.getCctype().getName() + "...."
 							+ card.getCardNo().substring(card.getCardNo().length() - 4);
 					card.setCcTypeName(ccTypeName);
@@ -3886,7 +3874,7 @@ public class InvoiceInfoDao {
 				customer.setTerminatedDate(cv.getDateTerminated() != null
 						? cv.getDateTerminated().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
 						: "");
-				if(cv.getIsTerminated() != null)
+				if (cv.getIsTerminated() != null)
 					customer.setTerminated(cv.getIsTerminated());
 
 				// Process Credit Card Information
@@ -4850,6 +4838,127 @@ public class InvoiceInfoDao {
 				sql = sql + " AND invoiceStatus in (0,2) AND InvoiceTypeID in (1,7,9) AND SONum=" + OrderNo;
 			} else {
 				sql = sql + " AND invoiceStatus=0 AND InvoiceTypeID=7";
+			}
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			int invoiceID = 0;
+			String style = "";
+			while (rs.next()) {
+				if (!list.isEmpty()) {
+					form = new InvoiceDto();
+				}
+				invoiceID = rs.getInt("InvoiceID");
+				form.setCustID(rs.getString("ClientVendorID"));
+				form.setPoNum(rs.getString("RefNum")); // sales Order
+				form.setOrderNo(String.valueOf(OrderNo));
+				style = rs.getString("InvoiceStyleID");
+				form.setInvoiceStyle(style);
+
+				form.setRep(rs.getString("SalesRepID"));
+				form.setTerm(rs.getString("TermID"));
+				form.setPayMethod(rs.getString("PaymentTypeID"));
+				form.setVia(rs.getString("ShipCarrierID"));
+				form.setMessage(rs.getString("MessageID"));
+				form.setSalesTaxID(rs.getString("SalesTaxID"));
+				form.setServiceID(rs.getInt("ServiceID"));
+				form.setWeight(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Weight")))));
+				form.setSubtotal(Double.parseDouble(truncate(String.valueOf(rs.getDouble("SubTotal")))));
+
+				form.setTax(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Tax")))));
+				form.setShipping(Double.parseDouble(truncate(String.valueOf(rs.getDouble("SH")))));
+				form.setTotal(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Total")))));
+				form.setAdjustedtotal(Double.parseDouble(truncate(String.valueOf(rs.getDouble("AdjustedTotal")))));
+				form.setBsAddressID(rs.getString("BSAddressID"));
+				form.setCompanyID(rs.getString("CompanyID"));
+				form.setTaxID(rs.getString("SalesTaxID"));
+				form.setShipDate(rs.getString("DateConfirmed"));
+				form.setOrderDate(rs.getString("DateAdded"));
+				form.setBalance(Double.parseDouble(truncate(String.valueOf(rs.getDouble("Balance")))));
+
+				form.setIsPending(rs.getInt("InvoiceTypeID") == 7 ? "true" : "false");
+				form.setTaxable(rs.getInt("Taxable") == 1 ? "true" : "false");
+				form.setItemShipped(rs.getInt("Shipped") == 1 ? "true" : "false");
+				form.setPaid(rs.getInt("IsPaymentCompleted") == 1 ? "true" : "false");
+				form.setMemo(rs.getString("Memo"));
+				form.setIsPending(rs.getInt("isPending") == 1 ? "true" : "false");
+
+				/* Bill Address */
+				ArrayList<InvoiceDto> billAddresses = billAddress(compId, form.getCustID());
+				if (!billAddresses.isEmpty()) {
+					InvoiceDto invoiceBillAddr = billAddresses.get(0);
+					form.setBsAddressID(invoiceBillAddr.getBsAddressID());
+					form.setBillTo(invoiceBillAddr.getBillTo());
+				}
+				/* Ship Address */
+				ArrayList<InvoiceDto> shipAddresses = shipAddress(compId, form.getCustID());
+				if (!shipAddresses.isEmpty()) {
+					InvoiceDto invoiceShipAddr = shipAddresses.get(0);
+					form.setShAddressID(invoiceShipAddr.getShAddressID());
+					form.setShipTo(invoiceShipAddr.getShipTo());
+				}
+				pstmt2 = con.prepareStatement(
+						"select LastName,FirstName from bca_clientvendor where ClientVendorID=? and CVTypeID in (1,2)");
+				pstmt2.setString(1, form.getCustID());
+				rs2 = pstmt2.executeQuery();
+				if (rs2.next()) {
+					if (form.getServiceID() == 0) {
+						form.setFullName(rs2.getString("LastName") + ", " + rs2.getString("FirstName"));
+					} else
+						form.setFullName(rs2.getString("LastName") + ", " + rs2.getString("FirstName") + "["
+								+ getServiceName(form.getServiceID()) + "]");
+				}
+				request.setAttribute("CustomerName", form.getFullName());
+				list.add(form);
+				/* Item List in the cart */
+				itemList(invoiceID, compId, request, form);
+				request.setAttribute("Style", style);
+			}
+		} catch (SQLException ex) {
+			Loger.log("Exception in getRecord Function" + ex.toString());
+			ex.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					db.close(rs);
+				}
+				if (rs2 != null) {
+					db.close(rs2);
+				}
+				if (pstmt != null) {
+					db.close(pstmt);
+				}
+				if (pstmt2 != null) {
+					db.close(pstmt2);
+				}
+				if (con != null) {
+					db.close(con);
+				}
+			} catch (Exception e) {
+				Loger.log(e.toString());
+			}
+		}
+		return list;
+	}
+
+	public ArrayList getLayawaysRecord(HttpServletRequest request, InvoiceDto form, String compId, long OrderNo) { // Sales
+		// Order
+		// Fetch
+		SQLExecutor db = new SQLExecutor();
+		Connection con = db.getConnection();
+		PreparedStatement pstmt = null, pstmt2 = null;
+		ResultSet rs = null, rs2 = null;
+		ArrayList<InvoiceDto> list = new ArrayList<>();
+		try {
+			String sql = " select InvoiceID,ClientVendorID,RefNum,InvoiceStyleID,SalesRepID,TermID,PaymentTypeID,"
+					+ " ShipCarrierID,MessageID,SalesTaxID,Weight,SubTotal,Tax,SH,Total,AdjustedTotal,"
+					+ " BSAddressID,CompanyID,date_format(DateConfirmed,'%m-%d-%Y') as DateConfirmed,"
+					+ " date_format(DateAdded,'%m-%d-%Y') as DateAdded ,Taxable,Balance,InvoiceTypeID,"
+					+ " Shipped,ServiceID,IsPaymentCompleted,Memo,isPending " + " FROM bca_invoice WHERE CompanyID="
+					+ compId;
+			if (OrderNo > 0) {
+				sql = sql + " AND invoiceStatus in (0,2) AND InvoiceTypeID in (1,7,9,18) AND SONum=" + OrderNo;
+			} else {
+				sql = sql + " AND invoiceStatus=0 AND InvoiceTypeID=18"; 
 			}
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
@@ -6153,7 +6262,7 @@ public class InvoiceInfoDao {
 		long orderNo = 0;
 		try {
 			String sql = "";
-			System.out.println("orderType="+orderType);
+			System.out.println("orderType=" + orderType);
 			if (("invoice").equalsIgnoreCase(orderType))
 				sql = " select InvoiceID from bca_invoice where OrderNum = ? and CompanyID = ? and invoiceStatus in (0,2) and InvoiceTypeID in (1,7,9) ";
 			else if (("estimation").equalsIgnoreCase(orderType))
@@ -6195,7 +6304,7 @@ public class InvoiceInfoDao {
 		Connection con = db.getConnection();
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
-		
+
 		System.out.println("sandip invoice info DAO: ");
 		try {
 			String sql = "select * from bca_invoice where InvoiceID = ? and CompanyID = ?";
@@ -6212,16 +6321,16 @@ public class InvoiceInfoDao {
 				orderDate = rs.getString("DateAdded");
 			}
 			String sql1 = "select Email from bca_clientvendor where ClientVendorID=? and Status in ('U','N')";
-			
+
 			pstmt = con.prepareStatement(sql1);
 			pstmt.setLong(1, cvId);
 			rs = pstmt.executeQuery();
-			
+
 			if (rs.next()) {
-			
+
 				form.setEmailAddr(rs.getString(1));
-				System.out.println("sandip : "+rs.getString(1));
-				
+				System.out.println("sandip : " + rs.getString(1));
+
 				Loger.log("SS" + form.getEmailAddr());
 				if (isEmail == 1) {
 					form.setIsEmailSent("true");
@@ -6343,7 +6452,7 @@ public class InvoiceInfoDao {
 		boolean result = false;
 		try {
 			EmailSenderDto emailSenderDto = getEmailSenderInfo(compId);
-			//MailSend mailSend = new MailSend();
+			// MailSend mailSend = new MailSend();
 			/*
 			 * result = mailSend.sendMail(form.getTo(), form.getSubject(),
 			 * form.getMessage(), emailSenderDto.getMailSenderEmail());
@@ -7192,7 +7301,7 @@ public class InvoiceInfoDao {
 //		}
 		return status;
 	}
-	
+
 	final public boolean getInvoiceById(String compId, int invoiceId) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -7202,8 +7311,7 @@ public class InvoiceInfoDao {
 		int cid = Integer.parseInt(compId);
 		boolean exist = false;
 		try {
-			pstmt = con.prepareStatement(
-					"select SONum from bca_invoice where InvoiceID = ? and CompanyID = ?");
+			pstmt = con.prepareStatement("select SONum from bca_invoice where InvoiceID = ? and CompanyID = ?");
 			pstmt.setInt(1, invoiceId);
 			pstmt.setInt(2, cid);
 			rs = pstmt.executeQuery();
@@ -7228,7 +7336,7 @@ public class InvoiceInfoDao {
 		}
 		return exist;
 	}
-	
+
 	public ArrayList<LeadDto> SearchLeadList(String compId, String cvId, HttpServletRequest request, LeadDto customer) {
 		ArrayList<LeadDto> customerList = new ArrayList<>();
 
@@ -7239,15 +7347,15 @@ public class InvoiceInfoDao {
 
 			if (cvId != null && !cvId.isEmpty())
 				jpql.append(" AND cv.leadID = " + cvId);
-			
-			String cvtypeId ="";
+
+			String cvtypeId = "";
 			if (request.getAttribute("cvtypeId") != null)
-				cvtypeId = request.getAttribute("cvtypeId").toString();	
-			
+				cvtypeId = request.getAttribute("cvtypeId").toString();
+
 			if (cvtypeId != null && !cvtypeId.isEmpty())
-				jpql.append("AND cv.cvtypeId = " + cvtypeId+" ");
+				jpql.append("AND cv.cvtypeId = " + cvtypeId + " ");
 			else if (cvId != null && cvId != "")
-				jpql.append("AND cv.leadID = " + cvId+" ");
+				jpql.append("AND cv.leadID = " + cvId + " ");
 
 			jpql.append("GROUP BY cv.leadID " + "ORDER BY cv.leadID DESC");
 			TypedQuery<BcaLeadNew> query = entityManager.createQuery(jpql.toString(), BcaLeadNew.class)
@@ -7266,51 +7374,53 @@ public class InvoiceInfoDao {
 				customer.setLastName(cv.getLastName());
 				customer.setAddress1(cv.getAddress1());
 				customer.setAddress2(cv.getAddress2());
-				if(cv.getCity() != null && !cv.getCity().isEmpty()) {
-					Optional<BcaCities> bcaCities = bcaCitiesRepository.findById(Integer.valueOf(cv.getCity()));	
+				if (cv.getCity() != null && !cv.getCity().isEmpty()) {
+					Optional<BcaCities> bcaCities = bcaCitiesRepository.findById(Integer.valueOf(cv.getCity()));
 					customer.setCity(bcaCities.get().getName());
 					customer.setCityID(String.valueOf(bcaCities.get().getId()));
 				}
-				if(cv.getState() != null && !cv.getState().isEmpty()) {
-					Optional<BcaStates> bcaStates = bcaStatesRepository.findById(Integer.valueOf(cv.getState()));	
+				if (cv.getState() != null && !cv.getState().isEmpty()) {
+					Optional<BcaStates> bcaStates = bcaStatesRepository.findById(Integer.valueOf(cv.getState()));
 					customer.setState(bcaStates.get().getName());
 					customer.setStateID(String.valueOf(bcaStates.get().getId()));
 				}
 
-				if(cv.getCountry() != null && !cv.getCustomerTitle().isEmpty()) {
-					Optional<BcaCountries> bcaCountries = bcaCountriesRepository.findById(Integer.valueOf(cv.getCountry()));	
+				if (cv.getCountry() != null && !cv.getCustomerTitle().isEmpty()) {
+					Optional<BcaCountries> bcaCountries = bcaCountriesRepository
+							.findById(Integer.valueOf(cv.getCountry()));
 					customer.setCountry(bcaCountries.get().getName());
 					customer.setCountryID(String.valueOf(bcaCountries.get().getId()));
 				}
-				
+
 				customer.setZipCode(cv.getZipCode());
 				customer.setPhone(cv.getPhone());
 				customer.setCellPhone(cv.getCellPhone());
 				customer.setFax(cv.getFax());
 				customer.setEmail(cv.getEmail());
-				if(cv.getCustomerTitle() != null && !cv.getCustomerTitle().isEmpty()) {
+				if (cv.getCustomerTitle() != null && !cv.getCustomerTitle().isEmpty()) {
 					Optional<BcaTitle> bcaTitle = bcaTitleRepository.findById(Integer.valueOf(cv.getCustomerTitle()));
 					customer.setTitle(bcaTitle.get().getTitle());
 				}
-				
+
 				customer.setTexID(cv.getResellerTaxId());
 				if (cv.getMiddleName() != null && !cv.getMiddleName().isEmpty())
 					customer.setMiddleName(cv.getMiddleName());
-				else 
+				else
 					customer.setMiddleName("");
-				
+
 				if (cv.getDbaname() != null && !cv.getDbaname().isEmpty())
 					customer.setDbaName(cv.getDbaname());
-				else 
+				else
 					customer.setDbaName("");
-				
-				if (cv.getLeadSource() != null && cv.getLeadSource().getName() != null && !cv.getLeadSource().getName().isEmpty())
+
+				if (cv.getLeadSource() != null && cv.getLeadSource().getName() != null
+						&& !cv.getLeadSource().getName().isEmpty())
 					customer.setSource(cv.getLeadSource().getName());
-				else 
+				else
 					customer.setSource("Not Specified");
 				customerList.add(customer);
 			}
-			//request.setAttribute("CustomerDetails", customer);
+			// request.setAttribute("CustomerDetails", customer);
 		} catch (Exception ee) {
 			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + ee.toString());
 			ee.printStackTrace();

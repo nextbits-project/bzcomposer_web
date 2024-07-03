@@ -376,6 +376,184 @@ public class SalesOrderBoardInfo {
 		return objList;
 	}
 	
+	public ArrayList layawaysRecordSearch(String compId, SalesBoardDto sform) {
+
+		String oDate1 = sform.getOrderDate1();
+		String oDate2 = sform.getOrderDate2();
+		String saleDate1 = sform.getSaleDate1();
+		String saleDate2 = sform.getSaleDate2();
+		String searchType = sform.getSearchType();
+		String searchTxt = sform.getSearchTxt();
+		String orderNoFrom = sform.getOrderNoFrom();
+		String orderNoTo = sform.getOrderNoTo();
+
+		Loger.log("From SalesInfo" + compId);
+		ArrayList<SalesBoard> objList = new ArrayList<SalesBoard>();
+		ResultSet rs = null, rs2 = null, rs3 = null;
+		String mark = null;
+		CustomerInfo cinfo = new CustomerInfo();
+		ConfigurationInfo configInfo = new ConfigurationInfo();
+		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+		try {
+			Loger.log("oDate1:" + oDate1 + " oDate2:" + oDate2);
+			StringBuffer query = new StringBuffer(
+					"select bi from BcaInvoice as bi where bi.company.companyId  = :companyId and bi.invoiceStatus =0  "
+							+ (orderNoFrom != null && orderNoTo != null && !orderNoFrom.isEmpty()
+									&& !orderNoTo.isEmpty()
+											? " and i.sonum between " + orderNoFrom + " and " + orderNoTo
+											: " ")
+							+ (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1
+									&& oDate2.trim().length() > 1
+											? " and bi.dateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
+													+ cinfo.string2date(oDate2) + "' "
+											: " ")
+							+ (oDate1 != null && oDate1.trim().length() > 1
+									? " and bi.dateConfirmed between '" + cinfo.string2date(oDate1) + "' and '"
+											+ cinfo.string2date("now()") + "' "
+									: " ")
+							+ (oDate2 != null && oDate2.trim().length() > 1
+									? " and bi.dateConfirmed <= '" + cinfo.string2date(oDate2) + "' "
+									: " ")
+							+ (saleDate1 != null && saleDate2 != null && saleDate1.trim().length() > 1
+									&& saleDate2.trim().length() > 1
+											? " and bi.dateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
+													+ cinfo.string2date(saleDate2) + "' "
+											: " ")
+							+ (saleDate1 != null && saleDate1.trim().length() > 1
+									? " and bi.dateAdded between '" + cinfo.string2date(saleDate1) + "' and '"
+											+ cinfo.string2date("now()") + "' "
+									: "")
+							+ (saleDate2 != null && saleDate2.trim().length() > 1
+									? " and bi.dateAdded <= '" + cinfo.string2date(saleDate2) + "' "
+									: " ")
+							+ (searchTxt != null && !searchTxt.trim().isEmpty()
+									? (searchType.equals("2") || searchType.equals("3")
+											? " and bi.sonum LIKE '%" + searchTxt + "%' "
+											: " ")
+									: " "));
+
+			query = query.append(" and bi.invoiceType.invoiceTypeId = 18 and bi.deleted = :deleted order by bi.sonum desc");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(query.toString(), BcaInvoice.class);
+			JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.valueOf(compId));
+			JpaHelper.addParameter(typedQuery, query.toString(), "deleted", 0);
+
+			List<BcaInvoice> lists = typedQuery.getResultList();
+			for (BcaInvoice bcaInvoice : lists) {
+				SalesBoard d = new SalesBoard();
+				d.setInvoiceID(bcaInvoice.getInvoiceId());
+				if (null != bcaInvoice.getTotal())
+					d.setTotal(new BigDecimal(bcaInvoice.getAdjustedTotal()).setScale(2, BigDecimal.ROUND_HALF_UP));
+				if (null != bcaInvoice.getOrderid()) {
+					d.setOrderid(Integer.parseInt(bcaInvoice.getOrderid().getOrderId()));
+					d.setTransactionID(bcaInvoice.getOrderid().getOrderId());
+				}
+				if (null != bcaInvoice.getOrderNum())
+					d.setOrderNum(bcaInvoice.getOrderNum());
+				if (null != bcaInvoice.getSonum()) {
+					d.setSo_no(bcaInvoice.getSonum()); // Sales Order Num
+
+					String orderNo = (String.valueOf(bcaInvoice.getSonum()));
+					d.setSoNumStr(MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.SOType, configDto, false));
+				}
+				if (null != bcaInvoice.getPonum())
+					d.setPo_no(bcaInvoice.getPonum());
+				if (null != bcaInvoice.getRcvNum())
+					d.setRcv_no(bcaInvoice.getRcvNum());
+				if (null != bcaInvoice.getEstNum())
+					d.setEst_no(bcaInvoice.getEstNum());
+				if (null != bcaInvoice.getClientVendor())
+					d.setCvID(bcaInvoice.getClientVendor().getClientVendorId());
+				if (null != bcaInvoice.getBsaddressId())
+					d.setBsAddressID(bcaInvoice.getBsaddressId());
+				if (null != bcaInvoice.getDateAdded())
+					d.setDateAdded(bcaInvoice.getDateAdded().format(formatter));
+				if (null != bcaInvoice.getDateConfirmed())
+					d.setSaleDate(bcaInvoice.getDateConfirmed().format(formatter));
+				if (null != bcaInvoice.getIsPrinted())
+					d.setPrinted(bcaInvoice.getIsPrinted());
+				if (null != bcaInvoice.getShipped())
+					d.setShipped(bcaInvoice.getShipped());
+				if (null != bcaInvoice.getIsInvoice())
+					d.setIsInvoice(bcaInvoice.getIsInvoice());
+				d.setMarketPlaceName(mark);
+
+				StringBuffer query2 = new StringBuffer("select new " + SalesBoard.class.getCanonicalName()
+						+ " (a.lastName, a.firstName, a.email, b.address1 , b.address2, b.city , b.state , b.country, b.zipCode, a.name) "
+						+ " from BcaClientvendor a , BcaBillingaddress b where a.clientVendorId = :clientVendorId and b.addressId = :addressId "
+						+ " and a.active =1 and b.active =1 and a.status in ('N' , 'U') and b.status in ('N','U') and a.deleted=0 and b.isDefault =1 ");
+
+				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
+
+					query = query.append((searchType.equals("1")
+							? " and(a.firstName like '%" + searchTxt + "%' or a.lastName like '%" + searchTxt + "%')"
+							: " ")
+							+ (searchType.equals("4")
+									? " and (b.address1 like '%" + searchTxt + "%' or b.address2 like '%" + searchTxt
+											+ "%' or b.city like '%" + searchTxt + "%' or b.country like '%" + searchTxt
+											+ "%'))"
+									: " ")
+							+ (searchType.equals("5") ? " and a.name like '%" + searchTxt + "%'" : " ")
+							+ (searchType.equals("6") ? " and a.email like '%" + searchTxt + "%'" : " "));
+
+				}
+
+				TypedQuery<SalesBoard> typedQuery2 = this.entityManager.createQuery(query2.toString(),
+						SalesBoard.class);
+				JpaHelper.addParameter(typedQuery2, query2.toString(), "clientVendorId", d.getCvID());
+				JpaHelper.addParameter(typedQuery2, query2.toString(), "addressId", d.getBsAddressID());
+
+				List<SalesBoard> salesBoards = typedQuery2.getResultList();
+				for (SalesBoard board : salesBoards) {
+					d.setFirstName(board.getFirstName());
+					d.setLastName(board.getLastName());
+					d.setAddress1(board.getAddress1());
+					d.setAddress2(board.getAddress2());
+					d.setCity(board.getCity());
+					d.setState(board.getState());
+					d.setCountry(board.getCountry());
+					d.setZipCode(board.getZipCode());
+					d.setEmail(board.getEmail());
+					d.setCompanyName(board.getCompanyName());
+
+				}
+
+				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
+					if (searchType.equals("1") && d.getFirstName() == null && d.getLastName() == null) {
+						continue;
+					} else if (searchType.equals("4") && d.getAddress1() == null && d.getAddress2() == null
+							&& d.getCity() == null && d.getCountry() == null) {
+						continue;
+					} else if (searchType.equals("5") && d.getCompanyName() == null) {
+						continue;
+					} else if (searchType.equals("6") && d.getEmail() == null) {
+						continue;
+					}
+				}
+
+				List<BcaCart> carts = bcaCartRepository.findByInvoiceIdAndCompanyId(d.getInvoiceID(),
+						Long.valueOf(compId));
+
+				int item_c = 0;
+				for (BcaCart bcaCart : carts) {
+					if (++item_c != 1)
+						continue;
+					d.setItemName(bcaCart.getInventoryName());
+					d.setInventoryCode(bcaCart.getInventoryCode());
+					d.setInventoryQty(bcaCart.getQty());
+					break;
+				}
+
+				objList.add(d);
+			}
+
+		} catch (Exception ee) {
+			Loger.log(2, " SQL Error in Class TaxInfo and  method -getFederalTax " + " " + ee.toString());
+
+		}
+		return objList;
+	}
 	
 	public boolean updateSalesOrder(HttpServletRequest request)
 	{

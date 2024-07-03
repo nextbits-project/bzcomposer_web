@@ -15,7 +15,7 @@ public class SalesOrderBoardDetails {
 	@Autowired
 	private SalesOrderBoardInfo salesOrderBoardInfo;
 	
-    public ArrayList getSalesOrderBoardDetails(HttpServletRequest request, SalesBoardDto sform) {
+	public ArrayList getSalesOrderBoardDetails(HttpServletRequest request, SalesBoardDto sform) {
         HttpSession sess = request.getSession();
         String compId = (String) sess.getAttribute("CID");
 //        SalesOrderBoardInfo SaleInfo = new SalesOrderBoardInfo();
@@ -24,6 +24,18 @@ public class SalesOrderBoardDetails {
         request.setAttribute("Market", sform.getFilterMarket());
         return saleOrderDetails;
     }
+	
+	public ArrayList getLayawaysBoardDetails(HttpServletRequest request, SalesBoardDto sform) {
+        HttpSession sess = request.getSession();
+        String compId = (String) sess.getAttribute("CID");
+//        SalesOrderBoardInfo SaleInfo = new SalesOrderBoardInfo();
+        ArrayList saleOrderDetails = salesOrderBoardInfo.layawaysRecordSearch(compId, sform);
+        request.setAttribute("SalesOrderBoardDetails", saleOrderDetails);
+        request.setAttribute("Market", sform.getFilterMarket());
+        return saleOrderDetails;
+    }
+    
+    
 
     public void updateRecord(HttpServletRequest request) {
 //        SalesOrderBoardInfo salesInfo = new SalesOrderBoardInfo();

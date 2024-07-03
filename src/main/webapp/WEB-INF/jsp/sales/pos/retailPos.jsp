@@ -48,9 +48,9 @@
             <div class="column-lef">
                 <div class="left-top">
                     <div class="customer-group">
-                        <div class="select-user">
+                        <%-- <div class="select-user">
                             <jsp:include page="customers.jsp" />
-                        </div>
+                        </div> --%>
                         <a type="button" class="btn btn-secondary add-user-btn" target="_blank"
                            href="/Customer?tabid=Customer">Add Customer</a>
                         <button type="button" class="btn btn-lg clear-cart" data-toggle="tooltip" data-placement="top"

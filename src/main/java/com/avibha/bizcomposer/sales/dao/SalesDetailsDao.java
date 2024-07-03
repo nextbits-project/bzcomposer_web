@@ -1867,6 +1867,13 @@ public class SalesDetailsDao {
 //		InvoiceInfoDao invoice = new InvoiceInfoDao();
 		invoice.getSalesOrderRecord(request, form, compId, soNo);
 	}
+	
+	public void getLayawaysInitialize(String salesOrderNo, HttpServletRequest request, InvoiceDto form) {
+		String compId = (String) request.getSession().getAttribute("CID");
+		long soNo = Long.parseLong(salesOrderNo); // Sales Order Num SO Num
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
+		invoice.getLayawaysRecord(request, form, compId, soNo);
+	}
 
 	public void getInitializeEstimation(String estNo, HttpServletRequest request, EstimationDto form) {
 		String compId = (String) request.getSession().getAttribute("CID");
@@ -2158,6 +2165,27 @@ public class SalesDetailsDao {
 			boolean saveStatus = invoice.SaveSalesOrder(compId, form, salesOrderType);
 			request.getSession().setAttribute("SaveStatus",
 					saveStatus ? "Sales Order is saved successfully." : "Sales Order is not saved successfully.");
+		}
+	}
+	
+	public void saveLayaways(HttpServletRequest request, InvoiceDto form) throws SQLException {
+//		InvoiceInfoDao invoice = new InvoiceInfoDao();
+		String compId = (String) request.getSession().getAttribute("CID");
+		if (form.getOrderNo().contains("-")) {
+			String orderNo = form.getOrderNo();
+			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
+		}
+		boolean exist = invoice.SalesOrderExist(compId, form.getOrderNo());
+		int layawaysType = 18;
+		if (exist == true) {
+			int invoiceID = invoice.getSalesInvoiceNo(compId, form.getOrderNo());
+			boolean saveStatus = invoice.SalesUpdate(compId, form, layawaysType, invoiceID);
+			request.getSession().setAttribute("SaveStatus",
+					saveStatus ? "Layaways is updated successfully." : "Layaways is not updated successfully.");
+		} else {
+			boolean saveStatus = invoice.SaveSalesOrder(compId, form, layawaysType);
+			request.getSession().setAttribute("SaveStatus",
+					saveStatus ? "Layaways is saved successfully." : "Layaways is not saved successfully.");
 		}
 	}
 
