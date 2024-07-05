@@ -42,7 +42,7 @@ public class LayawaysController {
 	@Autowired
 	private SalesOrderBoardDetails salesOrderBoardDetails;
 
-	@RequestMapping(value = { "/Layaways", "/ConsignmentSales" }, method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = { "/Layaways" }, method = { RequestMethod.GET, RequestMethod.POST })
 	public String executeLayawaysController(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
 			UpdateInvoiceDto updateInvoiceDto, OpportunityDto opportunityDto, EmailSenderDto emailSenderDto,
 			SalesBoardDto salesBoardDto, Model model, HttpServletRequest request, HttpServletResponse response)

@@ -29,6 +29,20 @@ public class PurchaseBoardDetails {
 		request.setAttribute("Market", pform.getFilterMarket());
 		return poBoardDetails;
 	}
+	
+	public ArrayList getConsignmentSaleDetails(HttpServletRequest request, PurchaseBoardDto pform) {
+
+		HttpSession sess = request.getSession();
+		String compId = (String) sess.getAttribute("CID");
+		String action = request.getParameter("tabid");
+
+//		PurchaseBoardInfoDao purchaseInfo = new PurchaseBoardInfoDao();
+//		ArrayList poBoardDetails = purchaseInfo.PurchaseRecordSearch(request,compId, action, pform);
+		ArrayList poBoardDetails = purchaseBoardInfoDao.consignmentSaleSearch(request, compId, action, pform);
+		request.setAttribute("PurchaseBoardDetails", poBoardDetails);
+		request.setAttribute("Market", pform.getFilterMarket());
+		return poBoardDetails;
+	}
 
 	public void getPurchaseBoardReceivedItemDetails(HttpServletRequest request) {
 		String invoiceID = request.getParameter("invoiceID");

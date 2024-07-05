@@ -121,6 +121,16 @@ public class PurchaseOrderDto{
 	private String memo;
 	private int templateType;
 	private List<Item> cart;
+	
+	private int invoiceTypeId;
+
+	public int getInvoiceTypeId() {
+		return invoiceTypeId;
+	}
+
+	public void setInvoiceTypeId(int invoiceTypeId) {
+		this.invoiceTypeId = invoiceTypeId;
+	}
 
 	/**
 	 * @return Returns the amount.

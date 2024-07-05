@@ -455,6 +455,16 @@
                             <span><spring:message code="BzComposer.purchase.Purchase.PurchaseBoard" /></span>
 						</a>
 				    </li>
+				    <li>
+                        <a href="ConsignmentSales?tabid=consignmentSales" title="ConsignmentSales">
+                            <span><spring:message code="BzComposer.consignmentSales.consignmentSalesheader" /></span>
+                        </a>
+                    </li>
+					<li>
+						<a href="ConsignmentSales?tabid=ShowList" title="ConsignmentSales">
+                            <span><spring:message code="BzComposer.consignmentSales.consignmentSalesboard" /></span>
+						</a>
+				    </li>
 					<!-- <li>
 						<a href="CheckPO?tabid=ShowListCheckPO">
 							<spring:message code="BzComposer.purchase.PurchaseOrder.CheckPOOrders" />

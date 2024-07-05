@@ -201,6 +201,7 @@ public class PurchaseOrderDetailsDao {
 			String orderNo = form.getOrderNo();
 			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
 		}
+		form.setInvoiceTypeId(2);
 		boolean exist = purchaseOrderInfoDao.poNumExist(compId, form.getOrderNo());
 		if (exist == true) {
 			try {
@@ -232,6 +233,49 @@ public class PurchaseOrderDetailsDao {
 		}
 	}
 
+	/*
+	 * Saves or updates the Consignment Sale information to the database.
+	 */
+	public void saveConsignmentSales(HttpServletRequest request, PurchaseOrderDto form) {
+//		PurchaseOrderInfoDao purchaseInfo = new PurchaseOrderInfoDao();
+		String compId = (String) request.getSession().getAttribute("CID");
+		String isShipUse = request.getParameter("useDropShip");
+		form.setInvoiceTypeId(31); //31 for Consignment Sale
+		if (form.getOrderNo().contains("-")) {
+			String orderNo = form.getOrderNo();
+			form.setOrderNo(orderNo.substring(orderNo.indexOf("-") + 1));
+		}
+		boolean exist = purchaseOrderInfoDao.poNumExist(compId, form.getOrderNo());
+		if (exist == true) {
+			try {
+				int invoiceID = purchaseOrderInfoDao.getInvoiceNo(compId, form.getOrderNo());
+				long isShipAddr = purchaseOrderInfoDao.getShipAddrExist(compId, form.getOrderNo());
+				if (isShipAddr == 0) {
+					purchaseOrderInfoDao.SaveUpdate(compId, form, invoiceID);
+				} else {
+					purchaseOrderInfoDao.Update(compId, form, invoiceID);
+				}
+				request.getSession().setAttribute("SaveStatus", "Consignment Sales is successfully updated.");
+			} catch (Exception e) {
+				Loger.log(e.toString());
+				request.getSession().setAttribute("SaveStatus", "Consignment Sales is not updated.");
+			}
+		} else {
+			try {
+				purchaseOrderInfoDao.Save(compId, form);
+				request.getSession().setAttribute("SaveStatus", "Consignment Sales is successfully saved.");
+			} catch (Exception e) {
+				Loger.log(e.toString());
+				request.getSession().setAttribute("SaveStatus", "Consignment Sales is not saved.");
+			}
+		}
+		if (isShipUse != null) {
+			if (isShipUse.equals("on")) {
+				request.setAttribute("IsUpdated", "true");
+			}
+		}
+	}
+	
 	/*
 	 * Provides the all the information of the purchase order by button name.
 	 */

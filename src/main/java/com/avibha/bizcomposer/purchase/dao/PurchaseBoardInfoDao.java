@@ -384,6 +384,300 @@ public class PurchaseBoardInfoDao {
 		}
 		return objList;
 	}
+	public ArrayList consignmentSaleSearch(HttpServletRequest request, String compId, String action,
+			PurchaseBoardDto form) {
+
+		String oDate1 = form.getOrderDate1();
+		String oDate2 = form.getOrderDate2();
+		String saleDate1 = form.getSaleDate1();
+		String saleDate2 = form.getSaleDate2();
+		String searchType = form.getSearchType();
+		String searchTxt = form.getSearchTxt();
+		String datesCombo = form.getDatesCombo();
+		String fromDate = form.getFromDate();
+		String toDate = form.getToDate();
+		String orderNoFrom = form.getOrderNoFrom();
+		String orderNoTo = form.getOrderNoTo();
+
+		ResultSet rs = null, rs2 = null, rs3 = null, rs4 = null, rs5 = null;
+		ArrayList<PurchaseBoard> objList = new ArrayList<>();
+		ArrayList<ItemDto> invCategoryList = new ArrayList<>();
+
+		String mark = null;
+		double totalBalance = 0;
+
+		String dateBetween = "";
+		ArrayList<Date> selectedRange = new ArrayList<>();
+		DateInfo dInfo = new DateInfo();
+		ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+
+		if (datesCombo != null && !datesCombo.equals("8")) {
+			if (datesCombo != null && !datesCombo.equals("")) {
+				selectedRange = dInfo.selectedIndex(Integer.parseInt(datesCombo));
+				if (!selectedRange.isEmpty() && selectedRange != null) {
+					form.setFromDate(customerInfo.date2String(selectedRange.get(0)));
+					form.setToDate(customerInfo.date2String(selectedRange.get(1)));
+				}
+				if (selectedRange != null && !selectedRange.isEmpty()) {
+					dateBetween = " AND bi.dateAdded BETWEEN Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(0)) + "') AND Timestamp ('"
+							+ JProjectUtil.getDateFormaterCommon().format(selectedRange.get(1)) + "')";
+				}
+			}
+		} else if (datesCombo != null && datesCombo.equals("8")) {
+			if (fromDate.equals("") && toDate.equals("")) {
+				dateBetween = "";
+			} else if (!fromDate.equals("") && toDate.equals("")) {
+				dateBetween = " AND bi.dateAdded >= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(customerInfo.string2date(fromDate) + "')");
+			} else if (fromDate.equals("") && !toDate.equals("")) {
+				dateBetween = " AND bi.dateAdded <= Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(customerInfo.string2date(toDate) + "')");
+			} else {
+				dateBetween = " AND bi.dateAdded BETWEEN Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(customerInfo.string2date(fromDate))
+						+ "') AND Timestamp ('"
+						+ JProjectUtil.getDateFormaterCommon().format(customerInfo.string2date(toDate)) + "')";
+			}
+		}
+		try {
+
+			// Loger.log("oDate1:" + oDate1 + " oDate2:" + oDate2);
+
+			String sqlString = "select bi from BcaInvoice bi where bi.company.companyId = :companyId and bi.invoiceStatus =0 "
+					+ dateBetween;
+			action = action != null ? action : "";
+			if (action.equalsIgnoreCase("ShowListCheckPO") || action.equalsIgnoreCase("UpdateCheckPO")) { // check PO
+																											// ordes
+																											// board
+				sqlString += " and bi.isReceived like '0' ";
+			}
+			if (action.equalsIgnoreCase("ShowReceivedItems")) { // Received Item
+				// sqlString +=" and IsReceived like '0' ";
+			}
+			if (orderNoFrom != null && orderNoTo != null && !orderNoFrom.isEmpty() && !orderNoTo.isEmpty()) {
+				sqlString += " and bi.ponum between " + orderNoFrom + " AND " + orderNoTo + " ";
+			}
+			if (oDate1 != null && oDate2 != null && oDate1.trim().length() > 1 && oDate2.trim().length() > 1) {
+				sqlString += "	and bi.dateAdded between '" + customerInfo.string2date(oDate1) + "' and '"
+						+ customerInfo.string2date(oDate2) + "' ";
+			} else if (oDate1 != null && oDate1.trim().length() > 1) {
+				sqlString += "	and bi.dateAdded between '" + customerInfo.string2date(oDate1) + "' and '"
+						+ customerInfo.string2date("now()") + "' ";
+			} else if (oDate2 != null && oDate2.trim().length() > 1) {
+				sqlString += "	and bi.dateAdded <= '" + customerInfo.string2date(oDate2) + "'  ";
+			}
+			if (saleDate1 != null && saleDate2 != null && saleDate1.trim().length() > 1
+					&& saleDate2.trim().length() > 1) {
+				sqlString += "	and bi.dateConfirmed between '" + customerInfo.string2date(saleDate1) + "' and '"
+						+ customerInfo.string2date(saleDate2) + "'  ";
+			} else if (saleDate1 != null && saleDate1.trim().length() > 1) {
+				sqlString += "	and bi.dateConfirmed between '" + customerInfo.string2date(saleDate1) + "' and '"
+						+ customerInfo.string2date("now()") + "' ";
+			} else if (saleDate2 != null && saleDate2.trim().length() > 1) {
+				sqlString += "	and bi.dateConfirmed <= '" + customerInfo.string2date(saleDate2) + "'  ";
+			}
+			if (searchTxt != null && !searchTxt.trim().isEmpty()) {
+				if (searchType.equals("2") || searchType.equals("3")) {
+					sqlString += " AND bi.ponum LIKE '%" + searchTxt + "%' ";
+				}
+			}
+
+			sqlString += " AND bi.invoiceType.invoiceTypeId=31 ORDER BY bi.ponum DESC";
+			Loger.log("Query is: " + sqlString);
+			TypedQuery<BcaInvoice> typedQuery = this.entityManager.createQuery(sqlString, BcaInvoice.class);
+			JpaHelper.addParameter(typedQuery, sqlString, "companyId", Long.parseLong(compId));
+			List<BcaInvoice> invoiceList = typedQuery.getResultList();
+			for (BcaInvoice invoice : invoiceList) 
+			{
+			   if(invoice.getDeleted()!=null&&invoice.getDeleted()==1)
+				   continue;
+			 
+				PurchaseBoard pb = new PurchaseBoard();
+				pb.setInvoiceID(invoice.getInvoiceId());
+				if (null != invoice.getOrderid()) {
+					pb.setOrderid(Integer.parseInt(invoice.getOrderid().getOrderId()));
+					pb.setTransactionID(invoice.getOrderid().getOrderId());
+				}
+				pb.setOrderNum(invoice.getOrderNum());
+				pb.setPo_no(invoice.getPonum());
+				String orderNo = (String.valueOf(invoice.getPonum()));
+				String yearPart = MyUtility.getYearPart(DateHelper.dateFormatter(invoice.getDateAdded()));
+
+				if (configDto.getIsPurchasePrefix().equals("on")) {
+					pb.setPoNumStr("PO".concat(yearPart).concat("-"
+							+ MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.POType, configDto, false)));
+				} else {
+					pb.setPoNumStr(
+							MyUtility.getOrderNumberByConfigData(orderNo, AppConstants.POType, configDto, false));
+				}
+				if (null != invoice.getRcvNum())
+
+					pb.setRcv_no(invoice.getRcvNum());
+				if (null != invoice.getEstNum())
+					pb.setEst_no(invoice.getEstNum());
+				if (null != invoice.getClientVendor())
+					pb.setCvID(invoice.getClientVendor().getClientVendorId());
+				pb.setBsAddressID(invoice.getBsaddressId());
+				if (null != invoice.getDateAdded())
+					pb.setDateAdded(DateHelper.dateFormatter(invoice.getDateAdded()));
+
+				if (null != invoice.getDateConfirmed())
+					pb.setSaleDate(DateHelper.dateFormatter(invoice.getDateConfirmed()));
+				if (null != invoice.getIsPrinted())
+					pb.setPrinted(invoice.getIsPrinted());
+				if (null != invoice.getShipped())
+					pb.setShipped(invoice.getShipped());
+				pb.setMarketPlaceName(mark);
+
+				pb.setTotal(invoice.getTotal());
+				if (null != invoice.getIsReceived())
+					pb.setIsReceived(invoice.getIsReceived() ? 1 : 0); // Check PO Order
+				if (null != invoice.getMessage()) {
+					int messageId = invoice.getMessage().getMessageId();
+					pb.setMessagebody(getMessageText(messageId));
+				}
+
+				pb.setBalance(invoice.getBalance());
+				pb.setMemo(invoice.getMemo());
+				if (null != invoice.getDateReceived())
+					pb.setDateReceived(DateHelper.dateFormatter(invoice.getDateReceived()));
+				totalBalance += pb.getBalance();
+				String sql2 = "SELECT a.lastName,a.firstName,a.email,b.address1,b.address2,b.city,b.state,b.country,b.zipCode,a.name, "
+						+ " a.salesRep.salesRepId from BcaClientvendor as a  JOIN BcaShippingaddress as b ON "
+						+ "a.clientVendorId =b.clientVendor.clientVendorId where a.clientVendorId = :clientVendorId and a.active =:active and "
+						+ " a.status IN :status and a.deleted =:deleted and b.status = :stat ";
+
+				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
+					if (searchType.equals("1")) {
+						sql2 += " AND (a.firstName LIKE '%" + searchTxt + "%' OR a.lastName LIKE '%" + searchTxt
+								+ "%')";
+					} else if (searchType.equals("4")) {
+						sql2 += "AND (b.address1 LIKE '%" + searchTxt + "%' OR b.address2 LIKE '%" + searchTxt
+								+ "%' OR b.city LIKE '%" + searchTxt + "%' OR b.country LIKE '%" + searchTxt + "%'))";
+					} else if (searchType.equals("5")) {
+						sql2 += "AND a.name LIKE '%" + searchTxt + "%'";
+					} else if (searchType.equals("6")) {
+						sql2 += "AND a.email LIKE '%" + searchTxt + "%'";
+					}
+				}
+				TypedQuery<Object[]> typedQuery2 = this.entityManager.createQuery(sql2, Object[].class);
+				JpaHelper.addParameter(typedQuery2, sql2, "clientVendorId", pb.getCvID());
+				JpaHelper.addParameter(typedQuery2, sql2, "active", 1);
+				JpaHelper.addParameter(typedQuery2, sql2, "status", Arrays.asList("N", "U"));
+				JpaHelper.addParameter(typedQuery2, sql2, "deleted", 0);
+				JpaHelper.addParameter(typedQuery2, sql2, "stat", "N");
+				List<Object[]> resultList = typedQuery2.getResultList();
+				String[] fieldNames = { "lastName", "firstName", "email", "address1", "address2", "city", "state",
+						"country", "zipCode", "companyName", "rep" };
+				List<PurchaseBoard> purchaseBoard = objectToDtoMapper.mapResultsToObject(resultList,
+						PurchaseBoard.class, fieldNames);
+				for (PurchaseBoard sa : purchaseBoard) {
+					pb.setFirstName(sa.getFirstName());
+					pb.setLastName(sa.getLastName());
+					pb.setAddress1(sa.getAddress1());
+					pb.setAddress2(sa.getAddress2());
+					pb.setCity(sa.getCity());
+					pb.setState(sa.getState());
+					pb.setCountry(sa.getCountry());
+					pb.setZipCode(sa.getZipCode());
+					pb.setEmail(sa.getEmail());
+					pb.setCompanyName(sa.getCompanyName());
+					pb.setRep(sa.getRep());
+					String rep = sa.getRep();
+					if (rep != null) {
+						BcaSalesrep salesRep = bcaSalesrepRepository.findById(Integer.parseInt(pb.getRep()))
+								.orElseThrow(() -> new EntityNotFoundException("Entity Not Found"));
+						pb.setRepname(salesRep.getName());
+
+					}
+				}
+				if (searchTxt != null && !searchTxt.trim().isEmpty()) {
+					if (searchType.equals("1") && pb.getFirstName() == null && pb.getLastName() == null) {
+						continue;
+					} else if (searchType.equals("4") && pb.getAddress1() == null && pb.getAddress2() == null
+							&& pb.getCity() == null && pb.getCountry() == null) {
+						continue;
+					} else if (searchType.equals("5") && pb.getCompanyName() == null) {
+						continue;
+					} else if (searchType.equals("6") && pb.getEmail() == null) {
+						continue;
+					}
+				}
+				String sql3 = "select c.cartId , c.inventory.inventoryId ,c.inventoryName , c.inventoryCode , c.qty , c.receivedQty , date_format(c.dateUpdated,'%m-%d-%Y') as dateUpdated ,"
+						+ "i.reorderPoint, l.name as location from BcaCart c left join BcaIteminventory i"
+						+ " ON i.inventoryId = c.inventory.inventoryId left join BcaLocation l"
+						+ " on l.locationId = i.location where c.invoice.invoiceId =:invoiceId and c.company.companyId =:companyId ";
+				String[] fieldNameslist = { "cartID", "inventoryId", "inventoryCode", "itemName", "orderQty",
+						"receivedQty", "dateUpdated", "reorderPoint", "location" };
+				TypedQuery<Object[]> typedQuery3 = this.entityManager.createQuery(sql3, Object[].class);
+				JpaHelper.addParameter(typedQuery3, sql2, "invoiceId", pb.getInvoiceID());
+				JpaHelper.addParameter(typedQuery3, sql2, "companyId", Long.parseLong(compId));
+
+				List<Object[]> resultList2 = typedQuery2.getResultList();
+				purchaseBoard = objectToDtoMapper.mapResultsToObject(resultList2, PurchaseBoard.class, fieldNameslist);
+				boolean cartFound = false;
+				for (PurchaseBoard ps : purchaseBoard) {
+					if (cartFound) {
+						try {
+							pb = (PurchaseBoard) pb.clone();
+						} catch (Exception ex) {
+							System.out.println(ex.getMessage());
+						}
+					}
+					pb.setCartID(ps.getCartID());
+					pb.setInventoryId(ps.getInventoryId());
+					pb.setInventoryCode(ps.getInventoryCode());
+					pb.setItemName(ps.getItemName());
+					pb.setOrderQty(ps.getOrderQty());
+					pb.setReceivedQty(ps.getReceivedQty());
+					pb.setDateUpdated(ps.getDateUpdated());
+					pb.setReorderPoint(ps.getReorderPoint());
+					pb.setLocation(ps.getLocation());
+					objList.add(pb);
+					cartFound = true;
+					if (!action.equalsIgnoreCase("ShowReceivedItems")) { // Received Item
+						break;
+					}
+				}
+				if (!cartFound) {
+					objList.add(pb);
+				}
+
+			}
+			List<BcaIteminventory> itemInventory = bcaIteminventoryRepository
+					.findByCompany_CompanyIdAndActive(Long.parseLong(compId), 1);
+			itemInventory.stream().forEach(item -> {
+				ItemDto itemDto = new ItemDto();
+				itemDto.setInventoryId(String.valueOf(item.getInventoryId()));
+				itemDto.setParentID(String.valueOf(item.getParentId()));
+				itemDto.setInventoryCode(item.getInventoryCode()); // Check Po Order value
+				invCategoryList.add(itemDto);
+			});
+			for (PurchaseBoard pb : objList) {
+				for (ItemDto itemDto : invCategoryList) {
+					if (pb.getInventoryId() != null && pb.getInventoryId().equals(itemDto.getInventoryId())) {
+						boolean found = false;
+						for (ItemDto itemDto2 : invCategoryList) {
+							if (itemDto.getParentID().equals(itemDto2.getInventoryId())) {
+								pb.setCategoryName(itemDto2.getInventoryCode());
+								found = true;
+								break;
+							}
+						}
+						if (found)
+							break;
+					}
+				}
+			}
+			request.setAttribute("total", totalBalance);
+		} catch (Exception ee) {
+			ee.printStackTrace();
+			Loger.log(2, "SQL Error in Class PurchaseBoardInfoDao and  method -consignmentSaleSearch " + ee.toString());
+
+		}
+		return objList;
+	}
 	public boolean updatePurchaseOrder(HttpServletRequest request)
 	{
 		 int count=0;

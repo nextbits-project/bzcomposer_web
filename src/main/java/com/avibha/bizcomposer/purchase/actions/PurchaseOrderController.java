@@ -206,6 +206,7 @@ public class PurchaseOrderController {
 //				SalesDetailsDao sdetails = new SalesDetailsDao();
 //			    PurchaseOrderDetailsDao pdetails = new PurchaseOrderDetailsDao();
 				purchaseOrderDetailsDao.newPurchaseOrder(request, purchaseOrderDto);
+				purchaseOrderDto.setInvoiceTypeId(2);
 				salesDetailsDao.getInitializePurchase(poNo, request, purchaseOrderDto);
 
 //				ConfigurationInfo configInfo = new ConfigurationInfo();

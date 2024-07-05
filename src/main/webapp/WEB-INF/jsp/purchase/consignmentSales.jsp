@@ -16,7 +16,7 @@
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
 <script src="${pageContext.request.contextPath}/styles/js/purchase1.js"></script>
 
-<title><spring:message code="BzComposer.purchaseorderboardtitle" />
+<title><spring:message code="BzComposer.consignmentSalesboardtitle" />
 </title>
 <style type="text/css">
 table.cart tbody tr td {
@@ -68,7 +68,7 @@ function setLastPO() {
 
 function onSave(form) {
 
-	
+	debugger;
 	//removeSessionData();
 	cid = form.custID.value;
 	Assignment(cid, form);
@@ -162,7 +162,7 @@ function onSave(form) {
                             val=((((val)/1 - (cnt)/1)));
                             form.size.value=val;
                         }
-                        document.forms['PurchaseOrderForm'].action="PurchaseOrderPost?tabid=SavePurchaseOrder";
+                        document.forms['PurchaseOrderForm'].action="ConsignmentSales?tabid=save";
                         document.forms['PurchaseOrderForm'].submit();
                     },
                     Cancel: function () {
@@ -267,7 +267,7 @@ function init() {
 						<span
 							style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; padding: 0 0 .3em 0;">
 							<spring:message
-								code="BzComposer.purchaseorder.purchaseorderheader" />
+								code="BzComposer.consignmentSales.consignmentSalesheader" />
 						</span>
 					</div>
 
@@ -355,7 +355,7 @@ function init() {
 									<thead>
 										<tr>
 											<th colspan="12" style="font-size: 14px;"><spring:message
-													code="BzComposer.purchaseorder.vendorinformation" /></th>
+													code="BzComposer.consignmentSales.vendorInformation" /></th>
 										</tr>
 									</thead>
 									<tr>
@@ -2965,7 +2965,7 @@ function saveNewUnitPrice()
 </div>
 <div id="updatePurchaseOrderDialog" style="display: none;">
 	<p>
-		<spring:message code="BzComposer.purchaseorder.savepurchaseorder" />
+		<spring:message code="BzComposer.consignmentSales.saveconsignmentSales" />
 	</p>
 </div>
 <div id="dropShipInvoiceDialog" style="display: none;">
