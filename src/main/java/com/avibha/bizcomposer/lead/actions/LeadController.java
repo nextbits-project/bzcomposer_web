@@ -17,6 +17,8 @@ import com.avibha.bizcomposer.employee.dao.Label;
 import com.avibha.bizcomposer.configuration.dao.ConfigurationInfo;
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
 import com.avibha.bizcomposer.employee.dao.Title;
+import com.avibha.bizcomposer.lead.dto.BcaLeadDirectoryDto;
+import com.avibha.bizcomposer.lead.dto.LeadBoardDto;
 import com.avibha.bizcomposer.lead.dto.LeadDirectoryDto;
 import com.avibha.bizcomposer.lead.dto.LeadDto;
 import com.avibha.bizcomposer.opportunity.dao.OpportunityDao;
@@ -376,12 +378,19 @@ public class LeadController {
 		return "leads/addNewLead";
 	}
 	
-	@GetMapping("/AllLeads")
-	public String getAllLeads(Model model, HttpServletRequest request) {
+	@RequestMapping(value = {"/AllLeads"}, method = {RequestMethod.GET, RequestMethod.POST})
+	public String getAllLeads(LeadBoardDto leadBoardDto, Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
+		String action = request.getParameter("tabid");
 		String companyId = (String) session.getAttribute("CID");
 		BcaCompany company = companyRepo.findById(Long.parseLong(companyId)).orElse(null);
-		model.addAttribute("customerList", leadService.getAllLeadsList(company));
+		if (action.equalsIgnoreCase("FilterList")) {
+			List<BcaLeadNew> leadList = leadService.getFilterLeadsList(company, leadBoardDto);
+			model.addAttribute("customerList", leadList);
+		} else {
+			model.addAttribute("customerList", leadService.getAllLeadsList(company));
+		}
+		
 		if(request.getSession().getAttribute("actionMsg") != null) {
 			request.setAttribute("actionMsg",request.getSession().getAttribute("actionMsg"));
 			request.getSession().setAttribute("SaveStatus","");
@@ -455,6 +464,7 @@ public class LeadController {
 	public String leadConvert(CustomerDto customerDto, InvoiceDto invoiceDto, ItemDto itemDto,
 			UpdateInvoiceDto updateInvoiceDto, EmailSenderDto emailSenderDto, Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		LeadBoardDto leadBoardDto = new LeadBoardDto();
 		String vendorAction = request.getParameter("customerAction");
 		HttpSession sess = request.getSession();
 		String companyID = (String) sess.getAttribute("CID");
@@ -477,7 +487,7 @@ public class LeadController {
 				Loger.log("\nContact Convertion to Customer failed, id=" + cvID);
 			}
 		}
-		return getAllLeads(model, request);
+		return getAllLeads(leadBoardDto, model, request);
 	}
 	
 	@RequestMapping(value = { "/CustomerConvertToLead" }, method = { RequestMethod.GET, RequestMethod.POST })
@@ -527,7 +537,7 @@ public class LeadController {
 		String companyId = (String) session.getAttribute("CID");
 		BcaCompany company = companyRepo.findById(Long.parseLong(companyId)).orElse(null);
 		List<LeadDirectoryDto> leadList = leadService.getAllLeadDirectoryByCompanyId(Long.valueOf(companyId));
-		List<BcaLeadDirectory> bcaLeadDirectorylist = leadDirectoryService.getAllDirectory(company);
+		List<BcaLeadDirectoryDto> bcaLeadDirectorylist = leadDirectoryService.getAllDirectory(company);
 		model.addAttribute("LeadDirectorys", bcaLeadDirectorylist);
 		model.addAttribute("LeadDetails", leadList);
 		return "leads/leadDirectory";

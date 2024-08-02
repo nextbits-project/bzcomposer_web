@@ -79,6 +79,9 @@ public class FileController {
 	@Autowired
 	private BcaCvtypeRepository bcaCvtypeRepository;
 
+	@Autowired
+	PurchaseInfoDao purchaseInfoDao;
+	
 	@GetMapping("/changeLocale")
 	public String changeLocale(HttpServletRequest request) throws Exception {
 		String url = "redirect:/";
@@ -345,8 +348,6 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("DownloadContactTemplate")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				//ArrayList<CustomerDto> leadDtos = new ArrayList<CustomerDto>();
-				//importExportUtils.exportCustomerList(leadDtos, type, response, "Contact");
 				importExportUtils.downloadContactTemplate(type, response);
 			} else {
 				forward = "redirect:File?tabid=ImportCustomer";
@@ -369,7 +370,6 @@ public class FileController {
 		} else if (action.equalsIgnoreCase("ExportVendor")) {
 			String type = request.getParameter("type");
 			if (type != null && (type.equalsIgnoreCase("csv") || type.equalsIgnoreCase("xls"))) {
-				PurchaseInfoDao purchaseInfoDao = new PurchaseInfoDao();
 				ArrayList<VendorDto> vendorList = purchaseInfoDao.SearchVendor(compId, null, request, new VendorDto());
 				boolean b = importExportUtils.exportVendorList(vendorList, type, response);
 				if (b == true) {
@@ -502,6 +502,9 @@ public class FileController {
 			forward = "redirect:File?tabid=ImportLeads";
 		} else if (action.equalsIgnoreCase("UploadVendorFile")) {
 			if (!attachFile.isEmpty()) {
+				Integer typeIDList = bcaCvtypeRepository.findByName("Vendor");
+				if (typeIDList > 0)
+					request.setAttribute("CVTypeID", typeIDList);
 				boolean b = importExportUtils.uploadVendorFile(attachFile, request);
 				if (b == true) {
 					request.getSession().setAttribute("successMessage1", "success");

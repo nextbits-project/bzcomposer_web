@@ -78,6 +78,22 @@
                 </c:choose>
 			</td>
 		</tr>
+		<tr id="tr40">
+			<td>
+				 <c:choose>
+                 <c:when test="${sessionScope.configActiveTab=='vendorPurchaseOrderTab'}">
+                     <a href="${pageContext.request.contextPath}/Configuration?tabid=config40&&tab=tr40">
+                         <img id="img40" src='ConfigurationImages/POS.png' />
+                     </a>
+                 </c:when>
+                 <c:otherwise>
+                     <a href="${pageContext.request.contextPath}/Configuration?tabid=config40&&tab=tr40">
+                        <img id="img40" src='ConfigurationImages/POS.png' />
+                     </a>
+                 </c:otherwise>
+                 </c:choose>
+			 </td>
+		</tr>
 		<tr id="tr10">
 			<td>
 				 <c:choose>
@@ -369,6 +385,9 @@
 		else if(rid=="tr20"){
 			document.getElementById('deviceManager').style.display='block';
 		}
+		else if(rid=="tr40"){
+			document.getElementById('deviceManager').style.display='block';
+		}
 		else if(rid=="tr21"){
 			document.getElementById('paymentGateway').style.display='block';
 		}
@@ -455,6 +474,9 @@
 			document.getElementById('MySQLConfiguration').style.display='block';
 		}*/
 		else if(t1=="tr20"){
+			document.getElementById('deviceManager').style.display='block';
+		}
+		else if(t1=="tr40"){
 			document.getElementById('deviceManager').style.display='block';
 		}
 		else if(t1=="tr21"){

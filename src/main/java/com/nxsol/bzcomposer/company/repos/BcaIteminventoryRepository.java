@@ -74,5 +74,8 @@ public interface BcaIteminventoryRepository extends JpaRepository<BcaIteminvento
 
 	@Query("FROM BcaIteminventory Where inventoryId=:inventoryId")
 	Optional<BcaIteminventory> getByInventoryId(int inventoryId);
+	
+	@Query("select bi from BcaIteminventory bi where bi.company.companyId = :companyId and bi.active = :active")
+	List<BcaIteminventory> findByCompanyIdAndActive(@Param("companyId") Long companyId, @Param("active") Integer active);
 
 }

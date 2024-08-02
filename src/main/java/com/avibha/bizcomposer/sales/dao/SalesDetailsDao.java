@@ -151,6 +151,9 @@ public class SalesDetailsDao {
 	@Autowired
 	private BcaCvtypeRepository bcaCvtypeRepository;
 	
+	@Autowired
+	DataImportExportUtils importExportUtils;
+	
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
 		Long compId = Long.valueOf(sess.getAttribute("CID").toString());
@@ -516,7 +519,6 @@ public class SalesDetailsDao {
 	}
 
 	public void uploadItemFile(HttpServletRequest request, MultipartFile attachFile) {
-		DataImportExportUtils importExportUtils = new DataImportExportUtils();
 		boolean b = importExportUtils.uploadItemFile(attachFile, request);
 		if (b == true) {
 			request.getSession().setAttribute("ItemUploaded", "successfully");
@@ -525,10 +527,8 @@ public class SalesDetailsDao {
 
 	public void exportFile(HttpServletRequest request, ItemDto itemDto, String type, HttpServletResponse response) {
 		String compId = (String) request.getSession().getAttribute("CID");
-		ItemInfoDao itemInfoDao = new ItemInfoDao();
 		if (type != null && (type.equals("xls") || type.equals("csv"))) {
-			DataImportExportUtils importExportUtils = new DataImportExportUtils();
-			ArrayList<ItemDto> itemList = itemInfoDao.SearchItem(compId, null, itemDto, request);
+			ArrayList<ItemDto> itemList = itemInfoDao.SearchItemForExport(compId, null, itemDto, request);
 			Collections.sort(itemList, Comparator.comparing(ItemDto::getParentID));
 			for (ItemDto item1 : itemList) {
 				for (ItemDto item2 : itemList) {

@@ -9,7 +9,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="${pageContext.request.contextPath}/styles/form.css" media="screen" rel="Stylesheet" type="text/css" />
 <script src="${pageContext.request.contextPath}/tableStyle/js/jquery.min.js"></script>
-<title><spring:message code="BzComposer.importvendortitle"/></title>
+<title><spring:message code="BzComposer.importcustomertitle"/></title>
 <%@include file="/include/header.jsp"%>
 <script>
 
@@ -18,6 +18,7 @@ function downloadTemplate(type){
 	document.forms[0].action = "File?tabid=DownloadVendorTemplate&type="+type;
 	document.forms[0].submit();
 }
+
 
 function CloseMe(){
     window.close();
@@ -32,6 +33,26 @@ function pleaseWait(){
 	<span style="font-size: 1.2em; font-weight: normal; color: #05A9C5 !important;">
 		<spring:message code="BzComposer.importvendor" />
 	</span>
+</div>
+<div style="margin: 20px 10px 0px 40px;">
+<table>
+  <tr>
+    <th style="background-color: #dddddd; text-align: center">STEP 1<br>Download Excel/CSV File</th><th>&thinsp;&thinsp;</th>
+    <th style="background-color: #dddddd; text-align: center">STEP 2<br>Fill Excel/CSV File data according to instruction</th><th>&thinsp;&thinsp;</th>
+    <th style="background-color: #dddddd; text-align: center">STEP 3<br>Validate data and complete import</th>
+  </tr>
+</table>
+</div>
+<div style="margin: 20px 10px 0px 40px;">
+<b>Instructions:</b>
+<ol>
+  <li>Download the format file (Download XLS Template/Download CSV Template and fill) it with proper data.</li>
+  <li>You can see the first record to understand how the data must be filled.</li>
+  <li>Then please removed/edit 1st record according to your input.</li>
+  <li>Once you downloaded and filled the template file upload it in the form below and submit.</li>
+  <li>After uploading Leads you need to edit them and change the various fields(if you want?).</li>
+  <li>If any Leads data not imported then it means your Phone number and Email matched with existing data.</li>
+</ol>
 </div>
 <div>
 <form:form action="FileUpload?tabid=UploadVendorFile" method="post" enctype="MULTIPART/FORM-DATA" id="uploadForm" modelAttribute="companyInfoDto">
@@ -49,8 +70,8 @@ function pleaseWait(){
 	 		<td style="width:33%;"><spring:message code="BzComposer.itemimport.csvorexcelfile"/></td>
 	 		<td style="width:33%;"><input type="file" name="attachFile" /></td>
 	 		<td style="width:33%;">
-	 		    <input type="submit" class="formbutton" onclick="pleaseWait();" value="<spring:message code='BzComposer.global.upload'/>" />
-	 	    </td>
+                <input type="submit" class="formbutton" onclick="pleaseWait();" value="<spring:message code='BzComposer.global.upload'/>" />
+            </td>
 	 	</tr>
 	 	<tr><td colspan="3">&nbsp;</td></tr>
 	 	<tr>
@@ -65,8 +86,8 @@ function pleaseWait(){
 	<div>
 	    <span style="color: green;display:none;" id="pleaseWait"><spring:message code="BzComposer.configuration.pleaseWait"/></span>
 		<c:if test="${not empty successMessage1}">
-		    <span style="color: green"><spring:message code="BzComposer.FileUpload"/></span>
-            <% session.removeAttribute("successMessage1"); %>
+		  <span style="color: green"><spring:message code="BzComposer.FileUpload"/></span>
+		  <% session.removeAttribute("successMessage1"); %>
 		</c:if>
 	</div>
 </form:form>

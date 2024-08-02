@@ -18,6 +18,23 @@
     <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js"></script>
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid black;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
 </head>
 
 <body class="d-flex flex-column h-100" data-new-gr-c-s-check-loaded="14.1107.0" data-gr-ext-installed=""
@@ -44,8 +61,8 @@
 <!-- Main Container -->
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
-            <div class="column-lef">
+        <div class="col-pos-6">
+            <div class="column-pos-lef">
                 <div class="left-top">
                     <div class="customer-group">
                         <%-- <div class="select-user">
@@ -90,10 +107,56 @@
                                 <input type="number" id="discount_amount" placeholder="0.00">
                             </div>
                         </div>
+                        <div>
+                        <table>
+						  <tr>
+						    <th>Barcode</th>
+						    <th>Description</th>
+						    <th>Qty</th>
+						    <th>Price</th>
+						  </tr>
+						  <tr>
+						    <td>55662</td>
+						    <td>T Shirt</td>
+						    <td>1</td>
+						    <td>1529</td>
+						  </tr>
+						  <tr>
+						    <td>55663</td>
+						    <td>Paint</td>
+						    <td>1</td>
+						    <td>1100</td>
+						  </tr>
+						  <tr>
+						    <td>55664</td>
+						    <td>Colgate</td>
+						    <td>1</td>
+						    <td>100</td>
+						  </tr>
+						  <tr>
+						    <td>55665</td>
+						    <td>Oil</td>
+						    <td>1</td>
+						    <td>150</td>
+						  </tr>
+						  <tr>
+						    <td>55666</td>
+						    <td>Cable</td>
+						    <td>1</td>
+						    <td>200</td>
+						  </tr>
+						  <tr>
+						    <td>55667</td>
+						    <td>Pen</td>
+						    <td>1</td>
+						    <td>10</td>
+						  </tr>
+						</table>
+                        </div>
                         <div class="separator"></div>
                         <div class="summary-item total-summary-item">
                             <div class="summary-title">Total</div>
-                            <div class="summary-amount">$<span id="grand_total">0.00</span></div>
+                            <div class="summary-amount">$<span id="grand_total">3089.00</span></div>
                         </div>
                     </div>
                     <div class="payment summary-item">
@@ -160,8 +223,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="column-right">
+        <div class="col-pos-7">
+            <div class="column-pos-right">
                 <div class="product-group" style="width: 100%;">
                     <div class="right-top">
                         <input class="form-control mr-sm-2 search-item" type="search"
@@ -232,7 +295,38 @@
         </div>
     </div>
 </div>
-
+<div class="footer-calculator-mainContainer" style="height: 17vh;">
+      <div class="footer-container">
+        <div class="total-discount-div">
+          <h4>Total Discounts</h4>
+          <input type="number" placeholder="0.00" class="placeholder-right" />
+        </div>
+        <div class="SubtotalAndTax-div">
+          <div class="Subtotal-div">
+            <h4>Subtotal</h4>
+            <input
+              type="number"
+              placeholder="3080.00"
+              class="placeholder-right"
+            />
+          </div>
+          <div class="Tax-div">
+            <h4>Tax</h4>
+            <input type="number" placeholder="9.00" class="placeholder-right" style="margin-left: 65px;"/>
+          </div>
+        </div>
+        <div class="Total-div">
+          <h4>Total</h4>
+          <div class="totalInput-div">
+            <input
+              type="number"
+              placeholder="3089.00"
+              class="placeholder-right"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
 <div class="footer">
     <div class="footer-btn-group">
         <button type="button" class="btn btn-lg btn-primary print">
@@ -264,7 +358,9 @@
             </svg>
             Clear All</a>
     </div>
-
+   <div class="footer-calculator">
+   <div><div>
+    </div>
     <!-- Modal Start-->
     <div class="modal fade" id="save" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -411,7 +507,7 @@
         </div>
     </div>
 </div>
-
+</div>
 <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/style.js"></script>
 <script>feather.replace()</script>

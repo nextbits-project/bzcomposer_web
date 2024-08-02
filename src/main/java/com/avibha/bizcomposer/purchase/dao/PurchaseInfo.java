@@ -153,7 +153,7 @@ public class PurchaseInfo {
 	@Autowired
 	private StorageShippingaddressRepository storageShippingaddressRepository;
 
-	@Cacheable(value = "vendorsCache", key = "{#compId, #sortBy}")
+	//@Cacheable(value = "vendorsCache", key = "{#compId, #sortBy}")
 	public List<VendorDto> getVendorsBySort(String compId, String sortBy) {
 		List<VendorDto> objList = new ArrayList<>();
 		List<VendorDto> serviceList = new ArrayList<>();

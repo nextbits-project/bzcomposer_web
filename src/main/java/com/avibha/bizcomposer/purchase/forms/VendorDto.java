@@ -18,11 +18,18 @@ import org.apache.struts.action.ActionForm;
 public class VendorDto extends ActionForm {
 	
 	private static final long serialVersionUID = 0;
-	public static final String vendorColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
-			+ "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID,Taxable,CVTypeID,CVCategoryID,"
-			+ "VendorOpenDebit,VendorAllowedCredit,TermID,SalesRepID,ShipCarrierID,PaymentTypeID,UseIndividual,"
-			+ "AnnualInterestRate,MinimumFinanceCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge,Detail";
-
+	/*
+	 * public static final String vendorColumns =
+	 * "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,"
+	 * +
+	 * "City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID,Taxable,CVTypeID,CVCategoryID,"
+	 * +
+	 * "VendorOpenDebit,VendorAllowedCredit,TermID,SalesRepID,ShipCarrierID,PaymentTypeID,UseIndividual,"
+	 * +
+	 * "AnnualInterestRate,MinimumFinanceCharge,GracePeriod,AssessFinanceCharge,MarkFinanceCharge,Detail";
+	 */
+	public static final String vendorColumns = "CompanyName,DBAName,CustomerTitle,FirstName,MiddleName,LastName,Address1,Address2,City,State,Country,ZipCode,Phone,CellPhone,Fax,Email,TaxID";
+	
 	private int companyID;
 	private String clientVendorID;
 	private String bsAddressID;
@@ -196,7 +203,8 @@ public class VendorDto extends ActionForm {
 	private  boolean isPaymentCompleted;
 	private String countryName;
 	private String cityName;
-
+	private String customerGroup;
+	private int cvTypeID;
 
 	public VendorDto(int clientVendorId, String name, String customerTitle, String firstName, String lastName,
 			String address1, String address2, String city, String state, String zipCode, String country, String email,
@@ -1171,6 +1179,26 @@ public class VendorDto extends ActionForm {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+
+	public String getCustomerGroup() {
+		return customerGroup;
+	}
+
+
+	public void setCustomerGroup(String customerGroup) {
+		this.customerGroup = customerGroup;
+	}
+
+
+	public int getCvTypeID() {
+		return cvTypeID;
+	}
+
+
+	public void setCvTypeID(int cvTypeID) {
+		this.cvTypeID = cvTypeID;
 	}
 
 }

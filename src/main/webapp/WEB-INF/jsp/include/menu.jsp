@@ -44,6 +44,18 @@
 								<a href="#" onclick="leadsImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.lead.leads" /></span></a>
 							</li>
 							<li>
+                        		<li>
+                            	<a href="#" onclick="quickBookImport()" style="cursor: pointer;">
+                                	<spring:message code="menu.file.QBImport" />
+                            	</a>
+                        		</li>
+                        		<li>
+								<a href="#" onclick="orderImport()" style="cursor: pointer;">
+								<spring:message code="menu.file.Order_Import" />
+								</a>
+								</li>
+							</li>
+							<li>
 								<a href="#" onclick="vendorImport()" style="cursor: pointer;"><span><spring:message code="BzComposer.vendor.vendors" /></span></a>
 							</li>
 							<li>
@@ -123,18 +135,6 @@
                                 </ul>
                             </li> -->
 						</ul>
-					</li>
-					<li>
-                        <li>
-                            <a href="#" onclick="quickBookImport()" style="cursor: pointer;">
-                                <spring:message code="menu.file.QBImport" />
-                            </a>
-                        </li>
-					</li>
-					<li>
-						<a href="#" onclick="orderImport()" style="cursor: pointer;">
-							<spring:message code="menu.file.Order_Import" />
-						</a>
 					</li>
 					</li>
 					<li>
@@ -1557,11 +1557,11 @@
 	}
 	function vendorImport()
 	{
-		window.open("File?tabid=ImportVendor",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+		window.open("File?tabid=ImportVendor",null,"scrollbars=no,height=500,width=1000,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	function uploadItem()
 	{
-		window.open("Item?tabid=UploadItem",null,"scrollbars=no,height=300,width=800,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
+		window.open("Item?tabid=UploadItem",null,"scrollbars=no,height=500,width=1000,left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
 	}
 	function invoicesImport()
     {

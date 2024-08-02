@@ -1,6 +1,7 @@
 package com.avibha.bizcomposer.configuration.dao;
 
 import com.avibha.bizcomposer.configuration.forms.ConfigurationDto;
+import com.avibha.bizcomposer.configuration.forms.DesignFeatureDto;
 import com.avibha.common.utility.CountryState;
 import com.nxsol.bzcomposer.company.repos.BcaFootnoteRepository;
 
@@ -667,6 +668,17 @@ public class ConfigurationDetails {
 			System.out.println("VendorPurchaseValues Saved Successfully...");
 		} else {
 			System.out.println("Error in saveVendorPurchaseValues!!!!!");
+		}
+	}
+	
+	public void saveDesignFeature(DesignFeatureDto configDto, String companyID) {
+		Long compId = Long.valueOf(companyID);
+		boolean saved = true;
+		//boolean saved = cinfo.saveVendorPurchaseValuesInConfigInfo(configDto, compId);
+		if (saved) {
+			System.out.println("Design And Feature Saved Successfully...");
+		} else {
+			System.out.println("Error in Design And Feature!!!!!");
 		}
 	}
 }

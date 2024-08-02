@@ -606,6 +606,39 @@ public class ConfigurationController {
 			setConfigActiveTab(session, "vendorPurchaseOrderTab");
 			System.out.println("goes to vendorPurchaseOrder page......................");
 			forward = "/configuration/vendorPurchaseOrder";
+		} else if (action.equalsIgnoreCase("config40")) {
+			VendorCategory vendorCategory = new VendorCategory();
+			configDetails.getConfigurationInfo(request, configDto);
+
+			request.setAttribute("CategoryID", configDto.getDefaultCategoryId());
+			request.setAttribute("countryID", configDto.getSelectedCountryId1());
+			request.setAttribute("stateID", configDto.getSelectedStateId1());
+			request.setAttribute("viaID", configDto.getShipCarrierId());
+			request.setAttribute("termID", configDto.getSelectedTermId());
+			request.setAttribute("repID", configDto.getSelectedSalesRepId());
+			request.setAttribute("payMethodID", configDto.getSelectedPaymentId());
+			request.setAttribute("inchargeEmpID", configDto.getSelectedActiveEmployeeId());
+
+			request.setAttribute("showCountry", configDto.getPoShowCountry());
+			request.setAttribute("showTelephone", configDto.getPoShowTelephone());
+			request.setAttribute("purchasePrefix", configDto.getIsPurchasePrefix());
+			request.setAttribute("businessTypes", vendorCategory.getCVCategoryList(companyID));
+			request.setAttribute("customerTypeList", dao.getCustomerTypeList(companyIDL));
+
+			dao.getCountry(configDto);
+			dao.getStates(231, configDto);
+			dao.getCategory(companyIDL, configDto);
+			dao.getExistingLocation(companyIDL, configDto);
+			dao.getActiveEmployee(companyIDL, request, configDto);
+			dao.getShipCarrier(companyIDL, request, configDto);
+			dao.getTerm(companyIDL, configDto);
+			dao.getSalesRepresentative(companyIDL, configDto);
+			dao.getPaymentType(companyIDL, configDto);
+			dao.getMessages(companyIDL, configDto);
+			dao.getInvoiceStyle(configDto);
+			setConfigActiveTab(session, "vendorPurchaseOrderTab");
+			System.out.println("goes to vendorPurchaseOrder page......................");
+			forward = "/configuration/posConfiguration";
 		} else if (action.equalsIgnoreCase("config11")) {
 			// System.out.println("Inside config11 condition");
 			ConfigurationDetails configDetails = new ConfigurationDetails();

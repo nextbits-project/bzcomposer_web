@@ -328,6 +328,7 @@ public class TblBSAddress2 implements Cloneable {
 		this.setIsDefault(1);
 		this.setStatus("N");
 	}
+	
 	public void setAddressWithCustomerDtoBilling(CustomerDto c, int cvID) {
 
 		this.setCvId(cvID);
@@ -410,6 +411,72 @@ public class TblBSAddress2 implements Cloneable {
 		this.setPhone(c.getShphone());
 		this.setCellPhone("");
 		this.setFax("");
+		this.setActive("1");
+		this.setIsDefault(1);
+		this.setStatus("N");
+	}
+	
+	public void setAddressWithVendorBillDetails(VendorDto c, int cvID) {
+
+		this.setCvId(cvID);
+		this.setName(c.getBscname());
+		this.setAddressName("Default");
+		this.setFirstName(c.getBsfirstName());
+		this.setLastName(c.getBslastName());
+		this.setAddress1(c.getBsaddress1());
+		this.setAddress2(c.getBsaddress2());
+		this.setCity(c.getBscity());
+		this.setState(c.getBsstate());
+		this.setProvince(c.getBsprovince());
+		this.setCountry(c.getBscountry());
+		this.setZipCode(c.getBszipCode());
+		this.setPhone(c.getBsphone());
+		this.setCellPhone("");
+		this.setFax("");
+		this.setActive("1");
+		this.setIsDefault(1);
+		this.setStatus("N");
+	}
+	
+	public void setAddressWithVendorShipping(VendorDto c, int cvID) {
+
+		this.setCvId(cvID);
+		this.setName(c.getShcname());
+		this.setAddressName("Default");
+		this.setFirstName(c.getShfirstName());
+		this.setLastName(c.getShlastName());
+		this.setAddress1(c.getShaddress1());
+		this.setAddress2(c.getShaddress2());
+		this.setCity(c.getShcity());
+		this.setState(c.getShstate());
+		this.setProvince(c.getShprovince());
+		this.setCountry(c.getShcountry());
+		this.setZipCode(c.getShzipCode());
+		this.setPhone(c.getShphone());
+		this.setCellPhone("");
+		this.setFax("");
+		this.setActive("1");
+		this.setIsDefault(1);
+		this.setStatus("N");
+	}
+	
+	public void setAddressWithVendorDetailsDto(VendorDto c, int cvID) {
+
+		this.setCvId(cvID);
+		this.setName(c.getCname());
+		this.setAddressName("Default");
+		this.setFirstName(c.getFirstName());
+		this.setLastName(c.getLastName());
+		this.setAddress1(c.getAddress1());
+		this.setAddress2(c.getAddress2());
+		this.setCity(c.getCity());
+		this.setState(c.getState());
+		this.setProvince(c.getProvince());
+		this.setCountry(c.getCountry());
+		this.setZipCode(c.getZipCode());
+		this.setPhone(c.getPhone());
+		this.setCellPhone(c.getCellPhone());
+		this.setFax(c.getFax());
 		this.setActive("1");
 		this.setIsDefault(1);
 		this.setStatus("N");

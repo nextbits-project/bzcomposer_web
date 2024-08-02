@@ -69,7 +69,7 @@ import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.nxsol.bzcomposer.company.utils.JpaHelper;
 
 @Service
-public class LeadService {
+public class DesignFeatureService {
 
 	@Autowired
 	private BcaClientvendorRepository clientVendorRepo;

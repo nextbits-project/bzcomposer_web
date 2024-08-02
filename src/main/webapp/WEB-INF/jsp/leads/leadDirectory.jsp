@@ -211,7 +211,7 @@ table.tabla-listados tbody tr td {
 							<thead class="thead-light">
 								<tr>
 									<th align="center">
-										<spring:message code="BzComposer.customerinfo.lead.source" />
+										<spring:message code="BzComposer.lead.file.name" />
 									</th>
 								</tr>
 							</thead>
@@ -228,27 +228,27 @@ table.tabla-listados tbody tr td {
 					<td colspan="10" style="vertical-align: 0;">
 						<div id="selectedAccount">
 							<h4 class="title2"><spring:message code="BzComposer.customerinfo.leadinformation" /></h4>
-							<table id="leadInfo" class="table table-bordered table-sm  devBankingDatatable"
-							style="font-size: 12px;">
-							<thead class="thead-light">
+							<table id="leadInfo" class="table table-bordered table-sm  devBankingDatatable">
+							<thead class="thead-light" style="font-size: 14px;white-space: nowrap;">
 								<tr>
-									<th>ID</th>
-									<th>Name</th>
-									<th>Company</th>
-									<th>Address1</th>
-									<th>Address2</th>
-									<th>City</th>
-									<th>State</th>
-									<th>Zip</th>
-									<th>Country</th>
-									<th>Date Added</th>
-									<th>Phone</th>
-									<th>Mobile</th>
-									<th>Fax</th>
-									<th>Email Address</th>
+									<th><spring:message code="BzComposer.Customer.ID" /> &#9650</th>
+									<th><spring:message code="BzComposer.customerinfo.lead.source" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.name" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.company" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.address1" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.address2" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.city" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.state" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.zip" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.country" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.dateadded" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.phone" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.mobile" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.fax" /> &#9650</th>
+									<th><spring:message code="BzComposer.global.emailaddress" /> &#9650</th>
 								</tr>
 							</thead>
-							<tbody id="MyTable">
+							<tbody id="MyTable" style="font-size: 12px;">
 								<c:if test="${not empty LeadDetails}">
 									<c:forEach items="${LeadDetails}" var="objList"
 										varStatus="loop">
@@ -258,6 +258,12 @@ table.tabla-listados tbody tr td {
 												id="custID${loop.index}" value="${objList.leadID}"
 												onchange="addRowIndex(${loop.index}, ${objList.leadID})" />
 												${objList.leadID}</td>
+											<c:if test="${(not empty objList.sourceName)}">
+												<td>${objList.sourceName}</td>
+											</c:if>
+											<c:if test="${(empty objList.sourceName)}">
+												<td>Not Specified</td>
+											</c:if>
 											<td>${objList.fullName}</td>
 											<td>${objList.companyName}</td>
 											<td>${objList.address1}</td>
@@ -322,12 +328,41 @@ function initialize(){
 }
 
 let tableBody = document.querySelector("#leadInfo > tbody");
+let tableData = [];
+<c:if test="${not empty LeadDetails}">
+	<c:forEach items="${LeadDetails}" var="objList">
+		var obj = {
+    	'leadID':'${objList.leadID}',
+    	<c:if test="${(not empty objList.sourceName)}">
+			'sourceName': '${objList.sourceName}',
+		</c:if>
+		<c:if test="${(empty objList.sourceName)}">
+			'sourceName': 'Not Specified',
+		</c:if>
+    	'fullName': '${objList.fullName}',
+    	'companyName': '${objList.companyName}',
+    	'address1': '${objList.address1}',
+    	'address2': '${objList.address2}',
+    	'city': '${objList.city}',
+    	'state': '${objList.state}',
+		'zipCode': '${objList.zipCode}',
+		'country': '${objList.country}',
+		'dateAdded': '${objList.dateAdded}',
+		'phone': '${objList.phone}',
+		'cellPhone': '${objList.cellPhone}',
+		'fax': '${objList.fax}',
+		'email': '${objList.email}'
+		}
+		tableData.push(obj);
+	</c:forEach>
+</c:if>
 
 function setDirectoryDataById(directoryID){
 	$.ajax({
         url:"getLeadDirectoryDetailsById/"+directoryID,
         method: "GET",
         success : function(data) {
+        	tableData = data;
         	buildTable(data);
         },
         error : function(error) {
@@ -350,12 +385,12 @@ function buildTable(data){
         	allRecordsHTML+='<tr id="'+i+'$$$" onclick="setRowLeadId('+data[i].leadID+', '+i+', true);">';
         	for(var j=0;j<headers.length;j++){
         		var header = headers[j];
-        		if(header == 'leadID' || header == 'fullName' || header == 'companyName' || header == 'address1' || 
+        		if(header == 'leadID' || header == 'sourceName' || header == 'fullName' || header == 'companyName' || header == 'address1' || 
         			header == 'address2' || header == 'city' || header == 'state' || header == 'zipCode' || 
         			header == 'country' || header == 'dateAdded' || header == 'phone' || header == 'cellPhone' || 
         			header == 'fax' || header == 'email') {
         			if(header == 'leadID'){
-        				allRecordsHTML+='<td><input type="checkbox" id="custID'+i+'" value="'+data[i][header]+'" onchange="addRowIndex('+i+', '+data[i][header]+')"/>'+data[i][header]+'</td>';					
+        				allRecordsHTML+='<td><input type="checkbox" id="custID'+i+'" value="'+data[i][header]+'" onchange="addRowIndex('+i+', '+data[i][header]+')"/> '+data[i][header]+'</td>';					
         			}else {
         				allRecordsHTML+='<td>'+data[i][header]+'</td>';
         			}
@@ -366,7 +401,25 @@ function buildTable(data){
     	table.innerHTML = allRecordsHTML;
 	}
 }
-
+        
+$('th').on('click', function(){	
+	var column = $(this).data('column')
+	var order = $(this).data('order')
+	var text = $(this).html()
+	text = text.substring(0, text.length - 1)
+	if(order == 'desc'){
+		$(this).data('order', "asc")
+		tableData = tableData.sort((a,b) => a[column] > b[column] ? 1 : -1)
+		text += '&#9660'
+	}else{
+		$(this).data('order', "desc")
+		tableData = tableData.sort((a,b) => a[column] < b[column] ? 1 : -1)
+		text += '&#9650'
+	}
+	$(this).html(text)
+	buildTable(tableData)
+})
+	
 function setRowId(rowid, rowIndex, flag){
     let lSize = document.getElementById("SourceSize").value;
     for (i=0; i<lSize; i++) {

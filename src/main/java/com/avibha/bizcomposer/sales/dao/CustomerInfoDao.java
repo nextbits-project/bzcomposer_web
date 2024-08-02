@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import com.avibha.bizcomposer.employee.dao.Title;
 import com.avibha.bizcomposer.purchase.dao.PurchaseInfo;
 import com.avibha.bizcomposer.purchase.dao.VendorCategory;
+import com.avibha.bizcomposer.purchase.forms.VendorDto;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.EstimationDto;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
@@ -4042,5 +4043,260 @@ public class CustomerInfoDao {
 			str = str.substring(0, str.length() - 2);	
 		}
 		return str;
+	}
+	
+	@CacheEvict(value = "contactDetails", allEntries = true)
+	public boolean insertVendorDetails(VendorDto c, String compID) {
+		boolean ret = false;
+		try {
+			String oBal = "0.0";
+			String exCredit = "0.0";
+			String status = "N";
+			int cvID = purchaseInfo.getLastClientVendorID() + 1;
+			if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
+				oBal = c.getOpeningUB();
+
+			if (c.getExtCredit() != null && c.getExtCredit().trim().length() > 0)
+				exCredit = c.getExtCredit();
+
+			String vcName = vc.CVCategory(removeLast2Digit(c.getType()));
+			BcaClientvendor bcv = new BcaClientvendor();
+			bcv.setClientVendorId(cvID);
+			bcv.setName(c.getCname());
+			Date dateAdded = (c.getDateAdded() == null || c.getDateAdded().equals("")) ? string2date(" now() ")
+					: string2date(c.getDateAdded());
+			bcv.setDateAdded(DateHelper.convertDateToOffsetDateTime(dateAdded));
+			if(c.getTitle() != null && !c.getTitle().isEmpty()) {
+				BcaTitle bcaTitle = bcaTitleRepository.findBytitleAndCompany_CompanyIdAndActive(c.getTitle(), Long.valueOf(compID), 1);
+				bcv.setCustomerTitle(String.valueOf(bcaTitle.getTitleId()));
+			}
+			
+			bcv.setFirstName(c.getFirstName());
+			bcv.setLastName(c.getLastName());
+			bcv.setAddress1(c.getAddress1());
+			if(c.getAddress2() != null && !c.getAddress2().isEmpty())
+				bcv.setAddress2(c.getAddress2());
+			else 
+				bcv.setAddress2("");
+			
+			if(c.getCity() != null && !c.getCity().isEmpty()) {
+				BcaCities bcaCities = cityRepository.findByname(c.getCity());
+				if(bcaCities != null && bcaCities.getId() != null && bcaCities.getId() > 0)
+					bcv.setCity(String.valueOf(bcaCities.getId()));
+			}
+			
+			if(c.getState() != null && !c.getState().isEmpty()) {
+				BcaStates bcaStates = stateRepository.findByname(c.getState());
+				if(bcaStates != null && bcaStates.getId() != null && bcaStates.getId() > 0)
+					bcv.setState(String.valueOf(bcaStates.getId()));
+			}
+			
+			bcv.setProvince(c.getProvince());
+			if(c.getCountry() != null && !c.getCountry().isEmpty()) {
+				BcaCountries bcaCountries = countriesRepository.findByname(c.getCountry());
+				if(bcaCountries != null && bcaCountries.getId() != null && bcaCountries.getId() > 0)
+					bcv.setCountry(String.valueOf(bcaCountries.getId()));
+			}
+			
+			if (null != c.getZipCode() && !c.getZipCode().isEmpty()) {
+				if(c.getZipCode().contains(".")) {
+					String zipcode = c.getZipCode().replace(".0", "");
+					bcv.setZipCode(zipcode);
+				} else {
+					bcv.setZipCode(c.getZipCode());
+				}
+			}
+			
+			if(c.getPhone() != null && !c.getPhone().isEmpty())
+				bcv.setPhone(c.getPhone());
+			else 
+				bcv.setPhone("");
+			
+			if(c.getPhone() != null && !c.getPhone().isEmpty())
+				bcv.setCellPhone(c.getPhone());
+			else 
+				bcv.setCellPhone("");
+			
+			if(c.getFax() != null && !c.getFax().isEmpty())
+				bcv.setFax(removeLast2Digit(c.getFax()));
+			else 
+				bcv.setFax("");
+			
+			bcv.setHomePage(c.getHomePage());
+			if(c.getEmail() != null && !c.getEmail().isEmpty())
+				bcv.setEmail(c.getEmail());
+			else 
+				bcv.setEmail("");
+			
+			Optional<BcaCompany> company = bcaCompanyRepository.findById(Long.parseLong(compID));
+			if (company.isPresent()) {
+				bcv.setCompany(company.get());
+			}
+
+			bcv.setResellerTaxId(c.getTexID());
+			bcv.setVendorOpenDebit(Double.parseDouble(oBal));
+			bcv.setVendorAllowedCredit(Double.parseDouble(exCredit));
+			bcv.setDetail(c.getMemo());
+			if (c.getIsclient() != null && !c.getIsclient().isEmpty())
+				bcv.setCvtypeId(Integer.valueOf(c.getIsclient()));
+			if (null != c.getTaxAble() && !c.getTaxAble().isEmpty()) {
+				bcv.setTaxable(Long.parseLong(removeLast2Digit(c.getTaxAble())));	
+			}
+			if (null != c.getType() && !c.getType().isEmpty()) {
+				bcv.setCvcategoryId(Integer.parseInt(removeLast2Digit(c.getType())));
+				
+			}
+			
+			bcv.setCvcategoryName(vcName);
+			bcv.setActive(1);
+			bcv.setDeleted(0);
+			bcv.setStatus(status);
+			bcv.setIsPhoneMobileNumber(c.isIsPhoneMobileNumber());
+			bcv.setIsMobilePhoneNumber(c.isIsMobilePhoneNumber());
+			bcv.setMiddleName(c.getMiddleName());
+			Date dateInput = (c.getDateInput() == null || c.getDateInput().trim().equals("")) ? null
+					: string2date(c.getDateInput());
+			bcv.setDateInput(DateHelper.convertDateToOffsetDateTime(dateInput));
+			Date dateTerminated = (c.getTerminatedDate() == null || c.getTerminatedDate().trim().equals("")) ? null
+					: string2date(c.getTerminatedDate());
+			bcv.setDateTerminated(DateHelper.convertDateToOffsetDateTime(dateTerminated));
+			bcv.setIsTerminated(c.isTerminated());
+			int termId = c.getTerm() == null || c.getTerm().trim().equals("") ? 0 : Integer.parseInt(removeLast2Digit(c.getTerm()));
+			bcv.setDbaname(c.getDbaName());
+			Optional<BcaTerm> term = bcaTermRepository.findById(termId);
+			if (term.isPresent())
+				bcv.setTerm(term.get());
+			int salesRepId = (c.getRep() == null || c.getRep().trim().equals("")) ? 0 : Integer.parseInt(removeLast2Digit(c.getRep()));
+			Optional<BcaSalesrep> salesRep = bcaSalesrepRepository.findById(salesRepId);
+			if (salesRep.isPresent())
+				bcv.setSalesRep(salesRep.get());
+			if(c.getShipping() != null) {
+				Optional<BcaShipcarrier> shipCarrier = bcaShipcarrierRepository.findById(Integer.parseInt(removeLast2Digit(c.getShipping())));	
+				if (shipCarrier.isPresent())
+					bcv.setShipCarrier(shipCarrier.get());
+			}
+			
+			int paymentTypeId = (c.getPaymentType() == null || c.getPaymentType().trim().equals("")) ? 0
+					: Integer.parseInt(removeLast2Digit(c.getPaymentType()));
+			Optional<BcaPaymenttype> paymentType = bcaPaymenttypeRepository.findById(paymentTypeId);
+			if (paymentType.isPresent())
+				bcv.setPaymentType(paymentType.get());
+			if (null != c.getCcType() && !c.getCcType().trim().isEmpty())
+				bcv.setCctypeId(Integer.parseInt(c.getCcType()));
+			if (null != c.getCustomerGroup())
+				bcv.setCustomerGroupId(Integer.parseInt(c.getCustomerGroup()));
+			System.out.println("Client Data ---"+c.toString());
+			BcaClientvendor cvSaved = bcaClientvendorRepository.save(bcv);
+			if (null != cvSaved) {
+				cvID = cvSaved.getClientVendorId();
+				bcv.setClientVendorId(cvID);
+				ret = true;
+			}
+
+			purchaseInfo.insertVendorCreditCard(cvID, c.getCcType(), c.getCardNo(), c.getExpDate(), c.getCw2(),
+					c.getCardHolderName(), c.getCardBillAddress(), c.getCardZip());
+			/*
+			 * if (c.getCvTypeID() != 3) { insertClientInfo(c, cvID, compID); }
+			 */
+			TblBSAddress2 address = new TblBSAddress2();
+			if ("0".equals(c.getSetdefaultbs())) {
+				address.setAddressWithVendorBillDetails(c, cvID);
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N", bcv.getCompany());
+				address.setAddressWithVendorShipping(c, cvID);
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N", bcv.getCompany());
+
+				if (billingAddId > 0 && shippingAddId > 0) {
+					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
+				}
+			} else {
+				c.setCountry(bcv.getCountry());
+				c.setState(bcv.getState());
+				c.setCity(bcv.getCity());
+				c.setZipCode(bcv.getZipCode());
+				address.setAddressWithVendorDetailsDto(c, cvID);
+				int billingAddId = purchaseInfo.insertBillingShippingAddress(address, 1, true, "N", bcv.getCompany());
+				int shippingAddId = purchaseInfo.insertBillingShippingAddress(address, 0, true, "N", bcv.getCompany());
+
+				if (billingAddId > 0 && shippingAddId > 0) {
+					purchaseInfo.updateClientInfo(billingAddId, shippingAddId, cvID);
+				}
+			}
+
+			insertVendorAccount(c, cvID);
+			int useIndividual = "1".equals(c.getFsUseIndividual()) ? 1 : 0;
+			int assFCharge = "1".equals(c.getFsAssessFinanceCharge()) ? 1 : 0;
+			int markFCharge = "1".equals(c.getFsMarkFinanceCharge()) ? 1 : 0;
+			purchaseInfo.insertVFCharge(cvID, useIndividual, c.getAnnualIntrestRate(), c.getMinFCharges(),
+					removeLast2Digit(c.getGracePrd()), assFCharge, markFCharge);
+		} catch (Exception ee) {
+			Loger.log(2, "SQLException in Class CustomerInfo,  method -insertCustomer " + ee.toString());
+
+		}
+		return ret;
+	}
+	
+	private void insertVendorAccount(VendorDto c, int cvId) {
+
+		String oBal = "0.00";
+		int cvTypeID = c.getCvTypeID();
+		if (c.getOpeningUB() != null && c.getOpeningUB().trim().length() > 0)
+			oBal = c.getOpeningUB();
+		Double openingBalance = Double.parseDouble(oBal);
+
+		TblAccount account = new TblAccount();
+		account.setParentID(0);
+		account.setIsCategory(false);
+		account.setName(c.getLastName() + ", " + c.getFirstName() + " - " + c.getCname());
+		account.setAccountTypeID(3);
+		account.setAccountCategoryID(2);
+		account.setCvID(cvId);
+		account.setDepositPaymentID(0);
+		// 1:both 2: customer 3 :vendor
+		if (cvTypeID == 1) {
+			account.setCustomerStartingBalance(openingBalance);
+			account.setCustomerCurrentBalance(openingBalance);
+			account.setVendorStartingBalance(openingBalance);
+			account.setVendorCurrentBalance(openingBalance);
+			account.setDescription("ClientVendor account.");
+			if (account.getCustomerStartingBalance() == 2.2E-306) {
+				account.setCustomerStartingBalance(0.0);
+			}
+			if (account.getCustomerCurrentBalance() == 2.2E-306) {
+				account.setCustomerCurrentBalance(0.0);
+			}
+			if (account.getVendorCurrentBalance() == 2.2E-306) {
+				account.setVendorCurrentBalance(0.0);
+			}
+			if (account.getVendorStartingBalance() == 2.2E-306) {
+				account.setVendorStartingBalance(0.0);
+			}
+		} else if (cvTypeID == 2) {
+			account.setCustomerStartingBalance(openingBalance);
+			account.setCustomerCurrentBalance(openingBalance);
+			account.setDescription("Client account.");
+			if (account.getCustomerStartingBalance() == 2.2E-306) {
+				account.setCustomerStartingBalance(0.0);
+			}
+			if (account.getCustomerCurrentBalance() == 2.2E-306) {
+				account.setCustomerCurrentBalance(0.0);
+			}
+		} else if (cvTypeID == 3) {
+			account.setVendorStartingBalance(openingBalance);
+			account.setVendorCurrentBalance(openingBalance);
+			account.setDescription("Vendor account.");
+			if (account.getVendorStartingBalance() == 2.2E-306) {
+				account.setVendorStartingBalance(0.0);
+			}
+			if (account.getVendorCurrentBalance() == 2.2E-306) {
+				account.setVendorCurrentBalance(0.0);
+			}
+		}
+		try {
+			int accountId = -1;
+			accountId = insertClientVendorAccount(account);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

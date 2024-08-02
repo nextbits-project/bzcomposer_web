@@ -2012,7 +2012,7 @@ public class PurchaseInfoDao {
 //		return vendorList;
 //	}
 
-	@Cacheable(value = "vendorDetails", key = "{#compId, #cvId}")
+	//@Cacheable(value = "vendorDetails", key = "{#compId, #cvId}")
 	public List<BcaClientvendor> getVendorDetails(String compId, String cvId) {
 		StringBuffer query = new StringBuffer(
 				"SELECT DISTINCT bcv FROM BcaClientvendor bcv " + " LEFT JOIN bcv.clientVendorBcaCvcreditcards cc "
@@ -2027,7 +2027,10 @@ public class PurchaseInfoDao {
 		TypedQuery<BcaClientvendor> typedQuery = this.entityManager.createQuery(query.toString(),
 				BcaClientvendor.class);
 		JpaHelper.addParameter(typedQuery, query.toString(), "companyId", Long.parseLong(compId));
-		JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvId));
+		if(cvId != null && !cvId.isEmpty()) {
+			JpaHelper.addParameter(typedQuery, query.toString(), "clientVendorId", Integer.parseInt(cvId));	
+		}
+		
 		JpaHelper.addParameter(typedQuery, query.toString(), "cvtypeId", Arrays.asList(1, 3));
 		JpaHelper.addParameter(typedQuery, query.toString(), "status", Arrays.asList("N", "U"));
 		JpaHelper.addParameter(typedQuery, query.toString(), "deleted", 0);
@@ -2128,132 +2131,134 @@ public class PurchaseInfoDao {
 				customer.setTerminated(vendor.getIsTerminated());
 				customer.setDbaName(vendor.getDbaname());
 				List<String> statusIn = Arrays.asList("N", "U");
-				BcaBillingaddress bcaBillingaddress = bcaBillingaddressRepository
-						.findByClientVendorIdAndStatusIn(Integer.parseInt(cvId), statusIn);
-				if (bcaBillingaddress != null) {
-					customer.setBscname(bcaBillingaddress.getName());
-					customer.setBsfirstName(bcaBillingaddress.getFirstName());
-					customer.setBslastName(bcaBillingaddress.getLastName());
-					customer.setBsaddress1(bcaBillingaddress.getAddress1());
-					customer.setBsaddress2(bcaBillingaddress.getAddress2());
-					customer.setBscity(bcaBillingaddress.getCity());
-					customer.setBszipCode(bcaBillingaddress.getZipCode());
-					customer.setBscountry(bcaBillingaddress.getCountry());
-					customer.setBsstate(bcaBillingaddress.getState());
-					customer.setBsprovince(bcaBillingaddress.getProvince());
-					if (bcaBillingaddress.getDbaname() != null)
-						customer.setBsdbaName(bcaBillingaddress.getDbaname());
-					request.setAttribute("state_bt", customer.getBsstate());
-				}
+				if (cvId != null && !cvId.isEmpty()) {
+					BcaBillingaddress bcaBillingaddress = bcaBillingaddressRepository
+							.findByClientVendorIdAndStatusIn(Integer.parseInt(cvId), statusIn);
+					if (bcaBillingaddress != null) {
+						customer.setBscname(bcaBillingaddress.getName());
+						customer.setBsfirstName(bcaBillingaddress.getFirstName());
+						customer.setBslastName(bcaBillingaddress.getLastName());
+						customer.setBsaddress1(bcaBillingaddress.getAddress1());
+						customer.setBsaddress2(bcaBillingaddress.getAddress2());
+						customer.setBscity(bcaBillingaddress.getCity());
+						customer.setBszipCode(bcaBillingaddress.getZipCode());
+						customer.setBscountry(bcaBillingaddress.getCountry());
+						customer.setBsstate(bcaBillingaddress.getState());
+						customer.setBsprovince(bcaBillingaddress.getProvince());
+						if (bcaBillingaddress.getDbaname() != null)
+							customer.setBsdbaName(bcaBillingaddress.getDbaname());
+						request.setAttribute("state_bt", customer.getBsstate());
+					}
+					
+					BcaShippingaddress shippingAddress = bcaShippingaddressRepository
+							.findByClientVendorIdAndStatusIn(Integer.parseInt(cvId), statusIn);
+					if (null != shippingAddress) {
+						customer.setShcname(shippingAddress.getName());
+						customer.setShfirstName(shippingAddress.getFirstName());
+						customer.setShlastName(shippingAddress.getLastName());
+						customer.setShaddress1(shippingAddress.getAddress1());
+						customer.setShaddress2(shippingAddress.getAddress2());
+						customer.setShcity(shippingAddress.getCity());
+						customer.setShzipCode(shippingAddress.getZipCode());
+						customer.setShcountry(shippingAddress.getCountry());
+						customer.setShstate(shippingAddress.getState());
+						customer.setShprovince(shippingAddress.getProvince());
+						if (null != shippingAddress.getDbaname())
+							customer.setShdbaName(shippingAddress.getDbaname());
+						request.setAttribute("state_st", customer.getShstate());
+					}
+				
+					/* for Account tab */
+					BcaClientvendor clientVendor = bcaClientvendorRepository
+							.findByCompanyIdAndClientvendorId(Long.parseLong(compId), Integer.parseInt(cvId));
+					if (null != clientVendor) {
+						if (null != clientVendor.getSalesRep())
+							customer.setRep(String.valueOf(clientVendor.getSalesRep().getSalesRepId()));
+						if (null != clientVendor.getTerm())
+							customer.setTerm(String.valueOf(clientVendor.getTerm().getTermId()));
+						if (null != clientVendor.getPaymentType())
+							customer.setPaymentType(String.valueOf(clientVendor.getPaymentType().getPaymentTypeId()));
+						if (null != clientVendor.getShipCarrier())
+							customer.setShipping(String.valueOf(clientVendor.getShipCarrier().getShipCarrierId()));
 
-				BcaShippingaddress shippingAddress = bcaShippingaddressRepository
-						.findByClientVendorIdAndStatusIn(Integer.parseInt(cvId), statusIn);
-				if (null != shippingAddress) {
-					customer.setShcname(shippingAddress.getName());
-					customer.setShfirstName(shippingAddress.getFirstName());
-					customer.setShlastName(shippingAddress.getLastName());
-					customer.setShaddress1(shippingAddress.getAddress1());
-					customer.setShaddress2(shippingAddress.getAddress2());
-					customer.setShcity(shippingAddress.getCity());
-					customer.setShzipCode(shippingAddress.getZipCode());
-					customer.setShcountry(shippingAddress.getCountry());
-					customer.setShstate(shippingAddress.getState());
-					customer.setShprovince(shippingAddress.getProvince());
-					if (null != shippingAddress.getDbaname())
-						customer.setShdbaName(shippingAddress.getDbaname());
-					request.setAttribute("state_st", customer.getShstate());
-				}
-				/* for Account tab */
-				BcaClientvendor clientVendor = bcaClientvendorRepository
-						.findByCompanyIdAndClientvendorId(Long.parseLong(compId), Integer.parseInt(cvId));
-				if (null != clientVendor) {
-					if (null != clientVendor.getSalesRep())
-						customer.setRep(String.valueOf(clientVendor.getSalesRep().getSalesRepId()));
-					if (null != clientVendor.getTerm())
-						customer.setTerm(String.valueOf(clientVendor.getTerm().getTermId()));
-					if (null != clientVendor.getPaymentType())
-						customer.setPaymentType(String.valueOf(clientVendor.getPaymentType().getPaymentTypeId()));
-					if (null != clientVendor.getShipCarrier())
-						customer.setShipping(String.valueOf(clientVendor.getShipCarrier().getShipCarrierId()));
+					}
+				
+					// ---start---------------------------------------------------------------------code
+					List<CreditCardDto> creditCards = new ArrayList<>();
 
-				}
+					List<Object[]> cvCreditCard = bcaCvcreditcardRepository
+							.findDistinctByClientVendorIdAndActive(Integer.parseInt(cvId), 1);
+					try {
+						for (Object obj[] : cvCreditCard) {
 
-				// ---start---------------------------------------------------------------------code
-				List<CreditCardDto> creditCards = new ArrayList<>();
+							BcaCvcreditcard cvcard = (BcaCvcreditcard) obj[0];
+							String cardTypeName = (String) obj[1];
 
-				List<Object[]> cvCreditCard = bcaCvcreditcardRepository
-						.findDistinctByClientVendorIdAndActive(Integer.parseInt(cvId), 1);
-				try {
-					for (Object obj[] : cvCreditCard) {
+							CreditCardDto card = new CreditCardDto();
+							card.setCardID(cvcard.getCreditCardId());
+							if (null != cvcard.getClientVendor())
+								card.setClientVendorID(cvcard.getClientVendor().getClientVendorId());
+							if (null != cvcard.getCctype())
+								card.setCcType(String.valueOf(cvcard.getCctype().getcCTypeID()));
+							card.setCardNo(cvcard.getCardNumber());
+							card.setExpDate(cvcard.getCardExpMonth() + " / " + cvcard.getCardExpYear());
+							card.setCw2(cvcard.getCardCw2());
+							card.setCardHolderName(cvcard.getCardHolderName());
+							card.setCardBillAddress(cvcard.getCardBillingAddress());
+							card.setCardZip(cvcard.getCardBillingZipCode());
+							card.setCardDefault(cvcard.getDefaultCard() != null ? cvcard.getDefaultCard() : false);
+							if (card.getCardNo() != null && card.getCardNo().length() > 4) {
 
-						BcaCvcreditcard cvcard = (BcaCvcreditcard) obj[0];
-						String cardTypeName = (String) obj[1];
-
-						CreditCardDto card = new CreditCardDto();
-						card.setCardID(cvcard.getCreditCardId());
-						if (null != cvcard.getClientVendor())
-							card.setClientVendorID(cvcard.getClientVendor().getClientVendorId());
-						if (null != cvcard.getCctype())
-							card.setCcType(String.valueOf(cvcard.getCctype().getcCTypeID()));
-						card.setCardNo(cvcard.getCardNumber());
-						card.setExpDate(cvcard.getCardExpMonth() + " / " + cvcard.getCardExpYear());
-						card.setCw2(cvcard.getCardCw2());
-						card.setCardHolderName(cvcard.getCardHolderName());
-						card.setCardBillAddress(cvcard.getCardBillingAddress());
-						card.setCardZip(cvcard.getCardBillingZipCode());
-						card.setCardDefault(cvcard.getDefaultCard() != null ? cvcard.getDefaultCard() : false);
-						if (card.getCardNo() != null && card.getCardNo().length() > 4) {
-
-							String ccTypeName = cardTypeName + "...."
-									+ card.getCardNo().substring(card.getCardNo().length() - 4);
-							card.setCcTypeName(ccTypeName);
+								String ccTypeName = cardTypeName + "...."
+										+ card.getCardNo().substring(card.getCardNo().length() - 4);
+								card.setCcTypeName(ccTypeName);
+							}
+							creditCards.add(card);
 						}
-						creditCards.add(card);
+
+						customer.setCustomerCards(creditCards);
+					} catch (ArrayIndexOutOfBoundsException | ClassCastException ex) {
+						Loger.log(2, " SQL Error in Class Purchasenfo and  method -searchVendor " + ex.toString());
+						ex.printStackTrace();
 					}
+					
+//					============================ Services ============================
+					List<BcaClientvendorservice> clientVendorService = bcaClientvendorserviceRepository
+							.findByCompanyIdAndClientVendorId(Long.parseLong(compId), Integer.parseInt(cvId));
+					String default_ser = "";
+					ArrayList<VendorDto> serviceinfo = new ArrayList<>();
+					for (BcaClientvendorservice cvs : clientVendorService) {
+						VendorDto uform1 = new VendorDto();
+						uform1.setServiceBalance(cvs.getServiceBalance());
+						uform1.setDefaultService(cvs.getDefaultService() ? 1 : 0);
 
-					customer.setCustomerCards(creditCards);
-				} catch (ArrayIndexOutOfBoundsException | ClassCastException ex) {
-					Loger.log(2, " SQL Error in Class Purchasenfo and  method -searchVendor " + ex.toString());
-					ex.printStackTrace();
-				}
-//				============================ Services ============================
-				List<BcaClientvendorservice> clientVendorService = bcaClientvendorserviceRepository
-						.findByCompanyIdAndClientVendorId(Long.parseLong(compId), Integer.parseInt(cvId));
-				String default_ser = "";
-				ArrayList<VendorDto> serviceinfo = new ArrayList<>();
-				for (BcaClientvendorservice cvs : clientVendorService) {
-					VendorDto uform1 = new VendorDto();
-					uform1.setServiceBalance(cvs.getServiceBalance());
-					uform1.setDefaultService(cvs.getDefaultService() ? 1 : 0);
+						int svID = cvs.getServiceId();
+						uform1.setServiceID(svID);
+						if (uform1.getDefaultService() == 1) {
+							default_ser = String.valueOf(svID);
+						}
+						BcaInvoicestyle invoiceStyle = bcaInvoicestyleRepository
+								.findByInvoiceStyleIdAndActive(cvs.getInvoiceStyleId(), 1);
+						if (null != invoiceStyle) {
+							uform1.setInvoiceStyle(invoiceStyle.getName());
+						}
 
-					int svID = cvs.getServiceId();
-					uform1.setServiceID(svID);
-					if (uform1.getDefaultService() == 1) {
-						default_ser = String.valueOf(svID);
+						Optional<BcaServicetype> serviceType = bcaServicetypeRepository.findById(svID);
+						if (serviceType.isPresent()) {
+							uform1.setServiceName(serviceType.get().getServiceName());
+						}
+
+						serviceinfo.add(uform1);
 					}
-					BcaInvoicestyle invoiceStyle = bcaInvoicestyleRepository
-							.findByInvoiceStyleIdAndActive(cvs.getInvoiceStyleId(), 1);
-					if (null != invoiceStyle) {
-						uform1.setInvoiceStyle(invoiceStyle.getName());
+					request.setAttribute("ServiceInfo", serviceinfo);
+					if (!(default_ser.equals(""))) {
+						request.setAttribute("DefaultService", default_ser);
+					} else {
+						default_ser = "0";
+						request.setAttribute("DefaultService", default_ser);
 					}
-
-					Optional<BcaServicetype> serviceType = bcaServicetypeRepository.findById(svID);
-					if (serviceType.isPresent()) {
-						uform1.setServiceName(serviceType.get().getServiceName());
-					}
-
-					serviceinfo.add(uform1);
-				}
-
-				request.setAttribute("ServiceInfo", serviceinfo);
-				if (!(default_ser.equals(""))) {
-					request.setAttribute("DefaultService", default_ser);
-				} else {
-					default_ser = "0";
-					request.setAttribute("DefaultService", default_ser);
 				}
 				vendorList.add(customer);
-
 			}
 			request.setAttribute("vendorDetails1", customer);
 			// System.out.println("vendorDetails1:"+customer.toString());

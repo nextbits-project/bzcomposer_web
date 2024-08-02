@@ -1525,6 +1525,79 @@ public class ItemInfoDao {
 		return objList;
 	}
 
+	public ArrayList<ItemDto> SearchItemForExport(String compId, String invId, ItemDto item, HttpServletRequest request) {
+		ArrayList<ItemDto> itemList = new ArrayList<>();
+		List<BcaIteminventory> itemInventories = null;
+		try {
+			itemInventories = bcaIteminventoryRepository.findByCompanyIdAndActive(Long.parseLong(compId), 1);
+			for (BcaIteminventory rs : itemInventories) {
+				if (!itemList.isEmpty()) {
+					item = new ItemDto();
+				}
+				item.setInventoryId(String.valueOf(rs.getInventoryId()));
+				item.setParentID(String.valueOf(rs.getParentId()));
+				item.setTectcmd(rs.getParentId());
+				item.setItemSubCategory(rs.getItemSubCategory());
+				item.setItemCode(rs.getInventoryCode());
+				item.setItemName(rs.getInventoryName());
+				item.setPurchasePrice(String.valueOf(rs.getPurchasePrice()));
+				item.setSalePrice(String.valueOf(rs.getSalePrice()));
+				item.setDealerPrice(String.valueOf(rs.getDealerPrice()));
+				item.setQty(String.valueOf(rs.getQty()));
+				item.setAvailableQty(String.valueOf(rs.getAvailableQty()));
+				item.setWeight(String.valueOf(rs.getWeight()));
+				item.setLocation(rs.getLocation());
+				item.setItemType(String.valueOf(rs.getItemTypeId()));
+				item.setSerialNum(String.valueOf(rs.getSerialNum()));
+				item.setTaxable(String.valueOf(rs.getTaxable()));
+				item.setIscategory(String.valueOf(rs.getIsCategory()));
+				item.setConsignedItem(rs.getIsConsignedItem());
+				item.setDiscontinued(String.valueOf(rs.getIsDiscontinued()));
+				item.setItemTaxable(rs.getIsItemTaxable());
+				item.setDropShipping(rs.getIsDropShip());
+				item.setDiscounted(rs.getIsDiscounted());
+				item.setPrimarySupplier(rs.getIsPrimarySupplier());
+
+				item.setInvTitle(rs.getInventoryDescription());
+				item.setBarcode(rs.getInventoryBarCode());
+				item.setDiscontinued(String.valueOf(rs.getIsDiscontinued()));
+				item.setFileName(rs.getPictureUrl());
+				item.setProductSKU(rs.getProductSku());
+				item.setSupplierSKU(rs.getSupplierSku());
+				if (null != rs.getOrderUnit())
+					item.setOrderUnit(Integer.parseInt(rs.getOrderUnit()));
+				
+				
+				item.setMinOrderUnit(rs.getMinOrderUnit());
+				item.setReorderPoint(rs.getReorderPoint());
+				item.setWeightUnit(rs.getWeightUnit());
+				item.setSupplierIDs(rs.getSupplierIds());
+				
+				if (rs.getLocation() != null) {
+					item.setActualWeight(String.valueOf(rs.getActualWeight()));	
+				}
+				
+				item.setTextAreaContent(rs.getTextAreaContent());
+				item.setAccountId(rs.getAccountId());
+				if (rs.getLocation() != null) {
+					item.setLocationId(Integer.parseInt(rs.getLocation()));
+				}
+				
+				item.setMeasurementId(rs.getMeasurementId());
+				item.setSubmeasurementId(rs.getSubMeasurementId());
+
+				if (item.getIscategory().equals("true")) {
+					request.setAttribute("ISCategory", "1");
+				}
+				itemList.add(item);
+			}
+		} catch (Exception ee) {
+			Loger.log(2, " SQL Error in Class SalesInfo and  method -getSalesRep " + " " + ee.toString());
+
+		}
+		return itemList;
+	}
+	
 	public ArrayList SearchItem(String compId, String invId, ItemDto item, HttpServletRequest request) {
 //		Connection con = null;
 //		PreparedStatement pstmt = null;

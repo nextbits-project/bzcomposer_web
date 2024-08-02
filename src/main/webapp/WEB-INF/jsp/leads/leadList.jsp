@@ -49,7 +49,8 @@ table.tabla-listados tbody tr td {
 }
 </style>
 </head>
-<body onload="initialize();">
+<body onload="initialize();" id="pageLoad">
+<form:form action="AllLeads?tabid=leadList" method="post" id="" name="LeadBoardForm" modelAttribute="leadBoardDto">
 	<!-- begin shared/header -->
 	<div id="ddcolortabsline">&nbsp;</div>
 	<div id="cos">
@@ -87,9 +88,9 @@ table.tabla-listados tbody tr td {
 														<td>Date Added To :</td>
 													</tr>
 													<tr>
-														<td style="width: 50%;"><input id="orderDate1" name="orderDate1" style="width: 120px;" type="text" value="" size="20"> <img style="margin: 5;" src="/images/cal.gif" onclick="displayCalendar(document.orderDate1,'mm-dd-yyyy',this);">
+														<td style="width: 50%;"><input id="orderDate1" name="orderDate1" style="width: 120px;" type="text" value="" size="20"> <img style="margin: 5;" src="/images/cal.gif" onclick="displayCalendar(document.LeadBoardForm.orderDate1,'mm-dd-yyyy',this);">
 														</td>
-														<td><input id="orderDate2" name="orderDate2" style="width: 120px;" type="text" value="" size="20"> <img style="margin: 5;" src="/images/cal.gif" onclick="displayCalendar(document.orderDate2,'mm-dd-yyyy',this);">
+														<td><input id="orderDate2" name="orderDate2" style="width: 120px;" type="text" value="" size="20"> <img style="margin: 5;" src="/images/cal.gif" onclick="displayCalendar(document.LeadBoardForm.orderDate2,'mm-dd-yyyy',this);">
 														</td>
 													</tr>
 												</tbody></table>
@@ -121,21 +122,18 @@ table.tabla-listados tbody tr td {
 											</td>
 											<td style="width: 20%;">
 												<div>
-													<button type="button" class="formbutton" onclick="SaleSearch(1);" style="width: 70px;">
+													<button type="button" class="formbutton" onclick="LeadSearch(1);" style="width: 70px;">
 														Search
 													</button>
 												</div>
 												<div>
-													<button type="button" class="formbutton" onclick="SaleSearch(2);" style="width: 70px; margin-top: 10px;">
+													<button type="button" class="formbutton" onclick="LeadSearch(2);" style="width: 70px; margin-top: 10px;">
 														Refresh
 													</button>
 												</div>
 												<div>
-													<button type="button" class="formbutton" onclick="SaleSearch(3);" style="width: 70px; margin-top: 10px; margin-right: 20px;">
+													<button type="button" class="formbutton" onclick="LeadSearch(3);" style="width: 70px; margin-top: 10px; margin-right: 20px;">
 														Clear
-													</button>
-													<button type="button" class="formbutton" onclick="downloadInvoiceBoardReport();" style="width: 110px; margin-top: 10px;">
-														Multi-Print
 													</button>
 												</div>
 											</td>
@@ -209,7 +207,7 @@ table.tabla-listados tbody tr td {
 							<thead>
 								<tr valign="center">
 									<th><spring:message code="BzComposer.Customer.ID" /></th>
-									<th>Lead Source</th>
+									<th><spring:message code="BzComposer.customerinfo.lead.source" /></th>
 									<th><spring:message code="BzComposer.global.name" /></th>
 									<th><spring:message code="BzComposer.global.company" /></th>
 									<%-- <th><spring:message code="BzComposer.Companyinformation.Type" /></th>--%>
@@ -305,6 +303,7 @@ table.tabla-listados tbody tr td {
 		href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 	<script type="text/javascript"
 		src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+		</form:form>
 </body>
 </html>
 <script>
@@ -482,7 +481,7 @@ function addRowIndex(rowId, custID){
     }
 }
 
-function SaleSearch(filterType)
+function LeadSearch(filterType)
 {
 	if(filterType > 1){
         location.reload();
@@ -493,10 +492,20 @@ function SaleSearch(filterType)
     let orderDate2 = $("#orderDate2").val();
     $.ajax({
         type : "POST",
-        url : "SalesBord?tabid=ShowList",
+        url : "AllLeads?tabid=FilterList",
         data:"searchType=" + searchType + "&searchTxt=" +searchTxt+ "&orderDate1=" +orderDate1+ "&orderDate2=" +orderDate2,
         success : function(data){
-            $(document).find('div#invoiceOrderList section').replaceWith($(data).find('div#invoiceOrderList').html());
+            //$(document).find('div#custTableBody section').replaceWith($(data).find('div#custTableBody').html());
+            let orderDate1 = document.getElementById('orderDate1').value;
+            let orderDate2 = document.getElementById('orderDate2').value;
+            let searchType = document.getElementById('searchType').value;
+            let searchTxt = document.getElementById('searchTxt').value;
+            document.getElementById('pageLoad').innerHTML = data;
+            document.getElementById('menubar2').style.display='block';
+            document.getElementById('orderDate1').value = orderDate1;
+            document.getElementById('orderDate2').value = orderDate2;
+            document.getElementById('searchType').value = searchType;
+            document.getElementById('searchTxt').value = searchTxt;
             selectedRowIDs = [];
         },
          error : function(data) {

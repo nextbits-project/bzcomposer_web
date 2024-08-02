@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 public class LeadDirectoryDto {
 	
 	private Integer leadID;
+	private String sourceName;
 	private String fullName;
 	private String companyName;
 	private String firstName;
@@ -21,12 +22,17 @@ public class LeadDirectoryDto {
 	private String cellPhone;
 	private String fax;
 	private String email;
-	private String sourceName;
 	public Integer getLeadID() {
 		return leadID;
 	}
 	public void setLeadID(Integer leadID) {
 		this.leadID = leadID;
+	}
+	public String getSourceName() {
+		return sourceName;
+	}
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
 	}
 	public String getFullName() {
 		return fullName;
@@ -123,11 +129,5 @@ public class LeadDirectoryDto {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public String getSourceName() {
-		return sourceName;
-	}
-	public void setSourceName(String sourceName) {
-		this.sourceName = sourceName;
 	}
 }

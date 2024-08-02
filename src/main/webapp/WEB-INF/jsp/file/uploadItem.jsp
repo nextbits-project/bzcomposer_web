@@ -14,6 +14,7 @@
 <script>
 
 function downloadTemplate(type){
+	
 	document.forms[0].action = "File?tabid=DownloadItemTemplate&type="+type;
 	document.forms[0].submit();
 }
@@ -32,6 +33,26 @@ function pleaseWait(){
 	<span style="font-size: 1.2em; font-weight: normal; color: #05A9C5 !important;">
 		<spring:message code="BzComposer.importitem" />
 	</span>
+</div>
+<div style="margin: 20px 10px 0px 40px;">
+<table>
+  <tr>
+    <th style="background-color: #dddddd; text-align: center">STEP 1<br>Download Excel/CSV File</th><th>&thinsp;&thinsp;</th>
+    <th style="background-color: #dddddd; text-align: center">STEP 2<br>Fill Excel/CSV File data according to instruction</th><th>&thinsp;&thinsp;</th>
+    <th style="background-color: #dddddd; text-align: center">STEP 3<br>Validate data and complete import</th>
+  </tr>
+</table>
+</div>
+<div style="margin: 20px 10px 0px 40px;">
+<b>Instructions:</b>
+<ol>
+  <li>Download the format file (Download XLS Template/Download CSV Template and fill) it with proper data.</li>
+  <li>You can see the first record to understand how the data must be filled.</li>
+  <li>Then please removed/edit 1st record according to your input.</li>
+  <li>Once you downloaded and filled the template file upload it in the form below and submit.</li>
+  <li>After uploading Leads you need to edit them and change the various fields(if you want?).</li>
+  <li>If any Leads data not imported then it means your Phone number and Email matched with existing data.</li>
+</ol>
 </div>
 <div>
 <form:form action="ItemFileUpload?tabid=UploadItemFile" method="post" enctype="MULTIPART/FORM-DATA" id="uploadForm" modelAttribute="itemDto">
@@ -53,13 +74,13 @@ function pleaseWait(){
             </td>
 	 	</tr>
 	 	<tr><td colspan="3">&nbsp;</td></tr>
-        <tr>
-            <td colspan="3" align="right" style="padding-right:50px;">
+	 	<tr>
+	 		<td colspan="3" align="right" style="padding-right:50px;">
                 <input type="button" class="formbutton" value="<spring:message code='BzComposer.global.downloadxlstemplate'/>" onclick="downloadTemplate('xls')"/>
                 <input type="button" class="formbutton" value="<spring:message code='BzComposer.global.downloadcsvtemplate'/>" onclick="downloadTemplate('csv')"/>
                 <input type="button" class="formbutton" onclick="CloseMe();" value="<spring:message code='BzComposer.global.close'/>" />
             </td>
-        </tr>
+	 	</tr>
 	 </table>
 	</div>
 	<div>

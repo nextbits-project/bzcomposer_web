@@ -121,9 +121,9 @@ public class SQLExecutor {
 		DriverManagerDataSource dataSourceH = new DriverManagerDataSource();
 		dataSourceH.setDriverClassName("com.mysql.cj.jdbc.Driver");
 		dataSourceH.setUrl(
-				"jdbc:mysql://localhost:3306/bizcomposer?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+				"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
 		dataSourceH.setUsername("root");
-		dataSourceH.setPassword("admin");
+		dataSourceH.setPassword("root");
 		return dataSourceH;
 	}
 
@@ -155,8 +155,8 @@ public class SQLExecutor {
 //					"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
 //					"root", "123");
 			connection = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/bcacom_bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
-					"bcacom_bzc_demo", "!passw0rd#12!");
+					"jdbc:mysql://localhost:3306/bzc_new?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+					"root", "root");
 
 //			 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namemaxx_bzc","db","myserverkonnect");
 		} catch (Exception ex) {
