@@ -456,8 +456,8 @@ function pleaseWaitDialog(){
 									<table cellspacing="0"
 										style="border: 0; padding: 0; width: 100%; overflow-y: scroll;"
 										class="section-border">
-										<!-- <tr>
-				<td>
+											<!-- <tr>
+					<td>
 					<span style="font-size:30px;cursor:pointer; margin-left: 30px;" onclick="toggleFunction()">&#9776;</span>
 				</td>
 				<td></td>
@@ -511,14 +511,21 @@ function pleaseWaitDialog(){
 																</div>
 																<br>
 																<table class="table-notifications" width="80%">
+																
+																<tr>
+																	<td>
+																	<img src="/images/Marketing.png" height="60" width="60">
+																	</td>
+
+																	<tr>
                                                                       <tr>
 																		<th colspan="2" align="left"
 																			style="font-size: 14px; padding: 5px;"><spring:message
 																				code="BzComposer.configuration.version.marketing" />
 																		</th>
 																	  </tr>
-																	<tr>
-                                        								<td><label class="switch"> <input
+																	<tr style="background:#f0f8ff">
+                                        								<td colspan="2"><label class="switch"> <input
 																				id="leads" type="checkbox" value="${configDto.leadsIsActive}"
 																			${configDto.leadsIsActive=='1'?'checked':''}> 
 																				
@@ -528,16 +535,23 @@ function pleaseWaitDialog(){
 																	</td>
 																	</tr>
 																	
+																	
+																	<tr>
+																	<td>
+																	<img src="/images/salesHub.png" height="60" width="60">
+																	</td>
+
+																	<tr>
+									
 															         <tr>
+															         
 																		<th colspan="2" align="left"
 																			style="font-size: 14px; padding: 5px;"><spring:message
 																				code="BzComposer.configuration.version.sales" /></th>
 
-
 																	</tr>
 
-
-																	<tr>
+																	<tr style="background:#f0f8ff">
 																		<td><label class="switch"> 
 																		<input id="invoice" type="checkbox" value="${configDto.invoiceIsActive}"
 																			${configDto.invoiceIsActive=='1'?'checked':''}> <span
@@ -554,7 +568,7 @@ function pleaseWaitDialog(){
 																			<br /></td>
 																	</tr>
 																	
-																	<tr>
+																	<tr style="background:#f0f8ff">
 																		<td><label class="switch"> <input
 																				id="salesOrder" type="checkbox" value="${configDto.salesOrderIsActive}"
 																			${configDto.salesOrderIsActive=='1'?'checked':''}> 
@@ -572,8 +586,8 @@ function pleaseWaitDialog(){
 																	</td>
 
 																	</tr>
-																	<tr>
-																		<td><label class="switch"> <input
+																	<tr style="background:#f0f8ff">
+																		<td colspan="2"><label class="switch"> <input
 																				id="dataManagar" type="checkbox" value="${configDto.dataManagarIsActive}"
 																			${configDto.dataManagarIsActive=='1'?'checked':''} > <span
 																				class="slider round"> </span>
@@ -582,14 +596,19 @@ function pleaseWaitDialog(){
 																			<br />
 																			</td>
 																	</tr>
-																	
+																	<tr>
+																	<td>
+																	<img src="/images/crm.png" height="60" width="60">
+																	</td>
+
+																	<tr style="background:#f0f8ff">
 <tr>
 																		<th colspan="2" align="left"
 																			style="font-size: 14px; padding: 5px;"><spring:message
 																				code="BzComposer.configuration.version.crm" />
 																				</th>
 																	</tr>
-																	<tr>
+																	<tr style="background:#f0f8ff">
 																		<td><label class="switch"> <input
 																				id="contact" type="checkbox" value="${configDto.contactIsActive}"
 																			${configDto.contactIsActive=='1'?'checked':''}> <span
@@ -605,31 +624,70 @@ function pleaseWaitDialog(){
 																				code="BzComposer.configuration.version.opportunities" />
 																			<br /></td>
 																	</tr>
-																	<tr>
-																		<td><label class="switch"> <input
+																	<tr style="background:#f0f8ff">
+																		<td ><label class="switch"> <input
 																				id="calendar" type="checkbox" value="${configDto.calendarIsActive}"
 																			${configDto.calendarIsActive=='1'?'checked':''}> <span
 																				class="slider round"></span>
 																		</label> <spring:message
 																				code="BzComposer.configuration.version.calendar" /><br />
 																		</td>
-																		<td><label class="switch"> <input
+																		<td ><label class="switch"> <input
 																				id="events" type="checkbox" value="${configDto.eventsIsActive}"
 																			${configDto.eventsIsActive=='1'?'checked':''}> <span
 																				class="slider round"></span>
 																		</label> <spring:message
 																				code="BzComposer.configuration.version.event" /> <br /></td>
 																	</tr>
+																	<tr>
+																	
+																	<tr>
+																	<td>
+																	<img src="/images/POS.png" height="60" width="60">
+																	</td>
 
 																	<tr>
 																		<th colspan="2" align="left"
 																			style="font-size: 14px; padding: 5px;"><spring:message
-																				code="BzComposer.configuration.version.service" />
+																				code="BzComposer.configuration.version.posHub" />
+																		</th>
+
+																	</tr>
+																	
+																	<tr style="background:#f0f8ff">
+																	
+																	<td colspan="2"><label class="switch"> <input
+																				id="pos" type="checkbox" value="${configDto.posIsActive}"
+																			${configDto.posIsActive=='1'?'checked':''}> <span
+																				class="slider round"></span>
+																		</label> <spring:message
+																				code="BzComposer.configuration.version.pos" /><br />
+																		</td>
+																	</tr>
+																	
+																	<tr>
+																	<td>
+																	<img src="/images/serviceHub.png" height="60" width="60">
+																	</td>
+																	</tr>
+																	<tr>
+																		<th colspan="2" align="left"
+																			style="font-size: 14px; padding: 5px;"><spring:message
+																				code="BzComposer.configuration.version.serviceHub" />
 																		</th>
 
 
 																	</tr>
-
+																	
+																	<tr  style="background:#f0f8ff ">
+																	<td colspan="2" ><label class="switch"> <input
+																				id="service" type="checkbox" value="${configDto.calendarIsActive}"
+																			${configDto.calendarIsActive=='1'?'checked':''}> <span
+																				class="slider round"></span>
+																		</label> <spring:message
+																				code="BzComposer.configuration.version.service" /><br />
+																	</td>
+																	</tr>
 
 
 																</table>
@@ -2151,7 +2209,7 @@ function SaveValues()
 	        		}
 	        		
 	        		var leads="off",invoice="off",estimation="off",salesOrder="off";
-	        		var rma="off",dataManagar="off",contact="off",events="off",calendar="off",opportunities="off";
+	        		var rma="off",dataManagar="off",contact="off",events="off",calendar="off",opportunities="off",pos="off";
 	        		
 	        		if(document.getElementById("leads").checked)
 	        			 leads="on";
@@ -2182,7 +2240,10 @@ function SaveValues()
 	        		
 	        		if(document.getElementById("opportunities").checked)
 	        			  opportunities="on";
+	        		if(document.getElementById("pos").checked)
+	        			  pos="on";
 	        		
+	        		//alert("pos value"+pos);
 	        	    /* document.getElementById('tabid').value="SaveConfigurationGeneral";
 	        		document.forms[0].action = "Configuration";
 	        		document.forms[0].submit(); */
@@ -2191,8 +2252,7 @@ function SaveValues()
 	        			+"&defaultLabelID="+defaultLabelID+"&filterOption="+filterOption+"&moduleID="+moduleID+"&mailServer="+mailServer+"&senderEmail="+senderEmail
 	        			+"&mailUserName="+mailUserName+"&mailPassword="+mailPassword+"&showUSAInBillShipAddress="+showUSAInBillShipAddress+"&multiUserConnection="+multiUserConnection
 	        		 +"&leads="+leads+"&invoice="+invoice+"&estimation="+estimation+"&salesOrder="+salesOrder+"&rma="+rma+"&dataManagar="+dataManagar+"&contact="+contact
-	            	+"&calendar="+calendar+"&events="+events+"&opportunities="+opportunities;
-	        		
+	            	+"&calendar="+calendar+"&events="+events+"&opportunities="+opportunities+"&pos="+pos;
 	        		 $(this).dialog("close");
 	            },
 	            "<spring:message code='BzComposer.global.cancel'/>": function () {

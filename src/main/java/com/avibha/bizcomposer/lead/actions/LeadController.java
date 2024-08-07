@@ -114,6 +114,8 @@ public class LeadController {
 //		    // ... Other operations
 //		}
 		
+		 ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+				request.setAttribute("defaultCongurationData", configDto);
 		int cvType = 6;// 6 for Lead
 		HttpSession session = request.getSession();
 		String companyId = (String) session.getAttribute("CID");
@@ -298,26 +300,65 @@ public class LeadController {
 	public String OpportunityConverion(OpportunityDto opportunityDto,Model model, HttpServletRequest request,
 			HttpServletResponse response)
 	{
-		System.out.println("at leadToOpportunity");
+		//System.out.println("at leadToOpportunity");
 		String action = request.getParameter("tabid");
-		System.out.println("At leadToOpportunity"+action);
+		//System.out.println("At leadToOpportunity"+action);
 		if(action.equalsIgnoreCase("newOpportunity"))
 		{
-		String cvID=request.getParameter("cvID");
-	    CustomerDto customerDto=leadService.getLeadById(Integer.parseInt(cvID)); 
-		opportunityDto.setClientVendorID(""+ customerDto.getClientVendorID());
-		opportunityDto.setCompanyName(customerDto.getCompanyName());
-	    opportunityDto.setCompanyID(""+customerDto.getCompanyID());
-		opportunityDto.setFullName(customerDto.getFirstName()+" "+customerDto.getLastName());
-		model.addAttribute("opportunityDto",opportunityDto);
-		return "opportunity/leadConvertOpportunity";
+						/*
+	 		String cvID=request.getParameter("cvID");
+	 	    CustomerDto customerDto=leadService.getLeadById(Integer.parseInt(cvID)); 
+	 		opportunityDto.setClientVendorID(""+ customerDto.getClientVendorID());
+	 		opportunityDto.setCompanyName(customerDto.getCompanyName());
+	 	    opportunityDto.setCompanyID(""+customerDto.getCompanyID());
+	 		opportunityDto.setFullName(customerDto.getFirstName()+" "+customerDto.getLastName());
+	 		model.addAttribute("opportunityDto",opportunityDto);
+		*/
+			String leadID=request.getParameter("leadID");
+					//System.out.println("########leadID"+leadID);
+					
+					CustomerDto customerDto =leadService.getNewLeadById(Integer.parseInt(leadID));
+					
+				request.getSession().setAttribute("ConvertLeadID",leadID);
+					
+					//request.getSession().setAttribute("ConvertLeadID",leadID);
+					
+					customerDto.setCustomerGroup("0");
+					String companyId = (String) request.getSession().getAttribute("CID");
+				       leadService.addClientVendor(customerDto, companyId, null);
+				         String cvID= clientVendorRepo.getMaxId();
+				         int cid=Integer.parseInt(cvID);
+				       BcaClientvendor customer= clientVendorRepo.findByCVId(cid-1);
+					opportunityDto.setClientVendorID(""+ customer.getClientVendorId());
+					opportunityDto.setCompanyName(customer.getCompany().getName());
+				    opportunityDto.setCompanyID(""+customer.getCompany().getCompanyId());
+				    opportunityDto.setSourceID(""+customerDto.getLeadSource());
+					opportunityDto.setFullName(customer.getFirstName()+" "+customer.getLastName());
+			 		model.addAttribute("opportunityDto",opportunityDto);
+					leadService.getAllOpportunityOwner(request);
+	 		return "opportunity/leadConvertOpportunity";
 		}
 		if(action.equalsIgnoreCase("conversion"))
 		{
 	       model.addAttribute("opportunityDto",opportunityDto);
-	       CustomerDto customerDto=leadService.getLeadById(Integer.parseInt(opportunityDto.getClientVendorID()));
-	        request.setAttribute("customerDetails",customerDto);
-			opportunityDao.save(opportunityDto,request);
+	      // CustomerDto customerDto=leadService.getLeadById(Integer.parseInt(opportunityDto.getClientVendorID()));
+	       // request.setAttribute("customerDetails",customerDto);
+			//opportunityDao.save(opportunityDto,request);
+	       
+	       BcaClientvendor customerDto= clientVendorRepo.findByCVId(Integer.parseInt(opportunityDto.getClientVendorID()));
+	       			       
+	       				       request.setAttribute("companyDetails",customerDto.getCompany());
+	      			 	        request.setAttribute("customerDetails",customerDto);
+	     			        opportunityDto.setStage(null);
+	       			        System.out.println(" ------------->conversion leadSorce ....="+ opportunityDto.getSourceID());
+	       			 		opportunityDao.save(opportunityDto,request);
+	       				String strLeadId=(String)request.getSession().getAttribute("ConvertLeadID");
+	      						
+	     						BcaLeadNew lead=bcaLeadNewRepository.findByLeadId(Integer.parseInt(strLeadId)).orElse(null);
+	     						    if(lead!=null)
+	       						lead.setActive(0);
+	      					   
+	       						  bcaLeadNewRepository.save(lead);
 			return "opportunity/showOpportunityConversion";
 		}
 		return "leadToOpportunity";

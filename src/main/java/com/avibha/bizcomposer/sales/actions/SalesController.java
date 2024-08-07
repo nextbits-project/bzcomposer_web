@@ -38,7 +38,8 @@ import com.avibha.bizcomposer.sales.dao.TrHistoryLookUp;
 import com.avibha.bizcomposer.sales.forms.CustomerDto;
 import com.avibha.bizcomposer.sales.forms.InvoiceDto;
 import com.avibha.bizcomposer.sales.forms.ItemDto;
-import com.avibha.bizcomposer.sales.forms.OpportunityDto;
+//import com.avibha.bizcomposer.sales.forms.OpportunityDto;
+import com.avibha.bizcomposer.opportunity.form.OpportunityDto;
 import com.avibha.bizcomposer.sales.forms.SalesBoardDto;
 import com.avibha.bizcomposer.sales.forms.SalesOrderBoardForm;
 import com.avibha.bizcomposer.sales.forms.UpdateInvoiceDto;
@@ -396,6 +397,9 @@ public class SalesController {
 		} else if (action.equalsIgnoreCase("opportunityBoard")) { // Show ContactBoard page
 			// SalesDetailsDao sd = new SalesDetailsDao();
 
+			ConfigurationDto configDto = configInfo.getDefaultCongurationDataBySession();
+			request.setAttribute("defaultCongurationData", configDto);
+			
 			salesDetailsDao.getAllOpportunityList(request);
 
 			// Long compId = Long.valueOf(sess.getAttribute("CID").toString());
@@ -1669,7 +1673,7 @@ public class SalesController {
 
 			sd.saveOrder(request, invoiceDto);
 			sd.removeSessionAddressUpdateData(request);
-			Loger.log("sandip:@after save invoice:");
+			Loger.log("@after save invoice:");
 			forward = "redirect:SalesOrder?tabid=SalesOrder";
 		} else if (action.equalsIgnoreCase("DeleteSalesOrder")) {
 //			SalesDetailsDao sdetails = new SalesDetailsDao();

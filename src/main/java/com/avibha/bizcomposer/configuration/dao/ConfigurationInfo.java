@@ -995,6 +995,7 @@ public class ConfigurationInfo {
 				cForm.setEventsIsActive(preferenceHubs.getIsEventsEnable());
 				cForm.setCalendarIsActive(preferenceHubs.getIsCalendarEnable());
 				cForm.setOpportunitiesIsActive(preferenceHubs.getIsOpportunitiesEnable());
+				cForm.setPosIsActive(preferenceHubs.getIsPosEnable());
 				request.getSession().setAttribute("versionConfigDetails", preferenceHubs);
 			}
 		}
@@ -1714,6 +1715,7 @@ public class ConfigurationInfo {
 			preferenceHubs.setIsOpportunitiesEnable(cForm.getOpportunitiesIsActive());
 			preferenceHubs.setIsCalendarEnable(cForm.getCalendarIsActive());
 			preferenceHubs.setIsEventsEnable(cForm.getEventsIsActive());
+			preferenceHubs.setIsPosEnable(cForm.getPosIsActive());
 				
 		}
 		else
@@ -1733,6 +1735,7 @@ public class ConfigurationInfo {
 			preferenceHubs.setIsOpportunitiesEnable(cForm.getOpportunitiesIsActive());
 			preferenceHubs.setIsCalendarEnable(cForm.getCalendarIsActive());
 			preferenceHubs.setIsEventsEnable(cForm.getEventsIsActive());
+			preferenceHubs.setIsPosEnable(cForm.getPosIsActive());
 			preferenceHubs.setActive(1);
 			
 		}

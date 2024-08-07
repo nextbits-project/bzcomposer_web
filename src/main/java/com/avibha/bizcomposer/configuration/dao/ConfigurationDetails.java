@@ -174,7 +174,7 @@ public class ConfigurationDetails {
 		configDto.setOpportunitiesIsActive("on".equals(request.getParameter("opportunities")) ? 1 : 0);
 		configDto.setCalendarIsActive("on".equals(request.getParameter("calendar")) ? 1 : 0);
 		configDto.setEventsIsActive("on".equals(request.getParameter("events")) ? 1 : 0);
-	
+		configDto.setPosIsActive("on".equalsIgnoreCase(request.getParameter("pos")) ? 1 : 0);
 //		ConfigurationInfo cinfo = new ConfigurationInfo();
 		
 		cinfo.saveConfigurationRecordGeneral(configDto, request);

@@ -444,6 +444,25 @@ public class ConfigurationDto implements Serializable {
 	    private int   calendarIsActive;
 	    private int   opportunitiesIsActive;
 	    private int   eventsIsActive;
+	    private int   posIsActive;
+	    public int getPosIsActive() {
+			return posIsActive;
+		}
+
+		public void setPosIsActive(int posIsActive) {
+			this.posIsActive = posIsActive;
+		}
+
+		public int getServiceIsActive() {
+			return serviceIsActive;
+		}
+
+		public void setServiceIsActive(int serviceIsActive) {
+			this.serviceIsActive = serviceIsActive;
+		}
+
+		private int   serviceIsActive;
+	    
 	    public int getOpportunitiesIsActive() {
 			return opportunitiesIsActive;
 		}

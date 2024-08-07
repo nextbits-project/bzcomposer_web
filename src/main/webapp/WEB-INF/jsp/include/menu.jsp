@@ -137,6 +137,16 @@
 						</ul>
 					</li>
 					</li>
+					
+					<c:if test="${versionConfigDetails.isCalendarEnable==1}" >
+					<li>
+						
+
+						<a href="#" onclick="showEventCalendar()"  title="Event Calendar">
+                            <span><spring:message code="menu.file.Calendar" /></span>
+						</a>
+ 					</li>
+				</c:if>
 					<li>
 						<a href="#ex1" rel="modal:open">
                             <span><spring:message code="menu.file.Calculator" /></span>
@@ -251,7 +261,8 @@
                     <c:if test="${versionConfigDetails.isOpportunitiesEnable==1}">
                     <li>
                         <a href="Customer?tabid=opportunityBoard" title="Opportunities">
-                        <span><spring:message code="BzComposer.Customer.opportunities" /></span>
+                       <!--   <span><spring:message code="BzComposer.Customer.opportunities" /></span>-->
+                         <span><spring:message code="BzComposer.customer.opportunityBoard" /></span>
                         </a>
                     </li>
                     </c:if>
@@ -379,6 +390,7 @@
 <%--                    <span><spring:message code="BzComposer.pos" /></span>--%>
 <%--				</a>--%>
 <%--			</li>--%>
+<c:if test="${versionConfigDetails.isPosEnable==1}" >
             <li>
                 <a href="retail-pos" title="Item" class="uppercaseText">
                     <span><spring:message code="BzComposer.pos" /></span>
@@ -400,6 +412,7 @@
 					</li> --%>
                 </ul>
             </li>
+            </c:if>
 			<!-- POS END -->
 			<li>
 				<a href="Item?tabid=Item&category=ALL" title="Item" class="uppercaseText">
@@ -1788,7 +1801,11 @@
 </div>
 <script type="text/javascript">
 
-
+function showEventCalendar()
+{
+	window.open("Opportunity?tabid=dailyEventCalendar",null,"scrollbars=yes,height=700,width=1000,status=yes,toolbar=no,menubar=no,location=no" );
+ 
+}
 
 
 	function ShowCustomerList()

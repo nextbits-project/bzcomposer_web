@@ -21,8 +21,6 @@ public class BcaOpportunity
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Integer opportunityId;
 	 
-	 
-
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "ClientVendorID")
 	    private BcaClientvendor clientVendor;
@@ -39,9 +37,32 @@ public class BcaOpportunity
 	    
 	    @Column(name= "Amount")
 	    private double  amount;
-	   
 	    
-	    public double getAmount() {
+	    @Column(name= "Opportunity_owner")
+	    private String opportunityOwner;
+	    
+	    @ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name = "SourceID")
+	    private BcaLeadSource SourceID;
+	    
+	    
+	    public BcaLeadSource getSourceID() {
+			return SourceID;
+		}
+
+		public void setSourceID(BcaLeadSource sourceID) {
+			SourceID = sourceID;
+		}
+
+		public String getOpportunityOwner() {
+			return opportunityOwner;
+		}
+
+		public void setOpportunityOwner(String opportunityOwner) {
+			this.opportunityOwner = opportunityOwner;
+		}
+
+		public double getAmount() {
 			return amount;
 		}
 
@@ -51,6 +72,17 @@ public class BcaOpportunity
 
 		@Column(name= "CloseDate")
 	    private OffsetDateTime closeDate;
+		
+		public OffsetDateTime getStartDate() {
+			return startDate;
+		}
+
+		public void setStartDate(OffsetDateTime startDate) {
+			this.startDate = startDate;
+		}
+
+		@Column(name= "StartDate")
+	    private OffsetDateTime startDate;
 	    
 	    
 	    @Column(name="Active")
@@ -80,11 +112,13 @@ public class BcaOpportunity
 			this.company = company;
 		}
 
-		public String getName() {
+		public String getName()
+		{
 			return name;
 		}
 
-		public void setName(String name) {
+		public void setName(String name)
+		{
 			this.name = name;
 		}
 
@@ -111,5 +145,4 @@ public class BcaOpportunity
 		public void setActive(Boolean active) {
 			this.active = active;
 		}
-
 }
