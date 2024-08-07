@@ -13,8 +13,8 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
 
 <title><spring:message code="BzComposer.billpayabletitle" /></title>
@@ -34,7 +34,7 @@ div#pie { /* 	color:#05A9C5;; */
 
 table.tabla-listados {
 	width: 100%;
-	border: 1px solid rgb(207, 207, 207);
+	border: 4px solid rgb(207, 207, 207);
 	margin: 10px 0px 10px 0px;
 }
 .scrollit {
@@ -42,8 +42,9 @@ table.tabla-listados {
     height:50vh;
 }
 
-table.tabla-listados thead tr th {
-	font-size: .7em;
+table.tabla-listados thead tr th
+ {
+	font-size: .8em;
 	text-align: left;
 	padding: 5px 10px;
 	/* 	background: rgba(5, 169, 197, 0.11); */
@@ -54,13 +55,12 @@ table.tabla-listados thead tr th {
 	 position:sticky;
 	 top:0;
 }
-
 table.tabla-listados tbody tr td {
 	font-size: .8em;
 	/* 	color: #666; */
 	padding: 5px 0px 5px 14px;
 	/* 	border-bottom: 1px solid rgb(207, 207, 207); */
-	background: #fff;
+	background: 4px solid rgba(5, 169, 197, 0.2);
 	vertical-align: top;
 }
 
@@ -74,155 +74,134 @@ table.tabla-listados tbody tr td {
 	z-index: 101;
 }
 
-#highlight {
+#highlight 
+{
 	background-color: blue;
 }
-
 
 .highlight {
 	background-color: #00CED1 !important;
 	color: #fff
 }
+
 </style>
 </head>
-<body>
+<body onload="setWindowOnLoad()">
 	<div id="ddcolortabsline">&nbsp;</div>
 	<form:form name="LeadConvertForm" id="frmLeadConvert" method="post"
 							modelAttribute="opportunityDto">
 		<div class="content1 clearfix">
 			<table style="width: 100%">
-				<tr align="center">
-
+				 <tr align="center">
 					<td align="left">
 						<h2 class="title1">
-							<b><spring:message
-									code="BzComposer.customer.opportunity.leadtoopportunity.conversion" />
-						</h2>
+							   <b>   
+							  <spring:message
+							   code="BzComposer.customer.opportunity.leadtoopportunity.conversion"/>	
+							   </b>	  
+							  </h2>
 					</td>
-					
-				</tr>
-			</table>
+				  </tr>
+			  </table>
 			</div>
-			
-					
-					                           <div align="center">												
-														<table class="tabla-listados"   style="width:80%; apdding: 0;" >
+		                           <div align="center" style="font-size:4px; ">												
+														<table class="tabla-listados"   style="width:80%; apdding: 0; background:#f0f8ff" >
 														<thead>
 														<tr>
 														
-														<th> <spring:message code="BzComposer.customer.account"/>
-														</th>
-														
 														<th>
+														<div>
+													  	<img style="margin: 5;"
+														src="${pageContext.request.contextPath}/images/opportunityCompanyIcon.png" height='38' width='38'>
+														<span>
+														 <spring:message code="BzComposer.customer.account"/>
+														 </span>
+														 </div>
+														</th>
+														<th>
+														<img style="margin: 5;"
+														src="${pageContext.request.contextPath}/images/opportunityContactIcon.png" height='38' width='38'>
+															<span>
 														<spring:message code="BzComposer.customer.opportunity.contact"/>
+														</span>
 														</th>
 														<th>
-														
-													<spring:message code="BzComposer.customer.opportunity"/>
-														</th>
-														
-														
+							                           <img style="margin: 5; 
+							                           "src="${pageContext.request.contextPath}/images/oppotunityIcon.png" height='38' width='38'>
+							                           <span>
+			                           			         <spring:message code="BzComposer.customer.opportunity"/>
+													    	</span>
+													    	</th>
 														</tr>
 														</thead>
 														 <tbody>
 														 <tr>
-														 
-														 <td>
+														 <td rowspan="2" style= "border-color: #96D4D4;">
 														 <b>
+														 
 													      Account Name:${opportunityDto.companyName} <br><br>
-														     Address1 :${companyDetails.address1} <br><br>
-														     Address2 :${companyDetails.address2} <br><br>
-														        Phone1:${companyDetails.phone1}<br><br>
-														       Website:${companyDetails.homePage}<br><br>
+														     Address1 :${customerDetails.address1}    <br><br>
+														      Address2:${customerDetails.address2}    <br><br>
+														        Phone1:${companyDetails.phone1}      <br><br>
+														       Website:${companyDetails.homePage}    <br><br>
+														       
 														 </b>
 														 </td>
-														 <td  rowspan="2">
+														 <td  rowspan="2" style= "border-color: #96D4D4;">
 														  <b> Full Name:${opportunityDto.fullName}  <br><br>
-														  Account Name: ${opportunityDto.companyName}<br><br>
-														  Address1:${customerDetails.address1}<br><br>
-														  Address2:${customerDetails.address2}<br><br>
-														  Phone Number:${customerDetails.cellPhone}<br></b>
-														 
+														   Account Name:${opportunityDto.companyName}<br><br>
+														       Address1:${customerDetails.address1}<br><br>
+														       Address2:${customerDetails.address2}<br><br>
+														   Phone Number:${customerDetails.cellPhone}<br></b>
 														 </td>
-														 <td  rowspan="2">
-														 <b>
-												
-												            Opportunity Name:${opportunityDto.name}  <br><br>
-														  Account Name: ${opportunityDto.companyName}<br><br>
+														 <td  rowspan="2" style= "border-color: #96D4D4;">
+														  
+														 <b>				      
+												      Opportunity Name:${opportunityDto.opportunityName}<br><br>
+														  Account Name:${opportunityDto.companyName}<br><br>
 														         stage:${opportunityDto.stage}<br><br>
 														        Amount:${opportunityDto.amount}<br><br>
-														  closed Date :${opportunityDto.closedDate}<br></b>
+														   closed Date:${opportunityDto.closedDate}<br><br>
+												      Opportunity owner:${opportunityDto.opportunityOwner}<br><br>
 														 </b>
+				
 														 </td>
 														 </tr>
-														
 														 </tbody>
-														 
-														 
+											</table>    
+	                      	<table style="width: 80%; apdding: 0;">		
+														<tr align="right">
+														<td >
+												 <div>
+													<input type="button" class="formbutton"
+													onclick="goToLeads();" style="padding: 7 15px;"
+													value="<spring:message code='BzComposer.Customer.opportunities.gotoLeads'/>" />
+													
+										         	</div>
+														</td>
+														</tr>
 											</table>
-											
-											<form:hidden path="clientVendorID" />
-											</div>
-											
-						
-		
+			   <form:hidden path="clientVendorID" />
+							</div>											
 	</form:form>
+	
 	<script type="text/javascript">
-	 $(document).ready(function(){
-	        $("input[type='button']").click(function(){
-	        	var radioValue = $("input[name='opportunityRadio']:checked").val();
-	           if(radioValue=="1")
-	        	document.LeadConvertForm.opportunityName.value=document.getElementById("newOpprtunityName").value;
-	        	
-	        });
-	        
-	     
-	        $("input[type='button']").click(function(){
-	        	var radioValue = $("input[name='accountRadio']:checked").val();
-	        	 if(radioValue=="1")
-	        	document.LeadConvertForm.companyName.value=document.getElementById("newCompanyName").value;
-	        });
-	        
-	        $("input[type='button']").click(function(){
-	        	var radioValue = $("input[name='contactRadio']:checked").val();
-	        	 if(radioValue=="1")
-	        	document.LeadConvertForm.fullName.value=document.getElementById("newFullName").value;
-	        	
-	          });
-	    });
-	 
-	 function convert()
+
+	function setWindowOnLoad()
 	 {
-		var newOpprtunityName= document.getElementById("newOpprtunityName").value;
-		if(newOpprtunityName=="")
-			{
-			 $("#showValidationDialog").dialog({
-		            resizable: false,
-		            height: 150,
-		            width:400,
-		            modal: true,
-		            buttons:
-		            {
-		                "<spring:message code='BzComposer.global.ok'/>": function ()
-		                {
-		                    $(this).dialog("close");
-		                    
-		                }
-		            }
-		        });
-			
-			}
-		else
-			{
-            var clientVendorID=document.LeadConvertForm.clientVendorID.value);
-            //window.open("/leadToOpportunityConversion/"+clientVendorID, null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no");
-
-
-			}
-		
-	 
+		 window.moveTo(350, 100);
+		 window.resizeTo(900,600); 
 	 }
+	 function goToLeads()
+	 { 
 
+		
+		 window.close();
+		 location.reload();
+		 
+	 }
+	
+	 
 </script>
 </body>
 </html>

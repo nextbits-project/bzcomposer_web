@@ -8,15 +8,14 @@
 <%@include file="/WEB-INF/jsp/include/headlogo.jsp"%>
 <%@include file="/WEB-INF/jsp/include/header.jsp"%>
 <%@include file="/WEB-INF/jsp/include/menu.jsp"%>
-<title><spring:message code="BzComposer.customerinfotitle" /></title>
+<title><spring:message code="BzComposer.customer.opportunityBoard" /></title>
 <style>
 .dataTables_length {
-	display: none;
+	font-size: 14px;
 }
 
 .dataTables_filter {
 	font-size: 14px;
-	float: left !important;
 }
 
 .dataTables_info {
@@ -63,10 +62,10 @@ table.tabla-listados tbody tr td {
 					<div id="padding">
 						<!-- begin Contents -->
 						<div>
-							<div>
+							<div style="float: left;">
 								<span
 									style="font-size: 1.2em; font-weight: normal; color: #838383; margin: 30px 0px 15px 0px; border-bottom: 1px dotted #333; padding: 0 0 .3em 0;">
-									<spring:message code="BzComposer.Customer.opportunityList" /> <c:if
+									<spring:message code="BzComposer.customer.opportunityBoard" /> <c:if
 										test="${not empty actionMsg}">
 										<br /> ${actionMsg}
             <%
@@ -78,54 +77,59 @@ table.tabla-listados tbody tr td {
 							<div style="width: 100%;">
 								<table style="width: 100%;">
 									<tr>
-										<td colspan="2"align="center" style="position: absolute; right: 25px;">
-											<input type="button" class="formbutton"
-											onclick="addOpportunity();" style="padding: 7 15px;"
-											value="<spring:message code='BzComposer.global.new'/>" /> <input
-											type="button" class="formbutton"
-											onclick="updateOpportunity('EDIT');" style="padding: 7 15px;"
-											value="<spring:message code='BzComposer.global.edit'/>" /> <input
-											type="button" class="formbutton"
-											onclick="updateOpportunity('DELETE');" style="padding: 7 15px;"
-											value="<spring:message code='BzComposer.global.delete'/>" />
-											 <input type="button"
-											class="formbutton" onclick=" "
-											style="padding: 7 15px;"
-											value="<spring:message code='BzComposer.customer.opportunity.help'/>" /> 
-										</td>
-									</tr>
-								
-									<tr>
 										<td align="center"><input type="button"
-											class="formbutton" onclick="openMailSender();"
+											class="formbutton" onclick="openCustomerMailSender();"
 											style="padding: 7 15px;"
 											value="<spring:message code='BzComposer.Email.SendMail'/>" />
 											<input type="button" class="formbutton"
-											onclick="openMailTemplates();" style="padding: 7 15px;"
-											value="<spring:message code='BzComposer.Email.MailTemplate'/>" />
-									   <!-- <input type="button" class="formbutton"
-											onclick="openSendThroughOutlook();" style="padding: 7 15px;"
-											value="<spring:message code='BzComposer.Email.SendThroughOutlook'/>" /> -->
-											<input type="button"
-											class="formbutton" onclick="manageCustomer('CONVERT');"
-											style="padding: 7 15px;"
-											value="<spring:message code='BzComposer.Customer.transform.customer'/>" />
-											
+											onclick="openCustomerMailTemplates();" style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Email.MailTemplates'/>" />
+											<input type="button" class="formbutton"
+											onclick="manageCustomer('CONVERTCUSTOMERtoLEAD');" style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Customer.transform.lead'/>" />
+											<input type="button" class="formbutton"
+											onclick="manageCustomer('CONVERTCUSTOMERtoCONTACT');" style="padding: 7 15px;"
+											value="<spring:message code='BzComposer.Customer.transform.contact'/>" />
 										</td>
 									</tr>
-									
-									
+									<tr>
+										<td colspan="2" align="center"><input type="button"
+											class="formbutton" onclick="customerImport()"
+											style="padding: 7 15px;"
+											value="<spring:message code='menu.file.Import'/>" /> <input
+											type="button" class="formbutton" onclick="exportCustomer()"
+											style="padding: 7 15px;"
+											value="<spring:message code='menu.file.ExportTo'/>" /></td>
+									</tr>
+								</table>
+							</div>
+							<div style="float: right;">
+								<table>
+									<tr align="right">
+										<td colspan="6">
+											<div>
+												<input type="button" class="formbutton"
+													onclick="addNewOpportunity();" style="padding: 7 15px;"
+													value="<spring:message code='BzComposer.global.new'/>" />
+												
+												
+												<input type="button" class="formbutton"
+													onclick="deleteOpportunity()"
+													style="padding: 7 15px;"
+													value="<spring:message code='BzComposer.global.delete'/>" />
+											</div>
+										</td>
+									</tr>
 								</table>
 							</div>
 						</div>
-						<input type="hidden" id="lSize" value='${customerList.size()}' />
+						<input type="hidden" id="lSize" value='${opportunityList.size()}' />
 						<table id="custTable" class="tabla-listados sortable"
 							cellspacing="0"
 							style="width: 100%; margin-top: 10px; border: 0; padding: 0; height: auto;"
 							align="center">
 							<thead>
 								<tr valign="center">
-								
 									<th style="padding-right: 30px !important;"><spring:message
 											code="BzComposer.Customer.opportunities.id" /></th>
 									<th><spring:message
@@ -135,12 +139,19 @@ table.tabla-listados tbody tr td {
 											code="BzComposer.Customer.opportunities.stage" /></th>
 									<th><spring:message
 											code="BzComposer.Customer.opportunities.amount" /></th>
+											
+											<th><spring:message
+											code="BzComposer.Customer.opportunities.opportunityOwner" />
+											</th>	
+											<th><spring:message
+											code="BzComposer.customer.opportunity.sourceID" />
+											</th>	
+											<th><spring:message
+											code="BzComposer.Customer.opportunities.startdate" /></th>
 									<th><spring:message
 											code="BzComposer.Customer.opportunities.closedate" /></th>
 											<th><spring:message
 											code="BzComposer.customer.opportunity.active" /></th>
-
-							
 								</tr>
 							</thead>
 							<tbody id="custTableBody">
@@ -148,20 +159,22 @@ table.tabla-listados tbody tr td {
 									<c:forEach items="${opportunityList}" var="objList"
 										varStatus="loop">
 										<tr  id='${loop.index}$$'
-											onclick="setRowId(${objList.opportunityId}, ${loop.index}, true);">
+											onclick="setRowId(${objList.opportunityID}, ${loop.index}, true);"
+											ondblclick="goToManageOpportunity(${objList.opportunityID});">
+											
 											<td> <input type="checkbox" id="opportunityId${loop.index}"
-												value="${objList.opportunityId}"
-												onchange="addRowIndex(${loop.index}, ${objList.opportunityId})" />
-												${objList.opportunityId}
+												value="${objList.opportunityID}"
+												onchange="addRowIndex(${loop.index}, ${objList.opportunityID})" />
+												${objList.opportunityID}
 											   </td>
-											     <td>${objList.name} </td>
-											     
+											     <td>${objList.opportunityName} </td>
 											     <td>${objList.stage} </td>
 											     <td>${objList.amount} </td>
-											     <td>${objList.closeDate} </td>
+											     <td>${objList.opportunityOwner} </td>
+											     <td>${objList.sourceID} </td>
+											     <td>${objList.startDate} </td>
+											     <td>${objList.closedDate} </td>
 											     	<td>Yes</td>
-											     
-												
 										</tr>
 									</c:forEach>
 								</c:if>
@@ -180,7 +193,6 @@ table.tabla-listados tbody tr td {
 		href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 	<script type="text/javascript"
 		src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-
 </body>
 </html>
 <script>
@@ -189,7 +201,7 @@ let itemIndex = 0;
 let selectedRowIndexs = [];
 $(document).ready(function() {
     $('#custTable').DataTable({
-        "iDisplayLength": 20,
+        "iDisplayLength": 25,
         "ordering": true,
         "order": [[0, 'desc']],
         "fnDrawCallback": function( oSettings ) {
@@ -233,6 +245,16 @@ function hightlightROW(){
     }
 }
 
+
+function goToManageOpportunity(opportunityID)
+{
+
+	
+	window.location="Opportunity?tabid=ManageOpportunity&opportunityID="+opportunityID;
+}
+
+
+
 function manageCustomer(cmd){
     
 	if (itemID == 0) {
@@ -240,44 +262,48 @@ function manageCustomer(cmd){
 	} else {
 		if (cmd=="EDIT") {
 			//window.location = "Customer?tabid=editCustomer&cvId="+itemID+"&itemIndex="+itemIndex;
-			window.open("Customer?tabid=updateOpportunity&cvId="+itemID, null,"scrollbars=yes,height=620,width=1200,status=yes,toolbar=no,menubar=no,location=no");
+			window.open("Customer?tabid=editCustomer&cvId="+itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 		}
 		else if (cmd=="DELETE") {
-			if(confirm("<spring:message code='BzComposer.customerinfo.deleteselectedcustomer'/>")==true) {
-				//window.location = "Customer?tabid=Customer&customerAction=DELETE&cvID="+clientVendorID;
-				$.ajax({
-                    type : "GET",
-                    url : "Customer?tabid=Customer&customerAction=DELETE&cvID="+itemID,
-                    success : function(data) {
-                        location.reload();
-                    },
-                    error : function(error) {
-                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
-                    }
-                });
-			}
-			return false;
-		}
-		else if (cmd=="CONVERT") {
-			if(confirm("<spring:message code='BzComposer.customerinfo.converttocustomer'/>")==true) {
-				$.ajax({
-                    type : "GET",
-                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=2&cvID="+itemID,
-                    success : function(data) {
-                        location.reload();
-                    },
-                    error : function(error) {
-                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
-                    }
-                });
-			}
+			event.preventDefault();
+			$("#deleteCustomer").dialog({
+		    	resizable: false,
+		        height: 200,
+		        width: 500,
+		        modal: true,
+		        buttons: {
+		            "<spring:message code='BzComposer.global.ok'/>": function () {
+		                $(this).dialog("close");
+		                window.location = "Customer?customerAction=DELETE&cvID="+itemID;
+		            },
+		            <spring:message code='BzComposer.global.cancel'/>: function () {
+		                $(this).dialog("close");
+		                return false;
+		            }
+				}
+			});
 			return false;
 		}
 		else if (cmd=="CONVERTCUSTOMERtoLEAD") {
 			if(confirm("<spring:message code='BzComposer.customerinfo.convertltolead'/>")==true) {
 				$.ajax({
                     type : "GET",
-                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=6&cvID="+itemID,
+                    url : "CustomerConvertToLead?tabid=Customer&customerAction=CONVERT&cvTypeId=Lead&cvID="+itemID,
+                    success : function(data) {
+                        location.reload();
+                    },
+                    error : function(error) {
+                         alert("<bean:message key='BzComposer.common.erroroccurred'/>");
+                    }
+                });
+			}
+			return false;
+		}
+		else if (cmd=="CONVERTCUSTOMERtoCONTACT") {
+			if(confirm("<spring:message code='BzComposer.customerinfo.convertltocontact'/>")==true) {
+				$.ajax({
+                    type : "GET",
+                    url : "Customer?tabid=Customer&customerAction=CONVERT&cvTypeId=7&cvID="+itemID,
                     success : function(data) {
                         location.reload();
                     },
@@ -290,21 +316,21 @@ function manageCustomer(cmd){
 		}
 	}
 }
-function addOpportunity(){
-	//window.location = "Customer?tabid=NewCustomer";
-	window.open("Customer?tabid=addOpportunity", null,"scrollbars=yes,height=620,width=1200,status=yes,toolbar=no,menubar=no,location=no");
 
+function goToCustomerBoard(clientVendorID){
+	window.open("Customer?tabid=editCustomer&cvId="+itemID, null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
+	   // window.location = "/Customer?tabid=CustomerBoard&selectedCvID="+clientVendorID;
+
+   
 }
-function updateOpportunity(){
+function addNewOpportunity(){
 	//window.location = "Customer?tabid=NewCustomer";
-	//window.open("Customer?tabid=updateOpportunity&cvId="+itemID, null,"scrollbars=yes,height=620,width=1200,status=yes,toolbar=no,menubar=no,location=no");
-	window.open("Customer?tabid=updateOpportunity", null,"scrollbars=yes,height=620,width=1200,status=yes,toolbar=no,menubar=no,location=no");
-
+	window.open("Opportunity?tabid=newOpportunity", null,"scrollbars=yes,height="+screen.height+",width=1300,status=yes,toolbar=no,menubar=no,location=no");
 }
 
 function showCustomerValidationDialog(){
 	event.preventDefault();
-	$("#showCustomerValidationDialog").dialog({
+	$("#showOpportunityValidationDialog").dialog({
     	resizable: false,
         height: 200,
         width: 400,
@@ -318,7 +344,21 @@ function showCustomerValidationDialog(){
     return false;
 }
 
-function addRowIndex(rowId, custID){
+function openCustomerMailSender(){
+    if (selectedRowIndexs.length == 0){
+        alert("<spring:message code='BzComposer.printlabels.selectcustomer'/>");
+        return false;
+    }else{
+        let CustIDs = "";
+        for(let x=0; x<selectedRowIndexs.length; x++){
+            CustIDs = CustIDs + selectedRowIndexs[x] +":";
+        }
+        CustIDs = CustIDs.substring(0, CustIDs.length-1);
+        window.open("Customer?tabid=ShowEmailOnCustomerBoard&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
+    }
+}
+
+function addCustomerRowIndex(rowId, custID){
     let isFound = false;
     let isChecked = document.getElementById('custID'+rowId).checked;
     for(let x=0; x<selectedRowIndexs.length; x++){
@@ -337,43 +377,37 @@ function addRowIndex(rowId, custID){
         }
     }
 }
-function openMailSender(){
-    if (selectedRowIndexs.length == 0){
-        alert("<spring:message code='BzComposer.printlabels.selectcustomer'/>");
-        return false;
-    }else{
-        let CustIDs = "";
-        for(let x=0; x<selectedRowIndexs.length; x++){
-            CustIDs = CustIDs + selectedRowIndexs[x] +":";
-        }
-        CustIDs = CustIDs.substring(0, CustIDs.length-1);
-        window.open("Customer?tabid=ShowEmailOnCustomerBoard&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
-    }
+
+
+function deleteOpportunity()
+{
+	if (itemID == 0) {
+		return showCustomerValidationDialog();
+	}
+		
+		
+		event.preventDefault();
+		$("#deleteOpportunity").dialog({
+	    	resizable: false,
+	        height: 200,
+	        width: 400,
+	        modal: true,
+	        buttons: {
+	            "<spring:message code='BzComposer.global.ok'/>": function () {
+	                $(this).dialog("close");
+	                
+	                window.location = "/Opportunity?tabid=delete&opportunityId="+itemID;
+	                
+	            }
+	        }
+	    });
+	    return false;
+
 }
-function transferToCustomer(){
-    if (selectedRowIndexs.length == 0){
-        alert("<spring:message code='BzComposer.printlabels.selectcustomer'/>");
-        return false;
-    }else{
-        let CustIDs = "";
-        for(let x=0; x<selectedRowIndexs.length; x++){
-            CustIDs = CustIDs + selectedRowIndexs[x] +":";
-        }
-        CustIDs = CustIDs.substring(0, CustIDs.length-1);
-        window.open("Customer?tabid=transferToCustomer&CustIDs="+CustIDs, null,"scrollbars=yes,height=450,width=800,status=yes,toolbar=no,menubar=no,location=no");
-    }
-}
-function openMailTemplates(){
+function openCustomerMailTemplates(){
 	window.open("MailTemplates?tabid=getMailTemplates", null,"scrollbars=yes,height=500,width=1000,status=yes,toolbar=no,menubar=no,location=no");
 }
 
-function exportContact(){
-	window.open("File?tabid=ExportContact",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
-}
-
-function contactImport(){
-	window.open("File?tabid=ImportContact",null,"scrollbars=no,height="+screenHeight+",width ="+screenWidth+",left = "+left+",top = "+top+",status=yes,toolbar=no,menubar=no,location=no");
-}
 </script>
 <!-- Dialog box used in sales order page -->
 <div id="showCustomerValidationDialog" style="display: none;">
@@ -386,3 +420,15 @@ function contactImport(){
 		<spring:message code="BzComposer.customerinfo.deleteselectedcustomer" />
 	</p>
 </div>
+
+<div id="deleteOpportunity" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.customer.opportunity.deleteselectedOpportunity" />
+	</p>
+</div>
+<div id="showOpportunityValidationDialog" style="display: none;">
+	<p>
+		<spring:message code="BzComposer.customerinfo.selectOpportunityfirst" />
+	</p>
+</div>
+

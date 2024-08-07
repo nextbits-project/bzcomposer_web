@@ -89,7 +89,7 @@ table.tabla-listados tbody tr td {
 }
 </style>
 </head>
-<body>
+<body onload="setWindowOnLoad()">
 	<div id="ddcolortabsline">&nbsp;</div>
 	<form:form name="LeadConvertForm" id="LeadConvertForm" method="post"
 							modelAttribute="opportunityDto">
@@ -98,21 +98,20 @@ table.tabla-listados tbody tr td {
 				<tr align="center">
 
 					<td align="left">
-						<h2 class="title1">
+						<h1 class="title1">
 							<b><spring:message
 									code="BzComposer.customer.opportunity.leadtoopportunity" />
-						</h2>
+									</b>
+						</h1>
 					</td>
 					
 				</tr>
 			</table>
 			</div>
-			
-					
-					<div align="center">
+					<div align="center" style="background-color: #F1F1F1;">
 					
 														
-														<table class="tabla-listados"   style="width:80%; apdding: 0;" >
+														<table class="tabla-listados"   style="width:80%;; apdding: 0;" >
 														
 														 <tr>
 														 <td>
@@ -219,40 +218,43 @@ table.tabla-listados tbody tr td {
 																	<spring:message code="BzComposer.customer.opportunity.createNew" />		
 																	</label> </b>
 																	<br>
+											
 																	<spring:message
 																			code="BzComposer.customer.opportunityName" />	
+																			
 																			 <span
 																		class="inputHighlighted"><spring:message
 																				code="BzComposer.CompulsoryField.Validation" />
 																				</span>
-														                   <input type="text" class="form-control devCheck"
-																				id="newOpprtunityName" name="newOpportunityName" />
-														 </td>
-														 
-														 <td>
-														 <label id="Or"> <spring:message code="BzComposer.customer.opportunity.or"/>
-														 
-														 </label>
-														 
-														 
-														 </td>
-														 
-														 <td>
-														 <input type="radio" id="ExistopportunityRadio" name="opportunityRadio" value="2" >
-
-																
-																	<b>
-																	 <label for="ExistopportunityRadio"> 
-																	<spring:message code="BzComposer.customer.opportunity.chooseeExisting" />		
-																	</label> </b>
-																	<form:input type="text" class="form-control devCheck"
+														                  	<form:input type="text" class="form-control devCheck"
 																				path="opportunityName" />
+														       </td>
 														 
-														 </td>
 														 
-														 </tr> 
 														 
-					
+											<td><b>
+											 <spring:message
+													code="BzComposer.customer.opportunity.owner" />
+													</b></td>
+											<td>
+											 <span
+																		class="inputHighlighted"><spring:message
+																				code="BzComposer.CompulsoryField.Validation" />
+												</span>
+											<form:select path="opportunityOwner">
+											
+													<form:option value="0">
+														<spring:message code="BzComposer.ComboBox.Select" />
+													</form:option>
+													
+							
+														
+														<form:options items="${opportunityOwnerList}" itemValue="name"
+																	itemLabel="name" />
+													</form:select>
+											
+											</td>
+										</tr>
 														</table>
 												<table style="width: 80%; apdding: 0;">
 														
@@ -274,42 +276,49 @@ table.tabla-listados tbody tr td {
 											</table>
 											<input type="hidden" id="tabid" name="tabid" value="" />
 											<form:hidden path="clientVendorID" />
+											<form:hidden path="sourceID"/>
 											<form:hidden path="companyID" />
 											</div>
-											
-						
-		
 	</form:form>
 	<script type="text/javascript">
 	 $(document).ready(function(){
-	        $("input[type='button']").click(function(){
+		// window.moveTo(350, 100);
+		 //window.resizeTo(900,600);
+		 
+	        $("input[type='button']").click(function()
+	       {
 	        	var radioValue = $("input[name='opportunityRadio']:checked").val();
-	           if(radioValue=="1")
-	        	document.LeadConvertForm.opportunityName.value=document.getElementById("newOpprtunityName").value;
-	        	
 	        });
 	        
-	     
 	        $("input[type='button']").click(function(){
 	        	var radioValue = $("input[name='accountRadio']:checked").val();
 	        	 if(radioValue=="1")
 	        	document.LeadConvertForm.companyName.value=document.getElementById("newCompanyName").value;
 	        });
 	        
-	        $("input[type='button']").click(function(){
+	 
+	        $("input[type='button']").click(function()
+	        		{
 	        	var radioValue = $("input[name='contactRadio']:checked").val();
 	        	 if(radioValue=="1")
 	        	document.LeadConvertForm.fullName.value=document.getElementById("newFullName").value;
-	        	
 	          });
 	    });
+       	
+	 function setWindowOnLoad()
+	 {
+		  window.moveTo(350, 100);
+		  window.resizeTo(900,600); 
+		  
+		  
+	 }
 	 
 	 function convert()
 	 {
-		var newOpprtunityName= document.getElementById("newOpprtunityName").value;
+		var OpprtunityName=document.LeadConvertForm.opportunityName.value;
 		
-		alert("company Id="+document.LeadConvertForm.companyID.value);
-		if(newOpprtunityName=="")
+		
+		if(OpprtunityName=="")
 			{
 			 $("#showValidationDialog").dialog({
 		            resizable: false,
@@ -325,18 +334,16 @@ table.tabla-listados tbody tr td {
 		                }
 		            }
 		        });
-			
-			}
+		  }
 		else
 			{
-          //var clientVendorID=document.LeadConvertForm.clientVendorID.value; 
-          // window.open("leadToOpportunity?tabid=conversion", null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no");
+          
+			//var clientVendorID=document.LeadConvertForm.clientVendorID.value; 
+     // window.open("leadToOpportunity?tabid=conversion", null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no");
            document.forms["LeadConvertForm"].action = "leadToOpportunity?tabid=conversion";
            document.forms["LeadConvertForm"].submit();
-
+          // window.close();
 			}
-		
-	 
 	 }
 
 </script>

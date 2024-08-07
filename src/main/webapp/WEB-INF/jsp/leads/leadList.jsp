@@ -406,8 +406,9 @@ function manageCustomer(cmd){
 		}
 		else if (cmd=="CONVERTLEADtoOPPORTUNITY")
 		{
-			window.open("leadToOpportunity?tabid=newOpportunity&cvID="+itemID, null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no");
+			//window.open("leadToOpportunity?tabid=newOpportunity&cvID="+itemID, null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no");
 			
+			window.open("leadToOpportunity?tabid=newOpportunity&leadID="+itemID, null,"scrollbars=yes,height=500,width=900,status=yes,toolbar=no,menubar=no,location=no");
 
 			<!-- 
 			if(confirm("<spring:message code='BzComposer.customerinfo.convertltoopportunity'/>")==true) 

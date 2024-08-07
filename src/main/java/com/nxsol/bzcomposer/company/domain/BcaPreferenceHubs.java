@@ -54,8 +54,18 @@ public class BcaPreferenceHubs
     
     @Column(name="Opportunity")
     private Integer isOpportunitiesEnable;
+    @Column(name="pos")
+    private Integer isPosEnable;
     
-    @Column(name="Active")
+    public Integer getIsPosEnable() {
+		return isPosEnable;
+	}
+
+	public void setIsPosEnable(Integer isPosEnable) {
+		this.isPosEnable = isPosEnable;
+	}
+
+	@Column(name="Active")
     private Integer active;
     
     public Integer getActive() {

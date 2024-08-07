@@ -46,7 +46,7 @@ import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.repos.SmdCvinfoRepository;
 import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.pritesh.bizcomposer.accounting.bean.TblBSAddress2;
-
+import com.avibha.bizcomposer.opportunity.form.OpportunityDto;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionServlet;
@@ -64,7 +64,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.*;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import com.avibha.bizcomposer.opportunity.form.OpportunityDto;
+
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class SalesDetailsDao {
@@ -97,6 +101,8 @@ public class SalesDetailsDao {
 
 	@Autowired
 	private PurchaseInfo purchaseInfo;
+
+	
 
 	@Autowired
 	private SmdCvinfoRepository smdCvinfoRepository;
@@ -150,9 +156,6 @@ public class SalesDetailsDao {
 	
 	@Autowired
 	private BcaCvtypeRepository bcaCvtypeRepository;
-	
-	@Autowired
-	DataImportExportUtils importExportUtils;
 	
 	public void getdataManager(HttpServletRequest request) {
 		HttpSession sess = request.getSession();
@@ -232,8 +235,40 @@ public class SalesDetailsDao {
 	 System.out.println("bca compny resp DAO ........"+bcaCompanyRepository);
 	  BcaCompany company = bcaCompanyRepository.findById(Long.parseLong(""+compId)).orElse(null);
 	  System.out.println("bca opp resp DAO ........"+bcaOpportunityRepository);
-	List<BcaOpportunity> opportunityList=bcaOpportunityRepository.findByCompany(company);
-	request.setAttribute("opportunityList", opportunityList);	
+	List<BcaOpportunity> opportunityList=bcaOpportunityRepository.findByCompanyAndActive(company,true);
+	
+	
+		List<OpportunityDto> ObjList=new  ArrayList<>();
+		for(BcaOpportunity bcaOpportunity:opportunityList)
+		{
+		 OpportunityDto op=new OpportunityDto();
+		 op.setOpportunityID(""+bcaOpportunity.getOpportunityId());
+		 op.setOpportunityName(bcaOpportunity.getName());
+		 op.setStage(bcaOpportunity.getStage());
+		 DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+		if(bcaOpportunity.getCloseDate()!=null)
+		 op.setClosedDate(outputFormat.format(bcaOpportunity.getCloseDate()));
+		 op.setStartDate(outputFormat.format(bcaOpportunity.getStartDate()));
+		 op.setAmount(bcaOpportunity.getAmount());
+		 if(bcaOpportunity.getOpportunityOwner().equals("0")==false&&bcaOpportunity.getOpportunityOwner()!=null)
+		 {
+			 
+			 //System.out.println("opportunityOwer............."+bcaOpportunity.getOpportunityOwner());
+		 op.setOpportunityOwner(bcaOpportunity.getOpportunityOwner());
+		 }
+		 if(bcaOpportunity.getSourceID()!=null)
+		 op.setSourceID(bcaOpportunity.getSourceID().getName());
+		 op.setActive(bcaOpportunity.getActive());	
+		 
+		 ObjList.add(op);
+		}
+		request.setAttribute("opportunityList", ObjList);	
+	 //request.setAttribute("opportunityList", opportunityList);
+		
+		
+		
+		
+		
 	}
 	
 
@@ -519,6 +554,7 @@ public class SalesDetailsDao {
 	}
 
 	public void uploadItemFile(HttpServletRequest request, MultipartFile attachFile) {
+		DataImportExportUtils importExportUtils = new DataImportExportUtils();
 		boolean b = importExportUtils.uploadItemFile(attachFile, request);
 		if (b == true) {
 			request.getSession().setAttribute("ItemUploaded", "successfully");
@@ -527,8 +563,10 @@ public class SalesDetailsDao {
 
 	public void exportFile(HttpServletRequest request, ItemDto itemDto, String type, HttpServletResponse response) {
 		String compId = (String) request.getSession().getAttribute("CID");
+		ItemInfoDao itemInfoDao = new ItemInfoDao();
 		if (type != null && (type.equals("xls") || type.equals("csv"))) {
-			ArrayList<ItemDto> itemList = itemInfoDao.SearchItemForExport(compId, null, itemDto, request);
+			DataImportExportUtils importExportUtils = new DataImportExportUtils();
+			ArrayList<ItemDto> itemList = itemInfoDao.SearchItem(compId, null, itemDto, request);
 			Collections.sort(itemList, Comparator.comparing(ItemDto::getParentID));
 			for (ItemDto item1 : itemList) {
 				for (ItemDto item2 : itemList) {

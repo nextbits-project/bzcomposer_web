@@ -1,14 +1,26 @@
 package com.avibha.bizcomposer.opportunity.form;
 
-import com.nxsol.bizcomposer.global.clientvendor.ClientVendor;
+
 import com.nxsol.bzcomposer.company.domain.BcaClientvendor;
 import com.nxsol.bzcomposer.company.domain.BcaCompany;
 
 public class OpportunityDto
 {
 	private static final long serialVersionUID = 0;
+	
+	public String getSourceID() 
+	{
+		return sourceID;
+	
+	}
+
+	public void setSourceID(String sourceID) {
+		this.sourceID = sourceID;
+	}
+
 	private String clientVendorID;
 	private String opportunityID;
+	private String sourceID;
 
 	
 	public String getOpprtunityName() {
@@ -40,9 +52,48 @@ public class OpportunityDto
 	private BcaCompany   company;
 	private double amount;
 	private String closedDate;
+	private String startDate;
+	
+	public String getStartDate() 
+	{
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
 	private String fullName;
 	private String companyName;
 	private String companyID;
+	private String opportunityOwner;
+	private double  opportunityAmount;
+	public double getOpportunityAmount() {
+		return opportunityAmount;
+	}
+
+	public void setOpportunityAmount(double  opportunityAmount) {
+		this.opportunityAmount = opportunityAmount;
+	}
+
+	private boolean active;
+	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public String getOpportunityOwner() {
+		return opportunityOwner;
+	}
+
+	public void setOpportunityOwner(String opportunityOwner) {
+		this.opportunityOwner = opportunityOwner;
+	}
+
 	public String getCompanyID() {
 		return companyID;
 	}

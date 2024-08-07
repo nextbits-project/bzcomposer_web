@@ -67,10 +67,13 @@ import com.nxsol.bzcomposer.company.repos.BcaStatesRepository;
 import com.nxsol.bzcomposer.company.repos.BcaTermRepository;
 import com.nxsol.bzcomposer.company.utils.DateHelper;
 import com.nxsol.bzcomposer.company.utils.JpaHelper;
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class LeadService {
 
+	@Autowired
+		private BcaSalesrepRepository bcaSalesrepRepository;
 	@Autowired
 	private BcaClientvendorRepository clientVendorRepo;
 	@Autowired
@@ -213,7 +216,8 @@ public class LeadService {
 		BcaLead lead = leadRepo.findByClientvendorId(clientVendor);
 		List<BcaLeadProducts> leadProducts = new ArrayList<BcaLeadProducts>();
 		if(lead != null) {
-			if (lead.getLeadSource() != null && lead.getLeadSource().getLeadSourceId() != null)
+			//if (lead.getLeadSource() != null && lead.getLeadSource().getLeadSourceId() != null)
+			if (lead.getLeadSource() != null)
 				customerDto.setLeadSource(lead.getLeadSource().getLeadSourceId());
 			
 			if (lead.getLeadCategory() != null && lead.getLeadCategory().getLeadCategoryId() != null)
@@ -1184,6 +1188,13 @@ public class LeadService {
 			Loger.log("ClientVendor not Found________________removeClientVendor");
 		}
 	}
+	
+	public  void getAllOpportunityOwner(HttpServletRequest request) 
+			{
+				String companyId = (String) request.getSession().getAttribute("CID");
+				List<BcaSalesrep> bcaSalesrep = bcaSalesrepRepository.findByCompany_CompanyIdAndActive(Long.parseLong(companyId), 1);
+				 request.setAttribute("opportunityOwnerList", bcaSalesrep);
+			}
 	
 	public List<LeadDirectoryDto> getAllLeadByDirectoryId(int directoryId) {
 		List<Object[]> bcaLeadList = bcaLeadNewRepository.findAllLeadByDirectoryId(directoryId);

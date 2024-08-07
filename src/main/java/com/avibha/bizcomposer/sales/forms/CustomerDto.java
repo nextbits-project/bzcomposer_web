@@ -237,6 +237,92 @@ public class CustomerDto  implements Serializable{
 	
 	private List<String> leadSelectedproducts;
 	
+	//opportunity module
+	private int opportunityId;
+	private   String  opportunityName;
+	private   String  opportunityStage;
+	private   double  opportunityAmount;
+	private   String  dateClosed;
+	private   String  startDate;
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	private   String  opportunityOwner;
+	private   boolean  opportunityStatus;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public int getOpportunityId() {
+		return opportunityId;
+	}
+
+	public void setOpportunityId(int opportunityId) {
+		this.opportunityId = opportunityId;
+	}
+
+	public String getOpportunityName() {
+		return opportunityName;
+	}
+
+	public void setOpportunityName(String opportunityName) {
+		this.opportunityName = opportunityName;
+	}
+
+	public String getOpportunityStage() {
+		return opportunityStage;
+	}
+
+	public void setOpportunityStage(String opportunityStage) {
+		this.opportunityStage = opportunityStage;
+	}
+
+	public double getOpportunityAmount() {
+		return opportunityAmount;
+	}
+
+	public void setOpportunityAmount(double opportunityAmount) {
+		this.opportunityAmount = opportunityAmount;
+	}
+
+	public String getDateClosed() {
+		return dateClosed;
+	}
+
+	public void setDateClosed(String dateClosed) {
+		this.dateClosed = dateClosed;
+	}
+
+	public String getOpportunityOwner() {
+		return opportunityOwner;
+	}
+
+	public void setOpportunityOwner(String opportunityOwner) {
+		this.opportunityOwner = opportunityOwner;
+	}
+
+	public boolean isOpportunityStatus() {
+		return opportunityStatus;
+	}
+
+	public void setOpportunityStatus(boolean opportunityStatus) {
+		this.opportunityStatus = opportunityStatus;
+	}
+
 	public CustomerDto() {
 		//adding for object creation
 	}
